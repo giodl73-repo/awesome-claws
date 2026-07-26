@@ -11,5 +11,8 @@
   },
   "engines": {
     "node": ">=22.22.3"
+  },
+  "devDependencies": {
+    "yaml": "2.9.0"
   }
 }

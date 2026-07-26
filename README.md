@@ -63,6 +63,11 @@ Every starter contains:
   criteria.
 - `package.json`: package identity and the `openclaw.claw` entry point.
 
+These packages intentionally follow the experimental prompt-body contract in
+[openclaw/openclaw#113454](https://github.com/openclaw/openclaw/pull/113454): a
+non-empty `CLAW.md` body is the portable agent prompt, and the same package does
+not declare a competing `SOUL.md` workspace sidecar.
+
 The generated packages are derived from [`catalog.json`](catalog.json). Edit
 that source and run `npm run build`; do not hand-edit files under `claws/`.
 

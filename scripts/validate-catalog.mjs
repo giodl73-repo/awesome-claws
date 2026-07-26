@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { readFile, readdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseDocument } from "yaml";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
@@ -94,6 +95,46 @@ for (const entry of catalog.entries) {
   const packageJson = JSON.parse(await readFile(join(packageRoot, "package.json"), "utf8"));
   if (packageJson.private !== true || packageJson.version !== "0.1.0") {
     throw new Error(`${entry.id} must remain non-publishable and exactly versioned.`);
+  }
+
+  const clawMarkdown = await readFile(join(packageRoot, "CLAW.md"), "utf8");
+  if (!clawMarkdown.startsWith("---\n")) {
+    throw new Error(`${entry.id}/CLAW.md must start with a YAML frontmatter delimiter.`);
+  }
+  const closingFrontmatter = clawMarkdown.indexOf("\n---\n", 4);
+  if (closingFrontmatter < 0 || !clawMarkdown.slice(closingFrontmatter + 5).trim()) {
+    throw new Error(`${entry.id}/CLAW.md must contain a non-empty portable agent prompt.`);
+  }
+  const frontmatter = clawMarkdown.slice(4, closingFrontmatter);
+  const document = parseDocument(frontmatter, { prettyErrors: false, uniqueKeys: true });
+  if (document.errors.length > 0) {
+    throw new Error(`${entry.id}/CLAW.md must contain valid, unique-key YAML frontmatter.`);
+  }
+  const manifest = document.toJS();
+  const workspaceTargets = [
+    ...Object.keys(manifest?.workspace?.bootstrapFiles ?? {}),
+    ...(manifest?.workspace?.files ?? []).map((file) => file.path),
+  ].map((path) => {
+    if (typeof path !== "string") {
+      throw new Error(`${entry.id}/CLAW.md workspace targets must be strings.`);
+    }
+    const normalized = path.replaceAll("\\", "/");
+    if (
+      normalized.startsWith("/") ||
+      /^[A-Za-z]:\//.test(normalized) ||
+      normalized.split("/").some((segment) => !segment || segment === "." || segment === "..")
+    ) {
+      throw new Error(`${entry.id}/CLAW.md workspace targets must be safe relative paths.`);
+    }
+    return normalized.normalize("NFC").toLowerCase();
+  });
+  if (
+    workspaceTargets.some(
+      (path) =>
+        path === "soul.md" || path.startsWith("soul.md/") || "soul.md".startsWith(`${path}/`),
+    )
+  ) {
+    throw new Error(`${entry.id}/CLAW.md must not declare a workspace target conflicting with SOUL.md.`);
   }
 
   for (const relativePath of expectedFiles) {
