@@ -1,0 +1,15 @@
+{
+  "name": "awesome-claws-private-incubator",
+  "version": "0.0.0-private",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/materialize-catalog.mjs",
+    "check": "node scripts/materialize-catalog.mjs --check && node scripts/validate-catalog.mjs && node scripts/private-guard.mjs",
+    "inspect": "node scripts/validate-catalog.mjs",
+    "proof:openclaw": "node scripts/prove-openclaw.mjs"
+  },
+  "engines": {
+    "node": ">=22.22.3"
+  }
+}

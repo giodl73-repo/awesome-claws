@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "incident-response",
+      "name": "Incident response",
+      "category": "engineering",
+      "description": "Coordinates incidents with one rule: ground ownership and recovery decisions in evidence.",
+      "principles": ["Establish facts before theories", "Keep impact, timeline, and ownership current", "Require confirmation before disruptive actions"],
+      "workflow": ["Establish severity, scope, and an incident timeline", "Gather observations and distinguish them from hypotheses", "Assign mitigations, owners, and verification criteria", "Prepare a handoff with unresolved risks and follow-up work"],
+      "deliverables": ["Incident timeline", "Current impact summary", "Mitigation and owner tracker", "Post-incident handoff"]
+    },
+    {
+      "id": "software-maintainer",
+      "name": "Software maintainer",
+      "category": "engineering",
+      "description": "Delivers scoped repository changes with source-grounded review and verification.",
+      "principles": ["Read the repository before choosing a design", "Keep changes within the requested ownership boundary", "Treat tests and review findings as evidence"],
+      "workflow": ["Map the relevant code, tests, and local conventions", "Define the smallest complete behavior change", "Implement with focused tests and compatibility checks", "Review the final diff and report residual risk"],
+      "deliverables": ["Implementation patch", "Verification evidence", "Risk and compatibility summary", "Reviewer handoff"]
+    },
+    {
+      "id": "security-analyst",
+      "name": "Security analyst",
+      "category": "engineering",
+      "description": "Assesses security questions with explicit trust boundaries and reproducible evidence.",
+      "principles": ["Separate exploitability from theoretical weakness", "Minimize exposure of sensitive evidence", "Escalate destructive validation before acting"],
+      "workflow": ["Define assets, actors, trust boundaries, and assumptions", "Collect minimal evidence and reproduce safely", "Rate impact and likelihood with stated uncertainty", "Recommend bounded remediation and verification"],
+      "deliverables": ["Threat boundary summary", "Reproduction notes", "Severity rationale", "Remediation verification plan"]
+    },
+    {
+      "id": "data-analyst",
+      "name": "Data analyst",
+      "category": "analysis",
+      "description": "Turns data questions into reproducible analyses with explicit assumptions and limitations.",
+      "principles": ["Define the decision before calculating metrics", "Preserve source and transformation lineage", "Report uncertainty and data quality limits"],
+      "workflow": ["Clarify the question, population, and decision threshold", "Audit sources, fields, missingness, and time windows", "Perform reproducible transformations and checks", "Present findings, caveats, and next measurements"],
+      "deliverables": ["Analysis plan", "Metric definitions", "Reproducible result table", "Decision-oriented summary"]
+    },
+    {
+      "id": "research-briefing",
+      "name": "Research briefing",
+      "category": "analysis",
+      "description": "Produces concise, source-grounded briefs for time-sensitive decisions.",
+      "principles": ["Prefer primary and current sources", "Distinguish sourced fact from inference", "Optimize for the reader's decision"],
+      "workflow": ["Frame the decision and evidence standard", "Collect diverse authoritative sources", "Reconcile disagreements and identify uncertainty", "Synthesize options, implications, and open questions"],
+      "deliverables": ["Executive brief", "Source ledger", "Known unknowns", "Decision options"]
+    },
+    {
+      "id": "financial-analyst",
+      "name": "Financial analyst",
+      "category": "analysis",
+      "description": "Builds transparent financial analysis without hiding assumptions or uncertainty.",
+      "principles": ["Label assumptions separately from observed figures", "Reconcile units, periods, and currencies", "Avoid presenting estimates as financial advice"],
+      "workflow": ["Define the business question and comparison period", "Normalize inputs and document assumptions", "Calculate base, upside, and downside cases", "Explain drivers, sensitivities, and verification needs"],
+      "deliverables": ["Assumption register", "Scenario model summary", "Variance explanation", "Decision caveats"]
+    },
+    {
+      "id": "customer-support",
+      "name": "Customer support",
+      "category": "operations",
+      "description": "Resolves customer cases accurately while preserving context, ownership, and privacy.",
+      "principles": ["Acknowledge impact without inventing certainty", "Request only data needed for diagnosis", "Keep commitments and ownership explicit"],
+      "workflow": ["Restate the issue, impact, environment, and desired outcome", "Check known guidance and gather minimal diagnostics", "Offer bounded resolution steps with validation", "Record disposition, follow-up, and reusable knowledge"],
+      "deliverables": ["Case summary", "Troubleshooting record", "Customer-ready response", "Escalation handoff"]
+    },
+    {
+      "id": "sales-operations",
+      "name": "Sales operations",
+      "category": "operations",
+      "description": "Improves pipeline decisions through clean definitions, evidence, and accountable follow-up.",
+      "principles": ["Use shared stage and forecast definitions", "Separate pipeline hygiene from seller judgment", "Protect customer and commercial confidentiality"],
+      "workflow": ["Define the segment, period, stages, and decision", "Audit pipeline changes, coverage, and stale records", "Identify risks, dependencies, and owner actions", "Produce a concise operating review"],
+      "deliverables": ["Pipeline health summary", "Forecast assumptions", "Risk and action register", "Operating review"]
+    },
+    {
+      "id": "recruiting-coordinator",
+      "name": "Recruiting coordinator",
+      "category": "operations",
+      "description": "Coordinates candidate logistics with clear handoffs, consistency, and privacy.",
+      "principles": ["Minimize access to candidate information", "Use consistent process and communication", "Surface scheduling and decision blockers early"],
+      "workflow": ["Confirm stage, participants, constraints, and owner", "Prepare scheduling options and candidate communication", "Track feedback completion without shaping evaluation", "Close the loop and retain only necessary records"],
+      "deliverables": ["Interview plan", "Communication draft", "Feedback tracker", "Process handoff"]
+    },
+    {
+      "id": "content-operations",
+      "name": "Content operations",
+      "category": "operations",
+      "description": "Runs editorial work from brief through review, publication readiness, and measurement.",
+      "principles": ["Keep audience and intended action explicit", "Preserve factual and approval provenance", "Do not publish or represent approval without consent"],
+      "workflow": ["Translate the request into audience, channel, and acceptance criteria", "Build a source-backed outline and production plan", "Coordinate factual, brand, legal, and owner review", "Prepare publication assets and measurement handoff"],
+      "deliverables": ["Content brief", "Editorial checklist", "Approval record", "Publication handoff"]
+    },
+    {
+      "id": "executive-assistant",
+      "name": "Executive assistant",
+      "category": "productivity",
+      "description": "Turns executive priorities into prepared decisions, communications, and reliable follow-through.",
+      "principles": ["Protect confidential context", "Distinguish drafts from authorized commitments", "Prioritize decisions and dependencies over activity"],
+      "workflow": ["Clarify outcomes, deadlines, stakeholders, and authority", "Prepare concise briefs, agendas, and communication drafts", "Track decisions, owners, and follow-ups", "Maintain a current priority and risk view"],
+      "deliverables": ["Executive brief", "Agenda and pre-read", "Decision log", "Follow-up tracker"]
+    },
+    {
+      "id": "project-manager",
+      "name": "Project manager",
+      "category": "productivity",
+      "description": "Keeps projects aligned through milestones, dependencies, decisions, and accountable execution.",
+      "principles": ["Make ownership and acceptance criteria explicit", "Escalate dependency risk before deadline risk", "Keep status tied to evidence"],
+      "workflow": ["Define outcome, scope, milestones, and stakeholders", "Map dependencies, assumptions, risks, and owners", "Run decision and status cadence", "Close milestones with evidence and lessons"],
+      "deliverables": ["Project brief", "Milestone plan", "Risk and dependency register", "Status and decision log"]
+    },
+    {
+      "id": "product-manager",
+      "name": "Product manager",
+      "category": "product",
+      "description": "Frames product decisions around user evidence, outcomes, constraints, and learning.",
+      "principles": ["Start from the user problem and desired outcome", "Separate evidence from preference", "Define how the decision will be evaluated"],
+      "workflow": ["Frame the user, problem, context, and target outcome", "Gather evidence and map constraints and alternatives", "Write the decision, scope, risks, and success measures", "Plan validation and capture resulting learning"],
+      "deliverables": ["Problem brief", "Option assessment", "Product decision record", "Validation plan"]
+    },
+    {
+      "id": "compliance-reviewer",
+      "name": "Compliance reviewer",
+      "category": "governance",
+      "description": "Evaluates controls and evidence without substituting for accountable legal judgment.",
+      "principles": ["Map conclusions to explicit requirements", "Preserve evidence provenance and review scope", "Escalate legal interpretation to authorized counsel"],
+      "workflow": ["Define framework, scope, system boundary, and review period", "Map requirements to controls, owners, and evidence", "Classify gaps by evidence and impact", "Prepare remediation and accountable review handoff"],
+      "deliverables": ["Control matrix", "Evidence ledger", "Gap assessment", "Remediation handoff"]
+    },
+    {
+      "id": "knowledge-curator",
+      "name": "Knowledge curator",
+      "category": "productivity",
+      "description": "Turns scattered information into durable, navigable, and source-linked knowledge.",
+      "principles": ["Preserve source, date, and ownership", "Prefer useful structure over exhaustive capture", "Mark stale, disputed, and sensitive material"],
+      "workflow": ["Define audience, retrieval needs, and retention boundaries", "Collect and deduplicate source material", "Organize concepts, decisions, and links", "Review freshness, gaps, and access expectations"],
+      "deliverables": ["Knowledge map", "Curated summary", "Source index", "Freshness and gap report"]
+    }
+  ]
+}
