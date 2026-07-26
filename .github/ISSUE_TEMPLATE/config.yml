@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: OpenClaw help
+    url: https://discord.gg/clawd
+    about: Ask setup and support questions in the OpenClaw community.
+  - name: Security report
+    url: https://github.com/openclaw/openclaw/security/policy
+    about: Report security vulnerabilities privately.

@@ -15,24 +15,6 @@ function numbered(values) {
 }
 
 function filesFor(entry) {
-  const claw = `---
-schemaVersion: 1
-agent:
-  id: ${entry.id}
-  name: ${JSON.stringify(entry.name)}
-  description: ${JSON.stringify(entry.description)}
-workspace:
-  bootstrapFiles:
-    AGENTS.md:
-      source: workspace/AGENTS.md
-    SOUL.md:
-      source: workspace/SOUL.md
-  files: []
-packages: []
-mcpServers: {}
-cronJobs: []
----
-`;
   const soul = `# ${entry.name}
 
 ## Purpose
@@ -55,6 +37,22 @@ ${bullets(entry.boundaries)}
 - Ask before external communication, publication, destructive action, or irreversible commitment.
 - State uncertainty, missing evidence, and the accountable human decision clearly.
 `;
+  const claw = `---
+schemaVersion: 1
+agent:
+  id: ${entry.id}
+  name: ${JSON.stringify(entry.name)}
+  description: ${JSON.stringify(entry.description)}
+workspace:
+  bootstrapFiles:
+    AGENTS.md:
+      source: workspace/AGENTS.md
+  files: []
+packages: []
+mcpServers: {}
+cronJobs: []
+---
+\n${soul}`;
   const agents = `# Operating workflow
 
 ## Start here
@@ -88,7 +86,7 @@ Keep working notes concise, preserve source links when available, and make the n
 `;
   const packageJson = `${JSON.stringify(
     {
-      name: `@awesome-claws-private/${entry.id}`,
+      name: `@awesome-claws/${entry.id}`,
       version: "0.1.0",
       private: true,
       type: "module",
@@ -97,11 +95,31 @@ Keep working notes concise, preserve source links when available, and make the n
     null,
     2,
   )}\n`;
+  const readme = `# ${entry.name}
+
+${entry.description}
+
+**Best for:** ${entry.audience}
+
+## Example
+
+**Request:** ${entry.example.request}
+
+**Expected outcome:** ${entry.example.outcome}
+
+## Package contents
+
+- \`CLAW.md\` defines the agent and provides its portable \`SOUL.md\` content.
+- \`workspace/AGENTS.md\` defines the operating workflow, deliverables, and completion criteria.
+
+Review the package before applying it. Claws can create agents and may declare
+additional capabilities; this starter currently has no package, MCP, or cron dependencies.
+`;
   return new Map([
     ["CLAW.md", claw],
+    ["README.md", readme],
     ["package.json", packageJson],
     ["workspace/AGENTS.md", agents],
-    ["workspace/SOUL.md", soul],
   ]);
 }
 
@@ -162,9 +180,9 @@ if (check) {
     const expectedEntries = new Set([
       "directory:workspace",
       "file:CLAW.md",
+      "file:README.md",
       "file:package.json",
       "file:workspace/AGENTS.md",
-      "file:workspace/SOUL.md",
     ]);
     const actualEntries = new Set(
       (await readdir(packageRoot, { recursive: true, withFileTypes: true })).map((item) => {

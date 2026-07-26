@@ -1,5 +1,5 @@
 {
-  "name": "@awesome-claws-private/project-manager",
+  "name": "@awesome-claws/project-manager",
   "version": "0.1.0",
   "private": true,
   "type": "module",

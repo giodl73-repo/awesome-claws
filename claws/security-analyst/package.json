@@ -1,5 +1,5 @@
 {
-  "name": "@awesome-claws-private/security-analyst",
+  "name": "@awesome-claws/security-analyst",
   "version": "0.1.0",
   "private": true,
   "type": "module",

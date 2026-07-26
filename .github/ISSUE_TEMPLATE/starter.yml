@@ -1,0 +1,33 @@
+name: Propose a starter Claw
+description: Propose a focused starter agent for the catalog.
+title: "Starter: "
+labels: ["starter proposal"]
+body:
+  - type: textarea
+    id: user
+    attributes:
+      label: User and setting
+      description: Who needs this Claw, and in what concrete setting?
+    validations:
+      required: true
+  - type: textarea
+    id: job
+    attributes:
+      label: Repeatable job
+      description: What bounded job should the agent perform?
+    validations:
+      required: true
+  - type: textarea
+    id: distinction
+    attributes:
+      label: Why a new starter
+      description: Why can an existing starter not cover this with a small change?
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Safety and authority boundaries
+      description: What approvals, privacy constraints, or external actions matter?
+    validations:
+      required: true

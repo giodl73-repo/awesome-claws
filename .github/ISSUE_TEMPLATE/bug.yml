@@ -1,0 +1,26 @@
+name: Report a catalog problem
+description: Report incorrect, unsafe, or unclear behavior in a starter Claw.
+title: "Bug: "
+labels: ["bug"]
+body:
+  - type: input
+    id: claw
+    attributes:
+      label: Claw
+      placeholder: incident-response
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What did the package say or do, and why is it incorrect or unsafe?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction and evidence
+      description: Include the revision, prompt, expected result, actual result, and redacted evidence.
+    validations:
+      required: true

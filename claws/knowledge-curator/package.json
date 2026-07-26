@@ -1,5 +1,5 @@
 {
-  "name": "@awesome-claws-private/knowledge-curator",
+  "name": "@awesome-claws/knowledge-curator",
   "version": "0.1.0",
   "private": true,
   "type": "module",

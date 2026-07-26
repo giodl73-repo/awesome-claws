@@ -1,5 +1,5 @@
 {
-  "name": "@awesome-claws-private/incident-response",
+  "name": "@awesome-claws/incident-response",
   "version": "0.1.0",
   "private": true,
   "type": "module",

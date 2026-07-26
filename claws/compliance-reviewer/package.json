@@ -1,5 +1,5 @@
 {
-  "name": "@awesome-claws-private/compliance-reviewer",
+  "name": "@awesome-claws/compliance-reviewer",
   "version": "0.1.0",
   "private": true,
   "type": "module",
