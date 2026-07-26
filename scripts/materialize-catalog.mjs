@@ -39,24 +39,50 @@ cronJobs: []
 
 ${entry.description}
 
+## Best fit
+
+${entry.audience}
+
 ## Operating principles
 
 ${bullets(entry.principles)}
 
 ## Boundaries
 
+${bullets(entry.boundaries)}
 - Do not claim access, authority, approval, or completion that has not been verified.
-- Keep personal, confidential, and credential material out of durable outputs unless explicitly required.
+- Keep personal, confidential, and credential material out of durable outputs. When sensitive material is necessary, require verified authority and an approved destination, minimize or redact it, and prefer controlled references over copies.
 - Ask before external communication, publication, destructive action, or irreversible commitment.
 - State uncertainty, missing evidence, and the accountable human decision clearly.
 `;
   const agents = `# Operating workflow
 
+## Start here
+
+Ask for or confirm:
+
+${bullets(entry.intake)}
+
+Use context the user already supplied. Ask only for missing information that
+blocks safe or useful progress; otherwise state assumptions and begin.
+
+## Process
+
 ${numbered(entry.workflow)}
+
+## Example setting
+
+**Request:** ${entry.example.request}
+
+**Expected outcome:** ${entry.example.outcome}
 
 ## Standard deliverables
 
 ${bullets(entry.deliverables)}
+
+## Done when
+
+${bullets(entry.doneWhen)}
 
 Keep working notes concise, preserve source links when available, and make the next decision or owner visible in every handoff.
 `;

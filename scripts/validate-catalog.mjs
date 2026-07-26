@@ -10,9 +10,30 @@ const cliEntry = resolve(
     join(root, "..", "standalone-claw-cli-prototype", "packages", "cli", "dist", "cli.mjs"),
 );
 const expectedFiles = ["CLAW.md", "package.json", "workspace/AGENTS.md", "workspace/SOUL.md"];
+const expectedStarterIds = [
+  "compliance-reviewer",
+  "content-operations",
+  "customer-support",
+  "data-analyst",
+  "executive-assistant",
+  "financial-analyst",
+  "incident-response",
+  "knowledge-curator",
+  "product-manager",
+  "project-manager",
+  "recruiting-coordinator",
+  "research-briefing",
+  "sales-operations",
+  "security-analyst",
+  "software-maintainer",
+];
 
-if (!Array.isArray(catalog.entries) || catalog.entries.length < 12) {
-  throw new Error("The private catalog must contain at least 12 substantive starters.");
+if (!Array.isArray(catalog.entries)) {
+  throw new Error("The private catalog must contain an entries array.");
+}
+const catalogIds = catalog.entries.map((entry) => entry.id).sort();
+if (JSON.stringify(catalogIds) !== JSON.stringify(expectedStarterIds)) {
+  throw new Error("The private catalog must contain the exact 15 reviewed starter identities.");
 }
 
 const ids = new Set();
@@ -23,6 +44,38 @@ for (const entry of catalog.entries) {
   }
   ids.add(entry.id);
   names.add(entry.name);
+
+  const minimumItems = {
+    principles: 3,
+    workflow: 4,
+    deliverables: 4,
+    intake: 3,
+    boundaries: 2,
+    doneWhen: 3,
+  };
+  for (const [field, minimum] of Object.entries(minimumItems)) {
+    const values = entry[field];
+    if (
+      !Array.isArray(values) ||
+      values.length < minimum ||
+      values.some((value) => typeof value !== "string" || !value.trim()) ||
+      new Set(values).size !== values.length
+    ) {
+      throw new Error(
+        `${entry.id}.${field} must contain at least ${minimum} unique substantive entries.`,
+      );
+    }
+  }
+  if (
+    typeof entry.audience !== "string" ||
+    !entry.audience.trim() ||
+    typeof entry.example?.request !== "string" ||
+    !entry.example.request.trim() ||
+    typeof entry.example?.outcome !== "string" ||
+    !entry.example.outcome.trim()
+  ) {
+    throw new Error(`${entry.id} must define an audience and complete example setting.`);
+  }
 
   const packageRoot = join(root, "claws", entry.id);
   const actualFiles = (await readdir(packageRoot, { recursive: true, withFileTypes: true }))
@@ -60,4 +113,3 @@ for (const entry of catalog.entries) {
 }
 
 console.log(`Validated ${catalog.entries.length} Claws with the standalone reference CLI.`);
-

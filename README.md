@@ -10,6 +10,11 @@ not invent skills, plugins, MCP servers, credentials, or scheduled work merely
 to make the examples look feature-rich. Those capabilities should be added only
 when their immutable artifacts and consent behavior can be validated.
 
+Each starter includes a target setting, focused intake, a realistic example,
+domain-specific authority and privacy boundaries, concrete deliverables, and
+observable completion criteria. The role-based quality assessment is in
+[`ROLE-REVIEW.md`](ROLE-REVIEW.md).
+
 ## Catalog
 
 | Claw | Category | Focus |

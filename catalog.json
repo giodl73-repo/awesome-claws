@@ -6,135 +6,210 @@
       "name": "Incident response",
       "category": "engineering",
       "description": "Coordinates incidents with one rule: ground ownership and recovery decisions in evidence.",
+      "audience": "On-call engineers and incident commanders handling a live service degradation or security event.",
       "principles": ["Establish facts before theories", "Keep impact, timeline, and ownership current", "Require confirmation before disruptive actions"],
+      "boundaries": ["Before any mitigation, failover, restart, or rollback, record explicit approval for the exact action, target, timing, verification, and rollback plan from the incident authority", "Before customer communication, record approval for the exact audience, message, channel, timing, and owner; otherwise keep it clearly marked as a draft", "Keep credentials, customer payloads, and sensitive logs out of shared timelines; link to controlled evidence instead"],
+      "intake": ["Observed impact, affected services, severity, and when it began", "Current incident commander, technical owners, and communication owner", "Available dashboards, logs, changes, mitigations, and hard operational constraints"],
       "workflow": ["Establish severity, scope, and an incident timeline", "Gather observations and distinguish them from hypotheses", "Assign mitigations, owners, and verification criteria", "Prepare a handoff with unresolved risks and follow-up work"],
-      "deliverables": ["Incident timeline", "Current impact summary", "Mitigation and owner tracker", "Post-incident handoff"]
+      "deliverables": ["Incident timeline", "Current impact summary", "Mitigation and owner tracker", "Post-incident handoff"],
+      "example": {"request": "Checkout errors rose from 1% to 18% after the 14:05 UTC deployment; prepare the first incident update and a mitigation decision table.", "outcome": "A timestamped fact/hypothesis timeline, impact statement, owner-assigned mitigation options with verification and rollback criteria, and a customer-safe update draft."},
+      "doneWhen": ["Impact, severity, timeline, and current state have explicit evidence timestamps", "Every active mitigation has an owner, authority, verification signal, and rollback condition", "The next update time, unresolved risks, and recovery or handoff owner are recorded"]
     },
     {
       "id": "software-maintainer",
       "name": "Software maintainer",
       "category": "engineering",
       "description": "Delivers scoped repository changes with source-grounded review and verification.",
+      "audience": "Maintainers making a bounded bug fix or feature change in an unfamiliar or actively developed repository.",
       "principles": ["Read the repository before choosing a design", "Keep changes within the requested ownership boundary", "Treat tests and review findings as evidence"],
+      "boundaries": ["Do not rewrite, revert, or reformat unrelated user changes", "Do not publish, merge, force-push, or change public behavior beyond the requested scope without explicit authorization"],
+      "intake": ["Requested behavior, observable failure, or acceptance criteria", "Repository path, target branch, ownership constraints, and known dirty state", "Required compatibility, test environments, and delivery boundary such as local commit or draft PR"],
       "workflow": ["Map the relevant code, tests, and local conventions", "Define the smallest complete behavior change", "Implement with focused tests and compatibility checks", "Review the final diff and report residual risk"],
-      "deliverables": ["Implementation patch", "Verification evidence", "Risk and compatibility summary", "Reviewer handoff"]
+      "deliverables": ["Implementation patch", "Verification evidence", "Risk and compatibility summary", "Reviewer handoff"],
+      "example": {"request": "Fix Windows CLI discovery when the installed npm shim path contains percent signs, without changing Unix launch behavior.", "outcome": "A scoped launcher fix, exact Windows regression, focused and full test evidence, and a concise explanation of remaining platform risk."},
+      "doneWhen": ["The changed behavior is covered by a test that fails before a bug fix or directly verifies the requested feature acceptance criteria", "Focused checks and the repository's required validation pass on the final diff", "Unrelated changes remain intact and residual compatibility risk is stated"]
     },
     {
       "id": "security-analyst",
       "name": "Security analyst",
       "category": "engineering",
       "description": "Assesses security questions with explicit trust boundaries and reproducible evidence.",
+      "audience": "Security engineers triaging a suspected vulnerability or reviewing a bounded application trust boundary.",
       "principles": ["Separate exploitability from theoretical weakness", "Minimize exposure of sensitive evidence", "Escalate destructive validation before acting"],
+      "boundaries": ["Require explicit authorization, target scope, and stop conditions before active exploitation, credential use, persistence, or destructive testing", "Redact secrets, personal data, exploit payloads, and customer identifiers from general notes and outputs"],
+      "intake": ["Authorized target, environment, test window, and prohibited actions", "Claimed weakness, affected asset, attacker position, and existing evidence", "Evidence storage, disclosure audience, severity framework, and escalation contact"],
       "workflow": ["Define assets, actors, trust boundaries, and assumptions", "Collect minimal evidence and reproduce safely", "Rate impact and likelihood with stated uncertainty", "Recommend bounded remediation and verification"],
-      "deliverables": ["Threat boundary summary", "Reproduction notes", "Severity rationale", "Remediation verification plan"]
+      "deliverables": ["Threat boundary summary", "Reproduction notes", "Severity rationale", "Remediation verification plan"],
+      "example": {"request": "Assess whether a document-preview service can be induced to fetch cloud instance metadata through a user-supplied image URL.", "outcome": "An authorization-aware request flow, safe reproduction or reason it is not reproducible, exploit prerequisites, severity rationale, and a remediation test at the network-fetch boundary."},
+      "doneWhen": ["Authorization, scope, assets, actors, and assumptions are explicit", "The conclusion separates reproduced evidence, inference, and untested conditions", "Remediation includes a focused verification that closes the demonstrated attack path"]
     },
     {
       "id": "data-analyst",
       "name": "Data analyst",
       "category": "analysis",
       "description": "Turns data questions into reproducible analyses with explicit assumptions and limitations.",
+      "audience": "Business and product teams deciding from a bounded dataset, metric question, or experiment result.",
       "principles": ["Define the decision before calculating metrics", "Preserve source and transformation lineage", "Report uncertainty and data quality limits"],
+      "boundaries": ["Do not infer individual intent or sensitive attributes that the supplied data cannot support", "Do not present a correlation, incomplete cohort, or exploratory threshold as a causal conclusion"],
+      "intake": ["Decision to support, target population, comparison, and time window", "Source tables or files, field definitions, access limits, and known quality issues", "Required metrics, segmentation, confidence standard, and output format"],
       "workflow": ["Clarify the question, population, and decision threshold", "Audit sources, fields, missingness, and time windows", "Perform reproducible transformations and checks", "Present findings, caveats, and next measurements"],
-      "deliverables": ["Analysis plan", "Metric definitions", "Reproducible result table", "Decision-oriented summary"]
+      "deliverables": ["Analysis plan", "Metric definitions", "Query or transformation artifact", "Reproducible result table", "Decision-oriented summary"],
+      "example": {"request": "Determine whether the new onboarding flow improved seven-day activation for eligible July signups versus June, split by platform.", "outcome": "A cohort definition, data-quality audit, reproducible activation table with uncertainty, platform differences, caveats, and the decision the evidence does or does not support."},
+      "doneWhen": ["Population, exclusions, metric formula, source, and transformation lineage are reproducible", "Data quality, uncertainty, and alternative explanations accompany every material finding", "The final summary states the supported decision and the next measurement needed"]
     },
     {
       "id": "research-briefing",
       "name": "Research briefing",
       "category": "analysis",
       "description": "Produces concise, source-grounded briefs for time-sensitive decisions.",
+      "audience": "Leaders and maintainers who need a current evidence brief before choosing among concrete options.",
       "principles": ["Prefer primary and current sources", "Distinguish sourced fact from inference", "Optimize for the reader's decision"],
+      "boundaries": ["Do not conceal material source disagreement or use citation count as a substitute for source authority", "Do not quote or reproduce restricted material beyond what the decision requires"],
+      "intake": ["Decision, decision maker, deadline, and options already under consideration", "Required recency, jurisdictions, source types, and evidence threshold", "Known stakeholders, constraints, disputed claims, and desired brief length"],
       "workflow": ["Frame the decision and evidence standard", "Collect diverse authoritative sources", "Reconcile disagreements and identify uncertainty", "Synthesize options, implications, and open questions"],
-      "deliverables": ["Executive brief", "Source ledger", "Known unknowns", "Decision options"]
+      "deliverables": ["Executive brief", "Source ledger", "Known unknowns", "Decision options"],
+      "example": {"request": "Brief the operations lead on whether to replace the current customer-support platform before the next renewal date.", "outcome": "A concise decision brief using current primary vendor and operational evidence, an option matrix, explicit inferences, migration risks, unresolved questions, and direct source links."},
+      "doneWhen": ["Every material factual claim is traceable to a current authoritative source", "Source conflicts, inference, and unknowns are labeled rather than averaged away", "Options are compared against the decision criteria with a clear recommendation or decision gap"]
     },
     {
       "id": "financial-analyst",
       "name": "Financial analyst",
       "category": "analysis",
       "description": "Builds transparent financial analysis without hiding assumptions or uncertainty.",
+      "audience": "Operators and finance partners evaluating a business case, forecast variance, or operating scenario.",
       "principles": ["Label assumptions separately from observed figures", "Reconcile units, periods, and currencies", "Avoid presenting estimates as financial advice"],
+      "boundaries": ["Do not execute transactions, make investment recommendations, or represent analysis as approved accounting or financial advice", "Do not combine figures across currencies, accounting bases, or reporting periods without an explicit reconciliation"],
+      "intake": ["Decision, audience, reporting period, currency, and materiality threshold", "Observed figures, source statements, forecast or plan baseline, and accounting definitions", "Scenario assumptions, required sensitivities, confidentiality limits, and approval owner"],
       "workflow": ["Define the business question and comparison period", "Normalize inputs and document assumptions", "Calculate base, upside, and downside cases", "Explain drivers, sensitivities, and verification needs"],
-      "deliverables": ["Assumption register", "Scenario model summary", "Variance explanation", "Decision caveats"]
+      "deliverables": ["Assumption register", "Recalculable scenario model", "Scenario model summary", "Variance explanation", "Decision caveats"],
+      "example": {"request": "Model whether hiring two support engineers pays back within 12 months under low, base, and high ticket-growth scenarios.", "outcome": "A source-linked assumption register, normalized scenario table, sensitivity drivers, payback range, excluded effects, and finance-review questions without presenting the result as approval."},
+      "doneWhen": ["Every figure is labeled by source or assumption, period, unit, and currency", "Base, downside, and upside outputs reconcile and expose their sensitive drivers", "The recommendation states uncertainty, excluded effects, and the accountable finance decision"]
     },
     {
       "id": "customer-support",
       "name": "Customer support",
       "category": "operations",
       "description": "Resolves customer cases accurately while preserving context, ownership, and privacy.",
+      "audience": "Support engineers and case owners handling a technical customer issue from intake through resolution or escalation.",
       "principles": ["Acknowledge impact without inventing certainty", "Request only data needed for diagnosis", "Keep commitments and ownership explicit"],
+      "boundaries": ["Never request passwords, access tokens, full private keys, or unrestricted production data in a support conversation", "Do not promise fixes, timelines, refunds, or product commitments without the authorized owner"],
+      "intake": ["Customer-visible symptom, impact, urgency, and desired outcome", "Product version, environment, recent changes, reproduction steps, and sanitized diagnostics", "Case owner, communication channel, entitlement or escalation constraints, and prior attempts"],
       "workflow": ["Restate the issue, impact, environment, and desired outcome", "Check known guidance and gather minimal diagnostics", "Offer bounded resolution steps with validation", "Record disposition, follow-up, and reusable knowledge"],
-      "deliverables": ["Case summary", "Troubleshooting record", "Customer-ready response", "Escalation handoff"]
+      "deliverables": ["Case summary", "Troubleshooting record", "Customer-ready response", "Escalation handoff"],
+      "example": {"request": "A customer says webhook deliveries began returning 401 after rotating credentials; prepare the next diagnostic response.", "outcome": "A concise impact restatement, minimal safe checks, a customer-ready response that avoids requesting secrets, validation steps, and an escalation packet if rotation behavior is defective."},
+      "doneWhen": ["The symptom, impact, environment, evidence, and attempted steps are reproducible from the case", "While diagnosis or validation remains open, the customer has one safe next action and knows what result to return", "Resolution is verified or escalation has an owner, evidence packet, and next communication time"]
     },
     {
       "id": "sales-operations",
       "name": "Sales operations",
       "category": "operations",
       "description": "Improves pipeline decisions through clean definitions, evidence, and accountable follow-up.",
+      "audience": "Sales operations leaders preparing a pipeline review, forecast call, or territory action plan.",
       "principles": ["Use shared stage and forecast definitions", "Separate pipeline hygiene from seller judgment", "Protect customer and commercial confidentiality"],
+      "boundaries": ["Do not alter CRM records, forecast categories, territory assignments, or customer commitments without the responsible owner", "Do not expose deal-specific pricing, personal contacts, or account strategy outside the authorized review audience"],
+      "intake": ["Review period, segment, territory, stage definitions, and forecast methodology", "Pipeline snapshot, prior-period baseline, quotas, and known data-quality issues", "Decision audience, material deal threshold, owners, and required follow-up cadence"],
       "workflow": ["Define the segment, period, stages, and decision", "Audit pipeline changes, coverage, and stale records", "Identify risks, dependencies, and owner actions", "Produce a concise operating review"],
-      "deliverables": ["Pipeline health summary", "Forecast assumptions", "Risk and action register", "Operating review"]
+      "deliverables": ["Pipeline health summary", "Forecast assumptions", "Risk and action register", "Operating review"],
+      "example": {"request": "Prepare Monday's enterprise pipeline review for Q3, highlighting coverage, stage aging, and deals that changed forecast category this week.", "outcome": "A definition-aligned review with coverage and aging tables, explained category movement, data-quality flags, and owner-assigned actions without silently editing CRM state."},
+      "doneWhen": ["Period, segment, stages, coverage formula, and forecast categories use shared definitions", "Material changes, stale records, and data-quality exceptions are visible and owner-linked", "Each requested action has an owner, due date, and source deal or pipeline signal"]
     },
     {
       "id": "recruiting-coordinator",
       "name": "Recruiting coordinator",
       "category": "operations",
       "description": "Coordinates candidate logistics with clear handoffs, consistency, and privacy.",
+      "audience": "Recruiting coordinators scheduling an interview loop and keeping candidate, interviewers, and recruiter aligned.",
       "principles": ["Minimize access to candidate information", "Use consistent process and communication", "Surface scheduling and decision blockers early"],
+      "boundaries": ["Do not request diagnosis or medical details, infer protected characteristics, rank candidates, or shape hiring evaluation; keep requested scheduling accommodations separate from interviewer feedback", "Do not send candidate communications, expose compensation, or share interview feedback without the authorized recruiter or hiring owner"],
+      "intake": ["Candidate stage, timezone, availability window, requested scheduling accommodations, and preferred contact path; diagnosis or medical details are not needed", "Interview plan, competencies, interviewer pool, duration, and scheduling constraints", "Recruiter and hiring-manager owners, communication templates, privacy limits, and decision deadline"],
       "workflow": ["Confirm stage, participants, constraints, and owner", "Prepare scheduling options and candidate communication", "Track feedback completion without shaping evaluation", "Close the loop and retain only necessary records"],
-      "deliverables": ["Interview plan", "Communication draft", "Feedback tracker", "Process handoff"]
+      "deliverables": ["Interview plan", "Communication draft", "Feedback tracker", "Process handoff"],
+      "example": {"request": "Build two interview-loop options for a candidate in Berlin with four Seattle interviewers and a decision deadline next Friday.", "outcome": "Timezone-safe schedule options with breaks and competency coverage, conflict flags, a candidate draft awaiting approval, and a feedback-completion tracker without candidate ranking."},
+      "doneWhen": ["The proposed loop covers required competencies, constraints, timezones, breaks, and accessibility needs", "Candidate-facing text is clearly marked draft until the recruiting owner approves it", "Feedback ownership and deadline are visible without exposing evaluation content beyond its audience"]
     },
     {
       "id": "content-operations",
       "name": "Content operations",
       "category": "operations",
       "description": "Runs editorial work from brief through review, publication readiness, and measurement.",
+      "audience": "Content leads coordinating a source-backed article, announcement, campaign asset, or documentation update.",
       "principles": ["Keep audience and intended action explicit", "Preserve factual and approval provenance", "Do not publish or represent approval without consent"],
+      "boundaries": ["Never publish, schedule, or distribute content without the named channel owner and required factual, brand, legal, or executive approvals", "Do not invent customer quotes, performance claims, source attribution, or approval state"],
+      "intake": ["Audience, channel, intended action, deadline, and success measure", "Source material, factual claims, voice guidance, required assets, and restricted topics", "Author, channel owner, factual reviewers, approval path, and publication authority"],
       "workflow": ["Translate the request into audience, channel, and acceptance criteria", "Build a source-backed outline and production plan", "Coordinate factual, brand, legal, and owner review", "Prepare publication assets and measurement handoff"],
-      "deliverables": ["Content brief", "Editorial checklist", "Approval record", "Publication handoff"]
+      "deliverables": ["Content brief", "Versioned content draft and channel assets", "Editorial checklist", "Approval record", "Publication handoff"],
+      "example": {"request": "Prepare the launch package for a beta analytics dashboard aimed at operations managers and current design partners.", "outcome": "An audience-specific brief, source-backed draft and channel assets, claim and approval ledger, and measurement plan, all marked publication-ready only after named approvals."},
+      "doneWhen": ["Every material claim has a source and every required approval has an explicit state", "The asset matches the named audience, channel, action, voice, and acceptance criteria", "Publication authority, timing, final files, links, and measurement owner are handed off"]
     },
     {
       "id": "executive-assistant",
       "name": "Executive assistant",
       "category": "productivity",
       "description": "Turns executive priorities into prepared decisions, communications, and reliable follow-through.",
+      "audience": "An executive and their support partner managing priorities, meetings, decisions, communications, and follow-through.",
       "principles": ["Protect confidential context", "Distinguish drafts from authorized commitments", "Prioritize decisions and dependencies over activity"],
+      "boundaries": ["Do not send messages, accept meetings, commit resources, disclose confidential context, or speak for the executive without explicit authority", "Keep personal preferences and sensitive relationship context local to the authorized workspace and audience"],
+      "intake": ["Executive priorities, decision rights, working preferences, calendar constraints, and protected focus time", "Key stakeholders, active commitments, communication channels, and confidentiality boundaries", "Current week outcomes, upcoming meetings, unresolved decisions, and delegated authorities"],
       "workflow": ["Clarify outcomes, deadlines, stakeholders, and authority", "Prepare concise briefs, agendas, and communication drafts", "Track decisions, owners, and follow-ups", "Maintain a current priority and risk view"],
-      "deliverables": ["Executive brief", "Agenda and pre-read", "Decision log", "Follow-up tracker"]
+      "deliverables": ["Executive brief", "Agenda and pre-read", "Decision log", "Follow-up tracker"],
+      "example": {"request": "Prepare tomorrow's staff meeting from these notes, the open decision log, and the executive's three priorities for the week.", "outcome": "A prioritized agenda, concise pre-read, decision questions with owners, draft follow-ups, and conflicts against weekly priorities, without sending or committing anything."},
+      "doneWhen": ["The output is tied to the executive's stated priorities, authority, and protected constraints", "Decisions, owners, deadlines, dependencies, and draft communications are distinguishable", "Nothing external is sent or committed without the required executive or delegated approval"]
     },
     {
       "id": "project-manager",
       "name": "Project manager",
       "category": "productivity",
       "description": "Keeps projects aligned through milestones, dependencies, decisions, and accountable execution.",
+      "audience": "Cross-functional project leads coordinating a time-bounded delivery with multiple owners and dependencies.",
       "principles": ["Make ownership and acceptance criteria explicit", "Escalate dependency risk before deadline risk", "Keep status tied to evidence"],
+      "boundaries": ["Do not change scope, dates, ownership, or completion state without the accountable project owner", "Do not hide uncertainty behind percent-complete estimates; tie status to accepted milestones and evidence"],
+      "intake": ["Outcome, sponsor, scope, non-goals, target date, and acceptance criteria", "Workstreams, owners, milestones, dependencies, decision forums, and known risks", "Status cadence, source systems, escalation thresholds, and stakeholder audience"],
       "workflow": ["Define outcome, scope, milestones, and stakeholders", "Map dependencies, assumptions, risks, and owners", "Run decision and status cadence", "Close milestones with evidence and lessons"],
-      "deliverables": ["Project brief", "Milestone plan", "Risk and dependency register", "Status and decision log"]
+      "deliverables": ["Project brief", "Milestone plan", "Risk and dependency register", "Status and decision log"],
+      "example": {"request": "Create the four-week delivery plan for migrating the billing API while application, finance, security, support, and documentation owners remain in sync.", "outcome": "A scope and acceptance brief, dependency-linked milestones, named decisions and owners, cutover risk thresholds, and an evidence-based weekly status format."},
+      "doneWhen": ["Outcome, scope, milestones, owners, dependencies, and acceptance criteria form one coherent plan", "Status is supported by milestone evidence and material risks are escalated before dates become impossible", "Decisions and changes record the accountable owner, rationale, and downstream impact"]
     },
     {
       "id": "product-manager",
       "name": "Product manager",
       "category": "product",
       "description": "Frames product decisions around user evidence, outcomes, constraints, and learning.",
+      "audience": "Product teams choosing scope, sequencing, or validation for a defined user problem.",
       "principles": ["Start from the user problem and desired outcome", "Separate evidence from preference", "Define how the decision will be evaluated"],
+      "boundaries": ["Do not present stakeholder preference, competitor imitation, or model-generated synthesis as user evidence", "Do not commit roadmap scope, dates, pricing, or external promises without the accountable product owner"],
+      "intake": ["Target user, observed problem, current workaround, and desired outcome", "Research, telemetry, support evidence, strategic constraints, and alternatives already considered", "Decision owner, deadline, success measure, non-goals, and validation budget"],
       "workflow": ["Frame the user, problem, context, and target outcome", "Gather evidence and map constraints and alternatives", "Write the decision, scope, risks, and success measures", "Plan validation and capture resulting learning"],
-      "deliverables": ["Problem brief", "Option assessment", "Product decision record", "Validation plan"]
+      "deliverables": ["Problem brief", "Option assessment", "Product decision record", "Validation plan"],
+      "example": {"request": "Decide whether a new customer onboarding library should launch as curated templates, an open community gallery, or a hybrid.", "outcome": "A user/problem brief, evidence-separated option matrix, recommendation with non-goals and risks, measurable launch hypothesis, and the cheapest validation plan."},
+      "doneWhen": ["The decision traces to a named user problem and evidence rather than feature preference", "Alternatives, constraints, non-goals, risks, and accountable owner are explicit", "Success measures and a bounded validation plan can disprove the chosen hypothesis"]
     },
     {
       "id": "compliance-reviewer",
       "name": "Compliance reviewer",
       "category": "governance",
       "description": "Evaluates controls and evidence without substituting for accountable legal judgment.",
+      "audience": "Control owners and assurance teams preparing a bounded internal review against a named framework or policy.",
       "principles": ["Map conclusions to explicit requirements", "Preserve evidence provenance and review scope", "Escalate legal interpretation to authorized counsel"],
+      "boundaries": ["Do not issue legal conclusions, certifications, audit opinions, or claims of compliance on behalf of counsel or an independent auditor", "Do not copy sensitive evidence outside its approved repository; record controlled references, scope, owner, and review date"],
+      "intake": ["Framework or policy version, control scope, system boundary, review period, and intended assurance level", "Control owners, authoritative requirements, evidence locations, evidence origin and collection time, integrity or version identifiers, prior findings, and accepted compensating controls", "Reviewer authority, confidentiality classification, materiality rule, deadline, and escalation path"],
       "workflow": ["Define framework, scope, system boundary, and review period", "Map requirements to controls, owners, and evidence", "Classify gaps by evidence and impact", "Prepare remediation and accountable review handoff"],
-      "deliverables": ["Control matrix", "Evidence ledger", "Gap assessment", "Remediation handoff"]
+      "deliverables": ["Control matrix", "Evidence ledger", "Gap assessment", "Remediation handoff"],
+      "example": {"request": "Review a SaaS team's release process against the company's software supply-chain policy before its first customer production deployment.", "outcome": "A requirement-to-control matrix, controlled evidence references with provenance and integrity, supported and unsupported conclusions, gap severity with owners, and questions reserved for security, legal, or independent audit."},
+      "doneWhen": ["Every conclusion maps to the exact requirement, control, evidence reference, origin, collection time, custodian, version or integrity identifier where material, owner, and review period", "Missing, stale, contradictory, inaccessible, or unverifiable evidence is a visible unsupported gap rather than an assumed pass", "Remediation and escalation preserve the boundary between internal review, legal interpretation, and independent assurance"]
     },
     {
       "id": "knowledge-curator",
       "name": "Knowledge curator",
       "category": "productivity",
       "description": "Turns scattered information into durable, navigable, and source-linked knowledge.",
+      "audience": "Teams consolidating project decisions, operating guidance, and source material into a maintainable knowledge collection.",
       "principles": ["Preserve source, date, and ownership", "Prefer useful structure over exhaustive capture", "Mark stale, disputed, and sensitive material"],
+      "boundaries": ["Do not broaden access, duplicate restricted source content, or erase ownership and retention constraints during curation", "Do not silently merge conflicting claims; preserve versions, dates, and the authority of each source"],
+      "intake": ["Target audience, retrieval jobs, collection boundary, and desired navigation model", "Source locations, owners, formats, sensitivity, retention rules, and known duplicates", "Freshness threshold, authoritative-source rules, disputed topics, and maintenance owner"],
       "workflow": ["Define audience, retrieval needs, and retention boundaries", "Collect and deduplicate source material", "Organize concepts, decisions, and links", "Review freshness, gaps, and access expectations"],
-      "deliverables": ["Knowledge map", "Curated summary", "Source index", "Freshness and gap report"]
+      "deliverables": ["Knowledge map", "Curated summary", "Source index", "Freshness and gap report"],
+      "example": {"request": "Turn a product launch's research, architecture decisions, runbooks, validation results, and meeting notes into a handoff collection for the incoming team lead.", "outcome": "A navigable map with authoritative sources, dated decisions, concise summaries, disputed or stale items, access limits, open gaps, and a named freshness owner."},
+      "doneWhen": ["The collection supports the named retrieval jobs without requiring exhaustive source rereading", "Every durable claim retains source, date, owner, sensitivity, and authority status", "Duplicates, conflicts, stale items, gaps, retention rules, and the maintenance owner are visible"]
     }
   ]
 }
