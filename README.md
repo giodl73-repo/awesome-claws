@@ -5,8 +5,8 @@ Claws. Each Claw is a portable setup for one purpose-built agent, including its
 identity, operating instructions, and any capabilities it needs.
 
 Claws are experimental. Review a Claw's manifest and dry-run plan before you
-apply it. Most starters create only an agent and workspace files. A small set
-also demonstrates pinned skills, an official plugin, a filtered OAuth MCP
+apply it. Most starters create an agent and workspace files. Several also
+demonstrate pinned skills, an official plugin, a filtered OAuth MCP
 connection, or scheduled work; those capabilities remain visible in the
 consent-bound preview.
 
@@ -29,6 +29,11 @@ consent-bound preview.
 | [Product manager](claws/product-manager) | Product | Base | Evidence-backed product decisions |
 | [Compliance reviewer](claws/compliance-reviewer) | Governance | Base | Traceable control review |
 | [Knowledge curator](claws/knowledge-curator) | Productivity | Base | Durable knowledge organization |
+| [Executive briefing](claws/executive-briefing) | Productivity | Gog + Weather skills, weekday cron | Private daily operating brief |
+| [Meeting intelligence](claws/meeting-intelligence) | Productivity | Whisper + DOCX skills | Consented meeting records |
+| [Spreadsheet analyst](claws/spreadsheet-analyst) | Analysis | XLSX skill | Auditable workbook transformation |
+| [Knowledge gardener](claws/knowledge-gardener) | Productivity | Notion skill | Scoped knowledge-space maintenance |
+| [Research monitor](claws/research-monitor) | Analysis | Parallel plugin, weekday cron | Source-linked evidence watch |
 
 ## Preview a Claw
 

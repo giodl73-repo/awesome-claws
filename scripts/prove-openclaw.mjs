@@ -24,6 +24,17 @@ const representatives = [
   },
   { id: "financial-analyst", expectedSummary: { packageActions: 1 } },
   { id: "customer-support", expectedSummary: { packageActions: 1 } },
+  {
+    id: "executive-briefing",
+    expectedSummary: { packageActions: 2, cronJobActions: 1 },
+  },
+  { id: "meeting-intelligence", expectedSummary: { packageActions: 2 } },
+  { id: "spreadsheet-analyst", expectedSummary: { packageActions: 1 } },
+  { id: "knowledge-gardener", expectedSummary: { packageActions: 1 } },
+  {
+    id: "research-monitor",
+    expectedSummary: { packageActions: 1, cronJobActions: 1 },
+  },
   { id: "executive-assistant" },
   { id: "compliance-reviewer" },
 ];
