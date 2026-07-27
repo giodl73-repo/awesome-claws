@@ -39,6 +39,7 @@ consent-bound preview.
 | [Media evidence reviewer](claws/media-evidence-reviewer) | Analysis | Video Frames + Whisper skills | Timestamped audiovisual review |
 | [Release coordinator](claws/release-coordinator) | Engineering | GitHub + Slack skills | Approval-bound release coordination |
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | Analysis | Blogwatcher skill, weekday cron | Curated source-feed deltas |
+| [Travel planner](claws/travel-planner) | Productivity | Open-Meteo + Travel Checklist skills | Public-source trip planning |
 
 ## Preview a Claw
 

@@ -43,6 +43,7 @@ const representatives = [
     id: "feed-intelligence-monitor",
     expectedSummary: { packageActions: 1, cronJobActions: 1 },
   },
+  { id: "travel-planner", expectedSummary: { packageActions: 2 } },
   { id: "executive-assistant" },
   { id: "compliance-reviewer" },
 ];
