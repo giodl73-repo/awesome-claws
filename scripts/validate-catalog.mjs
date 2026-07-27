@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { readFile, readdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { Cron } from "croner";
 import { parseDocument } from "yaml";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -13,7 +14,7 @@ const cliEntry = useReferenceCli
         join(root, "..", "standalone-claw-cli-prototype", "packages", "cli", "dist", "cli.mjs"),
     )
   : undefined;
-const expectedFiles = ["CLAW.md", "README.md", "package.json", "workspace/AGENTS.md"];
+const baseExpectedFiles = ["CLAW.md", "README.md", "package.json", "workspace/AGENTS.md"];
 const baselineStarterIds = [
   "compliance-reviewer",
   "content-operations",
@@ -31,6 +32,8 @@ const baselineStarterIds = [
   "security-analyst",
   "software-maintainer",
 ];
+const exactVersionPattern =
+  /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/;
 
 if (!Array.isArray(catalog.entries)) {
   throw new Error("The catalog must contain an entries array.");
@@ -43,6 +46,82 @@ if (missingBaselineIds.length > 0) {
 
 const ids = new Set();
 const names = new Set();
+const demonstratedCapabilities = new Set();
+
+function hasValidCronSchedule(schedule) {
+  if (
+    typeof schedule?.cron !== "string" ||
+    schedule.cron.trim().split(/\s+/).length !== 5 ||
+    typeof schedule.timezone !== "string" ||
+    !schedule.timezone.trim()
+  ) {
+    return false;
+  }
+  try {
+    return new Cron(schedule.cron, {
+      timezone: schedule.timezone,
+      catch: false,
+    }).nextRun(new Date()) instanceof Date;
+  } catch {
+    return false;
+  }
+}
+
+function hasValidCronDelivery(delivery) {
+  if (delivery === undefined) {
+    return true;
+  }
+  if (!delivery || typeof delivery !== "object" || Array.isArray(delivery)) {
+    return false;
+  }
+  const keys = Object.keys(delivery);
+  return (
+    (delivery.mode === "none" && delivery.channel === undefined && keys.length === 1) ||
+    (delivery.mode === "announce" && delivery.channel === "last" && keys.length === 2)
+  );
+}
+
+function hasOnlyKeys(value, allowed) {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    Object.keys(value).every((key) => allowed.includes(key))
+  );
+}
+
+function hasValidToolFilter(filter) {
+  if (filter === undefined) {
+    return true;
+  }
+  if (!hasOnlyKeys(filter, ["include", "exclude"])) {
+    return false;
+  }
+  for (const field of ["include", "exclude"]) {
+    const values = filter[field];
+    if (values === undefined) {
+      continue;
+    }
+    if (
+      !Array.isArray(values) ||
+      values.length === 0 ||
+      values.some(
+        (value) =>
+          typeof value !== "string" ||
+          !value.trim() ||
+          value !== value.trim() ||
+          value.includes("?") ||
+          value.includes("[") ||
+          value.includes("]"),
+      ) ||
+      new Set(values).size !== values.length
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
 for (const entry of catalog.entries) {
   if (ids.has(entry.id) || names.has(entry.name)) {
     throw new Error(`Duplicate catalog identity: ${entry.id}`);
@@ -82,7 +161,91 @@ for (const entry of catalog.entries) {
     throw new Error(`${entry.id} must define an audience and complete example setting.`);
   }
 
+  for (const pkg of entry.packages ?? []) {
+    if (
+      !["skill", "plugin"].includes(pkg?.kind) ||
+      pkg?.source !== "clawhub" ||
+      typeof pkg?.ref !== "string" ||
+      !/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/.test(pkg.ref) ||
+      typeof pkg?.version !== "string" ||
+      !exactVersionPattern.test(pkg.version)
+    ) {
+      throw new Error(`${entry.id} contains an invalid pinned ClawHub package declaration.`);
+    }
+    demonstratedCapabilities.add(pkg.kind);
+  }
+  for (const [name, server] of Object.entries(entry.mcpServers ?? {})) {
+    if (
+      !/^[a-z][a-z0-9_-]{0,63}$/.test(name) ||
+      !hasOnlyKeys(server, ["url", "transport", "auth", "toolFilter", "timeout", "connectTimeout"]) ||
+      typeof server?.url !== "string" ||
+      server.transport !== "streamable-http" ||
+      (server.auth !== undefined && server.auth !== "oauth") ||
+      !hasValidToolFilter(server.toolFilter) ||
+      (server.timeout !== undefined &&
+        (typeof server.timeout !== "number" || !Number.isFinite(server.timeout) || server.timeout <= 0)) ||
+      (server.connectTimeout !== undefined &&
+        (typeof server.connectTimeout !== "number" ||
+          !Number.isFinite(server.connectTimeout) ||
+          server.connectTimeout <= 0))
+    ) {
+      throw new Error(`${entry.id} contains an invalid remote MCP declaration.`);
+    }
+    const url = new URL(server.url);
+    if (url.protocol !== "https:" || url.username || url.password || url.hash) {
+      throw new Error(`${entry.id} remote MCP URLs must be credential-free HTTPS URLs.`);
+    }
+    demonstratedCapabilities.add("mcp");
+  }
+  for (const job of entry.cronJobs ?? []) {
+    if (
+      !hasOnlyKeys(job, ["id", "name", "schedule", "session", "message", "delivery"]) ||
+      !/^[a-z][a-z0-9_-]{0,63}$/.test(job?.id) ||
+      (job.name !== undefined && (typeof job.name !== "string" || !job.name.trim())) ||
+      !hasOnlyKeys(job?.schedule, ["cron", "timezone"]) ||
+      !hasValidCronSchedule(job?.schedule) ||
+      !["main", "isolated"].includes(job?.session) ||
+      typeof job?.message !== "string" ||
+      !job.message.trim() ||
+      !hasValidCronDelivery(job?.delivery)
+    ) {
+      throw new Error(`${entry.id} contains an invalid scheduled-work declaration.`);
+    }
+    demonstratedCapabilities.add("cron");
+  }
+  const capabilityCount =
+    (entry.packages?.length ?? 0) +
+    Object.keys(entry.mcpServers ?? {}).length +
+    (entry.cronJobs?.length ?? 0);
+  if (
+    capabilityCount > 0 &&
+    (!Array.isArray(entry.capabilityGuidance) ||
+      entry.capabilityGuidance.length === 0 ||
+      entry.capabilityGuidance.some(
+        (guidance) => typeof guidance !== "string" || !guidance.trim(),
+      ))
+  ) {
+    throw new Error(`${entry.id} must explain the boundaries of every integrated capability set.`);
+  }
+  if (entry.openclawProfile) {
+    const tools = entry.openclawProfile?.agent?.tools;
+    if (
+      entry.openclawProfile.schemaVersion !== 1 ||
+      !tools ||
+      typeof tools.profile !== "string" ||
+      !Array.isArray(tools.alsoAllow) ||
+      tools.alsoAllow.length === 0 ||
+      tools.fs?.workspaceOnly !== true
+    ) {
+      throw new Error(`${entry.id} contains an invalid OpenClaw capability profile.`);
+    }
+  }
+
   const packageRoot = join(root, "claws", entry.id);
+  const expectedFiles = [
+    ...baseExpectedFiles,
+    ...(entry.openclawProfile ? ["profiles/openclaw.yml"] : []),
+  ];
   const actualFiles = (await readdir(packageRoot, { recursive: true, withFileTypes: true }))
     .filter((item) => item.isFile())
     .map((item) => item.parentPath.slice(packageRoot.length + 1).replaceAll("\\", "/") + "/" + item.name)
@@ -95,6 +258,18 @@ for (const entry of catalog.entries) {
   const packageJson = JSON.parse(await readFile(join(packageRoot, "package.json"), "utf8"));
   if (packageJson.private !== true || packageJson.version !== "0.1.0") {
     throw new Error(`${entry.id} must remain non-publishable and exactly versioned.`);
+  }
+  if (entry.openclawProfile) {
+    const profile = parseDocument(
+      await readFile(join(packageRoot, "profiles", "openclaw.yml"), "utf8"),
+      { prettyErrors: false, uniqueKeys: true },
+    );
+    if (
+      profile.errors.length > 0 ||
+      JSON.stringify(profile.toJS()) !== JSON.stringify(entry.openclawProfile)
+    ) {
+      throw new Error(`${entry.id}/profiles/openclaw.yml does not match the catalog profile.`);
+    }
   }
 
   const clawMarkdown = await readFile(join(packageRoot, "CLAW.md"), "utf8");
@@ -111,6 +286,12 @@ for (const entry of catalog.entries) {
     throw new Error(`${entry.id}/CLAW.md must contain valid, unique-key YAML frontmatter.`);
   }
   const manifest = document.toJS();
+  for (const field of ["packages", "mcpServers", "cronJobs"]) {
+    const expected = entry[field] ?? (field === "mcpServers" ? {} : []);
+    if (JSON.stringify(manifest?.[field]) !== JSON.stringify(expected)) {
+      throw new Error(`${entry.id}/CLAW.md does not match catalog.${field}.`);
+    }
+  }
   const workspaceTargets = [
     ...Object.keys(manifest?.workspace?.bootstrapFiles ?? {}),
     ...(manifest?.workspace?.files ?? []).map((file) => file.path),
@@ -158,6 +339,12 @@ for (const entry of catalog.entries) {
     if (outcome.ok !== true || outcome.claw?.agent?.id !== entry.id) {
       throw new Error(`${entry.id} returned an inconsistent inspection result.`);
     }
+  }
+}
+
+for (const capability of ["skill", "plugin", "mcp", "cron"]) {
+  if (!demonstratedCapabilities.has(capability)) {
+    throw new Error(`The catalog must retain at least one reviewed ${capability} example.`);
   }
 }
 

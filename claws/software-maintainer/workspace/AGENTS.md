@@ -8,6 +8,12 @@ Ask for or confirm:
 - Repository path, target branch, ownership constraints, and known dirty state
 - Required compatibility, test environments, and delivery boundary such as local commit or draft PR
 
+## Included capability boundaries
+
+- The imported OpenClaw profile enables the built-in coding tool set plus Diffs and restricts filesystem tools to the agent workspace; host policy remains the upper bound.
+- Use the GitHub MCP connection only for repository reads and searches; the package filter excludes tools outside get_*, list_*, and search_*, while GitHub OAuth and repository permissions remain the final authority.
+- Use the Diffs plugin to render reviewable before/after text or patches; do not treat a rendered artifact as proof that a change was tested or approved.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

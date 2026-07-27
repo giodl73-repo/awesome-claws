@@ -14,18 +14,26 @@ if (!openClawEntry) {
   throw new Error("Set OPENCLAW_CLI_ENTRY to a compatible OpenClaw entry point.");
 }
 
-const representativeIds = [
-  "incident-response",
-  "financial-analyst",
-  "customer-support",
-  "executive-assistant",
-  "compliance-reviewer",
+const representatives = [
+  { id: "incident-response", expectedSummary: { cronJobActions: 1 } },
+  {
+    id: "software-maintainer",
+    expectedReady: false,
+    expectedRequirements: ["oauth"],
+    expectedSummary: { packageActions: 1, mcpServerActions: 1 },
+  },
+  { id: "financial-analyst", expectedSummary: { packageActions: 1 } },
+  { id: "customer-support", expectedSummary: { packageActions: 1 } },
+  { id: "executive-assistant" },
+  { id: "compliance-reviewer" },
 ];
 const proofRoot = await mkdtemp(join(tmpdir(), "awesome-claws-openclaw-proof-"));
 const results = [];
 
 try {
-  for (const id of representativeIds) {
+  for (const representative of representatives) {
+    const { id, expectedReady = true, expectedRequirements = [], expectedSummary = {} } =
+      representative;
     const stateRoot = join(proofRoot, id, "state");
     const home = join(proofRoot, id, "home");
     await mkdir(stateRoot, { recursive: true });
@@ -57,12 +65,22 @@ try {
       plan?.schemaVersion !== "openclaw.clawAddPlan.v1" ||
       plan.dryRun !== true ||
       plan.mutationAllowed !== false ||
-      plan.readiness?.ready !== true ||
-      plan.summary?.blockedActions !== 0
+      plan.readiness?.ready !== expectedReady ||
+      plan.summary?.blockedActions !== 0 ||
+      (plan.blockers?.length ?? 0) !== 0 ||
+      JSON.stringify((plan.readiness?.requirements ?? []).map((item) => item.kind)) !==
+        JSON.stringify(expectedRequirements) ||
+      Object.entries(expectedSummary).some(([key, value]) => plan.summary?.[key] !== value)
     ) {
-      throw new Error(`${id} did not return a ready non-mutating OpenClaw plan.`);
+      throw new Error(`${id} did not return the expected non-mutating OpenClaw plan.`);
     }
-    results.push({ id, actions: plan.summary.totalActions, integrity: plan.planIntegrity });
+    results.push({
+      id,
+      actions: plan.summary.totalActions,
+      ready: plan.readiness.ready,
+      requirements: expectedRequirements,
+      integrity: plan.planIntegrity,
+    });
   }
 } finally {
   await rm(proofRoot, { recursive: true, force: true });
@@ -79,4 +97,3 @@ console.log(
     2,
   ),
 );
-

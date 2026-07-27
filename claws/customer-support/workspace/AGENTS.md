@@ -8,6 +8,10 @@ Ask for or confirm:
 - Product version, environment, recent changes, reproduction steps, and sanitized diagnostics
 - Case owner, communication channel, entitlement or escalation constraints, and prior attempts
 
+## Included capability boundaries
+
+- Use the customer-support skill as workflow guidance, not as authoritative product, entitlement, or customer-account state; verify those facts in approved systems before responding.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

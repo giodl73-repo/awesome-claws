@@ -13,7 +13,18 @@
       "workflow": ["Establish severity, scope, and an incident timeline", "Gather observations and distinguish them from hypotheses", "Assign mitigations, owners, and verification criteria", "Prepare a handoff with unresolved risks and follow-up work"],
       "deliverables": ["Incident timeline", "Current impact summary", "Mitigation and owner tracker", "Post-incident handoff"],
       "example": {"request": "Checkout errors rose from 1% to 18% after the 14:05 UTC deployment; prepare the first incident update and a mitigation decision table.", "outcome": "A timestamped fact/hypothesis timeline, impact statement, owner-assigned mitigation options with verification and rollback criteria, and a customer-safe update draft."},
-      "doneWhen": ["Impact, severity, timeline, and current state have explicit evidence timestamps", "Every active mitigation has an owner, authority, verification signal, and rollback condition", "The next update time, unresolved risks, and recovery or handoff owner are recorded"]
+      "doneWhen": ["Impact, severity, timeline, and current state have explicit evidence timestamps", "Every active mitigation has an owner, authority, verification signal, and rollback condition", "The next update time, unresolved risks, and recovery or handoff owner are recorded"],
+      "cronJobs": [
+        {
+          "id": "daily-incident-brief",
+          "name": "Daily incident brief",
+          "schedule": { "cron": "0 9 * * *", "timezone": "UTC" },
+          "session": "isolated",
+          "message": "Review active incident notes and produce a concise status brief. If no active incident is documented, report that no brief is needed.",
+          "delivery": { "mode": "none" }
+        }
+      ],
+      "capabilityGuidance": ["The daily job runs in an isolated session without announcing externally; it summarizes only incident notes available to the agent and must not initiate mitigation or communication."]
     },
     {
       "id": "software-maintainer",
@@ -27,7 +38,23 @@
       "workflow": ["Map the relevant code, tests, and local conventions", "Define the smallest complete behavior change", "Implement with focused tests and compatibility checks", "Review the final diff and report residual risk"],
       "deliverables": ["Implementation patch", "Verification evidence", "Risk and compatibility summary", "Reviewer handoff"],
       "example": {"request": "Fix Windows CLI discovery when the installed npm shim path contains percent signs, without changing Unix launch behavior.", "outcome": "A scoped launcher fix, exact Windows regression, focused and full test evidence, and a concise explanation of remaining platform risk."},
-      "doneWhen": ["The changed behavior is covered by a test that fails before a bug fix or directly verifies the requested feature acceptance criteria", "Focused checks and the repository's required validation pass on the final diff", "Unrelated changes remain intact and residual compatibility risk is stated"]
+      "doneWhen": ["The changed behavior is covered by a test that fails before a bug fix or directly verifies the requested feature acceptance criteria", "Focused checks and the repository's required validation pass on the final diff", "Unrelated changes remain intact and residual compatibility risk is stated"],
+      "packages": [
+        { "kind": "plugin", "source": "clawhub", "ref": "@openclaw/diffs", "version": "2026.7.1" }
+      ],
+      "mcpServers": {
+        "github": {
+          "url": "https://api.githubcopilot.com/mcp/",
+          "transport": "streamable-http",
+          "auth": "oauth",
+          "toolFilter": { "include": ["get_*", "list_*", "search_*"] }
+        }
+      },
+      "openclawProfile": {
+        "schemaVersion": 1,
+        "agent": { "tools": { "profile": "coding", "alsoAllow": ["diffs"], "fs": { "workspaceOnly": true } } }
+      },
+      "capabilityGuidance": ["The imported OpenClaw profile enables the built-in coding tool set plus Diffs and restricts filesystem tools to the agent workspace; host policy remains the upper bound.", "Use the GitHub MCP connection only for repository reads and searches; the package filter excludes tools outside get_*, list_*, and search_*, while GitHub OAuth and repository permissions remain the final authority.", "Use the Diffs plugin to render reviewable before/after text or patches; do not treat a rendered artifact as proof that a change was tested or approved."]
     },
     {
       "id": "security-analyst",
@@ -83,7 +110,11 @@
       "workflow": ["Define the business question and comparison period", "Normalize inputs and document assumptions", "Calculate base, upside, and downside cases", "Explain drivers, sensitivities, and verification needs"],
       "deliverables": ["Assumption register", "Recalculable scenario model", "Scenario model summary", "Variance explanation", "Decision caveats"],
       "example": {"request": "Model whether hiring two support engineers pays back within 12 months under low, base, and high ticket-growth scenarios.", "outcome": "A source-linked assumption register, normalized scenario table, sensitivity drivers, payback range, excluded effects, and finance-review questions without presenting the result as approval."},
-      "doneWhen": ["Every figure is labeled by source or assumption, period, unit, and currency", "Base, downside, and upside outputs reconcile and expose their sensitive drivers", "The recommendation states uncertainty, excluded effects, and the accountable finance decision"]
+      "doneWhen": ["Every figure is labeled by source or assumption, period, unit, and currency", "Base, downside, and upside outputs reconcile and expose their sensitive drivers", "The recommendation states uncertainty, excluded effects, and the accountable finance decision"],
+      "packages": [
+        { "kind": "skill", "source": "clawhub", "ref": "yahoo-finance", "version": "1.0.0" }
+      ],
+      "capabilityGuidance": ["Use the Yahoo Finance skill for timestamped market and company observations, preserve source dates and units, and never use it to execute or recommend a transaction."]
     },
     {
       "id": "customer-support",
@@ -97,7 +128,11 @@
       "workflow": ["Restate the issue, impact, environment, and desired outcome", "Check known guidance and gather minimal diagnostics", "Offer bounded resolution steps with validation", "Record disposition, follow-up, and reusable knowledge"],
       "deliverables": ["Case summary", "Troubleshooting record", "Customer-ready response", "Escalation handoff"],
       "example": {"request": "A customer says webhook deliveries began returning 401 after rotating credentials; prepare the next diagnostic response.", "outcome": "A concise impact restatement, minimal safe checks, a customer-ready response that avoids requesting secrets, validation steps, and an escalation packet if rotation behavior is defective."},
-      "doneWhen": ["The symptom, impact, environment, evidence, and attempted steps are reproducible from the case", "While diagnosis or validation remains open, the customer has one safe next action and knows what result to return", "Resolution is verified or escalation has an owner, evidence packet, and next communication time"]
+      "doneWhen": ["The symptom, impact, environment, evidence, and attempted steps are reproducible from the case", "While diagnosis or validation remains open, the customer has one safe next action and knows what result to return", "Resolution is verified or escalation has an owner, evidence packet, and next communication time"],
+      "packages": [
+        { "kind": "skill", "source": "clawhub", "ref": "customer-support", "version": "1.0.0" }
+      ],
+      "capabilityGuidance": ["Use the customer-support skill as workflow guidance, not as authoritative product, entitlement, or customer-account state; verify those facts in approved systems before responding."]
     },
     {
       "id": "sales-operations",

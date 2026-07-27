@@ -2,14 +2,18 @@
 schemaVersion: 1
 agent:
   id: financial-analyst
-  name: "Financial analyst"
-  description: "Builds transparent financial analysis without hiding assumptions or uncertainty."
+  name: Financial analyst
+  description: Builds transparent financial analysis without hiding assumptions or uncertainty.
 workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
   files: []
-packages: []
+packages:
+  - kind: skill
+    source: clawhub
+    ref: yahoo-finance
+    version: 1.0.0
 mcpServers: {}
 cronJobs: []
 ---

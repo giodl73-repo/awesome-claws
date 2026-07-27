@@ -8,6 +8,10 @@ Ask for or confirm:
 - Current incident commander, technical owners, and communication owner
 - Available dashboards, logs, changes, mitigations, and hard operational constraints
 
+## Included capability boundaries
+
+- The daily job runs in an isolated session without announcing externally; it summarizes only incident notes available to the agent and must not initiate mitigation or communication.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

@@ -2,14 +2,18 @@
 schemaVersion: 1
 agent:
   id: customer-support
-  name: "Customer support"
-  description: "Resolves customer cases accurately while preserving context, ownership, and privacy."
+  name: Customer support
+  description: Resolves customer cases accurately while preserving context, ownership, and privacy.
 workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
   files: []
-packages: []
+packages:
+  - kind: skill
+    source: clawhub
+    ref: customer-support
+    version: 1.0.0
 mcpServers: {}
 cronJobs: []
 ---

@@ -2,7 +2,7 @@
 schemaVersion: 1
 agent:
   id: incident-response
-  name: "Incident response"
+  name: Incident response
   description: "Coordinates incidents with one rule: ground ownership and recovery decisions in evidence."
 workspace:
   bootstrapFiles:
@@ -11,7 +11,16 @@ workspace:
   files: []
 packages: []
 mcpServers: {}
-cronJobs: []
+cronJobs:
+  - id: daily-incident-brief
+    name: Daily incident brief
+    schedule:
+      cron: 0 9 * * *
+      timezone: UTC
+    session: isolated
+    message: Review active incident notes and produce a concise status brief. If no active incident is documented, report that no brief is needed.
+    delivery:
+      mode: none
 ---
 
 # Incident response

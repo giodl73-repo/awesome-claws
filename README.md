@@ -5,29 +5,30 @@ Claws. Each Claw is a portable setup for one purpose-built agent, including its
 identity, operating instructions, and any capabilities it needs.
 
 Claws are experimental. Review a Claw's manifest and dry-run plan before you
-apply it. These starters are intentionally dependency-free: they create an
-agent and workspace files without installing packages, configuring MCP servers,
-or scheduling work.
+apply it. Most starters create only an agent and workspace files. A small set
+also demonstrates pinned skills, an official plugin, a filtered OAuth MCP
+connection, or scheduled work; those capabilities remain visible in the
+consent-bound preview.
 
 ## Choose a starter
 
-| Claw | Category | Focus |
-| --- | --- | --- |
-| [Incident response](claws/incident-response) | Engineering | Evidence-led incident coordination |
-| [Software maintainer](claws/software-maintainer) | Engineering | Repository change delivery |
-| [Security analyst](claws/security-analyst) | Engineering | Bounded security assessment |
-| [Data analyst](claws/data-analyst) | Analysis | Reproducible data analysis |
-| [Research briefing](claws/research-briefing) | Analysis | Source-grounded decision briefs |
-| [Financial analyst](claws/financial-analyst) | Analysis | Assumption-explicit financial analysis |
-| [Customer support](claws/customer-support) | Operations | Accurate customer case resolution |
-| [Sales operations](claws/sales-operations) | Operations | Pipeline and process analysis |
-| [Recruiting coordinator](claws/recruiting-coordinator) | Operations | Candidate logistics and handoffs |
-| [Content operations](claws/content-operations) | Operations | Editorial production control |
-| [Executive assistant](claws/executive-assistant) | Productivity | Executive priorities and follow-through |
-| [Project manager](claws/project-manager) | Productivity | Milestones, dependencies, and decisions |
-| [Product manager](claws/product-manager) | Product | Evidence-backed product decisions |
-| [Compliance reviewer](claws/compliance-reviewer) | Governance | Traceable control review |
-| [Knowledge curator](claws/knowledge-curator) | Productivity | Durable knowledge organization |
+| Claw | Category | Capabilities | Focus |
+| --- | --- | --- | --- |
+| [Incident response](claws/incident-response) | Engineering | Daily isolated cron | Evidence-led incident coordination |
+| [Software maintainer](claws/software-maintainer) | Engineering | Coding profile, Diffs plugin, filtered GitHub MCP | Repository change delivery |
+| [Security analyst](claws/security-analyst) | Engineering | Base | Bounded security assessment |
+| [Data analyst](claws/data-analyst) | Analysis | Base | Reproducible data analysis |
+| [Research briefing](claws/research-briefing) | Analysis | Base | Source-grounded decision briefs |
+| [Financial analyst](claws/financial-analyst) | Analysis | Yahoo Finance skill | Assumption-explicit financial analysis |
+| [Customer support](claws/customer-support) | Operations | Customer support skill | Accurate customer case resolution |
+| [Sales operations](claws/sales-operations) | Operations | Base | Pipeline and process analysis |
+| [Recruiting coordinator](claws/recruiting-coordinator) | Operations | Base | Candidate logistics and handoffs |
+| [Content operations](claws/content-operations) | Operations | Base | Editorial production control |
+| [Executive assistant](claws/executive-assistant) | Productivity | Base | Executive priorities and follow-through |
+| [Project manager](claws/project-manager) | Productivity | Base | Milestones, dependencies, and decisions |
+| [Product manager](claws/product-manager) | Product | Base | Evidence-backed product decisions |
+| [Compliance reviewer](claws/compliance-reviewer) | Governance | Base | Traceable control review |
+| [Knowledge curator](claws/knowledge-curator) | Productivity | Base | Durable knowledge organization |
 
 ## Preview a Claw
 

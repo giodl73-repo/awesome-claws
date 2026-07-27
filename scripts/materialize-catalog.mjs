@@ -1,6 +1,7 @@
 import { lstat, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { stringify as stringifyYaml } from "yaml";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
@@ -14,7 +15,46 @@ function numbered(values) {
   return values.map((value, index) => `${index + 1}. ${value}`).join("\n");
 }
 
+function capabilitySummary(entry) {
+  const capabilities = [];
+  const tools = entry.openclawProfile?.agent?.tools;
+  if (tools) {
+    const additions = tools.alsoAllow?.length
+      ? ` plus ${tools.alsoAllow.map((tool) => `\`${tool}\``).join(", ")}`
+      : "";
+    const filesystem = tools.fs?.workspaceOnly ? " with workspace-only filesystem access" : "";
+    capabilities.push(`OpenClaw tool profile \`${tools.profile}\`${additions}${filesystem}`);
+  }
+  for (const pkg of entry.packages ?? []) {
+    capabilities.push(`${pkg.kind} \`${pkg.ref}@${pkg.version}\``);
+  }
+  const mcpNames = Object.keys(entry.mcpServers ?? {});
+  if (mcpNames.length > 0) {
+    capabilities.push(`MCP server${mcpNames.length === 1 ? "" : "s"} ${mcpNames.map((name) => `\`${name}\``).join(", ")}`);
+  }
+  for (const job of entry.cronJobs ?? []) {
+    capabilities.push(`scheduled job \`${job.id}\` (${job.schedule.cron} ${job.schedule.timezone})`);
+  }
+  return capabilities;
+}
+
 function filesFor(entry) {
+  const packages = entry.packages ?? [];
+  const mcpServers = entry.mcpServers ?? {};
+  const cronJobs = entry.cronJobs ?? [];
+  const capabilities = capabilitySummary(entry);
+  const capabilityGuidance = entry.capabilityGuidance ?? [];
+  const hasIntegratedCapabilities = capabilities.length > 0 || entry.openclawProfile;
+  const capabilityBoundarySection =
+    capabilityGuidance.length > 0
+      ? `\n\n## Included capability boundaries\n\n${bullets(capabilityGuidance)}`
+      : "";
+  const packageContents = [
+    "- `CLAW.md` defines the agent and provides its portable `SOUL.md` content.",
+    "- `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.",
+    ...capabilities.map((capability) => `- Declared capability: ${capability}.`),
+    ...capabilityGuidance.map((guidance) => `- Capability boundary: ${guidance}`),
+  ].join("\n");
   const soul = `# ${entry.name}
 
 ## Purpose
@@ -37,7 +77,23 @@ ${bullets(entry.boundaries)}
 - Ask before external communication, publication, destructive action, or irreversible commitment.
 - State uncertainty, missing evidence, and the accountable human decision clearly.
 `;
-  const claw = `---
+  const manifest = {
+    schemaVersion: 1,
+    agent: { id: entry.id, name: entry.name, description: entry.description },
+    ...(entry.openclawProfile
+      ? { metadata: { "openclaw.config": "profiles/openclaw.yml" } }
+      : {}),
+    workspace: {
+      bootstrapFiles: { "AGENTS.md": { source: "workspace/AGENTS.md" } },
+      files: [],
+    },
+    packages,
+    mcpServers,
+    cronJobs,
+  };
+  const claw = hasIntegratedCapabilities
+    ? `---\n${stringifyYaml(manifest, { lineWidth: 0 })}---\n\n${soul}`
+    : `---
 schemaVersion: 1
 agent:
   id: ${entry.id}
@@ -59,7 +115,7 @@ cronJobs: []
 
 Ask for or confirm:
 
-${bullets(entry.intake)}
+${bullets(entry.intake)}${capabilityBoundarySection}
 
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
@@ -109,17 +165,19 @@ ${entry.description}
 
 ## Package contents
 
-- \`CLAW.md\` defines the agent and provides its portable \`SOUL.md\` content.
-- \`workspace/AGENTS.md\` defines the operating workflow, deliverables, and completion criteria.
+${packageContents}
 
 Review the package before applying it. Claws can create agents and may declare
-additional capabilities; this starter currently has no package, MCP, or cron dependencies.
+additional capabilities${capabilities.length === 0 ? "; this starter currently has no package, MCP, or cron dependencies." : ". Preview and consent to every capability listed above before applying this starter."}
 `;
   return new Map([
     ["CLAW.md", claw],
     ["README.md", readme],
     ["package.json", packageJson],
     ["workspace/AGENTS.md", agents],
+    ...(entry.openclawProfile
+      ? [["profiles/openclaw.yml", stringifyYaml(entry.openclawProfile, { lineWidth: 0 })]]
+      : []),
   ]);
 }
 
@@ -183,6 +241,9 @@ if (check) {
       "file:README.md",
       "file:package.json",
       "file:workspace/AGENTS.md",
+      ...(entry.openclawProfile
+        ? ["directory:profiles", "file:profiles/openclaw.yml"]
+        : []),
     ]);
     const actualEntries = new Set(
       (await readdir(packageRoot, { recursive: true, withFileTypes: true })).map((item) => {

@@ -8,6 +8,10 @@ Ask for or confirm:
 - Observed figures, source statements, forecast or plan baseline, and accounting definitions
 - Scenario assumptions, required sensitivities, confidentiality limits, and approval owner
 
+## Included capability boundaries
+
+- Use the Yahoo Finance skill for timestamped market and company observations, preserve source dates and units, and never use it to execute or recommend a transaction.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

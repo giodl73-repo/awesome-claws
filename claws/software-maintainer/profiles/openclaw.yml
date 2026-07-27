@@ -1,0 +1,8 @@
+schemaVersion: 1
+agent:
+  tools:
+    profile: coding
+    alsoAllow:
+      - diffs
+    fs:
+      workspaceOnly: true
