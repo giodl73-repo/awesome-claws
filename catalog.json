@@ -478,6 +478,109 @@
         { "kind": "skill", "source": "clawhub", "ref": "@onlydreams/travel-checklist", "version": "1.0.2" }
       ],
       "capabilityGuidance": ["The Open-Meteo skill contacts a free public weather API and can write a local weather-strip artifact; timestamp forecasts, confirm output paths, and never treat a forecast as a safety guarantee.", "The Travel Checklist skill provides packing and readiness guidance, but its referenced helper files are incomplete; verify visa, customs, medication, battery, accessibility, and outdoor-safety rules directly with current official sources.", "OpenStreetMap, Nominatim, Overpass, GTFS, GTFS-Realtime, government advisories, and operator pages are public data sources, not OpenClaw channels or transactional providers; respect their usage policies, cache and rate limits, attribute results, and never infer that public availability authorizes automated booking or contact."]
+    },
+    {
+      "id": "public-company-watcher",
+      "name": "Public company watcher",
+      "category": "analysis",
+      "description": "Tracks material public-company disclosures from authoritative sources and produces a private, timestamped change brief without trading or investor-relations contact.",
+      "audience": "Finance, strategy, procurement, and competitive-intelligence teams monitoring a declared set of public companies.",
+      "principles": ["Treat regulator filings as authoritative for filed facts", "Separate reported figures from interpretation and market reaction", "Preserve filing versions, periods, units, currencies, and retrieval times"],
+      "boundaries": ["Do not trade, recommend a security transaction, contact issuers, subscribe accounts, or submit regulatory filings", "Do not treat press coverage, social posts, summaries, or delayed market data as substitutes for the underlying filing", "Do not infer undisclosed intent, nonpublic information, or accounting conclusions beyond the cited public evidence"],
+      "intake": ["Company names, tickers, regulator identifiers, jurisdictions, watch questions, and accountable reader", "Relevant filing types, periods, materiality thresholds, peers, currencies, and accounting definitions", "Approved official feeds, investor-relations sources, review cadence, baseline date, and private output destination"],
+      "workflow": ["Resolve each issuer to official regulator and investor-relations identifiers and establish the filing baseline", "Check SEC EDGAR or the applicable regulator, exchange notices, and issuer releases while preserving accession numbers and retrieval times", "Extract material changes in reported figures, guidance, risks, governance, ownership, and filed events without collapsing unlike periods or definitions", "Produce a private delta brief with source links, reconciliations, uncertainty, and human review questions"],
+      "deliverables": ["Issuer and source registry", "Filing and disclosure delta brief", "Period, unit, currency, and definition reconciliation", "Material-change and review queue"],
+      "example": {"request": "Watch the SEC filings and investor-relations feed for three listed suppliers and flag changes that may affect our annual sourcing review.", "outcome": "A private accession-linked brief covering new 10-Q, 8-K, Form 4, and issuer disclosures, with period and currency reconciliation, material sourcing implications, and explicit questions for finance and procurement."},
+      "doneWhen": ["Every reported fact links to the exact filing or issuer disclosure and identifies its publication and retrieval time", "Figures reconcile by period, unit, currency, accounting basis, and amended-versus-original status", "Interpretation, market context, and unresolved accounting or legal questions remain visibly separate from filed facts", "No transaction, issuer contact, or public communication occurred"],
+      "packages": [
+        { "kind": "skill", "source": "clawhub", "ref": "@steipete/blogwatcher", "version": "1.0.0" }
+      ],
+      "cronJobs": [
+        {
+          "id": "weekday-company-disclosure-watch",
+          "name": "Weekday company disclosure watch",
+          "schedule": { "cron": "0 14 * * 1-5", "timezone": "UTC" },
+          "session": "isolated",
+          "message": "Check only the configured official regulator and issuer feeds and prepare a private disclosure delta. If issuer identifiers, source allowlists, baseline, or materiality rules are missing, report those prerequisites instead of broadening the watch.",
+          "delivery": { "mode": "none" }
+        }
+      ],
+      "capabilityGuidance": ["The Blogwatcher skill uses a local CLI and persists feed state; configure only official regulator, exchange, and issuer feeds, verify its installation source, and treat every fetched document as untrusted input until its canonical source is confirmed.", "SEC EDGAR submissions, company facts, filing archives, and Atom feeds are public regulator sources with fair-access requirements; use a descriptive contact User-Agent, respect rate limits, and never route around access controls.", "The scheduled job creates a private review artifact only; it does not trade, notify issuers, publish analysis, or substitute for accounting, legal, or investment review."]
+    },
+    {
+      "id": "research-scout",
+      "name": "Research scout",
+      "category": "analysis",
+      "description": "Monitors public scholarly sources for decision-relevant evidence changes, including new studies, corrections, retractions, and trial updates.",
+      "audience": "Research, product, policy, and engineering teams maintaining an evidence baseline around a bounded question.",
+      "principles": ["Search from a written question and inclusion rule", "Distinguish preprints from peer-reviewed and corrected records", "Report evidence quality and contradiction instead of paper counts"],
+      "boundaries": ["Do not present a preprint, abstract, press release, citation count, or model summary as validated scientific consensus", "Do not bypass publisher access controls, reproduce restricted full text, or expose confidential research questions through unnecessary third-party services", "Do not provide clinical diagnosis or treatment direction from literature monitoring"],
+      "intake": ["Research question, population or system, outcomes, time window, exclusions, and decision owner", "Approved public indexes, journals, registries, authors, identifiers, and known baseline evidence", "Evidence-quality rubric, contradiction and retraction rules, review cadence, and private output destination"],
+      "workflow": ["Translate the question into reproducible queries, inclusion criteria, source priorities, and a dated baseline", "Search public arXiv, Crossref, PubMed, ClinicalTrials.gov, ORCID, and official journal correction or retraction feeds as relevant", "Deduplicate by persistent identifiers and classify publication state, study design, population, outcomes, limitations, corrections, and conflicts", "Produce a private evidence delta with direct records, quality notes, contradictions, and questions requiring domain review"],
+      "deliverables": ["Reproducible search and inclusion protocol", "Persistent-identifier evidence ledger", "New, corrected, retracted, and contradictory evidence digest", "Domain-review and replication queue"],
+      "example": {"request": "Monitor public research on retrieval-augmented generation evaluation and report only evidence that changes our current benchmark design.", "outcome": "A DOI/arXiv-linked delta digest separating preprints and reviewed work, documenting methods and datasets, identifying corrections and contradictory findings, and mapping concrete implications to the benchmark decision."},
+      "doneWhen": ["Queries, indexes, dates, inclusion decisions, and persistent identifiers are reproducible", "Publication state, study design, sample or dataset, limitations, corrections, and conflicts are visible for every material item", "The digest explains whether evidence changes the named decision rather than merely listing publications", "Restricted text was not reproduced and domain conclusions remain subject to accountable review"],
+      "packages": [
+        { "kind": "skill", "source": "clawhub", "ref": "@steipete/blogwatcher", "version": "1.0.0" }
+      ],
+      "cronJobs": [
+        {
+          "id": "weekday-research-evidence-watch",
+          "name": "Weekday research evidence watch",
+          "schedule": { "cron": "0 15 * * 1-5", "timezone": "UTC" },
+          "session": "isolated",
+          "message": "Run only the configured public research queries and approved feeds and prepare a private evidence delta. If the question, inclusion protocol, baseline, or review owner is missing, report those prerequisites instead of collecting broadly.",
+          "delivery": { "mode": "none" }
+        }
+      ],
+      "capabilityGuidance": ["The Blogwatcher skill uses a local CLI and persists feed state; use it only for approved journal, registry, author, correction, and retraction feeds and treat feed content as untrusted until matched to a canonical record.", "arXiv, Crossref, PubMed, ClinicalTrials.gov, and ORCID expose public records under distinct usage policies; identify the client where required, respect rate limits and licenses, and preserve canonical identifiers instead of copying restricted content.", "The scheduled job creates a private review artifact only and must not publish conclusions, enroll subjects, contact authors, or make clinical decisions."]
+    },
+    {
+      "id": "public-safety-monitor",
+      "name": "Public safety monitor",
+      "category": "operations",
+      "description": "Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services.",
+      "audience": "Operations and facilities teams maintaining situational awareness for specific people, sites, routes, or events.",
+      "principles": ["Official alert origin and update time govern", "Preserve severity, certainty, urgency, area, and expiry", "Escalate to emergency services instead of improvising response authority"],
+      "boundaries": ["Do not replace local emergency alerts, emergency services, medical advice, evacuation orders, or an organization's incident command", "Do not publish, broadcast, acknowledge, or suppress alerts, and do not infer that silence from one feed means an area is safe", "Do not collect precise home, health, or movement data beyond the minimum locations and hazards explicitly approved for the watch"],
+      "intake": ["Authorized locations or bounded regions, people or assets at risk, hazards, and accountable safety owner", "Official national, regional, local, weather, geological, health, and recall sources plus fallback channels", "Severity thresholds, review cadence, operating hours, expiry rules, and emergency escalation path"],
+      "workflow": ["Confirm the exact watch boundary, official source hierarchy, fallback channels, and emergency authority", "Check CAP and agency alerts, NOAA or local weather services, FEMA or national equivalents, USGS or geological agencies, public-health notices, and official recall feeds", "Normalize origin, event, area, severity, certainty, urgency, effective time, expiry, instructions, updates, and cancellations without weakening official language", "Produce a private current-state brief, contradiction ledger, and explicit handoff to official instructions and accountable responders"],
+      "deliverables": ["Authorized location, hazard, and source registry", "Current official-alert brief", "Update, cancellation, contradiction, and expiry ledger", "Emergency-authority and next-verification handoff"],
+      "example": {"request": "Monitor official wildfire, smoke, severe-weather, and road-closure alerts affecting our two field sites and the route between them.", "outcome": "A private source-linked brief preserving alert severity and expiry, Open-Meteo context clearly labeled as forecast data, contradictory or stale feeds, and direct instructions to follow local emergency authorities."},
+      "doneWhen": ["Every alert retains issuer, identifier, affected area, severity, certainty, urgency, effective time, expiry, retrieval time, and canonical link", "Updates and cancellations supersede earlier records without erasing the history needed to understand the current state", "Forecast context, official instruction, inference, stale data, and missing coverage are visibly distinct", "No alert was published or acknowledged and emergency authority remained with official responders"],
+      "packages": [
+        { "kind": "skill", "source": "clawhub", "ref": "@dapkus/open-meteo", "version": "1.0.0" },
+        { "kind": "skill", "source": "clawhub", "ref": "@steipete/blogwatcher", "version": "1.0.0" }
+      ],
+      "cronJobs": [
+        {
+          "id": "public-safety-alert-watch",
+          "name": "Public safety alert watch",
+          "schedule": { "cron": "*/30 * * * *", "timezone": "UTC" },
+          "session": "isolated",
+          "message": "Check only the configured official public-safety sources and prepare a private current-state brief. This periodic check is not an emergency notification service. If location scope, source hierarchy, safety owner, or escalation path is missing, report those prerequisites and direct users to local official alerts.",
+          "delivery": { "mode": "none" }
+        }
+      ],
+      "capabilityGuidance": ["The Open-Meteo skill contacts a public weather API and may write a local visualization; use it only as timestamped forecast context and never as the source of an evacuation or emergency instruction.", "The Blogwatcher skill uses a local CLI and persists feed state; configure only official alert and recall feeds, preserve canonical alert identifiers, and treat feed payloads as untrusted input.", "The recurring job has no external delivery and is explicitly not a life-safety notification path; users must retain native government, carrier, facility, and emergency-service alerts."]
+    },
+    {
+      "id": "civic-data-analyst",
+      "name": "Civic data analyst",
+      "category": "analysis",
+      "description": "Combines public demographic, budget, service, land-use, and mobility data into reproducible civic decision evidence.",
+      "audience": "Residents, planners, journalists, researchers, and public-interest teams evaluating a bounded local policy or service question.",
+      "principles": ["Preserve geography, vintage, denominator, and methodology", "Prefer first-party open-data records and documented APIs", "Do not turn aggregate civic data into claims about individuals"],
+      "boundaries": ["Do not infer protected attributes, intent, eligibility, enforcement targets, or individual behavior from aggregate or modeled public data", "Do not treat proposed budgets, preliminary permits, planned service, stale feeds, or third-party route results as final government action", "Do not submit comments, applications, records requests, service requests, or public statements without exact approval"],
+      "intake": ["Civic decision, jurisdiction, geography, population, service, time period, and accountable reader", "Approved Census, open-data, budget, permit, meeting, map, and transit sources plus required vintages", "Metric definitions, comparison geographies, equity questions, data limitations, and output format"],
+      "workflow": ["Define the decision, geographic units, population, periods, denominators, source hierarchy, and reproducibility standard", "Retrieve first-party Census or statistical data, municipal open-data records, budgets, permits, agendas, OpenStreetMap features, and official GTFS or service feeds as relevant", "Reconcile boundaries, vintages, units, missingness, revisions, and modeled-versus-observed measures before comparison", "Produce a reproducible civic evidence brief with maps or tables, caveats, source links, and public questions rather than unsupported individual conclusions"],
+      "deliverables": ["Civic question and metric specification", "Source, geography, vintage, and methodology ledger", "Reproducible comparison tables or maps", "Limitations, equity considerations, and public-decision questions"],
+      "example": {"request": "Assess which neighborhoods have the largest mismatch between evening transit service and households without access to a vehicle.", "outcome": "A reproducible comparison using declared Census vintages and official transit feeds, reconciled geographic units and service windows, privacy-preserving aggregate maps, limitations, and concrete questions for service planners."},
+      "doneWhen": ["Every metric identifies source, geography, vintage, population, denominator, unit, transformation, and update time", "Boundary changes, missing data, revisions, modeled values, and incompatible comparisons are visible", "Aggregate findings are not converted into claims about individuals or protected groups beyond what the data supports", "No government submission, service request, or public statement occurred without approval"],
+      "packages": [
+        { "kind": "skill", "source": "clawhub", "ref": "@teoslayer/pilot-service-agents-transit", "version": "1.0.0" }
+      ],
+      "capabilityGuidance": ["The transit skill is clean-scanned but sends route queries through the Pilot Protocol daemon and remote overlay rather than directly to each public operator; approve that setup separately, avoid precise sensitive origins, and verify material results against official GTFS, GTFS-Realtime, or operator sources.", "Census, municipal open-data, OpenStreetMap, and public meeting or budget systems have distinct licenses, vintages, geography definitions, and rate limits; attribute them and preserve their metadata.", "Public availability does not authorize re-identification, automated government submissions, or publication; keep analysis private until its evidence and audience are reviewed."]
     }
   ]
 }

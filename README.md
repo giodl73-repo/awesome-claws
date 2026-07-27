@@ -40,6 +40,10 @@ consent-bound preview.
 | [Release coordinator](claws/release-coordinator) | Engineering | GitHub + Slack skills | Approval-bound release coordination |
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | Analysis | Blogwatcher skill, weekday cron | Curated source-feed deltas |
 | [Travel planner](claws/travel-planner) | Productivity | Open-Meteo + Travel Checklist skills | Public-source trip planning |
+| [Public company watcher](claws/public-company-watcher) | Analysis | Blogwatcher skill, weekday cron | SEC-grounded company changes |
+| [Research scout](claws/research-scout) | Analysis | Blogwatcher skill, weekday cron | Public research evidence deltas |
+| [Public safety monitor](claws/public-safety-monitor) | Operations | Open-Meteo + Blogwatcher skills, recurring cron | Official alert synthesis |
+| [Civic data analyst](claws/civic-data-analyst) | Analysis | Public transit skill | Reproducible civic evidence |
 
 ## Preview a Claw
 
