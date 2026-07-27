@@ -35,6 +35,14 @@ const representatives = [
     id: "research-monitor",
     expectedSummary: { packageActions: 1, cronJobActions: 1 },
   },
+  { id: "presentation-producer", expectedSummary: { packageActions: 1 } },
+  { id: "document-intake-analyst", expectedSummary: { packageActions: 1 } },
+  { id: "media-evidence-reviewer", expectedSummary: { packageActions: 2 } },
+  { id: "release-coordinator", expectedSummary: { packageActions: 2 } },
+  {
+    id: "feed-intelligence-monitor",
+    expectedSummary: { packageActions: 1, cronJobActions: 1 },
+  },
   { id: "executive-assistant" },
   { id: "compliance-reviewer" },
 ];

@@ -34,6 +34,11 @@ consent-bound preview.
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | Analysis | XLSX skill | Auditable workbook transformation |
 | [Knowledge gardener](claws/knowledge-gardener) | Productivity | Notion skill | Scoped knowledge-space maintenance |
 | [Research monitor](claws/research-monitor) | Analysis | Parallel plugin, weekday cron | Source-linked evidence watch |
+| [Presentation producer](claws/presentation-producer) | Productivity | PowerPoint skill | Reviewable presentation delivery |
+| [Document intake analyst](claws/document-intake-analyst) | Analysis | Markdown Converter skill | Traceable document normalization |
+| [Media evidence reviewer](claws/media-evidence-reviewer) | Analysis | Video Frames + Whisper skills | Timestamped audiovisual review |
+| [Release coordinator](claws/release-coordinator) | Engineering | GitHub + Slack skills | Approval-bound release coordination |
+| [Feed intelligence monitor](claws/feed-intelligence-monitor) | Analysis | Blogwatcher skill, weekday cron | Curated source-feed deltas |
 
 ## Preview a Claw
 
