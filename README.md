@@ -41,6 +41,10 @@ consent-bound preview.
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | Analysis | Blogwatcher skill, weekday cron | Curated source-feed deltas |
 | [Travel planner](claws/travel-planner) | Productivity | Open-Meteo + Travel Checklist skills | Public-source trip planning |
 | [Travel concierge](claws/travel-concierge) | Productivity | Expedia Travel plugin, minimal tool profile | Live Expedia search and traveler-controlled booking handoff |
+| [Web evidence researcher](claws/web-evidence-researcher) | Analysis | Tavily plugin, minimal tool profile | Bounded search and source extraction |
+| [Website evidence collector](claws/website-evidence-collector) | Analysis | Firecrawl plugin, minimal tool profile | Allowlisted public website collection |
+| [Video concept producer](claws/video-concept-producer) | Productivity | PixVerse provider, minimal tool profile | Private review-first video generation |
+| [Workflow operator](claws/workflow-operator) | Operations | Lobster plugin, minimal tool profile | Typed approval-aware workflow execution |
 | [Public company watcher](claws/public-company-watcher) | Analysis | Blogwatcher skill, weekday cron | SEC-grounded company changes |
 | [Research scout](claws/research-scout) | Analysis | Blogwatcher skill, weekday cron | Public research evidence deltas |
 | [Public safety monitor](claws/public-safety-monitor) | Operations | Open-Meteo + Blogwatcher skills, recurring cron | Official alert synthesis |

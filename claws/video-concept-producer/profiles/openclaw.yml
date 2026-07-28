@@ -1,0 +1,8 @@
+schemaVersion: 1
+agent:
+  tools:
+    profile: minimal
+    alsoAllow:
+      - video_generate
+    fs:
+      workspaceOnly: true

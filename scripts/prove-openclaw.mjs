@@ -45,6 +45,10 @@ const representatives = [
   },
   { id: "travel-planner", expectedSummary: { packageActions: 2 } },
   { id: "travel-concierge", expectedSummary: { packageActions: 1 } },
+  { id: "web-evidence-researcher", expectedSummary: { packageActions: 1 } },
+  { id: "website-evidence-collector", expectedSummary: { packageActions: 1 } },
+  { id: "video-concept-producer", expectedSummary: { packageActions: 1 } },
+  { id: "workflow-operator", expectedSummary: { packageActions: 1 } },
   {
     id: "public-company-watcher",
     expectedSummary: { packageActions: 1, cronJobActions: 1 },

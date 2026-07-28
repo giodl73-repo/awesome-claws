@@ -1,0 +1,9 @@
+schemaVersion: 1
+agent:
+  tools:
+    profile: minimal
+    alsoAllow:
+      - firecrawl_search
+      - firecrawl_scrape
+    fs:
+      workspaceOnly: true
