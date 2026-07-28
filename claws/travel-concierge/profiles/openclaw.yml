@@ -1,0 +1,11 @@
+schemaVersion: 1
+agent:
+  tools:
+    profile: minimal
+    alsoAllow:
+      - search_stays
+      - search_flights
+      - eg_travel_signup
+      - eg_travel_verify
+    fs:
+      workspaceOnly: true

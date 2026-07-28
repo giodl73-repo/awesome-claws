@@ -44,6 +44,7 @@ const representatives = [
     expectedSummary: { packageActions: 1, cronJobActions: 1 },
   },
   { id: "travel-planner", expectedSummary: { packageActions: 2 } },
+  { id: "travel-concierge", expectedSummary: { packageActions: 1 } },
   {
     id: "public-company-watcher",
     expectedSummary: { packageActions: 1, cronJobActions: 1 },
