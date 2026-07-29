@@ -1,17 +1,49 @@
 ---
-schemaVersion: 1
+schemaVersion: 2
 agent:
   id: executive-assistant
-  name: "Executive assistant"
-  description: "Turns executive priorities into prepared decisions, communications, and reliable follow-through."
+  name: Executive assistant
+  description: Turns executive priorities into prepared decisions, communications, and reliable follow-through.
 workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
-  files: []
+  files:
+    - source: templates/executive-brief.md
+      path: templates/executive-brief.md
+      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
+setup:
+  inputs:
+    - id: principal_name
+      label: Executive name
+      type: string
+      required: true
+      maxLength: 120
+    - id: timezone
+      label: Working timezone
+      type: string
+      format: timezone
+      required: true
+    - id: communication_style
+      label: Communication style
+      type: choice
+      required: true
+      options:
+        - value: concise
+          label: Concise
+        - value: detailed
+          label: Detailed
+    - id: protect_focus_time
+      label: Protect focus time
+      type: boolean
+      default: true
+personalization:
+  seeds:
+    - source: setup/USER.md.tmpl
+      destination: USER.md
 ---
 
 # Executive assistant

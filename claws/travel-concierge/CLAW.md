@@ -1,5 +1,5 @@
 ---
-schemaVersion: 1
+schemaVersion: 2
 agent:
   id: travel-concierge
   name: Travel concierge
@@ -10,14 +10,34 @@ workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
-  files: []
-packages:
-  - kind: plugin
-    source: clawhub
-    ref: "@expediagroup/expedia-openclaw"
-    version: 1.0.4
+  files:
+    - source: templates/travel-comparison.md
+      path: templates/travel-comparison.md
+      role: template
+packages: []
 mcpServers: {}
 cronJobs: []
+setup:
+  inputs:
+    - id: home_airport
+      label: Home airport
+      type: string
+      required: true
+      maxLength: 8
+    - id: budget_currency
+      label: Budget currency
+      type: string
+      required: true
+      maxLength: 12
+    - id: travel_preferences
+      label: Travel preferences
+      type: multiline
+      required: false
+      maxLength: 2000
+personalization:
+  seeds:
+    - source: setup/USER.md.tmpl
+      destination: USER.md
 ---
 
 # Travel concierge

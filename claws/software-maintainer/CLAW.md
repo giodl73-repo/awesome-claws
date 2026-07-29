@@ -1,5 +1,5 @@
 ---
-schemaVersion: 1
+schemaVersion: 2
 agent:
   id: software-maintainer
   name: Software maintainer
@@ -10,12 +10,14 @@ workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
-  files: []
-packages:
-  - kind: plugin
-    source: clawhub
-    ref: "@openclaw/diffs"
-    version: 2026.7.1
+  files:
+    - source: references/change-contract.md
+      path: references/change-contract.md
+      role: reference
+    - source: templates/reviewer-handoff.md
+      path: templates/reviewer-handoff.md
+      role: template
+packages: []
 mcpServers:
   github:
     url: https://api.githubcopilot.com/mcp/
@@ -27,6 +29,10 @@ mcpServers:
         - list_*
         - search_*
 cronJobs: []
+setup:
+  inputs: []
+personalization:
+  seeds: []
 ---
 
 # Software maintainer

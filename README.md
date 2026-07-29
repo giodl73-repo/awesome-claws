@@ -1,30 +1,37 @@
 # Awesome Claws
 
 A curated collection of starter [OpenClaw](https://github.com/openclaw/openclaw)
-Claws. Each Claw is a portable setup for one purpose-built agent, including its
-identity, operating instructions, and any capabilities it needs.
+Claws. Each Claw is a portable, finished agent application for one purpose,
+including identity, operating instructions, setup, reusable resources, and the
+capabilities it needs.
 
 Claws are experimental. Review a Claw's manifest and dry-run plan before you
 apply it. Most starters create an agent and workspace files. Several also
-demonstrate pinned skills, an official plugin, a filtered OAuth MCP
+demonstrate pinned skills, a harness-native extension, a filtered OAuth MCP
 connection, or scheduled work; those capabilities remain visible in the
 consent-bound preview.
+
+Schema v2 examples show the application layering proposed in
+[RFC 0025](https://github.com/openclaw/rfcs/pull/52): portable skills, direct MCP
+requests, schedules, setup, and inert resources stay in `CLAW.md`; native
+plugin bundles live in a selected harness profile; answers, credentials, and
+user-edited preferences remain local.
 
 ## Choose a starter
 
 | Claw | Category | Capabilities | Focus |
 | --- | --- | --- | --- |
 | [Incident response](claws/incident-response) | Engineering | Daily isolated cron | Evidence-led incident coordination |
-| [Software maintainer](claws/software-maintainer) | Engineering | Coding profile, Diffs plugin, filtered GitHub MCP | Repository change delivery |
+| [Software maintainer](claws/software-maintainer) | Engineering | Coding profile, Diffs extension, filtered GitHub MCP, application resources | Repository change delivery |
 | [Security analyst](claws/security-analyst) | Engineering | Base | Bounded security assessment |
 | [Data analyst](claws/data-analyst) | Analysis | Base | Reproducible data analysis |
 | [Research briefing](claws/research-briefing) | Analysis | Base | Source-grounded decision briefs |
-| [Financial analyst](claws/financial-analyst) | Analysis | Yahoo Finance skill | Assumption-explicit financial analysis |
+| [Financial analyst](claws/financial-analyst) | Analysis | Setup, Yahoo Finance skill, report template | Assumption-explicit financial analysis |
 | [Customer support](claws/customer-support) | Operations | Customer support skill | Accurate customer case resolution |
 | [Sales operations](claws/sales-operations) | Operations | Base | Pipeline and process analysis |
 | [Recruiting coordinator](claws/recruiting-coordinator) | Operations | Base | Candidate logistics and handoffs |
 | [Content operations](claws/content-operations) | Operations | Base | Editorial production control |
-| [Executive assistant](claws/executive-assistant) | Productivity | Base | Executive priorities and follow-through |
+| [Executive assistant](claws/executive-assistant) | Productivity | Guided setup, local preferences, brief template | Executive priorities and follow-through |
 | [Project manager](claws/project-manager) | Productivity | Base | Milestones, dependencies, and decisions |
 | [Product manager](claws/product-manager) | Product | Base | Evidence-backed product decisions |
 | [Compliance reviewer](claws/compliance-reviewer) | Governance | Base | Traceable control review |
@@ -40,7 +47,7 @@ consent-bound preview.
 | [Release coordinator](claws/release-coordinator) | Engineering | GitHub + Slack skills | Approval-bound release coordination |
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | Analysis | Blogwatcher skill, weekday cron | Curated source-feed deltas |
 | [Travel planner](claws/travel-planner) | Productivity | Open-Meteo + Travel Checklist skills | Public-source trip planning |
-| [Travel concierge](claws/travel-concierge) | Productivity | Expedia Travel plugin, minimal tool profile | Live Expedia search and traveler-controlled booking handoff |
+| [Travel concierge](claws/travel-concierge) | Productivity | Guided setup, Expedia extension, minimal tool profile | Live Expedia search and traveler-controlled booking handoff |
 | [Web evidence researcher](claws/web-evidence-researcher) | Analysis | Tavily plugin, minimal tool profile | Bounded search and source extraction |
 | [Website evidence collector](claws/website-evidence-collector) | Analysis | Firecrawl plugin, minimal tool profile | Allowlisted public website collection |
 | [Video concept producer](claws/video-concept-producer) | Productivity | PixVerse provider, minimal tool profile | Private review-first video generation |
@@ -83,6 +90,13 @@ Every starter contains:
 - `workspace/AGENTS.md`: the agent's workflow, deliverables, and completion
   criteria.
 - `package.json`: package identity and the `openclaw.claw` entry point.
+
+Application examples may also contain `setup/*.tmpl` seed templates,
+role-labeled references, schemas, templates, examples, fixtures, or assets, and
+harness profiles such as `profiles/openclaw.yml`. Setup templates use only
+bounded `{{ input.<id> }}` interpolation. Applying a Claw seeds user-owned
+preferences only when absent; later package updates reconcile managed
+application content without overwriting those local edits.
 
 These packages intentionally follow the experimental prompt-body contract in
 [openclaw/openclaw#113454](https://github.com/openclaw/openclaw/pull/113454): a

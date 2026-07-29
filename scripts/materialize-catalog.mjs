@@ -7,6 +7,20 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
 const check = process.argv.includes("--check");
 
+function isSafePackagePath(value) {
+  if (typeof value !== "string" || !value || value.includes("\\")) return false;
+  if (value.startsWith("/") || /^[A-Za-z]:\//.test(value)) return false;
+  return value.split("/").every((segment) => segment && segment !== "." && segment !== "..");
+}
+
+function portablePathKey(value) {
+  return typeof value === "string" ? value.normalize("NFC").toLowerCase() : "";
+}
+
+function pathsConflict(left, right) {
+  return left === right || left.startsWith(`${right}/`) || right.startsWith(`${left}/`);
+}
+
 function bullets(values) {
   return values.map((value) => `- ${value}`).join("\n");
 }
@@ -28,6 +42,11 @@ function capabilitySummary(entry) {
   for (const pkg of entry.packages ?? []) {
     capabilities.push(`${pkg.kind} \`${pkg.ref}@${pkg.version}\``);
   }
+  for (const extension of entry.openclawProfile?.extensions ?? []) {
+    capabilities.push(
+      `${extension.format} ${extension.kind} \`${extension.ref}@${extension.version}\``,
+    );
+  }
   const mcpNames = Object.keys(entry.mcpServers ?? {});
   if (mcpNames.length > 0) {
     capabilities.push(`MCP server${mcpNames.length === 1 ? "" : "s"} ${mcpNames.map((name) => `\`${name}\``).join(", ")}`);
@@ -44,7 +63,14 @@ function filesFor(entry) {
   const cronJobs = entry.cronJobs ?? [];
   const capabilities = capabilitySummary(entry);
   const capabilityGuidance = entry.capabilityGuidance ?? [];
-  const hasIntegratedCapabilities = capabilities.length > 0 || entry.openclawProfile;
+  const resources = entry.resources ?? [];
+  const setupSeeds = entry.personalization?.seeds ?? [];
+  const needsStructuredManifest =
+    capabilities.length > 0 ||
+    entry.openclawProfile ||
+    entry.clawSchemaVersion === 2 ||
+    resources.length > 0 ||
+    setupSeeds.length > 0;
   const capabilityBoundarySection =
     capabilityGuidance.length > 0
       ? `\n\n## Included capability boundaries\n\n${bullets(capabilityGuidance)}`
@@ -78,20 +104,28 @@ ${bullets(entry.boundaries)}
 - State uncertainty, missing evidence, and the accountable human decision clearly.
 `;
   const manifest = {
-    schemaVersion: 1,
+    schemaVersion: entry.clawSchemaVersion ?? 1,
     agent: { id: entry.id, name: entry.name, description: entry.description },
     ...(entry.openclawProfile
       ? { metadata: { "openclaw.config": "profiles/openclaw.yml" } }
       : {}),
     workspace: {
       bootstrapFiles: { "AGENTS.md": { source: "workspace/AGENTS.md" } },
-      files: [],
+      files: resources.map(({ source, path, role }) => ({ source, path, role })),
     },
     packages,
     mcpServers,
     cronJobs,
+    ...(entry.clawSchemaVersion === 2
+      ? {
+          setup: entry.setup ?? { inputs: [] },
+          personalization: {
+            seeds: setupSeeds.map(({ source, destination }) => ({ source, destination })),
+          },
+        }
+      : {}),
   };
-  const claw = hasIntegratedCapabilities
+  const claw = needsStructuredManifest
     ? `---\n${stringifyYaml(manifest, { lineWidth: 0 })}---\n\n${soul}`
     : `---
 schemaVersion: 1
@@ -175,6 +209,8 @@ additional capabilities${capabilities.length === 0 ? "; this starter currently h
     ["README.md", readme],
     ["package.json", packageJson],
     ["workspace/AGENTS.md", agents],
+    ...resources.map((resource) => [resource.source, `${resource.content.trim()}\n`]),
+    ...setupSeeds.map((seed) => [seed.source, `${seed.content.trim()}\n`]),
     ...(entry.openclawProfile
       ? [["profiles/openclaw.yml", stringifyYaml(entry.openclawProfile, { lineWidth: 0 })]]
       : []),
@@ -200,6 +236,44 @@ async function ensureFile(path, expected) {
 for (const entry of catalog.entries) {
   if (!/^[a-z][a-z0-9-]{0,63}$/.test(entry.id)) {
     throw new Error(`Catalog id is not a safe portable agent id: ${JSON.stringify(entry.id)}`);
+  }
+  const generatedSources = [
+    ...(entry.resources ?? []).map((resource) => resource.source),
+    ...(entry.personalization?.seeds ?? []).map((seed) => seed.source),
+  ];
+  const reservedSources = [
+    "CLAW.md",
+    "README.md",
+    "package.json",
+    "workspace/AGENTS.md",
+    ...(entry.openclawProfile ? ["profiles/openclaw.yml"] : []),
+  ];
+  const sourceKeys = generatedSources.map(portablePathKey);
+  if (
+    generatedSources.some((source) => !isSafePackagePath(source)) ||
+    sourceKeys.some((source, index) =>
+      [...sourceKeys.slice(0, index), ...reservedSources.map(portablePathKey)].some((other) =>
+        pathsConflict(source, other),
+      ),
+    )
+  ) {
+    throw new Error(`${entry.id} contains unsafe or colliding generated package source paths.`);
+  }
+  const generatedTargets = [
+    ...(entry.resources ?? []).map((resource) => resource.path),
+    ...(entry.personalization?.seeds ?? []).map((seed) => seed.destination),
+  ];
+  const targetKeys = generatedTargets.map(portablePathKey);
+  const reservedTargets = ["AGENTS.md", "SOUL.md"].map(portablePathKey);
+  if (
+    generatedTargets.some((target) => !isSafePackagePath(target)) ||
+    targetKeys.some((target, index) =>
+      [...targetKeys.slice(0, index), ...reservedTargets].some((other) =>
+        pathsConflict(target, other),
+      ),
+    )
+  ) {
+    throw new Error(`${entry.id} contains unsafe or colliding generated workspace targets.`);
   }
 }
 const expectedIds = new Set(catalog.entries.map((entry) => entry.id));
@@ -241,10 +315,18 @@ if (check) {
       "file:README.md",
       "file:package.json",
       "file:workspace/AGENTS.md",
+      ...(entry.resources ?? []).map((resource) => `file:${resource.source}`),
+      ...(entry.personalization?.seeds ?? []).map((seed) => `file:${seed.source}`),
       ...(entry.openclawProfile
         ? ["directory:profiles", "file:profiles/openclaw.yml"]
         : []),
     ]);
+    for (const file of [...(entry.resources ?? []), ...(entry.personalization?.seeds ?? [])]) {
+      const parts = file.source.split("/");
+      for (let index = 1; index < parts.length; index += 1) {
+        expectedEntries.add(`directory:${parts.slice(0, index).join("/")}`);
+      }
+    }
     const actualEntries = new Set(
       (await readdir(packageRoot, { recursive: true, withFileTypes: true })).map((item) => {
         const parent = item.parentPath

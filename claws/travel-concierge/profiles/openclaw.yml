@@ -1,4 +1,4 @@
-schemaVersion: 1
+schemaVersion: 2
 agent:
   tools:
     profile: minimal
@@ -9,3 +9,10 @@ agent:
       - eg_travel_verify
     fs:
       workspaceOnly: true
+extensions:
+  - id: expedia
+    kind: plugin
+    format: openclaw
+    source: clawhub
+    ref: "@expediagroup/expedia-openclaw"
+    version: 1.0.4

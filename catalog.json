@@ -28,6 +28,7 @@
     },
     {
       "id": "software-maintainer",
+      "clawSchemaVersion": 2,
       "name": "Software maintainer",
       "category": "engineering",
       "description": "Delivers scoped repository changes with source-grounded review and verification.",
@@ -39,9 +40,7 @@
       "deliverables": ["Implementation patch", "Verification evidence", "Risk and compatibility summary", "Reviewer handoff"],
       "example": {"request": "Fix Windows CLI discovery when the installed npm shim path contains percent signs, without changing Unix launch behavior.", "outcome": "A scoped launcher fix, exact Windows regression, focused and full test evidence, and a concise explanation of remaining platform risk."},
       "doneWhen": ["The changed behavior is covered by a test that fails before a bug fix or directly verifies the requested feature acceptance criteria", "Focused checks and the repository's required validation pass on the final diff", "Unrelated changes remain intact and residual compatibility risk is stated"],
-      "packages": [
-        { "kind": "plugin", "source": "clawhub", "ref": "@openclaw/diffs", "version": "2026.7.1" }
-      ],
+      "packages": [],
       "mcpServers": {
         "github": {
           "url": "https://api.githubcopilot.com/mcp/",
@@ -51,9 +50,26 @@
         }
       },
       "openclawProfile": {
-        "schemaVersion": 1,
-        "agent": { "tools": { "profile": "coding", "alsoAllow": ["diffs"], "fs": { "workspaceOnly": true } } }
+        "schemaVersion": 2,
+        "agent": { "tools": { "profile": "coding", "alsoAllow": ["diffs"], "fs": { "workspaceOnly": true } } },
+        "extensions": [
+          { "id": "diffs", "kind": "plugin", "format": "openclaw", "source": "clawhub", "ref": "@openclaw/diffs", "version": "2026.7.1" }
+        ]
       },
+      "resources": [
+        {
+          "source": "references/change-contract.md",
+          "path": "references/change-contract.md",
+          "role": "reference",
+          "content": "# Change contract\n\nRecord the requested behavior, ownership boundary, acceptance criteria, validation commands, and delivery authority before changing code."
+        },
+        {
+          "source": "templates/reviewer-handoff.md",
+          "path": "templates/reviewer-handoff.md",
+          "role": "template",
+          "content": "# Reviewer handoff\n\n## Behavior\n\n## Files changed\n\n## Verification\n\n## Residual risk"
+        }
+      ],
       "capabilityGuidance": ["The imported OpenClaw profile enables the built-in coding tool set plus Diffs and restricts filesystem tools to the agent workspace; host policy remains the upper bound.", "Use the GitHub MCP connection only for repository reads and searches; the package filter excludes tools outside get_*, list_*, and search_*, while GitHub OAuth and repository permissions remain the final authority.", "Use the Diffs plugin to render reviewable before/after text or patches; do not treat a rendered artifact as proof that a change was tested or approved."]
     },
     {
@@ -100,6 +116,7 @@
     },
     {
       "id": "financial-analyst",
+      "clawSchemaVersion": 2,
       "name": "Financial analyst",
       "category": "analysis",
       "description": "Builds transparent financial analysis without hiding assumptions or uncertainty.",
@@ -113,6 +130,29 @@
       "doneWhen": ["Every figure is labeled by source or assumption, period, unit, and currency", "Base, downside, and upside outputs reconcile and expose their sensitive drivers", "The recommendation states uncertainty, excluded effects, and the accountable finance decision"],
       "packages": [
         { "kind": "skill", "source": "clawhub", "ref": "yahoo-finance", "version": "1.0.0" }
+      ],
+      "setup": {
+        "inputs": [
+          { "id": "reporting_currency", "label": "Reporting currency", "type": "string", "required": true, "maxLength": 12 },
+          { "id": "materiality_threshold", "label": "Materiality threshold", "type": "integer", "required": true, "minimum": 0 }
+        ]
+      },
+      "personalization": {
+        "seeds": [
+          {
+            "source": "setup/USER.md.tmpl",
+            "destination": "USER.md",
+            "content": "# Financial analysis preferences\n\n- Reporting currency: {{ input.reporting_currency }}\n- Materiality threshold: {{ input.materiality_threshold }}"
+          }
+        ]
+      },
+      "resources": [
+        {
+          "source": "templates/scenario-analysis.md",
+          "path": "templates/scenario-analysis.md",
+          "role": "template",
+          "content": "# Scenario analysis\n\n## Source figures\n\n## Assumptions\n\n## Downside, base, and upside\n\n## Sensitivities and caveats"
+        }
       ],
       "capabilityGuidance": ["Use the Yahoo Finance skill for timestamped market and company observations, preserve source dates and units, and never use it to execute or recommend a transaction."]
     },
@@ -178,6 +218,7 @@
     },
     {
       "id": "executive-assistant",
+      "clawSchemaVersion": 2,
       "name": "Executive assistant",
       "category": "productivity",
       "description": "Turns executive priorities into prepared decisions, communications, and reliable follow-through.",
@@ -188,7 +229,32 @@
       "workflow": ["Clarify outcomes, deadlines, stakeholders, and authority", "Prepare concise briefs, agendas, and communication drafts", "Track decisions, owners, and follow-ups", "Maintain a current priority and risk view"],
       "deliverables": ["Executive brief", "Agenda and pre-read", "Decision log", "Follow-up tracker"],
       "example": {"request": "Prepare tomorrow's staff meeting from these notes, the open decision log, and the executive's three priorities for the week.", "outcome": "A prioritized agenda, concise pre-read, decision questions with owners, draft follow-ups, and conflicts against weekly priorities, without sending or committing anything."},
-      "doneWhen": ["The output is tied to the executive's stated priorities, authority, and protected constraints", "Decisions, owners, deadlines, dependencies, and draft communications are distinguishable", "Nothing external is sent or committed without the required executive or delegated approval"]
+      "doneWhen": ["The output is tied to the executive's stated priorities, authority, and protected constraints", "Decisions, owners, deadlines, dependencies, and draft communications are distinguishable", "Nothing external is sent or committed without the required executive or delegated approval"],
+      "setup": {
+        "inputs": [
+          { "id": "principal_name", "label": "Executive name", "type": "string", "required": true, "maxLength": 120 },
+          { "id": "timezone", "label": "Working timezone", "type": "string", "format": "timezone", "required": true },
+          { "id": "communication_style", "label": "Communication style", "type": "choice", "required": true, "options": [{ "value": "concise", "label": "Concise" }, { "value": "detailed", "label": "Detailed" }] },
+          { "id": "protect_focus_time", "label": "Protect focus time", "type": "boolean", "default": true }
+        ]
+      },
+      "personalization": {
+        "seeds": [
+          {
+            "source": "setup/USER.md.tmpl",
+            "destination": "USER.md",
+            "content": "# Executive working preferences\n\n- Principal: {{ input.principal_name }}\n- Timezone: {{ input.timezone }}\n- Communication style: {{ input.communication_style }}\n- Protect focus time: {{ input.protect_focus_time }}"
+          }
+        ]
+      },
+      "resources": [
+        {
+          "source": "templates/executive-brief.md",
+          "path": "templates/executive-brief.md",
+          "role": "template",
+          "content": "# Executive brief\n\n## Decisions needed\n\n## Priority changes\n\n## Risks and dependencies\n\n## Owner follow-ups"
+        }
+      ]
     },
     {
       "id": "project-manager",
@@ -481,6 +547,7 @@
     },
     {
       "id": "travel-concierge",
+      "clawSchemaVersion": 2,
       "name": "Travel concierge",
       "category": "productivity",
       "description": "Searches and compares current Expedia lodging and flight options, then prepares a traveler-controlled booking handoff without completing a transaction.",
@@ -492,13 +559,38 @@
       "deliverables": ["Trip requirements brief", "Timestamped lodging and flight shortlist", "Price, fee, baggage, cancellation, and tradeoff comparison", "Traveler-controlled Expedia booking handoff", "Facts to recheck before purchase"],
       "example": {"request": "Find three refundable hotels near the Chicago Riverwalk and two nonstop flight options from Seattle for a four-night October trip for two adults; compare total cost but do not book anything.", "outcome": "A timestamped Expedia shortlist with disclosed inventory scope, total-price and cancellation caveats, flight and hotel tradeoffs, and direct links the traveler opens to verify and book personally."},
       "doneWhen": ["Each option records its Expedia source, retrieval time, quoted currency, and material price or availability caveats", "The shortlist addresses the declared dates, party, budget, location, accessibility, baggage, and cancellation constraints or visibly marks missing evidence", "Any signup or verification call followed explicit user confirmation and no verification code entered durable output", "No reservation, purchase, cancellation, provider contact, or traveler-data submission occurred and the traveler has exact links and facts to verify"],
-      "packages": [
-        { "kind": "plugin", "source": "clawhub", "ref": "@expediagroup/expedia-openclaw", "version": "1.0.4" }
-      ],
+      "packages": [],
       "openclawProfile": {
-        "schemaVersion": 1,
-        "agent": { "tools": { "profile": "minimal", "alsoAllow": ["search_stays", "search_flights", "eg_travel_signup", "eg_travel_verify"], "fs": { "workspaceOnly": true } } }
+        "schemaVersion": 2,
+        "agent": { "tools": { "profile": "minimal", "alsoAllow": ["search_stays", "search_flights", "eg_travel_signup", "eg_travel_verify"], "fs": { "workspaceOnly": true } } },
+        "extensions": [
+          { "id": "expedia", "kind": "plugin", "format": "openclaw", "source": "clawhub", "ref": "@expediagroup/expedia-openclaw", "version": "1.0.4" }
+        ]
       },
+      "setup": {
+        "inputs": [
+          { "id": "home_airport", "label": "Home airport", "type": "string", "required": true, "maxLength": 8 },
+          { "id": "budget_currency", "label": "Budget currency", "type": "string", "required": true, "maxLength": 12 },
+          { "id": "travel_preferences", "label": "Travel preferences", "type": "multiline", "required": false, "maxLength": 2000 }
+        ]
+      },
+      "personalization": {
+        "seeds": [
+          {
+            "source": "setup/USER.md.tmpl",
+            "destination": "USER.md",
+            "content": "# Travel preferences\n\n- Home airport: {{ input.home_airport }}\n- Budget currency: {{ input.budget_currency }}\n\n## Additional preferences\n\n{{ input.travel_preferences }}"
+          }
+        ]
+      },
+      "resources": [
+        {
+          "source": "templates/travel-comparison.md",
+          "path": "templates/travel-comparison.md",
+          "role": "template",
+          "content": "# Travel comparison\n\n## Search scope and timestamp\n\n## Shortlist\n\n## Price and policy caveats\n\n## Facts to verify before purchase"
+        }
+      ],
       "capabilityGuidance": ["The official Expedia Group plugin sends travel searches and the setup email address to Expedia's adapter service, stores a token and contact metadata in the local OpenClaw credential store, and is governed by Expedia's terms and privacy notice; review those terms before enabling it and remove the credential separately when access is no longer wanted.", "ClawHub marks version 1.0.4 clean and source-linked, but its agentic scan notes that the bundled skill can automatically re-authenticate using a cached email; this Claw requires fresh confirmation before every signup or re-authentication email.", "The minimal tool profile exposes only session status and the four documented Expedia search/setup tools; it does not grant browser, filesystem, command execution, messaging, booking, payment, cancellation, or provider-contact authority.", "Expedia search results are a single-provider view and remain volatile; timestamp them, disclose the source, preserve displayed total-price and policy caveats, and hand off all verification and transactions to the traveler on Expedia."]
     },
     {
