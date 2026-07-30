@@ -2,24 +2,11 @@ import { lstat, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises
 import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { stringify as stringifyYaml } from "yaml";
+import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
 const check = process.argv.includes("--check");
-
-function isSafePackagePath(value) {
-  if (typeof value !== "string" || !value || value.includes("\\")) return false;
-  if (value.startsWith("/") || /^[A-Za-z]:\//.test(value)) return false;
-  return value.split("/").every((segment) => segment && segment !== "." && segment !== "..");
-}
-
-function portablePathKey(value) {
-  return typeof value === "string" ? value.normalize("NFC").toLowerCase() : "";
-}
-
-function pathsConflict(left, right) {
-  return left === right || left.startsWith(`${right}/`) || right.startsWith(`${left}/`);
-}
 
 function bullets(values) {
   return values.map((value) => `- ${value}`).join("\n");
@@ -241,6 +228,14 @@ for (const entry of catalog.entries) {
     ...(entry.resources ?? []).map((resource) => resource.source),
     ...(entry.personalization?.seeds ?? []).map((seed) => seed.source),
   ];
+  const generatedFiles = [...(entry.resources ?? []), ...(entry.personalization?.seeds ?? [])];
+  if (
+    generatedFiles.some(
+      (file) => typeof file.content !== "string" || file.content.trim().length === 0,
+    )
+  ) {
+    throw new Error(`${entry.id} contains missing or empty generated file content.`);
+  }
   const reservedSources = [
     "CLAW.md",
     "README.md",

@@ -4,6 +4,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Cron } from "croner";
 import { parseDocument } from "yaml";
+import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
@@ -160,6 +161,33 @@ for (const entry of catalog.entries) {
   ) {
     throw new Error(`${entry.id} must define an audience and complete example setting.`);
   }
+  const generatedFiles = [...(entry.resources ?? []), ...(entry.personalization?.seeds ?? [])];
+  if (
+    generatedFiles.some(
+      (file) => typeof file.content !== "string" || file.content.trim().length === 0,
+    )
+  ) {
+    throw new Error(`${entry.id} contains missing or empty generated file content.`);
+  }
+  const generatedSources = generatedFiles.map((file) => file.source);
+  const reservedSources = [
+    "CLAW.md",
+    "README.md",
+    "package.json",
+    "workspace/AGENTS.md",
+    ...(entry.openclawProfile ? ["profiles/openclaw.yml"] : []),
+  ].map(portablePathKey);
+  const sourceKeys = generatedSources.map(portablePathKey);
+  if (
+    generatedSources.some((source) => !isSafePackagePath(source)) ||
+    sourceKeys.some((source, index) =>
+      [...sourceKeys.slice(0, index), ...reservedSources].some((other) =>
+        pathsConflict(source, other),
+      ),
+    )
+  ) {
+    throw new Error(`${entry.id} contains unsafe or colliding generated package source paths.`);
+  }
 
   for (const pkg of entry.packages ?? []) {
     if (
@@ -219,7 +247,8 @@ for (const entry of catalog.entries) {
   const capabilityCount =
     (entry.packages?.length ?? 0) +
     Object.keys(entry.mcpServers ?? {}).length +
-    (entry.cronJobs?.length ?? 0);
+    (entry.cronJobs?.length ?? 0) +
+    (entry.openclawProfile ? 1 : 0);
   if (
     capabilityCount > 0 &&
     (!Array.isArray(entry.capabilityGuidance) ||
@@ -234,6 +263,7 @@ for (const entry of catalog.entries) {
     const tools = entry.openclawProfile?.agent?.tools;
     if (
       ![1, 2].includes(entry.openclawProfile.schemaVersion) ||
+      (entry.openclawProfile.schemaVersion === 2 && entry.clawSchemaVersion !== 2) ||
       !tools ||
       typeof tools.profile !== "string" ||
       !Array.isArray(tools.alsoAllow) ||
@@ -338,27 +368,18 @@ for (const entry of catalog.entries) {
   const workspaceTargets = [
     ...Object.keys(manifest?.workspace?.bootstrapFiles ?? {}),
     ...(manifest?.workspace?.files ?? []).map((file) => file.path),
-  ].map((path) => {
-    if (typeof path !== "string") {
-      throw new Error(`${entry.id}/CLAW.md workspace targets must be strings.`);
-    }
-    const normalized = path.replaceAll("\\", "/");
-    if (
-      normalized.startsWith("/") ||
-      /^[A-Za-z]:\//.test(normalized) ||
-      normalized.split("/").some((segment) => !segment || segment === "." || segment === "..")
-    ) {
-      throw new Error(`${entry.id}/CLAW.md workspace targets must be safe relative paths.`);
-    }
-    return normalized.normalize("NFC").toLowerCase();
-  });
+    ...(manifest?.personalization?.seeds ?? []).map((seed) => seed.destination),
+  ];
+  if (workspaceTargets.some((path) => !isSafePackagePath(path))) {
+    throw new Error(`${entry.id}/CLAW.md workspace targets must be safe relative paths.`);
+  }
+  const targetKeys = workspaceTargets.map(portablePathKey);
   if (
-    workspaceTargets.some(
-      (path) =>
-        path === "soul.md" || path.startsWith("soul.md/") || "soul.md".startsWith(`${path}/`),
+    targetKeys.some((target, index) =>
+      [...targetKeys.slice(0, index), "soul.md"].some((other) => pathsConflict(target, other)),
     )
   ) {
-    throw new Error(`${entry.id}/CLAW.md must not declare a workspace target conflicting with SOUL.md.`);
+    throw new Error(`${entry.id}/CLAW.md contains colliding workspace targets.`);
   }
 
   for (const relativePath of expectedFiles) {
