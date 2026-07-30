@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { Cron } from "croner";
 import { parseDocument } from "yaml";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
+import { validateSetupTemplateDeclarations } from "./setup-templates.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
@@ -168,6 +169,18 @@ for (const entry of catalog.entries) {
     )
   ) {
     throw new Error(`${entry.id} contains missing or empty generated file content.`);
+  }
+  if (entry.clawSchemaVersion === 2) {
+    try {
+      validateSetupTemplateDeclarations(
+        entry.setup?.inputs ?? [],
+        entry.personalization?.seeds ?? [],
+      );
+    } catch (error) {
+      throw new Error(`${entry.id} contains invalid setup templates: ${error.message}`, {
+        cause: error,
+      });
+    }
   }
   const generatedSources = generatedFiles.map((file) => file.source);
   const reservedSources = [
@@ -341,6 +354,16 @@ for (const entry of catalog.entries) {
   const manifest = document.toJS();
   if (manifest.schemaVersion !== (entry.clawSchemaVersion ?? 1)) {
     throw new Error(`${entry.id}/CLAW.md has the wrong schema version.`);
+  }
+  const expectedMetadata = entry.openclawProfile
+    ? { "openclaw.config": "profiles/openclaw.yml" }
+    : undefined;
+  if (
+    JSON.stringify(manifest.metadata) !== JSON.stringify(expectedMetadata) ||
+    JSON.stringify(manifest.workspace?.bootstrapFiles) !==
+      JSON.stringify({ "AGENTS.md": { source: "workspace/AGENTS.md" } })
+  ) {
+    throw new Error(`${entry.id}/CLAW.md has inconsistent profile or bootstrap wiring.`);
   }
   for (const field of ["packages", "mcpServers", "cronJobs"]) {
     const expected = entry[field] ?? (field === "mcpServers" ? {} : []);
