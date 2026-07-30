@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "artifactCases": {
+    "target": 3,
+    "primary": "artifact",
+    "fallback": "text",
+    "outputPattern": "outputs/{id}-handoff.md",
+    "ids": [
+      "incident-response", "software-maintainer", "security-analyst", "data-analyst",
+      "research-briefing", "financial-analyst", "customer-support", "sales-operations",
+      "recruiting-coordinator", "content-operations", "executive-assistant", "project-manager",
+      "product-manager", "compliance-reviewer", "knowledge-curator", "executive-briefing",
+      "meeting-intelligence", "spreadsheet-analyst", "knowledge-gardener", "research-monitor",
+      "presentation-producer", "document-intake-analyst", "media-evidence-reviewer",
+      "release-coordinator", "feed-intelligence-monitor", "travel-planner",
+      "web-evidence-researcher", "website-evidence-collector", "video-concept-producer",
+      "workflow-operator", "public-company-watcher", "research-scout", "public-safety-monitor",
+      "civic-data-analyst", "fundraising-campaign-manager"
+    ]
+  },
+  "visualCases": [
+    { "id": "travel-concierge", "target": 5, "primary": "dashboard", "asset": "assets/travel-command-center.html", "fallback": "outputs/travel-comparison.md", "widgets": ["travel-shortlist"] },
+    { "id": "event-operations-director", "target": 5, "primary": "dashboard", "asset": "assets/event-readiness.html", "fallback": "outputs/event-handoff.md", "widgets": ["event-readiness", "event-timeline"] },
+    { "id": "api-integration-engineer", "target": 5, "primary": "dashboard", "asset": "assets/integration-console.html", "fallback": "outputs/integration-verification.md", "widgets": ["integration-readiness"] },
+    { "id": "procurement-evaluator", "target": 5, "primary": "dashboard", "asset": "assets/vendor-comparison.html", "fallback": "outputs/procurement-decision.md", "widgets": ["vendor-comparison"] },
+    { "id": "grant-portfolio-manager", "target": 5, "primary": "dashboard", "asset": "assets/grant-portfolio.html", "fallback": "outputs/grant-portfolio.md", "widgets": ["grant-portfolio", "submission-readiness"] },
+    { "id": "privacy-request-coordinator", "target": 5, "primary": "dashboard", "asset": "assets/privacy-case-dashboard.html", "fallback": "outputs/privacy-review-handoff.md", "widgets": ["privacy-case-status"] },
+    { "id": "manufacturing-operations-planner", "target": 5, "primary": "dashboard", "asset": "assets/production-control.html", "fallback": "outputs/shift-handoff.md", "widgets": ["production-capacity", "production-exceptions"] },
+    { "id": "facilities-operations-coordinator", "target": 4, "primary": "inline-widget", "asset": "assets/facilities-queue.html", "fallback": "outputs/facilities-handoff.md" },
+    { "id": "ux-research-synthesizer", "target": 4, "primary": "inline-widget", "asset": "assets/research-theme-map.html", "fallback": "outputs/research-synthesis.md" },
+    { "id": "experimentation-lead", "target": 4, "primary": "inline-widget", "asset": "assets/experiment-readout.html", "fallback": "outputs/experiment-decision.md" },
+    { "id": "data-migration-planner", "target": 4, "primary": "inline-widget", "asset": "assets/migration-readiness.html", "fallback": "outputs/migration-plan.md" },
+    { "id": "localization-program-manager", "target": 4, "primary": "inline-widget", "asset": "assets/locale-readiness.html", "fallback": "outputs/localization-handoff.md" },
+    { "id": "accessibility-review-coordinator", "target": 4, "primary": "inline-widget", "asset": "assets/accessibility-review.html", "fallback": "outputs/accessibility-handoff.md" },
+    { "id": "quality-assurance-lead", "target": 4, "primary": "inline-widget", "asset": "assets/qa-coverage.html", "fallback": "outputs/release-quality.md" },
+    { "id": "cloud-cost-analyst", "target": 4, "primary": "inline-widget", "asset": "assets/cloud-cost-view.html", "fallback": "outputs/cloud-cost-analysis.md" }
+  ]
+}

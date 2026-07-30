@@ -14,7 +14,7 @@ Collects and normalizes an approved set of public web pages through Firecrawl fo
 
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
-- Declared capability: OpenClaw tool profile `minimal` plus `firecrawl_search`, `firecrawl_scrape` with workspace-only filesystem access.
+- Declared capability: OpenClaw tool profile `minimal` plus `read`, `write`, `edit`, `firecrawl_search`, `firecrawl_scrape` with workspace-only filesystem access.
 - Declared capability: plugin `@openclaw/firecrawl-plugin@2026.7.1`.
 - Capability boundary: The official Firecrawl plugin is clean and source-linked and sends searches, URLs, and retrieved page requests to Firecrawl; configure `FIRECRAWL_API_KEY` or an approved secret-backed setting outside the package and understand account limits, retention, and charges.
 - Capability boundary: The minimal profile exposes only session status plus `firecrawl_search` and `firecrawl_scrape`; this Claw permits bounded public retrieval, not autonomous broad crawling, authentication, form submission, or browser automation.

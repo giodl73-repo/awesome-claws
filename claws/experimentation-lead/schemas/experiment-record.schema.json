@@ -1,0 +1,1 @@
+{"type":"object","required":["hypothesis","population","metrics","guardrails","decisionState"],"properties":{"hypothesis":{"type":"string"},"population":{"type":"string"},"metrics":{"type":"array"},"guardrails":{"type":"array"},"decisionState":{"type":"string"}}}

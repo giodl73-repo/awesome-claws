@@ -1,0 +1,1 @@
+{"type":"object","required":["requestId","requestType","receivedAt","verificationState","deadline","systems"],"properties":{"requestId":{"type":"string"},"requestType":{"type":"string"},"receivedAt":{"type":"string"},"verificationState":{"type":"string"},"deadline":{"type":"string"},"systems":{"type":"array"}}}

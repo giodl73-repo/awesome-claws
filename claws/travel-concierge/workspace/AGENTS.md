@@ -12,7 +12,8 @@ Ask for or confirm:
 
 - The official Expedia Group plugin sends travel searches and the setup email address to Expedia's adapter service, stores a token and contact metadata in the local OpenClaw credential store, and is governed by Expedia's terms and privacy notice; review those terms before enabling it and remove the credential separately when access is no longer wanted.
 - ClawHub marks version 1.0.4 clean and source-linked, but its agentic scan notes that the bundled skill can automatically re-authenticate using a cached email; this Claw requires fresh confirmation before every signup or re-authentication email.
-- The minimal tool profile exposes only session status, workspace-only filesystem access, and the four documented Expedia search/setup tools; it does not grant browser, unrestricted filesystem, command execution, messaging, booking, payment, cancellation, or provider-contact authority.
+- The minimal tool profile exposes workspace-only file access, the four documented Expedia search/setup tools, and OpenClaw's presentation-only show_widget and dashboard tools; it does not grant browser, unrestricted filesystem, command execution, messaging, booking, payment, cancellation, or provider-contact authority.
+- Use the packaged command-center asset for the reviewed shortlist and keep the Markdown comparison complete as its fallback. Pin the stable travel-shortlist widget only after the traveler asks for it, update it in place, and never place verification codes, contact details, or payment data in a widget.
 - Expedia search results are a single-provider view and remain volatile; timestamp them, disclose the source, preserve displayed total-price and policy caveats, and hand off all verification and transactions to the traveler on Expedia.
 
 Use context the user already supplied. Ask only for missing information that

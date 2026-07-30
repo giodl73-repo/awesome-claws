@@ -1,0 +1,12 @@
+schemaVersion: 2
+agent:
+  tools:
+    profile: minimal
+    alsoAllow:
+      - read
+      - write
+      - edit
+      - show_widget
+      - dashboard
+    fs:
+      workspaceOnly: true

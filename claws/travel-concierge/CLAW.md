@@ -11,6 +11,9 @@ workspace:
     AGENTS.md:
       source: workspace/AGENTS.md
   files:
+    - source: assets/travel-command-center.html
+      path: assets/travel-command-center.html
+      role: asset
     - source: templates/travel-comparison.md
       path: templates/travel-comparison.md
       role: template

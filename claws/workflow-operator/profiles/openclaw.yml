@@ -3,6 +3,9 @@ agent:
   tools:
     profile: minimal
     alsoAllow:
+      - read
+      - write
+      - edit
       - lobster
     fs:
       workspaceOnly: true

@@ -1,0 +1,9 @@
+{
+  "name": "@awesome-claws/localization-program-manager",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "openclaw": {
+    "claw": "CLAW.md"
+  }
+}

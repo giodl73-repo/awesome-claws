@@ -3,6 +3,11 @@ agent:
   tools:
     profile: minimal
     alsoAllow:
+      - read
+      - write
+      - edit
+      - show_widget
+      - dashboard
       - search_stays
       - search_flights
       - eg_travel_signup
