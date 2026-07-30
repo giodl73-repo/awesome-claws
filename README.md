@@ -19,6 +19,31 @@ user-edited preferences remain local.
 
 ## Choose a starter
 
+There are two useful reference points in the collection:
+
+- **Golden application example:** [Travel concierge](claws/travel-concierge)
+  shows the broad application shape: guided setup, user-owned preferences, a
+  managed comparison template, a least-privilege OpenClaw profile, and a real
+  Expedia extension with explicit authentication and transaction boundaries.
+  Start here to understand how the pieces form one finished agent application.
+- **Copyable reference:** [Executive assistant](claws/executive-assistant) is
+  intentionally smaller and dependency-free. Copy it when authoring a new
+  Claw to start from a portable prompt, operating workflow, managed template,
+  contextual setup, and seed-once `USER.md` preferences without first adopting
+  a plugin, MCP server, credential, or schedule.
+
+The Golden example is optimized for breadth and end-to-end understanding. The
+copyable reference is optimized for a small package that is easy to rename and
+adapt. The other starters demonstrate different application shapes between
+those two points; they are not expected to contain the same components.
+
+Every starter also gives its generated `SOUL.md` a role-specific identity. The
+collection intentionally ranges from light theming, such as the copyable
+Executive Assistant, to a more distinctive professional voice, such as the
+Travel Concierge. Theme means domain judgment, vocabulary, priorities, and
+tone; it does not mean theatrical role-play, duplicated workflow instructions,
+or weaker safety boundaries.
+
 | Claw | Category | Capabilities | Focus |
 | --- | --- | --- | --- |
 | [Incident response](claws/incident-response) | Engineering | Daily isolated cron | Evidence-led incident coordination |
@@ -31,7 +56,7 @@ user-edited preferences remain local.
 | [Sales operations](claws/sales-operations) | Operations | Base | Pipeline and process analysis |
 | [Recruiting coordinator](claws/recruiting-coordinator) | Operations | Base | Candidate logistics and handoffs |
 | [Content operations](claws/content-operations) | Operations | Base | Editorial production control |
-| [Executive assistant](claws/executive-assistant) | Productivity | Guided setup, local preferences, brief template | Executive priorities and follow-through |
+| [Executive assistant](claws/executive-assistant) (copyable reference) | Productivity | Guided setup, local preferences, brief template | Executive priorities and follow-through |
 | [Project manager](claws/project-manager) | Productivity | Base | Milestones, dependencies, and decisions |
 | [Product manager](claws/product-manager) | Product | Base | Evidence-backed product decisions |
 | [Compliance reviewer](claws/compliance-reviewer) | Governance | Base | Traceable control review |
@@ -47,7 +72,7 @@ user-edited preferences remain local.
 | [Release coordinator](claws/release-coordinator) | Engineering | GitHub + Slack skills | Approval-bound release coordination |
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | Analysis | Blogwatcher skill, weekday cron | Curated source-feed deltas |
 | [Travel planner](claws/travel-planner) | Productivity | Open-Meteo + Travel Checklist skills | Public-source trip planning |
-| [Travel concierge](claws/travel-concierge) | Productivity | Guided setup, Expedia extension, minimal tool profile | Live Expedia search and traveler-controlled booking handoff |
+| [Travel concierge](claws/travel-concierge) (Golden example) | Productivity | Guided setup, Expedia extension, minimal tool profile | Live Expedia search and traveler-controlled booking handoff |
 | [Web evidence researcher](claws/web-evidence-researcher) | Analysis | Tavily plugin, minimal tool profile | Bounded search and source extraction |
 | [Website evidence collector](claws/website-evidence-collector) | Analysis | Firecrawl plugin, minimal tool profile | Allowlisted public website collection |
 | [Video concept producer](claws/video-concept-producer) | Productivity | PixVerse provider, minimal tool profile | Private review-first video generation |
