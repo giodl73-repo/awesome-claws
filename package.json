@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/materialize-catalog.mjs",
-    "check": "node scripts/materialize-catalog.mjs --check && node scripts/validate-catalog.mjs",
+    "check": "node --test scripts/*.test.mjs && node scripts/materialize-catalog.mjs --check && node scripts/validate-catalog.mjs",
     "inspect": "node scripts/validate-catalog.mjs --reference",
-    "proof:openclaw": "node scripts/prove-openclaw.mjs"
+    "proof:openclaw": "node scripts/prove-openclaw.mjs",
+    "proof:portfolio": "node scripts/prove-portfolio.mjs",
+    "proof:experience": "node scripts/prove-experience-assets.mjs"
   },
   "engines": {
     "node": ">=22.22.3"
