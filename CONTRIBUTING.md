@@ -22,11 +22,15 @@ or changing the portable Claw contract requires maintainer approval.
    criteria.
 4. State evidence, approval, privacy, escalation, and external-action
    boundaries where they affect the job.
-5. Keep credentials, destinations, personal preferences, and other local
-   configuration out of the package.
-6. Add skills, plugins, MCP servers, or scheduled work only when essential.
-   Pin every distributable artifact to an exact version.
-7. Regenerate and validate the repository.
+5. For reusable onboarding, add plain package-root `BOOTSTRAP.md` instructions
+   through the catalog `bootstrap` field. Ask only for missing context, create
+   local preference files only when absent, and never package answers or secrets.
+6. Keep portable Agent Skills and direct MCP requests in `CLAW.md`. Put native
+   plugin bundles in the matching harness profile, with exact versions.
+7. Add shared schemas, references, templates, examples, fixtures, or assets as
+   ordinary declared workspace files. Keep executable behavior in reviewed
+   skills or harness extensions.
+8. Regenerate and validate the repository.
 
 ```bash
 npm run build
