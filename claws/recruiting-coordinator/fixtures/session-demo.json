@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "recruiting-coordinator",
+  "scenario": "Build two interview-loop options for a candidate in Berlin with four Seattle interviewers and a decision deadline next Friday.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Build two interview-loop options for a candidate in Berlin with four Seattle interviewers and a decision deadline next Friday."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the recruiting decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/recruiting-coordinator-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Recruiting coordinator session handoff",
+    "summary": "Timezone-safe schedule options with breaks and competency coverage, conflict flags, a candidate draft awaiting approval, and a feedback-completion tracker without candidate ranking.",
+    "output": "outputs/recruiting-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Interview plan",
+        "summary": "The proposed loop covers required competencies, constraints, timezones, breaks, and accessibility needs",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Communication draft",
+        "summary": "Candidate-facing text is clearly marked draft until the recruiting owner approves it",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Feedback tracker",
+        "summary": "Do not request diagnosis or medical details, infer protected characteristics, rank candidates, or shape hiring evaluation; keep requested scheduling accommodations separate from interviewer feedback",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Process handoff",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

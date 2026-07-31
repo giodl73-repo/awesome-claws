@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "research-monitor",
+  "scenario": "Monitor official changes to EU AI Act implementation guidance and produce a weekday digest only when new primary-source material affects our deployment checklist.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Monitor official changes to EU AI Act implementation guidance and produce a weekday digest only when new primary-source material affects our deployment checklist."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the research decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/research-monitor-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Research monitor session handoff",
+    "summary": "A private source-linked delta digest with retrieval dates, affected checklist items, contradictory guidance, and questions for legal review, without external publication.",
+    "output": "outputs/research-monitor-handoff.md",
+    "items": [
+      {
+        "title": "Source watch definition",
+        "summary": "Every reported change is traceable to a retrieved authoritative source",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Dated evidence digest",
+        "summary": "The digest distinguishes new evidence, repeated coverage, inference, and uncertainty",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Change and contradiction ledger",
+        "summary": "Do not publish, notify external audiences, or take action from a monitored signal without human review",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Human review queue",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

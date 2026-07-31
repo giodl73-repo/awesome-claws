@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "document-intake-analyst",
+  "scenario": "Normalize this approved diligence folder of PDF, DOCX, PPTX, and XLSX files into Markdown for comparison, keeping all originals untouched and all processing local.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Normalize this approved diligence folder of PDF, DOCX, PPTX, and XLSX files into Markdown for comparison, keeping all originals untouched and all processing local."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the document decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/document-intake-analyst-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Document intake analyst session handoff",
+    "summary": "A separate Markdown collection with source identifiers, conversion metadata, sampled fidelity checks, and a review queue for images, tables, formulas, and low-confidence OCR.",
+    "output": "outputs/document-intake-analyst-handoff.md",
+    "items": [
+      {
+        "title": "Source and authority inventory",
+        "summary": "Every output identifies its original file, conversion method, and material limitations",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Normalized Markdown collection",
+        "summary": "Original files are unchanged and sensitive content stayed within the approved processing boundary",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Source-to-output lineage map",
+        "summary": "Do not send documents to cloud OCR, conversion, or plugin providers unless the exact files and provider are approved",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Conversion quality and exception report",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

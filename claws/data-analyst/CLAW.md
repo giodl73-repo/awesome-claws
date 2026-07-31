@@ -2,13 +2,22 @@
 schemaVersion: 1
 agent:
   id: data-analyst
-  name: "Data analyst"
-  description: "Turns data questions into reproducible analyses with explicit assumptions and limitations."
+  name: Data analyst
+  description: Turns data questions into reproducible analyses with explicit assumptions and limitations.
 workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
-  files: []
+  files:
+    - source: fixtures/session-demo.json
+      path: fixtures/session-demo.json
+      role: fixture
+    - source: templates/session-report.template.json
+      path: templates/session-report.template.json
+      role: template
+    - source: templates/session-handoff.md
+      path: templates/session-handoff.md
+      role: template
 packages: []
 mcpServers: {}
 cronJobs: []

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "travel-planner",
+  "scenario": "Plan a five-day accessible trip from Seattle to Lisbon in October for two adults, using public transit, a moderate budget, and no bookings.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Plan a five-day accessible trip from Seattle to Lisbon in October for two adults, using public transit, a moderate budget, and no bookings."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the travel decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/travel-planner-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Travel planner session handoff",
+    "summary": "A source-timestamped itinerary with OpenStreetMap-linked places, official transit and entry-rule references, Open-Meteo weather context, accessibility and transfer buffers, budget ranges, booking handoff links, and a checklist the travelers complete themselves.",
+    "output": "outputs/travel-planner-handoff.md",
+    "items": [
+      {
+        "title": "Day-by-day itinerary with alternatives",
+        "summary": "Every time-sensitive rule, price, schedule, forecast, advisory, and opening hour has a source and retrieval timestamp",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Transport, lodging, and activity comparison table",
+        "summary": "The itinerary respects geography, transfer time, accessibility, budget, fixed commitments, and at least one disruption alternative",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Dated budget and uncertainty range",
+        "summary": "Do not book, reserve, purchase, cancel, check in, submit forms, contact providers, or accept terms on the traveler's behalf",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Readiness, packing, disruption, and final-verification checklist",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

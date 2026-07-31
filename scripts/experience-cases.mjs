@@ -29,8 +29,18 @@ export async function readExperienceCases(catalog) {
       throw new Error(`${item.id} has an invalid Experience target.`);
     }
     if (item.target === 3) {
+      const resources = new Set((entry.resources ?? []).map((resource) => resource.path));
       if (item.primary !== "artifact" || item.fallback !== "text" || !item.output) {
         throw new Error(`${item.id} must declare an artifact output and text fallback.`);
+      }
+      for (const requiredPath of [
+        "fixtures/session-demo.json",
+        "templates/session-report.template.json",
+        "templates/session-handoff.md",
+      ]) {
+        if (!resources.has(requiredPath)) {
+          throw new Error(`${item.id} must package ${requiredPath} for its X3 session demo.`);
+        }
       }
       continue;
     }

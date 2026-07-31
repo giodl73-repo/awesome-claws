@@ -309,6 +309,7 @@ if (check) {
       "file:CLAW.md",
       "file:README.md",
       "file:package.json",
+      "file:screenshot.png",
       "file:workspace/AGENTS.md",
       ...(entry.resources ?? []).map((resource) => `file:${resource.source}`),
       ...(entry.personalization?.seeds ?? []).map((seed) => `file:${seed.source}`),

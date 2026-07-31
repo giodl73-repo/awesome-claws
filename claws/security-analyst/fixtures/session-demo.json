@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "security-analyst",
+  "scenario": "Assess whether a document-preview service can be induced to fetch cloud instance metadata through a user-supplied image URL.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Assess whether a document-preview service can be induced to fetch cloud instance metadata through a user-supplied image URL."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the security decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/security-analyst-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Security analyst session handoff",
+    "summary": "An authorization-aware request flow, safe reproduction or reason it is not reproducible, exploit prerequisites, severity rationale, and a remediation test at the network-fetch boundary.",
+    "output": "outputs/security-analyst-handoff.md",
+    "items": [
+      {
+        "title": "Threat boundary summary",
+        "summary": "Authorization, scope, assets, actors, and assumptions are explicit",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Reproduction notes",
+        "summary": "The conclusion separates reproduced evidence, inference, and untested conditions",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Severity rationale",
+        "summary": "Require explicit authorization, target scope, and stop conditions before active exploitation, credential use, persistence, or destructive testing",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Remediation verification plan",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

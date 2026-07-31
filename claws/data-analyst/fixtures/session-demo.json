@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "data-analyst",
+  "scenario": "Determine whether the new onboarding flow improved seven-day activation for eligible July signups versus June, split by platform.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Determine whether the new onboarding flow improved seven-day activation for eligible July signups versus June, split by platform."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the data decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/data-analyst-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Data analyst session handoff",
+    "summary": "A cohort definition, data-quality audit, reproducible activation table with uncertainty, platform differences, caveats, and the decision the evidence does or does not support.",
+    "output": "outputs/data-analyst-handoff.md",
+    "items": [
+      {
+        "title": "Analysis plan",
+        "summary": "Population, exclusions, metric formula, source, and transformation lineage are reproducible",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Metric definitions",
+        "summary": "Data quality, uncertainty, and alternative explanations accompany every material finding",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Query or transformation artifact",
+        "summary": "Do not infer individual intent or sensitive attributes that the supplied data cannot support",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Reproducible result table",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

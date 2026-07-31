@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "fundraising-campaign-manager",
+  "scenario": "Prepare the review package for our approved year-end literacy campaign using these program results and brand guidelines; do not use donor data or send anything.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Prepare the review package for our approved year-end literacy campaign using these program results and brand guidelines; do not use donor data or send anything."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the fundraising decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/fundraising-campaign-manager-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Fundraising campaign manager session handoff",
+    "summary": "A source-grounded campaign brief, claim ledger, accessible channel drafts, stewardship plan, measurement contract, and approval queue with no solicitation or donor processing.",
+    "output": "outputs/fundraising-campaign-manager-handoff.md",
+    "items": [
+      {
+        "title": "Campaign strategy brief",
+        "summary": "Every material claim traces to approved evidence and identifies its reviewer and use restrictions",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Approved-claim and evidence ledger",
+        "summary": "Audience basis, consent, suppression, accessibility, channel, stewardship, and measurement rules are explicit",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Channel draft set",
+        "summary": "Do not contact or segment real donors, send solicitations, publish assets, process gifts, issue receipts, make tax claims, or accept terms",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Stewardship and suppression plan",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

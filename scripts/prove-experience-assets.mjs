@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readExperienceCases } from "./experience-cases.mjs";
@@ -16,6 +16,21 @@ if (!process.env.OPENCLAW_ROOT && !process.env.OPENCLAW_CLI_ENTRY) {
 const requireFromOpenClaw = createRequire(join(openClawRoot, "package.json"));
 const { chromium } = requireFromOpenClaw("playwright");
 const sharp = requireFromOpenClaw("sharp");
+const browserPaths = [
+  "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
+  "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+  "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+];
+
+async function findInstalledBrowser() {
+  for (const browserPath of browserPaths) {
+    if (await access(browserPath).then(() => true, () => false)) {
+      return browserPath;
+    }
+  }
+  return undefined;
+}
 
 const catalog = await readCatalog();
 const visualCases = (await readExperienceCases(catalog)).filter((item) => item.target >= 4);
@@ -76,7 +91,8 @@ async function imageSignal(buffer) {
   };
 }
 
-const browser = await chromium.launch({ headless: true });
+const executablePath = await findInstalledBrowser();
+const browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
 const results = [];
 try {
   for (const experience of visualCases) {

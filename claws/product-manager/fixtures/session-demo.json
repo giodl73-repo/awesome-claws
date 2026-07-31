@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "product-manager",
+  "scenario": "Decide whether a new customer onboarding library should launch as curated templates, an open community gallery, or a hybrid.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Decide whether a new customer onboarding library should launch as curated templates, an open community gallery, or a hybrid."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the product decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/product-manager-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Product manager session handoff",
+    "summary": "A user/problem brief, evidence-separated option matrix, recommendation with non-goals and risks, measurable launch hypothesis, and the cheapest validation plan.",
+    "output": "outputs/product-manager-handoff.md",
+    "items": [
+      {
+        "title": "Problem brief",
+        "summary": "The decision traces to a named user problem and evidence rather than feature preference",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Option assessment",
+        "summary": "Alternatives, constraints, non-goals, risks, and accountable owner are explicit",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Product decision record",
+        "summary": "Do not present stakeholder preference, competitor imitation, or model-generated synthesis as user evidence",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Validation plan",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

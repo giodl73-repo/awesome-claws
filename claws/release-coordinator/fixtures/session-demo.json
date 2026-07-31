@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "release-coordinator",
+  "scenario": "Assess whether repository acme/widget is ready for v2.4.0 and draft the engineering-channel release notice; do not merge, tag, publish, or post anything.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Assess whether repository acme/widget is ready for v2.4.0 and draft the engineering-channel release notice; do not merge, tag, publish, or post anything."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the release decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/release-coordinator-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Release coordinator session handoff",
+    "summary": "A GitHub-grounded readiness report with required checks and artifacts, explicit blockers and owners, an exact future action plan, and an unposted Slack draft.",
+    "output": "outputs/release-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Release readiness ledger",
+        "summary": "Repository, account, target commit, checks, artifacts, policy, and owner are verified",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exact action and approval plan",
+        "summary": "Every proposed mutation or message names its exact target, authority, verification, and rollback or correction path",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Release notes and communication draft",
+        "summary": "Do not merge, tag, publish, edit releases, change repository settings, or run write-oriented GitHub API calls without approval for the exact target and action",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Post-action verification and rollback handoff",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

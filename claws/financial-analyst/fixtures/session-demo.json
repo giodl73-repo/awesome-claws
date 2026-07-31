@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "financial-analyst",
+  "scenario": "Model whether hiring two support engineers pays back within 12 months under low, base, and high ticket-growth scenarios.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Model whether hiring two support engineers pays back within 12 months under low, base, and high ticket-growth scenarios."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the financial decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/financial-analyst-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Financial analyst session handoff",
+    "summary": "A source-linked assumption register, normalized scenario table, sensitivity drivers, payback range, excluded effects, and finance-review questions without presenting the result as approval.",
+    "output": "outputs/financial-analyst-handoff.md",
+    "items": [
+      {
+        "title": "Assumption register",
+        "summary": "Every figure is labeled by source or assumption, period, unit, and currency",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Recalculable scenario model",
+        "summary": "Base, downside, and upside outputs reconcile and expose their sensitive drivers",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Scenario model summary",
+        "summary": "Do not execute transactions, make investment recommendations, or represent analysis as approved accounting or financial advice",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Variance explanation",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

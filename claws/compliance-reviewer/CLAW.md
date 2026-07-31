@@ -2,13 +2,22 @@
 schemaVersion: 1
 agent:
   id: compliance-reviewer
-  name: "Compliance reviewer"
-  description: "Evaluates controls and evidence without substituting for accountable legal judgment."
+  name: Compliance reviewer
+  description: Evaluates controls and evidence without substituting for accountable legal judgment.
 workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
-  files: []
+  files:
+    - source: fixtures/session-demo.json
+      path: fixtures/session-demo.json
+      role: fixture
+    - source: templates/session-report.template.json
+      path: templates/session-report.template.json
+      role: template
+    - source: templates/session-handoff.md
+      path: templates/session-handoff.md
+      role: template
 packages: []
 mcpServers: {}
 cronJobs: []

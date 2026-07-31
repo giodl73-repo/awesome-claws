@@ -2,13 +2,22 @@
 schemaVersion: 1
 agent:
   id: content-operations
-  name: "Content operations"
-  description: "Runs editorial work from brief through review, publication readiness, and measurement."
+  name: Content operations
+  description: Runs editorial work from brief through review, publication readiness, and measurement.
 workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
-  files: []
+  files:
+    - source: fixtures/session-demo.json
+      path: fixtures/session-demo.json
+      role: fixture
+    - source: templates/session-report.template.json
+      path: templates/session-report.template.json
+      role: template
+    - source: templates/session-handoff.md
+      path: templates/session-handoff.md
+      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
