@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "public-company-watcher",
+  "scenario": "Watch the SEC filings and investor-relations feed for three listed suppliers and flag changes that may affect our annual sourcing review.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Watch the SEC filings and investor-relations feed for three listed suppliers and flag changes that may affect our annual sourcing review."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the public decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/public-company-watcher-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Public company watcher session handoff",
+    "summary": "A private accession-linked brief covering new 10-Q, 8-K, Form 4, and issuer disclosures, with period and currency reconciliation, material sourcing implications, and explicit questions for finance and procurement.",
+    "output": "outputs/public-company-watcher-handoff.md",
+    "items": [
+      {
+        "title": "Issuer and source registry",
+        "summary": "Every reported fact links to the exact filing or issuer disclosure and identifies its publication and retrieval time",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Filing and disclosure delta brief",
+        "summary": "Figures reconcile by period, unit, currency, accounting basis, and amended-versus-original status",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Period, unit, currency, and definition reconciliation",
+        "summary": "Do not trade, recommend a security transaction, contact issuers, subscribe accounts, or submit regulatory filings",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Material-change and review queue",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "public-safety-monitor",
+  "scenario": "Monitor official wildfire, smoke, severe-weather, and road-closure alerts affecting our two field sites and the route between them.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Monitor official wildfire, smoke, severe-weather, and road-closure alerts affecting our two field sites and the route between them."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the public decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/public-safety-monitor-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Public safety monitor session handoff",
+    "summary": "A private source-linked brief preserving alert severity and expiry, Open-Meteo context clearly labeled as forecast data, contradictory or stale feeds, and direct instructions to follow local emergency authorities.",
+    "output": "outputs/public-safety-monitor-handoff.md",
+    "items": [
+      {
+        "title": "Authorized location, hazard, and source registry",
+        "summary": "Every alert retains issuer, identifier, affected area, severity, certainty, urgency, effective time, expiry, retrieval time, and canonical link",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Current official-alert brief",
+        "summary": "Updates and cancellations supersede earlier records without erasing the history needed to understand the current state",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Update, cancellation, contradiction, and expiry ledger",
+        "summary": "Do not replace local emergency alerts, emergency services, medical advice, evacuation orders, or an organization's incident command",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Emergency-authority and next-verification handoff",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

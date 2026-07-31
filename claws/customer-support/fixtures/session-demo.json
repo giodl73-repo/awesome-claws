@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "customer-support",
+  "scenario": "A customer says webhook deliveries began returning 401 after rotating credentials; prepare the next diagnostic response.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "A customer says webhook deliveries began returning 401 after rotating credentials; prepare the next diagnostic response."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the customer decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/customer-support-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Customer support session handoff",
+    "summary": "A concise impact restatement, minimal safe checks, a customer-ready response that avoids requesting secrets, validation steps, and an escalation packet if rotation behavior is defective.",
+    "output": "outputs/customer-support-handoff.md",
+    "items": [
+      {
+        "title": "Case summary",
+        "summary": "The symptom, impact, environment, evidence, and attempted steps are reproducible from the case",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Troubleshooting record",
+        "summary": "While diagnosis or validation remains open, the customer has one safe next action and knows what result to return",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Customer-ready response",
+        "summary": "Never request passwords, access tokens, full private keys, or unrestricted production data in a support conversation",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Escalation handoff",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "website-evidence-collector",
+  "scenario": "Collect the current public security, privacy, and subprocessors pages for five approved SaaS vendors and flag material changes since last quarter.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Collect the current public security, privacy, and subprocessors pages for five approved SaaS vendors and flag material changes since last quarter."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the website decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/website-evidence-collector-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Website evidence collector session handoff",
+    "summary": "A capped, allowlisted Firecrawl retrieval with timestamps and hashes, normalized change evidence, original links, collection failures, and reviewer questions without authentication or publication.",
+    "output": "outputs/website-evidence-collector-handoff.md",
+    "items": [
+      {
+        "title": "Collection scope and allowlist",
+        "summary": "Every retrieval is inside the approved domain and path scope and records final URL, time, status, and evidence identity",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Retrieval and error ledger",
+        "summary": "Collection stayed within the declared page, byte, usage, and retention limits",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Normalized evidence set",
+        "summary": "Do not crawl outside the approved domains or paths, evade robots or access controls, authenticate, submit forms, or retrieve personal, confidential, paywalled, or prohibited content",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Content-change comparison",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

@@ -2,13 +2,19 @@
 schemaVersion: 1
 agent:
   id: project-manager
-  name: "Project manager"
-  description: "Keeps projects aligned through milestones, dependencies, decisions, and accountable execution."
+  name: Project manager
+  description: Keeps projects aligned through milestones, dependencies, decisions, and accountable execution.
 workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
-  files: []
+  files:
+    - source: fixtures/session-demo.json
+      path: fixtures/session-demo.json
+    - source: templates/session-report.template.json
+      path: templates/session-report.template.json
+    - source: templates/session-handoff.md
+      path: templates/session-handoff.md
 packages: []
 mcpServers: {}
 cronJobs: []

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "knowledge-gardener",
+  "scenario": "Review the project-decisions database shared with this integration, connect duplicate topics, and identify decisions older than six months that need owner review.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Review the project-decisions database shared with this integration, connect duplicate topics, and identify decisions older than six months that need owner review."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the knowledge decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/knowledge-gardener-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Knowledge gardener session handoff",
+    "summary": "A scoped review with proposed page and property updates, preserved conflicting decisions, and a dated review queue with source and owner context.",
+    "output": "outputs/knowledge-gardener-handoff.md",
+    "items": [
+      {
+        "title": "Knowledge-space map",
+        "summary": "All reads and proposed changes remain inside content shared with the dedicated integration",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Source-linked page drafts",
+        "summary": "New or changed durable claims retain source, date, and authority",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Link and property repair list",
+        "summary": "Do not access, create, update, archive, or move content outside pages explicitly shared with the dedicated Notion integration",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Freshness and conflict report",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

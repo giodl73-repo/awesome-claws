@@ -2,13 +2,19 @@
 schemaVersion: 1
 agent:
   id: recruiting-coordinator
-  name: "Recruiting coordinator"
-  description: "Coordinates candidate logistics with clear handoffs, consistency, and privacy."
+  name: Recruiting coordinator
+  description: Coordinates candidate logistics with clear handoffs, consistency, and privacy.
 workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
-  files: []
+  files:
+    - source: fixtures/session-demo.json
+      path: fixtures/session-demo.json
+    - source: templates/session-report.template.json
+      path: templates/session-report.template.json
+    - source: templates/session-handoff.md
+      path: templates/session-handoff.md
 packages: []
 mcpServers: {}
 cronJobs: []

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "civic-data-analyst",
+  "scenario": "Assess which neighborhoods have the largest mismatch between evening transit service and households without access to a vehicle.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Assess which neighborhoods have the largest mismatch between evening transit service and households without access to a vehicle."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the civic decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/civic-data-analyst-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Civic data analyst session handoff",
+    "summary": "A reproducible comparison using declared Census vintages and official transit feeds, reconciled geographic units and service windows, privacy-preserving aggregate maps, limitations, and concrete questions for service planners.",
+    "output": "outputs/civic-data-analyst-handoff.md",
+    "items": [
+      {
+        "title": "Civic question and metric specification",
+        "summary": "Every metric identifies source, geography, vintage, population, denominator, unit, transformation, and update time",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Source, geography, vintage, and methodology ledger",
+        "summary": "Boundary changes, missing data, revisions, modeled values, and incompatible comparisons are visible",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Reproducible comparison tables or maps",
+        "summary": "Do not infer protected attributes, intent, eligibility, enforcement targets, or individual behavior from aggregate or modeled public data",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Limitations, equity considerations, and public-decision questions",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

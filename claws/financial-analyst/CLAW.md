@@ -11,6 +11,12 @@ workspace:
   files:
     - source: templates/scenario-analysis.md
       path: templates/scenario-analysis.md
+    - source: fixtures/session-demo.json
+      path: fixtures/session-demo.json
+    - source: templates/session-report.template.json
+      path: templates/session-report.template.json
+    - source: templates/session-handoff.md
+      path: templates/session-handoff.md
 packages:
   - kind: skill
     source: clawhub

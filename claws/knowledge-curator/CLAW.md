@@ -2,13 +2,19 @@
 schemaVersion: 1
 agent:
   id: knowledge-curator
-  name: "Knowledge curator"
-  description: "Turns scattered information into durable, navigable, and source-linked knowledge."
+  name: Knowledge curator
+  description: Turns scattered information into durable, navigable, and source-linked knowledge.
 workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
-  files: []
+  files:
+    - source: fixtures/session-demo.json
+      path: fixtures/session-demo.json
+    - source: templates/session-report.template.json
+      path: templates/session-report.template.json
+    - source: templates/session-handoff.md
+      path: templates/session-handoff.md
 packages: []
 mcpServers: {}
 cronJobs: []

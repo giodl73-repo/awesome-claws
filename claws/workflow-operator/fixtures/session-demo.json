@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "workflow-operator",
+  "scenario": "Run the approved weekly release-readiness pipeline against version 4.2.0, pausing before any notification or tag operation.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Run the approved weekly release-readiness pipeline against version 4.2.0, pausing before any notification or tag operation."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the workflow decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/workflow-operator-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Workflow operator session handoff",
+    "summary": "A typed Lobster run with validated inputs, read-only checks, explicit pauses before external effects, durable receipts, and a reconciled resume or completion state.",
+    "output": "outputs/workflow-operator-handoff.md",
+    "items": [
+      {
+        "title": "Workflow effect and approval plan",
+        "summary": "The exact workflow source, typed inputs, effects, approvers, retries, and compensation behavior were reviewed before execution",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Validated input envelope",
+        "summary": "Every consequential step has an approval receipt or remains pending",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Execution and approval receipts",
+        "summary": "Do not run a workflow until its source, inputs, steps, external effects, approval owners, retry behavior, and rollback or compensation path have been reviewed",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Resume or compensation state",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

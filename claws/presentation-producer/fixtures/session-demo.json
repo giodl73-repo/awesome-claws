@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "presentation-producer",
+  "scenario": "Turn the approved quarterly operating review into a 12-slide leadership deck using last quarter's template and preserve all source links in speaker notes.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Turn the approved quarterly operating review into a 12-slide leadership deck using last quarter's template and preserve all source links in speaker notes."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the presentation decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/presentation-producer-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Presentation producer session handoff",
+    "summary": "A new template-faithful PPTX with a decision-oriented narrative, source-linked notes, rendered slide QA, and a visible list of claims still awaiting owner approval.",
+    "output": "outputs/presentation-producer-handoff.md",
+    "items": [
+      {
+        "title": "Slide narrative and source map",
+        "summary": "Every material claim maps to an approved source or is labeled as an assumption",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Reviewable PPTX deck",
+        "summary": "The source deck remains unchanged and template, notes, charts, and aspect ratio are preserved as required",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Rendered visual QA contact sheet",
+        "summary": "Do not expose hidden notes, comments, linked assets, or confidential source material outside the deck's approved audience",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Claim, caveat, and unresolved-review ledger",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

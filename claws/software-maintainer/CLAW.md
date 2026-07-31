@@ -13,6 +13,12 @@ workspace:
       path: references/change-contract.md
     - source: templates/reviewer-handoff.md
       path: templates/reviewer-handoff.md
+    - source: fixtures/session-demo.json
+      path: fixtures/session-demo.json
+    - source: templates/session-report.template.json
+      path: templates/session-report.template.json
+    - source: templates/session-handoff.md
+      path: templates/session-handoff.md
 packages: []
 mcpServers:
   github:

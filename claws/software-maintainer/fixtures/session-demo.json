@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "software-maintainer",
+  "scenario": "Fix Windows CLI discovery when the installed npm shim path contains percent signs, without changing Unix launch behavior.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Fix Windows CLI discovery when the installed npm shim path contains percent signs, without changing Unix launch behavior."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the software decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/software-maintainer-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Software maintainer session handoff",
+    "summary": "A scoped launcher fix, exact Windows regression, focused and full test evidence, and a concise explanation of remaining platform risk.",
+    "output": "outputs/software-maintainer-handoff.md",
+    "items": [
+      {
+        "title": "Implementation patch",
+        "summary": "The changed behavior is covered by a test that fails before a bug fix or directly verifies the requested feature acceptance criteria",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Verification evidence",
+        "summary": "Focused checks and the repository's required validation pass on the final diff",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Risk and compatibility summary",
+        "summary": "Do not rewrite, revert, or reformat unrelated user changes",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Reviewer handoff",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

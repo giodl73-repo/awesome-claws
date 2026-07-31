@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "media-evidence-reviewer",
+  "scenario": "Review this consented 40-minute usability recording for navigation failures between 12:00 and 28:00, using frames and transcript excerpts without identifying the participant.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Review this consented 40-minute usability recording for navigation failures between 12:00 and 28:00, using frames and transcript excerpts without identifying the participant."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the media decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/media-evidence-reviewer-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Media evidence reviewer session handoff",
+    "summary": "A bounded timestamped frame index and transcript, an evidence-led failure sequence, uncertainty markers, and redacted findings linked back to the authorized source.",
+    "output": "outputs/media-evidence-reviewer-handoff.md",
+    "items": [
+      {
+        "title": "Media authority and scope record",
+        "summary": "Authority, consent, time range, retention, audience, and output destination are explicit",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Timestamped frame index",
+        "summary": "Every material observation links to a timestamped frame, clip, or transcript passage",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Transcript with uncertainty markers",
+        "summary": "Do not process, retain, identify people in, or distribute media without verified authority, consent, and an approved destination",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Observation, inference, and gap ledger",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

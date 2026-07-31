@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "research-briefing",
+  "scenario": "Brief the operations lead on whether to replace the current customer-support platform before the next renewal date.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Brief the operations lead on whether to replace the current customer-support platform before the next renewal date."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the research decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/research-briefing-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Research briefing session handoff",
+    "summary": "A concise decision brief using current primary vendor and operational evidence, an option matrix, explicit inferences, migration risks, unresolved questions, and direct source links.",
+    "output": "outputs/research-briefing-handoff.md",
+    "items": [
+      {
+        "title": "Executive brief",
+        "summary": "Every material factual claim is traceable to a current authoritative source",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Source ledger",
+        "summary": "Source conflicts, inference, and unknowns are labeled rather than averaged away",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Known unknowns",
+        "summary": "Do not conceal material source disagreement or use citation count as a substitute for source authority",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Decision options",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

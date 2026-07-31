@@ -15,6 +15,12 @@ workspace:
       path: templates/campaign-brief.md
     - source: templates/channel-review.md
       path: templates/channel-review.md
+    - source: fixtures/session-demo.json
+      path: fixtures/session-demo.json
+    - source: templates/session-report.template.json
+      path: templates/session-report.template.json
+    - source: templates/session-handoff.md
+      path: templates/session-handoff.md
 packages: []
 mcpServers: {}
 cronJobs: []

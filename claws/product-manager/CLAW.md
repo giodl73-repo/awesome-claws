@@ -2,13 +2,19 @@
 schemaVersion: 1
 agent:
   id: product-manager
-  name: "Product manager"
-  description: "Frames product decisions around user evidence, outcomes, constraints, and learning."
+  name: Product manager
+  description: Frames product decisions around user evidence, outcomes, constraints, and learning.
 workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
-  files: []
+  files:
+    - source: fixtures/session-demo.json
+      path: fixtures/session-demo.json
+    - source: templates/session-report.template.json
+      path: templates/session-report.template.json
+    - source: templates/session-handoff.md
+      path: templates/session-handoff.md
 packages: []
 mcpServers: {}
 cronJobs: []
