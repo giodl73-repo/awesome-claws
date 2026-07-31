@@ -3,6 +3,9 @@ agent:
   tools:
     profile: minimal
     alsoAllow:
+      - read
+      - write
+      - edit
       - firecrawl_search
       - firecrawl_scrape
     fs:

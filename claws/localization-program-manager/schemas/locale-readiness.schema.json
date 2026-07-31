@@ -1,0 +1,1 @@
+{"type":"object","required":["release","sourceLocale","locales"],"properties":{"release":{"type":"string"},"sourceLocale":{"type":"string"},"locales":{"type":"array"}}}

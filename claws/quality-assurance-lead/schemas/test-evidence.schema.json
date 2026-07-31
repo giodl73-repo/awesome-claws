@@ -1,0 +1,1 @@
+{"type":"object","required":["requirementId","risk","testId","state","evidence"],"properties":{"requirementId":{"type":"string"},"risk":{"type":"string"},"testId":{"type":"string"},"state":{"type":"string"},"evidence":{"type":"string"}}}

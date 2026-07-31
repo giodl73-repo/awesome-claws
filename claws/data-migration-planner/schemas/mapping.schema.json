@@ -1,0 +1,1 @@
+{"type":"object","required":["sourceVersion","targetVersion","mappings","reconciliation"],"properties":{"sourceVersion":{"type":"string"},"targetVersion":{"type":"string"},"mappings":{"type":"array"},"reconciliation":{"type":"array"}}}

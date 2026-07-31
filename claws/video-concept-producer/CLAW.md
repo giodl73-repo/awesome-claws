@@ -4,8 +4,6 @@ agent:
   id: video-concept-producer
   name: Video concept producer
   description: Generates reviewable PixVerse video concepts from approved prompts or workspace assets without publishing or impersonating people.
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:

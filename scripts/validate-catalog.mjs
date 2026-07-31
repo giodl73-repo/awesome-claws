@@ -4,6 +4,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Cron } from "croner";
 import { parseDocument } from "yaml";
+import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
@@ -160,6 +161,37 @@ for (const entry of catalog.entries) {
   ) {
     throw new Error(`${entry.id} must define an audience and complete example setting.`);
   }
+  const generatedFiles = entry.resources ?? [];
+  if (
+    generatedFiles.some(
+      (file) => typeof file.content !== "string" || file.content.trim().length === 0,
+    )
+  ) {
+    throw new Error(`${entry.id} contains missing or empty generated file content.`);
+  }
+  if (entry.bootstrap !== undefined && (typeof entry.bootstrap !== "string" || !entry.bootstrap.trim())) {
+    throw new Error(`${entry.id}.bootstrap must contain seed-once setup instructions.`);
+  }
+  const generatedSources = generatedFiles.map((file) => file.source);
+  const reservedSources = [
+    "CLAW.md",
+    "README.md",
+    "package.json",
+    "workspace/AGENTS.md",
+    "BOOTSTRAP.md",
+    ...(entry.openclawProfile ? ["profiles/openclaw.yml"] : []),
+  ].map(portablePathKey);
+  const sourceKeys = generatedSources.map(portablePathKey);
+  if (
+    generatedSources.some((source) => !isSafePackagePath(source)) ||
+    sourceKeys.some((source, index) =>
+      [...sourceKeys.slice(0, index), ...reservedSources].some((other) =>
+        pathsConflict(source, other),
+      ),
+    )
+  ) {
+    throw new Error(`${entry.id} contains unsafe or colliding generated package source paths.`);
+  }
 
   for (const pkg of entry.packages ?? []) {
     if (
@@ -216,7 +248,8 @@ for (const entry of catalog.entries) {
   const capabilityCount =
     (entry.packages?.length ?? 0) +
     Object.keys(entry.mcpServers ?? {}).length +
-    (entry.cronJobs?.length ?? 0);
+    (entry.cronJobs?.length ?? 0) +
+    (entry.openclawProfile ? 1 : 0);
   if (
     capabilityCount > 0 &&
     (!Array.isArray(entry.capabilityGuidance) ||
@@ -239,12 +272,31 @@ for (const entry of catalog.entries) {
     ) {
       throw new Error(`${entry.id} contains an invalid OpenClaw capability profile.`);
     }
+    const extensionIds = new Set();
+    for (const extension of entry.openclawProfile.extensions ?? []) {
+      if (
+        !/^[a-z][a-z0-9_-]{0,63}$/.test(extension.id) ||
+        extensionIds.has(extension.id) ||
+        extension.kind !== "plugin" ||
+        !["openclaw", "claude", "codex", "cursor"].includes(extension.format) ||
+        extension.source !== "clawhub" ||
+        typeof extension.ref !== "string" ||
+        !/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/.test(extension.ref) ||
+        !exactVersionPattern.test(extension.version)
+      ) {
+        throw new Error(`${entry.id} contains an invalid harness extension.`);
+      }
+      extensionIds.add(extension.id);
+      demonstratedCapabilities.add("plugin");
+    }
   }
 
   const packageRoot = join(root, "claws", entry.id);
   const expectedFiles = [
     ...baseExpectedFiles,
     ...(entry.openclawProfile ? ["profiles/openclaw.yml"] : []),
+    ...(entry.resources ?? []).map((resource) => resource.source),
+    ...(entry.bootstrap ? ["BOOTSTRAP.md"] : []),
   ];
   const actualFiles = (await readdir(packageRoot, { recursive: true, withFileTypes: true }))
     .filter((item) => item.isFile())
@@ -286,36 +338,51 @@ for (const entry of catalog.entries) {
     throw new Error(`${entry.id}/CLAW.md must contain valid, unique-key YAML frontmatter.`);
   }
   const manifest = document.toJS();
+  if (manifest.schemaVersion !== 1) {
+    throw new Error(`${entry.id}/CLAW.md has the wrong schema version.`);
+  }
+  if (
+    manifest.metadata !== undefined ||
+    manifest.setup !== undefined ||
+    manifest.personalization !== undefined ||
+    JSON.stringify(manifest.workspace?.bootstrapFiles) !==
+      JSON.stringify({ "AGENTS.md": { source: "workspace/AGENTS.md" } })
+  ) {
+    throw new Error(`${entry.id}/CLAW.md contains retired schema-v2 fields or inconsistent bootstrap wiring.`);
+  }
   for (const field of ["packages", "mcpServers", "cronJobs"]) {
     const expected = entry[field] ?? (field === "mcpServers" ? {} : []);
     if (JSON.stringify(manifest?.[field]) !== JSON.stringify(expected)) {
       throw new Error(`${entry.id}/CLAW.md does not match catalog.${field}.`);
     }
   }
+  const expectedWorkspaceFiles = (entry.resources ?? []).map(({ source, path }) => ({
+    source,
+    path,
+  }));
+  if (JSON.stringify(manifest.workspace?.files ?? []) !== JSON.stringify(expectedWorkspaceFiles)) {
+    throw new Error(`${entry.id}/CLAW.md does not match catalog workspace files.`);
+  }
+  if (entry.bootstrap) {
+    const bootstrap = await readFile(join(packageRoot, "BOOTSTRAP.md"), "utf8");
+    if (bootstrap !== `${entry.bootstrap.trim()}\n`) {
+      throw new Error(`${entry.id}/BOOTSTRAP.md does not match catalog bootstrap instructions.`);
+    }
+  }
   const workspaceTargets = [
     ...Object.keys(manifest?.workspace?.bootstrapFiles ?? {}),
     ...(manifest?.workspace?.files ?? []).map((file) => file.path),
-  ].map((path) => {
-    if (typeof path !== "string") {
-      throw new Error(`${entry.id}/CLAW.md workspace targets must be strings.`);
-    }
-    const normalized = path.replaceAll("\\", "/");
-    if (
-      normalized.startsWith("/") ||
-      /^[A-Za-z]:\//.test(normalized) ||
-      normalized.split("/").some((segment) => !segment || segment === "." || segment === "..")
-    ) {
-      throw new Error(`${entry.id}/CLAW.md workspace targets must be safe relative paths.`);
-    }
-    return normalized.normalize("NFC").toLowerCase();
-  });
+  ];
+  if (workspaceTargets.some((path) => !isSafePackagePath(path))) {
+    throw new Error(`${entry.id}/CLAW.md workspace targets must be safe relative paths.`);
+  }
+  const targetKeys = workspaceTargets.map(portablePathKey);
   if (
-    workspaceTargets.some(
-      (path) =>
-        path === "soul.md" || path.startsWith("soul.md/") || "soul.md".startsWith(`${path}/`),
+    targetKeys.some((target, index) =>
+      [...targetKeys.slice(0, index), "soul.md"].some((other) => pathsConflict(target, other)),
     )
   ) {
-    throw new Error(`${entry.id}/CLAW.md must not declare a workspace target conflicting with SOUL.md.`);
+    throw new Error(`${entry.id}/CLAW.md contains colliding workspace targets.`);
   }
 
   for (const relativePath of expectedFiles) {

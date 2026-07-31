@@ -2,6 +2,7 @@ import { lstat, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises
 import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { stringify as stringifyYaml } from "yaml";
+import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
@@ -28,6 +29,11 @@ function capabilitySummary(entry) {
   for (const pkg of entry.packages ?? []) {
     capabilities.push(`${pkg.kind} \`${pkg.ref}@${pkg.version}\``);
   }
+  for (const extension of entry.openclawProfile?.extensions ?? []) {
+    capabilities.push(
+      `${extension.format} ${extension.kind} \`${extension.ref}@${extension.version}\``,
+    );
+  }
   const mcpNames = Object.keys(entry.mcpServers ?? {});
   if (mcpNames.length > 0) {
     capabilities.push(`MCP server${mcpNames.length === 1 ? "" : "s"} ${mcpNames.map((name) => `\`${name}\``).join(", ")}`);
@@ -44,7 +50,9 @@ function filesFor(entry) {
   const cronJobs = entry.cronJobs ?? [];
   const capabilities = capabilitySummary(entry);
   const capabilityGuidance = entry.capabilityGuidance ?? [];
-  const hasIntegratedCapabilities = capabilities.length > 0 || entry.openclawProfile;
+  const resources = entry.resources ?? [];
+  const needsStructuredManifest =
+    capabilities.length > 0 || entry.openclawProfile || resources.length > 0;
   const capabilityBoundarySection =
     capabilityGuidance.length > 0
       ? `\n\n## Included capability boundaries\n\n${bullets(capabilityGuidance)}`
@@ -54,6 +62,9 @@ function filesFor(entry) {
     "- `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.",
     ...capabilities.map((capability) => `- Declared capability: ${capability}.`),
     ...capabilityGuidance.map((guidance) => `- Capability boundary: ${guidance}`),
+    ...(entry.bootstrap
+      ? ["- `BOOTSTRAP.md` guides first-run setup and creates local preferences without packaging answers."]
+      : []),
   ].join("\n");
   const soul = `# ${entry.name}
 
@@ -80,18 +91,15 @@ ${bullets(entry.boundaries)}
   const manifest = {
     schemaVersion: 1,
     agent: { id: entry.id, name: entry.name, description: entry.description },
-    ...(entry.openclawProfile
-      ? { metadata: { "openclaw.config": "profiles/openclaw.yml" } }
-      : {}),
     workspace: {
       bootstrapFiles: { "AGENTS.md": { source: "workspace/AGENTS.md" } },
-      files: [],
+      files: resources.map(({ source, path }) => ({ source, path })),
     },
     packages,
     mcpServers,
     cronJobs,
   };
-  const claw = hasIntegratedCapabilities
+  const claw = needsStructuredManifest
     ? `---\n${stringifyYaml(manifest, { lineWidth: 0 })}---\n\n${soul}`
     : `---
 schemaVersion: 1
@@ -175,6 +183,8 @@ additional capabilities${capabilities.length === 0 ? "; this starter currently h
     ["README.md", readme],
     ["package.json", packageJson],
     ["workspace/AGENTS.md", agents],
+    ...resources.map((resource) => [resource.source, `${resource.content.trim()}\n`]),
+    ...(entry.bootstrap ? [["BOOTSTRAP.md", `${entry.bootstrap.trim()}\n`]] : []),
     ...(entry.openclawProfile
       ? [["profiles/openclaw.yml", stringifyYaml(entry.openclawProfile, { lineWidth: 0 })]]
       : []),
@@ -200,6 +210,47 @@ async function ensureFile(path, expected) {
 for (const entry of catalog.entries) {
   if (!/^[a-z][a-z0-9-]{0,63}$/.test(entry.id)) {
     throw new Error(`Catalog id is not a safe portable agent id: ${JSON.stringify(entry.id)}`);
+  }
+  const generatedSources = (entry.resources ?? []).map((resource) => resource.source);
+  const generatedFiles = entry.resources ?? [];
+  if (
+    generatedFiles.some(
+      (file) => typeof file.content !== "string" || file.content.trim().length === 0,
+    )
+  ) {
+    throw new Error(`${entry.id} contains missing or empty generated file content.`);
+  }
+  const reservedSources = [
+    "CLAW.md",
+    "README.md",
+    "package.json",
+    "workspace/AGENTS.md",
+    "BOOTSTRAP.md",
+    ...(entry.openclawProfile ? ["profiles/openclaw.yml"] : []),
+  ];
+  const sourceKeys = generatedSources.map(portablePathKey);
+  if (
+    generatedSources.some((source) => !isSafePackagePath(source)) ||
+    sourceKeys.some((source, index) =>
+      [...sourceKeys.slice(0, index), ...reservedSources.map(portablePathKey)].some((other) =>
+        pathsConflict(source, other),
+      ),
+    )
+  ) {
+    throw new Error(`${entry.id} contains unsafe or colliding generated package source paths.`);
+  }
+  const generatedTargets = (entry.resources ?? []).map((resource) => resource.path);
+  const targetKeys = generatedTargets.map(portablePathKey);
+  const reservedTargets = ["AGENTS.md", "SOUL.md"].map(portablePathKey);
+  if (
+    generatedTargets.some((target) => !isSafePackagePath(target)) ||
+    targetKeys.some((target, index) =>
+      [...targetKeys.slice(0, index), ...reservedTargets].some((other) =>
+        pathsConflict(target, other),
+      ),
+    )
+  ) {
+    throw new Error(`${entry.id} contains unsafe or colliding generated workspace targets.`);
   }
 }
 const expectedIds = new Set(catalog.entries.map((entry) => entry.id));
@@ -241,10 +292,18 @@ if (check) {
       "file:README.md",
       "file:package.json",
       "file:workspace/AGENTS.md",
+      ...(entry.resources ?? []).map((resource) => `file:${resource.source}`),
+      ...(entry.bootstrap ? ["file:BOOTSTRAP.md"] : []),
       ...(entry.openclawProfile
         ? ["directory:profiles", "file:profiles/openclaw.yml"]
         : []),
     ]);
+    for (const file of entry.resources ?? []) {
+      const parts = file.source.split("/");
+      for (let index = 1; index < parts.length; index += 1) {
+        expectedEntries.add(`directory:${parts.slice(0, index).join("/")}`);
+      }
+    }
     const actualEntries = new Set(
       (await readdir(packageRoot, { recursive: true, withFileTypes: true })).map((item) => {
         const parent = item.parentPath

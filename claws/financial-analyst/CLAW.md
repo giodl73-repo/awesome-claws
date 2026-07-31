@@ -8,7 +8,9 @@ workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
-  files: []
+  files:
+    - source: templates/scenario-analysis.md
+      path: templates/scenario-analysis.md
 packages:
   - kind: skill
     source: clawhub

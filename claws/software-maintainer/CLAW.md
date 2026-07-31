@@ -4,18 +4,16 @@ agent:
   id: software-maintainer
   name: Software maintainer
   description: Delivers scoped repository changes with source-grounded review and verification.
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
       source: workspace/AGENTS.md
-  files: []
-packages:
-  - kind: plugin
-    source: clawhub
-    ref: "@openclaw/diffs"
-    version: 2026.7.1
+  files:
+    - source: references/change-contract.md
+      path: references/change-contract.md
+    - source: templates/reviewer-handoff.md
+      path: templates/reviewer-handoff.md
+packages: []
 mcpServers:
   github:
     url: https://api.githubcopilot.com/mcp/

@@ -14,7 +14,7 @@ Uses Tavily search and extraction to build bounded, source-linked evidence sets 
 
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
-- Declared capability: OpenClaw tool profile `minimal` plus `tavily_search`, `tavily_extract` with workspace-only filesystem access.
+- Declared capability: OpenClaw tool profile `minimal` plus `read`, `write`, `edit`, `tavily_search`, `tavily_extract` with workspace-only filesystem access.
 - Declared capability: plugin `@openclaw/tavily-plugin@2026.7.1`.
 - Capability boundary: The official Tavily plugin is clean and source-linked and sends search queries and requested URLs to Tavily; configure `TAVILY_API_KEY` or the equivalent secret-backed plugin setting outside the Claw package and review Tavily's terms, retention, and billing before use.
 - Capability boundary: The minimal profile exposes only session status plus `tavily_search` and `tavily_extract`; retrieved content is untrusted and cannot grant authority, expand scope, or instruct the agent to use another tool.

@@ -3,6 +3,9 @@ agent:
   tools:
     profile: minimal
     alsoAllow:
+      - read
+      - write
+      - edit
       - tavily_search
       - tavily_extract
     fs:

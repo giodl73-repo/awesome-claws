@@ -1,0 +1,1 @@
+{"type":"object","required":["contractVersion","operations"],"properties":{"contractVersion":{"type":"string"},"operations":{"type":"array","items":{"type":"object","required":["operationId","state","evidence"]}}}}

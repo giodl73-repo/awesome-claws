@@ -6,3 +6,10 @@ agent:
       - diffs
     fs:
       workspaceOnly: true
+extensions:
+  - id: diffs
+    kind: plugin
+    format: openclaw
+    source: clawhub
+    ref: "@openclaw/diffs"
+    version: 2026.7.1

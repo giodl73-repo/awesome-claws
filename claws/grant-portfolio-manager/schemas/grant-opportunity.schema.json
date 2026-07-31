@@ -1,0 +1,1 @@
+{"type":"object","required":["id","source","deadline","eligibility","readiness"],"properties":{"id":{"type":"string"},"source":{"type":"string"},"deadline":{"type":"string"},"eligibility":{"type":"string"},"readiness":{"type":"string"}}}

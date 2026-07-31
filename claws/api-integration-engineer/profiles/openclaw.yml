@@ -1,0 +1,9 @@
+schemaVersion: 1
+agent:
+  tools:
+    profile: coding
+    alsoAllow:
+      - show_widget
+      - dashboard
+    fs:
+      workspaceOnly: true

@@ -14,7 +14,7 @@ Generates reviewable PixVerse video concepts from approved prompts or workspace 
 
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
-- Declared capability: OpenClaw tool profile `minimal` plus `video_generate` with workspace-only filesystem access.
+- Declared capability: OpenClaw tool profile `minimal` plus `read`, `write`, `edit`, `video_generate` with workspace-only filesystem access.
 - Declared capability: plugin `@openclaw/pixverse-provider@2026.7.1`.
 - Capability boundary: The official PixVerse provider plugin is clean and source-linked and sends prompts and selected input media to PixVerse; configure `PIXVERSE_API_KEY` through approved host secrets outside the package and confirm region, terms, retention, model, and credit pricing.
 - Capability boundary: The minimal profile exposes only session status plus `video_generate`, with filesystem access constrained to the Claw workspace; each paid generation still requires approval of the exact prompt, inputs, settings, and expected charge.
