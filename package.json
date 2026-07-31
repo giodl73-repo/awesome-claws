@@ -10,6 +10,7 @@
     "inspect": "node scripts/validate-catalog.mjs --reference",
     "proof:openclaw": "node scripts/prove-openclaw.mjs",
     "proof:portfolio": "node scripts/prove-portfolio.mjs",
+    "proof:golden": "node scripts/prove-golden-artifact.mjs",
     "proof:experience": "node scripts/prove-experience-assets.mjs",
     "polish:visual-assets": "node scripts/polish-visual-assets.mjs"
   },

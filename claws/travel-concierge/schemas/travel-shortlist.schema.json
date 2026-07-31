@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/travel-shortlist.schema.json",
+  "title": "Travel shortlist",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["retrievedAt", "currency", "options", "travelerDecisions"],
+  "properties": {
+    "retrievedAt": { "type": "string", "format": "date-time" },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "options": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "name", "sourceUrl", "priceSummary", "caveats"],
+        "properties": {
+          "kind": { "enum": ["flight", "lodging"] },
+          "name": { "type": "string", "maxLength": 200 },
+          "sourceUrl": { "type": "string", "format": "uri" },
+          "priceSummary": { "type": "string", "maxLength": 500 },
+          "caveats": { "type": "array", "items": { "type": "string", "maxLength": 500 } }
+        }
+      }
+    },
+    "travelerDecisions": { "type": "array", "items": { "type": "string", "maxLength": 500 } }
+  }
+}

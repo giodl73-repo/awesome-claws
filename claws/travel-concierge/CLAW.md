@@ -11,13 +11,35 @@ workspace:
     AGENTS.md:
       source: workspace/AGENTS.md
   files:
+    - source: schemas/travel-shortlist.schema.json
+      path: schemas/travel-shortlist.schema.json
     - source: assets/travel-command-center.html
       path: assets/travel-command-center.html
     - source: templates/travel-comparison.md
       path: templates/travel-comparison.md
 packages: []
-mcpServers: {}
-cronJobs: []
+mcpServers:
+  mapbox:
+    url: https://mcp.mapbox.com/mcp
+    transport: streamable-http
+    auth: oauth
+    toolFilter:
+      include:
+        - search_and_geocode_tool
+        - category_search_tool
+        - place_details_tool
+        - directions_tool
+        - matrix_tool
+cronJobs:
+  - id: daily-trip-readiness-refresh
+    name: Daily trip readiness refresh
+    schedule:
+      cron: 0 8 * * *
+      timezone: UTC
+    session: isolated
+    message: Refresh only the already-approved trip shortlist and prepare a private change brief. If dates, traveler scope, Expedia access, Mapbox authorization, or an existing shortlist is missing, report those prerequisites instead of searching broadly.
+    delivery:
+      mode: none
 ---
 
 # Travel concierge
