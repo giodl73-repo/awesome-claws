@@ -151,8 +151,10 @@ These packages intentionally follow the experimental prompt-body contract in
 non-empty `CLAW.md` body is the portable agent prompt, and the same package does
 not declare a competing `SOUL.md` workspace sidecar.
 
-The generated packages are derived from [`catalog.json`](catalog.json). Edit
-that source and run `npm run build`; do not hand-edit files under `claws/`.
+The generated packages are derived from [`catalog.json`](catalog.json), with
+their reviewed Control UI captures stored under [`screenshots/`](screenshots/).
+Edit those sources and run `npm run build`; do not hand-edit files under
+`claws/`.
 
 ## Validate the catalog
 
@@ -190,6 +192,14 @@ horizontal overflow, unnamed controls, console errors, or insufficient visual
 signal. Inline-widget and pinned-dashboard tool behavior remain separate native
 Control UI contract proofs because presentation assets must not substitute for
 the host's security and persistence semantics.
+
+`npm run screenshots` starts OpenClaw's real Control UI, opens a deterministic
+session for each Claw, and captures the same Chat, Canvas, and composer surfaces
+an OpenClaw user sees. The command writes source images under `screenshots/`
+and copies them into the generated packages. Set `SCREENSHOT_ONLY` to a
+comma-separated list of package ids while iterating. These captures prove the
+presentation path; `npm run proof:portfolio` remains the lifecycle and runtime
+wiring proof.
 
 When proof runs from a worktree whose Git metadata is not visible inside the
 execution environment, set `AWESOME_CLAWS_REVISION`, `CLAWS_CLI_REVISION`, and

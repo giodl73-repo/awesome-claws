@@ -6,16 +6,19 @@
   "scripts": {
     "build": "node scripts/materialize-catalog.mjs",
     "check": "node --test scripts/*.test.mjs && node scripts/materialize-catalog.mjs --check && node scripts/validate-catalog.mjs",
+    "screenshots": "node --import tsx scripts/generate-screenshots.mjs",
     "inspect": "node scripts/validate-catalog.mjs --reference",
     "proof:openclaw": "node scripts/prove-openclaw.mjs",
     "proof:portfolio": "node scripts/prove-portfolio.mjs",
-    "proof:experience": "node scripts/prove-experience-assets.mjs"
+    "proof:experience": "node scripts/prove-experience-assets.mjs",
+    "polish:visual-assets": "node scripts/polish-visual-assets.mjs"
   },
   "engines": {
     "node": ">=22.22.3"
   },
   "devDependencies": {
     "croner": "^10.0.1",
+    "tsx": "4.23.1",
     "yaml": "2.9.0"
   }
 }

@@ -15,7 +15,13 @@ const cliEntry = useReferenceCli
         join(root, "..", "standalone-claw-cli-prototype", "packages", "cli", "dist", "cli.mjs"),
     )
   : undefined;
-const baseExpectedFiles = ["CLAW.md", "README.md", "package.json", "workspace/AGENTS.md"];
+const baseExpectedFiles = [
+  "CLAW.md",
+  "README.md",
+  "package.json",
+  "screenshot.png",
+  "workspace/AGENTS.md",
+];
 const baselineStarterIds = [
   "compliance-reviewer",
   "content-operations",
@@ -385,7 +391,16 @@ for (const entry of catalog.entries) {
     throw new Error(`${entry.id}/CLAW.md contains colliding workspace targets.`);
   }
 
+  const screenshot = await readFile(join(packageRoot, "screenshot.png"));
+  const pngSignature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+  if (screenshot.length < 50_000 || !screenshot.subarray(0, 8).equals(pngSignature)) {
+    throw new Error(`${entry.id}/screenshot.png must be a non-empty PNG advertising screenshot.`);
+  }
+
   for (const relativePath of expectedFiles) {
+    if (relativePath.endsWith(".png")) {
+      continue;
+    }
     const content = await readFile(join(packageRoot, relativePath), "utf8");
     if (/(?:BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9_]{20,})/.test(content)) {
       throw new Error(`${entry.id}/${relativePath} contains secret-like material.`);

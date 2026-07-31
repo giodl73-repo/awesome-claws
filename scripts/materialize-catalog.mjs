@@ -7,6 +7,20 @@ import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-pa
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
 const check = process.argv.includes("--check");
+const safeAgentIdPattern = /^[a-z][a-z0-9-]{0,63}$/;
+for (const entry of catalog.entries) {
+  if (!safeAgentIdPattern.test(entry.id)) {
+    throw new Error(`Catalog id is not a safe portable agent id: ${JSON.stringify(entry.id)}`);
+  }
+}
+const screenshots = new Map(
+  await Promise.all(
+    catalog.entries.map(async (entry) => [
+      entry.id,
+      await readFile(join(root, "screenshots", `${entry.id}.png`)),
+    ]),
+  ),
+);
 
 function bullets(values) {
   return values.map((value) => `- ${value}`).join("\n");
@@ -182,6 +196,7 @@ additional capabilities${capabilities.length === 0 ? "; this starter currently h
     ["CLAW.md", claw],
     ["README.md", readme],
     ["package.json", packageJson],
+    ["screenshot.png", screenshots.get(entry.id)],
     ["workspace/AGENTS.md", agents],
     ...resources.map((resource) => [resource.source, `${resource.content.trim()}\n`]),
     ...(entry.bootstrap ? [["BOOTSTRAP.md", `${entry.bootstrap.trim()}\n`]] : []),
@@ -197,20 +212,20 @@ async function ensureFile(path, expected) {
     if (!file?.isFile()) {
       throw new Error(`Generated catalog path is not a regular file: ${path}`);
     }
-    const actual = await readFile(path, "utf8").catch(() => undefined);
-    if (actual !== expected) {
+    const actual = await readFile(path).catch(() => undefined);
+    const matches =
+      actual !== undefined &&
+      (Buffer.isBuffer(expected) ? actual.equals(expected) : actual.toString("utf8") === expected);
+    if (!matches) {
       throw new Error(`Generated catalog file is stale or missing: ${path}`);
     }
     return;
   }
   await mkdir(dirname(path), { recursive: true });
-  await writeFile(path, expected, "utf8");
+  await writeFile(path, expected, Buffer.isBuffer(expected) ? undefined : "utf8");
 }
 
 for (const entry of catalog.entries) {
-  if (!/^[a-z][a-z0-9-]{0,63}$/.test(entry.id)) {
-    throw new Error(`Catalog id is not a safe portable agent id: ${JSON.stringify(entry.id)}`);
-  }
   const generatedSources = (entry.resources ?? []).map((resource) => resource.source);
   const generatedFiles = entry.resources ?? [];
   if (
@@ -291,6 +306,7 @@ if (check) {
       "file:CLAW.md",
       "file:README.md",
       "file:package.json",
+      "file:screenshot.png",
       "file:workspace/AGENTS.md",
       ...(entry.resources ?? []).map((resource) => `file:${resource.source}`),
       ...(entry.bootstrap ? ["file:BOOTSTRAP.md"] : []),
