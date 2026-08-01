@@ -45,6 +45,10 @@ const unknownIds = [...requestedIds].filter(
 if (unknownIds.length > 0) {
   throw new Error(`Unknown PORTFOLIO_ONLY package ids: ${unknownIds.join(", ")}`);
 }
+const sourceOverride = process.env.PORTFOLIO_SOURCE_ROOT?.trim();
+if (sourceOverride && entries.length !== 1) {
+  throw new Error("PORTFOLIO_SOURCE_ROOT requires exactly one PORTFOLIO_ONLY package id.");
+}
 const runId = new Date().toISOString().replaceAll(":", "-").replaceAll(".", "-");
 const proofRoot = resolve(process.env.PORTFOLIO_PROOF_DIR ?? join(root, ".tmp", "proof", runId));
 const runtimeRoot = await mkdtemp(join(tmpdir(), "awesome-claws-portfolio-runtime-"));
@@ -309,7 +313,7 @@ for (const entry of entries) {
   const proof = await createProofEnvironment(runtimeRoot, entry.id);
   const evidenceRoot = join(proofRoot, entry.id);
   await mkdir(evidenceRoot, { recursive: true });
-  const source = join(root, "claws", entry.id);
+  const source = sourceOverride ? resolve(sourceOverride) : join(root, "claws", entry.id);
   let env = {
     ...proof.env,
     OPENAI_API_KEY: "awesome-claws-deterministic-proof",
@@ -320,7 +324,9 @@ for (const entry of entries) {
   let mockOpenAi;
   const result = {
     id: entry.id,
-    packagePath: relative(root, source).replaceAll("\\", "/"),
+    packagePath: sourceOverride
+      ? source
+      : relative(root, source).replaceAll("\\", "/"),
     status: "lifecycle-failed",
     phases,
     lifecycleProofMode: "local",
@@ -334,10 +340,14 @@ for (const entry of entries) {
   };
 
   try {
+    await writeFile(env.OPENCLAW_CONFIG_PATH, "{}\n", { flag: "wx" });
+    const marker = `OPENCLAW_E2E_APPLICATION_${entry.id.replaceAll("-", "_").toUpperCase()}`;
+    mockOpenAi = await startMockOpenAi(env, evidenceRoot, entry, marker);
+    env = await configureMockModel(env, mockOpenAi.port);
     if ((entry.cronJobs?.length ?? 0) > 0) {
       gateway = await startGateway(openClawEntry, env, entry.id);
       env = gateway.env;
-      result.gateway = { mode: "local", port: gateway.port };
+      result.gateway = { mode: "local", port: gateway.port, purpose: "canonical-cron-owner" };
     }
     const standaloneInspection = assertStandaloneSuccess(
       recordPhase(phases, "standalone-inspect", () =>
@@ -353,6 +363,7 @@ for (const entry of entries) {
     if (openClawInspection.valid !== true || openClawInspection.manifest?.agent?.id !== entry.id) {
       throw new Error(`${entry.id} OpenClaw inspection did not preserve package identity.`);
     }
+    result.openClawPackage = { source: openClawInspection.source };
 
     const adapterPreview = recordPhase(phases, "adapter-preview", () =>
       runStandalone(
@@ -375,6 +386,24 @@ for (const entry of entries) {
       ),
     );
     result.readiness = addPlan.readiness ?? { ready: true, requirements: [] };
+    result.openClawPackage.planIntegrity = addPlan.planIntegrity;
+    result.openClawPackage.plannedClaw = addPlan.claw;
+    for (const expectedCron of entry.cronJobs ?? []) {
+      const cronAction = addPlan.actions?.find(
+        (action) => action.kind === "cronJob" && action.id === expectedCron.id,
+      );
+      const projected = cronAction?.details;
+      if (
+        cronAction?.action !== "schedule" ||
+        JSON.stringify(projected?.schedule) !== JSON.stringify(expectedCron.schedule) ||
+        projected?.session !== expectedCron.session ||
+        projected?.message !== expectedCron.message ||
+        JSON.stringify(projected?.delivery) !== JSON.stringify(expectedCron.delivery) ||
+        projected?.agentId !== entry.id
+      ) {
+        throw new Error(`${entry.id} add plan did not preserve its declared cron contract.`);
+      }
+    }
 
     const addResult = assertSchema(
       recordPhase(phases, "add-apply", () =>
@@ -398,10 +427,19 @@ for (const entry of entries) {
     if (addResult.status !== "complete" || addResult.agent?.finalId !== entry.id) {
       throw new Error(`${entry.id} add did not create the declared agent completely.`);
     }
+    let userOwnedState;
+    if (entry.bootstrap) {
+      const workspace = addResult.agent?.workspace;
+      if (typeof workspace !== "string" || workspace.length === 0) {
+        throw new Error(`${entry.id} add did not report its bootstrap workspace.`);
+      }
+      const path = join(workspace, "USER.md");
+      const content = `# Local preferences\n\nProof marker: ${entry.id}\n`;
+      await writeFile(path, content, { flag: "wx" });
+      userOwnedState = { path, content };
+      result.bootstrapState = "synthetic-user-owned-preferences-created";
+    }
 
-    const marker = `OPENCLAW_E2E_APPLICATION_${entry.id.replaceAll("-", "_").toUpperCase()}`;
-    mockOpenAi = await startMockOpenAi(env, evidenceRoot, entry, marker);
-    env = await configureMockModel(env, mockOpenAi.port);
     const applicationTurn = recordPhase(phases, "application-scenario", () =>
       runOpenClaw(
         openClawEntry,
@@ -455,6 +493,35 @@ for (const entry of entries) {
       updatePlan.summary?.blocked !== 0
     ) {
       throw new Error(`${entry.id} update did not return a no-op consent-bound preview.`);
+    }
+    const updated = assertSchema(
+      recordPhase(phases, "update-apply", () =>
+        runOpenClaw(
+          openClawEntry,
+          [
+            "claws",
+            "update",
+            entry.id,
+            "--yes",
+            "--plan-integrity",
+            updatePlan.planIntegrity,
+          ],
+          env,
+          `${entry.id} update apply`,
+        ),
+      ),
+      "openclaw.clawUpdateResult.v1",
+      `${entry.id} update`,
+    );
+    if (updated.status !== "complete" || (updated.appliedActions?.length ?? 0) !== 0) {
+      throw new Error(`${entry.id} no-op update did not complete without mutations.`);
+    }
+    if (userOwnedState) {
+      const retained = await readFile(userOwnedState.path, "utf8");
+      if (retained !== userOwnedState.content) {
+        throw new Error(`${entry.id} no-op update changed user-owned USER.md state.`);
+      }
+      result.bootstrapState = "synthetic-user-owned-preferences-preserved-after-update";
     }
 
     const doctor = recordPhase(phases, "doctor", () =>
@@ -541,6 +608,13 @@ for (const entry of entries) {
     if (removed.status !== "complete" || removed.agentRemoved !== true) {
       throw new Error(`${entry.id} removal did not complete.`);
     }
+    if (userOwnedState) {
+      const retained = await readFile(userOwnedState.path, "utf8");
+      if (retained !== userOwnedState.content) {
+        throw new Error(`${entry.id} removal changed user-owned USER.md state.`);
+      }
+      result.bootstrapState = "synthetic-user-owned-preferences-preserved-after-remove";
+    }
 
     const finalStatus = assertSchema(
       recordPhase(phases, "final-status", () =>
@@ -603,6 +677,8 @@ console.log(
         status: result.status,
         adapterPreview: result.adapterPreview,
         applicationScenario: result.applicationScenario.status,
+        openClawPackage: result.openClawPackage,
+        ...(result.bootstrapState ? { bootstrapState: result.bootstrapState } : {}),
         ...(result.failure
           ? {
               failure: {
