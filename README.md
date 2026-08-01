@@ -177,8 +177,10 @@ OpenClaw adapter in disposable state.
 
 `npm run proof:portfolio` runs each package in a separate OpenClaw home through
 standalone and OpenClaw inspection, consent-bound add, a deterministic real
-agent turn, status, update preview, doctor, export inspection, selective
-removal, and final cleanup. The turn uses OpenClaw's OpenAI-compatible E2E
+agent turn, status, no-op update preview and apply, doctor, export inspection,
+selective removal, and final cleanup. For bootstrap-bearing examples it also
+creates synthetic user-owned preferences and proves update and removal preserve
+them; bootstrap interview quality remains a separate model-behavior lane. The turn uses OpenClaw's OpenAI-compatible E2E
 fixture and asserts that the package's domain request, identity, instructions,
 tool surface, and expected handoff cross the actual agent runtime. This proves
 runtime wiring, not subjective model quality; external, credentialed, billable,
@@ -188,14 +190,15 @@ Set `PORTFOLIO_ONLY` to a comma-separated list of package ids for a focused
 reproduction without changing the all-package default.
 
 `npm run proof:golden` proves the Golden Travel Concierge across repository
-boundaries. Set `GOLDEN_CLAW_ARTIFACT` to the deterministic `.tgz` produced by
-`openclaw claws build` and `CLAWHUB_CLI_ENTRY` to a built ClawHub CLI. The
-command publishes and downloads those exact bytes through a disposable local
-registry using the real ClawHub client, verifies the ClawHub and npm digests,
-safely extracts the verified transport artifact, and runs that package through
-the complete portfolio lifecycle. It requires the same `CLAWS_CLI_ENTRY` and
-`OPENCLAW_CLI_ENTRY` settings as `proof:portfolio`; it never publishes to the
-public registry.
+boundaries. Point `OPENCLAW_CLI_ENTRY` and `CLAWHUB_CLI_ENTRY` at the exact
+implementation checkouts under review. The command validates and previews the
+checked-out Golden source, builds it twice with OpenClaw, requires byte-identical
+artifacts, and publishes and downloads those exact bytes through an
+authenticated disposable local registry using the real ClawHub client. It then
+uses structured tar parsing, verifies every packaged byte against this checkout,
+and runs the verified package through the complete portfolio lifecycle. It
+requires the same `CLAWS_CLI_ENTRY` setting as `proof:portfolio`; it never
+publishes to the public registry or exercises live provider credentials.
 
 With `OPENCLAW_ROOT` pointing to a built OpenClaw checkout,
 `npm run proof:experience` renders every X4/X5 asset through Playwright at

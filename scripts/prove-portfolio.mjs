@@ -388,6 +388,22 @@ for (const entry of entries) {
     result.readiness = addPlan.readiness ?? { ready: true, requirements: [] };
     result.openClawPackage.planIntegrity = addPlan.planIntegrity;
     result.openClawPackage.plannedClaw = addPlan.claw;
+    for (const expectedCron of entry.cronJobs ?? []) {
+      const cronAction = addPlan.actions?.find(
+        (action) => action.kind === "cronJob" && action.id === expectedCron.id,
+      );
+      const projected = cronAction?.details;
+      if (
+        cronAction?.action !== "schedule" ||
+        JSON.stringify(projected?.schedule) !== JSON.stringify(expectedCron.schedule) ||
+        projected?.session !== expectedCron.session ||
+        projected?.message !== expectedCron.message ||
+        JSON.stringify(projected?.delivery) !== JSON.stringify(expectedCron.delivery) ||
+        projected?.agentId !== entry.id
+      ) {
+        throw new Error(`${entry.id} add plan did not preserve its declared cron contract.`);
+      }
+    }
 
     const addResult = assertSchema(
       recordPhase(phases, "add-apply", () =>
@@ -421,7 +437,7 @@ for (const entry of entries) {
       const content = `# Local preferences\n\nProof marker: ${entry.id}\n`;
       await writeFile(path, content, { flag: "wx" });
       userOwnedState = { path, content };
-      result.bootstrapState = "created-user-owned-preferences";
+      result.bootstrapState = "synthetic-user-owned-preferences-created";
     }
 
     const applicationTurn = recordPhase(phases, "application-scenario", () =>
@@ -477,6 +493,35 @@ for (const entry of entries) {
       updatePlan.summary?.blocked !== 0
     ) {
       throw new Error(`${entry.id} update did not return a no-op consent-bound preview.`);
+    }
+    const updated = assertSchema(
+      recordPhase(phases, "update-apply", () =>
+        runOpenClaw(
+          openClawEntry,
+          [
+            "claws",
+            "update",
+            entry.id,
+            "--yes",
+            "--plan-integrity",
+            updatePlan.planIntegrity,
+          ],
+          env,
+          `${entry.id} update apply`,
+        ),
+      ),
+      "openclaw.clawUpdateResult.v1",
+      `${entry.id} update`,
+    );
+    if (updated.status !== "complete" || (updated.appliedActions?.length ?? 0) !== 0) {
+      throw new Error(`${entry.id} no-op update did not complete without mutations.`);
+    }
+    if (userOwnedState) {
+      const retained = await readFile(userOwnedState.path, "utf8");
+      if (retained !== userOwnedState.content) {
+        throw new Error(`${entry.id} no-op update changed user-owned USER.md state.`);
+      }
+      result.bootstrapState = "synthetic-user-owned-preferences-preserved-after-update";
     }
 
     const doctor = recordPhase(phases, "doctor", () =>
@@ -566,9 +611,9 @@ for (const entry of entries) {
     if (userOwnedState) {
       const retained = await readFile(userOwnedState.path, "utf8");
       if (retained !== userOwnedState.content) {
-        throw new Error(`${entry.id} removal changed bootstrap-created USER.md state.`);
+        throw new Error(`${entry.id} removal changed user-owned USER.md state.`);
       }
-      result.bootstrapState = "preserved-after-remove";
+      result.bootstrapState = "synthetic-user-owned-preferences-preserved-after-remove";
     }
 
     const finalStatus = assertSchema(

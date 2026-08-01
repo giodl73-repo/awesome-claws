@@ -23,20 +23,19 @@ test("safe extraction accepts only package-root entries", () => {
   assert.throws(() => assertSafeTarEntries(["package/../../outside"]), /Unsafe path/);
   assert.throws(() => assertSafeTarEntries(["other/CLAW.md"]), /Unsafe path/);
   assert.throws(() => assertSafeTarEntries(["package.json"]), /Unsafe path/);
+  assert.throws(() => assertSafeTarEntries(["package/USER.md:proof"]), /Unsafe path/);
+  assert.throws(
+    () => assertSafeTarEntries(["package/CLAW.md", "package/claw.md"]),
+    /Duplicate or colliding path/,
+  );
   assert.throws(() => assertSafeTarEntries([]), /empty/);
 });
 
 test("safe extraction rejects links and special archive entries", () => {
   assert.doesNotThrow(() =>
-    assertSafeTarEntryTypes([
-      "drwxr-xr-x user/group 0 date package/",
-      "-rw-r--r-- user/group 1 date package/CLAW.md",
-    ]),
+    assertSafeTarEntryTypes(["Directory", "File"]),
   );
-  assert.throws(
-    () => assertSafeTarEntryTypes(["lrwxrwxrwx user/group 0 date package/link -> ../../outside"]),
-    /Unsafe entry type/,
-  );
+  assert.throws(() => assertSafeTarEntryTypes(["SymbolicLink"]), /Unsafe entry type/);
 });
 
 test("registry response binds the exact artifact identity", () => {
