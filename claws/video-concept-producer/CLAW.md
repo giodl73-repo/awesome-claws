@@ -13,13 +13,10 @@ workspace:
   files:
     - source: fixtures/session-demo.json
       path: fixtures/session-demo.json
-      role: fixture
     - source: templates/session-report.template.json
       path: templates/session-report.template.json
-      role: template
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
-      role: template
 packages:
   - kind: plugin
     source: clawhub
