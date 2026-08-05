@@ -377,19 +377,19 @@ for (const entry of catalog.entries) {
       throw new Error(`${entry.id}/CLAW.md does not match catalog.${field}.`);
     }
   }
+  const expectedWorkspaceFiles = (entry.resources ?? []).map(({ source, path, role }) =>
+    entry.clawSchemaVersion === 2 ? { source, path, role } : { source, path },
+  );
+  if (JSON.stringify(manifest.workspace.files) !== JSON.stringify(expectedWorkspaceFiles)) {
+    throw new Error(`${entry.id}/CLAW.md does not match the workspace file schema.`);
+  }
   if (entry.clawSchemaVersion === 2) {
-    const expectedFiles = (entry.resources ?? []).map(({ source, path, role }) => ({
-      source,
-      path,
-      role,
-    }));
     const expectedSeeds = (entry.personalization?.seeds ?? []).map(
       ({ source, destination }) => ({ source, destination }),
     );
     if (
       JSON.stringify(manifest.setup) !== JSON.stringify(entry.setup ?? { inputs: [] }) ||
-      JSON.stringify(manifest.personalization) !== JSON.stringify({ seeds: expectedSeeds }) ||
-      JSON.stringify(manifest.workspace.files) !== JSON.stringify(expectedFiles)
+      JSON.stringify(manifest.personalization) !== JSON.stringify({ seeds: expectedSeeds })
     ) {
       throw new Error(`${entry.id}/CLAW.md does not match catalog application setup.`);
     }

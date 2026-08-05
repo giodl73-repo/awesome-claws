@@ -98,7 +98,9 @@ ${bullets(entry.boundaries)}
       : {}),
     workspace: {
       bootstrapFiles: { "AGENTS.md": { source: "workspace/AGENTS.md" } },
-      files: resources.map(({ source, path, role }) => ({ source, path, role })),
+      files: resources.map(({ source, path, role }) =>
+        entry.clawSchemaVersion === 2 ? { source, path, role } : { source, path },
+      ),
     },
     packages,
     mcpServers,
