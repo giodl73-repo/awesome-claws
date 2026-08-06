@@ -37,7 +37,6 @@ try {
   for (const [index, entry] of entries.entries()) {
     process.stderr.write(`RUN  ${index + 1}/${entries.length} ${entry.id}\n`);
     const proof = await createProofEnvironment(proofRoot, entry.id);
-    const setupInputs = entry.setup?.inputs ?? [];
     const outcome = runStandalone(
         cliEntry,
         [join(root, "claws", entry.id), "--agent", "openclaw", "--dry-run"],
@@ -48,25 +47,13 @@ try {
     const plan = assertPreviewEnvelope(outcome);
     const blockerCodes = (plan.blockers ?? []).map((blocker) => blocker.code);
     const providerBlocked = blockerCodes.includes("clawhub_security_unavailable");
-    const allowedBlockers = new Set([
-      "clawhub_security_unavailable",
-      ...(setupInputs.length > 0 ? ["setup_answer_required"] : []),
-    ]);
+    const allowedBlockers = new Set(["clawhub_security_unavailable"]);
     if (blockerCodes.some((code) => !allowedBlockers.has(code))) {
       throw new Error(`${entry.id} returned unexpected blockers: ${blockerCodes.join(", ")}.`);
     }
     let adapterStatus;
     if (providerBlocked) {
       adapterStatus = "provider-blocked";
-    } else if (setupInputs.length > 0) {
-      adapterStatus = "setup-answers-unsupported";
-      if (
-        outcome.ok !== false ||
-        plan?.blockers?.length === 0 ||
-        plan.blockers.some((blocker) => blocker.code !== "setup_answer_required")
-      ) {
-        throw new Error(`${entry.id} adapter preview did not expose its setup-answer gap.`);
-      }
     } else {
       assertAddPreview(assertStandaloneSuccess(outcome, "preview"));
       adapterStatus = "passed";

@@ -1,11 +1,9 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: manufacturing-operations-planner
   name: Manufacturing operations planner
   description: Builds a constraint-led production plan and exception handoff from approved demand, capacity, material, quality, and maintenance evidence.
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -13,38 +11,13 @@ workspace:
   files:
     - source: schemas/production-plan.schema.json
       path: schemas/production-plan.schema.json
-      role: schema
     - source: assets/production-control.html
       path: assets/production-control.html
-      role: asset
     - source: templates/shift-handoff.md
       path: templates/shift-handoff.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs:
-    - id: site_name
-      label: Site name
-      type: string
-      required: true
-      maxLength: 160
-    - id: planning_timezone
-      label: Planning timezone
-      type: string
-      format: timezone
-      required: true
-    - id: default_horizon_days
-      label: Default planning horizon in days
-      type: integer
-      required: true
-      minimum: 1
-      maximum: 90
-personalization:
-  seeds:
-    - source: setup/USER.md.tmpl
-      destination: USER.md
 ---
 
 # Manufacturing operations planner

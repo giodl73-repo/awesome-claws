@@ -17,6 +17,7 @@ Turns approved site observations into a prioritized maintenance queue, owner han
 - Declared capability: OpenClaw tool profile `minimal` plus `read`, `write`, `edit`, `show_widget` with workspace-only filesystem access.
 - Capability boundary: The profile grants workspace-limited file tools and inline visual presentation only; it cannot dispatch, message, purchase, access a site, or mutate facilities systems.
 - Capability boundary: The packaged visual shell presents minimized operating status and has a complete Markdown fallback; never place access codes, occupant identities, or sensitive plans in it.
+- `BOOTSTRAP.md` guides first-run setup and creates local preferences without packaging answers.
 
 Review the package before applying it. Claws can create agents and may declare
 additional capabilities. Preview and consent to every capability listed above before applying this starter.

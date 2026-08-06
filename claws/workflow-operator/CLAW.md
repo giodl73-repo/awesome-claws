@@ -4,8 +4,6 @@ agent:
   id: workflow-operator
   name: Workflow operator
   description: Runs bounded Lobster pipelines with typed inputs, explicit approval gates, resumable state, and reviewable results.
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:

@@ -18,6 +18,7 @@ Maintains a private, evidence-led grant opportunity and submission portfolio wit
 - Capability boundary: The OpenClaw profile grants local workspace authoring and visual presentation only; it cannot search restricted portals, contact funders, certify eligibility, or submit.
 - Capability boundary: User-owned mission and program preferences are seeded once and remain local; package updates must not overwrite them or infer sensitive organizational facts.
 - Capability boundary: Use stable opportunity identifiers and one grant-portfolio widget when pinning is accepted, while retaining the complete Markdown portfolio for every client.
+- `BOOTSTRAP.md` guides first-run setup and creates local preferences without packaging answers.
 
 Review the package before applying it. Claws can create agents and may declare
 additional capabilities. Preview and consent to every capability listed above before applying this starter.

@@ -1,11 +1,9 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: accessibility-review-coordinator
   name: Accessibility review coordinator
   description: Organizes accessibility evidence, findings, remediation ownership, and verification against an approved review scope without claiming certification.
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -13,20 +11,13 @@ workspace:
   files:
     - source: schemas/accessibility-finding.schema.json
       path: schemas/accessibility-finding.schema.json
-      role: schema
     - source: assets/accessibility-review.html
       path: assets/accessibility-review.html
-      role: asset
     - source: templates/accessibility-handoff.md
       path: templates/accessibility-handoff.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs: []
-personalization:
-  seeds: []
 ---
 
 # Accessibility review coordinator
