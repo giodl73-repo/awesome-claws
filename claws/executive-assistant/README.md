@@ -14,6 +14,7 @@ Turns executive priorities into prepared decisions, communications, and reliable
 
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
+- `BOOTSTRAP.md` guides first-run setup and creates local preferences without packaging answers.
 
 Review the package before applying it. Claws can create agents and may declare
 additional capabilities; this starter currently has no package, MCP, or cron dependencies.

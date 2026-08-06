@@ -1,11 +1,9 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: procurement-evaluator
   name: Procurement evaluator
   description: Builds a traceable vendor evaluation from approved requirements, evidence, risks, and accountable purchasing decisions.
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -13,31 +11,13 @@ workspace:
   files:
     - source: schemas/vendor-evaluation.schema.json
       path: schemas/vendor-evaluation.schema.json
-      role: schema
     - source: assets/vendor-comparison.html
       path: assets/vendor-comparison.html
-      role: asset
     - source: templates/procurement-decision.md
       path: templates/procurement-decision.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs:
-    - id: reporting_currency
-      label: Reporting currency
-      type: string
-      required: true
-      maxLength: 12
-    - id: require_specialist_signoff
-      label: Require specialist signoff
-      type: boolean
-      default: true
-personalization:
-  seeds:
-    - source: setup/USER.md.tmpl
-      destination: USER.md
 ---
 
 # Procurement evaluator

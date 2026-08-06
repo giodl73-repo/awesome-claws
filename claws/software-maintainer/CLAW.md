@@ -1,11 +1,9 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: software-maintainer
   name: Software maintainer
   description: Delivers scoped repository changes with source-grounded review and verification.
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -13,19 +11,14 @@ workspace:
   files:
     - source: references/change-contract.md
       path: references/change-contract.md
-      role: reference
     - source: templates/reviewer-handoff.md
       path: templates/reviewer-handoff.md
-      role: template
     - source: fixtures/session-demo.json
       path: fixtures/session-demo.json
-      role: fixture
     - source: templates/session-report.template.json
       path: templates/session-report.template.json
-      role: template
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
-      role: template
 packages: []
 mcpServers:
   github:
@@ -38,10 +31,6 @@ mcpServers:
         - list_*
         - search_*
 cronJobs: []
-setup:
-  inputs: []
-personalization:
-  seeds: []
 ---
 
 # Software maintainer

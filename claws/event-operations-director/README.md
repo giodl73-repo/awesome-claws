@@ -18,6 +18,7 @@ Turns an approved event plan into a controlled run of show, readiness view, deci
 - Capability boundary: The OpenClaw profile adds only workspace file tools plus the core show_widget and dashboard presentation tools; it grants no messaging, browser, purchasing, or vendor system authority.
 - Capability boundary: Use the packaged semantic HTML as the reviewed visual shell and preserve the Markdown handoff as the complete fallback; do not fetch remote scripts or hide operating facts behind interaction.
 - Capability boundary: Create a persistent event dashboard only after the user requests or accepts it, use stable names for readiness and timeline widgets, and keep external actions as drafts or explicit follow-up prompts.
+- `BOOTSTRAP.md` guides first-run setup and creates local preferences without packaging answers.
 
 Review the package before applying it. Claws can create agents and may declare
 additional capabilities. Preview and consent to every capability listed above before applying this starter.

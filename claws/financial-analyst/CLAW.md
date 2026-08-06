@@ -1,5 +1,5 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: financial-analyst
   name: Financial analyst
@@ -11,16 +11,12 @@ workspace:
   files:
     - source: templates/scenario-analysis.md
       path: templates/scenario-analysis.md
-      role: template
     - source: fixtures/session-demo.json
       path: fixtures/session-demo.json
-      role: fixture
     - source: templates/session-report.template.json
       path: templates/session-report.template.json
-      role: template
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
-      role: template
 packages:
   - kind: skill
     source: clawhub
@@ -28,22 +24,6 @@ packages:
     version: 1.0.0
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs:
-    - id: reporting_currency
-      label: Reporting currency
-      type: string
-      required: true
-      maxLength: 12
-    - id: materiality_threshold
-      label: Materiality threshold
-      type: integer
-      required: true
-      minimum: 0
-personalization:
-  seeds:
-    - source: setup/USER.md.tmpl
-      destination: USER.md
 ---
 
 # Financial analyst

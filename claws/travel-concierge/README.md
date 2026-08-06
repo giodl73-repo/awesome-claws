@@ -21,6 +21,7 @@ Searches and compares current Expedia lodging and flight options, then prepares 
 - Capability boundary: The minimal tool profile exposes workspace-only file access, the four documented Expedia search/setup tools, and OpenClaw's presentation-only show_widget and dashboard tools; it does not grant browser, unrestricted filesystem, command execution, messaging, booking, payment, cancellation, or provider-contact authority.
 - Capability boundary: Use the packaged command-center asset for the reviewed shortlist and keep the Markdown comparison complete as its fallback. Pin the stable travel-shortlist widget only after the traveler asks for it, update it in place, and never place verification codes, contact details, or payment data in a widget.
 - Capability boundary: Expedia search results are a single-provider view and remain volatile; timestamp them, disclose the source, preserve displayed total-price and policy caveats, and hand off all verification and transactions to the traveler on Expedia.
+- `BOOTSTRAP.md` guides first-run setup and creates local preferences without packaging answers.
 
 Review the package before applying it. Claws can create agents and may declare
 additional capabilities. Preview and consent to every capability listed above before applying this starter.

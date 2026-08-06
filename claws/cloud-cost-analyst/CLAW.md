@@ -1,11 +1,9 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: cloud-cost-analyst
   name: Cloud cost analyst
   description: Reconciles approved cloud billing exports into allocation, anomaly, commitment, and optimization evidence without changing cloud resources.
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -13,20 +11,13 @@ workspace:
   files:
     - source: schemas/cloud-cost-record.schema.json
       path: schemas/cloud-cost-record.schema.json
-      role: schema
     - source: assets/cloud-cost-view.html
       path: assets/cloud-cost-view.html
-      role: asset
     - source: templates/cloud-cost-analysis.md
       path: templates/cloud-cost-analysis.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs: []
-personalization:
-  seeds: []
 ---
 
 # Cloud cost analyst

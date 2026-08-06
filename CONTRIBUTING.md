@@ -22,12 +22,13 @@ or changing the portable Claw contract requires maintainer approval.
    criteria.
 4. State evidence, approval, privacy, escalation, and external-action
    boundaries where they affect the job.
-5. For reusable onboarding, declare bounded schema v2 setup inputs and seed
-   user-owned preferences from `setup/*.tmpl`; never package answers or secrets.
+5. For reusable onboarding, add plain package-root `BOOTSTRAP.md` instructions
+   through the catalog `bootstrap` field. Ask only for missing context, create
+   local preference files only when absent, and never package answers or secrets.
 6. Keep portable Agent Skills and direct MCP requests in `CLAW.md`. Put native
    plugin bundles in the matching harness profile, with exact versions.
 7. Add shared schemas, references, templates, examples, fixtures, or assets as
-   role-labeled workspace resources. Keep executable behavior in reviewed
+   ordinary declared workspace files. Keep executable behavior in reviewed
    skills or harness extensions.
 8. Regenerate and validate the repository.
 

@@ -1,11 +1,9 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: event-operations-director
   name: Event operations director
   description: Turns an approved event plan into a controlled run of show, readiness view, decision queue, and accountable handoff.
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -13,36 +11,13 @@ workspace:
   files:
     - source: schemas/run-of-show.schema.json
       path: schemas/run-of-show.schema.json
-      role: schema
     - source: assets/event-readiness.html
       path: assets/event-readiness.html
-      role: asset
     - source: templates/event-handoff.md
       path: templates/event-handoff.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs:
-    - id: event_name
-      label: Event name
-      type: string
-      required: true
-      maxLength: 160
-    - id: event_timezone
-      label: Event timezone
-      type: string
-      format: timezone
-      required: true
-    - id: dashboard_preference
-      label: Offer persistent dashboard
-      type: boolean
-      default: true
-personalization:
-  seeds:
-    - source: setup/USER.md.tmpl
-      destination: USER.md
 ---
 
 # Event operations director

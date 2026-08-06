@@ -80,28 +80,6 @@ function assertSchema(payload, schemaVersion, label) {
   return payload;
 }
 
-function fixtureValue(input) {
-  if (input.format === "timezone") {
-    return "UTC";
-  }
-  if (input.type === "choice") {
-    return input.options[0].value;
-  }
-  if (input.type === "boolean") {
-    return input.default ?? false;
-  }
-  if (input.type === "integer") {
-    return input.minimum ?? 1;
-  }
-  if (input.id.includes("currency")) {
-    return "USD";
-  }
-  if (input.id.includes("airport")) {
-    return "SEA";
-  }
-  return `Portfolio proof ${input.label}`;
-}
-
 function classifyFailure(phase) {
   if (phase === "standalone-inspect" || phase === "adapter-preview") {
     return "standalone-cli-defect";
@@ -361,14 +339,6 @@ for (const entry of entries) {
       env = gateway.env;
       result.gateway = { mode: "local", port: gateway.port };
     }
-    const setupInputs = entry.setup?.inputs ?? [];
-    const answersPath = join(proof.packageRoot, "answers.json");
-    if (setupInputs.length > 0) {
-      const answers = Object.fromEntries(setupInputs.map((input) => [input.id, fixtureValue(input)]));
-      await writeFile(answersPath, `${JSON.stringify(answers, null, 2)}\n`);
-    }
-    const answerArgs = setupInputs.length > 0 ? ["--answers", answersPath] : [];
-
     const standaloneInspection = assertStandaloneSuccess(
       recordPhase(phases, "standalone-inspect", () =>
         runStandalone(cliEntry, ["inspect", source], env, `${entry.id} standalone inspect`),
@@ -385,34 +355,20 @@ for (const entry of entries) {
     }
 
     const adapterPreview = recordPhase(phases, "adapter-preview", () =>
-        runStandalone(
-          cliEntry,
-          [source, "--agent", "openclaw", "--dry-run"],
-          env,
-          `${entry.id} add preview`,
-          setupInputs.length > 0 ? [0, 3] : [0],
-        ),
-      );
-    if (setupInputs.length > 0) {
-      const setupPlan = adapterPreview.harness?.outcome;
-      if (
-        adapterPreview.ok !== false ||
-        setupPlan?.blockers?.length === 0 ||
-        setupPlan.blockers.some((blocker) => blocker.code !== "setup_answer_required")
-      ) {
-        throw new Error(`${entry.id} adapter preview did not expose its setup-answer gap.`);
-      }
-      result.adapterPreview = "setup-answers-unsupported";
-    } else {
-      assertAddPreview(assertStandaloneSuccess(adapterPreview, "preview"));
-      result.adapterPreview = "passed";
-    }
-
+      runStandalone(
+        cliEntry,
+        [source, "--agent", "openclaw", "--dry-run"],
+        env,
+        `${entry.id} add preview`,
+      ),
+    );
+    assertAddPreview(assertStandaloneSuccess(adapterPreview, "preview"));
+    result.adapterPreview = "passed";
     const addPlan = assertAddPreview(
       recordPhase(phases, "add-preview", () =>
         runOpenClaw(
           openClawEntry,
-          ["claws", "add", source, "--dry-run", ...answerArgs],
+          ["claws", "add", source, "--dry-run"],
           env,
           `${entry.id} add preview`,
         ),
@@ -431,7 +387,6 @@ for (const entry of entries) {
             "--yes",
             "--plan-integrity",
             addPlan.planIntegrity,
-            ...answerArgs,
           ],
           env,
           `${entry.id} add apply`,
