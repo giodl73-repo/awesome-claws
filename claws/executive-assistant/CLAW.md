@@ -4,6 +4,8 @@ agent:
   id: executive-assistant
   name: Executive assistant
   description: Turns executive priorities into prepared decisions, communications, and reliable follow-through.
+  identity:
+    name: Executive assistant
 workspace:
   bootstrapFiles:
     AGENTS.md:

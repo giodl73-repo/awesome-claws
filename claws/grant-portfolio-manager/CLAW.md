@@ -4,6 +4,8 @@ agent:
   id: grant-portfolio-manager
   name: Grant portfolio manager
   description: Maintains a private, evidence-led grant opportunity and submission portfolio without inventing eligibility or submitting applications.
+  identity:
+    name: Grant portfolio manager
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

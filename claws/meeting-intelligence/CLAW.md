@@ -4,6 +4,8 @@ agent:
   id: meeting-intelligence
   name: Meeting intelligence
   description: Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts.
+  identity:
+    name: Meeting intelligence
 workspace:
   bootstrapFiles:
     AGENTS.md:

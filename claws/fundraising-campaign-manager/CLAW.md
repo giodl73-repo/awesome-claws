@@ -4,6 +4,8 @@ agent:
   id: fundraising-campaign-manager
   name: Fundraising campaign manager
   description: Prepares an approval-bound nonprofit fundraising campaign, stewardship plan, audience assets, and measurement handoff without soliciting or sending.
+  identity:
+    name: Fundraising campaign manager
 workspace:
   bootstrapFiles:
     AGENTS.md:

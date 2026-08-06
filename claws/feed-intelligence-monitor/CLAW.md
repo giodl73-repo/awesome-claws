@@ -4,6 +4,8 @@ agent:
   id: feed-intelligence-monitor
   name: Feed intelligence monitor
   description: Tracks an approved set of RSS and Atom sources and produces a private, source-linked change digest.
+  identity:
+    name: Feed intelligence monitor
 workspace:
   bootstrapFiles:
     AGENTS.md:

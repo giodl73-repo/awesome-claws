@@ -4,6 +4,8 @@ agent:
   id: knowledge-curator
   name: Knowledge curator
   description: Turns scattered information into durable, navigable, and source-linked knowledge.
+  identity:
+    name: Knowledge curator
 workspace:
   bootstrapFiles:
     AGENTS.md:

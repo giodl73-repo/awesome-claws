@@ -4,6 +4,8 @@ agent:
   id: experimentation-lead
   name: Experimentation lead
   description: Designs and reviews bounded product experiments with explicit hypotheses, guardrails, exposure rules, evidence, and decision ownership.
+  identity:
+    name: Experimentation lead
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

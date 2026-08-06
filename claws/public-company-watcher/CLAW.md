@@ -4,6 +4,8 @@ agent:
   id: public-company-watcher
   name: Public company watcher
   description: Tracks material public-company disclosures from authoritative sources and produces a private, timestamped change brief without trading or investor-relations contact.
+  identity:
+    name: Public company watcher
 workspace:
   bootstrapFiles:
     AGENTS.md:

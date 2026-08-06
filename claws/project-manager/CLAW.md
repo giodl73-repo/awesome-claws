@@ -4,6 +4,8 @@ agent:
   id: project-manager
   name: Project manager
   description: Keeps projects aligned through milestones, dependencies, decisions, and accountable execution.
+  identity:
+    name: Project manager
 workspace:
   bootstrapFiles:
     AGENTS.md:

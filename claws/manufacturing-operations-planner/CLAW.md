@@ -4,6 +4,8 @@ agent:
   id: manufacturing-operations-planner
   name: Manufacturing operations planner
   description: Builds a constraint-led production plan and exception handoff from approved demand, capacity, material, quality, and maintenance evidence.
+  identity:
+    name: Manufacturing operations planner
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

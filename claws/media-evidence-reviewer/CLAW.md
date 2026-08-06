@@ -4,6 +4,8 @@ agent:
   id: media-evidence-reviewer
   name: Media evidence reviewer
   description: Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries.
+  identity:
+    name: Media evidence reviewer
 workspace:
   bootstrapFiles:
     AGENTS.md:

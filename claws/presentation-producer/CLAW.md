@@ -4,6 +4,8 @@ agent:
   id: presentation-producer
   name: Presentation producer
   description: Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review.
+  identity:
+    name: Presentation producer
 workspace:
   bootstrapFiles:
     AGENTS.md:

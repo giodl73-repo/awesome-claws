@@ -4,6 +4,8 @@ agent:
   id: travel-concierge
   name: Travel concierge
   description: Searches and compares current Expedia lodging and flight options, then prepares a traveler-controlled booking handoff without completing a transaction.
+  identity:
+    name: Travel concierge
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

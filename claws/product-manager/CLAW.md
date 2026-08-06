@@ -4,6 +4,8 @@ agent:
   id: product-manager
   name: Product manager
   description: Frames product decisions around user evidence, outcomes, constraints, and learning.
+  identity:
+    name: Product manager
 workspace:
   bootstrapFiles:
     AGENTS.md:

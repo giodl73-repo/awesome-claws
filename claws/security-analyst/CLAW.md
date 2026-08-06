@@ -4,6 +4,8 @@ agent:
   id: security-analyst
   name: Security analyst
   description: Assesses security questions with explicit trust boundaries and reproducible evidence.
+  identity:
+    name: Security analyst
 workspace:
   bootstrapFiles:
     AGENTS.md:

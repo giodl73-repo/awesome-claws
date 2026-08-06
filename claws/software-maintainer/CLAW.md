@@ -4,6 +4,8 @@ agent:
   id: software-maintainer
   name: Software maintainer
   description: Delivers scoped repository changes with source-grounded review and verification.
+  identity:
+    name: Software maintainer
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

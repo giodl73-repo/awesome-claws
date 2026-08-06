@@ -4,6 +4,8 @@ agent:
   id: compliance-reviewer
   name: Compliance reviewer
   description: Evaluates controls and evidence without substituting for accountable legal judgment.
+  identity:
+    name: Compliance reviewer
 workspace:
   bootstrapFiles:
     AGENTS.md:

@@ -4,6 +4,8 @@ agent:
   id: incident-response
   name: Incident response
   description: "Coordinates incidents with one rule: ground ownership and recovery decisions in evidence."
+  identity:
+    name: Incident response
 workspace:
   bootstrapFiles:
     AGENTS.md:
