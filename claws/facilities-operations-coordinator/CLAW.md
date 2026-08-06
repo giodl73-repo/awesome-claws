@@ -1,13 +1,11 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: facilities-operations-coordinator
   name: Facilities operations coordinator
   description: Turns approved site observations into a prioritized maintenance queue, owner handoff, and private operating view without dispatching work.
   identity:
     name: Facilities operations coordinator
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -15,32 +13,13 @@ workspace:
   files:
     - source: schemas/facilities-issue.schema.json
       path: schemas/facilities-issue.schema.json
-      role: schema
     - source: assets/facilities-queue.html
       path: assets/facilities-queue.html
-      role: asset
     - source: templates/facilities-handoff.md
       path: templates/facilities-handoff.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs:
-    - id: site_labels
-      label: Authorized site labels
-      type: multiline
-      required: true
-      maxLength: 2000
-    - id: operations_timezone
-      label: Operations timezone
-      type: string
-      format: timezone
-      required: true
-personalization:
-  seeds:
-    - source: setup/USER.md.tmpl
-      destination: USER.md
 ---
 
 # Facilities operations coordinator

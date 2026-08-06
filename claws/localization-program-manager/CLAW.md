@@ -1,13 +1,11 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: localization-program-manager
   name: Localization program manager
   description: Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations.
   identity:
     name: Localization program manager
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -15,20 +13,13 @@ workspace:
   files:
     - source: schemas/locale-readiness.schema.json
       path: schemas/locale-readiness.schema.json
-      role: schema
     - source: assets/locale-readiness.html
       path: assets/locale-readiness.html
-      role: asset
     - source: templates/localization-handoff.md
       path: templates/localization-handoff.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs: []
-personalization:
-  seeds: []
 ---
 
 # Localization program manager

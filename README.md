@@ -11,11 +11,12 @@ demonstrate pinned skills, a harness-native extension, a filtered OAuth MCP
 connection, or scheduled work; those capabilities remain visible in the
 consent-bound preview.
 
-Schema v2 examples show the application layering proposed in
+All examples use portable Claw schema v1 and the application layering proposed in
 [RFC 0025](https://github.com/openclaw/rfcs/pull/52): portable skills, direct MCP
-requests, schedules, setup, and inert resources stay in `CLAW.md`; native
-plugin bundles live in a selected harness profile; answers, credentials, and
-user-edited preferences remain local.
+requests, schedules, and ordinary workspace assets stay in `CLAW.md`; optional
+seed-once onboarding lives in package-root `BOOTSTRAP.md`; native plugin bundles
+and harness tuning live at conventional paths such as `profiles/openclaw.yml`.
+Answers, credentials, and user-edited preferences remain local.
 
 ## Choose a starter
 
@@ -138,20 +139,22 @@ Every starter contains:
   criteria.
 - `package.json`: package identity and the `openclaw.claw` entry point.
 
-Application examples may also contain `setup/*.tmpl` seed templates,
-role-labeled references, schemas, templates, examples, fixtures, or assets, and
-harness profiles such as `profiles/openclaw.yml`. Setup templates use only
-bounded `{{ input.<id> }}` interpolation. Applying a Claw seeds user-owned
-preferences only when absent; later package updates reconcile managed
-application content without overwriting those local edits.
+Application examples may also contain package-root `BOOTSTRAP.md`, references,
+schemas, templates, examples, fixtures, or assets declared as ordinary
+`workspace.files`, and harness profiles such as `profiles/openclaw.yml`.
+`BOOTSTRAP.md` guides the new agent through first-run questions and asks it to
+create local preference files only when absent. Package updates reconcile
+managed application content without owning or overwriting those local edits.
 
 These packages intentionally follow the experimental prompt-body contract in
 [openclaw/openclaw#113454](https://github.com/openclaw/openclaw/pull/113454): a
 non-empty `CLAW.md` body is the portable agent prompt, and the same package does
 not declare a competing `SOUL.md` workspace sidecar.
 
-The generated packages are derived from [`catalog.json`](catalog.json). Edit
-that source and run `npm run build`; do not hand-edit files under `claws/`.
+The generated packages are derived from [`catalog.json`](catalog.json), with
+their reviewed Control UI captures stored under [`screenshots/`](screenshots/).
+Edit those sources and run `npm run build`; do not hand-edit files under
+`claws/`.
 
 ## Validate the catalog
 
@@ -189,6 +192,14 @@ horizontal overflow, unnamed controls, console errors, or insufficient visual
 signal. Inline-widget and pinned-dashboard tool behavior remain separate native
 Control UI contract proofs because presentation assets must not substitute for
 the host's security and persistence semantics.
+
+`npm run screenshots` starts OpenClaw's real Control UI, opens a deterministic
+session for each Claw, and captures the same Chat, Canvas, and composer surfaces
+an OpenClaw user sees. The command writes source images under `screenshots/`
+and copies them into the generated packages. Set `SCREENSHOT_ONLY` to a
+comma-separated list of package ids while iterating. These captures prove the
+presentation path; `npm run proof:portfolio` remains the lifecycle and runtime
+wiring proof.
 
 When proof runs from a worktree whose Git metadata is not visible inside the
 execution environment, set `AWESOME_CLAWS_REVISION`, `CLAWS_CLI_REVISION`, and

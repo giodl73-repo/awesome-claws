@@ -5,7 +5,6 @@ import { fileURLToPath } from "node:url";
 import { Cron } from "croner";
 import { parseDocument } from "yaml";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
-import { validateSetupTemplateDeclarations } from "./setup-templates.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
@@ -168,7 +167,7 @@ for (const entry of catalog.entries) {
   ) {
     throw new Error(`${entry.id} must define an audience and complete example setting.`);
   }
-  const generatedFiles = [...(entry.resources ?? []), ...(entry.personalization?.seeds ?? [])];
+  const generatedFiles = entry.resources ?? [];
   if (
     generatedFiles.some(
       (file) => typeof file.content !== "string" || file.content.trim().length === 0,
@@ -176,17 +175,8 @@ for (const entry of catalog.entries) {
   ) {
     throw new Error(`${entry.id} contains missing or empty generated file content.`);
   }
-  if (entry.clawSchemaVersion === 2) {
-    try {
-      validateSetupTemplateDeclarations(
-        entry.setup?.inputs ?? [],
-        entry.personalization?.seeds ?? [],
-      );
-    } catch (error) {
-      throw new Error(`${entry.id} contains invalid setup templates: ${error.message}`, {
-        cause: error,
-      });
-    }
+  if (entry.bootstrap !== undefined && (typeof entry.bootstrap !== "string" || !entry.bootstrap.trim())) {
+    throw new Error(`${entry.id}.bootstrap must contain seed-once setup instructions.`);
   }
   const generatedSources = generatedFiles.map((file) => file.source);
   const reservedSources = [
@@ -194,6 +184,7 @@ for (const entry of catalog.entries) {
     "README.md",
     "package.json",
     "workspace/AGENTS.md",
+    "BOOTSTRAP.md",
     ...(entry.openclawProfile ? ["profiles/openclaw.yml"] : []),
   ].map(portablePathKey);
   const sourceKeys = generatedSources.map(portablePathKey);
@@ -220,9 +211,6 @@ for (const entry of catalog.entries) {
       throw new Error(`${entry.id} contains an invalid pinned ClawHub package declaration.`);
     }
     demonstratedCapabilities.add(pkg.kind);
-    if (entry.clawSchemaVersion === 2 && pkg.kind !== "skill") {
-      throw new Error(`${entry.id} schema v2 portable packages must be skills.`);
-    }
   }
   for (const [name, server] of Object.entries(entry.mcpServers ?? {})) {
     if (
@@ -281,8 +269,7 @@ for (const entry of catalog.entries) {
   if (entry.openclawProfile) {
     const tools = entry.openclawProfile?.agent?.tools;
     if (
-      ![1, 2].includes(entry.openclawProfile.schemaVersion) ||
-      (entry.openclawProfile.schemaVersion === 2 && entry.clawSchemaVersion !== 2) ||
+      entry.openclawProfile.schemaVersion !== 1 ||
       !tools ||
       typeof tools.profile !== "string" ||
       !Array.isArray(tools.alsoAllow) ||
@@ -294,7 +281,6 @@ for (const entry of catalog.entries) {
     const extensionIds = new Set();
     for (const extension of entry.openclawProfile.extensions ?? []) {
       if (
-        entry.openclawProfile.schemaVersion !== 2 ||
         !/^[a-z][a-z0-9_-]{0,63}$/.test(extension.id) ||
         extensionIds.has(extension.id) ||
         extension.kind !== "plugin" ||
@@ -316,7 +302,7 @@ for (const entry of catalog.entries) {
     ...baseExpectedFiles,
     ...(entry.openclawProfile ? ["profiles/openclaw.yml"] : []),
     ...(entry.resources ?? []).map((resource) => resource.source),
-    ...(entry.personalization?.seeds ?? []).map((seed) => seed.source),
+    ...(entry.bootstrap ? ["BOOTSTRAP.md"] : []),
   ];
   const actualFiles = (await readdir(packageRoot, { recursive: true, withFileTypes: true }))
     .filter((item) => item.isFile())
@@ -358,18 +344,17 @@ for (const entry of catalog.entries) {
     throw new Error(`${entry.id}/CLAW.md must contain valid, unique-key YAML frontmatter.`);
   }
   const manifest = document.toJS();
-  if (manifest.schemaVersion !== (entry.clawSchemaVersion ?? 1)) {
+  if (manifest.schemaVersion !== 1) {
     throw new Error(`${entry.id}/CLAW.md has the wrong schema version.`);
   }
-  const expectedMetadata = entry.openclawProfile
-    ? { "openclaw.config": "profiles/openclaw.yml" }
-    : undefined;
   if (
-    JSON.stringify(manifest.metadata) !== JSON.stringify(expectedMetadata) ||
+    manifest.metadata !== undefined ||
+    manifest.setup !== undefined ||
+    manifest.personalization !== undefined ||
     JSON.stringify(manifest.workspace?.bootstrapFiles) !==
       JSON.stringify({ "AGENTS.md": { source: "workspace/AGENTS.md" } })
   ) {
-    throw new Error(`${entry.id}/CLAW.md has inconsistent profile or bootstrap wiring.`);
+    throw new Error(`${entry.id}/CLAW.md contains retired schema-v2 fields or inconsistent bootstrap wiring.`);
   }
   for (const field of ["packages", "mcpServers", "cronJobs"]) {
     const expected = entry[field] ?? (field === "mcpServers" ? {} : []);
@@ -377,27 +362,22 @@ for (const entry of catalog.entries) {
       throw new Error(`${entry.id}/CLAW.md does not match catalog.${field}.`);
     }
   }
-  const expectedWorkspaceFiles = (entry.resources ?? []).map(({ source, path, role }) =>
-    entry.clawSchemaVersion === 2 ? { source, path, role } : { source, path },
-  );
-  if (JSON.stringify(manifest.workspace.files) !== JSON.stringify(expectedWorkspaceFiles)) {
-    throw new Error(`${entry.id}/CLAW.md does not match the workspace file schema.`);
+  const expectedWorkspaceFiles = (entry.resources ?? []).map(({ source, path }) => ({
+    source,
+    path,
+  }));
+  if (JSON.stringify(manifest.workspace?.files ?? []) !== JSON.stringify(expectedWorkspaceFiles)) {
+    throw new Error(`${entry.id}/CLAW.md does not match catalog workspace files.`);
   }
-  if (entry.clawSchemaVersion === 2) {
-    const expectedSeeds = (entry.personalization?.seeds ?? []).map(
-      ({ source, destination }) => ({ source, destination }),
-    );
-    if (
-      JSON.stringify(manifest.setup) !== JSON.stringify(entry.setup ?? { inputs: [] }) ||
-      JSON.stringify(manifest.personalization) !== JSON.stringify({ seeds: expectedSeeds })
-    ) {
-      throw new Error(`${entry.id}/CLAW.md does not match catalog application setup.`);
+  if (entry.bootstrap) {
+    const bootstrap = await readFile(join(packageRoot, "BOOTSTRAP.md"), "utf8");
+    if (bootstrap !== `${entry.bootstrap.trim()}\n`) {
+      throw new Error(`${entry.id}/BOOTSTRAP.md does not match catalog bootstrap instructions.`);
     }
   }
   const workspaceTargets = [
     ...Object.keys(manifest?.workspace?.bootstrapFiles ?? {}),
     ...(manifest?.workspace?.files ?? []).map((file) => file.path),
-    ...(manifest?.personalization?.seeds ?? []).map((seed) => seed.destination),
   ];
   if (workspaceTargets.some((path) => !isSafePackagePath(path))) {
     throw new Error(`${entry.id}/CLAW.md workspace targets must be safe relative paths.`);

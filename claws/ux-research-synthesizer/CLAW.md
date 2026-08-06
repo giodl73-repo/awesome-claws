@@ -1,13 +1,11 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: ux-research-synthesizer
   name: UX research synthesizer
   description: Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions.
   identity:
     name: UX research synthesizer
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -15,20 +13,13 @@ workspace:
   files:
     - source: schemas/research-evidence.schema.json
       path: schemas/research-evidence.schema.json
-      role: schema
     - source: assets/research-theme-map.html
       path: assets/research-theme-map.html
-      role: asset
     - source: templates/research-synthesis.md
       path: templates/research-synthesis.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs: []
-personalization:
-  seeds: []
 ---
 
 # UX research synthesizer
