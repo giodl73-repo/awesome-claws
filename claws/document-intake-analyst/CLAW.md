@@ -4,6 +4,8 @@ agent:
   id: document-intake-analyst
   name: Document intake analyst
   description: Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty.
+  identity:
+    name: Document intake analyst
 workspace:
   bootstrapFiles:
     AGENTS.md:

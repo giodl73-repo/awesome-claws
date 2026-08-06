@@ -4,6 +4,8 @@ agent:
   id: spreadsheet-analyst
   name: Spreadsheet analyst
   description: Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability.
+  identity:
+    name: Spreadsheet analyst
 workspace:
   bootstrapFiles:
     AGENTS.md:

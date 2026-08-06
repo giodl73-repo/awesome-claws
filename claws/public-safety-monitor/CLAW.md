@@ -4,6 +4,8 @@ agent:
   id: public-safety-monitor
   name: Public safety monitor
   description: Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services.
+  identity:
+    name: Public safety monitor
 workspace:
   bootstrapFiles:
     AGENTS.md:

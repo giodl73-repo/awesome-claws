@@ -92,7 +92,12 @@ ${bullets(entry.boundaries)}
 `;
   const manifest = {
     schemaVersion: entry.clawSchemaVersion ?? 1,
-    agent: { id: entry.id, name: entry.name, description: entry.description },
+    agent: {
+      id: entry.id,
+      name: entry.name,
+      description: entry.description,
+      identity: { name: entry.name },
+    },
     ...(entry.openclawProfile
       ? { metadata: { "openclaw.config": "profiles/openclaw.yml" } }
       : {}),
@@ -122,6 +127,8 @@ agent:
   id: ${entry.id}
   name: ${JSON.stringify(entry.name)}
   description: ${JSON.stringify(entry.description)}
+  identity:
+    name: ${JSON.stringify(entry.name)}
 workspace:
   bootstrapFiles:
     AGENTS.md:

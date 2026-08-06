@@ -4,6 +4,8 @@ agent:
   id: ux-research-synthesizer
   name: UX research synthesizer
   description: Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions.
+  identity:
+    name: UX research synthesizer
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

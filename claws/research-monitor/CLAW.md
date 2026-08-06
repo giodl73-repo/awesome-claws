@@ -4,6 +4,8 @@ agent:
   id: research-monitor
   name: Research monitor
   description: Runs a bounded source watch and produces a private evidence digest for a named decision area.
+  identity:
+    name: Research monitor
 workspace:
   bootstrapFiles:
     AGENTS.md:

@@ -4,6 +4,8 @@ agent:
   id: accessibility-review-coordinator
   name: Accessibility review coordinator
   description: Organizes accessibility evidence, findings, remediation ownership, and verification against an approved review scope without claiming certification.
+  identity:
+    name: Accessibility review coordinator
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

@@ -4,6 +4,8 @@ agent:
   id: data-migration-planner
   name: Data migration planner
   description: Plans a controlled data migration through mappings, validation, cutover, rollback, and accountable reconciliation without moving production data.
+  identity:
+    name: Data migration planner
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

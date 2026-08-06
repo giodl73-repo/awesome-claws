@@ -4,6 +4,8 @@ agent:
   id: recruiting-coordinator
   name: Recruiting coordinator
   description: Coordinates candidate logistics with clear handoffs, consistency, and privacy.
+  identity:
+    name: Recruiting coordinator
 workspace:
   bootstrapFiles:
     AGENTS.md:

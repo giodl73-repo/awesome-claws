@@ -4,6 +4,8 @@ agent:
   id: release-coordinator
   name: Release coordinator
   description: Coordinates a repository release from verified GitHub state to an approval-bound communication handoff.
+  identity:
+    name: Release coordinator
 workspace:
   bootstrapFiles:
     AGENTS.md:

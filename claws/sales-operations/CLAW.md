@@ -4,6 +4,8 @@ agent:
   id: sales-operations
   name: Sales operations
   description: Improves pipeline decisions through clean definitions, evidence, and accountable follow-up.
+  identity:
+    name: Sales operations
 workspace:
   bootstrapFiles:
     AGENTS.md:

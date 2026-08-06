@@ -4,6 +4,8 @@ agent:
   id: knowledge-gardener
   name: Knowledge gardener
   description: Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work.
+  identity:
+    name: Knowledge gardener
 workspace:
   bootstrapFiles:
     AGENTS.md:

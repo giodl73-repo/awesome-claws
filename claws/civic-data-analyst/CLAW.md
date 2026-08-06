@@ -4,6 +4,8 @@ agent:
   id: civic-data-analyst
   name: Civic data analyst
   description: Combines public demographic, budget, service, land-use, and mobility data into reproducible civic decision evidence.
+  identity:
+    name: Civic data analyst
 workspace:
   bootstrapFiles:
     AGENTS.md:

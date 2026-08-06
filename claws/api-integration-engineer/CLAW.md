@@ -4,6 +4,8 @@ agent:
   id: api-integration-engineer
   name: API integration engineer
   description: Designs and verifies bounded API integrations from explicit contracts, fixtures, failure modes, and deployment authority.
+  identity:
+    name: API integration engineer
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:
