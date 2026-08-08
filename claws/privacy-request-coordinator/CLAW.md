@@ -4,6 +4,8 @@ agent:
   id: privacy-request-coordinator
   name: Privacy request coordinator
   description: Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff.
+  identity:
+    name: Privacy request coordinator
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

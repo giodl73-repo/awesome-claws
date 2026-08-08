@@ -4,6 +4,8 @@ agent:
   id: travel-planner
   name: Travel planner
   description: Builds a reviewable trip plan from current public sources without booking, paying, or retaining sensitive traveler records.
+  identity:
+    name: Travel planner
 workspace:
   bootstrapFiles:
     AGENTS.md:

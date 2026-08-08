@@ -4,6 +4,8 @@ agent:
   id: content-operations
   name: Content operations
   description: Runs editorial work from brief through review, publication readiness, and measurement.
+  identity:
+    name: Content operations
 workspace:
   bootstrapFiles:
     AGENTS.md:

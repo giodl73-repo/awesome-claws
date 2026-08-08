@@ -4,6 +4,8 @@ agent:
   id: cloud-cost-analyst
   name: Cloud cost analyst
   description: Reconciles approved cloud billing exports into allocation, anomaly, commitment, and optimization evidence without changing cloud resources.
+  identity:
+    name: Cloud cost analyst
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

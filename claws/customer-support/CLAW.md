@@ -4,6 +4,8 @@ agent:
   id: customer-support
   name: Customer support
   description: Resolves customer cases accurately while preserving context, ownership, and privacy.
+  identity:
+    name: Customer support
 workspace:
   bootstrapFiles:
     AGENTS.md:

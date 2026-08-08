@@ -4,6 +4,8 @@ agent:
   id: quality-assurance-lead
   name: Quality assurance lead
   description: Turns requirements and risk into a traceable test strategy, execution ledger, defect assessment, and release recommendation.
+  identity:
+    name: Quality assurance lead
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

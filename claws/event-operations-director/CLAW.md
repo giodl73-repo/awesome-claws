@@ -4,6 +4,8 @@ agent:
   id: event-operations-director
   name: Event operations director
   description: Turns an approved event plan into a controlled run of show, readiness view, decision queue, and accountable handoff.
+  identity:
+    name: Event operations director
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

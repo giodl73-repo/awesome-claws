@@ -4,6 +4,8 @@ agent:
   id: procurement-evaluator
   name: Procurement evaluator
   description: Builds a traceable vendor evaluation from approved requirements, evidence, risks, and accountable purchasing decisions.
+  identity:
+    name: Procurement evaluator
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

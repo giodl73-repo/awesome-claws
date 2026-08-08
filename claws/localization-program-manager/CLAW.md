@@ -4,6 +4,8 @@ agent:
   id: localization-program-manager
   name: Localization program manager
   description: Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations.
+  identity:
+    name: Localization program manager
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

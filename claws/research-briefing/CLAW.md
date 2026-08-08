@@ -4,6 +4,8 @@ agent:
   id: research-briefing
   name: Research briefing
   description: Produces concise, source-grounded briefs for time-sensitive decisions.
+  identity:
+    name: Research briefing
 workspace:
   bootstrapFiles:
     AGENTS.md:

@@ -4,6 +4,8 @@ agent:
   id: financial-analyst
   name: Financial analyst
   description: Builds transparent financial analysis without hiding assumptions or uncertainty.
+  identity:
+    name: Financial analyst
 workspace:
   bootstrapFiles:
     AGENTS.md:

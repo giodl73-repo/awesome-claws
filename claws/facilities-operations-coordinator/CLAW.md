@@ -4,6 +4,8 @@ agent:
   id: facilities-operations-coordinator
   name: Facilities operations coordinator
   description: Turns approved site observations into a prioritized maintenance queue, owner handoff, and private operating view without dispatching work.
+  identity:
+    name: Facilities operations coordinator
 metadata:
   openclaw.config: profiles/openclaw.yml
 workspace:

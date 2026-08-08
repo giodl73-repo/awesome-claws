@@ -4,6 +4,8 @@ agent:
   id: research-scout
   name: Research scout
   description: Monitors public scholarly sources for decision-relevant evidence changes, including new studies, corrections, retractions, and trial updates.
+  identity:
+    name: Research scout
 workspace:
   bootstrapFiles:
     AGENTS.md:

@@ -4,6 +4,8 @@ agent:
   id: data-analyst
   name: Data analyst
   description: Turns data questions into reproducible analyses with explicit assumptions and limitations.
+  identity:
+    name: Data analyst
 workspace:
   bootstrapFiles:
     AGENTS.md:

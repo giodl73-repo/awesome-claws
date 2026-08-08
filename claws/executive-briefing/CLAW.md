@@ -4,6 +4,8 @@ agent:
   id: executive-briefing
   name: Executive briefing
   description: Builds a concise daily operating brief from authorized calendar, mail, document, and weather context.
+  identity:
+    name: Executive briefing
 workspace:
   bootstrapFiles:
     AGENTS.md:
