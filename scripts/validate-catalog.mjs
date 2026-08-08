@@ -348,6 +348,14 @@ for (const entry of catalog.entries) {
     throw new Error(`${entry.id}/CLAW.md has the wrong schema version.`);
   }
   if (
+    manifest.agent?.id !== entry.id ||
+    manifest.agent?.name !== entry.name ||
+    manifest.agent?.description !== entry.description ||
+    manifest.agent?.identity?.name !== entry.name
+  ) {
+    throw new Error(`${entry.id}/CLAW.md agent identity does not match the catalog.`);
+  }
+  if (
     manifest.metadata !== undefined ||
     manifest.setup !== undefined ||
     manifest.personalization !== undefined ||

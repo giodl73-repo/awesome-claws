@@ -124,13 +124,6 @@ async function waitForVisualResult(page, entry, session) {
   await page.evaluate(() => document.fonts.ready);
 }
 
-const openClawRoot = resolveOpenClawRoot();
-const { chromium } = loadPlaywright(openClawRoot);
-const {
-  controlUiSessionUrl,
-  installMockGateway,
-  startControlUiE2eServer,
-} = await loadControlUiHelpers(openClawRoot);
 const catalog = await readCatalog();
 const experienceCases = await readExperienceCases(catalog);
 const casesById = new Map(experienceCases.map((item) => [item.id, item]));
@@ -140,9 +133,22 @@ const requestedIds = new Set(
     .map((value) => value.trim())
     .filter(Boolean),
 );
+const unknownIds = [...requestedIds].filter(
+  (id) => !catalog.entries.some((entry) => entry.id === id),
+);
+if (unknownIds.length > 0) {
+  throw new Error(`Unknown SCREENSHOT_ONLY package ids: ${unknownIds.join(", ")}`);
+}
 const entries = requestedIds.size
   ? catalog.entries.filter((entry) => requestedIds.has(entry.id))
   : catalog.entries;
+const openClawRoot = resolveOpenClawRoot();
+const { chromium } = loadPlaywright(openClawRoot);
+const {
+  controlUiSessionUrl,
+  installMockGateway,
+  startControlUiE2eServer,
+} = await loadControlUiHelpers(openClawRoot);
 const executablePath = await findInstalledBrowser(chromium);
 const screenshotRoot = join(root, "screenshots");
 await mkdir(screenshotRoot, { recursive: true });
