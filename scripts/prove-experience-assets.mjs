@@ -92,7 +92,10 @@ async function imageSignal(buffer) {
 }
 
 const executablePath = await findInstalledBrowser();
-const browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
+const browser = await chromium.launch({
+  headless: true,
+  ...(executablePath ? { executablePath } : {}),
+});
 const results = [];
 try {
   for (const experience of visualCases) {

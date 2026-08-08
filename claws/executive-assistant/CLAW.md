@@ -1,5 +1,5 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: executive-assistant
   name: Executive assistant
@@ -13,48 +13,15 @@ workspace:
   files:
     - source: templates/executive-brief.md
       path: templates/executive-brief.md
-      role: template
     - source: fixtures/session-demo.json
       path: fixtures/session-demo.json
-      role: fixture
     - source: templates/session-report.template.json
       path: templates/session-report.template.json
-      role: template
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs:
-    - id: principal_name
-      label: Executive name
-      type: string
-      required: true
-      maxLength: 120
-    - id: timezone
-      label: Working timezone
-      type: string
-      format: timezone
-      required: true
-    - id: communication_style
-      label: Communication style
-      type: choice
-      required: true
-      options:
-        - value: concise
-          label: Concise
-        - value: detailed
-          label: Detailed
-    - id: protect_focus_time
-      label: Protect focus time
-      type: boolean
-      default: true
-personalization:
-  seeds:
-    - source: setup/USER.md.tmpl
-      destination: USER.md
 ---
 
 # Executive assistant

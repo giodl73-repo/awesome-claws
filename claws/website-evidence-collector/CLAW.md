@@ -6,8 +6,6 @@ agent:
   description: Collects and normalizes an approved set of public web pages through Firecrawl for reviewable evidence and change analysis.
   identity:
     name: Website evidence collector
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:

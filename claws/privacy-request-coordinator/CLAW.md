@@ -1,13 +1,11 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: privacy-request-coordinator
   name: Privacy request coordinator
   description: Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff.
   identity:
     name: Privacy request coordinator
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -15,20 +13,13 @@ workspace:
   files:
     - source: schemas/privacy-request.schema.json
       path: schemas/privacy-request.schema.json
-      role: schema
     - source: assets/privacy-case-dashboard.html
       path: assets/privacy-case-dashboard.html
-      role: asset
     - source: templates/privacy-review-handoff.md
       path: templates/privacy-review-handoff.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs: []
-personalization:
-  seeds: []
 ---
 
 # Privacy request coordinator

@@ -1,13 +1,11 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: data-migration-planner
   name: Data migration planner
   description: Plans a controlled data migration through mappings, validation, cutover, rollback, and accountable reconciliation without moving production data.
   identity:
     name: Data migration planner
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -15,20 +13,13 @@ workspace:
   files:
     - source: schemas/mapping.schema.json
       path: schemas/mapping.schema.json
-      role: schema
     - source: assets/migration-readiness.html
       path: assets/migration-readiness.html
-      role: asset
     - source: templates/migration-plan.md
       path: templates/migration-plan.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs: []
-personalization:
-  seeds: []
 ---
 
 # Data migration planner

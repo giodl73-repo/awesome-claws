@@ -1,13 +1,11 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: experimentation-lead
   name: Experimentation lead
   description: Designs and reviews bounded product experiments with explicit hypotheses, guardrails, exposure rules, evidence, and decision ownership.
   identity:
     name: Experimentation lead
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -15,20 +13,13 @@ workspace:
   files:
     - source: schemas/experiment-record.schema.json
       path: schemas/experiment-record.schema.json
-      role: schema
     - source: assets/experiment-readout.html
       path: assets/experiment-readout.html
-      role: asset
     - source: templates/experiment-decision.md
       path: templates/experiment-decision.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs: []
-personalization:
-  seeds: []
 ---
 
 # Experimentation lead

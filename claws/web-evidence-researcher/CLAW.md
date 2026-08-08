@@ -6,8 +6,6 @@ agent:
   description: Uses Tavily search and extraction to build bounded, source-linked evidence sets without publishing or acting on retrieved content.
   identity:
     name: Web evidence researcher
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:

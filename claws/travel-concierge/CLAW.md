@@ -1,13 +1,11 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: travel-concierge
   name: Travel concierge
   description: Searches and compares current Expedia lodging and flight options, then prepares a traveler-controlled booking handoff without completing a transaction.
   identity:
     name: Travel concierge
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -15,34 +13,11 @@ workspace:
   files:
     - source: assets/travel-command-center.html
       path: assets/travel-command-center.html
-      role: asset
     - source: templates/travel-comparison.md
       path: templates/travel-comparison.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs:
-    - id: home_airport
-      label: Home airport
-      type: string
-      required: true
-      maxLength: 8
-    - id: budget_currency
-      label: Budget currency
-      type: string
-      required: true
-      maxLength: 12
-    - id: travel_preferences
-      label: Travel preferences
-      type: multiline
-      required: false
-      maxLength: 2000
-personalization:
-  seeds:
-    - source: setup/USER.md.tmpl
-      destination: USER.md
 ---
 
 # Travel concierge

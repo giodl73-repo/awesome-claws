@@ -18,6 +18,7 @@ Builds a constraint-led production plan and exception handoff from approved dema
 - Capability boundary: The OpenClaw profile provides only workspace-limited authoring and presentation tools; it cannot connect to equipment, ERP, MES, quality, maintenance, scheduling, or workforce systems.
 - Capability boundary: The packaged control surface is a scenario visualization, not a released production schedule or safety control, and must display proposed-versus-released state prominently.
 - Capability boundary: Use stable capacity and exception widgets only after dashboard acceptance, preserve the complete shift handoff fallback, and require accountable system owners for every real mutation.
+- `BOOTSTRAP.md` guides first-run setup and creates local preferences without packaging answers.
 
 Review the package before applying it. Claws can create agents and may declare
 additional capabilities. Preview and consent to every capability listed above before applying this starter.

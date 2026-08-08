@@ -1,13 +1,11 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: api-integration-engineer
   name: API integration engineer
   description: Designs and verifies bounded API integrations from explicit contracts, fixtures, failure modes, and deployment authority.
   identity:
     name: API integration engineer
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -15,26 +13,17 @@ workspace:
   files:
     - source: references/integration-contract.md
       path: references/integration-contract.md
-      role: reference
     - source: fixtures/inventory-api.openapi.json
       path: fixtures/inventory-api.openapi.json
-      role: fixture
     - source: schemas/integration-readiness.schema.json
       path: schemas/integration-readiness.schema.json
-      role: schema
     - source: assets/integration-console.html
       path: assets/integration-console.html
-      role: asset
     - source: templates/integration-verification.md
       path: templates/integration-verification.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs: []
-personalization:
-  seeds: []
 ---
 
 # API integration engineer

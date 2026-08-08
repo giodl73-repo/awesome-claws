@@ -1,5 +1,5 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: fundraising-campaign-manager
   name: Fundraising campaign manager
@@ -13,41 +13,19 @@ workspace:
   files:
     - source: schemas/campaign-claim.schema.json
       path: schemas/campaign-claim.schema.json
-      role: schema
     - source: templates/campaign-brief.md
       path: templates/campaign-brief.md
-      role: template
     - source: templates/channel-review.md
       path: templates/channel-review.md
-      role: template
     - source: fixtures/session-demo.json
       path: fixtures/session-demo.json
-      role: fixture
     - source: templates/session-report.template.json
       path: templates/session-report.template.json
-      role: template
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs:
-    - id: organization_name
-      label: Organization name
-      type: string
-      required: true
-      maxLength: 160
-    - id: campaign_voice
-      label: Approved campaign voice
-      type: multiline
-      required: false
-      maxLength: 2000
-personalization:
-  seeds:
-    - source: setup/USER.md.tmpl
-      destination: USER.md
 ---
 
 # Fundraising campaign manager

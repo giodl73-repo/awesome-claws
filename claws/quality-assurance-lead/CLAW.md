@@ -1,13 +1,11 @@
 ---
-schemaVersion: 2
+schemaVersion: 1
 agent:
   id: quality-assurance-lead
   name: Quality assurance lead
   description: Turns requirements and risk into a traceable test strategy, execution ledger, defect assessment, and release recommendation.
   identity:
     name: Quality assurance lead
-metadata:
-  openclaw.config: profiles/openclaw.yml
 workspace:
   bootstrapFiles:
     AGENTS.md:
@@ -15,20 +13,13 @@ workspace:
   files:
     - source: schemas/test-evidence.schema.json
       path: schemas/test-evidence.schema.json
-      role: schema
     - source: assets/qa-coverage.html
       path: assets/qa-coverage.html
-      role: asset
     - source: templates/release-quality.md
       path: templates/release-quality.md
-      role: template
 packages: []
 mcpServers: {}
 cronJobs: []
-setup:
-  inputs: []
-personalization:
-  seeds: []
 ---
 
 # Quality assurance lead
