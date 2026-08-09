@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
+import { closeSync, openSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { createConnection, createServer } from "node:net";
 import { tmpdir } from "node:os";
@@ -44,6 +45,10 @@ const unknownIds = [...requestedIds].filter(
 );
 if (unknownIds.length > 0) {
   throw new Error(`Unknown PORTFOLIO_ONLY package ids: ${unknownIds.join(", ")}`);
+}
+const sourceOverride = process.env.PORTFOLIO_SOURCE_ROOT?.trim();
+if (sourceOverride && entries.length !== 1) {
+  throw new Error("PORTFOLIO_SOURCE_ROOT requires exactly one PORTFOLIO_ONLY package id.");
 }
 const runId = new Date().toISOString().replaceAll(":", "-").replaceAll(".", "-");
 const proofRoot = resolve(process.env.PORTFOLIO_PROOF_DIR ?? join(root, ".tmp", "proof", runId));
@@ -135,7 +140,36 @@ async function waitForPort(port, child) {
   throw new Error(`Local Gateway did not listen on port ${port} within 60 seconds.`);
 }
 
-async function startGateway(openClawEntry, baseEnv, id) {
+async function waitForGatewayReady(openClawEntry, env, port, child) {
+  const deadline = Date.now() + 30_000;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null) {
+      throw new Error(`Local Gateway exited before becoming healthy on port ${port}.`);
+    }
+    const remainingMs = deadline - Date.now();
+    try {
+      runOpenClaw(
+        openClawEntry,
+        [
+          "gateway",
+          "health",
+          "--port",
+          String(port),
+          "--timeout",
+          String(Math.max(1, Math.min(1000, remainingMs))),
+        ],
+        env,
+        "gateway readiness",
+      );
+      return;
+    } catch {
+      await new Promise((resolveDelay) => setTimeout(resolveDelay, Math.min(250, remainingMs)));
+    }
+  }
+  throw new Error(`Local Gateway did not become healthy on port ${port} within 30 seconds.`);
+}
+
+async function startGateway(openClawEntry, baseEnv, id, evidenceRoot) {
   const port = await reservePort();
   const token = `portfolio-proof-${id}`;
   const env = {
@@ -143,6 +177,8 @@ async function startGateway(openClawEntry, baseEnv, id) {
     OPENCLAW_GATEWAY_PORT: String(port),
     OPENCLAW_GATEWAY_TOKEN: token,
   };
+  const logPath = join(evidenceRoot, "gateway.log");
+  const logFd = openSync(logPath, "a");
   const child = spawn(
     process.execPath,
     [
@@ -159,14 +195,24 @@ async function startGateway(openClawEntry, baseEnv, id) {
       "--bind",
       "loopback",
     ],
-    { detached: process.platform !== "win32", env, stdio: "ignore" },
+    { detached: process.platform !== "win32", env, stdio: ["ignore", logFd, logFd] },
   );
-  await waitForPort(port, child);
-  return { child, env, port };
+  try {
+    await waitForPort(port, child);
+    await waitForGatewayReady(openClawEntry, env, port, child);
+    return { child, env, logFd, logPath, port };
+  } catch (error) {
+    await stopGateway({ child, logFd });
+    throw error;
+  }
 }
 
 async function stopGateway(gateway) {
-  if (!gateway || gateway.child.exitCode !== null) {
+  if (!gateway) {
+    return;
+  }
+  if (gateway.child.exitCode !== null) {
+    if (gateway.logFd !== undefined) closeSync(gateway.logFd);
     return;
   }
   const signal = (name) => {
@@ -209,6 +255,7 @@ async function stopGateway(gateway) {
       throw new Error(`Child process ${gateway.child.pid ?? "unknown"} did not terminate.`);
     }
   }
+  if (gateway.logFd !== undefined) closeSync(gateway.logFd);
 }
 
 async function startMockOpenAi(baseEnv, evidenceRoot, entry, marker) {
@@ -224,14 +271,28 @@ async function startMockOpenAi(baseEnv, evidenceRoot, entry, marker) {
     detached: process.platform !== "win32",
     stdio: "ignore",
   });
-  await waitForPort(port, child);
-  return { child, port, requestLog };
+  try {
+    await waitForPort(port, child);
+    return { child, port, requestLog };
+  } catch (error) {
+    await stopGateway({ child });
+    throw error;
+  }
 }
 
 async function configureMockModel(env, port) {
   const config = JSON.parse(await readFile(env.OPENCLAW_CONFIG_PATH, "utf8"));
   const agentEntries = config.agents?.entries;
   applyMockOpenAiModelConfig(config, { mockPort: port });
+  config.plugins = {
+    ...config.plugins,
+    enabled: true,
+    allow: [...new Set([...(config.plugins?.allow ?? []), "openai"])],
+    entries: {
+      ...config.plugins?.entries,
+      openai: { ...config.plugins?.entries?.openai, enabled: true },
+    },
+  };
   if (agentEntries) {
     config.agents.entries = agentEntries;
   }
@@ -309,7 +370,7 @@ for (const entry of entries) {
   const proof = await createProofEnvironment(runtimeRoot, entry.id);
   const evidenceRoot = join(proofRoot, entry.id);
   await mkdir(evidenceRoot, { recursive: true });
-  const source = join(root, "claws", entry.id);
+  const source = sourceOverride ? resolve(sourceOverride) : join(root, "claws", entry.id);
   let env = {
     ...proof.env,
     OPENAI_API_KEY: "awesome-claws-deterministic-proof",
@@ -320,7 +381,9 @@ for (const entry of entries) {
   let mockOpenAi;
   const result = {
     id: entry.id,
-    packagePath: relative(root, source).replaceAll("\\", "/"),
+    packagePath: sourceOverride
+      ? source
+      : relative(root, source).replaceAll("\\", "/"),
     status: "lifecycle-failed",
     phases,
     lifecycleProofMode: "local",
@@ -334,10 +397,19 @@ for (const entry of entries) {
   };
 
   try {
+    await writeFile(env.OPENCLAW_CONFIG_PATH, "{}\n", { flag: "wx" });
+    const marker = `OPENCLAW_E2E_APPLICATION_${entry.id.replaceAll("-", "_").toUpperCase()}`;
+    mockOpenAi = await startMockOpenAi(env, evidenceRoot, entry, marker);
+    env = await configureMockModel(env, mockOpenAi.port);
     if ((entry.cronJobs?.length ?? 0) > 0) {
-      gateway = await startGateway(openClawEntry, env, entry.id);
+      gateway = await startGateway(openClawEntry, env, entry.id, evidenceRoot);
       env = gateway.env;
-      result.gateway = { mode: "local", port: gateway.port };
+      result.gateway = {
+        mode: "local",
+        port: gateway.port,
+        purpose: "canonical-cron-owner",
+        log: relative(proofRoot, gateway.logPath).replaceAll("\\", "/"),
+      };
     }
     const standaloneInspection = assertStandaloneSuccess(
       recordPhase(phases, "standalone-inspect", () =>
@@ -353,6 +425,7 @@ for (const entry of entries) {
     if (openClawInspection.valid !== true || openClawInspection.manifest?.agent?.id !== entry.id) {
       throw new Error(`${entry.id} OpenClaw inspection did not preserve package identity.`);
     }
+    result.openClawPackage = { source: openClawInspection.source };
 
     const adapterPreview = recordPhase(phases, "adapter-preview", () =>
       runStandalone(
@@ -375,6 +448,24 @@ for (const entry of entries) {
       ),
     );
     result.readiness = addPlan.readiness ?? { ready: true, requirements: [] };
+    result.openClawPackage.planIntegrity = addPlan.planIntegrity;
+    result.openClawPackage.plannedClaw = addPlan.claw;
+    for (const expectedCron of entry.cronJobs ?? []) {
+      const cronAction = addPlan.actions?.find(
+        (action) => action.kind === "cronJob" && action.id === expectedCron.id,
+      );
+      const projected = cronAction?.details;
+      if (
+        cronAction?.action !== "schedule" ||
+        JSON.stringify(projected?.schedule) !== JSON.stringify(expectedCron.schedule) ||
+        projected?.session !== expectedCron.session ||
+        projected?.message !== expectedCron.message ||
+        JSON.stringify(projected?.delivery) !== JSON.stringify(expectedCron.delivery) ||
+        projected?.agentId !== entry.id
+      ) {
+        throw new Error(`${entry.id} add plan did not preserve its declared cron contract.`);
+      }
+    }
 
     const addResult = assertSchema(
       recordPhase(phases, "add-apply", () =>
@@ -398,10 +489,19 @@ for (const entry of entries) {
     if (addResult.status !== "complete" || addResult.agent?.finalId !== entry.id) {
       throw new Error(`${entry.id} add did not create the declared agent completely.`);
     }
+    let userOwnedState;
+    if (entry.bootstrap) {
+      const workspace = addResult.agent?.workspace;
+      if (typeof workspace !== "string" || workspace.length === 0) {
+        throw new Error(`${entry.id} add did not report its bootstrap workspace.`);
+      }
+      const path = join(workspace, "USER.md");
+      const content = `# Local preferences\n\nProof marker: ${entry.id}\n`;
+      await writeFile(path, content, { flag: "wx" });
+      userOwnedState = { path, content };
+      result.bootstrapState = "synthetic-user-owned-preferences-created";
+    }
 
-    const marker = `OPENCLAW_E2E_APPLICATION_${entry.id.replaceAll("-", "_").toUpperCase()}`;
-    mockOpenAi = await startMockOpenAi(env, evidenceRoot, entry, marker);
-    env = await configureMockModel(env, mockOpenAi.port);
     const applicationTurn = recordPhase(phases, "application-scenario", () =>
       runOpenClaw(
         openClawEntry,
@@ -455,6 +555,35 @@ for (const entry of entries) {
       updatePlan.summary?.blocked !== 0
     ) {
       throw new Error(`${entry.id} update did not return a no-op consent-bound preview.`);
+    }
+    const updated = assertSchema(
+      recordPhase(phases, "update-apply", () =>
+        runOpenClaw(
+          openClawEntry,
+          [
+            "claws",
+            "update",
+            entry.id,
+            "--yes",
+            "--plan-integrity",
+            updatePlan.planIntegrity,
+          ],
+          env,
+          `${entry.id} update apply`,
+        ),
+      ),
+      "openclaw.clawUpdateResult.v1",
+      `${entry.id} update`,
+    );
+    if (updated.status !== "complete" || (updated.appliedActions?.length ?? 0) !== 0) {
+      throw new Error(`${entry.id} no-op update did not complete without mutations.`);
+    }
+    if (userOwnedState) {
+      const retained = await readFile(userOwnedState.path, "utf8");
+      if (retained !== userOwnedState.content) {
+        throw new Error(`${entry.id} no-op update changed user-owned USER.md state.`);
+      }
+      result.bootstrapState = "synthetic-user-owned-preferences-preserved-after-update";
     }
 
     const doctor = recordPhase(phases, "doctor", () =>
@@ -541,6 +670,13 @@ for (const entry of entries) {
     if (removed.status !== "complete" || removed.agentRemoved !== true) {
       throw new Error(`${entry.id} removal did not complete.`);
     }
+    if (userOwnedState) {
+      const retained = await readFile(userOwnedState.path, "utf8");
+      if (retained !== userOwnedState.content) {
+        throw new Error(`${entry.id} removal changed user-owned USER.md state.`);
+      }
+      result.bootstrapState = "synthetic-user-owned-preferences-preserved-after-remove";
+    }
 
     const finalStatus = assertSchema(
       recordPhase(phases, "final-status", () =>
@@ -563,8 +699,13 @@ for (const entry of entries) {
     result.failure.provisionalOwner = classifyFailure(result.failure.phase);
   }
 
-  await stopGateway(gateway);
-  await stopGateway(mockOpenAi);
+  const cleanup = await Promise.allSettled([stopGateway(gateway), stopGateway(mockOpenAi)]);
+  const cleanupFailure = cleanup.find((outcome) => outcome.status === "rejected");
+  if (cleanupFailure?.status === "rejected") {
+    result.status = "lifecycle-failed";
+    result.failure = failureRecord("cleanup", cleanupFailure.reason);
+    result.failure.provisionalOwner = "proof-harness-defect";
+  }
 
   await writeFile(join(evidenceRoot, "result.json"), `${JSON.stringify(result, null, 2)}\n`);
   results.push(result);
@@ -603,6 +744,8 @@ console.log(
         status: result.status,
         adapterPreview: result.adapterPreview,
         applicationScenario: result.applicationScenario.status,
+        openClawPackage: result.openClawPackage,
+        ...(result.bootstrapState ? { bootstrapState: result.bootstrapState } : {}),
         ...(result.failure
           ? {
               failure: {

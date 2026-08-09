@@ -24,8 +24,10 @@ There are two useful reference points in the collection:
 
 - **Golden application example:** [Travel concierge](claws/travel-concierge)
   shows the broad application shape: guided setup, user-owned preferences, a
-  managed comparison template, a least-privilege OpenClaw profile, and a real
-  Expedia extension with explicit authentication and transaction boundaries.
+  managed comparison template and schema, a least-privilege OpenClaw profile,
+  a filtered Mapbox OAuth MCP connection, scheduled readiness refresh, and a
+  real Expedia extension with explicit authentication and transaction
+  boundaries.
   Start here to understand how the pieces form one finished agent application.
 - **Copyable reference:** [Executive assistant](claws/executive-assistant) is
   intentionally smaller and dependency-free. Copy it when authoring a new
@@ -80,7 +82,7 @@ Unsupported clients lose presentation, not meaning or control.
 | [Release coordinator](claws/release-coordinator) | Engineering | GitHub + Slack skills | Approval-bound release coordination |
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | Analysis | Blogwatcher skill, weekday cron | Curated source-feed deltas |
 | [Travel planner](claws/travel-planner) | Productivity | Open-Meteo + Travel Checklist skills | Public-source trip planning |
-| [Travel concierge](claws/travel-concierge) (Golden example) | Productivity | Guided setup, Expedia extension, visual asset, dashboard profile | Live Expedia search and traveler-controlled booking handoff |
+| [Travel concierge](claws/travel-concierge) (Golden example) | Productivity | Guided setup, Expedia extension, filtered Mapbox OAuth MCP, daily readiness cron, schema, visual asset, dashboard profile | Live travel search and traveler-controlled booking handoff |
 | [Web evidence researcher](claws/web-evidence-researcher) | Analysis | Tavily plugin, minimal tool profile | Bounded search and source extraction |
 | [Website evidence collector](claws/website-evidence-collector) | Analysis | Firecrawl plugin, minimal tool profile | Allowlisted public website collection |
 | [Video concept producer](claws/video-concept-producer) | Productivity | PixVerse provider, minimal tool profile | Private review-first video generation |
@@ -175,8 +177,10 @@ OpenClaw adapter in disposable state.
 
 `npm run proof:portfolio` runs each package in a separate OpenClaw home through
 standalone and OpenClaw inspection, consent-bound add, a deterministic real
-agent turn, status, update preview, doctor, export inspection, selective
-removal, and final cleanup. The turn uses OpenClaw's OpenAI-compatible E2E
+agent turn, status, no-op update preview and apply, doctor, export inspection,
+selective removal, and final cleanup. For bootstrap-bearing examples it also
+creates synthetic user-owned preferences and proves update and removal preserve
+them; bootstrap interview quality remains a separate model-behavior lane. The turn uses OpenClaw's OpenAI-compatible E2E
 fixture and asserts that the package's domain request, identity, instructions,
 tool surface, and expected handoff cross the actual agent runtime. This proves
 runtime wiring, not subjective model quality; external, credentialed, billable,
@@ -184,6 +188,17 @@ and live-model behavior require explicit provider lanes. The command retains a
 machine-readable record under `.tmp/proof/` and exits nonzero if any phase fails.
 Set `PORTFOLIO_ONLY` to a comma-separated list of package ids for a focused
 reproduction without changing the all-package default.
+
+`npm run proof:golden` proves the Golden Travel Concierge across repository
+boundaries. Point `OPENCLAW_CLI_ENTRY` and `CLAWHUB_CLI_ENTRY` at the exact
+implementation checkouts under review. The command validates and previews the
+checked-out Golden source, builds it twice with OpenClaw, requires byte-identical
+artifacts, and publishes and downloads those exact bytes through an
+authenticated disposable local registry using the real ClawHub client. It then
+uses structured tar parsing, verifies every packaged byte against this checkout,
+and runs the verified package through the complete portfolio lifecycle. It
+requires the same `CLAWS_CLI_ENTRY` setting as `proof:portfolio`; it never
+publishes to the public registry or exercises live provider credentials.
 
 With `OPENCLAW_ROOT` pointing to a built OpenClaw checkout,
 `npm run proof:experience` renders every X4/X5 asset through Playwright at
