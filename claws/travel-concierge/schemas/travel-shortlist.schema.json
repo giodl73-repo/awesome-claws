@@ -21,7 +21,11 @@
           "name": { "type": "string", "minLength": 1, "maxLength": 200 },
           "provider": { "const": "Expedia Group" },
           "retrievedAt": { "type": "string", "format": "date-time" },
-          "sourceUrl": { "type": "string", "format": "uri" },
+          "sourceUrl": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://(?:www\\.)?expedia\\.com(?:/|$)"
+          },
           "priceSummary": { "type": "string", "minLength": 1, "maxLength": 500 },
           "caveats": { "type": "array", "items": { "type": "string", "maxLength": 500 } }
         }

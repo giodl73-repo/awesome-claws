@@ -45,3 +45,27 @@ test("the Golden travel shortlist schema rejects empty and unsourced options", (
     false,
   );
 });
+
+test("the Golden travel shortlist schema rejects unsafe and unrelated source URLs", () => {
+  assert.equal(
+    validate({
+      ...validShortlist,
+      options: [{ ...validShortlist.options[0], sourceUrl: "javascript:alert(1)" }],
+    }),
+    false,
+  );
+  assert.equal(
+    validate({
+      ...validShortlist,
+      options: [{ ...validShortlist.options[0], sourceUrl: "https://example.com/hotel" }],
+    }),
+    false,
+  );
+  assert.equal(
+    validate({
+      ...validShortlist,
+      options: [{ ...validShortlist.options[0], sourceUrl: "http://www.expedia.com/hotel" }],
+    }),
+    false,
+  );
+});

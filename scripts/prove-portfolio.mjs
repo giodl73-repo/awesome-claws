@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
+import { closeSync, openSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { createConnection, createServer } from "node:net";
 import { tmpdir } from "node:os";
@@ -139,7 +140,36 @@ async function waitForPort(port, child) {
   throw new Error(`Local Gateway did not listen on port ${port} within 60 seconds.`);
 }
 
-async function startGateway(openClawEntry, baseEnv, id) {
+async function waitForGatewayReady(openClawEntry, env, port, child) {
+  const deadline = Date.now() + 30_000;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null) {
+      throw new Error(`Local Gateway exited before becoming healthy on port ${port}.`);
+    }
+    const remainingMs = deadline - Date.now();
+    try {
+      runOpenClaw(
+        openClawEntry,
+        [
+          "gateway",
+          "health",
+          "--port",
+          String(port),
+          "--timeout",
+          String(Math.max(1, Math.min(1000, remainingMs))),
+        ],
+        env,
+        "gateway readiness",
+      );
+      return;
+    } catch {
+      await new Promise((resolveDelay) => setTimeout(resolveDelay, Math.min(250, remainingMs)));
+    }
+  }
+  throw new Error(`Local Gateway did not become healthy on port ${port} within 30 seconds.`);
+}
+
+async function startGateway(openClawEntry, baseEnv, id, evidenceRoot) {
   const port = await reservePort();
   const token = `portfolio-proof-${id}`;
   const env = {
@@ -147,6 +177,8 @@ async function startGateway(openClawEntry, baseEnv, id) {
     OPENCLAW_GATEWAY_PORT: String(port),
     OPENCLAW_GATEWAY_TOKEN: token,
   };
+  const logPath = join(evidenceRoot, "gateway.log");
+  const logFd = openSync(logPath, "a");
   const child = spawn(
     process.execPath,
     [
@@ -163,14 +195,24 @@ async function startGateway(openClawEntry, baseEnv, id) {
       "--bind",
       "loopback",
     ],
-    { detached: process.platform !== "win32", env, stdio: "ignore" },
+    { detached: process.platform !== "win32", env, stdio: ["ignore", logFd, logFd] },
   );
-  await waitForPort(port, child);
-  return { child, env, port };
+  try {
+    await waitForPort(port, child);
+    await waitForGatewayReady(openClawEntry, env, port, child);
+    return { child, env, logFd, logPath, port };
+  } catch (error) {
+    await stopGateway({ child, logFd });
+    throw error;
+  }
 }
 
 async function stopGateway(gateway) {
-  if (!gateway || gateway.child.exitCode !== null) {
+  if (!gateway) {
+    return;
+  }
+  if (gateway.child.exitCode !== null) {
+    if (gateway.logFd !== undefined) closeSync(gateway.logFd);
     return;
   }
   const signal = (name) => {
@@ -213,6 +255,7 @@ async function stopGateway(gateway) {
       throw new Error(`Child process ${gateway.child.pid ?? "unknown"} did not terminate.`);
     }
   }
+  if (gateway.logFd !== undefined) closeSync(gateway.logFd);
 }
 
 async function startMockOpenAi(baseEnv, evidenceRoot, entry, marker) {
@@ -228,14 +271,28 @@ async function startMockOpenAi(baseEnv, evidenceRoot, entry, marker) {
     detached: process.platform !== "win32",
     stdio: "ignore",
   });
-  await waitForPort(port, child);
-  return { child, port, requestLog };
+  try {
+    await waitForPort(port, child);
+    return { child, port, requestLog };
+  } catch (error) {
+    await stopGateway({ child });
+    throw error;
+  }
 }
 
 async function configureMockModel(env, port) {
   const config = JSON.parse(await readFile(env.OPENCLAW_CONFIG_PATH, "utf8"));
   const agentEntries = config.agents?.entries;
   applyMockOpenAiModelConfig(config, { mockPort: port });
+  config.plugins = {
+    ...config.plugins,
+    enabled: true,
+    allow: [...new Set([...(config.plugins?.allow ?? []), "openai"])],
+    entries: {
+      ...config.plugins?.entries,
+      openai: { ...config.plugins?.entries?.openai, enabled: true },
+    },
+  };
   if (agentEntries) {
     config.agents.entries = agentEntries;
   }
@@ -345,9 +402,14 @@ for (const entry of entries) {
     mockOpenAi = await startMockOpenAi(env, evidenceRoot, entry, marker);
     env = await configureMockModel(env, mockOpenAi.port);
     if ((entry.cronJobs?.length ?? 0) > 0) {
-      gateway = await startGateway(openClawEntry, env, entry.id);
+      gateway = await startGateway(openClawEntry, env, entry.id, evidenceRoot);
       env = gateway.env;
-      result.gateway = { mode: "local", port: gateway.port, purpose: "canonical-cron-owner" };
+      result.gateway = {
+        mode: "local",
+        port: gateway.port,
+        purpose: "canonical-cron-owner",
+        log: relative(proofRoot, gateway.logPath).replaceAll("\\", "/"),
+      };
     }
     const standaloneInspection = assertStandaloneSuccess(
       recordPhase(phases, "standalone-inspect", () =>
@@ -637,8 +699,13 @@ for (const entry of entries) {
     result.failure.provisionalOwner = classifyFailure(result.failure.phase);
   }
 
-  await stopGateway(gateway);
-  await stopGateway(mockOpenAi);
+  const cleanup = await Promise.allSettled([stopGateway(gateway), stopGateway(mockOpenAi)]);
+  const cleanupFailure = cleanup.find((outcome) => outcome.status === "rejected");
+  if (cleanupFailure?.status === "rejected") {
+    result.status = "lifecycle-failed";
+    result.failure = failureRecord("cleanup", cleanupFailure.reason);
+    result.failure.provisionalOwner = "proof-harness-defect";
+  }
 
   await writeFile(join(evidenceRoot, "result.json"), `${JSON.stringify(result, null, 2)}\n`);
   results.push(result);
