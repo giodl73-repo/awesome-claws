@@ -34,11 +34,13 @@ function capabilitySummary(entry) {
   const capabilities = [];
   const tools = entry.openclawProfile?.agent?.tools;
   if (tools) {
-    const additions = tools.alsoAllow?.length
-      ? ` plus ${tools.alsoAllow.map((tool) => `\`${tool}\``).join(", ")}`
+    const policy = tools.allow?.length
+      ? ` bounded to ${tools.allow.map((tool) => `\`${tool}\``).join(", ")}`
+      : tools.alsoAllow?.length
+        ? ` plus ${tools.alsoAllow.map((tool) => `\`${tool}\``).join(", ")}`
       : "";
     const filesystem = tools.fs?.workspaceOnly ? " with workspace-only filesystem access" : "";
-    capabilities.push(`OpenClaw tool profile \`${tools.profile}\`${additions}${filesystem}`);
+    capabilities.push(`OpenClaw tool profile \`${tools.profile}\`${policy}${filesystem}`);
   }
   for (const pkg of entry.packages ?? []) {
     capabilities.push(`${pkg.kind} \`${pkg.ref}@${pkg.version}\``);

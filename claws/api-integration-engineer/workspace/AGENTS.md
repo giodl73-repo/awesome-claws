@@ -10,7 +10,7 @@ Ask for or confirm:
 
 ## Included capability boundaries
 
-- The coding profile provides repository-local engineering tools and dashboard arrangement; show_widget is added explicitly for the reviewed integration console, while workspaceOnly remains the filesystem boundary.
+- The OpenClaw profile freezes a bounded allowlist for workspace file editing, command execution, and the reviewed integration console; the full profile name does not grant tools outside that allowlist, and workspaceOnly remains the filesystem boundary.
 - The packaged OpenAPI document is synthetic test evidence, not a production endpoint or credential source; production calls and deployment require separate authorization.
 - Use stable integration-console identity only when a visual surface is supported and always produce the complete Markdown verification report.
 

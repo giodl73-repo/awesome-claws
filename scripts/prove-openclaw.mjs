@@ -1,5 +1,4 @@
-import { mkdtemp, rm } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
 import {
   assertAddPreview,
@@ -30,7 +29,8 @@ const unknownIds = [...requestedIds].filter(
 if (unknownIds.length > 0) {
   throw new Error(`Unknown PORTFOLIO_ONLY package ids: ${unknownIds.join(", ")}`);
 }
-const proofRoot = await mkdtemp(join(tmpdir(), "awesome-claws-openclaw-proof-"));
+await mkdir(join(root, ".tmp"), { recursive: true });
+const proofRoot = await mkdtemp(join(root, ".tmp", "openclaw-proof-"));
 const previews = [];
 
 try {

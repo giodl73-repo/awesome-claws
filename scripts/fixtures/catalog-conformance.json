@@ -1,0 +1,158 @@
+{
+  "accepted": [
+    {
+      "name": "minimal profile without additive tools",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "minimal",
+            "fs": {
+              "workspaceOnly": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "bounded coding profile with concrete MCP tool",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "coding",
+            "allow": [
+              "read",
+              "write",
+              "github__get_file_contents"
+            ],
+            "fs": {
+              "workspaceOnly": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "bounded full profile with extension and current heartbeat",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "full",
+            "allow": [
+              "read",
+              "diffs",
+              "show_widget"
+            ],
+            "fs": {
+              "workspaceOnly": true
+            }
+          },
+          "heartbeat": {
+            "every": "30m",
+            "lightContext": true,
+            "isolatedSession": false,
+            "timeoutSeconds": 30
+          }
+        },
+        "extensions": [
+          {
+            "id": "diffs",
+            "kind": "plugin",
+            "format": "openclaw",
+            "source": "clawhub",
+            "ref": "@openclaw/diffs",
+            "version": "2026.7.1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ordinary string metadata",
+      "manifest": {
+        "metadata": {
+          "catalog.owner": "awesome-claws"
+        }
+      }
+    }
+  ],
+  "rejected": [
+    {
+      "name": "coding profile without bounded allow",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "coding",
+            "fs": {
+              "workspaceOnly": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "profile combining allow and alsoAllow",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "minimal",
+            "allow": [
+              "session_status"
+            ],
+            "alsoAllow": [
+              "read"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "duplicate extension identity",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {},
+        "extensions": [
+          {
+            "id": "diffs",
+            "kind": "plugin",
+            "format": "openclaw",
+            "source": "clawhub",
+            "ref": "@openclaw/diffs",
+            "version": "2026.7.1"
+          },
+          {
+            "id": "diffs",
+            "kind": "plugin",
+            "format": "openclaw",
+            "source": "clawhub",
+            "ref": "@openclaw/other-diffs",
+            "version": "2026.7.2"
+          }
+        ]
+      }
+    },
+    {
+      "name": "retired heartbeat skipWhenBusy field",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "heartbeat": {
+            "every": "30m",
+            "skipWhenBusy": true
+          }
+        }
+      }
+    },
+    {
+      "name": "retired metadata profile pointer",
+      "manifest": {
+        "metadata": {
+          "openclaw.config": "profiles/openclaw.yml"
+        }
+      }
+    }
+  ]
+}

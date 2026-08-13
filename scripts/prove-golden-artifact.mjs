@@ -1,7 +1,6 @@
 import { spawn, spawnSync } from "node:child_process";
 import { createServer } from "node:http";
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
 import { dirname, extname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -22,7 +21,8 @@ const runId = new Date().toISOString().replaceAll(":", "-").replaceAll(".", "-")
 const proofRoot = resolve(
   process.env.GOLDEN_PROOF_DIR ?? join(root, ".tmp", "proof", `golden-${runId}`),
 );
-const runtimeRoot = await mkdtemp(join(tmpdir(), "awesome-claws-golden-registry-"));
+await mkdir(join(root, ".tmp"), { recursive: true });
+const runtimeRoot = await mkdtemp(join(root, ".tmp", "golden-registry-"));
 const artifactPath = join(proofRoot, "build", "travel-concierge-0.1.0.tgz");
 const comparisonArtifactPath = join(proofRoot, "build", "travel-concierge-0.1.0-second.tgz");
 const downloadedPath = join(proofRoot, "travel-concierge-0.1.0.tgz");

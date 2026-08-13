@@ -45,7 +45,8 @@ export async function readExperienceCases(catalog) {
       continue;
     }
     const resources = new Set((entry.resources ?? []).map((resource) => resource.path));
-    const tools = new Set(entry.openclawProfile?.agent?.tools?.alsoAllow ?? []);
+    const toolPolicy = entry.openclawProfile?.agent?.tools;
+    const tools = new Set([...(toolPolicy?.allow ?? []), ...(toolPolicy?.alsoAllow ?? [])]);
     if (!resources.has(item.asset) || !tools.has("show_widget") || !item.fallback) {
       throw new Error(`${item.id} does not satisfy its visual Experience declaration.`);
     }

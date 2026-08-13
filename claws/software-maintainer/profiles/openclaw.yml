@@ -1,9 +1,17 @@
 schemaVersion: 1
 agent:
   tools:
-    profile: coding
-    alsoAllow:
+    profile: full
+    allow:
+      - read
+      - write
+      - edit
+      - apply_patch
+      - exec
+      - process
       - diffs
+      - github__get_file_contents
+      - github__search_code
     fs:
       workspaceOnly: true
 extensions:

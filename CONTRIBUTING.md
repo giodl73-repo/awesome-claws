@@ -32,6 +32,16 @@ or changing the portable Claw contract requires maintainer approval.
    skills or harness extensions.
 8. Regenerate and validate the repository.
 
+OpenClaw profile declarations must preserve consent-bounded authority:
+
+- use `alsoAllow` only to add bounded tools to a selected profile;
+- use `allow` to freeze the exact surface, never together with `alsoAllow`;
+- give `full`, `coding`, and `messaging` Claw profiles the explicit bounded
+  allowlist required by OpenClaw, using exact `server__tool` names for MCP;
+- keep native extensions unique and exactly versioned; and
+- use conventional `profiles/openclaw.yml`, not retired
+  `metadata.openclaw.config` or retired heartbeat keys.
+
 ```bash
 npm run build
 npm run check
@@ -40,6 +50,8 @@ npm run check
 Set `CLAWS_CLI_ENTRY` to a built standalone Claws CLI and run `npm run inspect`
 when changing manifest behavior. Set `OPENCLAW_CLI_ENTRY` as well and run
 `npm run proof:openclaw` when changing compatibility with OpenClaw's planner.
+Static checks, dry runs, local registries, and deterministic provider fixtures
+must be described as such; they are not live-provider evidence.
 
 ## Pull requests
 

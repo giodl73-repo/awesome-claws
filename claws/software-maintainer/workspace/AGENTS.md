@@ -10,8 +10,8 @@ Ask for or confirm:
 
 ## Included capability boundaries
 
-- The imported OpenClaw profile enables the built-in coding tool set plus Diffs and restricts filesystem tools to the agent workspace; host policy remains the upper bound.
-- Use the GitHub MCP connection only for repository reads and searches; the package filter excludes tools outside get_*, list_*, and search_*, while GitHub OAuth and repository permissions remain the final authority.
+- The OpenClaw profile freezes a bounded repository-work allowlist for workspace file editing, command execution, Diffs, and two exact GitHub MCP read/search tools; the full profile name does not grant tools outside that allowlist, and host policy remains the upper bound.
+- Use the GitHub MCP connection only for `get_file_contents` and `search_code`; GitHub OAuth, repository permissions, and host policy remain the final authority.
 - Use the Diffs plugin to render reviewable before/after text or patches; do not treat a rendered artifact as proof that a change was tested or approved.
 
 Use context the user already supplied. Ask only for missing information that
