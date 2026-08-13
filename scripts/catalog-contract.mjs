@@ -80,9 +80,106 @@ const profileTools = new Map([
   ["full", null],
 ]);
 const profilesWithBundleMcp = new Set(["coding", "messaging"]);
+const staticToolGroups = new Map([
+  [
+    "group:openclaw",
+    [
+      "code_execution",
+      "web_search",
+      "web_fetch",
+      "x_search",
+      "memory_search",
+      "memory_get",
+      "sessions",
+      "sessions_list",
+      "sessions_history",
+      "sessions_search",
+      "conversations_list",
+      "conversations_send",
+      "conversations_turn",
+      "sessions_send",
+      "sessions_spawn",
+      "agents_wait",
+      "sessions_yield",
+      "subagents",
+      "session_status",
+      "suggest_task",
+      "dismiss_task",
+      "browser",
+      "screen",
+      "dashboard",
+      "terminal",
+      "show_widget",
+      "message",
+      "heartbeat_respond",
+      "automations",
+      "gateway",
+      "nodes",
+      "computer",
+      "mobile_ui",
+      "agents_list",
+      "get_goal",
+      "create_goal",
+      "update_goal",
+      "update_plan",
+      "ask_user",
+      "skill_workshop",
+      "image",
+      "image_generate",
+      "music_generate",
+      "video_generate",
+      "tts",
+    ],
+  ],
+  ["group:fs", ["read", "write", "edit", "apply_patch"]],
+  ["group:runtime", ["exec", "process", "code_execution"]],
+  ["group:web", ["web_search", "web_fetch", "x_search"]],
+  ["group:memory", ["memory_search", "memory_get"]],
+  [
+    "group:sessions",
+    [
+      "sessions",
+      "sessions_list",
+      "sessions_history",
+      "sessions_search",
+      "conversations_list",
+      "conversations_send",
+      "conversations_turn",
+      "sessions_send",
+      "sessions_spawn",
+      "agents_wait",
+      "sessions_yield",
+      "subagents",
+      "session_status",
+      "suggest_task",
+      "dismiss_task",
+    ],
+  ],
+  ["group:ui", ["browser", "screen", "dashboard", "terminal", "canvas", "show_widget"]],
+  ["group:messaging", ["message"]],
+  ["group:automation", ["heartbeat_respond", "automations", "gateway"]],
+  ["group:nodes", ["nodes", "computer", "mobile_ui"]],
+  [
+    "group:agents",
+    [
+      "agents_list",
+      "get_goal",
+      "create_goal",
+      "update_goal",
+      "update_plan",
+      "ask_user",
+      "skill_workshop",
+    ],
+  ],
+  ["group:media", ["image", "image_generate", "music_generate", "video_generate", "tts"]],
+]);
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function isNonEmptyString(value) {
+  return typeof value === "string" && value.length > 0 && value === value.trim();
 }
 
 function hasOnlyKeys(value, allowed) {
@@ -92,6 +189,30 @@ function hasOnlyKeys(value, allowed) {
 function normalizeToolName(value) {
   const normalized = value.trim().toLowerCase();
   return toolAliases.get(normalized) ?? normalized;
+}
+
+function isConcreteMcpToolName(value) {
+  return value.length <= 64 && concreteMcpToolPattern.test(value);
+}
+
+function isValidDuration(value) {
+  if (!isNonEmptyString(value)) return false;
+  const units = { ms: 1, s: 1_000, m: 60_000, h: 3_600_000, d: 86_400_000 };
+  const normalized = value.toLowerCase();
+  const single = /^(\d+(?:\.\d+)?)(ms|s|m|h|d)?$/.exec(normalized);
+  if (single) {
+    return Number.isSafeInteger(Math.round(Number(single[1]) * units[single[2] ?? "m"]));
+  }
+  let totalMs = 0;
+  let consumed = 0;
+  for (const match of normalized.matchAll(/(\d+(?:\.\d+)?)(ms|s|m|h|d)/g)) {
+    if (match.index !== consumed) return false;
+    totalMs += Number(match[1]) * units[match[2]];
+    consumed += match[0].length;
+  }
+  return (
+    consumed === normalized.length && consumed > 0 && Number.isSafeInteger(Math.round(totalMs))
+  );
 }
 
 function validateToolList(value, path) {
@@ -110,9 +231,8 @@ function validateToolList(value, path) {
         normalizeToolName(grant) === "bundle-mcp" ||
         normalizeToolName(grant) === "group:plugins" ||
         (normalizeToolName(grant).startsWith("group:") &&
-          !["group:fs", "group:runtime", "group:web", "group:memory", "group:sessions"].includes(
-            normalizeToolName(grant),
-          )),
+          !staticToolGroups.has(normalizeToolName(grant))) ||
+        (normalizeToolName(grant).includes("__") && !isConcreteMcpToolName(grant)),
     ) ||
     new Set(value.map(normalizeToolName)).size !== value.length
   ) {
@@ -122,10 +242,14 @@ function validateToolList(value, path) {
 
 function isProfileToolGrant(profile, grant) {
   const normalized = normalizeToolName(grant);
-  if (profilesWithBundleMcp.has(profile) && concreteMcpToolPattern.test(grant)) {
+  if (profilesWithBundleMcp.has(profile) && isConcreteMcpToolName(grant)) {
     return true;
   }
-  return profileTools.get(profile)?.has(normalized) === true;
+  const group = staticToolGroups.get(normalized);
+  return (
+    profileTools.get(profile)?.has(normalized) === true ||
+    group?.some((tool) => profileTools.get(profile)?.has(tool) === true) === true
+  );
 }
 
 export function validateOpenClawProfile(profile, label = "OpenClaw profile") {
@@ -142,6 +266,30 @@ export function validateOpenClawProfile(profile, label = "OpenClaw profile") {
     ])
   ) {
     throw new Error(`${label} must use the strict OpenClaw profile schema v1 shape.`);
+  }
+
+  const groupChat = profile.agent.groupChat;
+  if (
+    groupChat !== undefined &&
+    (!hasOnlyKeys(groupChat, ["mentionPatterns"]) ||
+      (groupChat.mentionPatterns !== undefined &&
+        (!Array.isArray(groupChat.mentionPatterns) ||
+          groupChat.mentionPatterns.length === 0 ||
+          groupChat.mentionPatterns.some((entry) => !isNonEmptyString(entry)))))
+  ) {
+    throw new Error(`${label}.agent.groupChat contains invalid mention patterns.`);
+  }
+
+  const sandbox = profile.agent.sandbox;
+  if (
+    sandbox !== undefined &&
+    (!hasOnlyKeys(sandbox, ["mode", "scope", "workspaceAccess"]) ||
+      (sandbox.mode !== undefined && !["off", "non-main", "all"].includes(sandbox.mode)) ||
+      (sandbox.scope !== undefined && !["session", "agent", "shared"].includes(sandbox.scope)) ||
+      (sandbox.workspaceAccess !== undefined &&
+        !["none", "ro", "rw"].includes(sandbox.workspaceAccess)))
+  ) {
+    throw new Error(`${label}.agent.sandbox contains invalid OpenClaw settings.`);
   }
 
   const tools = profile.agent.tools;
@@ -190,23 +338,80 @@ export function validateOpenClawProfile(profile, label = "OpenClaw profile") {
     }
   }
 
+  const memory = profile.agent.memory;
+  const search = memory?.search;
+  if (
+    memory !== undefined &&
+    (!hasOnlyKeys(memory, ["search"]) ||
+      (search !== undefined &&
+        (!hasOnlyKeys(search, ["enabled", "rememberAcrossConversations", "sources"]) ||
+          (search.enabled !== undefined && typeof search.enabled !== "boolean") ||
+          (search.rememberAcrossConversations !== undefined &&
+            typeof search.rememberAcrossConversations !== "boolean") ||
+          (search.sources !== undefined &&
+            (!Array.isArray(search.sources) ||
+              search.sources.length === 0 ||
+              search.sources.some((source) => !["memory", "sessions"].includes(source)))) ||
+          (search.sources?.includes("sessions") &&
+            search.rememberAcrossConversations !== true))))
+  ) {
+    throw new Error(`${label}.agent.memory contains invalid OpenClaw search settings.`);
+  }
+
   const heartbeat = profile.agent.heartbeat;
   if (
     heartbeat !== undefined &&
-    !hasOnlyKeys(heartbeat, [
+    (!hasOnlyKeys(heartbeat, [
       "every",
       "activeHours",
       "lightContext",
       "isolatedSession",
       "timeoutSeconds",
-    ])
+    ]) ||
+      (heartbeat.every !== undefined && !isValidDuration(heartbeat.every)) ||
+      (heartbeat.lightContext !== undefined && typeof heartbeat.lightContext !== "boolean") ||
+      (heartbeat.isolatedSession !== undefined &&
+        typeof heartbeat.isolatedSession !== "boolean") ||
+      (heartbeat.timeoutSeconds !== undefined &&
+        (!Number.isInteger(heartbeat.timeoutSeconds) || heartbeat.timeoutSeconds <= 0)) ||
+      (heartbeat.activeHours !== undefined &&
+        (!hasOnlyKeys(heartbeat.activeHours, ["start", "end", "timezone"]) ||
+          (heartbeat.activeHours.start !== undefined &&
+            !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(heartbeat.activeHours.start)) ||
+          (heartbeat.activeHours.end !== undefined &&
+            !/^(?:(?:[01]\d|2[0-3]):[0-5]\d|24:00)$/.test(heartbeat.activeHours.end)) ||
+          (heartbeat.activeHours.timezone !== undefined &&
+            (() => {
+              try {
+                new Intl.DateTimeFormat("en-US", {
+                  timeZone: heartbeat.activeHours.timezone,
+                }).format();
+                return false;
+              } catch {
+                return true;
+              }
+            })()))))
   ) {
-    throw new Error(`${label}.agent.heartbeat contains retired or unknown fields.`);
+    throw new Error(`${label}.agent.heartbeat contains invalid OpenClaw settings.`);
+  }
+
+  const humanDelay = profile.agent.humanDelay;
+  if (
+    humanDelay !== undefined &&
+    (!hasOnlyKeys(humanDelay, ["mode", "minMs", "maxMs"]) ||
+      (humanDelay.mode !== undefined && !["off", "natural", "custom"].includes(humanDelay.mode)) ||
+      ["minMs", "maxMs"].some(
+        (field) =>
+          humanDelay[field] !== undefined &&
+          (!Number.isInteger(humanDelay[field]) || humanDelay[field] < 0),
+      ))
+  ) {
+    throw new Error(`${label}.agent.humanDelay contains invalid OpenClaw settings.`);
   }
 
   const extensionIds = new Set();
   const extensionRefs = new Set();
-  const extensions = profile.extensions ?? [];
+  const extensions = profile.extensions === undefined ? [] : profile.extensions;
   if (!Array.isArray(extensions)) {
     throw new Error(`${label}.extensions must be an array.`);
   }
@@ -248,4 +453,3 @@ export function validateManifestMetadata(manifest, label = "Claw manifest") {
     }
   }
 }
-

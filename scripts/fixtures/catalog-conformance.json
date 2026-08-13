@@ -34,6 +34,20 @@
       }
     },
     {
+      "name": "bounded coding profile with static tool group",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "coding",
+            "allow": [
+              "group:fs"
+            ]
+          }
+        }
+      }
+    },
+    {
       "name": "bounded full profile with extension and current heartbeat",
       "profile": {
         "schemaVersion": 1,
@@ -66,6 +80,17 @@
             "version": "2026.7.1"
           }
         ]
+      }
+    },
+    {
+      "name": "composite fractional heartbeat duration",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "heartbeat": {
+            "every": "1s0.5ms"
+          }
+        }
       }
     },
     {
@@ -107,6 +132,90 @@
             ]
           }
         }
+      }
+    },
+    {
+      "name": "dynamic MCP bundle grant",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "full",
+            "allow": [
+              "bundle-mcp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "overlong concrete MCP tool grant",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "coding",
+            "allow": [
+              "server_abcdefghijklmnopqrstuvwxyz0123456789__tool_abcdefghijklmnopqrstuvwxyz0123456789"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "invalid sandbox mode",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "sandbox": {
+            "mode": "sometimes"
+          }
+        }
+      }
+    },
+    {
+      "name": "session memory without explicit opt-in",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "memory": {
+            "search": {
+              "sources": [
+                "sessions"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "invalid heartbeat duration",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "heartbeat": {
+            "every": "eventually"
+          }
+        }
+      }
+    },
+    {
+      "name": "negative human delay",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {
+          "humanDelay": {
+            "minMs": -1
+          }
+        }
+      }
+    },
+    {
+      "name": "null extensions collection",
+      "profile": {
+        "schemaVersion": 1,
+        "agent": {},
+        "extensions": null
       }
     },
     {
