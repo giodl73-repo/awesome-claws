@@ -1,8 +1,14 @@
 schemaVersion: 1
 agent:
   tools:
-    profile: coding
-    alsoAllow:
+    profile: full
+    allow:
+      - read
+      - write
+      - edit
+      - apply_patch
+      - exec
+      - process
       - show_widget
       - dashboard
     fs:

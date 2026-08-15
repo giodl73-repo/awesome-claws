@@ -29,9 +29,8 @@ mcpServers:
     auth: oauth
     toolFilter:
       include:
-        - get_*
-        - list_*
-        - search_*
+        - get_file_contents
+        - search_code
 cronJobs: []
 ---
 

@@ -14,11 +14,11 @@ Delivers scoped repository changes with source-grounded review and verification.
 
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
-- Declared capability: OpenClaw tool profile `coding` plus `diffs` with workspace-only filesystem access.
+- Declared capability: OpenClaw tool profile `full` bounded to `read`, `write`, `edit`, `apply_patch`, `exec`, `process`, `diffs`, `github__get_file_contents`, `github__search_code` with workspace-only filesystem access.
 - Declared capability: openclaw plugin `@openclaw/diffs@2026.7.1`.
 - Declared capability: MCP server `github`.
-- Capability boundary: The imported OpenClaw profile enables the built-in coding tool set plus Diffs and restricts filesystem tools to the agent workspace; host policy remains the upper bound.
-- Capability boundary: Use the GitHub MCP connection only for repository reads and searches; the package filter excludes tools outside get_*, list_*, and search_*, while GitHub OAuth and repository permissions remain the final authority.
+- Capability boundary: The OpenClaw profile freezes a bounded repository-work allowlist for workspace file editing, command execution, Diffs, and two exact GitHub MCP read/search tools; the full profile name does not grant tools outside that allowlist, and host policy remains the upper bound.
+- Capability boundary: Use the GitHub MCP connection only for `get_file_contents` and `search_code`; GitHub OAuth, repository permissions, and host policy remain the final authority.
 - Capability boundary: Use the Diffs plugin to render reviewable before/after text or patches; do not treat a rendered artifact as proof that a change was tested or approved.
 
 Review the package before applying it. Claws can create agents and may declare

@@ -12,7 +12,7 @@ connection, or scheduled work; those capabilities remain visible in the
 consent-bound preview.
 
 All examples use portable Claw schema v1 and the application layering proposed in
-[RFC 0025](https://github.com/openclaw/rfcs/pull/52): portable skills, direct MCP
+[RFC 0031](https://github.com/openclaw/rfcs/pull/52): portable skills, direct MCP
 requests, schedules, and ordinary workspace assets stay in `CLAW.md`; optional
 seed-once onboarding lives in package-root `BOOTSTRAP.md`; native plugin bundles
 and harness tuning live at conventional paths such as `profiles/openclaw.yml`.
@@ -57,7 +57,7 @@ Unsupported clients lose presentation, not meaning or control.
 | Claw | Category | Capabilities | Focus |
 | --- | --- | --- | --- |
 | [Incident response](claws/incident-response) | Engineering | Daily isolated cron | Evidence-led incident coordination |
-| [Software maintainer](claws/software-maintainer) | Engineering | Coding profile, Diffs extension, filtered GitHub MCP, application resources | Repository change delivery |
+| [Software maintainer](claws/software-maintainer) | Engineering | Bounded repository tools, Diffs extension, two-tool GitHub MCP, application resources | Repository change delivery |
 | [Security analyst](claws/security-analyst) | Engineering | Base | Bounded security assessment |
 | [Data analyst](claws/data-analyst) | Analysis | Base | Reproducible data analysis |
 | [Research briefing](claws/research-briefing) | Analysis | Base | Source-grounded decision briefs |
@@ -92,7 +92,7 @@ Unsupported clients lose presentation, not meaning or control.
 | [Public safety monitor](claws/public-safety-monitor) | Operations | Open-Meteo + Blogwatcher skills, recurring cron | Official alert synthesis |
 | [Civic data analyst](claws/civic-data-analyst) | Analysis | Public transit skill | Reproducible civic evidence |
 | [Event operations director](claws/event-operations-director) | Operations | Guided setup, visual assets, dashboard profile | Run-of-show and event readiness |
-| [API integration engineer](claws/api-integration-engineer) | Engineering | Coding profile, contract fixtures, visual asset | Contract-led API integration |
+| [API integration engineer](claws/api-integration-engineer) | Engineering | Bounded repository and presentation tools, contract fixtures, visual asset | Contract-led API integration |
 | [Procurement evaluator](claws/procurement-evaluator) | Operations | Guided setup, schema, visual asset | Traceable vendor evaluation |
 | [Grant portfolio manager](claws/grant-portfolio-manager) | Operations | Guided setup, schema, dashboard profile | Opportunity and submission readiness |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | Governance | Minimized schema, visual assets, dashboard profile | Privacy request coordination |
@@ -175,9 +175,51 @@ CLI. With `CLAWS_CLI_ENTRY` and `OPENCLAW_CLI_ENTRY` set to compatible built
 checkouts, `npm run proof:openclaw` dry-runs all 50 packages through the
 OpenClaw adapter in disposable state.
 
+### Catalog invariants
+
+- `catalog.json` is the only editable source for generated package content.
+  `npm run build` materializes it, and `npm run check` requires byte-for-byte
+  agreement with all 50 generated packages.
+- Harness profiles use the conventional `profiles/openclaw.yml` path, strict
+  schema version 1, exact pinned extension releases, and unique extension ids
+  and package refs.
+- Tool policy follows OpenClaw consent semantics. `alsoAllow` is optional and
+  additive only when a bounded profile is selected. `allow` and `alsoAllow`
+  cannot be combined. `full` requires a bounded `allow`; profiles containing
+  Bundle MCP authority, currently `coding` and `messaging`, also require an
+  explicit allowlist of core tools and exact `server__tool` MCP names.
+- Ordinary manifest metadata is string-to-string data. The retired
+  `metadata.openclaw.config` pointer is not accepted; profiles are discovered
+  conventionally. Retired heartbeat keys such as `skipWhenBusy` are rejected.
+- Workspace sources, package paths, package versions, MCP declarations, cron
+  jobs, bootstrap instructions, and generated output remain bounded and
+  portable across case-insensitive filesystems.
+
+### What each proof establishes
+
+- `npm run check` is static and generated-output proof. It does not apply a
+  Claw or contact a provider.
+- `npm run proof:openclaw` is standalone inspection plus OpenClaw dry-run proof.
+  It does not mutate state or prove provider behavior.
+- `npm run proof:portfolio` first checks deterministic materialization, then
+  exercises inspect, consent-bound add, status, export inspection, and removal
+  for all 50 packages in isolated local state. Its agent turn uses the checked-in
+  OpenAI-compatible fixture, so it proves runtime wiring rather than a live
+  provider.
+- `npm run proof:golden` additionally proves exact Golden artifact bytes through
+  a disposable local registry. It is not public publication or provider-live
+  evidence.
+- `npm run proof:experience` and `npm run screenshots` prove rendering and host
+  presentation paths, not provider correctness or model quality.
+
+No command in this repository is provider-live evidence by itself. A live claim
+requires an explicit credentialed provider lane, exact revisions, retained
+results, and a statement of the provider behavior actually exercised.
+
 `npm run proof:portfolio` runs each package in a separate OpenClaw home through
-standalone and OpenClaw inspection, consent-bound add, a deterministic real
-agent turn, status, no-op update preview and apply, doctor, export inspection,
+standalone and OpenClaw inspection, consent-bound add, a deterministic local
+agent turn through the OpenAI-compatible fixture, status, no-op update preview
+and apply, doctor, standalone and OpenClaw export inspection,
 selective removal, and final cleanup. For bootstrap-bearing examples it also
 creates synthetic user-owned preferences and proves update and removal preserve
 them; bootstrap interview quality remains a separate model-behavior lane. The turn uses OpenClaw's OpenAI-compatible E2E

@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { test } from "node:test";
 import {
@@ -9,6 +8,7 @@ import {
   createProofEnvironment,
   failureRecord,
   readCatalog,
+  root,
 } from "./openclaw-proof-lib.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
 
@@ -64,15 +64,17 @@ test("failures retain a phase and concise message", () => {
 });
 
 test("each proof environment isolates adapter snapshots", async () => {
-  const root = await mkdtemp(join(tmpdir(), "awesome-claws-proof-test-"));
+  const testRoot = join(root, ".tmp");
+  await mkdir(testRoot, { recursive: true });
+  const proofRoot = await mkdtemp(join(testRoot, "proof-test-"));
   try {
-    const first = await createProofEnvironment(root, "first");
-    const second = await createProofEnvironment(root, "second");
+    const first = await createProofEnvironment(proofRoot, "first");
+    const second = await createProofEnvironment(proofRoot, "second");
     assert.equal(first.env.TMPDIR, first.temp);
     assert.equal(first.env.TMP, first.temp);
     assert.equal(first.env.TEMP, first.temp);
     assert.notEqual(first.temp, second.temp);
   } finally {
-    await rm(root, { recursive: true, force: true });
+    await rm(proofRoot, { recursive: true, force: true });
   }
 });

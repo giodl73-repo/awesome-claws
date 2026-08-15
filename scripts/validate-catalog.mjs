@@ -4,6 +4,10 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Cron } from "croner";
 import { parseDocument } from "yaml";
+import {
+  validateManifestMetadata,
+  validateOpenClawProfile,
+} from "./catalog-contract.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -267,32 +271,8 @@ for (const entry of catalog.entries) {
     throw new Error(`${entry.id} must explain the boundaries of every integrated capability set.`);
   }
   if (entry.openclawProfile) {
-    const tools = entry.openclawProfile?.agent?.tools;
-    if (
-      entry.openclawProfile.schemaVersion !== 1 ||
-      !tools ||
-      typeof tools.profile !== "string" ||
-      !Array.isArray(tools.alsoAllow) ||
-      tools.alsoAllow.length === 0 ||
-      tools.fs?.workspaceOnly !== true
-    ) {
-      throw new Error(`${entry.id} contains an invalid OpenClaw capability profile.`);
-    }
-    const extensionIds = new Set();
+    validateOpenClawProfile(entry.openclawProfile, entry.id);
     for (const extension of entry.openclawProfile.extensions ?? []) {
-      if (
-        !/^[a-z][a-z0-9_-]{0,63}$/.test(extension.id) ||
-        extensionIds.has(extension.id) ||
-        extension.kind !== "plugin" ||
-        !["openclaw", "claude", "codex", "cursor"].includes(extension.format) ||
-        extension.source !== "clawhub" ||
-        typeof extension.ref !== "string" ||
-        !/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/.test(extension.ref) ||
-        !exactVersionPattern.test(extension.version)
-      ) {
-        throw new Error(`${entry.id} contains an invalid harness extension.`);
-      }
-      extensionIds.add(extension.id);
       demonstratedCapabilities.add("plugin");
     }
   }
@@ -344,6 +324,7 @@ for (const entry of catalog.entries) {
     throw new Error(`${entry.id}/CLAW.md must contain valid, unique-key YAML frontmatter.`);
   }
   const manifest = document.toJS();
+  validateManifestMetadata(manifest, `${entry.id}/CLAW.md`);
   if (manifest.schemaVersion !== 1) {
     throw new Error(`${entry.id}/CLAW.md has the wrong schema version.`);
   }
@@ -356,7 +337,6 @@ for (const entry of catalog.entries) {
     throw new Error(`${entry.id}/CLAW.md agent identity does not match the catalog.`);
   }
   if (
-    manifest.metadata !== undefined ||
     manifest.setup !== undefined ||
     manifest.personalization !== undefined ||
     JSON.stringify(manifest.workspace?.bootstrapFiles) !==

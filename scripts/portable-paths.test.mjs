@@ -20,6 +20,13 @@ test("rejects absolute, traversal, Windows drive-relative, and ADS paths", () =>
     "C:secret",
     "templates/report.md:ads",
     "templates\\report.md",
+    "CON",
+    "COM\u00b9",
+    "LPT\u00b3.txt",
+    "templates/bad?.md",
+    "templates/trailing.",
+    "templates/trailing ",
+    "templates/control\u0001.md",
   ]) {
     assert.equal(isSafePackagePath(path), false, path);
   }

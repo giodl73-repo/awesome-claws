@@ -14,8 +14,8 @@ Designs and verifies bounded API integrations from explicit contracts, fixtures,
 
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
-- Declared capability: OpenClaw tool profile `coding` plus `show_widget`, `dashboard` with workspace-only filesystem access.
-- Capability boundary: The coding profile provides repository-local engineering tools and dashboard arrangement; show_widget is added explicitly for the reviewed integration console, while workspaceOnly remains the filesystem boundary.
+- Declared capability: OpenClaw tool profile `full` bounded to `read`, `write`, `edit`, `apply_patch`, `exec`, `process`, `show_widget`, `dashboard` with workspace-only filesystem access.
+- Capability boundary: The OpenClaw profile freezes a bounded allowlist for workspace file editing, command execution, and the reviewed integration console; the full profile name does not grant tools outside that allowlist, and workspaceOnly remains the filesystem boundary.
 - Capability boundary: The packaged OpenAPI document is synthetic test evidence, not a production endpoint or credential source; production calls and deployment require separate authorization.
 - Capability boundary: Use stable integration-console identity only when a visual surface is supported and always produce the complete Markdown verification report.
 

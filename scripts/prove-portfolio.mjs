@@ -2,7 +2,6 @@ import { spawn, spawnSync } from "node:child_process";
 import { closeSync, openSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { createConnection, createServer } from "node:net";
-import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import {
@@ -52,8 +51,20 @@ if (sourceOverride && entries.length !== 1) {
 }
 const runId = new Date().toISOString().replaceAll(":", "-").replaceAll(".", "-");
 const proofRoot = resolve(process.env.PORTFOLIO_PROOF_DIR ?? join(root, ".tmp", "proof", runId));
-const runtimeRoot = await mkdtemp(join(tmpdir(), "awesome-claws-portfolio-runtime-"));
+await mkdir(join(root, ".tmp"), { recursive: true });
+const runtimeRoot = await mkdtemp(join(root, ".tmp", "portfolio-runtime-"));
 await mkdir(proofRoot, { recursive: true });
+
+const materializeCheck = spawnSync(
+  process.execPath,
+  [join(root, "scripts", "materialize-catalog.mjs"), "--check"],
+  { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 },
+);
+if (materializeCheck.status !== 0) {
+  throw new Error(
+    `Catalog materialization check failed:\n${materializeCheck.stderr || materializeCheck.stdout}`,
+  );
+}
 
 function revision(path, override) {
   if (override) {
@@ -626,6 +637,20 @@ for (const entry of entries) {
       runStandalone(cliEntry, ["inspect", exportRoot], env, `${entry.id} export inspect`),
     );
     assertStandaloneSuccess(exportedInspection, "inspect");
+    const exportedOpenClawInspection = recordPhase(phases, "export-openclaw-inspect", () =>
+      runOpenClaw(
+        openClawEntry,
+        ["claws", "inspect", exportRoot],
+        env,
+        `${entry.id} exported OpenClaw inspect`,
+      ),
+    );
+    if (
+      exportedOpenClawInspection.valid !== true ||
+      exportedOpenClawInspection.manifest?.agent?.id !== entry.id
+    ) {
+      throw new Error(`${entry.id} exported OpenClaw inspection lost package identity.`);
+    }
 
     const removePlan = assertSchema(
       recordPhase(phases, "remove-preview", () =>
@@ -718,6 +743,12 @@ const summary = {
   proofRoot,
   revisions,
   packageCount: results.length,
+  evidenceClaims: {
+    materialization: "byte-for-byte generated-output check",
+    lifecycle: "isolated local inspect/add/status/export/remove",
+    applicationRuntime: "deterministic OpenAI-compatible fixture",
+    providerLive: false,
+  },
   lifecyclePassed: results.filter((result) => result.status === "lifecycle-passed").length,
   lifecycleFailed: results.filter((result) => result.status === "lifecycle-failed").length,
   applicationScenariosPassed: results.filter(
@@ -736,6 +767,7 @@ console.log(
       proofRoot: summary.proofRoot,
       revisions: summary.revisions,
       packageCount: summary.packageCount,
+      evidenceClaims: summary.evidenceClaims,
       lifecyclePassed: summary.lifecyclePassed,
       lifecycleFailed: summary.lifecycleFailed,
       applicationScenariosPassed: summary.applicationScenariosPassed,
