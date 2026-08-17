@@ -12,7 +12,7 @@ connection, or scheduled work; those capabilities remain visible in the
 consent-bound preview.
 
 All examples use portable Claw schema v1 and the application layering proposed in
-[RFC 0031](https://github.com/openclaw/rfcs/pull/52): portable skills, direct MCP
+[draft RFC 0016](https://github.com/openclaw/rfcs/pull/48): portable skills, direct MCP
 requests, schedules, and ordinary workspace assets stay in `CLAW.md`; optional
 seed-once onboarding lives in package-root `BOOTSTRAP.md`; native plugin bundles
 and harness tuning live at conventional paths such as `profiles/openclaw.yml`.
