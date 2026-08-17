@@ -34,6 +34,7 @@
     { "id": "accessibility-review-coordinator", "target": 4, "primary": "inline-widget", "asset": "assets/accessibility-review.html", "fallback": "outputs/accessibility-handoff.md" },
     { "id": "quality-assurance-lead", "target": 4, "primary": "inline-widget", "asset": "assets/qa-coverage.html", "fallback": "outputs/release-quality.md" },
     { "id": "cloud-cost-analyst", "target": 4, "primary": "inline-widget", "asset": "assets/cloud-cost-view.html", "fallback": "outputs/cloud-cost-analysis.md" },
-    { "id": "release-coordinator", "target": 4, "primary": "inline-widget", "asset": "assets/release-readiness.html", "fallback": "outputs/release-readiness.md" }
+    { "id": "release-coordinator", "target": 4, "primary": "inline-widget", "asset": "assets/release-readiness.html", "fallback": "outputs/release-readiness.md" },
+    { "id": "data-governance-steward", "target": 4, "primary": "inline-widget", "asset": "assets/data-governance-review.html", "fallback": "outputs/data-governance-assessment.md" }
   ]
 }

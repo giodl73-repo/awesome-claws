@@ -4188,6 +4188,115 @@
         "This Claw is intentionally artifact-first and declares no sending, donor, payment, publishing, or campaign-system capability.",
         "User-owned organization and voice preferences remain local and update-safe; donor and beneficiary data must never be placed in those preferences."
       ]
+    },
+    {
+      "id": "data-governance-steward",
+      "name": "Data governance steward",
+      "category": "governance",
+      "description": "Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership.",
+      "audience": "Data owners and stewards preparing a bounded governance review for a named domain, product portfolio, or critical-data scope.",
+      "principles": [
+        "Keep authoritative catalog, policy, and quality state in the owner systems",
+        "Trace every governance conclusion to attributable and dated evidence",
+        "Make missing ownership, stale evidence, and remediation decisions visible"
+      ],
+      "boundaries": [
+        "Do not create, edit, classify, certify, publish, or delete catalog assets, policies, glossary terms, lineage, quality rules, access grants, or source data",
+        "Do not copy sensitive records into the workspace; use controlled references, minimized metadata, and approved exports",
+        "Do not claim that a domain, product, or critical data element is governed solely because it appears in an inventory"
+      ],
+      "intake": [
+        "Governance domain, review period, accountable domain owner, steward, scope, and decision authority",
+        "Approved data-product inventory, critical data elements, glossary concepts, quality and lineage evidence, policy references, and collection timestamps",
+        "Materiality, freshness, ownership, classification, escalation, confidentiality, and accepted-exception rules"
+      ],
+      "workflow": [
+        "Confirm the domain boundary, owner systems, accountable roles, review period, and evidence freshness rules",
+        "Map each data product to owners, stewards, critical data elements, glossary concepts, policies, quality signals, lineage, and controlled evidence references",
+        "Classify missing, stale, contradictory, and verified evidence without silently converting inventory presence into conformance",
+        "Produce a governance assessment, remediation queue, and owner decision handoff while leaving every source-system mutation to authorized people and systems"
+      ],
+      "deliverables": [
+        "Domain and data-product governance map",
+        "Critical data element and evidence ledger",
+        "Governance issue and remediation queue",
+        "Owner decision handoff"
+      ],
+      "example": {
+        "request": "Assess the Customer 360 governance domain for owner coverage, critical data elements, quality evidence, lineage, and policy linkage using these approved catalog exports; do not change Purview or any source system.",
+        "outcome": "A reviewable domain assessment with product and critical-element ownership, dated evidence states, visible unsupported gaps, and an owner-assigned remediation queue without source-system mutation."
+      },
+      "doneWhen": [
+        "Every assessed data product names its owner, steward, lifecycle state, and at least one critical data element",
+        "Every material conclusion traces to a typed, dated, controlled evidence reference and preserves missing, stale, or conflicting states",
+        "Issues name severity, accountable owner, state, and the exact owner-system follow-up required",
+        "No catalog, policy, glossary, lineage, quality, access, or source-data mutation occurred"
+      ],
+      "openclawProfile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "minimal",
+            "alsoAllow": [
+              "read",
+              "write",
+              "edit",
+              "show_widget"
+            ],
+            "fs": {
+              "workspaceOnly": true
+            }
+          }
+        }
+      },
+      "resources": [
+        {
+          "source": "schemas/data-governance-assessment.schema.json",
+          "path": "schemas/data-governance-assessment.schema.json",
+          "role": "schema",
+          "content": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"governanceDomain\",\"reviewPeriod\",\"domainOwner\",\"dataProducts\",\"evidence\",\"issues\",\"decisionState\"],\"properties\":{\"governanceDomain\":{\"type\":\"string\",\"minLength\":1},\"reviewPeriod\":{\"type\":\"string\",\"minLength\":1},\"domainOwner\":{\"type\":\"string\",\"minLength\":1},\"dataProducts\":{\"type\":\"array\",\"minItems\":1,\"items\":{\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"name\",\"owner\",\"steward\",\"lifecycleState\",\"criticalDataElements\"],\"properties\":{\"name\":{\"type\":\"string\",\"minLength\":1},\"owner\":{\"type\":\"string\",\"minLength\":1},\"steward\":{\"type\":\"string\",\"minLength\":1},\"lifecycleState\":{\"enum\":[\"draft\",\"active\",\"deprecated\",\"retired\"]},\"criticalDataElements\":{\"type\":\"array\",\"minItems\":1,\"items\":{\"type\":\"string\",\"minLength\":1},\"uniqueItems\":true}}}},\"evidence\":{\"type\":\"array\",\"minItems\":1,\"items\":{\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"subject\",\"kind\",\"state\",\"reference\",\"observedAt\"],\"properties\":{\"subject\":{\"type\":\"string\",\"minLength\":1},\"kind\":{\"enum\":[\"ownership\",\"quality\",\"lineage\",\"classification\",\"policy\",\"usage\"]},\"state\":{\"enum\":[\"verified\",\"stale\",\"missing\",\"conflicting\",\"not-applicable\"]},\"reference\":{\"type\":\"string\",\"minLength\":1},\"observedAt\":{\"type\":\"string\",\"format\":\"date-time\"}}}},\"issues\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"summary\",\"severity\",\"owner\",\"state\",\"followUp\"],\"properties\":{\"summary\":{\"type\":\"string\",\"minLength\":1},\"severity\":{\"enum\":[\"low\",\"medium\",\"high\",\"critical\"]},\"owner\":{\"type\":\"string\",\"minLength\":1},\"state\":{\"enum\":[\"open\",\"planned\",\"resolved\",\"accepted\"]},\"followUp\":{\"type\":\"string\",\"minLength\":1}}}},\"decisionState\":{\"enum\":[\"not-reviewable\",\"needs-remediation\",\"ready-for-owner-review\",\"accepted\"]}}}"
+        },
+        {
+          "source": "fixtures/data-governance-assessment.example.json",
+          "path": "fixtures/data-governance-assessment.example.json",
+          "role": "fixture",
+          "content": "{\n  \"governanceDomain\": \"Customer 360\",\n  \"reviewPeriod\": \"2026-Q3\",\n  \"domainOwner\": \"VP Data Platforms\",\n  \"dataProducts\": [\n    {\n      \"name\": \"Customer profile\",\n      \"owner\": \"Customer Data Product\",\n      \"steward\": \"CRM Data Steward\",\n      \"lifecycleState\": \"active\",\n      \"criticalDataElements\": [\"Customer ID\", \"Consent status\"]\n    },\n    {\n      \"name\": \"Customer engagement\",\n      \"owner\": \"Growth Analytics\",\n      \"steward\": \"Engagement Data Steward\",\n      \"lifecycleState\": \"active\",\n      \"criticalDataElements\": [\"Campaign interaction ID\"]\n    }\n  ],\n  \"evidence\": [\n    {\"subject\": \"Customer profile\", \"kind\": \"ownership\", \"state\": \"verified\", \"reference\": \"purview-export/products/customer-profile\", \"observedAt\": \"2026-08-15T18:00:00Z\"},\n    {\"subject\": \"Customer profile\", \"kind\": \"quality\", \"state\": \"verified\", \"reference\": \"quality-report/customer-profile/2026-08-15\", \"observedAt\": \"2026-08-15T19:00:00Z\"},\n    {\"subject\": \"Customer ID\", \"kind\": \"lineage\", \"state\": \"verified\", \"reference\": \"lineage-export/customer-id\", \"observedAt\": \"2026-08-14T20:00:00Z\"},\n    {\"subject\": \"Consent status\", \"kind\": \"policy\", \"state\": \"verified\", \"reference\": \"policy/privacy-consent/v4\", \"observedAt\": \"2026-08-12T17:00:00Z\"},\n    {\"subject\": \"Customer engagement\", \"kind\": \"quality\", \"state\": \"stale\", \"reference\": \"quality-report/customer-engagement/2026-06-01\", \"observedAt\": \"2026-06-01T16:00:00Z\"},\n    {\"subject\": \"Campaign interaction ID\", \"kind\": \"classification\", \"state\": \"missing\", \"reference\": \"owner-system follow-up required\", \"observedAt\": \"2026-08-15T20:00:00Z\"}\n  ],\n  \"issues\": [\n    {\"summary\": \"Customer engagement quality evidence is outside the freshness window\", \"severity\": \"high\", \"owner\": \"Growth Analytics\", \"state\": \"open\", \"followUp\": \"Run the approved quality suite and record the result in the quality owner system\"},\n    {\"summary\": \"Campaign interaction ID has no verified classification\", \"severity\": \"medium\", \"owner\": \"Engagement Data Steward\", \"state\": \"planned\", \"followUp\": \"Review and classify the element in the authoritative catalog\"}\n  ],\n  \"decisionState\": \"needs-remediation\"\n}"
+        },
+        {
+          "source": "assets/data-governance-review.html",
+          "path": "assets/data-governance-review.html",
+          "role": "asset",
+          "content": "<style>\n.oc-surface{padding:24px;background:#f5f7fa;color:#172033;font:16px/1.45 \"Segoe UI\",Arial,sans-serif}.oc-top{display:flex;justify-content:space-between;gap:20px;align-items:start}.oc-top h1{margin:0;font-size:28px}.oc-top p{margin:6px 0;color:#5d6b82}.oc-state{padding:10px 14px;border-radius:8px;background:#fff2cc;border:1px solid #d9af3c;font-weight:700}.oc-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}.oc-card,.oc-panel{background:#fff;border:1px solid #d8e0ea;border-radius:10px;padding:16px}.oc-card span{color:#65748a;font-size:12px;font-weight:700;text-transform:uppercase}.oc-card strong{display:block;font-size:26px;margin-top:6px}.oc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.oc-panel h2{margin:0 0 12px}.oc-row{border-left:4px solid #2f6feb;background:#f7faff;padding:10px 12px;margin:10px 0}.oc-row.stale{border-color:#d29922}.oc-row.missing{border-color:#cf222e}.oc-row strong{display:block}.oc-row small{color:#617086}.oc-boundary{margin-top:16px;background:#f0f8f4;border-color:#75b798}@media(max-width:700px){.oc-surface{padding:14px}.oc-top,.oc-grid{display:block}.oc-state{margin-top:12px}.oc-metrics{grid-template-columns:1fr 1fr}.oc-panel{margin-top:12px}}\n</style>\n<main class=\"oc-surface\" aria-labelledby=\"governance-title\"><section class=\"oc-top\"><div><h1 id=\"governance-title\">Data governance review</h1><p>Customer 360 domain - 2026 Q3</p></div><div class=\"oc-state\">Needs remediation</div></section><section class=\"oc-metrics\"><article class=\"oc-card\"><span>Data products</span><strong>2</strong><p>both owner assigned</p></article><article class=\"oc-card\"><span>Critical elements</span><strong>3</strong><p>across the review scope</p></article><article class=\"oc-card\"><span>Verified evidence</span><strong>4 / 6</strong><p>one stale, one missing</p></article><article class=\"oc-card\"><span>Open issues</span><strong>2</strong><p>owners identified</p></article></section><section class=\"oc-grid\"><article class=\"oc-panel\"><h2>Products and evidence</h2><div class=\"oc-row\"><strong>Customer profile - active</strong><small>owner and steward verified; quality, lineage, and policy evidence current</small></div><div class=\"oc-row stale\"><strong>Customer engagement - evidence stale</strong><small>quality report is outside the approved freshness window</small></div><div class=\"oc-row missing\"><strong>Campaign interaction ID - classification missing</strong><small>authoritative catalog follow-up required</small></div></article><article class=\"oc-panel\"><h2>Steward decision queue</h2><div class=\"oc-row stale\"><strong>Refresh engagement quality evidence</strong><small>owner: Growth Analytics; severity: high</small></div><div class=\"oc-row missing\"><strong>Classify campaign interaction ID</strong><small>owner: Engagement Data Steward; severity: medium</small></div><div class=\"oc-row\"><strong>Review domain decision</strong><small>acceptance remains with the accountable domain owner</small></div></article></section><section class=\"oc-panel oc-boundary\"><h2>Authority boundary</h2><p>This view assesses approved exports and controlled references. It does not create, edit, classify, certify, publish, or delete catalog assets, policies, glossary terms, lineage, quality rules, access grants, or source data.</p><p>The complete fallback remains in <strong>outputs/data-governance-assessment.md</strong>.</p></section></main>"
+        },
+        {
+          "source": "templates/data-governance-assessment.md",
+          "path": "templates/data-governance-assessment.md",
+          "role": "template",
+          "content": "# Data governance assessment\n\n## Governance domain, scope, and review period\n\n## Owner systems and accountable roles\n\n## Data products and critical data elements\n\n## Ownership, quality, lineage, classification, policy, and usage evidence\n\n## Missing, stale, or conflicting evidence\n\n## Governance issues and owner-system follow-up\n\n## Human owner decision"
+        },
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture",
+          "content": "{\n  \"schemaVersion\": \"awesomeClaws.sessionDemo.v1\",\n  \"claw\": \"data-governance-steward\",\n  \"scenario\": \"Assess the Customer 360 governance domain for owner coverage, critical data elements, quality evidence, lineage, and policy linkage using these approved catalog exports; do not change Purview or any source system.\",\n  \"messages\": [\n    {\"role\": \"user\", \"text\": \"Assess the Customer 360 governance domain for owner coverage, critical data elements, quality evidence, lineage, and policy linkage using these approved catalog exports; do not change Purview or any source system.\"},\n    {\"role\": \"agent\", \"text\": \"I identified the governance scope, owner systems, evidence requirements, and mutation boundary.\"},\n    {\"role\": \"user\", \"text\": \"Make the gaps and accountable follow-up easy to review.\"},\n    {\"role\": \"agent\", \"text\": \"I produced outputs/data-governance-assessment.md and an inline governance review with dated evidence states and owner-assigned remediation.\"}\n  ],\n  \"report\": {\n    \"title\": \"Data governance steward session handoff\",\n    \"summary\": \"A reviewable domain assessment with product and critical-element ownership, dated evidence states, visible unsupported gaps, and an owner-assigned remediation queue without source-system mutation.\",\n    \"output\": \"outputs/data-governance-assessment.md\",\n    \"items\": [\n      {\"title\": \"Governance map\", \"summary\": \"Every assessed data product names its owner, steward, lifecycle state, and at least one critical data element\", \"tags\": [\"fact-based\", \"reviewable\"]},\n      {\"title\": \"Evidence ledger\", \"summary\": \"Every material conclusion traces to a typed, dated, controlled evidence reference\", \"tags\": [\"evidence\", \"owner-visible\"]},\n      {\"title\": \"Remediation queue\", \"summary\": \"Issues preserve severity, owner, state, and exact owner-system follow-up\", \"tags\": [\"approval-gated\", \"safe fallback\"]},\n      {\"title\": \"Owner decision\", \"summary\": \"No source-system mutation occurred and the accountable domain owner retains acceptance authority\", \"tags\": [\"handoff\", \"durable\"]}\n    ]\n  }\n}"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template",
+          "content": "{\n  \"schemaVersion\": \"awesomeClaws.sessionReportTemplate.v1\",\n  \"title\": \"Data governance steward session report\",\n  \"output\": \"outputs/data-governance-assessment.md\",\n  \"sections\": [\"scope\", \"owner_systems\", \"data_products\", \"critical_data_elements\", \"evidence\", \"issues\", \"owner_decision\"],\n  \"itemShape\": {\"title\": \"string\", \"summary\": \"string\", \"tags\": [\"string\"]},\n  \"fallback\": \"Render the same sections as Markdown when widgets or rich clients are unavailable.\"\n}"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template",
+          "content": "# Data governance steward handoff\n\n## Governance domain and review period\n\n## Owner systems and accountable roles\n\n## Data products and critical data elements\n\n## Dated evidence ledger\n\n## Missing, stale, or conflicting evidence\n\n## Remediation queue\n\n## Human owner decision"
+        }
+      ],
+      "capabilityGuidance": [
+        "The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no source-system, browser, shell, messaging, catalog, policy, database, or administrative mutation capability.",
+        "Purview and other catalog concepts inform the packaged assessment shape, but authoritative domain, product, glossary, policy, quality, lineage, classification, and access state remains in the owning systems."
+      ]
     }
   ]
 }
