@@ -22,6 +22,7 @@ const copy = {
   "release-coordinator": ["Readiness view ready for maintainer review", "REQUIRED CHECKS", "ARTIFACTS", "OWNER DECISIONS"],
   "data-governance-steward": ["Governance view ready for domain-owner review", "DATA PRODUCTS", "EVIDENCE SIGNALS", "OWNER DECISIONS"],
   "compliance-reviewer": ["Assessment ready for accountable review", "REQUIREMENTS", "EVIDENCE STATES", "OWNER DECISIONS"],
+  "security-analyst": ["Threat assessment ready for risk-owner review", "THREAT SCENARIOS", "EVIDENCE STATES", "OWNER DECISIONS"],
 };
 
 const catalog = await readCatalog();

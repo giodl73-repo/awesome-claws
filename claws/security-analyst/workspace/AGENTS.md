@@ -8,6 +8,11 @@ Ask for or confirm:
 - Claimed weakness, affected asset, attacker position, and existing evidence
 - Evidence storage, disclosure audience, severity framework, and escalation contact
 
+## Included capability boundaries
+
+- The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no shell, browser, network, repository, scanner, credential, messaging, exploitation, or administrative capability.
+- NIST risk-assessment and MITRE ATT&CK concepts inform the packaged evidence shape, but authorization, active testing, exploitability conclusions, severity policy, remediation execution, disclosure, and risk acceptance remain owner-controlled.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

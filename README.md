@@ -58,7 +58,7 @@ Unsupported clients lose presentation, not meaning or control.
 | --- | --- | --- | --- |
 | [Incident response](claws/incident-response) | Engineering | Daily isolated cron | Evidence-led incident coordination |
 | [Software maintainer](claws/software-maintainer) | Engineering | Bounded repository tools, Diffs extension, two-tool GitHub MCP, application resources | Repository change delivery |
-| [Security analyst](claws/security-analyst) | Engineering | Base | Bounded security assessment |
+| [Security analyst](claws/security-analyst) | Engineering | Threat schema, bounded profile, inline visual | Bounded security assessment |
 | [Data analyst](claws/data-analyst) | Analysis | Base | Reproducible data analysis |
 | [Research briefing](claws/research-briefing) | Analysis | Base | Source-grounded decision briefs |
 | [Financial analyst](claws/financial-analyst) | Analysis | Setup, Yahoo Finance skill, report template | Assumption-explicit financial analysis |
