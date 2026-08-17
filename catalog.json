@@ -655,7 +655,9 @@
         }
       ],
       "capabilityGuidance": [
-        "Use the customer-support skill as workflow guidance, not as authoritative product, entitlement, or customer-account state; verify those facts in approved systems before responding."
+        "Use the customer-support skill as workflow guidance, not as authoritative product, entitlement, or customer-account state; verify those facts in approved systems before responding.",
+        "The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no customer-system, account, entitlement, messaging, network, shell, refund, or production mutation capability.",
+        "Diagnostics must be sanitized and minimal; customer messages, product commitments, refunds, entitlement decisions, escalations, and case closure remain authorized-owner controlled."
       ],
       "resources": [
         {
@@ -675,8 +677,49 @@
           "path": "templates/session-handoff.md",
           "role": "template",
           "content": "# Customer support handoff\n\n## Request\n\nSummarize the user request and the decision this claw is supporting.\n\n## Known facts\n\n- Record only facts grounded in the supplied context or approved tools.\n\n## Assumptions and gaps\n\n- Separate assumptions from missing evidence.\n\n## Evidence ledger\n\n- Link or name the source for every material claim.\n\n## Recommendation or decision state\n\n- State the best supported next step and why.\n\n## Blocked actions\n\n- Keep external communication, irreversible changes, purchases, publication, and authority-sensitive actions blocked until explicitly approved.\n\n## Next owner\n\nName the accountable human owner and where outputs/customer-support-handoff.md should be reviewed.\n"
+        },
+        {
+          "source": "schemas/support-case.schema.json",
+          "path": "schemas/support-case.schema.json",
+          "role": "schema",
+          "content": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"caseId\",\"symptom\",\"impact\",\"environment\",\"evidence\",\"diagnostics\",\"responseDraft\",\"escalation\",\"caseOwner\",\"disposition\"],\"properties\":{\"caseId\":{\"type\":\"string\",\"minLength\":1},\"symptom\":{\"type\":\"string\",\"minLength\":1},\"impact\":{\"enum\":[\"low\",\"medium\",\"high\",\"critical\"]},\"environment\":{\"type\":\"string\",\"minLength\":1},\"evidence\":{\"type\":\"array\",\"minItems\":1,\"items\":{\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"reference\",\"source\",\"observedAt\",\"state\"],\"properties\":{\"reference\":{\"type\":\"string\",\"minLength\":1},\"source\":{\"type\":\"string\",\"minLength\":1},\"observedAt\":{\"type\":\"string\",\"format\":\"date-time\"},\"state\":{\"enum\":[\"verified\",\"stale\",\"missing\",\"conflicting\"]}}}},\"diagnostics\":{\"type\":\"array\",\"minItems\":1,\"items\":{\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"check\",\"requestedData\",\"dataClass\",\"expectedResult\",\"state\"],\"properties\":{\"check\":{\"type\":\"string\",\"minLength\":1},\"requestedData\":{\"type\":\"string\",\"minLength\":1},\"dataClass\":{\"enum\":[\"public\",\"sanitized-diagnostic\",\"customer-approved-metadata\"]},\"expectedResult\":{\"type\":\"string\",\"minLength\":1},\"state\":{\"enum\":[\"proposed\",\"received\",\"verified\",\"inconclusive\"]}}}},\"responseDraft\":{\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"audience\",\"message\",\"state\",\"nextUpdateAt\"],\"properties\":{\"audience\":{\"type\":\"string\",\"minLength\":1},\"message\":{\"type\":\"string\",\"minLength\":1},\"state\":{\"enum\":[\"draft\",\"approved\",\"sent\",\"corrected\"]},\"nextUpdateAt\":{\"type\":\"string\",\"format\":\"date-time\"}}},\"escalation\":{\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"needed\",\"owner\",\"reason\",\"evidenceRefs\"],\"properties\":{\"needed\":{\"type\":\"boolean\"},\"owner\":{\"type\":\"string\",\"minLength\":1},\"reason\":{\"type\":\"string\",\"minLength\":1},\"evidenceRefs\":{\"type\":\"array\",\"minItems\":1,\"items\":{\"type\":\"string\",\"minLength\":1}}}},\"caseOwner\":{\"type\":\"string\",\"minLength\":1},\"disposition\":{\"enum\":[\"investigating\",\"awaiting-customer\",\"awaiting-owner\",\"ready-for-resolution-review\",\"closed-by-case-owner\"]}}}"
+        },
+        {
+          "source": "fixtures/support-case.example.json",
+          "path": "fixtures/support-case.example.json",
+          "role": "fixture",
+          "content": "{\n  \"caseId\": \"SUP-4017\",\n  \"symptom\": \"Webhook deliveries return 401 after credential rotation\",\n  \"impact\": \"high\",\n  \"environment\": \"Production webhook sender, version 4.8\",\n  \"evidence\": [\n    {\n      \"reference\": \"case/SUP-4017/sanitized-delivery-log\",\n      \"source\": \"Customer-approved diagnostic excerpt\",\n      \"observedAt\": \"2026-08-16T10:30:00Z\",\n      \"state\": \"verified\"\n    }\n  ],\n  \"diagnostics\": [\n    {\n      \"check\": \"Confirm the active credential identifier matches the webhook configuration\",\n      \"requestedData\": \"Last four characters of the credential identifier and rotation timestamp\",\n      \"dataClass\": \"customer-approved-metadata\",\n      \"expectedResult\": \"Configured identifier matches the active credential\",\n      \"state\": \"proposed\"\n    },\n    {\n      \"check\": \"Compare signature algorithm header before and after rotation\",\n      \"requestedData\": \"Sanitized header names and algorithm value; no secret or full payload\",\n      \"dataClass\": \"sanitized-diagnostic\",\n      \"expectedResult\": \"Algorithm remains supported and unchanged\",\n      \"state\": \"proposed\"\n    }\n  ],\n  \"responseDraft\": {\n    \"audience\": \"Customer technical contact\",\n    \"message\": \"We can narrow this without sharing secrets. Please confirm the rotation time, the last four characters of the active credential identifier, and the sanitized signature algorithm header.\",\n    \"state\": \"draft\",\n    \"nextUpdateAt\": \"2026-08-16T15:00:00Z\"\n  },\n  \"escalation\": {\n    \"needed\": true,\n    \"owner\": \"Webhook service owner\",\n    \"reason\": \"Escalate if the configured identifier matches but post-rotation signatures remain rejected\",\n    \"evidenceRefs\": [\n      \"case/SUP-4017/sanitized-delivery-log\"\n    ]\n  },\n  \"caseOwner\": \"Support engineer\",\n  \"disposition\": \"investigating\"\n}\n"
+        },
+        {
+          "source": "assets/support-case.html",
+          "path": "assets/support-case.html",
+          "role": "asset",
+          "content": "<style>\n.oc-surface{padding:24px;background:#f6f8fb;color:#172033;font:16px/1.45 \"Segoe UI\",Arial,sans-serif}.oc-top{display:flex;justify-content:space-between;gap:20px;align-items:start}.oc-top h1{margin:0;font-size:28px}.oc-top p{margin:6px 0;color:#5d6b82}.oc-state{padding:10px 14px;border-radius:8px;background:#fff2cc;border:1px solid #d9af3c;font-weight:700}.oc-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}.oc-card,.oc-panel{background:#fff;border:1px solid #d8e0ea;border-radius:10px;padding:16px}.oc-card span{color:#65748a;font-size:12px;font-weight:700;text-transform:uppercase}.oc-card strong{display:block;font-size:26px;margin-top:6px}.oc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.oc-panel h2{margin:0 0 12px}.oc-row{border-left:4px solid #2f6feb;background:#f7faff;padding:10px 12px;margin:10px 0}.oc-row.caution{border-color:#d29922}.oc-row strong{display:block}.oc-row small{color:#617086}.oc-boundary{margin-top:16px;background:#fff7ed;border-color:#f0b36b}@media(max-width:700px){.oc-surface{padding:14px}.oc-top,.oc-grid{display:block}.oc-state{margin-top:12px}.oc-metrics{grid-template-columns:1fr 1fr}.oc-panel{margin-top:12px}}\n</style>\n<main class=\"oc-surface\" aria-labelledby=\"view-title\"><section class=\"oc-top\"><div><h1 id=\"view-title\">SUP-4017 diagnostic readiness</h1><p>Webhook 401 after credential rotation</p></div><div class=\"oc-state\">Investigating</div></section><section class=\"oc-metrics\"><article class=\"oc-card\"><span>Impact</span><strong>High</strong><p>production delivery</p></article><article class=\"oc-card\"><span>Safe checks</span><strong>2</strong><p>no secrets requested</p></article><article class=\"oc-card\"><span>Evidence</span><strong>1</strong><p>sanitized log</p></article><article class=\"oc-card\"><span>Next update</span><strong>15:00</strong><p>draft only</p></article></section><section class=\"oc-grid\"><article class=\"oc-panel\"><h2>Bounded diagnostics</h2><div class=\"oc-row\"><strong>Credential identifier</strong><small>last four characters only</small></div><div class=\"oc-row\"><strong>Signature algorithm</strong><small>sanitized header names and value</small></div><div class=\"oc-row caution\"><strong>Validation</strong><small>compare active configuration and response</small></div></article><article class=\"oc-panel\"><h2>Case-owner queue</h2><div class=\"oc-row\"><strong>Customer response</strong><small>draft; not sent</small></div><div class=\"oc-row\"><strong>Escalation</strong><small>webhook owner if identifier matches</small></div><div class=\"oc-row caution\"><strong>Resolution</strong><small>requires verified result and owner review</small></div></article></section><section class=\"oc-panel oc-boundary\"><h2>Authority boundary</h2><p>This view requests only minimal sanitized diagnostics. It does not request secrets, access customer systems, promise a fix or refund, send a response, or close the case.</p><p>The complete fallback remains in <strong>outputs/support-case.md</strong>.</p></section></main>"
+        },
+        {
+          "source": "templates/support-case.md",
+          "path": "templates/support-case.md",
+          "role": "template",
+          "content": "# SUP-4017 diagnostic readiness\n\n## Decision and accountable owner\n\n## Scope, evidence, and provenance\n\n## Current state and material findings\n\n## Uncertainty, disagreement, and limitations\n\n## Options, risks, and bounded next steps\n\n## Human-owned decision\n"
         }
-      ]
+      ],
+      "openclawProfile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "minimal",
+            "alsoAllow": [
+              "read",
+              "write",
+              "edit",
+              "show_widget"
+            ],
+            "fs": {
+              "workspaceOnly": true
+            }
+          }
+        }
+      }
     },
     {
       "id": "sales-operations",

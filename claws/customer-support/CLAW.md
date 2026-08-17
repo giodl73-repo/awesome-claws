@@ -17,6 +17,14 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/support-case.schema.json
+      path: schemas/support-case.schema.json
+    - source: fixtures/support-case.example.json
+      path: fixtures/support-case.example.json
+    - source: assets/support-case.html
+      path: assets/support-case.html
+    - source: templates/support-case.md
+      path: templates/support-case.md
 packages:
   - kind: skill
     source: clawhub
