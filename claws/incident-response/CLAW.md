@@ -17,6 +17,14 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/incident-state.schema.json
+      path: schemas/incident-state.schema.json
+    - source: fixtures/incident-state.example.json
+      path: fixtures/incident-state.example.json
+    - source: assets/incident-readiness.html
+      path: assets/incident-readiness.html
+    - source: templates/incident-readiness.md
+      path: templates/incident-readiness.md
 packages: []
 mcpServers: {}
 cronJobs:

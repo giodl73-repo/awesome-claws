@@ -23,6 +23,7 @@ const copy = {
   "data-governance-steward": ["Governance view ready for domain-owner review", "DATA PRODUCTS", "EVIDENCE SIGNALS", "OWNER DECISIONS"],
   "compliance-reviewer": ["Assessment ready for accountable review", "REQUIREMENTS", "EVIDENCE STATES", "OWNER DECISIONS"],
   "security-analyst": ["Threat assessment ready for risk-owner review", "THREAT SCENARIOS", "EVIDENCE STATES", "OWNER DECISIONS"],
+  "incident-response": ["Recovery view ready for incident-command review", "TIMELINE EVENTS", "RECOVERY SIGNALS", "COMMAND DECISIONS"],
 };
 
 const catalog = await readCatalog();

@@ -56,7 +56,7 @@ Unsupported clients lose presentation, not meaning or control.
 
 | Claw | Category | Capabilities | Focus |
 | --- | --- | --- | --- |
-| [Incident response](claws/incident-response) | Engineering | Daily isolated cron | Evidence-led incident coordination |
+| [Incident response](claws/incident-response) | Engineering | Daily isolated cron, incident schema, bounded profile, inline visual | Evidence-led incident coordination |
 | [Software maintainer](claws/software-maintainer) | Engineering | Bounded repository tools, Diffs extension, two-tool GitHub MCP, application resources | Repository change delivery |
 | [Security analyst](claws/security-analyst) | Engineering | Threat schema, bounded profile, inline visual | Bounded security assessment |
 | [Data analyst](claws/data-analyst) | Analysis | Base | Reproducible data analysis |
