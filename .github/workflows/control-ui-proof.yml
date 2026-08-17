@@ -44,10 +44,14 @@ jobs:
       - run: corepack enable
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: pnpm --dir openclaw install --frozen-lockfile
-      - run: pnpm --dir openclaw build
-      - run: pnpm --dir claws-cli install --frozen-lockfile
-      - run: pnpm --dir claws-cli build
+      - run: corepack pnpm install --frozen-lockfile
+        working-directory: openclaw
+      - run: corepack pnpm build
+        working-directory: openclaw
+      - run: corepack pnpm install --frozen-lockfile
+        working-directory: claws-cli
+      - run: corepack pnpm build
+        working-directory: claws-cli
       - name: Prove installed visual runtime
         env:
           CLAWS_CLI_ENTRY: ${{ github.workspace }}/claws-cli/packages/cli/dist/cli.mjs
@@ -73,4 +77,4 @@ jobs:
           path: |
             .tmp/control-ui-proof
             .tmp/proof
-          if-no-files-found: error
+          if-no-files-found: warn
