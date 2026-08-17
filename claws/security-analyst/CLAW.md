@@ -17,6 +17,14 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/threat-assessment.schema.json
+      path: schemas/threat-assessment.schema.json
+    - source: fixtures/threat-assessment.example.json
+      path: fixtures/threat-assessment.example.json
+    - source: assets/threat-assessment.html
+      path: assets/threat-assessment.html
+    - source: templates/threat-assessment.md
+      path: templates/threat-assessment.md
 packages: []
 mcpServers: {}
 cronJobs: []
