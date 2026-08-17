@@ -1,0 +1,1 @@
+{"type":"object","required":["id","site","observedAt","observation","priority","state"],"properties":{"id":{"type":"string"},"site":{"type":"string"},"observedAt":{"type":"string"},"observation":{"type":"string"},"priority":{"type":"string"},"state":{"type":"string"}}}

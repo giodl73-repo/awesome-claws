@@ -14,6 +14,16 @@ Ask for or confirm:
 - The packaged OpenAPI document is synthetic test evidence, not a production endpoint or credential source; production calls and deployment require separate authorization.
 - Use stable integration-console identity only when a visual surface is supported and always produce the complete Markdown verification report.
 
+## Visual application contract
+
+- Treat `assets/integration-console.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/integration-readiness.json` and check it against `schemas/integration-readiness.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/integration-console.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/integration-verification.md`.
+- Read `outputs/integration-console.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+- After the current visual is ready, pin it only with the declared stable widget names (`integration-readiness`); do not pin fixture data.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

@@ -1,11 +1,16 @@
 import { lstat, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
-import { dirname, join, resolve, sep } from "node:path";
+import { basename, dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { stringify as stringifyYaml } from "yaml";
+import { readCatalog } from "./catalog-source.mjs";
+import { readExperienceCases } from "./experience-cases.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
+const catalog = await readCatalog();
+const experienceCases = new Map(
+  (await readExperienceCases(catalog)).map((experience) => [experience.id, experience]),
+);
 const check = process.argv.includes("--check");
 const safeAgentIdPattern = /^[a-z][a-z0-9-]{0,63}$/;
 for (const entry of catalog.entries) {
@@ -60,6 +65,32 @@ function capabilitySummary(entry) {
   return capabilities;
 }
 
+function visualContract(entry) {
+  const experience = experienceCases.get(entry.id);
+  if (!experience || experience.target < 4) {
+    return "";
+  }
+  const schema = (entry.resources ?? []).find((resource) => resource.role === "schema");
+  const schemaOutput = schema
+    ? `outputs/${basename(schema.path).replace(/\.schema(?=\.json$)/u, "")}`
+    : undefined;
+  const structuredState = schema
+    ? `- Write the current structured state to \`${schemaOutput}\` and check it against \`${schema.path}\`. Resolve duplicate or dangling ids and references before calling the artifact ready.`
+    : "- Build the presentation only from the current request and current workspace evidence; label missing or uncertain values instead of inventing them.";
+  const dashboard =
+    experience.target === 5
+      ? `\n- After the current visual is ready, pin it only with the declared stable widget names (${experience.widgets.map((widget) => `\`${widget}\``).join(", ")}); do not pin fixture data.`
+      : "";
+  return `\n\n## Visual application contract
+
+- Treat \`${experience.asset}\` as a presentation template, never as current or live evidence.
+${structuredState}
+- Create or update the workspace-owned visual \`${experience.output}\` from that template using only current state.
+- Write the equivalent durable Markdown handoff to \`${experience.fallback}\`.
+- Read \`${experience.output}\` and call \`show_widget\` with its HTML as \`widget_code\` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.${dashboard}`;
+}
+
 function filesFor(entry) {
   const packages = entry.packages ?? [];
   const mcpServers = entry.mcpServers ?? {};
@@ -73,6 +104,7 @@ function filesFor(entry) {
     capabilityGuidance.length > 0
       ? `\n\n## Included capability boundaries\n\n${bullets(capabilityGuidance)}`
       : "";
+  const visualContractSection = visualContract(entry);
   const packageContents = [
     "- `CLAW.md` defines the agent and provides its portable `SOUL.md` content.",
     "- `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.",
@@ -146,7 +178,7 @@ cronJobs: []
 
 Ask for or confirm:
 
-${bullets(entry.intake)}${capabilityBoundarySection}
+${bullets(entry.intake)}${capabilityBoundarySection}${visualContractSection}
 
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.

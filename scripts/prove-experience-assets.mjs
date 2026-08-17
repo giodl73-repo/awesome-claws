@@ -6,16 +6,9 @@ import { readExperienceCases } from "./experience-cases.mjs";
 import { readCatalog } from "./openclaw-proof-lib.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const openClawRoot = resolve(
-  process.env.OPENCLAW_ROOT ??
-    dirname(process.env.OPENCLAW_CLI_ENTRY ?? ""),
-);
-if (!process.env.OPENCLAW_ROOT && !process.env.OPENCLAW_CLI_ENTRY) {
-  throw new Error("Set OPENCLAW_ROOT or OPENCLAW_CLI_ENTRY to an OpenClaw checkout.");
-}
-const requireFromOpenClaw = createRequire(join(openClawRoot, "package.json"));
-const { chromium } = requireFromOpenClaw("playwright");
-const sharp = requireFromOpenClaw("sharp");
+const require = createRequire(import.meta.url);
+const { chromium } = require("playwright");
+const sharp = require("sharp");
 const browserPaths = [
   "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
   "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",

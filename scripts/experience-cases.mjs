@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { root } from "./openclaw-proof-lib.mjs";
+import { isSafePackagePath } from "./portable-paths.mjs";
 
 export async function readExperienceCases(catalog) {
   const registry = JSON.parse(await readFile(join(root, "experience-cases.json"), "utf8"));
@@ -47,7 +48,15 @@ export async function readExperienceCases(catalog) {
     const resources = new Set((entry.resources ?? []).map((resource) => resource.path));
     const toolPolicy = entry.openclawProfile?.agent?.tools;
     const tools = new Set([...(toolPolicy?.allow ?? []), ...(toolPolicy?.alsoAllow ?? [])]);
-    if (!resources.has(item.asset) || !tools.has("show_widget") || !item.fallback) {
+    if (
+      !resources.has(item.asset) ||
+      !tools.has("show_widget") ||
+      !isSafePackagePath(item.output) ||
+      !item.output.startsWith("outputs/") ||
+      !isSafePackagePath(item.fallback) ||
+      !item.fallback.startsWith("outputs/") ||
+      item.output === item.fallback
+    ) {
       throw new Error(`${item.id} does not satisfy its visual Experience declaration.`);
     }
     if (item.target === 5 && (!tools.has("dashboard") || !item.widgets?.length)) {

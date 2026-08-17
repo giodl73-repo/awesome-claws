@@ -13,6 +13,15 @@ Ask for or confirm:
 - The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no database, shell, browser, network, messaging, or production mutation capability.
 - Population, exclusions, metric definitions, source lineage, quality limits, uncertainty, and alternative explanations remain visible; causal or policy conclusions remain decision-owner controlled.
 
+## Visual application contract
+
+- Treat `assets/analysis-readout.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/analysis-state.json` and check it against `schemas/analysis-state.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/analysis-readout.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/analysis-readout.md`.
+- Read `outputs/analysis-readout.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { test } from "node:test";
 import {
@@ -25,6 +25,21 @@ test("Experience cases cover all 51 Claws with enforceable surfaces", async () =
   assert.equal(cases.filter((item) => item.target === 5).length, 7);
   assert.equal(cases.filter((item) => item.target === 4).length, 18);
   assert.equal(cases.filter((item) => item.target === 3).length, 26);
+  for (const item of cases.filter((experience) => experience.target >= 4)) {
+    const instructions = await readFile(
+      join(root, "claws", item.id, "workspace", "AGENTS.md"),
+      "utf8",
+    );
+    for (const requiredInstruction of [
+      item.asset,
+      item.output,
+      item.fallback,
+      "show_widget",
+    ]) {
+      assert.match(instructions, new RegExp(requiredInstruction.replaceAll(".", "\\."), "u"));
+    }
+    assert.match(instructions, /never as current or live evidence/iu);
+  }
 });
 
 test("add previews require a bounded, consent-addressable plan", () => {

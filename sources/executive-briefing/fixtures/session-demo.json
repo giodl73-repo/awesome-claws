@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "executive-briefing",
+  "scenario": "Prepare a 07:30 Pacific brief for tomorrow using the leadership calendar, flagged mail, and Seattle weather, emphasizing decisions and travel risk.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Prepare a 07:30 Pacific brief for tomorrow using the leadership calendar, flagged mail, and Seattle weather, emphasizing decisions and travel risk."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the executive decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/executive-briefing-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Executive briefing session handoff",
+    "summary": "A private source-timestamped brief with meetings, preparation needs, decision asks, schedule conflicts, and weather implications, without sending messages or changing calendar state.",
+    "output": "outputs/executive-briefing-handoff.md",
+    "items": [
+      {
+        "title": "Daily executive brief",
+        "summary": "Every material item identifies its source and freshness",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Decision and preparation queue",
+        "summary": "Decisions, preparation tasks, conflicts, and accountable owners are visible",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Schedule conflict summary",
+        "summary": "Do not send mail, modify calendars or documents, accept invitations, or make commitments without explicit approval for the exact action",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Source and freshness ledger",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

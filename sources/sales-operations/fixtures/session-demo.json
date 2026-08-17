@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "sales-operations",
+  "scenario": "Prepare Monday's enterprise pipeline review for Q3, highlighting coverage, stage aging, and deals that changed forecast category this week.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Prepare Monday's enterprise pipeline review for Q3, highlighting coverage, stage aging, and deals that changed forecast category this week."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the sales decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/sales-operations-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Sales operations session handoff",
+    "summary": "A definition-aligned review with coverage and aging tables, explained category movement, data-quality flags, and owner-assigned actions without silently editing CRM state.",
+    "output": "outputs/sales-operations-handoff.md",
+    "items": [
+      {
+        "title": "Pipeline health summary",
+        "summary": "Period, segment, stages, coverage formula, and forecast categories use shared definitions",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Forecast assumptions",
+        "summary": "Material changes, stale records, and data-quality exceptions are visible and owner-linked",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Risk and action register",
+        "summary": "Do not alter CRM records, forecast categories, territory assignments, or customer commitments without the responsible owner",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Operating review",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

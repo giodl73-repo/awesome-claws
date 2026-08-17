@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["event", "timezone", "items"],
+  "properties": {
+    "event": {"type": "string"},
+    "timezone": {"type": "string"},
+    "items": {"type": "array", "items": {"type": "object", "required": ["time", "owner", "state"]}}
+  }
+}

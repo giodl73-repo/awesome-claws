@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Project manager session report",
+  "output": "outputs/project-manager-handoff.md",
+  "sections": [
+    "request",
+    "known_facts",
+    "assumptions",
+    "evidence",
+    "decisions_or_recommendations",
+    "blocked_actions",
+    "next_owner"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the same sections as Markdown when widgets or rich clients are unavailable."
+}

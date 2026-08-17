@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "compliance-reviewer",
+  "scenario": "Review a SaaS team's release process against the company's software supply-chain policy before its first customer production deployment.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Review a SaaS team's release process against the company's software supply-chain policy before its first customer production deployment."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the compliance decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/compliance-reviewer-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Compliance reviewer session handoff",
+    "summary": "A requirement-to-control matrix, controlled evidence references with provenance and integrity, supported and unsupported conclusions, gap severity with owners, and questions reserved for security, legal, or independent audit.",
+    "output": "outputs/compliance-reviewer-handoff.md",
+    "items": [
+      {
+        "title": "Control matrix",
+        "summary": "Every conclusion maps to the exact requirement, control, evidence reference, origin, collection time, custodian, version or integrity identifier where material, owner, and review period",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Evidence ledger",
+        "summary": "Missing, stale, contradictory, inaccessible, or unverifiable evidence is a visible unsupported gap rather than an assumed pass",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Gap assessment",
+        "summary": "Do not issue legal conclusions, certifications, audit opinions, or claims of compliance on behalf of counsel or an independent auditor",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Remediation handoff",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

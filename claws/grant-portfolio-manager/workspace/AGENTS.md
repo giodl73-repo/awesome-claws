@@ -14,6 +14,16 @@ Ask for or confirm:
 - User-owned mission and program preferences are seeded once and remain local; package updates must not overwrite them or infer sensitive organizational facts.
 - Use stable opportunity identifiers and one grant-portfolio widget when pinning is accepted, while retaining the complete Markdown portfolio for every client.
 
+## Visual application contract
+
+- Treat `assets/grant-portfolio.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/grant-opportunity.json` and check it against `schemas/grant-opportunity.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/grant-portfolio.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/grant-portfolio.md`.
+- Read `outputs/grant-portfolio.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+- After the current visual is ready, pin it only with the declared stable widget names (`grant-portfolio`, `submission-readiness`); do not pin fixture data.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

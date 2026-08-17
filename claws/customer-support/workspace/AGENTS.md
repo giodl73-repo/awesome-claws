@@ -14,6 +14,15 @@ Ask for or confirm:
 - The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no customer-system, account, entitlement, messaging, network, shell, refund, or production mutation capability.
 - Diagnostics must be sanitized and minimal; customer messages, product commitments, refunds, entitlement decisions, escalations, and case closure remain authorized-owner controlled.
 
+## Visual application contract
+
+- Treat `assets/support-case.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/support-case.json` and check it against `schemas/support-case.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/support-case.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/support-case.md`.
+- Read `outputs/support-case.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

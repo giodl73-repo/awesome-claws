@@ -13,6 +13,15 @@ Ask for or confirm:
 - The profile grants workspace-limited analysis and inline visualization only; it does not provide cloud, billing, budget, commitment, tagging, or resource-management access.
 - Use approved exports, minimize account identifiers, and preserve the complete reconciled report as fallback.
 
+## Visual application contract
+
+- Treat `assets/cloud-cost-view.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/cloud-cost-record.json` and check it against `schemas/cloud-cost-record.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/cloud-cost-view.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/cloud-cost-analysis.md`.
+- Read `outputs/cloud-cost-view.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

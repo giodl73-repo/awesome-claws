@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "research-scout",
+  "scenario": "Monitor public research on retrieval-augmented generation evaluation and report only evidence that changes our current benchmark design.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Monitor public research on retrieval-augmented generation evaluation and report only evidence that changes our current benchmark design."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the research decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/research-scout-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Research scout session handoff",
+    "summary": "A DOI/arXiv-linked delta digest separating preprints and reviewed work, documenting methods and datasets, identifying corrections and contradictory findings, and mapping concrete implications to the benchmark decision.",
+    "output": "outputs/research-scout-handoff.md",
+    "items": [
+      {
+        "title": "Reproducible search and inclusion protocol",
+        "summary": "Queries, indexes, dates, inclusion decisions, and persistent identifiers are reproducible",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Persistent-identifier evidence ledger",
+        "summary": "Publication state, study design, sample or dataset, limitations, corrections, and conflicts are visible for every material item",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "New, corrected, retracted, and contradictory evidence digest",
+        "summary": "Do not present a preprint, abstract, press release, citation count, or model summary as validated scientific consensus",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Domain-review and replication queue",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

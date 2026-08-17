@@ -1,0 +1,68 @@
+name: Control UI Proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      openclaw_ref:
+        description: Exact OpenClaw branch, tag, or SHA to exercise
+        required: true
+        default: main
+  schedule:
+    - cron: "17 8 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  representative-control-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          repository: openclaw/openclaw
+          ref: ${{ inputs.openclaw_ref || 'main' }}
+          path: openclaw
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          repository: giodl73-repo/claws
+          ref: ae541e00a9106075efb0912e3d16457b88878c87
+          path: claws-cli
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24.15.0
+          cache: npm
+      - run: corepack enable
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: pnpm --dir openclaw install --frozen-lockfile
+      - run: pnpm --dir openclaw build
+      - run: pnpm --dir claws-cli install --frozen-lockfile
+      - run: pnpm --dir claws-cli build
+      - name: Prove installed visual runtime
+        env:
+          CLAWS_CLI_ENTRY: ${{ github.workspace }}/claws-cli/packages/cli/dist/cli.mjs
+          OPENCLAW_CLI_ENTRY: ${{ github.workspace }}/openclaw/openclaw.mjs
+          PORTFOLIO_ONLY: data-analyst
+          PORTFOLIO_VISUAL_RUNTIME: "1"
+        run: npm run proof:portfolio
+      - name: Capture representative installed presentation
+        env:
+          OPENCLAW_ROOT: ${{ github.workspace }}/openclaw
+          SCREENSHOT_ONLY: data-analyst
+        run: npm run screenshots
+      - name: Record exact OpenClaw revision
+        run: |
+          mkdir -p .tmp/control-ui-proof
+          git -C openclaw rev-parse HEAD > .tmp/control-ui-proof/openclaw-revision.txt
+          git -C claws-cli rev-parse HEAD > .tmp/control-ui-proof/claws-cli-revision.txt
+          cp screenshots/data-analyst.png .tmp/control-ui-proof/data-analyst.png
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: control-ui-proof
+          path: |
+            .tmp/control-ui-proof
+            .tmp/proof
+          if-no-files-found: error

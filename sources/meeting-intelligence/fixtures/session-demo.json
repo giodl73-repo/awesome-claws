@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "meeting-intelligence",
+  "scenario": "Process this consented architecture-review recording into minutes using our decision-record template, and flag every uncertain speaker attribution.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Process this consented architecture-review recording into minutes using our decision-record template, and flag every uncertain speaker attribution."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the meeting decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/meeting-intelligence-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Meeting intelligence session handoff",
+    "summary": "A local transcript with confidence markers, a source-linked decision/action register, and a DOCX draft awaiting participant review.",
+    "output": "outputs/meeting-intelligence-handoff.md",
+    "items": [
+      {
+        "title": "Timestamped transcript",
+        "summary": "Recording authority, retention, and audience are recorded",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Decision and action register",
+        "summary": "Transcript uncertainty and speaker ambiguity remain visible",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Uncertainty and correction log",
+        "summary": "Do not transcribe, retain, or distribute audio without verified participant consent and an approved destination",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Reviewable DOCX meeting record",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

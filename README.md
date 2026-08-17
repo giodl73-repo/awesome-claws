@@ -154,10 +154,11 @@ These packages intentionally follow the experimental prompt-body contract in
 non-empty `CLAW.md` body is the portable agent prompt, and the same package does
 not declare a competing `SOUL.md` workspace sidecar.
 
-The generated packages are derived from [`catalog.json`](catalog.json), with
-their reviewed Control UI captures stored under [`screenshots/`](screenshots/).
-Edit those sources and run `npm run build`; do not hand-edit files under
-`claws/`.
+The generated packages are derived from catalog metadata in
+[`catalog.json`](catalog.json) and readable per-Claw resource bodies under
+[`sources/`](sources/), with reviewed Control UI captures stored under
+[`screenshots/`](screenshots/). Edit those sources and run `npm run build`; do
+not hand-edit files under `claws/`.
 
 ## Validate the catalog
 
@@ -178,9 +179,11 @@ OpenClaw adapter in disposable state.
 
 ### Catalog invariants
 
-- `catalog.json` is the only editable source for generated package content.
-  `npm run build` materializes it, and `npm run check` requires byte-for-byte
-  agreement with all 51 generated packages.
+- `catalog.json` owns catalog metadata and resource declarations.
+  `sources/<claw-id>/` owns the declared resource bodies in their native file
+  formats. `npm run build` materializes both, and `npm run check` requires
+  byte-for-byte agreement with all 51 generated packages and rejects missing
+  or undeclared source files.
 - Harness profiles use the conventional `profiles/openclaw.yml` path, strict
   schema version 1, exact pinned extension releases, and unique extension ids
   and package refs.
@@ -207,11 +210,19 @@ OpenClaw adapter in disposable state.
   for all 51 packages in isolated local state. Its agent turn uses the checked-in
   OpenAI-compatible fixture, so it proves runtime wiring rather than a live
   provider.
+- With `PORTFOLIO_ONLY=data-analyst` and `PORTFOLIO_VISUAL_RUNTIME=1`,
+  portfolio proof runs the representative visual contract through an
+  inline-widget-capable Gateway client and a scripted OpenAI-compatible fixture
+  that requires workspace JSON/HTML/Markdown writes followed by an executed
+  `show_widget` call.
 - `npm run proof:golden` additionally proves exact Golden artifact bytes through
   a disposable local registry. It is not public publication or provider-live
   evidence.
 - `npm run proof:experience` and `npm run screenshots` prove rendering and host
   presentation paths, not provider correctness or model quality.
+- `npm run validate:artifact -- <claw-id> <artifact.json>` runs JSON Schema
+  validation and the registered semantic reference checks for the Data
+  Analyst, Project Manager, Product Manager, and Research Briefing artifacts.
 
 No command in this repository is provider-live evidence by itself. A live claim
 requires an explicit credentialed provider lane, exact revisions, retained
@@ -243,21 +254,23 @@ and runs the verified package through the complete portfolio lifecycle. It
 requires the same `CLAWS_CLI_ENTRY` setting as `proof:portfolio`; it never
 publishes to the public registry or exercises live provider credentials.
 
-With `OPENCLAW_ROOT` pointing to a built OpenClaw checkout,
-`npm run proof:experience` renders every X4/X5 asset through Playwright at
-desktop and mobile sizes. It retains screenshots and fails on blank output,
-horizontal overflow, unnamed controls, console errors, or insufficient visual
-signal. Inline-widget and pinned-dashboard tool behavior remain separate native
-Control UI contract proofs because presentation assets must not substitute for
-the host's security and persistence semantics.
+`npm run proof:experience` uses the repository's pinned Playwright and Sharp
+dependencies to render every X4/X5 asset at desktop and mobile sizes. It
+retains screenshots and fails on blank output, horizontal overflow, unnamed
+controls, console errors, or insufficient visual signal. The same proof is a
+required Linux CI job. Inline-widget and pinned-dashboard tool behavior remain
+separate native Control UI contract proofs because presentation assets must not
+substitute for the host's security and persistence semantics.
 
 `npm run screenshots` starts OpenClaw's real Control UI, opens a deterministic
-session for each Claw, and captures the same Chat, Canvas, and composer surfaces
-an OpenClaw user sees. The command writes source images under `screenshots/`
-and copies them into the generated packages. Set `SCREENSHOT_ONLY` to a
-comma-separated list of package ids while iterating. These captures prove the
-presentation path; `npm run proof:portfolio` remains the lifecycle and runtime
-wiring proof.
+injected session for each Claw, and captures the same Chat, Canvas, and composer
+surfaces an OpenClaw user sees. The command writes source images under
+`screenshots/` and copies them into the generated packages. Set
+`SCREENSHOT_ONLY` to a comma-separated list of package ids while iterating.
+These captures prove the presentation path, not agent invocation. The scheduled
+and manually dispatchable `Control UI Proof` workflow pairs a representative
+capture with the installed visual-runtime lane and retains the exact OpenClaw
+revision it exercised.
 
 When proof runs from a worktree whose Git metadata is not visible inside the
 execution environment, set `AWESOME_CLAWS_REVISION`, `CLAWS_CLI_REVISION`, and

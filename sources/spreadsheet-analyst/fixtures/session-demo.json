@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "spreadsheet-analyst",
+  "scenario": "Add a scenario sheet to this revenue model, preserve every existing formula and style, and show which assumptions drive the forecast range.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Add a scenario sheet to this revenue model, preserve every existing formula and style, and show which assumptions drive the forecast range."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the spreadsheet decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/spreadsheet-analyst-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Spreadsheet analyst session handoff",
+    "summary": "A new review copy with an auditable scenario sheet, preserved source formulas, recalculation checks, and a concise assumptions and compatibility report.",
+    "output": "outputs/spreadsheet-analyst-handoff.md",
+    "items": [
+      {
+        "title": "Workbook audit",
+        "summary": "The source workbook is unchanged and the output destination is explicit",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Transformation plan",
+        "summary": "Every material transformation and formula change is reproducible",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Reviewable output workbook",
+        "summary": "Do not overwrite the source workbook or silently replace formulas with values",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Formula and validation report",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

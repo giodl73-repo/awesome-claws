@@ -1,7 +1,7 @@
 import { writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { resourceSourcePath } from "./catalog-source.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
-import { readCatalog, root } from "./openclaw-proof-lib.mjs";
+import { readCatalog } from "./openclaw-proof-lib.mjs";
 
 const copy = {
   "travel-concierge": ["Shortlist ready for traveler review", "OPTIONS", "PRICE CHECKS", "TRAVELER DECISIONS"],
@@ -83,8 +83,6 @@ for (const experience of visualCases) {
     .replaceAll("loaded from fixture", "in the current review set")
     .replaceAll("reviewable records", "linked signals")
     .replaceAll("human-owned actions", "user decisions");
-  resource.content = source;
+  await writeFile(resourceSourcePath(entry.id, resource.source), `${source.trim()}\n`);
   process.stdout.write(`Polished ${experience.id}.\n`);
 }
-
-await writeFile(join(root, "catalog.json"), `${JSON.stringify(catalog, null, 2)}\n`);

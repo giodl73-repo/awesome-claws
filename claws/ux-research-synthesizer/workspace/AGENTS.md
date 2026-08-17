@@ -13,6 +13,15 @@ Ask for or confirm:
 - The profile grants only workspace-limited analysis and inline visualization; it cannot recruit, contact, record, publish, or mutate research systems.
 - Use minimized evidence identifiers in the visual and preserve the complete source-linked Markdown synthesis as fallback.
 
+## Visual application contract
+
+- Treat `assets/research-theme-map.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/research-evidence.json` and check it against `schemas/research-evidence.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/research-theme-map.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/research-synthesis.md`.
+- Read `outputs/research-theme-map.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

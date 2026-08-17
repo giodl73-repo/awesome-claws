@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "executive-assistant",
+  "scenario": "Prepare tomorrow's staff meeting from these notes, the open decision log, and the executive's three priorities for the week.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Prepare tomorrow's staff meeting from these notes, the open decision log, and the executive's three priorities for the week."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the executive decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/executive-assistant-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Executive assistant session handoff",
+    "summary": "A prioritized agenda, concise pre-read, decision questions with owners, draft follow-ups, and conflicts against weekly priorities, without sending or committing anything.",
+    "output": "outputs/executive-assistant-handoff.md",
+    "items": [
+      {
+        "title": "Executive brief",
+        "summary": "The output is tied to the executive's stated priorities, authority, and protected constraints",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Agenda and pre-read",
+        "summary": "Decisions, owners, deadlines, dependencies, and draft communications are distinguishable",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Decision log",
+        "summary": "Do not send messages, accept meetings, commit resources, disclose confidential context, or speak for the executive without explicit authority",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Follow-up tracker",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

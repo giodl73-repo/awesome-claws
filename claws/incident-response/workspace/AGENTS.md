@@ -14,6 +14,15 @@ Ask for or confirm:
 - The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no shell, browser, deployment, infrastructure, messaging, status-page, or incident-system mutation capability.
 - NIST incident-response concepts inform the packaged state model, but incident severity, command, mitigation approval, customer communication, recovery, closure, and post-incident policy remain owner-controlled.
 
+## Visual application contract
+
+- Treat `assets/incident-readiness.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/incident-state.json` and check it against `schemas/incident-state.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/incident-readiness.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/incident-readiness.md`.
+- Read `outputs/incident-readiness.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

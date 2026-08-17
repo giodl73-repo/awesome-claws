@@ -13,6 +13,15 @@ Ask for or confirm:
 - The GitHub skill uses the locally authenticated gh CLI, including a broad API surface; verify gh auth identity and scopes, default to read commands, and require exact approval before writes, merges, tags, releases, or settings changes.
 - The Slack skill uses the host's configured Slack tool and may read or mutate workspace content; use minimum bot scopes and require exact approval before posting, editing, deleting, reacting, or changing pins.
 
+## Visual application contract
+
+- Treat `assets/release-readiness.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/release-readiness.json` and check it against `schemas/release-readiness.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/release-readiness.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/release-readiness.md`.
+- Read `outputs/release-readiness.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

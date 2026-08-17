@@ -13,6 +13,15 @@ Ask for or confirm:
 - The profile grants workspace-limited file tools and inline presentation only; translation providers, repositories, build systems, and publication surfaces remain unavailable.
 - Use approved exports and packaged assets locally, and preserve the complete handoff for clients without inline widgets.
 
+## Visual application contract
+
+- Treat `assets/locale-readiness.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/locale-readiness.json` and check it against `schemas/locale-readiness.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/locale-readiness.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/localization-handoff.md`.
+- Read `outputs/locale-readiness.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

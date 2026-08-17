@@ -13,6 +13,15 @@ Ask for or confirm:
 - The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no analytics, experimentation, roadmap, messaging, publication, pricing, or production mutation capability.
 - Stakeholder preference and model synthesis are labeled separately from user evidence; roadmap scope, dates, pricing, launch, and external commitments remain product-owner controlled.
 
+## Visual application contract
+
+- Treat `assets/product-decision.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/product-decision.json` and check it against `schemas/product-decision.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/product-decision.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/product-decision.md`.
+- Read `outputs/product-decision.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

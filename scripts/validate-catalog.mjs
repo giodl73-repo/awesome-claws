@@ -1,9 +1,10 @@
 import { spawnSync } from "node:child_process";
 import { readFile, readdir } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Cron } from "croner";
 import { parseDocument } from "yaml";
+import { readCatalog, sourceRoot } from "./catalog-source.mjs";
 import {
   validateManifestMetadata,
   validateOpenClawProfile,
@@ -11,7 +12,7 @@ import {
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
+const catalog = await readCatalog();
 const useReferenceCli = process.argv.includes("--reference");
 const cliEntry = useReferenceCli
   ? resolve(
@@ -58,6 +59,32 @@ if (missingBaselineIds.length > 0) {
 const ids = new Set();
 const names = new Set();
 const demonstratedCapabilities = new Set();
+
+const expectedSourceFiles = new Set(
+  catalog.entries.flatMap((entry) =>
+    (entry.resources ?? []).map((resource) => `${entry.id}/${resource.source}`),
+  ),
+);
+const sourceEntries = await readdir(sourceRoot, { recursive: true, withFileTypes: true });
+const unsupportedSourceEntries = sourceEntries.filter(
+  (entry) => !entry.isDirectory() && !entry.isFile(),
+);
+if (unsupportedSourceEntries.length > 0) {
+  throw new Error("Per-Claw sources must contain only ordinary files and directories.");
+}
+const actualSourceFiles = new Set(
+  sourceEntries
+    .filter((entry) => entry.isFile())
+    .map((entry) =>
+      relative(sourceRoot, join(entry.parentPath, entry.name)).replaceAll("\\", "/"),
+    ),
+);
+const sourceMismatches = [...new Set([...expectedSourceFiles, ...actualSourceFiles])].filter(
+  (path) => expectedSourceFiles.has(path) !== actualSourceFiles.has(path),
+);
+if (sourceMismatches.length > 0) {
+  throw new Error(`Catalog source files differ: ${sourceMismatches.join(", ")}`);
+}
 
 function hasValidCronSchedule(schedule) {
   if (
