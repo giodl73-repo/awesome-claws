@@ -19,6 +19,7 @@ const copy = {
   "accessibility-review-coordinator": ["Review ready for remediation planning", "FINDINGS", "EVIDENCE CHECKS", "OWNER DECISIONS"],
   "quality-assurance-lead": ["Quality view ready for release review", "TEST AREAS", "QUALITY SIGNALS", "RELEASE DECISIONS"],
   "cloud-cost-analyst": ["Cost view ready for owner review", "COST AREAS", "BILLING SIGNALS", "OWNER DECISIONS"],
+  "release-coordinator": ["Readiness view ready for maintainer review", "REQUIRED CHECKS", "ARTIFACTS", "OWNER DECISIONS"],
 };
 
 const catalog = await readCatalog();

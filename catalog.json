@@ -1708,24 +1708,44 @@
       "workflow": [
         "Confirm account identity, repository scope, release target, policy, and required evidence",
         "Read GitHub commits, pull requests, checks, artifacts, and prior releases to build a readiness ledger",
-        "Prepare exact mutation and communication plans with blockers, owners, verification, and rollback",
-        "Execute only separately approved actions, then verify resulting GitHub state and provide a draft or approved Slack handoff"
+        "Populate the packaged readiness record and visual from attributable evidence, keeping missing, failed, blocked, and waived states distinct",
+        "Prepare exact mutation and communication plans with blockers, owners, verification, rollback, and a Markdown fallback",
+        "Execute only separately approved actions, then reconcile the readiness record with resulting GitHub state and provide a draft or approved Slack handoff"
       ],
       "deliverables": [
-        "Release readiness ledger",
+        "Schema-backed release readiness ledger",
+        "Inline readiness and blocker view",
         "Exact action and approval plan",
         "Release notes and communication draft",
         "Post-action verification and rollback handoff"
       ],
       "example": {
         "request": "Assess whether repository acme/widget is ready for v2.4.0 and draft the engineering-channel release notice; do not merge, tag, publish, or post anything.",
-        "outcome": "A GitHub-grounded readiness report with required checks and artifacts, explicit blockers and owners, an exact future action plan, and an unposted Slack draft."
+        "outcome": "A schema-validated readiness record and inline view with required checks, artifacts, blockers, owners, exact future actions, and an unposted Slack draft."
       },
       "doneWhen": [
-        "Repository, account, target commit, checks, artifacts, policy, and owner are verified",
+        "Repository, account, target commit, checks, artifacts, policy, and owner are recorded with attributable evidence and explicit state",
+        "The visual and Markdown fallback agree on ready, failed, blocked, missing, waived, and owner-decision states",
         "Every proposed mutation or message names its exact target, authority, verification, and rollback or correction path",
         "Executed actions are separately approved and verified; otherwise all outputs remain clearly marked as plans or drafts"
       ],
+      "openclawProfile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "minimal",
+            "alsoAllow": [
+              "read",
+              "write",
+              "edit",
+              "show_widget"
+            ],
+            "fs": {
+              "workspaceOnly": true
+            }
+          }
+        }
+      },
       "packages": [
         {
           "kind": "skill",
@@ -1762,6 +1782,30 @@
           "path": "templates/session-handoff.md",
           "role": "template",
           "content": "# Release coordinator handoff\n\n## Request\n\nSummarize the user request and the decision this claw is supporting.\n\n## Known facts\n\n- Record only facts grounded in the supplied context or approved tools.\n\n## Assumptions and gaps\n\n- Separate assumptions from missing evidence.\n\n## Evidence ledger\n\n- Link or name the source for every material claim.\n\n## Recommendation or decision state\n\n- State the best supported next step and why.\n\n## Blocked actions\n\n- Keep external communication, irreversible changes, purchases, publication, and authority-sensitive actions blocked until explicitly approved.\n\n## Next owner\n\nName the accountable human owner and where outputs/release-coordinator-handoff.md should be reviewed.\n"
+        },
+        {
+          "source": "schemas/release-readiness.schema.json",
+          "path": "schemas/release-readiness.schema.json",
+          "role": "schema",
+          "content": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\"repository\", \"version\", \"targetCommit\", \"checks\", \"artifacts\", \"blockers\", \"decisionState\", \"communicationState\"],\n  \"properties\": {\n    \"repository\": {\"type\": \"string\", \"minLength\": 1},\n    \"version\": {\"type\": \"string\", \"minLength\": 1},\n    \"targetCommit\": {\"type\": \"string\", \"pattern\": \"^[0-9a-f]{7,64}$\"},\n              \"checks\": {\"type\": \"array\", \"minItems\": 1, \"items\": {\"$ref\": \"#/$defs/evidenceItem\"}},\n    \"artifacts\": {\"type\": \"array\", \"minItems\": 1, \"items\": {\"$ref\": \"#/$defs/evidenceItem\"}},\n    \"blockers\": {\"type\": \"array\", \"items\": {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"summary\", \"owner\", \"state\"], \"properties\": {\"summary\": {\"type\": \"string\", \"minLength\": 1}, \"owner\": {\"type\": \"string\", \"minLength\": 1}, \"state\": {\"enum\": [\"open\", \"resolved\", \"accepted\"]}}}},\n    \"decisionState\": {\"enum\": [\"not-ready\", \"ready-for-owner-decision\", \"approved\", \"released\"]},\n    \"communicationState\": {\"enum\": [\"not-drafted\", \"draft\", \"approved\", \"sent\"]}\n  },\n  \"$defs\": {\n    \"evidenceItem\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\"name\", \"state\", \"evidence\"],\n      \"properties\": {\n        \"name\": {\"type\": \"string\", \"minLength\": 1},\n        \"state\": {\"enum\": [\"passed\", \"failed\", \"blocked\", \"missing\", \"waived\"]},\n        \"evidence\": {\"type\": \"string\", \"minLength\": 1}\n      }\n    }\n  }\n}"
+        },
+        {
+          "source": "fixtures/release-readiness.example.json",
+          "path": "fixtures/release-readiness.example.json",
+          "role": "fixture",
+          "content": "{\n  \"repository\": \"acme/widget\",\n  \"version\": \"v2.4.0\",\n  \"targetCommit\": \"8f1c2d4\",\n  \"checks\": [\n    {\"name\": \"required CI\", \"state\": \"passed\", \"evidence\": \"workflow run 1842\"},\n    {\"name\": \"upgrade smoke\", \"state\": \"blocked\", \"evidence\": \"Windows runner owner: release-eng\"}\n  ],\n  \"artifacts\": [\n    {\"name\": \"signed package\", \"state\": \"passed\", \"evidence\": \"sha256:example\"},\n    {\"name\": \"rollback bundle\", \"state\": \"missing\", \"evidence\": \"owner: operations\"}\n  ],\n  \"blockers\": [\n    {\"summary\": \"Upgrade smoke is blocked\", \"owner\": \"release-eng\", \"state\": \"open\"}\n  ],\n  \"decisionState\": \"not-ready\",\n  \"communicationState\": \"draft\"\n}"
+        },
+        {
+          "source": "assets/release-readiness.html",
+          "path": "assets/release-readiness.html",
+          "role": "asset",
+          "content": "<style>\n.oc-surface{padding:24px;background:#f6f8fb;color:#172033;font:16px/1.45 \"Segoe UI\",Arial,sans-serif}.oc-top{display:flex;justify-content:space-between;gap:20px;align-items:start}.oc-top h1{margin:0;font-size:28px}.oc-top p{margin:6px 0;color:#5d6b82}.oc-state{padding:10px 14px;border-radius:8px;background:#fff2cc;border:1px solid #e2bd55;font-weight:700}.oc-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}.oc-card,.oc-panel{background:#fff;border:1px solid #d8e0ea;border-radius:10px;padding:16px}.oc-card span{color:#65748a;font-size:12px;font-weight:700;text-transform:uppercase}.oc-card strong{display:block;font-size:26px;margin-top:6px}.oc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.oc-panel h2{margin:0 0 12px}.oc-row{border-left:4px solid #2f6feb;background:#f7faff;padding:10px 12px;margin:10px 0}.oc-row.blocked{border-color:#d29922}.oc-row.missing{border-color:#cf222e}.oc-row strong{display:block}.oc-row small{color:#617086}.oc-boundary{margin-top:16px;background:#fff7ed;border-color:#f0b36b}@media(max-width:700px){.oc-surface{padding:14px}.oc-top,.oc-grid{display:block}.oc-state{margin-top:12px}.oc-metrics{grid-template-columns:1fr 1fr}.oc-panel{margin-top:12px}}\n</style>\n<main class=\"oc-surface\" aria-labelledby=\"release-title\"><section class=\"oc-top\"><div><h1 id=\"release-title\">Release readiness</h1><p>acme/widget v2.4.0 at commit 8f1c2d4</p></div><div class=\"oc-state\">Not ready - owner action required</div></section><section class=\"oc-metrics\"><article class=\"oc-card\"><span>Required checks</span><strong>1 / 2</strong><p>one blocked</p></article><article class=\"oc-card\"><span>Artifacts</span><strong>1 / 2</strong><p>rollback missing</p></article><article class=\"oc-card\"><span>Open blockers</span><strong>1</strong><p>release-eng owner</p></article><article class=\"oc-card\"><span>Communication</span><strong>Draft</strong><p>not approved or sent</p></article></section><section class=\"oc-grid\"><article class=\"oc-panel\"><h2>Evidence ledger</h2><div class=\"oc-row\"><strong>Required CI - passed</strong><small>workflow run 1842</small></div><div class=\"oc-row blocked\"><strong>Upgrade smoke - blocked</strong><small>Windows runner; owner: release-eng</small></div><div class=\"oc-row\"><strong>Signed package - passed</strong><small>digest recorded</small></div><div class=\"oc-row missing\"><strong>Rollback bundle - missing</strong><small>owner: operations</small></div></article><article class=\"oc-panel\"><h2>Owner decision queue</h2><div class=\"oc-row blocked\"><strong>Complete upgrade smoke</strong><small>Verification must match target commit</small></div><div class=\"oc-row missing\"><strong>Produce rollback bundle</strong><small>No tag or publish action is authorized</small></div><div class=\"oc-row\"><strong>Review communication draft</strong><small>Slack message remains unsent</small></div></article></section><section class=\"oc-panel oc-boundary\"><h2>Authority boundary</h2><p>This view records evidence and proposed actions. It does not merge, tag, publish, edit releases, change repository settings, or send Slack messages.</p><p>The complete fallback remains in <strong>outputs/release-readiness.md</strong>.</p></section></main>"
+        },
+        {
+          "source": "templates/release-readiness.md",
+          "path": "templates/release-readiness.md",
+          "role": "template",
+          "content": "# Release readiness\n\n## Repository, version, and target commit\n\n## Required checks and attributable evidence\n\n## Artifacts, signing, and rollback\n\n## Blockers, owners, and accepted exceptions\n\n## Exact action and approval plan\n\n## Communication draft state\n\n## Human release decision"
         }
       ]
     },

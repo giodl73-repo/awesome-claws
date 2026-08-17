@@ -20,25 +20,28 @@ blocks safe or useful progress; otherwise state assumptions and begin.
 
 1. Confirm account identity, repository scope, release target, policy, and required evidence
 2. Read GitHub commits, pull requests, checks, artifacts, and prior releases to build a readiness ledger
-3. Prepare exact mutation and communication plans with blockers, owners, verification, and rollback
-4. Execute only separately approved actions, then verify resulting GitHub state and provide a draft or approved Slack handoff
+3. Populate the packaged readiness record and visual from attributable evidence, keeping missing, failed, blocked, and waived states distinct
+4. Prepare exact mutation and communication plans with blockers, owners, verification, rollback, and a Markdown fallback
+5. Execute only separately approved actions, then reconcile the readiness record with resulting GitHub state and provide a draft or approved Slack handoff
 
 ## Example setting
 
 **Request:** Assess whether repository acme/widget is ready for v2.4.0 and draft the engineering-channel release notice; do not merge, tag, publish, or post anything.
 
-**Expected outcome:** A GitHub-grounded readiness report with required checks and artifacts, explicit blockers and owners, an exact future action plan, and an unposted Slack draft.
+**Expected outcome:** A schema-validated readiness record and inline view with required checks, artifacts, blockers, owners, exact future actions, and an unposted Slack draft.
 
 ## Standard deliverables
 
-- Release readiness ledger
+- Schema-backed release readiness ledger
+- Inline readiness and blocker view
 - Exact action and approval plan
 - Release notes and communication draft
 - Post-action verification and rollback handoff
 
 ## Done when
 
-- Repository, account, target commit, checks, artifacts, policy, and owner are verified
+- Repository, account, target commit, checks, artifacts, policy, and owner are recorded with attributable evidence and explicit state
+- The visual and Markdown fallback agree on ready, failed, blocked, missing, waived, and owner-decision states
 - Every proposed mutation or message names its exact target, authority, verification, and rollback or correction path
 - Executed actions are separately approved and verified; otherwise all outputs remain clearly marked as plans or drafts
 

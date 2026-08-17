@@ -17,6 +17,14 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/release-readiness.schema.json
+      path: schemas/release-readiness.schema.json
+    - source: fixtures/release-readiness.example.json
+      path: fixtures/release-readiness.example.json
+    - source: assets/release-readiness.html
+      path: assets/release-readiness.html
+    - source: templates/release-readiness.md
+      path: templates/release-readiness.md
 packages:
   - kind: skill
     source: clawhub

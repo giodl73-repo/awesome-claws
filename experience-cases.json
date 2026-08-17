@@ -12,7 +12,7 @@
       "product-manager", "compliance-reviewer", "knowledge-curator", "executive-briefing",
       "meeting-intelligence", "spreadsheet-analyst", "knowledge-gardener", "research-monitor",
       "presentation-producer", "document-intake-analyst", "media-evidence-reviewer",
-      "release-coordinator", "feed-intelligence-monitor", "travel-planner",
+      "feed-intelligence-monitor", "travel-planner",
       "web-evidence-researcher", "website-evidence-collector", "video-concept-producer",
       "workflow-operator", "public-company-watcher", "research-scout", "public-safety-monitor",
       "civic-data-analyst", "fundraising-campaign-manager"
@@ -33,6 +33,7 @@
     { "id": "localization-program-manager", "target": 4, "primary": "inline-widget", "asset": "assets/locale-readiness.html", "fallback": "outputs/localization-handoff.md" },
     { "id": "accessibility-review-coordinator", "target": 4, "primary": "inline-widget", "asset": "assets/accessibility-review.html", "fallback": "outputs/accessibility-handoff.md" },
     { "id": "quality-assurance-lead", "target": 4, "primary": "inline-widget", "asset": "assets/qa-coverage.html", "fallback": "outputs/release-quality.md" },
-    { "id": "cloud-cost-analyst", "target": 4, "primary": "inline-widget", "asset": "assets/cloud-cost-view.html", "fallback": "outputs/cloud-cost-analysis.md" }
+    { "id": "cloud-cost-analyst", "target": 4, "primary": "inline-widget", "asset": "assets/cloud-cost-view.html", "fallback": "outputs/cloud-cost-analysis.md" },
+    { "id": "release-coordinator", "target": 4, "primary": "inline-widget", "asset": "assets/release-readiness.html", "fallback": "outputs/release-readiness.md" }
   ]
 }

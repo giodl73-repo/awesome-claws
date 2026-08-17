@@ -79,7 +79,7 @@ Unsupported clients lose presentation, not meaning or control.
 | [Presentation producer](claws/presentation-producer) | Productivity | PowerPoint skill | Reviewable presentation delivery |
 | [Document intake analyst](claws/document-intake-analyst) | Analysis | Markdown Converter skill | Traceable document normalization |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | Analysis | Video Frames + Whisper skills | Timestamped audiovisual review |
-| [Release coordinator](claws/release-coordinator) | Engineering | GitHub + Slack skills | Approval-bound release coordination |
+| [Release coordinator](claws/release-coordinator) | Engineering | GitHub + Slack skills, readiness schema, inline visual | Approval-bound release coordination |
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | Analysis | Blogwatcher skill, weekday cron | Curated source-feed deltas |
 | [Travel planner](claws/travel-planner) | Productivity | Open-Meteo + Travel Checklist skills | Public-source trip planning |
 | [Travel concierge](claws/travel-concierge) (Golden example) | Productivity | Guided setup, Expedia extension, filtered Mapbox OAuth MCP, daily readiness cron, schema, visual asset, dashboard profile | Live travel search and traveler-controlled booking handoff |
