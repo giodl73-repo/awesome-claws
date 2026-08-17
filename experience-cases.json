@@ -6,7 +6,7 @@
     "fallback": "text",
     "outputPattern": "outputs/{id}-handoff.md",
     "ids": [
-      "incident-response", "software-maintainer", "data-analyst",
+      "software-maintainer", "data-analyst",
       "research-briefing", "financial-analyst", "customer-support", "sales-operations",
       "recruiting-coordinator", "content-operations", "executive-assistant", "project-manager",
       "product-manager", "knowledge-curator", "executive-briefing",
@@ -37,6 +37,7 @@
     { "id": "release-coordinator", "target": 4, "primary": "inline-widget", "asset": "assets/release-readiness.html", "fallback": "outputs/release-readiness.md" },
     { "id": "data-governance-steward", "target": 4, "primary": "inline-widget", "asset": "assets/data-governance-review.html", "fallback": "outputs/data-governance-assessment.md" },
     { "id": "compliance-reviewer", "target": 4, "primary": "inline-widget", "asset": "assets/control-assessment.html", "fallback": "outputs/control-assessment.md" },
-    { "id": "security-analyst", "target": 4, "primary": "inline-widget", "asset": "assets/threat-assessment.html", "fallback": "outputs/threat-assessment.md" }
+    { "id": "security-analyst", "target": 4, "primary": "inline-widget", "asset": "assets/threat-assessment.html", "fallback": "outputs/threat-assessment.md" },
+    { "id": "incident-response", "target": 4, "primary": "inline-widget", "asset": "assets/incident-readiness.html", "fallback": "outputs/incident-readiness.md" }
   ]
 }

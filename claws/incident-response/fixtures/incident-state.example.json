@@ -1,0 +1,24 @@
+{
+  "incidentId": "INC-2048",
+  "severity": "SEV-1",
+  "status": "mitigating",
+  "startedAt": "2026-08-16T14:07:00Z",
+  "incidentCommander": "Primary incident commander",
+  "impact": {"summary": "Checkout errors increased from 1% to 18% after deployment 2026.08.16.4.", "affectedServices": ["checkout-api", "payment-orchestrator"], "customerImpact": "partial-outage", "evidenceRef": "dashboard/checkout-errors/14-07", "observedAt": "2026-08-16T14:09:00Z"},
+  "timeline": [
+    {"timestamp": "2026-08-16T14:07:00Z", "kind": "observation", "summary": "Checkout error alert crossed the SEV-1 threshold.", "evidenceRef": "alert/checkout-errors-2048", "owner": "On-call engineer"},
+    {"timestamp": "2026-08-16T14:12:00Z", "kind": "hypothesis", "summary": "Deployment 2026.08.16.4 may have changed payment timeout handling.", "evidenceRef": "deploy/2026.08.16.4", "owner": "Checkout lead"},
+    {"timestamp": "2026-08-16T14:18:00Z", "kind": "decision", "summary": "Incident commander approved a rollback of checkout-api only.", "evidenceRef": "approval/INC-2048/rollback-checkout", "owner": "Primary incident commander"}
+  ],
+  "mitigations": [
+    {"action": "Roll back checkout-api to 2026.08.16.3", "target": "checkout-api production", "owner": "Checkout lead", "state": "in-progress", "approvalRef": "approval/INC-2048/rollback-checkout", "verification": "Checkout errors remain below 2% for 15 minutes.", "rollbackCondition": "Stop if payment authorization failures increase above 3%."},
+    {"action": "Hold payment-orchestrator deployment", "target": "payment-orchestrator production", "owner": "Payments lead", "state": "approved", "approvalRef": "approval/INC-2048/deploy-hold", "verification": "No new payment-orchestrator version reaches production.", "rollbackCondition": "Release hold only after incident commander recovery review."}
+  ],
+  "recoveryCriteria": [
+    {"criterion": "Checkout errors below 2% for 15 minutes", "state": "unmet", "evidenceRef": "dashboard/checkout-errors/live", "owner": "Checkout lead"},
+    {"criterion": "Payment authorization failures remain below 3%", "state": "met", "evidenceRef": "dashboard/payment-auth/live", "owner": "Payments lead"},
+    {"criterion": "Rollback version and configuration are verified", "state": "blocked", "evidenceRef": "verification/rollback-pending", "owner": "Release engineer"}
+  ],
+  "communications": [{"audience": "Customer support and status-page owner", "state": "draft", "owner": "Incident communications lead", "messageRef": "draft/INC-2048/update-1"}],
+  "decisionState": "not-ready"
+}

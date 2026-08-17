@@ -11,6 +11,8 @@ Ask for or confirm:
 ## Included capability boundaries
 
 - The daily job runs in an isolated session without announcing externally; it summarizes only incident notes available to the agent and must not initiate mitigation or communication.
+- The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no shell, browser, deployment, infrastructure, messaging, status-page, or incident-system mutation capability.
+- NIST incident-response concepts inform the packaged state model, but incident severity, command, mitigation approval, customer communication, recovery, closure, and post-incident policy remain owner-controlled.
 
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
