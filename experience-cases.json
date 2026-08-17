@@ -7,7 +7,7 @@
     "outputPattern": "outputs/{id}-handoff.md",
     "ids": [
       "software-maintainer",
-      "research-briefing", "financial-analyst", "sales-operations",
+      "financial-analyst", "sales-operations",
       "recruiting-coordinator", "content-operations", "executive-assistant", "knowledge-curator", "executive-briefing",
       "meeting-intelligence", "spreadsheet-analyst", "knowledge-gardener", "research-monitor",
       "presentation-producer", "document-intake-analyst", "media-evidence-reviewer",
@@ -41,6 +41,7 @@
     { "id": "data-analyst", "target": 4, "primary": "inline-widget", "asset": "assets/analysis-readout.html", "fallback": "outputs/analysis-readout.md" },
     { "id": "project-manager", "target": 4, "primary": "inline-widget", "asset": "assets/project-readiness.html", "fallback": "outputs/project-readiness.md" },
     { "id": "product-manager", "target": 4, "primary": "inline-widget", "asset": "assets/product-decision.html", "fallback": "outputs/product-decision.md" },
-    { "id": "customer-support", "target": 4, "primary": "inline-widget", "asset": "assets/support-case.html", "fallback": "outputs/support-case.md" }
+    { "id": "customer-support", "target": 4, "primary": "inline-widget", "asset": "assets/support-case.html", "fallback": "outputs/support-case.md" },
+    { "id": "research-briefing", "target": 4, "primary": "inline-widget", "asset": "assets/research-brief.html", "fallback": "outputs/research-brief.md" }
   ]
 }
