@@ -33,6 +33,7 @@ export async function createProofEnvironment(proofRoot, id) {
     env: {
       ...process.env,
       HOME: home,
+      USERPROFILE: home,
       OPENCLAW_CONFIG_PATH: join(stateRoot, "openclaw.json"),
       OPENCLAW_EXPERIMENTAL_CLAWS: "1",
       OPENCLAW_HOME: stateRoot,

@@ -1,6 +1,6 @@
 import { spawn, spawnSync } from "node:child_process";
 import { closeSync, openSync } from "node:fs";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { access, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { createConnection, createServer } from "node:net";
 import { dirname, join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -48,6 +48,25 @@ if (unknownIds.length > 0) {
 }
 const sourceOverride = process.env.PORTFOLIO_SOURCE_ROOT?.trim();
 const visualRuntimeProof = process.env.PORTFOLIO_VISUAL_RUNTIME === "1";
+const upgradeFixtures = new Map([
+  [
+    "executive-assistant",
+    {
+      previousSource: join(
+        root,
+        "scripts",
+        "fixtures",
+        "upgrades",
+        "executive-assistant-v0.0.1",
+      ),
+      previousVersion: "0.0.1",
+      targetVersion: "0.1.0",
+      changedPath: "AGENTS.md",
+      addedPath: "templates/session-handoff.md",
+      removedPath: "templates/legacy-follow-up.md",
+    },
+  ],
+]);
 if (sourceOverride && entries.length !== 1) {
   throw new Error("PORTFOLIO_SOURCE_ROOT requires exactly one PORTFOLIO_ONLY package id.");
 }
@@ -115,6 +134,91 @@ function assertSchema(payload, schemaVersion, label) {
     throw new Error(`${label} returned ${payload.schemaVersion ?? "no schemaVersion"}.`);
   }
   return payload;
+}
+
+function assertUpdatePlan(plan, fixture, direction, label) {
+  if (
+    plan.schemaVersion !== "openclaw.clawUpdatePlan.v1" ||
+    plan.mutationAllowed !== false ||
+    typeof plan.planIntegrity !== "string" ||
+    plan.summary?.added !== 1 ||
+    plan.summary?.changed !== 1 ||
+    plan.summary?.removed !== 1 ||
+    plan.summary?.blocked !== 0 ||
+    (plan.blockers?.length ?? 0) !== 0
+  ) {
+    throw new Error(`${label} did not return the expected consent-bound managed delta.`);
+  }
+  const expected =
+    direction === "forward"
+      ? [
+          ["change", fixture.changedPath],
+          ["add", fixture.addedPath],
+          ["remove", fixture.removedPath],
+        ]
+      : [
+          ["change", fixture.changedPath],
+          ["remove", fixture.addedPath],
+          ["add", fixture.removedPath],
+        ];
+  for (const [action, id] of expected) {
+    const matched = plan.actions?.some(
+      (candidate) =>
+        candidate.kind === "workspaceFile" &&
+        candidate.action === action &&
+        candidate.id === id &&
+        candidate.blocked === false,
+    );
+    if (!matched) {
+      throw new Error(`${label} omitted workspace ${action} action for ${id}.`);
+    }
+  }
+  const expectedVersion =
+    direction === "forward" ? fixture.targetVersion : fixture.previousVersion;
+  if (plan.targetClaw?.version !== expectedVersion) {
+    throw new Error(`${label} targeted ${plan.targetClaw?.version ?? "no version"}.`);
+  }
+  return plan;
+}
+
+async function assertFileMatches(actualPath, expectedPath, label) {
+  const [actual, expected] = await Promise.all([readFile(actualPath), readFile(expectedPath)]);
+  if (!actual.equals(expected)) {
+    throw new Error(`${label} did not match ${expectedPath}.`);
+  }
+}
+
+async function assertFileMissing(path, label) {
+  try {
+    await access(path);
+  } catch (error) {
+    if (error?.code === "ENOENT") {
+      return;
+    }
+    throw error;
+  }
+  throw new Error(`${label} unexpectedly remained at ${path}.`);
+}
+
+async function assertUserOwnedState(userOwnedState, label) {
+  if (!userOwnedState) {
+    return;
+  }
+  const retained = await readFile(userOwnedState.path, "utf8");
+  if (retained !== userOwnedState.content) {
+    throw new Error(`${label} changed user-owned USER.md state.`);
+  }
+}
+
+function assertInstalledVersion(status, expectedVersion, label) {
+  const record = status.records?.[0];
+  if (
+    status.summary?.claws !== 1 ||
+    record?.agentState !== "present" ||
+    record?.install?.claw?.version !== expectedVersion
+  ) {
+    throw new Error(`${label} did not report installed version ${expectedVersion}.`);
+  }
 }
 
 function classifyFailure(phase) {
@@ -548,6 +652,8 @@ for (const entry of entries) {
   const evidenceRoot = join(proofRoot, entry.id);
   await mkdir(evidenceRoot, { recursive: true });
   const source = sourceOverride ? resolve(sourceOverride) : join(root, "claws", entry.id);
+  const upgradeFixture = sourceOverride ? undefined : upgradeFixtures.get(entry.id);
+  const installSource = upgradeFixture?.previousSource ?? source;
   let env = {
     ...proof.env,
     OPENAI_API_KEY: "awesome-claws-deterministic-proof",
@@ -560,7 +666,7 @@ for (const entry of entries) {
     id: entry.id,
     packagePath: sourceOverride
       ? source
-      : relative(root, source).replaceAll("\\", "/"),
+      : relative(root, installSource).replaceAll("\\", "/"),
     status: "lifecycle-failed",
     phases,
     lifecycleProofMode: "local",
@@ -590,14 +696,14 @@ for (const entry of entries) {
     }
     const standaloneInspection = assertStandaloneSuccess(
       recordPhase(phases, "standalone-inspect", () =>
-        runStandalone(cliEntry, ["inspect", source], env, `${entry.id} standalone inspect`),
+        runStandalone(cliEntry, ["inspect", installSource], env, `${entry.id} standalone inspect`),
       ),
       "inspect",
     );
     result.package = standaloneInspection.package;
 
     const openClawInspection = recordPhase(phases, "openclaw-inspect", () =>
-      runOpenClaw(openClawEntry, ["claws", "inspect", source], env, `${entry.id} inspect`),
+      runOpenClaw(openClawEntry, ["claws", "inspect", installSource], env, `${entry.id} inspect`),
     );
     if (openClawInspection.valid !== true || openClawInspection.manifest?.agent?.id !== entry.id) {
       throw new Error(`${entry.id} OpenClaw inspection did not preserve package identity.`);
@@ -607,7 +713,7 @@ for (const entry of entries) {
     const adapterPreview = recordPhase(phases, "adapter-preview", () =>
       runStandalone(
         cliEntry,
-        [source, "--agent", "openclaw", "--dry-run"],
+        [installSource, "--agent", "openclaw", "--dry-run"],
         env,
         `${entry.id} add preview`,
       ),
@@ -618,7 +724,7 @@ for (const entry of entries) {
       recordPhase(phases, "add-preview", () =>
         runOpenClaw(
           openClawEntry,
-          ["claws", "add", source, "--dry-run"],
+          ["claws", "add", installSource, "--dry-run"],
           env,
           `${entry.id} add preview`,
         ),
@@ -651,7 +757,7 @@ for (const entry of entries) {
           [
             "claws",
             "add",
-            source,
+            installSource,
             "--yes",
             "--plan-integrity",
             addPlan.planIntegrity,
@@ -725,52 +831,303 @@ for (const entry of entries) {
       throw new Error(`${entry.id} status did not report one present Claw agent.`);
     }
 
-    const updatePlan = recordPhase(phases, "update-preview", () =>
-      runOpenClaw(
-        openClawEntry,
-        ["claws", "update", entry.id, "--dry-run"],
-        env,
-        `${entry.id} update preview`,
-      ),
-    );
-    if (
-      updatePlan.schemaVersion !== "openclaw.clawUpdatePlan.v1" ||
-      updatePlan.mutationAllowed !== false ||
-      typeof updatePlan.planIntegrity !== "string" ||
-      updatePlan.summary?.added !== 0 ||
-      updatePlan.summary?.changed !== 0 ||
-      updatePlan.summary?.removed !== 0 ||
-      updatePlan.summary?.blocked !== 0
-    ) {
-      throw new Error(`${entry.id} update did not return a no-op consent-bound preview.`);
-    }
-    const updated = assertSchema(
-      recordPhase(phases, "update-apply", () =>
+    if (upgradeFixture) {
+      assertInstalledVersion(status, upgradeFixture.previousVersion, `${entry.id} initial status`);
+      const workspace = addResult.agent?.workspace;
+      if (typeof workspace !== "string" || workspace.length === 0) {
+        throw new Error(`${entry.id} upgrade proof requires an installed workspace.`);
+      }
+      const priorAgents = join(upgradeFixture.previousSource, "workspace", "AGENTS.md");
+      const targetAgents = join(source, "workspace", "AGENTS.md");
+      const priorLegacy = join(
+        upgradeFixture.previousSource,
+        "templates",
+        "legacy-follow-up.md",
+      );
+      const targetHandoff = join(source, "templates", "session-handoff.md");
+      await assertFileMatches(join(workspace, upgradeFixture.changedPath), priorAgents, entry.id);
+      await assertFileMatches(join(workspace, upgradeFixture.removedPath), priorLegacy, entry.id);
+      await assertFileMissing(join(workspace, upgradeFixture.addedPath), entry.id);
+
+      const updatePlan = assertUpdatePlan(
+        recordPhase(phases, "upgrade-preview", () =>
+          runOpenClaw(
+            openClawEntry,
+            ["claws", "update", entry.id, "--from", source, "--dry-run"],
+            env,
+            `${entry.id} upgrade preview`,
+          ),
+        ),
+        upgradeFixture,
+        "forward",
+        `${entry.id} upgrade`,
+      );
+      const rejected = recordPhase(phases, "upgrade-reject-stale-consent", () =>
         runOpenClaw(
           openClawEntry,
           [
             "claws",
             "update",
             entry.id,
+            "--from",
+            source,
             "--yes",
             "--plan-integrity",
-            updatePlan.planIntegrity,
+            `sha256:${"0".repeat(64)}`,
           ],
           env,
-          `${entry.id} update apply`,
+          `${entry.id} stale-consent update`,
+          [1],
         ),
-      ),
-      "openclaw.clawUpdateResult.v1",
-      `${entry.id} update`,
-    );
-    if (updated.status !== "complete" || (updated.appliedActions?.length ?? 0) !== 0) {
-      throw new Error(`${entry.id} no-op update did not complete without mutations.`);
+      );
+      if (rejected.status !== "failed" || rejected.error?.code !== "plan_integrity_mismatch") {
+        throw new Error(`${entry.id} update did not reject stale plan integrity.`);
+      }
+      await assertFileMatches(join(workspace, upgradeFixture.changedPath), priorAgents, entry.id);
+      await assertFileMatches(join(workspace, upgradeFixture.removedPath), priorLegacy, entry.id);
+      await assertFileMissing(join(workspace, upgradeFixture.addedPath), entry.id);
+      const rejectedStatus = assertSchema(
+        recordPhase(phases, "upgrade-rejected-status", () =>
+          runOpenClaw(
+            openClawEntry,
+            ["claws", "status", entry.id],
+            env,
+            `${entry.id} rejected-update status`,
+          ),
+        ),
+        "openclaw.clawStatus.v1",
+        `${entry.id} rejected-update status`,
+      );
+      assertInstalledVersion(
+        rejectedStatus,
+        upgradeFixture.previousVersion,
+        `${entry.id} rejected-update status`,
+      );
+
+      const updated = assertSchema(
+        recordPhase(phases, "upgrade-apply", () =>
+          runOpenClaw(
+            openClawEntry,
+            [
+              "claws",
+              "update",
+              entry.id,
+              "--from",
+              source,
+              "--yes",
+              "--plan-integrity",
+              updatePlan.planIntegrity,
+            ],
+            env,
+            `${entry.id} upgrade apply`,
+          ),
+        ),
+        "openclaw.clawUpdateResult.v1",
+        `${entry.id} upgrade`,
+      );
+      if (updated.status !== "complete" || (updated.appliedActions?.length ?? 0) !== 3) {
+        throw new Error(`${entry.id} upgrade did not apply the three managed deltas.`);
+      }
+      await assertFileMatches(join(workspace, upgradeFixture.changedPath), targetAgents, entry.id);
+      await assertFileMatches(join(workspace, upgradeFixture.addedPath), targetHandoff, entry.id);
+      await assertFileMissing(join(workspace, upgradeFixture.removedPath), entry.id);
+      await assertUserOwnedState(userOwnedState, `${entry.id} upgrade`);
+      const upgradedStatus = assertSchema(
+        recordPhase(phases, "upgrade-status", () =>
+          runOpenClaw(
+            openClawEntry,
+            ["claws", "status", entry.id],
+            env,
+            `${entry.id} upgraded status`,
+          ),
+        ),
+        "openclaw.clawStatus.v1",
+        `${entry.id} upgraded status`,
+      );
+      assertInstalledVersion(
+        upgradedStatus,
+        upgradeFixture.targetVersion,
+        `${entry.id} upgraded status`,
+      );
+
+      const rollbackPlan = assertUpdatePlan(
+        recordPhase(phases, "rollback-preview", () =>
+          runOpenClaw(
+            openClawEntry,
+            [
+              "claws",
+              "update",
+              entry.id,
+              "--from",
+              upgradeFixture.previousSource,
+              "--dry-run",
+            ],
+            env,
+            `${entry.id} rollback preview`,
+          ),
+        ),
+        upgradeFixture,
+        "rollback",
+        `${entry.id} rollback`,
+      );
+      const rolledBack = assertSchema(
+        recordPhase(phases, "rollback-apply", () =>
+          runOpenClaw(
+            openClawEntry,
+            [
+              "claws",
+              "update",
+              entry.id,
+              "--from",
+              upgradeFixture.previousSource,
+              "--yes",
+              "--plan-integrity",
+              rollbackPlan.planIntegrity,
+            ],
+            env,
+            `${entry.id} rollback apply`,
+          ),
+        ),
+        "openclaw.clawUpdateResult.v1",
+        `${entry.id} rollback`,
+      );
+      if (rolledBack.status !== "complete" || (rolledBack.appliedActions?.length ?? 0) !== 3) {
+        throw new Error(`${entry.id} rollback did not restore the three managed deltas.`);
+      }
+      await assertFileMatches(join(workspace, upgradeFixture.changedPath), priorAgents, entry.id);
+      await assertFileMatches(join(workspace, upgradeFixture.removedPath), priorLegacy, entry.id);
+      await assertFileMissing(join(workspace, upgradeFixture.addedPath), entry.id);
+      await assertUserOwnedState(userOwnedState, `${entry.id} rollback`);
+      const rolledBackStatus = assertSchema(
+        recordPhase(phases, "rollback-status", () =>
+          runOpenClaw(
+            openClawEntry,
+            ["claws", "status", entry.id],
+            env,
+            `${entry.id} rolled-back status`,
+          ),
+        ),
+        "openclaw.clawStatus.v1",
+        `${entry.id} rolled-back status`,
+      );
+      assertInstalledVersion(
+        rolledBackStatus,
+        upgradeFixture.previousVersion,
+        `${entry.id} rolled-back status`,
+      );
+
+      const repeatPlan = assertUpdatePlan(
+        recordPhase(phases, "upgrade-repeat-preview", () =>
+          runOpenClaw(
+            openClawEntry,
+            ["claws", "update", entry.id, "--from", source, "--dry-run"],
+            env,
+            `${entry.id} repeat upgrade preview`,
+          ),
+        ),
+        upgradeFixture,
+        "forward",
+        `${entry.id} repeat upgrade`,
+      );
+      const repeated = assertSchema(
+        recordPhase(phases, "upgrade-repeat-apply", () =>
+          runOpenClaw(
+            openClawEntry,
+            [
+              "claws",
+              "update",
+              entry.id,
+              "--from",
+              source,
+              "--yes",
+              "--plan-integrity",
+              repeatPlan.planIntegrity,
+            ],
+            env,
+            `${entry.id} repeat upgrade apply`,
+          ),
+        ),
+        "openclaw.clawUpdateResult.v1",
+        `${entry.id} repeat upgrade`,
+      );
+      if (repeated.status !== "complete" || (repeated.appliedActions?.length ?? 0) !== 3) {
+        throw new Error(`${entry.id} repeat upgrade did not apply the managed deltas.`);
+      }
+      await assertFileMatches(join(workspace, upgradeFixture.changedPath), targetAgents, entry.id);
+      await assertFileMatches(join(workspace, upgradeFixture.addedPath), targetHandoff, entry.id);
+      await assertFileMissing(join(workspace, upgradeFixture.removedPath), entry.id);
+      await assertUserOwnedState(userOwnedState, `${entry.id} repeat upgrade`);
+      const repeatedStatus = assertSchema(
+        recordPhase(phases, "upgrade-repeat-status", () =>
+          runOpenClaw(
+            openClawEntry,
+            ["claws", "status", entry.id],
+            env,
+            `${entry.id} repeated-upgrade status`,
+          ),
+        ),
+        "openclaw.clawStatus.v1",
+        `${entry.id} repeated-upgrade status`,
+      );
+      assertInstalledVersion(
+        repeatedStatus,
+        upgradeFixture.targetVersion,
+        `${entry.id} repeated-upgrade status`,
+      );
+      result.upgradeProof = {
+        status: "passed",
+        previousVersion: upgradeFixture.previousVersion,
+        targetVersion: upgradeFixture.targetVersion,
+        managedDelta: { added: 1, changed: 1, removed: 1 },
+        staleConsent: "rejected-before-mutation",
+        rollback: "public-update-path-passed",
+        repeatUpgrade: "passed",
+      };
+    } else {
+      const updatePlan = recordPhase(phases, "update-preview", () =>
+        runOpenClaw(
+          openClawEntry,
+          ["claws", "update", entry.id, "--dry-run"],
+          env,
+          `${entry.id} update preview`,
+        ),
+      );
+      if (
+        updatePlan.schemaVersion !== "openclaw.clawUpdatePlan.v1" ||
+        updatePlan.mutationAllowed !== false ||
+        typeof updatePlan.planIntegrity !== "string" ||
+        updatePlan.summary?.added !== 0 ||
+        updatePlan.summary?.changed !== 0 ||
+        updatePlan.summary?.removed !== 0 ||
+        updatePlan.summary?.blocked !== 0
+      ) {
+        throw new Error(`${entry.id} update did not return a no-op consent-bound preview.`);
+      }
+      const updated = assertSchema(
+        recordPhase(phases, "update-apply", () =>
+          runOpenClaw(
+            openClawEntry,
+            [
+              "claws",
+              "update",
+              entry.id,
+              "--yes",
+              "--plan-integrity",
+              updatePlan.planIntegrity,
+            ],
+            env,
+            `${entry.id} update apply`,
+          ),
+        ),
+        "openclaw.clawUpdateResult.v1",
+        `${entry.id} update`,
+      );
+      if (updated.status !== "complete" || (updated.appliedActions?.length ?? 0) !== 0) {
+        throw new Error(`${entry.id} no-op update did not complete without mutations.`);
+      }
     }
     if (userOwnedState) {
-      const retained = await readFile(userOwnedState.path, "utf8");
-      if (retained !== userOwnedState.content) {
-        throw new Error(`${entry.id} no-op update changed user-owned USER.md state.`);
-      }
+      await assertUserOwnedState(userOwnedState, `${entry.id} update`);
       result.bootstrapState = "synthetic-user-owned-preferences-preserved-after-update";
     }
 

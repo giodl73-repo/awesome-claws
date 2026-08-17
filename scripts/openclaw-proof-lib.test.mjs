@@ -88,6 +88,8 @@ test("each proof environment isolates adapter snapshots", async () => {
     assert.equal(first.env.TMPDIR, first.temp);
     assert.equal(first.env.TMP, first.temp);
     assert.equal(first.env.TEMP, first.temp);
+    assert.equal(first.env.HOME, first.home);
+    assert.equal(first.env.USERPROFILE, first.home);
     assert.notEqual(first.temp, second.temp);
   } finally {
     await rm(proofRoot, { recursive: true, force: true });
