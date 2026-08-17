@@ -207,9 +207,11 @@ OpenClaw adapter in disposable state.
   It does not mutate state or prove provider behavior.
 - `npm run proof:portfolio` first checks deterministic materialization, then
   exercises inspect, consent-bound add, status, export inspection, and removal
-  for all 51 packages in isolated local state. Its agent turn uses the checked-in
-  OpenAI-compatible fixture, so it proves runtime wiring rather than a live
-  provider.
+  for all 51 packages in isolated local state. Executive Assistant additionally
+  proves a real managed-resource update from a checked-in previous-version fixture,
+  stale-consent rejection, reverse rollback, and repeat upgrade while preserving user-owned state. Its
+  agent turn uses the checked-in OpenAI-compatible fixture, so it proves runtime
+  wiring rather than a live provider.
 - With `PORTFOLIO_ONLY=data-analyst` and `PORTFOLIO_VISUAL_RUNTIME=1`,
   portfolio proof runs the representative visual contract through an
   inline-widget-capable Gateway client and a scripted OpenAI-compatible fixture
@@ -230,11 +232,17 @@ results, and a statement of the provider behavior actually exercised.
 
 `npm run proof:portfolio` runs each package in a separate OpenClaw home through
 standalone and OpenClaw inspection, consent-bound add, a deterministic local
-agent turn through the OpenAI-compatible fixture, status, no-op update preview
-and apply, doctor, standalone and OpenClaw export inspection,
-selective removal, and final cleanup. For bootstrap-bearing examples it also
-creates synthetic user-owned preferences and proves update and removal preserve
-them; bootstrap interview quality remains a separate model-behavior lane. The turn uses OpenClaw's OpenAI-compatible E2E
+agent turn through the OpenAI-compatible fixture, status, update preview and
+apply, doctor, standalone and OpenClaw export inspection, selective removal,
+and final cleanup. Executive Assistant starts from the checked-in representative
+`0.0.1` fixture and proves the exact add/change/remove delta to catalog version
+`0.1.0`, failed plan integrity before mutation, reverse rollback, and a repeat
+upgrade. The fixture is purpose-built proof input, not a reconstructed published
+release.
+Other packages retain the no-op update contract. For bootstrap-bearing examples
+the proof also creates synthetic user-owned preferences and proves update,
+rollback, repeat update, and removal preserve them; bootstrap interview quality
+remains a separate model-behavior lane. The turn uses OpenClaw's OpenAI-compatible E2E
 fixture and asserts that the package's domain request, identity, instructions,
 tool surface, and expected handoff cross the actual agent runtime. This proves
 runtime wiring, not subjective model quality; external, credentialed, billable,
