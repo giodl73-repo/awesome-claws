@@ -8,12 +8,13 @@ Coordinates a repository release from verified GitHub state to an approval-bound
 
 **Request:** Assess whether repository acme/widget is ready for v2.4.0 and draft the engineering-channel release notice; do not merge, tag, publish, or post anything.
 
-**Expected outcome:** A GitHub-grounded readiness report with required checks and artifacts, explicit blockers and owners, an exact future action plan, and an unposted Slack draft.
+**Expected outcome:** A schema-validated readiness record and inline view with required checks, artifacts, blockers, owners, exact future actions, and an unposted Slack draft.
 
 ## Package contents
 
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
+- Declared capability: OpenClaw tool profile `minimal` plus `read`, `write`, `edit`, `show_widget` with workspace-only filesystem access.
 - Declared capability: skill `@steipete/github@1.0.0`.
 - Declared capability: skill `@steipete/slack@1.0.0`.
 - Capability boundary: The GitHub skill uses the locally authenticated gh CLI, including a broad API surface; verify gh auth identity and scopes, default to read commands, and require exact approval before writes, merges, tags, releases, or settings changes.
