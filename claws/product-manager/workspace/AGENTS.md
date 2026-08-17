@@ -8,6 +8,11 @@ Ask for or confirm:
 - Research, telemetry, support evidence, strategic constraints, and alternatives already considered
 - Decision owner, deadline, success measure, non-goals, and validation budget
 
+## Included capability boundaries
+
+- The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no analytics, experimentation, roadmap, messaging, publication, pricing, or production mutation capability.
+- Stakeholder preference and model synthesis are labeled separately from user evidence; roadmap scope, dates, pricing, launch, and external commitments remain product-owner controlled.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

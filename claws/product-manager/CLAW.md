@@ -17,6 +17,14 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/product-decision.schema.json
+      path: schemas/product-decision.schema.json
+    - source: fixtures/product-decision.example.json
+      path: fixtures/product-decision.example.json
+    - source: assets/product-decision.html
+      path: assets/product-decision.html
+    - source: templates/product-decision.md
+      path: templates/product-decision.md
 packages: []
 mcpServers: {}
 cronJobs: []
