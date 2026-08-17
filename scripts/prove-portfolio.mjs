@@ -498,7 +498,10 @@ async function assertVisualRuntime({ entry, env, requestLog, turn }) {
     throw new Error(`${entry.id} show_widget did not return an executed tool result.`);
   }
   const config = JSON.parse(await readFile(env.OPENCLAW_CONFIG_PATH, "utf8"));
-  const installed = config.agents?.entries?.find((agent) => agent.id === entry.id);
+  const agentEntries = config.agents?.entries;
+  const installed = Array.isArray(agentEntries)
+    ? agentEntries.find((agent) => agent.id === entry.id)
+    : agentEntries?.[entry.id];
   if (!installed?.workspace) {
     throw new Error(`${entry.id} installed workspace was not recorded.`);
   }
