@@ -347,14 +347,14 @@ async function runGatewayApplicationTurn({ entry, gateway, marker }) {
   try {
     await connected;
     const sessionKey = `agent:${entry.id}:main`;
-    const accepted = await client.request("agent", {
+    const accepted = await client.request("chat.send", {
       sessionKey,
       idempotencyKey: marker,
       message: entry.example.request,
       deliver: false,
       timeout: 120,
     });
-    if (accepted?.status !== "accepted") {
+    if (!["started", "in_flight", "ok"].includes(accepted?.status)) {
       throw new Error(`${entry.id} visual runtime agent request was not accepted.`);
     }
     const completed = await client.request(
@@ -402,12 +402,11 @@ async function configureMockModel(env, port) {
 
 function findAgentTurnText(payload) {
   const queue = [payload];
+  const text = [];
   while (queue.length > 0) {
     const value = queue.shift();
     if (typeof value === "string" && value.trim().length > 0) {
-      if (/OPENCLAW_E2E_APPLICATION_/u.test(value)) {
-        return value;
-      }
+      text.push(value);
       continue;
     }
     if (Array.isArray(value)) {
@@ -418,7 +417,9 @@ function findAgentTurnText(payload) {
       queue.push(...Object.values(value));
     }
   }
-  return "";
+  return text.some((value) => /OPENCLAW_E2E_APPLICATION_/u.test(value))
+    ? text.join("\n")
+    : "";
 }
 
 async function assertApplicationTurn({ entry, marker, requestLog, turn }) {
