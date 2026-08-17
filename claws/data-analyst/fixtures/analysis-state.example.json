@@ -1,0 +1,76 @@
+{
+  "question": "Did the new onboarding flow improve seven-day activation for eligible July signups versus June?",
+  "population": {
+    "included": [
+      "Eligible June and July signups with a known platform"
+    ],
+    "excluded": [
+      "Internal accounts",
+      "Signups without seven days of observation"
+    ]
+  },
+  "comparison": "July new-flow cohort versus June prior-flow cohort, segmented by web and mobile",
+  "timeWindow": {
+    "start": "2026-06-01",
+    "end": "2026-07-31"
+  },
+  "sources": [
+    {
+      "reference": "warehouse/onboarding-cohorts-v4",
+      "source": "Approved analytics export",
+      "observedAt": "2026-08-01T09:00:00Z",
+      "state": "verified",
+      "fields": [
+        "signup_date",
+        "platform",
+        "eligible",
+        "activated_at"
+      ]
+    }
+  ],
+  "transformations": [
+    {
+      "step": "Define activation",
+      "inputRef": "warehouse/onboarding-cohorts-v4",
+      "outputField": "activated_within_7d",
+      "logic": "activated_at is within seven complete days after signup_date"
+    }
+  ],
+  "metrics": [
+    {
+      "name": "July web activation",
+      "formula": "activated eligible July web users / eligible July web users",
+      "value": 0.64,
+      "unit": "rate",
+      "uncertainty": "95% interval: 0.61-0.67",
+      "lineageRefs": [
+        "warehouse/onboarding-cohorts-v4",
+        "activated_within_7d"
+      ]
+    }
+  ],
+  "qualityFindings": [
+    {
+      "issue": "2.1% of eligible rows lack a platform",
+      "severity": "medium",
+      "affectedRows": 84,
+      "disposition": "Excluded from platform split and retained in overall sensitivity check"
+    }
+  ],
+  "findings": [
+    {
+      "statement": "July web activation is higher than June, but the observational comparison does not establish causality.",
+      "evidenceState": "supported",
+      "metricRefs": [
+        "July web activation"
+      ],
+      "alternativeExplanations": [
+        "Seasonality",
+        "Acquisition mix",
+        "Concurrent messaging changes"
+      ]
+    }
+  ],
+  "decisionOwner": "Growth product lead",
+  "decisionState": "ready-for-review"
+}

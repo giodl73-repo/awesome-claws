@@ -8,6 +8,11 @@ Ask for or confirm:
 - Source tables or files, field definitions, access limits, and known quality issues
 - Required metrics, segmentation, confidence standard, and output format
 
+## Included capability boundaries
+
+- The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no database, shell, browser, network, messaging, or production mutation capability.
+- Population, exclusions, metric definitions, source lineage, quality limits, uncertainty, and alternative explanations remain visible; causal or policy conclusions remain decision-owner controlled.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 
