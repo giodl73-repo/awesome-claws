@@ -1,6 +1,14 @@
 name: Control UI Proof
 
 on:
+  pull_request:
+    paths:
+      - ".github/workflows/control-ui-proof.yml"
+      - "package.json"
+      - "package-lock.json"
+      - "scripts/prove-portfolio.mjs"
+      - "scripts/visual-runtime-mock.mjs"
+      - "scripts/visual-runtime-mock.test.mjs"
   workflow_dispatch:
     inputs:
       openclaw_ref:
