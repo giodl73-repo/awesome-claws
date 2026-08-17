@@ -319,7 +319,9 @@ async function startMockOpenAi(baseEnv, evidenceRoot, entry, marker) {
 
 async function runGatewayApplicationTurn({ entry, gateway, marker }) {
   const { GatewayClient } = await import(
-    pathToFileURL(join(openClawRoot, "src", "gateway", "client.ts")).href
+    pathToFileURL(
+      join(openClawRoot, "packages", "gateway-client", "dist", "index.mjs"),
+    ).href
   );
   let connectedResolve;
   let connectedReject;
