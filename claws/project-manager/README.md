@@ -14,6 +14,9 @@ Keeps projects aligned through milestones, dependencies, decisions, and accounta
 
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
+- Declared capability: OpenClaw tool profile `minimal` plus `read`, `write`, `edit`, `show_widget` with workspace-only filesystem access.
+- Capability boundary: The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no issue-tracker, messaging, calendar, repository, deployment, or administrative mutation capability.
+- Capability boundary: Scope, target dates, ownership, milestone acceptance, escalation, and completion remain sponsor-controlled; the packaged state records evidence rather than changing project systems.
 
 Review the package before applying it. Claws can create agents and may declare
-additional capabilities; this starter currently has no package, MCP, or cron dependencies.
+additional capabilities. Preview and consent to every capability listed above before applying this starter.
