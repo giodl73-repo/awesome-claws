@@ -70,6 +70,7 @@ Unsupported clients lose presentation, not meaning or control.
 | [Project manager](claws/project-manager) | Productivity | Base | Milestones, dependencies, and decisions |
 | [Product manager](claws/product-manager) | Product | Base | Evidence-backed product decisions |
 | [Compliance reviewer](claws/compliance-reviewer) | Governance | Base | Traceable control review |
+| [Data governance steward](claws/data-governance-steward) | Governance | Governance schema, bounded profile, inline visual | Evidence-backed data-product stewardship |
 | [Knowledge curator](claws/knowledge-curator) | Productivity | Base | Durable knowledge organization |
 | [Executive briefing](claws/executive-briefing) | Productivity | Gog + Weather skills, weekday cron | Private daily operating brief |
 | [Meeting intelligence](claws/meeting-intelligence) | Productivity | Whisper + DOCX skills | Consented meeting records |
@@ -172,14 +173,14 @@ coverage, content quality, and basic secret hygiene. Maintainers can set
 `CLAWS_CLI_ENTRY` and run
 `npm run inspect` to inspect every package with a standalone Claws reference
 CLI. With `CLAWS_CLI_ENTRY` and `OPENCLAW_CLI_ENTRY` set to compatible built
-checkouts, `npm run proof:openclaw` dry-runs all 50 packages through the
+checkouts, `npm run proof:openclaw` dry-runs all 51 packages through the
 OpenClaw adapter in disposable state.
 
 ### Catalog invariants
 
 - `catalog.json` is the only editable source for generated package content.
   `npm run build` materializes it, and `npm run check` requires byte-for-byte
-  agreement with all 50 generated packages.
+  agreement with all 51 generated packages.
 - Harness profiles use the conventional `profiles/openclaw.yml` path, strict
   schema version 1, exact pinned extension releases, and unique extension ids
   and package refs.
@@ -203,7 +204,7 @@ OpenClaw adapter in disposable state.
   It does not mutate state or prove provider behavior.
 - `npm run proof:portfolio` first checks deterministic materialization, then
   exercises inspect, consent-bound add, status, export inspection, and removal
-  for all 50 packages in isolated local state. Its agent turn uses the checked-in
+  for all 51 packages in isolated local state. Its agent turn uses the checked-in
   OpenAI-compatible fixture, so it proves runtime wiring rather than a live
   provider.
 - `npm run proof:golden` additionally proves exact Golden artifact bytes through
