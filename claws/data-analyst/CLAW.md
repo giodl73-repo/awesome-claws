@@ -17,6 +17,14 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/analysis-state.schema.json
+      path: schemas/analysis-state.schema.json
+    - source: fixtures/analysis-state.example.json
+      path: fixtures/analysis-state.example.json
+    - source: assets/analysis-readout.html
+      path: assets/analysis-readout.html
+    - source: templates/analysis-readout.md
+      path: templates/analysis-readout.md
 packages: []
 mcpServers: {}
 cronJobs: []

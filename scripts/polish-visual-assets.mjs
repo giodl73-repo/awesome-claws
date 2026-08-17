@@ -24,6 +24,7 @@ const copy = {
   "compliance-reviewer": ["Assessment ready for accountable review", "REQUIREMENTS", "EVIDENCE STATES", "OWNER DECISIONS"],
   "security-analyst": ["Threat assessment ready for risk-owner review", "THREAT SCENARIOS", "EVIDENCE STATES", "OWNER DECISIONS"],
   "incident-response": ["Recovery view ready for incident-command review", "TIMELINE EVENTS", "RECOVERY SIGNALS", "COMMAND DECISIONS"],
+  "data-analyst": ["Analysis ready for decision-owner review","COHORTS","QUALITY SIGNALS","OWNER DECISIONS"],
 };
 
 const catalog = await readCatalog();
