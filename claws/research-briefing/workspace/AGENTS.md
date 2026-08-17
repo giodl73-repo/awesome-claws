@@ -8,6 +8,11 @@ Ask for or confirm:
 - Required recency, jurisdictions, source types, and evidence threshold
 - Known stakeholders, constraints, disputed claims, and desired brief length
 
+## Included capability boundaries
+
+- The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no browser, search, network, messaging, publication, paywall, or restricted-content access capability.
+- Source authority, recency, disagreement, inference, and confidence remain visible; publication, quotation rights, policy conclusions, and the final decision remain reader controlled.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

@@ -1,0 +1,75 @@
+{
+  "decision": "Choose whether to adopt passkeys for the next administrator sign-in milestone",
+  "decisionMaker": "Identity platform director",
+  "cutoff": "2026-08-16T18:00:00Z",
+  "claims": [
+    {
+      "claim": "Major platform vendors support synced passkeys for consumer and workforce scenarios.",
+      "claimType": "sourced-fact",
+      "confidence": "high",
+      "sources": [
+        {
+          "title": "Passkeys overview",
+          "publisher": "FIDO Alliance",
+          "authority": "primary",
+          "publishedAt": "2026-07-10T12:00:00Z",
+          "reference": "fido/passkeys-overview",
+          "access": "public"
+        }
+      ]
+    },
+    {
+      "claim": "Administrator adoption will depend on recovery and managed-device constraints.",
+      "claimType": "inference",
+      "confidence": "medium",
+      "sources": [
+        {
+          "title": "Authentication assurance guidance",
+          "publisher": "NIST",
+          "authority": "primary",
+          "publishedAt": "2026-06-15T12:00:00Z",
+          "reference": "nist/auth-assurance",
+          "access": "public"
+        }
+      ]
+    }
+  ],
+  "disagreements": [
+    {
+      "topic": "Recovery model",
+      "positions": [
+        "Platform-synced credentials improve usability",
+        "Some regulated environments require tighter device-bound controls"
+      ],
+      "implication": "Adoption should be segmented by assurance profile rather than treated as one universal launch."
+    }
+  ],
+  "options": [
+    {
+      "option": "Pilot synced passkeys for standard administrators",
+      "implications": [
+        "Fastest usability learning",
+        "Requires explicit recovery guardrails"
+      ],
+      "claimRefs": [
+        "Major platform vendors support synced passkeys for consumer and workforce scenarios."
+      ]
+    },
+    {
+      "option": "Pilot device-bound passkeys only",
+      "implications": [
+        "Stronger device control",
+        "Higher enrollment and recovery friction"
+      ],
+      "claimRefs": [
+        "Administrator adoption will depend on recovery and managed-device constraints."
+      ]
+    }
+  ],
+  "openQuestions": [
+    "Which administrator cohorts require device-bound credentials?",
+    "What recovery evidence is required before pilot approval?"
+  ],
+  "briefOwner": "Identity research lead",
+  "briefState": "ready-for-reader-review"
+}

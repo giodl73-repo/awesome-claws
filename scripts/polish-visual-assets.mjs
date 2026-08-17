@@ -28,6 +28,7 @@ const copy = {
   "project-manager": ["Project view ready for sponsor review","MILESTONES","DELIVERY SIGNALS","SPONSOR DECISIONS"],
   "product-manager": ["Product decision ready for owner review","OPTIONS","EVIDENCE SIGNALS","PRODUCT DECISIONS"],
   "customer-support": ["Support case ready for case-owner review","DIAGNOSTICS","CASE SIGNALS","OWNER DECISIONS"],
+  "research-briefing": ["Research brief ready for decision-maker review","CLAIMS","SOURCE SIGNALS","READER DECISIONS"],
 };
 
 const catalog = await readCatalog();

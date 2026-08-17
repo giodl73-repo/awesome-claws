@@ -17,6 +17,14 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/research-brief.schema.json
+      path: schemas/research-brief.schema.json
+    - source: fixtures/research-brief.example.json
+      path: fixtures/research-brief.example.json
+    - source: assets/research-brief.html
+      path: assets/research-brief.html
+    - source: templates/research-brief.md
+      path: templates/research-brief.md
 packages: []
 mcpServers: {}
 cronJobs: []
