@@ -352,7 +352,6 @@ async function runGatewayApplicationTurn({ entry, gateway, marker }) {
       idempotencyKey: marker,
       message: entry.example.request,
       deliver: false,
-      timeout: 120,
     });
     if (!["started", "in_flight", "ok"].includes(accepted?.status)) {
       throw new Error(`${entry.id} visual runtime agent request was not accepted.`);
