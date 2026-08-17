@@ -338,7 +338,7 @@ async function runGatewayApplicationTurn({ entry, gateway, marker }) {
     clientVersion: "dev",
     mode: "test",
     role: "operator",
-    scopes: ["operator.admin"],
+    scopes: ["operator.admin", "operator.read", "operator.write"],
     caps: ["inline-widgets"],
     onHelloOk: () => connectedResolve(),
     onConnectError: (error) => connectedReject(error),
