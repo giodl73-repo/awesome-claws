@@ -8,8 +8,7 @@
     "ids": [
       "software-maintainer",
       "research-briefing", "financial-analyst", "customer-support", "sales-operations",
-      "recruiting-coordinator", "content-operations", "executive-assistant", "project-manager",
-      "product-manager", "knowledge-curator", "executive-briefing",
+      "recruiting-coordinator", "content-operations", "executive-assistant", "product-manager", "knowledge-curator", "executive-briefing",
       "meeting-intelligence", "spreadsheet-analyst", "knowledge-gardener", "research-monitor",
       "presentation-producer", "document-intake-analyst", "media-evidence-reviewer",
       "feed-intelligence-monitor", "travel-planner",
@@ -39,6 +38,7 @@
     { "id": "compliance-reviewer", "target": 4, "primary": "inline-widget", "asset": "assets/control-assessment.html", "fallback": "outputs/control-assessment.md" },
     { "id": "security-analyst", "target": 4, "primary": "inline-widget", "asset": "assets/threat-assessment.html", "fallback": "outputs/threat-assessment.md" },
     { "id": "incident-response", "target": 4, "primary": "inline-widget", "asset": "assets/incident-readiness.html", "fallback": "outputs/incident-readiness.md" },
-    { "id": "data-analyst", "target": 4, "primary": "inline-widget", "asset": "assets/analysis-readout.html", "fallback": "outputs/analysis-readout.md" }
+    { "id": "data-analyst", "target": 4, "primary": "inline-widget", "asset": "assets/analysis-readout.html", "fallback": "outputs/analysis-readout.md" },
+    { "id": "project-manager", "target": 4, "primary": "inline-widget", "asset": "assets/project-readiness.html", "fallback": "outputs/project-readiness.md" }
   ]
 }

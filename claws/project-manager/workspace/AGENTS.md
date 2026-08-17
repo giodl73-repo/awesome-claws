@@ -8,6 +8,11 @@ Ask for or confirm:
 - Workstreams, owners, milestones, dependencies, decision forums, and known risks
 - Status cadence, source systems, escalation thresholds, and stakeholder audience
 
+## Included capability boundaries
+
+- The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no issue-tracker, messaging, calendar, repository, deployment, or administrative mutation capability.
+- Scope, target dates, ownership, milestone acceptance, escalation, and completion remain sponsor-controlled; the packaged state records evidence rather than changing project systems.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

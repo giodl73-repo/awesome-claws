@@ -17,6 +17,14 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/project-state.schema.json
+      path: schemas/project-state.schema.json
+    - source: fixtures/project-state.example.json
+      path: fixtures/project-state.example.json
+    - source: assets/project-readiness.html
+      path: assets/project-readiness.html
+    - source: templates/project-readiness.md
+      path: templates/project-readiness.md
 packages: []
 mcpServers: {}
 cronJobs: []
