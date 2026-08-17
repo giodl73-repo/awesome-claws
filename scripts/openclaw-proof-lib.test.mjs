@@ -23,8 +23,8 @@ test("Experience cases cover all 51 Claws with enforceable surfaces", async () =
   const cases = await readExperienceCases(catalog);
   assert.equal(cases.length, 51);
   assert.equal(cases.filter((item) => item.target === 5).length, 7);
-  assert.equal(cases.filter((item) => item.target === 4).length, 10);
-  assert.equal(cases.filter((item) => item.target === 3).length, 34);
+  assert.equal(cases.filter((item) => item.target === 4).length, 11);
+  assert.equal(cases.filter((item) => item.target === 3).length, 33);
 });
 
 test("add previews require a bounded, consent-addressable plan", () => {

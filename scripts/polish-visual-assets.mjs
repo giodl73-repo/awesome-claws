@@ -21,6 +21,7 @@ const copy = {
   "cloud-cost-analyst": ["Cost view ready for owner review", "COST AREAS", "BILLING SIGNALS", "OWNER DECISIONS"],
   "release-coordinator": ["Readiness view ready for maintainer review", "REQUIRED CHECKS", "ARTIFACTS", "OWNER DECISIONS"],
   "data-governance-steward": ["Governance view ready for domain-owner review", "DATA PRODUCTS", "EVIDENCE SIGNALS", "OWNER DECISIONS"],
+  "compliance-reviewer": ["Assessment ready for accountable review", "REQUIREMENTS", "EVIDENCE STATES", "OWNER DECISIONS"],
 };
 
 const catalog = await readCatalog();

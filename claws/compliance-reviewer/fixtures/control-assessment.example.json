@@ -1,0 +1,60 @@
+{
+  "framework": "Software Supply-Chain Policy",
+  "frameworkVersion": "2026.3",
+  "systemBoundary": "Acme SaaS build, signing, deployment, and rollback process",
+  "reviewPeriod": "2026-Q3",
+  "requirements": [
+    {
+      "requirementId": "SUP-01",
+      "requirement": "Production artifacts are built by the approved CI service from reviewed source.",
+      "controlOwner": "Build Platform",
+      "implementationState": "implemented",
+      "evidenceState": "supported",
+      "evidence": [{"reference": "ci-run/1842", "source": "CI export", "custodian": "Build Platform", "collectedAt": "2026-08-15T18:00:00Z", "integrityRef": "sha256:ci-example"}],
+      "finding": {"severity": "none", "summary": "Approved CI provenance is supported for the sampled release.", "state": "resolved"}
+    },
+    {
+      "requirementId": "SEC-07",
+      "requirement": "Release artifacts have a current vulnerability assessment before deployment.",
+      "controlOwner": "Product Security",
+      "implementationState": "partial",
+      "evidenceState": "stale",
+      "evidence": [{"reference": "scan/2026-06-01", "source": "Scanner export", "custodian": "Product Security", "collectedAt": "2026-06-01T16:00:00Z"}],
+      "finding": {"severity": "high", "summary": "The supplied scan predates the reviewed release candidate.", "state": "open"}
+    },
+    {
+      "requirementId": "REL-04",
+      "requirement": "Rollback instructions match the production deployment mechanism.",
+      "controlOwner": "Release Engineering",
+      "implementationState": "partial",
+      "evidenceState": "conflicting",
+      "evidence": [{"reference": "runbook/rollback-v4", "source": "Runbook export", "custodian": "Release Engineering", "collectedAt": "2026-08-14T17:00:00Z"}, {"reference": "pipeline/deploy-v5", "source": "Pipeline export", "custodian": "Build Platform", "collectedAt": "2026-08-15T17:30:00Z"}],
+      "finding": {"severity": "high", "summary": "The rollback runbook names a retired deployment job.", "state": "open"}
+    },
+    {
+      "requirementId": "IAM-03",
+      "requirement": "Production release approval requires independent separation of duties.",
+      "controlOwner": "Identity Governance",
+      "implementationState": "partial",
+      "evidenceState": "compensating-control",
+      "evidence": [{"reference": "approval-log/2026-08-15", "source": "Approval export", "custodian": "Release Engineering", "collectedAt": "2026-08-15T19:00:00Z"}],
+      "compensatingControl": {"controlId": "IAM-03-C1", "rationale": "A separately authorized operations approver reviews the immutable release digest.", "owner": "Operations Assurance", "evidenceReferences": ["approval-log/2026-08-15"]},
+      "finding": {"severity": "medium", "summary": "The compensating control requires independent reviewer acceptance.", "state": "accepted"}
+    },
+    {
+      "requirementId": "LOG-02",
+      "requirement": "Release actions retain attributable audit records for the policy retention period.",
+      "controlOwner": "Security Operations",
+      "implementationState": "not-implemented",
+      "evidenceState": "unsupported",
+      "evidence": [{"reference": "evidence-request/LOG-02", "source": "Review evidence request", "custodian": "Compliance Operations", "collectedAt": "2026-08-15T20:00:00Z"}],
+      "finding": {"severity": "critical", "summary": "No controlled audit-retention evidence was supplied.", "state": "open"}
+    }
+  ],
+  "remediation": [
+    {"requirementId": "SEC-07", "action": "Run the approved scanner against the release candidate and retain the attributable export.", "owner": "Product Security", "state": "planned"},
+    {"requirementId": "REL-04", "action": "Reconcile the rollback runbook with the production deployment pipeline.", "owner": "Release Engineering", "state": "proposed"},
+    {"requirementId": "LOG-02", "action": "Provide audit-retention configuration and sampled records from the authoritative logging system.", "owner": "Security Operations", "state": "proposed"}
+  ],
+  "assessmentDecision": "needs-remediation"
+}
