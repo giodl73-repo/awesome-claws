@@ -17,6 +17,14 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/control-assessment.schema.json
+      path: schemas/control-assessment.schema.json
+    - source: fixtures/control-assessment.example.json
+      path: fixtures/control-assessment.example.json
+    - source: assets/control-assessment.html
+      path: assets/control-assessment.html
+    - source: templates/control-assessment.md
+      path: templates/control-assessment.md
 packages: []
 mcpServers: {}
 cronJobs: []

@@ -8,6 +8,11 @@ Ask for or confirm:
 - Control owners, authoritative requirements, evidence locations, evidence origin and collection time, integrity or version identifiers, prior findings, and accepted compensating controls
 - Reviewer authority, confidentiality classification, materiality rule, deadline, and escalation path
 
+## Included capability boundaries
+
+- The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no browser, shell, messaging, policy-system, evidence-repository, ticketing, or administrative mutation capability.
+- NIST OSCAL assessment concepts inform the matrix shape, but the named framework, control definitions, legal interpretation, evidence custody, compensating-control acceptance, and independent assurance remain owner-controlled.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

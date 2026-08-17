@@ -69,7 +69,7 @@ Unsupported clients lose presentation, not meaning or control.
 | [Executive assistant](claws/executive-assistant) (copyable reference) | Productivity | Guided setup, local preferences, brief template | Executive priorities and follow-through |
 | [Project manager](claws/project-manager) | Productivity | Base | Milestones, dependencies, and decisions |
 | [Product manager](claws/product-manager) | Product | Base | Evidence-backed product decisions |
-| [Compliance reviewer](claws/compliance-reviewer) | Governance | Base | Traceable control review |
+| [Compliance reviewer](claws/compliance-reviewer) | Governance | Control schema, evidence matrix, bounded profile, inline visual | Traceable control review |
 | [Data governance steward](claws/data-governance-steward) | Governance | Governance schema, bounded profile, inline visual | Evidence-backed data-product stewardship |
 | [Knowledge curator](claws/knowledge-curator) | Productivity | Base | Durable knowledge organization |
 | [Executive briefing](claws/executive-briefing) | Productivity | Gog + Weather skills, weekday cron | Private daily operating brief |

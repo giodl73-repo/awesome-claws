@@ -9,7 +9,7 @@
       "incident-response", "software-maintainer", "security-analyst", "data-analyst",
       "research-briefing", "financial-analyst", "customer-support", "sales-operations",
       "recruiting-coordinator", "content-operations", "executive-assistant", "project-manager",
-      "product-manager", "compliance-reviewer", "knowledge-curator", "executive-briefing",
+      "product-manager", "knowledge-curator", "executive-briefing",
       "meeting-intelligence", "spreadsheet-analyst", "knowledge-gardener", "research-monitor",
       "presentation-producer", "document-intake-analyst", "media-evidence-reviewer",
       "feed-intelligence-monitor", "travel-planner",
@@ -35,6 +35,7 @@
     { "id": "quality-assurance-lead", "target": 4, "primary": "inline-widget", "asset": "assets/qa-coverage.html", "fallback": "outputs/release-quality.md" },
     { "id": "cloud-cost-analyst", "target": 4, "primary": "inline-widget", "asset": "assets/cloud-cost-view.html", "fallback": "outputs/cloud-cost-analysis.md" },
     { "id": "release-coordinator", "target": 4, "primary": "inline-widget", "asset": "assets/release-readiness.html", "fallback": "outputs/release-readiness.md" },
-    { "id": "data-governance-steward", "target": 4, "primary": "inline-widget", "asset": "assets/data-governance-review.html", "fallback": "outputs/data-governance-assessment.md" }
+    { "id": "data-governance-steward", "target": 4, "primary": "inline-widget", "asset": "assets/data-governance-review.html", "fallback": "outputs/data-governance-assessment.md" },
+    { "id": "compliance-reviewer", "target": 4, "primary": "inline-widget", "asset": "assets/control-assessment.html", "fallback": "outputs/control-assessment.md" }
   ]
 }
