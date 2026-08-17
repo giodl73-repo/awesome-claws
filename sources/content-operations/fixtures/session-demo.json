@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "content-operations",
+  "scenario": "Prepare the launch package for a beta analytics dashboard aimed at operations managers and current design partners.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Prepare the launch package for a beta analytics dashboard aimed at operations managers and current design partners."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the content decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/content-operations-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Content operations session handoff",
+    "summary": "An audience-specific brief, source-backed draft and channel assets, claim and approval ledger, and measurement plan, all marked publication-ready only after named approvals.",
+    "output": "outputs/content-operations-handoff.md",
+    "items": [
+      {
+        "title": "Content brief",
+        "summary": "Every material claim has a source and every required approval has an explicit state",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Versioned content draft and channel assets",
+        "summary": "The asset matches the named audience, channel, action, voice, and acceptance criteria",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Editorial checklist",
+        "summary": "Never publish, schedule, or distribute content without the named channel owner and required factual, brand, legal, or executive approvals",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Approval record",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

@@ -13,6 +13,15 @@ Ask for or confirm:
 - The profile grants workspace-limited file tools and inline visual presentation only; it cannot dispatch, message, purchase, access a site, or mutate facilities systems.
 - The packaged visual shell presents minimized operating status and has a complete Markdown fallback; never place access codes, occupant identities, or sensitive plans in it.
 
+## Visual application contract
+
+- Treat `assets/facilities-queue.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/facilities-issue.json` and check it against `schemas/facilities-issue.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/facilities-queue.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/facilities-handoff.md`.
+- Read `outputs/facilities-queue.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

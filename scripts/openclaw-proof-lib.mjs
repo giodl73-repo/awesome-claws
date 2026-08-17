@@ -1,9 +1,9 @@
 import { spawnSync } from "node:child_process";
 import { mkdir, readFile } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join, resolve } from "node:path";
+import { readCatalog, root } from "./catalog-source.mjs";
 
-export const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+export { readCatalog, root };
 
 export function resolveProofConfig() {
   const cliEntry = resolve(
@@ -15,14 +15,6 @@ export function resolveProofConfig() {
     throw new Error("Set OPENCLAW_CLI_ENTRY to a compatible OpenClaw entry point.");
   }
   return { cliEntry, openClawEntry: resolve(openClawEntry) };
-}
-
-export async function readCatalog() {
-  const catalog = JSON.parse(await readFile(join(root, "catalog.json"), "utf8"));
-  if (catalog.schemaVersion !== 1 || !Array.isArray(catalog.entries)) {
-    throw new Error("catalog.json must contain a schemaVersion 1 entries array.");
-  }
-  return catalog;
 }
 
 export async function createProofEnvironment(proofRoot, id) {

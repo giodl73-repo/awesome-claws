@@ -9,9 +9,10 @@
     "screenshots": "node --import tsx scripts/generate-screenshots.mjs",
     "inspect": "node scripts/validate-catalog.mjs --reference",
     "proof:openclaw": "node scripts/prove-openclaw.mjs",
-    "proof:portfolio": "node scripts/prove-portfolio.mjs",
+    "proof:portfolio": "node --import tsx scripts/prove-portfolio.mjs",
     "proof:golden": "node scripts/prove-golden-artifact.mjs",
     "proof:experience": "node scripts/prove-experience-assets.mjs",
+    "validate:artifact": "node scripts/validate-artifact.mjs",
     "polish:visual-assets": "node scripts/polish-visual-assets.mjs"
   },
   "engines": {
@@ -21,6 +22,8 @@
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "croner": "^10.0.1",
+    "playwright": "1.62.1",
+    "sharp": "0.35.3",
     "tar": "^7.5.22",
     "tsx": "4.23.1",
     "yaml": "2.9.0"

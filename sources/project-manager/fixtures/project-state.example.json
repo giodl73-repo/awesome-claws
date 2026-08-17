@@ -1,0 +1,70 @@
+{
+  "project": "Billing API migration",
+  "sponsor": "Platform vice president",
+  "outcome": "Move billing traffic to v2 without customer-visible regression",
+  "targetDate": "2026-09-14",
+  "scope": {
+    "in": [
+      "Application cutover",
+      "Finance reconciliation",
+      "Security review",
+      "Support readiness",
+      "Documentation"
+    ],
+    "out": [
+      "Pricing changes"
+    ],
+    "acceptanceCriteria": [
+      "Error rate remains below 1%",
+      "Finance totals reconcile",
+      "Rollback is verified"
+    ]
+  },
+  "milestones": [
+    {
+      "id": "M1",
+      "name": "Compatibility and reconciliation proof",
+      "owner": "Billing engineering lead",
+      "dueDate": "2026-08-28",
+      "state": "in-progress",
+      "dependencies": [],
+      "evidenceRefs": [
+        "test/billing-v2-contract",
+        "finance/reconciliation-draft"
+      ]
+    },
+    {
+      "id": "M2",
+      "name": "Cutover readiness review",
+      "owner": "Program lead",
+      "dueDate": "2026-09-08",
+      "state": "blocked",
+      "dependencies": [
+        "M1"
+      ],
+      "evidenceRefs": [
+        "readiness/cutover-checklist"
+      ]
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Finance reconciliation misses a legacy adjustment",
+      "likelihood": "medium",
+      "impact": "high",
+      "owner": "Finance systems lead",
+      "trigger": "Any daily variance above 0.5%",
+      "response": "Pause cutover and reconcile affected ledger classes"
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "Approve the final cutover window",
+      "owner": "Platform vice president",
+      "state": "needed",
+      "rationale": "Requires accepted technical and finance evidence",
+      "downstreamImpact": "Sets support, documentation, and rollback staffing"
+    }
+  ],
+  "statusState": "at-risk"
+}

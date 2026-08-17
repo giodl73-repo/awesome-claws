@@ -1,0 +1,1 @@
+{"type":"object","required":["evidenceId","observation","theme","confidence"],"properties":{"evidenceId":{"type":"string"},"observation":{"type":"string"},"theme":{"type":"string"},"confidence":{"type":"string"}}}

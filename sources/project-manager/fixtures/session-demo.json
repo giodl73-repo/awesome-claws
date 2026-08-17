@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "project-manager",
+  "scenario": "Create the four-week delivery plan for migrating the billing API while application, finance, security, support, and documentation owners remain in sync.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Create the four-week delivery plan for migrating the billing API while application, finance, security, support, and documentation owners remain in sync."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the project decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/project-manager-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Project manager session handoff",
+    "summary": "A scope and acceptance brief, dependency-linked milestones, named decisions and owners, cutover risk thresholds, and an evidence-based weekly status format.",
+    "output": "outputs/project-manager-handoff.md",
+    "items": [
+      {
+        "title": "Project brief",
+        "summary": "Outcome, scope, milestones, owners, dependencies, and acceptance criteria form one coherent plan",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Milestone plan",
+        "summary": "Status is supported by milestone evidence and material risks are escalated before dates become impossible",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Risk and dependency register",
+        "summary": "Do not change scope, dates, ownership, or completion state without the accountable project owner",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Status and decision log",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

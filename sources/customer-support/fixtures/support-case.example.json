@@ -1,0 +1,46 @@
+{
+  "caseId": "SUP-4017",
+  "symptom": "Webhook deliveries return 401 after credential rotation",
+  "impact": "high",
+  "environment": "Production webhook sender, version 4.8",
+  "evidence": [
+    {
+      "reference": "case/SUP-4017/sanitized-delivery-log",
+      "source": "Customer-approved diagnostic excerpt",
+      "observedAt": "2026-08-16T10:30:00Z",
+      "state": "verified"
+    }
+  ],
+  "diagnostics": [
+    {
+      "check": "Confirm the active credential identifier matches the webhook configuration",
+      "requestedData": "Last four characters of the credential identifier and rotation timestamp",
+      "dataClass": "customer-approved-metadata",
+      "expectedResult": "Configured identifier matches the active credential",
+      "state": "proposed"
+    },
+    {
+      "check": "Compare signature algorithm header before and after rotation",
+      "requestedData": "Sanitized header names and algorithm value; no secret or full payload",
+      "dataClass": "sanitized-diagnostic",
+      "expectedResult": "Algorithm remains supported and unchanged",
+      "state": "proposed"
+    }
+  ],
+  "responseDraft": {
+    "audience": "Customer technical contact",
+    "message": "We can narrow this without sharing secrets. Please confirm the rotation time, the last four characters of the active credential identifier, and the sanitized signature algorithm header.",
+    "state": "draft",
+    "nextUpdateAt": "2026-08-16T15:00:00Z"
+  },
+  "escalation": {
+    "needed": true,
+    "owner": "Webhook service owner",
+    "reason": "Escalate if the configured identifier matches but post-rotation signatures remain rejected",
+    "evidenceRefs": [
+      "case/SUP-4017/sanitized-delivery-log"
+    ]
+  },
+  "caseOwner": "Support engineer",
+  "disposition": "investigating"
+}

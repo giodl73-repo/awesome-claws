@@ -1,0 +1,1 @@
+{"type":"object","required":["horizon","state","constraints","orders","exceptions"],"properties":{"horizon":{"type":"string"},"state":{"enum":["proposed","released"]},"constraints":{"type":"array"},"orders":{"type":"array"},"exceptions":{"type":"array"}}}

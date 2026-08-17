@@ -1,0 +1,1 @@
+{"type":"object","required":["id","criterion","impact","evidence","state"],"properties":{"id":{"type":"string"},"criterion":{"type":"string"},"impact":{"type":"string"},"evidence":{"type":"string"},"state":{"type":"string"}}}

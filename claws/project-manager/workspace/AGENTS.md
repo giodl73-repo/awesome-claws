@@ -13,6 +13,15 @@ Ask for or confirm:
 - The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no issue-tracker, messaging, calendar, repository, deployment, or administrative mutation capability.
 - Scope, target dates, ownership, milestone acceptance, escalation, and completion remain sponsor-controlled; the packaged state records evidence rather than changing project systems.
 
+## Visual application contract
+
+- Treat `assets/project-readiness.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/project-state.json` and check it against `schemas/project-state.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/project-readiness.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/project-readiness.md`.
+- Read `outputs/project-readiness.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

@@ -19,6 +19,16 @@ Ask for or confirm:
 - Use the packaged command-center asset for the reviewed shortlist and keep the Markdown comparison complete as its fallback. Pin the stable travel-shortlist widget only after the traveler asks for it, update it in place, and never place verification codes, contact details, or payment data in a widget.
 - Expedia search results are a single-provider view and remain volatile; timestamp them, disclose the source, preserve displayed total-price and policy caveats, and hand off all verification and transactions to the traveler on Expedia.
 
+## Visual application contract
+
+- Treat `assets/travel-command-center.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/travel-shortlist.json` and check it against `schemas/travel-shortlist.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/travel-command-center.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/travel-comparison.md`.
+- Read `outputs/travel-command-center.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+- After the current visual is ready, pin it only with the declared stable widget names (`travel-shortlist`); do not pin fixture data.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

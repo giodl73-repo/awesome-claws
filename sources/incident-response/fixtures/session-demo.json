@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "incident-response",
+  "scenario": "Checkout errors rose from 1% to 18% after the 14:05 UTC deployment; prepare the first incident update and a mitigation decision table.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Checkout errors rose from 1% to 18% after the 14:05 UTC deployment; prepare the first incident update and a mitigation decision table."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the incident decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/incident-response-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Incident response session handoff",
+    "summary": "A timestamped fact/hypothesis timeline, impact statement, owner-assigned mitigation options with verification and rollback criteria, and a customer-safe update draft.",
+    "output": "outputs/incident-response-handoff.md",
+    "items": [
+      {
+        "title": "Incident timeline",
+        "summary": "Impact, severity, timeline, and current state have explicit evidence timestamps",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Current impact summary",
+        "summary": "Every active mitigation has an owner, authority, verification signal, and rollback condition",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Mitigation and owner tracker",
+        "summary": "Before any mitigation, failover, restart, or rollback, record explicit approval for the exact action, target, timing, verification, and rollback plan from the incident authority",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Post-incident handoff",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

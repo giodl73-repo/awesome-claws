@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "data-governance-steward",
+  "scenario": "Assess the Customer 360 governance domain for owner coverage, critical data elements, quality evidence, lineage, and policy linkage using these approved catalog exports; do not change Purview or any source system.",
+  "messages": [
+    {"role": "user", "text": "Assess the Customer 360 governance domain for owner coverage, critical data elements, quality evidence, lineage, and policy linkage using these approved catalog exports; do not change Purview or any source system."},
+    {"role": "agent", "text": "I identified the governance scope, owner systems, evidence requirements, and mutation boundary."},
+    {"role": "user", "text": "Make the gaps and accountable follow-up easy to review."},
+    {"role": "agent", "text": "I produced outputs/data-governance-assessment.md and an inline governance review with dated evidence states and owner-assigned remediation."}
+  ],
+  "report": {
+    "title": "Data governance steward session handoff",
+    "summary": "A reviewable domain assessment with product and critical-element ownership, dated evidence states, visible unsupported gaps, and an owner-assigned remediation queue without source-system mutation.",
+    "output": "outputs/data-governance-assessment.md",
+    "items": [
+      {"title": "Governance map", "summary": "Every assessed data product names its owner, steward, lifecycle state, and at least one critical data element", "tags": ["fact-based", "reviewable"]},
+      {"title": "Evidence ledger", "summary": "Every material conclusion traces to a typed, dated, controlled evidence reference", "tags": ["evidence", "owner-visible"]},
+      {"title": "Remediation queue", "summary": "Issues preserve severity, owner, state, and exact owner-system follow-up", "tags": ["approval-gated", "safe fallback"]},
+      {"title": "Owner decision", "summary": "No source-system mutation occurred and the accountable domain owner retains acceptance authority", "tags": ["handoff", "durable"]}
+    ]
+  }
+}

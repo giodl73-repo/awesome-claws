@@ -15,6 +15,7 @@ import {
   runOpenClaw,
   runStandalone,
 } from "./openclaw-proof-lib.mjs";
+import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
 
 const { cliEntry, openClawEntry } = resolveProofConfig();
@@ -46,8 +47,15 @@ if (unknownIds.length > 0) {
   throw new Error(`Unknown PORTFOLIO_ONLY package ids: ${unknownIds.join(", ")}`);
 }
 const sourceOverride = process.env.PORTFOLIO_SOURCE_ROOT?.trim();
+const visualRuntimeProof = process.env.PORTFOLIO_VISUAL_RUNTIME === "1";
 if (sourceOverride && entries.length !== 1) {
   throw new Error("PORTFOLIO_SOURCE_ROOT requires exactly one PORTFOLIO_ONLY package id.");
+}
+if (
+  visualRuntimeProof &&
+  (entries.length !== 1 || entries[0]?.id !== "data-analyst")
+) {
+  throw new Error("PORTFOLIO_VISUAL_RUNTIME currently requires PORTFOLIO_ONLY=data-analyst.");
 }
 const runId = new Date().toISOString().replaceAll(":", "-").replaceAll(".", "-");
 const proofRoot = resolve(process.env.PORTFOLIO_PROOF_DIR ?? join(root, ".tmp", "proof", runId));
@@ -81,6 +89,19 @@ function recordPhase(phases, name, command) {
   process.stderr.write(`RUN  ${name}\n`);
   try {
     const result = command();
+    phases.push({ name, status: "passed", startedAt, command: result.record });
+    return result.payload;
+  } catch (error) {
+    phases.push({ name, status: "failed", startedAt, ...failureRecord(name, error) });
+    throw error;
+  }
+}
+
+async function recordAsyncPhase(phases, name, command) {
+  const startedAt = new Date().toISOString();
+  process.stderr.write(`RUN  ${name}\n`);
+  try {
+    const result = await command();
     phases.push({ name, status: "passed", startedAt, command: result.record });
     return result.payload;
   } catch (error) {
@@ -272,12 +293,17 @@ async function stopGateway(gateway) {
 async function startMockOpenAi(baseEnv, evidenceRoot, entry, marker) {
   const port = await reservePort();
   const requestLog = join(evidenceRoot, "agent-turn.requests.jsonl");
-  const child = spawn(process.execPath, [mockOpenAiEntry], {
+  const mockEntry = visualRuntimeProof
+    ? join(root, "scripts", "visual-runtime-mock.mjs")
+    : mockOpenAiEntry;
+  const child = spawn(process.execPath, [mockEntry], {
     env: {
       ...baseEnv,
       MOCK_PORT: String(port),
       MOCK_REQUEST_LOG: requestLog,
-      SUCCESS_MARKER: `${marker}\n${entry.example.outcome}`,
+      SUCCESS_MARKER: visualRuntimeProof ? marker : `${marker}\n${entry.example.outcome}`,
+      EXPECTED_OUTCOME: entry.example.outcome,
+      VISUAL_RUNTIME_PACKAGE_ROOT: join(root, "claws", entry.id),
     },
     detached: process.platform !== "win32",
     stdio: "ignore",
@@ -288,6 +314,68 @@ async function startMockOpenAi(baseEnv, evidenceRoot, entry, marker) {
   } catch (error) {
     await stopGateway({ child });
     throw error;
+  }
+}
+
+async function runGatewayApplicationTurn({ entry, gateway, marker }) {
+  const { GatewayClient } = await import(
+    pathToFileURL(
+      join(openClawRoot, "packages", "gateway-client", "dist", "index.mjs"),
+    ).href
+  );
+  let connectedResolve;
+  let connectedReject;
+  const connected = new Promise((resolveConnected, rejectConnected) => {
+    connectedResolve = resolveConnected;
+    connectedReject = rejectConnected;
+  });
+  const client = new GatewayClient({
+    url: `ws://127.0.0.1:${gateway.port}`,
+    token: gateway.env.OPENCLAW_GATEWAY_TOKEN,
+    requestTimeoutMs: 120_000,
+    clientName: "cli",
+    clientDisplayName: "awesome-claws-visual-proof",
+    clientVersion: "dev",
+    mode: "cli",
+    role: "operator",
+    scopes: ["operator.admin", "operator.read", "operator.write"],
+    caps: ["inline-widgets"],
+    onHelloOk: () => connectedResolve(),
+    onConnectError: (error) => connectedReject(error),
+  });
+  client.start();
+  try {
+    await connected;
+    const sessionKey = `agent:${entry.id}:main`;
+    const accepted = await client.request("chat.send", {
+      sessionKey,
+      idempotencyKey: marker,
+      message: entry.example.request,
+      deliver: false,
+    });
+    if (!["started", "in_flight", "ok"].includes(accepted?.status)) {
+      throw new Error(`${entry.id} visual runtime agent request was not accepted.`);
+    }
+    const completed = await client.request(
+      "agent.wait",
+      { runId: marker, timeoutMs: 120_000 },
+      { timeoutMs: 125_000 },
+    );
+    if (completed?.status !== "ok") {
+      throw new Error(`${entry.id} visual runtime agent request did not complete.`);
+    }
+    const history = await client.request("chat.history", { sessionKey, limit: 50 });
+    return {
+      payload: history,
+      record: {
+        invocation: ["gateway", "agent", sessionKey],
+        status: 0,
+        stdout: "",
+        stderr: "",
+      },
+    };
+  } finally {
+    await client.stopAndWait({ timeoutMs: 5_000 });
   }
 }
 
@@ -313,12 +401,11 @@ async function configureMockModel(env, port) {
 
 function findAgentTurnText(payload) {
   const queue = [payload];
+  const text = [];
   while (queue.length > 0) {
     const value = queue.shift();
     if (typeof value === "string" && value.trim().length > 0) {
-      if (/OPENCLAW_E2E_APPLICATION_/u.test(value)) {
-        return value;
-      }
+      text.push(value);
       continue;
     }
     if (Array.isArray(value)) {
@@ -329,7 +416,9 @@ function findAgentTurnText(payload) {
       queue.push(...Object.values(value));
     }
   }
-  return "";
+  return text.some((value) => /OPENCLAW_E2E_APPLICATION_/u.test(value))
+    ? text.join("\n")
+    : "";
 }
 
 async function assertApplicationTurn({ entry, marker, requestLog, turn }) {
@@ -356,6 +445,21 @@ async function assertApplicationTurn({ entry, marker, requestLog, turn }) {
   if (!instructions.includes(entry.name) || !instructions.includes(entry.principles[0])) {
     throw new Error(`${entry.id} runtime instructions did not include the Claw identity.`);
   }
+  const experience = experienceCases.get(entry.id);
+  if (experience?.target >= 4) {
+    for (const requiredInstruction of [
+      experience.asset,
+      experience.output,
+      experience.fallback,
+      "show_widget",
+    ]) {
+      if (!instructions.includes(requiredInstruction)) {
+        throw new Error(
+          `${entry.id} runtime instructions omitted visual contract value ${requiredInstruction}.`,
+        );
+      }
+    }
+  }
   if (!Array.isArray(body.tools) || body.tools.length === 0) {
     throw new Error(`${entry.id} runtime request did not expose an agent tool surface.`);
   }
@@ -367,6 +471,68 @@ async function assertApplicationTurn({ entry, marker, requestLog, turn }) {
     responseMarker: marker,
     declaredToolCount: body.tools.length,
     requestLog: "agent-turn.requests.jsonl",
+  };
+}
+
+async function assertVisualRuntime({ entry, env, requestLog, turn }) {
+  const result = await assertApplicationTurn({
+    entry,
+    marker: `OPENCLAW_E2E_APPLICATION_${entry.id.replaceAll("-", "_").toUpperCase()}`,
+    requestLog,
+    turn,
+  });
+  const requestRecords = (await readFile(requestLog, "utf8"))
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
+  const showWidgetRecord = requestRecords.find((record) => record.emittedTool === "show_widget");
+  const postWidgetRecord = requestRecords.find((record) => record.step > showWidgetRecord?.step);
+  if (!showWidgetRecord || !postWidgetRecord) {
+    throw new Error(`${entry.id} did not execute show_widget.`);
+  }
+  const postWidgetRequest = JSON.parse(postWidgetRecord.body);
+  if (
+    !(postWidgetRequest.input ?? []).some((item) => item?.type === "function_call_output")
+  ) {
+    throw new Error(`${entry.id} show_widget did not return an executed tool result.`);
+  }
+  const config = JSON.parse(await readFile(env.OPENCLAW_CONFIG_PATH, "utf8"));
+  const agentEntries = config.agents?.entries;
+  const installed = Array.isArray(agentEntries)
+    ? agentEntries.find((agent) => agent.id === entry.id)
+    : agentEntries?.[entry.id];
+  if (!installed?.workspace) {
+    throw new Error(`${entry.id} installed workspace was not recorded.`);
+  }
+  for (const output of [
+    "outputs/analysis-state.json",
+    "outputs/analysis-readout.html",
+    "outputs/analysis-readout.md",
+  ]) {
+    const content = await readFile(join(installed.workspace, output), "utf8");
+    if (!content.trim()) {
+      throw new Error(`${entry.id} produced an empty ${output}.`);
+    }
+  }
+  const structuredState = JSON.parse(
+    await readFile(join(installed.workspace, "outputs", "analysis-state.json"), "utf8"),
+  );
+  const semanticFindings = validateArtifactSemantics(entry.id, structuredState);
+  if (semanticFindings.length > 0) {
+    throw new Error(
+      `${entry.id} produced semantically invalid state: ${JSON.stringify(semanticFindings)}`,
+    );
+  }
+  return {
+    ...result,
+    status: "installed-visual-runtime-passed",
+    showWidgetCall: "observed",
+    outputs: [
+      "outputs/analysis-state.json",
+      "outputs/analysis-readout.html",
+      "outputs/analysis-readout.md",
+    ],
   };
 }
 
@@ -412,7 +578,7 @@ for (const entry of entries) {
     const marker = `OPENCLAW_E2E_APPLICATION_${entry.id.replaceAll("-", "_").toUpperCase()}`;
     mockOpenAi = await startMockOpenAi(env, evidenceRoot, entry, marker);
     env = await configureMockModel(env, mockOpenAi.port);
-    if ((entry.cronJobs?.length ?? 0) > 0) {
+    if ((entry.cronJobs?.length ?? 0) > 0 || visualRuntimeProof) {
       gateway = await startGateway(openClawEntry, env, entry.id, evidenceRoot);
       env = gateway.env;
       result.gateway = {
@@ -513,27 +679,38 @@ for (const entry of entries) {
       result.bootstrapState = "synthetic-user-owned-preferences-created";
     }
 
-    const applicationTurn = recordPhase(phases, "application-scenario", () =>
-      runOpenClaw(
-        openClawEntry,
-        [
-          "agent",
-          ...(gateway ? [] : ["--local"]),
-          "--agent",
-          entry.id,
-          "--message",
-          entry.example.request,
-        ],
-        env,
-        `${entry.id} application scenario`,
-      ),
-    );
-    result.applicationScenario = await assertApplicationTurn({
-      entry,
-      marker,
-      requestLog: mockOpenAi.requestLog,
-      turn: applicationTurn,
-    });
+    const applicationTurn = visualRuntimeProof
+      ? await recordAsyncPhase(phases, "application-scenario", () =>
+          runGatewayApplicationTurn({ entry, gateway, marker }),
+        )
+      : recordPhase(phases, "application-scenario", () =>
+          runOpenClaw(
+            openClawEntry,
+            [
+              "agent",
+              ...(gateway ? [] : ["--local"]),
+              "--agent",
+              entry.id,
+              "--message",
+              entry.example.request,
+            ],
+            env,
+            `${entry.id} application scenario`,
+          ),
+        );
+    result.applicationScenario = visualRuntimeProof
+      ? await assertVisualRuntime({
+          entry,
+          env,
+          requestLog: mockOpenAi.requestLog,
+          turn: applicationTurn,
+        })
+      : await assertApplicationTurn({
+          entry,
+          marker,
+          requestLog: mockOpenAi.requestLog,
+          turn: applicationTurn,
+        });
     await stopGateway(mockOpenAi);
     mockOpenAi = undefined;
 

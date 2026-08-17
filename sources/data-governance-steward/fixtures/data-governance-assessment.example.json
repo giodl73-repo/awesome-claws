@@ -1,0 +1,34 @@
+{
+  "governanceDomain": "Customer 360",
+  "reviewPeriod": "2026-Q3",
+  "domainOwner": "VP Data Platforms",
+  "dataProducts": [
+    {
+      "name": "Customer profile",
+      "owner": "Customer Data Product",
+      "steward": "CRM Data Steward",
+      "lifecycleState": "active",
+      "criticalDataElements": ["Customer ID", "Consent status"]
+    },
+    {
+      "name": "Customer engagement",
+      "owner": "Growth Analytics",
+      "steward": "Engagement Data Steward",
+      "lifecycleState": "active",
+      "criticalDataElements": ["Campaign interaction ID"]
+    }
+  ],
+  "evidence": [
+    {"subject": "Customer profile", "kind": "ownership", "state": "verified", "reference": "purview-export/products/customer-profile", "observedAt": "2026-08-15T18:00:00Z"},
+    {"subject": "Customer profile", "kind": "quality", "state": "verified", "reference": "quality-report/customer-profile/2026-08-15", "observedAt": "2026-08-15T19:00:00Z"},
+    {"subject": "Customer ID", "kind": "lineage", "state": "verified", "reference": "lineage-export/customer-id", "observedAt": "2026-08-14T20:00:00Z"},
+    {"subject": "Consent status", "kind": "policy", "state": "verified", "reference": "policy/privacy-consent/v4", "observedAt": "2026-08-12T17:00:00Z"},
+    {"subject": "Customer engagement", "kind": "quality", "state": "stale", "reference": "quality-report/customer-engagement/2026-06-01", "observedAt": "2026-06-01T16:00:00Z"},
+    {"subject": "Campaign interaction ID", "kind": "classification", "state": "missing", "reference": "owner-system follow-up required", "observedAt": "2026-08-15T20:00:00Z"}
+  ],
+  "issues": [
+    {"summary": "Customer engagement quality evidence is outside the freshness window", "severity": "high", "owner": "Growth Analytics", "state": "open", "followUp": "Run the approved quality suite and record the result in the quality owner system"},
+    {"summary": "Campaign interaction ID has no verified classification", "severity": "medium", "owner": "Engagement Data Steward", "state": "planned", "followUp": "Review and classify the element in the authoritative catalog"}
+  ],
+  "decisionState": "needs-remediation"
+}

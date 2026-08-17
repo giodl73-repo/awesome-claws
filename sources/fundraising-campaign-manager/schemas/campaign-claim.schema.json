@@ -1,0 +1,1 @@
+{"type":"object","required":["claim","evidence","reviewer","state"],"properties":{"claim":{"type":"string"},"evidence":{"type":"string"},"reviewer":{"type":"string"},"state":{"type":"string"}}}

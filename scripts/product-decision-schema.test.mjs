@@ -3,12 +3,15 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 
 const schema = JSON.parse(await readFile(new URL("../claws/product-manager/schemas/product-decision.schema.json", import.meta.url), "utf8"));
 const fixture = JSON.parse(await readFile(new URL("../claws/product-manager/fixtures/product-decision.example.json", import.meta.url), "utf8"));
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validate = ajv.compile(schema);
+const isValid = (candidate) =>
+  validate(candidate) && validateArtifactSemantics("product-manager", candidate).length === 0;
 
 function setPath(value, path, replacement) {
   const parts = path.split(".");
@@ -20,29 +23,46 @@ function setPath(value, path, replacement) {
 }
 
 test("the Product Manager schema accepts the packaged fixture", () => {
-  assert.equal(validate(fixture), true, JSON.stringify(validate.errors));
+  assert.equal(isValid(fixture), true, JSON.stringify(validate.errors));
 });
 
 test("rejects empty evidence", () => {
   const candidate = structuredClone(fixture);
   setPath(candidate, "evidence", []);
-  assert.equal(validate(candidate), false);
+  assert.equal(isValid(candidate), false);
 });
 
 test("rejects unlabeled preference", () => {
   const candidate = structuredClone(fixture);
   setPath(candidate, "evidence.0.kind", "fact");
-  assert.equal(validate(candidate), false);
+  assert.equal(isValid(candidate), false);
 });
 
 test("rejects validation without failure threshold", () => {
   const candidate = structuredClone(fixture);
   setPath(candidate, "hypothesis.failureThreshold", null);
-  assert.equal(validate(candidate), false);
+  assert.equal(isValid(candidate), false);
 });
 
 test("rejects automatic roadmap commitment", () => {
   const candidate = structuredClone(fixture);
   setPath(candidate, "decisionState", "committed-by-agent");
-  assert.equal(validate(candidate), false);
+  assert.equal(isValid(candidate), false);
+});
+
+test("rejects dangling and duplicate evidence references", () => {
+  const candidate = structuredClone(fixture);
+  setPath(candidate, "options.0.evidenceRefs", ["missing"]);
+  assert.equal(isValid(candidate), false);
+  setPath(candidate, "options.0.evidenceRefs", [
+    "research/onboarding-2026-q2",
+    "research/onboarding-2026-q2",
+  ]);
+  assert.equal(isValid(candidate), false);
+});
+
+test("rejects recommendations without supported evidence", () => {
+  const candidate = structuredClone(fixture);
+  setPath(candidate, "options.2.evidenceRefs", ["strategy/workshop-notes"]);
+  assert.equal(isValid(candidate), false);
 });

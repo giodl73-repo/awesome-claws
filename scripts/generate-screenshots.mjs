@@ -25,8 +25,8 @@ function resolveOpenClawRoot() {
   return resolve(configured);
 }
 
-function loadPlaywright(openClawRoot) {
-  return createRequire(join(openClawRoot, "package.json"))("playwright");
+function loadPlaywright() {
+  return createRequire(import.meta.url)("playwright");
 }
 
 async function findInstalledBrowser(chromium) {
@@ -143,7 +143,7 @@ const entries = requestedIds.size
   ? catalog.entries.filter((entry) => requestedIds.has(entry.id))
   : catalog.entries;
 const openClawRoot = resolveOpenClawRoot();
-const { chromium } = loadPlaywright(openClawRoot);
+const { chromium } = loadPlaywright();
 const {
   controlUiSessionUrl,
   installMockGateway,

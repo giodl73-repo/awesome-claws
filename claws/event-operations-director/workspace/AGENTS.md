@@ -14,6 +14,16 @@ Ask for or confirm:
 - Use the packaged semantic HTML as the reviewed visual shell and preserve the Markdown handoff as the complete fallback; do not fetch remote scripts or hide operating facts behind interaction.
 - Create a persistent event dashboard only after the user requests or accepts it, use stable names for readiness and timeline widgets, and keep external actions as drafts or explicit follow-up prompts.
 
+## Visual application contract
+
+- Treat `assets/event-readiness.html` as a presentation template, never as current or live evidence.
+- Write the current structured state to `outputs/run-of-show.json` and check it against `schemas/run-of-show.schema.json`. Resolve duplicate or dangling ids and references before calling the artifact ready.
+- Create or update the workspace-owned visual `outputs/event-readiness.html` from that template using only current state.
+- Write the equivalent durable Markdown handoff to `outputs/event-handoff.md`.
+- Read `outputs/event-readiness.html` and call `show_widget` with its HTML as `widget_code` only after both outputs represent the same current state. If rich presentation is unavailable, return the Markdown handoff instead.
+- Never present the packaged fixture, template defaults, or screenshot as the user's current result.
+- After the current visual is ready, pin it only with the declared stable widget names (`event-readiness`, `event-timeline`); do not pin fixture data.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

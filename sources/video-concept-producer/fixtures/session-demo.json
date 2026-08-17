@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "video-concept-producer",
+  "scenario": "Create two six-second abstract motion concepts for an internal renewable-energy presentation using only our approved geometric brand assets.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Create two six-second abstract motion concepts for an internal renewable-energy presentation using only our approved geometric brand assets."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the video decision, the evidence needed, and the boundary that must stay human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make it useful in a normal chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/video-concept-producer-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+    }
+  ],
+  "report": {
+    "title": "Video concept producer session handoff",
+    "summary": "Two private PixVerse-generated concepts with exact prompts, settings, cost acknowledgement, synthetic provenance, rights-cleared inputs, and an editorial review board; nothing is published.",
+    "output": "outputs/video-concept-producer-handoff.md",
+    "items": [
+      {
+        "title": "Approved generation brief",
+        "summary": "Every generation was individually approved and records prompt, settings, provider, time, output identity, and expected usage cost",
+        "tags": [
+          "fact-based",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Prompt and settings ledger",
+        "summary": "Inputs are documented as rights-cleared and contain no prohibited sensitive or deceptive subject",
+        "tags": [
+          "evidence",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Private video concept variants",
+        "summary": "Do not depict a real person, private individual, trademarked character, or sensitive event deceptively or without documented authority and rights",
+        "tags": [
+          "approval-gated",
+          "safe fallback"
+        ]
+      },
+      {
+        "title": "Rights, safety, and factual review checklist",
+        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "tags": [
+          "handoff",
+          "durable"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "decision": "Choose curated templates, an open gallery, or a hybrid for the onboarding library",
+  "targetUser": "New workspace administrators",
+  "problem": "Administrators need trustworthy starting points without evaluating an unbounded catalog",
+  "evidence": [
+    {
+      "claim": "New administrators abandon setup when they cannot distinguish supported templates",
+      "kind": "user-research",
+      "reference": "research/onboarding-2026-q2",
+      "observedAt": "2026-07-20T16:00:00Z",
+      "state": "supported"
+    },
+    {
+      "claim": "Community breadth is strategically desirable",
+      "kind": "stakeholder-preference",
+      "reference": "strategy/workshop-notes",
+      "observedAt": "2026-07-25T12:00:00Z",
+      "state": "limited"
+    }
+  ],
+  "options": [
+    {
+      "name": "Curated only",
+      "userValue": "High trust and predictable quality",
+      "constraints": [
+        "Slow catalog growth"
+      ],
+      "risks": [
+        "Narrow coverage"
+      ],
+      "evidenceRefs": [
+        "research/onboarding-2026-q2"
+      ],
+      "state": "viable"
+    },
+    {
+      "name": "Open gallery",
+      "userValue": "Broad choice",
+      "constraints": [
+        "Requires trust and moderation model"
+      ],
+      "risks": [
+        "Unsafe or stale templates"
+      ],
+      "evidenceRefs": [
+        "strategy/workshop-notes"
+      ],
+      "state": "needs-evidence"
+    },
+    {
+      "name": "Hybrid",
+      "userValue": "Curated default with clearly separated community discovery",
+      "constraints": [
+        "Two-tier UX"
+      ],
+      "risks": [
+        "Confusing trust labels"
+      ],
+      "evidenceRefs": [
+        "research/onboarding-2026-q2",
+        "strategy/workshop-notes"
+      ],
+      "state": "recommended"
+    }
+  ],
+  "hypothesis": {
+    "statement": "A curated default plus separated community gallery improves first-session success without reducing discovery.",
+    "successMeasure": "10% higher completed setup with no increase in trust-related support cases",
+    "failureThreshold": "Less than 3% completion lift or more than 1% trust-case increase",
+    "nonGoals": [
+      "Pricing",
+      "Marketplace monetization"
+    ]
+  },
+  "validationPlan": {
+    "method": "Prototype test followed by bounded A/B rollout",
+    "budget": "Two design weeks and one engineering week",
+    "duration": "Four weeks",
+    "owner": "Onboarding product lead",
+    "decisionRule": "Advance only if the success measure clears and the failure threshold does not trigger"
+  },
+  "decisionOwner": "Onboarding product director",
+  "decisionState": "ready-for-owner-review"
+}

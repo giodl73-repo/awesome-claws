@@ -13,10 +13,12 @@ or changing the portable Claw contract requires maintainer approval.
 
 ## Edit the catalog
 
-`catalog.json` is the source of truth. Do not hand-edit generated files under
-`claws/`.
+`catalog.json` is the metadata source of truth, while declared resource bodies
+live under `sources/<claw-id>/` in their native formats. Do not hand-edit
+generated files under `claws/`.
 
-1. Add or update one entry in `catalog.json`.
+1. Add or update one entry in `catalog.json` and its declared files under
+   `sources/<claw-id>/`.
 2. Give it one coherent operational purpose, not a generic assistant persona.
 3. Define concrete intake, workflow, deliverables, and observable completion
    criteria.
@@ -27,9 +29,10 @@ or changing the portable Claw contract requires maintainer approval.
    local preference files only when absent, and never package answers or secrets.
 6. Keep portable Agent Skills and direct MCP requests in `CLAW.md`. Put native
    plugin bundles in the matching harness profile, with exact versions.
-7. Add shared schemas, references, templates, examples, fixtures, or assets as
-   ordinary declared workspace files. Keep executable behavior in reviewed
-   skills or harness extensions.
+7. Add schemas, references, templates, examples, fixtures, or assets as
+   ordinary declared workspace files, with their bodies under the matching
+   per-Claw source directory. Keep executable behavior in reviewed skills or
+   harness extensions.
 8. Regenerate and validate the repository.
 
 OpenClaw profile declarations must preserve consent-bounded authority:

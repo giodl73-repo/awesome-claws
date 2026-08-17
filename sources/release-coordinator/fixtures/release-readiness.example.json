@@ -1,0 +1,18 @@
+{
+  "repository": "acme/widget",
+  "version": "v2.4.0",
+  "targetCommit": "8f1c2d4",
+  "checks": [
+    {"name": "required CI", "state": "passed", "evidence": "workflow run 1842"},
+    {"name": "upgrade smoke", "state": "blocked", "evidence": "Windows runner owner: release-eng"}
+  ],
+  "artifacts": [
+    {"name": "signed package", "state": "passed", "evidence": "sha256:example"},
+    {"name": "rollback bundle", "state": "missing", "evidence": "owner: operations"}
+  ],
+  "blockers": [
+    {"summary": "Upgrade smoke is blocked", "owner": "release-eng", "state": "open"}
+  ],
+  "decisionState": "not-ready",
+  "communicationState": "draft"
+}
