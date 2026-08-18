@@ -8,6 +8,7 @@ function canonicalJson(value) {
   if (Array.isArray(value)) {
     return `[${value.map(canonicalJson).join(",")}]`;
   }
+
   if (value && typeof value === "object") {
     return `{${Object.keys(value)
       .sort()
@@ -15,6 +16,11 @@ function canonicalJson(value) {
       .join(",")}}`;
   }
   return JSON.stringify(value);
+}
+
+export function computeChangePlanDigest(plan) {
+  const { digest: _digest, ...digestInput } = plan;
+  return createHash("sha256").update(canonicalJson(digestInput)).digest("hex");
 }
 
 function duplicates(values) {
@@ -466,8 +472,7 @@ function changeControlFindings(value) {
     ...uniqueFindings(stepIds, "plan.steps", "Step id"),
     ...uniqueFindings(value.execution.stepResults.map((item) => item.stepRef), "execution.stepResults", "Step result reference"),
   ];
-  const { digest: _digest, ...digestInput } = value.plan;
-  const expectedDigest = createHash("sha256").update(canonicalJson(digestInput)).digest("hex");
+  const expectedDigest = computeChangePlanDigest(value.plan);
   if (value.plan.digest !== expectedDigest) {
     findings.push(
       finding("invalid_plan_digest", "plan.digest", "Plan digest must be the SHA-256 of the canonical plan content."),

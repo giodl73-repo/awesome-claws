@@ -11,6 +11,7 @@
     "proof:openclaw": "node scripts/prove-openclaw.mjs",
     "proof:portfolio": "node --import tsx scripts/prove-portfolio.mjs",
     "proof:capabilities": "node scripts/prove-capability-matrix.mjs",
+    "proof:capstones": "node scripts/prove-capstones.mjs",
     "proof:dependencies": "node scripts/check-dependency-health.mjs",
     "proof:golden": "node scripts/prove-golden-artifact.mjs",
     "proof:experience": "node scripts/prove-experience-assets.mjs",
