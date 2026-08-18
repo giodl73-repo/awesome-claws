@@ -106,7 +106,14 @@ function revision(path, override) {
     encoding: "utf8",
   });
   const revision = override ?? result.stdout.trim();
-  return status.status === 0 && status.stdout.trim().length > 0 ? `${revision}-dirty` : revision;
+  const dirtyEntries =
+    status.status === 0
+      ? status.stdout
+          .split(/\r?\n/u)
+          .filter(Boolean)
+          .filter((entry) => !(entry.startsWith("?? ") && entry.endsWith("/")))
+      : [];
+  return dirtyEntries.length > 0 ? `${revision}-dirty` : revision;
 }
 
 function recordPhase(phases, name, command) {
