@@ -1,0 +1,13 @@
+schemaVersion: 1
+agent:
+  tools:
+    profile: coding
+    allow:
+      - read
+      - write
+      - edit
+      - apply_patch
+      - exec
+      - process
+    fs:
+      workspaceOnly: true

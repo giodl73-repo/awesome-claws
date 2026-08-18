@@ -61,6 +61,48 @@
       }
     },
     {
+      "id": "case-continuity-coordinator",
+      "name": "Case continuity coordinator",
+      "description": "Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions.",
+      "audience": "Teams carrying a bounded support, operations, review, or remediation case across shifts, sessions, and accountable owners.",
+      "category": "operations",
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "change-control-operator",
+      "name": "Change control operator",
+      "description": "Prepares and executes bounded workspace changes only after an accountable owner approves the exact plan digest.",
+      "audience": "Operators and maintainers applying a reviewable configuration, code, or runbook change in a controlled workspace.",
+      "category": "engineering",
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "civic-data-analyst",
       "name": "Civic data analyst",
       "description": "Combines public demographic, budget, service, land-use, and mobility data into reproducible civic decision evidence.",
@@ -234,6 +276,27 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "delegation-coordinator",
+      "name": "Delegation coordinator",
+      "description": "Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner.",
+      "audience": "Leads decomposing a source-heavy review, analysis, or planning task into independent evidence assignments.",
+      "category": "productivity",
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/case-checkpoint.schema.json",
+  "title": "Resumable case checkpoint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "case", "evidence", "checkpoints", "actions", "resume", "decision"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.caseCheckpoint.v1" },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "scope", "owner", "custodian"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "scope": { "type": "string", "minLength": 1 },
+        "owner": { "type": "string", "minLength": 1 },
+        "custodian": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "state", "observedAt", "expiresAt", "reference"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["current", "stale", "missing", "conflicting", "superseded"] },
+          "observedAt": { "type": "string", "format": "date-time" },
+          "expiresAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "checkpoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "version", "recordedAt", "previousRef", "evidenceRefs", "summary"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "version": { "type": "integer", "minimum": 1 },
+          "recordedAt": { "type": "string", "format": "date-time" },
+          "previousRef": { "type": ["string", "null"] },
+          "evidenceRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "summary": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "state", "owner", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["open", "blocked", "done-by-owner", "cancelled-by-owner"] },
+          "owner": { "type": "string", "minLength": 1 },
+          "evidenceRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "resume": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpointRef", "nextCustodian", "instructions"],
+      "properties": {
+        "checkpointRef": { "type": "string", "minLength": 1 },
+        "nextCustodian": { "type": "string", "minLength": 1 },
+        "instructions": { "type": "string", "minLength": 1 }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner"],
+      "properties": {
+        "state": { "enum": ["open", "handoff-ready", "closed-by-owner"] },
+        "owner": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

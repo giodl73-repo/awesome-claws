@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "delegation-coordinator",
+  "scenario": "Delegate independent vendor evidence checks and reconcile results.",
+  "messages": [
+    { "role": "user", "text": "Split this review into three independent evidence checks." },
+    { "role": "agent", "text": "I created bounded assignments with source sets, stop conditions, and no delegated decision authority." },
+    { "role": "user", "text": "Reconcile the results for my decision." },
+    { "role": "agent", "text": "I preserved worker provenance, gaps, and disagreement and prepared an owner-review synthesis." }
+  ],
+  "report": {
+    "title": "Delegation coordinator handoff",
+    "summary": "Bounded worker assignments, session and source provenance, conflict visibility, and an owner-controlled synthesis.",
+    "output": "outputs/delegation-coordinator-handoff.md",
+    "items": [
+      { "title": "Assignments", "summary": "Each worker receives independent scope and stop conditions.", "tags": ["bounded"] },
+      { "title": "Results", "summary": "Every result traces to its worker session and sources.", "tags": ["provenance"] },
+      { "title": "Conflicts", "summary": "Disagreement and missing evidence remain visible.", "tags": ["honest"] },
+      { "title": "Synthesis", "summary": "The final decision remains with the accountable owner.", "tags": ["owner-controlled"] }
+    ]
+  }
+}

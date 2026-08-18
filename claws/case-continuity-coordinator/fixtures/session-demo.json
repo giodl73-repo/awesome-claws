@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "case-continuity-coordinator",
+  "scenario": "Resume case CS-1842 from the prior shift checkpoint.",
+  "messages": [
+    { "role": "user", "text": "Resume this case and identify stale evidence." },
+    { "role": "agent", "text": "I verified the checkpoint chain and separated current evidence from stale or missing state." },
+    { "role": "user", "text": "Prepare the next handoff but do not close it." },
+    { "role": "agent", "text": "I appended a resume checkpoint with open actions and preserved owner-controlled closure." }
+  ],
+  "report": {
+    "title": "Case continuity handoff",
+    "summary": "A predecessor-linked checkpoint, evidence freshness ledger, open actions, and precise resume instructions.",
+    "output": "outputs/case-continuity-coordinator-handoff.md",
+    "items": [
+      { "title": "Identity", "summary": "Case, owner, custodian, and scope remain stable.", "tags": ["continuity"] },
+      { "title": "Evidence", "summary": "Freshness and gaps are explicit.", "tags": ["time-bound"] },
+      { "title": "Checkpoint", "summary": "The new state links to its predecessor.", "tags": ["append-only"] },
+      { "title": "Decision", "summary": "Closure remains with the accountable owner.", "tags": ["owner-controlled"] }
+    ]
+  }
+}

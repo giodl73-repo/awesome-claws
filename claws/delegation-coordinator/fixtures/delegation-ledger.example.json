@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "awesomeClaws.delegationLedger.v1",
+  "objective": "Compare vendor evidence across security, accessibility, and operations.",
+  "decisionOwner": "procurement lead",
+  "sources": [
+    { "id": "security-pack", "reference": "workspace://vendor/security" },
+    { "id": "accessibility-pack", "reference": "workspace://vendor/accessibility" },
+    { "id": "operations-pack", "reference": "workspace://vendor/operations" }
+  ],
+  "assignments": [
+    {
+      "id": "security-review",
+      "scope": "Assess only supplied security evidence and gaps.",
+      "sourceRefs": ["security-pack"],
+      "workerSessionRef": "agent:security-review:01",
+      "state": "completed",
+      "stopCondition": "Stop after classifying supplied controls and missing evidence."
+    },
+    {
+      "id": "accessibility-review",
+      "scope": "Assess only supplied accessibility evidence and gaps.",
+      "sourceRefs": ["accessibility-pack"],
+      "workerSessionRef": "agent:accessibility-review:01",
+      "state": "completed",
+      "stopCondition": "Stop after classifying supplied conformance evidence and missing evidence."
+    },
+    {
+      "id": "operations-review",
+      "scope": "Assess only supplied operating evidence and gaps.",
+      "sourceRefs": ["operations-pack"],
+      "workerSessionRef": "agent:operations-review:01",
+      "state": "completed",
+      "stopCondition": "Stop after classifying supplied support and continuity evidence."
+    }
+  ],
+  "results": [
+    {
+      "id": "security-result",
+      "assignmentRef": "security-review",
+      "workerSessionRef": "agent:security-review:01",
+      "sourceRefs": ["security-pack"],
+      "summary": "Encryption evidence is current; recovery-test evidence is missing.",
+      "confidence": "high"
+    },
+    {
+      "id": "accessibility-result",
+      "assignmentRef": "accessibility-review",
+      "workerSessionRef": "agent:accessibility-review:01",
+      "sourceRefs": ["accessibility-pack"],
+      "summary": "The report covers web flows but excludes the mobile application.",
+      "confidence": "high"
+    },
+    {
+      "id": "operations-result",
+      "assignmentRef": "operations-review",
+      "workerSessionRef": "agent:operations-review:01",
+      "sourceRefs": ["operations-pack"],
+      "summary": "Support targets conflict between the contract and operating guide.",
+      "confidence": "medium"
+    }
+  ],
+  "conflicts": [],
+  "synthesis": {
+    "resultRefs": ["security-result", "accessibility-result", "operations-result"],
+    "state": "owner-review",
+    "decisionOwner": "procurement lead",
+    "summary": "Evidence gaps and the support-target conflict require owner review before selection."
+  }
+}

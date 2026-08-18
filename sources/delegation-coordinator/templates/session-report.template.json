@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Delegation coordinator session report",
+  "output": "outputs/delegation-coordinator-handoff.md",
+  "sections": ["objective", "decision_owner", "assignments", "worker_results", "coverage", "conflicts", "synthesis"],
+  "itemShape": { "title": "string", "summary": "string", "tags": ["string"] },
+  "fallback": "Render the same sections as Markdown when rich clients are unavailable."
+}

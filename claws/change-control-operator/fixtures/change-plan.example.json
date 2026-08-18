@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "awesomeClaws.changePlan.v1",
+  "plan": {
+    "id": "staging-retry-limit",
+    "digest": "5dd9e794d1e99ae4b08a72998fb32b04619ccd7302f33af6b61489697885de5c",
+    "generatedAt": "2026-08-18T15:00:00Z",
+    "workspace": "staging-service",
+    "baseState": "commit:4ea9b35",
+    "targets": ["config/staging.yml"],
+    "steps": [
+      {
+        "id": "edit-retry-limit",
+        "kind": "edit",
+        "target": "config/staging.yml",
+        "summary": "Change retry limit from 3 to 5."
+      },
+      {
+        "id": "run-config-test",
+        "kind": "command",
+        "target": "tests/config.test.mjs",
+        "summary": "Run the focused staging configuration test."
+      }
+    ],
+    "verification": ["Focused configuration test passes", "Only config/staging.yml changed"],
+    "rollback": ["Restore retry limit to 3", "Rerun the focused configuration test"]
+  },
+  "decision": {
+    "state": "approved-by-owner",
+    "owner": "staging change owner",
+    "decidedAt": "2026-08-18T15:05:00Z",
+    "planDigest": "5dd9e794d1e99ae4b08a72998fb32b04619ccd7302f33af6b61489697885de5c"
+  },
+  "execution": {
+    "state": "verified",
+    "planDigest": "5dd9e794d1e99ae4b08a72998fb32b04619ccd7302f33af6b61489697885de5c",
+    "stepResults": [
+      {
+        "stepRef": "edit-retry-limit",
+        "state": "passed",
+        "evidence": "config/staging.yml contains retryLimit: 5"
+      },
+      {
+        "stepRef": "run-config-test",
+        "state": "passed",
+        "evidence": "Focused test exited 0."
+      }
+    ],
+    "verificationResults": ["Focused configuration test passed", "Diff contains one intended file"],
+    "rollbackState": "available"
+  }
+}

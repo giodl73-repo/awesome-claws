@@ -1,5 +1,20 @@
+import { createHash } from "node:crypto";
+
 function finding(code, path, message) {
   return { code, path, message };
+}
+
+function canonicalJson(value) {
+  if (Array.isArray(value)) {
+    return `[${value.map(canonicalJson).join(",")}]`;
+  }
+  if (value && typeof value === "object") {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
 }
 
 function duplicates(values) {
@@ -444,9 +459,234 @@ function civicDataFindings(value) {
   return findings;
 }
 
+function changeControlFindings(value) {
+  const stepIds = value.plan.steps.map((item) => item.id);
+  const steps = new Set(stepIds);
+  const findings = [
+    ...uniqueFindings(stepIds, "plan.steps", "Step id"),
+    ...uniqueFindings(value.execution.stepResults.map((item) => item.stepRef), "execution.stepResults", "Step result reference"),
+  ];
+  const { digest: _digest, ...digestInput } = value.plan;
+  const expectedDigest = createHash("sha256").update(canonicalJson(digestInput)).digest("hex");
+  if (value.plan.digest !== expectedDigest) {
+    findings.push(
+      finding("invalid_plan_digest", "plan.digest", "Plan digest must be the SHA-256 of the canonical plan content."),
+    );
+  }
+  if (value.decision.planDigest !== value.plan.digest) {
+    findings.push(finding("digest_mismatch", "decision.planDigest", "Owner decision must bind the current plan digest."));
+  }
+  if (value.execution.planDigest !== value.plan.digest) {
+    findings.push(finding("digest_mismatch", "execution.planDigest", "Execution must bind the current plan digest."));
+  }
+  for (const [index, result] of value.execution.stepResults.entries()) {
+    findings.push(
+      ...referenceFindings([result.stepRef], steps, `execution.stepResults.${index}.stepRef`, "Step reference"),
+    );
+  }
+  if (
+    value.execution.state === "verified" &&
+    (value.decision.state !== "approved-by-owner" ||
+      value.execution.stepResults.length !== value.plan.steps.length ||
+      value.execution.stepResults.some((item) => item.state !== "passed") ||
+      value.execution.verificationResults.length === 0)
+  ) {
+    findings.push(
+      finding(
+        "unsupported_terminal_state",
+        "execution.state",
+        "Verified execution requires owner approval, one passing result per plan step, and verification evidence.",
+      ),
+    );
+  }
+  if (Date.parse(value.decision.decidedAt) < Date.parse(value.plan.generatedAt)) {
+    findings.push(
+      finding("invalid_time_order", "decision.decidedAt", "Owner decision cannot predate plan generation."),
+    );
+  }
+  return findings;
+}
+
+function caseContinuityFindings(value) {
+  const evidenceIds = value.evidence.map((item) => item.id);
+  const checkpointIds = value.checkpoints.map((item) => item.id);
+  const evidence = new Set(evidenceIds);
+  const checkpoints = new Set(checkpointIds);
+  const findings = [
+    ...uniqueFindings(evidenceIds, "evidence", "Evidence id"),
+    ...uniqueFindings(checkpointIds, "checkpoints", "Checkpoint id"),
+    ...uniqueFindings(value.actions.map((item) => item.id), "actions", "Action id"),
+  ];
+  const latestRecordedAt = Date.parse(value.checkpoints.at(-1).recordedAt);
+  for (const [index, item] of value.evidence.entries()) {
+    if (Date.parse(item.expiresAt) <= Date.parse(item.observedAt)) {
+      findings.push(
+        finding("invalid_time_range", `evidence.${index}.expiresAt`, "Evidence expiry must follow observation time."),
+      );
+    }
+    if (item.state === "current" && Date.parse(item.expiresAt) <= latestRecordedAt) {
+      findings.push(
+        finding(
+          "stale_evidence_state",
+          `evidence.${index}.state`,
+          "Evidence expired by the latest checkpoint cannot remain current.",
+        ),
+      );
+    }
+  }
+  for (const [index, checkpoint] of value.checkpoints.entries()) {
+    findings.push(
+      ...uniqueFindings(checkpoint.evidenceRefs, `checkpoints.${index}.evidenceRefs`, "Evidence reference"),
+      ...referenceFindings(
+        checkpoint.evidenceRefs,
+        evidence,
+        `checkpoints.${index}.evidenceRefs`,
+        "Evidence reference",
+      ),
+    );
+    const expectedPrevious = index === 0 ? null : value.checkpoints[index - 1].id;
+    if (checkpoint.previousRef !== expectedPrevious || checkpoint.version !== index + 1) {
+      findings.push(
+        finding(
+          "invalid_checkpoint_chain",
+          `checkpoints.${index}`,
+          "Checkpoint versions must be ordered and link directly to their predecessor.",
+        ),
+      );
+    }
+    for (const reference of checkpoint.evidenceRefs) {
+      const item = value.evidence.find((candidate) => candidate.id === reference);
+      if (item && Date.parse(item.observedAt) > Date.parse(checkpoint.recordedAt)) {
+        findings.push(
+          finding(
+            "future_evidence_reference",
+            `checkpoints.${index}.evidenceRefs`,
+            `Checkpoint cannot reference evidence ${JSON.stringify(reference)} observed later.`,
+          ),
+        );
+      }
+    }
+  }
+  for (const [index, action] of value.actions.entries()) {
+    findings.push(
+      ...uniqueFindings(action.evidenceRefs, `actions.${index}.evidenceRefs`, "Evidence reference"),
+      ...referenceFindings(action.evidenceRefs, evidence, `actions.${index}.evidenceRefs`, "Evidence reference"),
+    );
+  }
+  findings.push(
+    ...referenceFindings([value.resume.checkpointRef], checkpoints, "resume.checkpointRef", "Checkpoint reference"),
+  );
+  if (value.resume.checkpointRef !== value.checkpoints.at(-1).id) {
+    findings.push(
+      finding("stale_resume_point", "resume.checkpointRef", "Resume instructions must reference the latest checkpoint."),
+    );
+  }
+  return findings;
+}
+
+function delegationFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const assignmentIds = value.assignments.map((item) => item.id);
+  const resultIds = value.results.map((item) => item.id);
+  const sources = new Set(sourceIds);
+  const assignments = new Map(value.assignments.map((item) => [item.id, item]));
+  const results = new Set(resultIds);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(assignmentIds, "assignments", "Assignment id"),
+    ...uniqueFindings(resultIds, "results", "Result id"),
+    ...uniqueFindings(value.conflicts.map((item) => item.id), "conflicts", "Conflict id"),
+  ];
+  for (const [index, assignment] of value.assignments.entries()) {
+    findings.push(
+      ...uniqueFindings(assignment.sourceRefs, `assignments.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(
+        assignment.sourceRefs,
+        sources,
+        `assignments.${index}.sourceRefs`,
+        "Source reference",
+      ),
+    );
+  }
+  for (const [index, result] of value.results.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [result.assignmentRef],
+        new Set(assignmentIds),
+        `results.${index}.assignmentRef`,
+        "Assignment reference",
+      ),
+      ...uniqueFindings(result.sourceRefs, `results.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(result.sourceRefs, sources, `results.${index}.sourceRefs`, "Source reference"),
+    );
+    const assignment = assignments.get(result.assignmentRef);
+    if (assignment && assignment.workerSessionRef !== result.workerSessionRef) {
+      findings.push(
+        finding(
+          "session_mismatch",
+          `results.${index}.workerSessionRef`,
+          "Worker result session must match its assignment.",
+        ),
+      );
+    }
+    if (
+      assignment &&
+      result.sourceRefs.some((reference) => !assignment.sourceRefs.includes(reference))
+    ) {
+      findings.push(
+        finding(
+          "scope_expansion",
+          `results.${index}.sourceRefs`,
+          "Worker result may cite only sources assigned to that worker.",
+        ),
+      );
+    }
+  }
+  for (const [index, assignment] of value.assignments.entries()) {
+    const matchingResults = value.results.filter((result) => result.assignmentRef === assignment.id);
+    if (assignment.state === "completed" && matchingResults.length !== 1) {
+      findings.push(
+        finding(
+          "missing_completed_result",
+          `assignments.${index}.state`,
+          "A completed assignment requires exactly one provenance-linked result.",
+        ),
+      );
+    }
+  }
+  for (const [index, conflict] of value.conflicts.entries()) {
+    findings.push(
+      ...uniqueFindings(conflict.resultRefs, `conflicts.${index}.resultRefs`, "Result reference"),
+      ...referenceFindings(
+        conflict.resultRefs,
+        results,
+        `conflicts.${index}.resultRefs`,
+        "Result reference",
+      ),
+    );
+  }
+  findings.push(
+    ...uniqueFindings(value.synthesis.resultRefs, "synthesis.resultRefs", "Result reference"),
+    ...referenceFindings(value.synthesis.resultRefs, results, "synthesis.resultRefs", "Result reference"),
+  );
+  if (value.synthesis.decisionOwner !== value.decisionOwner) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "synthesis.decisionOwner",
+        "Synthesis must preserve the parent accountable decision owner.",
+      ),
+    );
+  }
+  return findings;
+}
+
 const validators = {
+  "case-continuity-coordinator": caseContinuityFindings,
+  "change-control-operator": changeControlFindings,
   "civic-data-analyst": civicDataFindings,
   "data-analyst": dataAnalysisFindings,
+  "delegation-coordinator": delegationFindings,
   "financial-analyst": financialAnalysisFindings,
   "project-manager": projectFindings,
   "product-manager": productFindings,

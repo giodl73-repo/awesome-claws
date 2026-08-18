@@ -8,18 +8,21 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (20)
+### Low setup (23)
 
 | Claw | Detail |
 | --- | --- |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | no bootstrap, external dependency, or schedule |
 | [API integration engineer](claws/api-integration-engineer) | no bootstrap, external dependency, or schedule |
+| [Case continuity coordinator](claws/case-continuity-coordinator) | no bootstrap, external dependency, or schedule |
+| [Change control operator](claws/change-control-operator) | no bootstrap, external dependency, or schedule |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | no bootstrap, external dependency, or schedule |
 | [Compliance reviewer](claws/compliance-reviewer) | no bootstrap, external dependency, or schedule |
 | [Content operations](claws/content-operations) | no bootstrap, external dependency, or schedule |
 | [Data analyst](claws/data-analyst) | no bootstrap, external dependency, or schedule |
 | [Data governance steward](claws/data-governance-steward) | no bootstrap, external dependency, or schedule |
 | [Data migration planner](claws/data-migration-planner) | no bootstrap, external dependency, or schedule |
+| [Delegation coordinator](claws/delegation-coordinator) | no bootstrap, external dependency, or schedule |
 | [Experimentation lead](claws/experimentation-lead) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
 | [Localization program manager](claws/localization-program-manager) | no bootstrap, external dependency, or schedule |
@@ -78,18 +81,21 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (28)
+### No external dependencies (31)
 
 | Claw | Detail |
 | --- | --- |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | None |
 | [API integration engineer](claws/api-integration-engineer) | None |
+| [Case continuity coordinator](claws/case-continuity-coordinator) | None |
+| [Change control operator](claws/change-control-operator) | None |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | None |
 | [Compliance reviewer](claws/compliance-reviewer) | None |
 | [Content operations](claws/content-operations) | None |
 | [Data analyst](claws/data-analyst) | None |
 | [Data governance steward](claws/data-governance-steward) | None |
 | [Data migration planner](claws/data-migration-planner) | None |
+| [Delegation coordinator](claws/delegation-coordinator) | None |
 | [Event operations director](claws/event-operations-director) | None |
 | [Executive assistant](claws/executive-assistant) | None |
 | [Experimentation lead](claws/experimentation-lead) | None |
@@ -143,12 +149,15 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (26)
+### X3 (29)
 
 | Claw | Detail |
 | --- | --- |
+| [Case continuity coordinator](claws/case-continuity-coordinator) | Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions. |
+| [Change control operator](claws/change-control-operator) | Prepares and executes bounded workspace changes only after an accountable owner approves the exact plan digest. |
 | [Civic data analyst](claws/civic-data-analyst) | Combines public demographic, budget, service, land-use, and mobility data into reproducible civic decision evidence. |
 | [Content operations](claws/content-operations) | Runs editorial work from brief through review, publication readiness, and measurement. |
+| [Delegation coordinator](claws/delegation-coordinator) | Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
 | [Document intake analyst](claws/document-intake-analyst) | Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty. |
 | [Executive assistant](claws/executive-assistant) | Turns executive priorities into prepared decisions, communications, and reliable follow-through. |
 | [Executive briefing](claws/executive-briefing) | Builds a concise daily operating brief from authorized calendar, mail, document, and weather context. |
@@ -232,11 +241,12 @@ Categories come directly from the catalog entry.
 | [Web evidence researcher](claws/web-evidence-researcher) | X3; Uses Tavily search and extraction to build bounded, source-linked evidence sets without publishing or acting on retrieved content. |
 | [Website evidence collector](claws/website-evidence-collector) | X3; Collects and normalizes an approved set of public web pages through Firecrawl for reviewable evidence and change analysis. |
 
-### Engineering (7)
+### Engineering (8)
 
 | Claw | Detail |
 | --- | --- |
 | [API integration engineer](claws/api-integration-engineer) | X5; Designs and verifies bounded API integrations from explicit contracts, fixtures, failure modes, and deployment authority. |
+| [Change control operator](claws/change-control-operator) | X3; Prepares and executes bounded workspace changes only after an accountable owner approves the exact plan digest. |
 | [Data migration planner](claws/data-migration-planner) | X4; Plans a controlled data migration through mappings, validation, cutover, rollback, and accountable reconciliation without moving production data. |
 | [Incident response](claws/incident-response) | X4; Coordinates incidents with one rule: ground ownership and recovery decisions in evidence. |
 | [Quality assurance lead](claws/quality-assurance-lead) | X4; Turns requirements and risk into a traceable test strategy, execution ledger, defect assessment, and release recommendation. |
@@ -253,10 +263,11 @@ Categories come directly from the catalog entry.
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 
-### Operations (12)
+### Operations (13)
 
 | Claw | Detail |
 | --- | --- |
+| [Case continuity coordinator](claws/case-continuity-coordinator) | X3; Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions. |
 | [Content operations](claws/content-operations) | X3; Runs editorial work from brief through review, publication readiness, and measurement. |
 | [Customer support](claws/customer-support) | X4; Resolves customer cases accurately while preserving context, ownership, and privacy. |
 | [Event operations director](claws/event-operations-director) | X5; Turns an approved event plan into a controlled run of show, readiness view, decision queue, and accountable handoff. |
@@ -278,10 +289,11 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (11)
+### Productivity (12)
 
 | Claw | Detail |
 | --- | --- |
+| [Delegation coordinator](claws/delegation-coordinator) | X3; Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
 | [Executive assistant](claws/executive-assistant) | X3; Turns executive priorities into prepared decisions, communications, and reliable follow-through. |
 | [Executive briefing](claws/executive-briefing) | X3; Builds a concise daily operating brief from authorized calendar, mail, document, and weather context. |
 | [Knowledge curator](claws/knowledge-curator) | X3; Turns scattered information into durable, navigable, and source-linked knowledge. |
@@ -307,11 +319,13 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Recruiting coordinator](claws/recruiting-coordinator) | portable workspace artifacts only |
 | [Sales operations](claws/sales-operations) | portable workspace artifacts only |
 
-### Guarded attention (33)
+### Guarded attention (36)
 
 | Claw | Detail |
 | --- | --- |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | explicit tool policy |
+| [Case continuity coordinator](claws/case-continuity-coordinator) | explicit tool policy |
+| [Change control operator](claws/change-control-operator) | explicit tool policy |
 | [Civic data analyst](claws/civic-data-analyst) | pinned skill |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | explicit tool policy |
 | [Compliance reviewer](claws/compliance-reviewer) | explicit tool policy |
@@ -319,6 +333,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Data analyst](claws/data-analyst) | explicit tool policy |
 | [Data governance steward](claws/data-governance-steward) | explicit tool policy |
 | [Data migration planner](claws/data-migration-planner) | explicit tool policy |
+| [Delegation coordinator](claws/delegation-coordinator) | explicit tool policy |
 | [Document intake analyst](claws/document-intake-analyst) | pinned skill |
 | [Event operations director](claws/event-operations-director) | guided local setup; explicit tool policy; persistent dashboard |
 | [Executive assistant](claws/executive-assistant) | guided local setup |

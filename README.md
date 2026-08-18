@@ -112,6 +112,9 @@ Unsupported clients lose presentation, not meaning or control.
 | [Quality assurance lead](claws/quality-assurance-lead) | Engineering | Test-evidence schema, coverage asset | Risk-based release quality |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | Analysis | Cost schema, operating-view asset | Reconciled FinOps evidence |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | Operations | Guided setup, claims schema, artifact templates | Approval-bound campaign preparation |
+| [Change control operator](claws/change-control-operator) | Engineering | Bounded workspace patch and execution tools, digest-bound schema | Approval-bound local change execution |
+| [Case continuity coordinator](claws/case-continuity-coordinator) | Operations | Workspace-only checkpoint ledger | Resumable evidence-fresh case handoff |
+| [Delegation coordinator](claws/delegation-coordinator) | Productivity | Bounded worker-session tools, provenance schema | Accountable multi-agent coordination |
 
 ## Preview a Claw
 
@@ -179,7 +182,7 @@ coverage, content quality, and basic secret hygiene. Maintainers can set
 `CLAWS_CLI_ENTRY` and run
 `npm run inspect` to inspect every package with a standalone Claws reference
 CLI. With `CLAWS_CLI_ENTRY` and `OPENCLAW_CLI_ENTRY` set to compatible built
-checkouts, `npm run proof:openclaw` dry-runs all 51 packages through the
+checkouts, `npm run proof:openclaw` dry-runs all 54 packages through the
 OpenClaw adapter in disposable state.
 
 ### Catalog invariants
@@ -187,7 +190,7 @@ OpenClaw adapter in disposable state.
 - `catalog.json` owns catalog metadata and resource declarations.
   `sources/<claw-id>/` owns the declared resource bodies in their native file
   formats. `npm run build` materializes both, and `npm run check` requires
-  byte-for-byte agreement with all 51 generated packages and rejects missing
+  byte-for-byte agreement with all 54 generated packages and rejects missing
   or undeclared source files.
 - Harness profiles use the conventional `profiles/openclaw.yml` path, strict
   schema version 1, exact pinned extension releases, and unique extension ids
@@ -212,13 +215,14 @@ OpenClaw adapter in disposable state.
   It does not mutate state or prove provider behavior.
 - `npm run proof:portfolio` first checks deterministic materialization, then
   exercises inspect, consent-bound add, status, export inspection, and removal
-  for all 51 packages in isolated local state. Executive Assistant additionally
+  for all 54 packages in isolated local state. Executive Assistant additionally
   proves a real managed-resource update from a checked-in previous-version fixture,
   stale-consent rejection, reverse rollback, and repeat upgrade while preserving user-owned state. Its
   agent turn uses the checked-in OpenAI-compatible fixture, so it proves runtime
   wiring rather than a live provider.
 - `npm run proof:capabilities` derives the catalog's skill, plugin package,
-  profile extension, OAuth MCP, cron, bootstrap, and visual classes, then runs
+  profile extension, OAuth MCP, cron, bootstrap, visual, workspace-execution,
+  and delegated-session classes, then runs
   one installed representative for every class. It requires clean, exact Awesome
   Claws, standalone CLI, and OpenClaw revisions and writes an aggregate record
   under `.tmp/capability-proof/`. The required Control UI workflow runs this
