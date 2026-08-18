@@ -22,7 +22,7 @@ workspace:
 packages:
   - kind: skill
     source: clawhub
-    ref: yahoo-finance
+    ref: "@ajanraj/yahoo-finance"
     version: 1.0.0
 mcpServers: {}
 cronJobs: []

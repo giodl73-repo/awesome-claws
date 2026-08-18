@@ -585,7 +585,7 @@
         {
           "kind": "skill",
           "source": "clawhub",
-          "ref": "yahoo-finance",
+          "ref": "@ajanraj/yahoo-finance",
           "version": "1.0.0"
         }
       ],
@@ -660,7 +660,7 @@
         {
           "kind": "skill",
           "source": "clawhub",
-          "ref": "customer-support",
+          "ref": "@ivangdavila/customer-support",
           "version": "1.0.0"
         }
       ],
@@ -2324,7 +2324,7 @@
         },
         "extensions": [
           {
-            "id": "expedia",
+            "id": "expedia-openclaw",
             "kind": "plugin",
             "format": "openclaw",
             "source": "clawhub",

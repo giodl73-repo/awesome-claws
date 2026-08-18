@@ -15,7 +15,7 @@ agent:
     fs:
       workspaceOnly: true
 extensions:
-  - id: expedia
+  - id: expedia-openclaw
     kind: plugin
     format: openclaw
     source: clawhub

@@ -15,7 +15,7 @@ Resolves customer cases accurately while preserving context, ownership, and priv
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
 - Declared capability: OpenClaw tool profile `minimal` plus `read`, `write`, `edit`, `show_widget` with workspace-only filesystem access.
-- Declared capability: skill `customer-support@1.0.0`.
+- Declared capability: skill `@ivangdavila/customer-support@1.0.0`.
 - Capability boundary: Use the customer-support skill as workflow guidance, not as authoritative product, entitlement, or customer-account state; verify those facts in approved systems before responding.
 - Capability boundary: The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no customer-system, account, entitlement, messaging, network, shell, refund, or production mutation capability.
 - Capability boundary: Diagnostics must be sanitized and minimal; customer messages, product commitments, refunds, entitlement decisions, escalations, and case closure remain authorized-owner controlled.

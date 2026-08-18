@@ -28,7 +28,7 @@ workspace:
 packages:
   - kind: skill
     source: clawhub
-    ref: customer-support
+    ref: "@ivangdavila/customer-support"
     version: 1.0.0
 mcpServers: {}
 cronJobs: []
