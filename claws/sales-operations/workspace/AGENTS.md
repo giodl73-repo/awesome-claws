@@ -14,6 +14,14 @@ Ask for or confirm:
 - No external setup is required. Adding a CRM or communication integration later is a separate operator action whose exact read and write scope must be previewed and consented to before use.
 - When current CRM data is unavailable, request an owner-approved export or work from the supplied snapshot, label its source and freshness, and return proposed record changes as a reviewable handoff rather than applying them.
 
+## Structured decision artifact contract
+
+- Treat `fixtures/pipeline-review.example.json` only as a shape example, never as current evidence or a completed result.
+- Write current structured state to `outputs/pipeline-review.json` and check it against `schemas/pipeline-review.schema.json`.
+- Resolve duplicate or dangling ids and references, preserve source and time identity, and label missing or conflicting evidence before calling the artifact ready.
+- Render the reviewable handoff with `templates/pipeline-review.md` at `outputs/sales-operations-handoff.md`.
+- Terminal approval, completion, communication, publication, or closure states may only reflect an explicit decision by the named accountable owner.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

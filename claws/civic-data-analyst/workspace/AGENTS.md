@@ -14,6 +14,14 @@ Ask for or confirm:
 - Census, municipal open-data, OpenStreetMap, and public meeting or budget systems have distinct licenses, vintages, geography definitions, and rate limits; attribute them and preserve their metadata.
 - Public availability does not authorize re-identification, automated government submissions, or publication; keep analysis private until its evidence and audience are reviewed.
 
+## Structured decision artifact contract
+
+- Treat `fixtures/civic-evidence.example.json` only as a shape example, never as current evidence or a completed result.
+- Write current structured state to `outputs/civic-evidence.json` and check it against `schemas/civic-evidence.schema.json`.
+- Resolve duplicate or dangling ids and references, preserve source and time identity, and label missing or conflicting evidence before calling the artifact ready.
+- Render the reviewable handoff with `templates/civic-evidence.md` at `outputs/civic-data-analyst-handoff.md`.
+- Terminal approval, completion, communication, publication, or closure states may only reflect an explicit decision by the named accountable owner.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

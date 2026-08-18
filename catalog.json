@@ -609,6 +609,21 @@
           "source": "templates/session-handoff.md",
           "path": "templates/session-handoff.md",
           "role": "template"
+        },
+        {
+          "source": "schemas/financial-scenario.schema.json",
+          "path": "schemas/financial-scenario.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/financial-scenario.example.json",
+          "path": "fixtures/financial-scenario.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/financial-scenario.md",
+          "path": "templates/financial-scenario.md",
+          "role": "template"
         }
       ],
       "capabilityGuidance": [
@@ -785,6 +800,21 @@
           "source": "templates/session-handoff.md",
           "path": "templates/session-handoff.md",
           "role": "template"
+        },
+        {
+          "source": "schemas/pipeline-review.schema.json",
+          "path": "schemas/pipeline-review.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/pipeline-review.example.json",
+          "path": "fixtures/pipeline-review.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/pipeline-review.md",
+          "path": "templates/pipeline-review.md",
+          "role": "template"
         }
       ]
     },
@@ -848,6 +878,21 @@
         {
           "source": "templates/session-handoff.md",
           "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/interview-plan.schema.json",
+          "path": "schemas/interview-plan.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/interview-plan.example.json",
+          "path": "fixtures/interview-plan.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/interview-plan.md",
+          "path": "templates/interview-plan.md",
           "role": "template"
         }
       ]
@@ -3026,6 +3071,21 @@
           "source": "templates/session-handoff.md",
           "path": "templates/session-handoff.md",
           "role": "template"
+        },
+        {
+          "source": "schemas/public-safety-state.schema.json",
+          "path": "schemas/public-safety-state.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/public-safety-state.example.json",
+          "path": "fixtures/public-safety-state.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/public-safety-state.md",
+          "path": "templates/public-safety-state.md",
+          "role": "template"
         }
       ]
     },
@@ -3099,6 +3159,21 @@
         {
           "source": "templates/session-handoff.md",
           "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/civic-evidence.schema.json",
+          "path": "schemas/civic-evidence.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/civic-evidence.example.json",
+          "path": "fixtures/civic-evidence.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/civic-evidence.md",
+          "path": "templates/civic-evidence.md",
           "role": "template"
         }
       ]

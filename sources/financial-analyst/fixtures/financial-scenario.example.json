@@ -1,0 +1,57 @@
+{
+  "question": "Does adding two support engineers pay back within 12 months?",
+  "asOf": "2026-08-01T12:00:00Z",
+  "currency": "USD",
+  "sources": [
+    {
+      "id": "actuals-q2",
+      "kind": "actual",
+      "reference": "finance/q2-support-actuals",
+      "observedAt": "2026-07-31T18:00:00Z",
+      "state": "supported"
+    },
+    {
+      "id": "growth-plan",
+      "kind": "forecast",
+      "reference": "planning/q3-ticket-growth",
+      "observedAt": "2026-07-28T16:00:00Z",
+      "state": "limited"
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "loaded-cost",
+      "statement": "Two engineers cost 240000 USD fully loaded for twelve months.",
+      "sourceRefs": ["actuals-q2"]
+    },
+    {
+      "id": "ticket-growth",
+      "statement": "Ticket volume follows the approved base growth plan.",
+      "sourceRefs": ["growth-plan"]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "downside",
+      "name": "Downside",
+      "assumptionRefs": ["loaded-cost"],
+      "outcomes": [{ "name": "paybackMonths", "value": 18, "unit": "months" }]
+    },
+    {
+      "id": "base",
+      "name": "Base",
+      "assumptionRefs": ["loaded-cost", "ticket-growth"],
+      "outcomes": [{ "name": "paybackMonths", "value": 11, "unit": "months" }]
+    }
+  ],
+  "risks": [
+    {
+      "id": "growth-uncertainty",
+      "description": "The ticket-growth plan has not yet been observed.",
+      "sourceRefs": ["growth-plan"],
+      "scenarioRefs": ["base"]
+    }
+  ],
+  "decisionOwner": "Finance director",
+  "decisionState": "ready-for-owner-review"
+}

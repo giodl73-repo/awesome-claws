@@ -173,11 +173,287 @@ function researchFindings(value) {
   return findings;
 }
 
+function financialAnalysisFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const assumptionIds = value.assumptions.map((item) => item.id);
+  const scenarioIds = value.scenarios.map((item) => item.id);
+  const sources = new Set(sourceIds);
+  const assumptions = new Set(assumptionIds);
+  const scenarios = new Set(scenarioIds);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(assumptionIds, "assumptions", "Assumption id"),
+    ...uniqueFindings(scenarioIds, "scenarios", "Scenario id"),
+    ...uniqueFindings(value.risks.map((item) => item.id), "risks", "Risk id"),
+  ];
+  for (const [index, assumption] of value.assumptions.entries()) {
+    findings.push(
+      ...uniqueFindings(assumption.sourceRefs, `assumptions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(
+        assumption.sourceRefs,
+        sources,
+        `assumptions.${index}.sourceRefs`,
+        "Source reference",
+      ),
+    );
+  }
+  for (const [index, scenario] of value.scenarios.entries()) {
+    findings.push(
+      ...uniqueFindings(
+        scenario.assumptionRefs,
+        `scenarios.${index}.assumptionRefs`,
+        "Assumption reference",
+      ),
+      ...referenceFindings(
+        scenario.assumptionRefs,
+        assumptions,
+        `scenarios.${index}.assumptionRefs`,
+        "Assumption reference",
+      ),
+    );
+  }
+  for (const [index, risk] of value.risks.entries()) {
+    findings.push(
+      ...uniqueFindings(risk.sourceRefs, `risks.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(risk.sourceRefs, sources, `risks.${index}.sourceRefs`, "Source reference"),
+      ...uniqueFindings(
+        risk.scenarioRefs,
+        `risks.${index}.scenarioRefs`,
+        "Scenario reference",
+      ),
+      ...referenceFindings(
+        risk.scenarioRefs,
+        scenarios,
+        `risks.${index}.scenarioRefs`,
+        "Scenario reference",
+      ),
+    );
+  }
+  return findings;
+}
+
+function publicSafetyFindings(value) {
+  const alertIds = value.alerts.map((item) => item.id);
+  const alerts = new Set(alertIds);
+  const findings = [
+    ...uniqueFindings(alertIds, "alerts", "Alert id"),
+    ...uniqueFindings(value.observations.map((item) => item.id), "observations", "Observation id"),
+    ...uniqueFindings(value.actions.map((item) => item.id), "actions", "Action id"),
+  ];
+  for (const [index, alert] of value.alerts.entries()) {
+    if (Date.parse(alert.expiresAt) <= Date.parse(alert.issuedAt)) {
+      findings.push(
+        finding(
+          "invalid_time_range",
+          `alerts.${index}.expiresAt`,
+          "Alert expiry must be later than its issue time.",
+        ),
+      );
+    }
+  }
+  for (const [index, observation] of value.observations.entries()) {
+    findings.push(
+      ...uniqueFindings(
+        observation.alertRefs,
+        `observations.${index}.alertRefs`,
+        "Alert reference",
+      ),
+      ...referenceFindings(
+        observation.alertRefs,
+        alerts,
+        `observations.${index}.alertRefs`,
+        "Alert reference",
+      ),
+    );
+  }
+  for (const [index, action] of value.actions.entries()) {
+    findings.push(
+      ...uniqueFindings(action.alertRefs, `actions.${index}.alertRefs`, "Alert reference"),
+      ...referenceFindings(
+        action.alertRefs,
+        alerts,
+        `actions.${index}.alertRefs`,
+        "Alert reference",
+      ),
+    );
+  }
+  return findings;
+}
+
+function recruitingFindings(value) {
+  const interviewerIds = value.interviewers.map((item) => item.id);
+  const competencyIds = value.competencies.map((item) => item.id);
+  const constraintIds = value.constraints.map((item) => item.id);
+  const sessionIds = value.sessions.map((item) => item.id);
+  const interviewers = new Set(interviewerIds);
+  const competencies = new Set(competencyIds);
+  const constraints = new Set(constraintIds);
+  const sessions = new Set(sessionIds);
+  const findings = [
+    ...uniqueFindings(interviewerIds, "interviewers", "Interviewer id"),
+    ...uniqueFindings(competencyIds, "competencies", "Competency id"),
+    ...uniqueFindings(constraintIds, "constraints", "Constraint id"),
+    ...uniqueFindings(sessionIds, "sessions", "Session id"),
+  ];
+  for (const [index, session] of value.sessions.entries()) {
+    findings.push(
+      ...uniqueFindings(
+        session.interviewerRefs,
+        `sessions.${index}.interviewerRefs`,
+        "Interviewer reference",
+      ),
+      ...referenceFindings(
+        session.interviewerRefs,
+        interviewers,
+        `sessions.${index}.interviewerRefs`,
+        "Interviewer reference",
+      ),
+      ...uniqueFindings(
+        session.competencyRefs,
+        `sessions.${index}.competencyRefs`,
+        "Competency reference",
+      ),
+      ...referenceFindings(
+        session.competencyRefs,
+        competencies,
+        `sessions.${index}.competencyRefs`,
+        "Competency reference",
+      ),
+      ...uniqueFindings(
+        session.constraintRefs,
+        `sessions.${index}.constraintRefs`,
+        "Constraint reference",
+      ),
+      ...referenceFindings(
+        session.constraintRefs,
+        constraints,
+        `sessions.${index}.constraintRefs`,
+        "Constraint reference",
+      ),
+    );
+    if (Date.parse(session.end) <= Date.parse(session.start)) {
+      findings.push(
+        finding(
+          "invalid_time_range",
+          `sessions.${index}.end`,
+          "Interview session end must be later than its start.",
+        ),
+      );
+    }
+  }
+  for (const [index, communication] of value.communications.entries()) {
+    findings.push(
+      ...uniqueFindings(
+        communication.sessionRefs,
+        `communications.${index}.sessionRefs`,
+        "Session reference",
+      ),
+      ...referenceFindings(
+        communication.sessionRefs,
+        sessions,
+        `communications.${index}.sessionRefs`,
+        "Session reference",
+      ),
+    );
+  }
+  return findings;
+}
+
+function salesOperationsFindings(value) {
+  const dealIds = value.deals.map((item) => item.id);
+  const deals = new Set(dealIds);
+  const findings = [
+    ...uniqueFindings(dealIds, "deals", "Deal id"),
+    ...uniqueFindings(value.risks.map((item) => item.id), "risks", "Risk id"),
+    ...uniqueFindings(value.actions.map((item) => item.id), "actions", "Action id"),
+  ];
+  for (const [index, change] of value.changes.entries()) {
+    findings.push(
+      ...referenceFindings([change.dealRef], deals, `changes.${index}.dealRef`, "Deal reference"),
+    );
+  }
+  for (const [index, risk] of value.risks.entries()) {
+    findings.push(
+      ...uniqueFindings(risk.dealRefs, `risks.${index}.dealRefs`, "Deal reference"),
+      ...referenceFindings(risk.dealRefs, deals, `risks.${index}.dealRefs`, "Deal reference"),
+    );
+  }
+  for (const [index, action] of value.actions.entries()) {
+    findings.push(
+      ...uniqueFindings(action.dealRefs, `actions.${index}.dealRefs`, "Deal reference"),
+      ...referenceFindings(
+        action.dealRefs,
+        deals,
+        `actions.${index}.dealRefs`,
+        "Deal reference",
+      ),
+    );
+  }
+  return findings;
+}
+
+function civicDataFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const measureIds = value.measures.map((item) => item.id);
+  const sources = new Set(sourceIds);
+  const measures = new Set(measureIds);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(measureIds, "measures", "Measure id"),
+    ...uniqueFindings(value.comparisons.map((item) => item.id), "comparisons", "Comparison id"),
+  ];
+  for (const [index, measure] of value.measures.entries()) {
+    findings.push(
+      ...uniqueFindings(
+        measure.sourceRefs,
+        `measures.${index}.sourceRefs`,
+        "Source reference",
+      ),
+      ...referenceFindings(
+        measure.sourceRefs,
+        sources,
+        `measures.${index}.sourceRefs`,
+        "Source reference",
+      ),
+    );
+    if (measure.geographyRef !== value.geography.id) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `measures.${index}.geographyRef`,
+          `Geography reference ${JSON.stringify(measure.geographyRef)} does not resolve.`,
+        ),
+      );
+    }
+  }
+  for (const [index, comparison] of value.comparisons.entries()) {
+    findings.push(
+      ...uniqueFindings(
+        comparison.measureRefs,
+        `comparisons.${index}.measureRefs`,
+        "Measure reference",
+      ),
+      ...referenceFindings(
+        comparison.measureRefs,
+        measures,
+        `comparisons.${index}.measureRefs`,
+        "Measure reference",
+      ),
+    );
+  }
+  return findings;
+}
+
 const validators = {
+  "civic-data-analyst": civicDataFindings,
   "data-analyst": dataAnalysisFindings,
+  "financial-analyst": financialAnalysisFindings,
   "project-manager": projectFindings,
   "product-manager": productFindings,
+  "public-safety-monitor": publicSafetyFindings,
+  "recruiting-coordinator": recruitingFindings,
   "research-briefing": researchFindings,
+  "sales-operations": salesOperationsFindings,
 };
 
 export function validateArtifactSemantics(id, value) {

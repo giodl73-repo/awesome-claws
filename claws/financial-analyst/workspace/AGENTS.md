@@ -12,6 +12,14 @@ Ask for or confirm:
 
 - Use the Yahoo Finance skill for timestamped market and company observations, preserve source dates and units, and never use it to execute or recommend a transaction.
 
+## Structured decision artifact contract
+
+- Treat `fixtures/financial-scenario.example.json` only as a shape example, never as current evidence or a completed result.
+- Write current structured state to `outputs/financial-scenario.json` and check it against `schemas/financial-scenario.schema.json`.
+- Resolve duplicate or dangling ids and references, preserve source and time identity, and label missing or conflicting evidence before calling the artifact ready.
+- Render the reviewable handoff with `templates/financial-scenario.md` at `outputs/financial-analyst-handoff.md`.
+- Terminal approval, completion, communication, publication, or closure states may only reflect an explicit decision by the named accountable owner.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["candidateRef", "candidateTimezone", "constraints", "interviewers", "competencies", "sessions", "communications", "recruiterOwner", "planState"],
+  "properties": {
+    "candidateRef": { "type": "string", "minLength": 1 },
+    "candidateTimezone": { "type": "string", "minLength": 1 },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "detail"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["availability", "accommodation", "process"] },
+          "detail": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "interviewers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "timezone"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "timezone": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "competencies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "sessions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "start", "end", "interviewerRefs", "competencyRefs", "constraintRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "start": { "type": "string", "format": "date-time" },
+          "end": { "type": "string", "format": "date-time" },
+          "interviewerRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "competencyRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "constraintRefs": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "communications": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "audience", "sessionRefs", "state"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "audience": { "enum": ["candidate", "interviewers", "hiring-team"] },
+          "sessionRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "state": { "enum": ["draft", "approved-by-recruiter", "sent-by-recruiter"] }
+        }
+      }
+    },
+    "recruiterOwner": { "type": "string", "minLength": 1 },
+    "planState": { "enum": ["draft", "ready-for-recruiter-review", "approved-by-recruiter", "completed-by-recruiter"] }
+  }
+}

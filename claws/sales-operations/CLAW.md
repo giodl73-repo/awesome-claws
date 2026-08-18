@@ -17,6 +17,12 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/pipeline-review.schema.json
+      path: schemas/pipeline-review.schema.json
+    - source: fixtures/pipeline-review.example.json
+      path: fixtures/pipeline-review.example.json
+    - source: templates/pipeline-review.md
+      path: templates/pipeline-review.md
 packages: []
 mcpServers: {}
 cronJobs: []

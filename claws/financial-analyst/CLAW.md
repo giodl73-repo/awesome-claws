@@ -19,6 +19,12 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/financial-scenario.schema.json
+      path: schemas/financial-scenario.schema.json
+    - source: fixtures/financial-scenario.example.json
+      path: fixtures/financial-scenario.example.json
+    - source: templates/financial-scenario.md
+      path: templates/financial-scenario.md
 packages:
   - kind: skill
     source: clawhub

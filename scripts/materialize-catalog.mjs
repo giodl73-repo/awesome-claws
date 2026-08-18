@@ -91,6 +91,31 @@ ${structuredState}
 - Never present the packaged fixture, template defaults, or screenshot as the user's current result.${dashboard}`;
 }
 
+function structuredArtifactContract(entry) {
+  const experience = experienceCases.get(entry.id);
+  if (!experience || experience.target !== 3) return "";
+  const resources = entry.resources ?? [];
+  const schema = resources.find((resource) => resource.role === "schema");
+  if (!schema) {
+    return "";
+  }
+  const name = basename(schema.path).replace(/\.schema\.json$/u, "");
+  const fixture = resources.find(
+    (resource) => resource.path === `fixtures/${name}.example.json`,
+  );
+  const template = resources.find((resource) => resource.path === `templates/${name}.md`);
+  if (!fixture || !template) {
+    return "";
+  }
+  return `\n\n## Structured decision artifact contract
+
+- Treat \`${fixture.path}\` only as a shape example, never as current evidence or a completed result.
+- Write current structured state to \`outputs/${name}.json\` and check it against \`${schema.path}\`.
+- Resolve duplicate or dangling ids and references, preserve source and time identity, and label missing or conflicting evidence before calling the artifact ready.
+- Render the reviewable handoff with \`${template.path}\` at \`${experience.output}\`.
+- Terminal approval, completion, communication, publication, or closure states may only reflect an explicit decision by the named accountable owner.`;
+}
+
 function filesFor(entry) {
   const packages = entry.packages ?? [];
   const mcpServers = entry.mcpServers ?? {};
@@ -105,6 +130,7 @@ function filesFor(entry) {
       ? `\n\n## Included capability boundaries\n\n${bullets(capabilityGuidance)}`
       : "";
   const visualContractSection = visualContract(entry);
+  const structuredArtifactContractSection = structuredArtifactContract(entry);
   const packageContents = [
     "- `CLAW.md` defines the agent and provides its portable `SOUL.md` content.",
     "- `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.",
@@ -178,7 +204,7 @@ cronJobs: []
 
 Ask for or confirm:
 
-${bullets(entry.intake)}${capabilityBoundarySection}${visualContractSection}
+${bullets(entry.intake)}${capabilityBoundarySection}${visualContractSection}${structuredArtifactContractSection}
 
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.

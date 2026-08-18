@@ -17,6 +17,12 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/interview-plan.schema.json
+      path: schemas/interview-plan.schema.json
+    - source: fixtures/interview-plan.example.json
+      path: fixtures/interview-plan.example.json
+    - source: templates/interview-plan.md
+      path: templates/interview-plan.md
 packages: []
 mcpServers: {}
 cronJobs: []
