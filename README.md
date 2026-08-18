@@ -40,6 +40,11 @@ copyable reference is optimized for a small package that is easy to rename and
 adapt. The other starters demonstrate different application shapes between
 those two points; they are not expected to contain the same components.
 
+Use the generated [catalog chooser](CHOOSER.md) to compare every starter by
+setup burden, external dependencies, Experience proof tier, category, and
+boundary-attention level. The same derived data is available as
+[`catalog-chooser.json`](catalog-chooser.json) for tools and other catalogs.
+
 Every starter also gives its generated `SOUL.md` a role-specific identity. The
 collection intentionally ranges from light theming, such as the copyable
 Executive Assistant, to a more distinctive professional voice, such as the
