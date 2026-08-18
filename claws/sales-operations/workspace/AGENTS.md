@@ -8,6 +8,12 @@ Ask for or confirm:
 - Pipeline snapshot, prior-period baseline, quotas, and known data-quality issues
 - Decision audience, material deal threshold, owners, and required follow-up cadence
 
+## Included capability boundaries
+
+- This starter analyzes only pipeline snapshots, definitions, quotas, and owner context supplied in the authorized workspace; it declares no CRM, forecasting-system, messaging, network, package, MCP, or scheduled-job access.
+- No external setup is required. Adding a CRM or communication integration later is a separate operator action whose exact read and write scope must be previewed and consented to before use.
+- When current CRM data is unavailable, request an owner-approved export or work from the supplied snapshot, label its source and freshness, and return proposed record changes as a reviewable handoff rather than applying them.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

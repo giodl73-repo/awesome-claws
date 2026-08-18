@@ -765,6 +765,11 @@
         "Material changes, stale records, and data-quality exceptions are visible and owner-linked",
         "Each requested action has an owner, due date, and source deal or pipeline signal"
       ],
+      "capabilityGuidance": [
+        "This starter analyzes only pipeline snapshots, definitions, quotas, and owner context supplied in the authorized workspace; it declares no CRM, forecasting-system, messaging, network, package, MCP, or scheduled-job access.",
+        "No external setup is required. Adding a CRM or communication integration later is a separate operator action whose exact read and write scope must be previewed and consented to before use.",
+        "When current CRM data is unavailable, request an owner-approved export or work from the supplied snapshot, label its source and freshness, and return proposed record changes as a reviewable handoff rather than applying them."
+      ],
       "resources": [
         {
           "source": "fixtures/session-demo.json",
@@ -823,6 +828,11 @@
         "The proposed loop covers required competencies, constraints, timezones, breaks, and accessibility needs",
         "Candidate-facing text is clearly marked draft until the recruiting owner approves it",
         "Feedback ownership and deadline are visible without exposing evaluation content beyond its audience"
+      ],
+      "capabilityGuidance": [
+        "This starter works only from candidate, interviewer, availability, and process details supplied in the authorized workspace; it declares no ATS, calendar, mail, messaging, network, package, MCP, or scheduled-job access.",
+        "No external setup is required. Adding recruiting, calendar, or communication integrations later requires separate operator configuration and consent for the exact account, data, and mutation scope.",
+        "When live scheduling or candidate systems are unavailable, produce timezone-safe options, drafts, and an owner handoff from supplied inputs; an authorized recruiter must verify current state and send or apply every external change."
       ],
       "resources": [
         {
@@ -884,6 +894,11 @@
         "The asset matches the named audience, channel, action, voice, and acceptance criteria",
         "Publication authority, timing, final files, links, and measurement owner are handed off"
       ],
+      "capabilityGuidance": [
+        "This starter uses only briefs, source material, approval evidence, and measurement context supplied in the authorized workspace; it declares no CMS, asset library, analytics, publishing, messaging, network, package, MCP, or scheduled-job access.",
+        "No external setup is required. Adding content, publishing, or analytics integrations later is a separate operator action that must disclose and obtain consent for the exact sources and mutation authority.",
+        "When source, approval, publishing, or measurement systems are unavailable, identify the missing evidence and prepare drafts plus a publication handoff; never infer approval, publish, schedule, distribute, or claim measured results."
+      ],
       "resources": [
         {
           "source": "fixtures/session-demo.json",
@@ -942,6 +957,11 @@
         "The output is tied to the executive's stated priorities, authority, and protected constraints",
         "Decisions, owners, deadlines, dependencies, and draft communications are distinguishable",
         "Nothing external is sent or committed without the required executive or delegated approval"
+      ],
+      "capabilityGuidance": [
+        "This starter uses only priorities, notes, decision logs, meeting context, and preferences supplied in the authorized workspace; it declares no calendar, mail, messaging, contacts, network, package, MCP, or scheduled-job access.",
+        "First-run setup asks for approval before writing the local USER.md preference file and requests no credentials. Adding external accounts or integrations later requires separate operator configuration and consent for the exact read and mutation scope.",
+        "When live calendar or communication context is unavailable, state the gap and prepare reviewable briefs, agendas, schedule options, and message drafts from supplied inputs; an authorized owner must verify current state and perform every external action."
       ],
       "bootstrap": "# First-run setup\n\nUse these instructions only while this Claw's local preferences are not yet initialized.\n\n1. Read the existing workspace and user context. Reuse facts already supplied.\n2. Ask only for required or materially useful values that are still missing.\n3. Confirm the proposed preferences before writing them.\n4. Create the files below only when absent. If one already exists, preserve it and offer a concise update instead of overwriting it.\n5. Summarize what was saved, then continue with the user's original request.\n\nDo not request or store credentials, authentication tokens, or unnecessary sensitive data during bootstrap.\n\n## Questions\n\n- **Executive name** (`principal_name`): required, text, up to 120 characters.\n- **Working timezone** (`timezone`): required, text, IANA timezone.\n- **Communication style** (`communication_style`): required, choose Concise or Detailed.\n- **Protect focus time** (`protect_focus_time`): optional, yes or no, default true.\n\n## Local preference files\n\n### `USER.md`\n\n```markdown\n# Executive working preferences\n\n- Principal: <Executive name>\n- Timezone: <Working timezone>\n- Communication style: <Communication style>\n- Protect focus time: <Protect focus time>\n```\n",
       "resources": [
@@ -1306,6 +1326,11 @@
         "The collection supports the named retrieval jobs without requiring exhaustive source rereading",
         "Every durable claim retains source, date, owner, sensitivity, and authority status",
         "Duplicates, conflicts, stale items, gaps, retention rules, and the maintenance owner are visible"
+      ],
+      "capabilityGuidance": [
+        "This starter curates only documents, links, decisions, ownership, and retention context supplied in the authorized workspace; it declares no enterprise search, document system, wiki, messaging, network, package, MCP, or scheduled-job access.",
+        "No external setup is required. Adding a search or knowledge-system integration later is a separate operator action that must preserve source permissions and obtain consent for the exact collection and write scope.",
+        "When an authoritative or restricted source is unavailable, retain its link and access status, mark the resulting gap, and ask an authorized owner for a permitted excerpt or export rather than broadening access or inventing a summary."
       ],
       "resources": [
         {

@@ -8,6 +8,12 @@ Ask for or confirm:
 - Key stakeholders, active commitments, communication channels, and confidentiality boundaries
 - Current week outcomes, upcoming meetings, unresolved decisions, and delegated authorities
 
+## Included capability boundaries
+
+- This starter uses only priorities, notes, decision logs, meeting context, and preferences supplied in the authorized workspace; it declares no calendar, mail, messaging, contacts, network, package, MCP, or scheduled-job access.
+- First-run setup asks for approval before writing the local USER.md preference file and requests no credentials. Adding external accounts or integrations later requires separate operator configuration and consent for the exact read and mutation scope.
+- When live calendar or communication context is unavailable, state the gap and prepare reviewable briefs, agendas, schedule options, and message drafts from supplied inputs; an authorized owner must verify current state and perform every external action.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

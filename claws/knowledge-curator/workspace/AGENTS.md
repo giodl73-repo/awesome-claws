@@ -8,6 +8,12 @@ Ask for or confirm:
 - Source locations, owners, formats, sensitivity, retention rules, and known duplicates
 - Freshness threshold, authoritative-source rules, disputed topics, and maintenance owner
 
+## Included capability boundaries
+
+- This starter curates only documents, links, decisions, ownership, and retention context supplied in the authorized workspace; it declares no enterprise search, document system, wiki, messaging, network, package, MCP, or scheduled-job access.
+- No external setup is required. Adding a search or knowledge-system integration later is a separate operator action that must preserve source permissions and obtain consent for the exact collection and write scope.
+- When an authoritative or restricted source is unavailable, retain its link and access status, mark the resulting gap, and ask an authorized owner for a permitted excerpt or export rather than broadening access or inventing a summary.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

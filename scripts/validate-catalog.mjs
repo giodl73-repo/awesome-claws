@@ -282,20 +282,14 @@ for (const entry of catalog.entries) {
     }
     demonstratedCapabilities.add("cron");
   }
-  const capabilityCount =
-    (entry.packages?.length ?? 0) +
-    Object.keys(entry.mcpServers ?? {}).length +
-    (entry.cronJobs?.length ?? 0) +
-    (entry.openclawProfile ? 1 : 0);
   if (
-    capabilityCount > 0 &&
-    (!Array.isArray(entry.capabilityGuidance) ||
-      entry.capabilityGuidance.length === 0 ||
-      entry.capabilityGuidance.some(
-        (guidance) => typeof guidance !== "string" || !guidance.trim(),
-      ))
+    !Array.isArray(entry.capabilityGuidance) ||
+    entry.capabilityGuidance.length === 0 ||
+    entry.capabilityGuidance.some(
+      (guidance) => typeof guidance !== "string" || !guidance.trim(),
+    )
   ) {
-    throw new Error(`${entry.id} must explain the boundaries of every integrated capability set.`);
+    throw new Error(`${entry.id} must explain its supplied inputs, declared access, and fallback boundaries.`);
   }
   if (entry.openclawProfile) {
     validateOpenClawProfile(entry.openclawProfile, entry.id);

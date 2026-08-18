@@ -8,6 +8,12 @@ Ask for or confirm:
 - Interview plan, competencies, interviewer pool, duration, and scheduling constraints
 - Recruiter and hiring-manager owners, communication templates, privacy limits, and decision deadline
 
+## Included capability boundaries
+
+- This starter works only from candidate, interviewer, availability, and process details supplied in the authorized workspace; it declares no ATS, calendar, mail, messaging, network, package, MCP, or scheduled-job access.
+- No external setup is required. Adding recruiting, calendar, or communication integrations later requires separate operator configuration and consent for the exact account, data, and mutation scope.
+- When live scheduling or candidate systems are unavailable, produce timezone-safe options, drafts, and an owner handoff from supplied inputs; an authorized recruiter must verify current state and send or apply every external change.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 
