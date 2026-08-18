@@ -1,0 +1,52 @@
+{
+  "candidateRef": "candidate-berlin-042",
+  "candidateTimezone": "Europe/Berlin",
+  "constraints": [
+    {
+      "id": "candidate-window",
+      "kind": "availability",
+      "detail": "Interviews must end by 18:00 Europe/Berlin."
+    },
+    {
+      "id": "break",
+      "kind": "accommodation",
+      "detail": "Keep a 30-minute break between the two sessions."
+    }
+  ],
+  "interviewers": [
+    { "id": "engineering-lead", "timezone": "America/Los_Angeles" },
+    { "id": "product-partner", "timezone": "America/Los_Angeles" }
+  ],
+  "competencies": [
+    { "id": "systems", "name": "Systems judgment" },
+    { "id": "collaboration", "name": "Cross-functional collaboration" }
+  ],
+  "sessions": [
+    {
+      "id": "session-systems",
+      "start": "2026-08-20T15:00:00Z",
+      "end": "2026-08-20T15:45:00Z",
+      "interviewerRefs": ["engineering-lead"],
+      "competencyRefs": ["systems"],
+      "constraintRefs": ["candidate-window"]
+    },
+    {
+      "id": "session-collaboration",
+      "start": "2026-08-20T16:15:00Z",
+      "end": "2026-08-20T17:00:00Z",
+      "interviewerRefs": ["product-partner"],
+      "competencyRefs": ["collaboration"],
+      "constraintRefs": ["candidate-window", "break"]
+    }
+  ],
+  "communications": [
+    {
+      "id": "candidate-draft",
+      "audience": "candidate",
+      "sessionRefs": ["session-systems", "session-collaboration"],
+      "state": "draft"
+    }
+  ],
+  "recruiterOwner": "Recruiting coordinator",
+  "planState": "ready-for-recruiter-review"
+}

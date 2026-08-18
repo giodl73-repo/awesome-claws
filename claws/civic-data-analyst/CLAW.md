@@ -17,6 +17,12 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/civic-evidence.schema.json
+      path: schemas/civic-evidence.schema.json
+    - source: fixtures/civic-evidence.example.json
+      path: fixtures/civic-evidence.example.json
+    - source: templates/civic-evidence.md
+      path: templates/civic-evidence.md
 packages:
   - kind: skill
     source: clawhub

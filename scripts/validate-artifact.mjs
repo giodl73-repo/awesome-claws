@@ -10,10 +10,15 @@ if (!id || !input) {
   throw new Error("Usage: npm run validate:artifact -- <claw-id> <artifact.json>");
 }
 const schemaNames = {
+  "civic-data-analyst": "civic-evidence.schema.json",
   "data-analyst": "analysis-state.schema.json",
+  "financial-analyst": "financial-scenario.schema.json",
   "project-manager": "project-state.schema.json",
   "product-manager": "product-decision.schema.json",
+  "public-safety-monitor": "public-safety-state.schema.json",
+  "recruiting-coordinator": "interview-plan.schema.json",
   "research-briefing": "research-brief.schema.json",
+  "sales-operations": "pipeline-review.schema.json",
 };
 const schemaName = schemaNames[id];
 if (!schemaName) {

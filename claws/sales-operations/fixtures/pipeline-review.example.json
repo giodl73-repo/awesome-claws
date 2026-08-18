@@ -1,0 +1,46 @@
+{
+  "reviewPeriod": "2026 Q3 week 7",
+  "asOf": "2026-08-17T17:00:00Z",
+  "currency": "USD",
+  "snapshot": {
+    "reference": "crm-export/enterprise-q3-week7",
+    "observedAt": "2026-08-17T16:30:00Z"
+  },
+  "deals": [
+    {
+      "id": "deal-northwind",
+      "stage": "Validation",
+      "forecastCategory": "Best case",
+      "amount": 180000,
+      "lastActivityAt": "2026-08-12T19:00:00Z",
+      "owner": "Enterprise seller"
+    }
+  ],
+  "changes": [
+    {
+      "dealRef": "deal-northwind",
+      "field": "forecastCategory",
+      "from": "Pipeline",
+      "to": "Best case",
+      "evidence": "Owner note in supplied CRM export"
+    }
+  ],
+  "risks": [
+    {
+      "id": "stale-validation",
+      "dealRefs": ["deal-northwind"],
+      "description": "No validation activity appears in the supplied snapshot for five days."
+    }
+  ],
+  "actions": [
+    {
+      "id": "confirm-validation",
+      "dealRefs": ["deal-northwind"],
+      "owner": "Enterprise seller",
+      "dueAt": "2026-08-19T17:00:00Z",
+      "state": "proposed"
+    }
+  ],
+  "decisionOwner": "Sales operations director",
+  "decisionState": "ready-for-owner-review"
+}

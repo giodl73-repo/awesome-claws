@@ -17,6 +17,12 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/public-safety-state.schema.json
+      path: schemas/public-safety-state.schema.json
+    - source: fixtures/public-safety-state.example.json
+      path: fixtures/public-safety-state.example.json
+    - source: templates/public-safety-state.md
+      path: templates/public-safety-state.md
 packages:
   - kind: skill
     source: clawhub

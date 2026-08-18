@@ -1,0 +1,63 @@
+{
+  "question": "Where is evening transit service least aligned with households without a vehicle?",
+  "geography": {
+    "id": "city-neighborhoods-2026",
+    "name": "Adopted city neighborhood boundaries",
+    "type": "neighborhood-set"
+  },
+  "period": "Weekdays 18:00-23:00, August 2026",
+  "sources": [
+    {
+      "id": "acs-vehicle",
+      "publisher": "United States Census Bureau",
+      "dataset": "ACS five-year vehicle availability",
+      "vintage": "2024",
+      "retrievedAt": "2026-08-15T16:00:00Z",
+      "url": "https://api.census.gov/data/2024/acs/acs5",
+      "state": "official-current"
+    },
+    {
+      "id": "gtfs-evening",
+      "publisher": "City transit authority",
+      "dataset": "Static GTFS schedule",
+      "vintage": "2026-08-10",
+      "retrievedAt": "2026-08-16T16:00:00Z",
+      "url": "https://transit.example.gov/gtfs",
+      "state": "official-current"
+    }
+  ],
+  "measures": [
+    {
+      "id": "zero-vehicle-share",
+      "name": "Households without a vehicle",
+      "value": 0.21,
+      "unit": "ratio",
+      "denominator": "occupied households",
+      "sourceRefs": ["acs-vehicle"],
+      "geographyRef": "city-neighborhoods-2026"
+    },
+    {
+      "id": "evening-trips",
+      "name": "Scheduled evening trips",
+      "value": 3.4,
+      "unit": "trips per square kilometer",
+      "denominator": "neighborhood land area",
+      "sourceRefs": ["gtfs-evening"],
+      "geographyRef": "city-neighborhoods-2026"
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "service-mismatch",
+      "label": "Vehicle access versus evening service",
+      "measureRefs": ["zero-vehicle-share", "evening-trips"],
+      "method": "Rank both measures within the same adopted neighborhood geography; do not infer individual travel behavior."
+    }
+  ],
+  "limitations": [
+    "Scheduled trips are not observed reliability.",
+    "ACS estimates and transit schedules use different vintages."
+  ],
+  "publicationOwner": "Civic data editor",
+  "publicationState": "ready-for-owner-review"
+}

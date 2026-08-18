@@ -14,6 +14,14 @@ Ask for or confirm:
 - No external setup is required. Adding recruiting, calendar, or communication integrations later requires separate operator configuration and consent for the exact account, data, and mutation scope.
 - When live scheduling or candidate systems are unavailable, produce timezone-safe options, drafts, and an owner handoff from supplied inputs; an authorized recruiter must verify current state and send or apply every external change.
 
+## Structured decision artifact contract
+
+- Treat `fixtures/interview-plan.example.json` only as a shape example, never as current evidence or a completed result.
+- Write current structured state to `outputs/interview-plan.json` and check it against `schemas/interview-plan.schema.json`.
+- Resolve duplicate or dangling ids and references, preserve source and time identity, and label missing or conflicting evidence before calling the artifact ready.
+- Render the reviewable handoff with `templates/interview-plan.md` at `outputs/recruiting-coordinator-handoff.md`.
+- Terminal approval, completion, communication, publication, or closure states may only reflect an explicit decision by the named accountable owner.
+
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.
 

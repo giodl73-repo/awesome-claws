@@ -1,0 +1,33 @@
+{
+  "watchScope": "North field site and the state route to the depot",
+  "generatedAt": "2026-08-17T18:00:00Z",
+  "alerts": [
+    {
+      "id": "county-fire-2026-0817",
+      "issuer": "County emergency management",
+      "canonicalUrl": "https://example.gov/alerts/county-fire-2026-0817",
+      "issuedAt": "2026-08-17T16:00:00Z",
+      "expiresAt": "2026-08-18T04:00:00Z",
+      "status": "official-active"
+    }
+  ],
+  "observations": [
+    {
+      "id": "official-area-overlap",
+      "kind": "official",
+      "summary": "The official alert area intersects the approved route watch.",
+      "alertRefs": ["county-fire-2026-0817"]
+    }
+  ],
+  "actions": [
+    {
+      "id": "verify-route",
+      "description": "Safety owner verifies the route against the current official closure map.",
+      "alertRefs": ["county-fire-2026-0817"],
+      "owner": "Site safety lead",
+      "state": "proposed"
+    }
+  ],
+  "safetyOwner": "Site safety lead",
+  "state": "ready-for-owner-review"
+}
