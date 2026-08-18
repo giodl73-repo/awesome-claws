@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { closeSync, openSync } from "node:fs";
 import { access, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { createConnection, createServer } from "node:net";
@@ -94,13 +95,25 @@ if (materializeCheck.status !== 0) {
 }
 
 function revision(path, override) {
-  if (override) {
-    return override;
-  }
-  const result = spawnSync("git", ["-C", dirname(path), "rev-parse", "HEAD"], {
+  const cwd = dirname(path);
+  const result = spawnSync("git", ["-C", cwd, "rev-parse", "HEAD"], {
     encoding: "utf8",
   });
-  return result.status === 0 ? result.stdout.trim() : "unknown";
+  if (result.status !== 0) {
+    return override ?? "unknown";
+  }
+  const status = spawnSync("git", ["-C", cwd, "status", "--porcelain", "--untracked-files=normal"], {
+    encoding: "utf8",
+  });
+  const revision = override ?? result.stdout.trim();
+  const dirtyEntries =
+    status.status === 0
+      ? status.stdout
+          .split(/\r?\n/u)
+          .filter(Boolean)
+          .filter((entry) => !(entry.startsWith("?? ") && entry.endsWith("/")))
+      : [];
+  return dirtyEntries.length > 0 ? `${revision}-dirty` : revision;
 }
 
 function recordPhase(phases, name, command) {
@@ -218,6 +231,80 @@ function assertInstalledVersion(status, expectedVersion, label) {
     record?.install?.claw?.version !== expectedVersion
   ) {
     throw new Error(`${label} did not report installed version ${expectedVersion}.`);
+  }
+}
+
+function assertInstalledCapabilities(entry, addPlan, addResult) {
+  const expectedPackages = [
+    ...(entry.packages ?? []),
+    ...(entry.openclawProfile?.extensions ?? []).map((extension) => ({
+      kind: extension.kind,
+      ref: extension.ref,
+      version: extension.version,
+    })),
+  ];
+  for (const expected of expectedPackages) {
+    const installed = addResult.packages?.find(
+      (item) =>
+        item.kind === expected.kind &&
+        item.ref === expected.ref &&
+        item.version === expected.version,
+    );
+    if (installed?.status !== "complete" || typeof installed.integrity !== "string") {
+      throw new Error(
+        `${entry.id} did not install exact ${expected.kind} ${expected.ref}@${expected.version}.`,
+      );
+    }
+  }
+  for (const [name, expected] of Object.entries(entry.mcpServers ?? {})) {
+    const planned = addPlan.actions?.find(
+      (action) => action.kind === "mcpServer" && action.id === name,
+    );
+    if (
+      planned?.action !== "configure" ||
+      planned.details?.url !== expected.url ||
+      planned.details?.transport !== expected.transport ||
+      planned.details?.auth !== expected.auth ||
+      JSON.stringify(planned.details?.toolFilter) !== JSON.stringify(expected.toolFilter)
+    ) {
+      throw new Error(`${entry.id} add plan did not preserve MCP server ${name}.`);
+    }
+    const installed = addResult.mcpServers?.find((item) => item.name === name);
+    if (installed?.status !== "complete") {
+      throw new Error(`${entry.id} did not install MCP server ${name}.`);
+    }
+  }
+  for (const expected of entry.cronJobs ?? []) {
+    const installed = addResult.cronJobs?.find((item) => item.manifestId === expected.id);
+    if (installed?.status !== "complete") {
+      throw new Error(`${entry.id} did not install cron job ${expected.id}.`);
+    }
+  }
+}
+
+async function assertInstalledBootstrap(entry, addPlan, addResult) {
+  if (!entry.bootstrap) {
+    return;
+  }
+  const action = addPlan.actions?.find(
+    (candidate) => candidate.kind === "bootstrap" && candidate.id === "BOOTSTRAP.md",
+  );
+  const workspace = addResult.agent?.workspace;
+  if (
+    action?.action !== "write" ||
+    action.blocked !== false ||
+    typeof action.source !== "string" ||
+    typeof action.digest !== "string" ||
+    typeof workspace !== "string" ||
+    workspace.length === 0
+  ) {
+    throw new Error(`${entry.id} add plan did not preserve its bootstrap contract.`);
+  }
+  const source = await readFile(action.source);
+  const digest = `sha256:${createHash("sha256").update(source).digest("hex")}`;
+  const installed = await readFile(join(workspace, "BOOTSTRAP.md"));
+  if (digest !== action.digest || !source.equals(installed)) {
+    throw new Error(`${entry.id} did not install the exact planned bootstrap bytes.`);
   }
 }
 
@@ -772,12 +859,12 @@ for (const entry of entries) {
     if (addResult.status !== "complete" || addResult.agent?.finalId !== entry.id) {
       throw new Error(`${entry.id} add did not create the declared agent completely.`);
     }
+    assertInstalledCapabilities(entry, addPlan, addResult);
+    await assertInstalledBootstrap(entry, addPlan, addResult);
+    result.capabilityProofMode = "installed-declarations";
     let userOwnedState;
     if (entry.bootstrap) {
-      const workspace = addResult.agent?.workspace;
-      if (typeof workspace !== "string" || workspace.length === 0) {
-        throw new Error(`${entry.id} add did not report its bootstrap workspace.`);
-      }
+      const workspace = addResult.agent.workspace;
       const path = join(workspace, "USER.md");
       const content = `# Local preferences\n\nProof marker: ${entry.id}\n`;
       await writeFile(path, content, { flag: "wx" });
@@ -1286,7 +1373,9 @@ const summary = {
   lifecyclePassed: results.filter((result) => result.status === "lifecycle-passed").length,
   lifecycleFailed: results.filter((result) => result.status === "lifecycle-failed").length,
   applicationScenariosPassed: results.filter(
-    (result) => result.applicationScenario.status === "runtime-wiring-passed",
+    (result) =>
+      result.applicationScenario.status === "runtime-wiring-passed" ||
+      result.applicationScenario.status === "installed-visual-runtime-passed",
   ).length,
   results,
 };
@@ -1310,6 +1399,7 @@ console.log(
         status: result.status,
         adapterPreview: result.adapterPreview,
         applicationScenario: result.applicationScenario.status,
+        capabilityProofMode: result.capabilityProofMode,
         openClawPackage: result.openClawPackage,
         ...(result.bootstrapState ? { bootstrapState: result.bootstrapState } : {}),
         ...(result.failure

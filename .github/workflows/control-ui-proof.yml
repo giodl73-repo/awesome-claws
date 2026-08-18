@@ -45,19 +45,11 @@ jobs:
         working-directory: claws-cli
       - run: corepack pnpm build
         working-directory: claws-cli
-      - name: Prove installed visual runtime
+      - name: Prove installed capability classes
         env:
           CLAWS_CLI_ENTRY: ${{ github.workspace }}/claws-cli/packages/cli/dist/cli.mjs
           OPENCLAW_CLI_ENTRY: ${{ github.workspace }}/openclaw/openclaw.mjs
-          PORTFOLIO_ONLY: data-analyst
-          PORTFOLIO_VISUAL_RUNTIME: "1"
-        run: npm run proof:portfolio
-      - name: Prove representative managed upgrade
-        env:
-          CLAWS_CLI_ENTRY: ${{ github.workspace }}/claws-cli/packages/cli/dist/cli.mjs
-          OPENCLAW_CLI_ENTRY: ${{ github.workspace }}/openclaw/openclaw.mjs
-          PORTFOLIO_ONLY: executive-assistant
-        run: npm run proof:portfolio
+        run: npm run proof:capabilities
       - name: Capture representative installed presentation
         env:
           OPENCLAW_ROOT: ${{ github.workspace }}/openclaw
@@ -75,5 +67,6 @@ jobs:
           name: control-ui-proof
           path: |
             .tmp/control-ui-proof
+            .tmp/capability-proof
             .tmp/proof
-          if-no-files-found: warn
+          if-no-files-found: error

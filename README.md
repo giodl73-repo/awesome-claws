@@ -212,6 +212,12 @@ OpenClaw adapter in disposable state.
   stale-consent rejection, reverse rollback, and repeat upgrade while preserving user-owned state. Its
   agent turn uses the checked-in OpenAI-compatible fixture, so it proves runtime
   wiring rather than a live provider.
+- `npm run proof:capabilities` derives the catalog's skill, plugin package,
+  profile extension, OAuth MCP, cron, bootstrap, and visual classes, then runs
+  one installed representative for every class. It requires clean, exact Awesome
+  Claws, standalone CLI, and OpenClaw revisions and writes an aggregate record
+  under `.tmp/capability-proof/`. The required Control UI workflow runs this
+  matrix on every pull request.
 - With `PORTFOLIO_ONLY=data-analyst` and `PORTFOLIO_VISUAL_RUNTIME=1`,
   portfolio proof runs the representative visual contract through an
   inline-widget-capable Gateway client and a scripted OpenAI-compatible fixture
