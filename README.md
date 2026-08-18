@@ -218,6 +218,17 @@ OpenClaw adapter in disposable state.
   Claws, standalone CLI, and OpenClaw revisions and writes an aggregate record
   under `.tmp/capability-proof/`. The required Control UI workflow runs this
   matrix on every pull request.
+- `npm run proof:dependencies` anonymously verifies every unique exact-pinned
+  ClawHub skill, plugin package, and profile extension, plus each declared OAuth
+  MCP endpoint. Skills must retain their publisher, version, verification
+  fingerprints, exact skill card, security decision, and downloadable archive.
+  Plugins must retain their family, version, runtime identity where declared,
+  clean verification metadata, and byte-for-byte npm artifact digests. OAuth
+  MCP endpoints must reject anonymous initialization with a Bearer challenge
+  whose protected-resource metadata names the exact declared endpoint. The
+  scheduled and manually dispatchable Dependency Health workflow writes
+  machine-readable evidence under `.tmp/dependency-health/`; live registry and
+  third-party checks intentionally do not run in pull-request CI.
 - With `PORTFOLIO_ONLY=data-analyst` and `PORTFOLIO_VISUAL_RUNTIME=1`,
   portfolio proof runs the representative visual contract through an
   inline-widget-capable Gateway client and a scripted OpenAI-compatible fixture
