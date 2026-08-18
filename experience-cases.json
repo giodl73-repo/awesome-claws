@@ -31,7 +31,10 @@
       "research-scout",
       "public-safety-monitor",
       "civic-data-analyst",
-      "fundraising-campaign-manager"
+      "fundraising-campaign-manager",
+      "change-control-operator",
+      "case-continuity-coordinator",
+      "delegation-coordinator"
     ]
   },
   "visualCases": [

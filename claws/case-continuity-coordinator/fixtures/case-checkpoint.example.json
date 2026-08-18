@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "awesomeClaws.caseCheckpoint.v1",
+  "case": {
+    "id": "CS-1842",
+    "scope": "Restore access after an approved account correction.",
+    "owner": "support duty manager",
+    "custodian": "day shift"
+  },
+  "evidence": [
+    {
+      "id": "account-state",
+      "state": "current",
+      "observedAt": "2026-08-18T14:40:00Z",
+      "expiresAt": "2026-08-18T18:40:00Z",
+      "reference": "controlled://cases/CS-1842/account-state"
+    },
+    {
+      "id": "prior-handoff",
+      "state": "current",
+      "observedAt": "2026-08-17T23:50:00Z",
+      "expiresAt": "2026-08-19T23:50:00Z",
+      "reference": "workspace://checkpoints/CS-1842-v1"
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "CS-1842-v1",
+      "version": 1,
+      "recordedAt": "2026-08-17T23:50:00Z",
+      "previousRef": null,
+      "evidenceRefs": ["prior-handoff"],
+      "summary": "Night shift captured the approved correction and pending verification."
+    },
+    {
+      "id": "CS-1842-v2",
+      "version": 2,
+      "recordedAt": "2026-08-18T15:00:00Z",
+      "previousRef": "CS-1842-v1",
+      "evidenceRefs": ["account-state", "prior-handoff"],
+      "summary": "Day shift verified current account state; customer confirmation remains open."
+    }
+  ],
+  "actions": [
+    {
+      "id": "confirm-access",
+      "state": "open",
+      "owner": "support duty manager",
+      "evidenceRefs": ["account-state"]
+    }
+  ],
+  "resume": {
+    "checkpointRef": "CS-1842-v2",
+    "nextCustodian": "evening shift",
+    "instructions": "Refresh account-state evidence, confirm owner follow-up, and do not close without the duty manager's decision."
+  },
+  "decision": {
+    "state": "handoff-ready",
+    "owner": "support duty manager"
+  }
+}

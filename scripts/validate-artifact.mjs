@@ -10,8 +10,11 @@ if (!id || !input) {
   throw new Error("Usage: npm run validate:artifact -- <claw-id> <artifact.json>");
 }
 const schemaNames = {
+  "case-continuity-coordinator": "case-checkpoint.schema.json",
+  "change-control-operator": "change-plan.schema.json",
   "civic-data-analyst": "civic-evidence.schema.json",
   "data-analyst": "analysis-state.schema.json",
+  "delegation-coordinator": "delegation-ledger.schema.json",
   "financial-analyst": "financial-scenario.schema.json",
   "project-manager": "project-state.schema.json",
   "product-manager": "product-decision.schema.json",

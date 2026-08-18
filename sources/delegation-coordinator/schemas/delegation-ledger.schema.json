@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/delegation-ledger.schema.json",
+  "title": "Delegation provenance ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "objective", "decisionOwner", "sources", "assignments", "results", "conflicts", "synthesis"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.delegationLedger.v1" },
+    "objective": { "type": "string", "minLength": 1 },
+    "decisionOwner": { "type": "string", "minLength": 1 },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reference"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "reference": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "assignments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "scope", "sourceRefs", "workerSessionRef", "state", "stopCondition"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "scope": { "type": "string", "minLength": 1 },
+          "sourceRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "workerSessionRef": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["assigned", "running", "completed", "failed", "timed-out", "blocked"] },
+          "stopCondition": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "assignmentRef", "workerSessionRef", "sourceRefs", "summary", "confidence"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "assignmentRef": { "type": "string", "minLength": 1 },
+          "workerSessionRef": { "type": "string", "minLength": 1 },
+          "sourceRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "summary": { "type": "string", "minLength": 1 },
+          "confidence": { "enum": ["low", "medium", "high"] }
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "resultRefs", "state", "summary"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "resultRefs": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "state": { "enum": ["open", "resolved-by-evidence", "owner-decision-needed"] },
+          "summary": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "synthesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resultRefs", "state", "decisionOwner", "summary"],
+      "properties": {
+        "resultRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "state": { "enum": ["draft", "owner-review", "decided-by-owner"] },
+        "decisionOwner": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

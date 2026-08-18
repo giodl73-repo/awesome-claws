@@ -12,19 +12,19 @@ import {
 } from "./openclaw-proof-lib.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
 
-test("the proof catalog covers all 51 materialized Claws", async () => {
+test("the proof catalog covers all 54 materialized Claws", async () => {
   const catalog = await readCatalog();
-  assert.equal(catalog.entries.length, 51);
-  assert.equal(new Set(catalog.entries.map((entry) => entry.id)).size, 51);
+  assert.equal(catalog.entries.length, 54);
+  assert.equal(new Set(catalog.entries.map((entry) => entry.id)).size, 54);
 });
 
-test("Experience cases cover all 51 Claws with enforceable surfaces", async () => {
+test("Experience cases cover all 54 Claws with enforceable surfaces", async () => {
   const catalog = await readCatalog();
   const cases = await readExperienceCases(catalog);
-  assert.equal(cases.length, 51);
+  assert.equal(cases.length, 54);
   assert.equal(cases.filter((item) => item.target === 5).length, 7);
   assert.equal(cases.filter((item) => item.target === 4).length, 18);
-  assert.equal(cases.filter((item) => item.target === 3).length, 26);
+  assert.equal(cases.filter((item) => item.target === 3).length, 29);
   for (const item of cases.filter((experience) => experience.target >= 4)) {
     const instructions = await readFile(
       join(root, "claws", item.id, "workspace", "AGENTS.md"),

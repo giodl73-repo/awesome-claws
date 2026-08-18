@@ -40,6 +40,24 @@ const definitions = [
     matches: (_entry, experience) => (experience?.target ?? 0) >= 4,
     proofMode: "visual-runtime",
   },
+  {
+    id: "workspace-execution",
+    description: "Installs bounded workspace patch and command-execution authority.",
+    matches: (entry) => {
+      const tools = entry.openclawProfile?.agent?.tools;
+      const grants = [...(tools?.allow ?? []), ...(tools?.alsoAllow ?? [])];
+      return grants.includes("apply_patch") && grants.includes("exec");
+    },
+  },
+  {
+    id: "delegated-sessions",
+    description: "Installs bounded worker-session spawning, waiting, and provenance access.",
+    matches: (entry) => {
+      const tools = entry.openclawProfile?.agent?.tools;
+      const grants = [...(tools?.allow ?? []), ...(tools?.alsoAllow ?? [])];
+      return grants.includes("sessions_spawn") && grants.includes("agents_wait");
+    },
+  },
 ];
 
 export const capabilityRepresentatives = Object.freeze({
@@ -50,6 +68,8 @@ export const capabilityRepresentatives = Object.freeze({
   cron: "incident-response",
   bootstrap: "executive-assistant",
   visual: "data-analyst",
+  "workspace-execution": "change-control-operator",
+  "delegated-sessions": "delegation-coordinator",
 });
 
 export function buildCapabilityMatrix(

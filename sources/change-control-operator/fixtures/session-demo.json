@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "change-control-operator",
+  "scenario": "Update the staging retry limit after exact owner approval.",
+  "messages": [
+    { "role": "user", "text": "Prepare an exact plan before changing anything." },
+    { "role": "agent", "text": "I wrote the scoped plan and digest; execution remains blocked pending the owner's decision." },
+    { "role": "user", "text": "The owner approved this exact digest." },
+    { "role": "agent", "text": "I executed only that plan and preserved step, verification, and rollback evidence." }
+  ],
+  "report": {
+    "title": "Change control handoff",
+    "summary": "A digest-bound plan, explicit owner decision, scoped execution evidence, verification, and rollback state.",
+    "output": "outputs/change-control-operator-handoff.md",
+    "items": [
+      { "title": "Plan", "summary": "Targets and steps bind to one stable digest.", "tags": ["digest-bound", "reviewable"] },
+      { "title": "Decision", "summary": "The accountable owner approves or rejects the exact digest.", "tags": ["owner-controlled"] },
+      { "title": "Execution", "summary": "Every result traces to an approved step.", "tags": ["evidence"] },
+      { "title": "Rollback", "summary": "Rollback remains explicit and bounded.", "tags": ["recoverable"] }
+    ]
+  }
+}

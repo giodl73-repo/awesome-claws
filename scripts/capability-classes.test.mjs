@@ -10,8 +10,8 @@ import { readExperienceCases } from "./experience-cases.mjs";
 
 test("every declared capability class has a valid installed-proof representative", async () => {
   const matrix = await readCapabilityMatrix();
-  assert.equal(matrix.classCount, 7);
-  assert.equal(matrix.representativeCount, 6);
+  assert.equal(matrix.classCount, 9);
+  assert.equal(matrix.representativeCount, 8);
   assert.deepEqual(
     matrix.classes.map((item) => item.id),
     [
@@ -22,6 +22,8 @@ test("every declared capability class has a valid installed-proof representative
       "cron",
       "bootstrap",
       "visual",
+      "workspace-execution",
+      "delegated-sessions",
     ],
   );
   assert.deepEqual(

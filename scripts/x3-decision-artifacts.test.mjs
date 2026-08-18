@@ -9,6 +9,24 @@ import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 
 const definitions = [
   {
+    id: "change-control-operator",
+    schema: "../claws/change-control-operator/schemas/change-plan.schema.json",
+    fixture: "../claws/change-control-operator/fixtures/change-plan.example.json",
+    decisionField: "decision.state",
+  },
+  {
+    id: "case-continuity-coordinator",
+    schema: "../claws/case-continuity-coordinator/schemas/case-checkpoint.schema.json",
+    fixture: "../claws/case-continuity-coordinator/fixtures/case-checkpoint.example.json",
+    decisionField: "decision.state",
+  },
+  {
+    id: "delegation-coordinator",
+    schema: "../claws/delegation-coordinator/schemas/delegation-ledger.schema.json",
+    fixture: "../claws/delegation-coordinator/fixtures/delegation-ledger.example.json",
+    decisionField: "synthesis.state",
+  },
+  {
     id: "financial-analyst",
     schema: "../claws/financial-analyst/schemas/financial-scenario.schema.json",
     fixture: "../claws/financial-analyst/fixtures/financial-scenario.example.json",
@@ -146,13 +164,18 @@ test("civic evidence rejects incompatible source, measure, and geography referen
 test("decision artifacts reject agent-owned terminal states", () => {
   for (const item of cases.values()) {
     const candidate = structuredClone(item.fixture);
-    candidate[item.decisionField] = "committed-by-agent";
+    const parts = item.decisionField.split(".");
+    const target = parts.slice(0, -1).reduce((value, key) => value[key], candidate);
+    target[parts.at(-1)] = "committed-by-agent";
     assert.equal(isValid(item.id, candidate), false, item.id);
   }
 });
 
 test("decision artifacts reject duplicate semantic references", () => {
   const mutations = [
+    ["change-control-operator", (value) => value.execution.stepResults.push(structuredClone(value.execution.stepResults[0]))],
+    ["case-continuity-coordinator", (value) => value.actions[0].evidenceRefs.push(value.actions[0].evidenceRefs[0])],
+    ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],
     ["recruiting-coordinator", (value) => value.communications[0].sessionRefs.push(value.communications[0].sessionRefs[0])],
@@ -164,4 +187,56 @@ test("decision artifacts reject duplicate semantic references", () => {
     mutate(candidate);
     assert.equal(isValid(id, candidate), false, id);
   }
+});
+
+test("change control rejects digest drift and unsupported verification", () => {
+  const candidate = structuredClone(cases.get("change-control-operator").fixture);
+  candidate.decision.planDigest = "b".repeat(64);
+  assert.equal(isValid("change-control-operator", candidate), false);
+  candidate.decision.planDigest = candidate.plan.digest;
+  candidate.execution.stepResults[0].state = "failed";
+  assert.equal(isValid("change-control-operator", candidate), false);
+  const changedPlan = structuredClone(cases.get("change-control-operator").fixture);
+  changedPlan.plan.targets.push("config/production.yml");
+  assert.equal(isValid("change-control-operator", changedPlan), false);
+});
+
+test("case continuity rejects broken chains and stale resume points", () => {
+  const candidate = structuredClone(cases.get("case-continuity-coordinator").fixture);
+  candidate.checkpoints[1].previousRef = "missing-checkpoint";
+  assert.equal(isValid("case-continuity-coordinator", candidate), false);
+  candidate.checkpoints[1].previousRef = candidate.checkpoints[0].id;
+  candidate.resume.checkpointRef = candidate.checkpoints[0].id;
+  assert.equal(isValid("case-continuity-coordinator", candidate), false);
+  const stale = structuredClone(cases.get("case-continuity-coordinator").fixture);
+  stale.evidence[0].expiresAt = stale.checkpoints.at(-1).recordedAt;
+  assert.equal(isValid("case-continuity-coordinator", stale), false);
+});
+
+test("delegation rejects dangling provenance and mismatched worker sessions", () => {
+  const candidate = structuredClone(cases.get("delegation-coordinator").fixture);
+  candidate.results[0].assignmentRef = "missing-assignment";
+  assert.equal(isValid("delegation-coordinator", candidate), false);
+  candidate.results[0].assignmentRef = candidate.assignments[0].id;
+  candidate.results[0].workerSessionRef = "agent:other:01";
+  assert.equal(isValid("delegation-coordinator", candidate), false);
+  const expanded = structuredClone(cases.get("delegation-coordinator").fixture);
+  expanded.results[0].sourceRefs = ["accessibility-pack"];
+  assert.equal(isValid("delegation-coordinator", expanded), false);
+});
+
+test("capstone profiles expose only their intended runtime dimensions", async () => {
+  const manifests = new Map(
+    await Promise.all(
+      ["change-control-operator", "case-continuity-coordinator", "delegation-coordinator"].map(
+        async (id) => [id, await readFile(new URL(`../claws/${id}/profiles/openclaw.yml`, import.meta.url), "utf8")],
+      ),
+    ),
+  );
+  assert.match(manifests.get("change-control-operator"), /apply_patch/u);
+  assert.doesNotMatch(manifests.get("change-control-operator"), /sessions_spawn/u);
+  assert.match(manifests.get("delegation-coordinator"), /sessions_spawn/u);
+  assert.match(manifests.get("delegation-coordinator"), /agents_wait/u);
+  assert.doesNotMatch(manifests.get("delegation-coordinator"), /\n\s+- exec\b/u);
+  assert.doesNotMatch(manifests.get("case-continuity-coordinator"), /sessions_spawn|exec|process/u);
 });
