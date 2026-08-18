@@ -10,6 +10,7 @@
     "inspect": "node scripts/validate-catalog.mjs --reference",
     "proof:openclaw": "node scripts/prove-openclaw.mjs",
     "proof:portfolio": "node --import tsx scripts/prove-portfolio.mjs",
+    "proof:capabilities": "node scripts/prove-capability-matrix.mjs",
     "proof:golden": "node scripts/prove-golden-artifact.mjs",
     "proof:experience": "node scripts/prove-experience-assets.mjs",
     "validate:artifact": "node scripts/validate-artifact.mjs",
