@@ -6,10 +6,56 @@ purpose, authority, workflow, and outputs from its package.
 
 ## Propose a starter
 
-Open an issue before adding a new catalog entry. Explain the user and setting,
-the repeatable job the agent performs, and why an existing starter cannot cover
-it with a small change. Creating a new repository in the OpenClaw organization
-or changing the portable Claw contract requires maintainer approval.
+Before opening the issue, copy `contributor/new-claw.example.json` outside the
+repository and replace the proposed entry, problem, repeatable job, and proof
+plan. You may leave `existingAlternatives` empty for this discovery pass:
+
+```bash
+npm run review:contribution -- --proposal ../my-claw.json
+```
+
+Use the reported nearest matches to complete the proposal template, then open
+the issue before adding a catalog entry. Explain the user and setting, the
+repeatable job the agent performs, and why an existing starter cannot cover it
+with a small change. Creating a new repository in the OpenClaw organization or
+changing the portable Claw contract requires maintainer approval.
+
+Read the [admission rubric](docs/contribution-admission.md) first. New Claws
+need a distinct operating contract, not only a new audience, profession,
+industry vocabulary, persona, or visual theme. Claw ids are stable descriptive
+slugs and are never sequence numbers.
+
+Use the proposal template to compare at least three existing Claws. Maintainers
+will choose one of four outcomes: add a new Claw, improve an existing Claw,
+treat the proposal as a variant outside this curated catalog, or request a
+product decision.
+
+## Scaffold a new Claw
+
+After maintainers accept the proposal, update `existingAlternatives` in your
+proposal JSON to discuss the reported nearest matches. At least two comparisons
+must be among the current five nearest matches. Then scaffold and build:
+
+```bash
+npm run create:claw -- --proposal ../my-claw.json
+npm run build
+```
+
+The scaffolder creates an X3 artifact starter, its source resources, Experience
+entry, and durable contribution record. It temporarily copies the Executive
+Assistant screenshot so the package can materialize. That duplicate
+intentionally fails `npm run check` until replaced by current Control UI proof:
+
+```bash
+git clone https://github.com/openclaw/openclaw.git /path/to/openclaw
+OPENCLAW_ROOT=/path/to/openclaw \
+SCREENSHOT_ONLY=my-claw \
+npm run screenshots
+npm run check
+```
+
+Do not add a new id to `contribution-policy.json`. That list freezes the
+pre-policy catalog; all later Claws require a reviewable contribution record.
 
 ## Edit the catalog
 
@@ -17,8 +63,9 @@ or changing the portable Claw contract requires maintainer approval.
 live under `sources/<claw-id>/` in their native formats. Do not hand-edit
 generated files under `claws/`.
 
-1. Add or update one entry in `catalog.json` and its declared files under
-   `sources/<claw-id>/`.
+1. Update the entry and source files created by `npm run create:claw`. For
+   changes to an existing Claw, update its entry in `catalog.json` and declared
+   files under `sources/<claw-id>/`.
 2. Give it one coherent operational purpose, not a generic assistant persona.
 3. Define concrete intake, workflow, deliverables, and observable completion
    criteria.
@@ -34,6 +81,9 @@ generated files under `claws/`.
    per-Claw source directory. Keep executable behavior in reviewed skills or
    harness extensions.
 8. Regenerate and validate the repository.
+
+Start at X3 unless the repeatable job needs a visual or persistent dashboard.
+See the admission guide for X3/X4/X5 and capability-specific proof.
 
 OpenClaw profile declarations must preserve consent-bounded authority:
 
@@ -61,6 +111,14 @@ must be described as such; they are not live-provider evidence.
 Keep each pull request focused on one starter or one catalog-wide rule. Describe
 the user problem, the shipped change, user impact, and validation evidence.
 Enable maintainer edits so OpenClaw maintainers can finish small corrections.
+For a new Claw, link the accepted proposal, include
+`contributions/<claw-id>.json`, paste the current similarity report, and explain
+the distinction from its nearest matches in operational—not branding—terms.
+
+ClawSweeper can provide related-item discovery and an advisory exact-head
+review when configured. Its similarity result does not replace Patrick and
+Gio's catalog admission decision; see
+[ClawSweeper contribution review](docs/clawsweeper-contributions.md).
 
 By contributing, you agree that your contribution is licensed under the MIT
 License in [LICENSE](LICENSE).

@@ -20,8 +20,32 @@ body:
   - type: textarea
     id: distinction
     attributes:
-      label: Why a new starter
-      description: Why can an existing starter not cover this with a small change?
+      label: Nearest existing Claws
+      description: Run `npm run review:contribution -- --proposal <file>`, then name at least three existing Claws from its results. For each, explain the honest overlap and the material difference in user, job, workflow, outputs, evidence, or authority.
+    validations:
+      required: true
+  - type: textarea
+    id: sentence
+    attributes:
+      label: One-sentence distinction
+      description: "Complete: Unlike <nearest Claw>, this Claw repeatedly does <job> for <user> using <workflow/evidence> to produce <outputs>, while retaining <authority boundary>."
+    validations:
+      required: true
+  - type: dropdown
+    id: experience
+    attributes:
+      label: Smallest sufficient Experience tier
+      options:
+        - X3 durable artifact
+        - X4 inline visual
+        - X5 persistent dashboard
+    validations:
+      required: true
+  - type: textarea
+    id: capabilities
+    attributes:
+      label: Required capabilities
+      description: List only capabilities the repeatable job requires. Say "base only" when no skill, plugin, MCP, schedule, bootstrap, execution, or delegation is needed.
     validations:
       required: true
   - type: textarea
@@ -31,3 +55,21 @@ body:
       description: What approvals, privacy constraints, or external actions matter?
     validations:
       required: true
+  - type: textarea
+    id: proof
+    attributes:
+      label: Proof plan
+      description: What accepted result, structured failure, screenshot, runtime path, and fallback will prove this starter?
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Proposal checks
+      options:
+        - label: I reviewed CHOOSER.md and the nearest existing Claws.
+          required: true
+        - label: This is a repeatable operating job, not only a persona, industry variant, prompt, or visual theme.
+          required: true
+        - label: I understand maintainers may route this to an existing Claw instead of adding a new catalog entry.
+          required: true

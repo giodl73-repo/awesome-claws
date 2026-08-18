@@ -312,3 +312,9 @@ execution environment, set `AWESOME_CLAWS_REVISION`, `CLAWS_CLI_REVISION`, and
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) to propose or improve a starter and
 [SECURITY.md](SECURITY.md) to report a vulnerability.
+
+New starters are admitted by operating-contract distinction, not sequence
+number or profession count. The
+[contribution admission rubric](docs/contribution-admission.md), proposal
+scaffolder, similarity report, and required post-policy contribution record
+make that decision reviewable.

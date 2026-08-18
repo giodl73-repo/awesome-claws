@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/materialize-catalog.mjs && node scripts/generate-catalog-chooser.mjs",
-    "check": "node --test scripts/*.test.mjs && node scripts/materialize-catalog.mjs --check && node scripts/generate-catalog-chooser.mjs --check && node scripts/validate-catalog.mjs",
+    "check": "node --test scripts/*.test.mjs && node scripts/materialize-catalog.mjs --check && node scripts/generate-catalog-chooser.mjs --check && node scripts/validate-catalog.mjs && node scripts/validate-contributions.mjs",
+    "create:claw": "node scripts/create-claw.mjs",
+    "review:contribution": "node scripts/review-contribution.mjs",
     "screenshots": "node --import tsx scripts/generate-screenshots.mjs",
     "inspect": "node scripts/validate-catalog.mjs --reference",
     "proof:openclaw": "node scripts/prove-openclaw.mjs",
