@@ -50,6 +50,8 @@ jobs:
           CLAWS_CLI_ENTRY: ${{ github.workspace }}/claws-cli/packages/cli/dist/cli.mjs
           OPENCLAW_CLI_ENTRY: ${{ github.workspace }}/openclaw/openclaw.mjs
         run: npm run proof:capabilities
+      - name: Prove capstone runtime boundaries
+        run: npm run proof:capstones
       - name: Capture representative installed presentation
         env:
           OPENCLAW_ROOT: ${{ github.workspace }}/openclaw
@@ -68,5 +70,6 @@ jobs:
           path: |
             .tmp/control-ui-proof
             .tmp/capability-proof
+            .tmp/capstone-runtime-proof
             .tmp/proof
           if-no-files-found: error
