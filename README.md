@@ -44,6 +44,11 @@ Use the generated [catalog chooser](CHOOSER.md) to compare every starter by
 maintenance state, accountable maintainer, setup burden, external dependencies,
 Experience proof tier, category, and boundary-attention level. The same derived data is available as
 [`catalog-chooser.json`](catalog-chooser.json) for tools and other catalogs.
+For interactive search and shareable filters across proof lanes, capabilities,
+authority attention, ownership, and review freshness, open the generated
+[catalog explorer](https://giodl73-repo.github.io/awesome-claws/). Its
+self-contained source is committed as
+[`catalog-explorer.html`](catalog-explorer.html) and published from `main`.
 
 All current Claws are actively maintained by
 [@giodl73-repo](https://github.com/giodl73-repo). Catalog maintenance metadata

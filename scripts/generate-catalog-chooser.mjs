@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { buildChooser, renderChooserMarkdown } from "./catalog-chooser.mjs";
+import { renderCatalogExplorer } from "./catalog-explorer.mjs";
 import { readCatalog } from "./catalog-source.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
 import { root } from "./openclaw-proof-lib.mjs";
@@ -11,6 +12,7 @@ const chooser = buildChooser(catalog, await readExperienceCases(catalog));
 const outputs = new Map([
   ["catalog-chooser.json", `${JSON.stringify(chooser, null, 2)}\n`],
   ["CHOOSER.md", renderChooserMarkdown(chooser)],
+  ["catalog-explorer.html", renderCatalogExplorer(chooser)],
 ]);
 
 for (const [relativePath, expected] of outputs) {

@@ -6,6 +6,7 @@ import {
   buildChooser,
   classifyBoundary,
   classifySetup,
+  proofLanesFor,
   renderChooserMarkdown,
 } from "./catalog-chooser.mjs";
 import { readCatalog } from "./catalog-source.mjs";
@@ -26,10 +27,37 @@ test("covers every catalog entry exactly once in stable name order", () => {
   assert.ok(
     chooser.entries.every(
       (entry) =>
+        entry.proofLanes.includes("static") &&
+        entry.proofLanes.includes("regression") &&
+        entry.proofLanes.includes("installed") &&
+        Array.isArray(entry.capabilityClasses),
+    ),
+  );
+  assert.ok(
+    chooser.entries.every(
+      (entry) =>
         entry.maintenance.status === "active" &&
         entry.maintenance.maintainers.length > 0 &&
         /^\d{4}-\d{2}-\d{2}$/u.test(entry.maintenance.lastVerified),
     ),
+  );
+});
+
+test("derives optional proof lanes from Experience and dependency metadata", () => {
+  const base = { packages: [], mcpServers: {}, cronJobs: [] };
+  assert.deepEqual(proofLanesFor(base, { target: 3 }), ["static", "regression", "installed"]);
+  assert.deepEqual(proofLanesFor(base, { target: 4 }), [
+    "static",
+    "regression",
+    "installed",
+    "visual",
+  ]);
+  assert.deepEqual(
+    proofLanesFor(
+      { ...base, packages: [{ kind: "skill", ref: "@example/one", version: "1.0.0" }] },
+      { target: 3 },
+    ),
+    ["static", "regression", "installed", "dependency-live"],
   );
 });
 

@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Awesome Claws catalog explorer</title>
+  <script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--cp-bg);
+      color: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+    }
+    a { color: var(--cp-link); }
+    button, input, select { font: inherit; }
+    button, input, select {
+      border: 1px solid var(--cp-border-strong);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+    }
+    button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible {
+      outline: 3px solid var(--cp-accent);
+      outline-offset: 2px;
+    }
+    header {
+      border-bottom: 1px solid var(--cp-border);
+      background: var(--cp-bg-elevated);
+    }
+    .shell { width: min(1200px, calc(100% - 32px)); margin: 0 auto; }
+    .hero { padding: 48px 0 36px; }
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--cp-accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.05; }
+    .lede { max-width: 760px; margin: 16px 0 0; color: var(--cp-text-muted); font-size: 1.08rem; }
+    main { padding: 28px 0 56px; }
+    .controls {
+      padding: 20px;
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      background: var(--cp-surface);
+      box-shadow: 0 0 2px var(--cp-border), 0 1px 2px var(--cp-border);
+    }
+    .search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
+    .search-row input { width: 100%; padding: 12px 14px; }
+    .secondary {
+      padding: 10px 16px;
+      border-color: var(--cp-border);
+      background: var(--cp-surface-soft);
+      cursor: pointer;
+    }
+    .secondary:hover { border-color: var(--cp-accent); color: var(--cp-accent); }
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    label { display: grid; gap: 6px; color: var(--cp-text-muted); font-size: 0.82rem; font-weight: 600; }
+    select { width: 100%; padding: 9px 10px; }
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 24px 0 16px;
+    }
+    .summary-row p { margin: 0; color: var(--cp-text-muted); }
+    .summary-row strong { color: var(--cp-text); }
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .card {
+      display: grid;
+      gap: 16px;
+      padding: 20px;
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      background: var(--cp-surface);
+      box-shadow: 0 0 2px var(--cp-border), 0 1px 2px var(--cp-border);
+    }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    h2 { margin: 0; font-size: 1.2rem; }
+    h2 a { color: var(--cp-text); text-decoration: none; }
+    h2 a:hover { color: var(--cp-accent); text-decoration: underline; }
+    .description { margin: 6px 0 0; color: var(--cp-text-muted); }
+    .tier {
+      flex: none;
+      min-width: 42px;
+      padding: 5px 8px;
+      border: 1px solid var(--cp-accent);
+      border-radius: 0.625rem;
+      background: var(--cp-accent-soft);
+      color: var(--cp-accent);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-weight: 700;
+      text-align: center;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      padding: 3px 8px;
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-surface-soft);
+      color: var(--cp-text-soft);
+      font-size: 0.76rem;
+    }
+    dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 12px; margin: 0; font-size: 0.86rem; }
+    dt { color: var(--cp-text-muted); font-weight: 600; }
+    dd { margin: 0; overflow-wrap: anywhere; }
+    .empty {
+      grid-column: 1 / -1;
+      padding: 48px 24px;
+      border: 1px dashed var(--cp-border-strong);
+      border-radius: 16px;
+      color: var(--cp-text-muted);
+      text-align: center;
+    }
+    footer { padding: 24px 0 40px; color: var(--cp-text-muted); font-size: 0.86rem; }
+    @media (max-width: 900px) {
+      .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 680px) {
+      .shell { width: min(100% - 20px, 1200px); }
+      .hero { padding: 32px 0 24px; }
+      .search-row, .filter-grid, .cards { grid-template-columns: 1fr; }
+      .summary-row, .card-top { align-items: flex-start; flex-direction: column; }
+      .secondary { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell hero">
+      <p class="eyebrow">Awesome Claws</p>
+      <h1>Find the right starter</h1>
+      <p class="lede">Compare 54 portable OpenClaw applications by setup, proof, capability, authority attention, ownership, and review freshness. Filters come from reviewed catalog metadata, not marketing claims.</p>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="controls" aria-label="Catalog filters">
+      <div class="search-row">
+        <label>
+          Search
+          <input id="search" type="search" placeholder="Name, purpose, audience, capability…" autocomplete="off">
+        </label>
+        <button class="secondary" id="clear" type="button">Clear filters</button>
+      </div>
+      <div class="filter-grid">
+        <label>Category<select id="category"></select></label>
+        <label>Setup burden<select id="setup"></select></label>
+        <label>Proof tier<select id="proof"></select></label>
+        <label>Proof lane<select id="lane"></select></label>
+        <label>Capability<select id="capability"></select></label>
+        <label>Authority attention<select id="authority"></select></label>
+        <label>Dependency<select id="dependency"></select></label>
+        <label>Maintenance<select id="maintenance"></select></label>
+        <label>Maintainer<select id="maintainer"></select></label>
+        <label>Review freshness<select id="freshness"></select></label>
+        <label>Sort<select id="sort"></select></label>
+      </div>
+    </section>
+    <div class="summary-row">
+      <p id="count" role="status" aria-live="polite"></p>
+      <a href="CHOOSER.md">Open the Markdown chooser</a>
+    </div>
+    <section id="cards" class="cards" aria-label="Matching Claws"></section>
+  </main>
+  <footer class="shell">
+    Generated from <a href="catalog.json">catalog.json</a> and <a href="experience-cases.json">experience-cases.json</a>. Authority attention is a consent-review aid, not a security rating. Provider-live behavior is not claimed.
+  </footer>
+  <script type="application/json" id="catalog-data">{"schemaVersion":1,"generatedFrom":["catalog.json","experience-cases.json"],"rules":{"setupBurden":{"low":"No bootstrap, external dependency, or schedule.","medium":"One or two setup signals, without an MCP connection or native extension.","high":"An MCP connection, native extension, or at least three setup signals."},"boundaryAttention":{"standard":"Portable workspace artifacts without an additional declared capability.","guarded":"Pinned skills, guided local setup, or an explicit bounded tool policy.","heightened":"Plugin runtime, native extension, network MCP, scheduled execution, or full tool profile."},"proofTier":"Derived from the authoritative Experience case target.","proofLanes":"Static, regression, and installed proof apply to every Claw. Visual and dependency-live lanes are derived from Experience and dependency metadata.","maintenanceStatus":{"active":"Maintained and accepting ordinary improvements.","needs-help":"Still supported, but an additional maintainer is needed.","retiring":"Maintained only through a documented retirement transition."}},"entries":[{"id":"accessibility-review-coordinator","name":"Accessibility review coordinator","description":"Organizes accessibility evidence, findings, remediation ownership, and verification against an approved review scope without claiming certification.","audience":"Product, design, engineering, content, and accessibility teams coordinating a bounded review.","category":"governance","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"api-integration-engineer","name":"API integration engineer","description":"Designs and verifies bounded API integrations from explicit contracts, fixtures, failure modes, and deployment authority.","audience":"Engineers implementing or reviewing an integration against a documented HTTP API in a controlled repository.","category":"engineering","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X5","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual","workspace-execution"],"boundaryAttention":{"level":"heightened","reasons":["full tool profile"]}},{"id":"case-continuity-coordinator","name":"Case continuity coordinator","description":"Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions.","audience":"Teams carrying a bounded support, operations, review, or remediation case across shifts, sessions, and accountable owners.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X3","proofLanes":["static","regression","installed"],"capabilityClasses":[],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"change-control-operator","name":"Change control operator","description":"Prepares and executes bounded workspace changes only after an accountable owner approves the exact plan digest.","audience":"Operators and maintainers applying a reviewable configuration, code, or runbook change in a controlled workspace.","category":"engineering","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X3","proofLanes":["static","regression","installed"],"capabilityClasses":["workspace-execution"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"civic-data-analyst","name":"Civic data analyst","description":"Combines public demographic, budget, service, land-use, and mobility data into reproducible civic decision evidence.","audience":"Residents, planners, journalists, researchers, and public-interest teams evaluating a bounded local policy or service question.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package"]},"externalDependencies":[{"kind":"skill","id":"@teoslayer/pilot-service-agents-transit","version":"1.0.0"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill"],"boundaryAttention":{"level":"guarded","reasons":["pinned skill"]}},{"id":"cloud-cost-analyst","name":"Cloud cost analyst","description":"Reconciles approved cloud billing exports into allocation, anomaly, commitment, and optimization evidence without changing cloud resources.","audience":"Engineering, finance, and FinOps teams reviewing a bounded cloud-cost period and accountable optimization decisions.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"compliance-reviewer","name":"Compliance reviewer","description":"Evaluates controls and evidence without substituting for accountable legal judgment.","audience":"Control owners and assurance teams preparing a bounded internal review against a named framework or policy.","category":"governance","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"content-operations","name":"Content operations","description":"Runs editorial work from brief through review, publication readiness, and measurement.","audience":"Content leads coordinating a source-backed article, announcement, campaign asset, or documentation update.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X3","proofLanes":["static","regression","installed"],"capabilityClasses":[],"boundaryAttention":{"level":"standard","reasons":["portable workspace artifacts only"]}},{"id":"customer-support","name":"Customer support","description":"Resolves customer cases accurately while preserving context, ownership, and privacy.","audience":"Support engineers and case owners handling a technical customer issue from intake through resolution or escalation.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package"]},"externalDependencies":[{"kind":"skill","id":"@ivangdavila/customer-support","version":"1.0.0"}],"proofTier":"X4","proofLanes":["static","regression","installed","visual","dependency-live"],"capabilityClasses":["clawhub-skill","visual"],"boundaryAttention":{"level":"guarded","reasons":["pinned skill","explicit tool policy"]}},{"id":"data-analyst","name":"Data analyst","description":"Turns data questions into reproducible analyses with explicit assumptions and limitations.","audience":"Business and product teams deciding from a bounded dataset, metric question, or experiment result.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"data-governance-steward","name":"Data governance steward","description":"Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership.","audience":"Data owners and stewards preparing a bounded governance review for a named domain, product portfolio, or critical-data scope.","category":"governance","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"data-migration-planner","name":"Data migration planner","description":"Plans a controlled data migration through mappings, validation, cutover, rollback, and accountable reconciliation without moving production data.","audience":"Engineering, data, and operations teams preparing a bounded system or schema migration.","category":"engineering","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"delegation-coordinator","name":"Delegation coordinator","description":"Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner.","audience":"Leads decomposing a source-heavy review, analysis, or planning task into independent evidence assignments.","category":"productivity","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X3","proofLanes":["static","regression","installed"],"capabilityClasses":["delegated-sessions"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"document-intake-analyst","name":"Document intake analyst","description":"Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty.","audience":"Analysts preparing a bounded collection of mixed-format documents for search, comparison, or downstream review.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package"]},"externalDependencies":[{"kind":"skill","id":"@steipete/markdown-converter","version":"1.0.0"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill"],"boundaryAttention":{"level":"guarded","reasons":["pinned skill"]}},{"id":"event-operations-director","name":"Event operations director","description":"Turns an approved event plan into a controlled run of show, readiness view, decision queue, and accountable handoff.","audience":"Event owners and operations teams coordinating a conference, launch, workshop, or internal gathering with multiple workstreams.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["guided bootstrap"]},"externalDependencies":[],"proofTier":"X5","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["bootstrap","visual"],"boundaryAttention":{"level":"guarded","reasons":["guided local setup","explicit tool policy","persistent dashboard"]}},{"id":"executive-assistant","name":"Executive assistant","description":"Turns executive priorities into prepared decisions, communications, and reliable follow-through.","audience":"An executive and their support partner managing priorities, meetings, decisions, communications, and follow-through.","category":"productivity","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["guided bootstrap"]},"externalDependencies":[],"proofTier":"X3","proofLanes":["static","regression","installed"],"capabilityClasses":["bootstrap"],"boundaryAttention":{"level":"guarded","reasons":["guided local setup"]}},{"id":"executive-briefing","name":"Executive briefing","description":"Builds a concise daily operating brief from authorized calendar, mail, document, and weather context.","audience":"Executives and support partners who want a repeatable morning brief without delegating communication or calendar authority.","category":"productivity","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"high","reasons":["2 pinned packages","1 scheduled job"]},"externalDependencies":[{"kind":"skill","id":"@steipete/gog","version":"1.0.0"},{"kind":"skill","id":"@steipete/weather","version":"1.0.0"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill","cron"],"boundaryAttention":{"level":"heightened","reasons":["scheduled execution"]}},{"id":"experimentation-lead","name":"Experimentation lead","description":"Designs and reviews bounded product experiments with explicit hypotheses, guardrails, exposure rules, evidence, and decision ownership.","audience":"Product, engineering, data, and design teams preparing or evaluating an experiment without directly changing production allocation.","category":"product","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"facilities-operations-coordinator","name":"Facilities operations coordinator","description":"Turns approved site observations into a prioritized maintenance queue, owner handoff, and private operating view without dispatching work.","audience":"Facilities teams coordinating maintenance, inspections, vendors, occupants, and shift handoffs for a bounded site portfolio.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["guided bootstrap"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["bootstrap","visual"],"boundaryAttention":{"level":"guarded","reasons":["guided local setup","explicit tool policy"]}},{"id":"feed-intelligence-monitor","name":"Feed intelligence monitor","description":"Tracks an approved set of RSS and Atom sources and produces a private, source-linked change digest.","audience":"Teams monitoring known official blogs, advisories, release feeds, or industry sources on a repeatable cadence.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package","1 scheduled job"]},"externalDependencies":[{"kind":"skill","id":"@steipete/blogwatcher","version":"1.0.0"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill","cron"],"boundaryAttention":{"level":"heightened","reasons":["scheduled execution"]}},{"id":"financial-analyst","name":"Financial analyst","description":"Builds transparent financial analysis without hiding assumptions or uncertainty.","audience":"Operators and finance partners evaluating a business case, forecast variance, or operating scenario.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["guided bootstrap","1 pinned package"]},"externalDependencies":[{"kind":"skill","id":"@ajanraj/yahoo-finance","version":"1.0.0"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill","bootstrap"],"boundaryAttention":{"level":"guarded","reasons":["pinned skill","guided local setup"]}},{"id":"fundraising-campaign-manager","name":"Fundraising campaign manager","description":"Prepares an approval-bound nonprofit fundraising campaign, stewardship plan, audience assets, and measurement handoff without soliciting or sending.","audience":"Nonprofit development and communications teams planning a bounded campaign with accountable fundraising, legal, and brand review.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["guided bootstrap"]},"externalDependencies":[],"proofTier":"X3","proofLanes":["static","regression","installed"],"capabilityClasses":["bootstrap"],"boundaryAttention":{"level":"guarded","reasons":["guided local setup"]}},{"id":"grant-portfolio-manager","name":"Grant portfolio manager","description":"Maintains a private, evidence-led grant opportunity and submission portfolio without inventing eligibility or submitting applications.","audience":"Nonprofit, research, education, and civic teams managing multiple funding opportunities and accountable submissions.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["guided bootstrap"]},"externalDependencies":[],"proofTier":"X5","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["bootstrap","visual"],"boundaryAttention":{"level":"guarded","reasons":["guided local setup","explicit tool policy","persistent dashboard"]}},{"id":"incident-response","name":"Incident response","description":"Coordinates incidents with one rule: ground ownership and recovery decisions in evidence.","audience":"On-call engineers and incident commanders handling a live service degradation or security event.","category":"engineering","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 scheduled job"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["cron","visual"],"boundaryAttention":{"level":"heightened","reasons":["scheduled execution"]}},{"id":"knowledge-curator","name":"Knowledge curator","description":"Turns scattered information into durable, navigable, and source-linked knowledge.","audience":"Teams consolidating project decisions, operating guidance, and source material into a maintainable knowledge collection.","category":"productivity","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X3","proofLanes":["static","regression","installed"],"capabilityClasses":[],"boundaryAttention":{"level":"standard","reasons":["portable workspace artifacts only"]}},{"id":"knowledge-gardener","name":"Knowledge gardener","description":"Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work.","audience":"Teams maintaining a bounded collection of operational knowledge in Notion.","category":"productivity","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package"]},"externalDependencies":[{"kind":"skill","id":"@steipete/notion","version":"1.0.0"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill"],"boundaryAttention":{"level":"guarded","reasons":["pinned skill"]}},{"id":"localization-program-manager","name":"Localization program manager","description":"Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations.","audience":"Product, content, engineering, and localization teams preparing a multilingual release.","category":"productivity","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"manufacturing-operations-planner","name":"Manufacturing operations planner","description":"Builds a constraint-led production plan and exception handoff from approved demand, capacity, material, quality, and maintenance evidence.","audience":"Production planners and plant operations teams reconciling a bounded planning horizon without directly controlling equipment or enterprise systems.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["guided bootstrap"]},"externalDependencies":[],"proofTier":"X5","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["bootstrap","visual"],"boundaryAttention":{"level":"guarded","reasons":["guided local setup","explicit tool policy","persistent dashboard"]}},{"id":"media-evidence-reviewer","name":"Media evidence reviewer","description":"Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries.","audience":"Research, support, safety, and operations teams examining consented audiovisual material for a specific question.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["2 pinned packages"]},"externalDependencies":[{"kind":"skill","id":"@steipete/openai-whisper","version":"1.0.0"},{"kind":"skill","id":"@steipete/video-frames","version":"1.0.0"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill"],"boundaryAttention":{"level":"guarded","reasons":["pinned skill"]}},{"id":"meeting-intelligence","name":"Meeting intelligence","description":"Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts.","audience":"Teams processing consented meeting audio into internal records and follow-up artifacts.","category":"productivity","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["2 pinned packages"]},"externalDependencies":[{"kind":"skill","id":"@ivangdavila/word-docx","version":"1.0.2"},{"kind":"skill","id":"@steipete/openai-whisper","version":"1.0.0"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill"],"boundaryAttention":{"level":"guarded","reasons":["pinned skill"]}},{"id":"presentation-producer","name":"Presentation producer","description":"Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review.","audience":"Teams turning approved analysis or decisions into a reviewable PowerPoint presentation.","category":"productivity","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package"]},"externalDependencies":[{"kind":"skill","id":"@ivangdavila/powerpoint-pptx","version":"1.0.1"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill"],"boundaryAttention":{"level":"guarded","reasons":["pinned skill"]}},{"id":"privacy-request-coordinator","name":"Privacy request coordinator","description":"Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff.","audience":"Privacy operations teams coordinating access, correction, deletion, restriction, or objection requests under accountable legal policy.","category":"governance","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X5","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy","persistent dashboard"]}},{"id":"procurement-evaluator","name":"Procurement evaluator","description":"Builds a traceable vendor evaluation from approved requirements, evidence, risks, and accountable purchasing decisions.","audience":"Procurement, security, finance, legal, and business owners comparing a bounded vendor shortlist.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["guided bootstrap"]},"externalDependencies":[],"proofTier":"X5","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["bootstrap","visual"],"boundaryAttention":{"level":"guarded","reasons":["guided local setup","explicit tool policy","persistent dashboard"]}},{"id":"product-manager","name":"Product manager","description":"Frames product decisions around user evidence, outcomes, constraints, and learning.","audience":"Product teams choosing scope, sequencing, or validation for a defined user problem.","category":"product","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"project-manager","name":"Project manager","description":"Keeps projects aligned through milestones, dependencies, decisions, and accountable execution.","audience":"Cross-functional project leads coordinating a time-bounded delivery with multiple owners and dependencies.","category":"productivity","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"public-company-watcher","name":"Public company watcher","description":"Tracks material public-company disclosures from authoritative sources and produces a private, timestamped change brief without trading or investor-relations contact.","audience":"Finance, strategy, procurement, and competitive-intelligence teams monitoring a declared set of public companies.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package","1 scheduled job"]},"externalDependencies":[{"kind":"skill","id":"@steipete/blogwatcher","version":"1.0.0"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill","cron"],"boundaryAttention":{"level":"heightened","reasons":["scheduled execution"]}},{"id":"public-safety-monitor","name":"Public safety monitor","description":"Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services.","audience":"Operations and facilities teams maintaining situational awareness for specific people, sites, routes, or events.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"high","reasons":["2 pinned packages","1 scheduled job"]},"externalDependencies":[{"kind":"skill","id":"@dapkus/open-meteo","version":"1.0.0"},{"kind":"skill","id":"@steipete/blogwatcher","version":"1.0.0"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill","cron"],"boundaryAttention":{"level":"heightened","reasons":["scheduled execution"]}},{"id":"quality-assurance-lead","name":"Quality assurance lead","description":"Turns requirements and risk into a traceable test strategy, execution ledger, defect assessment, and release recommendation.","audience":"Engineering and product teams preparing evidence for a bounded software release decision.","category":"engineering","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"recruiting-coordinator","name":"Recruiting coordinator","description":"Coordinates candidate logistics with clear handoffs, consistency, and privacy.","audience":"Recruiting coordinators scheduling an interview loop and keeping candidate, interviewers, and recruiter aligned.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X3","proofLanes":["static","regression","installed"],"capabilityClasses":[],"boundaryAttention":{"level":"standard","reasons":["portable workspace artifacts only"]}},{"id":"release-coordinator","name":"Release coordinator","description":"Coordinates a repository release from verified GitHub state to an approval-bound communication handoff.","audience":"Maintainers preparing a scoped software release across GitHub checks, artifacts, owners, and team communications.","category":"engineering","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["2 pinned packages"]},"externalDependencies":[{"kind":"skill","id":"@steipete/github","version":"1.0.0"},{"kind":"skill","id":"@steipete/slack","version":"1.0.0"}],"proofTier":"X4","proofLanes":["static","regression","installed","visual","dependency-live"],"capabilityClasses":["clawhub-skill","visual"],"boundaryAttention":{"level":"guarded","reasons":["pinned skill","explicit tool policy"]}},{"id":"research-briefing","name":"Research briefing","description":"Synthesizes supplied sources into concise, source-grounded briefs for time-sensitive decisions.","audience":"Leaders and maintainers who have a bounded source set and need an evidence brief before choosing among concrete options.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"research-monitor","name":"Research monitor","description":"Runs a bounded source watch and produces a private evidence digest for a named decision area.","audience":"Research, strategy, and product teams monitoring a defined topic without automating publication or decisions.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package","1 scheduled job"]},"externalDependencies":[{"kind":"plugin","id":"@openclaw/parallel-plugin","version":"2026.7.1"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-plugin","cron"],"boundaryAttention":{"level":"heightened","reasons":["plugin runtime","scheduled execution"]}},{"id":"research-scout","name":"Research scout","description":"Monitors public scholarly sources for decision-relevant evidence changes, including new studies, corrections, retractions, and trial updates.","audience":"Research, product, policy, and engineering teams maintaining an evidence baseline around a bounded question.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package","1 scheduled job"]},"externalDependencies":[{"kind":"skill","id":"@steipete/blogwatcher","version":"1.0.0"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill","cron"],"boundaryAttention":{"level":"heightened","reasons":["scheduled execution"]}},{"id":"sales-operations","name":"Sales operations","description":"Improves pipeline decisions through clean definitions, evidence, and accountable follow-up.","audience":"Sales operations leaders preparing a pipeline review, forecast call, or territory action plan.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X3","proofLanes":["static","regression","installed"],"capabilityClasses":[],"boundaryAttention":{"level":"standard","reasons":["portable workspace artifacts only"]}},{"id":"security-analyst","name":"Security analyst","description":"Assesses security questions with explicit trust boundaries and reproducible evidence.","audience":"Security engineers triaging a suspected vulnerability or reviewing a bounded application trust boundary.","category":"engineering","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"software-maintainer","name":"Software maintainer","description":"Delivers scoped repository changes with source-grounded review and verification.","audience":"Maintainers making a bounded bug fix or feature change in an unfamiliar or actively developed repository.","category":"engineering","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"high","reasons":["1 native extension","1 MCP connection"]},"externalDependencies":[{"kind":"extension:plugin","id":"@openclaw/diffs","version":"2026.7.1"},{"kind":"mcp","id":"github","url":"https://api.githubcopilot.com/mcp/","auth":"oauth"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["profile-extension","oauth-mcp","workspace-execution"],"boundaryAttention":{"level":"heightened","reasons":["native extension","network MCP connection","full tool profile"]}},{"id":"spreadsheet-analyst","name":"Spreadsheet analyst","description":"Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability.","audience":"Analysts and operators who need a controlled review or transformation of Excel workbooks.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package"]},"externalDependencies":[{"kind":"skill","id":"@ivangdavila/excel-xlsx","version":"1.0.2"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill"],"boundaryAttention":{"level":"guarded","reasons":["pinned skill"]}},{"id":"travel-concierge","name":"Travel concierge","description":"Searches and compares current Expedia lodging and flight options, then prepares a traveler-controlled booking handoff without completing a transaction.","audience":"Travelers who want live Expedia hotel, vacation-rental, and flight options narrowed to a reviewable shortlist.","category":"productivity","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"high","reasons":["guided bootstrap","1 native extension","1 MCP connection","1 scheduled job"]},"externalDependencies":[{"kind":"extension:plugin","id":"@expediagroup/expedia-openclaw","version":"1.0.4"},{"kind":"mcp","id":"mapbox","url":"https://mcp.mapbox.com/mcp","auth":"oauth"}],"proofTier":"X5","proofLanes":["static","regression","installed","visual","dependency-live"],"capabilityClasses":["profile-extension","oauth-mcp","cron","bootstrap","visual"],"boundaryAttention":{"level":"heightened","reasons":["native extension","network MCP connection","scheduled execution"]}},{"id":"travel-planner","name":"Travel planner","description":"Builds a reviewable trip plan from current public sources without booking, paying, or retaining sensitive traveler records.","audience":"Travelers comparing destinations or preparing an itinerary, readiness checklist, and disruption-aware travel brief.","category":"productivity","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["2 pinned packages"]},"externalDependencies":[{"kind":"skill","id":"@dapkus/open-meteo","version":"1.0.0"},{"kind":"skill","id":"@onlydreams/travel-checklist","version":"1.0.2"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-skill"],"boundaryAttention":{"level":"guarded","reasons":["pinned skill"]}},{"id":"ux-research-synthesizer","name":"UX research synthesizer","description":"Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions.","audience":"Research and product teams interpreting an approved set of interviews, observations, surveys, or usability sessions.","category":"product","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"low","reasons":["no bootstrap, external dependency, or schedule"]},"externalDependencies":[],"proofTier":"X4","proofLanes":["static","regression","installed","visual"],"capabilityClasses":["visual"],"boundaryAttention":{"level":"guarded","reasons":["explicit tool policy"]}},{"id":"video-concept-producer","name":"Video concept producer","description":"Generates reviewable PixVerse video concepts from approved prompts or workspace assets without publishing or impersonating people.","audience":"Creative teams prototyping short video treatments and variants before human editorial, rights, and publication review.","category":"productivity","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package"]},"externalDependencies":[{"kind":"plugin","id":"@openclaw/pixverse-provider","version":"2026.7.1"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-plugin"],"boundaryAttention":{"level":"heightened","reasons":["plugin runtime"]}},{"id":"web-evidence-researcher","name":"Web evidence researcher","description":"Uses Tavily search and extraction to build bounded, source-linked evidence sets without publishing or acting on retrieved content.","audience":"Researchers and operators who need current web evidence collected against a declared question and source standard.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package"]},"externalDependencies":[{"kind":"plugin","id":"@openclaw/tavily-plugin","version":"2026.7.1"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-plugin"],"boundaryAttention":{"level":"heightened","reasons":["plugin runtime"]}},{"id":"website-evidence-collector","name":"Website evidence collector","description":"Collects and normalizes an approved set of public web pages through Firecrawl for reviewable evidence and change analysis.","audience":"Analysts preparing a bounded website evidence set from explicitly approved public URLs and domains.","category":"analysis","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package"]},"externalDependencies":[{"kind":"plugin","id":"@openclaw/firecrawl-plugin","version":"2026.7.1"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-plugin"],"boundaryAttention":{"level":"heightened","reasons":["plugin runtime"]}},{"id":"workflow-operator","name":"Workflow operator","description":"Runs bounded Lobster pipelines with typed inputs, explicit approval gates, resumable state, and reviewable results.","audience":"Operators converting a repetitive, already-authorized procedure into a typed and approval-aware execution workflow.","category":"operations","maintenance":{"status":"active","maintainers":["@giodl73-repo"],"lastVerified":"2026-08-19"},"setup":{"level":"medium","reasons":["1 pinned package"]},"externalDependencies":[{"kind":"plugin","id":"@openclaw/lobster","version":"2026.7.1"}],"proofTier":"X3","proofLanes":["static","regression","installed","dependency-live"],"capabilityClasses":["clawhub-plugin"],"boundaryAttention":{"level":"heightened","reasons":["plugin runtime"]}}]}</script>
+  <script>
+    const catalog = JSON.parse(document.getElementById("catalog-data").textContent);
+    const controls = Object.fromEntries(
+      ["search", "category", "setup", "proof", "lane", "capability", "authority", "dependency", "maintenance", "maintainer", "freshness", "sort"]
+        .map((id) => [id, document.getElementById(id)]),
+    );
+    const params = new URLSearchParams(window.location.search);
+    const labels = {
+      "dependency-live": "Dependency live",
+      "delegated-sessions": "Delegated sessions",
+      "profile-extension": "Profile extension",
+      "workspace-execution": "Workspace execution",
+      "clawhub-plugin": "ClawHub plugin",
+      "clawhub-skill": "ClawHub skill",
+      "oauth-mcp": "OAuth MCP",
+    };
+    const title = (value) => labels[value] || value.split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ");
+    const unique = (values) => [...new Set(values)].sort((left, right) => left.localeCompare(right, "en"));
+    const fill = (control, values, allLabel) => {
+      control.replaceChildren(new Option(allLabel, ""), ...values.map((value) => new Option(title(value), value)));
+    };
+    fill(controls.category, unique(catalog.entries.map((entry) => entry.category)), "All categories");
+    fill(controls.setup, ["low", "medium", "high"], "Any setup");
+    fill(controls.proof, unique(catalog.entries.map((entry) => entry.proofTier)), "Any proof tier");
+    fill(controls.lane, unique(catalog.entries.flatMap((entry) => entry.proofLanes)), "Any proof lane");
+    fill(controls.capability, unique(catalog.entries.flatMap((entry) => entry.capabilityClasses)), "Any capability");
+    fill(controls.authority, ["standard", "guarded", "heightened"], "Any authority attention");
+    fill(controls.dependency, ["none", "declared"], "Any dependency state");
+    fill(controls.maintenance, ["active", "needs-help", "retiring"], "Any maintenance state");
+    fill(controls.maintainer, unique(catalog.entries.flatMap((entry) => entry.maintenance.maintainers)), "Any maintainer");
+    fill(controls.freshness, ["30", "90", "older"], "Any review age");
+    fill(controls.sort, ["name", "setup", "proof", "freshness"], "Sort by");
+    controls.sort.options[0].textContent = "Name";
+
+    for (const [key, control] of Object.entries(controls)) {
+      if (params.has(key)) control.value = params.get(key);
+    }
+
+    const ageDays = (date) => Math.floor((Date.now() - Date.parse(date + "T00:00:00Z")) / 86400000);
+    const matchesFreshness = (entry, value) =>
+      !value || (value === "30" && ageDays(entry.maintenance.lastVerified) <= 30) ||
+      (value === "90" && ageDays(entry.maintenance.lastVerified) > 30 && ageDays(entry.maintenance.lastVerified) <= 90) ||
+      (value === "older" && ageDays(entry.maintenance.lastVerified) > 90);
+    const textFor = (entry) => [
+      entry.id, entry.name, entry.description, entry.audience, entry.category,
+      ...entry.capabilityClasses, ...entry.proofLanes, ...entry.setup.reasons,
+      ...entry.boundaryAttention.reasons, ...entry.maintenance.maintainers,
+      ...entry.externalDependencies.flatMap((item) => [item.kind, item.id]),
+    ].join(" ").toLowerCase();
+    const escapeHtml = (value) => String(value)
+      .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+    const chips = (values) => values.map((value) => `<span class="chip">${escapeHtml(title(value))}</span>`).join("");
+    const card = (entry) => `
+      <article class="card">
+        <div class="card-top">
+          <div>
+            <h2><a href="https://github.com/giodl73-repo/awesome-claws/tree/main/claws/${encodeURIComponent(entry.id)}">${escapeHtml(entry.name)}</a></h2>
+            <p class="description">${escapeHtml(entry.description)}</p>
+          </div>
+          <span class="tier" title="Experience proof tier">${escapeHtml(entry.proofTier)}</span>
+        </div>
+        <div class="chips">${chips([entry.category, ...entry.capabilityClasses])}</div>
+        <dl>
+          <dt>Audience</dt><dd>${escapeHtml(entry.audience)}</dd>
+          <dt>Setup</dt><dd>${escapeHtml(title(entry.setup.level))}: ${escapeHtml(entry.setup.reasons.join("; "))}</dd>
+          <dt>Proof</dt><dd>${escapeHtml(entry.proofLanes.map(title).join(", "))}</dd>
+          <dt>Authority</dt><dd>${escapeHtml(title(entry.boundaryAttention.level))}: ${escapeHtml(entry.boundaryAttention.reasons.join("; "))}</dd>
+          <dt>Dependencies</dt><dd>${entry.externalDependencies.length ? escapeHtml(entry.externalDependencies.map((item) => item.id).join(", ")) : "None"}</dd>
+          <dt>Maintained by</dt><dd>${escapeHtml(entry.maintenance.maintainers.join(", "))}; ${escapeHtml(entry.maintenance.status)}</dd>
+          <dt>Last verified</dt><dd><time datetime="${escapeHtml(entry.maintenance.lastVerified)}">${escapeHtml(entry.maintenance.lastVerified)}</time></dd>
+        </dl>
+      </article>`;
+
+    function render() {
+      const state = Object.fromEntries(Object.entries(controls).map(([key, control]) => [key, control.value]));
+      const query = state.search.trim().toLowerCase();
+      const entries = catalog.entries.filter((entry) =>
+        (!query || textFor(entry).includes(query)) &&
+        (!state.category || entry.category === state.category) &&
+        (!state.setup || entry.setup.level === state.setup) &&
+        (!state.proof || entry.proofTier === state.proof) &&
+        (!state.lane || entry.proofLanes.includes(state.lane)) &&
+        (!state.capability || entry.capabilityClasses.includes(state.capability)) &&
+        (!state.authority || entry.boundaryAttention.level === state.authority) &&
+        (!state.dependency || (state.dependency === "declared") === (entry.externalDependencies.length > 0)) &&
+        (!state.maintenance || entry.maintenance.status === state.maintenance) &&
+        (!state.maintainer || entry.maintenance.maintainers.includes(state.maintainer)) &&
+        matchesFreshness(entry, state.freshness)
+      );
+      const order = {
+        name: (left, right) => left.name.localeCompare(right.name, "en"),
+        setup: (left, right) => ["low", "medium", "high"].indexOf(left.setup.level) - ["low", "medium", "high"].indexOf(right.setup.level) || left.name.localeCompare(right.name, "en"),
+        proof: (left, right) => right.proofTier.localeCompare(left.proofTier, "en") || left.name.localeCompare(right.name, "en"),
+        freshness: (left, right) => right.maintenance.lastVerified.localeCompare(left.maintenance.lastVerified, "en") || left.name.localeCompare(right.name, "en"),
+      };
+      entries.sort(order[state.sort] || order.name);
+      document.getElementById("count").innerHTML = `Showing <strong>${entries.length}</strong> of <strong>${catalog.entries.length}</strong> Claws`;
+      document.getElementById("cards").innerHTML = entries.length
+        ? entries.map(card).join("")
+        : '<div class="empty">No Claws match these filters. Clear a filter or broaden the search.</div>';
+      const next = new URLSearchParams(window.location.search);
+      for (const [key, value] of Object.entries(state)) {
+        if (value && !(key === "sort" && value === "name")) next.set(key, value);
+        else next.delete(key);
+      }
+      history.replaceState(null, "", window.location.pathname + (next.size ? "?" + next : "") + window.location.hash);
+    }
+    for (const control of Object.values(controls)) {
+      control.addEventListener(control === controls.search ? "input" : "change", render);
+    }
+    document.getElementById("clear").addEventListener("click", () => {
+      for (const control of Object.values(controls)) control.value = "";
+      controls.sort.value = "name";
+      render();
+      controls.search.focus();
+    });
+    render();
+  </script>
+</body>
+</html>
