@@ -8,7 +8,8 @@ purpose, authority, workflow, and outputs from its package.
 
 Before opening the issue, copy `contributor/new-claw.example.json` outside the
 repository and replace the proposed entry, problem, repeatable job, and proof
-plan. You may leave `existingAlternatives` empty for this discovery pass:
+plan. Replace the maintenance placeholder with the accountable GitHub
+maintainer. You may leave `existingAlternatives` empty for this discovery pass:
 
 ```bash
 npm run review:contribution -- --proposal ../my-claw.json
@@ -71,21 +72,24 @@ generated files under `claws/`.
 1. Update the entry and source files created by `npm run create:claw`. For
    changes to an existing Claw, update its entry in `catalog.json` and declared
    files under `sources/<claw-id>/`.
-2. Give it one coherent operational purpose, not a generic assistant persona.
-3. Define concrete intake, workflow, deliverables, and observable completion
+2. Keep `maintenance.status`, `maintenance.maintainers`, and
+   `maintenance.lastVerified` current. Add another maintainer before transferring
+   primary responsibility; do not use a team name or placeholder as accountability.
+3. Give it one coherent operational purpose, not a generic assistant persona.
+4. Define concrete intake, workflow, deliverables, and observable completion
    criteria.
-4. State evidence, approval, privacy, escalation, and external-action
+5. State evidence, approval, privacy, escalation, and external-action
    boundaries where they affect the job.
-5. For reusable onboarding, add plain package-root `BOOTSTRAP.md` instructions
+6. For reusable onboarding, add plain package-root `BOOTSTRAP.md` instructions
    through the catalog `bootstrap` field. Ask only for missing context, create
    local preference files only when absent, and never package answers or secrets.
-6. Keep portable Agent Skills and direct MCP requests in `CLAW.md`. Put native
+7. Keep portable Agent Skills and direct MCP requests in `CLAW.md`. Put native
    plugin bundles in the matching harness profile, with exact versions.
-7. Add schemas, references, templates, examples, fixtures, or assets as
+8. Add schemas, references, templates, examples, fixtures, or assets as
    ordinary declared workspace files, with their bodies under the matching
    per-Claw source directory. Keep executable behavior in reviewed skills or
    harness extensions.
-8. Regenerate and validate the repository.
+9. Regenerate and validate the repository.
 
 Keep `regression-cases.json` aligned when an existing Claw changes its intake,
 boundaries, Experience surface, or capabilities. After reviewing the behavior

@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { maintenanceErrors } from "./catalog-health.mjs";
 
 const STOP_WORDS = new Set([
   "all",
@@ -227,6 +228,7 @@ export function validateContributionProposal(
   if (!CATEGORIES.has(entry.category)) {
     errors.push(`entry.category must be one of ${[...CATEGORIES].join(", ")}`);
   }
+  errors.push(...maintenanceErrors(entry.maintenance).map((error) => `entry.${error}`));
   const minimums = {
     principles: 3,
     boundaries: 2,

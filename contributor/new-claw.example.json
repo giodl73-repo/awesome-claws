@@ -4,6 +4,13 @@
     "id": "service-readiness-coordinator",
     "name": "Service readiness coordinator",
     "category": "engineering",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@replace-with-github-handle"
+      ],
+      "lastVerified": "2026-08-19"
+    },
     "description": "Prepares an evidence-linked service readiness handoff without deploying or approving the release.",
     "audience": "Service owners preparing a bounded production-readiness decision.",
     "principles": [

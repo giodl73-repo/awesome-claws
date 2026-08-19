@@ -29,6 +29,7 @@ Every post-policy Claw keeps `contributions/<claw-id>.json`. It records:
 - the user problem and repeatable job;
 - at least three existing alternatives with honest overlap and difference;
 - the intended proof;
+- accountable GitHub maintainers and current maintenance state;
 - the complete proposed catalog entry.
 
 `npm run review:contribution -- --proposal <file>` produces the nearest current

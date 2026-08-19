@@ -19,6 +19,11 @@ const existing = [
     id: "release-coordinator",
     name: "Release coordinator",
     category: "engineering",
+    maintenance: {
+      status: "active",
+      maintainers: ["@contributor"],
+      lastVerified: "2026-08-19",
+    },
     description: "Coordinates evidence and approvals for a software release.",
     audience: "Release managers",
     workflow: ["Collect checks", "Review evidence", "Request approval", "Prepare handoff"],
@@ -59,6 +64,11 @@ const proposal = {
     id: "deployment-readiness",
     name: "Deployment readiness",
     category: "engineering",
+    maintenance: {
+      status: "active",
+      maintainers: ["@contributor"],
+      lastVerified: "2026-08-19",
+    },
     description: "Coordinates checks and owner approval for a bounded deployment.",
     audience: "Service owners preparing a deployment.",
     principles: ["Use current evidence only", "Keep authority explicit", "Preserve failed checks"],

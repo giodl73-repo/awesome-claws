@@ -23,6 +23,14 @@ test("covers every catalog entry exactly once in stable name order", () => {
     chooser.entries.map((entry) => entry.name).toSorted((left, right) => left.localeCompare(right, "en")),
   );
   assert.ok(chooser.entries.every((entry) => /^X[345]$/.test(entry.proofTier)));
+  assert.ok(
+    chooser.entries.every(
+      (entry) =>
+        entry.maintenance.status === "active" &&
+        entry.maintenance.maintainers.length > 0 &&
+        /^\d{4}-\d{2}-\d{2}$/u.test(entry.maintenance.lastVerified),
+    ),
+  );
 });
 
 test("derives setup and boundary levels from declared capabilities", () => {
@@ -53,6 +61,7 @@ test("derives setup and boundary levels from declared capabilities", () => {
 test("renders every required chooser dimension and Claw", () => {
   const markdown = renderChooserMarkdown(chooser);
   for (const heading of [
+    "## By maintenance status",
     "## By setup burden",
     "## By external dependencies",
     "## By Experience proof tier",

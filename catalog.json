@@ -5,6 +5,13 @@
       "id": "incident-response",
       "name": "Incident response",
       "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Coordinates incidents with one rule: ground ownership and recovery decisions in evidence.",
       "audience": "On-call engineers and incident commanders handling a live service degradation or security event.",
       "principles": [
@@ -122,6 +129,13 @@
       "id": "software-maintainer",
       "name": "Software maintainer",
       "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Delivers scoped repository changes with source-grounded review and verification.",
       "audience": "Maintainers making a bounded bug fix or feature change in an unfamiliar or actively developed repository.",
       "principles": [
@@ -240,6 +254,13 @@
       "id": "security-analyst",
       "name": "Security analyst",
       "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Assesses security questions with explicit trust boundaries and reproducible evidence.",
       "audience": "Security engineers triaging a suspected vulnerability or reviewing a bounded application trust boundary.",
       "principles": [
@@ -340,6 +361,13 @@
       "id": "data-analyst",
       "name": "Data analyst",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Turns data questions into reproducible analyses with explicit assumptions and limitations.",
       "audience": "Business and product teams deciding from a bounded dataset, metric question, or experiment result.",
       "principles": [
@@ -441,6 +469,13 @@
       "id": "research-briefing",
       "name": "Research briefing",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Synthesizes supplied sources into concise, source-grounded briefs for time-sensitive decisions.",
       "audience": "Leaders and maintainers who have a bounded source set and need an evidence brief before choosing among concrete options.",
       "principles": [
@@ -543,6 +578,13 @@
       "id": "financial-analyst",
       "name": "Financial analyst",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Builds transparent financial analysis without hiding assumptions or uncertainty.",
       "audience": "Operators and finance partners evaluating a business case, forecast variance, or operating scenario.",
       "principles": [
@@ -634,6 +676,13 @@
       "id": "customer-support",
       "name": "Customer support",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Resolves customer cases accurately while preserving context, ownership, and privacy.",
       "audience": "Support engineers and case owners handling a technical customer issue from intake through resolution or escalation.",
       "principles": [
@@ -743,6 +792,13 @@
       "id": "sales-operations",
       "name": "Sales operations",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Improves pipeline decisions through clean definitions, evidence, and accountable follow-up.",
       "audience": "Sales operations leaders preparing a pipeline review, forecast call, or territory action plan.",
       "principles": [
@@ -822,6 +878,13 @@
       "id": "recruiting-coordinator",
       "name": "Recruiting coordinator",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Coordinates candidate logistics with clear handoffs, consistency, and privacy.",
       "audience": "Recruiting coordinators scheduling an interview loop and keeping candidate, interviewers, and recruiter aligned.",
       "principles": [
@@ -901,6 +964,13 @@
       "id": "content-operations",
       "name": "Content operations",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Runs editorial work from brief through review, publication readiness, and measurement.",
       "audience": "Content leads coordinating a source-backed article, announcement, campaign asset, or documentation update.",
       "principles": [
@@ -966,6 +1036,13 @@
       "id": "executive-assistant",
       "name": "Executive assistant",
       "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Turns executive priorities into prepared decisions, communications, and reliable follow-through.",
       "audience": "An executive and their support partner managing priorities, meetings, decisions, communications, and follow-through.",
       "principles": [
@@ -1035,6 +1112,13 @@
       "id": "project-manager",
       "name": "Project manager",
       "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Keeps projects aligned through milestones, dependencies, decisions, and accountable execution.",
       "audience": "Cross-functional project leads coordinating a time-bounded delivery with multiple owners and dependencies.",
       "principles": [
@@ -1135,6 +1219,13 @@
       "id": "product-manager",
       "name": "Product manager",
       "category": "product",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Frames product decisions around user evidence, outcomes, constraints, and learning.",
       "audience": "Product teams choosing scope, sequencing, or validation for a defined user problem.",
       "principles": [
@@ -1235,6 +1326,13 @@
       "id": "compliance-reviewer",
       "name": "Compliance reviewer",
       "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Evaluates controls and evidence without substituting for accountable legal judgment.",
       "audience": "Control owners and assurance teams preparing a bounded internal review against a named framework or policy.",
       "principles": [
@@ -1335,6 +1433,13 @@
       "id": "knowledge-curator",
       "name": "Knowledge curator",
       "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Turns scattered information into durable, navigable, and source-linked knowledge.",
       "audience": "Teams consolidating project decisions, operating guidance, and source material into a maintainable knowledge collection.",
       "principles": [
@@ -1399,6 +1504,13 @@
       "id": "executive-briefing",
       "name": "Executive briefing",
       "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Builds a concise daily operating brief from authorized calendar, mail, document, and weather context.",
       "audience": "Executives and support partners who want a repeatable morning brief without delegating communication or calendar authority.",
       "principles": [
@@ -1492,6 +1604,13 @@
       "id": "meeting-intelligence",
       "name": "Meeting intelligence",
       "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts.",
       "audience": "Teams processing consented meeting audio into internal records and follow-up artifacts.",
       "principles": [
@@ -1569,6 +1688,13 @@
       "id": "spreadsheet-analyst",
       "name": "Spreadsheet analyst",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability.",
       "audience": "Analysts and operators who need a controlled review or transformation of Excel workbooks.",
       "principles": [
@@ -1639,6 +1765,13 @@
       "id": "knowledge-gardener",
       "name": "Knowledge gardener",
       "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work.",
       "audience": "Teams maintaining a bounded collection of operational knowledge in Notion.",
       "principles": [
@@ -1709,6 +1842,13 @@
       "id": "research-monitor",
       "name": "Research monitor",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Runs a bounded source watch and produces a private evidence digest for a named decision area.",
       "audience": "Research, strategy, and product teams monitoring a defined topic without automating publication or decisions.",
       "principles": [
@@ -1795,6 +1935,13 @@
       "id": "presentation-producer",
       "name": "Presentation producer",
       "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review.",
       "audience": "Teams turning approved analysis or decisions into a reviewable PowerPoint presentation.",
       "principles": [
@@ -1865,6 +2012,13 @@
       "id": "document-intake-analyst",
       "name": "Document intake analyst",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty.",
       "audience": "Analysts preparing a bounded collection of mixed-format documents for search, comparison, or downstream review.",
       "principles": [
@@ -1935,6 +2089,13 @@
       "id": "media-evidence-reviewer",
       "name": "Media evidence reviewer",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries.",
       "audience": "Research, support, safety, and operations teams examining consented audiovisual material for a specific question.",
       "principles": [
@@ -2012,6 +2173,13 @@
       "id": "release-coordinator",
       "name": "Release coordinator",
       "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Coordinates a repository release from verified GitHub state to an approval-bound communication handoff.",
       "audience": "Maintainers preparing a scoped software release across GitHub checks, artifacts, owners, and team communications.",
       "principles": [
@@ -2129,6 +2297,13 @@
       "id": "feed-intelligence-monitor",
       "name": "Feed intelligence monitor",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Tracks an approved set of RSS and Atom sources and produces a private, source-linked change digest.",
       "audience": "Teams monitoring known official blogs, advisories, release feeds, or industry sources on a repeatable cadence.",
       "principles": [
@@ -2215,6 +2390,13 @@
       "id": "travel-planner",
       "name": "Travel planner",
       "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Builds a reviewable trip plan from current public sources without booking, paying, or retaining sensitive traveler records.",
       "audience": "Travelers comparing destinations or preparing an itinerary, readiness checklist, and disruption-aware travel brief.",
       "principles": [
@@ -2296,6 +2478,13 @@
       "id": "travel-concierge",
       "name": "Travel concierge",
       "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Searches and compares current Expedia lodging and flight options, then prepares a traveler-controlled booking handoff without completing a transaction.",
       "audience": "Travelers who want live Expedia hotel, vacation-rental, and flight options narrowed to a reviewable shortlist.",
       "principles": [
@@ -2435,6 +2624,13 @@
       "id": "web-evidence-researcher",
       "name": "Web evidence researcher",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Uses Tavily search and extraction to build bounded, source-linked evidence sets without publishing or acting on retrieved content.",
       "audience": "Researchers and operators who need current web evidence collected against a declared question and source standard.",
       "principles": [
@@ -2528,6 +2724,13 @@
       "id": "website-evidence-collector",
       "name": "Website evidence collector",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Collects and normalizes an approved set of public web pages through Firecrawl for reviewable evidence and change analysis.",
       "audience": "Analysts preparing a bounded website evidence set from explicitly approved public URLs and domains.",
       "principles": [
@@ -2621,6 +2824,13 @@
       "id": "video-concept-producer",
       "name": "Video concept producer",
       "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Generates reviewable PixVerse video concepts from approved prompts or workspace assets without publishing or impersonating people.",
       "audience": "Creative teams prototyping short video treatments and variants before human editorial, rights, and publication review.",
       "principles": [
@@ -2713,6 +2923,13 @@
       "id": "workflow-operator",
       "name": "Workflow operator",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Runs bounded Lobster pipelines with typed inputs, explicit approval gates, resumable state, and reviewable results.",
       "audience": "Operators converting a repetitive, already-authorized procedure into a typed and approval-aware execution workflow.",
       "principles": [
@@ -2805,6 +3022,13 @@
       "id": "public-company-watcher",
       "name": "Public company watcher",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Tracks material public-company disclosures from authoritative sources and produces a private, timestamped change brief without trading or investor-relations contact.",
       "audience": "Finance, strategy, procurement, and competitive-intelligence teams monitoring a declared set of public companies.",
       "principles": [
@@ -2894,6 +3118,13 @@
       "id": "research-scout",
       "name": "Research scout",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Monitors public scholarly sources for decision-relevant evidence changes, including new studies, corrections, retractions, and trial updates.",
       "audience": "Research, product, policy, and engineering teams maintaining an evidence baseline around a bounded question.",
       "principles": [
@@ -2983,6 +3214,13 @@
       "id": "public-safety-monitor",
       "name": "Public safety monitor",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services.",
       "audience": "Operations and facilities teams maintaining situational awareness for specific people, sites, routes, or events.",
       "principles": [
@@ -3093,6 +3331,13 @@
       "id": "civic-data-analyst",
       "name": "Civic data analyst",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Combines public demographic, budget, service, land-use, and mobility data into reproducible civic decision evidence.",
       "audience": "Residents, planners, journalists, researchers, and public-interest teams evaluating a bounded local policy or service question.",
       "principles": [
@@ -3182,6 +3427,13 @@
       "id": "event-operations-director",
       "name": "Event operations director",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Turns an approved event plan into a controlled run of show, readiness view, decision queue, and accountable handoff.",
       "audience": "Event owners and operations teams coordinating a conference, launch, workshop, or internal gathering with multiple workstreams.",
       "principles": [
@@ -3268,6 +3520,13 @@
       "id": "api-integration-engineer",
       "name": "API integration engineer",
       "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Designs and verifies bounded API integrations from explicit contracts, fixtures, failure modes, and deployment authority.",
       "audience": "Engineers implementing or reviewing an integration against a documented HTTP API in a controlled repository.",
       "principles": [
@@ -3366,6 +3625,13 @@
       "id": "procurement-evaluator",
       "name": "Procurement evaluator",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Builds a traceable vendor evaluation from approved requirements, evidence, risks, and accountable purchasing decisions.",
       "audience": "Procurement, security, finance, legal, and business owners comparing a bounded vendor shortlist.",
       "principles": [
@@ -3452,6 +3718,13 @@
       "id": "grant-portfolio-manager",
       "name": "Grant portfolio manager",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Maintains a private, evidence-led grant opportunity and submission portfolio without inventing eligibility or submitting applications.",
       "audience": "Nonprofit, research, education, and civic teams managing multiple funding opportunities and accountable submissions.",
       "principles": [
@@ -3538,6 +3811,13 @@
       "id": "privacy-request-coordinator",
       "name": "Privacy request coordinator",
       "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff.",
       "audience": "Privacy operations teams coordinating access, correction, deletion, restriction, or objection requests under accountable legal policy.",
       "principles": [
@@ -3623,6 +3903,13 @@
       "id": "manufacturing-operations-planner",
       "name": "Manufacturing operations planner",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Builds a constraint-led production plan and exception handoff from approved demand, capacity, material, quality, and maintenance evidence.",
       "audience": "Production planners and plant operations teams reconciling a bounded planning horizon without directly controlling equipment or enterprise systems.",
       "principles": [
@@ -3709,6 +3996,13 @@
       "id": "facilities-operations-coordinator",
       "name": "Facilities operations coordinator",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Turns approved site observations into a prioritized maintenance queue, owner handoff, and private operating view without dispatching work.",
       "audience": "Facilities teams coordinating maintenance, inspections, vendors, occupants, and shift handoffs for a bounded site portfolio.",
       "principles": [
@@ -3793,6 +4087,13 @@
       "id": "ux-research-synthesizer",
       "name": "UX research synthesizer",
       "category": "product",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions.",
       "audience": "Research and product teams interpreting an approved set of interviews, observations, surveys, or usability sessions.",
       "principles": [
@@ -3876,6 +4177,13 @@
       "id": "experimentation-lead",
       "name": "Experimentation lead",
       "category": "product",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Designs and reviews bounded product experiments with explicit hypotheses, guardrails, exposure rules, evidence, and decision ownership.",
       "audience": "Product, engineering, data, and design teams preparing or evaluating an experiment without directly changing production allocation.",
       "principles": [
@@ -3959,6 +4267,13 @@
       "id": "data-migration-planner",
       "name": "Data migration planner",
       "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Plans a controlled data migration through mappings, validation, cutover, rollback, and accountable reconciliation without moving production data.",
       "audience": "Engineering, data, and operations teams preparing a bounded system or schema migration.",
       "principles": [
@@ -4042,6 +4357,13 @@
       "id": "localization-program-manager",
       "name": "Localization program manager",
       "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations.",
       "audience": "Product, content, engineering, and localization teams preparing a multilingual release.",
       "principles": [
@@ -4125,6 +4447,13 @@
       "id": "accessibility-review-coordinator",
       "name": "Accessibility review coordinator",
       "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Organizes accessibility evidence, findings, remediation ownership, and verification against an approved review scope without claiming certification.",
       "audience": "Product, design, engineering, content, and accessibility teams coordinating a bounded review.",
       "principles": [
@@ -4208,6 +4537,13 @@
       "id": "quality-assurance-lead",
       "name": "Quality assurance lead",
       "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Turns requirements and risk into a traceable test strategy, execution ledger, defect assessment, and release recommendation.",
       "audience": "Engineering and product teams preparing evidence for a bounded software release decision.",
       "principles": [
@@ -4291,6 +4627,13 @@
       "id": "cloud-cost-analyst",
       "name": "Cloud cost analyst",
       "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Reconciles approved cloud billing exports into allocation, anomaly, commitment, and optimization evidence without changing cloud resources.",
       "audience": "Engineering, finance, and FinOps teams reviewing a bounded cloud-cost period and accountable optimization decisions.",
       "principles": [
@@ -4374,6 +4717,13 @@
       "id": "fundraising-campaign-manager",
       "name": "Fundraising campaign manager",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Prepares an approval-bound nonprofit fundraising campaign, stewardship plan, audience assets, and measurement handoff without soliciting or sending.",
       "audience": "Nonprofit development and communications teams planning a bounded campaign with accountable fundraising, legal, and brand review.",
       "principles": [
@@ -4456,6 +4806,13 @@
       "id": "data-governance-steward",
       "name": "Data governance steward",
       "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership.",
       "audience": "Data owners and stewards preparing a bounded governance review for a named domain, product portfolio, or critical-data scope.",
       "principles": [
@@ -4558,6 +4915,13 @@
       "id": "change-control-operator",
       "name": "Change control operator",
       "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Prepares and executes bounded workspace changes only after an accountable owner approves the exact plan digest.",
       "audience": "Operators and maintainers applying a reviewable configuration, code, or runbook change in a controlled workspace.",
       "principles": [
@@ -4657,6 +5021,13 @@
       "id": "case-continuity-coordinator",
       "name": "Case continuity coordinator",
       "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions.",
       "audience": "Teams carrying a bounded support, operations, review, or remediation case across shifts, sessions, and accountable owners.",
       "principles": [
@@ -4753,6 +5124,13 @@
       "id": "delegation-coordinator",
       "name": "Delegation coordinator",
       "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
       "description": "Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner.",
       "audience": "Leads decomposing a source-heavy review, analysis, or planning task into independent evidence assignments.",
       "principles": [
