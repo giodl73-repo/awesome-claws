@@ -42,9 +42,10 @@ npm run build
 ```
 
 The scaffolder creates an X3 artifact starter, its source resources, Experience
-entry, and durable contribution record. It temporarily copies the Executive
-Assistant screenshot so the package can materialize. That duplicate
-intentionally fails `npm run check` until replaced by current Control UI proof:
+entry, deterministic regression contract, and durable contribution record. It
+temporarily copies the Executive Assistant screenshot so the package can
+materialize. That duplicate intentionally fails `npm run check` until replaced
+by current Control UI proof:
 
 ```bash
 git clone https://github.com/openclaw/openclaw.git /path/to/openclaw
@@ -53,6 +54,10 @@ SCREENSHOT_ONLY=my-claw \
 npm run screenshots
 npm run check
 ```
+
+The reference evaluator exercises the accepted catalog example, one
+missing-evidence case, and one unapproved-authority case. The contract also pins
+the complete Experience surface and all capability-bearing configuration.
 
 Do not add a new id to `contribution-policy.json`. That list freezes the
 pre-policy catalog; all later Claws require a reviewable contribution record.
@@ -81,6 +86,16 @@ generated files under `claws/`.
    per-Claw source directory. Keep executable behavior in reviewed skills or
    harness extensions.
 8. Regenerate and validate the repository.
+
+Keep `regression-cases.json` aligned when an existing Claw changes its intake,
+boundaries, Experience surface, or capabilities. After reviewing the behavior
+change, regenerate the exact snapshot with:
+
+```bash
+npm run test:regression -- --update
+```
+
+Review the resulting diff; do not update a contract merely to hide drift.
 
 Start at X3 unless the repeatable job needs a visual or persistent dashboard.
 See the admission guide for X3/X4/X5 and capability-specific proof.

@@ -60,6 +60,12 @@ const definitions = [
   },
 ];
 
+export function capabilityClassesForEntry(entry, experience) {
+  return definitions
+    .filter((definition) => definition.matches(entry, experience))
+    .map((definition) => definition.id);
+}
+
 export const capabilityRepresentatives = Object.freeze({
   "clawhub-skill": "customer-support",
   "clawhub-plugin": "workflow-operator",

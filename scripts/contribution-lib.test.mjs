@@ -11,6 +11,7 @@ import {
   validateContributionProposal,
 } from "./contribution-lib.mjs";
 import { scaffoldClaw } from "./create-claw.mjs";
+import { regressionCaseFor } from "./regression-cases.mjs";
 import { validateContributions } from "./validate-contributions.mjs";
 
 const existing = [
@@ -184,6 +185,24 @@ test("scaffolder creates a neutral X3 source package and contribution record", a
       )}\n`,
     );
     await writeFile(
+      join(targetRoot, "regression-cases.json"),
+      `${JSON.stringify(
+        {
+          schemaVersion: 1,
+          requiredCases: [
+            "accepted-request",
+            "missing-evidence",
+            "authority-boundary",
+            "output-fallback",
+            "capability-limits",
+          ],
+          cases: [],
+        },
+        null,
+        2,
+      )}\n`,
+    );
+    await writeFile(
       join(targetRoot, "contribution-policy.json"),
       `${JSON.stringify(
         { schemaVersion: 1, grandfatheredIds: existing.map((entry) => entry.id) },
@@ -216,6 +235,18 @@ test("scaffolder creates a neutral X3 source package and contribution record", a
     assert.equal(result.id, proposal.entry.id);
     const catalog = JSON.parse(await readFile(join(targetRoot, "catalog.json"), "utf8"));
     assert.ok(catalog.entries.some((entry) => entry.id === proposal.entry.id));
+    const regression = JSON.parse(
+      await readFile(join(targetRoot, "regression-cases.json"), "utf8"),
+    );
+    assert.deepEqual(
+      regression.cases.find((item) => item.id === proposal.entry.id),
+      regressionCaseFor(proposal.entry, {
+        target: 3,
+        primary: "artifact",
+        output: `outputs/${proposal.entry.id}-handoff.md`,
+        fallback: "text",
+      }),
+    );
     const handoff = await readFile(
       join(
         targetRoot,

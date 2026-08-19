@@ -1,9 +1,9 @@
 {
   "schemaVersion": "awesomeClaws.sessionDemo.v1",
   "claw": "change-control-operator",
-  "scenario": "Update the staging retry limit after exact owner approval.",
+  "scenario": "Update the staging service's checked-in retry limit from three to five, run the focused configuration test, and do not touch production or deploy anything.",
   "messages": [
-    { "role": "user", "text": "Prepare an exact plan before changing anything." },
+    { "role": "user", "text": "Update the staging service's checked-in retry limit from three to five, run the focused configuration test, and do not touch production or deploy anything." },
     { "role": "agent", "text": "I wrote the scoped plan and digest; execution remains blocked pending the owner's decision." },
     { "role": "user", "text": "The owner approved this exact digest." },
     { "role": "agent", "text": "I executed only that plan and preserved step, verification, and rollback evidence." }

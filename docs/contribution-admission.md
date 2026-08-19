@@ -48,6 +48,14 @@ score can make the product decision.
 Start with X3 unless the job genuinely requires richer presentation. A higher
 tier does not make a weak or duplicate job distinct.
 
+Every tier also requires one entry in `regression-cases.json`. The deterministic
+reference evaluator executes accepted, missing-evidence, and unapproved-authority
+vectors against the exact request, intake, and boundary contract for every Claw.
+It also pins the complete Experience surface and a digest of capability-bearing
+configuration. This is package-contract regression proof, not an LLM evaluation
+or a replacement for Experience, installed lifecycle, visual, or live-provider
+proof.
+
 ## Stable identity
 
 Claw ids are lowercase descriptive slugs such as `change-control-operator`.

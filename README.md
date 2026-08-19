@@ -59,6 +59,16 @@ packaged, inert HTML asset and `show_widget`; dashboard applications additionall
 use stable widget names and pin only after the user accepts the persistent view.
 Unsupported clients lose presentation, not meaning or control.
 
+Every starter also has one deterministic contract in
+[`regression-cases.json`](regression-cases.json). The shared reference evaluator
+executes accepted, missing-evidence, and unapproved-authority vectors against
+each Claw's exact request, intake, and boundary contract. The registry also pins
+its complete Experience surface and a digest of all declared capability-bearing
+configuration. Run `npm run test:regression` for this fast catalog-wide check.
+It validates deterministic package contracts and materialized instructions; it
+does not execute or grade an LLM, replace installed lifecycle proof, or claim
+live-provider behavior.
+
 | Claw | Category | Capabilities | Focus |
 | --- | --- | --- | --- |
 | [Incident response](claws/incident-response) | Engineering | Daily isolated cron, incident schema, bounded profile, inline visual | Evidence-led incident coordination |
@@ -177,8 +187,8 @@ npm run build
 npm run check
 ```
 
-`npm run check` verifies generated output, package consistency, Experience-case
-coverage, content quality, and basic secret hygiene. Maintainers can set
+`npm run check` verifies generated output, package consistency, Experience and
+regression coverage, content quality, and basic secret hygiene. Maintainers can set
 `CLAWS_CLI_ENTRY` and run
 `npm run inspect` to inspect every package with a standalone Claws reference
 CLI. With `CLAWS_CLI_ENTRY` and `OPENCLAW_CLI_ENTRY` set to compatible built
