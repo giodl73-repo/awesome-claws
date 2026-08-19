@@ -39,7 +39,7 @@ must be among the current five nearest matches. Then scaffold and build:
 
 ```bash
 npm run create:claw -- --proposal ../my-claw.json
-npm run build
+npm run prepare:claw -- my-claw
 ```
 
 The scaffolder creates an X3 artifact starter, its source resources, Experience
@@ -59,6 +59,13 @@ npm run check
 The reference evaluator exercises the accepted catalog example, one
 missing-evidence case, and one unapproved-authority case. The contract also pins
 the complete Experience surface and all capability-bearing configuration.
+
+Use `npm run test:claw -- <id-or-filter>` for a quick materialization and
+regression pass while iterating. Add `--visual`, `--installed`, or `--live` only
+when the selected Claw needs that lane and its prerequisites are available.
+Every run writes aggregate and per-Claw summaries and logs under
+`.tmp/claw-runs/`; `--live` means declared dependency health, not live model
+quality.
 
 Do not add a new id to `contribution-policy.json`. That list freezes the
 pre-policy catalog; all later Claws require a reviewable contribution record.

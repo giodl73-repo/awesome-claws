@@ -26,7 +26,22 @@ async function findInstalledBrowser() {
 }
 
 const catalog = await readCatalog();
-const visualCases = (await readExperienceCases(catalog)).filter((item) => item.target >= 4);
+const requestedIds = new Set(
+  (process.env.EXPERIENCE_ONLY ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean),
+);
+const unknownIds = [...requestedIds].filter(
+  (id) => !catalog.entries.some((entry) => entry.id === id),
+);
+if (unknownIds.length > 0) {
+  throw new Error(`Unknown EXPERIENCE_ONLY Claw ids: ${unknownIds.join(", ")}`);
+}
+const visualCases = (await readExperienceCases(catalog)).filter(
+  (item) =>
+    item.target >= 4 && (requestedIds.size === 0 || requestedIds.has(item.id)),
+);
 const proofRoot = resolve(
   process.env.EXPERIENCE_PROOF_DIR ?? join(root, ".tmp", "experience-assets"),
 );

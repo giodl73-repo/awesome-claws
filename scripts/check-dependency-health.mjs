@@ -239,8 +239,23 @@ async function runPool(items, concurrency, worker) {
   return results;
 }
 
-export async function runDependencyHealth() {
-  const inventory = buildDependencyInventory(await readCatalog());
+export async function runDependencyHealth({ onlyIds } = {}) {
+  const catalog = await readCatalog();
+  const requestedIds = new Set(onlyIds ?? []);
+  const unknownIds = [...requestedIds].filter(
+    (id) => !catalog.entries.some((entry) => entry.id === id),
+  );
+  if (unknownIds.length > 0) {
+    throw new Error(`Unknown dependency-health Claw ids: ${unknownIds.join(", ")}`);
+  }
+  const selectedCatalog =
+    requestedIds.size === 0
+      ? catalog
+      : {
+          ...catalog,
+          entries: catalog.entries.filter((entry) => requestedIds.has(entry.id)),
+        };
+  const inventory = buildDependencyInventory(selectedCatalog);
   const checks = await runPool(inventory, 4, async (dependency) => {
     const startedAt = new Date().toISOString();
     const label = `${dependency.ref ?? dependency.url}${dependency.version ? `@${dependency.version}` : ""}`;
@@ -270,11 +285,16 @@ export async function runDependencyHealth() {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const evidenceRoot = join(root, ".tmp", "dependency-health");
+  const evidenceRoot =
+    process.env.DEPENDENCY_HEALTH_DIR ?? join(root, ".tmp", "dependency-health");
   await mkdir(evidenceRoot, { recursive: true });
   let summary;
   try {
-    summary = await runDependencyHealth();
+    const onlyIds = (process.env.DEPENDENCY_HEALTH_ONLY ?? "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+    summary = await runDependencyHealth({ onlyIds });
   } catch (error) {
     summary = {
       schemaVersion: "awesomeClaws.dependencyHealth.v1",
