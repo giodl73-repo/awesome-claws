@@ -34,3 +34,5 @@ Explain why this is not a small improvement or variant of the nearest existing C
 
 <!-- For a new Claw: New Claw / Improve existing / Variant / Needs product decision.
 Do not treat similarity scoring as the decision. -->
+
+- [ ] Accountable maintainer and `lastVerified` date are current

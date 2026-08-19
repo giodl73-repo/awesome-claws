@@ -1,0 +1,91 @@
+name: Compatibility Canary
+
+on:
+  workflow_dispatch:
+    inputs:
+      openclaw_ref:
+        description: Exact OpenClaw branch, tag, or SHA to exercise
+        required: true
+        default: main
+  schedule:
+    - cron: "41 10 * * 1"
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  catalog-compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          repository: openclaw/openclaw
+          ref: ${{ inputs.openclaw_ref || 'main' }}
+          path: openclaw
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          repository: giodl73-repo/claws
+          ref: ae541e00a9106075efb0912e3d16457b88878c87
+          path: claws-cli
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24.15.0
+          cache: npm
+      - run: corepack enable
+      - run: npm ci
+      - run: corepack pnpm install --frozen-lockfile
+        working-directory: openclaw
+      - run: corepack pnpm build
+        working-directory: openclaw
+      - run: corepack pnpm install --frozen-lockfile
+        working-directory: claws-cli
+      - run: corepack pnpm build
+        working-directory: claws-cli
+      - name: Exercise every Claw against current OpenClaw
+        env:
+          CLAWS_CLI_ENTRY: ${{ github.workspace }}/claws-cli/packages/cli/dist/cli.mjs
+          OPENCLAW_CLI_ENTRY: ${{ github.workspace }}/openclaw/openclaw.mjs
+        run: npm run proof:compatibility
+      - name: Track persistent scheduled drift
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          previous_conclusion="$(
+            gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/compatibility-canary.yml/runs?event=schedule&status=completed&per_page=1" \
+              --jq '.workflow_runs[0].conclusion // "none"'
+          )"
+          if [[ "$previous_conclusion" != "failure" ]]; then
+            echo "First scheduled failure; preserving evidence without opening an issue."
+            exit 0
+          fi
+
+          body=".tmp/compatibility-canary/summary.md"
+          if [[ ! -f "$body" ]]; then
+            mkdir -p "$(dirname "$body")"
+            printf '# Awesome Claws compatibility canary\n\nThe canary failed before producing a per-Claw report.\n\nRun: %s/actions/runs/%s\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" > "$body"
+          fi
+          printf '\nRun: %s/actions/runs/%s\n' \
+            "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" >> "$body"
+
+          issue_number="$(
+            gh issue list --state open --search '"Compatibility canary drift" in:title' \
+              --json number --jq '.[0].number // empty'
+          )"
+          if [[ -n "$issue_number" ]]; then
+            gh issue comment "$issue_number" --body-file "$body"
+          else
+            gh issue create --title "Compatibility canary drift" --body-file "$body"
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: compatibility-canary
+          path: .tmp/compatibility-canary
+          if-no-files-found: error

@@ -41,9 +41,14 @@ adapt. The other starters demonstrate different application shapes between
 those two points; they are not expected to contain the same components.
 
 Use the generated [catalog chooser](CHOOSER.md) to compare every starter by
-setup burden, external dependencies, Experience proof tier, category, and
-boundary-attention level. The same derived data is available as
+maintenance state, accountable maintainer, setup burden, external dependencies,
+Experience proof tier, category, and boundary-attention level. The same derived data is available as
 [`catalog-chooser.json`](catalog-chooser.json) for tools and other catalogs.
+
+All current Claws are actively maintained by
+[@giodl73-repo](https://github.com/giodl73-repo). Catalog maintenance metadata
+supports additional maintainers and eventual ownership transfer without changing
+the portable package contract.
 
 Every starter also gives its generated `SOUL.md` a role-specific identity. The
 collection intentionally ranges from light theming, such as the copyable
@@ -248,6 +253,12 @@ OpenClaw adapter in disposable state.
   scheduled and manually dispatchable Dependency Health workflow writes
   machine-readable evidence under `.tmp/dependency-health/`; live registry and
   third-party checks intentionally do not run in pull-request CI.
+- `npm run proof:compatibility` runs every Claw's complete deterministic
+  lifecycle against the selected OpenClaw checkout, preserves per-Claw results
+  and logs under `.tmp/compatibility-canary/`, and fails closed on missing
+  coverage. The scheduled Compatibility Canary tracks moving `openclaw/main`;
+  required pull-request proof remains pinned. Two consecutive scheduled failures
+  open or update one drift issue instead of silently changing catalog packages.
 - With `PORTFOLIO_ONLY=data-analyst` and `PORTFOLIO_VISUAL_RUNTIME=1`,
   portfolio proof runs the representative visual contract through an
   inline-widget-capable Gateway client and a scripted OpenAI-compatible fixture

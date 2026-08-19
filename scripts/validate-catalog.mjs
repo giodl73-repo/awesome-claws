@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { Cron } from "croner";
 import { parseDocument } from "yaml";
 import { readCatalog, sourceRoot } from "./catalog-source.mjs";
+import { maintenanceErrors } from "./catalog-health.mjs";
 import {
   validateManifestMetadata,
   validateOpenClawProfile,
@@ -166,6 +167,11 @@ for (const entry of catalog.entries) {
   }
   ids.add(entry.id);
   names.add(entry.name);
+
+  const healthErrors = maintenanceErrors(entry.maintenance);
+  if (healthErrors.length > 0) {
+    throw new Error(`${entry.id} has invalid maintenance metadata: ${healthErrors.join("; ")}`);
+  }
 
   const minimumItems = {
     principles: 3,
