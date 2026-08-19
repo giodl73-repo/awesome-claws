@@ -16,6 +16,7 @@
       "heightened": "Plugin runtime, native extension, network MCP, scheduled execution, or full tool profile."
     },
     "proofTier": "Derived from the authoritative Experience case target.",
+    "proofLanes": "Static, regression, and installed proof apply to every Claw. Visual and dependency-live lanes are derived from Experience and dependency metadata.",
     "maintenanceStatus": {
       "active": "Maintained and accepting ordinary improvements.",
       "needs-help": "Still supported, but an additional maintainer is needed.",
@@ -44,6 +45,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -72,6 +82,16 @@
       },
       "externalDependencies": [],
       "proofTier": "X5",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual",
+        "workspace-execution"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -100,6 +120,12 @@
       },
       "externalDependencies": [],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -128,6 +154,14 @@
       },
       "externalDependencies": [],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [
+        "workspace-execution"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -162,6 +196,15 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -190,6 +233,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -218,6 +270,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -246,6 +307,12 @@
       },
       "externalDependencies": [],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
       "boundaryAttention": {
         "level": "standard",
         "reasons": [
@@ -280,6 +347,17 @@
         }
       ],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill",
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -309,6 +387,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -337,6 +424,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -365,6 +461,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -393,6 +498,14 @@
       },
       "externalDependencies": [],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [
+        "delegated-sessions"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -427,6 +540,15 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -455,6 +577,16 @@
       },
       "externalDependencies": [],
       "proofTier": "X5",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "bootstrap",
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -485,6 +617,14 @@
       },
       "externalDependencies": [],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [
+        "bootstrap"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -525,6 +665,16 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill",
+        "cron"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -553,6 +703,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -581,6 +740,16 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "bootstrap",
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -617,6 +786,16 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill",
+        "cron"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -652,6 +831,16 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill",
+        "bootstrap"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -681,6 +870,14 @@
       },
       "externalDependencies": [],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [
+        "bootstrap"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -709,6 +906,16 @@
       },
       "externalDependencies": [],
       "proofTier": "X5",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "bootstrap",
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -739,6 +946,16 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "cron",
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -767,6 +984,12 @@
       },
       "externalDependencies": [],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
       "boundaryAttention": {
         "level": "standard",
         "reasons": [
@@ -801,6 +1024,15 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -829,6 +1061,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -857,6 +1098,16 @@
       },
       "externalDependencies": [],
       "proofTier": "X5",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "bootstrap",
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -898,6 +1149,15 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -937,6 +1197,15 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -971,6 +1240,15 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -999,6 +1277,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X5",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -1028,6 +1315,16 @@
       },
       "externalDependencies": [],
       "proofTier": "X5",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "bootstrap",
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -1058,6 +1355,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -1086,6 +1392,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -1121,6 +1436,16 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill",
+        "cron"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -1161,6 +1486,16 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill",
+        "cron"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -1189,6 +1524,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -1217,6 +1561,12 @@
       },
       "externalDependencies": [],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
       "boundaryAttention": {
         "level": "standard",
         "reasons": [
@@ -1256,6 +1606,17 @@
         }
       ],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill",
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -1285,6 +1646,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -1320,6 +1690,16 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-plugin",
+        "cron"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -1356,6 +1736,16 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill",
+        "cron"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -1384,6 +1774,12 @@
       },
       "externalDependencies": [],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
       "boundaryAttention": {
         "level": "standard",
         "reasons": [
@@ -1412,6 +1808,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -1453,6 +1858,17 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "profile-extension",
+        "oauth-mcp",
+        "workspace-execution"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -1489,6 +1905,15 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -1532,6 +1957,20 @@
         }
       ],
       "proofTier": "X5",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "profile-extension",
+        "oauth-mcp",
+        "cron",
+        "bootstrap",
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -1573,6 +2012,15 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-skill"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -1601,6 +2049,15 @@
       },
       "externalDependencies": [],
       "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -1635,6 +2092,15 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-plugin"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -1669,6 +2135,15 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-plugin"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -1703,6 +2178,15 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-plugin"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [
@@ -1737,6 +2221,15 @@
         }
       ],
       "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "clawhub-plugin"
+      ],
       "boundaryAttention": {
         "level": "heightened",
         "reasons": [

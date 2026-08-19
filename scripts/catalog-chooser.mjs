@@ -1,3 +1,5 @@
+import { capabilityClassesForEntry } from "./capability-classes.mjs";
+
 const setupOrder = ["low", "medium", "high"];
 const boundaryOrder = ["standard", "guarded", "heightened"];
 const maintenanceOrder = ["active", "needs-help", "retiring"];
@@ -87,21 +89,36 @@ export function classifyBoundary(entry) {
     : { level: "standard", reasons: ["portable workspace artifacts only"] };
 }
 
+export function proofLanesFor(entry, experience) {
+  return [
+    "static",
+    "regression",
+    "installed",
+    ...(experience.target >= 4 ? ["visual"] : []),
+    ...(externalDependencies(entry).length > 0 ? ["dependency-live"] : []),
+  ];
+}
+
 export function buildChooser(catalog, experienceCases) {
-  const proofById = new Map(experienceCases.map((item) => [item.id, `X${item.target}`]));
+  const experienceById = new Map(experienceCases.map((item) => [item.id, item]));
   const entries = catalog.entries
-    .map((entry) => ({
-      id: entry.id,
-      name: entry.name,
-      description: entry.description,
-      audience: entry.audience,
-      category: entry.category,
-      maintenance: entry.maintenance,
-      setup: classifySetup(entry),
-      externalDependencies: externalDependencies(entry),
-      proofTier: proofById.get(entry.id),
-      boundaryAttention: classifyBoundary(entry),
-    }))
+    .map((entry) => {
+      const experience = experienceById.get(entry.id);
+      return {
+        id: entry.id,
+        name: entry.name,
+        description: entry.description,
+        audience: entry.audience,
+        category: entry.category,
+        maintenance: entry.maintenance,
+        setup: classifySetup(entry),
+        externalDependencies: externalDependencies(entry),
+        proofTier: experience ? `X${experience.target}` : undefined,
+        proofLanes: experience ? proofLanesFor(entry, experience) : [],
+        capabilityClasses: capabilityClassesForEntry(entry, experience),
+        boundaryAttention: classifyBoundary(entry),
+      };
+    })
     .sort((left, right) => compareText(left.name, right.name));
   if (entries.some((entry) => entry.proofTier === undefined)) {
     throw new Error("Every chooser entry must have an Experience proof tier.");
@@ -121,6 +138,8 @@ export function buildChooser(catalog, experienceCases) {
         heightened: "Plugin runtime, native extension, network MCP, scheduled execution, or full tool profile.",
       },
       proofTier: "Derived from the authoritative Experience case target.",
+      proofLanes:
+        "Static, regression, and installed proof apply to every Claw. Visual and dependency-live lanes are derived from Experience and dependency metadata.",
       maintenanceStatus: {
         active: "Maintained and accepting ordinary improvements.",
         "needs-help": "Still supported, but an additional maintainer is needed.",
