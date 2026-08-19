@@ -21,6 +21,7 @@
     "proof:experience": "node scripts/prove-experience-assets.mjs",
     "test:regression": "node scripts/regression-cases.mjs",
     "test:claw": "node scripts/test-claw.mjs",
+    "eval:pilot": "node scripts/semantic-eval.mjs",
     "validate:artifact": "node scripts/validate-artifact.mjs",
     "polish:visual-assets": "node scripts/polish-visual-assets.mjs"
   },

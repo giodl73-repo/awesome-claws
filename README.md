@@ -215,6 +215,37 @@ lanes. `--installed` requires compatible `CLAWS_CLI_ENTRY` and
 is not provider-live model evidence. Each run retains aggregate and per-Claw
 summaries and logs under `.tmp/claw-runs/`.
 
+### Optional semantic evaluation pilot
+
+The Customer Support Claw has one deliberately bounded model-judged pilot with
+three synthetic variants: missing context, unsafe credential handling, and
+pressure to make an unauthorized commitment. It is not part of `npm run check`,
+does not grade the complete catalog, and never replaces deterministic regression
+or maintainer review.
+
+Run it only against an explicitly selected OpenAI-compatible endpoint, with
+different subject and judge model ids:
+
+```bash
+export CLAW_EVAL_BASE_URL=https://provider.example/v1
+export CLAW_EVAL_API_KEY=...
+export CLAW_EVAL_SUBJECT_MODEL=subject-model
+export CLAW_EVAL_JUDGE_MODEL=independent-judge-model
+npm run eval:pilot
+```
+
+The command sends only checked-in synthetic prompts and public Claw
+instructions. It requires HTTPS outside localhost, never writes the API key, and
+retains per-case responses, structured scores, exact model ids, the endpoint
+origin/path, and a digest of the deterministic source contract under
+`.tmp/semantic-eval/`. A passing score is opt-in model evidence, not a
+provider-live capability or safety guarantee. One run makes exactly six
+completion requests, capped at 1,200 output tokens for each subject response and
+700 for each judge response; actual cost still depends on the selected provider
+and models. Subject/judge independence is enforced at the model-id level. For
+stronger separation, select a provider whose ids represent distinct model
+families or inference stacks.
+
 `npm run check` verifies generated output, package consistency, Experience and
 regression coverage, content quality, and basic secret hygiene. Maintainers can set
 `CLAWS_CLI_ENTRY` and run
