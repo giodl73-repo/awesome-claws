@@ -1,9 +1,9 @@
 {
   "schemaVersion": "awesomeClaws.sessionDemo.v1",
   "claw": "delegation-coordinator",
-  "scenario": "Delegate independent vendor evidence checks and reconcile results.",
+  "scenario": "Split this vendor review into independent security, accessibility, and operations evidence checks, then reconcile the results for my decision.",
   "messages": [
-    { "role": "user", "text": "Split this review into three independent evidence checks." },
+    { "role": "user", "text": "Split this vendor review into independent security, accessibility, and operations evidence checks, then reconcile the results for my decision." },
     { "role": "agent", "text": "I created bounded assignments with source sets, stop conditions, and no delegated decision authority." },
     { "role": "user", "text": "Reconcile the results for my decision." },
     { "role": "agent", "text": "I preserved worker provenance, gaps, and disagreement and prepared an owner-review synthesis." }

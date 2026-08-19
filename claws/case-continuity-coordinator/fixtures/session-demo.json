@@ -1,9 +1,9 @@
 {
   "schemaVersion": "awesomeClaws.sessionDemo.v1",
   "claw": "case-continuity-coordinator",
-  "scenario": "Resume case CS-1842 from the prior shift checkpoint.",
+  "scenario": "Resume case CS-1842 from yesterday's handoff, identify anything stale, and prepare the next shift checkpoint without closing the case.",
   "messages": [
-    { "role": "user", "text": "Resume this case and identify stale evidence." },
+    { "role": "user", "text": "Resume case CS-1842 from yesterday's handoff, identify anything stale, and prepare the next shift checkpoint without closing the case." },
     { "role": "agent", "text": "I verified the checkpoint chain and separated current evidence from stale or missing state." },
     { "role": "user", "text": "Prepare the next handoff but do not close it." },
     { "role": "agent", "text": "I appended a resume checkpoint with open actions and preserved owner-controlled closure." }

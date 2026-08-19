@@ -6,6 +6,7 @@ import {
   nearestMatchDiscussion,
   validateContributionProposal,
 } from "./contribution-lib.mjs";
+import { regressionCaseFor } from "./regression-cases.mjs";
 
 function proposalPath() {
   const index = process.argv.indexOf("--proposal");
@@ -18,6 +19,7 @@ function proposalPath() {
 export async function scaffoldClaw({ proposal, targetRoot = root }) {
 const catalogPath = join(targetRoot, "catalog.json");
 const experiencePath = join(targetRoot, "experience-cases.json");
+const regressionPath = join(targetRoot, "regression-cases.json");
 const catalog = JSON.parse(await readFile(catalogPath, "utf8"));
 const errors = validateContributionProposal(proposal, catalog.entries);
 if (errors.length > 0) {
@@ -61,6 +63,16 @@ catalog.entries.push(catalogEntry);
 
 const experience = JSON.parse(await readFile(experiencePath, "utf8"));
 experience.artifactCases.ids.push(entry.id);
+const regression = JSON.parse(await readFile(regressionPath, "utf8"));
+regression.cases.push(
+  regressionCaseFor(catalogEntry, {
+    id: entry.id,
+    target: experience.artifactCases.target,
+    primary: experience.artifactCases.primary,
+    fallback: experience.artifactCases.fallback,
+    output: experience.artifactCases.outputPattern.replace("{id}", entry.id),
+  }),
+);
 
 const sourceRoot = join(targetRoot, "sources", entry.id);
 await mkdir(join(sourceRoot, "fixtures"), { recursive: true });
@@ -168,6 +180,7 @@ await copyFile(
 );
 await writeFile(catalogPath, `${JSON.stringify(catalog, null, 2)}\n`);
 await writeFile(experiencePath, `${JSON.stringify(experience, null, 2)}\n`);
+await writeFile(regressionPath, `${JSON.stringify(regression, null, 2)}\n`);
 
 return { id: entry.id, discussion };
 }
