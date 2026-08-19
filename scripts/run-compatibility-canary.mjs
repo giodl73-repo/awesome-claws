@@ -36,11 +36,13 @@ await Promise.all([
 process.stderr.write(result.stderr ?? "");
 
 let portfolioSummary;
+let summaryError;
 try {
   portfolioSummary = JSON.parse(await readFile(join(portfolioRoot, "summary.json"), "utf8"));
 } catch (error) {
+  summaryError = error instanceof Error ? error.message : String(error);
   if (result.status === 0 && !result.error) {
-    throw new Error(`Compatibility proof did not produce a valid summary: ${error.message}`, {
+    throw new Error(`Compatibility proof did not produce a valid summary: ${summaryError}`, {
       cause: error,
     });
   }
@@ -53,6 +55,7 @@ const report = buildCompatibilityReport({
     status: result.status,
     signal: result.signal,
     ...(result.error ? { error: result.error.message } : {}),
+    ...(summaryError ? { summaryError } : {}),
   },
 });
 const markdown = renderCompatibilityReport(report);

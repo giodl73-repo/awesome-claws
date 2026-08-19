@@ -74,7 +74,7 @@ test("fails closed for incompatible, missing, and unknown results", () => {
         passedResult("unknown"),
       ],
     },
-    execution: { status: 1 },
+    execution: { status: 1, summaryError: "Unexpected end of JSON input" },
   });
   assert.equal(report.status, "failed");
   assert.deepEqual(report.counts, {
@@ -84,5 +84,8 @@ test("fails closed for incompatible, missing, and unknown results", () => {
     notRun: 1,
   });
   assert.deepEqual(report.unknownResultIds, ["unknown"]);
-  assert.match(renderCompatibilityReport(report), /add-preview/u);
+  assert.equal(report.execution.summaryError, "Unexpected end of JSON input");
+  const markdown = renderCompatibilityReport(report);
+  assert.match(markdown, /Unexpected end of JSON input/u);
+  assert.match(markdown, /add-preview/u);
 });

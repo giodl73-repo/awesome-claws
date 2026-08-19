@@ -56,6 +56,7 @@ export function buildCompatibilityReport({
       status: execution.status,
       signal: execution.signal ?? null,
       ...(execution.error ? { error: execution.error } : {}),
+      ...(execution.summaryError ? { summaryError: execution.summaryError } : {}),
     },
     counts,
     unknownResultIds,
@@ -67,6 +68,10 @@ export function renderCompatibilityReport(report) {
   const failures = report.entries.filter((entry) => entry.status !== "compatible");
   const revisions = Object.entries(report.revisions ?? {})
     .map(([name, revision]) => `- ${name}: \`${revision}\``)
+    .join("\n");
+  const executionFailure = [report.execution.error, report.execution.summaryError]
+    .filter(Boolean)
+    .map((message) => `- ${message}`)
     .join("\n");
   const failureRows =
     failures.length === 0
@@ -91,7 +96,7 @@ ${revisions || "- Exact revisions unavailable because proof did not start."}
 
 ## Results requiring attention
 
-${failureRows}
+${executionFailure ? `### Proof execution\n\n${executionFailure}\n\n` : ""}${failureRows}
 
 This is scheduled compatibility evidence against a moving OpenClaw revision. It
 does not change reviewed catalog maintenance state or replace pinned pull-request
