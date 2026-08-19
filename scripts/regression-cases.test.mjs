@@ -38,6 +38,19 @@ test("every Claw passes the deterministic regression contract", async () => {
   }
 });
 
+test("focused regression execution preserves global coverage validation", async () => {
+  const input = await fixture();
+  const results = runRegressionCases({
+    ...input,
+    onlyIds: ["incident-response"],
+  });
+  assert.deepEqual(results.map((result) => result.id), ["incident-response"]);
+  assert.throws(
+    () => runRegressionCases({ ...input, onlyIds: ["unknown-claw"] }),
+    /Unknown regression Claw ids/u,
+  );
+});
+
 test("the reference evaluator changes behavior with evidence and approval", () => {
   const contract = {
     acceptedRequest: "Prepare the release.",

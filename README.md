@@ -192,6 +192,24 @@ npm run build
 npm run check
 ```
 
+For one Claw or a name/id filter, use the contributor workflow:
+
+```bash
+npm run prepare:claw -- data-analyst
+npm run test:claw -- analyst
+npm run test:claw -- data-analyst --visual
+npm run test:claw -- software-maintainer --installed --live
+```
+
+`prepare:claw` regenerates the catalog, runs the complete repository check, and
+prints the selected Claw's proof plan. `test:claw` always checks materialization
+and deterministic regression, then runs only explicitly requested expensive
+lanes. `--installed` requires compatible `CLAWS_CLI_ENTRY` and
+`OPENCLAW_CLI_ENTRY` builds. `--visual` renders applicable X4/X5 assets.
+`--live` anonymously checks declared dependency registries and MCP endpoints; it
+is not provider-live model evidence. Each run retains aggregate and per-Claw
+summaries and logs under `.tmp/claw-runs/`.
+
 `npm run check` verifies generated output, package consistency, Experience and
 regression coverage, content quality, and basic secret hygiene. Maintainers can set
 `CLAWS_CLI_ENTRY` and run

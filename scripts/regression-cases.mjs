@@ -207,6 +207,7 @@ export function runRegressionCases({
   catalog,
   experienceCases,
   packageTexts,
+  onlyIds,
 }) {
   if (
     !hasExactKeys(registry, ["schemaVersion", "requiredCases", "cases"]) ||
@@ -239,8 +240,17 @@ export function runRegressionCases({
 
   const capabilityMatrix = buildCapabilityMatrix(catalog, experienceCases);
   const knownClasses = new Set(capabilityMatrix.classes.map((item) => item.id));
+  const requestedIds = new Set(onlyIds ?? []);
+  const unknownRequestedIds = [...requestedIds].filter((id) => !entriesById.has(id));
+  if (unknownRequestedIds.length > 0) {
+    throw new Error(`Unknown regression Claw ids: ${unknownRequestedIds.join(", ")}`);
+  }
+  const contracts =
+    requestedIds.size === 0
+      ? registry.cases
+      : registry.cases.filter((contract) => requestedIds.has(contract.id));
   const results = [];
-  for (const contract of registry.cases) {
+  for (const contract of contracts) {
     if (
       !hasExactKeys(contract, allowedCaseKeys) ||
       typeof contract.acceptedRequest !== "string" ||
@@ -332,12 +342,12 @@ export function runRegressionCases({
   return results;
 }
 
-export async function runRepositoryRegressionCases() {
+export async function runRepositoryRegressionCases({ onlyIds } = {}) {
   const catalog = await readCatalog();
   const experienceCases = await readExperienceCases(catalog);
   const registry = await readRegressionCases();
   const packageTexts = await readPackageTexts(catalog);
-  return runRegressionCases({ registry, catalog, experienceCases, packageTexts });
+  return runRegressionCases({ registry, catalog, experienceCases, packageTexts, onlyIds });
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
@@ -351,7 +361,11 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     );
     console.log(`Updated regression contracts for ${registry.cases.length} Claws.`);
   } else {
-    const results = await runRepositoryRegressionCases();
+    const onlyIds = (process.env.REGRESSION_ONLY ?? "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+    const results = await runRepositoryRegressionCases({ onlyIds });
     if (process.argv.includes("--json")) {
       console.log(JSON.stringify({ schemaVersion: 1, results }, null, 2));
     } else {

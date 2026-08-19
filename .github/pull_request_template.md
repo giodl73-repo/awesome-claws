@@ -23,6 +23,7 @@ Explain why this is not a small improvement or variant of the nearest existing C
 
 - [ ] `npm run build`
 - [ ] `npm run check`
+- [ ] `npm run prepare:claw -- <id-or-filter>`
 - [ ] Per-Claw regression contract added or updated
 - [ ] Current Control UI screenshot (new or presentation-changing Claw)
 - [ ] Applicable Experience, OpenClaw, capability, dependency, or runtime proof
