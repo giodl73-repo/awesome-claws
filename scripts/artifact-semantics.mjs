@@ -1731,6 +1731,407 @@ function homeRepairFindings(value) {
   return findings;
 }
 
+function greenThumbFindings(value) {
+  const evidenceIds = value.evidence.map((item) => item.id);
+  const evidence = new Set(evidenceIds);
+  const observationIds = value.observations.map((item) => item.id);
+  const observations = new Set(observationIds);
+  const hypothesisIds = value.hypotheses.map((item) => item.id);
+  const hypotheses = new Set(hypothesisIds);
+  const monitoringIds = value.monitoring.map((item) => item.id);
+  const monitoring = new Set(monitoringIds);
+  const providerIds = value.providers.map((item) => item.id);
+  const providers = new Set(providerIds);
+  const findings = [
+    ...uniqueFindings(evidenceIds, "evidence", "Evidence id"),
+    ...uniqueFindings(observationIds, "observations", "Observation id"),
+    ...uniqueFindings(hypothesisIds, "hypotheses", "Hypothesis id"),
+    ...uniqueFindings(value.calendar.map((item) => item.id), "calendar", "Calendar id"),
+    ...uniqueFindings(value.carePlan.steps.map((item) => item.id), "carePlan.steps", "Care step id"),
+    ...uniqueFindings(monitoringIds, "monitoring", "Monitoring id"),
+    ...uniqueFindings(providerIds, "providers", "Provider id"),
+  ];
+  const evidenceReferences = [
+    ...value.observations.map((item) => [item.evidenceRefs, "observations"]),
+    [value.riskAssessment.evidenceRefs, "riskAssessment.evidenceRefs"],
+    ...value.hypotheses.map((item) => [item.evidenceRefs, "hypotheses"]),
+    ...value.calendar.map((item) => [item.siteEvidenceRefs, "calendar"]),
+    ...value.carePlan.steps.map((item) => [item.evidenceRefs, "carePlan.steps"]),
+    ...value.monitoring.map((item) => [item.evidenceRefs, "monitoring"]),
+    ...value.providers.map((item) => [[item.sourceRef], "providers"]),
+    ...(value.appointment.bookingIntegration
+      ? [[[value.appointment.bookingIntegration.approvalEvidenceRef], "appointment.bookingIntegration"]]
+      : []),
+    ...(value.appointment.receipt
+      ? [[[value.appointment.receipt.evidenceRef], "appointment.receipt"]]
+      : []),
+  ];
+  for (const [references, path] of evidenceReferences) {
+    findings.push(...uniqueFindings(references, path, "Evidence reference"));
+    findings.push(...referenceFindings(references, evidence, path, "Evidence reference"));
+  }
+  if (/\b\d{1,6}[A-Za-z]?(?:-\d{1,6}[A-Za-z]?)?\s+[A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+){0,4}\s+(?:Alley|Aly|Avenue|Ave|Boulevard|Blvd|Circle|Cir|Court|Ct|Crescent|Cres|Drive|Dr|Expressway|Expy|Freeway|Fwy|Highway|Hwy|Lane|Ln|Parkway|Pkwy|Place|Pl|Plaza|Plz|Road|Rd|Route|Rte|Square|Sq|Street|St|Terrace|Ter|Trail|Trl|Way)\b/iu.test(canonicalJson(value))) {
+    findings.push(
+      finding(
+        "exposed_home_address",
+        "site",
+        "Durable garden artifacts must use garden labels, not a street address.",
+      ),
+    );
+  }
+  const highRisks = new Set([
+    "poison-exposure",
+    "toxic-species",
+    "invasive-species",
+    "regulated-pesticide",
+    "off-label-treatment",
+    "hazardous-tree",
+    "excavation",
+    "mains-electricity",
+    "pressurized-irrigation",
+    "protected-species",
+  ]);
+  const hasHighRisk = value.riskAssessment.risks.some((item) => highRisks.has(item));
+  if (
+    (value.riskAssessment.risks.includes("none") &&
+      value.riskAssessment.risks.length !== 1) ||
+    (value.riskAssessment.risks.includes("none") &&
+      value.riskAssessment.level !== "low-risk") ||
+    (value.riskAssessment.level === "low-risk" &&
+      value.riskAssessment.action !== "bounded-resident-care") ||
+    (value.riskAssessment.level === "emergency" &&
+      !["poison-control", "emergency-services"].includes(value.riskAssessment.action)) ||
+    (["high", "qualified-specialist", "uncertain"].includes(value.riskAssessment.level) &&
+      value.riskAssessment.action !== "qualified-specialist") ||
+    (value.riskAssessment.risks.includes("poison-exposure") &&
+      !["poison-control", "emergency-services"].includes(value.riskAssessment.action)) ||
+    (hasHighRisk &&
+      !["high", "qualified-specialist", "emergency"].includes(
+        value.riskAssessment.level,
+      )) ||
+    (value.carePlan.eligibility === "resident-care" &&
+      (value.riskAssessment.level !== "low-risk" ||
+        value.riskAssessment.action !== "bounded-resident-care" ||
+        canonicalJson(value.riskAssessment.risks) !== canonicalJson(["none"]))) ||
+    (hasHighRisk && value.carePlan.steps.length > 0)
+  ) {
+    findings.push(
+      finding(
+        "unsafe_care_eligibility",
+        "riskAssessment",
+        "High-risk, uncertain, or contradictory states cannot permit resident care.",
+      ),
+    );
+  }
+  if (
+    (value.carePlan.eligibility === "resident-care" &&
+      (value.hypotheses.length === 0 || value.carePlan.steps.length === 0)) ||
+    (value.carePlan.eligibility !== "resident-care" && value.carePlan.steps.length > 0)
+  ) {
+    findings.push(
+      finding(
+        "incoherent_care_plan",
+        "carePlan",
+        "Resident care requires an evidence-linked hypothesis and step; specialist-only or blocked plans cannot contain resident instructions.",
+      ),
+    );
+  }
+  if (
+    value.carePlan.eligibility === "resident-care" &&
+    !["verified-owner", "verified-tenant-permission"].includes(value.site.workAuthority)
+  ) {
+    findings.push(
+      finding(
+        "missing_work_authority",
+        "site.workAuthority",
+        "Resident garden work requires verified authority.",
+      ),
+    );
+  }
+  for (const [index, hypothesis] of value.hypotheses.entries()) {
+    findings.push(
+      ...referenceFindings(
+        hypothesis.observationRefs,
+        observations,
+        `hypotheses.${index}.observationRefs`,
+        "Observation reference",
+      ),
+    );
+    if (
+      hypothesis.status === "specialist-confirmed" &&
+      !hypothesis.evidenceRefs.some((reference) => {
+        const item = value.evidence.find((candidate) => candidate.id === reference);
+        return item?.type === "specialist-finding" && item.authority === "qualified-specialist";
+      })
+    ) {
+      findings.push(
+        finding(
+          "unsupported_diagnosis",
+          `hypotheses.${index}`,
+          "Only a qualified specialist finding may confirm a plant-health condition.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of value.calendar.entries()) {
+    if (
+      Date.parse(item.windowEnd) < Date.parse(item.windowStart) ||
+      !item.siteEvidenceRefs.some((reference) => {
+        const evidenceItem = value.evidence.find((candidate) => candidate.id === reference);
+        return ["zone-record", "weather-record", "soil-test", "species-record", "water-rule"].includes(
+          evidenceItem?.type,
+        );
+      })
+    ) {
+      findings.push(
+        finding(
+          "unsupported_calendar_window",
+          `calendar.${index}`,
+          "Calendar windows require ordered dates and site, climate, species, soil, or water evidence.",
+        ),
+      );
+    }
+    if (
+      item.executor === "resident" &&
+      (value.riskAssessment.level !== "low-risk" ||
+        value.riskAssessment.action !== "bounded-resident-care" ||
+        hasHighRisk ||
+        !["verified-owner", "verified-tenant-permission"].includes(value.site.workAuthority))
+    ) {
+      findings.push(
+        finding(
+          "unsafe_calendar_activity",
+          `calendar.${index}`,
+          "Resident calendar activities require verified authority and no high-risk condition.",
+        ),
+      );
+    }
+  }
+  for (const [index, step] of value.carePlan.steps.entries()) {
+    findings.push(
+      ...referenceFindings(
+        step.observationRefs,
+        observations,
+        `carePlan.steps.${index}.observationRefs`,
+        "Observation reference",
+      ),
+      ...referenceFindings(
+        step.hypothesisRefs,
+        hypotheses,
+        `carePlan.steps.${index}.hypothesisRefs`,
+        "Hypothesis reference",
+      ),
+      ...referenceFindings(
+        [step.monitoringRef],
+        monitoring,
+        `carePlan.steps.${index}.monitoringRef`,
+        "Monitoring reference",
+      ),
+    );
+    const labelEvidence = step.productUse
+      ? value.evidence.find((item) => item.id === step.productUse.labelRef)
+      : undefined;
+    const localRuleEvidence = step.productUse?.localRuleRefs.map((reference) =>
+      value.evidence.find((item) => item.id === reference),
+    );
+    if (
+      (step.class === "label-approved-product" &&
+        (!step.productUse ||
+          step.productUse.licenseRequired ||
+          !step.evidenceRefs.includes(step.productUse.labelRef) ||
+          labelEvidence?.type !== "product-label" ||
+          labelEvidence.authority !== "manufacturer" ||
+          localRuleEvidence?.some(
+            (item) => item?.type !== "treatment-rule" || item.authority !== "government",
+          ))) ||
+      (step.class !== "label-approved-product" && step.productUse !== null)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_product_step",
+          `carePlan.steps.${index}.productUse`,
+          "A resident product step must bind its exact manufacturer label, permitted target and limits, applicable government rule, and non-licensed use.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of value.monitoring.entries()) {
+    if (
+      ["passed", "failed"].includes(item.state) &&
+      (!item.observedAt ||
+        Date.parse(item.observedAt) < Date.parse(item.dueAt) ||
+        !item.evidenceRefs.some((reference) => {
+        const evidenceItem = value.evidence.find((candidate) => candidate.id === reference);
+        return (
+          ["photo", "measurement"].includes(evidenceItem?.type) &&
+          evidenceItem.capturedAt === item.observedAt
+        );
+      }))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_monitoring_result",
+          `monitoring.${index}`,
+          "Passed or failed monitoring requires timed outcome photo or measurement evidence.",
+        ),
+      );
+    }
+  }
+  for (const [index, provider] of value.providers.entries()) {
+    const providerEvidence = value.evidence.find((item) => item.id === provider.sourceRef);
+    if (
+      providerEvidence &&
+      (providerEvidence.type !== "provider-info" ||
+        !["service-provider", "qualified-specialist"].includes(providerEvidence.authority))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_provider_evidence",
+          `providers.${index}.sourceRef`,
+          "Every provider must cite provider-information evidence.",
+        ),
+      );
+    }
+  }
+  const appointment = value.appointment;
+  const hasPlan = Boolean(appointment.plan);
+  const hasApproval = Boolean(appointment.approval);
+  const hasIntegration = Boolean(appointment.bookingIntegration);
+  const hasReceipt = Boolean(appointment.receipt);
+  if (
+    (["options-ready", "awaiting-approval", "approved", "booked"].includes(appointment.state) &&
+      !hasPlan) ||
+    (["approved", "booked"].includes(appointment.state) && !hasApproval) ||
+    (appointment.state === "booked" && (!hasIntegration || !hasReceipt)) ||
+    (appointment.state !== "booked" && (hasIntegration || hasReceipt)) ||
+    (!["approved", "booked"].includes(appointment.state) && hasApproval) ||
+    (appointment.state === "not-requested" && hasPlan) ||
+    (appointment.state === "blocked" && !appointment.blockedReason)
+  ) {
+    findings.push(
+      finding(
+        "incoherent_appointment_state",
+        "appointment",
+        "Appointment plan, approval, integration, receipt, and blocked reason must match the state.",
+      ),
+    );
+  }
+  if (appointment.plan) {
+    findings.push(
+      ...referenceFindings(
+        [appointment.plan.providerRef],
+        providers,
+        "appointment.plan.providerRef",
+        "Provider reference",
+      ),
+    );
+    const provider = value.providers.find((item) => item.id === appointment.plan.providerRef);
+    if (
+      provider &&
+      (provider.specialty !== appointment.plan.specialty ||
+        provider.qualificationState !== "resident-verified")
+    ) {
+      findings.push(
+        finding(
+          "unsupported_provider",
+          "appointment.plan",
+          "The appointment specialty must match a resident-verified provider.",
+        ),
+      );
+    }
+    if (appointment.plan.maxDeposit > appointment.plan.maxCost) {
+      findings.push(
+        finding(
+          "deposit_exceeds_cost",
+          "appointment.plan.maxDeposit",
+          "The deposit ceiling cannot exceed the cost ceiling.",
+        ),
+      );
+    }
+  }
+  const planDigest = appointment.plan
+    ? `sha256:${createHash("sha256").update(canonicalJson(appointment.plan)).digest("hex")}`
+    : undefined;
+  if (["approved", "booked"].includes(appointment.state) && appointment.approval) {
+    if (
+      appointment.approval.planDigest !== planDigest ||
+      canonicalJson(appointment.approval.resident) !== canonicalJson(value.resident)
+    ) {
+      findings.push(
+        finding(
+          "appointment_approval_mismatch",
+          "appointment.approval",
+          "Appointment approval must bind the exact plan and resident.",
+        ),
+      );
+    }
+  }
+  if (
+    appointment.state === "booked" &&
+    appointment.plan &&
+    appointment.approval &&
+    appointment.bookingIntegration &&
+    appointment.receipt
+  ) {
+    const integrationEvidence = value.evidence.find(
+      (item) => item.id === appointment.bookingIntegration.approvalEvidenceRef,
+    );
+    const receiptEvidence = value.evidence.find(
+      (item) => item.id === appointment.receipt.evidenceRef,
+    );
+    if (
+      appointment.receipt.planDigest !== planDigest ||
+      appointment.receipt.integrationId !== appointment.bookingIntegration.id ||
+      appointment.receipt.providerRef !== appointment.plan.providerRef ||
+      appointment.bookingIntegration.providerRef !== appointment.plan.providerRef ||
+      !appointment.receipt.confirmationRef.startsWith(
+        `provider://${appointment.plan.providerRef}/`,
+      ) ||
+      integrationEvidence?.type !== "integration-approval" ||
+      integrationEvidence.authority !== "resident-supplied" ||
+      integrationEvidence.reference !== appointment.bookingIntegration.approvalRef ||
+      receiptEvidence?.type !== "provider-receipt" ||
+      receiptEvidence.authority !== "service-provider" ||
+      receiptEvidence.reference !== appointment.receipt.confirmationRef ||
+      receiptEvidence.capturedAt !== appointment.receipt.bookedAt ||
+      Date.parse(integrationEvidence.capturedAt) > Date.parse(appointment.receipt.bookedAt) ||
+      Date.parse(appointment.receipt.bookedAt) >= Date.parse(appointment.plan.startsAt) ||
+      canonicalJson(appointment.bookingIntegration.configuredBy) !==
+        canonicalJson(value.resident)
+    ) {
+      findings.push(
+        finding(
+          "booking_receipt_mismatch",
+          "appointment.receipt",
+          "The approved integration and provider receipt must bind the exact plan.",
+        ),
+      );
+    }
+    if (Date.parse(appointment.receipt.bookedAt) < Date.parse(appointment.approval.approvedAt)) {
+      findings.push(
+        finding(
+          "booking_predates_approval",
+          "appointment.receipt.bookedAt",
+          "A specialist booking cannot predate resident approval.",
+        ),
+      );
+    }
+  }
+  if (
+    canonicalJson(value.handoff.resident) !== canonicalJson(value.resident) ||
+    value.resident.id === "green-thumb-coordinator"
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.resident",
+        "Garden work, treatment, payment, and appointment authority remain resident-controlled.",
+      ),
+    );
+  }
+  return findings;
+}
+
 const validators = {
   "case-continuity-coordinator": caseContinuityFindings,
   "change-control-operator": changeControlFindings,
@@ -1738,6 +2139,7 @@ const validators = {
   "data-analyst": dataAnalysisFindings,
   "delegation-coordinator": delegationFindings,
   "financial-analyst": financialAnalysisFindings,
+  "green-thumb-coordinator": greenThumbFindings,
   "home-repair-coordinator": homeRepairFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
   "project-manager": projectFindings,

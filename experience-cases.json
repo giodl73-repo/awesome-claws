@@ -37,7 +37,8 @@
       "delegation-coordinator",
       "model-evaluation-adjudicator",
       "vehicle-service-coordinator",
-      "home-repair-coordinator"
+      "home-repair-coordinator",
+      "green-thumb-coordinator"
     ]
   },
   "visualCases": [
