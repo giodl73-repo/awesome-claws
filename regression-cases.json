@@ -1363,6 +1363,28 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "vehicle-service-coordinator",
+      "acceptedRequest": "Help me understand this intermittent charging warning on my 2021 hybrid, identify safe checks and qualified service options, then book my chosen appointment after I approve the exact plan.",
+      "requiredEvidence": [
+        "Vehicle year, make, model, powertrain, mileage, owner-approved identifier scope, location, and accountable owner",
+        "Symptoms, warning indicators, diagnostic codes, timing, operating conditions, recent work, maintenance history, photos, recordings, and supplied manuals",
+        "Mobility constraints, safe-to-drive concerns, warranty or recall context, provider preferences, availability, budget ceiling, and appointment authority"
+      ],
+      "authorityBoundaries": [
+        "Do not control, drive, road-test, jack, tow, disassemble, modify, or disable a vehicle or safety system",
+        "Do not present a hypothesis as a professional diagnosis or recommend owner work on brakes, steering, restraint systems, fuel systems, high-voltage systems, or other safety-critical components",
+        "Do not book, cancel, authorize diagnosis or repair, accept terms, submit payment, or exceed an approved service, provider, time, and cost ceiling without exact owner consent"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/vehicle-service-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

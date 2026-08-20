@@ -1123,6 +1123,243 @@ function modelEvaluationFindings(value) {
   return findings;
 }
 
+function vehicleServiceFindings(value) {
+  const evidenceIds = value.evidence.map((item) => item.id);
+  const evidence = new Set(evidenceIds);
+  const providerIds = value.providers.map((item) => item.id);
+  const providers = new Set(providerIds);
+  const findings = [
+    ...uniqueFindings(evidenceIds, "evidence", "Evidence id"),
+    ...uniqueFindings(value.observations.map((item) => item.id), "observations", "Observation id"),
+    ...uniqueFindings(value.hypotheses.map((item) => item.id), "hypotheses", "Hypothesis id"),
+    ...uniqueFindings(value.ownerChecks.map((item) => item.id), "ownerChecks", "Owner check id"),
+    ...uniqueFindings(providerIds, "providers", "Provider id"),
+  ];
+  if (/\b[A-HJ-NPR-Z0-9]{17}\b/iu.test(canonicalJson(value))) {
+    findings.push(
+      finding(
+        "exposed_vehicle_identifier",
+        "vehicle",
+        "Durable vehicle-service artifacts must not contain a VIN-like identifier.",
+      ),
+    );
+  }
+  const evidenceReferences = [
+    ...value.observations.map((item) => [item.evidenceRefs, "observations"]),
+    [value.assessment.evidenceRefs, "assessment.evidenceRefs"],
+    ...value.hypotheses.map((item) => [item.evidenceRefs, "hypotheses"]),
+    ...value.ownerChecks.map((item) => [item.evidenceRefs, "ownerChecks"]),
+    ...value.providers.map((item) => [[item.sourceRef], "providers"]),
+  ];
+  for (const [references, path] of evidenceReferences) {
+    findings.push(...uniqueFindings(references, path, "Evidence reference"));
+    findings.push(...referenceFindings(references, evidence, path, "Evidence reference"));
+  }
+  for (const [index, hypothesis] of value.hypotheses.entries()) {
+    if (
+      hypothesis.status === "technician-confirmed" &&
+      !hypothesis.evidenceRefs.some((reference) => {
+        const item = value.evidence.find((candidate) => candidate.id === reference);
+        return item?.authority === "qualified-technician";
+      })
+    ) {
+      findings.push(
+        finding(
+          "unsupported_diagnosis",
+          `hypotheses.${index}`,
+          "Only qualified-technician evidence may confirm a vehicle diagnosis.",
+        ),
+      );
+    }
+  }
+  for (const [index, check] of value.ownerChecks.entries()) {
+    if (
+      check.safetyClass === "manual-approved" &&
+      !check.evidenceRefs.some((reference) => {
+        const item = value.evidence.find((candidate) => candidate.id === reference);
+        return item?.type === "manual" && item.authority === "manufacturer";
+      })
+    ) {
+      findings.push(
+        finding(
+          "unsupported_owner_check",
+          `ownerChecks.${index}.evidenceRefs`,
+          "A manual-approved owner check must cite manufacturer manual evidence.",
+        ),
+      );
+    }
+  }
+  if (
+    value.assessment.safetyCritical &&
+    !["stop-driving", "roadside-only", "uncertain"].includes(value.assessment.safeToDrive)
+  ) {
+    findings.push(
+      finding(
+        "unsafe_driving_state",
+        "assessment.safeToDrive",
+        "Safety-critical evidence cannot produce a routine or limited-use driving state.",
+      ),
+    );
+  }
+  if (
+    ["stop-driving", "roadside-only", "uncertain"].includes(value.assessment.safeToDrive) &&
+    !["emergency-services", "roadside-assistance", "qualified-specialist"].includes(
+      value.assessment.escalation,
+    )
+  ) {
+    findings.push(
+      finding(
+        "missing_safety_escalation",
+        "assessment.escalation",
+        "An unsafe or uncertain driving state requires a qualified escalation.",
+      ),
+    );
+  }
+  const appointment = value.appointment;
+  const hasPlan = Boolean(appointment.plan);
+  const hasApproval = Boolean(appointment.approval);
+  const hasIntegration = Boolean(appointment.bookingIntegration);
+  const hasReceipt = Boolean(appointment.receipt);
+  if (
+    (["options-ready", "awaiting-approval", "approved", "booked"].includes(
+      appointment.state,
+    ) &&
+      !hasPlan) ||
+    (["approved", "booked"].includes(appointment.state) && !hasApproval) ||
+    (appointment.state === "booked" && (!hasIntegration || !hasReceipt)) ||
+    (appointment.state !== "booked" && (hasIntegration || hasReceipt)) ||
+    (!["approved", "booked"].includes(appointment.state) && hasApproval) ||
+    (appointment.state === "not-requested" && hasPlan) ||
+    (appointment.state === "blocked" && !appointment.blockedReason)
+  ) {
+    findings.push(
+      finding(
+        "incoherent_appointment_state",
+        "appointment",
+        "Appointment plan, approval, integration, receipt, and blocked reason must match the declared state.",
+      ),
+    );
+  }
+  if (appointment.plan) {
+    findings.push(
+      ...referenceFindings(
+        [appointment.plan.providerRef],
+        providers,
+        "appointment.plan.providerRef",
+        "Provider reference",
+      ),
+    );
+    if (appointment.plan.maxDeposit > appointment.plan.maxCost) {
+      findings.push(
+        finding(
+          "deposit_exceeds_cost",
+          "appointment.plan.maxDeposit",
+          "The approved deposit ceiling cannot exceed the total cost ceiling.",
+        ),
+      );
+    }
+  }
+  const planDigest = appointment.plan
+    ? `sha256:${createHash("sha256").update(canonicalJson(appointment.plan)).digest("hex")}`
+    : undefined;
+  if (["approved", "booked"].includes(appointment.state)) {
+    if (!appointment.plan || !appointment.approval) {
+      findings.push(
+        finding(
+          "missing_appointment_approval",
+          "appointment",
+          "Approved and booked appointments require an exact plan and owner approval.",
+        ),
+      );
+    } else {
+      if (appointment.approval.planDigest !== planDigest) {
+        findings.push(
+          finding(
+            "appointment_digest_mismatch",
+            "appointment.approval.planDigest",
+            "Appointment approval must bind the exact plan.",
+          ),
+        );
+      }
+      if (canonicalJson(appointment.approval.owner) !== canonicalJson(value.owner)) {
+        findings.push(
+          finding(
+            "appointment_owner_mismatch",
+            "appointment.approval.owner",
+            "Appointment approval must come from the accountable vehicle owner.",
+          ),
+        );
+      }
+    }
+  }
+  if (appointment.state === "booked") {
+    if (!appointment.bookingIntegration || !appointment.receipt) {
+      findings.push(
+        finding(
+          "unsupported_booking",
+          "appointment",
+          "A booked state requires an approved integration and verifiable receipt.",
+        ),
+      );
+    } else {
+      if (
+        appointment.receipt.planDigest !== planDigest ||
+        appointment.receipt.integrationId !== appointment.bookingIntegration.id ||
+        appointment.receipt.providerRef !== appointment.plan.providerRef ||
+        appointment.bookingIntegration.providerRef !== appointment.plan.providerRef ||
+        !appointment.receipt.confirmationRef.startsWith(
+          `provider://${appointment.plan.providerRef}/`,
+        )
+      ) {
+        findings.push(
+          finding(
+            "booking_receipt_mismatch",
+            "appointment.receipt",
+            "The booking integration and receipt must bind the exact approved plan and provider.",
+          ),
+        );
+      }
+      if (
+        canonicalJson(appointment.bookingIntegration.configuredBy) !==
+        canonicalJson(value.owner)
+      ) {
+        findings.push(
+          finding(
+            "unapproved_booking_integration",
+            "appointment.bookingIntegration.configuredBy",
+            "The accountable owner must approve the configured booking integration.",
+          ),
+        );
+      }
+      if (
+        appointment.approval &&
+        Date.parse(appointment.receipt.bookedAt) < Date.parse(appointment.approval.approvedAt)
+      ) {
+        findings.push(
+          finding(
+            "booking_predates_approval",
+            "appointment.receipt.bookedAt",
+            "A booking receipt cannot predate the owner's exact plan approval.",
+          ),
+        );
+      }
+    }
+  }
+  if (
+    canonicalJson(value.handoff.owner) !== canonicalJson(value.owner) ||
+    value.owner.id === "vehicle-service-coordinator"
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Vehicle, repair, payment, and appointment authority must remain owner-controlled.",
+      ),
+    );
+  }
+  return findings;
+}
+
 const validators = {
   "case-continuity-coordinator": caseContinuityFindings,
   "change-control-operator": changeControlFindings,
@@ -1137,6 +1374,7 @@ const validators = {
   "recruiting-coordinator": recruitingFindings,
   "research-briefing": researchFindings,
   "sales-operations": salesOperationsFindings,
+  "vehicle-service-coordinator": vehicleServiceFindings,
 };
 
 export function validateArtifactSemantics(id, value) {

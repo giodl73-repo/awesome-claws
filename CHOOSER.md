@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (55)
+### Active (56)
 
 | Claw | Detail |
 | --- | --- |
@@ -63,6 +63,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Travel concierge](claws/travel-concierge) | @giodl73-repo; last verified 2026-08-19 |
 | [Travel planner](claws/travel-planner) | @giodl73-repo; last verified 2026-08-19 |
 | [UX research synthesizer](claws/ux-research-synthesizer) | @giodl73-repo; last verified 2026-08-19 |
+| [Vehicle service coordinator](claws/vehicle-service-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Video concept producer](claws/video-concept-producer) | @giodl73-repo; last verified 2026-08-19 |
 | [Web evidence researcher](claws/web-evidence-researcher) | @giodl73-repo; last verified 2026-08-19 |
 | [Website evidence collector](claws/website-evidence-collector) | @giodl73-repo; last verified 2026-08-19 |
@@ -82,7 +83,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (24)
+### Low setup (25)
 
 | Claw | Detail |
 | --- | --- |
@@ -110,6 +111,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Sales operations](claws/sales-operations) | no bootstrap, external dependency, or schedule |
 | [Security analyst](claws/security-analyst) | no bootstrap, external dependency, or schedule |
 | [UX research synthesizer](claws/ux-research-synthesizer) | no bootstrap, external dependency, or schedule |
+| [Vehicle service coordinator](claws/vehicle-service-coordinator) | no bootstrap, external dependency, or schedule |
 
 ### Medium setup (27)
 
@@ -156,7 +158,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (32)
+### No external dependencies (33)
 
 | Claw | Detail |
 | --- | --- |
@@ -192,6 +194,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Sales operations](claws/sales-operations) | None |
 | [Security analyst](claws/security-analyst) | None |
 | [UX research synthesizer](claws/ux-research-synthesizer) | None |
+| [Vehicle service coordinator](claws/vehicle-service-coordinator) | None |
 
 ### External dependencies declared (23)
 
@@ -225,7 +228,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (30)
+### X3 (31)
 
 | Claw | Detail |
 | --- | --- |
@@ -255,6 +258,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Software maintainer](claws/software-maintainer) | Delivers scoped repository changes with source-grounded review and verification. |
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability. |
 | [Travel planner](claws/travel-planner) | Builds a reviewable trip plan from current public sources without booking, paying, or retaining sensitive traveler records. |
+| [Vehicle service coordinator](claws/vehicle-service-coordinator) | Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle. |
 | [Video concept producer](claws/video-concept-producer) | Generates reviewable PixVerse video concepts from approved prompts or workspace assets without publishing or impersonating people. |
 | [Web evidence researcher](claws/web-evidence-researcher) | Uses Tavily search and extraction to build bounded, source-linked evidence sets without publishing or acting on retrieved content. |
 | [Website evidence collector](claws/website-evidence-collector) | Collects and normalizes an approved set of public web pages through Firecrawl for reviewable evidence and change analysis. |
@@ -341,7 +345,7 @@ Categories come directly from the catalog entry.
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 
-### Operations (13)
+### Operations (14)
 
 | Claw | Detail |
 | --- | --- |
@@ -357,6 +361,7 @@ Categories come directly from the catalog entry.
 | [Public safety monitor](claws/public-safety-monitor) | X3; Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services. |
 | [Recruiting coordinator](claws/recruiting-coordinator) | X3; Coordinates candidate logistics with clear handoffs, consistency, and privacy. |
 | [Sales operations](claws/sales-operations) | X3; Improves pipeline decisions through clean definitions, evidence, and accountable follow-up. |
+| [Vehicle service coordinator](claws/vehicle-service-coordinator) | X3; Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle. |
 | [Workflow operator](claws/workflow-operator) | X3; Runs bounded Lobster pipelines with typed inputs, explicit approval gates, resumable state, and reviewable results. |
 
 ### Product (3)
@@ -388,7 +393,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (5)
+### Standard attention (6)
 
 | Claw | Detail |
 | --- | --- |
@@ -397,6 +402,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | portable workspace artifacts only |
 | [Recruiting coordinator](claws/recruiting-coordinator) | portable workspace artifacts only |
 | [Sales operations](claws/sales-operations) | portable workspace artifacts only |
+| [Vehicle service coordinator](claws/vehicle-service-coordinator) | portable workspace artifacts only |
 
 ### Guarded attention (36)
 
