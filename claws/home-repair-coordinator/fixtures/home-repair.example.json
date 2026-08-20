@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "awesomeClaws.homeRepair.v1",
+  "home": {
+    "reference": "home-a",
+    "buildingType": "apartment",
+    "ageRange": "2000-present",
+    "locationLabel": "kitchen",
+    "workAuthority": "verified-owner"
+  },
+  "resident": { "id": "resident-1", "kind": "human", "role": "resident and appliance owner" },
+  "evidence": [
+    { "id": "ev-report", "type": "resident-report", "authority": "resident-supplied", "capturedAt": "2026-08-20T02:00:00Z", "reference": "evidence/resident-report.md" },
+    { "id": "ev-manual", "type": "manual", "authority": "manufacturer", "capturedAt": "2026-08-20T02:05:00Z", "reference": "evidence/dishwasher-manual.md" },
+    { "id": "ev-provider", "type": "provider-info", "authority": "service-provider", "capturedAt": "2026-08-20T02:10:00Z", "reference": "evidence/appliance-provider.md" }
+  ],
+  "observations": [
+    { "id": "obs-water", "system": "appliance", "description": "Dishwasher leaves standing water after the cycle and displays no electrical or leak warning.", "evidenceRefs": ["ev-report"] }
+  ],
+  "hazardAssessment": {
+    "level": "low-risk",
+    "hazards": ["none"],
+    "action": "bounded-owner-check",
+    "rationale": "The supplied manual permits a powered-off visual filter inspection; no gas, mains electrical, structural, fire, contamination, height, or uncontrolled-water evidence is present.",
+    "evidenceRefs": ["ev-report", "ev-manual"]
+  },
+  "isolations": [
+    { "system": "appliance-power", "state": "confirmed", "evidenceRefs": ["ev-manual"] }
+  ],
+  "repairPlan": {
+    "eligibility": "owner-repair",
+    "hypotheses": [
+      { "id": "hyp-filter", "statement": "A visible filter obstruction may be contributing, but the cause remains unconfirmed.", "status": "unconfirmed", "evidenceRefs": ["ev-report", "ev-manual"] }
+    ],
+    "steps": [
+      {
+        "id": "step-filter",
+        "instruction": "With appliance power isolated, remove and visually inspect the user-serviceable filter exactly as shown in the supplied manual.",
+        "class": "manual-approved",
+        "observationRefs": ["obs-water"],
+        "hypothesisRefs": ["hyp-filter"],
+        "evidenceRefs": ["ev-manual"],
+        "prerequisites": ["Appliance power is isolated", "No active leak, heat, burning odor, damaged wiring, or sharp broken component is present"],
+        "stopConditions": ["The filter does not release with normal hand pressure", "Damage, wiring, heat, odor, or uncontrolled water is observed"],
+        "restoration": "Reinstall the filter in its documented locked position before restoring appliance power.",
+        "verification": "Run only the manual's short verification cycle and record whether drainage completes without a leak or warning."
+      }
+    ],
+    "parts": [],
+    "tools": ["protective gloves", "absorbent towel"]
+  },
+  "verification": {
+    "state": "not-started",
+    "evidenceRefs": [],
+    "unresolvedConditions": ["Whether the user-serviceable filter is obstructed", "Whether drainage succeeds after restoration"]
+  },
+  "providers": [
+    { "id": "provider-appliance", "name": "Example Appliance Service", "trade": "appliance-repair", "sourceRef": "ev-provider", "qualificationState": "owner-verified" }
+  ],
+  "appointment": {
+    "state": "awaiting-approval",
+    "plan": {
+      "providerRef": "provider-appliance",
+      "trade": "appliance-repair",
+      "serviceScope": "Dishwasher drainage diagnosis only; no repair authorization.",
+      "startsAt": "2026-08-23T18:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "maxCost": 180,
+      "currency": "USD",
+      "maxDeposit": 0,
+      "cancellationTerms": "No fee when cancelled at least 24 hours before the appointment.",
+      "dataDisclosure": ["building type", "kitchen label", "dishwasher make and model", "resident callback number"]
+    }
+  },
+  "handoff": {
+    "state": "ready-for-resident",
+    "resident": { "id": "resident-1", "kind": "human", "role": "resident and appliance owner" },
+    "prohibitedActions": ["perform-high-hazard-work", "claim-professional-diagnosis", "authorize-trade-work", "submit-payment", "exceed-appointment-scope"]
+  }
+}

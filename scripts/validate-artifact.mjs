@@ -16,6 +16,7 @@ const schemaNames = {
   "data-analyst": "analysis-state.schema.json",
   "delegation-coordinator": "delegation-ledger.schema.json",
   "financial-analyst": "financial-scenario.schema.json",
+  "home-repair-coordinator": "home-repair.schema.json",
   "model-evaluation-adjudicator": "model-evaluation.schema.json",
   "project-manager": "project-state.schema.json",
   "product-manager": "product-decision.schema.json",

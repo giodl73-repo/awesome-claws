@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "home-repair-coordinator",
+  "scenario": "Help me investigate why my dishwasher is not draining, walk me through only safe reversible checks from its manual, and prepare a repair appointment if those checks do not resolve it.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Help me investigate why my dishwasher is not draining, walk me through only safe reversible checks from its manual, and prepare a repair appointment if those checks do not resolve it."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/home-repair-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Home repair coordinator session handoff",
+    "summary": "A source-linked symptom record, hazard screen, bounded owner checks with stop conditions, parts and restoration checklist, and an exact specialist appointment plan that remains blocked until resident approval.",
+    "output": "outputs/home-repair-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Household issue and evidence ledger",
+        "summary": "Every observation, hypothesis, instruction, source, result, and unresolved condition remains distinguishable",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Hazard, shutoff, and escalation assessment",
+        "summary": "High-hazard, regulated, uncertain, or authority-constrained work is escalated rather than converted into DIY instructions",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Bounded owner-repair plan with stop conditions",
+        "summary": "Every owner step is reversible or manufacturer-approved and names prerequisites, stop conditions, restoration, and verification",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Parts, tools, verification, and restoration checklist",
+        "summary": "No external contact, appointment, work authorization, payment, or home-data disclosure exceeded exact resident consent",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Specialist comparison, appointment plan, and booking receipt or blocked handoff",
+        "summary": "Every observation, hypothesis, instruction, source, result, and unresolved condition remains distinguishable",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

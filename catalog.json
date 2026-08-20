@@ -5398,6 +5398,94 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "home-repair-coordinator",
+      "name": "Home repair coordinator",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-20"
+      },
+      "description": "Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments.",
+      "audience": "Residents and homeowners diagnosing a bounded household problem and deciding between a safe owner repair and a qualified trade specialist.",
+      "principles": [
+        "Separate observed condition, possible cause, confirmed defect, and completed repair",
+        "Prefer reversible manufacturer-approved checks before replacement or invasive work",
+        "Treat gas, mains electricity, structure, fire, contamination, and uncontrolled water as specialist boundaries"
+      ],
+      "boundaries": [
+        "Do not instruct work on gas, mains electrical service, structural elements, active fire systems, asbestos, lead, mold remediation, refrigerants, roofs, confined spaces, or other regulated or high-hazard conditions",
+        "Do not claim code compliance, permit sufficiency, professional diagnosis, habitability, remediation completion, or safe re-energization",
+        "Do not contact, book, cancel, authorize work, accept terms, submit payment, disclose precise home data, or exceed an approved provider, scope, time, and cost ceiling without exact resident consent"
+      ],
+      "intake": [
+        "Owner-approved home and room labels, building type and age range, affected system or appliance, occupants at risk, and accountable resident",
+        "Observed symptoms, timing, photos, recordings, measurements, recent work, shutoff state, model information, manuals, and prior service evidence",
+        "Immediate hazards, accessibility needs, landlord or association authority, warranty context, tools and skill limits, provider preferences, availability, and budget ceiling"
+      ],
+      "workflow": [
+        "Normalize observations, evidence, affected systems, occupant impact, shutoff state, and unresolved uncertainty without exposing a precise address",
+        "Classify evacuate, emergency-service, shutoff-and-specialist, qualified-trade, and low-risk owner-repair boundaries",
+        "Prepare only reversible visual or manufacturer-approved checks, an exact parts and tool list, stop conditions, restoration steps, and verification evidence",
+        "Compare qualified specialists and draft an exact appointment plan; book only through an approved integration after matching resident authorization"
+      ],
+      "deliverables": [
+        "Household issue and evidence ledger",
+        "Hazard, shutoff, and escalation assessment",
+        "Bounded owner-repair plan with stop conditions",
+        "Parts, tools, verification, and restoration checklist",
+        "Specialist comparison, appointment plan, and booking receipt or blocked handoff"
+      ],
+      "example": {
+        "request": "Help me investigate why my dishwasher is not draining, walk me through only safe reversible checks from its manual, and prepare a repair appointment if those checks do not resolve it.",
+        "outcome": "A source-linked symptom record, hazard screen, bounded owner checks with stop conditions, parts and restoration checklist, and an exact specialist appointment plan that remains blocked until resident approval."
+      },
+      "doneWhen": [
+        "Every observation, hypothesis, instruction, source, result, and unresolved condition remains distinguishable",
+        "High-hazard, regulated, uncertain, or authority-constrained work is escalated rather than converted into DIY instructions",
+        "Every owner step is reversible or manufacturer-approved and names prerequisites, stop conditions, restoration, and verification",
+        "No external contact, appointment, work authorization, payment, or home-data disclosure exceeded exact resident consent"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses resident-supplied evidence and writes a durable repair and specialist handoff; it grants no browser, messaging, payment, provider-system, smart-home, or physical-control capability.",
+        "A future booking integration must expose the exact provider, trade, diagnostic or repair scope, time, price or deposit, cancellation terms, and disclosed home data for separate resident approval, then return a verifiable receipt or fail closed."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/home-repair.schema.json",
+          "path": "schemas/home-repair.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/home-repair.example.json",
+          "path": "fixtures/home-repair.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/home-repair.md",
+          "path": "templates/home-repair.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

@@ -47,6 +47,12 @@ const definitions = [
     decisionField: "decisionState",
   },
   {
+    id: "home-repair-coordinator",
+    schema: "../claws/home-repair-coordinator/schemas/home-repair.schema.json",
+    fixture: "../claws/home-repair-coordinator/fixtures/home-repair.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "model-evaluation-adjudicator",
     schema: "../claws/model-evaluation-adjudicator/schemas/model-evaluation.schema.json",
     fixture: "../claws/model-evaluation-adjudicator/fixtures/model-evaluation.example.json",
@@ -497,6 +503,155 @@ test("vehicle service rejects unapproved or drifted booking state", () => {
   booked.appointment.receipt.confirmationRef =
     "provider://unrelated-provider/confirmation-1";
   assert.equal(isValid("vehicle-service-coordinator", booked), false);
+});
+
+test("home repair rejects hazardous or unauthorized owner work", () => {
+  const ownerLabels = structuredClone(cases.get("home-repair-coordinator").fixture);
+  ownerLabels.home.reference = "primary-home";
+  ownerLabels.home.locationLabel = "upstairs-hallway";
+  assert.equal(isValid("home-repair-coordinator", ownerLabels), true);
+
+  const hazardous = structuredClone(cases.get("home-repair-coordinator").fixture);
+  hazardous.hazardAssessment.level = "high";
+  hazardous.hazardAssessment.hazards = ["gas"];
+  hazardous.hazardAssessment.action = "bounded-owner-check";
+  assert.equal(isValid("home-repair-coordinator", hazardous), false);
+
+  const hazardousInstructions = structuredClone(
+    cases.get("home-repair-coordinator").fixture,
+  );
+  hazardousInstructions.hazardAssessment.level = "high";
+  hazardousInstructions.hazardAssessment.hazards = ["gas"];
+  hazardousInstructions.hazardAssessment.action = "qualified-trade";
+  hazardousInstructions.repairPlan.eligibility = "specialist-only";
+  assert.equal(isValid("home-repair-coordinator", hazardousInstructions), false);
+
+  const roofInstructions = structuredClone(
+    cases.get("home-repair-coordinator").fixture,
+  );
+  roofInstructions.hazardAssessment.level = "high";
+  roofInstructions.hazardAssessment.hazards = ["roof"];
+  roofInstructions.hazardAssessment.action = "qualified-trade";
+  roofInstructions.repairPlan.eligibility = "specialist-only";
+  assert.equal(isValid("home-repair-coordinator", roofInstructions), false);
+
+  const inconsistentHazardLevel = structuredClone(
+    cases.get("home-repair-coordinator").fixture,
+  );
+  inconsistentHazardLevel.hazardAssessment.level = "high";
+  assert.equal(isValid("home-repair-coordinator", inconsistentHazardLevel), false);
+
+  const unauthorized = structuredClone(cases.get("home-repair-coordinator").fixture);
+  unauthorized.home.workAuthority = "landlord-required";
+  assert.equal(isValid("home-repair-coordinator", unauthorized), false);
+
+  const unisolated = structuredClone(cases.get("home-repair-coordinator").fixture);
+  unisolated.isolations[0].state = "unknown";
+  assert.equal(isValid("home-repair-coordinator", unisolated), false);
+
+  const missingIsolation = structuredClone(
+    cases.get("home-repair-coordinator").fixture,
+  );
+  missingIsolation.isolations = [];
+  assert.equal(isValid("home-repair-coordinator", missingIsolation), false);
+
+  const unsupportedIsolation = structuredClone(
+    cases.get("home-repair-coordinator").fixture,
+  );
+  unsupportedIsolation.isolations[0].evidenceRefs = [];
+  assert.equal(isValid("home-repair-coordinator", unsupportedIsolation), false);
+});
+
+test("home repair binds instructions, verification, and resident authority", () => {
+  const unsupportedStep = structuredClone(cases.get("home-repair-coordinator").fixture);
+  unsupportedStep.repairPlan.steps[0].evidenceRefs = ["ev-report"];
+  unsupportedStep.repairPlan.hypotheses = [];
+  assert.equal(isValid("home-repair-coordinator", unsupportedStep), false);
+
+  const unsupportedDiagnosis = structuredClone(
+    cases.get("home-repair-coordinator").fixture,
+  );
+  unsupportedDiagnosis.repairPlan.hypotheses[0].status = "specialist-confirmed";
+  unsupportedDiagnosis.evidence[0].authority = "qualified-specialist";
+  assert.equal(isValid("home-repair-coordinator", unsupportedDiagnosis), false);
+
+  const unsupportedVerification = structuredClone(
+    cases.get("home-repair-coordinator").fixture,
+  );
+  unsupportedVerification.verification.state = "passed";
+  unsupportedVerification.verification.evidenceRefs = ["ev-manual"];
+  unsupportedVerification.verification.unresolvedConditions = [];
+  assert.equal(isValid("home-repair-coordinator", unsupportedVerification), false);
+
+  const unboundStep = structuredClone(cases.get("home-repair-coordinator").fixture);
+  unboundStep.repairPlan.steps[0].observationRefs = ["obs-missing"];
+  assert.equal(isValid("home-repair-coordinator", unboundStep), false);
+
+  const missingHypothesis = structuredClone(cases.get("home-repair-coordinator").fixture);
+  missingHypothesis.repairPlan.hypotheses = [];
+  missingHypothesis.repairPlan.steps = [];
+  assert.equal(isValid("home-repair-coordinator", missingHypothesis), false);
+
+  const agentOwned = structuredClone(cases.get("home-repair-coordinator").fixture);
+  agentOwned.resident.id = "home-repair-coordinator";
+  agentOwned.handoff.resident.id = "home-repair-coordinator";
+  assert.equal(isValid("home-repair-coordinator", agentOwned), false);
+});
+
+test("home repair rejects address leakage and unapproved appointments", () => {
+  const addressLeak = structuredClone(cases.get("home-repair-coordinator").fixture);
+  addressLeak.observations[0].description += " Service address: 123 Main Street.";
+  assert.equal(isValid("home-repair-coordinator", addressLeak), false);
+
+  const terraceLeak = structuredClone(cases.get("home-repair-coordinator").fixture);
+  terraceLeak.observations[0].description += " Service address: 742 Evergreen Terrace.";
+  assert.equal(isValid("home-repair-coordinator", terraceLeak), false);
+
+  const alphanumericAddressLeak = structuredClone(
+    cases.get("home-repair-coordinator").fixture,
+  );
+  alphanumericAddressLeak.observations[0].description +=
+    " Service address: 123A Main Street.";
+  assert.equal(isValid("home-repair-coordinator", alphanumericAddressLeak), false);
+
+  const sluggedAddressLeak = structuredClone(
+    cases.get("home-repair-coordinator").fixture,
+  );
+  sluggedAddressLeak.home.reference = "home-123-main-st";
+  assert.equal(isValid("home-repair-coordinator", sluggedAddressLeak), false);
+
+  const invalidProvider = structuredClone(cases.get("home-repair-coordinator").fixture);
+  invalidProvider.appointment.plan.trade = "electrician";
+  assert.equal(isValid("home-repair-coordinator", invalidProvider), false);
+
+  const unsupportedProvider = structuredClone(
+    cases.get("home-repair-coordinator").fixture,
+  );
+  unsupportedProvider.providers[0].sourceRef = "ev-manual";
+  assert.equal(isValid("home-repair-coordinator", unsupportedProvider), false);
+
+  unsupportedProvider.appointment = { state: "not-requested" };
+  assert.equal(isValid("home-repair-coordinator", unsupportedProvider), false);
+
+  const prematureReceipt = structuredClone(
+    cases.get("home-repair-coordinator").fixture,
+  );
+  prematureReceipt.appointment.bookingIntegration = {
+    id: "approved-integration-provider",
+    providerRef: "provider-appliance",
+    approvalRef: "controlled://home-repair/integration-approval",
+    approvalEvidenceRef: "ev-report",
+    configuredBy: prematureReceipt.resident,
+  };
+  prematureReceipt.appointment.receipt = {
+    planDigest: `sha256:${"0".repeat(64)}`,
+    integrationId: "approved-integration-provider",
+    providerRef: "provider-appliance",
+    confirmationRef: "provider://provider-appliance/confirmation-early",
+    evidenceRef: "ev-provider",
+    bookedAt: "2026-08-23T17:00:00Z",
+  };
+  assert.equal(isValid("home-repair-coordinator", prematureReceipt), false);
 });
 
 test("capstone profiles expose only their intended runtime dimensions", async () => {

@@ -36,7 +36,8 @@
       "case-continuity-coordinator",
       "delegation-coordinator",
       "model-evaluation-adjudicator",
-      "vehicle-service-coordinator"
+      "vehicle-service-coordinator",
+      "home-repair-coordinator"
     ]
   },
   "visualCases": [

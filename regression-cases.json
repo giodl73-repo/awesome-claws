@@ -1385,6 +1385,28 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "home-repair-coordinator",
+      "acceptedRequest": "Help me investigate why my dishwasher is not draining, walk me through only safe reversible checks from its manual, and prepare a repair appointment if those checks do not resolve it.",
+      "requiredEvidence": [
+        "Owner-approved home and room labels, building type and age range, affected system or appliance, occupants at risk, and accountable resident",
+        "Observed symptoms, timing, photos, recordings, measurements, recent work, shutoff state, model information, manuals, and prior service evidence",
+        "Immediate hazards, accessibility needs, landlord or association authority, warranty context, tools and skill limits, provider preferences, availability, and budget ceiling"
+      ],
+      "authorityBoundaries": [
+        "Do not instruct work on gas, mains electrical service, structural elements, active fire systems, asbestos, lead, mold remediation, refrigerants, roofs, confined spaces, or other regulated or high-hazard conditions",
+        "Do not claim code compliance, permit sufficiency, professional diagnosis, habitability, remediation completion, or safe re-energization",
+        "Do not contact, book, cancel, authorize work, accept terms, submit payment, disclose precise home data, or exceed an approved provider, scope, time, and cost ceiling without exact resident consent"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/home-repair-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
