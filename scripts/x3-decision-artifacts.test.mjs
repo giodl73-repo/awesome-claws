@@ -1,11 +1,25 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { validateArtifactSemantics } from "./artifact-semantics.mjs";
+
+function canonicalJson(value) {
+  if (Array.isArray(value)) {
+    return `[${value.map(canonicalJson).join(",")}]`;
+  }
+  if (value && typeof value === "object") {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
 
 const definitions = [
   {
@@ -36,6 +50,12 @@ const definitions = [
     id: "model-evaluation-adjudicator",
     schema: "../claws/model-evaluation-adjudicator/schemas/model-evaluation.schema.json",
     fixture: "../claws/model-evaluation-adjudicator/fixtures/model-evaluation.example.json",
+    decisionField: "handoff.state",
+  },
+  {
+    id: "vehicle-service-coordinator",
+    schema: "../claws/vehicle-service-coordinator/schemas/vehicle-service.schema.json",
+    fixture: "../claws/vehicle-service-coordinator/fixtures/vehicle-service.example.json",
     decisionField: "handoff.state",
   },
   {
@@ -343,6 +363,7 @@ test("model evaluation keeps blinding and terminal authority owner-controlled", 
     .forEach((item) => {
       item.outputRef = "output-gpt-5";
     });
+
   mismatchedOpaqueAlias.samplingPlan
     .filter((item) => item.outputRef === "output-a")
     .forEach((item) => {
@@ -378,6 +399,104 @@ test("model evaluation keeps blinding and terminal authority owner-controlled", 
   );
   incompleteProhibitions.handoff.prohibitedActions = ["deploy"];
   assert.equal(isValid("model-evaluation-adjudicator", incompleteProhibitions), false);
+});
+
+test("vehicle service binds safety, diagnosis, and appointment authority", () => {
+  const unsafe = structuredClone(cases.get("vehicle-service-coordinator").fixture);
+  unsafe.assessment.safeToDrive = "routine";
+  assert.equal(isValid("vehicle-service-coordinator", unsafe), false);
+
+  const unsupportedDiagnosis = structuredClone(
+    cases.get("vehicle-service-coordinator").fixture,
+  );
+  unsupportedDiagnosis.hypotheses[0].status = "technician-confirmed";
+  assert.equal(isValid("vehicle-service-coordinator", unsupportedDiagnosis), false);
+
+  const unsupportedCheck = structuredClone(cases.get("vehicle-service-coordinator").fixture);
+  unsupportedCheck.ownerChecks[0].safetyClass = "manual-approved";
+  unsupportedCheck.ownerChecks[0].evidenceRefs = ["ev-owner"];
+  unsupportedCheck.hypotheses = [];
+  assert.equal(isValid("vehicle-service-coordinator", unsupportedCheck), false);
+
+  const exposedVin = structuredClone(cases.get("vehicle-service-coordinator").fixture);
+  exposedVin.vehicle.reference = "vehicle-1hgcm82633a004352";
+  assert.equal(isValid("vehicle-service-coordinator", exposedVin), false);
+
+  const exposedLowercaseVin = structuredClone(
+    cases.get("vehicle-service-coordinator").fixture,
+  );
+  exposedLowercaseVin.observations[0].description += " VIN 1hgcm82633a004352.";
+  assert.equal(isValid("vehicle-service-coordinator", exposedLowercaseVin), false);
+
+  const agentOwned = structuredClone(cases.get("vehicle-service-coordinator").fixture);
+  agentOwned.owner.id = "vehicle-service-coordinator";
+  agentOwned.handoff.owner.id = "vehicle-service-coordinator";
+  assert.equal(isValid("vehicle-service-coordinator", agentOwned), false);
+});
+
+test("vehicle service rejects unapproved or drifted booking state", () => {
+  const prematureReceipt = structuredClone(
+    cases.get("vehicle-service-coordinator").fixture,
+  );
+  prematureReceipt.appointment.bookingIntegration = {
+    id: "approved-integration-provider",
+    providerRef: "provider-hybrid",
+    approvalRef: "controlled://vehicle-service/integration-approval",
+    configuredBy: prematureReceipt.owner,
+  };
+  prematureReceipt.appointment.receipt = {
+    planDigest: `sha256:${"0".repeat(64)}`,
+    integrationId: "approved-integration-provider",
+    providerRef: "provider-hybrid",
+    confirmationRef: "provider://provider-hybrid/confirmation-early",
+    bookedAt: "2026-08-22T17:00:00Z",
+  };
+  assert.equal(isValid("vehicle-service-coordinator", prematureReceipt), false);
+
+  const unapproved = structuredClone(cases.get("vehicle-service-coordinator").fixture);
+  unapproved.appointment.state = "booked";
+  assert.equal(isValid("vehicle-service-coordinator", unapproved), false);
+
+  const invalidProvider = structuredClone(cases.get("vehicle-service-coordinator").fixture);
+  invalidProvider.appointment.plan.providerRef = "missing-provider";
+  assert.equal(isValid("vehicle-service-coordinator", invalidProvider), false);
+
+  const excessiveDeposit = structuredClone(cases.get("vehicle-service-coordinator").fixture);
+  excessiveDeposit.appointment.plan.maxDeposit = 300;
+  assert.equal(isValid("vehicle-service-coordinator", excessiveDeposit), false);
+
+  const booked = structuredClone(cases.get("vehicle-service-coordinator").fixture);
+  const planDigest = `sha256:${createHash("sha256")
+    .update(canonicalJson(booked.appointment.plan))
+    .digest("hex")}`;
+  booked.appointment = {
+    ...booked.appointment,
+    state: "booked",
+    approval: {
+      owner: booked.owner,
+      planDigest,
+      approvedAt: "2026-08-22T18:00:00Z",
+    },
+    bookingIntegration: {
+      id: "approved-integration-provider",
+      providerRef: "provider-hybrid",
+      approvalRef: "controlled://vehicle-service/integration-approval",
+      configuredBy: booked.owner,
+    },
+    receipt: {
+      planDigest,
+      integrationId: "approved-integration-provider",
+      providerRef: "provider-hybrid",
+      confirmationRef: "provider://provider-hybrid/confirmation-1",
+      bookedAt: "2026-08-22T17:00:00Z",
+    },
+  };
+  assert.equal(isValid("vehicle-service-coordinator", booked), false);
+
+  booked.appointment.receipt.bookedAt = "2026-08-22T19:00:00Z";
+  booked.appointment.receipt.confirmationRef =
+    "provider://unrelated-provider/confirmation-1";
+  assert.equal(isValid("vehicle-service-coordinator", booked), false);
 });
 
 test("capstone profiles expose only their intended runtime dimensions", async () => {

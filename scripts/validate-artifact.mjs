@@ -23,6 +23,7 @@ const schemaNames = {
   "recruiting-coordinator": "interview-plan.schema.json",
   "research-briefing": "research-brief.schema.json",
   "sales-operations": "pipeline-review.schema.json",
+  "vehicle-service-coordinator": "vehicle-service.schema.json",
 };
 const schemaName = schemaNames[id];
 if (!schemaName) {

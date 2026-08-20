@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "vehicle", "owner", "evidence", "observations", "assessment", "hypotheses", "ownerChecks", "providers", "appointment", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.vehicleService.v1" },
+    "vehicle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference", "year", "make", "model", "powertrain", "mileage", "identifierScope"],
+      "properties": {
+        "reference": { "type": "string", "pattern": "^vehicle-[a-z]$" },
+        "year": { "type": "integer", "minimum": 1886, "maximum": 2100 },
+        "make": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 },
+        "powertrain": { "enum": ["combustion", "hybrid", "plug-in-hybrid", "battery-electric", "other", "unknown"] },
+        "mileage": { "type": "integer", "minimum": 0 },
+        "identifierScope": { "enum": ["none", "masked"] }
+      }
+    },
+    "owner": { "$ref": "#/$defs/accountableOwner" },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "authority", "capturedAt", "reference"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "type": { "enum": ["owner-report", "photo", "recording", "manual", "service-record", "diagnostic-code", "recall", "warranty", "provider-info", "technician-finding"] },
+          "authority": { "enum": ["owner-supplied", "manufacturer", "government", "service-provider", "qualified-technician"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "description", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["symptom", "warning-indicator", "diagnostic-code", "maintenance-history", "operating-condition"] },
+          "description": { "type": "string", "minLength": 1 },
+          "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["safeToDrive", "safetyCritical", "escalation", "rationale", "evidenceRefs"],
+      "properties": {
+        "safeToDrive": { "enum": ["stop-driving", "roadside-only", "limited-use", "uncertain", "routine"] },
+        "safetyCritical": { "type": "boolean" },
+        "escalation": { "enum": ["emergency-services", "roadside-assistance", "qualified-specialist", "routine-service", "none"] },
+        "rationale": { "type": "string", "minLength": 1 },
+        "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "hypotheses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "statement", "confidence", "status", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "statement": { "type": "string", "minLength": 1 },
+          "confidence": { "enum": ["low", "medium", "high"] },
+          "status": { "enum": ["unconfirmed", "technician-confirmed", "rejected"] },
+          "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "ownerChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "instruction", "safetyClass", "state", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "instruction": { "type": "string", "minLength": 1 },
+          "safetyClass": { "enum": ["visual-only", "manual-approved"] },
+          "state": { "enum": ["proposed", "completed", "blocked"] },
+          "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "providers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "type", "sourceRef", "serviceCapabilities"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "type": { "enum": ["dealer", "independent-shop", "roadside-provider", "specialist"] },
+          "sourceRef": { "type": "string", "minLength": 1 },
+          "serviceCapabilities": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "appointment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "properties": {
+        "state": { "enum": ["not-requested", "options-ready", "awaiting-approval", "approved", "booked", "blocked"] },
+        "plan": { "$ref": "#/$defs/appointmentPlan" },
+        "approval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["owner", "planDigest", "approvedAt"],
+          "properties": {
+            "owner": { "$ref": "#/$defs/accountableOwner" },
+            "planDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+            "approvedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "bookingIntegration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "providerRef", "approvalRef", "configuredBy"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^approved-integration-[a-z0-9-]+$" },
+            "providerRef": { "type": "string", "minLength": 1 },
+            "approvalRef": { "type": "string", "pattern": "^controlled://[a-z0-9/._-]+$" },
+            "configuredBy": { "$ref": "#/$defs/accountableOwner" }
+          }
+        },
+        "receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["planDigest", "integrationId", "providerRef", "confirmationRef", "bookedAt"],
+          "properties": {
+            "planDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+            "integrationId": { "type": "string", "pattern": "^approved-integration-[a-z0-9-]+$" },
+            "providerRef": { "type": "string", "minLength": 1 },
+            "confirmationRef": { "type": "string", "pattern": "^provider://[a-z0-9/._-]+$" },
+            "bookedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "blockedReason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-owner", "blocked"] },
+        "owner": { "$ref": "#/$defs/accountableOwner" },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": { "enum": ["control-vehicle", "perform-safety-critical-repair", "authorize-repair", "submit-payment", "exceed-appointment-scope"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "accountableOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "role"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["human", "team"] },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    },
+    "appointmentPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["providerRef", "serviceScope", "startsAt", "timezone", "maxCost", "currency", "maxDeposit", "cancellationTerms", "dataDisclosure"],
+      "properties": {
+        "providerRef": { "type": "string", "minLength": 1 },
+        "serviceScope": { "type": "string", "minLength": 1 },
+        "startsAt": { "type": "string", "format": "date-time" },
+        "timezone": { "type": "string", "minLength": 1 },
+        "maxCost": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "maxDeposit": { "type": "number", "minimum": 0 },
+        "cancellationTerms": { "type": "string", "minLength": 1 },
+        "dataDisclosure": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+      }
+    }
+  }
+}

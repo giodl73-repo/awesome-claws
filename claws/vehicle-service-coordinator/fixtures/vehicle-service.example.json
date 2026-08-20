@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "awesomeClaws.vehicleService.v1",
+  "vehicle": {
+    "reference": "vehicle-a",
+    "year": 2021,
+    "make": "Example",
+    "model": "Hybrid",
+    "powertrain": "hybrid",
+    "mileage": 48200,
+    "identifierScope": "masked"
+  },
+  "owner": { "id": "owner-1", "kind": "human", "role": "vehicle owner" },
+  "evidence": [
+    { "id": "ev-owner", "type": "owner-report", "authority": "owner-supplied", "capturedAt": "2026-08-20T01:00:00Z", "reference": "evidence/owner-report.md" },
+    { "id": "ev-manual", "type": "manual", "authority": "manufacturer", "capturedAt": "2026-08-20T01:05:00Z", "reference": "evidence/owner-manual.md" },
+    { "id": "ev-provider", "type": "provider-info", "authority": "service-provider", "capturedAt": "2026-08-20T01:10:00Z", "reference": "evidence/provider-page.md" }
+  ],
+  "observations": [
+    { "id": "obs-warning", "kind": "warning-indicator", "description": "Intermittent charging-system warning appears after cold start.", "evidenceRefs": ["ev-owner"] }
+  ],
+  "assessment": {
+    "safeToDrive": "uncertain",
+    "safetyCritical": true,
+    "escalation": "qualified-specialist",
+    "rationale": "The supplied manual requires qualified inspection when the charging warning recurs; no remote diagnosis establishes continued safe operation.",
+    "evidenceRefs": ["ev-owner", "ev-manual"]
+  },
+  "hypotheses": [
+    { "id": "hyp-charging", "statement": "The warning may involve the charging system, but the cause is unconfirmed.", "confidence": "low", "status": "unconfirmed", "evidenceRefs": ["ev-owner", "ev-manual"] }
+  ],
+  "ownerChecks": [
+    { "id": "check-indicator", "instruction": "With the vehicle parked and powered off, record the exact indicator text and whether it returns at the next start.", "safetyClass": "visual-only", "state": "proposed", "evidenceRefs": ["ev-manual"] }
+  ],
+  "providers": [
+    { "id": "provider-hybrid", "name": "Example Hybrid Service", "type": "specialist", "sourceRef": "ev-provider", "serviceCapabilities": ["hybrid charging-system diagnosis"] }
+  ],
+  "appointment": {
+    "state": "awaiting-approval",
+    "plan": {
+      "providerRef": "provider-hybrid",
+      "serviceScope": "Diagnostic appointment only; no repair authorization.",
+      "startsAt": "2026-08-22T17:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "maxCost": 225,
+      "currency": "USD",
+      "maxDeposit": 0,
+      "cancellationTerms": "No fee when cancelled at least 24 hours before the appointment.",
+      "dataDisclosure": ["vehicle year, make, model, powertrain", "owner callback number"]
+    }
+  },
+  "handoff": {
+    "state": "ready-for-owner",
+    "owner": { "id": "owner-1", "kind": "human", "role": "vehicle owner" },
+    "prohibitedActions": ["control-vehicle", "perform-safety-critical-repair", "authorize-repair", "submit-payment", "exceed-appointment-scope"]
+  }
+}

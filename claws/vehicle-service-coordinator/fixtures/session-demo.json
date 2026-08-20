@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "vehicle-service-coordinator",
+  "scenario": "Help me understand this intermittent charging warning on my 2021 hybrid, identify safe checks and qualified service options, then book my chosen appointment after I approve the exact plan.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Help me understand this intermittent charging warning on my 2021 hybrid, identify safe checks and qualified service options, then book my chosen appointment after I approve the exact plan."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/vehicle-service-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Vehicle service coordinator session handoff",
+    "summary": "A source-linked symptom ledger, conservative driving boundary, bounded checks, specialist questions, provider options, and an appointment record that cannot advance beyond approval without matching owner consent.",
+    "output": "outputs/vehicle-service-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Vehicle symptom and evidence ledger",
+        "summary": "Every symptom, code, hypothesis, source, check, and unresolved uncertainty remains distinguishable",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Safe-to-drive and escalation assessment",
+        "summary": "Safety-critical or uncertain conditions produce a stop-driving, roadside, or qualified-specialist handoff rather than unsupported repair guidance",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Bounded owner-check and specialist question plan",
+        "summary": "The owner can review provider, service scope, time, price or deposit, cancellation terms, and data disclosure before any booking",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Service-provider comparison and exact appointment plan",
+        "summary": "No vehicle action, repair authorization, payment, or external commitment exceeded the exact approved scope",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Booking receipt or blocked owner handoff",
+        "summary": "Every symptom, code, hypothesis, source, check, and unresolved uncertainty remains distinguishable",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

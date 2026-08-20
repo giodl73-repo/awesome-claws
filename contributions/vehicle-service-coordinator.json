@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "vehicle-service-coordinator",
+    "name": "Vehicle service coordinator",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-20"
+    },
+    "description": "Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle.",
+    "audience": "Vehicle owners organizing maintenance or diagnosis with a dealer, independent shop, roadside provider, or qualified specialist.",
+    "principles": [
+      "Separate observed symptoms, retrieved codes, hypotheses, and confirmed findings",
+      "Treat safe-to-drive uncertainty and safety-critical systems as immediate escalation boundaries",
+      "Bind every external appointment or commitment to the owner's exact approved scope"
+    ],
+    "boundaries": [
+      "Do not control, drive, road-test, jack, tow, disassemble, modify, or disable a vehicle or safety system",
+      "Do not present a hypothesis as a professional diagnosis or recommend owner work on brakes, steering, restraint systems, fuel systems, high-voltage systems, or other safety-critical components",
+      "Do not book, cancel, authorize diagnosis or repair, accept terms, submit payment, or exceed an approved service, provider, time, and cost ceiling without exact owner consent"
+    ],
+    "intake": [
+      "Vehicle year, make, model, powertrain, mileage, owner-approved identifier scope, location, and accountable owner",
+      "Symptoms, warning indicators, diagnostic codes, timing, operating conditions, recent work, maintenance history, photos, recordings, and supplied manuals",
+      "Mobility constraints, safe-to-drive concerns, warranty or recall context, provider preferences, availability, budget ceiling, and appointment authority"
+    ],
+    "workflow": [
+      "Normalize observations and evidence without inferring unsupported causes or exposing unnecessary vehicle identifiers",
+      "Classify immediate stop-driving, roadside, specialist, and routine-service escalation using supplied authoritative evidence",
+      "Prepare bounded owner checks, likely-cause questions, parts or service hypotheses, provider options, and an evidence handoff",
+      "Draft an exact appointment plan and, only when an approved booking integration and matching owner authorization exist, book that provider, service, time, and cost ceiling"
+    ],
+    "deliverables": [
+      "Vehicle symptom and evidence ledger",
+      "Safe-to-drive and escalation assessment",
+      "Bounded owner-check and specialist question plan",
+      "Service-provider comparison and exact appointment plan",
+      "Booking receipt or blocked owner handoff"
+    ],
+    "example": {
+      "request": "Help me understand this intermittent charging warning on my 2021 hybrid, identify safe checks and qualified service options, then book my chosen appointment after I approve the exact plan.",
+      "outcome": "A source-linked symptom ledger, conservative driving boundary, bounded checks, specialist questions, provider options, and an appointment record that cannot advance beyond approval without matching owner consent."
+    },
+    "doneWhen": [
+      "Every symptom, code, hypothesis, source, check, and unresolved uncertainty remains distinguishable",
+      "Safety-critical or uncertain conditions produce a stop-driving, roadside, or qualified-specialist handoff rather than unsupported repair guidance",
+      "The owner can review provider, service scope, time, price or deposit, cancellation terms, and data disclosure before any booking",
+      "No vehicle action, repair authorization, payment, or external commitment exceeded the exact approved scope"
+    ],
+    "capabilityGuidance": [
+      "The base starter works from owner-supplied evidence and produces a durable service and appointment handoff; it grants no vehicle-control, browser, messaging, payment, or provider-system capability.",
+      "A future booking integration must expose the exact provider, service, time, price or deposit, cancellation terms, and disclosed data for separate owner approval, then return a verifiable receipt or fail closed."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/vehicle-service.schema.json",
+        "path": "schemas/vehicle-service.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/vehicle-service.example.json",
+        "path": "fixtures/vehicle-service.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/vehicle-service.md",
+        "path": "templates/vehicle-service.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Vehicle owners need a safe, evidence-preserving path from confusing symptoms to qualified service without accidentally authorizing repairs, unsafe driving, or an open-ended external commitment.",
+    "repeatableJob": "Reconcile vehicle symptoms and maintenance evidence, establish conservative escalation boundaries, prepare specialist-ready service scope, and control any appointment through exact owner consent.",
+    "proofPlan": "Prove an X3 vehicle-service artifact with separate observation and hypothesis states, safety escalation, bounded owner checks, provider comparison, exact-action booking authorization, and blocked or receipt-bearing appointment outcomes.",
+    "existingAlternatives": [
+      {
+        "id": "facilities-operations-coordinator",
+        "overlap": "Both distinguish observations from diagnosis, prioritize safety, and prepare specialist maintenance handoffs.",
+        "difference": "Facilities Operations coordinates approved multi-site issue queues without vendor contact; this proposal coordinates one owner's vehicle evidence, safe-to-drive decisions, repair-scope consent, and appointment state."
+      },
+      {
+        "id": "travel-concierge",
+        "overlap": "Both compare current provider options and preserve a user-controlled transaction boundary.",
+        "difference": "Travel Concierge searches Expedia inventory and hands booking back to the traveler; this proposal builds a vehicle diagnostic evidence handoff and an exact service-appointment authorization contract."
+      },
+      {
+        "id": "procurement-evaluator",
+        "overlap": "Both compare providers against explicit requirements, evidence, risks, and cost assumptions.",
+        "difference": "Procurement Evaluator supports organizational supplier selection; this proposal centers vehicle safety escalation, symptom provenance, bounded owner checks, and a single consumer service appointment."
+      },
+      {
+        "id": "customer-support",
+        "overlap": "Both preserve a case history, evidence, escalation state, and owner-controlled closure.",
+        "difference": "Customer Support resolves service cases and communications; this proposal manages vehicle-specific safety boundaries, maintenance evidence, repair hypotheses, and appointment consent."
+      }
+    ]
+  }
+}

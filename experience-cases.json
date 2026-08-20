@@ -35,7 +35,8 @@
       "change-control-operator",
       "case-continuity-coordinator",
       "delegation-coordinator",
-      "model-evaluation-adjudicator"
+      "model-evaluation-adjudicator",
+      "vehicle-service-coordinator"
     ]
   },
   "visualCases": [
