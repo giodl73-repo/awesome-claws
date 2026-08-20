@@ -1360,6 +1360,377 @@ function vehicleServiceFindings(value) {
   return findings;
 }
 
+function homeRepairFindings(value) {
+  const evidenceIds = value.evidence.map((item) => item.id);
+  const evidence = new Set(evidenceIds);
+  const observationIds = value.observations.map((item) => item.id);
+  const observations = new Set(observationIds);
+  const hypothesisIds = value.repairPlan.hypotheses.map((item) => item.id);
+  const hypotheses = new Set(hypothesisIds);
+  const providerIds = value.providers.map((item) => item.id);
+  const providers = new Set(providerIds);
+  const findings = [
+    ...uniqueFindings(evidenceIds, "evidence", "Evidence id"),
+    ...uniqueFindings(observationIds, "observations", "Observation id"),
+    ...uniqueFindings(
+      hypothesisIds,
+      "repairPlan.hypotheses",
+      "Hypothesis id",
+    ),
+    ...uniqueFindings(
+      value.repairPlan.steps.map((item) => item.id),
+      "repairPlan.steps",
+      "Repair step id",
+    ),
+    ...uniqueFindings(providerIds, "providers", "Provider id"),
+  ];
+  const evidenceReferences = [
+    ...value.observations.map((item) => [item.evidenceRefs, "observations"]),
+    [value.hazardAssessment.evidenceRefs, "hazardAssessment.evidenceRefs"],
+    ...value.isolations.map((item) => [item.evidenceRefs, "isolations"]),
+    ...value.repairPlan.hypotheses.map((item) => [
+      item.evidenceRefs,
+      "repairPlan.hypotheses",
+    ]),
+    ...value.repairPlan.steps.map((item) => [item.evidenceRefs, "repairPlan.steps"]),
+    [value.verification.evidenceRefs, "verification.evidenceRefs"],
+    ...value.providers.map((item) => [[item.sourceRef], "providers"]),
+    ...(value.appointment.bookingIntegration
+      ? [[[value.appointment.bookingIntegration.approvalEvidenceRef], "appointment.bookingIntegration"]]
+      : []),
+    ...(value.appointment.receipt
+      ? [[[value.appointment.receipt.evidenceRef], "appointment.receipt"]]
+      : []),
+  ];
+  for (const [references, path] of evidenceReferences) {
+    findings.push(...uniqueFindings(references, path, "Evidence reference"));
+    findings.push(...referenceFindings(references, evidence, path, "Evidence reference"));
+  }
+  if (/\b\d{1,6}[A-Za-z]?(?:-\d{1,6}[A-Za-z]?)?\s+[A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+){0,4}\s+(?:Alley|Aly|Avenue|Ave|Boulevard|Blvd|Circle|Cir|Court|Ct|Crescent|Cres|Drive|Dr|Expressway|Expy|Freeway|Fwy|Highway|Hwy|Lane|Ln|Parkway|Pkwy|Place|Pl|Plaza|Plz|Road|Rd|Route|Rte|Square|Sq|Street|St|Terrace|Ter|Trail|Trl|Way)\b/iu.test(canonicalJson(value))) {
+    findings.push(
+      finding(
+        "exposed_home_address",
+        "home",
+        "Durable home-repair artifacts must use room and system labels, not a street address.",
+      ),
+    );
+  }
+  const highHazards = new Set([
+    "gas",
+    "mains-electricity",
+    "structural",
+    "fire",
+    "asbestos",
+    "lead",
+    "mold",
+    "refrigerant",
+    "roof",
+    "height",
+    "confined-space",
+    "uncontrolled-water",
+  ]);
+  const hasHighHazard = value.hazardAssessment.hazards.some((item) =>
+    highHazards.has(item),
+  );
+  if (
+    (value.hazardAssessment.hazards.includes("none") &&
+      value.hazardAssessment.hazards.length !== 1) ||
+    (value.repairPlan.eligibility === "owner-repair" &&
+      (value.hazardAssessment.level !== "low-risk" ||
+        value.hazardAssessment.action !== "bounded-owner-check" ||
+        canonicalJson(value.hazardAssessment.hazards) !== canonicalJson(["none"]))) ||
+    (hasHighHazard &&
+      (value.hazardAssessment.action === "bounded-owner-check" ||
+        value.repairPlan.eligibility === "owner-repair" ||
+        value.repairPlan.steps.length > 0))
+  ) {
+    findings.push(
+      finding(
+        "unsafe_repair_eligibility",
+        "hazardAssessment",
+        "High-hazard or contradictory hazard state cannot permit owner repair.",
+      ),
+    );
+  }
+  for (const [index, provider] of value.providers.entries()) {
+    const providerEvidence = value.evidence.find(
+      (item) => item.id === provider.sourceRef,
+    );
+    if (
+      providerEvidence &&
+      (providerEvidence.type !== "provider-info" ||
+        !["service-provider", "qualified-specialist"].includes(
+          providerEvidence.authority,
+        ))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_provider_evidence",
+          `providers.${index}.sourceRef`,
+          "Every provider must cite provider-information evidence from the provider or a qualified specialist.",
+        ),
+      );
+    }
+  }
+  if (
+    (value.repairPlan.eligibility === "owner-repair" &&
+      (value.repairPlan.hypotheses.length === 0 || value.repairPlan.steps.length === 0)) ||
+    (value.repairPlan.eligibility !== "owner-repair" && value.repairPlan.steps.length > 0)
+  ) {
+    findings.push(
+      finding(
+        "incoherent_owner_repair_plan",
+        "repairPlan",
+        "Owner repair requires an evidence-linked hypothesis and step; specialist-only or blocked plans cannot contain resident repair instructions.",
+      ),
+    );
+  }
+  if (
+    value.repairPlan.eligibility === "owner-repair" &&
+    !["verified-owner", "verified-tenant-permission"].includes(value.home.workAuthority)
+  ) {
+    findings.push(
+      finding(
+        "missing_work_authority",
+        "home.workAuthority",
+        "Owner repair requires verified authority for the bounded work.",
+      ),
+    );
+  }
+  if (
+    value.repairPlan.eligibility === "owner-repair" &&
+    value.isolations.some((item) => ["unknown", "specialist-only"].includes(item.state))
+  ) {
+    findings.push(
+      finding(
+        "unconfirmed_isolation",
+        "isolations",
+        "Owner repair requires every declared isolation to be confirmed or not required.",
+      ),
+    );
+  }
+  if (
+    value.isolations.some(
+      (item) => item.state === "confirmed" && item.evidenceRefs.length === 0,
+    )
+  ) {
+    findings.push(
+      finding(
+        "unsupported_isolation",
+        "isolations",
+        "Every confirmed household isolation requires supporting evidence.",
+      ),
+    );
+  }
+  for (const [index, hypothesis] of value.repairPlan.hypotheses.entries()) {
+    if (
+      hypothesis.status === "specialist-confirmed" &&
+      !hypothesis.evidenceRefs.some((reference) => {
+        const item = value.evidence.find((candidate) => candidate.id === reference);
+        return (
+          item?.type === "specialist-finding" &&
+          item.authority === "qualified-specialist"
+        );
+      })
+    ) {
+      findings.push(
+        finding(
+          "unsupported_diagnosis",
+          `repairPlan.hypotheses.${index}`,
+          "Only qualified-specialist evidence may confirm a household defect.",
+        ),
+      );
+    }
+  }
+  for (const [index, step] of value.repairPlan.steps.entries()) {
+    findings.push(
+      ...referenceFindings(
+        step.observationRefs,
+        observations,
+        `repairPlan.steps.${index}.observationRefs`,
+        "Observation reference",
+      ),
+      ...referenceFindings(
+        step.hypothesisRefs,
+        hypotheses,
+        `repairPlan.steps.${index}.hypothesisRefs`,
+        "Hypothesis reference",
+      ),
+    );
+    if (
+      step.class === "manual-approved" &&
+      !step.evidenceRefs.some((reference) => {
+        const item = value.evidence.find((candidate) => candidate.id === reference);
+        return item?.type === "manual" && item.authority === "manufacturer";
+      })
+    ) {
+      findings.push(
+        finding(
+          "unsupported_repair_step",
+          `repairPlan.steps.${index}.evidenceRefs`,
+          "A manual-approved repair step must cite manufacturer manual evidence.",
+        ),
+      );
+    }
+  }
+  if (
+    value.verification.state === "passed" &&
+    (value.verification.evidenceRefs.length === 0 ||
+      value.verification.unresolvedConditions.length > 0 ||
+      !value.verification.evidenceRefs.some((reference) => {
+        const item = value.evidence.find((candidate) => candidate.id === reference);
+        return ["photo", "recording", "measurement"].includes(item?.type);
+      }))
+  ) {
+    findings.push(
+      finding(
+        "unsupported_verification",
+        "verification",
+        "Passed verification requires evidence and no unresolved conditions.",
+      ),
+    );
+  }
+  const appointment = value.appointment;
+  const hasPlan = Boolean(appointment.plan);
+  const hasApproval = Boolean(appointment.approval);
+  const hasIntegration = Boolean(appointment.bookingIntegration);
+  const hasReceipt = Boolean(appointment.receipt);
+  if (
+    (["options-ready", "awaiting-approval", "approved", "booked"].includes(
+      appointment.state,
+    ) &&
+      !hasPlan) ||
+    (["approved", "booked"].includes(appointment.state) && !hasApproval) ||
+    (appointment.state === "booked" && (!hasIntegration || !hasReceipt)) ||
+    (appointment.state !== "booked" && (hasIntegration || hasReceipt)) ||
+    (!["approved", "booked"].includes(appointment.state) && hasApproval) ||
+    (appointment.state === "not-requested" && hasPlan) ||
+    (appointment.state === "blocked" && !appointment.blockedReason)
+  ) {
+    findings.push(
+      finding(
+        "incoherent_appointment_state",
+        "appointment",
+        "Appointment plan, approval, integration, receipt, and blocked reason must match the declared state.",
+      ),
+    );
+  }
+  if (appointment.plan) {
+    findings.push(
+      ...referenceFindings(
+        [appointment.plan.providerRef],
+        providers,
+        "appointment.plan.providerRef",
+        "Provider reference",
+      ),
+    );
+    const provider = value.providers.find(
+      (item) => item.id === appointment.plan.providerRef,
+    );
+    if (
+      provider &&
+      (provider.trade !== appointment.plan.trade ||
+        provider.qualificationState !== "owner-verified")
+    ) {
+      findings.push(
+        finding(
+          "unsupported_provider",
+          "appointment.plan",
+          "The appointment trade must match an owner-verified provider.",
+        ),
+      );
+    }
+    if (appointment.plan.maxDeposit > appointment.plan.maxCost) {
+      findings.push(
+        finding(
+          "deposit_exceeds_cost",
+          "appointment.plan.maxDeposit",
+          "The approved deposit ceiling cannot exceed the total cost ceiling.",
+        ),
+      );
+    }
+  }
+  const planDigest = appointment.plan
+    ? `sha256:${createHash("sha256").update(canonicalJson(appointment.plan)).digest("hex")}`
+    : undefined;
+  if (["approved", "booked"].includes(appointment.state) && appointment.approval) {
+    if (
+      appointment.approval.planDigest !== planDigest ||
+      canonicalJson(appointment.approval.resident) !== canonicalJson(value.resident)
+    ) {
+      findings.push(
+        finding(
+          "appointment_approval_mismatch",
+          "appointment.approval",
+          "Appointment approval must bind the exact plan and accountable resident.",
+        ),
+      );
+    }
+  }
+  if (
+    appointment.state === "booked" &&
+    appointment.plan &&
+    appointment.approval &&
+    appointment.bookingIntegration &&
+    appointment.receipt
+  ) {
+    const integrationEvidence = value.evidence.find(
+      (item) => item.id === appointment.bookingIntegration.approvalEvidenceRef,
+    );
+    const receiptEvidence = value.evidence.find(
+      (item) => item.id === appointment.receipt.evidenceRef,
+    );
+    if (
+      appointment.receipt.planDigest !== planDigest ||
+      appointment.receipt.integrationId !== appointment.bookingIntegration.id ||
+      appointment.receipt.providerRef !== appointment.plan.providerRef ||
+      appointment.bookingIntegration.providerRef !== appointment.plan.providerRef ||
+      !appointment.receipt.confirmationRef.startsWith(
+        `provider://${appointment.plan.providerRef}/`,
+      ) ||
+      integrationEvidence?.type !== "integration-approval" ||
+      integrationEvidence.authority !== "resident-supplied" ||
+      integrationEvidence.reference !== appointment.bookingIntegration.approvalRef ||
+      receiptEvidence?.type !== "provider-receipt" ||
+      receiptEvidence.authority !== "service-provider" ||
+      receiptEvidence.reference !== appointment.receipt.confirmationRef ||
+      receiptEvidence.capturedAt !== appointment.receipt.bookedAt ||
+      canonicalJson(appointment.bookingIntegration.configuredBy) !==
+        canonicalJson(value.resident)
+    ) {
+      findings.push(
+        finding(
+          "booking_receipt_mismatch",
+          "appointment.receipt",
+          "The owner-approved integration and provider receipt must bind the exact appointment plan.",
+        ),
+      );
+    }
+    if (Date.parse(appointment.receipt.bookedAt) < Date.parse(appointment.approval.approvedAt)) {
+      findings.push(
+        finding(
+          "booking_predates_approval",
+          "appointment.receipt.bookedAt",
+          "A specialist booking cannot predate the resident's exact plan approval.",
+        ),
+      );
+    }
+  }
+  if (
+    canonicalJson(value.handoff.resident) !== canonicalJson(value.resident) ||
+    value.resident.id === "home-repair-coordinator"
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.resident",
+        "Repair, trade, payment, and appointment authority must remain resident-controlled.",
+      ),
+    );
+  }
+  return findings;
+}
+
 const validators = {
   "case-continuity-coordinator": caseContinuityFindings,
   "change-control-operator": changeControlFindings,
@@ -1367,6 +1738,7 @@ const validators = {
   "data-analyst": dataAnalysisFindings,
   "delegation-coordinator": delegationFindings,
   "financial-analyst": financialAnalysisFindings,
+  "home-repair-coordinator": homeRepairFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
   "project-manager": projectFindings,
   "product-manager": productFindings,

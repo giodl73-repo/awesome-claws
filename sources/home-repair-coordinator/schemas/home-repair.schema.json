@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "home", "resident", "evidence", "observations", "hazardAssessment", "isolations", "repairPlan", "verification", "providers", "appointment", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.homeRepair.v1" },
+    "home": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference", "buildingType", "ageRange", "locationLabel", "workAuthority"],
+      "properties": {
+        "reference": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 32 },
+        "buildingType": { "enum": ["detached", "attached", "apartment", "manufactured", "other", "unknown"] },
+        "ageRange": { "enum": ["pre-1940", "1940-1977", "1978-1999", "2000-present", "unknown"] },
+        "locationLabel": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 32 },
+        "workAuthority": { "enum": ["verified-owner", "verified-tenant-permission", "landlord-required", "association-required", "unverified"] }
+      }
+    },
+    "resident": { "$ref": "#/$defs/accountableOwner" },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "authority", "capturedAt", "reference"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "type": { "enum": ["resident-report", "photo", "recording", "measurement", "manual", "service-record", "permit-record", "specialist-finding", "provider-info", "integration-approval", "provider-receipt"] },
+          "authority": { "enum": ["resident-supplied", "manufacturer", "government", "service-provider", "qualified-specialist"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "system", "description", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "system": { "enum": ["appliance", "plumbing", "electrical", "hvac", "building-envelope", "structural", "fire-safety", "environmental", "other"] },
+          "description": { "type": "string", "minLength": 1 },
+          "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+        }
+      }
+    },
+    "hazardAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "hazards", "action", "rationale", "evidenceRefs"],
+      "properties": {
+        "level": { "enum": ["emergency", "high", "qualified-trade", "low-risk", "uncertain"] },
+        "hazards": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["gas", "mains-electricity", "structural", "fire", "asbestos", "lead", "mold", "refrigerant", "roof", "height", "confined-space", "uncontrolled-water", "none"] }
+        },
+        "action": { "enum": ["evacuate", "emergency-services", "shutoff-and-specialist", "qualified-trade", "bounded-owner-check"] },
+        "rationale": { "type": "string", "minLength": 1 },
+        "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+      }
+    },
+    "isolations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["system", "state", "evidenceRefs"],
+        "properties": {
+          "system": { "enum": ["water", "appliance-power", "branch-electricity", "mains-electricity", "gas", "hvac", "none"] },
+          "state": { "enum": ["not-required", "confirmed", "unknown", "specialist-only"] },
+          "evidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+        }
+      }
+    },
+    "repairPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligibility", "hypotheses", "steps", "parts", "tools"],
+      "properties": {
+        "eligibility": { "enum": ["owner-repair", "specialist-only", "blocked"] },
+        "hypotheses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "statement", "status", "evidenceRefs"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "statement": { "type": "string", "minLength": 1 },
+              "status": { "enum": ["unconfirmed", "specialist-confirmed", "rejected"] },
+              "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+            }
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "instruction", "class", "observationRefs", "hypothesisRefs", "evidenceRefs", "prerequisites", "stopConditions", "restoration", "verification"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "instruction": { "type": "string", "minLength": 1 },
+              "class": { "enum": ["visual-only", "reversible", "manual-approved"] },
+              "observationRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+              "hypothesisRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+              "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+              "prerequisites": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+              "stopConditions": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+              "restoration": { "type": "string", "minLength": 1 },
+              "verification": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "parts": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "tools": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "evidenceRefs", "unresolvedConditions"],
+      "properties": {
+        "state": { "enum": ["not-started", "passed", "failed", "blocked"] },
+        "evidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "unresolvedConditions": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "providers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "trade", "sourceRef", "qualificationState"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "trade": { "enum": ["appliance-repair", "plumber", "electrician", "hvac", "roofer", "structural-engineer", "environmental-specialist", "general-contractor", "emergency-service"] },
+          "sourceRef": { "type": "string", "minLength": 1 },
+          "qualificationState": { "enum": ["owner-verified", "unverified"] }
+        }
+      }
+    },
+    "appointment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "properties": {
+        "state": { "enum": ["not-requested", "options-ready", "awaiting-approval", "approved", "booked", "blocked"] },
+        "plan": { "$ref": "#/$defs/appointmentPlan" },
+        "approval": { "$ref": "#/$defs/approval" },
+        "bookingIntegration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "providerRef", "approvalRef", "approvalEvidenceRef", "configuredBy"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^approved-integration-[a-z0-9-]+$" },
+            "providerRef": { "type": "string", "minLength": 1 },
+            "approvalRef": { "type": "string", "pattern": "^controlled://[a-z0-9/._-]+$" },
+            "approvalEvidenceRef": { "type": "string", "minLength": 1 },
+            "configuredBy": { "$ref": "#/$defs/accountableOwner" }
+          }
+        },
+        "receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["planDigest", "integrationId", "providerRef", "confirmationRef", "evidenceRef", "bookedAt"],
+          "properties": {
+            "planDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+            "integrationId": { "type": "string", "pattern": "^approved-integration-[a-z0-9-]+$" },
+            "providerRef": { "type": "string", "minLength": 1 },
+            "confirmationRef": { "type": "string", "pattern": "^provider://[a-z0-9/._-]+$" },
+            "evidenceRef": { "type": "string", "minLength": 1 },
+            "bookedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "blockedReason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "resident", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-resident", "blocked"] },
+        "resident": { "$ref": "#/$defs/accountableOwner" },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": { "enum": ["perform-high-hazard-work", "claim-professional-diagnosis", "authorize-trade-work", "submit-payment", "exceed-appointment-scope"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "accountableOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "role"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["human", "team"] },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    },
+    "appointmentPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["providerRef", "trade", "serviceScope", "startsAt", "timezone", "maxCost", "currency", "maxDeposit", "cancellationTerms", "dataDisclosure"],
+      "properties": {
+        "providerRef": { "type": "string", "minLength": 1 },
+        "trade": { "type": "string", "minLength": 1 },
+        "serviceScope": { "type": "string", "minLength": 1 },
+        "startsAt": { "type": "string", "format": "date-time" },
+        "timezone": { "type": "string", "minLength": 1 },
+        "maxCost": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "maxDeposit": { "type": "number", "minimum": 0 },
+        "cancellationTerms": { "type": "string", "minLength": 1 },
+        "dataDisclosure": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resident", "planDigest", "approvedAt"],
+      "properties": {
+        "resident": { "$ref": "#/$defs/accountableOwner" },
+        "planDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "approvedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

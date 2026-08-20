@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (56)
+### Active (57)
 
 | Claw | Detail |
 | --- | --- |
@@ -35,6 +35,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Financial analyst](claws/financial-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Grant portfolio manager](claws/grant-portfolio-manager) | @giodl73-repo; last verified 2026-08-19 |
+| [Home repair coordinator](claws/home-repair-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Incident response](claws/incident-response) | @giodl73-repo; last verified 2026-08-19 |
 | [Knowledge curator](claws/knowledge-curator) | @giodl73-repo; last verified 2026-08-19 |
 | [Knowledge gardener](claws/knowledge-gardener) | @giodl73-repo; last verified 2026-08-19 |
@@ -83,7 +84,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (25)
+### Low setup (26)
 
 | Claw | Detail |
 | --- | --- |
@@ -99,6 +100,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Data migration planner](claws/data-migration-planner) | no bootstrap, external dependency, or schedule |
 | [Delegation coordinator](claws/delegation-coordinator) | no bootstrap, external dependency, or schedule |
 | [Experimentation lead](claws/experimentation-lead) | no bootstrap, external dependency, or schedule |
+| [Home repair coordinator](claws/home-repair-coordinator) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
 | [Localization program manager](claws/localization-program-manager) | no bootstrap, external dependency, or schedule |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | no bootstrap, external dependency, or schedule |
@@ -158,7 +160,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (33)
+### No external dependencies (34)
 
 | Claw | Detail |
 | --- | --- |
@@ -179,6 +181,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | None |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | None |
 | [Grant portfolio manager](claws/grant-portfolio-manager) | None |
+| [Home repair coordinator](claws/home-repair-coordinator) | None |
 | [Incident response](claws/incident-response) | None |
 | [Knowledge curator](claws/knowledge-curator) | None |
 | [Localization program manager](claws/localization-program-manager) | None |
@@ -228,7 +231,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (31)
+### X3 (32)
 
 | Claw | Detail |
 | --- | --- |
@@ -243,6 +246,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | Tracks an approved set of RSS and Atom sources and produces a private, source-linked change digest. |
 | [Financial analyst](claws/financial-analyst) | Builds transparent financial analysis without hiding assumptions or uncertainty. |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | Prepares an approval-bound nonprofit fundraising campaign, stewardship plan, audience assets, and measurement handoff without soliciting or sending. |
+| [Home repair coordinator](claws/home-repair-coordinator) | Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments. |
 | [Knowledge curator](claws/knowledge-curator) | Turns scattered information into durable, navigable, and source-linked knowledge. |
 | [Knowledge gardener](claws/knowledge-gardener) | Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work. |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries. |
@@ -345,7 +349,7 @@ Categories come directly from the catalog entry.
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 
-### Operations (14)
+### Operations (15)
 
 | Claw | Detail |
 | --- | --- |
@@ -356,6 +360,7 @@ Categories come directly from the catalog entry.
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | X4; Turns approved site observations into a prioritized maintenance queue, owner handoff, and private operating view without dispatching work. |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | X3; Prepares an approval-bound nonprofit fundraising campaign, stewardship plan, audience assets, and measurement handoff without soliciting or sending. |
 | [Grant portfolio manager](claws/grant-portfolio-manager) | X5; Maintains a private, evidence-led grant opportunity and submission portfolio without inventing eligibility or submitting applications. |
+| [Home repair coordinator](claws/home-repair-coordinator) | X3; Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments. |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | X5; Builds a constraint-led production plan and exception handoff from approved demand, capacity, material, quality, and maintenance evidence. |
 | [Procurement evaluator](claws/procurement-evaluator) | X5; Builds a traceable vendor evaluation from approved requirements, evidence, risks, and accountable purchasing decisions. |
 | [Public safety monitor](claws/public-safety-monitor) | X3; Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services. |
@@ -393,11 +398,12 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (6)
+### Standard attention (7)
 
 | Claw | Detail |
 | --- | --- |
 | [Content operations](claws/content-operations) | portable workspace artifacts only |
+| [Home repair coordinator](claws/home-repair-coordinator) | portable workspace artifacts only |
 | [Knowledge curator](claws/knowledge-curator) | portable workspace artifacts only |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | portable workspace artifacts only |
 | [Recruiting coordinator](claws/recruiting-coordinator) | portable workspace artifacts only |
