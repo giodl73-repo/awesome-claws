@@ -42,6 +42,11 @@ function referenceFindings(values, allowed, path, label) {
     );
 }
 
+function numbersEqual(left, right) {
+  const scale = Math.max(1, Math.abs(left), Math.abs(right));
+  return Math.abs(left - right) <= Number.EPSILON * scale * 8;
+}
+
 function dataAnalysisFindings(value) {
   const sourceRefs = value.sources.map((source) => source.reference);
   const outputFields = value.transformations.map((transformation) => transformation.outputField);
@@ -686,6 +691,438 @@ function delegationFindings(value) {
   return findings;
 }
 
+function modelEvaluationFindings(value) {
+  const criterionIds = value.criteria.map((item) => item.id);
+  const anchorIds = value.anchors.map((item) => item.id);
+  const outputIds = value.outputs.map((item) => item.id);
+  const evaluatorIds = value.evaluators.map((item) => item.id);
+  const judgmentIds = value.judgments.map((item) => item.id);
+  const criteria = new Map(value.criteria.map((item) => [item.id, item]));
+  const judgments = new Map(value.judgments.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(criterionIds, "criteria", "Criterion id"),
+    ...uniqueFindings(anchorIds, "anchors", "Anchor id"),
+    ...uniqueFindings(outputIds, "outputs", "Output id"),
+    ...uniqueFindings(value.outputs.map((item) => item.blindLabel), "outputs", "Blind label"),
+    ...uniqueFindings(value.outputs.map((item) => item.sourceRef), "outputs", "Blinded source"),
+    ...uniqueFindings(evaluatorIds, "evaluators", "Evaluator id"),
+    ...uniqueFindings(judgmentIds, "judgments", "Judgment id"),
+    ...uniqueFindings(value.disagreements.map((item) => item.id), "disagreements", "Disagreement id"),
+  ];
+  const anchors = new Set(anchorIds);
+  const requiredAnchors = new Set(anchorIds);
+  const outputs = new Set(outputIds);
+  const evaluators = new Set(evaluatorIds);
+  const judgmentSet = new Set(judgmentIds);
+  for (const [index, criterion] of value.criteria.entries()) {
+    findings.push(
+      ...uniqueFindings(criterion.anchorRefs, `criteria.${index}.anchorRefs`, "Anchor reference"),
+      ...referenceFindings(
+        criterion.anchorRefs,
+        anchors,
+        `criteria.${index}.anchorRefs`,
+        "Anchor reference",
+      ),
+    );
+    for (const anchorRef of criterion.anchorRefs) {
+      const anchor = value.anchors.find((item) => item.id === anchorRef);
+      if (anchor && anchor.criterionRef !== criterion.id) {
+        findings.push(
+          finding(
+            "anchor_criterion_mismatch",
+            `criteria.${index}.anchorRefs`,
+            `Anchor ${JSON.stringify(anchorRef)} belongs to a different criterion.`,
+          ),
+        );
+      }
+    }
+    if (criterion.scale.max <= criterion.scale.min) {
+      findings.push(
+        finding(
+          "invalid_score_scale",
+          `criteria.${index}.scale`,
+          "Criterion score maximum must be greater than its minimum.",
+        ),
+      );
+    }
+  }
+  for (const [index, anchor] of value.anchors.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [anchor.criterionRef],
+        new Set(criterionIds),
+        `anchors.${index}.criterionRef`,
+        "Criterion reference",
+      ),
+    );
+    const criterion = criteria.get(anchor.criterionRef);
+    if (
+      criterion &&
+      (anchor.score < criterion.scale.min || anchor.score > criterion.scale.max)
+    ) {
+      findings.push(
+        finding(
+          "score_out_of_range",
+          `anchors.${index}.score`,
+          "Anchor score must fit the referenced criterion scale.",
+        ),
+      );
+    }
+  }
+  for (const [index, output] of value.outputs.entries()) {
+    const blindId = output.blindLabel.replace(/^System /, "").toLowerCase();
+    if (
+      output.id !== `output-${blindId}` ||
+      output.sourceRef !== `blinded/system-${blindId}.json`
+    ) {
+      findings.push(
+        finding(
+          "exposed_output_identity",
+          `outputs.${index}`,
+          "Output ids and source paths must derive only from their opaque blind label.",
+        ),
+      );
+    }
+  }
+  for (const [index, evaluator] of value.evaluators.entries()) {
+    findings.push(
+      ...uniqueFindings(evaluator.anchorRefs, `evaluators.${index}.anchorRefs`, "Anchor reference"),
+      ...referenceFindings(
+        evaluator.anchorRefs,
+        anchors,
+        `evaluators.${index}.anchorRefs`,
+        "Anchor reference",
+      ),
+    );
+    if (
+      evaluator.calibrationState === "calibrated" &&
+      (evaluator.anchorRefs.length !== requiredAnchors.size ||
+        [...requiredAnchors].some((reference) => !evaluator.anchorRefs.includes(reference)))
+    ) {
+      findings.push(
+        finding(
+          "incomplete_calibration",
+          `evaluators.${index}.anchorRefs`,
+          "A calibrated evaluator must complete the full declared anchor set.",
+        ),
+      );
+    }
+  }
+  const samplingKeys = value.samplingPlan.map(
+    (item) => `${item.outputRef}\u0000${item.criterionRef}\u0000${item.evaluatorRef}`,
+  );
+  const samplingSet = new Set(samplingKeys);
+  findings.push(...uniqueFindings(samplingKeys, "samplingPlan", "Sampling tuple"));
+  for (const [index, item] of value.samplingPlan.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [item.outputRef],
+        outputs,
+        `samplingPlan.${index}.outputRef`,
+        "Output reference",
+      ),
+      ...referenceFindings(
+        [item.criterionRef],
+        new Set(criterionIds),
+        `samplingPlan.${index}.criterionRef`,
+        "Criterion reference",
+      ),
+      ...referenceFindings(
+        [item.evaluatorRef],
+        evaluators,
+        `samplingPlan.${index}.evaluatorRef`,
+        "Evaluator reference",
+      ),
+    );
+  }
+  for (const [values, offset, label] of [
+    [outputIds, 0, "output"],
+    [criterionIds, 1, "criterion"],
+    [evaluatorIds, 2, "evaluator"],
+  ]) {
+    for (const valueId of values) {
+      if (![...samplingSet].some((key) => key.split("\u0000")[offset] === valueId)) {
+        findings.push(
+          finding(
+            "incomplete_sampling_plan",
+            "samplingPlan",
+            `Sampling plan does not cover declared ${label} ${JSON.stringify(valueId)}.`,
+          ),
+        );
+      }
+    }
+  }
+  const judgmentKeys = new Set();
+  for (const [index, judgment] of value.judgments.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [judgment.outputRef],
+        outputs,
+        `judgments.${index}.outputRef`,
+        "Output reference",
+      ),
+      ...referenceFindings(
+        [judgment.criterionRef],
+        new Set(criterionIds),
+        `judgments.${index}.criterionRef`,
+        "Criterion reference",
+      ),
+      ...referenceFindings(
+        [judgment.evaluatorRef],
+        evaluators,
+        `judgments.${index}.evaluatorRef`,
+        "Evaluator reference",
+      ),
+    );
+    const key = `${judgment.outputRef}\u0000${judgment.criterionRef}\u0000${judgment.evaluatorRef}`;
+    if (judgmentKeys.has(key)) {
+      findings.push(
+        finding(
+          "duplicate_judgment",
+          `judgments.${index}`,
+          "Each output, criterion, and evaluator combination may have only one judgment.",
+        ),
+      );
+    }
+    judgmentKeys.add(key);
+    if (!samplingSet.has(key)) {
+      findings.push(
+        finding(
+          "unplanned_judgment",
+          `judgments.${index}`,
+          "Every judgment must belong to the declared sampling plan.",
+        ),
+      );
+    }
+    const criterion = criteria.get(judgment.criterionRef);
+    if (
+      criterion &&
+      (judgment.score < criterion.scale.min || judgment.score > criterion.scale.max)
+    ) {
+      findings.push(
+        finding(
+          "score_out_of_range",
+          `judgments.${index}.score`,
+          "Judgment score must fit the referenced criterion scale.",
+        ),
+      );
+    }
+  }
+  const judgmentsByGroup = new Map();
+  for (const judgment of value.judgments) {
+    const key = `${judgment.outputRef}\u0000${judgment.criterionRef}`;
+    const group = judgmentsByGroup.get(key) ?? [];
+    group.push(judgment);
+    judgmentsByGroup.set(key, group);
+  }
+  const disagreementGroups = new Map();
+  for (const [index, disagreement] of value.disagreements.entries()) {
+    findings.push(
+      ...uniqueFindings(
+        disagreement.judgmentRefs,
+        `disagreements.${index}.judgmentRefs`,
+        "Judgment reference",
+      ),
+      ...referenceFindings(
+        disagreement.judgmentRefs,
+        judgmentSet,
+        `disagreements.${index}.judgmentRefs`,
+        "Judgment reference",
+      ),
+    );
+    const linked = disagreement.judgmentRefs
+      .map((reference) => judgments.get(reference))
+      .filter(Boolean);
+    if (
+      linked.length > 1 &&
+      linked.some(
+        (item) =>
+          item.outputRef !== linked[0].outputRef || item.criterionRef !== linked[0].criterionRef,
+      )
+    ) {
+      findings.push(
+        finding(
+          "incomparable_disagreement",
+          `disagreements.${index}.judgmentRefs`,
+          "A disagreement may compare judgments only for the same output and criterion.",
+        ),
+      );
+    }
+    if (linked.length > 1) {
+      const groupKey = `${linked[0].outputRef}\u0000${linked[0].criterionRef}`;
+      const completeGroup = judgmentsByGroup.get(groupKey) ?? [];
+      if (disagreementGroups.has(groupKey)) {
+        findings.push(
+          finding(
+            "duplicate_disagreement",
+            `disagreements.${index}`,
+            "Each output and criterion pair may have only one disagreement record.",
+          ),
+        );
+      }
+      disagreementGroups.set(groupKey, disagreement);
+      if (
+        disagreement.judgmentRefs.length !== completeGroup.length ||
+        completeGroup.some((judgment) => !disagreement.judgmentRefs.includes(judgment.id))
+      ) {
+        findings.push(
+          finding(
+            "incomplete_disagreement",
+            `disagreements.${index}.judgmentRefs`,
+            "A disagreement must include every judgment for its output and criterion pair.",
+          ),
+        );
+      }
+      const scores = completeGroup.map((item) => item.score);
+      const spread = Math.max(...scores) - Math.min(...scores);
+      if (!numbersEqual(spread, disagreement.spread)) {
+        findings.push(
+          finding(
+            "spread_mismatch",
+            `disagreements.${index}.spread`,
+            "Disagreement spread must equal the linked judgment score range.",
+          ),
+        );
+      }
+      if (
+        disagreement.thresholdExceeded !==
+        (spread >= value.study.disagreementThreshold)
+      ) {
+        findings.push(
+          finding(
+            "threshold_mismatch",
+            `disagreements.${index}.thresholdExceeded`,
+            "Threshold state must match the study disagreement threshold.",
+          ),
+        );
+      }
+    }
+  }
+  const materialDisagreementGroups = new Set();
+  for (const [groupKey, group] of judgmentsByGroup.entries()) {
+    if (group.length < 2) {
+      continue;
+    }
+    const scores = group.map((item) => item.score);
+    const spread = Math.max(...scores) - Math.min(...scores);
+    if (spread < value.study.disagreementThreshold) {
+      continue;
+    }
+    materialDisagreementGroups.add(groupKey);
+    if (!disagreementGroups.has(groupKey)) {
+      findings.push(
+        finding(
+          "missing_disagreement",
+          "disagreements",
+          "Every threshold-crossing output and criterion pair requires a disagreement record.",
+        ),
+      );
+    }
+  }
+  const missingKeys = value.coverage.missing.map(
+    (item) => `${item.outputRef}\u0000${item.criterionRef}\u0000${item.evaluatorRef}`,
+  );
+  findings.push(
+    ...uniqueFindings(missingKeys, "coverage.missing", "Missing judgment key"),
+  );
+  for (const [index, item] of value.coverage.missing.entries()) {
+    const key = `${item.outputRef}\u0000${item.criterionRef}\u0000${item.evaluatorRef}`;
+    findings.push(
+      ...referenceFindings(
+        [item.outputRef],
+        outputs,
+        `coverage.missing.${index}.outputRef`,
+        "Output reference",
+      ),
+      ...referenceFindings(
+        [item.criterionRef],
+        new Set(criterionIds),
+        `coverage.missing.${index}.criterionRef`,
+        "Criterion reference",
+      ),
+      ...referenceFindings(
+        [item.evaluatorRef],
+        evaluators,
+        `coverage.missing.${index}.evaluatorRef`,
+        "Evaluator reference",
+      ),
+    );
+    if (!samplingSet.has(key)) {
+      findings.push(
+        finding(
+          "unplanned_missing_judgment",
+          `coverage.missing.${index}`,
+          "Every missing judgment must belong to the declared sampling plan.",
+        ),
+      );
+    }
+  }
+  for (const key of samplingSet) {
+    const occurrences = Number(judgmentKeys.has(key)) + Number(missingKeys.includes(key));
+    if (occurrences !== 1) {
+      findings.push(
+        finding(
+          "sampling_coverage_mismatch",
+          "samplingPlan",
+          "Every planned judgment must appear exactly once as completed or explicitly missing.",
+        ),
+      );
+    }
+  }
+  if (
+    value.coverage.completedJudgments !== value.judgments.length ||
+    value.coverage.expectedJudgments !== value.samplingPlan.length ||
+    value.coverage.expectedJudgments !== value.coverage.completedJudgments + value.coverage.missing.length
+  ) {
+    findings.push(
+      finding(
+        "coverage_mismatch",
+        "coverage",
+        "Coverage totals must equal the judgment ledger plus explicit missing evaluations.",
+      ),
+    );
+  }
+  if (canonicalJson(value.handoff.decisionOwner) !== canonicalJson(value.study.decisionOwner)) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "handoff.decisionOwner",
+        "The comparison handoff must preserve the study decision owner.",
+      ),
+    );
+  }
+  if (
+    value.study.decisionOwner.id === "model-evaluation-adjudicator" ||
+    value.study.blinding.verifiedBy.id === "model-evaluation-adjudicator"
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "study",
+        "Decision ownership and blinding verification must remain human- or team-owned.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner" &&
+    (value.study.blinding.state !== "verified" ||
+      value.evaluators.some((item) => item.calibrationState !== "calibrated") ||
+      value.coverage.missing.length > 0 ||
+      [...materialDisagreementGroups].some(
+        (groupKey) => disagreementGroups.get(groupKey)?.state !== "adjudicated",
+      ))
+  ) {
+    findings.push(
+      finding(
+        "unsupported_terminal_state",
+        "handoff.state",
+        "A ready handoff requires verified blinding, calibrated evaluators, complete coverage, and adjudicated threshold-crossing disagreements.",
+      ),
+    );
+  }
+  return findings;
+}
+
 const validators = {
   "case-continuity-coordinator": caseContinuityFindings,
   "change-control-operator": changeControlFindings,
@@ -693,6 +1130,7 @@ const validators = {
   "data-analyst": dataAnalysisFindings,
   "delegation-coordinator": delegationFindings,
   "financial-analyst": financialAnalysisFindings,
+  "model-evaluation-adjudicator": modelEvaluationFindings,
   "project-manager": projectFindings,
   "product-manager": productFindings,
   "public-safety-monitor": publicSafetyFindings,

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "model-evaluation-adjudicator",
+  "scenario": "Compare two blinded support-response models across accuracy, policy compliance, tone, and escalation quality.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Compare two blinded support-response models across accuracy, policy compliance, tone, and escalation quality."
+    },
+    {
+      "role": "agent",
+      "text": "I will verify the blind labels and rubric version, calibrate against the supplied anchors, retain criterion-level judgments, and flag threshold-crossing disagreement without selecting a model."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/model-evaluation-adjudicator-handoff.md with the score ledger, complete coverage accounting, preserved disagreement, adjudication rationale, uncertainty, and an owner-controlled comparison handoff."
+    }
+  ],
+  "report": {
+    "title": "Model evaluation adjudicator session handoff",
+    "summary": "A rubric-bound comparison with calibrated judgments, disagreement evidence, adjudications, uncertainty, and no deployment recommendation.",
+    "output": "outputs/model-evaluation-adjudicator-handoff.md",
+    "items": [
+      {
+        "title": "Versioned evaluation rubric",
+        "summary": "Every judgment names the rubric version, task stratum, criterion, evaluator, and evidence",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blinded criterion-level score ledger",
+        "summary": "Missing evaluations, rubric ambiguity, and material disagreement remain visible",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Evaluator disagreement and adjudication record",
+        "summary": "The accountable owner receives a comparison without automatic model selection or deployment",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Model comparison decision handoff",
+        "summary": "Every judgment names the rubric version, task stratum, criterion, evaluator, and evidence",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

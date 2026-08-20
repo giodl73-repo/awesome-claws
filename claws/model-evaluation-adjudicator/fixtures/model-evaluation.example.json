@@ -1,0 +1,244 @@
+{
+  "study": {
+    "id": "support-response-2026-08",
+    "evaluationQuestion": "How do two blinded systems compare on policy-sensitive support responses?",
+    "rubricVersion": "support-rubric-v3",
+    "decisionOwner": {
+      "id": "support-ai-product-owner",
+      "kind": "human",
+      "role": "Support AI product owner"
+    },
+    "blinding": {
+      "state": "verified",
+      "verifiedBy": {
+        "id": "evaluation-operations-lead",
+        "kind": "human",
+        "role": "Evaluation operations lead"
+      },
+      "verifiedAt": "2026-08-19T18:00:00Z",
+      "mappingCustodian": "Evaluation Operations",
+      "identityMappingRef": "controlled://evaluation-operations/support-response-2026-08"
+    },
+    "disagreementThreshold": 2
+  },
+  "criteria": [
+    {
+      "id": "accuracy",
+      "description": "The response is factually grounded in the supplied case.",
+      "scale": { "min": 1, "max": 5 },
+      "anchorRefs": ["anchor-accuracy-low", "anchor-accuracy-high"]
+    },
+    {
+      "id": "policy",
+      "description": "The response follows the supplied support and escalation policy.",
+      "scale": { "min": 1, "max": 5 },
+      "anchorRefs": ["anchor-policy-low", "anchor-policy-high"]
+    }
+  ],
+  "anchors": [
+    {
+      "id": "anchor-accuracy-low",
+      "criterionRef": "accuracy",
+      "score": 1,
+      "evidenceRef": "anchors/accuracy-low.md"
+    },
+    {
+      "id": "anchor-accuracy-high",
+      "criterionRef": "accuracy",
+      "score": 5,
+      "evidenceRef": "anchors/accuracy-high.md"
+    },
+    {
+      "id": "anchor-policy-low",
+      "criterionRef": "policy",
+      "score": 1,
+      "evidenceRef": "anchors/policy-low.md"
+    },
+    {
+      "id": "anchor-policy-high",
+      "criterionRef": "policy",
+      "score": 5,
+      "evidenceRef": "anchors/policy-high.md"
+    }
+  ],
+  "outputs": [
+    {
+      "id": "output-a",
+      "blindLabel": "System A",
+      "taskStratum": "billing-escalation",
+      "sourceRef": "blinded/system-a.json"
+    },
+    {
+      "id": "output-b",
+      "blindLabel": "System B",
+      "taskStratum": "billing-escalation",
+      "sourceRef": "blinded/system-b.json"
+    }
+  ],
+  "evaluators": [
+    {
+      "id": "evaluator-1",
+      "calibrationState": "calibrated",
+      "anchorRefs": [
+        "anchor-accuracy-low",
+        "anchor-accuracy-high",
+        "anchor-policy-low",
+        "anchor-policy-high"
+      ]
+    },
+    {
+      "id": "evaluator-2",
+      "calibrationState": "calibrated",
+      "anchorRefs": [
+        "anchor-accuracy-low",
+        "anchor-accuracy-high",
+        "anchor-policy-low",
+        "anchor-policy-high"
+      ]
+    }
+  ],
+  "judgments": [
+    {
+      "id": "j-a-accuracy-1",
+      "outputRef": "output-a",
+      "criterionRef": "accuracy",
+      "evaluatorRef": "evaluator-1",
+      "score": 4,
+      "evidenceRef": "evaluations/evaluator-1.json"
+    },
+    {
+      "id": "j-a-accuracy-2",
+      "outputRef": "output-a",
+      "criterionRef": "accuracy",
+      "evaluatorRef": "evaluator-2",
+      "score": 4,
+      "evidenceRef": "evaluations/evaluator-2.json"
+    },
+    {
+      "id": "j-a-policy-1",
+      "outputRef": "output-a",
+      "criterionRef": "policy",
+      "evaluatorRef": "evaluator-1",
+      "score": 3,
+      "evidenceRef": "evaluations/evaluator-1.json"
+    },
+    {
+      "id": "j-a-policy-2",
+      "outputRef": "output-a",
+      "criterionRef": "policy",
+      "evaluatorRef": "evaluator-2",
+      "score": 3,
+      "evidenceRef": "evaluations/evaluator-2.json"
+    },
+    {
+      "id": "j-b-accuracy-1",
+      "outputRef": "output-b",
+      "criterionRef": "accuracy",
+      "evaluatorRef": "evaluator-1",
+      "score": 4,
+      "evidenceRef": "evaluations/evaluator-1.json"
+    },
+    {
+      "id": "j-b-accuracy-2",
+      "outputRef": "output-b",
+      "criterionRef": "accuracy",
+      "evaluatorRef": "evaluator-2",
+      "score": 3,
+      "evidenceRef": "evaluations/evaluator-2.json"
+    },
+    {
+      "id": "j-b-policy-1",
+      "outputRef": "output-b",
+      "criterionRef": "policy",
+      "evaluatorRef": "evaluator-1",
+      "score": 1,
+      "evidenceRef": "evaluations/evaluator-1.json",
+      "note": "The response bypassed the required escalation."
+    },
+    {
+      "id": "j-b-policy-2",
+      "outputRef": "output-b",
+      "criterionRef": "policy",
+      "evaluatorRef": "evaluator-2",
+      "score": 4,
+      "evidenceRef": "evaluations/evaluator-2.json",
+      "note": "The response named escalation but its timing was ambiguous."
+    }
+  ],
+  "samplingPlan": [
+    {
+      "outputRef": "output-a",
+      "criterionRef": "accuracy",
+      "evaluatorRef": "evaluator-1"
+    },
+    {
+      "outputRef": "output-a",
+      "criterionRef": "accuracy",
+      "evaluatorRef": "evaluator-2"
+    },
+    {
+      "outputRef": "output-a",
+      "criterionRef": "policy",
+      "evaluatorRef": "evaluator-1"
+    },
+    {
+      "outputRef": "output-a",
+      "criterionRef": "policy",
+      "evaluatorRef": "evaluator-2"
+    },
+    {
+      "outputRef": "output-b",
+      "criterionRef": "accuracy",
+      "evaluatorRef": "evaluator-1"
+    },
+    {
+      "outputRef": "output-b",
+      "criterionRef": "accuracy",
+      "evaluatorRef": "evaluator-2"
+    },
+    {
+      "outputRef": "output-b",
+      "criterionRef": "policy",
+      "evaluatorRef": "evaluator-1"
+    },
+    {
+      "outputRef": "output-b",
+      "criterionRef": "policy",
+      "evaluatorRef": "evaluator-2"
+    }
+  ],
+  "disagreements": [
+    {
+      "id": "d-b-policy",
+      "judgmentRefs": ["j-b-policy-1", "j-b-policy-2"],
+      "spread": 3,
+      "thresholdExceeded": true,
+      "state": "adjudicated",
+      "adjudication": {
+        "adjudicator": "Evaluation lead",
+        "outcome": "Retain both judgments and mark the policy result uncertain.",
+        "rationale": "The rubric does not define whether naming escalation without a deadline satisfies the criterion.",
+        "evidenceRefs": [
+          "evaluations/evaluator-1.json",
+          "evaluations/evaluator-2.json",
+          "rubrics/support-rubric-v3.md"
+        ]
+      }
+    }
+  ],
+  "coverage": {
+    "expectedJudgments": 8,
+    "completedJudgments": 8,
+    "missing": []
+  },
+  "handoff": {
+    "state": "ready-for-owner",
+    "decisionOwner": {
+      "id": "support-ai-product-owner",
+      "kind": "human",
+      "role": "Support AI product owner"
+    },
+    "summary": "System A has consistent supplied judgments; System B has unresolved rubric sensitivity on policy compliance. No winner is inferred.",
+    "prohibitedActions": ["select", "deploy", "tune", "promote", "unblind"]
+  }
+}

@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (54)
+### Active (55)
 
 | Claw | Detail |
 | --- | --- |
@@ -42,6 +42,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | @giodl73-repo; last verified 2026-08-19 |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | @giodl73-repo; last verified 2026-08-19 |
 | [Meeting intelligence](claws/meeting-intelligence) | @giodl73-repo; last verified 2026-08-19 |
+| [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | @giodl73-repo; last verified 2026-08-19 |
 | [Presentation producer](claws/presentation-producer) | @giodl73-repo; last verified 2026-08-19 |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Procurement evaluator](claws/procurement-evaluator) | @giodl73-repo; last verified 2026-08-19 |
@@ -81,7 +82,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (23)
+### Low setup (24)
 
 | Claw | Detail |
 | --- | --- |
@@ -99,6 +100,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Experimentation lead](claws/experimentation-lead) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
 | [Localization program manager](claws/localization-program-manager) | no bootstrap, external dependency, or schedule |
+| [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | no bootstrap, external dependency, or schedule |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | no bootstrap, external dependency, or schedule |
 | [Product manager](claws/product-manager) | no bootstrap, external dependency, or schedule |
 | [Project manager](claws/project-manager) | no bootstrap, external dependency, or schedule |
@@ -154,7 +156,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (31)
+### No external dependencies (32)
 
 | Claw | Detail |
 | --- | --- |
@@ -179,6 +181,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Knowledge curator](claws/knowledge-curator) | None |
 | [Localization program manager](claws/localization-program-manager) | None |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | None |
+| [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | None |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | None |
 | [Procurement evaluator](claws/procurement-evaluator) | None |
 | [Product manager](claws/product-manager) | None |
@@ -222,7 +225,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (29)
+### X3 (30)
 
 | Claw | Detail |
 | --- | --- |
@@ -241,6 +244,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Knowledge gardener](claws/knowledge-gardener) | Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work. |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries. |
 | [Meeting intelligence](claws/meeting-intelligence) | Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts. |
+| [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | Coordinates blinded model-output evaluation, rubric calibration, and disagreement adjudication without selecting or deploying a model. |
 | [Presentation producer](claws/presentation-producer) | Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review. |
 | [Public company watcher](claws/public-company-watcher) | Tracks material public-company disclosures from authoritative sources and produces a private, timestamped change brief without trading or investor-relations contact. |
 | [Public safety monitor](claws/public-safety-monitor) | Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services. |
@@ -295,7 +299,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 
 Categories come directly from the catalog entry.
 
-### Analysis (14)
+### Analysis (15)
 
 | Claw | Detail |
 | --- | --- |
@@ -306,6 +310,7 @@ Categories come directly from the catalog entry.
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | X3; Tracks an approved set of RSS and Atom sources and produces a private, source-linked change digest. |
 | [Financial analyst](claws/financial-analyst) | X3; Builds transparent financial analysis without hiding assumptions or uncertainty. |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | X3; Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries. |
+| [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | X3; Coordinates blinded model-output evaluation, rubric calibration, and disagreement adjudication without selecting or deploying a model. |
 | [Public company watcher](claws/public-company-watcher) | X3; Tracks material public-company disclosures from authoritative sources and produces a private, timestamped change brief without trading or investor-relations contact. |
 | [Research briefing](claws/research-briefing) | X4; Synthesizes supplied sources into concise, source-grounded briefs for time-sensitive decisions. |
 | [Research monitor](claws/research-monitor) | X3; Runs a bounded source watch and produces a private evidence digest for a named decision area. |
@@ -383,12 +388,13 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (4)
+### Standard attention (5)
 
 | Claw | Detail |
 | --- | --- |
 | [Content operations](claws/content-operations) | portable workspace artifacts only |
 | [Knowledge curator](claws/knowledge-curator) | portable workspace artifacts only |
+| [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | portable workspace artifacts only |
 | [Recruiting coordinator](claws/recruiting-coordinator) | portable workspace artifacts only |
 | [Sales operations](claws/sales-operations) | portable workspace artifacts only |
 

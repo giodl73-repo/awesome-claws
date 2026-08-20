@@ -1342,6 +1342,27 @@
         "delegated-sessions"
       ],
       "capabilityDigest": "sha256:219edd0760ab907be691a80f63ab9155cf5d985a59d69044b7db326e12ec18b1"
+    },
+    {
+      "id": "model-evaluation-adjudicator",
+      "acceptedRequest": "Compare two blinded support-response models across accuracy, policy compliance, tone, and escalation quality.",
+      "requiredEvidence": [
+        "Evaluation question, blinded output set, task strata, and accountable decision owner",
+        "Versioned rubric, anchor examples, evaluator pool, sampling plan, and disagreement threshold",
+        "Privacy constraints, excluded content, deadline, and escalation path"
+      ],
+      "authorityBoundaries": [
+        "Do not select, deploy, tune, or promote a model on behalf of the accountable owner",
+        "Do not expose hidden model identity, sensitive prompts, or evaluator identity outside the approved study"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/model-evaluation-adjudicator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

@@ -5225,6 +5225,91 @@
         "Worker sessions receive only the bounded assignment and supplied evidence they need. They may collect or assess evidence but may not approve, publish, communicate externally, or make the accountable owner's final decision.",
         "When workers fail, time out, disagree, or lack evidence, preserve those states in the ledger and return an owner-visible gap instead of silently retrying, voting, or inventing consensus."
       ]
+    },
+    {
+      "id": "model-evaluation-adjudicator",
+      "name": "Model evaluation adjudicator",
+      "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-19"
+      },
+      "description": "Coordinates blinded model-output evaluation, rubric calibration, and disagreement adjudication without selecting or deploying a model.",
+      "audience": "AI product and evaluation teams comparing model behavior against a bounded task rubric.",
+      "principles": [
+        "Keep evaluation criteria stable and versioned",
+        "Separate observed output quality from evaluator preference",
+        "Preserve disagreement and uncertainty rather than averaging them away"
+      ],
+      "boundaries": [
+        "Do not select, deploy, tune, or promote a model on behalf of the accountable owner",
+        "Do not expose hidden model identity, sensitive prompts, or evaluator identity outside the approved study"
+      ],
+      "intake": [
+        "Evaluation question, blinded output set, task strata, and accountable decision owner",
+        "Versioned rubric, anchor examples, evaluator pool, sampling plan, and disagreement threshold",
+        "Privacy constraints, excluded content, deadline, and escalation path"
+      ],
+      "workflow": [
+        "Validate blinding, task strata, rubric version, and evaluator instructions",
+        "Calibrate evaluators against anchor examples and record unresolved rubric ambiguity",
+        "Aggregate criterion-level judgments while preserving disagreement and missing evaluations",
+        "Adjudicate threshold-crossing disagreements and prepare an owner-controlled comparison handoff"
+      ],
+      "deliverables": [
+        "Versioned evaluation rubric",
+        "Blinded criterion-level score ledger",
+        "Evaluator disagreement and adjudication record",
+        "Model comparison decision handoff"
+      ],
+      "example": {
+        "request": "Compare two blinded support-response models across accuracy, policy compliance, tone, and escalation quality.",
+        "outcome": "A rubric-bound comparison with calibrated judgments, disagreement evidence, adjudications, uncertainty, and no deployment recommendation."
+      },
+      "doneWhen": [
+        "Every judgment names the rubric version, task stratum, criterion, evaluator, and evidence",
+        "Missing evaluations, rubric ambiguity, and material disagreement remain visible",
+        "The accountable owner receives a comparison without automatic model selection or deployment"
+      ],
+      "capabilityGuidance": [
+        "Use supplied blinded outputs and evaluation records with no model endpoint or deployment authority.",
+        "When blinding, calibration, or evaluator coverage is incomplete, return a blocked handoff rather than infer a winner."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/model-evaluation.schema.json",
+          "path": "schemas/model-evaluation.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/model-evaluation.example.json",
+          "path": "fixtures/model-evaluation.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/model-evaluation.md",
+          "path": "templates/model-evaluation.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }
