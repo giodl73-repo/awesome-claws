@@ -33,6 +33,12 @@ const definitions = [
     decisionField: "decisionState",
   },
   {
+    id: "model-evaluation-adjudicator",
+    schema: "../claws/model-evaluation-adjudicator/schemas/model-evaluation.schema.json",
+    fixture: "../claws/model-evaluation-adjudicator/fixtures/model-evaluation.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "public-safety-monitor",
     schema: "../claws/public-safety-monitor/schemas/public-safety-state.schema.json",
     fixture: "../claws/public-safety-monitor/fixtures/public-safety-state.example.json",
@@ -177,6 +183,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["case-continuity-coordinator", (value) => value.actions[0].evidenceRefs.push(value.actions[0].evidenceRefs[0])],
     ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
+    ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],
     ["recruiting-coordinator", (value) => value.communications[0].sessionRefs.push(value.communications[0].sessionRefs[0])],
     ["sales-operations", (value) => value.actions[0].dealRefs.push(value.actions[0].dealRefs[0])],
@@ -223,6 +230,154 @@ test("delegation rejects dangling provenance and mismatched worker sessions", ()
   const expanded = structuredClone(cases.get("delegation-coordinator").fixture);
   expanded.results[0].sourceRefs = ["accessibility-pack"];
   assert.equal(isValid("delegation-coordinator", expanded), false);
+});
+
+test("model evaluation rejects invalid score, coverage, and adjudication state", () => {
+  const candidate = structuredClone(cases.get("model-evaluation-adjudicator").fixture);
+  candidate.judgments[0].score = 8;
+  assert.equal(isValid("model-evaluation-adjudicator", candidate), false);
+  candidate.judgments[0].score = 4;
+  candidate.coverage.completedJudgments = 7;
+  assert.equal(isValid("model-evaluation-adjudicator", candidate), false);
+  candidate.coverage.completedJudgments = 8;
+  candidate.disagreements[0].state = "open";
+  delete candidate.disagreements[0].adjudication;
+  assert.equal(isValid("model-evaluation-adjudicator", candidate), false);
+});
+
+test("model evaluation rejects dangling and incomparable judgments", () => {
+  const candidate = structuredClone(cases.get("model-evaluation-adjudicator").fixture);
+  candidate.disagreements[0].judgmentRefs[1] = "missing-judgment";
+  assert.equal(isValid("model-evaluation-adjudicator", candidate), false);
+  candidate.disagreements[0].judgmentRefs[1] = "j-a-policy-1";
+  assert.equal(isValid("model-evaluation-adjudicator", candidate), false);
+});
+
+test("model evaluation blocks incomplete studies from owner-ready state", () => {
+  const candidate = structuredClone(cases.get("model-evaluation-adjudicator").fixture);
+  candidate.study.blinding.state = "partial";
+  assert.equal(isValid("model-evaluation-adjudicator", candidate), false);
+  candidate.study.blinding.state = "verified";
+  candidate.evaluators[0].calibrationState = "needs-review";
+  assert.equal(isValid("model-evaluation-adjudicator", candidate), false);
+});
+
+test("model evaluation requires every planned judgment and material disagreement", () => {
+  const missingDisagreement = structuredClone(
+    cases.get("model-evaluation-adjudicator").fixture,
+  );
+  missingDisagreement.disagreements = [];
+  assert.equal(isValid("model-evaluation-adjudicator", missingDisagreement), false);
+
+  const omittedOutlier = structuredClone(cases.get("model-evaluation-adjudicator").fixture);
+  omittedOutlier.evaluators.push({
+    id: "evaluator-3",
+    calibrationState: "calibrated",
+    anchorRefs: omittedOutlier.evaluators[0].anchorRefs,
+  });
+  omittedOutlier.judgments.push({
+    id: "j-b-policy-3",
+    outputRef: "output-b",
+    criterionRef: "policy",
+    evaluatorRef: "evaluator-3",
+    score: 1,
+    evidenceRef: "evaluations/evaluator-3.json",
+  });
+  omittedOutlier.samplingPlan.push({
+    outputRef: "output-b",
+    criterionRef: "policy",
+    evaluatorRef: "evaluator-3",
+  });
+  omittedOutlier.coverage.expectedJudgments += 1;
+  omittedOutlier.coverage.completedJudgments += 1;
+  omittedOutlier.disagreements[0].judgmentRefs = ["j-b-policy-1", "j-b-policy-3"];
+  omittedOutlier.disagreements[0].spread = 0;
+  omittedOutlier.disagreements[0].thresholdExceeded = false;
+  assert.equal(isValid("model-evaluation-adjudicator", omittedOutlier), false);
+
+  const decimalSpread = structuredClone(cases.get("model-evaluation-adjudicator").fixture);
+  decimalSpread.judgments.find((item) => item.id === "j-b-policy-1").score = 1.1;
+  decimalSpread.judgments.find((item) => item.id === "j-b-policy-2").score = 3.3;
+  decimalSpread.disagreements[0].spread = 2.2;
+  assert.equal(isValid("model-evaluation-adjudicator", decimalSpread), true);
+
+  const incompleteMatrix = structuredClone(cases.get("model-evaluation-adjudicator").fixture);
+  incompleteMatrix.judgments = [incompleteMatrix.judgments[0]];
+  incompleteMatrix.samplingPlan = [incompleteMatrix.samplingPlan[0]];
+  incompleteMatrix.coverage = {
+    expectedJudgments: 1,
+    completedJudgments: 1,
+    missing: [],
+  };
+  incompleteMatrix.disagreements = [];
+  assert.equal(isValid("model-evaluation-adjudicator", incompleteMatrix), false);
+});
+
+test("model evaluation binds calibration anchors to their criteria", () => {
+  const incomplete = structuredClone(cases.get("model-evaluation-adjudicator").fixture);
+  incomplete.evaluators[0].anchorRefs = ["anchor-accuracy-low"];
+  assert.equal(isValid("model-evaluation-adjudicator", incomplete), false);
+
+  const mismatched = structuredClone(cases.get("model-evaluation-adjudicator").fixture);
+  mismatched.criteria[0].anchorRefs[0] = "anchor-policy-low";
+  assert.equal(isValid("model-evaluation-adjudicator", mismatched), false);
+});
+
+test("model evaluation keeps blinding and terminal authority owner-controlled", () => {
+  const exposed = structuredClone(cases.get("model-evaluation-adjudicator").fixture);
+  exposed.outputs[0].blindLabel = "GPT-5.6";
+  exposed.outputs[0].sourceRef = "outputs/gpt-5.6.json";
+  assert.equal(isValid("model-evaluation-adjudicator", exposed), false);
+
+  const identityBearingPath = structuredClone(cases.get("model-evaluation-adjudicator").fixture);
+  identityBearingPath.outputs[0].sourceRef = "blinded/gpt-5.6.json";
+  assert.equal(isValid("model-evaluation-adjudicator", identityBearingPath), false);
+
+  const mismatchedOpaqueAlias = structuredClone(
+    cases.get("model-evaluation-adjudicator").fixture,
+  );
+  mismatchedOpaqueAlias.outputs[0].id = "output-gpt-5";
+  mismatchedOpaqueAlias.outputs[0].sourceRef = "blinded/system-gpt-5.json";
+  mismatchedOpaqueAlias.judgments
+    .filter((item) => item.outputRef === "output-a")
+    .forEach((item) => {
+      item.outputRef = "output-gpt-5";
+    });
+  mismatchedOpaqueAlias.samplingPlan
+    .filter((item) => item.outputRef === "output-a")
+    .forEach((item) => {
+      item.outputRef = "output-gpt-5";
+    });
+  assert.equal(isValid("model-evaluation-adjudicator", mismatchedOpaqueAlias), false);
+
+  const identityBearingAlias = structuredClone(
+    cases.get("model-evaluation-adjudicator").fixture,
+  );
+  identityBearingAlias.outputs[0].blindLabel = "System GPT-5";
+  identityBearingAlias.outputs[0].id = "output-gpt-5";
+  identityBearingAlias.outputs[0].sourceRef = "blinded/system-gpt-5.json";
+  identityBearingAlias.judgments
+    .filter((item) => item.outputRef === "output-a")
+    .forEach((item) => {
+      item.outputRef = "output-gpt-5";
+    });
+  identityBearingAlias.samplingPlan
+    .filter((item) => item.outputRef === "output-a")
+    .forEach((item) => {
+      item.outputRef = "output-gpt-5";
+    });
+  assert.equal(isValid("model-evaluation-adjudicator", identityBearingAlias), false);
+
+  const agentOwned = structuredClone(cases.get("model-evaluation-adjudicator").fixture);
+  agentOwned.study.decisionOwner.id = "model-evaluation-adjudicator";
+  agentOwned.handoff.decisionOwner.id = "model-evaluation-adjudicator";
+  assert.equal(isValid("model-evaluation-adjudicator", agentOwned), false);
+
+  const incompleteProhibitions = structuredClone(
+    cases.get("model-evaluation-adjudicator").fixture,
+  );
+  incompleteProhibitions.handoff.prohibitedActions = ["deploy"];
+  assert.equal(isValid("model-evaluation-adjudicator", incompleteProhibitions), false);
 });
 
 test("capstone profiles expose only their intended runtime dimensions", async () => {

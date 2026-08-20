@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Model evaluation adjudicator session report",
+  "output": "outputs/model-evaluation-adjudicator-handoff.md",
+  "sections": [
+    "study_and_owner",
+    "blinding_and_rubric",
+    "calibration",
+    "judgment_ledger",
+    "coverage",
+    "disagreements",
+    "adjudications",
+    "comparison_handoff",
+    "blocked_actions",
+    "accountable_owner"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the same rubric, judgment, coverage, disagreement, adjudication, uncertainty, and owner-decision sections as Markdown when rich clients are unavailable."
+}

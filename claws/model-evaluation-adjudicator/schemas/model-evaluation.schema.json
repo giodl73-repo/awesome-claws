@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "study",
+    "criteria",
+    "anchors",
+    "outputs",
+    "evaluators",
+    "judgments",
+    "samplingPlan",
+    "disagreements",
+    "coverage",
+    "handoff"
+  ],
+  "properties": {
+    "study": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "evaluationQuestion",
+        "rubricVersion",
+        "decisionOwner",
+        "blinding",
+        "disagreementThreshold"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "evaluationQuestion": { "type": "string", "minLength": 1 },
+        "rubricVersion": { "type": "string", "minLength": 1 },
+        "decisionOwner": {
+          "$ref": "#/$defs/accountableOwner"
+        },
+        "blinding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "verifiedBy",
+            "verifiedAt",
+            "mappingCustodian",
+            "identityMappingRef"
+          ],
+          "properties": {
+            "state": { "enum": ["verified", "partial", "failed"] },
+            "verifiedBy": { "$ref": "#/$defs/accountableOwner" },
+            "verifiedAt": { "type": "string", "format": "date-time" },
+            "mappingCustodian": { "type": "string", "minLength": 1 },
+            "identityMappingRef": {
+              "type": "string",
+              "pattern": "^controlled://"
+            }
+          }
+        },
+        "disagreementThreshold": { "type": "number", "minimum": 0 }
+      }
+    },
+    "criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "description", "scale", "anchorRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 },
+          "scale": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["min", "max"],
+            "properties": {
+              "min": { "type": "number" },
+              "max": { "type": "number" }
+            }
+          },
+          "anchorRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "anchors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "criterionRef", "score", "evidenceRef"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "criterionRef": { "type": "string", "minLength": 1 },
+          "score": { "type": "number" },
+          "evidenceRef": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "blindLabel", "taskStratum", "sourceRef"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^output-[a-z][a-z0-9-]*$"
+          },
+          "blindLabel": {
+            "type": "string",
+            "pattern": "^System [A-Z]$"
+          },
+          "taskStratum": { "type": "string", "minLength": 1 },
+          "sourceRef": {
+            "type": "string",
+            "pattern": "^blinded/system-[a-z][a-z0-9-]*\\.json$"
+          }
+        }
+      }
+    },
+    "evaluators": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "calibrationState", "anchorRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "calibrationState": { "enum": ["calibrated", "needs-review", "excluded"] },
+          "anchorRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "judgments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "outputRef",
+          "criterionRef",
+          "evaluatorRef",
+          "score",
+          "evidenceRef"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "outputRef": { "type": "string", "minLength": 1 },
+          "criterionRef": { "type": "string", "minLength": 1 },
+          "evaluatorRef": { "type": "string", "minLength": 1 },
+          "score": { "type": "number" },
+          "evidenceRef": { "type": "string", "minLength": 1 },
+          "note": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "samplingPlan": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["outputRef", "criterionRef", "evaluatorRef"],
+        "properties": {
+          "outputRef": { "type": "string", "minLength": 1 },
+          "criterionRef": { "type": "string", "minLength": 1 },
+          "evaluatorRef": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "disagreements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "judgmentRefs", "spread", "thresholdExceeded", "state"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "judgmentRefs": {
+            "type": "array",
+            "minItems": 2,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "spread": { "type": "number", "minimum": 0 },
+          "thresholdExceeded": { "type": "boolean" },
+          "state": { "enum": ["open", "adjudicated", "blocked"] },
+          "adjudication": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["adjudicator", "outcome", "rationale", "evidenceRefs"],
+            "properties": {
+              "adjudicator": { "type": "string", "minLength": 1 },
+              "outcome": { "type": "string", "minLength": 1 },
+              "rationale": { "type": "string", "minLength": 1 },
+              "evidenceRefs": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": { "state": { "const": "adjudicated" } },
+              "required": ["state"]
+            },
+            "then": {
+              "required": ["adjudication"],
+              "properties": { "adjudication": {} }
+            },
+            "else": { "not": { "required": ["adjudication"] } }
+          }
+        ]
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expectedJudgments", "completedJudgments", "missing"],
+      "properties": {
+        "expectedJudgments": { "type": "integer", "minimum": 1 },
+        "completedJudgments": { "type": "integer", "minimum": 0 },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["outputRef", "criterionRef", "evaluatorRef"],
+            "properties": {
+              "outputRef": { "type": "string", "minLength": 1 },
+              "criterionRef": { "type": "string", "minLength": 1 },
+              "evaluatorRef": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "decisionOwner", "summary", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["blocked", "ready-for-owner"] },
+        "decisionOwner": { "$ref": "#/$defs/accountableOwner" },
+        "summary": { "type": "string", "minLength": 1 },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": { "enum": ["select", "deploy", "tune", "promote", "unblind"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "accountableOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "role"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["human", "team"] },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
