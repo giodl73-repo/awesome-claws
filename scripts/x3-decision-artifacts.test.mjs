@@ -89,6 +89,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "movie-streaming-organizer",
+    schema: "../claws/movie-streaming-organizer/schemas/movie-streaming.schema.json",
+    fixture: "../claws/movie-streaming-organizer/fixtures/movie-streaming.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "pet-care-coordinator",
     schema: "../claws/pet-care-coordinator/schemas/pet-care.schema.json",
     fixture: "../claws/pet-care-coordinator/fixtures/pet-care.example.json",
@@ -264,6 +270,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
     ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],
+    ["movie-streaming-organizer", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],
     ["recruiting-coordinator", (value) => value.communications[0].sessionRefs.push(value.communications[0].sessionRefs[0])],
     ["sales-operations", (value) => value.actions[0].dealRefs.push(value.actions[0].dealRefs[0])],
@@ -1838,6 +1845,25 @@ test("sports team watcher preserves sourced fan facts and blocks wagering conten
   const bettingContent = structuredClone(cases.get("sports-team-watcher").fixture);
   bettingContent.watchItems[0].whyItMatters += " Include the betting spread.";
   assert.equal(isValid("sports-team-watcher", bettingContent), false);
+});
+
+test("movie and streaming organizer preserves availability and blocks account actions", () => {
+  const stalePick = structuredClone(cases.get("movie-streaming-organizer").fixture);
+  stalePick.availability[0].freshness = "stale";
+  assert.equal(isValid("movie-streaming-organizer", stalePick), false);
+
+  const rentalPick = structuredClone(cases.get("movie-streaming-organizer").fixture);
+  rentalPick.availability[0].accessMode = "rent";
+  rentalPick.availability[0].accountConstraint = "requires-rental";
+  assert.equal(isValid("movie-streaming-organizer", rentalPick), false);
+
+  const watchedPick = structuredClone(cases.get("movie-streaming-organizer").fixture);
+  watchedPick.titles[0].tasteState = "watched";
+  assert.equal(isValid("movie-streaming-organizer", watchedPick), false);
+
+  const accountAction = structuredClone(cases.get("movie-streaming-organizer").fixture);
+  accountAction.shortlist[0].fitReason += " Rent it if needed.";
+  assert.equal(isValid("movie-streaming-organizer", accountAction), false);
 });
 
 test("stock portfolio monitor binds valuations to sources and blocks advice", () => {

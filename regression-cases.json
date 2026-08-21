@@ -1615,6 +1615,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "movie-streaming-organizer",
+      "acceptedRequest": "Organize our family movie list for tonight. We have Netflix and Disney+, prefer under two hours, need PG-13 or lower, and want to avoid anything already watched. Show where each option is available but do not rent, buy, subscribe, rate, or message anyone.",
+      "requiredEvidence": [
+        "Watchlist titles, watched history, favorites, disliked titles, household members, region, age-rating limits, and preferred genres or moods",
+        "Streaming services the owner says they have, approved availability sources, freshness expectations, and unavailable-source fallback rules",
+        "Viewing context such as date night, family night, solo viewing, runtime limits, languages, accessibility needs, and device constraints",
+        "External actions that must remain draft-only, including rentals, purchases, subscription changes, public ratings, calendar holds, and group messages"
+      ],
+      "authorityBoundaries": [
+        "Do not rent, buy, subscribe, cancel, publish ratings, message a group, or modify a streaming account without exact approval",
+        "Do not bypass regional, household, parental, age-rating, account, or content restrictions",
+        "Do not claim complete streaming availability when sources are stale, missing, conflicting, regional, or account-specific"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/movie-streaming-organizer-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
