@@ -1731,6 +1731,449 @@ function homeRepairFindings(value) {
   return findings;
 }
 
+function applianceCareFindings(value) {
+  const evidenceIds = value.evidence.map((item) => item.id);
+  const evidence = new Set(evidenceIds);
+  const applianceIds = value.appliances.map((item) => item.id);
+  const appliances = new Set(applianceIds);
+  const providerIds = value.providers.map((item) => item.id);
+  const providers = new Set(providerIds);
+  const findings = [
+    ...uniqueFindings(evidenceIds, "evidence", "Evidence id"),
+    ...uniqueFindings(applianceIds, "appliances", "Appliance id"),
+    ...uniqueFindings(value.maintenance.map((item) => item.id), "maintenance", "Maintenance id"),
+    ...uniqueFindings(providerIds, "providers", "Provider id"),
+    ...uniqueFindings(value.coverage.map((item) => item.applianceRef), "coverage", "Coverage appliance"),
+    ...uniqueFindings(value.recalls.map((item) => item.applianceRef), "recalls", "Recall appliance"),
+    ...uniqueFindings(value.incidents.map((item) => item.applianceRef), "incidents", "Incident appliance"),
+    ...uniqueFindings(
+      value.lifecycleDecisions.map((item) => item.applianceRef),
+      "lifecycleDecisions",
+      "Lifecycle appliance",
+    ),
+  ];
+  const evidenceReferences = [
+    ...value.appliances.map((item) => [item.modelEvidenceRefs, "appliances.modelEvidenceRefs"]),
+    ...value.appliances.map((item) => [item.serialEvidenceRefs, "appliances.serialEvidenceRefs"]),
+    ...value.maintenance.map((item) => [item.sourceRefs, "maintenance.sourceRefs"]),
+    ...value.maintenance.map((item) => [
+      item.completionEvidenceRefs,
+      "maintenance.completionEvidenceRefs",
+    ]),
+    ...value.coverage.map((item) => [item.evidenceRefs, "coverage.evidenceRefs"]),
+    ...value.recalls.map((item) => [item.evidenceRefs, "recalls.evidenceRefs"]),
+    ...value.incidents.map((item) => [item.evidenceRefs, "incidents.evidenceRefs"]),
+    ...value.lifecycleDecisions.map((item) => [
+      item.evidenceRefs,
+      "lifecycleDecisions.evidenceRefs",
+    ]),
+    ...value.providers.map((item) => [[item.sourceRef], "providers.sourceRef"]),
+    ...(value.action.integration
+      ? [[[value.action.integration.approvalEvidenceRef], "action.integration"]]
+      : []),
+    ...(value.action.receipt
+      ? [[[value.action.receipt.evidenceRef], "action.receipt"]]
+      : []),
+  ];
+  for (const [references, path] of evidenceReferences) {
+    findings.push(...uniqueFindings(references, path, "Evidence reference"));
+    findings.push(...referenceFindings(references, evidence, path, "Evidence reference"));
+  }
+  for (const [path, references] of [
+    ["maintenance", value.maintenance.map((item) => item.applianceRef)],
+    ["coverage", value.coverage.map((item) => item.applianceRef)],
+    ["recalls", value.recalls.map((item) => item.applianceRef)],
+    ["incidents", value.incidents.map((item) => item.applianceRef)],
+    ["lifecycleDecisions", value.lifecycleDecisions.map((item) => item.applianceRef)],
+  ]) {
+    findings.push(...referenceFindings(references, appliances, path, "Appliance reference"));
+  }
+  if (
+    /\b\d{1,6}[A-Za-z]?(?:-\d{1,6}[A-Za-z]?)?\s+[A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+){0,4}\s+(?:Alley|Aly|Avenue|Ave|Boulevard|Blvd|Circle|Cir|Court|Ct|Crescent|Cres|Drive|Dr|Highway|Hwy|Lane|Ln|Parkway|Pkwy|Place|Pl|Road|Rd|Route|Rte|Street|St|Terrace|Ter|Trail|Trl|Way)\b/iu.test(
+      canonicalJson(value),
+    )
+  ) {
+    findings.push(
+      finding(
+        "exposed_home_address",
+        "portfolio",
+        "Appliance-care artifacts must use privacy-safe appliance and room labels, not a street address.",
+      ),
+    );
+  }
+  const asOf = Date.parse(value.portfolio.asOf);
+  const evidenceById = new Map(value.evidence.map((item) => [item.id, item]));
+  for (const [index, appliance] of value.appliances.entries()) {
+    const modelEvidence = appliance.modelEvidenceRefs
+      .map((reference) => evidenceById.get(reference))
+      .filter(Boolean);
+    const serialEvidence = appliance.serialEvidenceRefs
+      .map((reference) => evidenceById.get(reference))
+      .filter(Boolean);
+    if (
+      !modelEvidence.some(
+        (item) =>
+          ["label-photo", "purchase-record", "manual"].includes(item.type) &&
+          ["owner-supplied", "manufacturer"].includes(item.authority),
+      ) ||
+      (appliance.serialScope === "verified" &&
+        !serialEvidence.some(
+          (item) =>
+            ["label-photo", "purchase-record"].includes(item.type) &&
+            item.authority === "owner-supplied",
+        )) ||
+      (appliance.serialScope === "masked" && serialEvidence.length === 0) ||
+      (appliance.serialScope === "unverified" && serialEvidence.length > 0)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_appliance_identity",
+          `appliances.${index}`,
+          "Model and serial identity states must be backed by direct label, purchase, or manufacturer evidence.",
+        ),
+      );
+    }
+  }
+  const unsafeCarePattern =
+    /\b(?:diagnose|repair|disassemble|rewire|bypass|defeat|open\s+(?:the\s+)?panel|handle\s+refrigerant|disconnect\s+(?:the\s+)?gas\s+line)\b/iu;
+  for (const [index, item] of value.maintenance.entries()) {
+    const sources = item.sourceRefs
+      .map((reference) => evidenceById.get(reference))
+      .filter(Boolean);
+    const completionEvidence = item.completionEvidenceRefs
+      .map((reference) => evidenceById.get(reference))
+      .filter(Boolean);
+    const manufacturerSupported = sources.some(
+      (source) =>
+        (["manual", "manufacturer-maintenance"].includes(source.type) &&
+          source.authority === "manufacturer") ||
+        (source.type === "recall-result" &&
+          ["manufacturer", "government"].includes(source.authority)),
+    );
+    const completed = item.state === "completed";
+    if (
+      !manufacturerSupported ||
+      unsafeCarePattern.test(item.task) ||
+      (completed &&
+        (!item.completedAt ||
+          completionEvidence.length === 0 ||
+          completionEvidence.every(
+            (source) =>
+              !["owner-report", "label-photo", "service-record"].includes(source.type) ||
+              Date.parse(source.capturedAt) < Date.parse(item.completedAt),
+          ))) ||
+      (!completed && (item.completedAt || item.completionEvidenceRefs.length > 0)) ||
+      (item.state === "blocked" && !item.blockedReason) ||
+      (item.state !== "blocked" && item.blockedReason) ||
+      (item.state === "upcoming" && Date.parse(item.dueAt) <= asOf) ||
+      (item.state === "overdue" && Date.parse(item.dueAt) >= asOf)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_maintenance",
+          `maintenance.${index}`,
+          "Maintenance must be model-bound manufacturer care with coherent timing, completion evidence, and no repair instructions.",
+        ),
+      );
+    }
+  }
+  const requiredApplianceSet = canonicalJson([...appliances].sort());
+  for (const [path, values] of [
+    ["coverage", value.coverage.map((item) => item.applianceRef)],
+    ["recalls", value.recalls.map((item) => item.applianceRef)],
+    ["incidents", value.incidents.map((item) => item.applianceRef)],
+    ["lifecycleDecisions", value.lifecycleDecisions.map((item) => item.applianceRef)],
+  ]) {
+    if (canonicalJson([...new Set(values)].sort()) !== requiredApplianceSet) {
+      findings.push(
+        finding(
+          "incomplete_appliance_portfolio",
+          path,
+          "Coverage, recall, incident, and lifecycle state must cover every appliance exactly once.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of value.coverage.entries()) {
+    const sources = item.evidenceRefs
+      .map((reference) => evidenceById.get(reference))
+      .filter(Boolean);
+    const hasWarranty = sources.some(
+      (source) =>
+        source.type === "warranty-terms" && source.authority === "manufacturer",
+    );
+    const hasRegistration = sources.some(
+      (source) =>
+        source.type === "registration-receipt" && source.authority === "manufacturer",
+    );
+    const hasPurchase = sources.some(
+      (source) =>
+        source.type === "purchase-record" && source.authority === "owner-supplied",
+    );
+    if (
+      (item.registrationState === "registered" && !hasRegistration) ||
+      (["active", "expired"].includes(item.warrantyState) && !hasWarranty) ||
+      (item.warrantyState === "active" && (!hasPurchase || !item.expiresAt)) ||
+      (item.expiresAt && Date.parse(item.expiresAt) <= Date.parse(item.assessedAt) &&
+        item.warrantyState === "active") ||
+      Date.parse(item.assessedAt) > asOf
+    ) {
+      findings.push(
+        finding(
+          "unsupported_coverage_state",
+          `coverage.${index}`,
+          "Registration and warranty conclusions require authoritative receipt, terms, purchase, and coherent date evidence.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of value.recalls.entries()) {
+    const appliance = value.appliances.find(
+      (candidate) => candidate.id === item.applianceRef,
+    );
+    const sources = item.evidenceRefs
+      .map((reference) => evidenceById.get(reference))
+      .filter(Boolean);
+    const authoritativeResult = sources.some(
+      (source) =>
+        source.type === "recall-result" &&
+        ["manufacturer", "government"].includes(source.authority) &&
+        source.capturedAt === item.checkedAt,
+    );
+    const serialMatch = ["serial", "model-and-serial"].includes(item.matchScope);
+    if (
+      !authoritativeResult ||
+      (serialMatch && appliance?.serialScope !== "verified") ||
+      (item.state === "matched" &&
+        (item.matchScope === "unverified" || item.remedyState === "not-applicable")) ||
+      (item.state === "no-match" && item.remedyState !== "not-applicable") ||
+      (item.state === "unknown" &&
+        (item.matchScope !== "unverified" || item.remedyState !== "unknown")) ||
+      Date.parse(item.checkedAt) > asOf
+    ) {
+      findings.push(
+        finding(
+          "unsupported_recall_state",
+          `recalls.${index}`,
+          "Recall state requires a current authoritative result and exact identity evidence for any serial match.",
+        ),
+      );
+    }
+  }
+  const incidentHandoffs = {
+    none: ["none"],
+    "active-fault": ["home-repair"],
+    "active-hazard": ["emergency-services"],
+    "recall-stop-use": ["manufacturer-recall"],
+    uncertain: ["blocked", "home-repair"],
+  };
+  for (const [index, item] of value.incidents.entries()) {
+    if (!incidentHandoffs[item.state].includes(item.handoff)) {
+      findings.push(
+        finding(
+          "unsafe_incident_handoff",
+          `incidents.${index}`,
+          "Active faults, hazards, and stop-use recalls must route to the correct owner system without repair instructions.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of value.lifecycleDecisions.entries()) {
+    const sources = item.evidenceRefs
+      .map((reference) => evidenceById.get(reference))
+      .filter(Boolean);
+    const relevant = sources.some((source) =>
+      [
+        "purchase-record",
+        "manufacturer-maintenance",
+        "warranty-terms",
+        "recall-result",
+        "service-record",
+        "energy-label",
+      ].includes(source.type),
+    );
+    const replacementEvidence =
+      item.state !== "replacement-research" ||
+      (sources.some((source) => source.type === "energy-label") &&
+        sources.some((source) =>
+          ["service-record", "warranty-terms", "purchase-record"].includes(source.type),
+        ));
+    if (
+      !relevant ||
+      !replacementEvidence ||
+      (item.state === "blocked" && item.uncertainties.length === 0)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_lifecycle_decision",
+          `lifecycleDecisions.${index}`,
+          "Lifecycle decisions require relevant ownership evidence; replacement research also requires energy and history or coverage evidence.",
+        ),
+      );
+    }
+  }
+  for (const [index, provider] of value.providers.entries()) {
+    const source = evidenceById.get(provider.sourceRef);
+    if (
+      source?.type !== "provider-info" ||
+      !["manufacturer", "service-provider"].includes(source.authority)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_provider",
+          `providers.${index}.sourceRef`,
+          "Manufacturer and authorized-servicer options require provider-controlled evidence.",
+        ),
+      );
+    }
+  }
+  const action = value.action;
+  const hasPlan = Boolean(action.plan);
+  const hasApproval = Boolean(action.approval);
+  const hasIntegration = Boolean(action.integration);
+  const hasReceipt = Boolean(action.receipt);
+  if (
+    (["options-ready", "awaiting-approval", "approved", "completed"].includes(
+      action.state,
+    ) &&
+      !hasPlan) ||
+    (["approved", "completed"].includes(action.state) && !hasApproval) ||
+    (action.state === "completed" && (!hasIntegration || !hasReceipt)) ||
+    (action.state !== "completed" && (hasIntegration || hasReceipt)) ||
+    (!["approved", "completed"].includes(action.state) && hasApproval) ||
+    (action.state === "not-requested" && hasPlan) ||
+    (action.state === "blocked" && !action.blockedReason)
+  ) {
+    findings.push(
+      finding(
+        "incoherent_action_state",
+        "action",
+        "Action plan, approval, integration, receipt, and blocked reason must match the declared state.",
+      ),
+    );
+  }
+  if (action.plan) {
+    findings.push(
+      ...referenceFindings(
+        [action.plan.applianceRef],
+        appliances,
+        "action.plan.applianceRef",
+        "Appliance reference",
+      ),
+      ...referenceFindings(
+        [action.plan.providerRef],
+        providers,
+        "action.plan.providerRef",
+        "Provider reference",
+      ),
+    );
+    const provider = value.providers.find(
+      (item) => item.id === action.plan.providerRef,
+    );
+    const recall = value.recalls.find(
+      (item) => item.applianceRef === action.plan.applianceRef,
+    );
+    const coverage = value.coverage.find(
+      (item) => item.applianceRef === action.plan.applianceRef,
+    );
+    if (
+      !provider ||
+      provider.qualificationState === "unverified" ||
+      action.plan.maxDeposit > action.plan.maxCost ||
+      (action.plan.actionType === "recall-remedy" && recall?.state !== "matched") ||
+      (action.plan.actionType === "warranty-claim" &&
+        coverage?.warrantyState !== "active")
+    ) {
+      findings.push(
+        finding(
+          "unsupported_external_action",
+          "action.plan",
+          "External actions require an eligible appliance state, verified provider, and bounded cost.",
+        ),
+      );
+    }
+  }
+  const planDigest = action.plan
+    ? `sha256:${createHash("sha256").update(canonicalJson(action.plan)).digest("hex")}`
+    : undefined;
+  if (["approved", "completed"].includes(action.state) && action.approval) {
+    if (
+      action.approval.planDigest !== planDigest ||
+      canonicalJson(action.approval.owner) !== canonicalJson(value.owner)
+    ) {
+      findings.push(
+        finding(
+          "action_approval_mismatch",
+          "action.approval",
+          "Owner approval must bind the exact external action plan.",
+        ),
+      );
+    }
+  }
+  if (
+    action.state === "completed" &&
+    action.plan &&
+    action.approval &&
+    action.integration &&
+    action.receipt
+  ) {
+    const integrationEvidence = evidenceById.get(
+      action.integration.approvalEvidenceRef,
+    );
+    const receiptEvidence = evidenceById.get(action.receipt.evidenceRef);
+    if (
+      action.receipt.planDigest !== planDigest ||
+      action.receipt.integrationId !== action.integration.id ||
+      action.receipt.providerRef !== action.plan.providerRef ||
+      action.integration.providerRef !== action.plan.providerRef ||
+      !action.receipt.confirmationRef.startsWith(
+        `provider://${action.plan.providerRef}/`,
+      ) ||
+      integrationEvidence?.type !== "integration-approval" ||
+      integrationEvidence.authority !== "owner-supplied" ||
+      integrationEvidence.reference !== action.integration.approvalRef ||
+      receiptEvidence?.type !== "action-receipt" ||
+      !["manufacturer", "service-provider"].includes(receiptEvidence.authority) ||
+      receiptEvidence.reference !== action.receipt.confirmationRef ||
+      receiptEvidence.capturedAt !== action.receipt.completedAt ||
+      canonicalJson(action.integration.configuredBy) !== canonicalJson(value.owner)
+    ) {
+      findings.push(
+        finding(
+          "action_receipt_mismatch",
+          "action.receipt",
+          "The owner-approved integration and provider receipt must bind the exact action plan.",
+        ),
+      );
+    }
+    if (
+      Date.parse(action.receipt.completedAt) <
+      Date.parse(action.approval.approvedAt)
+    ) {
+      findings.push(
+        finding(
+          "action_predates_approval",
+          "action.receipt.completedAt",
+          "An external action cannot predate the owner's exact approval.",
+        ),
+      );
+    }
+  }
+  if (
+    canonicalJson(value.handoff.owner) !== canonicalJson(value.owner) ||
+    value.owner.id === "appliance-care-coordinator"
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Registration, claim, service, terms, payment, and lifecycle authority must remain owner-controlled.",
+      ),
+    );
+  }
+  return findings;
+}
+
 function greenThumbFindings(value) {
   const evidenceIds = value.evidence.map((item) => item.id);
   const evidence = new Set(evidenceIds);
@@ -2370,6 +2813,7 @@ function petCareFindings(value) {
 }
 
 const validators = {
+  "appliance-care-coordinator": applianceCareFindings,
   "case-continuity-coordinator": caseContinuityFindings,
   "change-control-operator": changeControlFindings,
   "civic-data-analyst": civicDataFindings,

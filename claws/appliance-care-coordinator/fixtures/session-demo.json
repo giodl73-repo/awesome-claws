@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "appliance-care-coordinator",
+  "scenario": "Organize my washer, dryer, refrigerator, and range; tell me which manufacturer care is due, whether any exact model or serial has a recall or active warranty, and prepare authorized service for approved items.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize my washer, dryer, refrigerator, and range; tell me which manufacturer care is due, whether any exact model or serial has a recall or active warranty, and prepare authorized service for approved items."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/appliance-care-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Appliance care coordinator session handoff",
+    "summary": "A four-appliance provenance ledger, model-bound care calendar, exact-match recall and coverage states, lifecycle decision briefs, and approval-blocked manufacturer or authorized-servicer plans without troubleshooting or repair instructions.",
+    "output": "outputs/appliance-care-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Multi-appliance ownership and provenance ledger",
+        "summary": "Every appliance identity, due item, coverage statement, recall match, service event, and lifecycle recommendation cites the evidence that supports it",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Model-bound preventive-care calendar with completion evidence",
+        "summary": "Unverified identity, stale sources, hazardous symptoms, or missing manufacturer guidance block the affected conclusion or action rather than becoming generic advice",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Warranty, registration, recall, and service-history state",
+        "summary": "No diagnosis or repair instruction is produced; active faults are handed to Home Repair or the appropriate emergency path",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Evidence-bounded retain, repair-evaluation, or replacement-research brief",
+        "summary": "Every registration, claim, contact, appointment, authorization, disclosure, acceptance, and payment remains owner-controlled",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Manufacturer or authorized-servicer action plan with approval, receipt, or blocked handoff",
+        "summary": "Every appliance identity, due item, coverage statement, recall match, service event, and lifecycle recommendation cites the evidence that supports it",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -39,7 +39,8 @@
       "vehicle-service-coordinator",
       "home-repair-coordinator",
       "green-thumb-coordinator",
-      "pet-care-coordinator"
+      "pet-care-coordinator",
+      "appliance-care-coordinator"
     ]
   },
   "visualCases": [
