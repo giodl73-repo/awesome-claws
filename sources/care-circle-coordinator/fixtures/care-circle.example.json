@@ -1,0 +1,272 @@
+{
+  "schemaVersion": "awesomeClaws.careCircle.v1",
+  "recipient": {
+    "id": "recipient-robin",
+    "label": "robin",
+    "role": "care recipient"
+  },
+  "organizer": {
+    "id": "organizer-maya",
+    "label": "maya",
+    "role": "family organizer"
+  },
+  "helpers": [
+    {
+      "id": "helper-lee",
+      "label": "lee",
+      "relationship": "family",
+      "allowedTaskKinds": ["ride", "errand", "check-in"],
+      "availabilityEvidenceRefs": ["ev-lee-availability"],
+      "privateNoteHandling": "minimum-necessary"
+    },
+    {
+      "id": "helper-sam",
+      "label": "sam",
+      "relationship": "neighbor",
+      "allowedTaskKinds": ["meal", "check-in"],
+      "availabilityEvidenceRefs": ["ev-sam-availability"],
+      "privateNoteHandling": "none"
+    },
+    {
+      "id": "helper-aide",
+      "label": "aide",
+      "relationship": "paid-aide",
+      "allowedTaskKinds": ["respite", "accessibility", "appointment-prep"],
+      "availabilityEvidenceRefs": ["ev-aide-availability"],
+      "privateNoteHandling": "recipient-only"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-consent",
+      "type": "recipient-consent",
+      "authority": "recipient-supplied",
+      "capturedAt": "2026-08-21T15:00:00Z",
+      "reference": "evidence/recipient-approved-sharing.md"
+    },
+    {
+      "id": "ev-appointment",
+      "type": "appointment-window",
+      "authority": "organizer-supplied",
+      "capturedAt": "2026-08-21T15:05:00Z",
+      "reference": "evidence/outpatient-follow-up-window.md"
+    },
+    {
+      "id": "ev-lee-availability",
+      "type": "helper-availability",
+      "authority": "helper-supplied",
+      "capturedAt": "2026-08-21T15:10:00Z",
+      "reference": "evidence/helper-lee-availability.md"
+    },
+    {
+      "id": "ev-sam-availability",
+      "type": "helper-availability",
+      "authority": "helper-supplied",
+      "capturedAt": "2026-08-21T15:12:00Z",
+      "reference": "evidence/helper-sam-availability.md"
+    },
+    {
+      "id": "ev-aide-availability",
+      "type": "helper-availability",
+      "authority": "care-team-supplied",
+      "capturedAt": "2026-08-21T15:14:00Z",
+      "reference": "evidence/aide-availability.md"
+    },
+    {
+      "id": "ev-access",
+      "type": "accessibility-need",
+      "authority": "recipient-supplied",
+      "capturedAt": "2026-08-21T15:16:00Z",
+      "reference": "evidence/mobility-and-entry-preferences.md"
+    },
+    {
+      "id": "ev-boundary",
+      "type": "professional-boundary",
+      "authority": "professional-supplied",
+      "capturedAt": "2026-08-21T15:18:00Z",
+      "reference": "evidence/clinician-escalation-instructions.md"
+    },
+    {
+      "id": "ev-emergency",
+      "type": "emergency-contact",
+      "authority": "recipient-supplied",
+      "capturedAt": "2026-08-21T15:20:00Z",
+      "reference": "evidence/emergency-contact-minimum.md"
+    }
+  ],
+  "needs": [
+    {
+      "id": "need-ride",
+      "kind": "ride",
+      "description": "Privacy-safe ride to the follow-up appointment; share time window and pickup instructions only.",
+      "priority": "time-sensitive",
+      "dueStart": "2026-08-24T15:30:00Z",
+      "dueEnd": "2026-08-24T18:00:00Z",
+      "evidenceRefs": ["ev-appointment", "ev-consent"],
+      "professionalBoundary": "practical-support"
+    },
+    {
+      "id": "need-meal",
+      "kind": "meal",
+      "description": "Drop off two mild meals using recipient-approved food preferences.",
+      "priority": "routine",
+      "dueStart": "2026-08-24T22:00:00Z",
+      "dueEnd": "2026-08-25T02:00:00Z",
+      "evidenceRefs": ["ev-consent"],
+      "professionalBoundary": "practical-support"
+    },
+    {
+      "id": "need-respite",
+      "kind": "respite",
+      "description": "Paid aide coverage while the organizer is unavailable; do not change any care instructions.",
+      "priority": "time-sensitive",
+      "dueStart": "2026-08-25T19:00:00Z",
+      "dueEnd": "2026-08-25T23:00:00Z",
+      "evidenceRefs": ["ev-aide-availability", "ev-access"],
+      "professionalBoundary": "practical-support"
+    },
+    {
+      "id": "need-symptom",
+      "kind": "professional-care",
+      "description": "Question about increased pain after surgery.",
+      "priority": "urgent",
+      "dueStart": "2026-08-21T16:00:00Z",
+      "dueEnd": "2026-08-21T16:30:00Z",
+      "evidenceRefs": ["ev-boundary", "ev-emergency"],
+      "professionalBoundary": "licensed-clinician"
+    }
+  ],
+  "consentScopes": [
+    {
+      "id": "scope-ride",
+      "recipientRef": "recipient-robin",
+      "audienceRefs": ["helper-lee", "organizer-maya"],
+      "purpose": "Coordinate a ride to the follow-up appointment without sharing diagnosis or procedure details.",
+      "allowedDetails": ["transport-window", "arrival-instructions", "professional-contact"],
+      "expiresAt": "2026-08-25T00:00:00Z",
+      "evidenceRefs": ["ev-consent"]
+    },
+    {
+      "id": "scope-meal",
+      "recipientRef": "recipient-robin",
+      "audienceRefs": ["helper-sam", "organizer-maya"],
+      "purpose": "Coordinate meal drop-off and check-in using only approved preference details.",
+      "allowedDetails": ["meal-preference", "support-window"],
+      "expiresAt": "2026-08-26T00:00:00Z",
+      "evidenceRefs": ["ev-consent"]
+    },
+    {
+      "id": "scope-aide",
+      "recipientRef": "recipient-robin",
+      "audienceRefs": ["helper-aide", "organizer-maya"],
+      "purpose": "Coordinate respite and accessibility logistics while keeping private notes recipient-only.",
+      "allowedDetails": ["support-window", "accessibility-need", "emergency-contact"],
+      "expiresAt": "2026-08-26T00:00:00Z",
+      "evidenceRefs": ["ev-consent", "ev-access"]
+    }
+  ],
+  "supportTasks": [
+    {
+      "id": "task-ride",
+      "needRef": "need-ride",
+      "title": "Appointment ride window",
+      "helperRef": "helper-lee",
+      "startsAt": "2026-08-24T15:30:00Z",
+      "endsAt": "2026-08-24T18:00:00Z",
+      "scopeRef": "scope-ride",
+      "state": "accepted",
+      "blockedReasons": []
+    },
+    {
+      "id": "task-meal",
+      "needRef": "need-meal",
+      "title": "Meal drop-off and check-in",
+      "helperRef": "helper-sam",
+      "startsAt": "2026-08-24T22:00:00Z",
+      "endsAt": "2026-08-25T02:00:00Z",
+      "scopeRef": "scope-meal",
+      "state": "accepted",
+      "blockedReasons": []
+    },
+    {
+      "id": "task-respite",
+      "needRef": "need-respite",
+      "title": "Respite coverage",
+      "helperRef": "helper-aide",
+      "startsAt": "2026-08-25T19:00:00Z",
+      "endsAt": "2026-08-25T23:00:00Z",
+      "scopeRef": "scope-aide",
+      "state": "pending-recipient",
+      "blockedReasons": ["Recipient has not yet approved the final aide coverage window"]
+    },
+    {
+      "id": "task-symptom",
+      "needRef": "need-symptom",
+      "title": "Escalate pain question to care team",
+      "helperRef": null,
+      "startsAt": "2026-08-21T16:00:00Z",
+      "endsAt": "2026-08-21T16:30:00Z",
+      "scopeRef": null,
+      "state": "escalation-required",
+      "blockedReasons": ["Medical question must be handled by the care team or emergency services"]
+    }
+  ],
+  "commitments": [
+    {
+      "id": "commitment-ride",
+      "taskRef": "task-ride",
+      "helperRef": "helper-lee",
+      "state": "accepted",
+      "acceptedAt": "2026-08-21T15:30:00Z",
+      "evidenceRefs": ["ev-lee-availability"]
+    },
+    {
+      "id": "commitment-meal",
+      "taskRef": "task-meal",
+      "helperRef": "helper-sam",
+      "state": "accepted",
+      "acceptedAt": "2026-08-21T15:35:00Z",
+      "evidenceRefs": ["ev-sam-availability"]
+    },
+    {
+      "id": "commitment-respite",
+      "taskRef": "task-respite",
+      "helperRef": "helper-aide",
+      "state": "pending",
+      "acceptedAt": null,
+      "evidenceRefs": ["ev-aide-availability"]
+    }
+  ],
+  "blockedItems": [
+    {
+      "id": "block-symptom",
+      "kind": "medical",
+      "description": "Increased pain question requires licensed care-team guidance.",
+      "ownerRef": "organizer-maya",
+      "state": "escalated",
+      "reason": "The Claw can preserve the concern and escalation contact, but cannot triage, diagnose, or recommend treatment."
+    },
+    {
+      "id": "block-respite-approval",
+      "kind": "helper-approval",
+      "description": "Final respite window remains pending recipient approval.",
+      "ownerRef": "recipient-robin",
+      "state": "open",
+      "reason": "A helper cannot be committed to the final window until the recipient approves the exact coverage details."
+    }
+  ],
+  "handoff": {
+    "state": "blocked",
+    "recipientRef": "recipient-robin",
+    "organizerRef": "organizer-maya",
+    "prohibitedActions": [
+      "diagnose-or-treat",
+      "change-medication",
+      "replace-emergency-services",
+      "share-unapproved-private-detail",
+      "commit-helper-without-approval",
+      "book-or-cancel-care",
+      "make-legal-or-financial-decision"
+    ]
+  }
+}

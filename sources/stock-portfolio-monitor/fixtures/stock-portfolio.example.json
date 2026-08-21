@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "awesomeClaws.stockPortfolio.v1",
+  "portfolio": {
+    "id": "portfolio-watch",
+    "owner": "Portfolio owner",
+    "reportingCurrency": "USD",
+    "asOf": "2026-08-21T20:00:00Z"
+  },
+  "sources": [
+    { "id": "src-positions", "kind": "user-position", "authority": "user-supplied", "capturedAt": "2026-08-21T19:30:00Z", "reference": "user://portfolio/positions-2026-08-21", "freshness": "current" },
+    { "id": "src-aapl-quote", "kind": "market-quote", "authority": "market-data-provider", "capturedAt": "2026-08-21T19:55:00Z", "reference": "market://quote/AAPL", "freshness": "delayed" },
+    { "id": "src-msft-quote", "kind": "market-quote", "authority": "market-data-provider", "capturedAt": "2026-08-21T19:55:00Z", "reference": "market://quote/MSFT", "freshness": "delayed" },
+    { "id": "src-nvda-quote", "kind": "market-quote", "authority": "market-data-provider", "capturedAt": "2026-08-21T19:55:00Z", "reference": "market://quote/NVDA", "freshness": "delayed" },
+    { "id": "src-aapl-filing", "kind": "issuer-filing", "authority": "issuer", "capturedAt": "2026-08-21T18:00:00Z", "reference": "issuer://AAPL/filing-calendar", "freshness": "current" },
+    { "id": "src-nvda-event", "kind": "issuer-news", "authority": "trusted-news-source", "capturedAt": "2026-08-21T18:30:00Z", "reference": "news://NVDA/earnings-watch", "freshness": "current" }
+  ],
+  "positions": [
+    { "id": "position-aapl", "ticker": "AAPL", "exchange": "NASDAQ", "issuer": "Apple Inc.", "quantity": 10, "positionSourceRef": "src-positions", "costBasis": { "state": "supplied", "amount": 1500, "currency": "USD", "sourceRef": "src-positions" } },
+    { "id": "position-msft", "ticker": "MSFT", "exchange": "NASDAQ", "issuer": "Microsoft Corporation", "quantity": 5, "positionSourceRef": "src-positions", "costBasis": { "state": "not-supplied", "amount": null, "currency": null, "sourceRef": null } },
+    { "id": "position-nvda", "ticker": "NVDA", "exchange": "NASDAQ", "issuer": "NVIDIA Corporation", "quantity": 8, "positionSourceRef": "src-positions", "costBasis": { "state": "not-supplied", "amount": null, "currency": null, "sourceRef": null } }
+  ],
+  "quotes": [
+    { "positionRef": "position-aapl", "price": 200, "currency": "USD", "asOf": "2026-08-21T19:55:00Z", "sourceRef": "src-aapl-quote", "freshness": "delayed" },
+    { "positionRef": "position-msft", "price": 400, "currency": "USD", "asOf": "2026-08-21T19:55:00Z", "sourceRef": "src-msft-quote", "freshness": "delayed" },
+    { "positionRef": "position-nvda", "price": 125, "currency": "USD", "asOf": "2026-08-21T19:55:00Z", "sourceRef": "src-nvda-quote", "freshness": "delayed" }
+  ],
+  "allocations": [
+    { "positionRef": "position-aapl", "marketValue": 2000, "currency": "USD", "allocationPct": 40, "driftState": "within-threshold" },
+    { "positionRef": "position-msft", "marketValue": 2000, "currency": "USD", "allocationPct": 40, "driftState": "within-threshold" },
+    { "positionRef": "position-nvda", "marketValue": 1000, "currency": "USD", "allocationPct": 20, "driftState": "over-threshold" }
+  ],
+  "issuerEvents": [
+    { "id": "event-aapl-filing", "positionRef": "position-aapl", "kind": "filing", "summary": "Issuer calendar should be checked before the next review.", "eventDate": "2026-08-25", "sourceRefs": ["src-aapl-filing"], "state": "current" },
+    { "id": "event-nvda-earnings", "positionRef": "position-nvda", "kind": "earnings", "summary": "Earnings watch item may affect review questions but is not a trade signal.", "eventDate": "2026-08-28", "sourceRefs": ["src-nvda-event"], "state": "current" }
+  ],
+  "reviewQuestions": [
+    { "id": "question-concentration", "question": "Does the owner want a concentration threshold for single-issuer exposure before future reviews?", "owner": "Portfolio owner", "sourceRefs": ["src-positions", "src-aapl-quote", "src-msft-quote", "src-nvda-quote"] },
+    { "id": "question-cost-basis", "question": "Should missing cost basis remain excluded until supplied by the owner or custodian?", "owner": "Portfolio owner", "sourceRefs": ["src-positions"] }
+  ],
+  "blockedActions": ["recommend-buy", "recommend-sell", "recommend-hold", "execute-trade", "connect-broker", "infer-cost-basis", "give-tax-advice", "give-legal-advice"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Portfolio owner",
+    "prohibitedActions": ["recommend-buy", "recommend-sell", "recommend-hold", "execute-trade", "connect-broker", "infer-cost-basis", "give-tax-advice", "give-legal-advice"]
+  }
+}

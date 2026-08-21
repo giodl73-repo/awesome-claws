@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "care-circle-coordinator",
+  "scenario": "Help coordinate next week's support for my father after outpatient surgery: rides, meals, check-ins, and backup coverage, without sharing medical details beyond what he approved.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Help coordinate next week's support for my father after outpatient surgery: rides, meals, check-ins, and backup coverage, without sharing medical details beyond what he approved."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/care-circle-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Care Circle Coordinator session handoff",
+    "summary": "A recipient-approved practical support plan with helper commitments, privacy limits, blocked items, escalation contacts, and no medical or legal advice.",
+    "output": "outputs/care-circle-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Consent and privacy scope ledger",
+        "summary": "Every support task is assigned, pending, blocked, or escalated with a named owner",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Care support schedule",
+        "summary": "Every shared detail is covered by an explicit recipient-approved purpose and audience",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Helper commitment register",
+        "summary": "Every helper commitment is exact, time-bound, and separately accepted",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked and escalation-required item list",
+        "summary": "Medical, legal, financial, emergency, and unsupported care questions remain escalated to qualified humans",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Organizer handoff",
+        "summary": "Every support task is assigned, pending, blocked, or escalated with a named owner",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

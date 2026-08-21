@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "stock-portfolio-monitor",
+  "scenario": "Monitor my supplied long-only watch portfolio for AAPL, MSFT, and NVDA this week. Show allocation drift, earnings or filing events, and questions for review, but do not tell me what to buy or sell.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Monitor my supplied long-only watch portfolio for AAPL, MSFT, and NVDA this week. Show allocation drift, earnings or filing events, and questions for review, but do not tell me what to buy or sell."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/stock-portfolio-monitor-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Stock portfolio monitor session handoff",
+    "summary": "A timestamped portfolio monitor with user-supplied positions, sourced quote freshness, allocation drift, issuer events, unresolved evidence gaps, and no investment, tax, legal, or trading recommendation.",
+    "output": "outputs/stock-portfolio-monitor-handoff.md",
+    "items": [
+      {
+        "title": "Portfolio holdings ledger",
+        "summary": "Every ticker or issuer maps to a source, exchange, currency, and freshness state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Market data freshness register",
+        "summary": "Every exposure or drift calculation traces to supplied position facts and sourced market data",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Allocation and concentration drift view",
+        "summary": "Issuer events and material changes are separated from interpretation and review questions",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Issuer event watchlist",
+        "summary": "No buy, sell, hold, tax, legal, broker, or suitability action is recommended or executed",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Human-review question set",
+        "summary": "Every ticker or issuer maps to a source, exchange, currency, and freshness state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

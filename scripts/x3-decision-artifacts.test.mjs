@@ -29,6 +29,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "care-circle-coordinator",
+    schema: "../claws/care-circle-coordinator/schemas/care-circle.schema.json",
+    fixture: "../claws/care-circle-coordinator/fixtures/care-circle.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "change-control-operator",
     schema: "../claws/change-control-operator/schemas/change-plan.schema.json",
     fixture: "../claws/change-control-operator/fixtures/change-plan.example.json",
@@ -117,6 +123,18 @@ const definitions = [
     schema: "../claws/sales-operations/schemas/pipeline-review.schema.json",
     fixture: "../claws/sales-operations/fixtures/pipeline-review.example.json",
     decisionField: "decisionState",
+  },
+  {
+    id: "sports-team-watcher",
+    schema: "../claws/sports-team-watcher/schemas/sports-team-watch.schema.json",
+    fixture: "../claws/sports-team-watcher/fixtures/sports-team-watch.example.json",
+    decisionField: "handoff.state",
+  },
+  {
+    id: "stock-portfolio-monitor",
+    schema: "../claws/stock-portfolio-monitor/schemas/stock-portfolio.schema.json",
+    fixture: "../claws/stock-portfolio-monitor/fixtures/stock-portfolio.example.json",
+    decisionField: "handoff.state",
   },
   {
     id: "civic-data-analyst",
@@ -249,6 +267,8 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],
     ["recruiting-coordinator", (value) => value.communications[0].sessionRefs.push(value.communications[0].sessionRefs[0])],
     ["sales-operations", (value) => value.actions[0].dealRefs.push(value.actions[0].dealRefs[0])],
+    ["sports-team-watcher", (value) => value.games[0].sourceRefs.push(value.games[0].sourceRefs[0])],
+    ["stock-portfolio-monitor", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
     ["civic-data-analyst", (value) => value.measures[0].sourceRefs.push(value.measures[0].sourceRefs[0])],
   ];
   for (const [id, mutate] of mutations) {
@@ -1759,6 +1779,83 @@ test("pet care protects guardian appointment authority", () => {
   agentOwned.guardian.id = "pet-care-coordinator";
   agentOwned.handoff.guardian.id = "pet-care-coordinator";
   assert.equal(isValid("pet-care-coordinator", agentOwned), false);
+});
+
+test("care circle protects recipient privacy and consent scope", () => {
+  const privateLocation = structuredClone(cases.get("care-circle-coordinator").fixture);
+  privateLocation.needs[0].description += " Pickup at 123 Main Street.";
+  assert.equal(isValid("care-circle-coordinator", privateLocation), false);
+
+  const unapprovedAudience = structuredClone(cases.get("care-circle-coordinator").fixture);
+  unapprovedAudience.consentScopes[0].audienceRefs = ["helper-lee"];
+  assert.equal(isValid("care-circle-coordinator", unapprovedAudience), false);
+
+  const staleConsent = structuredClone(cases.get("care-circle-coordinator").fixture);
+  staleConsent.consentScopes[0].expiresAt = "2026-08-21T14:59:00Z";
+  assert.equal(isValid("care-circle-coordinator", staleConsent), false);
+});
+
+test("care circle rejects professional-care and helper commitment overreach", () => {
+  const unsupportedCare = structuredClone(cases.get("care-circle-coordinator").fixture);
+  unsupportedCare.supportTasks[3].helperRef = "helper-aide";
+  unsupportedCare.supportTasks[3].scopeRef = "scope-aide";
+  unsupportedCare.supportTasks[3].state = "accepted";
+  unsupportedCare.commitments.push({
+    id: "commitment-symptom",
+    taskRef: "task-symptom",
+    helperRef: "helper-aide",
+    state: "accepted",
+    acceptedAt: "2026-08-21T15:40:00Z",
+    evidenceRefs: ["ev-aide-availability"],
+  });
+  assert.equal(isValid("care-circle-coordinator", unsupportedCare), false);
+
+  const unacceptedTask = structuredClone(cases.get("care-circle-coordinator").fixture);
+  unacceptedTask.commitments.find((item) => item.id === "commitment-ride").state = "pending";
+  unacceptedTask.commitments.find((item) => item.id === "commitment-ride").acceptedAt = null;
+  assert.equal(isValid("care-circle-coordinator", unacceptedTask), false);
+
+  const agentOwned = structuredClone(cases.get("care-circle-coordinator").fixture);
+  agentOwned.organizer.id = "care-circle-coordinator";
+  agentOwned.handoff.organizerRef = "care-circle-coordinator";
+  assert.equal(isValid("care-circle-coordinator", agentOwned), false);
+});
+
+test("sports team watcher preserves sourced fan facts and blocks wagering content", () => {
+  const staleReady = structuredClone(cases.get("sports-team-watcher").fixture);
+  staleReady.sources[0].freshness = "stale";
+  assert.equal(isValid("sports-team-watcher", staleReady), false);
+
+  const unofficialTeam = structuredClone(cases.get("sports-team-watcher").fixture);
+  unofficialTeam.sources[0].authority = "trusted-news-source";
+  unofficialTeam.teams[0].sourceRefs = ["src-mlb-schedule"];
+  assert.equal(isValid("sports-team-watcher", unofficialTeam), false);
+
+  const scoreBeforeFinal = structuredClone(cases.get("sports-team-watcher").fixture);
+  scoreBeforeFinal.games[1].score = "SEA 1, TEX 0";
+  assert.equal(isValid("sports-team-watcher", scoreBeforeFinal), false);
+
+  const bettingContent = structuredClone(cases.get("sports-team-watcher").fixture);
+  bettingContent.watchItems[0].whyItMatters += " Include the betting spread.";
+  assert.equal(isValid("sports-team-watcher", bettingContent), false);
+});
+
+test("stock portfolio monitor binds valuations to sources and blocks advice", () => {
+  const staleQuote = structuredClone(cases.get("stock-portfolio-monitor").fixture);
+  staleQuote.quotes[0].freshness = "stale";
+  assert.equal(isValid("stock-portfolio-monitor", staleQuote), false);
+
+  const inferredCostBasis = structuredClone(cases.get("stock-portfolio-monitor").fixture);
+  inferredCostBasis.positions[1].costBasis.amount = 1800;
+  assert.equal(isValid("stock-portfolio-monitor", inferredCostBasis), false);
+
+  const wrongAllocation = structuredClone(cases.get("stock-portfolio-monitor").fixture);
+  wrongAllocation.allocations[0].marketValue = 2100;
+  assert.equal(isValid("stock-portfolio-monitor", wrongAllocation), false);
+
+  const advice = structuredClone(cases.get("stock-portfolio-monitor").fixture);
+  advice.reviewQuestions[0].question = "Should the owner buy more AAPL this week?";
+  assert.equal(isValid("stock-portfolio-monitor", advice), false);
 });
 
 test("capstone profiles expose only their intended runtime dimensions", async () => {

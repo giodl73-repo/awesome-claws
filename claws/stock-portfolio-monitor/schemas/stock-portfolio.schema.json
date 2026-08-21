@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "portfolio", "sources", "positions", "quotes", "allocations", "issuerEvents", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.stockPortfolio.v1" },
+    "portfolio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "reportingCurrency", "asOf"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^portfolio-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "reportingCurrency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "asOf": { "type": "string", "format": "date-time" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "authority", "capturedAt", "reference", "freshness"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": { "enum": ["user-position", "market-quote", "issuer-filing", "issuer-news", "dividend-calendar", "analyst-note"] },
+          "authority": { "enum": ["user-supplied", "exchange", "issuer", "regulator", "market-data-provider", "trusted-news-source"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 },
+          "freshness": { "enum": ["current", "delayed", "stale", "missing", "conflicting"] }
+        }
+      }
+    },
+    "positions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "ticker", "exchange", "issuer", "quantity", "positionSourceRef", "costBasis"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^position-[a-z0-9-]+$" },
+          "ticker": { "type": "string", "pattern": "^[A-Z][A-Z0-9.-]{0,9}$" },
+          "exchange": { "type": "string", "minLength": 1 },
+          "issuer": { "type": "string", "minLength": 1 },
+          "quantity": { "type": "number", "exclusiveMinimum": 0 },
+          "positionSourceRef": { "type": "string", "minLength": 1 },
+          "costBasis": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["state"],
+            "properties": {
+              "state": { "enum": ["supplied", "not-supplied"] },
+              "amount": { "type": ["number", "null"], "minimum": 0 },
+              "currency": { "type": ["string", "null"], "pattern": "^[A-Z]{3}$" },
+              "sourceRef": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "quotes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["positionRef", "price", "currency", "asOf", "sourceRef", "freshness"],
+        "properties": {
+          "positionRef": { "type": "string", "minLength": 1 },
+          "price": { "type": "number", "minimum": 0 },
+          "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+          "asOf": { "type": "string", "format": "date-time" },
+          "sourceRef": { "type": "string", "minLength": 1 },
+          "freshness": { "enum": ["current", "delayed", "stale", "missing", "conflicting"] }
+        }
+      }
+    },
+    "allocations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["positionRef", "marketValue", "currency", "allocationPct", "driftState"],
+        "properties": {
+          "positionRef": { "type": "string", "minLength": 1 },
+          "marketValue": { "type": "number", "minimum": 0 },
+          "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+          "allocationPct": { "type": "number", "minimum": 0, "maximum": 100 },
+          "driftState": { "enum": ["within-threshold", "over-threshold", "not-evaluated"] }
+        }
+      }
+    },
+    "issuerEvents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "positionRef", "kind", "summary", "eventDate", "sourceRefs", "state"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^event-[a-z0-9-]+$" },
+          "positionRef": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["earnings", "filing", "dividend", "corporate-action", "material-news"] },
+          "summary": { "type": "string", "minLength": 1 },
+          "eventDate": { "type": "string", "format": "date" },
+          "sourceRefs": { "$ref": "#/$defs/refs" },
+          "state": { "enum": ["current", "delayed", "stale", "missing", "conflicting"] }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "owner", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 7,
+      "uniqueItems": true,
+      "items": { "enum": ["recommend-buy", "recommend-sell", "recommend-hold", "execute-trade", "connect-broker", "infer-cost-basis", "give-tax-advice", "give-legal-advice"] }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": { "enum": ["recommend-buy", "recommend-sell", "recommend-hold", "execute-trade", "connect-broker", "infer-cost-basis", "give-tax-advice", "give-legal-advice"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

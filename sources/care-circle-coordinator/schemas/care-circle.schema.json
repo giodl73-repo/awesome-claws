@@ -1,0 +1,253 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "recipient",
+    "organizer",
+    "helpers",
+    "evidence",
+    "needs",
+    "consentScopes",
+    "supportTasks",
+    "commitments",
+    "blockedItems",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.careCircle.v1" },
+    "recipient": { "$ref": "#/$defs/person" },
+    "organizer": { "$ref": "#/$defs/person" },
+    "helpers": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/helper" }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "authority", "capturedAt", "reference"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^ev-[a-z0-9-]+$" },
+          "type": {
+            "enum": [
+              "recipient-consent",
+              "organizer-note",
+              "helper-availability",
+              "appointment-window",
+              "accessibility-need",
+              "professional-boundary",
+              "emergency-contact"
+            ]
+          },
+          "authority": {
+            "enum": [
+              "recipient-supplied",
+              "organizer-supplied",
+              "helper-supplied",
+              "care-team-supplied",
+              "professional-supplied"
+            ]
+          },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "needs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "description", "priority", "dueStart", "dueEnd", "evidenceRefs", "professionalBoundary"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^need-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "ride",
+              "meal",
+              "check-in",
+              "errand",
+              "respite",
+              "accessibility",
+              "appointment-prep",
+              "professional-care"
+            ]
+          },
+          "description": { "type": "string", "minLength": 1 },
+          "priority": { "enum": ["routine", "time-sensitive", "urgent", "emergency"] },
+          "dueStart": { "type": "string", "format": "date-time" },
+          "dueEnd": { "type": "string", "format": "date-time" },
+          "evidenceRefs": { "$ref": "#/$defs/refs" },
+          "professionalBoundary": {
+            "enum": [
+              "practical-support",
+              "licensed-clinician",
+              "legal-advisor",
+              "financial-advisor",
+              "emergency-services"
+            ]
+          }
+        }
+      }
+    },
+    "consentScopes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "recipientRef", "audienceRefs", "purpose", "allowedDetails", "expiresAt", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^scope-[a-z0-9-]+$" },
+          "recipientRef": { "type": "string", "minLength": 1 },
+          "audienceRefs": { "$ref": "#/$defs/refs" },
+          "purpose": { "type": "string", "minLength": 1 },
+          "allowedDetails": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "support-window",
+                "transport-window",
+                "meal-preference",
+                "accessibility-need",
+                "arrival-instructions",
+                "emergency-contact",
+                "professional-contact",
+                "medical-detail"
+              ]
+            }
+          },
+          "expiresAt": { "type": "string", "format": "date-time" },
+          "evidenceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "supportTasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "needRef", "title", "helperRef", "startsAt", "endsAt", "scopeRef", "state", "blockedReasons"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^task-[a-z0-9-]+$" },
+          "needRef": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "helperRef": { "type": ["string", "null"] },
+          "startsAt": { "type": "string", "format": "date-time" },
+          "endsAt": { "type": "string", "format": "date-time" },
+          "scopeRef": { "type": ["string", "null"] },
+          "state": { "enum": ["accepted", "pending-helper", "pending-recipient", "blocked", "escalation-required"] },
+          "blockedReasons": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "commitments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "taskRef", "helperRef", "state", "acceptedAt", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^commitment-[a-z0-9-]+$" },
+          "taskRef": { "type": "string", "minLength": 1 },
+          "helperRef": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["accepted", "declined", "pending"] },
+          "acceptedAt": { "type": ["string", "null"], "format": "date-time" },
+          "evidenceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "blockedItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "description", "ownerRef", "state", "reason"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^block-[a-z0-9-]+$" },
+          "kind": { "enum": ["medical", "legal", "financial", "emergency", "privacy", "helper-approval", "capacity"] },
+          "description": { "type": "string", "minLength": 1 },
+          "ownerRef": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["open", "escalated", "resolved-by-human"] },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "recipientRef", "organizerRef", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-organizer", "blocked"] },
+        "recipientRef": { "type": "string", "minLength": 1 },
+        "organizerRef": { "type": "string", "minLength": 1 },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "diagnose-or-treat",
+              "change-medication",
+              "replace-emergency-services",
+              "share-unapproved-private-detail",
+              "commit-helper-without-approval",
+              "book-or-cancel-care",
+              "make-legal-or-financial-decision"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "person": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "role"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^(?:recipient|organizer)-[a-z0-9-]+$" },
+        "label": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 40 },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    },
+    "helper": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "relationship", "allowedTaskKinds", "availabilityEvidenceRefs", "privateNoteHandling"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^helper-[a-z0-9-]+$" },
+        "label": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 40 },
+        "relationship": { "enum": ["family", "friend", "neighbor", "paid-aide", "volunteer", "professional"] },
+        "allowedTaskKinds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["ride", "meal", "check-in", "errand", "respite", "accessibility", "appointment-prep"] }
+        },
+        "availabilityEvidenceRefs": { "$ref": "#/$defs/refs" },
+        "privateNoteHandling": { "enum": ["none", "recipient-only", "organizer-only", "minimum-necessary"] }
+      }
+    }
+  }
+}

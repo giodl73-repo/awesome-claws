@@ -40,6 +40,13 @@ copyable reference is optimized for a small package that is easy to rename and
 adapt. The other starters demonstrate different application shapes between
 those two points; they are not expected to contain the same components.
 
+The catalog now also has a practical personal-agent lane: vehicle, home, garden,
+pet, pond, appliance, care-circle, sports-team, and stock-portfolio starters
+cover everyday bounded workflows with explicit owner authority. Household
+Steward and Work Chief of Staff sit above those as orchestration capstones: they
+coordinate specialist-Claw artifacts, conflicts, and accountable decisions
+without taking over the people or functions that own the work.
+
 Use the generated [catalog chooser](CHOOSER.md) to compare every starter by
 maintenance state, accountable maintainer, setup burden, external dependencies,
 Experience proof tier, category, and boundary-attention level. The same derived data is available as

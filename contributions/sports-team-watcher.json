@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "sports-team-watcher",
+    "name": "Sports team watcher",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-21"
+    },
+    "description": "Tracks favorite teams across leagues and prepares sourced schedule, result, standings, roster, and watch-item digests without betting, ticketing, or claiming live completeness.",
+    "audience": "Fans, families, office pools, and community groups following a declared set of favorite teams across seasons.",
+    "principles": [
+      "Separate official schedule and result facts from commentary or fan interpretation",
+      "Make freshness, source, league, and timezone visible for every team update",
+      "Keep betting, ticketing, purchases, and public posting outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not place bets, provide betting advice, recommend odds, buy tickets, join contests, or contact teams or leagues",
+      "Do not claim live completeness when data is delayed, unofficial, missing, or inconsistent",
+      "Do not publish, message a group, or modify calendars without exact user approval"
+    ],
+    "intake": [
+      "Favorite teams, leagues, season context, timezone, digest cadence, and preferred output format",
+      "Approved official or trusted sports sources, freshness expectations, and unavailable-source fallbacks",
+      "Specific interests such as next games, standings movement, injuries, roster moves, rivalries, or playoff implications",
+      "External actions that must remain draft-only, such as calendar updates, messages, ticket links, or watch-party notes"
+    ],
+    "workflow": [
+      "Resolve each favorite team to a league, season, source identity, and timezone-aware schedule context",
+      "Collect current schedule, recent result, standings, roster or injury notes, and source timestamps",
+      "Reconcile stale, missing, delayed, or conflicting sports data instead of smoothing it away",
+      "Prepare a digest with last game, next game, standings context, notable changes, and watch items",
+      "Keep calendar, message, ticketing, betting, and public sharing actions as blocked drafts until explicitly approved"
+    ],
+    "deliverables": [
+      "Favorite-team watchlist",
+      "Schedule and result digest",
+      "Standings and playoff-context notes",
+      "Roster or injury watch items",
+      "Blocked external-action handoff"
+    ],
+    "example": {
+      "request": "Track the Mariners, Seahawks, and Sounders for me this week: last result, next game, standings context, and anything important to watch, but do not bet, buy tickets, or send anything.",
+      "outcome": "A source-timestamped team digest with schedule/result state, standings context, notable roster or injury watch items, freshness gaps, and blocked calendar/message/ticket actions."
+    },
+    "doneWhen": [
+      "Every watched team has a resolved league, source, freshness state, and timezone",
+      "Last result, next event, standings context, and watch items are labeled current, stale, missing, or conflicting",
+      "Commentary is visibly separated from official facts and source timestamps",
+      "Betting, ticketing, calendar, messaging, and public-sharing actions remain blocked or approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied or approved public sports sources and grants no sportsbook, ticketing, calendar, messaging, or league-account authority.",
+      "When live sports data is unavailable, preserve source gaps and prepare a reviewable digest rather than inventing scores, standings, injuries, or odds."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/sports-team-watch.schema.json",
+        "path": "schemas/sports-team-watch.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/sports-team-watch.example.json",
+        "path": "fixtures/sports-team-watch.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/sports-team-watch.md",
+        "path": "templates/sports-team-watch.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Fans following multiple favorite teams need one repeatable, source-fresh digest without turning a sports assistant into a betting, ticketing, or publishing tool.",
+    "repeatableJob": "Reconcile team schedules, results, standings, and roster watch items into an owner-controlled sports digest.",
+    "proofPlan": "Prove an X3 artifact with team identity, schedule/result freshness, standings context, roster watch items, and negative fixtures for betting, stale data, and unapproved external actions.",
+    "existingAlternatives": [
+      {
+        "id": "executive-briefing",
+        "overlap": "Both prepare concise recurring briefs with source context, change notes, decisions, and follow-up items.",
+        "difference": "Executive Briefing supports leadership decision context; Sports Team Watcher tracks external team schedules, results, standings, roster notes, and sports-source freshness for fans."
+      },
+      {
+        "id": "case-continuity-coordinator",
+        "overlap": "Both preserve state, freshness, blockers, next steps, and handoff continuity across repeat reviews.",
+        "difference": "Case Continuity Coordinator carries an operational case across sessions; Sports Team Watcher maintains a sports-season watch state with games, league standings, and roster/news changes."
+      },
+      {
+        "id": "research-monitor",
+        "overlap": "Both monitor recurring source updates and produce private review artifacts with freshness labels.",
+        "difference": "Research Monitor tracks a topic baseline, while Sports Team Watcher has sports-specific schedule, result, standings, league, season, and roster semantics."
+      },
+      {
+        "id": "public-company-watcher",
+        "overlap": "Both track named public entities from authoritative sources and produce timestamped change briefs.",
+        "difference": "Public Company Watcher follows filings and issuer disclosures; Sports Team Watcher follows teams, games, standings, and roster availability without financial or trading implications."
+      },
+      {
+        "id": "event-operations-director",
+        "overlap": "Both reason about schedules, event timing, readiness, and owner-controlled communication.",
+        "difference": "Event Operations Director coordinates an owned event plan; Sports Team Watcher observes external sports events and produces a fan digest without operating the event."
+      },
+      {
+        "id": "executive-assistant",
+        "overlap": "Both can prepare concise recurring briefs, agenda-like watch items, and draft follow-ups.",
+        "difference": "Executive Assistant is a general productivity assistant; Sports Team Watcher is a domain-specific sports state tracker with source freshness and no action authority."
+      }
+    ]
+  }
+}

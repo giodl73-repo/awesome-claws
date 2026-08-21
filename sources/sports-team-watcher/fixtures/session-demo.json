@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "sports-team-watcher",
+  "scenario": "Track the Mariners, Seahawks, and Sounders for me this week: last result, next game, standings context, and anything important to watch, but do not bet, buy tickets, or send anything.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Track the Mariners, Seahawks, and Sounders for me this week: last result, next game, standings context, and anything important to watch, but do not bet, buy tickets, or send anything."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/sports-team-watcher-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Sports team watcher session handoff",
+    "summary": "A source-timestamped team digest with schedule/result state, standings context, notable roster or injury watch items, freshness gaps, and blocked calendar/message/ticket actions.",
+    "output": "outputs/sports-team-watcher-handoff.md",
+    "items": [
+      {
+        "title": "Favorite-team watchlist",
+        "summary": "Every watched team has a resolved league, source, freshness state, and timezone",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Schedule and result digest",
+        "summary": "Last result, next event, standings context, and watch items are labeled current, stale, missing, or conflicting",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Standings and playoff-context notes",
+        "summary": "Commentary is visibly separated from official facts and source timestamps",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Roster or injury watch items",
+        "summary": "Betting, ticketing, calendar, messaging, and public-sharing actions remain blocked or approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked external-action handoff",
+        "summary": "Every watched team has a resolved league, source, freshness state, and timezone",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
