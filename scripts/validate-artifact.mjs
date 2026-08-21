@@ -21,6 +21,7 @@ const schemaNames = {
   "home-repair-coordinator": "home-repair.schema.json",
   "model-evaluation-adjudicator": "model-evaluation.schema.json",
   "pet-care-coordinator": "pet-care.schema.json",
+  "pond-water-feature-coordinator": "pond-system.schema.json",
   "project-manager": "project-state.schema.json",
   "product-manager": "product-decision.schema.json",
   "public-safety-monitor": "public-safety-state.schema.json",

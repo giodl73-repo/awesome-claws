@@ -2575,6 +2575,443 @@ function greenThumbFindings(value) {
   return findings;
 }
 
+function pondWaterFeatureFindings(value) {
+  const evidenceIds = value.evidence.map((item) => item.id);
+  const evidence = new Set(evidenceIds);
+  const componentIds = value.components.map((item) => item.id);
+  const components = new Set(componentIds);
+  const providerIds = value.providers.map((item) => item.id);
+  const providers = new Set(providerIds);
+  const evidenceById = new Map(value.evidence.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(evidenceIds, "evidence", "Evidence id"),
+    ...uniqueFindings(componentIds, "components", "Component id"),
+    ...uniqueFindings(value.observations.map((item) => item.id), "observations", "Observation id"),
+    ...uniqueFindings(value.installation.requirements.map((item) => item.id), "installation.requirements", "Requirement id"),
+    ...uniqueFindings(value.installation.requirements.map((item) => item.category), "installation.requirements", "Requirement category"),
+    ...uniqueFindings(value.operationsCalendar.map((item) => item.id), "operationsCalendar", "Calendar id"),
+    ...uniqueFindings(value.waterQuality.map((item) => item.id), "waterQuality", "Water-quality id"),
+    ...uniqueFindings(value.habitat.map((item) => item.id), "habitat", "Habitat id"),
+    ...uniqueFindings(value.incidents.map((item) => item.id), "incidents", "Incident id"),
+    ...uniqueFindings(providerIds, "providers", "Provider id"),
+  ];
+  for (const [references, path] of [
+    ...value.components.map((item, index) => [item.evidenceRefs, `components.${index}.evidenceRefs`]),
+    ...value.observations.map((item, index) => [item.evidenceRefs, `observations.${index}.evidenceRefs`]),
+    [value.riskAssessment.evidenceRefs, "riskAssessment.evidenceRefs"],
+    ...value.installation.requirements.map((item, index) => [item.evidenceRefs, `installation.requirements.${index}.evidenceRefs`]),
+    ...value.operationsCalendar.map((item, index) => [item.sourceRefs, `operationsCalendar.${index}.sourceRefs`]),
+    ...value.waterQuality.map((item, index) => [[item.evidenceRef, ...item.thresholdRefs], `waterQuality.${index}`]),
+    ...value.habitat.map((item, index) => [item.evidenceRefs, `habitat.${index}.evidenceRefs`]),
+    ...value.incidents.map((item, index) => [item.evidenceRefs, `incidents.${index}.evidenceRefs`]),
+    ...value.providers.map((item, index) => [[item.sourceRef], `providers.${index}.sourceRef`]),
+    ...(value.appointment.bookingIntegration
+      ? [[[value.appointment.bookingIntegration.approvalEvidenceRef], "appointment.bookingIntegration"]]
+      : []),
+    ...(value.appointment.receipt
+      ? [[[value.appointment.receipt.evidenceRef], "appointment.receipt"]]
+      : []),
+  ]) {
+    findings.push(...uniqueFindings(references, path, "Evidence reference"));
+    findings.push(...referenceFindings(references, evidence, path, "Evidence reference"));
+  }
+  for (const [references, path] of [
+    ...value.operationsCalendar.map((item, index) => [item.componentRefs, `operationsCalendar.${index}.componentRefs`]),
+    ...value.incidents.map((item, index) => [item.componentRefs, `incidents.${index}.componentRefs`]),
+  ]) {
+    findings.push(...uniqueFindings(references, path, "Component reference"));
+    findings.push(...referenceFindings(references, components, path, "Component reference"));
+  }
+  if (
+    /\b\d{1,6}[A-Za-z]?(?:-\d{1,6}[A-Za-z]?)?\s+[A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+){0,4}\s+(?:Alley|Aly|Avenue|Ave|Boulevard|Blvd|Circle|Cir|Court|Ct|Drive|Dr|Highway|Hwy|Lane|Ln|Parkway|Pkwy|Place|Pl|Road|Rd|Route|Rte|Street|St|Terrace|Ter|Trail|Trl|Way)\b/iu.test(
+      canonicalJson(value),
+    )
+  ) {
+    findings.push(
+      finding(
+        "exposed_home_address",
+        "site",
+        "Pond artifacts must use privacy-safe site labels, not a street address.",
+      ),
+    );
+  }
+  const directComponentEvidence = new Set([
+    "site-plan",
+    "manufacturer-manual",
+    "equipment-record",
+    "installation-record",
+    "service-record",
+  ]);
+  for (const [index, component] of value.components.entries()) {
+    const sources = component.evidenceRefs.map((reference) => evidenceById.get(reference));
+    if (
+      component.state === "installed" &&
+      !sources.some(
+        (source) =>
+          directComponentEvidence.has(source?.type) &&
+          ["resident-supplied", "manufacturer", "service-provider", "qualified-contractor"].includes(
+            source.authority,
+          ),
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_installed_component",
+          `components.${index}`,
+          "Installed pond components require direct plan, equipment, installation, manufacturer, or service evidence.",
+        ),
+      );
+    }
+  }
+  const requiredCategories = [
+    "utility",
+    "permit",
+    "electrical",
+    "structural",
+    "hydraulic",
+    "drainage",
+    "access",
+    "environmental",
+  ];
+  const requirementCategories = new Set(
+    value.installation.requirements.map((item) => item.category),
+  );
+  const hasRequirementGap = value.installation.requirements.some((item) =>
+    ["missing", "unknown"].includes(item.state),
+  );
+  const installationClaimsReady = ["bid-ready", "contracted", "complete"].includes(
+    value.installation.state,
+  );
+  if (
+    requiredCategories.some((category) => !requirementCategories.has(category)) ||
+    (installationClaimsReady && hasRequirementGap) ||
+    (value.installation.state === "blocked" && !value.installation.blockedReason) ||
+    (value.installation.state !== "blocked" && value.installation.blockedReason)
+  ) {
+    findings.push(
+      finding(
+        "incoherent_installation_state",
+        "installation",
+        "All installation constraints must be represented, and missing or unknown requirements block ready, contracted, or complete state.",
+      ),
+    );
+  }
+  const requiredEvidenceTypes = {
+    utility: ["utility-location"],
+    permit: ["permit-record", "regulation"],
+    electrical: ["electrical-record"],
+    structural: ["structural-record", "site-plan"],
+    hydraulic: ["site-plan", "installation-record", "specialist-finding"],
+    drainage: ["site-plan", "installation-record", "specialist-finding"],
+    access: ["site-plan", "site-photo", "specialist-finding"],
+    environmental: ["permit-record", "regulation", "specialist-finding"],
+  };
+  for (const [index, requirement] of value.installation.requirements.entries()) {
+    const sources = requirement.evidenceRefs.map((reference) => evidenceById.get(reference));
+    if (
+      ["verified", "not-required"].includes(requirement.state) &&
+      !sources.some((source) =>
+        requiredEvidenceTypes[requirement.category].includes(source?.type),
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_installation_requirement",
+          `installation.requirements.${index}`,
+          "Verified and not-required installation constraints need category-relevant evidence.",
+        ),
+      );
+    }
+  }
+  const unsafeOperation =
+    /\b(?:excavat(?:e|ion)|dig|rewire|wire|hardwire|repair|disassembl|bypass|structural\s+work|pressuri[sz]ed\s+plumb|dose|chemical\s+treat|algaecide|herbicide|pesticide|saniti[sz]er|medicat(?:e|ion)|stock(?:ing)?|release)\b/iu;
+  const qualifiedCalendarAuthorities = new Set([
+    "manufacturer",
+    "government",
+    "laboratory",
+    "university-extension",
+    "qualified-contractor",
+    "aquatic-specialist",
+    "veterinarian",
+  ]);
+  const highRisk = ["emergency", "high", "qualified-specialist"].includes(
+    value.riskAssessment.level,
+  );
+  for (const [index, item] of value.operationsCalendar.entries()) {
+    const sources = item.sourceRefs.map((reference) => evidenceById.get(reference));
+    const installedComponents = item.componentRefs.every(
+      (reference) =>
+        value.components.find((component) => component.id === reference)?.state === "installed",
+    );
+    if (
+      Date.parse(item.windowStart) > Date.parse(item.windowEnd) ||
+      !installedComponents ||
+      !sources.some((source) => qualifiedCalendarAuthorities.has(source?.authority)) ||
+      unsafeOperation.test(item.activity) ||
+      (highRisk && item.executor === "resident")
+    ) {
+      findings.push(
+        finding(
+          "unsafe_or_unsupported_operation",
+          `operationsCalendar.${index}`,
+          "Operations require installed components, qualified evidence, ordered windows, and no high-risk, repair, treatment, stocking, or release instructions.",
+        ),
+      );
+    }
+  }
+  if (
+    (value.riskAssessment.risks.includes("none") &&
+      (value.riskAssessment.risks.length !== 1 ||
+        value.riskAssessment.level !== "low-risk" ||
+        value.riskAssessment.action !== "bounded-resident-operation")) ||
+    (highRisk && value.riskAssessment.action === "bounded-resident-operation")
+  ) {
+    findings.push(
+      finding(
+        "unsafe_risk_assessment",
+        "riskAssessment",
+        "High-risk pond states must suppress resident operations, while a no-risk state must be explicitly low-risk and bounded.",
+      ),
+    );
+  }
+  for (const [index, item] of value.waterQuality.entries()) {
+    const measurement = evidenceById.get(item.evidenceRef);
+    const thresholds = item.thresholdRefs.map((reference) => evidenceById.get(reference));
+    if (
+      measurement?.type !== "water-measurement" &&
+      measurement?.type !== "laboratory-result"
+    ) {
+      findings.push(
+        finding(
+          "unsupported_water_measurement",
+          `waterQuality.${index}.evidenceRef`,
+          "Water-quality values require direct measurement or laboratory evidence.",
+        ),
+      );
+    }
+    if (
+      item.status !== "unknown" &&
+      !thresholds.some((source) =>
+        ["government", "laboratory", "university-extension", "aquatic-specialist", "veterinarian"].includes(
+          source?.authority,
+        ),
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_water_conclusion",
+          `waterQuality.${index}.status`,
+          "Within-range and outside-range conclusions require a qualified threshold source.",
+        ),
+      );
+    }
+  }
+  const habitatHandoffs = {
+    "aquatic-plant": ["green-thumb", "aquatic-specialist", "regulator"],
+    fish: ["pet-care", "aquatic-specialist", "veterinarian", "regulator"],
+    amphibian: ["aquatic-specialist", "veterinarian", "regulator"],
+    wildlife: ["aquatic-specialist", "veterinarian", "regulator"],
+    other: ["aquatic-specialist", "veterinarian", "regulator"],
+  };
+  for (const [index, item] of value.habitat.entries()) {
+    const sources = item.evidenceRefs.map((reference) => evidenceById.get(reference));
+    const qualifiedIdentity = sources.some(
+      (source) =>
+        source?.type === "species-record" &&
+        ["government", "university-extension", "aquatic-specialist", "veterinarian"].includes(
+          source.authority,
+        ),
+    );
+    if (
+      (item.identityState === "qualified-confirmed" && !qualifiedIdentity) ||
+      (["concern-observed", "escalated"].includes(item.observationState) &&
+        !habitatHandoffs[item.kind].includes(item.handoff)) ||
+      (item.observationState === "escalated" && item.handoff === "none")
+    ) {
+      findings.push(
+        finding(
+          "unsafe_habitat_handoff",
+          `habitat.${index}`,
+          "Species identity and plant, fish, wildlife, invasive, or protected-species concerns must remain qualified and route to the correct owner system.",
+        ),
+      );
+    }
+  }
+  const incidentHandoffs = {
+    "equipment-fault": ["home-repair"],
+    leak: ["home-repair", "qualified-plumber"],
+    "electrical-warning": ["qualified-electrician", "emergency-services"],
+    "structural-concern": ["home-repair"],
+    "water-quality-exceedance": ["aquatic-specialist", "veterinarian"],
+    "fish-health": ["pet-care", "veterinarian"],
+    "plant-concern": ["green-thumb", "aquatic-specialist"],
+    "environmental-discharge": ["regulator", "emergency-services"],
+    other: ["aquatic-specialist", "regulator"],
+  };
+  for (const [index, item] of value.incidents.entries()) {
+    if (
+      item.state !== "resolved" &&
+      !incidentHandoffs[item.kind].includes(item.handoff)
+    ) {
+      findings.push(
+        finding(
+          "unsafe_incident_handoff",
+          `incidents.${index}`,
+          "Open pond incidents must route faults, plants, fish health, electrical hazards, water quality, and discharge to the correct owner system.",
+        ),
+      );
+    }
+  }
+  for (const [index, provider] of value.providers.entries()) {
+    const source = evidenceById.get(provider.sourceRef);
+    if (
+      source?.type !== "provider-info" ||
+      source.authority !== "service-provider" ||
+      provider.qualificationState === "unverified"
+    ) {
+      findings.push(
+        finding(
+          "unsupported_provider",
+          `providers.${index}`,
+          "Pond provider options require provider-controlled evidence and resident or source verification.",
+        ),
+      );
+    }
+  }
+  const appointment = value.appointment;
+  const hasPlan = Boolean(appointment.plan);
+  const hasApproval = Boolean(appointment.approval);
+  const hasIntegration = Boolean(appointment.bookingIntegration);
+  const hasReceipt = Boolean(appointment.receipt);
+  if (
+    (["options-ready", "awaiting-approval", "approved", "booked"].includes(appointment.state) &&
+      !hasPlan) ||
+    (["approved", "booked"].includes(appointment.state) && !hasApproval) ||
+    (appointment.state === "booked" && (!hasIntegration || !hasReceipt)) ||
+    (appointment.state !== "booked" && (hasIntegration || hasReceipt)) ||
+    (!["approved", "booked"].includes(appointment.state) && hasApproval) ||
+    (appointment.state === "not-requested" && hasPlan) ||
+    (appointment.state === "blocked" && !appointment.blockedReason)
+  ) {
+    findings.push(
+      finding(
+        "incoherent_appointment_state",
+        "appointment",
+        "Appointment plan, approval, integration, receipt, and blocked reason must match the declared state.",
+      ),
+    );
+  }
+  if (appointment.plan) {
+    findings.push(
+      ...referenceFindings(
+        [appointment.plan.providerRef],
+        providers,
+        "appointment.plan.providerRef",
+        "Provider reference",
+      ),
+    );
+    const provider = value.providers.find(
+      (item) => item.id === appointment.plan.providerRef,
+    );
+    if (
+      !provider ||
+      provider.qualificationState === "unverified" ||
+      provider.specialty !== appointment.plan.specialty ||
+      appointment.plan.maxDeposit > appointment.plan.maxCost
+    ) {
+      findings.push(
+        finding(
+          "unsupported_appointment",
+          "appointment.plan",
+          "Appointments require a verified matching specialist and a deposit within the approved cost ceiling.",
+        ),
+      );
+    }
+  }
+  const planDigest = appointment.plan
+    ? `sha256:${createHash("sha256").update(canonicalJson(appointment.plan)).digest("hex")}`
+    : undefined;
+  if (["approved", "booked"].includes(appointment.state) && appointment.approval) {
+    if (
+      appointment.approval.planDigest !== planDigest ||
+      canonicalJson(appointment.approval.resident) !== canonicalJson(value.resident)
+    ) {
+      findings.push(
+        finding(
+          "appointment_approval_mismatch",
+          "appointment.approval",
+          "Resident approval must bind the exact appointment plan.",
+        ),
+      );
+    }
+  }
+  if (
+    appointment.state === "booked" &&
+    appointment.plan &&
+    appointment.approval &&
+    appointment.bookingIntegration &&
+    appointment.receipt
+  ) {
+    const integrationEvidence = evidenceById.get(
+      appointment.bookingIntegration.approvalEvidenceRef,
+    );
+    const receiptEvidence = evidenceById.get(appointment.receipt.evidenceRef);
+    if (
+      appointment.receipt.planDigest !== planDigest ||
+      appointment.receipt.integrationId !== appointment.bookingIntegration.id ||
+      appointment.receipt.providerRef !== appointment.plan.providerRef ||
+      appointment.bookingIntegration.providerRef !== appointment.plan.providerRef ||
+      !appointment.receipt.confirmationRef.startsWith(
+        `provider://${appointment.plan.providerRef}/`,
+      ) ||
+      integrationEvidence?.type !== "integration-approval" ||
+      integrationEvidence.authority !== "resident-supplied" ||
+      integrationEvidence.reference !== appointment.bookingIntegration.approvalRef ||
+      receiptEvidence?.type !== "provider-receipt" ||
+      receiptEvidence.authority !== "service-provider" ||
+      receiptEvidence.reference !== appointment.receipt.confirmationRef ||
+      receiptEvidence.capturedAt !== appointment.receipt.bookedAt ||
+      Date.parse(integrationEvidence.capturedAt) > Date.parse(appointment.receipt.bookedAt) ||
+      Date.parse(appointment.receipt.bookedAt) >= Date.parse(appointment.plan.startsAt) ||
+      canonicalJson(appointment.bookingIntegration.configuredBy) !==
+        canonicalJson(value.resident)
+    ) {
+      findings.push(
+        finding(
+          "booking_receipt_mismatch",
+          "appointment.receipt",
+          "The approved integration and provider receipt must bind the exact resident-approved plan.",
+        ),
+      );
+    }
+    if (Date.parse(appointment.receipt.bookedAt) < Date.parse(appointment.approval.approvedAt)) {
+      findings.push(
+        finding(
+          "booking_predates_approval",
+          "appointment.receipt.bookedAt",
+          "A pond-service booking cannot predate resident approval.",
+        ),
+      );
+    }
+  }
+  if (
+    canonicalJson(value.handoff.resident) !== canonicalJson(value.resident) ||
+    value.resident.id === "pond-water-feature-coordinator" ||
+    (value.site.workAuthority === "unverified" &&
+      (value.handoff.state !== "blocked" ||
+        !["not-requested", "blocked"].includes(appointment.state)))
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.resident",
+        "Site work, treatment, disclosure, payment, and appointment authority must remain with a verified resident.",
+      ),
+    );
+  }
+  return findings;
+}
+
 function petCareFindings(value) {
   const evidenceIds = value.evidence.map((item) => item.id);
   const evidence = new Set(evidenceIds);
@@ -2824,6 +3261,7 @@ const validators = {
   "home-repair-coordinator": homeRepairFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
   "pet-care-coordinator": petCareFindings,
+  "pond-water-feature-coordinator": pondWaterFeatureFindings,
   "project-manager": projectFindings,
   "product-manager": productFindings,
   "public-safety-monitor": publicSafetyFindings,

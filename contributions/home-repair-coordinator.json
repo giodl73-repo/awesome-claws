@@ -99,6 +99,11 @@
         "difference": "Vehicle Service governs roadworthiness and technician service for an identified vehicle; this proposal governs household hazard isolation, resident or landlord work authority, restoration before re-energization, and escalation across building trades."
       },
       {
+        "id": "pond-water-feature-coordinator",
+        "overlap": "Both classify electrical, plumbing, structural, uncontrolled-water, and resident-work hazards; preserve equipment evidence; and prepare qualified specialist appointments.",
+        "difference": "Pond and Water Feature owns installation readiness and normal seasonal operation of one coupled recirculating-water system and aquatic habitat. Home Repair starts with an equipment, electrical, plumbing, liner, structural, or leak fault and owns hazard isolation, bounded troubleshooting, repair, restoration, and verification."
+      },
+      {
         "id": "facilities-operations-coordinator",
         "overlap": "Both separate observations from diagnosis, prioritize safety, and prepare maintenance and specialist handoffs.",
         "difference": "Facilities Operations manages approved site portfolios without directing repairs; this proposal supports one resident through hazard screening, bounded reversible DIY work, verification, and an exact specialist appointment."

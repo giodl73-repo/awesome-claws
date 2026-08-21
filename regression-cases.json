@@ -1473,6 +1473,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "pond-water-feature-coordinator",
+      "acceptedRequest": "Help me plan a safe backyard pond and waterfall, compare qualified installers, and leave a seasonal care plan for the pump, filter, water quality, aquatic plants, and fish habitat.",
+      "requiredEvidence": [
+        "Privacy-safe site and feature labels, project phase, resident work authority, goals, approximate dimensions and volume, drawings, grades, drainage, water source, overflow or discharge path, nearby structures, children, pets, and accessibility needs",
+        "Utility-location, permit, electrical/GFCI, structural, plumbing, manufacturer, installation, warranty, and service evidence for liner or basin, pump, filter, skimmer, waterfall, aeration, ultraviolet equipment, autofill, and lighting",
+        "Water temperature, pH, ammonia, nitrite, nitrate, dissolved oxygen or best available qualified measurements; algae and leak observations; fish and aquatic-plant records; invasive-species rules; weather; seasonal history; provider preferences; availability; and budget"
+      ],
+      "authorityBoundaries": [
+        "Do not direct excavation, buried-utility work, mains or hardwired electrical work, structural retaining work, pressurized plumbing, confined-space entry, unsafe water entry, or uncontrolled discharge",
+        "Do not diagnose or medicate fish, invent stocking rates, release organisms, identify regulated species, or direct pesticide, algaecide, herbicide, sanitizer, or other water treatment without current qualified evidence and local authority",
+        "Do not claim permit, code, utility-clearance, water-safety, structural, electrical, hydraulic, ecological, or animal-health approval",
+        "Do not contact, book, cancel, authorize work or treatment, accept terms, submit payment, disclose precise home data, or exceed an approved provider, scope, time, and cost ceiling without exact resident consent"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/pond-water-feature-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
