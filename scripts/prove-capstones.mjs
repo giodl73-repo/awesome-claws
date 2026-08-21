@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { execFile, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdtemp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -20,7 +21,21 @@ const capstones = [
   "case-continuity-coordinator",
   "delegation-coordinator",
   "household-steward",
+  "work-chief-of-staff",
 ];
+
+function canonicalJson(value) {
+  if (Array.isArray(value)) {
+    return `[${value.map(canonicalJson).join(",")}]`;
+  }
+  if (value && typeof value === "object") {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
 
 async function readFixture(id, name) {
   return JSON.parse(
@@ -298,6 +313,143 @@ async function proveHousehold(runtimeRoot, evidenceRoot) {
   return evidence;
 }
 
+async function proveWorkChiefOfStaff(runtimeRoot, evidenceRoot) {
+  const id = "work-chief-of-staff";
+  const fixture = await readFixture(id, "operating-portfolio");
+  const validate = await validator(id, "operating-portfolio");
+  const sourceRoot = join(runtimeRoot, "work-portfolio-sources");
+  await mkdir(sourceRoot, { recursive: true });
+  const workerInputs = [];
+  for (const assignment of fixture.assignments) {
+    const sourceRef = assignment.sourceArtifactRefs[0];
+    const sourcePath = join(sourceRoot, `${sourceRef}.txt`);
+    const expectedMarker = `confidentiality-bounded-source:${sourceRef}`;
+    await writeFile(sourcePath, `${expectedMarker}\n`);
+    const inputPath = join(runtimeRoot, `${assignment.id}.json`);
+    await writeFile(
+      inputPath,
+      `${JSON.stringify({
+        id: assignment.id,
+        sourceArtifactRefs: assignment.sourceArtifactRefs,
+        sourcePath,
+        expectedMarker,
+        result: fixture.results.find((item) => item.id === assignment.resultRef),
+      })}\n`,
+    );
+    workerInputs.push(inputPath);
+  }
+
+  const workerResults = await Promise.all(
+    workerInputs.map((inputPath) => runWorker(["work", inputPath])),
+  );
+  const portfolio = structuredClone(fixture);
+  portfolio.assignments = portfolio.assignments.map((assignment, index) => ({
+    ...assignment,
+    workerSessionRef: `process:${workerResults[index].pid}`,
+  }));
+  portfolio.results = workerResults.map(({ pid, ...result }) => ({
+    ...result,
+    workerSessionRef: `process:${pid}`,
+  }));
+  validate(portfolio, "Parallel multi-leader operating portfolio");
+
+  const broadened = structuredClone(portfolio);
+  broadened.assignments[0].sourceArtifactRefs.push("artifact-finance");
+  assertRejected(id, broadened, "unsafe_worker_assignment");
+  const confidentialLeak = structuredClone(portfolio);
+  confidentialLeak.views[0].sourceArtifactRefs.push("artifact-finance");
+  assertRejected(id, confidentialLeak, "work_portfolio_view_confidentiality_leak");
+  const falseConsensus = structuredClone(portfolio);
+  falseConsensus.commitment.state = "approved";
+  falseConsensus.commitment.approvals = [
+    {
+      principalRef: "principal-ceo",
+      planDigest: `sha256:${"0".repeat(64)}`,
+      approvedAt: "2026-08-21T17:30:00Z",
+    },
+  ];
+  assertRejected(id, falseConsensus, "work_commitment_approval_mismatch");
+
+  const completed = structuredClone(portfolio);
+  completed.workstreams.find(
+    (item) => item.id === completed.commitment.plan.workstreamRef,
+  ).state = "ready";
+  completed.workstreams.find(
+    (item) => item.id === completed.commitment.plan.workstreamRef,
+  ).blockedReasons = [];
+  completed.conflicts = completed.conflicts.filter(
+    (item) => !item.workstreamRefs.includes(completed.commitment.plan.workstreamRef),
+  );
+  completed.commitment.plan.effectiveAt = "2026-08-21T17:35:00Z";
+  const planDigest = `sha256:${createHash("sha256")
+    .update(canonicalJson(completed.commitment.plan))
+    .digest("hex")}`;
+  completed.commitment = {
+    ...completed.commitment,
+    state: "completed",
+    approvals: [
+      {
+        principalRef: "principal-ceo",
+        planDigest,
+        approvedAt: "2026-08-21T17:30:00Z",
+      },
+      {
+        principalRef: "principal-product",
+        planDigest,
+        approvedAt: "2026-08-21T17:31:00Z",
+      },
+    ],
+    integration: {
+      id: "approved-integration-roadmap",
+      systemRef: "roadmap-system",
+      approvalRef: "controlled://integrations/roadmap-system",
+      approvalEvidenceRef: "ev-integration",
+      configuredByRef: "principal-product",
+    },
+    receipt: {
+      planDigest,
+      integrationId: "approved-integration-roadmap",
+      systemRef: "roadmap-system",
+      confirmationRef: "system://roadmap-system/commitment-1",
+      evidenceRef: "ev-receipt",
+      completedAt: "2026-08-21T17:40:00Z",
+    },
+  };
+  completed.evidence.push(
+    {
+      id: "ev-integration",
+      type: "integration-approval",
+      authority: "approved-integration",
+      capturedAt: "2026-08-21T17:20:00Z",
+      reference: "controlled://integrations/roadmap-system",
+    },
+    {
+      id: "ev-receipt",
+      type: "system-receipt",
+      authority: "controlled-system",
+      capturedAt: "2026-08-21T17:40:00Z",
+      reference: "system://roadmap-system/commitment-1",
+    },
+  );
+  validate(completed, "Completed multi-principal work commitment");
+
+  const evidence = {
+    status: "passed",
+    principalCount: portfolio.principals.length,
+    workerSessionRefs: portfolio.assignments.map((item) => item.workerSessionRef),
+    restrictedArtifactCount: portfolio.sourceArtifacts.filter(
+      (item) => item.confidentiality !== "portfolio-shared",
+    ).length,
+    openConflictKinds: portfolio.conflicts.map((item) => item.kind),
+    broadenedScope: "rejected",
+    confidentialViewLeak: "rejected",
+    singleLeaderFalseConsensus: "rejected",
+    completedJointCommitment: "accepted",
+  };
+  await writeFile(join(evidenceRoot, `${id}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
+  return evidence;
+}
+
 export async function proveCapstones(options = {}) {
   const evidenceRoot = resolve(
     options.evidenceRoot ??
@@ -312,6 +464,7 @@ export async function proveCapstones(options = {}) {
       "case-continuity-coordinator": await proveContinuity(runtimeRoot, evidenceRoot),
       "delegation-coordinator": await proveDelegation(runtimeRoot, evidenceRoot),
       "household-steward": await proveHousehold(runtimeRoot, evidenceRoot),
+      "work-chief-of-staff": await proveWorkChiefOfStaff(runtimeRoot, evidenceRoot),
     };
     const summary = {
       schemaVersion: "awesomeClaws.capstoneRuntimeProof.v1",
@@ -323,6 +476,7 @@ export async function proveCapstones(options = {}) {
         continuity: "durable checkpoint resumed by a distinct Node process",
         delegation: "parallel bounded worker processes with provenance and conflict preservation",
         household: "parallel privacy-bounded specialist workers across independent household principals, conflicts, and joint approval",
+        workChiefOfStaff: "parallel confidentiality-bounded specialist workers across independent leaders, portfolio conflicts, and joint commitment approval",
       },
       results,
     };

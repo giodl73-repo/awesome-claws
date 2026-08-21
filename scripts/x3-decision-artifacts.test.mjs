@@ -71,6 +71,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "work-chief-of-staff",
+    schema: "../claws/work-chief-of-staff/schemas/operating-portfolio.schema.json",
+    fixture: "../claws/work-chief-of-staff/fixtures/operating-portfolio.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "model-evaluation-adjudicator",
     schema: "../claws/model-evaluation-adjudicator/schemas/model-evaluation.schema.json",
     fixture: "../claws/model-evaluation-adjudicator/fixtures/model-evaluation.example.json",
@@ -717,6 +723,457 @@ test("household steward keeps shared and private views separate", () => {
   assert.equal(isValid("household-steward", missingPrivateView), false);
 });
 
+test("work chief of staff preserves independent leader authority", () => {
+  const agentOwned = structuredClone(cases.get("work-chief-of-staff").fixture);
+  agentOwned.principals[0].id = "work-chief-of-staff";
+  agentOwned.handoff.accountablePrincipalRefs[0] = "work-chief-of-staff";
+  assert.equal(isValid("work-chief-of-staff", agentOwned), false);
+
+  const falseConsensus = structuredClone(cases.get("work-chief-of-staff").fixture);
+  falseConsensus.commitment.state = "approved";
+  falseConsensus.commitment.approvals = [
+    {
+      principalRef: "principal-ceo",
+      planDigest: `sha256:${"0".repeat(64)}`,
+      approvedAt: "2026-08-21T17:30:00Z",
+    },
+  ];
+  assert.equal(isValid("work-chief-of-staff", falseConsensus), false);
+
+  const borrowedAuthority = structuredClone(
+    cases.get("work-chief-of-staff").fixture,
+  );
+  borrowedAuthority.principals.find(
+    (principal) => principal.id === "principal-product",
+  ).authorityEvidenceRefs = ["ev-ceo"];
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", borrowedAuthority).some(
+      (finding) => finding.code === "unsupported_work_principal_authority",
+    ),
+  );
+
+  const selfAuthorized = structuredClone(cases.get("work-chief-of-staff").fixture);
+  selfAuthorized.approvalPolicies[0].requiredPrincipalRefs = ["principal-ceo"];
+  const selfAuthorizedDigest = `sha256:${createHash("sha256")
+    .update(canonicalJson(selfAuthorized.commitment.plan))
+    .digest("hex")}`;
+  selfAuthorized.commitment.state = "approved";
+  selfAuthorized.commitment.approvals = [
+    {
+      principalRef: "principal-ceo",
+      planDigest: selfAuthorizedDigest,
+      approvedAt: "2026-08-21T17:30:00Z",
+    },
+  ];
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", selfAuthorized).some(
+      (finding) => finding.code === "work_commitment_approval_mismatch",
+    ),
+  );
+
+  const borrowedPolicyAuthority = structuredClone(
+    cases.get("work-chief-of-staff").fixture,
+  );
+  borrowedPolicyAuthority.approvalPolicies[0].authorityEvidenceRefs = [
+    "ev-engineering",
+  ];
+  assert.ok(
+    validateArtifactSemantics(
+      "work-chief-of-staff",
+      borrowedPolicyAuthority,
+    ).some((finding) => finding.code === "unsupported_work_approval_policy"),
+  );
+});
+
+test("work chief of staff bounds specialist worker scope and provenance", () => {
+  const broadened = structuredClone(cases.get("work-chief-of-staff").fixture);
+  broadened.assignments[0].sourceArtifactRefs.push("artifact-finance");
+  assert.equal(isValid("work-chief-of-staff", broadened), false);
+
+  const mismatchedSession = structuredClone(cases.get("work-chief-of-staff").fixture);
+  mismatchedSession.results[0].workerSessionRef = "agent:unrelated:99";
+  assert.equal(isValid("work-chief-of-staff", mismatchedSession), false);
+
+  const droppedBoundary = structuredClone(cases.get("work-chief-of-staff").fixture);
+  droppedBoundary.results[2].prohibitedActions = ["merge"];
+  assert.equal(isValid("work-chief-of-staff", droppedBoundary), false);
+
+  const prematureResult = structuredClone(cases.get("work-chief-of-staff").fixture);
+  prematureResult.assignments[0].state = "running";
+  prematureResult.assignments[0].resultRef = null;
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", prematureResult).some(
+      (finding) => finding.code === "work_result_scope_drift",
+    ),
+  );
+
+  const duplicateResult = structuredClone(cases.get("work-chief-of-staff").fixture);
+  duplicateResult.results.push({
+    ...structuredClone(duplicateResult.results[0]),
+    id: "result-product-duplicate",
+  });
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", duplicateResult).some(
+      (finding) => finding.code === "work_result_scope_drift",
+    ),
+  );
+
+  const futureResult = structuredClone(cases.get("work-chief-of-staff").fixture);
+  futureResult.results[0].producedAt = "2027-08-21T18:00:00Z";
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", futureResult).some(
+      (finding) => finding.code === "work_result_scope_drift",
+    ),
+  );
+});
+
+test("work chief of staff exposes portfolio conflicts instead of false alignment", () => {
+  const hiddenCapacity = structuredClone(cases.get("work-chief-of-staff").fixture);
+  hiddenCapacity.conflicts = hiddenCapacity.conflicts.filter(
+    (item) => item.id !== "conflict-engineering-capacity",
+  );
+  assert.equal(isValid("work-chief-of-staff", hiddenCapacity), false);
+
+  const falseReady = structuredClone(cases.get("work-chief-of-staff").fixture);
+  const release = falseReady.workstreams.find(
+    (item) => item.id === "workstream-release",
+  );
+  release.state = "ready";
+  release.blockedReasons = [];
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", falseReady).some(
+      (finding) => finding.code === "unsafe_workstream",
+    ),
+  );
+
+  const authorityConflictReady = structuredClone(
+    cases.get("work-chief-of-staff").fixture,
+  );
+  const product = authorityConflictReady.workstreams.find(
+    (item) => item.id === "workstream-product",
+  );
+  product.state = "ready";
+  product.blockedReasons = [];
+  assert.ok(
+    validateArtifactSemantics(
+      "work-chief-of-staff",
+      authorityConflictReady,
+    ).some((finding) => finding.code === "unsafe_workstream"),
+  );
+
+  const declaredCapacityConflict = structuredClone(
+    cases.get("work-chief-of-staff").fixture,
+  );
+  declaredCapacityConflict.capacityEnvelopes.find(
+    (item) => item.id === "capacity-engineering",
+  ).amount = 30;
+  const platform = declaredCapacityConflict.workstreams.find(
+    (item) => item.id === "workstream-platform",
+  );
+  platform.state = "ready";
+  platform.blockedReasons = [];
+  assert.ok(
+    validateArtifactSemantics(
+      "work-chief-of-staff",
+      declaredCapacityConflict,
+    ).some((finding) => finding.code === "unsafe_workstream"),
+  );
+
+  const falseHandoff = structuredClone(cases.get("work-chief-of-staff").fixture);
+  falseHandoff.handoff.state = "ready-for-leadership";
+  assert.equal(isValid("work-chief-of-staff", falseHandoff), false);
+
+  const missingDecisionOwner = structuredClone(cases.get("work-chief-of-staff").fixture);
+  missingDecisionOwner.decisionForums[1].requiredPrincipalRefs =
+    missingDecisionOwner.decisionForums[1].requiredPrincipalRefs.filter(
+      (reference) => reference !== "principal-engineering",
+    );
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", missingDecisionOwner).some(
+      (finding) => finding.code === "incoherent_decision_forum",
+    ),
+  );
+
+  const missingConflictPrincipal = structuredClone(
+    cases.get("work-chief-of-staff").fixture,
+  );
+  const capacityConflict = missingConflictPrincipal.conflicts.find(
+    (item) => item.id === "conflict-engineering-capacity",
+  );
+  capacityConflict.requiredDecisionRefs =
+    capacityConflict.requiredDecisionRefs.filter(
+      (reference) => reference !== "principal-product",
+    );
+  assert.ok(
+    validateArtifactSemantics(
+      "work-chief-of-staff",
+      missingConflictPrincipal,
+    ).some((finding) => finding.code === "incoherent_work_conflict"),
+  );
+});
+
+test("work chief of staff keeps leadership and restricted views separate", () => {
+  const restrictedLeak = structuredClone(cases.get("work-chief-of-staff").fixture);
+  restrictedLeak.views[0].sourceArtifactRefs.push("artifact-finance");
+  assert.equal(isValid("work-chief-of-staff", restrictedLeak), false);
+
+  const unauthorizedScope = structuredClone(cases.get("work-chief-of-staff").fixture);
+  const engineering = unauthorizedScope.principals.find(
+    (principal) => principal.id === "principal-engineering",
+  );
+  engineering.confidentialityScopes = engineering.confidentialityScopes.filter(
+    (scope) => scope !== "finance-confidential",
+  );
+  unauthorizedScope.sourceArtifacts
+    .find((artifact) => artifact.id === "artifact-finance")
+    .permittedPrincipalRefs.push("principal-engineering");
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", unauthorizedScope).some(
+      (finding) => finding.code === "unsupported_work_source_artifact",
+    ),
+  );
+
+  const derivedLeak = structuredClone(cases.get("work-chief-of-staff").fixture);
+  derivedLeak.views
+    .find((view) => view.id === "view-engineering")
+    .workstreamRefs.push("workstream-recruiting");
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", derivedLeak).some(
+      (finding) => finding.code === "work_portfolio_view_confidentiality_leak",
+    ),
+  );
+
+  const missingPrivateView = structuredClone(cases.get("work-chief-of-staff").fixture);
+  missingPrivateView.views = missingPrivateView.views.filter(
+    (view) => view.id !== "view-finance",
+  );
+  assert.equal(isValid("work-chief-of-staff", missingPrivateView), false);
+});
+
+test("work chief of staff blocks commitments over unresolved portfolio state", () => {
+  const blockedCommitment = structuredClone(cases.get("work-chief-of-staff").fixture);
+  const planDigest = `sha256:${createHash("sha256")
+    .update(canonicalJson(blockedCommitment.commitment.plan))
+    .digest("hex")}`;
+  blockedCommitment.commitment.state = "approved";
+  blockedCommitment.commitment.approvals = [
+    {
+      principalRef: "principal-ceo",
+      planDigest,
+      approvedAt: "2026-08-21T17:30:00Z",
+    },
+    {
+      principalRef: "principal-product",
+      planDigest,
+      approvedAt: "2026-08-21T17:31:00Z",
+    },
+  ];
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", blockedCommitment).some(
+      (finding) => finding.code === "work_commitment_approval_mismatch",
+    ),
+  );
+
+  const agentConfigured = structuredClone(blockedCommitment);
+  agentConfigured.commitment.state = "completed";
+  agentConfigured.evidence.push(
+    {
+      id: "ev-integration",
+      type: "integration-approval",
+      authority: "approved-integration",
+      capturedAt: "2026-08-21T17:20:00Z",
+      reference: "controlled://integrations/roadmap-system",
+    },
+    {
+      id: "ev-receipt",
+      type: "system-receipt",
+      authority: "controlled-system",
+      capturedAt: "2026-08-21T17:40:00Z",
+      reference: "system://roadmap-system/commitment-1",
+    },
+  );
+  agentConfigured.commitment.integration = {
+    id: "approved-integration-roadmap",
+    systemRef: "roadmap-system",
+    approvalRef: "controlled://integrations/roadmap-system",
+    approvalEvidenceRef: "ev-integration",
+    configuredByRef: "work-chief-of-staff",
+  };
+  agentConfigured.commitment.receipt = {
+    planDigest,
+    integrationId: "approved-integration-roadmap",
+    systemRef: "roadmap-system",
+    confirmationRef: "system://roadmap-system/commitment-1",
+    evidenceRef: "ev-receipt",
+    completedAt: "2026-08-21T17:40:00Z",
+  };
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", agentConfigured).some(
+      (finding) => finding.code === "work_commitment_receipt_mismatch",
+    ),
+  );
+
+  const retroactiveApproval = structuredClone(agentConfigured);
+  retroactiveApproval.commitment.integration.configuredByRef = "principal-product";
+  for (const approval of retroactiveApproval.commitment.approvals) {
+    approval.approvedAt = "2026-08-22T17:30:00Z";
+  }
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", retroactiveApproval).some(
+      (finding) => finding.code === "work_commitment_receipt_mismatch",
+    ),
+  );
+
+  const unauthorizedSpend = structuredClone(
+    cases.get("work-chief-of-staff").fixture,
+  );
+  unauthorizedSpend.commitment.plan.actionType = "approve-spend";
+  unauthorizedSpend.commitment.plan.affectedPrincipalRefs = [
+    "principal-product",
+  ];
+  unauthorizedSpend.approvalPolicies[0].actionTypes = ["approve-spend"];
+  unauthorizedSpend.approvalPolicies[0].requiredPrincipalRefs = [
+    "principal-product",
+  ];
+  const unauthorizedSpendDigest = `sha256:${createHash("sha256")
+    .update(canonicalJson(unauthorizedSpend.commitment.plan))
+    .digest("hex")}`;
+  unauthorizedSpend.commitment.state = "approved";
+  unauthorizedSpend.commitment.approvals = [
+    {
+      principalRef: "principal-product",
+      planDigest: unauthorizedSpendDigest,
+      approvedAt: "2026-08-21T17:30:00Z",
+    },
+  ];
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", unauthorizedSpend).some(
+      (finding) => finding.code === "work_commitment_approval_mismatch",
+    ),
+  );
+
+  const prematureReceipt = structuredClone(agentConfigured);
+  prematureReceipt.commitment.integration.configuredByRef = "principal-product";
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", prematureReceipt).some(
+      (finding) => finding.code === "work_commitment_receipt_mismatch",
+    ),
+  );
+});
+
+test("work chief of staff supports every advertised leadership source", () => {
+  for (const clawId of ["delegation-coordinator", "meeting-intelligence"]) {
+    const candidate = structuredClone(cases.get("work-chief-of-staff").fixture);
+    candidate.sourceArtifacts[0].clawId = clawId;
+    assert.equal(isValid("work-chief-of-staff", candidate), true, clawId);
+  }
+});
+
+test("work chief of staff preserves truthful decision forum chronology", () => {
+  const completed = structuredClone(cases.get("work-chief-of-staff").fixture);
+  completed.decisionForums[0].state = "completed";
+  completed.decisionForums[0].startsAt = "2026-08-20T17:00:00Z";
+  assert.equal(isValid("work-chief-of-staff", completed), true);
+
+  completed.decisionForums[0].startsAt = "2026-08-22T17:00:00Z";
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", completed).some(
+      (finding) => finding.code === "incoherent_decision_forum",
+    ),
+  );
+
+  const omitted = structuredClone(cases.get("work-chief-of-staff").fixture);
+  omitted.decisionForums[1].workstreamRefs =
+    omitted.decisionForums[1].workstreamRefs.filter(
+      (reference) => reference !== "workstream-release",
+    );
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", omitted).some(
+      (finding) => finding.code === "incoherent_decision_forum",
+    ),
+  );
+});
+
+test("work chief of staff binds evidence and capacity to the portfolio period", () => {
+  const futureEvidence = structuredClone(cases.get("work-chief-of-staff").fixture);
+  futureEvidence.evidence[0].capturedAt = "2027-08-21T15:00:00Z";
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", futureEvidence).some(
+      (finding) => finding.code === "future_work_evidence",
+    ),
+  );
+
+  const unrelatedCapacity = structuredClone(
+    cases.get("work-chief-of-staff").fixture,
+  );
+  const engineering = unrelatedCapacity.capacityEnvelopes.find(
+    (item) => item.id === "capacity-engineering",
+  );
+  engineering.periodStart = "2027-09-01";
+  engineering.periodEnd = "2027-09-30";
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", unrelatedCapacity).some(
+      (finding) => finding.code === "unsafe_workstream",
+    ),
+  );
+
+  const unauthorizedCapacity = structuredClone(
+    cases.get("work-chief-of-staff").fixture,
+  );
+  const unauthorizedEngineering = unauthorizedCapacity.capacityEnvelopes.find(
+    (item) => item.id === "capacity-engineering",
+  );
+  unauthorizedEngineering.approverRefs = ["principal-product"];
+  unauthorizedEngineering.evidenceRefs = ["ev-product"];
+  assert.ok(
+    validateArtifactSemantics(
+      "work-chief-of-staff",
+      unauthorizedCapacity,
+    ).some((finding) => finding.code === "invalid_capacity_period"),
+  );
+
+  const invalidHorizon = structuredClone(cases.get("work-chief-of-staff").fixture);
+  invalidHorizon.portfolio.periodStart = "2026-12-01";
+  invalidHorizon.portfolio.periodEnd = "2026-09-01";
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", invalidHorizon).some(
+      (finding) => finding.code === "invalid_portfolio_period",
+    ),
+  );
+
+  const futureApproval = structuredClone(cases.get("work-chief-of-staff").fixture);
+  const approvalDigest = `sha256:${createHash("sha256")
+    .update(canonicalJson(futureApproval.commitment.plan))
+    .digest("hex")}`;
+  futureApproval.commitment.approvals = [
+    {
+      principalRef: "principal-ceo",
+      planDigest: approvalDigest,
+      approvedAt: "2027-08-21T18:00:00Z",
+    },
+  ];
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", futureApproval).some(
+      (finding) => finding.code === "work_commitment_approval_mismatch",
+    ),
+  );
+
+  const falseCompletion = structuredClone(cases.get("work-chief-of-staff").fixture);
+  const productWorkstream = falseCompletion.workstreams.find(
+    (item) => item.id === "workstream-product",
+  );
+  productWorkstream.state = "completed";
+  productWorkstream.blockedReasons = [];
+  falseCompletion.conflicts = falseCompletion.conflicts.filter(
+    (item) => !item.workstreamRefs.includes(productWorkstream.id),
+  );
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", falseCompletion).some(
+      (finding) => finding.code === "unsafe_workstream",
+    ),
+  );
+});
+
 test("home repair rejects hazardous or unauthorized owner work", () => {
   const ownerLabels = structuredClone(cases.get("home-repair-coordinator").fixture);
   ownerLabels.home.reference = "primary-home";
@@ -1307,7 +1764,7 @@ test("pet care protects guardian appointment authority", () => {
 test("capstone profiles expose only their intended runtime dimensions", async () => {
   const manifests = new Map(
     await Promise.all(
-      ["change-control-operator", "case-continuity-coordinator", "delegation-coordinator", "household-steward"].map(
+      ["change-control-operator", "case-continuity-coordinator", "delegation-coordinator", "household-steward", "work-chief-of-staff"].map(
         async (id) => [id, await readFile(new URL(`../claws/${id}/profiles/openclaw.yml`, import.meta.url), "utf8")],
       ),
     ),
@@ -1320,5 +1777,8 @@ test("capstone profiles expose only their intended runtime dimensions", async ()
   assert.match(manifests.get("household-steward"), /sessions_spawn/u);
   assert.match(manifests.get("household-steward"), /agents_wait/u);
   assert.doesNotMatch(manifests.get("household-steward"), /\n\s+- exec\b/u);
+  assert.match(manifests.get("work-chief-of-staff"), /sessions_spawn/u);
+  assert.match(manifests.get("work-chief-of-staff"), /agents_wait/u);
+  assert.doesNotMatch(manifests.get("work-chief-of-staff"), /\n\s+- exec\b/u);
   assert.doesNotMatch(manifests.get("case-continuity-coordinator"), /sessions_spawn|exec|process/u);
 });

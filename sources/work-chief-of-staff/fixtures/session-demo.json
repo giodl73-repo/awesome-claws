@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "work-chief-of-staff",
+  "scenario": "Coordinate our next-quarter operating portfolio across product, engineering, finance, recruiting, sales, and release work. Keep the CEO, product lead, engineering lead, and finance lead as separate decision owners; surface capacity and dependency conflicts, but do not invent alignment or make commitments.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Coordinate our next-quarter operating portfolio across product, engineering, finance, recruiting, sales, and release work. Keep the CEO, product lead, engineering lead, and finance lead as separate decision owners; surface capacity and dependency conflicts, but do not invent alignment or make commitments."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/work-chief-of-staff-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Work chief of staff session handoff",
+    "summary": "A source-linked operating portfolio with separate leader authority and confidentiality scopes, cross-workstream dependencies, capacity conflicts, decision forums, audience-scoped views, and approval-blocked commitments.",
+    "output": "outputs/work-chief-of-staff-handoff.md",
+    "items": [
+      {
+        "title": "Principal, decision-right, confidentiality, delegation, and escalation matrix",
+        "summary": "Every portfolio item traces to a current specialist-Claw artifact or direct leadership evidence and preserves its status semantics, accountable owner, decision owner, and prohibited actions",
+        "tags": ["evidence", "reviewable"]
+      },
+      {
+        "title": "Source-linked specialist-Claw portfolio and cross-workstream dependency graph",
+        "summary": "Every principal and worker sees only authorized information and no assignment broadens source, scope, confidentiality, or decision authority",
+        "tags": ["evidence", "reviewable"]
+      },
+      {
+        "title": "Priority and outcome register, capacity envelope, resource-conflict register, and decision-forum calendar",
+        "summary": "Cross-workstream dependency, capacity, priority, timing, and authority conflicts remain explicit and block false aligned, ready, approved, or completed states",
+        "tags": ["evidence", "reviewable"]
+      },
+      {
+        "title": "Audience-scoped leadership briefs and unresolved decision packet",
+        "summary": "No leader, specialist Claw, worker, integration, or agent exceeds exact decision, confidentiality, delegation, budget, staffing, customer, roadmap, publication, release, or change authority",
+        "tags": ["evidence", "reviewable"]
+      },
+      {
+        "title": "Exact commitment plan, required-principal approvals, and controlled-system receipt or blocked handoff",
+        "summary": "Every commitment remains blocked until all exact approvals and controlled-system evidence exist",
+        "tags": ["handoff", "owner-visible"]
+      }
+    ]
+  }
+}

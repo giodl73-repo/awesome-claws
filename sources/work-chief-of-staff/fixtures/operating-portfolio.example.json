@@ -1,0 +1,545 @@
+{
+  "schemaVersion": "awesomeClaws.operatingPortfolio.v1",
+  "portfolio": {
+    "id": "portfolio-northstar",
+    "label": "northstar-quarter",
+    "timezone": "America/Los_Angeles",
+    "periodStart": "2026-09-01",
+    "periodEnd": "2026-11-30",
+    "asOf": "2026-08-21T18:00:00Z"
+  },
+  "principals": [
+    {
+      "id": "principal-ceo",
+      "label": "chief-executive",
+      "role": "chief-executive",
+      "decisionScopes": ["portfolio", "staffing", "external-communication", "publication"],
+      "confidentialityScopes": ["portfolio-shared", "leadership-confidential", "product-confidential", "engineering-confidential", "finance-confidential", "people-confidential", "sales-confidential", "security-confidential"],
+      "delegationScopes": ["evidence-review", "status-reconciliation", "dependency-analysis", "capacity-analysis"],
+      "authorityEvidenceRefs": ["ev-ceo", "ev-charter"]
+    },
+    {
+      "id": "principal-product",
+      "label": "product-lead",
+      "role": "product-lead",
+      "decisionScopes": ["product", "sales", "external-communication"],
+      "confidentialityScopes": ["portfolio-shared", "leadership-confidential", "product-confidential", "engineering-confidential", "sales-confidential"],
+      "delegationScopes": ["evidence-review", "status-reconciliation", "dependency-analysis"],
+      "authorityEvidenceRefs": ["ev-product", "ev-charter"]
+    },
+    {
+      "id": "principal-engineering",
+      "label": "engineering-lead",
+      "role": "engineering-lead",
+      "decisionScopes": ["engineering", "release", "change-control"],
+      "confidentialityScopes": ["portfolio-shared", "leadership-confidential", "product-confidential", "engineering-confidential", "security-confidential"],
+      "delegationScopes": ["evidence-review", "status-reconciliation", "dependency-analysis", "capacity-analysis"],
+      "authorityEvidenceRefs": ["ev-engineering", "ev-charter"]
+    },
+    {
+      "id": "principal-finance",
+      "label": "finance-lead",
+      "role": "finance-lead",
+      "decisionScopes": ["finance", "staffing"],
+      "confidentialityScopes": ["portfolio-shared", "leadership-confidential", "product-confidential", "finance-confidential", "people-confidential", "sales-confidential"],
+      "delegationScopes": ["evidence-review", "status-reconciliation", "capacity-analysis"],
+      "authorityEvidenceRefs": ["ev-finance", "ev-charter"]
+    }
+  ],
+  "evidence": [
+    { "id": "ev-ceo", "type": "principal-declaration", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:00:00Z", "reference": "evidence/ceo-declaration.md", "subjectPrincipalRef": "principal-ceo" },
+    { "id": "ev-product", "type": "principal-declaration", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:01:00Z", "reference": "evidence/product-lead-declaration.md", "subjectPrincipalRef": "principal-product" },
+    { "id": "ev-engineering", "type": "principal-declaration", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:02:00Z", "reference": "evidence/engineering-lead-declaration.md", "subjectPrincipalRef": "principal-engineering" },
+    { "id": "ev-finance", "type": "principal-declaration", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:03:00Z", "reference": "evidence/finance-lead-declaration.md", "subjectPrincipalRef": "principal-finance" },
+    { "id": "ev-charter", "type": "portfolio-charter", "authority": "jointly-supplied", "capturedAt": "2026-08-21T15:04:00Z", "reference": "evidence/quarterly-operating-charter.md", "authorizedPrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering", "principal-finance"] },
+    { "id": "ev-capacity-engineering", "type": "capacity-envelope", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:05:00Z", "reference": "evidence/engineering-capacity.json" },
+    { "id": "ev-capacity-product", "type": "capacity-envelope", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:06:00Z", "reference": "evidence/product-capacity.json" },
+    { "id": "ev-capacity-investment", "type": "capacity-envelope", "authority": "jointly-supplied", "capturedAt": "2026-08-21T15:07:00Z", "reference": "evidence/investment-envelope.json" },
+    { "id": "ev-forum", "type": "forum-charter", "authority": "jointly-supplied", "capturedAt": "2026-08-21T15:08:00Z", "reference": "evidence/operating-review-charter.md" }
+  ],
+  "sourceArtifacts": [
+    {
+      "id": "artifact-executive",
+      "clawId": "executive-assistant",
+      "artifactRef": "controlled://claws/executive/quarterly-priorities",
+      "artifactVersion": "v3",
+      "capturedAt": "2026-08-21T12:00:00Z",
+      "expiresAt": "2026-09-21T12:00:00Z",
+      "state": "current",
+      "accountableOwnerRef": "principal-ceo",
+      "decisionOwnerRef": "principal-ceo",
+      "statusSemantic": "decision-needed",
+      "prohibitedActions": ["speak-for-executive", "commit-resources", "send-communication"],
+      "confidentiality": "leadership-confidential",
+      "permittedPrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering", "principal-finance"],
+      "sharedSummary": "Quarterly priorities require a leadership tradeoff on shared engineering capacity."
+    },
+    {
+      "id": "artifact-project",
+      "clawId": "project-manager",
+      "artifactRef": "controlled://claws/project/platform-migration",
+      "artifactVersion": "v5",
+      "capturedAt": "2026-08-21T12:10:00Z",
+      "expiresAt": "2026-09-05T12:10:00Z",
+      "state": "current",
+      "accountableOwnerRef": "principal-engineering",
+      "decisionOwnerRef": "principal-engineering",
+      "statusSemantic": "at-risk",
+      "prohibitedActions": ["change-scope", "change-date", "claim-complete"],
+      "confidentiality": "portfolio-shared",
+      "permittedPrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering", "principal-finance"],
+      "sharedSummary": "The platform migration is at risk because its engineering allocation overlaps release hardening."
+    },
+    {
+      "id": "artifact-product",
+      "clawId": "product-manager",
+      "artifactRef": "controlled://claws/product/growth-decision",
+      "artifactVersion": "v4",
+      "capturedAt": "2026-08-21T12:20:00Z",
+      "expiresAt": "2026-09-10T12:20:00Z",
+      "state": "current",
+      "accountableOwnerRef": "principal-product",
+      "decisionOwnerRef": "principal-product",
+      "statusSemantic": "decision-needed",
+      "prohibitedActions": ["commit-roadmap", "set-pricing", "make-external-promise"],
+      "confidentiality": "product-confidential",
+      "permittedPrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering", "principal-finance"],
+      "sharedSummary": "The growth option needs product and portfolio decisions before roadmap commitment."
+    },
+    {
+      "id": "artifact-finance",
+      "clawId": "financial-analyst",
+      "artifactRef": "controlled://claws/finance/quarterly-scenarios",
+      "artifactVersion": "v2",
+      "capturedAt": "2026-08-21T12:30:00Z",
+      "expiresAt": "2026-09-01T12:30:00Z",
+      "state": "current",
+      "accountableOwnerRef": "principal-finance",
+      "decisionOwnerRef": "principal-finance",
+      "statusSemantic": "at-risk",
+      "prohibitedActions": ["execute-transaction", "approve-budget", "represent-approved-accounting"],
+      "confidentiality": "finance-confidential",
+      "permittedPrincipalRefs": ["principal-ceo", "principal-finance"],
+      "sharedSummary": "The combined recruiting and sales investment requests exceed the supplied envelope."
+    },
+    {
+      "id": "artifact-recruiting",
+      "clawId": "recruiting-coordinator",
+      "artifactRef": "controlled://claws/recruiting/platform-loop",
+      "artifactVersion": "v3",
+      "capturedAt": "2026-08-21T12:40:00Z",
+      "expiresAt": "2026-08-30T12:40:00Z",
+      "state": "current",
+      "accountableOwnerRef": "principal-finance",
+      "decisionOwnerRef": "principal-ceo",
+      "statusSemantic": "planned",
+      "prohibitedActions": ["rank-candidates", "approve-hiring", "send-candidate-communication"],
+      "confidentiality": "people-confidential",
+      "permittedPrincipalRefs": ["principal-ceo", "principal-finance"],
+      "sharedSummary": "A privacy-minimized staffing request is pending investment approval."
+    },
+    {
+      "id": "artifact-sales",
+      "clawId": "sales-operations",
+      "artifactRef": "controlled://claws/sales/enterprise-pipeline",
+      "artifactVersion": "v6",
+      "capturedAt": "2026-08-21T12:50:00Z",
+      "expiresAt": "2026-08-28T12:50:00Z",
+      "state": "current",
+      "accountableOwnerRef": "principal-product",
+      "decisionOwnerRef": "principal-product",
+      "statusSemantic": "at-risk",
+      "prohibitedActions": ["alter-forecast", "change-territory", "commit-customer"],
+      "confidentiality": "sales-confidential",
+      "permittedPrincipalRefs": ["principal-ceo", "principal-product", "principal-finance"],
+      "sharedSummary": "The enterprise pipeline assumes a roadmap item that is not committed."
+    },
+    {
+      "id": "artifact-release",
+      "clawId": "release-coordinator",
+      "artifactRef": "controlled://claws/release/autumn",
+      "artifactVersion": "v7",
+      "capturedAt": "2026-08-21T13:00:00Z",
+      "expiresAt": "2026-08-29T13:00:00Z",
+      "state": "current",
+      "accountableOwnerRef": "principal-engineering",
+      "decisionOwnerRef": "principal-engineering",
+      "statusSemantic": "blocked",
+      "prohibitedActions": ["merge", "tag", "publish", "post-communication"],
+      "confidentiality": "engineering-confidential",
+      "permittedPrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering"],
+      "sharedSummary": "Release hardening is blocked by the unresolved engineering capacity conflict."
+    },
+    {
+      "id": "artifact-change",
+      "clawId": "change-control-operator",
+      "artifactRef": "controlled://claws/change/platform-cutover",
+      "artifactVersion": "v2",
+      "capturedAt": "2026-08-21T13:10:00Z",
+      "expiresAt": "2026-08-29T13:10:00Z",
+      "state": "current",
+      "accountableOwnerRef": "principal-engineering",
+      "decisionOwnerRef": "principal-engineering",
+      "statusSemantic": "planned",
+      "prohibitedActions": ["execute-unapproved-plan", "reuse-stale-approval", "claim-success-without-verification"],
+      "confidentiality": "security-confidential",
+      "permittedPrincipalRefs": ["principal-ceo", "principal-engineering"],
+      "sharedSummary": "The cutover remains planning-only and retains its digest approval gate."
+    }
+  ],
+  "assignments": [
+    {
+      "id": "assignment-product",
+      "specialistClawId": "product-manager",
+      "sourceArtifactRefs": ["artifact-product"],
+      "permittedPrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering", "principal-finance"],
+      "scope": "Confirm the current option, status meaning, dependencies, and prohibited commitments without changing product scope.",
+      "workerSessionRef": "agent:product-manager:01",
+      "state": "completed",
+      "resultRef": "result-product",
+      "stopCondition": "Stop on roadmap change, customer promise, missing evidence, stale source, or broader confidential context."
+    },
+    {
+      "id": "assignment-finance",
+      "specialistClawId": "financial-analyst",
+      "sourceArtifactRefs": ["artifact-finance"],
+      "permittedPrincipalRefs": ["principal-ceo", "principal-finance"],
+      "scope": "Confirm the supplied investment-envelope variance without exposing model detail or approving spend.",
+      "workerSessionRef": "agent:financial-analyst:02",
+      "state": "completed",
+      "resultRef": "result-finance",
+      "stopCondition": "Stop on transaction, budget approval, accounting representation, stale source, or audience expansion."
+    },
+    {
+      "id": "assignment-release",
+      "specialistClawId": "release-coordinator",
+      "sourceArtifactRefs": ["artifact-release"],
+      "permittedPrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering"],
+      "scope": "Confirm the release blocker and required owner decision without merging, tagging, publishing, or communicating.",
+      "workerSessionRef": "agent:release-coordinator:03",
+      "state": "completed",
+      "resultRef": "result-release",
+      "stopCondition": "Stop on repository mutation, communication, evidence drift, broader source need, or release approval."
+    }
+  ],
+  "results": [
+    {
+      "id": "result-product",
+      "assignmentRef": "assignment-product",
+      "workerSessionRef": "agent:product-manager:01",
+      "sourceArtifactRefs": ["artifact-product"],
+      "decisionOwnerRef": "principal-product",
+      "statusSemantic": "decision-needed",
+      "prohibitedActions": ["commit-roadmap", "set-pricing", "make-external-promise"],
+      "summary": "The artifact supports an option review but no roadmap or customer commitment.",
+      "producedAt": "2026-08-21T17:00:00Z"
+    },
+    {
+      "id": "result-finance",
+      "assignmentRef": "assignment-finance",
+      "workerSessionRef": "agent:financial-analyst:02",
+      "sourceArtifactRefs": ["artifact-finance"],
+      "decisionOwnerRef": "principal-finance",
+      "statusSemantic": "at-risk",
+      "prohibitedActions": ["execute-transaction", "approve-budget", "represent-approved-accounting"],
+      "summary": "The combined requests exceed the current investment envelope; approval remains with named principals.",
+      "producedAt": "2026-08-21T17:01:00Z"
+    },
+    {
+      "id": "result-release",
+      "assignmentRef": "assignment-release",
+      "workerSessionRef": "agent:release-coordinator:03",
+      "sourceArtifactRefs": ["artifact-release"],
+      "decisionOwnerRef": "principal-engineering",
+      "statusSemantic": "blocked",
+      "prohibitedActions": ["merge", "tag", "publish", "post-communication"],
+      "summary": "Release hardening remains blocked; no repository or communication action is authorized.",
+      "producedAt": "2026-08-21T17:02:00Z"
+    }
+  ],
+  "capacityEnvelopes": [
+    {
+      "id": "capacity-engineering",
+      "function": "engineering",
+      "amount": 20,
+      "unit": "person-weeks",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "approverRefs": ["principal-engineering"],
+      "evidenceRefs": ["ev-capacity-engineering"]
+    },
+    {
+      "id": "capacity-product",
+      "function": "product",
+      "amount": 12,
+      "unit": "person-weeks",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "approverRefs": ["principal-product"],
+      "evidenceRefs": ["ev-capacity-product"]
+    },
+    {
+      "id": "capacity-investment",
+      "function": "finance",
+      "amount": 500000,
+      "unit": "budget-usd",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-11-30",
+      "approverRefs": ["principal-ceo", "principal-finance"],
+      "evidenceRefs": ["ev-capacity-investment"]
+    }
+  ],
+  "approvalPolicies": [
+    {
+      "id": "policy-roadmap",
+      "actionTypes": ["commit-roadmap"],
+      "requiredPrincipalRefs": ["principal-ceo", "principal-product"],
+      "authorityEvidenceRefs": ["ev-charter"],
+      "mode": "all-required",
+      "delegationAllowed": false
+    },
+    {
+      "id": "policy-release",
+      "actionTypes": ["merge", "release", "execute-change"],
+      "requiredPrincipalRefs": ["principal-engineering"],
+      "authorityEvidenceRefs": ["ev-charter"],
+      "mode": "all-required",
+      "delegationAllowed": false
+    }
+  ],
+  "decisionForums": [
+    {
+      "id": "forum-operating-review",
+      "title": "Quarterly operating review",
+      "startsAt": "2026-08-25T17:00:00Z",
+      "requiredPrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering", "principal-finance"],
+      "workstreamRefs": ["workstream-product", "workstream-platform", "workstream-recruiting", "workstream-sales"],
+      "purpose": "Resolve portfolio priority, capacity, dependency, and investment conflicts without altering specialist decisions.",
+      "state": "needs-decision"
+    },
+    {
+      "id": "forum-release-review",
+      "title": "Release readiness review",
+      "startsAt": "2026-08-27T17:00:00Z",
+      "requiredPrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering"],
+      "workstreamRefs": ["workstream-release", "workstream-change"],
+      "purpose": "Review source-owned readiness and dependencies without approving a release or change.",
+      "state": "scheduled"
+    }
+  ],
+  "workstreams": [
+    {
+      "id": "workstream-product",
+      "domain": "product",
+      "title": "Growth option decision",
+      "outcome": "Select a validated option or preserve no-commitment state.",
+      "sourceArtifactRef": "artifact-product",
+      "accountableOwnerRef": "principal-product",
+      "decisionOwnerRef": "principal-product",
+      "priority": "disputed",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "capacityDemands": [{ "capacityRef": "capacity-product", "amount": 8 }],
+      "dependencyRefs": [],
+      "forumRef": "forum-operating-review",
+      "state": "blocked",
+      "blockedReasons": ["roadmap decision and portfolio priority remain unresolved"]
+    },
+    {
+      "id": "workstream-platform",
+      "domain": "engineering",
+      "title": "Platform migration",
+      "outcome": "Complete the accepted migration milestones without hiding capacity risk.",
+      "sourceArtifactRef": "artifact-project",
+      "accountableOwnerRef": "principal-engineering",
+      "decisionOwnerRef": "principal-engineering",
+      "priority": "high",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "capacityDemands": [{ "capacityRef": "capacity-engineering", "amount": 14 }],
+      "dependencyRefs": [],
+      "forumRef": "forum-operating-review",
+      "state": "blocked",
+      "blockedReasons": ["shared engineering capacity is overallocated"]
+    },
+    {
+      "id": "workstream-recruiting",
+      "domain": "recruiting",
+      "title": "Platform staffing loop",
+      "outcome": "Prepare the authorized interview loop without making a hiring decision.",
+      "sourceArtifactRef": "artifact-recruiting",
+      "accountableOwnerRef": "principal-finance",
+      "decisionOwnerRef": "principal-ceo",
+      "priority": "medium",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-10-15",
+      "capacityDemands": [{ "capacityRef": "capacity-investment", "amount": 300000 }],
+      "dependencyRefs": ["workstream-platform"],
+      "forumRef": "forum-operating-review",
+      "state": "blocked",
+      "blockedReasons": ["investment envelope and platform priority remain unresolved"]
+    },
+    {
+      "id": "workstream-sales",
+      "domain": "sales",
+      "title": "Enterprise pipeline plan",
+      "outcome": "Reconcile pipeline assumptions without altering forecast or committing customers.",
+      "sourceArtifactRef": "artifact-sales",
+      "accountableOwnerRef": "principal-product",
+      "decisionOwnerRef": "principal-product",
+      "priority": "high",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-11-30",
+      "capacityDemands": [{ "capacityRef": "capacity-investment", "amount": 250000 }],
+      "dependencyRefs": ["workstream-product"],
+      "forumRef": "forum-operating-review",
+      "state": "blocked",
+      "blockedReasons": ["roadmap dependency and investment envelope remain unresolved"]
+    },
+    {
+      "id": "workstream-release",
+      "domain": "release",
+      "title": "Autumn release hardening",
+      "outcome": "Produce source-owned release readiness evidence without release execution.",
+      "sourceArtifactRef": "artifact-release",
+      "accountableOwnerRef": "principal-engineering",
+      "decisionOwnerRef": "principal-engineering",
+      "priority": "critical",
+      "periodStart": "2026-09-15",
+      "periodEnd": "2026-09-30",
+      "capacityDemands": [{ "capacityRef": "capacity-engineering", "amount": 10 }],
+      "dependencyRefs": ["workstream-product", "workstream-platform"],
+      "forumRef": "forum-release-review",
+      "state": "blocked",
+      "blockedReasons": ["engineering capacity and upstream dependencies remain unresolved"]
+    },
+    {
+      "id": "workstream-change",
+      "domain": "change-control",
+      "title": "Platform cutover plan",
+      "outcome": "Prepare a digest-bound cutover plan without execution.",
+      "sourceArtifactRef": "artifact-change",
+      "accountableOwnerRef": "principal-engineering",
+      "decisionOwnerRef": "principal-engineering",
+      "priority": "medium",
+      "periodStart": "2026-10-01",
+      "periodEnd": "2026-10-15",
+      "capacityDemands": [],
+      "dependencyRefs": ["workstream-platform", "workstream-release"],
+      "forumRef": "forum-release-review",
+      "state": "blocked",
+      "blockedReasons": ["migration and release dependencies are incomplete"]
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-engineering-capacity",
+      "kind": "capacity",
+      "workstreamRefs": ["workstream-platform", "workstream-release"],
+      "principalRefs": ["principal-ceo", "principal-product", "principal-engineering"],
+      "state": "open",
+      "requiredDecisionRefs": ["principal-ceo", "principal-product", "principal-engineering"],
+      "summary": "Platform migration and release hardening request 24 person-weeks from a 20 person-week envelope."
+    },
+    {
+      "id": "conflict-investment-capacity",
+      "kind": "capacity",
+      "workstreamRefs": ["workstream-recruiting", "workstream-sales"],
+      "principalRefs": ["principal-ceo", "principal-product", "principal-finance"],
+      "state": "open",
+      "requiredDecisionRefs": ["principal-ceo", "principal-product", "principal-finance"],
+      "summary": "Recruiting and sales requests total 550000 USD against a 500000 USD envelope."
+    },
+    {
+      "id": "conflict-roadmap-authority",
+      "kind": "authority",
+      "workstreamRefs": ["workstream-product", "workstream-sales"],
+      "principalRefs": ["principal-ceo", "principal-product"],
+      "state": "open",
+      "requiredDecisionRefs": ["principal-ceo", "principal-product"],
+      "summary": "Sales assumptions cannot become a roadmap or customer commitment without both required decisions."
+    }
+  ],
+  "views": [
+    {
+      "id": "view-leadership",
+      "kind": "leadership-shared",
+      "audiencePrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering", "principal-finance"],
+      "workstreamRefs": ["workstream-platform"],
+      "sourceArtifactRefs": ["artifact-project"],
+      "excludedFields": ["personnel-details", "compensation-details", "customer-details", "legal-details", "security-details", "financial-model-details", "roadmap-detail", "acquisition-detail", "credentials", "restricted-artifacts"]
+    },
+    {
+      "id": "view-ceo",
+      "kind": "principal-private",
+      "audiencePrincipalRefs": ["principal-ceo"],
+      "workstreamRefs": ["workstream-product", "workstream-platform", "workstream-recruiting", "workstream-sales", "workstream-release", "workstream-change"],
+      "sourceArtifactRefs": ["artifact-executive", "artifact-project", "artifact-product", "artifact-finance", "artifact-recruiting", "artifact-sales", "artifact-release", "artifact-change"],
+      "excludedFields": ["credentials"]
+    },
+    {
+      "id": "view-product",
+      "kind": "principal-private",
+      "audiencePrincipalRefs": ["principal-product"],
+      "workstreamRefs": ["workstream-product", "workstream-platform", "workstream-sales", "workstream-release"],
+      "sourceArtifactRefs": ["artifact-executive", "artifact-project", "artifact-product", "artifact-sales", "artifact-release"],
+      "excludedFields": ["finance-model-detail", "people-detail", "security-detail", "credentials"]
+    },
+    {
+      "id": "view-engineering",
+      "kind": "principal-private",
+      "audiencePrincipalRefs": ["principal-engineering"],
+      "workstreamRefs": ["workstream-product", "workstream-platform", "workstream-release", "workstream-change"],
+      "sourceArtifactRefs": ["artifact-executive", "artifact-project", "artifact-product", "artifact-release", "artifact-change"],
+      "excludedFields": ["finance-model-detail", "people-detail", "customer-detail", "credentials"]
+    },
+    {
+      "id": "view-finance",
+      "kind": "principal-private",
+      "audiencePrincipalRefs": ["principal-finance"],
+      "workstreamRefs": ["workstream-product", "workstream-platform", "workstream-recruiting", "workstream-sales"],
+      "sourceArtifactRefs": ["artifact-executive", "artifact-project", "artifact-product", "artifact-finance", "artifact-recruiting", "artifact-sales"],
+      "excludedFields": ["security-detail", "credentials"]
+    },
+    {
+      "id": "view-release-product",
+      "kind": "decision-forum",
+      "audiencePrincipalRefs": ["principal-product"],
+      "workstreamRefs": ["workstream-release"],
+      "sourceArtifactRefs": ["artifact-release"],
+      "excludedFields": ["finance-model-detail", "people-detail", "customer-detail", "security-detail", "credentials"]
+    },
+    {
+      "id": "view-release-security",
+      "kind": "decision-forum",
+      "audiencePrincipalRefs": ["principal-ceo", "principal-engineering"],
+      "workstreamRefs": ["workstream-release", "workstream-change"],
+      "sourceArtifactRefs": ["artifact-release", "artifact-change"],
+      "excludedFields": ["finance-model-detail", "people-detail", "customer-detail", "credentials"]
+    }
+  ],
+  "commitment": {
+    "state": "awaiting-approval",
+    "plan": {
+      "workstreamRef": "workstream-product",
+      "systemRef": "roadmap-system",
+      "targetRef": "initiative-growth-option",
+      "actionType": "commit-roadmap",
+      "scope": "Commit only the bounded growth validation milestone; no dates, pricing, or customer promises.",
+      "effectiveAt": "2026-09-01T16:00:00Z",
+      "capacityAmount": 8,
+      "capacityUnit": "person-weeks",
+      "maxCost": 0,
+      "currency": "USD",
+      "dataDisclosure": ["milestone-label", "bounded-scope", "decision-owner"],
+      "affectedPrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering"],
+      "approvalPolicyRef": "policy-roadmap"
+    },
+    "approvals": []
+  },
+  "handoff": {
+    "state": "blocked",
+    "accountablePrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering", "principal-finance"],
+    "prohibitedActions": ["act-as-executive", "infer-decision-rights", "override-leader-conflict", "replace-specialist-decision", "expose-restricted-data", "authorize-for-another-principal", "perform-commitment", "expand-worker-scope"]
+  }
+}
