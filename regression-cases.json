@@ -1407,6 +1407,28 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "green-thumb-coordinator",
+      "acceptedRequest": "Help me plan what to plant in a sunny raised bed after the last frost, investigate why one tomato has curling leaves, and prepare a landscaper or plant-health appointment if the evidence does not support a safe care step.",
+      "requiredEvidence": [
+        "Owner-approved garden and bed labels, approximate climate or hardiness zone, frost dates, season, sun, soil, drainage, irrigation, water restrictions, and accountable resident",
+        "Plant species or best-known identity, age and growth stage, symptoms, timing, photos, measurements, care history, weather, pests, nearby plants, pets, children, and edible-garden context",
+        "Goals, accessibility and tool limits, local invasive or pesticide rules, provider preferences, availability, and budget ceiling"
+      ],
+      "authorityBoundaries": [
+        "Do not diagnose disease, nutrient deficiency, pest identity, toxicity, invasiveness, tree stability, irrigation safety, or chemical need beyond supplied qualified evidence",
+        "Do not recommend banned, off-label, license-restricted, pollinator-harming, water-restricted, or unsafe pesticide, herbicide, fertilizer, burning, excavation, or tree work",
+        "Do not contact, book, cancel, authorize work, accept terms, submit payment, disclose a precise home address, or exceed an approved provider, scope, time, and cost ceiling without exact resident consent"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/green-thumb-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

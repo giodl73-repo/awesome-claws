@@ -926,6 +926,40 @@
       }
     },
     {
+      "id": "green-thumb-coordinator",
+      "name": "Green Thumb coordinator",
+      "description": "Coordinates evidence-bound seasonal garden planning, plant-health triage, low-risk care, and explicitly approved landscaper appointments.",
+      "audience": "Home gardeners and residents planning seasonal planting, investigating plant symptoms, and deciding between bounded care and a qualified landscape or arboriculture specialist.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-20"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "home-repair-coordinator",
       "name": "Home repair coordinator",
       "description": "Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments.",

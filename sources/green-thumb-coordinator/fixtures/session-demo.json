@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "green-thumb-coordinator",
+  "scenario": "Help me plan what to plant in a sunny raised bed after the last frost, investigate why one tomato has curling leaves, and prepare a landscaper or plant-health appointment if the evidence does not support a safe care step.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Help me plan what to plant in a sunny raised bed after the last frost, investigate why one tomato has curling leaves, and prepare a landscaper or plant-health appointment if the evidence does not support a safe care step."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/green-thumb-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Green Thumb coordinator session handoff",
+    "summary": "A zone- and site-bound planting calendar, source-linked symptom record, uncertainty-preserving low-risk care plan, monitoring checkpoints, and an exact specialist appointment that remains blocked until resident approval.",
+    "output": "outputs/green-thumb-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Garden site, season, and evidence ledger",
+        "summary": "Every season, site condition, observation, hypothesis, recommendation, source, intervention, and outcome remains distinguishable",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Plant observation, hypothesis, risk, and escalation assessment",
+        "summary": "Toxic, invasive, regulated-treatment, hazardous-tree, excavation, electrical, and uncertain high-risk conditions are escalated rather than converted into resident instructions",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Seasonal planting and maintenance calendar",
+        "summary": "Every planting or care step names its climate and site assumptions, prerequisites, stop conditions, monitoring, and verification",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Bounded care plan with prerequisites, stop conditions, monitoring, and verification",
+        "summary": "No external contact, appointment, work authorization, payment, treatment, or precise-home-data disclosure exceeded exact resident consent",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Specialist comparison, appointment plan, and booking receipt or blocked handoff",
+        "summary": "Every season, site condition, observation, hypothesis, recommendation, source, intervention, and outcome remains distinguishable",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -47,6 +47,12 @@ const definitions = [
     decisionField: "decisionState",
   },
   {
+    id: "green-thumb-coordinator",
+    schema: "../claws/green-thumb-coordinator/schemas/garden-plan.schema.json",
+    fixture: "../claws/green-thumb-coordinator/fixtures/garden-plan.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "home-repair-coordinator",
     schema: "../claws/home-repair-coordinator/schemas/home-repair.schema.json",
     fixture: "../claws/home-repair-coordinator/fixtures/home-repair.example.json",
@@ -652,6 +658,170 @@ test("home repair rejects address leakage and unapproved appointments", () => {
     bookedAt: "2026-08-23T17:00:00Z",
   };
   assert.equal(isValid("home-repair-coordinator", prematureReceipt), false);
+});
+
+test("green thumb rejects unsafe or unsupported resident care", () => {
+  const hazardous = structuredClone(cases.get("green-thumb-coordinator").fixture);
+  hazardous.riskAssessment.level = "high";
+  hazardous.riskAssessment.risks = ["regulated-pesticide"];
+  hazardous.riskAssessment.action = "qualified-specialist";
+  assert.equal(isValid("green-thumb-coordinator", hazardous), false);
+
+  hazardous.carePlan.eligibility = "specialist-only";
+  hazardous.carePlan.steps = [];
+  hazardous.calendar[0].activity = "Prune the unstable tree limb above the bed.";
+  assert.equal(isValid("green-thumb-coordinator", hazardous), false);
+
+  const contradictoryRisk = structuredClone(
+    cases.get("green-thumb-coordinator").fixture,
+  );
+  contradictoryRisk.riskAssessment.level = "uncertain";
+  contradictoryRisk.carePlan.eligibility = "specialist-only";
+  contradictoryRisk.carePlan.steps = [];
+  assert.equal(isValid("green-thumb-coordinator", contradictoryRisk), false);
+
+  contradictoryRisk.riskAssessment.level = "high";
+  contradictoryRisk.riskAssessment.action = "qualified-specialist";
+  contradictoryRisk.calendar[0].executor = "resident";
+  assert.equal(isValid("green-thumb-coordinator", contradictoryRisk), false);
+
+  const understatedRisk = structuredClone(cases.get("green-thumb-coordinator").fixture);
+  understatedRisk.riskAssessment.risks = ["regulated-pesticide"];
+  understatedRisk.carePlan.eligibility = "specialist-only";
+  understatedRisk.carePlan.steps = [];
+  understatedRisk.calendar[0].executor = "qualified-specialist";
+  assert.equal(isValid("green-thumb-coordinator", understatedRisk), false);
+
+  const unauthorized = structuredClone(cases.get("green-thumb-coordinator").fixture);
+  unauthorized.site.workAuthority = "landlord-required";
+  assert.equal(isValid("green-thumb-coordinator", unauthorized), false);
+
+  const unsupportedProduct = structuredClone(
+    cases.get("green-thumb-coordinator").fixture,
+  );
+  unsupportedProduct.carePlan.steps[0].class = "label-approved-product";
+  unsupportedProduct.carePlan.steps[0].productUse = {
+    productName: "Restricted pesticide",
+    target: "tomato",
+    labelRef: "ev-extension",
+    localRuleRefs: ["ev-zone"],
+    licenseRequired: true,
+    applicationLimits: "Unknown",
+  };
+  assert.equal(isValid("green-thumb-coordinator", unsupportedProduct), false);
+});
+
+test("green thumb binds seasonal evidence and monitored outcomes", () => {
+  const unsupportedCalendar = structuredClone(
+    cases.get("green-thumb-coordinator").fixture,
+  );
+  unsupportedCalendar.calendar[0].siteEvidenceRefs = ["ev-report"];
+  assert.equal(isValid("green-thumb-coordinator", unsupportedCalendar), false);
+
+  const reversedWindow = structuredClone(cases.get("green-thumb-coordinator").fixture);
+  reversedWindow.calendar[0].windowEnd = "2026-03-01";
+  assert.equal(isValid("green-thumb-coordinator", reversedWindow), false);
+
+  const unsupportedDiagnosis = structuredClone(
+    cases.get("green-thumb-coordinator").fixture,
+  );
+  unsupportedDiagnosis.hypotheses[0].status = "specialist-confirmed";
+  assert.equal(isValid("green-thumb-coordinator", unsupportedDiagnosis), false);
+
+  const unsupportedOutcome = structuredClone(
+    cases.get("green-thumb-coordinator").fixture,
+  );
+  unsupportedOutcome.monitoring[0].state = "passed";
+  unsupportedOutcome.monitoring[0].evidenceRefs = ["ev-extension"];
+  unsupportedOutcome.monitoring[0].observedAt = "2026-03-25T16:00:00Z";
+  assert.equal(isValid("green-thumb-coordinator", unsupportedOutcome), false);
+
+  const staleOutcome = structuredClone(cases.get("green-thumb-coordinator").fixture);
+  staleOutcome.monitoring[0].state = "passed";
+  staleOutcome.monitoring[0].evidenceRefs = ["ev-photo"];
+  staleOutcome.monitoring[0].observedAt = "2026-03-18T16:10:00Z";
+  assert.equal(isValid("green-thumb-coordinator", staleOutcome), false);
+
+  const unsupportedFailure = structuredClone(
+    cases.get("green-thumb-coordinator").fixture,
+  );
+  unsupportedFailure.monitoring[0].state = "failed";
+  assert.equal(isValid("green-thumb-coordinator", unsupportedFailure), false);
+});
+
+test("green thumb protects resident and appointment authority", () => {
+  const addressLeak = structuredClone(cases.get("green-thumb-coordinator").fixture);
+  addressLeak.observations[0].description += " Service address: 742 Evergreen Terrace.";
+  assert.equal(isValid("green-thumb-coordinator", addressLeak), false);
+
+  const circleAddressLeak = structuredClone(
+    cases.get("green-thumb-coordinator").fixture,
+  );
+  circleAddressLeak.observations[0].description += " Service address: 123 Main Circle.";
+  assert.equal(isValid("green-thumb-coordinator", circleAddressLeak), false);
+
+  const unsupportedProvider = structuredClone(
+    cases.get("green-thumb-coordinator").fixture,
+  );
+  unsupportedProvider.providers[0].sourceRef = "ev-extension";
+  assert.equal(isValid("green-thumb-coordinator", unsupportedProvider), false);
+
+  const invalidSpecialty = structuredClone(
+    cases.get("green-thumb-coordinator").fixture,
+  );
+  invalidSpecialty.appointment.plan.specialty = "certified-arborist";
+  assert.equal(isValid("green-thumb-coordinator", invalidSpecialty), false);
+
+  const lateBooking = structuredClone(cases.get("green-thumb-coordinator").fixture);
+  const planDigest = `sha256:${createHash("sha256")
+    .update(canonicalJson(lateBooking.appointment.plan))
+    .digest("hex")}`;
+  lateBooking.evidence.push(
+    {
+      id: "ev-integration",
+      type: "integration-approval",
+      authority: "resident-supplied",
+      capturedAt: "2026-04-02T16:00:00Z",
+      reference: "controlled://green-thumb/integration-approval",
+    },
+    {
+      id: "ev-receipt",
+      type: "provider-receipt",
+      authority: "service-provider",
+      capturedAt: "2026-04-01T16:00:00Z",
+      reference: "provider://provider-plant-health/confirmation-1",
+    },
+  );
+  lateBooking.appointment = {
+    ...lateBooking.appointment,
+    state: "booked",
+    approval: {
+      resident: lateBooking.resident,
+      planDigest,
+      approvedAt: "2026-03-20T16:00:00Z",
+    },
+    bookingIntegration: {
+      id: "approved-integration-plant-health",
+      providerRef: "provider-plant-health",
+      approvalRef: "controlled://green-thumb/integration-approval",
+      approvalEvidenceRef: "ev-integration",
+      configuredBy: lateBooking.resident,
+    },
+    receipt: {
+      planDigest,
+      integrationId: "approved-integration-plant-health",
+      providerRef: "provider-plant-health",
+      confirmationRef: "provider://provider-plant-health/confirmation-1",
+      evidenceRef: "ev-receipt",
+      bookedAt: "2026-04-01T16:00:00Z",
+    },
+  };
+  assert.equal(isValid("green-thumb-coordinator", lateBooking), false);
+
+  const agentOwned = structuredClone(cases.get("green-thumb-coordinator").fixture);
+  agentOwned.resident.id = "green-thumb-coordinator";
+  agentOwned.handoff.resident.id = "green-thumb-coordinator";
+  assert.equal(isValid("green-thumb-coordinator", agentOwned), false);
 });
 
 test("capstone profiles expose only their intended runtime dimensions", async () => {

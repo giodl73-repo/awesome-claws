@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "awesomeClaws.greenThumb.v1",
+  "site": {
+    "reference": "home-garden",
+    "locationLabel": "sunny-raised-bed",
+    "climateZone": "USDA 8b",
+    "season": "spring",
+    "lastFrostDate": "2026-03-15",
+    "sun": "full-sun",
+    "soil": "raised-bed-mix",
+    "drainage": "well-drained",
+    "irrigation": "drip",
+    "workAuthority": "verified-owner"
+  },
+  "resident": { "id": "resident-1", "kind": "human", "role": "resident gardener" },
+  "evidence": [
+    { "id": "ev-report", "type": "resident-report", "authority": "resident-supplied", "capturedAt": "2026-03-18T16:00:00Z", "reference": "evidence/resident-report.md" },
+    { "id": "ev-zone", "type": "zone-record", "authority": "government", "capturedAt": "2026-03-18T16:05:00Z", "reference": "evidence/zone-and-frost.md" },
+    { "id": "ev-photo", "type": "photo", "authority": "resident-supplied", "capturedAt": "2026-03-18T16:10:00Z", "reference": "evidence/tomato-leaves.jpg" },
+    { "id": "ev-extension", "type": "species-record", "authority": "university-extension", "capturedAt": "2026-03-18T16:15:00Z", "reference": "evidence/tomato-care.md" },
+    { "id": "ev-provider", "type": "provider-info", "authority": "service-provider", "capturedAt": "2026-03-18T16:20:00Z", "reference": "evidence/plant-health-provider.md" }
+  ],
+  "observations": [
+    { "id": "obs-curl", "subject": "plant", "description": "One young tomato has upward leaf curl without visible spots, insects, stem damage, or neighboring plant symptoms.", "evidenceRefs": ["ev-report", "ev-photo"] }
+  ],
+  "riskAssessment": {
+    "level": "low-risk",
+    "risks": ["none"],
+    "action": "bounded-resident-care",
+    "rationale": "No poison exposure, toxic or invasive identity, regulated treatment, hazardous tree, excavation, electrical, or pressurized-irrigation evidence is present.",
+    "evidenceRefs": ["ev-report", "ev-photo", "ev-extension"]
+  },
+  "hypotheses": [
+    { "id": "hyp-transplant", "statement": "Recent transplant and weather stress may contribute, but the cause remains unconfirmed.", "status": "unconfirmed", "observationRefs": ["obs-curl"], "evidenceRefs": ["ev-report", "ev-photo", "ev-extension"] }
+  ],
+  "calendar": [
+    {
+      "id": "cal-planting",
+      "windowStart": "2026-03-22",
+      "windowEnd": "2026-04-15",
+      "activity": "Plant frost-tender starts only after the local frost window and forecast support overnight temperatures above the supplied threshold.",
+      "executor": "resident",
+      "siteEvidenceRefs": ["ev-zone", "ev-extension"],
+      "conditions": ["Soil is workable and not waterlogged", "Seven-day forecast has no frost warning"],
+      "stopConditions": ["A frost advisory is issued", "The bed becomes waterlogged"]
+    }
+  ],
+  "carePlan": {
+    "eligibility": "resident-care",
+    "steps": [
+      {
+        "id": "step-monitor",
+        "instruction": "Keep the current watering schedule unchanged for seven days and photograph the same leaves every two days; do not apply fertilizer or pesticide.",
+        "class": "observe-only",
+        "observationRefs": ["obs-curl"],
+        "hypothesisRefs": ["hyp-transplant"],
+        "evidenceRefs": ["ev-extension"],
+        "prerequisites": ["No poison exposure or rapid whole-plant decline is present", "Soil is not waterlogged"],
+        "stopConditions": ["Symptoms spread rapidly", "Stem collapse, exposure symptoms, or neighboring plant damage appears"],
+        "monitoringRef": "mon-curl",
+        "productUse": null
+      }
+    ]
+  },
+  "monitoring": [
+    {
+      "id": "mon-curl",
+      "measure": "Compare leaf curl, new growth, spread, and soil moisture using repeat photographs.",
+      "dueAt": "2026-03-25T16:00:00Z",
+      "observedAt": null,
+      "state": "planned",
+      "evidenceRefs": [],
+      "successCriteria": "Curl does not spread and new growth appears normal.",
+      "escalationCriteria": "Symptoms spread, plant vigor declines, or a toxic, invasive, pest, or disease concern emerges."
+    }
+  ],
+  "providers": [
+    { "id": "provider-plant-health", "name": "Example Plant Health Service", "specialty": "plant-health-specialist", "sourceRef": "ev-provider", "qualificationState": "resident-verified" }
+  ],
+  "appointment": {
+    "state": "awaiting-approval",
+    "plan": {
+      "providerRef": "provider-plant-health",
+      "specialty": "plant-health-specialist",
+      "serviceScope": "On-site tomato symptom assessment only; no treatment authorization.",
+      "startsAt": "2026-03-28T17:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "maxCost": 150,
+      "currency": "USD",
+      "maxDeposit": 0,
+      "cancellationTerms": "No fee when cancelled at least 24 hours before the appointment.",
+      "dataDisclosure": ["approximate climate zone", "raised-bed label", "tomato photographs", "resident callback number"]
+    }
+  },
+  "handoff": {
+    "state": "ready-for-resident",
+    "resident": { "id": "resident-1", "kind": "human", "role": "resident gardener" },
+    "prohibitedActions": ["perform-high-risk-work", "claim-professional-diagnosis", "authorize-treatment-or-service", "submit-payment", "exceed-appointment-scope"]
+  }
+}

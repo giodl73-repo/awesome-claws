@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "site", "resident", "evidence", "observations", "riskAssessment", "hypotheses", "calendar", "carePlan", "monitoring", "providers", "appointment", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.greenThumb.v1" },
+    "site": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference", "locationLabel", "climateZone", "season", "lastFrostDate", "sun", "soil", "drainage", "irrigation", "workAuthority"],
+      "properties": {
+        "reference": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 32 },
+        "locationLabel": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 32 },
+        "climateZone": { "type": "string", "minLength": 1 },
+        "season": { "enum": ["winter", "spring", "summer", "autumn"] },
+        "lastFrostDate": { "type": ["string", "null"], "format": "date" },
+        "sun": { "enum": ["full-sun", "part-sun", "part-shade", "full-shade", "mixed", "unknown"] },
+        "soil": { "enum": ["sand", "loam", "clay", "silt", "raised-bed-mix", "container-mix", "mixed", "unknown"] },
+        "drainage": { "enum": ["rapid", "well-drained", "slow", "waterlogged", "unknown"] },
+        "irrigation": { "enum": ["manual", "drip", "sprinkler", "rain-only", "mixed", "unknown"] },
+        "workAuthority": { "enum": ["verified-owner", "verified-tenant-permission", "landlord-required", "association-required", "unverified"] }
+      }
+    },
+    "resident": { "$ref": "#/$defs/accountableOwner" },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "authority", "capturedAt", "reference"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "type": { "enum": ["resident-report", "photo", "measurement", "weather-record", "zone-record", "soil-test", "water-rule", "treatment-rule", "product-label", "species-record", "specialist-finding", "provider-info", "integration-approval", "provider-receipt"] },
+          "authority": { "enum": ["resident-supplied", "government", "university-extension", "manufacturer", "laboratory", "service-provider", "qualified-specialist"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "subject", "description", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "subject": { "enum": ["site", "plant", "soil", "water", "weather", "pest", "disease", "other"] },
+          "description": { "type": "string", "minLength": 1 },
+          "evidenceRefs": { "$ref": "#/$defs/nonemptyRefs" }
+        }
+      }
+    },
+    "riskAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "risks", "action", "rationale", "evidenceRefs"],
+      "properties": {
+        "level": { "enum": ["emergency", "high", "qualified-specialist", "low-risk", "uncertain"] },
+        "risks": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["poison-exposure", "toxic-species", "invasive-species", "regulated-pesticide", "off-label-treatment", "hazardous-tree", "excavation", "mains-electricity", "pressurized-irrigation", "protected-species", "none"] }
+        },
+        "action": { "enum": ["poison-control", "emergency-services", "qualified-specialist", "bounded-resident-care"] },
+        "rationale": { "type": "string", "minLength": 1 },
+        "evidenceRefs": { "$ref": "#/$defs/nonemptyRefs" }
+      }
+    },
+    "hypotheses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "statement", "status", "observationRefs", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "statement": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["unconfirmed", "specialist-confirmed", "rejected"] },
+          "observationRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "evidenceRefs": { "$ref": "#/$defs/nonemptyRefs" }
+        }
+      }
+    },
+    "calendar": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "windowStart", "windowEnd", "activity", "executor", "siteEvidenceRefs", "conditions", "stopConditions"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "windowStart": { "type": "string", "format": "date" },
+          "windowEnd": { "type": "string", "format": "date" },
+          "activity": { "type": "string", "minLength": 1 },
+          "executor": { "enum": ["resident", "qualified-specialist", "none"] },
+          "siteEvidenceRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "conditions": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "stopConditions": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "carePlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligibility", "steps"],
+      "properties": {
+        "eligibility": { "enum": ["resident-care", "specialist-only", "blocked"] },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "instruction", "class", "observationRefs", "hypothesisRefs", "evidenceRefs", "prerequisites", "stopConditions", "monitoringRef", "productUse"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "instruction": { "type": "string", "minLength": 1 },
+              "class": { "enum": ["observe-only", "cultural-care", "label-approved-product"] },
+              "observationRefs": { "$ref": "#/$defs/nonemptyRefs" },
+              "hypothesisRefs": { "$ref": "#/$defs/nonemptyRefs" },
+              "evidenceRefs": { "$ref": "#/$defs/nonemptyRefs" },
+              "prerequisites": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+              "stopConditions": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+              "monitoringRef": { "type": "string", "minLength": 1 }
+              ,
+              "productUse": {
+                "oneOf": [
+                  { "type": "null" },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["productName", "target", "labelRef", "localRuleRefs", "licenseRequired", "applicationLimits"],
+                    "properties": {
+                      "productName": { "type": "string", "minLength": 1 },
+                      "target": { "type": "string", "minLength": 1 },
+                      "labelRef": { "type": "string", "minLength": 1 },
+                      "localRuleRefs": { "$ref": "#/$defs/nonemptyRefs" },
+                      "licenseRequired": { "type": "boolean" },
+                      "applicationLimits": { "type": "string", "minLength": 1 }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "monitoring": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "measure", "dueAt", "observedAt", "state", "evidenceRefs", "successCriteria", "escalationCriteria"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "measure": { "type": "string", "minLength": 1 },
+          "dueAt": { "type": "string", "format": "date-time" },
+          "observedAt": { "type": ["string", "null"], "format": "date-time" },
+          "state": { "enum": ["planned", "passed", "failed", "blocked"] },
+          "evidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+          "successCriteria": { "type": "string", "minLength": 1 },
+          "escalationCriteria": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "providers": { "$ref": "#/$defs/providers" },
+    "appointment": { "$ref": "#/$defs/appointment" },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "resident", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-resident", "blocked"] },
+        "resident": { "$ref": "#/$defs/accountableOwner" },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": { "enum": ["perform-high-risk-work", "claim-professional-diagnosis", "authorize-treatment-or-service", "submit-payment", "exceed-appointment-scope"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "nonemptyRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "accountableOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "role"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["human", "team"] },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    },
+    "providers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "specialty", "sourceRef", "qualificationState"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "specialty": { "enum": ["landscaper", "certified-arborist", "irrigation-specialist", "plant-health-specialist", "licensed-pesticide-applicator", "poison-control", "emergency-service"] },
+          "sourceRef": { "type": "string", "minLength": 1 },
+          "qualificationState": { "enum": ["resident-verified", "unverified"] }
+        }
+      }
+    },
+    "appointmentPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["providerRef", "specialty", "serviceScope", "startsAt", "timezone", "maxCost", "currency", "maxDeposit", "cancellationTerms", "dataDisclosure"],
+      "properties": {
+        "providerRef": { "type": "string", "minLength": 1 },
+        "specialty": { "type": "string", "minLength": 1 },
+        "serviceScope": { "type": "string", "minLength": 1 },
+        "startsAt": { "type": "string", "format": "date-time" },
+        "timezone": { "type": "string", "minLength": 1 },
+        "maxCost": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "maxDeposit": { "type": "number", "minimum": 0 },
+        "cancellationTerms": { "type": "string", "minLength": 1 },
+        "dataDisclosure": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+      }
+    },
+    "appointment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "properties": {
+        "state": { "enum": ["not-requested", "options-ready", "awaiting-approval", "approved", "booked", "blocked"] },
+        "plan": { "$ref": "#/$defs/appointmentPlan" },
+        "approval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["resident", "planDigest", "approvedAt"],
+          "properties": {
+            "resident": { "$ref": "#/$defs/accountableOwner" },
+            "planDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+            "approvedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "bookingIntegration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "providerRef", "approvalRef", "approvalEvidenceRef", "configuredBy"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^approved-integration-[a-z0-9-]+$" },
+            "providerRef": { "type": "string", "minLength": 1 },
+            "approvalRef": { "type": "string", "pattern": "^controlled://[a-z0-9/._-]+$" },
+            "approvalEvidenceRef": { "type": "string", "minLength": 1 },
+            "configuredBy": { "$ref": "#/$defs/accountableOwner" }
+          }
+        },
+        "receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["planDigest", "integrationId", "providerRef", "confirmationRef", "evidenceRef", "bookedAt"],
+          "properties": {
+            "planDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+            "integrationId": { "type": "string", "pattern": "^approved-integration-[a-z0-9-]+$" },
+            "providerRef": { "type": "string", "minLength": 1 },
+            "confirmationRef": { "type": "string", "pattern": "^provider://[a-z0-9/._-]+$" },
+            "evidenceRef": { "type": "string", "minLength": 1 },
+            "bookedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "blockedReason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
