@@ -65,6 +65,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "household-steward",
+    schema: "../claws/household-steward/schemas/household-operations.schema.json",
+    fixture: "../claws/household-steward/fixtures/household-operations.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "model-evaluation-adjudicator",
     schema: "../claws/model-evaluation-adjudicator/schemas/model-evaluation.schema.json",
     fixture: "../claws/model-evaluation-adjudicator/fixtures/model-evaluation.example.json",
@@ -629,6 +635,86 @@ test("appliance care protects owner authority and external actions", () => {
   agentOwned.owner.id = "appliance-care-coordinator";
   agentOwned.handoff.owner.id = "appliance-care-coordinator";
   assert.equal(isValid("appliance-care-coordinator", agentOwned), false);
+});
+
+test("household steward preserves independent member authority", () => {
+  const elevatedCaregiver = structuredClone(cases.get("household-steward").fixture);
+  elevatedCaregiver.members[3].decisionScopes = ["appointment"];
+  assert.equal(isValid("household-steward", elevatedCaregiver), false);
+
+  const agentOwned = structuredClone(cases.get("household-steward").fixture);
+  agentOwned.members[0].id = "household-steward";
+  agentOwned.handoff.accountableMemberRefs[0] = "household-steward";
+  assert.equal(isValid("household-steward", agentOwned), false);
+
+  const falseConsensus = structuredClone(cases.get("household-steward").fixture);
+  falseConsensus.externalAction.state = "approved";
+  falseConsensus.externalAction.approvals = [
+    {
+      memberRef: "member-alex",
+      planDigest: `sha256:${"0".repeat(64)}`,
+      approvedAt: "2026-08-21T05:10:00Z",
+    },
+  ];
+  assert.equal(isValid("household-steward", falseConsensus), false);
+});
+
+test("household steward bounds multiplayer worker scope and provenance", () => {
+  const broadened = structuredClone(cases.get("household-steward").fixture);
+  broadened.assignments[0].sourceArtifactRefs.push("artifact-pet");
+  assert.equal(isValid("household-steward", broadened), false);
+
+  const mismatchedSession = structuredClone(cases.get("household-steward").fixture);
+  mismatchedSession.results[0].workerSessionRef = "agent:unrelated:99";
+  assert.equal(isValid("household-steward", mismatchedSession), false);
+
+  const droppedBoundary = structuredClone(cases.get("household-steward").fixture);
+  droppedBoundary.results[1].prohibitedActions = ["diagnose"];
+  assert.equal(isValid("household-steward", droppedBoundary), false);
+});
+
+test("household steward exposes cross-domain conflicts instead of false readiness", () => {
+  const unavailableReady = structuredClone(cases.get("household-steward").fixture);
+  const vehicle = unavailableReady.operations.find(
+    (item) => item.id === "operation-vehicle",
+  );
+  vehicle.state = "ready";
+  vehicle.blockedReasons = [];
+  assert.equal(isValid("household-steward", unavailableReady), false);
+
+  const hiddenBudget = structuredClone(cases.get("household-steward").fixture);
+  hiddenBudget.conflicts = hiddenBudget.conflicts.filter(
+    (item) => item.kind !== "budget",
+  );
+  assert.equal(isValid("household-steward", hiddenBudget), false);
+
+  const unresolvedDependency = structuredClone(cases.get("household-steward").fixture);
+  const pond = unresolvedDependency.operations.find(
+    (item) => item.id === "operation-pond",
+  );
+  pond.state = "ready";
+  pond.blockedReasons = [];
+  assert.equal(isValid("household-steward", unresolvedDependency), false);
+
+  const falseHandoff = structuredClone(cases.get("household-steward").fixture);
+  falseHandoff.handoff.state = "ready-for-household";
+  assert.equal(isValid("household-steward", falseHandoff), false);
+});
+
+test("household steward keeps shared and private views separate", () => {
+  const restrictedLeak = structuredClone(cases.get("household-steward").fixture);
+  restrictedLeak.views[0].sourceArtifactRefs.push("artifact-pet");
+  assert.equal(isValid("household-steward", restrictedLeak), false);
+
+  const addressLeak = structuredClone(cases.get("household-steward").fixture);
+  addressLeak.sourceArtifacts[0].sharedSummary += " Address: 123 Main Street.";
+  assert.equal(isValid("household-steward", addressLeak), false);
+
+  const missingPrivateView = structuredClone(cases.get("household-steward").fixture);
+  missingPrivateView.views = missingPrivateView.views.filter(
+    (view) => view.id !== "view-casey-private",
+  );
+  assert.equal(isValid("household-steward", missingPrivateView), false);
 });
 
 test("home repair rejects hazardous or unauthorized owner work", () => {
@@ -1221,7 +1307,7 @@ test("pet care protects guardian appointment authority", () => {
 test("capstone profiles expose only their intended runtime dimensions", async () => {
   const manifests = new Map(
     await Promise.all(
-      ["change-control-operator", "case-continuity-coordinator", "delegation-coordinator"].map(
+      ["change-control-operator", "case-continuity-coordinator", "delegation-coordinator", "household-steward"].map(
         async (id) => [id, await readFile(new URL(`../claws/${id}/profiles/openclaw.yml`, import.meta.url), "utf8")],
       ),
     ),
@@ -1231,5 +1317,8 @@ test("capstone profiles expose only their intended runtime dimensions", async ()
   assert.match(manifests.get("delegation-coordinator"), /sessions_spawn/u);
   assert.match(manifests.get("delegation-coordinator"), /agents_wait/u);
   assert.doesNotMatch(manifests.get("delegation-coordinator"), /\n\s+- exec\b/u);
+  assert.match(manifests.get("household-steward"), /sessions_spawn/u);
+  assert.match(manifests.get("household-steward"), /agents_wait/u);
+  assert.doesNotMatch(manifests.get("household-steward"), /\n\s+- exec\b/u);
   assert.doesNotMatch(manifests.get("case-continuity-coordinator"), /sessions_spawn|exec|process/u);
 });

@@ -19,6 +19,7 @@ const schemaNames = {
   "financial-analyst": "financial-scenario.schema.json",
   "green-thumb-coordinator": "garden-plan.schema.json",
   "home-repair-coordinator": "home-repair.schema.json",
+  "household-steward": "household-operations.schema.json",
   "model-evaluation-adjudicator": "model-evaluation.schema.json",
   "pet-care-coordinator": "pet-care.schema.json",
   "pond-water-feature-coordinator": "pond-system.schema.json",

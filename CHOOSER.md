@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (61)
+### Active (62)
 
 | Claw | Detail |
 | --- | --- |
@@ -38,6 +38,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Grant portfolio manager](claws/grant-portfolio-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Home repair coordinator](claws/home-repair-coordinator) | @giodl73-repo; last verified 2026-08-20 |
+| [Household steward](claws/household-steward) | @giodl73-repo; last verified 2026-08-21 |
 | [Incident response](claws/incident-response) | @giodl73-repo; last verified 2026-08-19 |
 | [Knowledge curator](claws/knowledge-curator) | @giodl73-repo; last verified 2026-08-19 |
 | [Knowledge gardener](claws/knowledge-gardener) | @giodl73-repo; last verified 2026-08-19 |
@@ -88,7 +89,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (30)
+### Low setup (31)
 
 | Claw | Detail |
 | --- | --- |
@@ -107,6 +108,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Experimentation lead](claws/experimentation-lead) | no bootstrap, external dependency, or schedule |
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | no bootstrap, external dependency, or schedule |
 | [Home repair coordinator](claws/home-repair-coordinator) | no bootstrap, external dependency, or schedule |
+| [Household steward](claws/household-steward) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
 | [Localization program manager](claws/localization-program-manager) | no bootstrap, external dependency, or schedule |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | no bootstrap, external dependency, or schedule |
@@ -168,7 +170,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (38)
+### No external dependencies (39)
 
 | Claw | Detail |
 | --- | --- |
@@ -192,6 +194,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Grant portfolio manager](claws/grant-portfolio-manager) | None |
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | None |
 | [Home repair coordinator](claws/home-repair-coordinator) | None |
+| [Household steward](claws/household-steward) | None |
 | [Incident response](claws/incident-response) | None |
 | [Knowledge curator](claws/knowledge-curator) | None |
 | [Localization program manager](claws/localization-program-manager) | None |
@@ -243,7 +246,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (36)
+### X3 (37)
 
 | Claw | Detail |
 | --- | --- |
@@ -261,6 +264,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | Prepares an approval-bound nonprofit fundraising campaign, stewardship plan, audience assets, and measurement handoff without soliciting or sending. |
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | Coordinates evidence-bound seasonal garden planning, plant-health triage, low-risk care, and explicitly approved landscaper appointments. |
 | [Home repair coordinator](claws/home-repair-coordinator) | Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments. |
+| [Household steward](claws/household-steward) | Coordinates a multi-person household's priorities, responsibilities, specialist-Claw handoffs, shared constraints, and explicitly authorized external actions without becoming the household decision-maker. |
 | [Knowledge curator](claws/knowledge-curator) | Turns scattered information into durable, navigable, and source-linked knowledge. |
 | [Knowledge gardener](claws/knowledge-gardener) | Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work. |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries. |
@@ -365,7 +369,7 @@ Categories come directly from the catalog entry.
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 
-### Operations (19)
+### Operations (20)
 
 | Claw | Detail |
 | --- | --- |
@@ -379,6 +383,7 @@ Categories come directly from the catalog entry.
 | [Grant portfolio manager](claws/grant-portfolio-manager) | X5; Maintains a private, evidence-led grant opportunity and submission portfolio without inventing eligibility or submitting applications. |
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | X3; Coordinates evidence-bound seasonal garden planning, plant-health triage, low-risk care, and explicitly approved landscaper appointments. |
 | [Home repair coordinator](claws/home-repair-coordinator) | X3; Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments. |
+| [Household steward](claws/household-steward) | X3; Coordinates a multi-person household's priorities, responsibilities, specialist-Claw handoffs, shared constraints, and explicitly authorized external actions without becoming the household decision-maker. |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | X5; Builds a constraint-led production plan and exception handoff from approved demand, capacity, material, quality, and maintenance evidence. |
 | [Pet care coordinator](claws/pet-care-coordinator) | X3; Coordinates evidence-bound routine pet care, symptom triage, medication-safe handoffs, and explicitly approved veterinary appointments. |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | X3; Coordinates evidence-bound ornamental pond and waterfall planning, installation readiness, recirculating-system care, aquatic-habitat monitoring, and explicitly approved specialist appointments. |
@@ -434,7 +439,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Sales operations](claws/sales-operations) | portable workspace artifacts only |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | portable workspace artifacts only |
 
-### Guarded attention (36)
+### Guarded attention (37)
 
 | Claw | Detail |
 | --- | --- |
@@ -457,6 +462,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Financial analyst](claws/financial-analyst) | pinned skill; guided local setup |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | guided local setup |
 | [Grant portfolio manager](claws/grant-portfolio-manager) | guided local setup; explicit tool policy; persistent dashboard |
+| [Household steward](claws/household-steward) | explicit tool policy |
 | [Knowledge gardener](claws/knowledge-gardener) | pinned skill |
 | [Localization program manager](claws/localization-program-manager) | explicit tool policy |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | guided local setup; explicit tool policy; persistent dashboard |

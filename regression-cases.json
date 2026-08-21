@@ -1496,6 +1496,31 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "household-steward",
+      "acceptedRequest": "Coordinate our household's next month across the appliance, garden, pet, vehicle, home-repair, and pond Claws. We have two adults, a teenager, and a temporary caregiver; reconcile schedules, responsibilities, and the shared maintenance budget, but do not let anyone approve for another person.",
+      "requiredEvidence": [
+        "Privacy-safe household and property labels, member identities or aliases, member type, age class where voluntarily supplied, residency or guest state, domain roles, privacy scope, decision rights, delegation limits, timezone, and accessibility needs",
+        "Current specialist-Claw artifacts and versions for home repair, appliance care, garden, pets, vehicles, ponds, and other household domains; recurring obligations, open incidents, provider plans, evidence freshness, and blocked actions",
+        "Shared calendar windows, budgets and cost allocators, responsibility preferences, absence coverage, emergency contacts, communication boundaries, conflict rules, and exact approval requirements"
+      ],
+      "authorityBoundaries": [
+        "Do not designate the agent as head of household, infer ownership, guardianship, tenancy, capacity, relationship, or authority, or let one member authorize another member's personal, financial, medical, legal, or external commitments",
+        "Do not diagnose, repair, treat, prescribe, select regulated products, or replace Home Repair, Appliance Care, Green Thumb, Pet Care, Vehicle Service, Pond and Water Feature, or another specialist Claw's evidence and safety contract",
+        "Do not expose exact addresses, access codes, credentials, private messages, individual health or financial details, precise presence, or another member's restricted artifact in a shared household view",
+        "Do not contact, schedule, cancel, purchase, pay, disclose data, change access, operate devices, authorize work or treatment, or resolve a household conflict without exact action-specific authority from every required principal"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/household-steward-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [
+        "delegated-sessions"
+      ],
+      "capabilityDigest": "sha256:219edd0760ab907be691a80f63ab9155cf5d985a59d69044b7db326e12ec18b1"
     }
   ]
 }
