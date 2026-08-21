@@ -1829,6 +1829,741 @@ function householdStewardFindings(value) {
   return findings;
 }
 
+function workChiefOfStaffFindings(value) {
+  const evidenceIds = value.evidence.map((item) => item.id);
+  const evidence = new Set(evidenceIds);
+  const evidenceById = new Map(value.evidence.map((item) => [item.id, item]));
+  const principalIds = value.principals.map((item) => item.id);
+  const principals = new Set(principalIds);
+  const principalById = new Map(value.principals.map((item) => [item.id, item]));
+  const artifactIds = value.sourceArtifacts.map((item) => item.id);
+  const artifacts = new Set(artifactIds);
+  const artifactById = new Map(value.sourceArtifacts.map((item) => [item.id, item]));
+  const assignmentIds = value.assignments.map((item) => item.id);
+  const assignments = new Set(assignmentIds);
+  const assignmentById = new Map(value.assignments.map((item) => [item.id, item]));
+  const resultIds = value.results.map((item) => item.id);
+  const results = new Set(resultIds);
+  const resultById = new Map(value.results.map((item) => [item.id, item]));
+  const capacityIds = value.capacityEnvelopes.map((item) => item.id);
+  const capacities = new Set(capacityIds);
+  const capacityById = new Map(value.capacityEnvelopes.map((item) => [item.id, item]));
+  const policyIds = value.approvalPolicies.map((item) => item.id);
+  const policies = new Set(policyIds);
+  const policyById = new Map(value.approvalPolicies.map((item) => [item.id, item]));
+  const forumIds = value.decisionForums.map((item) => item.id);
+  const forums = new Set(forumIds);
+  const workstreamIds = value.workstreams.map((item) => item.id);
+  const workstreams = new Set(workstreamIds);
+  const workstreamById = new Map(value.workstreams.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(evidenceIds, "evidence", "Evidence id"),
+    ...uniqueFindings(principalIds, "principals", "Principal id"),
+    ...uniqueFindings(artifactIds, "sourceArtifacts", "Source artifact id"),
+    ...uniqueFindings(assignmentIds, "assignments", "Assignment id"),
+    ...uniqueFindings(resultIds, "results", "Result id"),
+    ...uniqueFindings(capacityIds, "capacityEnvelopes", "Capacity envelope id"),
+    ...uniqueFindings(policyIds, "approvalPolicies", "Approval policy id"),
+    ...uniqueFindings(forumIds, "decisionForums", "Decision forum id"),
+    ...uniqueFindings(workstreamIds, "workstreams", "Workstream id"),
+    ...uniqueFindings(value.conflicts.map((item) => item.id), "conflicts", "Conflict id"),
+    ...uniqueFindings(value.views.map((item) => item.id), "views", "View id"),
+  ];
+  if (
+    Date.parse(value.portfolio.periodStart) > Date.parse(value.portfolio.periodEnd)
+  ) {
+    findings.push(
+      finding(
+        "invalid_portfolio_period",
+        "portfolio",
+        "The operating portfolio period must be ordered.",
+      ),
+    );
+  }
+  for (const [index, item] of value.evidence.entries()) {
+    if (Date.parse(item.capturedAt) > Date.parse(value.portfolio.asOf)) {
+      findings.push(
+        finding(
+          "future_work_evidence",
+          `evidence.${index}.capturedAt`,
+          "Portfolio evidence cannot establish authority or state before it was captured.",
+        ),
+      );
+    }
+  }
+  for (const [references, allowed, path, label] of [
+    ...value.principals.map((item, index) => [item.authorityEvidenceRefs, evidence, `principals.${index}.authorityEvidenceRefs`, "Evidence reference"]),
+    ...value.sourceArtifacts.map((item, index) => [item.permittedPrincipalRefs, principals, `sourceArtifacts.${index}.permittedPrincipalRefs`, "Principal reference"]),
+    ...value.assignments.map((item, index) => [item.sourceArtifactRefs, artifacts, `assignments.${index}.sourceArtifactRefs`, "Artifact reference"]),
+    ...value.assignments.map((item, index) => [item.permittedPrincipalRefs, principals, `assignments.${index}.permittedPrincipalRefs`, "Principal reference"]),
+    ...value.results.map((item, index) => [item.sourceArtifactRefs, artifacts, `results.${index}.sourceArtifactRefs`, "Artifact reference"]),
+    ...value.capacityEnvelopes.map((item, index) => [item.approverRefs, principals, `capacityEnvelopes.${index}.approverRefs`, "Principal reference"]),
+    ...value.capacityEnvelopes.map((item, index) => [item.evidenceRefs, evidence, `capacityEnvelopes.${index}.evidenceRefs`, "Evidence reference"]),
+    ...value.approvalPolicies.map((item, index) => [item.requiredPrincipalRefs, principals, `approvalPolicies.${index}.requiredPrincipalRefs`, "Principal reference"]),
+    ...value.approvalPolicies.map((item, index) => [item.authorityEvidenceRefs, evidence, `approvalPolicies.${index}.authorityEvidenceRefs`, "Evidence reference"]),
+    ...value.decisionForums.map((item, index) => [item.requiredPrincipalRefs, principals, `decisionForums.${index}.requiredPrincipalRefs`, "Principal reference"]),
+    ...value.decisionForums.map((item, index) => [item.workstreamRefs, workstreams, `decisionForums.${index}.workstreamRefs`, "Workstream reference"]),
+    ...value.workstreams.map((item, index) => [[item.sourceArtifactRef], artifacts, `workstreams.${index}.sourceArtifactRef`, "Artifact reference"]),
+    ...value.workstreams.map((item, index) => [[item.accountableOwnerRef], principals, `workstreams.${index}.accountableOwnerRef`, "Principal reference"]),
+    ...value.workstreams.map((item, index) => [[item.decisionOwnerRef], principals, `workstreams.${index}.decisionOwnerRef`, "Principal reference"]),
+    ...value.workstreams.flatMap((item, index) => item.capacityDemands.map((demand) => [[demand.capacityRef], capacities, `workstreams.${index}.capacityDemands`, "Capacity reference"])),
+    ...value.workstreams.map((item, index) => [item.dependencyRefs, workstreams, `workstreams.${index}.dependencyRefs`, "Workstream reference"]),
+    ...value.workstreams.map((item, index) => [[item.forumRef], forums, `workstreams.${index}.forumRef`, "Forum reference"]),
+    ...value.conflicts.map((item, index) => [item.workstreamRefs, workstreams, `conflicts.${index}.workstreamRefs`, "Workstream reference"]),
+    ...value.conflicts.map((item, index) => [item.principalRefs, principals, `conflicts.${index}.principalRefs`, "Principal reference"]),
+    ...value.conflicts.map((item, index) => [item.requiredDecisionRefs, principals, `conflicts.${index}.requiredDecisionRefs`, "Principal reference"]),
+    ...value.views.map((item, index) => [item.audiencePrincipalRefs, principals, `views.${index}.audiencePrincipalRefs`, "Principal reference"]),
+    ...value.views.map((item, index) => [item.workstreamRefs, workstreams, `views.${index}.workstreamRefs`, "Workstream reference"]),
+    ...value.views.map((item, index) => [item.sourceArtifactRefs, artifacts, `views.${index}.sourceArtifactRefs`, "Artifact reference"]),
+    [value.handoff.accountablePrincipalRefs, principals, "handoff.accountablePrincipalRefs", "Principal reference"],
+  ]) {
+    findings.push(...uniqueFindings(references, path, label));
+    findings.push(...referenceFindings(references, allowed, path, label));
+  }
+
+  for (const [index, principal] of value.principals.entries()) {
+    const authorityEvidence = principal.authorityEvidenceRefs.map((reference) =>
+      evidenceById.get(reference),
+    );
+    if (
+      !authorityEvidence.some((item) =>
+        ["principal-declaration", "decision-right-record", "portfolio-charter"].includes(item?.type),
+      ) ||
+      principal.id === "work-chief-of-staff" ||
+      (principal.delegationScopes.includes("none") &&
+        principal.delegationScopes.length !== 1)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_work_principal_authority",
+          `principals.${index}`,
+          "Leadership roles, decision rights, confidentiality, and delegation require direct authority evidence and can never belong to the agent.",
+        ),
+      );
+    }
+  }
+
+  const clawDomains = {
+    "executive-assistant": "leadership",
+    "delegation-coordinator": "leadership",
+    "meeting-intelligence": "leadership",
+    "project-manager": "engineering",
+    "product-manager": "product",
+    "financial-analyst": "finance",
+    "recruiting-coordinator": "recruiting",
+    "sales-operations": "sales",
+    "release-coordinator": "release",
+    "change-control-operator": "change-control",
+  };
+  const domainDecisionScopes = {
+    leadership: "portfolio",
+    product: "product",
+    engineering: "engineering",
+    finance: "finance",
+    recruiting: "staffing",
+    sales: "sales",
+    release: "release",
+    "change-control": "change-control",
+  };
+  const asOf = Date.parse(value.portfolio.asOf);
+  for (const [index, artifact] of value.sourceArtifacts.entries()) {
+    const accountableOwner = principalById.get(artifact.accountableOwnerRef);
+    const decisionOwner = principalById.get(artifact.decisionOwnerRef);
+    const domain = clawDomains[artifact.clawId];
+    if (
+      !accountableOwner ||
+      !decisionOwner ||
+      !artifact.permittedPrincipalRefs.includes(artifact.accountableOwnerRef) ||
+      !artifact.permittedPrincipalRefs.includes(artifact.decisionOwnerRef) ||
+      !decisionOwner.decisionScopes.includes(domainDecisionScopes[domain]) ||
+      Date.parse(artifact.capturedAt) > asOf ||
+      Date.parse(artifact.capturedAt) >= Date.parse(artifact.expiresAt) ||
+      artifact.permittedPrincipalRefs.some((principalRef) => {
+        const principal = principalById.get(principalRef);
+        return (
+          artifact.confidentiality !== "portfolio-shared" &&
+          !principal?.confidentialityScopes.includes(artifact.confidentiality)
+        );
+      }) ||
+      (artifact.state === "current" && Date.parse(artifact.expiresAt) <= asOf) ||
+      (artifact.state === "stale" && Date.parse(artifact.expiresAt) > asOf) ||
+      (artifact.confidentiality !== "portfolio-shared" &&
+        artifact.permittedPrincipalRefs.length === principalIds.length &&
+        artifact.sharedSummary.length === 0)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_work_source_artifact",
+          `sourceArtifacts.${index}`,
+          "Source artifacts must preserve truthful freshness, functional decision rights, accountable owners, audience, status meaning, and prohibitions.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, policy] of value.approvalPolicies.entries()) {
+    const authorityEvidence = policy.authorityEvidenceRefs.map((reference) =>
+      evidenceById.get(reference),
+    );
+    if (
+      !authorityEvidence.some((item) =>
+        ["decision-right-record", "portfolio-charter"].includes(item?.type),
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_work_approval_policy",
+          `approvalPolicies.${index}`,
+          "Commitment approval policies require direct decision-right or portfolio-charter evidence.",
+        ),
+      );
+    }
+  }
+  for (const [index, capacity] of value.capacityEnvelopes.entries()) {
+    const requiredScope = domainDecisionScopes[capacity.function];
+    const capacityEvidence = capacity.evidenceRefs.map((reference) =>
+      evidenceById.get(reference),
+    );
+    if (
+      Date.parse(capacity.periodStart) > Date.parse(capacity.periodEnd) ||
+      Date.parse(capacity.periodStart) < Date.parse(value.portfolio.periodStart) ||
+      Date.parse(capacity.periodEnd) > Date.parse(value.portfolio.periodEnd) ||
+      capacity.approverRefs.some((principalRef) => {
+        const principal = principalById.get(principalRef);
+        return (
+          !principal?.decisionScopes.includes(requiredScope) &&
+          !principal?.decisionScopes.includes("portfolio")
+        );
+      }) ||
+      !capacityEvidence.some((item) => item?.type === "capacity-envelope")
+    ) {
+      findings.push(
+        finding(
+          "invalid_capacity_period",
+          `capacityEnvelopes.${index}`,
+          "Capacity envelopes require an in-horizon period, functionally authorized approvers, and direct capacity evidence.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, assignment] of value.assignments.entries()) {
+    const assignedArtifacts = assignment.sourceArtifactRefs.map((reference) =>
+      artifactById.get(reference),
+    );
+    const result = assignment.resultRef ? resultById.get(assignment.resultRef) : undefined;
+    if (
+      assignedArtifacts.some(
+        (artifact) =>
+          artifact?.clawId !== assignment.specialistClawId ||
+          assignment.permittedPrincipalRefs.some(
+            (principalRef) => !artifact.permittedPrincipalRefs.includes(principalRef),
+          ),
+      ) ||
+      (assignment.state === "completed" &&
+        (!result ||
+          result.assignmentRef !== assignment.id ||
+          result.workerSessionRef !== assignment.workerSessionRef)) ||
+      (assignment.state !== "completed" && assignment.resultRef)
+    ) {
+      findings.push(
+        finding(
+          "unsafe_worker_assignment",
+          `assignments.${index}`,
+          "Worker scope, specialist Claw, sources, audience, completion state, session, and result must remain exactly bounded.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, result] of value.results.entries()) {
+    const assignment = assignmentById.get(result.assignmentRef);
+    const sourceArtifacts = result.sourceArtifactRefs.map((reference) =>
+      artifactById.get(reference),
+    );
+    if (
+      !assignment ||
+      assignment.state !== "completed" ||
+      assignment.resultRef !== result.id ||
+      assignment.workerSessionRef !== result.workerSessionRef ||
+      canonicalJson([...result.sourceArtifactRefs].sort()) !==
+        canonicalJson([...assignment.sourceArtifactRefs].sort()) ||
+      sourceArtifacts.some(
+        (artifact) =>
+          artifact?.decisionOwnerRef !== result.decisionOwnerRef ||
+          artifact.statusSemantic !== result.statusSemantic ||
+          artifact.prohibitedActions.some(
+            (action) => !result.prohibitedActions.includes(action),
+          ) ||
+          Date.parse(result.producedAt) < Date.parse(artifact.capturedAt),
+      ) ||
+      Date.parse(result.producedAt) > asOf
+    ) {
+      findings.push(
+        finding(
+          "work_result_scope_drift",
+          `results.${index}`,
+          "Worker results must preserve assignment sources, session provenance, decision owner, source status meaning, and every prohibition.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, forum] of value.decisionForums.entries()) {
+    const requiredParticipants = new Set(
+      forum.workstreamRefs.map(
+        (reference) => workstreamById.get(reference)?.decisionOwnerRef,
+      ),
+    );
+    for (const conflict of value.conflicts) {
+      if (
+        conflict.state === "open" &&
+        conflict.workstreamRefs.some((reference) =>
+          forum.workstreamRefs.includes(reference),
+        )
+      ) {
+        for (const principalRef of [
+          ...conflict.principalRefs,
+          ...conflict.requiredDecisionRefs,
+        ]) {
+          requiredParticipants.add(principalRef);
+        }
+      }
+    }
+    if (
+      (forum.state === "completed"
+        ? Date.parse(forum.startsAt) > asOf
+        : Date.parse(forum.startsAt) <= asOf) ||
+      forum.workstreamRefs.some(
+        (reference) => workstreamById.get(reference)?.forumRef !== forum.id,
+      ) ||
+      [...requiredParticipants].some(
+        (principalRef) =>
+          principalRef && !forum.requiredPrincipalRefs.includes(principalRef),
+      )
+    ) {
+      findings.push(
+        finding(
+          "incoherent_decision_forum",
+          `decisionForums.${index}`,
+          "Decision forums must be future-dated and contain only workstreams assigned to that exact forum.",
+        ),
+      );
+    }
+  }
+  for (const [index, workstream] of value.workstreams.entries()) {
+    const forumMemberships = value.decisionForums.filter((forum) =>
+      forum.workstreamRefs.includes(workstream.id),
+    );
+    if (
+      forumMemberships.length !== 1 ||
+      forumMemberships[0].id !== workstream.forumRef
+    ) {
+      findings.push(
+        finding(
+          "incoherent_decision_forum",
+          `workstreams.${index}.forumRef`,
+          "Every workstream must appear exactly once in its declared decision forum.",
+        ),
+      );
+    }
+  }
+
+  const overallocatedCapacities = new Set(
+    value.capacityEnvelopes
+      .filter((capacity) => {
+        const allocated = value.workstreams
+          .filter((item) => item.state !== "completed")
+          .flatMap((item) => item.capacityDemands)
+          .filter((item) => item.capacityRef === capacity.id)
+          .reduce((sum, item) => sum + item.amount, 0);
+        return allocated > capacity.amount;
+      })
+      .map((capacity) => capacity.id),
+  );
+  for (const [index, workstream] of value.workstreams.entries()) {
+    const artifact = artifactById.get(workstream.sourceArtifactRef);
+    const decisionOwner = principalById.get(workstream.decisionOwnerRef);
+    const blocked = workstream.state === "blocked";
+    const unresolvedDependency = workstream.dependencyRefs.some(
+      (reference) => workstreamById.get(reference)?.state !== "completed",
+    );
+    const capacityMismatch = workstream.capacityDemands.some((demand) => {
+      const capacity = capacityById.get(demand.capacityRef);
+      return (
+        capacity &&
+        (Date.parse(capacity.periodStart) > Date.parse(capacity.periodEnd) ||
+          Date.parse(workstream.periodStart) < Date.parse(capacity.periodStart) ||
+          Date.parse(workstream.periodEnd) > Date.parse(capacity.periodEnd) ||
+          (capacity.function !== workstream.domain &&
+            capacity.function !== "finance" &&
+            !(
+              ["release", "change-control"].includes(workstream.domain) &&
+              capacity.function === "engineering"
+            )))
+      );
+    });
+    const unresolvedCapacityConflict =
+      workstream.capacityDemands.some((demand) =>
+        overallocatedCapacities.has(demand.capacityRef),
+      ) &&
+      value.conflicts.some(
+        (conflict) =>
+          conflict.kind === "capacity" &&
+          conflict.state === "open" &&
+          conflict.workstreamRefs.includes(workstream.id),
+      );
+    const unresolvedConflict = value.conflicts.some(
+      (conflict) =>
+        conflict.state === "open" &&
+        conflict.workstreamRefs.includes(workstream.id),
+    );
+    if (
+      Date.parse(workstream.periodStart) > Date.parse(workstream.periodEnd) ||
+      Date.parse(workstream.periodStart) < Date.parse(value.portfolio.periodStart) ||
+      Date.parse(workstream.periodEnd) > Date.parse(value.portfolio.periodEnd) ||
+      artifact?.clawId === undefined ||
+      clawDomains[artifact.clawId] !== workstream.domain ||
+      workstream.accountableOwnerRef !== artifact.accountableOwnerRef ||
+      workstream.decisionOwnerRef !== artifact.decisionOwnerRef ||
+      !decisionOwner?.decisionScopes.includes(domainDecisionScopes[workstream.domain]) ||
+      capacityMismatch ||
+      (["ready", "completed"].includes(workstream.state) &&
+        (artifact.state !== "current" ||
+          ["blocked", "unknown"].includes(artifact.statusSemantic) ||
+          unresolvedDependency ||
+          unresolvedCapacityConflict ||
+          unresolvedConflict)) ||
+      (workstream.state === "completed" &&
+        (artifact.statusSemantic !== "completed" ||
+          Date.parse(workstream.periodEnd) > asOf)) ||
+      (blocked && workstream.blockedReasons.length === 0) ||
+      (!blocked && workstream.blockedReasons.length > 0)
+    ) {
+      findings.push(
+        finding(
+          "unsafe_workstream",
+          `workstreams.${index}`,
+          "Workstreams must preserve source domain, owners, decision rights, dates, capacity, dependencies, status meaning, and blocked state.",
+        ),
+      );
+    }
+  }
+
+  for (const capacity of value.capacityEnvelopes) {
+    const allocated = value.workstreams
+      .filter((item) => item.state !== "completed")
+      .flatMap((item) => item.capacityDemands)
+      .filter((item) => item.capacityRef === capacity.id)
+      .reduce((sum, item) => sum + item.amount, 0);
+    const hasOpenCapacityConflict = value.conflicts.some(
+      (item) =>
+        item.kind === "capacity" &&
+        item.state === "open" &&
+        item.workstreamRefs.some((reference) =>
+          workstreamById
+            .get(reference)
+            ?.capacityDemands.some((demand) => demand.capacityRef === capacity.id),
+        ),
+    );
+    if (allocated > capacity.amount && !hasOpenCapacityConflict) {
+      findings.push(
+        finding(
+          "hidden_capacity_conflict",
+          `capacityEnvelopes.${capacity.id}`,
+          "Overallocated capacity requires an explicit open conflict and cannot be silently normalized.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, conflict] of value.conflicts.entries()) {
+    if (
+      (conflict.state === "open" && conflict.requiredDecisionRefs.length === 0) ||
+      (conflict.state === "open" &&
+        conflict.principalRefs.some(
+          (principalRef) =>
+            !conflict.requiredDecisionRefs.includes(principalRef),
+        )) ||
+      (conflict.state === "resolved-by-principals" &&
+        conflict.requiredDecisionRefs.length > 0)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_work_conflict",
+          `conflicts.${index}`,
+          "Open conflicts retain every required principal decision; resolved conflicts retain none.",
+        ),
+      );
+    }
+  }
+
+  const requiredSharedExclusions = [
+    "personnel-details",
+    "compensation-details",
+    "customer-details",
+    "legal-details",
+    "security-details",
+    "financial-model-details",
+    "roadmap-detail",
+    "acquisition-detail",
+    "credentials",
+    "restricted-artifacts",
+  ];
+  for (const [index, view] of value.views.entries()) {
+    const visibleArtifacts = view.sourceArtifactRefs.map((reference) =>
+      artifactById.get(reference),
+    );
+    if (
+      visibleArtifacts.some((artifact) =>
+        view.audiencePrincipalRefs.some(
+          (principalRef) => !artifact?.permittedPrincipalRefs.includes(principalRef),
+        ),
+      ) ||
+      view.workstreamRefs.some((reference) => {
+        const artifact = artifactById.get(
+          workstreamById.get(reference)?.sourceArtifactRef,
+        );
+        return view.audiencePrincipalRefs.some(
+          (principalRef) =>
+            !artifact?.permittedPrincipalRefs.includes(principalRef) ||
+            (artifact.confidentiality !== "portfolio-shared" &&
+              !principalById
+                .get(principalRef)
+                ?.confidentialityScopes.includes(artifact.confidentiality)),
+        );
+      }) ||
+      (view.kind === "leadership-shared" &&
+        (visibleArtifacts.some(
+          (artifact) => artifact?.confidentiality !== "portfolio-shared",
+        ) ||
+          requiredSharedExclusions.some(
+            (field) => !view.excludedFields.includes(field),
+          ))) ||
+      (view.kind === "principal-private" &&
+        view.audiencePrincipalRefs.length !== 1)
+    ) {
+      findings.push(
+        finding(
+          "work_portfolio_view_confidentiality_leak",
+          `views.${index}`,
+          "Leadership, forum, and private views must respect every source audience and suppress restricted organizational fields.",
+        ),
+      );
+    }
+  }
+  for (const principalId of principalIds) {
+    if (
+      !value.views.some(
+        (view) =>
+          view.kind === "principal-private" &&
+          view.audiencePrincipalRefs.length === 1 &&
+          view.audiencePrincipalRefs[0] === principalId,
+      )
+    ) {
+      findings.push(
+        finding(
+          "missing_principal_private_view",
+          "views",
+          `Principal ${JSON.stringify(principalId)} requires a distinct private view.`,
+        ),
+      );
+    }
+  }
+
+  const commitment = value.commitment;
+  const hasPlan = Boolean(commitment.plan);
+  const approvals = commitment.approvals ?? [];
+  const hasIntegration = Boolean(commitment.integration);
+  const hasReceipt = Boolean(commitment.receipt);
+  const actionDecisionScope = commitment.plan
+    ? {
+        "send-communication": "external-communication",
+        "schedule-forum": "portfolio",
+        "allocate-staff": "staffing",
+        "approve-spend": "finance",
+        "approve-hiring": "staffing",
+        "change-forecast": "finance",
+        "commit-roadmap": "product",
+        "commit-customer": "sales",
+        "publish-plan": "publication",
+        merge: "release",
+        release: "release",
+        "execute-change": "change-control",
+      }[commitment.plan.actionType]
+    : undefined;
+  if (
+    (["awaiting-approval", "approved", "completed"].includes(commitment.state) &&
+      !hasPlan) ||
+    (commitment.state === "completed" && (!hasIntegration || !hasReceipt)) ||
+    (commitment.state !== "completed" && (hasIntegration || hasReceipt)) ||
+    (commitment.state === "not-requested" &&
+      (hasPlan || approvals.length > 0)) ||
+    (commitment.state === "blocked" && !commitment.blockedReason)
+  ) {
+    findings.push(
+      finding(
+        "incoherent_work_commitment",
+        "commitment",
+        "Commitment plan, approvals, integration, receipt, and blocked reason must match the declared state.",
+      ),
+    );
+  }
+  const planDigest = commitment.plan
+    ? `sha256:${createHash("sha256").update(canonicalJson(commitment.plan)).digest("hex")}`
+    : undefined;
+  if (commitment.plan) {
+    findings.push(
+      ...referenceFindings(
+        [commitment.plan.workstreamRef],
+        workstreams,
+        "commitment.plan.workstreamRef",
+        "Workstream reference",
+      ),
+      ...referenceFindings(
+        commitment.plan.affectedPrincipalRefs,
+        principals,
+        "commitment.plan.affectedPrincipalRefs",
+        "Principal reference",
+      ),
+      ...referenceFindings(
+        [commitment.plan.approvalPolicyRef],
+        policies,
+        "commitment.plan.approvalPolicyRef",
+        "Policy reference",
+      ),
+    );
+    const policy = policyById.get(commitment.plan.approvalPolicyRef);
+    const workstream = workstreamById.get(commitment.plan.workstreamRef);
+    const artifact = artifactById.get(workstream?.sourceArtifactRef);
+    const requiredByAuthority = new Set([workstream?.decisionOwnerRef]);
+    const actionAuthorizedPrincipals =
+      commitment.plan.affectedPrincipalRefs.filter((principalRef) => {
+        const principal = principalById.get(principalRef);
+        return (
+          principal?.decisionScopes.includes(actionDecisionScope) ||
+          principal?.decisionScopes.includes("portfolio")
+        );
+      });
+    for (const principalRef of commitment.plan.affectedPrincipalRefs) {
+      const principal = principalById.get(principalRef);
+      if (
+        principal?.decisionScopes.includes(actionDecisionScope) ||
+        principal?.decisionScopes.includes("portfolio")
+      ) {
+        requiredByAuthority.add(principalRef);
+      }
+    }
+    const approvedPrincipals = approvals.map((approval) => approval.principalRef);
+    const approvalComplete =
+      policy &&
+      policy.requiredPrincipalRefs.every((principalRef) =>
+        approvedPrincipals.includes(principalRef),
+      );
+    if (
+      !policy ||
+      !policy.actionTypes.includes(commitment.plan.actionType) ||
+      actionAuthorizedPrincipals.length === 0 ||
+      [...requiredByAuthority].some(
+        (principalRef) =>
+          principalRef && !policy.requiredPrincipalRefs.includes(principalRef),
+      ) ||
+      approvals.some(
+        (approval) =>
+          approval.planDigest !== planDigest ||
+          !policy.requiredPrincipalRefs.includes(approval.principalRef) ||
+          Date.parse(approval.approvedAt) > asOf,
+      ) ||
+      (["approved", "completed"].includes(commitment.state) &&
+        (!approvalComplete ||
+          !workstream ||
+          workstream.state === "blocked" ||
+          artifact?.state !== "current" ||
+          value.conflicts.some(
+            (conflict) =>
+              conflict.state === "open" &&
+              conflict.workstreamRefs.includes(workstream.id),
+          ))) ||
+      (commitment.state === "awaiting-approval" && approvalComplete)
+    ) {
+      findings.push(
+        finding(
+          "work_commitment_approval_mismatch",
+          "commitment",
+          "Every policy-required principal must separately approve the exact commitment plan.",
+        ),
+      );
+    }
+  }
+  if (
+    commitment.state === "completed" &&
+    commitment.plan &&
+    commitment.integration &&
+    commitment.receipt
+  ) {
+    const integrationEvidence = evidenceById.get(
+      commitment.integration.approvalEvidenceRef,
+    );
+    const receiptEvidence = evidenceById.get(commitment.receipt.evidenceRef);
+    const configuredBy = principalById.get(commitment.integration.configuredByRef);
+    if (
+      commitment.receipt.planDigest !== planDigest ||
+      commitment.receipt.integrationId !== commitment.integration.id ||
+      commitment.receipt.systemRef !== commitment.plan.systemRef ||
+      commitment.integration.systemRef !== commitment.plan.systemRef ||
+      !configuredBy ||
+      commitment.integration.configuredByRef === "work-chief-of-staff" ||
+      (!configuredBy.decisionScopes.includes(actionDecisionScope) &&
+        !configuredBy.decisionScopes.includes("portfolio")) ||
+      !commitment.receipt.confirmationRef.startsWith(
+        `system://${commitment.plan.systemRef}/`,
+      ) ||
+      integrationEvidence?.type !== "integration-approval" ||
+      integrationEvidence.authority !== "approved-integration" ||
+      integrationEvidence.reference !== commitment.integration.approvalRef ||
+      receiptEvidence?.type !== "system-receipt" ||
+      receiptEvidence.authority !== "controlled-system" ||
+      receiptEvidence.reference !== commitment.receipt.confirmationRef ||
+      receiptEvidence.capturedAt !== commitment.receipt.completedAt ||
+      Date.parse(commitment.receipt.completedAt) <
+        Date.parse(commitment.plan.effectiveAt) ||
+      Date.parse(integrationEvidence.capturedAt) >
+        Date.parse(commitment.receipt.completedAt) ||
+      approvals.some(
+        (approval) =>
+          Date.parse(approval.approvedAt) >
+          Date.parse(commitment.receipt.completedAt),
+      )
+    ) {
+      findings.push(
+        finding(
+          "work_commitment_receipt_mismatch",
+          "commitment.receipt",
+          "Approved integration and controlled-system receipt evidence must bind the exact multi-principal commitment.",
+        ),
+      );
+    }
+  }
+
+  const openConflicts = value.conflicts.some((item) => item.state === "open");
+  if (
+    (openConflicts && value.handoff.state !== "blocked") ||
+    !value.handoff.accountablePrincipalRefs.some(
+      (principalRef) =>
+        principalById.get(principalRef)?.decisionScopes.includes("portfolio"),
+    )
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_work_authority",
+        "handoff",
+        "Open conflicts block handoff, and portfolio authority remains with explicitly scoped human principals.",
+      ),
+    );
+  }
+  return findings;
+}
+
 function homeRepairFindings(value) {
   const evidenceIds = value.evidence.map((item) => item.id);
   const evidence = new Set(evidenceIds);
@@ -3739,6 +4474,7 @@ const validators = {
   "research-briefing": researchFindings,
   "sales-operations": salesOperationsFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
+  "work-chief-of-staff": workChiefOfStaffFindings,
 };
 
 export function validateArtifactSemantics(id, value) {

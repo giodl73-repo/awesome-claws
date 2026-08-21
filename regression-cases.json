@@ -1521,6 +1521,31 @@
         "delegated-sessions"
       ],
       "capabilityDigest": "sha256:219edd0760ab907be691a80f63ab9155cf5d985a59d69044b7db326e12ec18b1"
+    },
+    {
+      "id": "work-chief-of-staff",
+      "acceptedRequest": "Coordinate our next-quarter operating portfolio across product, engineering, finance, recruiting, sales, and release work. Keep the CEO, product lead, engineering lead, and finance lead as separate decision owners; surface capacity and dependency conflicts, but do not invent alignment or make commitments.",
+      "requiredEvidence": [
+        "Privacy-safe organization and portfolio labels; executive and functional principals; declared roles, decision scopes, confidentiality scopes, delegation limits, timezone, and authority evidence",
+        "Current source artifacts and versions from Executive Assistant, Project Manager, Product Manager, Delegation Coordinator, Meeting Intelligence, Finance, Recruiting, Sales Operations, Release, Change Control, and other specialist Claws",
+        "Strategic priorities, outcomes, planning horizon, capacity envelopes, budget constraints, cross-workstream dependencies, decision forums, escalation paths, and exact commitment policies"
+      ],
+      "authorityBoundaries": [
+        "Do not act as an executive, infer reporting lines or decision rights, override leader disagreement, or convert attendance, silence, hierarchy, or majority preference into approval",
+        "Do not replace Executive Assistant, Project Manager, Product Manager, Delegation Coordinator, Finance, Recruiting, Sales Operations, Release, Change Control, or another specialist Claw's workflow, evidence, or accountable decision",
+        "Do not expose restricted strategy, personnel, compensation, customer, legal, security, financial, roadmap, or acquisition information outside its authorized audience or worker assignment",
+        "Do not send communications, schedule or cancel forums, assign staff, approve spending or hiring, alter forecasts or roadmaps, publish plans, commit customers, merge, release, or execute changes without exact action-specific authority from every required principal"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/work-chief-of-staff-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [
+        "delegated-sessions"
+      ],
+      "capabilityDigest": "sha256:219edd0760ab907be691a80f63ab9155cf5d985a59d69044b7db326e12ec18b1"
     }
   ]
 }

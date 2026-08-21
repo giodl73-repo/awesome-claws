@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (62)
+### Active (63)
 
 | Claw | Detail |
 | --- | --- |
@@ -73,6 +73,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Video concept producer](claws/video-concept-producer) | @giodl73-repo; last verified 2026-08-19 |
 | [Web evidence researcher](claws/web-evidence-researcher) | @giodl73-repo; last verified 2026-08-19 |
 | [Website evidence collector](claws/website-evidence-collector) | @giodl73-repo; last verified 2026-08-19 |
+| [Work chief of staff](claws/work-chief-of-staff) | @giodl73-repo; last verified 2026-08-21 |
 | [Workflow operator](claws/workflow-operator) | @giodl73-repo; last verified 2026-08-19 |
 
 ### Needs Help (0)
@@ -89,7 +90,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (31)
+### Low setup (32)
 
 | Claw | Detail |
 | --- | --- |
@@ -124,6 +125,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Security analyst](claws/security-analyst) | no bootstrap, external dependency, or schedule |
 | [UX research synthesizer](claws/ux-research-synthesizer) | no bootstrap, external dependency, or schedule |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | no bootstrap, external dependency, or schedule |
+| [Work chief of staff](claws/work-chief-of-staff) | no bootstrap, external dependency, or schedule |
 
 ### Medium setup (27)
 
@@ -170,7 +172,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (39)
+### No external dependencies (40)
 
 | Claw | Detail |
 | --- | --- |
@@ -213,6 +215,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Security analyst](claws/security-analyst) | None |
 | [UX research synthesizer](claws/ux-research-synthesizer) | None |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | None |
+| [Work chief of staff](claws/work-chief-of-staff) | None |
 
 ### External dependencies declared (23)
 
@@ -246,7 +249,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (37)
+### X3 (38)
 
 | Claw | Detail |
 | --- | --- |
@@ -286,6 +289,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Video concept producer](claws/video-concept-producer) | Generates reviewable PixVerse video concepts from approved prompts or workspace assets without publishing or impersonating people. |
 | [Web evidence researcher](claws/web-evidence-researcher) | Uses Tavily search and extraction to build bounded, source-linked evidence sets without publishing or acting on retrieved content. |
 | [Website evidence collector](claws/website-evidence-collector) | Collects and normalizes an approved set of public web pages through Firecrawl for reviewable evidence and change analysis. |
+| [Work chief of staff](claws/work-chief-of-staff) | Coordinates a multi-leader operating portfolio across specialist-Claw artifacts, shared resources, decision forums, and explicitly authorized commitments without becoming the executive or functional decision-maker. |
 | [Workflow operator](claws/workflow-operator) | Runs bounded Lobster pipelines with typed inputs, explicit approval gates, resumable state, and reviewable results. |
 
 ### X4 (18)
@@ -369,7 +373,7 @@ Categories come directly from the catalog entry.
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 
-### Operations (20)
+### Operations (21)
 
 | Claw | Detail |
 | --- | --- |
@@ -392,6 +396,7 @@ Categories come directly from the catalog entry.
 | [Recruiting coordinator](claws/recruiting-coordinator) | X3; Coordinates candidate logistics with clear handoffs, consistency, and privacy. |
 | [Sales operations](claws/sales-operations) | X3; Improves pipeline decisions through clean definitions, evidence, and accountable follow-up. |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | X3; Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle. |
+| [Work chief of staff](claws/work-chief-of-staff) | X3; Coordinates a multi-leader operating portfolio across specialist-Claw artifacts, shared resources, decision forums, and explicitly authorized commitments without becoming the executive or functional decision-maker. |
 | [Workflow operator](claws/workflow-operator) | X3; Runs bounded Lobster pipelines with typed inputs, explicit approval gates, resumable state, and reviewable results. |
 
 ### Product (3)
@@ -439,7 +444,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Sales operations](claws/sales-operations) | portable workspace artifacts only |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | portable workspace artifacts only |
 
-### Guarded attention (37)
+### Guarded attention (38)
 
 | Claw | Detail |
 | --- | --- |
@@ -480,6 +485,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | pinned skill |
 | [Travel planner](claws/travel-planner) | pinned skill |
 | [UX research synthesizer](claws/ux-research-synthesizer) | explicit tool policy |
+| [Work chief of staff](claws/work-chief-of-staff) | explicit tool policy |
 
 ### Heightened attention (14)
 

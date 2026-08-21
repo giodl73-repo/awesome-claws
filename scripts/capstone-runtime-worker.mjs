@@ -67,6 +67,25 @@ if (mode === "continuity-v1") {
       producedAt: assignment.result.producedAt,
     }),
   );
+} else if (mode === "work") {
+  const assignment = JSON.parse(await readFile(inputPath, "utf8"));
+  const source = await readFile(assignment.sourcePath, "utf8");
+  if (!source.includes(assignment.expectedMarker)) {
+    throw new Error(`Assigned work source did not contain ${assignment.expectedMarker}.`);
+  }
+  console.log(
+    JSON.stringify({
+      pid: process.pid,
+      id: assignment.result.id,
+      assignmentRef: assignment.id,
+      sourceArtifactRefs: assignment.sourceArtifactRefs,
+      decisionOwnerRef: assignment.result.decisionOwnerRef,
+      statusSemantic: assignment.result.statusSemantic,
+      prohibitedActions: assignment.result.prohibitedActions,
+      summary: assignment.result.summary,
+      producedAt: assignment.result.producedAt,
+    }),
+  );
 } else {
   throw new Error(`Unknown capstone worker mode: ${mode ?? "missing"}.`);
 }

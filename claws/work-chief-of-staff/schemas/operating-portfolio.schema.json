@@ -1,0 +1,339 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "portfolio", "principals", "evidence", "sourceArtifacts", "assignments", "results", "capacityEnvelopes", "approvalPolicies", "decisionForums", "workstreams", "conflicts", "views", "commitment", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.operatingPortfolio.v1" },
+    "portfolio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "timezone", "periodStart", "periodEnd", "asOf"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^portfolio-[a-z0-9-]+$" },
+        "label": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 50 },
+        "timezone": { "type": "string", "minLength": 1 },
+        "periodStart": { "type": "string", "format": "date" },
+        "periodEnd": { "type": "string", "format": "date" },
+        "asOf": { "type": "string", "format": "date-time" }
+      }
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "role", "decisionScopes", "confidentialityScopes", "delegationScopes", "authorityEvidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^principal-[a-z0-9-]+$" },
+          "label": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 40 },
+          "role": { "enum": ["chief-executive", "product-lead", "engineering-lead", "finance-lead", "people-lead", "sales-lead", "operations-lead"] },
+          "decisionScopes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/decisionScope" } },
+          "confidentialityScopes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/confidentialityScope" } },
+          "delegationScopes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["evidence-review", "status-reconciliation", "dependency-analysis", "capacity-analysis", "none"] } },
+          "authorityEvidenceRefs": { "$ref": "#/$defs/nonemptyRefs" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "authority", "capturedAt", "reference"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^ev-[a-z0-9-]+$" },
+          "type": { "enum": ["principal-declaration", "decision-right-record", "portfolio-charter", "capacity-envelope", "forum-charter", "integration-approval", "system-receipt"] },
+          "authority": { "enum": ["principal-supplied", "jointly-supplied", "organization-record", "approved-integration", "controlled-system"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "sourceArtifacts": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "clawId", "artifactRef", "artifactVersion", "capturedAt", "expiresAt", "state", "accountableOwnerRef", "decisionOwnerRef", "statusSemantic", "prohibitedActions", "confidentiality", "permittedPrincipalRefs", "sharedSummary"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^artifact-[a-z0-9-]+$" },
+          "clawId": { "$ref": "#/$defs/specialistClaw" },
+          "artifactRef": { "type": "string", "pattern": "^controlled://[a-z0-9/._-]+$" },
+          "artifactVersion": { "type": "string", "minLength": 1 },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "expiresAt": { "type": "string", "format": "date-time" },
+          "state": { "enum": ["current", "stale", "conflicting", "missing"] },
+          "accountableOwnerRef": { "type": "string", "minLength": 1 },
+          "decisionOwnerRef": { "type": "string", "minLength": 1 },
+          "statusSemantic": { "enum": ["planned", "on-track", "at-risk", "blocked", "decision-needed", "approved", "completed", "unknown"] },
+          "prohibitedActions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "confidentiality": { "$ref": "#/$defs/confidentialityScope" },
+          "permittedPrincipalRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "sharedSummary": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "assignments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "specialistClawId", "sourceArtifactRefs", "permittedPrincipalRefs", "scope", "workerSessionRef", "state", "resultRef", "stopCondition"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^assignment-[a-z0-9-]+$" },
+          "specialistClawId": { "$ref": "#/$defs/specialistClaw" },
+          "sourceArtifactRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "permittedPrincipalRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "scope": { "type": "string", "minLength": 1 },
+          "workerSessionRef": { "type": "string", "pattern": "^(?:agent|process):[a-zA-Z0-9:._-]+$" },
+          "state": { "enum": ["assigned", "running", "completed", "failed", "blocked"] },
+          "resultRef": { "type": ["string", "null"] },
+          "stopCondition": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "assignmentRef", "workerSessionRef", "sourceArtifactRefs", "decisionOwnerRef", "statusSemantic", "prohibitedActions", "summary", "producedAt"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^result-[a-z0-9-]+$" },
+          "assignmentRef": { "type": "string", "minLength": 1 },
+          "workerSessionRef": { "type": "string", "pattern": "^(?:agent|process):[a-zA-Z0-9:._-]+$" },
+          "sourceArtifactRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "decisionOwnerRef": { "type": "string", "minLength": 1 },
+          "statusSemantic": { "enum": ["planned", "on-track", "at-risk", "blocked", "decision-needed", "approved", "completed", "unknown"] },
+          "prohibitedActions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "summary": { "type": "string", "minLength": 1 },
+          "producedAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "capacityEnvelopes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "function", "amount", "unit", "periodStart", "periodEnd", "approverRefs", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^capacity-[a-z0-9-]+$" },
+          "function": { "$ref": "#/$defs/domain" },
+          "amount": { "type": "number", "minimum": 0 },
+          "unit": { "enum": ["person-weeks", "budget-usd", "team-percent"] },
+          "periodStart": { "type": "string", "format": "date" },
+          "periodEnd": { "type": "string", "format": "date" },
+          "approverRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "evidenceRefs": { "$ref": "#/$defs/nonemptyRefs" }
+        }
+      }
+    },
+    "approvalPolicies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "actionTypes", "requiredPrincipalRefs", "authorityEvidenceRefs", "mode", "delegationAllowed"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^policy-[a-z0-9-]+$" },
+          "actionTypes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/actionType" } },
+          "requiredPrincipalRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "authorityEvidenceRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "mode": { "const": "all-required" },
+          "delegationAllowed": { "const": false }
+        }
+      }
+    },
+    "decisionForums": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "startsAt", "requiredPrincipalRefs", "workstreamRefs", "purpose", "state"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^forum-[a-z0-9-]+$" },
+          "title": { "type": "string", "minLength": 1 },
+          "startsAt": { "type": "string", "format": "date-time" },
+          "requiredPrincipalRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "workstreamRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "purpose": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["scheduled", "needs-decision", "completed"] }
+        }
+      }
+    },
+    "workstreams": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "domain", "title", "outcome", "sourceArtifactRef", "accountableOwnerRef", "decisionOwnerRef", "priority", "periodStart", "periodEnd", "capacityDemands", "dependencyRefs", "forumRef", "state", "blockedReasons"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^workstream-[a-z0-9-]+$" },
+          "domain": { "$ref": "#/$defs/domain" },
+          "title": { "type": "string", "minLength": 1 },
+          "outcome": { "type": "string", "minLength": 1 },
+          "sourceArtifactRef": { "type": "string", "minLength": 1 },
+          "accountableOwnerRef": { "type": "string", "minLength": 1 },
+          "decisionOwnerRef": { "type": "string", "minLength": 1 },
+          "priority": { "enum": ["critical", "high", "medium", "low", "disputed"] },
+          "periodStart": { "type": "string", "format": "date" },
+          "periodEnd": { "type": "string", "format": "date" },
+          "capacityDemands": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["capacityRef", "amount"],
+              "properties": {
+                "capacityRef": { "type": "string", "minLength": 1 },
+                "amount": { "type": "number", "minimum": 0 }
+              }
+            }
+          },
+          "dependencyRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "forumRef": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["planned", "ready", "blocked", "completed"] },
+          "blockedReasons": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "workstreamRefs", "principalRefs", "state", "requiredDecisionRefs", "summary"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^conflict-[a-z0-9-]+$" },
+          "kind": { "enum": ["capacity", "dependency", "priority", "timing", "authority", "confidentiality", "source"] },
+          "workstreamRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "principalRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "state": { "enum": ["open", "resolved-by-principals"] },
+          "requiredDecisionRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "summary": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "views": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "audiencePrincipalRefs", "workstreamRefs", "sourceArtifactRefs", "excludedFields"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^view-[a-z0-9-]+$" },
+          "kind": { "enum": ["leadership-shared", "principal-private", "decision-forum"] },
+          "audiencePrincipalRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "workstreamRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "sourceArtifactRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "excludedFields": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "commitment": { "$ref": "#/$defs/commitment" },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "accountablePrincipalRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-leadership", "blocked"] },
+        "accountablePrincipalRefs": { "$ref": "#/$defs/nonemptyRefs" },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": { "enum": ["act-as-executive", "infer-decision-rights", "override-leader-conflict", "replace-specialist-decision", "expose-restricted-data", "authorize-for-another-principal", "perform-commitment", "expand-worker-scope"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "nonemptyRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "domain": { "enum": ["leadership", "product", "engineering", "finance", "recruiting", "sales", "release", "change-control"] },
+    "decisionScope": { "enum": ["portfolio", "product", "engineering", "finance", "staffing", "sales", "release", "change-control", "external-communication", "publication"] },
+    "confidentialityScope": { "enum": ["portfolio-shared", "leadership-confidential", "product-confidential", "engineering-confidential", "finance-confidential", "people-confidential", "sales-confidential", "security-confidential"] },
+    "specialistClaw": { "enum": ["executive-assistant", "project-manager", "product-manager", "delegation-coordinator", "meeting-intelligence", "financial-analyst", "recruiting-coordinator", "sales-operations", "release-coordinator", "change-control-operator"] },
+    "actionType": { "enum": ["send-communication", "schedule-forum", "allocate-staff", "approve-spend", "approve-hiring", "change-forecast", "commit-roadmap", "commit-customer", "publish-plan", "merge", "release", "execute-change"] },
+    "commitmentPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workstreamRef", "systemRef", "targetRef", "actionType", "scope", "effectiveAt", "capacityAmount", "capacityUnit", "maxCost", "currency", "dataDisclosure", "affectedPrincipalRefs", "approvalPolicyRef"],
+      "properties": {
+        "workstreamRef": { "type": "string", "minLength": 1 },
+        "systemRef": { "type": "string", "minLength": 1 },
+        "targetRef": { "type": "string", "minLength": 1 },
+        "actionType": { "$ref": "#/$defs/actionType" },
+        "scope": { "type": "string", "minLength": 1 },
+        "effectiveAt": { "type": "string", "format": "date-time" },
+        "capacityAmount": { "type": "number", "minimum": 0 },
+        "capacityUnit": { "enum": ["person-weeks", "budget-usd", "team-percent", "none"] },
+        "maxCost": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "dataDisclosure": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "affectedPrincipalRefs": { "$ref": "#/$defs/nonemptyRefs" },
+        "approvalPolicyRef": { "type": "string", "minLength": 1 }
+      }
+    },
+    "commitment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "properties": {
+        "state": { "enum": ["not-requested", "awaiting-approval", "approved", "completed", "blocked"] },
+        "plan": { "$ref": "#/$defs/commitmentPlan" },
+        "approvals": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["principalRef", "planDigest", "approvedAt"],
+            "properties": {
+              "principalRef": { "type": "string", "minLength": 1 },
+              "planDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+              "approvedAt": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        "integration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "systemRef", "approvalRef", "approvalEvidenceRef", "configuredByRef"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^approved-integration-[a-z0-9-]+$" },
+            "systemRef": { "type": "string", "minLength": 1 },
+            "approvalRef": { "type": "string", "pattern": "^controlled://[a-z0-9/._-]+$" },
+            "approvalEvidenceRef": { "type": "string", "minLength": 1 },
+            "configuredByRef": { "type": "string", "minLength": 1 }
+          }
+        },
+        "receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["planDigest", "integrationId", "systemRef", "confirmationRef", "evidenceRef", "completedAt"],
+          "properties": {
+            "planDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+            "integrationId": { "type": "string", "minLength": 1 },
+            "systemRef": { "type": "string", "minLength": 1 },
+            "confirmationRef": { "type": "string", "pattern": "^system://[a-z0-9/._-]+$" },
+            "evidenceRef": { "type": "string", "minLength": 1 },
+            "completedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "blockedReason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
