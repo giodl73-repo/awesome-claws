@@ -19,6 +19,7 @@ const capstones = [
   "change-control-operator",
   "case-continuity-coordinator",
   "delegation-coordinator",
+  "household-steward",
 ];
 
 async function readFixture(id, name) {
@@ -224,6 +225,79 @@ async function proveDelegation(runtimeRoot, evidenceRoot) {
   return evidence;
 }
 
+async function proveHousehold(runtimeRoot, evidenceRoot) {
+  const id = "household-steward";
+  const fixture = await readFixture(id, "household-operations");
+  const validate = await validator(id, "household-operations");
+  const sourceRoot = join(runtimeRoot, "household-sources");
+  await mkdir(sourceRoot, { recursive: true });
+  const workerInputs = [];
+  for (const assignment of fixture.assignments) {
+    const sourceRef = assignment.sourceArtifactRefs[0];
+    const sourcePath = join(sourceRoot, `${sourceRef}.txt`);
+    const expectedMarker = `privacy-bounded-source:${sourceRef}`;
+    await writeFile(sourcePath, `${expectedMarker}\n`);
+    const inputPath = join(runtimeRoot, `${assignment.id}.json`);
+    await writeFile(
+      inputPath,
+      `${JSON.stringify({
+        id: assignment.id,
+        sourceArtifactRefs: assignment.sourceArtifactRefs,
+        sourcePath,
+        expectedMarker,
+        result: fixture.results.find((item) => item.id === assignment.resultRef),
+      })}\n`,
+    );
+    workerInputs.push(inputPath);
+  }
+
+  const workerResults = await Promise.all(
+    workerInputs.map((inputPath) => runWorker(["household", inputPath])),
+  );
+  const ledger = structuredClone(fixture);
+  ledger.assignments = ledger.assignments.map((assignment, index) => ({
+    ...assignment,
+    workerSessionRef: `process:${workerResults[index].pid}`,
+  }));
+  ledger.results = workerResults.map(({ pid, ...result }) => ({
+    ...result,
+    workerSessionRef: `process:${pid}`,
+  }));
+  validate(ledger, "Parallel multi-principal household ledger");
+
+  const broadened = structuredClone(ledger);
+  broadened.assignments[0].sourceArtifactRefs.push("artifact-pet");
+  assertRejected(id, broadened, "unsafe_worker_assignment");
+  const privateLeak = structuredClone(ledger);
+  privateLeak.views[0].sourceArtifactRefs.push("artifact-pet");
+  assertRejected(id, privateLeak, "household_view_privacy_leak");
+  const falseConsensus = structuredClone(ledger);
+  falseConsensus.externalAction.state = "approved";
+  falseConsensus.externalAction.approvals = [
+    {
+      memberRef: "member-alex",
+      planDigest: `sha256:${"0".repeat(64)}`,
+      approvedAt: "2026-08-21T05:10:00Z",
+    },
+  ];
+  assertRejected(id, falseConsensus, "household_action_approval_mismatch");
+
+  const evidence = {
+    status: "passed",
+    memberCount: ledger.members.length,
+    workerSessionRefs: ledger.assignments.map((item) => item.workerSessionRef),
+    restrictedArtifactCount: ledger.sourceArtifacts.filter(
+      (item) => item.visibility === "restricted",
+    ).length,
+    openConflictKinds: ledger.conflicts.map((item) => item.kind),
+    broadenedScope: "rejected",
+    sharedPrivateLeak: "rejected",
+    singleMemberFalseConsensus: "rejected",
+  };
+  await writeFile(join(evidenceRoot, `${id}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
+  return evidence;
+}
+
 export async function proveCapstones(options = {}) {
   const evidenceRoot = resolve(
     options.evidenceRoot ??
@@ -237,6 +311,7 @@ export async function proveCapstones(options = {}) {
       "change-control-operator": await proveChangeControl(runtimeRoot, evidenceRoot),
       "case-continuity-coordinator": await proveContinuity(runtimeRoot, evidenceRoot),
       "delegation-coordinator": await proveDelegation(runtimeRoot, evidenceRoot),
+      "household-steward": await proveHousehold(runtimeRoot, evidenceRoot),
     };
     const summary = {
       schemaVersion: "awesomeClaws.capstoneRuntimeProof.v1",
@@ -247,6 +322,7 @@ export async function proveCapstones(options = {}) {
         changeControl: "digest-gated workspace mutation plus focused command execution",
         continuity: "durable checkpoint resumed by a distinct Node process",
         delegation: "parallel bounded worker processes with provenance and conflict preservation",
+        household: "parallel privacy-bounded specialist workers across independent household principals, conflicts, and joint approval",
       },
       results,
     };

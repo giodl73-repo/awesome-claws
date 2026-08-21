@@ -1360,6 +1360,475 @@ function vehicleServiceFindings(value) {
   return findings;
 }
 
+function householdStewardFindings(value) {
+  const evidenceIds = value.evidence.map((item) => item.id);
+  const evidence = new Set(evidenceIds);
+  const evidenceById = new Map(value.evidence.map((item) => [item.id, item]));
+  const memberIds = value.members.map((item) => item.id);
+  const members = new Set(memberIds);
+  const memberById = new Map(value.members.map((item) => [item.id, item]));
+  const artifactIds = value.sourceArtifacts.map((item) => item.id);
+  const artifacts = new Set(artifactIds);
+  const artifactById = new Map(value.sourceArtifacts.map((item) => [item.id, item]));
+  const assignmentIds = value.assignments.map((item) => item.id);
+  const assignments = new Set(assignmentIds);
+  const assignmentById = new Map(value.assignments.map((item) => [item.id, item]));
+  const resultIds = value.results.map((item) => item.id);
+  const results = new Set(resultIds);
+  const resultById = new Map(value.results.map((item) => [item.id, item]));
+  const budgetIds = value.budgets.map((item) => item.id);
+  const budgets = new Set(budgetIds);
+  const budgetById = new Map(value.budgets.map((item) => [item.id, item]));
+  const policyIds = value.approvalPolicies.map((item) => item.id);
+  const policies = new Set(policyIds);
+  const policyById = new Map(value.approvalPolicies.map((item) => [item.id, item]));
+  const operationIds = value.operations.map((item) => item.id);
+  const operations = new Set(operationIds);
+  const operationById = new Map(value.operations.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(evidenceIds, "evidence", "Evidence id"),
+    ...uniqueFindings(memberIds, "members", "Member id"),
+    ...uniqueFindings(artifactIds, "sourceArtifacts", "Source artifact id"),
+    ...uniqueFindings(assignmentIds, "assignments", "Assignment id"),
+    ...uniqueFindings(resultIds, "results", "Result id"),
+    ...uniqueFindings(budgetIds, "budgets", "Budget id"),
+    ...uniqueFindings(value.availability.map((item) => item.id), "availability", "Availability id"),
+    ...uniqueFindings(policyIds, "approvalPolicies", "Approval policy id"),
+    ...uniqueFindings(operationIds, "operations", "Operation id"),
+    ...uniqueFindings(value.conflicts.map((item) => item.id), "conflicts", "Conflict id"),
+    ...uniqueFindings(value.views.map((item) => item.id), "views", "View id"),
+  ];
+  for (const [references, allowed, path, label] of [
+    ...value.members.map((item, index) => [item.authorityEvidenceRefs, evidence, `members.${index}.authorityEvidenceRefs`, "Evidence reference"]),
+    ...value.sourceArtifacts.map((item, index) => [item.permittedMemberRefs, members, `sourceArtifacts.${index}.permittedMemberRefs`, "Member reference"]),
+    ...value.assignments.map((item, index) => [item.sourceArtifactRefs, artifacts, `assignments.${index}.sourceArtifactRefs`, "Artifact reference"]),
+    ...value.assignments.map((item, index) => [item.permittedMemberRefs, members, `assignments.${index}.permittedMemberRefs`, "Member reference"]),
+    ...value.results.map((item, index) => [item.sourceArtifactRefs, artifacts, `results.${index}.sourceArtifactRefs`, "Artifact reference"]),
+    ...value.budgets.map((item, index) => [item.approverRefs, members, `budgets.${index}.approverRefs`, "Member reference"]),
+    ...value.budgets.map((item, index) => [item.evidenceRefs, evidence, `budgets.${index}.evidenceRefs`, "Evidence reference"]),
+    ...value.availability.map((item, index) => [[item.memberRef], members, `availability.${index}.memberRef`, "Member reference"]),
+    ...value.availability.map((item, index) => [item.evidenceRefs, evidence, `availability.${index}.evidenceRefs`, "Evidence reference"]),
+    ...value.approvalPolicies.map((item, index) => [item.requiredMemberRefs, members, `approvalPolicies.${index}.requiredMemberRefs`, "Member reference"]),
+    ...value.operations.map((item, index) => [[item.sourceArtifactRef], artifacts, `operations.${index}.sourceArtifactRef`, "Artifact reference"]),
+    ...value.operations.map((item, index) => [item.affectedMemberRefs, members, `operations.${index}.affectedMemberRefs`, "Member reference"]),
+    ...value.operations.filter((item) => item.assigneeRef).map((item, index) => [[item.assigneeRef], members, `operations.${index}.assigneeRef`, "Member reference"]),
+    ...value.operations.map((item, index) => [[item.budgetRef], budgets, `operations.${index}.budgetRef`, "Budget reference"]),
+    ...value.operations.map((item, index) => [item.dependencyRefs, operations, `operations.${index}.dependencyRefs`, "Operation reference"]),
+    ...value.operations.map((item, index) => [[item.approvalPolicyRef], policies, `operations.${index}.approvalPolicyRef`, "Policy reference"]),
+    ...value.conflicts.map((item, index) => [item.operationRefs, operations, `conflicts.${index}.operationRefs`, "Operation reference"]),
+    ...value.conflicts.map((item, index) => [item.memberRefs, members, `conflicts.${index}.memberRefs`, "Member reference"]),
+    ...value.conflicts.map((item, index) => [item.requiredDecisionRefs, members, `conflicts.${index}.requiredDecisionRefs`, "Member reference"]),
+    ...value.views.map((item, index) => [item.audienceMemberRefs, members, `views.${index}.audienceMemberRefs`, "Member reference"]),
+    ...value.views.map((item, index) => [item.operationRefs, operations, `views.${index}.operationRefs`, "Operation reference"]),
+    ...value.views.map((item, index) => [item.sourceArtifactRefs, artifacts, `views.${index}.sourceArtifactRefs`, "Artifact reference"]),
+    [value.handoff.accountableMemberRefs, members, "handoff.accountableMemberRefs", "Member reference"],
+  ]) {
+    findings.push(...uniqueFindings(references, path, label));
+    findings.push(...referenceFindings(references, allowed, path, label));
+  }
+  if (
+    /\b\d{1,6}[A-Za-z]?(?:-\d{1,6}[A-Za-z]?)?\s+[A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+){0,4}\s+(?:Alley|Aly|Avenue|Ave|Boulevard|Blvd|Circle|Cir|Court|Ct|Drive|Dr|Highway|Hwy|Lane|Ln|Parkway|Pkwy|Place|Pl|Road|Rd|Route|Rte|Street|St|Terrace|Ter|Trail|Trl|Way)\b/iu.test(
+      canonicalJson(value),
+    )
+  ) {
+    findings.push(
+      finding(
+        "exposed_household_address",
+        "household",
+        "Household artifacts must use privacy-safe labels, not a street address.",
+      ),
+    );
+  }
+  for (const [index, member] of value.members.entries()) {
+    const authorityEvidence = member.authorityEvidenceRefs.map((reference) =>
+      evidenceById.get(reference),
+    );
+    const decisionBearing = member.decisionScopes.some((scope) => scope !== "none");
+    if (
+      !authorityEvidence.some((item) =>
+        ["member-declaration", "authority-record"].includes(item?.type),
+      ) ||
+      (["minor", "caregiver", "guest", "unknown"].includes(member.kind) &&
+        decisionBearing) ||
+      (member.decisionScopes.includes("none") && member.decisionScopes.length !== 1) ||
+      member.id === "household-steward"
+    ) {
+      findings.push(
+        finding(
+          "unsupported_member_authority",
+          `members.${index}`,
+          "Member roles and decision scopes require direct declarations; limited or unknown roles cannot gain household decision authority.",
+        ),
+      );
+    }
+  }
+  const clawDomains = {
+    "home-repair-coordinator": "home-repair",
+    "appliance-care-coordinator": "appliance-care",
+    "green-thumb-coordinator": "green-thumb",
+    "pet-care-coordinator": "pet-care",
+    "vehicle-service-coordinator": "vehicle-service",
+    "pond-water-feature-coordinator": "pond-water-feature",
+  };
+  const asOf = Date.parse(value.household.asOf);
+  for (const [index, artifact] of value.sourceArtifacts.entries()) {
+    const owner = memberById.get(artifact.decisionOwnerRef);
+    if (
+      !owner ||
+      !owner.domainScopes.includes(clawDomains[artifact.clawId]) ||
+      !artifact.permittedMemberRefs.includes(artifact.decisionOwnerRef) ||
+      (artifact.state === "current" &&
+        (Date.parse(artifact.capturedAt) > asOf || Date.parse(artifact.expiresAt) <= asOf)) ||
+      (artifact.state === "stale" && Date.parse(artifact.expiresAt) > asOf) ||
+      (artifact.visibility === "restricted" && artifact.permittedMemberRefs.length === memberIds.length)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_source_artifact",
+          `sourceArtifacts.${index}`,
+          "Source artifacts must preserve a scoped human decision owner, truthful freshness, and meaningful restricted visibility.",
+        ),
+      );
+    }
+  }
+  for (const [index, assignment] of value.assignments.entries()) {
+    const assignedArtifacts = assignment.sourceArtifactRefs.map((reference) =>
+      artifactById.get(reference),
+    );
+    const result = assignment.resultRef ? resultById.get(assignment.resultRef) : undefined;
+    if (
+      assignedArtifacts.some(
+        (artifact) =>
+          artifact?.clawId !== assignment.specialistClawId ||
+          assignment.permittedMemberRefs.some(
+            (memberRef) => !artifact.permittedMemberRefs.includes(memberRef),
+          ),
+      ) ||
+      (assignment.state === "completed" &&
+        (!result ||
+          result.assignmentRef !== assignment.id ||
+          result.workerSessionRef !== assignment.workerSessionRef)) ||
+      (assignment.state !== "completed" && assignment.resultRef)
+    ) {
+      findings.push(
+        finding(
+          "unsafe_worker_assignment",
+          `assignments.${index}`,
+          "Worker scope, specialist Claw, permitted people, completion state, session, and result must remain exactly bounded.",
+        ),
+      );
+    }
+  }
+  for (const [index, result] of value.results.entries()) {
+    const assignment = assignmentById.get(result.assignmentRef);
+    const sourceArtifacts = result.sourceArtifactRefs.map((reference) =>
+      artifactById.get(reference),
+    );
+    if (
+      !assignment ||
+      assignment.workerSessionRef !== result.workerSessionRef ||
+      canonicalJson([...result.sourceArtifactRefs].sort()) !==
+        canonicalJson([...assignment.sourceArtifactRefs].sort()) ||
+      sourceArtifacts.some(
+        (artifact) =>
+          artifact?.decisionOwnerRef !== result.decisionOwnerRef ||
+          artifact.safetyState !== result.safetyState ||
+          artifact.prohibitedActions.some(
+            (action) => !result.prohibitedActions.includes(action),
+          ),
+      )
+    ) {
+      findings.push(
+        finding(
+          "worker_result_scope_drift",
+          `results.${index}`,
+          "Worker results must preserve assignment sources, session provenance, domain decision owner, safety state, and every prohibition.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of value.availability.entries()) {
+    if (Date.parse(item.startsAt) >= Date.parse(item.endsAt)) {
+      findings.push(
+        finding(
+          "invalid_availability_window",
+          `availability.${index}`,
+          "Availability windows must be ordered.",
+        ),
+      );
+    }
+  }
+  for (const [index, operation] of value.operations.entries()) {
+    const artifact = artifactById.get(operation.sourceArtifactRef);
+    const assignee = operation.assigneeRef
+      ? memberById.get(operation.assigneeRef)
+      : undefined;
+    const budget = budgetById.get(operation.budgetRef);
+    const policy = policyById.get(operation.approvalPolicyRef);
+    const blocked = operation.state === "blocked";
+    const assigneeUnavailable =
+      assignee &&
+      value.availability.some(
+        (item) =>
+          item.memberRef === assignee.id &&
+          item.state === "unavailable" &&
+          Date.parse(item.startsAt) < Date.parse(operation.dueEnd) &&
+          Date.parse(item.endsAt) > Date.parse(operation.dueStart),
+      );
+    const unresolvedDependency = operation.dependencyRefs.some(
+      (reference) => operationById.get(reference)?.state !== "completed",
+    );
+    if (
+      Date.parse(operation.dueStart) >= Date.parse(operation.dueEnd) ||
+      artifact?.clawId !==
+        Object.keys(clawDomains).find((clawId) => clawDomains[clawId] === operation.domain) ||
+      operation.affectedMemberRefs.some(
+        (memberRef) => !artifact?.permittedMemberRefs.includes(memberRef),
+      ) ||
+      (assignee &&
+        (!assignee.domainScopes.includes(operation.domain) ||
+          !artifact?.permittedMemberRefs.includes(assignee.id))) ||
+      !budget ||
+      budget.currency !== operation.currency ||
+      !policy ||
+      (["ready", "completed"].includes(operation.state) &&
+        (artifact?.state !== "current" ||
+          ["emergency", "blocked", "unknown"].includes(artifact.safetyState) ||
+          assigneeUnavailable ||
+          unresolvedDependency)) ||
+      (blocked && operation.blockedReasons.length === 0) ||
+      (!blocked && operation.blockedReasons.length > 0)
+    ) {
+      findings.push(
+        finding(
+          "unsafe_household_operation",
+          `operations.${index}`,
+          "Household operations must preserve domain, visibility, member eligibility, time, budget, dependency, safety, and blocked-state boundaries.",
+        ),
+      );
+    }
+  }
+  for (const budget of value.budgets) {
+    const allocated = value.operations
+      .filter((item) => item.budgetRef === budget.id && item.state !== "completed")
+      .reduce((sum, item) => sum + item.cost, 0);
+    const hasOpenBudgetConflict = value.conflicts.some(
+      (item) =>
+        item.kind === "budget" &&
+        item.state === "open" &&
+        item.operationRefs.some(
+          (reference) => operationById.get(reference)?.budgetRef === budget.id,
+        ),
+    );
+    if (allocated > budget.amount && !hasOpenBudgetConflict) {
+      findings.push(
+        finding(
+          "hidden_budget_conflict",
+          `budgets.${budget.id}`,
+          "Overallocated household budgets require an explicit open conflict.",
+        ),
+      );
+    }
+  }
+  for (const [index, conflict] of value.conflicts.entries()) {
+    if (
+      (conflict.state === "open" &&
+        conflict.requiredDecisionRefs.length === 0) ||
+      (conflict.state === "resolved-by-members" &&
+        conflict.requiredDecisionRefs.length > 0)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_household_conflict",
+          `conflicts.${index}`,
+          "Open conflicts retain every required human decision; resolved conflicts retain none.",
+        ),
+      );
+    }
+  }
+  const requiredSharedExclusions = [
+    "exact-address",
+    "access-codes",
+    "credentials",
+    "private-messages",
+    "health-details",
+    "financial-details",
+    "precise-presence",
+    "restricted-artifacts",
+  ];
+  for (const [index, view] of value.views.entries()) {
+    const visibleArtifacts = view.sourceArtifactRefs.map((reference) =>
+      artifactById.get(reference),
+    );
+    if (
+      visibleArtifacts.some((artifact) =>
+        view.audienceMemberRefs.some(
+          (memberRef) => !artifact?.permittedMemberRefs.includes(memberRef),
+        ),
+      ) ||
+      (view.kind === "shared" &&
+        (visibleArtifacts.some((artifact) => artifact?.visibility === "restricted") ||
+          requiredSharedExclusions.some(
+            (field) => !view.excludedFields.includes(field),
+          ))) ||
+      (view.kind === "member-private" && view.audienceMemberRefs.length !== 1)
+    ) {
+      findings.push(
+        finding(
+          "household_view_privacy_leak",
+          `views.${index}`,
+          "Shared and private views must respect every source-artifact audience and suppress sensitive household fields.",
+        ),
+      );
+    }
+  }
+  for (const memberId of memberIds) {
+    if (
+      !value.views.some(
+        (view) =>
+          view.kind === "member-private" &&
+          view.audienceMemberRefs.length === 1 &&
+          view.audienceMemberRefs[0] === memberId,
+      )
+    ) {
+      findings.push(
+        finding(
+          "missing_member_private_view",
+          "views",
+          `Member ${JSON.stringify(memberId)} requires a distinct private view.`,
+        ),
+      );
+    }
+  }
+  const action = value.externalAction;
+  const hasPlan = Boolean(action.plan);
+  const approvals = action.approvals ?? [];
+  const hasIntegration = Boolean(action.integration);
+  const hasReceipt = Boolean(action.receipt);
+  if (
+    (["awaiting-approval", "approved", "completed"].includes(action.state) &&
+      !hasPlan) ||
+    (action.state === "completed" && (!hasIntegration || !hasReceipt)) ||
+    (action.state !== "completed" && (hasIntegration || hasReceipt)) ||
+    (action.state === "not-requested" && (hasPlan || approvals.length > 0)) ||
+    (action.state === "blocked" && !action.blockedReason)
+  ) {
+    findings.push(
+      finding(
+        "incoherent_household_action",
+        "externalAction",
+        "External action plan, approvals, integration, receipt, and blocked reason must match the declared state.",
+      ),
+    );
+  }
+  const planDigest = action.plan
+    ? `sha256:${createHash("sha256").update(canonicalJson(action.plan)).digest("hex")}`
+    : undefined;
+  if (action.plan) {
+    findings.push(
+      ...referenceFindings(
+        [action.plan.operationRef],
+        operations,
+        "externalAction.plan.operationRef",
+        "Operation reference",
+      ),
+      ...referenceFindings(
+        action.plan.affectedMemberRefs,
+        members,
+        "externalAction.plan.affectedMemberRefs",
+        "Member reference",
+      ),
+      ...referenceFindings(
+        [action.plan.approvalPolicyRef],
+        policies,
+        "externalAction.plan.approvalPolicyRef",
+        "Policy reference",
+      ),
+    );
+    const operation = operationById.get(action.plan.operationRef);
+    const policy = policyById.get(action.plan.approvalPolicyRef);
+    const approvedMembers = approvals.map((approval) => approval.memberRef);
+    const approvalComplete =
+      policy &&
+      policy.requiredMemberRefs.every((memberRef) => approvedMembers.includes(memberRef));
+    if (
+      !operation ||
+      operation.approvalPolicyRef !== action.plan.approvalPolicyRef ||
+      action.plan.maxDeposit > action.plan.maxCost ||
+      approvals.some(
+        (approval) =>
+          approval.planDigest !== planDigest ||
+          !policy?.requiredMemberRefs.includes(approval.memberRef),
+      ) ||
+      (["approved", "completed"].includes(action.state) && !approvalComplete) ||
+      (action.state === "awaiting-approval" && approvalComplete)
+    ) {
+      findings.push(
+        finding(
+          "household_action_approval_mismatch",
+          "externalAction",
+          "Every policy-required member must separately approve the exact external action plan.",
+        ),
+      );
+    }
+  }
+  if (
+    action.state === "completed" &&
+    action.plan &&
+    action.integration &&
+    action.receipt
+  ) {
+    const integrationEvidence = evidenceById.get(action.integration.approvalEvidenceRef);
+    const receiptEvidence = evidenceById.get(action.receipt.evidenceRef);
+    if (
+      action.receipt.planDigest !== planDigest ||
+      action.receipt.integrationId !== action.integration.id ||
+      action.receipt.providerRef !== action.plan.providerRef ||
+      action.integration.providerRef !== action.plan.providerRef ||
+      !action.receipt.confirmationRef.startsWith(
+        `provider://${action.plan.providerRef}/`,
+      ) ||
+      integrationEvidence?.type !== "integration-approval" ||
+      integrationEvidence.authority !== "approved-integration" ||
+      integrationEvidence.reference !== action.integration.approvalRef ||
+      receiptEvidence?.type !== "provider-receipt" ||
+      receiptEvidence.authority !== "provider" ||
+      receiptEvidence.reference !== action.receipt.confirmationRef ||
+      receiptEvidence.capturedAt !== action.receipt.completedAt ||
+      Date.parse(action.receipt.completedAt) >= Date.parse(action.plan.startsAt)
+    ) {
+      findings.push(
+        finding(
+          "household_action_receipt_mismatch",
+          "externalAction.receipt",
+          "Approved integration and provider receipt evidence must bind the exact multi-member plan.",
+        ),
+      );
+    }
+  }
+  const openConflicts = value.conflicts.some((item) => item.state === "open");
+  if (
+    (openConflicts && value.handoff.state !== "blocked") ||
+    value.handoff.accountableMemberRefs.some((memberRef) => {
+      const member = memberById.get(memberRef);
+      return (
+        !member ||
+        member.kind !== "adult" ||
+        !member.decisionScopes.includes("shared-maintenance")
+      );
+    })
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_household_authority",
+        "handoff",
+        "Open conflicts block handoff, and household authority remains with explicitly scoped adult members.",
+      ),
+    );
+  }
+  return findings;
+}
+
 function homeRepairFindings(value) {
   const evidenceIds = value.evidence.map((item) => item.id);
   const evidence = new Set(evidenceIds);
@@ -3259,6 +3728,7 @@ const validators = {
   "financial-analyst": financialAnalysisFindings,
   "green-thumb-coordinator": greenThumbFindings,
   "home-repair-coordinator": homeRepairFindings,
+  "household-steward": householdStewardFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
   "pet-care-coordinator": petCareFindings,
   "pond-water-feature-coordinator": pondWaterFeatureFindings,

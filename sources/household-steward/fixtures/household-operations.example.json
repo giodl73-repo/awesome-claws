@@ -1,0 +1,499 @@
+{
+  "schemaVersion": "awesomeClaws.householdOperations.v1",
+  "household": {
+    "id": "household-river",
+    "label": "river-household",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-21T05:30:00Z"
+  },
+  "members": [
+    {
+      "id": "member-alex",
+      "label": "alex",
+      "kind": "adult",
+      "residency": "resident",
+      "declaredRoles": ["property-decision-maker", "budget-approver", "domain-owner"],
+      "domainScopes": ["home-repair", "appliance-care", "green-thumb", "pond-water-feature", "shared-household"],
+      "decisionScopes": ["shared-maintenance", "budget", "appointment", "purchase", "data-disclosure"],
+      "privacyScopes": ["shared-summary", "assigned-domain", "own-private"],
+      "authorityEvidenceRefs": ["ev-alex", "ev-property", "ev-joint"]
+    },
+    {
+      "id": "member-jordan",
+      "label": "jordan",
+      "kind": "adult",
+      "residency": "resident",
+      "declaredRoles": ["property-decision-maker", "budget-approver", "domain-owner"],
+      "domainScopes": ["pet-care", "vehicle-service", "shared-household"],
+      "decisionScopes": ["shared-maintenance", "budget", "appointment", "purchase", "data-disclosure", "personal-care"],
+      "privacyScopes": ["shared-summary", "assigned-domain", "own-private"],
+      "authorityEvidenceRefs": ["ev-jordan", "ev-property", "ev-joint"]
+    },
+    {
+      "id": "member-sam",
+      "label": "sam",
+      "kind": "minor",
+      "residency": "resident",
+      "declaredRoles": ["participant", "minor-resident"],
+      "domainScopes": ["appliance-care", "green-thumb", "pond-water-feature"],
+      "decisionScopes": ["none"],
+      "privacyScopes": ["shared-summary", "assigned-domain", "own-private"],
+      "authorityEvidenceRefs": ["ev-sam"]
+    },
+    {
+      "id": "member-casey",
+      "label": "casey",
+      "kind": "caregiver",
+      "residency": "temporary",
+      "declaredRoles": ["caregiver"],
+      "domainScopes": ["pet-care"],
+      "decisionScopes": ["none"],
+      "privacyScopes": ["shared-summary", "caregiving-minimum"],
+      "authorityEvidenceRefs": ["ev-casey", "ev-absence"]
+    }
+  ],
+  "evidence": [
+    { "id": "ev-alex", "type": "member-declaration", "authority": "member-supplied", "capturedAt": "2026-08-20T18:00:00Z", "reference": "evidence/member-alex-declaration.md" },
+    { "id": "ev-jordan", "type": "member-declaration", "authority": "member-supplied", "capturedAt": "2026-08-20T18:01:00Z", "reference": "evidence/member-jordan-declaration.md" },
+    { "id": "ev-sam", "type": "member-declaration", "authority": "jointly-supplied", "capturedAt": "2026-08-20T18:02:00Z", "reference": "evidence/member-sam-participation.md" },
+    { "id": "ev-casey", "type": "member-declaration", "authority": "member-supplied", "capturedAt": "2026-08-20T18:03:00Z", "reference": "evidence/member-casey-caregiving-scope.md" },
+    { "id": "ev-property", "type": "authority-record", "authority": "property-record", "capturedAt": "2026-08-20T18:04:00Z", "reference": "evidence/privacy-minimized-property-authority.pdf" },
+    { "id": "ev-joint", "type": "authority-record", "authority": "jointly-supplied", "capturedAt": "2026-08-20T18:05:00Z", "reference": "evidence/joint-household-decisions.md" },
+    { "id": "ev-calendar", "type": "calendar-window", "authority": "jointly-supplied", "capturedAt": "2026-08-20T18:06:00Z", "reference": "evidence/privacy-safe-availability.json" },
+    { "id": "ev-budget", "type": "budget-envelope", "authority": "jointly-supplied", "capturedAt": "2026-08-20T18:07:00Z", "reference": "evidence/shared-maintenance-envelope.json" },
+    { "id": "ev-absence", "type": "absence-plan", "authority": "jointly-supplied", "capturedAt": "2026-08-20T18:08:00Z", "reference": "evidence/caregiver-minimum-scope.md" },
+    { "id": "ev-provider", "type": "provider-info", "authority": "provider", "capturedAt": "2026-08-20T18:09:00Z", "reference": "evidence/pond-provider.pdf" }
+  ],
+  "sourceArtifacts": [
+    {
+      "id": "artifact-home",
+      "clawId": "home-repair-coordinator",
+      "artifactRef": "controlled://claws/home-repair/august",
+      "artifactVersion": "v4",
+      "capturedAt": "2026-08-20T16:00:00Z",
+      "expiresAt": "2026-09-20T16:00:00Z",
+      "state": "current",
+      "decisionOwnerRef": "member-alex",
+      "safetyState": "qualified-specialist",
+      "prohibitedActions": ["perform-hazardous-work", "authorize-service"],
+      "visibility": "shared",
+      "permittedMemberRefs": ["member-alex", "member-jordan", "member-sam", "member-casey"],
+      "sharedSummary": "Qualified trade assessment is pending for the exterior outlet."
+    },
+    {
+      "id": "artifact-appliance",
+      "clawId": "appliance-care-coordinator",
+      "artifactRef": "controlled://claws/appliance/august",
+      "artifactVersion": "v2",
+      "capturedAt": "2026-08-20T16:10:00Z",
+      "expiresAt": "2026-09-20T16:10:00Z",
+      "state": "current",
+      "decisionOwnerRef": "member-alex",
+      "safetyState": "bounded",
+      "prohibitedActions": ["diagnose-or-repair", "authorize-service"],
+      "visibility": "shared",
+      "permittedMemberRefs": ["member-alex", "member-jordan", "member-sam", "member-casey"],
+      "sharedSummary": "The manufacturer filter inspection is due this month."
+    },
+    {
+      "id": "artifact-garden",
+      "clawId": "green-thumb-coordinator",
+      "artifactRef": "controlled://claws/green-thumb/august",
+      "artifactVersion": "v3",
+      "capturedAt": "2026-08-20T16:20:00Z",
+      "expiresAt": "2026-09-10T16:20:00Z",
+      "state": "current",
+      "decisionOwnerRef": "member-alex",
+      "safetyState": "bounded",
+      "prohibitedActions": ["apply-unsupported-treatment", "authorize-service"],
+      "visibility": "shared",
+      "permittedMemberRefs": ["member-alex", "member-jordan", "member-sam", "member-casey"],
+      "sharedSummary": "The irrigation observation and fall planting review are due."
+    },
+    {
+      "id": "artifact-pet",
+      "clawId": "pet-care-coordinator",
+      "artifactRef": "controlled://claws/pet/private-august",
+      "artifactVersion": "v5",
+      "capturedAt": "2026-08-20T16:30:00Z",
+      "expiresAt": "2026-08-28T16:30:00Z",
+      "state": "current",
+      "decisionOwnerRef": "member-jordan",
+      "safetyState": "bounded",
+      "prohibitedActions": ["diagnose", "authorize-treatment", "delay-emergency-care"],
+      "visibility": "restricted",
+      "permittedMemberRefs": ["member-jordan", "member-casey"],
+      "sharedSummary": "A caregiver-visible feeding checkpoint is due; private clinical details are excluded."
+    },
+    {
+      "id": "artifact-vehicle",
+      "clawId": "vehicle-service-coordinator",
+      "artifactRef": "controlled://claws/vehicle/private-august",
+      "artifactVersion": "v2",
+      "capturedAt": "2026-08-20T16:40:00Z",
+      "expiresAt": "2026-09-20T16:40:00Z",
+      "state": "current",
+      "decisionOwnerRef": "member-jordan",
+      "safetyState": "qualified-specialist",
+      "prohibitedActions": ["diagnose", "authorize-service", "claim-roadworthy"],
+      "visibility": "restricted",
+      "permittedMemberRefs": ["member-jordan"],
+      "sharedSummary": "A service estimate is pending with private vehicle details excluded."
+    },
+    {
+      "id": "artifact-pond",
+      "clawId": "pond-water-feature-coordinator",
+      "artifactRef": "controlled://claws/pond/august",
+      "artifactVersion": "v1",
+      "capturedAt": "2026-08-20T16:50:00Z",
+      "expiresAt": "2026-09-20T16:50:00Z",
+      "state": "current",
+      "decisionOwnerRef": "member-alex",
+      "safetyState": "bounded",
+      "prohibitedActions": ["perform-high-risk-work", "treat-or-release-organisms", "authorize-service-or-treatment"],
+      "visibility": "shared",
+      "permittedMemberRefs": ["member-alex", "member-jordan", "member-sam", "member-casey"],
+      "sharedSummary": "A seasonal system and habitat assessment awaits household approval."
+    }
+  ],
+  "assignments": [
+    {
+      "id": "assignment-appliance",
+      "specialistClawId": "appliance-care-coordinator",
+      "sourceArtifactRefs": ["artifact-appliance"],
+      "permittedMemberRefs": ["member-alex", "member-sam"],
+      "scope": "Confirm the existing manufacturer inspection window without diagnosing or changing appliance state.",
+      "workerSessionRef": "agent:appliance-care:01",
+      "state": "completed",
+      "resultRef": "result-appliance",
+      "stopCondition": "Stop on fault, hazard, stale source, private-data need, or repair request."
+    },
+    {
+      "id": "assignment-pet",
+      "specialistClawId": "pet-care-coordinator",
+      "sourceArtifactRefs": ["artifact-pet"],
+      "permittedMemberRefs": ["member-jordan", "member-casey"],
+      "scope": "Confirm the caregiver-visible feeding checkpoint only; exclude clinical details and treatment authority.",
+      "workerSessionRef": "agent:pet-care:02",
+      "state": "completed",
+      "resultRef": "result-pet",
+      "stopCondition": "Stop on symptoms, treatment, emergency, private-data expansion, or guardian decision."
+    },
+    {
+      "id": "assignment-pond",
+      "specialistClawId": "pond-water-feature-coordinator",
+      "sourceArtifactRefs": ["artifact-pond"],
+      "permittedMemberRefs": ["member-alex", "member-jordan", "member-sam"],
+      "scope": "Confirm the assessment scope and stop conditions without booking, treatment, repair, or organism action.",
+      "workerSessionRef": "agent:pond-water-feature:03",
+      "state": "completed",
+      "resultRef": "result-pond",
+      "stopCondition": "Stop on high-risk work, treatment, repair, release, stale evidence, or external action."
+    }
+  ],
+  "results": [
+    {
+      "id": "result-appliance",
+      "assignmentRef": "assignment-appliance",
+      "workerSessionRef": "agent:appliance-care:01",
+      "sourceArtifactRefs": ["artifact-appliance"],
+      "decisionOwnerRef": "member-alex",
+      "status": "supported",
+      "safetyState": "bounded",
+      "prohibitedActions": ["diagnose-or-repair", "authorize-service"],
+      "summary": "The existing source supports a bounded manufacturer-indicator inspection.",
+      "producedAt": "2026-08-21T05:00:00Z"
+    },
+    {
+      "id": "result-pet",
+      "assignmentRef": "assignment-pet",
+      "workerSessionRef": "agent:pet-care:02",
+      "sourceArtifactRefs": ["artifact-pet"],
+      "decisionOwnerRef": "member-jordan",
+      "status": "supported",
+      "safetyState": "bounded",
+      "prohibitedActions": ["diagnose", "authorize-treatment", "delay-emergency-care"],
+      "summary": "Only the caregiver-visible feeding checkpoint may be shared; clinical detail remains restricted.",
+      "producedAt": "2026-08-21T05:01:00Z"
+    },
+    {
+      "id": "result-pond",
+      "assignmentRef": "assignment-pond",
+      "workerSessionRef": "agent:pond-water-feature:03",
+      "sourceArtifactRefs": ["artifact-pond"],
+      "decisionOwnerRef": "member-alex",
+      "status": "supported",
+      "safetyState": "bounded",
+      "prohibitedActions": ["perform-high-risk-work", "treat-or-release-organisms", "authorize-service-or-treatment"],
+      "summary": "The assessment scope is supported but booking remains subject to joint approval.",
+      "producedAt": "2026-08-21T05:02:00Z"
+    }
+  ],
+  "budgets": [
+    {
+      "id": "budget-maintenance",
+      "label": "september shared maintenance",
+      "amount": 1000,
+      "currency": "USD",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "approverRefs": ["member-alex", "member-jordan"],
+      "evidenceRefs": ["ev-budget", "ev-joint"]
+    }
+  ],
+  "availability": [
+    {
+      "id": "availability-alex",
+      "memberRef": "member-alex",
+      "startsAt": "2026-09-01T00:00:00Z",
+      "endsAt": "2026-09-30T23:59:59Z",
+      "state": "available",
+      "evidenceRefs": ["ev-calendar"]
+    },
+    {
+      "id": "availability-jordan",
+      "memberRef": "member-jordan",
+      "startsAt": "2026-09-05T16:00:00Z",
+      "endsAt": "2026-09-05T20:00:00Z",
+      "state": "unavailable",
+      "evidenceRefs": ["ev-calendar"]
+    },
+    {
+      "id": "availability-sam",
+      "memberRef": "member-sam",
+      "startsAt": "2026-09-01T00:00:00Z",
+      "endsAt": "2026-09-30T23:59:59Z",
+      "state": "available",
+      "evidenceRefs": ["ev-calendar"]
+    },
+    {
+      "id": "availability-casey",
+      "memberRef": "member-casey",
+      "startsAt": "2026-09-05T16:00:00Z",
+      "endsAt": "2026-09-05T20:00:00Z",
+      "state": "available",
+      "evidenceRefs": ["ev-calendar", "ev-absence"]
+    }
+  ],
+  "approvalPolicies": [
+    {
+      "id": "policy-joint-household",
+      "actionTypes": ["schedule", "purchase", "payment", "data-disclosure", "work-authorization"],
+      "requiredMemberRefs": ["member-alex", "member-jordan"],
+      "mode": "all-required",
+      "delegationAllowed": false
+    },
+    {
+      "id": "policy-jordan-private",
+      "actionTypes": ["schedule", "data-disclosure", "treatment-authorization"],
+      "requiredMemberRefs": ["member-jordan"],
+      "mode": "all-required",
+      "delegationAllowed": false
+    }
+  ],
+  "operations": [
+    {
+      "id": "operation-home",
+      "domain": "home-repair",
+      "title": "Qualified exterior outlet assessment",
+      "sourceArtifactRef": "artifact-home",
+      "affectedMemberRefs": ["member-alex", "member-jordan"],
+      "assigneeRef": "member-alex",
+      "dueStart": "2026-09-02T16:00:00Z",
+      "dueEnd": "2026-09-02T18:00:00Z",
+      "cost": 450,
+      "currency": "USD",
+      "budgetRef": "budget-maintenance",
+      "dependencyRefs": [],
+      "approvalPolicyRef": "policy-joint-household",
+      "state": "planned",
+      "visibility": "shared",
+      "blockedReasons": []
+    },
+    {
+      "id": "operation-appliance",
+      "domain": "appliance-care",
+      "title": "Manufacturer filter indicator inspection",
+      "sourceArtifactRef": "artifact-appliance",
+      "affectedMemberRefs": ["member-alex", "member-sam"],
+      "assigneeRef": "member-sam",
+      "dueStart": "2026-09-03T17:00:00Z",
+      "dueEnd": "2026-09-03T17:30:00Z",
+      "cost": 0,
+      "currency": "USD",
+      "budgetRef": "budget-maintenance",
+      "dependencyRefs": [],
+      "approvalPolicyRef": "policy-joint-household",
+      "state": "planned",
+      "visibility": "shared",
+      "blockedReasons": []
+    },
+    {
+      "id": "operation-garden",
+      "domain": "green-thumb",
+      "title": "Fall planting review",
+      "sourceArtifactRef": "artifact-garden",
+      "affectedMemberRefs": ["member-alex", "member-sam"],
+      "assigneeRef": "member-alex",
+      "dueStart": "2026-09-04T17:00:00Z",
+      "dueEnd": "2026-09-04T18:00:00Z",
+      "cost": 180,
+      "currency": "USD",
+      "budgetRef": "budget-maintenance",
+      "dependencyRefs": [],
+      "approvalPolicyRef": "policy-joint-household",
+      "state": "planned",
+      "visibility": "shared",
+      "blockedReasons": []
+    },
+    {
+      "id": "operation-pet",
+      "domain": "pet-care",
+      "title": "Caregiver-visible feeding checkpoint",
+      "sourceArtifactRef": "artifact-pet",
+      "affectedMemberRefs": ["member-jordan", "member-casey"],
+      "assigneeRef": "member-casey",
+      "dueStart": "2026-09-05T17:00:00Z",
+      "dueEnd": "2026-09-05T17:30:00Z",
+      "cost": 0,
+      "currency": "USD",
+      "budgetRef": "budget-maintenance",
+      "dependencyRefs": [],
+      "approvalPolicyRef": "policy-jordan-private",
+      "state": "planned",
+      "visibility": "restricted",
+      "blockedReasons": []
+    },
+    {
+      "id": "operation-vehicle",
+      "domain": "vehicle-service",
+      "title": "Review private service estimate",
+      "sourceArtifactRef": "artifact-vehicle",
+      "affectedMemberRefs": ["member-jordan"],
+      "assigneeRef": "member-jordan",
+      "dueStart": "2026-09-05T17:00:00Z",
+      "dueEnd": "2026-09-05T18:00:00Z",
+      "cost": 420,
+      "currency": "USD",
+      "budgetRef": "budget-maintenance",
+      "dependencyRefs": [],
+      "approvalPolicyRef": "policy-jordan-private",
+      "state": "blocked",
+      "visibility": "restricted",
+      "blockedReasons": ["The decision owner is unavailable during the proposed window", "The shared budget is overallocated"]
+    },
+    {
+      "id": "operation-pond",
+      "domain": "pond-water-feature",
+      "title": "Seasonal system and habitat assessment",
+      "sourceArtifactRef": "artifact-pond",
+      "affectedMemberRefs": ["member-alex", "member-jordan", "member-sam"],
+      "assigneeRef": null,
+      "dueStart": "2026-09-05T17:00:00Z",
+      "dueEnd": "2026-09-05T18:00:00Z",
+      "cost": 220,
+      "currency": "USD",
+      "budgetRef": "budget-maintenance",
+      "dependencyRefs": ["operation-home"],
+      "approvalPolicyRef": "policy-joint-household",
+      "state": "blocked",
+      "visibility": "shared",
+      "blockedReasons": ["Joint schedule approval is unresolved", "The shared budget is overallocated", "The exterior electrical assessment remains a dependency"]
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-schedule",
+      "kind": "schedule",
+      "operationRefs": ["operation-vehicle", "operation-pond"],
+      "memberRefs": ["member-alex", "member-jordan"],
+      "state": "open",
+      "requiredDecisionRefs": ["member-alex", "member-jordan"],
+      "summary": "The proposed vehicle and pond windows overlap while one required decision owner is unavailable."
+    },
+    {
+      "id": "conflict-budget",
+      "kind": "budget",
+      "operationRefs": ["operation-home", "operation-garden", "operation-vehicle", "operation-pond"],
+      "memberRefs": ["member-alex", "member-jordan"],
+      "state": "open",
+      "requiredDecisionRefs": ["member-alex", "member-jordan"],
+      "summary": "Planned September work totals more than the jointly supplied maintenance envelope."
+    },
+    {
+      "id": "conflict-dependency",
+      "kind": "dependency",
+      "operationRefs": ["operation-home", "operation-pond"],
+      "memberRefs": ["member-alex", "member-jordan"],
+      "state": "open",
+      "requiredDecisionRefs": ["member-alex", "member-jordan"],
+      "summary": "The pond assessment must not proceed before the qualified exterior electrical assessment."
+    }
+  ],
+  "views": [
+    {
+      "id": "view-shared",
+      "kind": "shared",
+      "audienceMemberRefs": ["member-alex", "member-jordan", "member-sam", "member-casey"],
+      "operationRefs": ["operation-home", "operation-appliance", "operation-garden", "operation-pond"],
+      "sourceArtifactRefs": ["artifact-home", "artifact-appliance", "artifact-garden", "artifact-pond"],
+      "excludedFields": ["exact-address", "access-codes", "credentials", "private-messages", "health-details", "financial-details", "precise-presence", "restricted-artifacts"]
+    },
+    {
+      "id": "view-alex-private",
+      "kind": "member-private",
+      "audienceMemberRefs": ["member-alex"],
+      "operationRefs": ["operation-home", "operation-appliance", "operation-garden", "operation-pond"],
+      "sourceArtifactRefs": ["artifact-home", "artifact-appliance", "artifact-garden", "artifact-pond"],
+      "excludedFields": ["other-member-private-data"]
+    },
+    {
+      "id": "view-jordan-private",
+      "kind": "member-private",
+      "audienceMemberRefs": ["member-jordan"],
+      "operationRefs": ["operation-home", "operation-pet", "operation-vehicle", "operation-pond"],
+      "sourceArtifactRefs": ["artifact-home", "artifact-pet", "artifact-vehicle", "artifact-pond"],
+      "excludedFields": ["other-member-private-data"]
+    },
+    {
+      "id": "view-sam-private",
+      "kind": "member-private",
+      "audienceMemberRefs": ["member-sam"],
+      "operationRefs": ["operation-appliance", "operation-garden", "operation-pond"],
+      "sourceArtifactRefs": ["artifact-appliance", "artifact-garden", "artifact-pond"],
+      "excludedFields": ["adult-private-data", "provider-terms", "payment-data"]
+    },
+    {
+      "id": "view-casey-private",
+      "kind": "member-private",
+      "audienceMemberRefs": ["member-casey"],
+      "operationRefs": ["operation-pet"],
+      "sourceArtifactRefs": ["artifact-pet"],
+      "excludedFields": ["clinical-details", "treatment-authority", "other-member-private-data"]
+    }
+  ],
+  "externalAction": {
+    "state": "awaiting-approval",
+    "plan": {
+      "operationRef": "operation-pond",
+      "providerRef": "provider-aquatic",
+      "actionType": "schedule",
+      "scope": "Seasonal system and habitat assessment only; no repair, treatment, stocking, release, payment, or expanded work.",
+      "startsAt": "2026-09-05T17:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "maxCost": 220,
+      "currency": "USD",
+      "maxDeposit": 0,
+      "cancellationTerms": "No fee when cancelled at least 24 hours before the appointment.",
+      "dataDisclosure": ["river-household label", "pond artifact version", "component summary", "privacy-safe callback"],
+      "affectedMemberRefs": ["member-alex", "member-jordan", "member-sam"],
+      "approvalPolicyRef": "policy-joint-household"
+    },
+    "approvals": []
+  },
+  "handoff": {
+    "state": "blocked",
+    "accountableMemberRefs": ["member-alex", "member-jordan"],
+    "prohibitedActions": ["act-as-head-of-household", "infer-member-authority", "override-member-conflict", "replace-specialist-decision", "expose-restricted-data", "authorize-for-another-member", "perform-external-action", "expand-worker-scope"]
+  }
+}

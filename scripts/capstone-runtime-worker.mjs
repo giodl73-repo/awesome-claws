@@ -47,6 +47,26 @@ if (mode === "continuity-v1") {
       confidence: assignment.confidence,
     }),
   );
+} else if (mode === "household") {
+  const assignment = JSON.parse(await readFile(inputPath, "utf8"));
+  const source = await readFile(assignment.sourcePath, "utf8");
+  if (!source.includes(assignment.expectedMarker)) {
+    throw new Error(`Assigned household source did not contain ${assignment.expectedMarker}.`);
+  }
+  console.log(
+    JSON.stringify({
+      pid: process.pid,
+      id: assignment.result.id,
+      assignmentRef: assignment.id,
+      sourceArtifactRefs: assignment.sourceArtifactRefs,
+      decisionOwnerRef: assignment.result.decisionOwnerRef,
+      status: assignment.result.status,
+      safetyState: assignment.result.safetyState,
+      prohibitedActions: assignment.result.prohibitedActions,
+      summary: assignment.result.summary,
+      producedAt: assignment.result.producedAt,
+    }),
+  );
 } else {
   throw new Error(`Unknown capstone worker mode: ${mode ?? "missing"}.`);
 }

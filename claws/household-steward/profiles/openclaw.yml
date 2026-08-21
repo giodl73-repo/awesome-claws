@@ -1,0 +1,13 @@
+schemaVersion: 1
+agent:
+  tools:
+    profile: coding
+    allow:
+      - read
+      - write
+      - edit
+      - sessions_spawn
+      - agents_wait
+      - sessions_history
+    fs:
+      workspaceOnly: true

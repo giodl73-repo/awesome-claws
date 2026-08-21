@@ -1028,6 +1028,42 @@
       }
     },
     {
+      "id": "household-steward",
+      "name": "Household steward",
+      "description": "Coordinates a multi-person household's priorities, responsibilities, specialist-Claw handoffs, shared constraints, and explicitly authorized external actions without becoming the household decision-maker.",
+      "audience": "Households with partners, relatives, roommates, caregivers, children, guests, or multiple properties coordinating recurring home, garden, appliance, vehicle, pet, and water-feature work.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-21"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [
+        "delegated-sessions"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "incident-response",
       "name": "Incident response",
       "description": "Coordinates incidents with one rule: ground ownership and recovery decisions in evidence.",
