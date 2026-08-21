@@ -1892,6 +1892,8 @@ function workChiefOfStaffFindings(value) {
     }
   }
   for (const [references, allowed, path, label] of [
+    ...value.evidence.filter((item) => item.subjectPrincipalRef).map((item, index) => [[item.subjectPrincipalRef], principals, `evidence.${index}.subjectPrincipalRef`, "Principal reference"]),
+    ...value.evidence.filter((item) => item.authorizedPrincipalRefs).map((item, index) => [item.authorizedPrincipalRefs, principals, `evidence.${index}.authorizedPrincipalRefs`, "Principal reference"]),
     ...value.principals.map((item, index) => [item.authorityEvidenceRefs, evidence, `principals.${index}.authorityEvidenceRefs`, "Evidence reference"]),
     ...value.sourceArtifacts.map((item, index) => [item.permittedPrincipalRefs, principals, `sourceArtifacts.${index}.permittedPrincipalRefs`, "Principal reference"]),
     ...value.assignments.map((item, index) => [item.sourceArtifactRefs, artifacts, `assignments.${index}.sourceArtifactRefs`, "Artifact reference"]),
@@ -1926,8 +1928,12 @@ function workChiefOfStaffFindings(value) {
       evidenceById.get(reference),
     );
     if (
-      !authorityEvidence.some((item) =>
-        ["principal-declaration", "decision-right-record", "portfolio-charter"].includes(item?.type),
+      !authorityEvidence.some(
+        (item) =>
+          (["principal-declaration", "decision-right-record"].includes(item?.type) &&
+            item.subjectPrincipalRef === principal.id) ||
+          (item?.type === "portfolio-charter" &&
+            item.authorizedPrincipalRefs?.includes(principal.id)),
       ) ||
       principal.id === "work-chief-of-staff" ||
       (principal.delegationScopes.includes("none") &&
@@ -2006,8 +2012,15 @@ function workChiefOfStaffFindings(value) {
       evidenceById.get(reference),
     );
     if (
-      !authorityEvidence.some((item) =>
-        ["decision-right-record", "portfolio-charter"].includes(item?.type),
+      policy.requiredPrincipalRefs.some(
+        (principalRef) =>
+          !authorityEvidence.some(
+            (item) =>
+              (item?.type === "decision-right-record" &&
+                item.subjectPrincipalRef === principalRef) ||
+              (item?.type === "portfolio-charter" &&
+                item.authorizedPrincipalRefs?.includes(principalRef)),
+          ),
       )
     ) {
       findings.push(

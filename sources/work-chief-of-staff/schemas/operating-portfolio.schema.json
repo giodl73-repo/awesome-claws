@@ -48,7 +48,9 @@
           "type": { "enum": ["principal-declaration", "decision-right-record", "portfolio-charter", "capacity-envelope", "forum-charter", "integration-approval", "system-receipt"] },
           "authority": { "enum": ["principal-supplied", "jointly-supplied", "organization-record", "approved-integration", "controlled-system"] },
           "capturedAt": { "type": "string", "format": "date-time" },
-          "reference": { "type": "string", "minLength": 1 }
+          "reference": { "type": "string", "minLength": 1 },
+          "subjectPrincipalRef": { "type": "string", "minLength": 1 },
+          "authorizedPrincipalRefs": { "$ref": "#/$defs/nonemptyRefs" }
         }
       }
     },

@@ -740,6 +740,18 @@ test("work chief of staff preserves independent leader authority", () => {
   ];
   assert.equal(isValid("work-chief-of-staff", falseConsensus), false);
 
+  const borrowedAuthority = structuredClone(
+    cases.get("work-chief-of-staff").fixture,
+  );
+  borrowedAuthority.principals.find(
+    (principal) => principal.id === "principal-product",
+  ).authorityEvidenceRefs = ["ev-ceo"];
+  assert.ok(
+    validateArtifactSemantics("work-chief-of-staff", borrowedAuthority).some(
+      (finding) => finding.code === "unsupported_work_principal_authority",
+    ),
+  );
+
   const selfAuthorized = structuredClone(cases.get("work-chief-of-staff").fixture);
   selfAuthorized.approvalPolicies[0].requiredPrincipalRefs = ["principal-ceo"];
   const selfAuthorizedDigest = `sha256:${createHash("sha256")
@@ -757,6 +769,19 @@ test("work chief of staff preserves independent leader authority", () => {
     validateArtifactSemantics("work-chief-of-staff", selfAuthorized).some(
       (finding) => finding.code === "work_commitment_approval_mismatch",
     ),
+  );
+
+  const borrowedPolicyAuthority = structuredClone(
+    cases.get("work-chief-of-staff").fixture,
+  );
+  borrowedPolicyAuthority.approvalPolicies[0].authorityEvidenceRefs = [
+    "ev-engineering",
+  ];
+  assert.ok(
+    validateArtifactSemantics(
+      "work-chief-of-staff",
+      borrowedPolicyAuthority,
+    ).some((finding) => finding.code === "unsupported_work_approval_policy"),
   );
 });
 

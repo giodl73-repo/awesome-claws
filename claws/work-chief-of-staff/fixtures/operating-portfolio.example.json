@@ -47,11 +47,11 @@
     }
   ],
   "evidence": [
-    { "id": "ev-ceo", "type": "principal-declaration", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:00:00Z", "reference": "evidence/ceo-declaration.md" },
-    { "id": "ev-product", "type": "principal-declaration", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:01:00Z", "reference": "evidence/product-lead-declaration.md" },
-    { "id": "ev-engineering", "type": "principal-declaration", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:02:00Z", "reference": "evidence/engineering-lead-declaration.md" },
-    { "id": "ev-finance", "type": "principal-declaration", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:03:00Z", "reference": "evidence/finance-lead-declaration.md" },
-    { "id": "ev-charter", "type": "portfolio-charter", "authority": "jointly-supplied", "capturedAt": "2026-08-21T15:04:00Z", "reference": "evidence/quarterly-operating-charter.md" },
+    { "id": "ev-ceo", "type": "principal-declaration", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:00:00Z", "reference": "evidence/ceo-declaration.md", "subjectPrincipalRef": "principal-ceo" },
+    { "id": "ev-product", "type": "principal-declaration", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:01:00Z", "reference": "evidence/product-lead-declaration.md", "subjectPrincipalRef": "principal-product" },
+    { "id": "ev-engineering", "type": "principal-declaration", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:02:00Z", "reference": "evidence/engineering-lead-declaration.md", "subjectPrincipalRef": "principal-engineering" },
+    { "id": "ev-finance", "type": "principal-declaration", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:03:00Z", "reference": "evidence/finance-lead-declaration.md", "subjectPrincipalRef": "principal-finance" },
+    { "id": "ev-charter", "type": "portfolio-charter", "authority": "jointly-supplied", "capturedAt": "2026-08-21T15:04:00Z", "reference": "evidence/quarterly-operating-charter.md", "authorizedPrincipalRefs": ["principal-ceo", "principal-product", "principal-engineering", "principal-finance"] },
     { "id": "ev-capacity-engineering", "type": "capacity-envelope", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:05:00Z", "reference": "evidence/engineering-capacity.json" },
     { "id": "ev-capacity-product", "type": "capacity-envelope", "authority": "principal-supplied", "capturedAt": "2026-08-21T15:06:00Z", "reference": "evidence/product-capacity.json" },
     { "id": "ev-capacity-investment", "type": "capacity-envelope", "authority": "jointly-supplied", "capturedAt": "2026-08-21T15:07:00Z", "reference": "evidence/investment-envelope.json" },
