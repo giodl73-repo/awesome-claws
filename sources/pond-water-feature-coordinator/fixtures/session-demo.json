@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "pond-water-feature-coordinator",
+  "scenario": "Help me plan a safe backyard pond and waterfall, compare qualified installers, and leave a seasonal care plan for the pump, filter, water quality, aquatic plants, and fish habitat.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Help me plan a safe backyard pond and waterfall, compare qualified installers, and leave a seasonal care plan for the pump, filter, water quality, aquatic plants, and fish habitat."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/pond-water-feature-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Pond and water feature coordinator session handoff",
+    "summary": "A privacy-safe site and system ledger, installation-readiness gaps, quote-ready contractor scope, evidence-bound seasonal operations and monitoring plan, and approval-blocked specialist appointments without excavation, wiring, structural, chemical, or fish-treatment instructions.",
+    "output": "outputs/pond-water-feature-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Pond site, project-phase, system, equipment, habitat, and evidence ledger",
+        "summary": "Every site fact, system component, measurement, organism, requirement, recommendation, provider, and result remains attributable to current evidence",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Installation-readiness, permit and utility gaps, design constraints, and contractor-bid brief",
+        "summary": "Installation planning identifies unresolved utility, permit, electrical, structural, hydraulic, drainage, access, and environmental constraints before a quote or appointment is owner-ready",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Seasonal pump, filtration, aeration, waterfall, water-level, and winterization calendar",
+        "summary": "Routine care and monitoring remain bounded by manufacturer, extension, laboratory, regulator, veterinarian, or qualified-specialist evidence and never become unsupported repair, chemical-treatment, stocking, or animal-health instructions",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Water-quality, algae, leak, aquatic-plant, and fish-habitat monitoring plan with escalation thresholds",
+        "summary": "No contact, booking, work or treatment authorization, organism release, payment, or precise-home-data disclosure exceeds exact resident consent",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Specialist comparison, exact appointment plan, and booking receipt or blocked handoff",
+        "summary": "Every site fact, system component, measurement, organism, requirement, recommendation, provider, and result remains attributable to current evidence",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

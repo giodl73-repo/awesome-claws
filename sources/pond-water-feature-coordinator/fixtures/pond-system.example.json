@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "awesomeClaws.pondWaterFeature.v1",
+  "site": {
+    "reference": "primary-home",
+    "locationLabel": "rear-garden-pond",
+    "projectPhase": "operating",
+    "featureType": "pond-waterfall",
+    "approximateVolumeLiters": 7600,
+    "workAuthority": "verified-owner",
+    "asOf": "2026-08-21T03:00:00Z"
+  },
+  "resident": { "id": "resident-1", "kind": "human", "role": "resident and pond owner" },
+  "evidence": [
+    { "id": "ev-report", "type": "resident-report", "authority": "resident-supplied", "capturedAt": "2026-08-20T17:00:00Z", "reference": "evidence/resident-pond-report.md" },
+    { "id": "ev-photo", "type": "site-photo", "authority": "resident-supplied", "capturedAt": "2026-08-20T17:05:00Z", "reference": "evidence/privacy-safe-site-photos/" },
+    { "id": "ev-plan", "type": "site-plan", "authority": "qualified-contractor", "capturedAt": "2024-04-01T16:00:00Z", "reference": "evidence/installed-site-plan.pdf" },
+    { "id": "ev-utility", "type": "utility-location", "authority": "utility", "capturedAt": "2024-03-20T16:00:00Z", "reference": "evidence/utility-location-record.pdf" },
+    { "id": "ev-permit", "type": "permit-record", "authority": "government", "capturedAt": "2024-03-25T16:00:00Z", "reference": "evidence/permit-record.pdf" },
+    { "id": "ev-electrical", "type": "electrical-record", "authority": "qualified-contractor", "capturedAt": "2024-04-10T16:00:00Z", "reference": "evidence/gfci-installation-record.pdf" },
+    { "id": "ev-install", "type": "installation-record", "authority": "qualified-contractor", "capturedAt": "2024-04-15T16:00:00Z", "reference": "evidence/pond-installation-record.pdf" },
+    { "id": "ev-manual", "type": "manufacturer-manual", "authority": "manufacturer", "capturedAt": "2024-04-15T16:05:00Z", "reference": "evidence/pump-filter-manuals/" },
+    { "id": "ev-water-ph", "type": "water-measurement", "authority": "resident-supplied", "capturedAt": "2026-08-20T17:15:00Z", "reference": "evidence/ph-test-photo.jpg" },
+    { "id": "ev-water-ammonia", "type": "water-measurement", "authority": "resident-supplied", "capturedAt": "2026-08-20T17:16:00Z", "reference": "evidence/ammonia-test-photo.jpg" },
+    { "id": "ev-extension", "type": "regulation", "authority": "university-extension", "capturedAt": "2026-08-20T17:20:00Z", "reference": "evidence/extension-water-guidance.pdf" },
+    { "id": "ev-species", "type": "species-record", "authority": "aquatic-specialist", "capturedAt": "2026-08-20T17:25:00Z", "reference": "evidence/aquatic-species-record.pdf" },
+    { "id": "ev-provider", "type": "provider-info", "authority": "service-provider", "capturedAt": "2026-08-20T17:30:00Z", "reference": "evidence/pond-provider-info.pdf" }
+  ],
+  "components": [
+    { "id": "component-liner", "type": "liner-or-basin", "state": "installed", "manufacturer": "ExampleLiner", "model": "EPDM-45", "evidenceRefs": ["ev-plan", "ev-install"] },
+    { "id": "component-pump", "type": "pump", "state": "installed", "manufacturer": "ExamplePump", "model": "P8000", "evidenceRefs": ["ev-install", "ev-manual"] },
+    { "id": "component-filter", "type": "filter", "state": "installed", "manufacturer": "ExampleFilter", "model": "F9000", "evidenceRefs": ["ev-install", "ev-manual"] },
+    { "id": "component-waterfall", "type": "waterfall", "state": "installed", "manufacturer": null, "model": null, "evidenceRefs": ["ev-plan", "ev-install"] },
+    { "id": "component-overflow", "type": "overflow", "state": "installed", "manufacturer": null, "model": null, "evidenceRefs": ["ev-plan", "ev-install"] }
+  ],
+  "observations": [
+    { "id": "obs-flow", "subject": "system", "description": "The waterfall flow is steady and the pump has no reported warning or unusual sound.", "evidenceRefs": ["ev-report", "ev-photo"] },
+    { "id": "obs-water", "subject": "water", "description": "The water is clear enough to observe the fish and submerged plant containers.", "evidenceRefs": ["ev-report", "ev-photo"] }
+  ],
+  "riskAssessment": {
+    "level": "low-risk",
+    "risks": ["none"],
+    "action": "bounded-resident-operation",
+    "rationale": "The installed records show utility, permit, electrical, overflow, and contractor evidence; the current request is observation and manufacturer maintenance rather than excavation, wiring, structural work, treatment, or repair.",
+    "evidenceRefs": ["ev-plan", "ev-utility", "ev-permit", "ev-electrical", "ev-install", "ev-report"]
+  },
+  "installation": {
+    "state": "complete",
+    "requirements": [
+      { "id": "req-utility", "category": "utility", "state": "verified", "evidenceRefs": ["ev-utility"] },
+      { "id": "req-permit", "category": "permit", "state": "verified", "evidenceRefs": ["ev-permit"] },
+      { "id": "req-electrical", "category": "electrical", "state": "verified", "evidenceRefs": ["ev-electrical"] },
+      { "id": "req-structural", "category": "structural", "state": "not-required", "evidenceRefs": ["ev-plan"] },
+      { "id": "req-hydraulic", "category": "hydraulic", "state": "verified", "evidenceRefs": ["ev-plan", "ev-install"] },
+      { "id": "req-drainage", "category": "drainage", "state": "verified", "evidenceRefs": ["ev-plan", "ev-install"] },
+      { "id": "req-access", "category": "access", "state": "verified", "evidenceRefs": ["ev-plan", "ev-photo"] },
+      { "id": "req-environmental", "category": "environmental", "state": "verified", "evidenceRefs": ["ev-permit", "ev-extension"] }
+    ],
+    "bidScope": {
+      "includedComponents": ["liner and basin", "pump and filter", "waterfall return", "controlled overflow"],
+      "excludedWork": ["future excavation", "electrical modification", "structural modification", "chemical treatment", "fish treatment"],
+      "acceptanceCriteria": ["Installed components match the plan and records", "Overflow follows the documented path", "Electrical work retains qualified evidence"]
+    }
+  },
+  "operationsCalendar": [
+    {
+      "id": "calendar-filter",
+      "componentRefs": ["component-filter"],
+      "windowStart": "2026-08-21",
+      "windowEnd": "2026-08-28",
+      "activity": "Inspect the accessible filter indicator and record whether manufacturer service is due.",
+      "executor": "resident",
+      "sourceRefs": ["ev-manual"],
+      "conditions": ["No electrical warning, damaged cable, active leak, unstable edge, or unsafe access is present"],
+      "stopConditions": ["A warning, damage, leak, unstable edge, or step beyond the manufacturer owner-access surface is observed"]
+    },
+    {
+      "id": "calendar-autumn",
+      "componentRefs": ["component-pump", "component-filter", "component-waterfall"],
+      "windowStart": "2026-10-01",
+      "windowEnd": "2026-10-31",
+      "activity": "Review the manufacturer and extension winterization plan with a qualified pond specialist.",
+      "executor": "qualified-specialist",
+      "sourceRefs": ["ev-manual", "ev-extension"],
+      "conditions": ["Local weather outlook and fish-habitat requirements are current"],
+      "stopConditions": ["Current equipment, habitat, or weather evidence is missing"]
+    }
+  ],
+  "waterQuality": [
+    { "id": "water-ph", "parameter": "ph", "value": 7.4, "unit": "pH", "measuredAt": "2026-08-20T17:15:00Z", "evidenceRef": "ev-water-ph", "status": "within-source-range", "thresholdRefs": ["ev-extension"] },
+    { "id": "water-ammonia", "parameter": "ammonia", "value": 0, "unit": "mg/L", "measuredAt": "2026-08-20T17:16:00Z", "evidenceRef": "ev-water-ammonia", "status": "within-source-range", "thresholdRefs": ["ev-extension"] }
+  ],
+  "habitat": [
+    { "id": "habitat-water-lilies", "kind": "aquatic-plant", "label": "water-lilies", "identityState": "qualified-confirmed", "observationState": "no-concern-observed", "evidenceRefs": ["ev-photo", "ev-species"], "handoff": "none" },
+    { "id": "habitat-fish", "kind": "fish", "label": "resident-pond-fish", "identityState": "qualified-confirmed", "observationState": "no-concern-observed", "evidenceRefs": ["ev-photo", "ev-species"], "handoff": "none" }
+  ],
+  "incidents": [],
+  "providers": [
+    { "id": "provider-aquatic", "name": "Example Aquatic Services", "specialty": "aquatic-specialist", "sourceRef": "ev-provider", "qualificationState": "resident-verified" }
+  ],
+  "appointment": {
+    "state": "awaiting-approval",
+    "plan": {
+      "providerRef": "provider-aquatic",
+      "specialty": "aquatic-specialist",
+      "serviceScope": "Seasonal system and habitat assessment only; no repair, treatment, stocking, organism release, or expanded work.",
+      "startsAt": "2026-09-05T17:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "maxCost": 220,
+      "currency": "USD",
+      "maxDeposit": 0,
+      "cancellationTerms": "No fee when cancelled at least 24 hours before the appointment.",
+      "dataDisclosure": ["rear-garden-pond label", "approximate volume", "component models", "water measurements", "habitat labels", "resident callback number"]
+    }
+  },
+  "handoff": {
+    "state": "ready-for-resident",
+    "resident": { "id": "resident-1", "kind": "human", "role": "resident and pond owner" },
+    "prohibitedActions": ["perform-high-risk-work", "claim-qualified-approval", "diagnose-or-repair", "treat-or-release-organisms", "authorize-service-or-treatment", "submit-payment", "exceed-appointment-scope"]
+  }
+}

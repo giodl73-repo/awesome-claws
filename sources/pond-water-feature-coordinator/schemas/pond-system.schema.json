@@ -1,0 +1,301 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "site", "resident", "evidence", "components", "observations", "riskAssessment", "installation", "operationsCalendar", "waterQuality", "habitat", "incidents", "providers", "appointment", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.pondWaterFeature.v1" },
+    "site": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference", "locationLabel", "projectPhase", "featureType", "approximateVolumeLiters", "workAuthority", "asOf"],
+      "properties": {
+        "reference": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 32 },
+        "locationLabel": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 32 },
+        "projectPhase": { "enum": ["concept", "bid-ready", "installation", "operating", "seasonal-shutdown"] },
+        "featureType": { "enum": ["pond", "waterfall", "fountain", "pond-waterfall", "other"] },
+        "approximateVolumeLiters": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+        "workAuthority": { "enum": ["verified-owner", "verified-tenant-permission", "landlord-required", "association-required", "unverified"] },
+        "asOf": { "type": "string", "format": "date-time" }
+      }
+    },
+    "resident": { "$ref": "#/$defs/accountableOwner" },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "authority", "capturedAt", "reference"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "type": { "enum": ["resident-report", "site-photo", "site-plan", "utility-location", "permit-record", "electrical-record", "structural-record", "manufacturer-manual", "equipment-record", "installation-record", "water-measurement", "laboratory-result", "species-record", "regulation", "weather-record", "service-record", "specialist-finding", "veterinarian-record", "provider-info", "integration-approval", "provider-receipt"] },
+          "authority": { "enum": ["resident-supplied", "manufacturer", "government", "utility", "laboratory", "university-extension", "service-provider", "qualified-contractor", "aquatic-specialist", "veterinarian"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "state", "manufacturer", "model", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^component-[a-z0-9-]+$" },
+          "type": { "enum": ["liner-or-basin", "pump", "filter", "skimmer", "aeration", "waterfall", "plumbing", "autofill", "overflow", "lighting", "ultraviolet", "other"] },
+          "state": { "enum": ["proposed", "installed", "unknown"] },
+          "manufacturer": { "type": ["string", "null"], "minLength": 1 },
+          "model": { "type": ["string", "null"], "minLength": 1 },
+          "evidenceRefs": { "$ref": "#/$defs/nonemptyRefs" }
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "subject", "description", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "subject": { "enum": ["site", "system", "water", "algae", "leak", "aquatic-plant", "fish", "weather", "other"] },
+          "description": { "type": "string", "minLength": 1 },
+          "evidenceRefs": { "$ref": "#/$defs/nonemptyRefs" }
+        }
+      }
+    },
+    "riskAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "risks", "action", "rationale", "evidenceRefs"],
+      "properties": {
+        "level": { "enum": ["emergency", "high", "qualified-specialist", "low-risk", "uncertain"] },
+        "risks": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["excavation", "buried-utility", "mains-electricity", "drowning", "structural", "pressurized-plumbing", "uncontrolled-water", "contamination", "chemical-treatment", "invasive-species", "protected-species", "fish-health", "environmental-discharge", "none"] }
+        },
+        "action": { "enum": ["emergency-services", "shutoff-and-specialist", "qualified-specialist", "bounded-resident-operation", "blocked"] },
+        "rationale": { "type": "string", "minLength": 1 },
+        "evidenceRefs": { "$ref": "#/$defs/nonemptyRefs" }
+      }
+    },
+    "installation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "requirements", "bidScope"],
+      "properties": {
+        "state": { "enum": ["not-requested", "gaps", "bid-ready", "contracted", "complete", "blocked"] },
+        "requirements": {
+          "type": "array",
+          "minItems": 7,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "category", "state", "evidenceRefs"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "category": { "enum": ["utility", "permit", "electrical", "structural", "hydraulic", "drainage", "access", "environmental"] },
+              "state": { "enum": ["verified", "missing", "not-required", "unknown"] },
+              "evidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+            }
+          }
+        },
+        "bidScope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["includedComponents", "excludedWork", "acceptanceCriteria"],
+          "properties": {
+            "includedComponents": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+            "excludedWork": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+            "acceptanceCriteria": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+          }
+        },
+        "blockedReason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "operationsCalendar": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "componentRefs", "windowStart", "windowEnd", "activity", "executor", "sourceRefs", "conditions", "stopConditions"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "componentRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "windowStart": { "type": "string", "format": "date" },
+          "windowEnd": { "type": "string", "format": "date" },
+          "activity": { "type": "string", "minLength": 1 },
+          "executor": { "enum": ["resident", "qualified-specialist", "none"] },
+          "sourceRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "conditions": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "stopConditions": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "waterQuality": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "parameter", "value", "unit", "measuredAt", "evidenceRef", "status", "thresholdRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "parameter": { "enum": ["temperature", "ph", "ammonia", "nitrite", "nitrate", "dissolved-oxygen", "chlorine", "alkalinity", "other"] },
+          "value": { "type": "number" },
+          "unit": { "type": "string", "minLength": 1 },
+          "measuredAt": { "type": "string", "format": "date-time" },
+          "evidenceRef": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["within-source-range", "outside-source-range", "unknown"] },
+          "thresholdRefs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+        }
+      }
+    },
+    "habitat": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "identityState", "observationState", "evidenceRefs", "handoff"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["aquatic-plant", "fish", "amphibian", "wildlife", "other"] },
+          "label": { "type": "string", "minLength": 1 },
+          "identityState": { "enum": ["resident-reported", "qualified-confirmed", "uncertain"] },
+          "observationState": { "enum": ["no-concern-observed", "concern-observed", "escalated", "unknown"] },
+          "evidenceRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "handoff": { "enum": ["none", "green-thumb", "pet-care", "aquatic-specialist", "veterinarian", "regulator"] }
+        }
+      }
+    },
+    "incidents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "state", "componentRefs", "evidenceRefs", "handoff"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["equipment-fault", "leak", "electrical-warning", "structural-concern", "water-quality-exceedance", "fish-health", "plant-concern", "environmental-discharge", "other"] },
+          "state": { "enum": ["open", "monitoring", "resolved", "blocked"] },
+          "componentRefs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+          "evidenceRefs": { "$ref": "#/$defs/nonemptyRefs" },
+          "handoff": { "enum": ["home-repair", "green-thumb", "pet-care", "emergency-services", "qualified-electrician", "qualified-plumber", "aquatic-specialist", "veterinarian", "regulator", "none"] }
+        }
+      }
+    },
+    "providers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "specialty", "sourceRef", "qualificationState"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "specialty": { "enum": ["pond-builder", "aquatic-specialist", "landscaper", "electrician", "plumber", "structural-engineer", "veterinarian", "environmental-specialist", "emergency-service"] },
+          "sourceRef": { "type": "string", "minLength": 1 },
+          "qualificationState": { "enum": ["resident-verified", "source-verified", "unverified"] }
+        }
+      }
+    },
+    "appointment": { "$ref": "#/$defs/appointment" },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "resident", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-resident", "blocked"] },
+        "resident": { "$ref": "#/$defs/accountableOwner" },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "uniqueItems": true,
+          "items": { "enum": ["perform-high-risk-work", "claim-qualified-approval", "diagnose-or-repair", "treat-or-release-organisms", "authorize-service-or-treatment", "submit-payment", "exceed-appointment-scope"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "nonemptyRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "accountableOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "role"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["human", "team"] },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    },
+    "appointmentPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["providerRef", "specialty", "serviceScope", "startsAt", "timezone", "maxCost", "currency", "maxDeposit", "cancellationTerms", "dataDisclosure"],
+      "properties": {
+        "providerRef": { "type": "string", "minLength": 1 },
+        "specialty": { "type": "string", "minLength": 1 },
+        "serviceScope": { "type": "string", "minLength": 1 },
+        "startsAt": { "type": "string", "format": "date-time" },
+        "timezone": { "type": "string", "minLength": 1 },
+        "maxCost": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "maxDeposit": { "type": "number", "minimum": 0 },
+        "cancellationTerms": { "type": "string", "minLength": 1 },
+        "dataDisclosure": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+      }
+    },
+    "appointment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "properties": {
+        "state": { "enum": ["not-requested", "options-ready", "awaiting-approval", "approved", "booked", "blocked"] },
+        "plan": { "$ref": "#/$defs/appointmentPlan" },
+        "approval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["resident", "planDigest", "approvedAt"],
+          "properties": {
+            "resident": { "$ref": "#/$defs/accountableOwner" },
+            "planDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+            "approvedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "bookingIntegration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "providerRef", "approvalRef", "approvalEvidenceRef", "configuredBy"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^approved-integration-[a-z0-9-]+$" },
+            "providerRef": { "type": "string", "minLength": 1 },
+            "approvalRef": { "type": "string", "pattern": "^controlled://[a-z0-9/._-]+$" },
+            "approvalEvidenceRef": { "type": "string", "minLength": 1 },
+            "configuredBy": { "$ref": "#/$defs/accountableOwner" }
+          }
+        },
+        "receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["planDigest", "integrationId", "providerRef", "confirmationRef", "evidenceRef", "bookedAt"],
+          "properties": {
+            "planDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+            "integrationId": { "type": "string", "pattern": "^approved-integration-[a-z0-9-]+$" },
+            "providerRef": { "type": "string", "minLength": 1 },
+            "confirmationRef": { "type": "string", "pattern": "^provider://[a-z0-9/._-]+$" },
+            "evidenceRef": { "type": "string", "minLength": 1 },
+            "bookedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "blockedReason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

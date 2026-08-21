@@ -77,6 +77,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "pond-water-feature-coordinator",
+    schema: "../claws/pond-water-feature-coordinator/schemas/pond-system.schema.json",
+    fixture: "../claws/pond-water-feature-coordinator/fixtures/pond-system.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "vehicle-service-coordinator",
     schema: "../claws/vehicle-service-coordinator/schemas/vehicle-service.schema.json",
     fixture: "../claws/vehicle-service-coordinator/fixtures/vehicle-service.example.json",
@@ -936,6 +942,102 @@ test("green thumb protects resident and appointment authority", () => {
   agentOwned.resident.id = "green-thumb-coordinator";
   agentOwned.handoff.resident.id = "green-thumb-coordinator";
   assert.equal(isValid("green-thumb-coordinator", agentOwned), false);
+});
+
+test("pond coordinator blocks unsafe work and unsupported conclusions", () => {
+  const missingPermit = structuredClone(
+    cases.get("pond-water-feature-coordinator").fixture,
+  );
+  const permit = missingPermit.installation.requirements.find(
+    (item) => item.category === "permit",
+  );
+  permit.evidenceRefs = ["ev-report"];
+  assert.equal(isValid("pond-water-feature-coordinator", missingPermit), false);
+
+  const unsafeResidentWork = structuredClone(
+    cases.get("pond-water-feature-coordinator").fixture,
+  );
+  unsafeResidentWork.operationsCalendar[0].activity =
+    "Excavate beside the pond and rewire the pump.";
+  assert.equal(isValid("pond-water-feature-coordinator", unsafeResidentWork), false);
+
+  const unsupportedWater = structuredClone(
+    cases.get("pond-water-feature-coordinator").fixture,
+  );
+  unsupportedWater.waterQuality[0].thresholdRefs = ["ev-report"];
+  assert.equal(isValid("pond-water-feature-coordinator", unsupportedWater), false);
+
+  const treatmentOverreach = structuredClone(
+    cases.get("pond-water-feature-coordinator").fixture,
+  );
+  treatmentOverreach.operationsCalendar[0].activity =
+    "Medicate the fish and release a new organism.";
+  assert.equal(isValid("pond-water-feature-coordinator", treatmentOverreach), false);
+});
+
+test("pond coordinator routes habitat and system incidents to owner systems", () => {
+  const fishConcern = structuredClone(
+    cases.get("pond-water-feature-coordinator").fixture,
+  );
+  fishConcern.habitat[1].observationState = "concern-observed";
+  assert.equal(isValid("pond-water-feature-coordinator", fishConcern), false);
+
+  fishConcern.habitat[1].handoff = "pet-care";
+  assert.equal(isValid("pond-water-feature-coordinator", fishConcern), true);
+
+  const wrongFaultOwner = structuredClone(
+    cases.get("pond-water-feature-coordinator").fixture,
+  );
+  wrongFaultOwner.incidents.push({
+    id: "incident-pump",
+    kind: "equipment-fault",
+    state: "open",
+    componentRefs: ["component-pump"],
+    evidenceRefs: ["ev-report"],
+    handoff: "pet-care",
+  });
+  assert.equal(isValid("pond-water-feature-coordinator", wrongFaultOwner), false);
+
+  wrongFaultOwner.incidents[0].handoff = "home-repair";
+  assert.equal(isValid("pond-water-feature-coordinator", wrongFaultOwner), true);
+});
+
+test("pond coordinator protects resident privacy and appointment authority", () => {
+  const addressLeak = structuredClone(
+    cases.get("pond-water-feature-coordinator").fixture,
+  );
+  addressLeak.observations[0].description += " Service address: 123 Main Street.";
+  assert.equal(isValid("pond-water-feature-coordinator", addressLeak), false);
+
+  const unverifiedProvider = structuredClone(
+    cases.get("pond-water-feature-coordinator").fixture,
+  );
+  unverifiedProvider.providers[0].qualificationState = "unverified";
+  assert.equal(isValid("pond-water-feature-coordinator", unverifiedProvider), false);
+
+  const unapprovedBooking = structuredClone(
+    cases.get("pond-water-feature-coordinator").fixture,
+  );
+  unapprovedBooking.appointment.state = "booked";
+  assert.equal(isValid("pond-water-feature-coordinator", unapprovedBooking), false);
+
+  const driftedApproval = structuredClone(
+    cases.get("pond-water-feature-coordinator").fixture,
+  );
+  driftedApproval.appointment.state = "approved";
+  driftedApproval.appointment.approval = {
+    resident: driftedApproval.resident,
+    planDigest: `sha256:${"0".repeat(64)}`,
+    approvedAt: "2026-08-20T18:00:00Z",
+  };
+  assert.equal(isValid("pond-water-feature-coordinator", driftedApproval), false);
+
+  const agentOwned = structuredClone(
+    cases.get("pond-water-feature-coordinator").fixture,
+  );
+  agentOwned.resident.id = "pond-water-feature-coordinator";
+  agentOwned.handoff.resident.id = "pond-water-feature-coordinator";
+  assert.equal(isValid("pond-water-feature-coordinator", agentOwned), false);
 });
 
 test("pet care rejects unsafe or unsupported guardian care", () => {
