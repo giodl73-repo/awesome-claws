@@ -11,6 +11,7 @@ if (!id || !input) {
 }
 const schemaNames = {
   "appliance-care-coordinator": "appliance-care.schema.json",
+  "care-circle-coordinator": "care-circle.schema.json",
   "case-continuity-coordinator": "case-checkpoint.schema.json",
   "change-control-operator": "change-plan.schema.json",
   "civic-data-analyst": "civic-evidence.schema.json",
@@ -29,6 +30,8 @@ const schemaNames = {
   "recruiting-coordinator": "interview-plan.schema.json",
   "research-briefing": "research-brief.schema.json",
   "sales-operations": "pipeline-review.schema.json",
+  "sports-team-watcher": "sports-team-watch.schema.json",
+  "stock-portfolio-monitor": "stock-portfolio.schema.json",
   "vehicle-service-coordinator": "vehicle-service.schema.json",
   "work-chief-of-staff": "operating-portfolio.schema.json",
 };

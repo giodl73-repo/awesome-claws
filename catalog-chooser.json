@@ -134,6 +134,40 @@
       }
     },
     {
+      "id": "care-circle-coordinator",
+      "name": "Care Circle Coordinator",
+      "description": "Coordinates a consent-bounded support plan for a person who relies on family, friends, or aides without giving medical, legal, or financial advice.",
+      "audience": "Care recipients, family organizers, and trusted helpers coordinating practical support across appointments, errands, check-ins, transportation, meals, and respite coverage.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-21"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "case-continuity-coordinator",
       "name": "Case continuity coordinator",
       "description": "Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions.",
@@ -2119,6 +2153,40 @@
       }
     },
     {
+      "id": "sports-team-watcher",
+      "name": "Sports team watcher",
+      "description": "Tracks favorite teams across leagues and prepares sourced schedule, result, standings, roster, and watch-item digests without betting, ticketing, or claiming live completeness.",
+      "audience": "Fans, families, office pools, and community groups following a declared set of favorite teams across seasons.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-21"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "spreadsheet-analyst",
       "name": "Spreadsheet analyst",
       "description": "Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability.",
@@ -2158,6 +2226,40 @@
         "level": "guarded",
         "reasons": [
           "pinned skill"
+        ]
+      }
+    },
+    {
+      "id": "stock-portfolio-monitor",
+      "name": "Stock portfolio monitor",
+      "description": "Monitors a user-supplied stock portfolio or watchlist with sourced prices, holdings, allocation drift, issuer events, and review questions without investment advice or trade execution.",
+      "audience": "Individuals, family offices, finance partners, and strategy teams tracking declared holdings or watchlists for review.",
+      "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-21"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
         ]
       }
     },

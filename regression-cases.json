@@ -1546,6 +1546,75 @@
         "delegated-sessions"
       ],
       "capabilityDigest": "sha256:219edd0760ab907be691a80f63ab9155cf5d985a59d69044b7db326e12ec18b1"
+    },
+    {
+      "id": "care-circle-coordinator",
+      "acceptedRequest": "Help coordinate next week's support for my father after outpatient surgery: rides, meals, check-ins, and backup coverage, without sharing medical details beyond what he approved.",
+      "requiredEvidence": [
+        "Care recipient, organizer, trusted helpers, communication preferences, consent scope, and emergency escalation contacts",
+        "Requested support window, recurring needs, appointment times, transportation constraints, meal or errand needs, and respite requirements",
+        "Helper availability, accepted task types, privacy limits, accessibility needs, and current blockers",
+        "Known professional-care boundaries, urgent symptoms, safety concerns, and unsupported requests that must be escalated"
+      ],
+      "authorityBoundaries": [
+        "Do not diagnose, recommend treatment, change medication, interpret protected medical records, or replace licensed professionals",
+        "Do not disclose private recipient or helper information beyond the explicitly authorized circle, purpose, and time window",
+        "Do not book, cancel, or commit helpers to tasks without the named person's exact approval"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/care-circle-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "stock-portfolio-monitor",
+      "acceptedRequest": "Monitor my supplied long-only watch portfolio for AAPL, MSFT, and NVDA this week. Show allocation drift, earnings or filing events, and questions for review, but do not tell me what to buy or sell.",
+      "requiredEvidence": [
+        "Tickers, exchange or issuer identifiers, user-supplied holdings, cost basis if supplied, watchlist entries, and reporting currency",
+        "Approved data sources, quote delay expectations, disclosure sources, review cadence, and materiality thresholds",
+        "Portfolio questions such as allocation drift, concentration, dividend events, earnings dates, filings, or price moves",
+        "Accountable reviewer, prohibited actions, tax/legal boundaries, and broker or account systems that must remain inaccessible"
+      ],
+      "authorityBoundaries": [
+        "Do not recommend buy, sell, hold, allocation, option, margin, tax, or legal actions",
+        "Do not execute trades, connect broker accounts, infer cost basis, or claim personalized financial advice",
+        "Do not treat delayed quotes, news summaries, or model output as complete market evidence"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/stock-portfolio-monitor-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "sports-team-watcher",
+      "acceptedRequest": "Track the Mariners, Seahawks, and Sounders for me this week: last result, next game, standings context, and anything important to watch, but do not bet, buy tickets, or send anything.",
+      "requiredEvidence": [
+        "Favorite teams, leagues, season context, timezone, digest cadence, and preferred output format",
+        "Approved official or trusted sports sources, freshness expectations, and unavailable-source fallbacks",
+        "Specific interests such as next games, standings movement, injuries, roster moves, rivalries, or playoff implications",
+        "External actions that must remain draft-only, such as calendar updates, messages, ticket links, or watch-party notes"
+      ],
+      "authorityBoundaries": [
+        "Do not place bets, provide betting advice, recommend odds, buy tickets, join contests, or contact teams or leagues",
+        "Do not claim live completeness when data is delayed, unofficial, missing, or inconsistent",
+        "Do not publish, message a group, or modify calendars without exact user approval"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/sports-team-watcher-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

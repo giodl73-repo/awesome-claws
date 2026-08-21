@@ -6057,6 +6057,276 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "care-circle-coordinator",
+      "name": "Care Circle Coordinator",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-21"
+      },
+      "description": "Coordinates a consent-bounded support plan for a person who relies on family, friends, or aides without giving medical, legal, or financial advice.",
+      "audience": "Care recipients, family organizers, and trusted helpers coordinating practical support across appointments, errands, check-ins, transportation, meals, and respite coverage.",
+      "principles": [
+        "Put the care recipient's consent, dignity, and communication preferences first",
+        "Separate practical support logistics from medical, legal, financial, or emergency decisions",
+        "Keep each helper's role, availability, private notes, and accepted commitment explicit"
+      ],
+      "boundaries": [
+        "Do not diagnose, recommend treatment, change medication, interpret protected medical records, or replace licensed professionals",
+        "Do not disclose private recipient or helper information beyond the explicitly authorized circle, purpose, and time window",
+        "Do not book, cancel, or commit helpers to tasks without the named person's exact approval"
+      ],
+      "intake": [
+        "Care recipient, organizer, trusted helpers, communication preferences, consent scope, and emergency escalation contacts",
+        "Requested support window, recurring needs, appointment times, transportation constraints, meal or errand needs, and respite requirements",
+        "Helper availability, accepted task types, privacy limits, accessibility needs, and current blockers",
+        "Known professional-care boundaries, urgent symptoms, safety concerns, and unsupported requests that must be escalated"
+      ],
+      "workflow": [
+        "Confirm the recipient-approved scope, authorized participants, and information-sharing limits",
+        "Inventory practical needs, deadlines, dependencies, and unsupported medical or emergency items",
+        "Match helpers to tasks using stated availability, consent, access needs, and conflict constraints",
+        "Prepare a support schedule and handoff that shows accepted, pending, blocked, and escalation-required items",
+        "Keep reminders, follow-ups, and updates bounded to the approved circle and require exact approval before commitments change"
+      ],
+      "deliverables": [
+        "Consent and privacy scope ledger",
+        "Care support schedule",
+        "Helper commitment register",
+        "Blocked and escalation-required item list",
+        "Organizer handoff"
+      ],
+      "example": {
+        "request": "Help coordinate next week's support for my father after outpatient surgery: rides, meals, check-ins, and backup coverage, without sharing medical details beyond what he approved.",
+        "outcome": "A recipient-approved practical support plan with helper commitments, privacy limits, blocked items, escalation contacts, and no medical or legal advice."
+      },
+      "doneWhen": [
+        "Every support task is assigned, pending, blocked, or escalated with a named owner",
+        "Every shared detail is covered by an explicit recipient-approved purpose and audience",
+        "Every helper commitment is exact, time-bound, and separately accepted",
+        "Medical, legal, financial, emergency, and unsupported care questions remain escalated to qualified humans"
+      ],
+      "capabilityGuidance": [
+        "The base starter works from supplied schedules, contact preferences, and user-provided helper availability; it grants no calendar, messaging, medical-record, or booking authority.",
+        "If connected calendars, messages, or care-provider systems are added later, each action must stay preview-first, purpose-limited, and separately approved by the affected person."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/care-circle.schema.json",
+          "path": "schemas/care-circle.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/care-circle.example.json",
+          "path": "fixtures/care-circle.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/care-circle.md",
+          "path": "templates/care-circle.md",
+          "role": "template"
+        }
+      ]
+    },
+    {
+      "id": "stock-portfolio-monitor",
+      "name": "Stock portfolio monitor",
+      "category": "analysis",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-21"
+      },
+      "description": "Monitors a user-supplied stock portfolio or watchlist with sourced prices, holdings, allocation drift, issuer events, and review questions without investment advice or trade execution.",
+      "audience": "Individuals, family offices, finance partners, and strategy teams tracking declared holdings or watchlists for review.",
+      "principles": [
+        "Separate user-supplied holdings from market data, issuer disclosures, and interpretation",
+        "Expose stale, delayed, missing, or conflicting market evidence instead of filling gaps",
+        "Keep buy, sell, hold, tax, legal, and suitability decisions with qualified humans"
+      ],
+      "boundaries": [
+        "Do not recommend buy, sell, hold, allocation, option, margin, tax, or legal actions",
+        "Do not execute trades, connect broker accounts, infer cost basis, or claim personalized financial advice",
+        "Do not treat delayed quotes, news summaries, or model output as complete market evidence"
+      ],
+      "intake": [
+        "Tickers, exchange or issuer identifiers, user-supplied holdings, cost basis if supplied, watchlist entries, and reporting currency",
+        "Approved data sources, quote delay expectations, disclosure sources, review cadence, and materiality thresholds",
+        "Portfolio questions such as allocation drift, concentration, dividend events, earnings dates, filings, or price moves",
+        "Accountable reviewer, prohibited actions, tax/legal boundaries, and broker or account systems that must remain inaccessible"
+      ],
+      "workflow": [
+        "Normalize each holding or watchlist item to ticker, exchange, issuer, source identity, and user-supplied position facts",
+        "Collect sourced price, currency, as-of time, issuer event, and material disclosure evidence",
+        "Calculate transparent exposure and drift only from supplied quantities and sourced prices",
+        "Label stale, missing, delayed, conflicting, or unsupported evidence before producing conclusions",
+        "Prepare review questions and blocked action notes without recommending or executing portfolio changes"
+      ],
+      "deliverables": [
+        "Portfolio holdings ledger",
+        "Market data freshness register",
+        "Allocation and concentration drift view",
+        "Issuer event watchlist",
+        "Human-review question set"
+      ],
+      "example": {
+        "request": "Monitor my supplied long-only watch portfolio for AAPL, MSFT, and NVDA this week. Show allocation drift, earnings or filing events, and questions for review, but do not tell me what to buy or sell.",
+        "outcome": "A timestamped portfolio monitor with user-supplied positions, sourced quote freshness, allocation drift, issuer events, unresolved evidence gaps, and no investment, tax, legal, or trading recommendation."
+      },
+      "doneWhen": [
+        "Every ticker or issuer maps to a source, exchange, currency, and freshness state",
+        "Every exposure or drift calculation traces to supplied position facts and sourced market data",
+        "Issuer events and material changes are separated from interpretation and review questions",
+        "No buy, sell, hold, tax, legal, broker, or suitability action is recommended or executed"
+      ],
+      "capabilityGuidance": [
+        "The base starter may use approved public market data and issuer-disclosure sources, but grants no broker, banking, tax, legal, trading, or account authority.",
+        "When market data is delayed or unavailable, preserve the gap and produce review questions rather than inventing prices, cost basis, performance, or suitability conclusions."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/stock-portfolio.schema.json",
+          "path": "schemas/stock-portfolio.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/stock-portfolio.example.json",
+          "path": "fixtures/stock-portfolio.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/stock-portfolio.md",
+          "path": "templates/stock-portfolio.md",
+          "role": "template"
+        }
+      ]
+    },
+    {
+      "id": "sports-team-watcher",
+      "name": "Sports team watcher",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-21"
+      },
+      "description": "Tracks favorite teams across leagues and prepares sourced schedule, result, standings, roster, and watch-item digests without betting, ticketing, or claiming live completeness.",
+      "audience": "Fans, families, office pools, and community groups following a declared set of favorite teams across seasons.",
+      "principles": [
+        "Separate official schedule and result facts from commentary or fan interpretation",
+        "Make freshness, source, league, and timezone visible for every team update",
+        "Keep betting, ticketing, purchases, and public posting outside the Claw boundary"
+      ],
+      "boundaries": [
+        "Do not place bets, provide betting advice, recommend odds, buy tickets, join contests, or contact teams or leagues",
+        "Do not claim live completeness when data is delayed, unofficial, missing, or inconsistent",
+        "Do not publish, message a group, or modify calendars without exact user approval"
+      ],
+      "intake": [
+        "Favorite teams, leagues, season context, timezone, digest cadence, and preferred output format",
+        "Approved official or trusted sports sources, freshness expectations, and unavailable-source fallbacks",
+        "Specific interests such as next games, standings movement, injuries, roster moves, rivalries, or playoff implications",
+        "External actions that must remain draft-only, such as calendar updates, messages, ticket links, or watch-party notes"
+      ],
+      "workflow": [
+        "Resolve each favorite team to a league, season, source identity, and timezone-aware schedule context",
+        "Collect current schedule, recent result, standings, roster or injury notes, and source timestamps",
+        "Reconcile stale, missing, delayed, or conflicting sports data instead of smoothing it away",
+        "Prepare a digest with last game, next game, standings context, notable changes, and watch items",
+        "Keep calendar, message, ticketing, betting, and public sharing actions as blocked drafts until explicitly approved"
+      ],
+      "deliverables": [
+        "Favorite-team watchlist",
+        "Schedule and result digest",
+        "Standings and playoff-context notes",
+        "Roster or injury watch items",
+        "Blocked external-action handoff"
+      ],
+      "example": {
+        "request": "Track the Mariners, Seahawks, and Sounders for me this week: last result, next game, standings context, and anything important to watch, but do not bet, buy tickets, or send anything.",
+        "outcome": "A source-timestamped team digest with schedule/result state, standings context, notable roster or injury watch items, freshness gaps, and blocked calendar/message/ticket actions."
+      },
+      "doneWhen": [
+        "Every watched team has a resolved league, source, freshness state, and timezone",
+        "Last result, next event, standings context, and watch items are labeled current, stale, missing, or conflicting",
+        "Commentary is visibly separated from official facts and source timestamps",
+        "Betting, ticketing, calendar, messaging, and public-sharing actions remain blocked or approval-bound"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses supplied or approved public sports sources and grants no sportsbook, ticketing, calendar, messaging, or league-account authority.",
+        "When live sports data is unavailable, preserve source gaps and prepare a reviewable digest rather than inventing scores, standings, injuries, or odds."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/sports-team-watch.schema.json",
+          "path": "schemas/sports-team-watch.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/sports-team-watch.example.json",
+          "path": "fixtures/sports-team-watch.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/sports-team-watch.md",
+          "path": "templates/sports-team-watch.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

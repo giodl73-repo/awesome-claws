@@ -4466,8 +4466,394 @@ function petCareFindings(value) {
   return findings;
 }
 
+function careCircleFindings(value) {
+  const evidenceIds = value.evidence.map((item) => item.id);
+  const helperIds = value.helpers.map((item) => item.id);
+  const needIds = value.needs.map((item) => item.id);
+  const scopeIds = value.consentScopes.map((item) => item.id);
+  const taskIds = value.supportTasks.map((item) => item.id);
+  const people = new Set([value.recipient.id, value.organizer.id, ...helperIds]);
+  const evidence = new Set(evidenceIds);
+  const helpers = new Set(helperIds);
+  const needs = new Set(needIds);
+  const scopes = new Set(scopeIds);
+  const tasks = new Set(taskIds);
+  const evidenceById = new Map(value.evidence.map((item) => [item.id, item]));
+  const helperById = new Map(value.helpers.map((item) => [item.id, item]));
+  const needById = new Map(value.needs.map((item) => [item.id, item]));
+  const scopeById = new Map(value.consentScopes.map((item) => [item.id, item]));
+  const commitmentByTask = new Map(value.commitments.map((item) => [item.taskRef, item]));
+  const findings = [
+    ...uniqueFindings(evidenceIds, "evidence", "Evidence id"),
+    ...uniqueFindings(helperIds, "helpers", "Helper id"),
+    ...uniqueFindings(needIds, "needs", "Need id"),
+    ...uniqueFindings(scopeIds, "consentScopes", "Consent scope id"),
+    ...uniqueFindings(taskIds, "supportTasks", "Support task id"),
+    ...uniqueFindings(value.commitments.map((item) => item.id), "commitments", "Commitment id"),
+    ...uniqueFindings(value.blockedItems.map((item) => item.id), "blockedItems", "Blocked item id"),
+  ];
+  for (const [references, allowed, path, label] of [
+    ...value.helpers.map((item, index) => [
+      item.availabilityEvidenceRefs,
+      evidence,
+      `helpers.${index}.availabilityEvidenceRefs`,
+      "Evidence reference",
+    ]),
+    ...value.needs.map((item, index) => [
+      item.evidenceRefs,
+      evidence,
+      `needs.${index}.evidenceRefs`,
+      "Evidence reference",
+    ]),
+    ...value.consentScopes.map((item, index) => [
+      item.evidenceRefs,
+      evidence,
+      `consentScopes.${index}.evidenceRefs`,
+      "Evidence reference",
+    ]),
+    ...value.consentScopes.map((item, index) => [
+      item.audienceRefs,
+      people,
+      `consentScopes.${index}.audienceRefs`,
+      "Audience reference",
+    ]),
+    ...value.commitments.map((item, index) => [
+      item.evidenceRefs,
+      evidence,
+      `commitments.${index}.evidenceRefs`,
+      "Evidence reference",
+    ]),
+  ]) {
+    findings.push(...uniqueFindings(references, path, label));
+    findings.push(...referenceFindings(references, allowed, path, label));
+  }
+  for (const [index, need] of value.needs.entries()) {
+    if (Date.parse(need.dueEnd) <= Date.parse(need.dueStart)) {
+      findings.push(finding("invalid_time_range", `needs.${index}`, "Care need due windows must be ordered."));
+    }
+    if (
+      ["urgent", "emergency"].includes(need.priority) &&
+      need.professionalBoundary === "practical-support"
+    ) {
+      findings.push(
+        finding(
+          "unsafe_care_need",
+          `needs.${index}`,
+          "Urgent and emergency care questions must route to professional or emergency owners.",
+        ),
+      );
+    }
+  }
+  for (const [index, scope] of value.consentScopes.entries()) {
+    findings.push(
+      ...referenceFindings([scope.recipientRef], new Set([value.recipient.id]), `consentScopes.${index}.recipientRef`, "Recipient reference"),
+    );
+    const consentEvidence = scope.evidenceRefs
+      .map((reference) => evidenceById.get(reference))
+      .filter(Boolean);
+    if (
+      consentEvidence.every(
+        (item) => item.type !== "recipient-consent" || item.authority !== "recipient-supplied",
+      ) ||
+      Date.parse(scope.expiresAt) <= Math.max(...consentEvidence.map((item) => Date.parse(item.capturedAt)))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_consent_scope",
+          `consentScopes.${index}`,
+          "Shared care-circle details require current recipient-supplied consent.",
+        ),
+      );
+    }
+  }
+  for (const [index, task] of value.supportTasks.entries()) {
+    findings.push(
+      ...referenceFindings([task.needRef], needs, `supportTasks.${index}.needRef`, "Need reference"),
+    );
+    if (task.helperRef) {
+      findings.push(
+        ...referenceFindings([task.helperRef], helpers, `supportTasks.${index}.helperRef`, "Helper reference"),
+      );
+    }
+    if (task.scopeRef) {
+      findings.push(
+        ...referenceFindings([task.scopeRef], scopes, `supportTasks.${index}.scopeRef`, "Consent scope reference"),
+      );
+    }
+    if (Date.parse(task.endsAt) <= Date.parse(task.startsAt)) {
+      findings.push(finding("invalid_time_range", `supportTasks.${index}`, "Support task windows must be ordered."));
+    }
+    const need = needById.get(task.needRef);
+    const helper = task.helperRef ? helperById.get(task.helperRef) : undefined;
+    const scope = task.scopeRef ? scopeById.get(task.scopeRef) : undefined;
+    const commitment = commitmentByTask.get(task.id);
+    if (
+      need &&
+      need.professionalBoundary !== "practical-support" &&
+      !["blocked", "escalation-required"].includes(task.state)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_professional_care",
+          `supportTasks.${index}`,
+          "Medical, legal, financial, and emergency needs cannot become ordinary helper support tasks.",
+        ),
+      );
+    }
+    if (
+      task.state === "accepted" &&
+      (!helper ||
+        !scope ||
+        !scope.audienceRefs.includes(helper.id) ||
+        !scope.audienceRefs.includes(value.organizer.id) ||
+        !helper.allowedTaskKinds.includes(need?.kind) ||
+        !commitment ||
+        commitment.state !== "accepted" ||
+        commitment.helperRef !== helper.id ||
+        commitment.acceptedAt === null)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_helper_commitment",
+          `supportTasks.${index}`,
+          "Accepted care tasks require a permitted helper, consent scope, and exact accepted commitment.",
+        ),
+      );
+    }
+  }
+  for (const [index, commitment] of value.commitments.entries()) {
+    findings.push(
+      ...referenceFindings([commitment.taskRef], tasks, `commitments.${index}.taskRef`, "Task reference"),
+      ...referenceFindings([commitment.helperRef], helpers, `commitments.${index}.helperRef`, "Helper reference"),
+    );
+    if (
+      (commitment.state === "accepted" && !commitment.acceptedAt) ||
+      (commitment.state !== "accepted" && commitment.acceptedAt)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_commitment_state",
+          `commitments.${index}`,
+          "Only accepted helper commitments may carry an acceptedAt timestamp.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of value.blockedItems.entries()) {
+    findings.push(
+      ...referenceFindings([item.ownerRef], people, `blockedItems.${index}.ownerRef`, "Owner reference"),
+    );
+  }
+  if (/\b\d{1,6}[A-Za-z]?(?:-\d{1,6}[A-Za-z]?)?\s+[A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+){0,4}\s+(?:Alley|Aly|Avenue|Ave|Boulevard|Blvd|Circle|Cir|Court|Ct|Crescent|Cres|Drive|Dr|Expressway|Expy|Freeway|Fwy|Highway|Hwy|Lane|Ln|Parkway|Pkwy|Place|Pl|Plaza|Plz|Road|Rd|Route|Rte|Square|Sq|Street|St|Terrace|Ter|Trail|Trl|Way)\b/iu.test(canonicalJson(value))) {
+    findings.push(
+      finding(
+        "exposed_private_location",
+        "recipient",
+        "Durable care-circle artifacts must use privacy-safe labels, not a street address.",
+      ),
+    );
+  }
+  if (
+    value.handoff.recipientRef !== value.recipient.id ||
+    value.handoff.organizerRef !== value.organizer.id ||
+    value.recipient.id === "care-circle-coordinator" ||
+    value.organizer.id === "care-circle-coordinator"
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff",
+        "Care, privacy, helper commitments, and escalation authority must remain with named humans.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-organizer" &&
+    (value.supportTasks.some((item) => ["blocked", "escalation-required", "pending-recipient"].includes(item.state)) ||
+      value.blockedItems.some((item) => item.state !== "resolved-by-human"))
+  ) {
+    findings.push(
+      finding(
+        "unsupported_terminal_state",
+        "handoff.state",
+        "Ready handoff requires all blocked, escalation, and recipient-pending items to be resolved by humans.",
+      ),
+    );
+  }
+  return findings;
+}
+
+function sportsTeamWatchFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const teamIds = value.teams.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const teamSet = new Set(teamIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(teamIds, "teams", "Team id"),
+    ...uniqueFindings(value.games.map((item) => item.id), "games", "Game id"),
+    ...uniqueFindings(value.rosterNotes.map((item) => item.id), "rosterNotes", "Roster note id"),
+    ...uniqueFindings(value.watchItems.map((item) => item.id), "watchItems", "Watch item id"),
+  ];
+  for (const [index, team] of value.teams.entries()) {
+    findings.push(
+      ...uniqueFindings(team.sourceRefs, `teams.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(team.sourceRefs, sourceSet, `teams.${index}.sourceRefs`, "Source reference"),
+    );
+    const officialSources = team.sourceRefs
+      .map((ref) => sourceById.get(ref))
+      .filter((item) => item && ["official-league", "official-team"].includes(item.authority));
+    if (officialSources.length === 0) {
+      findings.push(finding("unofficial_team_facts", `teams.${index}.sourceRefs`, "Team facts require official league or team source evidence."));
+    }
+  }
+  for (const [index, game] of value.games.entries()) {
+    findings.push(
+      ...referenceFindings([game.teamRef], teamSet, `games.${index}.teamRef`, "Team reference"),
+      ...uniqueFindings(game.sourceRefs, `games.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(game.sourceRefs, sourceSet, `games.${index}.sourceRefs`, "Source reference"),
+    );
+    if ((game.status === "final" && !game.score) || (game.status !== "final" && game.score !== null)) {
+      findings.push(finding("incoherent_game_score", `games.${index}.score`, "Only final games may carry a score, and final games require one."));
+    }
+  }
+  for (const [collection, path] of [
+    [value.standings, "standings"],
+    [value.rosterNotes, "rosterNotes"],
+    [value.watchItems, "watchItems"],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...referenceFindings([item.teamRef], teamSet, `${path}.${index}.teamRef`, "Team reference"),
+        ...uniqueFindings(item.sourceRefs, `${path}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${path}.${index}.sourceRefs`, "Source reference"),
+      );
+    }
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready sports watches cannot depend on stale, missing, or conflicting sources."));
+  }
+  const fanText = canonicalJson({
+    games: value.games.map(({ opponent, score }) => ({ opponent, score })),
+    rosterNotes: value.rosterNotes.map(({ subject, note }) => ({ subject, note })),
+    standings: value.standings.map(({ summary }) => summary),
+    watchItems: value.watchItems.map(({ title, whyItMatters }) => ({ title, whyItMatters })),
+  });
+  if (/\b(odds|spread|parlay|moneyline|wager|bet|betting)\b/iu.test(fanText)) {
+    findings.push(finding("betting_content", "watchItems", "Sports watch artifacts must exclude betting, odds, and wagering content."));
+  }
+  if (value.handoff.owner === "sports-team-watcher") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Review, betting, ticketing, calendar, and messaging authority must remain with the named owner."));
+  }
+  return findings;
+}
+
+function stockPortfolioFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const positionIds = value.positions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const positionSet = new Set(positionIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const positionById = new Map(value.positions.map((item) => [item.id, item]));
+  const quoteByPosition = new Map(value.quotes.map((item) => [item.positionRef, item]));
+  const allocationByPosition = new Map(value.allocations.map((item) => [item.positionRef, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(positionIds, "positions", "Position id"),
+    ...uniqueFindings(value.quotes.map((item) => item.positionRef), "quotes", "Quote position reference"),
+    ...uniqueFindings(value.allocations.map((item) => item.positionRef), "allocations", "Allocation position reference"),
+    ...uniqueFindings(value.issuerEvents.map((item) => item.id), "issuerEvents", "Issuer event id"),
+    ...uniqueFindings(value.reviewQuestions.map((item) => item.id), "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, position] of value.positions.entries()) {
+    findings.push(
+      ...referenceFindings([position.positionSourceRef], sourceSet, `positions.${index}.positionSourceRef`, "Source reference"),
+    );
+    if (!quoteByPosition.has(position.id) || !allocationByPosition.has(position.id)) {
+      findings.push(finding("missing_position_valuation", `positions.${index}`, "Every position requires exactly one quote and one allocation."));
+    }
+    if (position.costBasis.state === "supplied") {
+      if (position.costBasis.amount === null || !position.costBasis.currency || !position.costBasis.sourceRef) {
+        findings.push(finding("unsupported_cost_basis", `positions.${index}.costBasis`, "Supplied cost basis requires amount, currency, and source evidence."));
+      } else {
+        findings.push(
+          ...referenceFindings([position.costBasis.sourceRef], sourceSet, `positions.${index}.costBasis.sourceRef`, "Source reference"),
+        );
+      }
+    }
+    if (
+      position.costBasis.state === "not-supplied" &&
+      (position.costBasis.amount !== null || position.costBasis.currency !== null || position.costBasis.sourceRef !== null)
+    ) {
+      findings.push(finding("unsupported_cost_basis", `positions.${index}.costBasis`, "Missing cost basis cannot carry inferred values."));
+    }
+  }
+  for (const [index, quote] of value.quotes.entries()) {
+    findings.push(
+      ...referenceFindings([quote.positionRef], positionSet, `quotes.${index}.positionRef`, "Position reference"),
+      ...referenceFindings([quote.sourceRef], sourceSet, `quotes.${index}.sourceRef`, "Source reference"),
+    );
+    const source = sourceById.get(quote.sourceRef);
+    if (!source || source.kind !== "market-quote" || !["exchange", "market-data-provider"].includes(source.authority)) {
+      findings.push(finding("unsupported_quote_source", `quotes.${index}.sourceRef`, "Quotes require market-quote evidence from an exchange or approved market-data provider."));
+    }
+    if (["stale", "missing", "conflicting"].includes(quote.freshness) || ["stale", "missing", "conflicting"].includes(source?.freshness)) {
+      findings.push(finding("stale_market_quote", `quotes.${index}.freshness`, "Ready portfolio monitors require non-stale market quote evidence."));
+    }
+  }
+  for (const [index, allocation] of value.allocations.entries()) {
+    findings.push(...referenceFindings([allocation.positionRef], positionSet, `allocations.${index}.positionRef`, "Position reference"));
+    const position = positionById.get(allocation.positionRef);
+    const quote = quoteByPosition.get(allocation.positionRef);
+    if (position && quote) {
+      if (quote.currency !== allocation.currency || !numbersEqual(allocation.marketValue, position.quantity * quote.price)) {
+        findings.push(finding("allocation_mismatch", `allocations.${index}.marketValue`, "Allocation market value must equal supplied quantity times sourced quote price."));
+      }
+    }
+  }
+  const allocationTotal = value.allocations.reduce((total, item) => total + item.allocationPct, 0);
+  if (!numbersEqual(allocationTotal, 100)) {
+    findings.push(finding("allocation_total_mismatch", "allocations", "Allocation percentages must sum to 100."));
+  }
+  for (const [index, event] of value.issuerEvents.entries()) {
+    findings.push(
+      ...referenceFindings([event.positionRef], positionSet, `issuerEvents.${index}.positionRef`, "Position reference"),
+      ...uniqueFindings(event.sourceRefs, `issuerEvents.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(event.sourceRefs, sourceSet, `issuerEvents.${index}.sourceRefs`, "Source reference"),
+    );
+    const supported = event.sourceRefs.every((ref) =>
+      ["issuer-filing", "issuer-news", "dividend-calendar"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!supported) {
+      findings.push(finding("unsupported_issuer_event_source", `issuerEvents.${index}.sourceRefs`, "Issuer events require filing, issuer-news, or dividend-calendar sources."));
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  const adviceText = canonicalJson({
+    issuerEvents: value.issuerEvents.map(({ summary }) => summary),
+    reviewQuestions: value.reviewQuestions.map(({ question }) => question),
+  });
+  if (/\b(buy|sell|hold|trim|accumulate|overweight|underweight|add shares|increase position|reduce position)\b/iu.test(adviceText)) {
+    findings.push(finding("portfolio_recommendation", "reviewQuestions", "Portfolio monitor artifacts must not recommend buy, sell, hold, tax, legal, or trading actions."));
+  }
+  if (value.handoff.owner === "stock-portfolio-monitor") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Trading, broker, tax, legal, and suitability authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
+  "care-circle-coordinator": careCircleFindings,
   "case-continuity-coordinator": caseContinuityFindings,
   "change-control-operator": changeControlFindings,
   "civic-data-analyst": civicDataFindings,
@@ -4486,6 +4872,8 @@ const validators = {
   "recruiting-coordinator": recruitingFindings,
   "research-briefing": researchFindings,
   "sales-operations": salesOperationsFindings,
+  "sports-team-watcher": sportsTeamWatchFindings,
+  "stock-portfolio-monitor": stockPortfolioFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
   "work-chief-of-staff": workChiefOfStaffFindings,
 };

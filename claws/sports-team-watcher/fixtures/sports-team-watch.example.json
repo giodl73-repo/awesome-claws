@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "awesomeClaws.sportsTeamWatch.v1",
+  "watchlist": {
+    "id": "watchlist-seattle",
+    "owner": "Fan owner",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-21T18:00:00Z"
+  },
+  "sources": [
+    { "id": "src-mlb-schedule", "kind": "league-schedule", "authority": "official-league", "capturedAt": "2026-08-21T17:30:00Z", "reference": "league://mlb/mariners/schedule", "freshness": "current" },
+    { "id": "src-nfl-schedule", "kind": "league-schedule", "authority": "official-league", "capturedAt": "2026-08-21T17:31:00Z", "reference": "league://nfl/seahawks/schedule", "freshness": "current" },
+    { "id": "src-mls-schedule", "kind": "league-schedule", "authority": "official-league", "capturedAt": "2026-08-21T17:32:00Z", "reference": "league://mls/sounders/schedule", "freshness": "current" },
+    { "id": "src-mlb-standings", "kind": "league-standings", "authority": "official-league", "capturedAt": "2026-08-21T17:35:00Z", "reference": "league://mlb/standings", "freshness": "current" },
+    { "id": "src-nfl-standings", "kind": "league-standings", "authority": "official-league", "capturedAt": "2026-08-21T17:36:00Z", "reference": "league://nfl/standings", "freshness": "delayed" },
+    { "id": "src-mls-roster", "kind": "team-roster", "authority": "official-team", "capturedAt": "2026-08-21T17:40:00Z", "reference": "team://sounders/availability", "freshness": "current" }
+  ],
+  "teams": [
+    { "id": "team-mariners", "name": "Seattle Mariners", "league": "MLB", "season": "2026", "sourceRefs": ["src-mlb-schedule", "src-mlb-standings"] },
+    { "id": "team-seahawks", "name": "Seattle Seahawks", "league": "NFL", "season": "2026", "sourceRefs": ["src-nfl-schedule", "src-nfl-standings"] },
+    { "id": "team-sounders", "name": "Seattle Sounders FC", "league": "MLS", "season": "2026", "sourceRefs": ["src-mls-schedule", "src-mls-roster"] }
+  ],
+  "games": [
+    { "id": "game-mariners-last", "teamRef": "team-mariners", "kind": "last", "opponent": "Oakland Athletics", "startsAt": "2026-08-20T02:40:00Z", "status": "final", "score": "SEA 5, OAK 2", "sourceRefs": ["src-mlb-schedule"] },
+    { "id": "game-mariners-next", "teamRef": "team-mariners", "kind": "next", "opponent": "Texas Rangers", "startsAt": "2026-08-22T02:40:00Z", "status": "scheduled", "score": null, "sourceRefs": ["src-mlb-schedule"] },
+    { "id": "game-seahawks-next", "teamRef": "team-seahawks", "kind": "next", "opponent": "Arizona Cardinals", "startsAt": "2026-08-24T01:20:00Z", "status": "scheduled", "score": null, "sourceRefs": ["src-nfl-schedule"] },
+    { "id": "game-sounders-next", "teamRef": "team-sounders", "kind": "next", "opponent": "Portland Timbers", "startsAt": "2026-08-24T02:30:00Z", "status": "scheduled", "score": null, "sourceRefs": ["src-mls-schedule"] }
+  ],
+  "standings": [
+    { "teamRef": "team-mariners", "summary": "Within reach of the division lead; confirm official standings before any playoff statement.", "state": "current", "sourceRefs": ["src-mlb-standings"] },
+    { "teamRef": "team-seahawks", "summary": "Preseason standings context is delayed and should not be treated as meaningful playoff position.", "state": "delayed", "sourceRefs": ["src-nfl-standings"] },
+    { "teamRef": "team-sounders", "summary": "Conference position is not included in the current source set.", "state": "missing", "sourceRefs": ["src-mls-schedule"] }
+  ],
+  "rosterNotes": [
+    { "id": "note-sounders-availability", "teamRef": "team-sounders", "subject": "availability", "note": "One official availability note should be reviewed before the rivalry match.", "state": "current", "sourceRefs": ["src-mls-roster"] }
+  ],
+  "watchItems": [
+    { "id": "watch-mariners-series", "teamRef": "team-mariners", "title": "Division series", "whyItMatters": "The next series affects standings context; use official results before updating the digest.", "sourceRefs": ["src-mlb-schedule", "src-mlb-standings"] },
+    { "id": "watch-sounders-rivalry", "teamRef": "team-sounders", "title": "Rivalry match", "whyItMatters": "Roster availability and kickoff time are the useful fan-facing watch items.", "sourceRefs": ["src-mls-schedule", "src-mls-roster"] }
+  ],
+  "blockedActions": ["place-bet", "recommend-odds", "buy-ticket", "join-contest", "send-message", "modify-calendar", "contact-team"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Fan owner",
+    "prohibitedActions": ["place-bet", "recommend-odds", "buy-ticket", "join-contest", "send-message", "modify-calendar", "contact-team"]
+  }
+}
