@@ -38,7 +38,8 @@
       "model-evaluation-adjudicator",
       "vehicle-service-coordinator",
       "home-repair-coordinator",
-      "green-thumb-coordinator"
+      "green-thumb-coordinator",
+      "pet-care-coordinator"
     ]
   },
   "visualCases": [

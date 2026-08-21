@@ -2132,6 +2132,243 @@ function greenThumbFindings(value) {
   return findings;
 }
 
+function petCareFindings(value) {
+  const evidenceIds = value.evidence.map((item) => item.id);
+  const evidence = new Set(evidenceIds);
+  const providerIds = value.providers.map((item) => item.id);
+  const providers = new Set(providerIds);
+  const findings = [
+    ...uniqueFindings(evidenceIds, "evidence", "Evidence id"),
+    ...uniqueFindings(value.observations.map((item) => item.id), "observations", "Observation id"),
+    ...uniqueFindings(value.careCalendar.map((item) => item.id), "careCalendar", "Calendar id"),
+    ...uniqueFindings(value.monitoring.map((item) => item.id), "monitoring", "Monitoring id"),
+    ...uniqueFindings(providerIds, "providers", "Provider id"),
+  ];
+  for (const [references, path] of [
+    ...value.observations.map((item, index) => [item.evidenceRefs, `observations.${index}.evidenceRefs`]),
+    [value.assessment.evidenceRefs, "assessment.evidenceRefs"],
+    ...value.careCalendar.map((item, index) => [item.evidenceRefs, `careCalendar.${index}.evidenceRefs`]),
+    ...value.monitoring.map((item, index) => [item.evidenceRefs, `monitoring.${index}.evidenceRefs`]),
+    ...value.providers.map((item, index) => [[item.sourceRef], `providers.${index}.sourceRef`]),
+  ]) {
+    findings.push(...uniqueFindings(references, path, "Evidence reference"));
+    findings.push(...referenceFindings(references, evidence, path, "Evidence reference"));
+  }
+  if (/\b\d{1,6}[A-Za-z]?(?:-\d{1,6}[A-Za-z]?)?\s+[A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+){0,4}\s+(?:Alley|Aly|Avenue|Ave|Boulevard|Blvd|Circle|Cir|Court|Ct|Crescent|Cres|Drive|Dr|Expressway|Expy|Freeway|Fwy|Highway|Hwy|Lane|Ln|Parkway|Pkwy|Place|Pl|Plaza|Plz|Road|Rd|Route|Rte|Square|Sq|Street|St|Terrace|Ter|Trail|Trl|Way)\b/iu.test(canonicalJson(value))) {
+    findings.push(finding("exposed_home_address", "pet", "Durable pet-care artifacts must use privacy-safe labels, not a street address."));
+  }
+  const emergencyRisks = new Set([
+    "breathing-distress", "collapse", "uncontrolled-bleeding", "seizure",
+    "toxic-exposure", "medication-error", "severe-pain", "rapid-decline",
+  ]);
+  const urgentRisks = new Set(["foreign-body", "persistent-vomiting"]);
+  const hasEmergencyRisk = value.assessment.risks.some((risk) => emergencyRisks.has(risk));
+  const hasNonToxicEmergencyRisk = value.assessment.risks.some(
+    (risk) => emergencyRisks.has(risk) && risk !== "toxic-exposure",
+  );
+  const hasUrgentRisk = value.assessment.risks.some((risk) => urgentRisks.has(risk));
+  if (
+    (value.assessment.risks.includes("none") && value.assessment.risks.length !== 1) ||
+    (value.assessment.risks.includes("none") && !["routine", "preventive"].includes(value.assessment.level)) ||
+    (hasEmergencyRisk && value.assessment.level !== "emergency") ||
+    (hasUrgentRisk && !["urgent", "emergency"].includes(value.assessment.level)) ||
+    (value.assessment.level === "emergency" &&
+      ((hasNonToxicEmergencyRisk &&
+        value.assessment.action !== "emergency-veterinary") ||
+        (!hasNonToxicEmergencyRisk &&
+          !["emergency-veterinary", "poison-control"].includes(
+            value.assessment.action,
+          )))) ||
+    (value.assessment.level === "urgent" &&
+      value.assessment.action !== "urgent-veterinary") ||
+    (value.assessment.level === "routine" &&
+      value.assessment.action !== "routine-veterinary") ||
+    (value.assessment.level === "preventive" &&
+      value.assessment.action !== "preventive-tracking") ||
+    (value.assessment.level === "uncertain" && value.assessment.action === "preventive-tracking")
+  ) {
+    findings.push(finding("unsafe_pet_assessment", "assessment", "Emergency, toxic-exposure, medication-error, and uncertain states must fail closed to qualified care."));
+  }
+  if (value.assessment.level !== "emergency" && value.careCalendar.length === 0) {
+    findings.push(
+      finding(
+        "missing_care_calendar",
+        "careCalendar",
+        "Non-emergency pet-care handoffs require an evidence-bound care calendar.",
+      ),
+    );
+  }
+  for (const [index, item] of value.careCalendar.entries()) {
+    if (Date.parse(item.dueStart) > Date.parse(item.dueEnd)) {
+      findings.push(finding("invalid_care_window", `careCalendar.${index}`, "Care due windows must be ordered."));
+    }
+    const qualified = item.evidenceRefs.some((reference) => {
+      const evidenceItem = value.evidence.find((candidate) => candidate.id === reference);
+      return ["veterinarian", "veterinary-laboratory", "manufacturer", "government"].includes(evidenceItem?.authority);
+    });
+    const linkedEvidence = item.evidenceRefs
+      .map((reference) => value.evidence.find((candidate) => candidate.id === reference))
+      .filter(Boolean);
+    const supportedMedication =
+      item.kind !== "veterinarian-directed-medication" ||
+      linkedEvidence.some(
+        (evidenceItem) =>
+          evidenceItem.type === "prescription-label" &&
+          evidenceItem.authority === "veterinarian",
+      );
+    const supportedPreventive =
+      item.kind !== "preventive" ||
+      linkedEvidence.some(
+        (evidenceItem) =>
+          (evidenceItem.type === "veterinary-record" &&
+            evidenceItem.authority === "veterinarian") ||
+          (evidenceItem.type === "laboratory-result" &&
+            evidenceItem.authority === "veterinary-laboratory") ||
+          (evidenceItem.type === "manufacturer-label" &&
+            evidenceItem.authority === "manufacturer") ||
+          (evidenceItem.type === "government-guidance" &&
+            evidenceItem.authority === "government"),
+      );
+    if (
+      !qualified ||
+      !supportedMedication ||
+      !supportedPreventive ||
+      (value.assessment.level === "emergency" && item.executor === "guardian")
+    ) {
+      findings.push(finding("unsupported_pet_care", `careCalendar.${index}`, "Care items require qualified evidence and emergency states cannot produce guardian care instructions."));
+    }
+  }
+  for (const [index, item] of value.monitoring.entries()) {
+    const timedOutcomeEvidence = item.evidenceRefs
+      .map((reference) => value.evidence.find((candidate) => candidate.id === reference))
+      .filter(
+        (evidenceItem) =>
+          evidenceItem &&
+          ["guardian-report", "photo", "video", "measurement", "veterinary-record", "laboratory-result"].includes(
+            evidenceItem.type,
+          ) &&
+          item.observedAt &&
+          Date.parse(evidenceItem.capturedAt) <= Date.parse(item.observedAt) &&
+          Date.parse(evidenceItem.capturedAt) >= Date.parse(item.dueAt),
+      );
+    if (
+      (["stable", "worsened"].includes(item.state) &&
+        (!item.observedAt || timedOutcomeEvidence.length === 0)) ||
+      (item.state === "planned" && item.observedAt)
+    ) {
+      findings.push(finding("unsupported_monitoring_result", `monitoring.${index}`, "Completed monitoring requires timed outcome evidence captured at or after the checkpoint."));
+    }
+  }
+  for (const [index, provider] of value.providers.entries()) {
+    const source = value.evidence.find((item) => item.id === provider.sourceRef);
+    if (source?.type !== "provider-info" || source.authority !== "service-provider") {
+      findings.push(finding("unsupported_provider", `providers.${index}.sourceRef`, "Veterinary provider options require provider-controlled evidence."));
+    }
+  }
+  const appointment = value.appointment;
+  const hasPlan = Boolean(appointment.plan);
+  const hasApproval = Boolean(appointment.approval);
+  const hasIntegration = Boolean(appointment.bookingIntegration);
+  const hasReceipt = Boolean(appointment.receipt);
+  if (
+    value.assessment.level === "emergency" &&
+    (appointment.state !== "blocked" ||
+      hasPlan ||
+      !appointment.blockedReason ||
+      value.handoff.state !== "blocked")
+  ) {
+    findings.push(
+      finding(
+        "unsafe_emergency_handoff",
+        "appointment",
+        "Emergency pet-care states must block routine scheduling and produce an immediate-care handoff.",
+      ),
+    );
+  }
+  if (
+    (["options-ready", "awaiting-approval", "approved", "booked"].includes(appointment.state) && !hasPlan) ||
+    (["approved", "booked"].includes(appointment.state) && !hasApproval) ||
+    (appointment.state === "booked" && (!hasIntegration || !hasReceipt)) ||
+    (appointment.state !== "booked" && (hasIntegration || hasReceipt)) ||
+    (!["approved", "booked"].includes(appointment.state) && hasApproval) ||
+    (appointment.state === "not-requested" && hasPlan) ||
+    (appointment.state === "blocked" && !appointment.blockedReason)
+  ) {
+    findings.push(finding("incoherent_appointment_state", "appointment", "Appointment plan, approval, integration, and receipt must match the declared state."));
+  }
+  if (appointment.plan) {
+    findings.push(...referenceFindings([appointment.plan.providerRef], providers, "appointment.plan.providerRef", "Provider reference"));
+    const provider = value.providers.find((item) => item.id === appointment.plan.providerRef);
+    if (
+      provider &&
+      (provider.specialty !== appointment.plan.specialty ||
+        provider.qualificationState !== "guardian-verified")
+    ) {
+      findings.push(finding("appointment_specialty_mismatch", "appointment.plan.specialty", "Appointment specialty must match the selected veterinary provider."));
+    }
+    if (appointment.plan.maxDeposit > appointment.plan.maxCost) {
+      findings.push(finding("deposit_exceeds_cost", "appointment.plan.maxDeposit", "Deposit cannot exceed the approved cost ceiling."));
+    }
+  }
+  const planDigest = appointment.plan
+    ? `sha256:${createHash("sha256").update(canonicalJson(appointment.plan)).digest("hex")}`
+    : undefined;
+  if (["approved", "booked"].includes(appointment.state) && appointment.approval) {
+    if (
+      appointment.approval.planDigest !== planDigest ||
+      canonicalJson(appointment.approval.guardian) !== canonicalJson(value.guardian)
+    ) {
+      findings.push(finding("appointment_approval_mismatch", "appointment.approval", "Appointment approval must bind the exact plan and guardian."));
+    }
+  }
+  if (
+    appointment.state === "booked" &&
+    appointment.plan &&
+    appointment.approval &&
+    appointment.bookingIntegration &&
+    appointment.receipt
+  ) {
+    const integrationEvidence = value.evidence.find(
+      (item) => item.id === appointment.bookingIntegration.approvalEvidenceRef,
+    );
+    const receiptEvidence = value.evidence.find(
+      (item) => item.id === appointment.receipt.evidenceRef,
+    );
+    if (
+      appointment.receipt.planDigest !== planDigest ||
+      appointment.receipt.integrationId !== appointment.bookingIntegration.id ||
+      appointment.receipt.providerRef !== appointment.plan.providerRef ||
+      appointment.bookingIntegration.providerRef !== appointment.plan.providerRef ||
+      !appointment.receipt.confirmationRef.startsWith(
+        `provider://${appointment.plan.providerRef}/`,
+      ) ||
+      integrationEvidence?.type !== "integration-approval" ||
+      integrationEvidence.authority !== "guardian-supplied" ||
+      integrationEvidence.reference !== appointment.bookingIntegration.approvalRef ||
+      receiptEvidence?.type !== "provider-receipt" ||
+      receiptEvidence.authority !== "service-provider" ||
+      receiptEvidence.reference !== appointment.receipt.confirmationRef ||
+      receiptEvidence.capturedAt !== appointment.receipt.bookedAt ||
+      Date.parse(integrationEvidence.capturedAt) > Date.parse(appointment.receipt.bookedAt) ||
+      Date.parse(appointment.receipt.bookedAt) >= Date.parse(appointment.plan.startsAt) ||
+      canonicalJson(appointment.bookingIntegration.configuredBy) !==
+        canonicalJson(value.guardian)
+    ) {
+      findings.push(finding("booking_receipt_mismatch", "appointment.receipt", "The approved integration and provider receipt must bind the exact guardian-approved plan."));
+    }
+    if (Date.parse(appointment.receipt.bookedAt) < Date.parse(appointment.approval.approvedAt)) {
+      findings.push(finding("booking_predates_approval", "appointment.receipt.bookedAt", "A veterinary booking cannot predate guardian approval."));
+    }
+  }
+  if (
+    canonicalJson(value.handoff.guardian) !== canonicalJson(value.guardian) ||
+    value.guardian.id === "pet-care-coordinator"
+  ) {
+    findings.push(finding("agent_owned_authority", "handoff.guardian", "Diagnosis, treatment, disclosure, payment, and appointment authority remain guardian-controlled."));
+  }
+  return findings;
+}
+
 const validators = {
   "case-continuity-coordinator": caseContinuityFindings,
   "change-control-operator": changeControlFindings,
@@ -2142,6 +2379,7 @@ const validators = {
   "green-thumb-coordinator": greenThumbFindings,
   "home-repair-coordinator": homeRepairFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
+  "pet-care-coordinator": petCareFindings,
   "project-manager": projectFindings,
   "product-manager": productFindings,
   "public-safety-monitor": publicSafetyFindings,

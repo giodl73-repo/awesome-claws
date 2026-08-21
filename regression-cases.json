@@ -1429,6 +1429,28 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "pet-care-coordinator",
+      "acceptedRequest": "Track my dog's preventive care and help me decide whether new vomiting needs urgent veterinary care.",
+      "requiredEvidence": [
+        "Privacy-safe pet label, species, breed or best-known type, age, weight history, preventive-care records, veterinarian instructions, and accountable guardian",
+        "Symptoms, timing, photos, recordings, measurements, appetite, hydration, elimination, mobility, behavior, medications, possible exposures, and prior findings",
+        "Emergency signs, poison or medication concerns, provider relationship, guardian authority, accessibility, preferences, availability, and budget"
+      ],
+      "authorityBoundaries": [
+        "Do not diagnose, prescribe, calculate or change doses, recommend human medication, direct invasive care, or delay emergency veterinary or poison-control care",
+        "Do not infer vaccination, prescription, laboratory, microchip, or treatment status without current qualified records",
+        "Do not book, authorize treatment, disclose precise location or unnecessary guardian data, accept terms, or pay without exact guardian consent"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/pet-care-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

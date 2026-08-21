@@ -94,6 +94,16 @@
     "proofPlan": "Prove an X3 vehicle-service artifact with separate observation and hypothesis states, safety escalation, bounded owner checks, provider comparison, exact-action booking authorization, and blocked or receipt-bearing appointment outcomes.",
     "existingAlternatives": [
       {
+        "id": "home-repair-coordinator",
+        "overlap": "Both preserve observation and hypothesis provenance, suppress unsafe owner work, use manufacturer evidence, and bind specialist appointments to exact consent.",
+        "difference": "Home Repair governs household systems, isolation, restoration, and qualified building trades; Vehicle Service governs roadworthiness, safety-critical vehicle systems, maintenance history, roadside escalation, and technician service."
+      },
+      {
+        "id": "pet-care-coordinator",
+        "overlap": "Both classify urgency from observations, preserve professional diagnosis authority, track longitudinal records, and require exact approval before specialist booking.",
+        "difference": "Pet Care governs animal welfare, poison and emergency-veterinary escalation, prescriptions, preventive records, and guardian treatment consent; Vehicle Service governs roadworthiness, diagnostic codes, safety-critical equipment, recalls, and repair authorization."
+      },
+      {
         "id": "facilities-operations-coordinator",
         "overlap": "Both distinguish observations from diagnosis, prioritize safety, and prepare specialist maintenance handoffs.",
         "difference": "Facilities Operations coordinates approved multi-site issue queues without vendor contact; this proposal coordinates one owner's vehicle evidence, safe-to-drive decisions, repair-scope consent, and appointment state."
