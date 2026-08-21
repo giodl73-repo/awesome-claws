@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "awesomeClaws.petCare.v1",
+  "pet": { "reference": "family-dog", "nameLabel": "senior-dog", "species": "dog", "ageBand": "senior", "weightKg": 24.8 },
+  "guardian": { "id": "guardian-1", "kind": "human", "role": "pet guardian" },
+  "evidence": [
+    { "id": "ev-report", "type": "guardian-report", "authority": "guardian-supplied", "capturedAt": "2026-08-20T15:00:00Z", "reference": "evidence/vomiting-report.md" },
+    { "id": "ev-video", "type": "video", "authority": "guardian-supplied", "capturedAt": "2026-08-20T15:05:00Z", "reference": "evidence/mobility-and-breathing.mp4" },
+    { "id": "ev-record", "type": "veterinary-record", "authority": "veterinarian", "capturedAt": "2026-08-20T15:10:00Z", "reference": "evidence/preventive-record.md" },
+    { "id": "ev-provider", "type": "provider-info", "authority": "service-provider", "capturedAt": "2026-08-20T15:15:00Z", "reference": "evidence/veterinary-provider.md" }
+  ],
+  "observations": [
+    { "id": "obs-vomit", "subject": "vomiting", "description": "One vomiting episode after breakfast; dog remains alert, is breathing normally, and has no observed collapse, bleeding, seizure, or suspected exposure.", "observedAt": "2026-08-20T14:50:00Z", "evidenceRefs": ["ev-report", "ev-video"] }
+  ],
+  "assessment": {
+    "level": "routine",
+    "risks": ["none"],
+    "action": "routine-veterinary",
+    "rationale": "Current guardian evidence reports one episode without supplied emergency signs; diagnosis remains with the veterinarian.",
+    "evidenceRefs": ["ev-report", "ev-video"]
+  },
+  "careCalendar": [
+    {
+      "id": "cal-preventive",
+      "kind": "preventive",
+      "dueStart": "2026-09-01T08:00:00Z",
+      "dueEnd": "2026-09-30T17:00:00Z",
+      "instruction": "Ask the veterinarian to reconcile the preventive record during the next visit; do not infer that any vaccination is due or complete.",
+      "executor": "veterinarian",
+      "evidenceRefs": ["ev-record"],
+      "stopConditions": ["The veterinarian supplies a superseding record", "An urgent or emergency sign appears"]
+    }
+  ],
+  "monitoring": [
+    {
+      "id": "mon-vomit",
+      "measure": "Record additional vomiting, water intake, alertness, breathing, mobility, and possible exposure without assigning a diagnosis.",
+      "dueAt": "2026-08-20T19:00:00Z",
+      "observedAt": null,
+      "state": "planned",
+      "evidenceRefs": ["ev-report"],
+      "successCriteria": "No additional episode or new concerning sign is observed before the veterinary call.",
+      "escalationCriteria": "Repeated vomiting, inability to retain water, breathing change, collapse, severe pain, blood, seizure, possible toxin, medication error, or rapid decline."
+    }
+  ],
+  "providers": [
+    { "id": "provider-general", "name": "Example Veterinary Clinic", "specialty": "general-veterinary", "sourceRef": "ev-provider", "qualificationState": "guardian-verified" }
+  ],
+  "appointment": {
+    "state": "awaiting-approval",
+    "plan": {
+      "providerRef": "provider-general",
+      "specialty": "general-veterinary",
+      "serviceScope": "Veterinary examination for reported vomiting and preventive-record reconciliation; no treatment authorization.",
+      "startsAt": "2026-08-21T17:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "maxCost": 180,
+      "currency": "USD",
+      "maxDeposit": 0,
+      "cancellationTerms": "No fee when cancelled at least 24 hours before the appointment.",
+      "dataDisclosure": ["privacy-safe pet label", "species", "age band", "weight", "observation summary", "veterinary record"]
+    }
+  },
+  "handoff": {
+    "state": "ready-for-guardian",
+    "guardian": { "id": "guardian-1", "kind": "human", "role": "pet guardian" },
+    "prohibitedActions": ["claim-diagnosis", "prescribe-or-change-dose", "delay-emergency-care", "authorize-treatment-or-service", "submit-payment", "exceed-appointment-scope"]
+  }
+}

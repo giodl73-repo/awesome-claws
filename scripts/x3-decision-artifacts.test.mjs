@@ -65,6 +65,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "pet-care-coordinator",
+    schema: "../claws/pet-care-coordinator/schemas/pet-care.schema.json",
+    fixture: "../claws/pet-care-coordinator/fixtures/pet-care.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "vehicle-service-coordinator",
     schema: "../claws/vehicle-service-coordinator/schemas/vehicle-service.schema.json",
     fixture: "../claws/vehicle-service-coordinator/fixtures/vehicle-service.example.json",
@@ -822,6 +828,184 @@ test("green thumb protects resident and appointment authority", () => {
   agentOwned.resident.id = "green-thumb-coordinator";
   agentOwned.handoff.resident.id = "green-thumb-coordinator";
   assert.equal(isValid("green-thumb-coordinator", agentOwned), false);
+});
+
+test("pet care rejects unsafe or unsupported guardian care", () => {
+  const emergency = structuredClone(cases.get("pet-care-coordinator").fixture);
+  emergency.assessment.risks = ["breathing-distress"];
+  assert.equal(isValid("pet-care-coordinator", emergency), false);
+
+  emergency.assessment.level = "emergency";
+  emergency.assessment.action = "emergency-veterinary";
+  emergency.careCalendar[0].executor = "veterinarian";
+  assert.equal(isValid("pet-care-coordinator", emergency), false);
+
+  emergency.appointment = {
+    state: "blocked",
+    blockedReason: "Seek immediate emergency veterinary care.",
+  };
+  emergency.handoff.state = "blocked";
+  emergency.careCalendar = [];
+  assert.equal(isValid("pet-care-coordinator", emergency), true);
+
+  emergency.careCalendar = structuredClone(
+    cases.get("pet-care-coordinator").fixture.careCalendar,
+  );
+  emergency.assessment.action = "poison-control";
+  assert.equal(isValid("pet-care-coordinator", emergency), false);
+
+  emergency.assessment.action = "emergency-veterinary";
+  emergency.careCalendar[0].executor = "guardian";
+  assert.equal(isValid("pet-care-coordinator", emergency), false);
+
+  const understatedUrgency = structuredClone(
+    cases.get("pet-care-coordinator").fixture,
+  );
+  understatedUrgency.assessment.risks = ["persistent-vomiting"];
+  assert.equal(isValid("pet-care-coordinator", understatedUrgency), false);
+
+  understatedUrgency.assessment.risks = ["foreign-body"];
+  assert.equal(isValid("pet-care-coordinator", understatedUrgency), false);
+
+  understatedUrgency.assessment.level = "emergency";
+  understatedUrgency.assessment.action = "emergency-veterinary";
+  assert.equal(isValid("pet-care-coordinator", understatedUrgency), false);
+
+  understatedUrgency.appointment = {
+    state: "blocked",
+    blockedReason: "Seek immediate emergency veterinary care.",
+  };
+  understatedUrgency.handoff.state = "blocked";
+  understatedUrgency.careCalendar[0].executor = "guardian";
+  assert.equal(isValid("pet-care-coordinator", understatedUrgency), false);
+
+  const unsupportedMedication = structuredClone(
+    cases.get("pet-care-coordinator").fixture,
+  );
+  unsupportedMedication.careCalendar[0].kind = "veterinarian-directed-medication";
+  unsupportedMedication.careCalendar[0].instruction =
+    "Give a medication using the guardian report.";
+  unsupportedMedication.careCalendar[0].evidenceRefs = ["ev-report"];
+  assert.equal(isValid("pet-care-coordinator", unsupportedMedication), false);
+
+  const reversedWindow = structuredClone(cases.get("pet-care-coordinator").fixture);
+  reversedWindow.careCalendar[0].dueEnd = "2026-08-01T17:00:00Z";
+  assert.equal(isValid("pet-care-coordinator", reversedWindow), false);
+});
+
+test("pet care binds outcome and provider evidence", () => {
+  for (const [type, authority] of [
+    ["laboratory-result", "veterinary-laboratory"],
+    ["manufacturer-label", "manufacturer"],
+    ["government-guidance", "government"],
+  ]) {
+    const supportedPreventive = structuredClone(
+      cases.get("pet-care-coordinator").fixture,
+    );
+    const record = supportedPreventive.evidence.find((item) => item.id === "ev-record");
+    record.type = type;
+    record.authority = authority;
+    assert.equal(isValid("pet-care-coordinator", supportedPreventive), true);
+  }
+
+  const staleOutcome = structuredClone(cases.get("pet-care-coordinator").fixture);
+  staleOutcome.monitoring[0].state = "stable";
+  staleOutcome.monitoring[0].observedAt = "2026-08-20T19:30:00Z";
+  staleOutcome.monitoring[0].evidenceRefs = ["ev-report"];
+  assert.equal(isValid("pet-care-coordinator", staleOutcome), false);
+
+  const unsupportedProvider = structuredClone(
+    cases.get("pet-care-coordinator").fixture,
+  );
+  unsupportedProvider.providers[0].sourceRef = "ev-record";
+  assert.equal(isValid("pet-care-coordinator", unsupportedProvider), false);
+
+  const unverifiedProvider = structuredClone(
+    cases.get("pet-care-coordinator").fixture,
+  );
+  unverifiedProvider.providers[0].qualificationState = "unverified";
+  assert.equal(isValid("pet-care-coordinator", unverifiedProvider), false);
+
+  const addressLeak = structuredClone(cases.get("pet-care-coordinator").fixture);
+  addressLeak.observations[0].description += " Home address: 123 Main Circle.";
+  assert.equal(isValid("pet-care-coordinator", addressLeak), false);
+});
+
+test("pet care protects guardian appointment authority", () => {
+  const missingBoundary = structuredClone(cases.get("pet-care-coordinator").fixture);
+  missingBoundary.handoff.prohibitedActions =
+    missingBoundary.handoff.prohibitedActions.filter(
+      (action) => action !== "delay-emergency-care",
+    );
+  assert.equal(isValid("pet-care-coordinator", missingBoundary), false);
+
+  const unexplainedBlock = structuredClone(cases.get("pet-care-coordinator").fixture);
+  unexplainedBlock.appointment = { state: "blocked" };
+  assert.equal(isValid("pet-care-coordinator", unexplainedBlock), false);
+
+  const unrequestedPlan = structuredClone(cases.get("pet-care-coordinator").fixture);
+  unrequestedPlan.appointment.state = "not-requested";
+  assert.equal(isValid("pet-care-coordinator", unrequestedPlan), false);
+
+  const driftedApproval = structuredClone(cases.get("pet-care-coordinator").fixture);
+  driftedApproval.appointment.state = "approved";
+  driftedApproval.appointment.approval = {
+    guardian: driftedApproval.guardian,
+    planDigest: `sha256:${"0".repeat(64)}`,
+    approvedAt: "2026-08-20T16:00:00Z",
+  };
+  assert.equal(isValid("pet-care-coordinator", driftedApproval), false);
+
+  const lateBooking = structuredClone(cases.get("pet-care-coordinator").fixture);
+  const planDigest = `sha256:${createHash("sha256")
+    .update(canonicalJson(lateBooking.appointment.plan))
+    .digest("hex")}`;
+  lateBooking.evidence.push(
+    {
+      id: "ev-integration",
+      type: "integration-approval",
+      authority: "guardian-supplied",
+      capturedAt: "2026-08-20T16:00:00Z",
+      reference: "controlled://pet-care/integration-approval",
+    },
+    {
+      id: "ev-receipt",
+      type: "provider-receipt",
+      authority: "service-provider",
+      capturedAt: "2026-08-22T17:00:00Z",
+      reference: "provider://provider-general/confirmation-1",
+    },
+  );
+  lateBooking.appointment = {
+    ...lateBooking.appointment,
+    state: "booked",
+    approval: {
+      guardian: lateBooking.guardian,
+      planDigest,
+      approvedAt: "2026-08-20T16:00:00Z",
+    },
+    bookingIntegration: {
+      id: "approved-integration-veterinary",
+      providerRef: "provider-general",
+      approvalRef: "controlled://pet-care/integration-approval",
+      approvalEvidenceRef: "ev-integration",
+      configuredBy: lateBooking.guardian,
+    },
+    receipt: {
+      planDigest,
+      integrationId: "approved-integration-veterinary",
+      providerRef: "provider-general",
+      confirmationRef: "provider://provider-general/confirmation-1",
+      evidenceRef: "ev-receipt",
+      bookedAt: "2026-08-22T17:00:00Z",
+    },
+  };
+  assert.equal(isValid("pet-care-coordinator", lateBooking), false);
+
+  const agentOwned = structuredClone(cases.get("pet-care-coordinator").fixture);
+  agentOwned.guardian.id = "pet-care-coordinator";
+  agentOwned.handoff.guardian.id = "pet-care-coordinator";
+  assert.equal(isValid("pet-care-coordinator", agentOwned), false);
 });
 
 test("capstone profiles expose only their intended runtime dimensions", async () => {

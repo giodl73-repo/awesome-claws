@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "pet-care-coordinator",
+  "scenario": "Track my dog's preventive care and help me decide whether new vomiting needs urgent veterinary care.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Track my dog's preventive care and help me decide whether new vomiting needs urgent veterinary care."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/pet-care-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Pet care coordinator session handoff",
+    "summary": "An observation ledger, fail-closed escalation, care calendar, and an appointment plan blocked on exact approval.",
+    "output": "outputs/pet-care-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Pet profile, record, and evidence ledger",
+        "summary": "Every observation, hypothesis, qualified finding, instruction, intervention, and outcome remains distinct",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Observation, risk, and escalation assessment",
+        "summary": "Emergency, toxic-exposure, uncertain-medication, and unsupported-treatment states never become home-treatment instructions",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Preventive and veterinarian-directed care calendar",
+        "summary": "Every preventive or monitoring item cites current qualified evidence and retains its due window",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Medication and treatment observation log without prescribing authority",
+        "summary": "Treatment, disclosure, booking, and payment remain guardian-controlled",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Provider comparison, appointment plan, and booking receipt or blocked handoff",
+        "summary": "Every observation, hypothesis, qualified finding, instruction, intervention, and outcome remains distinct",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
