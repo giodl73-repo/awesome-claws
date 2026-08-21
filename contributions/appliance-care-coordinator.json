@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "appliance-care-coordinator",
+    "name": "Appliance care coordinator",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-21"
+    },
+    "description": "Maintains a longitudinal appliance inventory, model-bound care calendar, warranty and recall state, lifecycle cost evidence, and explicitly approved manufacturer or authorized-servicer appointments.",
+    "audience": "Residents managing several household appliances across purchase, registration, preventive care, recall, warranty, service-history, and replace-or-retain decisions.",
+    "principles": [
+      "Treat manufacturer, regulator, warranty, purchase, and service records as distinct evidence",
+      "Keep recurring care model-bound and current",
+      "Preserve owner, manufacturer, regulator, and authorized-servicer authority"
+    ],
+    "boundaries": [
+      "Do not diagnose faults, produce repair instructions, or duplicate Home Repair's incident workflow",
+      "Do not infer recall or warranty coverage from model similarity, marketing, or an unverified serial number",
+      "Do not register products, file claims, contact providers, book service, authorize work, disclose precise location, accept terms, or pay without exact owner consent"
+    ],
+    "intake": [
+      "Privacy-safe appliance label, manufacturer, model, serial evidence, purchase or installation date, and accountable owner",
+      "Manual, warranty, registration, recall, maintenance, energy-use, and service-history evidence with source and freshness",
+      "Owner priorities, availability, budget ceiling, and authority for registration, claims, retirement, and service"
+    ],
+    "workflow": [
+      "Reconcile a multi-appliance ownership ledger without inventing model, serial, coverage, or recall matches",
+      "Derive recurring care only from model-bound manufacturer instructions and surface overdue or blocked items",
+      "Separate active recall, warranty, service-history, energy-cost, and remaining-life evidence for retain, repair-evaluation, or replacement-research decisions",
+      "Prepare an exact manufacturer or authorized-servicer action plan; execute only after matching owner approval and return a controlled receipt"
+    ],
+    "deliverables": [
+      "Multi-appliance ownership and provenance ledger",
+      "Model-bound preventive-care calendar with completion evidence",
+      "Warranty, registration, recall, and service-history state",
+      "Evidence-bounded retain, repair-evaluation, or replacement-research brief",
+      "Manufacturer or authorized-servicer action plan with approval, receipt, or blocked handoff"
+    ],
+    "example": {
+      "request": "Organize my washer, dryer, refrigerator, and range; tell me which manufacturer care is due, whether any exact model or serial has a recall or active warranty, and prepare authorized service for approved items.",
+      "outcome": "A four-appliance provenance ledger, model-bound care calendar, exact-match recall and coverage states, lifecycle decision briefs, and approval-blocked manufacturer or authorized-servicer plans without troubleshooting or repair instructions."
+    },
+    "doneWhen": [
+      "Every appliance identity, due item, coverage statement, recall match, service event, and lifecycle recommendation cites the evidence that supports it",
+      "Unverified identity, stale sources, hazardous symptoms, or missing manufacturer guidance block the affected conclusion or action rather than becoming generic advice",
+      "No diagnosis or repair instruction is produced; active faults are handed to Home Repair or the appropriate emergency path",
+      "Every registration, claim, contact, appointment, authorization, disclosure, acceptance, and payment remains owner-controlled"
+    ],
+    "capabilityGuidance": [
+      "The base starter writes local ownership artifacts and grants no appliance-control, manufacturer-account, warranty, recall-subscription, provider, messaging, payment, or smart-home capability.",
+      "Future integrations must expose the exact appliance, data disclosure, manufacturer or servicer, purpose, scope, time, cost, terms, and owner approval, then return authoritative receipt evidence or fail closed."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/appliance-care.schema.json",
+        "path": "schemas/appliance-care.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/appliance-care.example.json",
+        "path": "fixtures/appliance-care.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/appliance-care.md",
+        "path": "templates/appliance-care.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Appliance ownership evidence is fragmented across labels, manuals, receipts, warranty portals, recall notices, calendars, and service records, so residents miss preventive care, cannot prove coverage, overlook exact-model safety actions, and make repair-or-replace decisions without a durable history.",
+    "repeatableJob": "Maintain a multi-appliance identity and provenance ledger over years; derive manufacturer-authoritative care; reconcile warranty, recall, and service state; support evidence-bounded lifecycle decisions; and control manufacturer or authorized-servicer actions through exact consent.",
+    "proofPlan": "Prove an X3 longitudinal ownership artifact for multiple appliances with model and serial provenance, source freshness, recurring maintenance completion, exact recall and warranty matching, lifecycle decision evidence, incident handoff, and digest-bound external-action approval and receipt.",
+    "existingAlternatives": [
+      {
+        "id": "home-repair-coordinator",
+        "overlap": "Both use manufacturer evidence, suppress unsafe resident work, preserve household privacy, compare qualified service providers, and require exact consent before appointments.",
+        "difference": "Home Repair starts with one observed household problem and owns hazard triage, hypotheses, bounded reversible checks, restoration, and repair verification. Appliance Care starts with a multi-appliance ownership portfolio and owns identity provenance, recurring care, warranty and recall state, service history, and lifecycle decisions; it produces no diagnosis or repair instructions and hands active faults to Home Repair."
+      },
+      {
+        "id": "vehicle-service-coordinator",
+        "overlap": "Both retain model, maintenance, warranty, recall, service-history, provider, and appointment evidence.",
+        "difference": "Vehicle Service starts with one identified vehicle and owns roadworthiness, stop-driving escalation, symptoms, and a current service event. Appliance Care manages several stationary household products longitudinally, exact model or serial recall matching, manufacturer care calendars, coverage records, and repair-versus-replacement research without operational-safety or incident diagnosis."
+      },
+      {
+        "id": "public-safety-monitor",
+        "overlap": "Both use official recall or safety sources and fail closed when authoritative evidence is unavailable.",
+        "difference": "Public Safety Monitor tracks broad location-based alerts and organizational escalation. Appliance Care binds a manufacturer or regulator notice to an owner-controlled appliance identity, lifecycle record, remedy state, and exact approved action."
+      }
+    ]
+  }
+}

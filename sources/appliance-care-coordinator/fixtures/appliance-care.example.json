@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "awesomeClaws.applianceCare.v1",
+  "portfolio": {
+    "reference": "primary-home",
+    "asOf": "2026-08-21T02:00:00Z"
+  },
+  "owner": {
+    "id": "owner-1",
+    "kind": "human",
+    "role": "resident and appliance owner"
+  },
+  "evidence": [
+    { "id": "ev-labels", "type": "label-photo", "authority": "owner-supplied", "capturedAt": "2026-08-20T18:00:00Z", "reference": "evidence/masked-appliance-labels/" },
+    { "id": "ev-purchases", "type": "purchase-record", "authority": "owner-supplied", "capturedAt": "2026-08-20T18:05:00Z", "reference": "evidence/purchase-records/" },
+    { "id": "ev-manuals", "type": "manual", "authority": "manufacturer", "capturedAt": "2026-08-20T18:10:00Z", "reference": "evidence/manufacturer-manuals/" },
+    { "id": "ev-maintenance", "type": "manufacturer-maintenance", "authority": "manufacturer", "capturedAt": "2026-08-20T18:15:00Z", "reference": "evidence/model-bound-maintenance/" },
+    { "id": "ev-warranties", "type": "warranty-terms", "authority": "manufacturer", "capturedAt": "2026-08-20T18:20:00Z", "reference": "evidence/warranty-terms/" },
+    { "id": "ev-registration", "type": "registration-receipt", "authority": "manufacturer", "capturedAt": "2026-08-20T18:25:00Z", "reference": "evidence/registration-receipts/" },
+    { "id": "ev-recalls", "type": "recall-result", "authority": "government", "capturedAt": "2026-08-20T18:30:00Z", "reference": "evidence/official-recall-results/" },
+    { "id": "ev-service", "type": "service-record", "authority": "service-provider", "capturedAt": "2026-08-20T18:35:00Z", "reference": "evidence/service-history/" },
+    { "id": "ev-energy", "type": "energy-label", "authority": "government", "capturedAt": "2026-08-20T18:40:00Z", "reference": "evidence/energy-guide/" },
+    { "id": "ev-owner", "type": "owner-report", "authority": "owner-supplied", "capturedAt": "2026-08-20T18:45:00Z", "reference": "evidence/owner-priorities.md" },
+    { "id": "ev-provider", "type": "provider-info", "authority": "manufacturer", "capturedAt": "2026-08-20T18:50:00Z", "reference": "evidence/manufacturer-recall-provider.md" }
+  ],
+  "appliances": [
+    { "id": "appliance-washer", "label": "laundry-washer", "category": "washer", "manufacturer": "ExampleCo", "model": "W100", "serialScope": "masked", "purchaseDate": "2023-05-01", "modelEvidenceRefs": ["ev-labels", "ev-purchases"], "serialEvidenceRefs": ["ev-labels"] },
+    { "id": "appliance-dryer", "label": "laundry-dryer", "category": "dryer", "manufacturer": "ExampleCo", "model": "D200", "serialScope": "verified", "purchaseDate": "2023-05-01", "modelEvidenceRefs": ["ev-labels", "ev-purchases"], "serialEvidenceRefs": ["ev-labels", "ev-purchases"] },
+    { "id": "appliance-refrigerator", "label": "kitchen-refrigerator", "category": "refrigerator", "manufacturer": "ColdCo", "model": "R300", "serialScope": "masked", "purchaseDate": "2018-09-15", "modelEvidenceRefs": ["ev-labels", "ev-purchases"], "serialEvidenceRefs": ["ev-labels"] },
+    { "id": "appliance-range", "label": "kitchen-range", "category": "range", "manufacturer": "CookCo", "model": "G400", "serialScope": "verified", "purchaseDate": "2022-02-10", "modelEvidenceRefs": ["ev-labels", "ev-purchases"], "serialEvidenceRefs": ["ev-labels", "ev-purchases"] }
+  ],
+  "maintenance": [
+    { "id": "care-washer-clean", "applianceRef": "appliance-washer", "task": "Run the manufacturer-specified washer cleaning cycle.", "dueAt": "2026-08-25T17:00:00Z", "state": "due", "sourceRefs": ["ev-maintenance"], "completionEvidenceRefs": [] },
+    { "id": "care-dryer-vent", "applianceRef": "appliance-dryer", "task": "Arrange the manufacturer-recommended qualified dryer vent inspection.", "dueAt": "2026-09-01T17:00:00Z", "state": "upcoming", "sourceRefs": ["ev-maintenance"], "completionEvidenceRefs": [] },
+    { "id": "care-fridge-coils", "applianceRef": "appliance-refrigerator", "task": "Record completion of the manufacturer-specified accessible condenser-area cleaning.", "dueAt": "2026-07-15T17:00:00Z", "state": "overdue", "sourceRefs": ["ev-maintenance", "ev-manuals"], "completionEvidenceRefs": [] },
+    { "id": "care-range-check", "applianceRef": "appliance-range", "task": "Do not use the range while the matched recall remedy is pending.", "dueAt": "2026-08-20T18:30:00Z", "state": "blocked", "sourceRefs": ["ev-recalls"], "completionEvidenceRefs": [], "blockedReason": "The official exact-serial recall result requires stop-use and a manufacturer remedy." }
+  ],
+  "coverage": [
+    { "applianceRef": "appliance-washer", "registrationState": "registered", "warrantyState": "active", "assessedAt": "2026-08-20T18:25:00Z", "expiresAt": "2028-05-01T00:00:00Z", "evidenceRefs": ["ev-purchases", "ev-warranties", "ev-registration"] },
+    { "applianceRef": "appliance-dryer", "registrationState": "registered", "warrantyState": "active", "assessedAt": "2026-08-20T18:25:00Z", "expiresAt": "2028-05-01T00:00:00Z", "evidenceRefs": ["ev-purchases", "ev-warranties", "ev-registration"] },
+    { "applianceRef": "appliance-refrigerator", "registrationState": "unknown", "warrantyState": "expired", "assessedAt": "2026-08-20T18:20:00Z", "evidenceRefs": ["ev-purchases", "ev-warranties"] },
+    { "applianceRef": "appliance-range", "registrationState": "registered", "warrantyState": "active", "assessedAt": "2026-08-20T18:25:00Z", "expiresAt": "2027-02-10T00:00:00Z", "evidenceRefs": ["ev-purchases", "ev-warranties", "ev-registration"] }
+  ],
+  "recalls": [
+    { "applianceRef": "appliance-washer", "state": "no-match", "matchScope": "model", "remedyState": "not-applicable", "checkedAt": "2026-08-20T18:30:00Z", "evidenceRefs": ["ev-recalls"] },
+    { "applianceRef": "appliance-dryer", "state": "no-match", "matchScope": "model-and-serial", "remedyState": "not-applicable", "checkedAt": "2026-08-20T18:30:00Z", "evidenceRefs": ["ev-recalls"] },
+    { "applianceRef": "appliance-refrigerator", "state": "no-match", "matchScope": "model", "remedyState": "not-applicable", "checkedAt": "2026-08-20T18:30:00Z", "evidenceRefs": ["ev-recalls"] },
+    { "applianceRef": "appliance-range", "state": "matched", "matchScope": "model-and-serial", "remedyState": "not-started", "checkedAt": "2026-08-20T18:30:00Z", "evidenceRefs": ["ev-recalls"] }
+  ],
+  "incidents": [
+    { "applianceRef": "appliance-washer", "state": "none", "handoff": "none", "evidenceRefs": ["ev-owner"] },
+    { "applianceRef": "appliance-dryer", "state": "none", "handoff": "none", "evidenceRefs": ["ev-owner"] },
+    { "applianceRef": "appliance-refrigerator", "state": "none", "handoff": "none", "evidenceRefs": ["ev-owner"] },
+    { "applianceRef": "appliance-range", "state": "recall-stop-use", "handoff": "manufacturer-recall", "evidenceRefs": ["ev-recalls"] }
+  ],
+  "lifecycleDecisions": [
+    { "applianceRef": "appliance-washer", "state": "retain", "rationale": "Current coverage and model-bound care evidence support continued ownership.", "evidenceRefs": ["ev-purchases", "ev-warranties", "ev-maintenance"], "uncertainties": [] },
+    { "applianceRef": "appliance-dryer", "state": "retain", "rationale": "Current coverage, maintenance, and service evidence support continued ownership.", "evidenceRefs": ["ev-warranties", "ev-maintenance", "ev-service"], "uncertainties": [] },
+    { "applianceRef": "appliance-refrigerator", "state": "replacement-research", "rationale": "Expired coverage, service history, and comparative energy evidence justify replacement research without deciding a purchase.", "evidenceRefs": ["ev-warranties", "ev-service", "ev-energy"], "uncertainties": ["No current repair estimate is available."] },
+    { "applianceRef": "appliance-range", "state": "blocked", "rationale": "The official recall remedy must be resolved before a normal retain-or-replace recommendation.", "evidenceRefs": ["ev-recalls"], "uncertainties": ["Manufacturer remedy completion is pending."] }
+  ],
+  "providers": [
+    { "id": "provider-cookco-recall", "name": "CookCo Recall Support", "type": "manufacturer", "sourceRef": "ev-provider", "qualificationState": "source-verified" }
+  ],
+  "action": {
+    "state": "awaiting-approval",
+    "plan": {
+      "applianceRef": "appliance-range",
+      "providerRef": "provider-cookco-recall",
+      "actionType": "recall-remedy",
+      "scope": "Schedule the no-cost manufacturer recall remedy; no other diagnosis, repair, terms, or payment are authorized.",
+      "scheduledFor": "2026-08-24T17:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "maxCost": 0,
+      "currency": "USD",
+      "maxDeposit": 0,
+      "terms": "No-cost recall remedy; owner must separately approve any expanded work.",
+      "dataDisclosure": ["masked appliance label", "verified model and serial", "owner callback number", "kitchen-range label"]
+    }
+  },
+  "handoff": {
+    "state": "ready-for-owner",
+    "owner": {
+      "id": "owner-1",
+      "kind": "human",
+      "role": "resident and appliance owner"
+    },
+    "prohibitedActions": ["diagnose-or-repair", "operate-hazardous-appliance", "register-or-file-claim", "contact-or-book", "accept-terms-or-pay", "exceed-approved-scope"]
+  }
+}

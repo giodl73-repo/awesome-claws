@@ -23,6 +23,12 @@ function canonicalJson(value) {
 
 const definitions = [
   {
+    id: "appliance-care-coordinator",
+    schema: "../claws/appliance-care-coordinator/schemas/appliance-care.schema.json",
+    fixture: "../claws/appliance-care-coordinator/fixtures/appliance-care.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "change-control-operator",
     schema: "../claws/change-control-operator/schemas/change-plan.schema.json",
     fixture: "../claws/change-control-operator/fixtures/change-plan.example.json",
@@ -515,6 +521,108 @@ test("vehicle service rejects unapproved or drifted booking state", () => {
   booked.appointment.receipt.confirmationRef =
     "provider://unrelated-provider/confirmation-1";
   assert.equal(isValid("vehicle-service-coordinator", booked), false);
+});
+
+test("appliance care binds identity, recurring care, and portfolio state", () => {
+  const unverifiedSerial = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  unverifiedSerial.appliances[1].serialScope = "unverified";
+  assert.equal(isValid("appliance-care-coordinator", unverifiedSerial), false);
+
+  const unsupportedCare = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  unsupportedCare.maintenance[0].sourceRefs = ["ev-owner"];
+  assert.equal(isValid("appliance-care-coordinator", unsupportedCare), false);
+
+  const repairInstruction = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  repairInstruction.maintenance[0].task = "Disassemble and repair the washer pump.";
+  assert.equal(isValid("appliance-care-coordinator", repairInstruction), false);
+
+  const unsupportedCompletion = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  unsupportedCompletion.maintenance[0].state = "completed";
+  unsupportedCompletion.maintenance[0].completedAt = "2026-08-20T19:00:00Z";
+  assert.equal(isValid("appliance-care-coordinator", unsupportedCompletion), false);
+
+  const incompleteCoverage = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  incompleteCoverage.coverage.pop();
+  assert.equal(isValid("appliance-care-coordinator", incompleteCoverage), false);
+});
+
+test("appliance care requires exact recall, coverage, and lifecycle evidence", () => {
+  const serialMismatch = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  serialMismatch.appliances[3].serialScope = "masked";
+  assert.equal(isValid("appliance-care-coordinator", serialMismatch), false);
+
+  const unsupportedRecall = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  unsupportedRecall.recalls[3].evidenceRefs = ["ev-owner"];
+  assert.equal(isValid("appliance-care-coordinator", unsupportedRecall), false);
+
+  const unsupportedWarranty = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  unsupportedWarranty.coverage[0].evidenceRefs = ["ev-purchases"];
+  assert.equal(isValid("appliance-care-coordinator", unsupportedWarranty), false);
+
+  const unsupportedReplacement = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  unsupportedReplacement.lifecycleDecisions[2].evidenceRefs = ["ev-service"];
+  assert.equal(isValid("appliance-care-coordinator", unsupportedReplacement), false);
+
+  const wrongFaultHandoff = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  wrongFaultHandoff.incidents[0].state = "active-fault";
+  assert.equal(isValid("appliance-care-coordinator", wrongFaultHandoff), false);
+});
+
+test("appliance care protects owner authority and external actions", () => {
+  const addressLeak = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  addressLeak.lifecycleDecisions[0].rationale += " Service address: 742 Evergreen Terrace.";
+  assert.equal(isValid("appliance-care-coordinator", addressLeak), false);
+
+  const unsupportedProvider = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  unsupportedProvider.providers[0].sourceRef = "ev-manuals";
+  assert.equal(isValid("appliance-care-coordinator", unsupportedProvider), false);
+
+  const wrongAction = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  wrongAction.action.plan.applianceRef = "appliance-washer";
+  assert.equal(isValid("appliance-care-coordinator", wrongAction), false);
+
+  const prematureApproval = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  prematureApproval.action.approval = {
+    owner: prematureApproval.owner,
+    planDigest: `sha256:${"0".repeat(64)}`,
+    approvedAt: "2026-08-21T03:00:00Z",
+  };
+  assert.equal(isValid("appliance-care-coordinator", prematureApproval), false);
+
+  const agentOwned = structuredClone(
+    cases.get("appliance-care-coordinator").fixture,
+  );
+  agentOwned.owner.id = "appliance-care-coordinator";
+  agentOwned.handoff.owner.id = "appliance-care-coordinator";
+  assert.equal(isValid("appliance-care-coordinator", agentOwned), false);
 });
 
 test("home repair rejects hazardous or unauthorized owner work", () => {

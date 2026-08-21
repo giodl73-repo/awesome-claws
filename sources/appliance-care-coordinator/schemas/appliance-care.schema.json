@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "portfolio", "owner", "evidence", "appliances", "maintenance", "coverage", "recalls", "incidents", "lifecycleDecisions", "providers", "action", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.applianceCare.v1" },
+    "portfolio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference", "asOf"],
+      "properties": {
+        "reference": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 32 },
+        "asOf": { "type": "string", "format": "date-time" }
+      }
+    },
+    "owner": { "$ref": "#/$defs/accountableOwner" },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "authority", "capturedAt", "reference"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "type": { "enum": ["owner-report", "label-photo", "purchase-record", "manual", "manufacturer-maintenance", "warranty-terms", "registration-receipt", "recall-result", "service-record", "energy-label", "provider-info", "integration-approval", "action-receipt"] },
+          "authority": { "enum": ["owner-supplied", "manufacturer", "government", "service-provider", "qualified-technician"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "appliances": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "category", "manufacturer", "model", "serialScope", "modelEvidenceRefs", "serialEvidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^appliance-[a-z0-9-]+$" },
+          "label": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 32 },
+          "category": { "enum": ["washer", "dryer", "refrigerator", "freezer", "range", "oven", "cooktop", "dishwasher", "water-heater", "air-conditioner", "other"] },
+          "manufacturer": { "type": "string", "minLength": 1 },
+          "model": { "type": "string", "minLength": 1 },
+          "serialScope": { "enum": ["unverified", "masked", "verified"] },
+          "purchaseDate": { "type": "string", "format": "date" },
+          "modelEvidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+          "serialEvidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+        }
+      }
+    },
+    "maintenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "applianceRef", "task", "dueAt", "state", "sourceRefs", "completionEvidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "applianceRef": { "type": "string", "minLength": 1 },
+          "task": { "type": "string", "minLength": 1 },
+          "dueAt": { "type": "string", "format": "date-time" },
+          "state": { "enum": ["upcoming", "due", "overdue", "completed", "blocked"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+          "completionEvidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+          "completedAt": { "type": "string", "format": "date-time" },
+          "blockedReason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["applianceRef", "registrationState", "warrantyState", "assessedAt", "evidenceRefs"],
+        "properties": {
+          "applianceRef": { "type": "string", "minLength": 1 },
+          "registrationState": { "enum": ["registered", "not-registered", "unknown"] },
+          "warrantyState": { "enum": ["active", "expired", "not-offered", "unknown"] },
+          "assessedAt": { "type": "string", "format": "date-time" },
+          "expiresAt": { "type": "string", "format": "date-time" },
+          "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+        }
+      }
+    },
+    "recalls": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["applianceRef", "state", "matchScope", "remedyState", "checkedAt", "evidenceRefs"],
+        "properties": {
+          "applianceRef": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["no-match", "matched", "unknown"] },
+          "matchScope": { "enum": ["model", "serial", "model-and-serial", "unverified"] },
+          "remedyState": { "enum": ["not-applicable", "not-started", "scheduled", "completed", "blocked", "unknown"] },
+          "checkedAt": { "type": "string", "format": "date-time" },
+          "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+        }
+      }
+    },
+    "incidents": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["applianceRef", "state", "handoff", "evidenceRefs"],
+        "properties": {
+          "applianceRef": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["none", "active-fault", "active-hazard", "recall-stop-use", "uncertain"] },
+          "handoff": { "enum": ["none", "home-repair", "emergency-services", "manufacturer-recall", "blocked"] },
+          "evidenceRefs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+        }
+      }
+    },
+    "lifecycleDecisions": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["applianceRef", "state", "rationale", "evidenceRefs", "uncertainties"],
+        "properties": {
+          "applianceRef": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["retain", "repair-evaluation", "replacement-research", "blocked"] },
+          "rationale": { "type": "string", "minLength": 1 },
+          "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+          "uncertainties": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "providers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "type", "sourceRef", "qualificationState"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "type": { "enum": ["manufacturer", "authorized-servicer", "retailer", "recall-administrator"] },
+          "sourceRef": { "type": "string", "minLength": 1 },
+          "qualificationState": { "enum": ["source-verified", "owner-verified", "unverified"] }
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "properties": {
+        "state": { "enum": ["not-requested", "options-ready", "awaiting-approval", "approved", "completed", "blocked"] },
+        "plan": { "$ref": "#/$defs/actionPlan" },
+        "approval": { "$ref": "#/$defs/approval" },
+        "integration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "providerRef", "approvalRef", "approvalEvidenceRef", "configuredBy"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^approved-integration-[a-z0-9-]+$" },
+            "providerRef": { "type": "string", "minLength": 1 },
+            "approvalRef": { "type": "string", "pattern": "^controlled://[a-z0-9/._-]+$" },
+            "approvalEvidenceRef": { "type": "string", "minLength": 1 },
+            "configuredBy": { "$ref": "#/$defs/accountableOwner" }
+          }
+        },
+        "receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["planDigest", "integrationId", "providerRef", "confirmationRef", "evidenceRef", "completedAt"],
+          "properties": {
+            "planDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+            "integrationId": { "type": "string", "pattern": "^approved-integration-[a-z0-9-]+$" },
+            "providerRef": { "type": "string", "minLength": 1 },
+            "confirmationRef": { "type": "string", "pattern": "^provider://[a-z0-9/._-]+$" },
+            "evidenceRef": { "type": "string", "minLength": 1 },
+            "completedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "blockedReason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-owner", "blocked"] },
+        "owner": { "$ref": "#/$defs/accountableOwner" },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": { "enum": ["diagnose-or-repair", "operate-hazardous-appliance", "register-or-file-claim", "contact-or-book", "accept-terms-or-pay", "exceed-approved-scope"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "accountableOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "role"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["human", "team"] },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    },
+    "actionPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["applianceRef", "providerRef", "actionType", "scope", "scheduledFor", "timezone", "maxCost", "currency", "maxDeposit", "terms", "dataDisclosure"],
+      "properties": {
+        "applianceRef": { "type": "string", "minLength": 1 },
+        "providerRef": { "type": "string", "minLength": 1 },
+        "actionType": { "enum": ["product-registration", "warranty-claim", "recall-remedy", "preventive-service", "service-evaluation"] },
+        "scope": { "type": "string", "minLength": 1 },
+        "scheduledFor": { "type": "string", "format": "date-time" },
+        "timezone": { "type": "string", "minLength": 1 },
+        "maxCost": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "maxDeposit": { "type": "number", "minimum": 0 },
+        "terms": { "type": "string", "minLength": 1 },
+        "dataDisclosure": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner", "planDigest", "approvedAt"],
+      "properties": {
+        "owner": { "$ref": "#/$defs/accountableOwner" },
+        "planDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "approvedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

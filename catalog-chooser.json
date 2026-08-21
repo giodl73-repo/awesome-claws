@@ -100,6 +100,40 @@
       }
     },
     {
+      "id": "appliance-care-coordinator",
+      "name": "Appliance care coordinator",
+      "description": "Maintains a longitudinal appliance inventory, model-bound care calendar, warranty and recall state, lifecycle cost evidence, and explicitly approved manufacturer or authorized-servicer appointments.",
+      "audience": "Residents managing several household appliances across purchase, registration, preventive care, recall, warranty, service-history, and replace-or-retain decisions.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-21"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "case-continuity-coordinator",
       "name": "Case continuity coordinator",
       "description": "Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions.",

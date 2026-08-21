@@ -1451,6 +1451,28 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "appliance-care-coordinator",
+      "acceptedRequest": "Organize my washer, dryer, refrigerator, and range; tell me which manufacturer care is due, whether any exact model or serial has a recall or active warranty, and prepare authorized service for approved items.",
+      "requiredEvidence": [
+        "Privacy-safe appliance label, manufacturer, model, serial evidence, purchase or installation date, and accountable owner",
+        "Manual, warranty, registration, recall, maintenance, energy-use, and service-history evidence with source and freshness",
+        "Owner priorities, availability, budget ceiling, and authority for registration, claims, retirement, and service"
+      ],
+      "authorityBoundaries": [
+        "Do not diagnose faults, produce repair instructions, or duplicate Home Repair's incident workflow",
+        "Do not infer recall or warranty coverage from model similarity, marketing, or an unverified serial number",
+        "Do not register products, file claims, contact providers, book service, authorize work, disclose precise location, accept terms, or pay without exact owner consent"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/appliance-care-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

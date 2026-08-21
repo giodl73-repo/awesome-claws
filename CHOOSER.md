@@ -8,12 +8,13 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (59)
+### Active (60)
 
 | Claw | Detail |
 | --- | --- |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [API integration engineer](claws/api-integration-engineer) | @giodl73-repo; last verified 2026-08-19 |
+| [Appliance care coordinator](claws/appliance-care-coordinator) | @giodl73-repo; last verified 2026-08-21 |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Change control operator](claws/change-control-operator) | @giodl73-repo; last verified 2026-08-19 |
 | [Civic data analyst](claws/civic-data-analyst) | @giodl73-repo; last verified 2026-08-19 |
@@ -86,12 +87,13 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (28)
+### Low setup (29)
 
 | Claw | Detail |
 | --- | --- |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | no bootstrap, external dependency, or schedule |
 | [API integration engineer](claws/api-integration-engineer) | no bootstrap, external dependency, or schedule |
+| [Appliance care coordinator](claws/appliance-care-coordinator) | no bootstrap, external dependency, or schedule |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | no bootstrap, external dependency, or schedule |
 | [Change control operator](claws/change-control-operator) | no bootstrap, external dependency, or schedule |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | no bootstrap, external dependency, or schedule |
@@ -164,12 +166,13 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (36)
+### No external dependencies (37)
 
 | Claw | Detail |
 | --- | --- |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | None |
 | [API integration engineer](claws/api-integration-engineer) | None |
+| [Appliance care coordinator](claws/appliance-care-coordinator) | None |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | None |
 | [Change control operator](claws/change-control-operator) | None |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | None |
@@ -237,10 +240,11 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (34)
+### X3 (35)
 
 | Claw | Detail |
 | --- | --- |
+| [Appliance care coordinator](claws/appliance-care-coordinator) | Maintains a longitudinal appliance inventory, model-bound care calendar, warranty and recall state, lifecycle cost evidence, and explicitly approved manufacturer or authorized-servicer appointments. |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions. |
 | [Change control operator](claws/change-control-operator) | Prepares and executes bounded workspace changes only after an accountable owner approves the exact plan digest. |
 | [Civic data analyst](claws/civic-data-analyst) | Combines public demographic, budget, service, land-use, and mobility data into reproducible civic decision evidence. |
@@ -357,10 +361,11 @@ Categories come directly from the catalog entry.
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 
-### Operations (17)
+### Operations (18)
 
 | Claw | Detail |
 | --- | --- |
+| [Appliance care coordinator](claws/appliance-care-coordinator) | X3; Maintains a longitudinal appliance inventory, model-bound care calendar, warranty and recall state, lifecycle cost evidence, and explicitly approved manufacturer or authorized-servicer appointments. |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | X3; Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions. |
 | [Content operations](claws/content-operations) | X3; Runs editorial work from brief through review, publication readiness, and measurement. |
 | [Customer support](claws/customer-support) | X4; Resolves customer cases accurately while preserving context, ownership, and privacy. |
@@ -408,10 +413,11 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (9)
+### Standard attention (10)
 
 | Claw | Detail |
 | --- | --- |
+| [Appliance care coordinator](claws/appliance-care-coordinator) | portable workspace artifacts only |
 | [Content operations](claws/content-operations) | portable workspace artifacts only |
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | portable workspace artifacts only |
 | [Home repair coordinator](claws/home-repair-coordinator) | portable workspace artifacts only |
