@@ -4752,6 +4752,100 @@ function sportsTeamWatchFindings(value) {
   return findings;
 }
 
+function movieStreamingFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const titleIds = value.titles.map((item) => item.id);
+  const availabilityIds = value.availability.map((item) => item.id);
+  const preferenceIds = value.preferences.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const titleSet = new Set(titleIds);
+  const availabilitySet = new Set(availabilityIds);
+  const preferenceSet = new Set(preferenceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const titleById = new Map(value.titles.map((item) => [item.id, item]));
+  const availabilityById = new Map(value.availability.map((item) => [item.id, item]));
+  const collectionServices = new Set(value.collection.services);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(titleIds, "titles", "Title id"),
+    ...uniqueFindings(availabilityIds, "availability", "Availability id"),
+    ...uniqueFindings(preferenceIds, "preferences", "Preference id"),
+    ...uniqueFindings(value.shortlist.map((item) => item.id), "shortlist", "Shortlist id"),
+  ];
+  for (const [index, title] of value.titles.entries()) {
+    findings.push(
+      ...uniqueFindings(title.sourceRefs, `titles.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(title.sourceRefs, sourceSet, `titles.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, row] of value.availability.entries()) {
+    findings.push(
+      ...referenceFindings([row.titleRef], titleSet, `availability.${index}.titleRef`, "Title reference"),
+      ...uniqueFindings(row.sourceRefs, `availability.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(row.sourceRefs, sourceSet, `availability.${index}.sourceRefs`, "Source reference"),
+    );
+    const supportedSource = row.sourceRefs.some((ref) =>
+      ["streaming-availability", "title-metadata"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!supportedSource) {
+      findings.push(finding("unsupported_availability_source", `availability.${index}.sourceRefs`, "Availability rows require streaming availability or title metadata source evidence."));
+    }
+    if (!collectionServices.has(row.service)) {
+      findings.push(finding("unsupported_service", `availability.${index}.service`, "Availability must be scoped to services the owner says they have."));
+    }
+    if (row.region !== value.collection.region) {
+      findings.push(finding("region_mismatch", `availability.${index}.region`, "Availability region must match the watchlist region."));
+    }
+  }
+  for (const [index, preference] of value.preferences.entries()) {
+    findings.push(
+      ...uniqueFindings(preference.sourceRefs, `preferences.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(preference.sourceRefs, sourceSet, `preferences.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, pick] of value.shortlist.entries()) {
+    findings.push(
+      ...referenceFindings([pick.titleRef], titleSet, `shortlist.${index}.titleRef`, "Title reference"),
+      ...referenceFindings([pick.availabilityRef], availabilitySet, `shortlist.${index}.availabilityRef`, "Availability reference"),
+      ...uniqueFindings(pick.preferenceRefs, `shortlist.${index}.preferenceRefs`, "Preference reference"),
+      ...referenceFindings(pick.preferenceRefs, preferenceSet, `shortlist.${index}.preferenceRefs`, "Preference reference"),
+    );
+    const title = titleById.get(pick.titleRef);
+    const availability = availabilityById.get(pick.availabilityRef);
+    if (availability && availability.titleRef !== pick.titleRef) {
+      findings.push(finding("availability_title_mismatch", `shortlist.${index}.availabilityRef`, "Shortlist availability must belong to the same title."));
+    }
+    if (
+      pick.state === "recommended" &&
+      (!availability ||
+        availability.freshness !== "current" ||
+        availability.accessMode !== "included" ||
+        availability.accountConstraint !== "included-in-owner-plan")
+    ) {
+      findings.push(finding("unsupported_recommendation", `shortlist.${index}`, "Recommended titles require current included availability on the owner's declared services."));
+    }
+    if (pick.state === "recommended" && ["watched", "disliked", "blocked"].includes(title?.tasteState)) {
+      findings.push(finding("taste_state_conflict", `shortlist.${index}.titleRef`, "Recommended titles cannot conflict with watched, disliked, or blocked taste state."));
+    }
+    if (
+      (pick.state === "blocked" && !pick.blockedReason) ||
+      (pick.state !== "blocked" && pick.blockedReason !== null)
+    ) {
+      findings.push(finding("incoherent_blocked_state", `shortlist.${index}.blockedReason`, "Only blocked shortlist items may carry a blocked reason."));
+    }
+  }
+  const accountActionText = canonicalJson({
+    shortlist: value.shortlist.map(({ fitReason, blockedReason }) => ({ fitReason, blockedReason })),
+  });
+  if (/\b(rent|buy|subscribe|cancel|publish|rate|message|modify account|bypass)\b/iu.test(accountActionText)) {
+    findings.push(finding("account_action_content", "shortlist", "Watch artifacts must not instruct account, purchase, subscription, posting, messaging, or restriction-bypass actions."));
+  }
+  if (value.handoff.owner === "movie-streaming-organizer") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Streaming account, purchase, rating, messaging, and viewing decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 function stockPortfolioFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const positionIds = value.positions.map((item) => item.id);
@@ -4864,6 +4958,7 @@ const validators = {
   "home-repair-coordinator": homeRepairFindings,
   "household-steward": householdStewardFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
+  "movie-streaming-organizer": movieStreamingFindings,
   "pet-care-coordinator": petCareFindings,
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
   "project-manager": projectFindings,

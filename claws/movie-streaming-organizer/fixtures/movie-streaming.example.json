@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "awesomeClaws.movieStreaming.v1",
+  "collection": {
+    "id": "watchlist-family-night",
+    "owner": "Household owner",
+    "region": "US",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-21T19:00:00Z",
+    "services": ["Netflix", "Disney+"]
+  },
+  "sources": [
+    { "id": "src-metadata", "kind": "title-metadata", "authority": "metadata-provider", "capturedAt": "2026-08-21T18:30:00Z", "reference": "metadata://family-night/titles", "freshness": "current" },
+    { "id": "src-ratings", "kind": "content-rating", "authority": "ratings-board", "capturedAt": "2026-08-21T18:32:00Z", "reference": "ratings://us/family-night", "freshness": "current" },
+    { "id": "src-netflix", "kind": "streaming-availability", "authority": "availability-provider", "capturedAt": "2026-08-21T18:35:00Z", "reference": "availability://netflix/us/family-night", "freshness": "current" },
+    { "id": "src-disney", "kind": "streaming-availability", "authority": "availability-provider", "capturedAt": "2026-08-21T18:36:00Z", "reference": "availability://disney-plus/us/family-night", "freshness": "current" },
+    { "id": "src-history", "kind": "watch-history", "authority": "user-supplied", "capturedAt": "2026-08-21T18:40:00Z", "reference": "owner://watch-history/family-night", "freshness": "current" },
+    { "id": "src-preferences", "kind": "household-preference", "authority": "household-member", "capturedAt": "2026-08-21T18:42:00Z", "reference": "owner://preferences/family-night", "freshness": "current" }
+  ],
+  "titles": [
+    { "id": "title-stellar-quest", "name": "Stellar Quest", "mediaType": "movie", "releaseYear": 2024, "runtimeMinutes": 108, "rating": "PG", "tasteState": "watchlist", "sourceRefs": ["src-metadata", "src-ratings", "src-history"] },
+    { "id": "title-harbor-mystery", "name": "Harbor Mystery", "mediaType": "movie", "releaseYear": 2022, "runtimeMinutes": 116, "rating": "PG-13", "tasteState": "watchlist", "sourceRefs": ["src-metadata", "src-ratings", "src-history"] },
+    { "id": "title-galaxy-rewind", "name": "Galaxy Rewind", "mediaType": "movie", "releaseYear": 2020, "runtimeMinutes": 123, "rating": "PG-13", "tasteState": "watched", "sourceRefs": ["src-metadata", "src-ratings", "src-history"] },
+    { "id": "title-late-night-case", "name": "Late Night Case", "mediaType": "movie", "releaseYear": 2025, "runtimeMinutes": 142, "rating": "R", "tasteState": "blocked", "sourceRefs": ["src-metadata", "src-ratings", "src-history"] }
+  ],
+  "availability": [
+    { "id": "avail-stellar-netflix", "titleRef": "title-stellar-quest", "service": "Netflix", "region": "US", "accessMode": "included", "accountConstraint": "included-in-owner-plan", "freshness": "current", "sourceRefs": ["src-netflix"] },
+    { "id": "avail-harbor-disney", "titleRef": "title-harbor-mystery", "service": "Disney+", "region": "US", "accessMode": "included", "accountConstraint": "included-in-owner-plan", "freshness": "current", "sourceRefs": ["src-disney"] },
+    { "id": "avail-galaxy-netflix", "titleRef": "title-galaxy-rewind", "service": "Netflix", "region": "US", "accessMode": "included", "accountConstraint": "included-in-owner-plan", "freshness": "current", "sourceRefs": ["src-netflix"] },
+    { "id": "avail-case-disney", "titleRef": "title-late-night-case", "service": "Disney+", "region": "US", "accessMode": "unknown", "accountConstraint": "unknown", "freshness": "missing", "sourceRefs": ["src-disney"] }
+  ],
+  "preferences": [
+    { "id": "pref-rating", "owner": "Household owner", "kind": "age-rating-limit", "value": "PG-13 or lower", "sourceRefs": ["src-preferences"] },
+    { "id": "pref-runtime", "owner": "Household owner", "kind": "max-runtime", "value": "120 minutes", "sourceRefs": ["src-preferences"] },
+    { "id": "pref-history", "owner": "Household owner", "kind": "watched-history", "value": "Avoid titles already watched by the group", "sourceRefs": ["src-history"] },
+    { "id": "pref-mood", "owner": "Household owner", "kind": "mood", "value": "Light adventure or mystery", "sourceRefs": ["src-preferences"] }
+  ],
+  "shortlist": [
+    { "id": "pick-stellar", "titleRef": "title-stellar-quest", "rank": 1, "fit": "strong", "fitReason": "Included on an owned service, under two hours, PG, and still on the watchlist.", "availabilityRef": "avail-stellar-netflix", "preferenceRefs": ["pref-rating", "pref-runtime", "pref-history", "pref-mood"], "state": "recommended", "blockedReason": null },
+    { "id": "pick-harbor", "titleRef": "title-harbor-mystery", "rank": 2, "fit": "possible", "fitReason": "Included on an owned service and within rating limit, but close to the runtime ceiling.", "availabilityRef": "avail-harbor-disney", "preferenceRefs": ["pref-rating", "pref-runtime", "pref-history", "pref-mood"], "state": "recommended", "blockedReason": null },
+    { "id": "pick-galaxy", "titleRef": "title-galaxy-rewind", "rank": 3, "fit": "blocked", "fitReason": "Already watched by the group.", "availabilityRef": "avail-galaxy-netflix", "preferenceRefs": ["pref-history"], "state": "blocked", "blockedReason": "Watched history says to avoid repeats tonight." }
+  ],
+  "blockedActions": ["rent-title", "buy-title", "subscribe", "cancel-subscription", "publish-rating", "send-message", "modify-calendar", "modify-account", "bypass-restriction"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Household owner",
+    "prohibitedActions": ["rent-title", "buy-title", "subscribe", "cancel-subscription", "publish-rating", "send-message", "modify-calendar", "modify-account", "bypass-restriction"]
+  }
+}

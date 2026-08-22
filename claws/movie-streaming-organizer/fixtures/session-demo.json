@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "movie-streaming-organizer",
+  "scenario": "Organize our family movie list for tonight. We have Netflix and Disney+, prefer under two hours, need PG-13 or lower, and want to avoid anything already watched. Show where each option is available but do not rent, buy, subscribe, rate, or message anyone.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize our family movie list for tonight. We have Netflix and Disney+, prefer under two hours, need PG-13 or lower, and want to avoid anything already watched. Show where each option is available but do not rent, buy, subscribe, rate, or message anyone."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/movie-streaming-organizer-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Movie and streaming organizer session handoff",
+    "summary": "A source-timestamped watchlist and watch-night shortlist with service availability, household preferences, age-rating and runtime constraints, watched-state conflicts, stale or missing availability, and all account or purchase actions blocked.",
+    "output": "outputs/movie-streaming-organizer-handoff.md",
+    "items": [
+      {
+        "title": "Personal or household title watchlist",
+        "summary": "Every title has a source identity, media type, owner taste state, and availability freshness state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Streaming availability table",
+        "summary": "Availability is labeled by service, region, access mode, account constraint, source, and captured time",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Watched, favorite, disliked, and blocked-state ledger",
+        "summary": "The shortlist traces every recommendation to explicit household preferences and constraints without hiding gaps",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Watch-night shortlist with source freshness",
+        "summary": "Rental, purchase, subscription, cancellation, rating, calendar, and messaging actions remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked account, purchase, subscription, posting, and messaging handoff",
+        "summary": "Every title has a source identity, media type, owner taste state, and availability freshness state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
