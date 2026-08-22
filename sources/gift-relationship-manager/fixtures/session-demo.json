@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "gift-relationship-manager",
+  "scenario": "Help me plan gifts for Maya's birthday and my team's thank-you notes from the notes I supplied. Keep Maya's surprise private, stay under the budgets, avoid duplicate gifts, and do not buy anything, message anyone, edit calendars, or infer private relationship meaning.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Help me plan gifts for Maya's birthday and my team's thank-you notes from the notes I supplied. Keep Maya's surprise private, stay under the budgets, avoid duplicate gifts, and do not buy anything, message anyone, edit calendars, or infer private relationship meaning."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/gift-relationship-manager-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Gift and relationship manager session handoff",
+    "summary": "A source-backed recipient and occasion ledger with gift ideas, preference evidence, budget fit, timing and shipping gaps, duplicate gift risks, privacy-sensitive notes, owner review questions, and all purchase or communication actions blocked.",
+    "output": "outputs/gift-relationship-manager-handoff.md",
+    "items": [
+      {
+        "title": "Recipient and occasion ledger",
+        "summary": "Every recipient, occasion, preference, and gift idea has source identity, freshness, and privacy labeling",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Preference and gift-history register",
+        "summary": "Every shortlist item traces to explicit preferences, budget, timing, and gift-history evidence without hiding gaps",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Gift idea shortlist with budget, timing, and source freshness",
+        "summary": "Sensitive relationship, address, surprise, and private-note details are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Privacy and surprise-risk review questions",
+        "summary": "Purchases, reservations, returns, shipping, calendar edits, messages, invitations, and social posts remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked purchase, shipping, calendar, message, invitation, and social-post handoff",
+        "summary": "Every recipient, occasion, preference, and gift idea has source identity, freshness, and privacy labeling",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

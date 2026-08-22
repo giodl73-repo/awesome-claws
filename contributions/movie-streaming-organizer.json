@@ -96,6 +96,16 @@
     "proofPlan": "Prove an X3 artifact with title identity, service availability freshness, taste-state provenance, household constraints, shortlist reasoning, and negative fixtures for stale availability, unsupported access, and unapproved account or purchase actions.",
     "existingAlternatives": [
       {
+        "id": "music-organizer",
+        "overlap": "Both organize personal entertainment libraries with taste state, service availability, source freshness, and blocked account or public-sharing actions.",
+        "difference": "Music Organizer handles artists, tracks, playlists, listening history, explicit-content and rights constraints; Movie and Streaming Organizer handles films, shows, watched history, ratings, runtime, and watch-night fit."
+      },
+      {
+        "id": "gift-relationship-manager",
+        "overlap": "Both use personal preferences, favorites, duplicate or history signals, budgets or access constraints, and owner-controlled blocked actions.",
+        "difference": "Gift and Relationship Manager plans gifts for recipients and occasions with privacy, budget, and shipping boundaries; Movie and Streaming Organizer plans what to watch from title availability and viewing constraints."
+      },
+      {
         "id": "travel-concierge",
         "overlap": "Both compare options across external inventory, constraints, preferences, dates, and owner-visible choices.",
         "difference": "Travel Concierge compares trips, lodging, and itinerary options; Movie and Streaming Organizer maintains media watch state, household taste, service availability, and content/account restrictions."

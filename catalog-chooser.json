@@ -954,6 +954,40 @@
       }
     },
     {
+      "id": "gift-relationship-manager",
+      "name": "Gift and relationship manager",
+      "description": "Organizes relationship notes, occasions, gift ideas, preference evidence, budgets, and owner-review reminders without buying gifts, sending messages, editing calendars, or inferring sensitive relationship meaning.",
+      "audience": "Individuals, households, assistants, and small teams keeping thoughtful gift and occasion notes while preserving privacy and owner authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-22"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "grant-portfolio-manager",
       "name": "Grant portfolio manager",
       "description": "Maintains a private, evidence-led grant opportunity and submission portfolio without inventing eligibility or submitting applications.",

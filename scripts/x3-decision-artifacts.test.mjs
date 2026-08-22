@@ -59,6 +59,12 @@ const definitions = [
     decisionField: "decisionState",
   },
   {
+    id: "gift-relationship-manager",
+    schema: "../claws/gift-relationship-manager/schemas/gift-plan.schema.json",
+    fixture: "../claws/gift-relationship-manager/fixtures/gift-plan.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "green-thumb-coordinator",
     schema: "../claws/green-thumb-coordinator/schemas/garden-plan.schema.json",
     fixture: "../claws/green-thumb-coordinator/fixtures/garden-plan.example.json",
@@ -229,6 +235,28 @@ test("financial analysis rejects dangling source and scenario references", () =>
   assert.equal(isValid("financial-analyst", candidate), false);
 });
 
+test("gift relationship manager preserves privacy, budget, and owner authority", () => {
+  const staleSource = structuredClone(cases.get("gift-relationship-manager").fixture);
+  staleSource.sources[0].freshness = "stale";
+  assert.equal(isValid("gift-relationship-manager", staleSource), false);
+
+  const overBudget = structuredClone(cases.get("gift-relationship-manager").fixture);
+  overBudget.giftIdeas[0].estimatedCost = 90;
+  assert.equal(isValid("gift-relationship-manager", overBudget), false);
+
+  const lateShipping = structuredClone(cases.get("gift-relationship-manager").fixture);
+  lateShipping.giftIdeas[0].shippingState = "risk";
+  assert.equal(isValid("gift-relationship-manager", lateShipping), false);
+
+  const actionAdvice = structuredClone(cases.get("gift-relationship-manager").fixture);
+  actionAdvice.shortlist[0].fitReason += " Buy it now and send a message.";
+  assert.equal(isValid("gift-relationship-manager", actionAdvice), false);
+
+  const mismatch = structuredClone(cases.get("gift-relationship-manager").fixture);
+  mismatch.giftIdeas[0].recipientRef = "recipient-team";
+  assert.equal(isValid("gift-relationship-manager", mismatch), false);
+});
+
 test("public safety state rejects impossible time ranges and dangling alerts", () => {
   const candidate = structuredClone(cases.get("public-safety-monitor").fixture);
   candidate.alerts[0].expiresAt = candidate.alerts[0].issuedAt;
@@ -281,6 +309,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["case-continuity-coordinator", (value) => value.actions[0].evidenceRefs.push(value.actions[0].evidenceRefs[0])],
     ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
+    ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],
     ["movie-streaming-organizer", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["music-organizer", (value) => value.playlistPlan[0].preferenceRefs.push(value.playlistPlan[0].preferenceRefs[0])],

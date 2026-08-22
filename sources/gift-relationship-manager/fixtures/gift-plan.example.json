@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "awesomeClaws.giftPlan.v1",
+  "plan": {
+    "id": "gift-plan-august",
+    "owner": "Gift owner",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-22T18:30:00Z",
+    "currency": "USD"
+  },
+  "sources": [
+    { "id": "src-owner-notes", "kind": "owner-note", "authority": "user-supplied", "capturedAt": "2026-08-22T18:00:00Z", "reference": "owner://gift-notes/august", "freshness": "current", "privacy": "private-note" },
+    { "id": "src-maya-preferences", "kind": "recipient-preference", "authority": "recipient-supplied", "capturedAt": "2026-08-20T12:00:00Z", "reference": "owner://maya/preferences", "freshness": "current", "privacy": "surprise-sensitive" },
+    { "id": "src-team-notes", "kind": "relationship-note", "authority": "user-supplied", "capturedAt": "2026-08-21T09:00:00Z", "reference": "owner://team/thank-you-notes", "freshness": "current", "privacy": "normal" },
+    { "id": "src-gift-history", "kind": "gift-history", "authority": "user-supplied", "capturedAt": "2026-08-22T17:50:00Z", "reference": "owner://gift-history", "freshness": "current", "privacy": "private-note" },
+    { "id": "src-merchant", "kind": "merchant-page", "authority": "merchant", "capturedAt": "2026-08-22T18:05:00Z", "reference": "merchant://bookstore/gardening-journal", "freshness": "current", "privacy": "normal" },
+    { "id": "src-shipping", "kind": "shipping-estimate", "authority": "shipping-provider", "capturedAt": "2026-08-22T18:08:00Z", "reference": "shipping://standard/august", "freshness": "current", "privacy": "normal" }
+  ],
+  "recipients": [
+    { "id": "recipient-maya", "displayName": "Maya", "relationshipLabel": "friend", "privacy": "surprise-sensitive", "sourceRefs": ["src-owner-notes", "src-maya-preferences"] },
+    { "id": "recipient-team", "displayName": "Launch team", "relationshipLabel": "work group", "privacy": "normal", "sourceRefs": ["src-team-notes"] }
+  ],
+  "occasions": [
+    { "id": "occasion-maya-birthday", "recipientRef": "recipient-maya", "kind": "birthday", "date": "2026-09-03", "budget": 60, "currency": "USD", "privacy": "surprise-sensitive", "sourceRefs": ["src-owner-notes"] },
+    { "id": "occasion-team-thanks", "recipientRef": "recipient-team", "kind": "thank-you", "date": "2026-08-30", "budget": 120, "currency": "USD", "privacy": "normal", "sourceRefs": ["src-team-notes"] }
+  ],
+  "preferences": [
+    { "id": "pref-maya-garden", "recipientRef": "recipient-maya", "kind": "hobby", "value": "Likes gardening notebooks and native plants", "sensitivity": "surprise-sensitive", "sourceRefs": ["src-maya-preferences"] },
+    { "id": "pref-maya-duplicate", "recipientRef": "recipient-maya", "kind": "duplicate-history", "value": "Already received a ceramic planter last year", "sensitivity": "private", "sourceRefs": ["src-gift-history"] },
+    { "id": "pref-team-format", "recipientRef": "recipient-team", "kind": "format", "value": "Consumable team snacks or handwritten cards", "sensitivity": "normal", "sourceRefs": ["src-team-notes"] }
+  ],
+  "giftIdeas": [
+    { "id": "gift-garden-journal", "recipientRef": "recipient-maya", "occasionRef": "occasion-maya-birthday", "name": "Native garden journal", "category": "stationery", "estimatedCost": 34, "currency": "USD", "availability": "available", "shippingState": "arrives-before-occasion", "sourceRefs": ["src-merchant", "src-shipping", "src-maya-preferences"] },
+    { "id": "gift-ceramic-planter", "recipientRef": "recipient-maya", "occasionRef": "occasion-maya-birthday", "name": "Ceramic planter", "category": "home", "estimatedCost": 48, "currency": "USD", "availability": "available", "shippingState": "arrives-before-occasion", "sourceRefs": ["src-merchant", "src-gift-history"] },
+    { "id": "gift-team-snacks", "recipientRef": "recipient-team", "occasionRef": "occasion-team-thanks", "name": "Shared snack box", "category": "food", "estimatedCost": 85, "currency": "USD", "availability": "limited", "shippingState": "risk", "sourceRefs": ["src-team-notes", "src-shipping"] }
+  ],
+  "shortlist": [
+    { "id": "pick-garden-journal", "giftRef": "gift-garden-journal", "rank": 1, "fit": "strong", "fitReason": "Fits Maya's supplied gardening preference, stays under budget, and has current shipping evidence.", "preferenceRefs": ["pref-maya-garden", "pref-maya-duplicate"], "state": "recommended", "blockedReason": null },
+    { "id": "pick-ceramic-planter", "giftRef": "gift-ceramic-planter", "rank": 2, "fit": "blocked", "fitReason": "Gift history says a similar planter was already given last year.", "preferenceRefs": ["pref-maya-duplicate"], "state": "blocked", "blockedReason": "Duplicate gift risk needs owner review." },
+    { "id": "pick-team-snacks", "giftRef": "gift-team-snacks", "rank": 3, "fit": "weak", "fitReason": "Matches team format preference but shipping timing is at risk.", "preferenceRefs": ["pref-team-format"], "state": "review-needed", "blockedReason": null }
+  ],
+  "reviewQuestions": [
+    { "id": "question-shipping", "question": "Should the owner choose a different team thank-you idea if shipping cannot be verified before the date?", "reason": "The shipping estimate is current but marked as timing risk.", "recipientRefs": ["recipient-team"], "giftRefs": ["gift-team-snacks"], "sourceRefs": ["src-shipping", "src-team-notes"] },
+    { "id": "question-surprise", "question": "Where should the owner keep Maya's surprise-sensitive notes so the recipient cannot see them?", "reason": "The birthday occasion and preference notes are surprise-sensitive.", "recipientRefs": ["recipient-maya"], "giftRefs": ["gift-garden-journal"], "sourceRefs": ["src-owner-notes", "src-maya-preferences"] }
+  ],
+  "blockedActions": ["buy-gift", "reserve-gift", "return-gift", "ship-gift", "send-message", "send-invitation", "modify-calendar", "publish-post", "share-surprise", "store-address", "infer-sensitive-relationship"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Gift owner",
+    "prohibitedActions": ["buy-gift", "reserve-gift", "return-gift", "ship-gift", "send-message", "send-invitation", "modify-calendar", "publish-post", "share-surprise", "store-address", "infer-sensitive-relationship"]
+  }
+}
