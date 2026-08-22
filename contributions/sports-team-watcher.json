@@ -96,6 +96,16 @@
     "proofPlan": "Prove an X3 artifact with team identity, schedule/result freshness, standings context, roster watch items, and negative fixtures for betting, stale data, and unapproved external actions.",
     "existingAlternatives": [
       {
+        "id": "movie-streaming-organizer",
+        "overlap": "Both track entertainment-adjacent favorites, schedules or availability, freshness, watch items, and blocked external actions.",
+        "difference": "Movie and Streaming Organizer maintains title watchlists and service availability; Sports Team Watcher follows teams, games, standings, roster notes, and league-source freshness."
+      },
+      {
+        "id": "music-organizer",
+        "overlap": "Both organize personal entertainment interests with favorites, source freshness, watch or listening context, and no account mutation or public sharing by default.",
+        "difference": "Music Organizer manages music libraries, playlists, service availability, and rights constraints; Sports Team Watcher tracks external sports teams, fixtures, standings, and roster or injury updates."
+      },
+      {
         "id": "executive-briefing",
         "overlap": "Both prepare concise recurring briefs with source context, change notes, decisions, and follow-up items.",
         "difference": "Executive Briefing supports leadership decision context; Sports Team Watcher tracks external team schedules, results, standings, roster notes, and sports-source freshness for fans."

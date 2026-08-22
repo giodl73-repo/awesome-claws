@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "awesomeClaws.musicLibrary.v1",
+  "library": {
+    "id": "music-library-road-trip",
+    "owner": "Playlist owner",
+    "region": "US",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-22T17:30:00Z",
+    "services": ["Spotify", "Local library"]
+  },
+  "sources": [
+    { "id": "src-metadata", "kind": "music-metadata", "authority": "metadata-provider", "capturedAt": "2026-08-22T17:00:00Z", "reference": "metadata://road-trip/music", "freshness": "current" },
+    { "id": "src-spotify", "kind": "streaming-availability", "authority": "availability-provider", "capturedAt": "2026-08-22T17:05:00Z", "reference": "availability://spotify/us/road-trip", "freshness": "current" },
+    { "id": "src-local", "kind": "library-export", "authority": "local-export", "capturedAt": "2026-08-22T17:07:00Z", "reference": "local://music/export-2026-08-22", "freshness": "current" },
+    { "id": "src-history", "kind": "listening-history", "authority": "user-supplied", "capturedAt": "2026-08-22T17:10:00Z", "reference": "owner://listening-history/recent-skips", "freshness": "current" },
+    { "id": "src-preferences", "kind": "owner-preference", "authority": "user-supplied", "capturedAt": "2026-08-22T17:12:00Z", "reference": "owner://playlist-preferences/road-trip", "freshness": "current" },
+    { "id": "src-rights", "kind": "rights-metadata", "authority": "rights-database", "capturedAt": "2026-08-22T17:15:00Z", "reference": "rights://clean-versions/us", "freshness": "current" }
+  ],
+  "items": [
+    { "id": "music-sunrise-drive", "name": "Sunrise Drive", "artist": "The Mile Markers", "mediaType": "track", "durationSeconds": 214, "explicitState": "clean", "libraryState": "saved", "tasteState": "liked", "sourceRefs": ["src-metadata", "src-local", "src-history"] },
+    { "id": "music-night-lanes", "name": "Night Lanes", "artist": "Harbor Keys", "mediaType": "track", "durationSeconds": 231, "explicitState": "clean", "libraryState": "streamable", "tasteState": "favorite", "sourceRefs": ["src-metadata", "src-spotify", "src-history"] },
+    { "id": "music-static-repeat", "name": "Static Repeat", "artist": "Loop Atlas", "mediaType": "track", "durationSeconds": 196, "explicitState": "clean", "libraryState": "saved", "tasteState": "skipped", "sourceRefs": ["src-metadata", "src-local", "src-history"] },
+    { "id": "music-late-cut", "name": "Late Cut", "artist": "Neon Room", "mediaType": "track", "durationSeconds": 248, "explicitState": "explicit", "libraryState": "streamable", "tasteState": "blocked", "sourceRefs": ["src-metadata", "src-spotify", "src-rights"] }
+  ],
+  "availability": [
+    { "id": "music-avail-sunrise-local", "itemRef": "music-sunrise-drive", "service": "Local library", "region": "US", "accessMode": "owned-local", "rightsConstraint": "playable-in-owner-library", "freshness": "current", "sourceRefs": ["src-local", "src-rights"] },
+    { "id": "music-avail-night-spotify", "itemRef": "music-night-lanes", "service": "Spotify", "region": "US", "accessMode": "included", "rightsConstraint": "streamable-in-owner-plan", "freshness": "current", "sourceRefs": ["src-spotify", "src-rights"] },
+    { "id": "music-avail-static-local", "itemRef": "music-static-repeat", "service": "Local library", "region": "US", "accessMode": "owned-local", "rightsConstraint": "playable-in-owner-library", "freshness": "current", "sourceRefs": ["src-local", "src-history"] },
+    { "id": "music-avail-late-spotify", "itemRef": "music-late-cut", "service": "Spotify", "region": "US", "accessMode": "included", "rightsConstraint": "explicit-blocked", "freshness": "current", "sourceRefs": ["src-spotify", "src-rights"] }
+  ],
+  "preferences": [
+    { "id": "pref-mood", "owner": "Playlist owner", "kind": "mood", "value": "Upbeat road trip", "sourceRefs": ["src-preferences"] },
+    { "id": "pref-clean", "owner": "Playlist owner", "kind": "explicit-limit", "value": "Prefer clean versions", "sourceRefs": ["src-preferences", "src-rights"] },
+    { "id": "pref-skips", "owner": "Playlist owner", "kind": "avoid-recent-skips", "value": "Avoid tracks skipped repeatedly this week", "sourceRefs": ["src-history"] },
+    { "id": "pref-dedupe", "owner": "Playlist owner", "kind": "dedupe", "value": "Avoid duplicate artist runs longer than two tracks", "sourceRefs": ["src-preferences"] }
+  ],
+  "playlistPlan": [
+    { "id": "pick-sunrise", "itemRef": "music-sunrise-drive", "position": 1, "fit": "strong", "fitReason": "Clean saved track with current local-library evidence and upbeat road-trip fit.", "availabilityRef": "music-avail-sunrise-local", "preferenceRefs": ["pref-mood", "pref-clean", "pref-skips"], "state": "recommended", "blockedReason": null },
+    { "id": "pick-night", "itemRef": "music-night-lanes", "position": 2, "fit": "strong", "fitReason": "Clean favorite track with current Spotify availability in the declared region.", "availabilityRef": "music-avail-night-spotify", "preferenceRefs": ["pref-mood", "pref-clean", "pref-skips", "pref-dedupe"], "state": "recommended", "blockedReason": null },
+    { "id": "pick-static", "itemRef": "music-static-repeat", "position": 3, "fit": "blocked", "fitReason": "Recent listening history says this track was skipped repeatedly.", "availabilityRef": "music-avail-static-local", "preferenceRefs": ["pref-skips"], "state": "blocked", "blockedReason": "Avoid recent skips until the owner reviews it." }
+  ],
+  "reviewQuestions": [
+    { "id": "question-clean-version", "question": "Should the owner replace any explicit-only tracks with clean alternatives before using the playlist?", "reason": "The playlist preference requests clean versions when possible.", "itemRefs": ["music-late-cut"], "sourceRefs": ["src-preferences", "src-rights"] },
+    { "id": "question-skips", "question": "Should recently skipped tracks stay out of this road trip playlist?", "reason": "Listening history shows repeated skips for one otherwise available track.", "itemRefs": ["music-static-repeat"], "sourceRefs": ["src-history"] }
+  ],
+  "blockedActions": ["buy-track", "subscribe", "cancel-subscription", "modify-account", "publish-playlist", "post-listening-activity", "follow-artist", "download-file", "modify-calendar", "send-message", "bypass-rights"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Playlist owner",
+    "prohibitedActions": ["buy-track", "subscribe", "cancel-subscription", "modify-account", "publish-playlist", "post-listening-activity", "follow-artist", "download-file", "modify-calendar", "send-message", "bypass-rights"]
+  }
+}

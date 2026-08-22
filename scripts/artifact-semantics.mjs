@@ -4846,6 +4846,122 @@ function movieStreamingFindings(value) {
   return findings;
 }
 
+function musicOrganizerFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const itemIds = value.items.map((item) => item.id);
+  const availabilityIds = value.availability.map((item) => item.id);
+  const preferenceIds = value.preferences.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const itemSet = new Set(itemIds);
+  const availabilitySet = new Set(availabilityIds);
+  const preferenceSet = new Set(preferenceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const itemById = new Map(value.items.map((item) => [item.id, item]));
+  const availabilityById = new Map(value.availability.map((item) => [item.id, item]));
+  const libraryServices = new Set(value.library.services);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(itemIds, "items", "Music item id"),
+    ...uniqueFindings(availabilityIds, "availability", "Availability id"),
+    ...uniqueFindings(preferenceIds, "preferences", "Preference id"),
+    ...uniqueFindings(value.playlistPlan.map((item) => item.id), "playlistPlan", "Playlist pick id"),
+    ...uniqueFindings(value.reviewQuestions.map((item) => item.id), "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, item] of value.items.entries()) {
+    findings.push(
+      ...uniqueFindings(item.sourceRefs, `items.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `items.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, row] of value.availability.entries()) {
+    findings.push(
+      ...referenceFindings([row.itemRef], itemSet, `availability.${index}.itemRef`, "Music item reference"),
+      ...uniqueFindings(row.sourceRefs, `availability.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(row.sourceRefs, sourceSet, `availability.${index}.sourceRefs`, "Source reference"),
+    );
+    const supportedSource = row.sourceRefs.some((ref) =>
+      ["streaming-availability", "library-export", "rights-metadata"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!supportedSource) {
+      findings.push(finding("unsupported_availability_source", `availability.${index}.sourceRefs`, "Music availability requires streaming, library-export, or rights source evidence."));
+    }
+    if (!libraryServices.has(row.service)) {
+      findings.push(finding("unsupported_service", `availability.${index}.service`, "Music availability must be scoped to services or libraries the owner declared."));
+    }
+    if (row.region !== value.library.region) {
+      findings.push(finding("region_mismatch", `availability.${index}.region`, "Music availability region must match the library region."));
+    }
+  }
+  for (const [index, preference] of value.preferences.entries()) {
+    findings.push(
+      ...uniqueFindings(preference.sourceRefs, `preferences.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(preference.sourceRefs, sourceSet, `preferences.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, pick] of value.playlistPlan.entries()) {
+    findings.push(
+      ...referenceFindings([pick.itemRef], itemSet, `playlistPlan.${index}.itemRef`, "Music item reference"),
+      ...referenceFindings([pick.availabilityRef], availabilitySet, `playlistPlan.${index}.availabilityRef`, "Availability reference"),
+      ...uniqueFindings(pick.preferenceRefs, `playlistPlan.${index}.preferenceRefs`, "Preference reference"),
+      ...referenceFindings(pick.preferenceRefs, preferenceSet, `playlistPlan.${index}.preferenceRefs`, "Preference reference"),
+    );
+    const item = itemById.get(pick.itemRef);
+    const availability = availabilityById.get(pick.availabilityRef);
+    if (availability && availability.itemRef !== pick.itemRef) {
+      findings.push(finding("availability_item_mismatch", `playlistPlan.${index}.availabilityRef`, "Playlist availability must belong to the same music item."));
+    }
+    if (
+      pick.state === "recommended" &&
+      (!availability ||
+        availability.freshness !== "current" ||
+        !["owned-local", "included"].includes(availability.accessMode) ||
+        !["playable-in-owner-library", "streamable-in-owner-plan"].includes(availability.rightsConstraint))
+    ) {
+      findings.push(finding("unsupported_recommendation", `playlistPlan.${index}`, "Recommended music requires current owned or included availability under the owner's declared rights."));
+    }
+    if (pick.state === "recommended" && ["skipped", "disliked", "blocked"].includes(item?.tasteState)) {
+      findings.push(finding("taste_state_conflict", `playlistPlan.${index}.itemRef`, "Recommended playlist items cannot conflict with skipped, disliked, or blocked taste state."));
+    }
+    if (pick.state === "recommended" && item?.explicitState === "explicit") {
+      const cleanLimit = pick.preferenceRefs.some((ref) => value.preferences.find((pref) => pref.id === ref)?.kind === "explicit-limit");
+      if (cleanLimit) {
+        findings.push(finding("explicit_content_conflict", `playlistPlan.${index}.itemRef`, "Recommended items cannot be explicit when the linked owner preference asks for clean versions."));
+      }
+    }
+    if (
+      (pick.state === "blocked" && !pick.blockedReason) ||
+      (pick.state !== "blocked" && pick.blockedReason !== null)
+    ) {
+      findings.push(finding("incoherent_blocked_state", `playlistPlan.${index}.blockedReason`, "Only blocked playlist items may carry a blocked reason."));
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.itemRefs, `reviewQuestions.${index}.itemRefs`, "Music item reference"),
+      ...referenceFindings(question.itemRefs, itemSet, `reviewQuestions.${index}.itemRefs`, "Music item reference"),
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready music library plans cannot depend on stale, missing, or conflicting sources."));
+  }
+  const accountActionText = canonicalJson({
+    playlistPlan: value.playlistPlan.map(({ fitReason, blockedReason }) => ({ fitReason, blockedReason })),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(buy|purchase|subscribe|cancel|publish|post|follow artist|download|message|modify account|bypass|rip|pirate)\b/iu.test(accountActionText)) {
+    findings.push(finding("account_action_content", "playlistPlan", "Music organizer artifacts must not instruct purchase, subscription, account, public sharing, download, messaging, or rights-bypass actions."));
+  }
+  if (value.handoff.owner === "music-organizer") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Music account, purchase, publishing, downloading, messaging, and rights decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 function stockPortfolioFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const positionIds = value.positions.map((item) => item.id);
@@ -5047,6 +5163,7 @@ const validators = {
   "household-steward": householdStewardFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
   "movie-streaming-organizer": movieStreamingFindings,
+  "music-organizer": musicOrganizerFindings,
   "pet-care-coordinator": petCareFindings,
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
   "project-manager": projectFindings,

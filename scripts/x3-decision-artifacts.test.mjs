@@ -95,6 +95,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "music-organizer",
+    schema: "../claws/music-organizer/schemas/music-library.schema.json",
+    fixture: "../claws/music-organizer/fixtures/music-library.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "pet-care-coordinator",
     schema: "../claws/pet-care-coordinator/schemas/pet-care.schema.json",
     fixture: "../claws/pet-care-coordinator/fixtures/pet-care.example.json",
@@ -277,6 +283,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
     ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],
     ["movie-streaming-organizer", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
+    ["music-organizer", (value) => value.playlistPlan[0].preferenceRefs.push(value.playlistPlan[0].preferenceRefs[0])],
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],
     ["recruiting-coordinator", (value) => value.communications[0].sessionRefs.push(value.communications[0].sessionRefs[0])],
     ["sales-operations", (value) => value.actions[0].dealRefs.push(value.actions[0].dealRefs[0])],
@@ -1871,6 +1878,29 @@ test("movie and streaming organizer preserves availability and blocks account ac
   const accountAction = structuredClone(cases.get("movie-streaming-organizer").fixture);
   accountAction.shortlist[0].fitReason += " Rent it if needed.";
   assert.equal(isValid("movie-streaming-organizer", accountAction), false);
+});
+
+test("music organizer preserves rights, availability, and account boundaries", () => {
+  const staleSource = structuredClone(cases.get("music-organizer").fixture);
+  staleSource.sources[0].freshness = "stale";
+  assert.equal(isValid("music-organizer", staleSource), false);
+
+  const unsupportedService = structuredClone(cases.get("music-organizer").fixture);
+  unsupportedService.availability[0].service = "Unapproved Music Service";
+  assert.equal(isValid("music-organizer", unsupportedService), false);
+
+  const purchaseRequired = structuredClone(cases.get("music-organizer").fixture);
+  purchaseRequired.availability[0].accessMode = "purchase-required";
+  purchaseRequired.availability[0].rightsConstraint = "requires-purchase";
+  assert.equal(isValid("music-organizer", purchaseRequired), false);
+
+  const skippedPick = structuredClone(cases.get("music-organizer").fixture);
+  skippedPick.items[0].tasteState = "skipped";
+  assert.equal(isValid("music-organizer", skippedPick), false);
+
+  const publishAction = structuredClone(cases.get("music-organizer").fixture);
+  publishAction.playlistPlan[0].fitReason += " Publish the playlist when done.";
+  assert.equal(isValid("music-organizer", publishAction), false);
 });
 
 test("stock portfolio monitor binds valuations to sources and blocks advice", () => {

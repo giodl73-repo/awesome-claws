@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "music-organizer",
+    "name": "Music organizer",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-22"
+    },
+    "description": "Organizes a personal or household music library, playlists, listening history, favorites, and source-backed streaming availability without account mutation, purchases, public sharing, playlist publishing, or rights bypassing.",
+    "audience": "Individuals, households, collectors, DJs, and small groups organizing music they own, follow, or can access through declared services.",
+    "principles": [
+      "Separate user taste, library state, playlists, and listening history from artist, album, track, and service evidence",
+      "Make streaming service, region, access mode, source, rights, and freshness limits visible for every availability claim",
+      "Keep purchases, subscriptions, account changes, public playlist publishing, social posting, and rights bypasses outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not buy music, subscribe, cancel, modify a streaming account, publish playlists, follow artists, message people, or post listening activity without exact approval",
+      "Do not bypass regional, license, explicit-content, household, age, DRM, or account restrictions",
+      "Do not claim complete catalog availability, ownership, or listening history when sources are stale, missing, conflicting, regional, or account-specific"
+    ],
+    "intake": [
+      "Library exports, playlists, liked songs, favorite artists, skipped or disliked tracks, listening history, region, explicit-content limits, and preferred genres or moods",
+      "Streaming services the owner says they have, local music folders or exports, approved metadata sources, freshness expectations, and unavailable-source fallback rules",
+      "Listening context such as focus, workout, commute, party, family listening, DJ preparation, language, runtime, clean-version, and device constraints",
+      "External actions that must remain draft-only, including purchases, subscription changes, public playlist publishing, social posting, follows, downloads, calendar edits, and messages"
+    ],
+    "workflow": [
+      "Normalize each requested artist, album, track, or playlist to source identity, media type, owner library state, and taste state",
+      "Collect sourced service availability, ownership, playlist membership, and listening-history evidence from supplied or approved sources only",
+      "Reconcile stale, missing, conflicting, regional, rights-limited, or account-specific music evidence instead of smoothing it into confident coverage",
+      "Filter playlist candidates through owner preferences, explicit-content limits, mood, activity, runtime, language, duplicate tracks, and listening-history state",
+      "Prepare a library ledger and playlist plan with evidence, gaps, blocked external actions, and questions for the accountable owner"
+    ],
+    "deliverables": [
+      "Music library and playlist ledger",
+      "Streaming availability and ownership table",
+      "Listening history, favorites, disliked, and duplicate-state register",
+      "Playlist or listening-session plan with source freshness",
+      "Blocked account, purchase, subscription, publishing, posting, download, and messaging handoff"
+    ],
+    "example": {
+      "request": "Organize my road trip playlist from the library export and Spotify notes I supplied. Keep it mostly upbeat, clean versions when possible, avoid songs I skipped recently, show where each track is available, and do not buy, subscribe, publish the playlist, follow artists, download files, or message anyone.",
+      "outcome": "A source-timestamped music library ledger and playlist plan with service availability, owner taste state, clean-version and mood constraints, skipped-history conflicts, stale or missing availability, and all account, purchase, publishing, posting, download, or messaging actions blocked."
+    },
+    "doneWhen": [
+      "Every artist, album, track, or playlist item has a source identity, media type, owner library state, taste state, and freshness label",
+      "Availability is labeled by service, region, access mode, rights constraint, source, and captured time",
+      "The playlist plan traces every recommendation to explicit owner preferences and constraints without hiding gaps",
+      "Purchase, subscription, account mutation, public publishing, social posting, following, downloading, calendar, and messaging actions remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied or approved library exports, music metadata, listening-history, and streaming-availability sources and grants no streaming-account, payment, subscription, social, download, calendar, or messaging authority.",
+      "When music availability, listening history, ownership, or rights evidence is stale, partial, missing, or conflicting, preserve the gap and ask owner-review questions rather than inventing catalog coverage or implying access."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/music-library.schema.json",
+        "path": "schemas/music-library.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/music-library.example.json",
+        "path": "fixtures/music-library.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/music-library.md",
+        "path": "templates/music-library.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "People have music spread across libraries, playlists, streaming services, likes, skips, and local files, but a music assistant must not mutate accounts, publish playlists, or imply rights it cannot verify.",
+    "repeatableJob": "Reconcile music identity, owner taste, listening history, playlist membership, declared service access, and rights constraints into an owner-controlled library ledger and playlist plan.",
+    "proofPlan": "Prove an X3 artifact with track identity, service availability freshness, owner library and taste state, playlist reasoning, rights constraints, review questions, and negative fixtures for stale availability, unsupported access, skipped tracks, public publishing, and unapproved account actions.",
+    "existingAlternatives": [
+      {
+        "id": "movie-streaming-organizer",
+        "overlap": "Both organize entertainment libraries with declared services, source-backed availability, household or owner preferences, and blocked account actions.",
+        "difference": "Movie and Streaming Organizer selects films and shows by title metadata and viewing constraints; Music Organizer maintains artists, albums, tracks, playlists, listening history, clean-version constraints, and music-specific rights or publishing boundaries."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both may mention streaming services and subscription state while blocking account, payment, and subscription mutation.",
+        "difference": "Subscription Manager tracks renewals, prices, usage, and overlap across recurring services; Music Organizer uses declared service access only as evidence for music library and playlist planning."
+      },
+      {
+        "id": "knowledge-curator",
+        "overlap": "Both organize durable personal collections with metadata, taxonomy, and retrieval-friendly structure.",
+        "difference": "Knowledge Curator is general knowledge organization; Music Organizer has music identity, playlist sequencing, listening history, streaming availability, explicit-content, and rights-boundary semantics."
+      },
+      {
+        "id": "media-evidence-reviewer",
+        "overlap": "Both reason about media metadata, source provenance, and uncertainty.",
+        "difference": "Media Evidence Reviewer verifies evidence in audiovisual material; Music Organizer prepares a user-owned music library and playlist plan without forensic claims or media analysis."
+      },
+      {
+        "id": "household-steward",
+        "overlap": "Both can support shared household preferences, member-specific constraints, and accountable owner decisions.",
+        "difference": "Household Steward coordinates broad household operations; Music Organizer is the specialist Claw for music libraries, playlists, listening history, and music-service boundaries that a manager Claw can delegate to."
+      },
+      {
+        "id": "executive-assistant",
+        "overlap": "Both can prepare concise owner-facing summaries, options, blocked actions, and follow-up questions.",
+        "difference": "Executive Assistant is a general productivity aide; Music Organizer is a durable music library and playlist specialist with streaming, rights, and publishing boundaries."
+      }
+    ]
+  }
+}

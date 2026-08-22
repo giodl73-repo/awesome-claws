@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "music-organizer",
+  "scenario": "Organize my road trip playlist from the library export and Spotify notes I supplied. Keep it mostly upbeat, clean versions when possible, avoid songs I skipped recently, show where each track is available, and do not buy, subscribe, publish the playlist, follow artists, download files, or message anyone.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize my road trip playlist from the library export and Spotify notes I supplied. Keep it mostly upbeat, clean versions when possible, avoid songs I skipped recently, show where each track is available, and do not buy, subscribe, publish the playlist, follow artists, download files, or message anyone."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/music-organizer-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Music organizer session handoff",
+    "summary": "A source-timestamped music library ledger and playlist plan with service availability, owner taste state, clean-version and mood constraints, skipped-history conflicts, stale or missing availability, and all account, purchase, publishing, posting, download, or messaging actions blocked.",
+    "output": "outputs/music-organizer-handoff.md",
+    "items": [
+      {
+        "title": "Music library and playlist ledger",
+        "summary": "Every artist, album, track, or playlist item has a source identity, media type, owner library state, taste state, and freshness label",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Streaming availability and ownership table",
+        "summary": "Availability is labeled by service, region, access mode, rights constraint, source, and captured time",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Listening history, favorites, disliked, and duplicate-state register",
+        "summary": "The playlist plan traces every recommendation to explicit owner preferences and constraints without hiding gaps",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Playlist or listening-session plan with source freshness",
+        "summary": "Purchase, subscription, account mutation, public publishing, social posting, following, downloading, calendar, and messaging actions remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked account, purchase, subscription, publishing, posting, download, and messaging handoff",
+        "summary": "Every artist, album, track, or playlist item has a source identity, media type, owner library state, taste state, and freshness label",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
