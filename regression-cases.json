@@ -1707,6 +1707,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "personal-archive-curator",
+      "acceptedRequest": "Help me organize the folder export, receipt list, warranty photos, and family memory notes I supplied. Build a searchable index and tag proposal, flag duplicates and private items, but do not delete, move, upload, share, train memory, or infer sensitive facts.",
+      "requiredEvidence": [
+        "Supplied file lists, folder exports, note indexes, link lists, receipt and warranty pointers, photo descriptions, and owner-approved metadata",
+        "Owner privacy labels, retention questions, retrieval needs, duplicate hints, folder/tag preferences, and stale-source fallback rules",
+        "Context such as tax-year folder cleanup, warranty retrieval, family photo indexing, receipts for a move, or memory-note organization",
+        "External actions that must remain draft-only, including file deletion, movement, renaming, sharing, upload, publication, backup changes, and memory training"
+      ],
+      "authorityBoundaries": [
+        "Do not delete, move, rename, upload, publish, share, train memory, change permissions, or edit source files without exact approval",
+        "Do not infer sensitive identity, health, financial, legal, relationship, biometric, or location facts from archive fragments",
+        "Do not expose private file paths, addresses, faces, account ids, or valuables in durable outputs beyond the owner-approved destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/personal-archive-curator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
