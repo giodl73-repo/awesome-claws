@@ -33,6 +33,7 @@ const schemaNames = {
   "sales-operations": "pipeline-review.schema.json",
   "sports-team-watcher": "sports-team-watch.schema.json",
   "stock-portfolio-monitor": "stock-portfolio.schema.json",
+  "subscription-manager": "subscription-ledger.schema.json",
   "vehicle-service-coordinator": "vehicle-service.schema.json",
   "work-chief-of-staff": "operating-portfolio.schema.json",
 };

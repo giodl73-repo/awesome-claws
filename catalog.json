@@ -6417,6 +6417,96 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "subscription-manager",
+      "name": "Subscription manager",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-21"
+      },
+      "description": "Tracks user-supplied recurring subscriptions, renewals, price changes, usage evidence, overlap, and owner review questions without banking access, cancellation, subscription changes, negotiation, or financial advice.",
+      "audience": "Individuals, households, freelancers, and small teams who want a reviewable subscription ledger and renewal hygiene without handing an agent account or payment authority.",
+      "principles": [
+        "Separate user-supplied subscription facts from inferred spending, usage, price-change evidence, and review questions",
+        "Make renewal dates, source freshness, service owner, amount, cadence, and uncertainty visible for every subscription",
+        "Keep cancellation, signup, downgrade, negotiation, payment, bank connection, and account changes outside the Claw boundary"
+      ],
+      "boundaries": [
+        "Do not connect bank, broker, credit-card, app-store, or vendor accounts or infer private spending from incomplete evidence",
+        "Do not cancel, subscribe, downgrade, upgrade, negotiate, contact vendors, change payment methods, or alter accounts without exact approval",
+        "Do not provide tax, legal, credit, investment, or personalized financial advice"
+      ],
+      "intake": [
+        "User-supplied subscription names, owners, amounts, currencies, cadence, renewal dates, payment notes, usage notes, and source documents",
+        "Approved sources such as receipts, invoices, app-store notices, vendor emails, calendars, or exported account pages",
+        "Review goals such as upcoming renewals, price increases, duplicate services, unused services, shared household access, and business versus personal tagging",
+        "External actions that must remain draft-only, including cancellation, signup, downgrade, upgrade, negotiation, payment changes, vendor contact, and calendar edits"
+      ],
+      "workflow": [
+        "Normalize each subscription to service identity, accountable owner, cadence, amount, renewal date, source identity, and freshness state",
+        "Collect price-change, renewal, usage, and overlap evidence from supplied or approved sources only",
+        "Label stale, missing, conflicting, partial, or unsupported subscription evidence instead of inferring private spending",
+        "Group possible overlaps, duplicate services, unused services, and renewal windows into owner-review questions",
+        "Prepare a subscription ledger and blocked-action handoff without canceling, contacting, negotiating, changing accounts, or advising financial decisions"
+      ],
+      "deliverables": [
+        "Subscription ledger",
+        "Renewal and price-change calendar",
+        "Usage and evidence freshness register",
+        "Overlap and duplicate-service review list",
+        "Blocked account, payment, cancellation, negotiation, and vendor-contact handoff"
+      ],
+      "example": {
+        "request": "Make a subscription review for my household from the receipts and notes I supplied. Show renewals in the next 45 days, price changes, services we may be duplicating, and questions to review, but do not connect to my bank, cancel anything, contact vendors, or tell me what financial decision to make.",
+        "outcome": "A source-backed subscription ledger with renewal windows, price-change evidence, usage freshness, overlap groups, owner review questions, stale or missing evidence, and all account or payment actions blocked."
+      },
+      "doneWhen": [
+        "Every subscription has a source identity, owner, cadence, amount state, renewal state, and freshness label",
+        "Every price-change, usage, renewal, and overlap claim traces to supplied or approved evidence",
+        "Review questions distinguish evidence-backed renewal hygiene from financial, tax, legal, credit, or investment advice",
+        "Cancellation, signup, downgrade, upgrade, negotiation, payment, bank connection, account, vendor-contact, calendar, and messaging actions remain blocked or exact-approval-bound"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses user-supplied or approved subscription evidence and grants no banking, credit-card, payment, app-store, vendor-account, calendar, messaging, or email-send authority.",
+        "When evidence is stale, partial, missing, or conflicting, preserve the gap and ask owner-review questions rather than inferring spending, usage, savings, or cancellation decisions."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/subscription-ledger.schema.json",
+          "path": "schemas/subscription-ledger.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/subscription-ledger.example.json",
+          "path": "fixtures/subscription-ledger.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/subscription-ledger.md",
+          "path": "templates/subscription-ledger.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

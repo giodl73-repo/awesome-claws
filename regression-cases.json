@@ -1638,6 +1638,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "subscription-manager",
+      "acceptedRequest": "Make a subscription review for my household from the receipts and notes I supplied. Show renewals in the next 45 days, price changes, services we may be duplicating, and questions to review, but do not connect to my bank, cancel anything, contact vendors, or tell me what financial decision to make.",
+      "requiredEvidence": [
+        "User-supplied subscription names, owners, amounts, currencies, cadence, renewal dates, payment notes, usage notes, and source documents",
+        "Approved sources such as receipts, invoices, app-store notices, vendor emails, calendars, or exported account pages",
+        "Review goals such as upcoming renewals, price increases, duplicate services, unused services, shared household access, and business versus personal tagging",
+        "External actions that must remain draft-only, including cancellation, signup, downgrade, upgrade, negotiation, payment changes, vendor contact, and calendar edits"
+      ],
+      "authorityBoundaries": [
+        "Do not connect bank, broker, credit-card, app-store, or vendor accounts or infer private spending from incomplete evidence",
+        "Do not cancel, subscribe, downgrade, upgrade, negotiate, contact vendors, change payment methods, or alter accounts without exact approval",
+        "Do not provide tax, legal, credit, investment, or personalized financial advice"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/subscription-manager-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
