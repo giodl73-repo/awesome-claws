@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "gift-relationship-manager",
+    "name": "Gift and relationship manager",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-22"
+    },
+    "description": "Organizes relationship notes, occasions, gift ideas, preference evidence, budgets, and owner-review reminders without buying gifts, sending messages, editing calendars, or inferring sensitive relationship meaning.",
+    "audience": "Individuals, households, assistants, and small teams keeping thoughtful gift and occasion notes while preserving privacy and owner authority.",
+    "principles": [
+      "Separate recipient facts, preferences, occasions, gift ideas, and relationship notes by source and freshness",
+      "Make budget, timing, shipping, privacy, and uncertainty visible for every gift shortlist item",
+      "Keep purchases, messages, calendar edits, social posting, surprise disclosure, and relationship-sensitive conclusions outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not buy, reserve, return, ship, message, post, invite, schedule, or edit calendars without exact approval",
+      "Do not infer sensitive relationship status, health, finances, beliefs, age, identity, or private preferences from weak evidence",
+      "Do not expose surprise plans, private notes, addresses, or recipient-sensitive details in durable outputs unless the owner approved the destination"
+    ],
+    "intake": [
+      "Recipients, relationship labels supplied by the owner, occasions, dates, budgets, gift history, dislikes, sizes, constraints, and approved preference sources",
+      "Gift ideas, merchant or availability notes, shipping windows, return windows, privacy constraints, and stale-source fallback rules",
+      "Context such as birthday, holiday, thank-you, hosting gift, team milestone, anniversary, or care package",
+      "External actions that must remain draft-only, including purchases, reservations, returns, shipping, calendar edits, messages, invitations, and social posts"
+    ],
+    "workflow": [
+      "Normalize each recipient, occasion, preference, gift idea, and source to owner-supplied identity and freshness state",
+      "Collect preference, gift-history, budget, timing, shipping, and availability evidence from supplied or approved sources only",
+      "Reconcile stale, missing, conflicting, sensitive, or surprise-risk evidence instead of presenting it as settled",
+      "Rank gift ideas by explicit preferences, constraints, budget, timing, privacy, and duplicate gift history",
+      "Prepare a reviewable gift plan with evidence, gaps, blocked external actions, and owner questions"
+    ],
+    "deliverables": [
+      "Recipient and occasion ledger",
+      "Preference and gift-history register",
+      "Gift idea shortlist with budget, timing, and source freshness",
+      "Privacy and surprise-risk review questions",
+      "Blocked purchase, shipping, calendar, message, invitation, and social-post handoff"
+    ],
+    "example": {
+      "request": "Help me plan gifts for Maya's birthday and my team's thank-you notes from the notes I supplied. Keep Maya's surprise private, stay under the budgets, avoid duplicate gifts, and do not buy anything, message anyone, edit calendars, or infer private relationship meaning.",
+      "outcome": "A source-backed recipient and occasion ledger with gift ideas, preference evidence, budget fit, timing and shipping gaps, duplicate gift risks, privacy-sensitive notes, owner review questions, and all purchase or communication actions blocked."
+    },
+    "doneWhen": [
+      "Every recipient, occasion, preference, and gift idea has source identity, freshness, and privacy labeling",
+      "Every shortlist item traces to explicit preferences, budget, timing, and gift-history evidence without hiding gaps",
+      "Sensitive relationship, address, surprise, and private-note details are minimized or blocked from inappropriate outputs",
+      "Purchases, reservations, returns, shipping, calendar edits, messages, invitations, and social posts remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied or approved notes, gift history, merchant pages, and owner preferences and grants no shopping, payment, address-book, calendar, messaging, email-send, or social-post authority.",
+      "When preference, budget, relationship, shipping, or availability evidence is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than inventing intent or taking action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/gift-plan.schema.json",
+        "path": "schemas/gift-plan.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/gift-plan.example.json",
+        "path": "fixtures/gift-plan.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/gift-plan.md",
+        "path": "templates/gift-plan.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "People want to be thoughtful across birthdays, holidays, thank-yous, and relationship moments, but an assistant must not buy gifts, leak surprise plans, or infer private relationship meaning.",
+    "repeatableJob": "Reconcile recipients, occasions, preferences, gift history, budgets, timing, privacy, and gift ideas into an owner-controlled gift plan.",
+    "proofPlan": "Prove an X3 artifact with recipient and occasion identity, preference provenance, gift-history dedupe, budget and timing fit, privacy labels, owner review questions, and negative fixtures for sensitive inference, stale evidence, purchase instructions, messaging, and surprise leakage.",
+    "existingAlternatives": [
+      {
+        "id": "care-circle-coordinator",
+        "overlap": "Both manage relationship-sensitive support for named people with privacy, consent, commitments, and blocked external actions.",
+        "difference": "Care Circle coordinates support tasks for care recipients; Gift and Relationship Manager handles occasions, preferences, gifts, budgets, and surprise/privacy risks without care-plan or helper-commitment authority."
+      },
+      {
+        "id": "household-steward",
+        "overlap": "Both can serve households, shared relationships, private member context, and owner-approved actions.",
+        "difference": "Household Steward coordinates broad household operations; Gift and Relationship Manager is the specialist for recipients, occasions, gift ideas, and relationship notes that a manager Claw can delegate to."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both track owner-supplied money-adjacent facts, budgets or amounts, source freshness, and blocked account/payment actions.",
+        "difference": "Subscription Manager tracks recurring services and renewals; Gift and Relationship Manager tracks one-off gift ideas, recipients, occasions, preference evidence, timing, and privacy."
+      },
+      {
+        "id": "movie-streaming-organizer",
+        "overlap": "Both organize personal taste and preference evidence for owner-controlled choices.",
+        "difference": "Movie and Streaming Organizer selects entertainment from title availability; Gift and Relationship Manager organizes recipient preferences, gift history, budgets, occasions, and privacy-sensitive relationship notes."
+      },
+      {
+        "id": "music-organizer",
+        "overlap": "Both manage preference-heavy personal collections and can include gift-like taste evidence such as favorite artists or formats.",
+        "difference": "Music Organizer plans music libraries and playlists; Gift and Relationship Manager plans gifts across categories and occasions with budget, shipping, and surprise-risk boundaries."
+      },
+      {
+        "id": "executive-assistant",
+        "overlap": "Both can prepare owner-facing summaries, reminders, draft follow-ups, and blocked-action handoffs.",
+        "difference": "Executive Assistant is general productivity support; Gift and Relationship Manager is a durable relationship and occasion ledger with gift-specific privacy and purchase boundaries."
+      }
+    ]
+  }
+}

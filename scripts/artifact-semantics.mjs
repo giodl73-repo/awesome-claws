@@ -258,6 +258,131 @@ function financialAnalysisFindings(value) {
   return findings;
 }
 
+function giftRelationshipFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const recipientIds = value.recipients.map((item) => item.id);
+  const occasionIds = value.occasions.map((item) => item.id);
+  const preferenceIds = value.preferences.map((item) => item.id);
+  const giftIds = value.giftIdeas.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const recipientSet = new Set(recipientIds);
+  const occasionSet = new Set(occasionIds);
+  const preferenceSet = new Set(preferenceIds);
+  const giftSet = new Set(giftIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const occasionById = new Map(value.occasions.map((item) => [item.id, item]));
+  const giftById = new Map(value.giftIdeas.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(recipientIds, "recipients", "Recipient id"),
+    ...uniqueFindings(occasionIds, "occasions", "Occasion id"),
+    ...uniqueFindings(preferenceIds, "preferences", "Preference id"),
+    ...uniqueFindings(giftIds, "giftIdeas", "Gift id"),
+    ...uniqueFindings(value.shortlist.map((item) => item.id), "shortlist", "Shortlist id"),
+    ...uniqueFindings(value.reviewQuestions.map((item) => item.id), "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, recipient] of value.recipients.entries()) {
+    findings.push(
+      ...uniqueFindings(recipient.sourceRefs, `recipients.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(recipient.sourceRefs, sourceSet, `recipients.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, occasion] of value.occasions.entries()) {
+    findings.push(
+      ...referenceFindings([occasion.recipientRef], recipientSet, `occasions.${index}.recipientRef`, "Recipient reference"),
+      ...uniqueFindings(occasion.sourceRefs, `occasions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(occasion.sourceRefs, sourceSet, `occasions.${index}.sourceRefs`, "Source reference"),
+    );
+    if (occasion.budget !== null && occasion.currency !== value.plan.currency) {
+      findings.push(finding("budget_currency_mismatch", `occasions.${index}.currency`, "Occasion budgets must use the plan currency."));
+    }
+  }
+  for (const [index, preference] of value.preferences.entries()) {
+    findings.push(
+      ...referenceFindings([preference.recipientRef], recipientSet, `preferences.${index}.recipientRef`, "Recipient reference"),
+      ...uniqueFindings(preference.sourceRefs, `preferences.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(preference.sourceRefs, sourceSet, `preferences.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, gift] of value.giftIdeas.entries()) {
+    findings.push(
+      ...referenceFindings([gift.recipientRef], recipientSet, `giftIdeas.${index}.recipientRef`, "Recipient reference"),
+      ...referenceFindings([gift.occasionRef], occasionSet, `giftIdeas.${index}.occasionRef`, "Occasion reference"),
+      ...uniqueFindings(gift.sourceRefs, `giftIdeas.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(gift.sourceRefs, sourceSet, `giftIdeas.${index}.sourceRefs`, "Source reference"),
+    );
+    const occasion = occasionById.get(gift.occasionRef);
+    if (occasion && occasion.recipientRef !== gift.recipientRef) {
+      findings.push(finding("occasion_recipient_mismatch", `giftIdeas.${index}.occasionRef`, "Gift occasion must belong to the same recipient."));
+    }
+    if (gift.estimatedCost !== null) {
+      if (gift.currency !== value.plan.currency) {
+        findings.push(finding("gift_currency_mismatch", `giftIdeas.${index}.currency`, "Gift costs must use the plan currency."));
+      }
+      if (occasion?.budget !== null && gift.estimatedCost > occasion.budget) {
+        findings.push(finding("budget_exceeded", `giftIdeas.${index}.estimatedCost`, "Gift ideas over the occasion budget cannot be recommended without owner review."));
+      }
+    }
+    const hasMerchantOrHistory = gift.sourceRefs.some((ref) =>
+      ["merchant-page", "gift-history", "recipient-preference", "owner-note", "relationship-note"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasMerchantOrHistory) {
+      findings.push(finding("unsupported_gift_source", `giftIdeas.${index}.sourceRefs`, "Gift ideas require owner, recipient, merchant, or gift-history evidence."));
+    }
+  }
+  for (const [index, pick] of value.shortlist.entries()) {
+    findings.push(
+      ...referenceFindings([pick.giftRef], giftSet, `shortlist.${index}.giftRef`, "Gift reference"),
+      ...uniqueFindings(pick.preferenceRefs, `shortlist.${index}.preferenceRefs`, "Preference reference"),
+      ...referenceFindings(pick.preferenceRefs, preferenceSet, `shortlist.${index}.preferenceRefs`, "Preference reference"),
+    );
+    const gift = giftById.get(pick.giftRef);
+    const occasion = gift ? occasionById.get(gift.occasionRef) : null;
+    if (
+      pick.state === "recommended" &&
+      (!gift ||
+        !["available", "limited"].includes(gift.availability) ||
+        !["arrives-before-occasion", "not-needed"].includes(gift.shippingState) ||
+        (gift.estimatedCost !== null && occasion?.budget !== null && gift.estimatedCost > occasion.budget))
+    ) {
+      findings.push(finding("unsupported_recommendation", `shortlist.${index}`, "Recommended gifts require available evidence, acceptable timing, and budget fit."));
+    }
+    if (
+      (pick.state === "blocked" && !pick.blockedReason) ||
+      (pick.state !== "blocked" && pick.blockedReason !== null)
+    ) {
+      findings.push(finding("incoherent_blocked_state", `shortlist.${index}.blockedReason`, "Only blocked gift shortlist items may carry a blocked reason."));
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.recipientRefs, `reviewQuestions.${index}.recipientRefs`, "Recipient reference"),
+      ...referenceFindings(question.recipientRefs, recipientSet, `reviewQuestions.${index}.recipientRefs`, "Recipient reference"),
+      ...uniqueFindings(question.giftRefs, `reviewQuestions.${index}.giftRefs`, "Gift reference"),
+      ...referenceFindings(question.giftRefs, giftSet, `reviewQuestions.${index}.giftRefs`, "Gift reference"),
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready gift plans cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    shortlist: value.shortlist.map(({ fitReason, blockedReason }) => ({ fitReason, blockedReason })),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(buy|purchase|reserve|return|ship|send|message|invite|calendar|post|publish|share the surprise|store address|relationship status|infer)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "shortlist", "Gift artifacts must not instruct purchase, shipping, messaging, calendar, posting, surprise-sharing, address-storage, or sensitive inference actions."));
+  }
+  if (value.handoff.owner === "gift-relationship-manager") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Gift, message, calendar, address, privacy, and relationship-sensitive decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 function publicSafetyFindings(value) {
   const alertIds = value.alerts.map((item) => item.id);
   const alerts = new Set(alertIds);
@@ -5158,6 +5283,7 @@ const validators = {
   "data-analyst": dataAnalysisFindings,
   "delegation-coordinator": delegationFindings,
   "financial-analyst": financialAnalysisFindings,
+  "gift-relationship-manager": giftRelationshipFindings,
   "green-thumb-coordinator": greenThumbFindings,
   "home-repair-coordinator": homeRepairFindings,
   "household-steward": householdStewardFindings,

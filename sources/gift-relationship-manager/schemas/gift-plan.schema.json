@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "plan", "sources", "recipients", "occasions", "preferences", "giftIdeas", "shortlist", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.giftPlan.v1" },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "timezone", "asOf", "currency"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^gift-plan-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "timezone": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "authority", "capturedAt", "reference", "freshness", "privacy"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": { "enum": ["owner-note", "recipient-preference", "gift-history", "merchant-page", "calendar-export", "shipping-estimate", "relationship-note"] },
+          "authority": { "enum": ["user-supplied", "recipient-supplied", "merchant", "calendar-export", "shipping-provider"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 },
+          "freshness": { "enum": ["current", "delayed", "stale", "missing", "conflicting"] },
+          "privacy": { "enum": ["normal", "private-note", "surprise-sensitive", "address-sensitive", "recipient-sensitive"] }
+        }
+      }
+    },
+    "recipients": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "displayName", "relationshipLabel", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^recipient-[a-z0-9-]+$" },
+          "displayName": { "type": "string", "minLength": 1 },
+          "relationshipLabel": { "type": "string", "minLength": 1 },
+          "privacy": { "enum": ["normal", "surprise-sensitive", "private-note", "recipient-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "occasions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "recipientRef", "kind", "date", "budget", "currency", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^occasion-[a-z0-9-]+$" },
+          "recipientRef": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["birthday", "holiday", "thank-you", "anniversary", "hosting", "milestone", "care-package", "other"] },
+          "date": { "type": "string", "format": "date" },
+          "budget": { "type": ["number", "null"], "minimum": 0 },
+          "currency": { "type": ["string", "null"], "pattern": "^[A-Z]{3}$" },
+          "privacy": { "enum": ["normal", "surprise-sensitive", "private-note", "recipient-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "preferences": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "recipientRef", "kind", "value", "sensitivity", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^pref-[a-z0-9-]+$" },
+          "recipientRef": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["likes", "dislikes", "size", "allergy", "hobby", "format", "shipping", "duplicate-history", "privacy"] },
+          "value": { "type": "string", "minLength": 1 },
+          "sensitivity": { "enum": ["normal", "private", "sensitive", "surprise-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "giftIdeas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "recipientRef", "occasionRef", "name", "category", "estimatedCost", "currency", "availability", "shippingState", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^gift-[a-z0-9-]+$" },
+          "recipientRef": { "type": "string", "minLength": 1 },
+          "occasionRef": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "category": { "type": "string", "minLength": 1 },
+          "estimatedCost": { "type": ["number", "null"], "minimum": 0 },
+          "currency": { "type": ["string", "null"], "pattern": "^[A-Z]{3}$" },
+          "availability": { "enum": ["available", "limited", "unknown", "unavailable"] },
+          "shippingState": { "enum": ["arrives-before-occasion", "risk", "unknown", "not-needed"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "shortlist": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "giftRef", "rank", "fit", "fitReason", "preferenceRefs", "state", "blockedReason"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^pick-[a-z0-9-]+$" },
+          "giftRef": { "type": "string", "minLength": 1 },
+          "rank": { "type": "integer", "minimum": 1 },
+          "fit": { "enum": ["strong", "possible", "weak", "blocked"] },
+          "fitReason": { "type": "string", "minLength": 1 },
+          "preferenceRefs": { "$ref": "#/$defs/refs" },
+          "state": { "enum": ["recommended", "review-needed", "blocked"] },
+          "blockedReason": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "recipientRefs", "giftRefs", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "recipientRefs": { "$ref": "#/$defs/refs" },
+          "giftRefs": { "$ref": "#/$defs/refs" },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 8,
+      "uniqueItems": true,
+      "items": { "enum": ["buy-gift", "reserve-gift", "return-gift", "ship-gift", "send-message", "send-invitation", "modify-calendar", "publish-post", "share-surprise", "store-address", "infer-sensitive-relationship"] }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 11,
+          "uniqueItems": true,
+          "items": { "enum": ["buy-gift", "reserve-gift", "return-gift", "ship-gift", "send-message", "send-invitation", "modify-calendar", "publish-post", "share-surprise", "store-address", "infer-sensitive-relationship"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

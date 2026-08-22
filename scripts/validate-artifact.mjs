@@ -18,6 +18,7 @@ const schemaNames = {
   "data-analyst": "analysis-state.schema.json",
   "delegation-coordinator": "delegation-ledger.schema.json",
   "financial-analyst": "financial-scenario.schema.json",
+  "gift-relationship-manager": "gift-plan.schema.json",
   "green-thumb-coordinator": "garden-plan.schema.json",
   "home-repair-coordinator": "home-repair.schema.json",
   "household-steward": "household-operations.schema.json",
