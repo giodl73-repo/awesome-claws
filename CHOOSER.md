@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (67)
+### Active (68)
 
 | Claw | Detail |
 | --- | --- |
@@ -70,6 +70,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Sports team watcher](claws/sports-team-watcher) | @giodl73-repo; last verified 2026-08-21 |
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | @giodl73-repo; last verified 2026-08-21 |
+| [Subscription manager](claws/subscription-manager) | @giodl73-repo; last verified 2026-08-21 |
 | [Travel concierge](claws/travel-concierge) | @giodl73-repo; last verified 2026-08-19 |
 | [Travel planner](claws/travel-planner) | @giodl73-repo; last verified 2026-08-19 |
 | [UX research synthesizer](claws/ux-research-synthesizer) | @giodl73-repo; last verified 2026-08-19 |
@@ -94,7 +95,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (36)
+### Low setup (37)
 
 | Claw | Detail |
 | --- | --- |
@@ -131,6 +132,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Security analyst](claws/security-analyst) | no bootstrap, external dependency, or schedule |
 | [Sports team watcher](claws/sports-team-watcher) | no bootstrap, external dependency, or schedule |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | no bootstrap, external dependency, or schedule |
+| [Subscription manager](claws/subscription-manager) | no bootstrap, external dependency, or schedule |
 | [UX research synthesizer](claws/ux-research-synthesizer) | no bootstrap, external dependency, or schedule |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | no bootstrap, external dependency, or schedule |
 | [Work chief of staff](claws/work-chief-of-staff) | no bootstrap, external dependency, or schedule |
@@ -180,7 +182,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (44)
+### No external dependencies (45)
 
 | Claw | Detail |
 | --- | --- |
@@ -225,6 +227,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Security analyst](claws/security-analyst) | None |
 | [Sports team watcher](claws/sports-team-watcher) | None |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | None |
+| [Subscription manager](claws/subscription-manager) | None |
 | [UX research synthesizer](claws/ux-research-synthesizer) | None |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | None |
 | [Work chief of staff](claws/work-chief-of-staff) | None |
@@ -261,7 +264,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (42)
+### X3 (43)
 
 | Claw | Detail |
 | --- | --- |
@@ -300,6 +303,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Sports team watcher](claws/sports-team-watcher) | Tracks favorite teams across leagues and prepares sourced schedule, result, standings, roster, and watch-item digests without betting, ticketing, or claiming live completeness. |
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability. |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | Monitors a user-supplied stock portfolio or watchlist with sourced prices, holdings, allocation drift, issuer events, and review questions without investment advice or trade execution. |
+| [Subscription manager](claws/subscription-manager) | Tracks user-supplied recurring subscriptions, renewals, price changes, usage evidence, overlap, and owner review questions without banking access, cancellation, subscription changes, negotiation, or financial advice. |
 | [Travel planner](claws/travel-planner) | Builds a reviewable trip plan from current public sources without booking, paying, or retaining sensitive traveler records. |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle. |
 | [Video concept producer](claws/video-concept-producer) | Generates reviewable PixVerse video concepts from approved prompts or workspace assets without publishing or impersonating people. |
@@ -424,7 +428,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (15)
+### Productivity (16)
 
 | Claw | Detail |
 | --- | --- |
@@ -440,6 +444,7 @@ Categories come directly from the catalog entry.
 | [Presentation producer](claws/presentation-producer) | X3; Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review. |
 | [Project manager](claws/project-manager) | X4; Keeps projects aligned through milestones, dependencies, decisions, and accountable execution. |
 | [Sports team watcher](claws/sports-team-watcher) | X3; Tracks favorite teams across leagues and prepares sourced schedule, result, standings, roster, and watch-item digests without betting, ticketing, or claiming live completeness. |
+| [Subscription manager](claws/subscription-manager) | X3; Tracks user-supplied recurring subscriptions, renewals, price changes, usage evidence, overlap, and owner review questions without banking access, cancellation, subscription changes, negotiation, or financial advice. |
 | [Travel concierge](claws/travel-concierge) | X5; Searches and compares current Expedia lodging and flight options, then prepares a traveler-controlled booking handoff without completing a transaction. |
 | [Travel planner](claws/travel-planner) | X3; Builds a reviewable trip plan from current public sources without booking, paying, or retaining sensitive traveler records. |
 | [Video concept producer](claws/video-concept-producer) | X3; Generates reviewable PixVerse video concepts from approved prompts or workspace assets without publishing or impersonating people. |
@@ -448,7 +453,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (15)
+### Standard attention (16)
 
 | Claw | Detail |
 | --- | --- |
@@ -466,6 +471,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Sales operations](claws/sales-operations) | portable workspace artifacts only |
 | [Sports team watcher](claws/sports-team-watcher) | portable workspace artifacts only |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | portable workspace artifacts only |
+| [Subscription manager](claws/subscription-manager) | portable workspace artifacts only |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | portable workspace artifacts only |
 
 ### Guarded attention (38)

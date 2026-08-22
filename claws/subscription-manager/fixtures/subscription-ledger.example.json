@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "awesomeClaws.subscriptionLedger.v1",
+  "portfolio": {
+    "id": "subscription-portfolio-household",
+    "owner": "Household owner",
+    "currency": "USD",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-21T20:00:00Z",
+    "reviewWindowDays": 45
+  },
+  "sources": [
+    { "id": "src-netflix-receipt", "kind": "receipt", "authority": "user-supplied", "capturedAt": "2026-08-21T18:30:00Z", "reference": "owner://receipts/netflix-august", "freshness": "current" },
+    { "id": "src-disney-email", "kind": "vendor-email", "authority": "vendor-supplied", "capturedAt": "2026-08-21T18:35:00Z", "reference": "owner://emails/disney-renewal", "freshness": "current" },
+    { "id": "src-news-invoice", "kind": "invoice", "authority": "user-supplied", "capturedAt": "2026-08-21T18:40:00Z", "reference": "owner://invoices/news-annual", "freshness": "current" },
+    { "id": "src-storage-receipt", "kind": "receipt", "authority": "user-supplied", "capturedAt": "2026-08-21T18:45:00Z", "reference": "owner://receipts/storage-august", "freshness": "current" },
+    { "id": "src-usage-notes", "kind": "usage-note", "authority": "user-supplied", "capturedAt": "2026-08-21T18:50:00Z", "reference": "owner://notes/subscription-usage", "freshness": "current" },
+    { "id": "src-calendar", "kind": "calendar-note", "authority": "calendar-export", "capturedAt": "2026-08-21T18:55:00Z", "reference": "owner://calendar/renewals-export", "freshness": "current" }
+  ],
+  "subscriptions": [
+    { "id": "sub-netflix", "service": "Netflix", "category": "streaming", "owner": "Household owner", "state": "active", "cadence": "monthly", "amount": 22.99, "currency": "USD", "amountState": "supplied", "sourceRefs": ["src-netflix-receipt"] },
+    { "id": "sub-disney", "service": "Disney+", "category": "streaming", "owner": "Household owner", "state": "active", "cadence": "monthly", "amount": 15.99, "currency": "USD", "amountState": "supplied", "sourceRefs": ["src-disney-email"] },
+    { "id": "sub-daily-news", "service": "Daily News", "category": "news", "owner": "Household owner", "state": "active", "cadence": "annual", "amount": 119.0, "currency": "USD", "amountState": "supplied", "sourceRefs": ["src-news-invoice"] },
+    { "id": "sub-cloud-storage", "service": "Cloud Storage", "category": "storage", "owner": "Household owner", "state": "active", "cadence": "monthly", "amount": 9.99, "currency": "USD", "amountState": "supplied", "sourceRefs": ["src-storage-receipt"] }
+  ],
+  "renewals": [
+    { "id": "renewal-netflix", "subscriptionRef": "sub-netflix", "renewsAt": "2026-09-05T07:00:00Z", "windowState": "inside-review-window", "priceChange": { "state": "none", "previousAmount": null, "newAmount": null, "currency": null }, "sourceRefs": ["src-netflix-receipt", "src-calendar"] },
+    { "id": "renewal-disney", "subscriptionRef": "sub-disney", "renewsAt": "2026-09-12T07:00:00Z", "windowState": "inside-review-window", "priceChange": { "state": "increase", "previousAmount": 13.99, "newAmount": 15.99, "currency": "USD" }, "sourceRefs": ["src-disney-email", "src-calendar"] },
+    { "id": "renewal-news", "subscriptionRef": "sub-daily-news", "renewsAt": "2026-10-01T07:00:00Z", "windowState": "inside-review-window", "priceChange": { "state": "unknown", "previousAmount": null, "newAmount": null, "currency": null }, "sourceRefs": ["src-news-invoice", "src-calendar"] },
+    { "id": "renewal-storage", "subscriptionRef": "sub-cloud-storage", "renewsAt": "2026-09-18T07:00:00Z", "windowState": "inside-review-window", "priceChange": { "state": "none", "previousAmount": null, "newAmount": null, "currency": null }, "sourceRefs": ["src-storage-receipt", "src-calendar"] }
+  ],
+  "usage": [
+    { "subscriptionRef": "sub-netflix", "state": "used-recently", "summary": "Owner note says the household used the service this week.", "observedAt": "2026-08-21T18:50:00Z", "sourceRefs": ["src-usage-notes"] },
+    { "subscriptionRef": "sub-disney", "state": "used-recently", "summary": "Owner note says family movie night used the service this month.", "observedAt": "2026-08-21T18:50:00Z", "sourceRefs": ["src-usage-notes"] },
+    { "subscriptionRef": "sub-daily-news", "state": "unknown", "summary": "No recent usage note was supplied.", "observedAt": "2026-08-21T18:50:00Z", "sourceRefs": ["src-usage-notes"] },
+    { "subscriptionRef": "sub-cloud-storage", "state": "used-recently", "summary": "Owner note says backups used the service this week.", "observedAt": "2026-08-21T18:50:00Z", "sourceRefs": ["src-usage-notes"] }
+  ],
+  "overlaps": [
+    { "id": "overlap-streaming", "subscriptionRefs": ["sub-netflix", "sub-disney"], "kind": "duplicate-category", "summary": "Both services are streaming subscriptions; this is an owner review prompt, not an account action.", "sourceRefs": ["src-netflix-receipt", "src-disney-email", "src-usage-notes"] }
+  ],
+  "reviewQuestions": [
+    { "id": "question-disney-price", "subscriptionRefs": ["sub-disney"], "question": "Does the owner want to review the Disney+ renewal before the price increase takes effect?", "reason": "Vendor email shows an increase from 13.99 USD to 15.99 USD inside the review window.", "sourceRefs": ["src-disney-email", "src-calendar"] },
+    { "id": "question-news-usage", "subscriptionRefs": ["sub-daily-news"], "question": "Can the owner supply recent usage evidence for Daily News before the annual renewal?", "reason": "Renewal is inside the review window and current usage evidence is unknown.", "sourceRefs": ["src-news-invoice", "src-usage-notes", "src-calendar"] },
+    { "id": "question-streaming-overlap", "subscriptionRefs": ["sub-netflix", "sub-disney"], "question": "Should the owner compare household usage notes for the two streaming services before the next renewal?", "reason": "The ledger shows two streaming services with recent use on both, so this remains an owner review question.", "sourceRefs": ["src-netflix-receipt", "src-disney-email", "src-usage-notes"] }
+  ],
+  "blockedActions": ["connect-bank", "connect-credit-card", "cancel-subscription", "subscribe", "downgrade", "upgrade", "negotiate", "contact-vendor", "change-payment", "modify-account", "modify-calendar", "send-message", "financial-advice"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Household owner",
+    "prohibitedActions": ["connect-bank", "connect-credit-card", "cancel-subscription", "subscribe", "downgrade", "upgrade", "negotiate", "contact-vendor", "change-payment", "modify-account", "modify-calendar", "send-message", "financial-advice"]
+  }
+}

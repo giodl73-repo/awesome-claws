@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "subscription-manager",
+  "scenario": "Make a subscription review for my household from the receipts and notes I supplied. Show renewals in the next 45 days, price changes, services we may be duplicating, and questions to review, but do not connect to my bank, cancel anything, contact vendors, or tell me what financial decision to make.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Make a subscription review for my household from the receipts and notes I supplied. Show renewals in the next 45 days, price changes, services we may be duplicating, and questions to review, but do not connect to my bank, cancel anything, contact vendors, or tell me what financial decision to make."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/subscription-manager-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Subscription manager session handoff",
+    "summary": "A source-backed subscription ledger with renewal windows, price-change evidence, usage freshness, overlap groups, owner review questions, stale or missing evidence, and all account or payment actions blocked.",
+    "output": "outputs/subscription-manager-handoff.md",
+    "items": [
+      {
+        "title": "Subscription ledger",
+        "summary": "Every subscription has a source identity, owner, cadence, amount state, renewal state, and freshness label",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Renewal and price-change calendar",
+        "summary": "Every price-change, usage, renewal, and overlap claim traces to supplied or approved evidence",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Usage and evidence freshness register",
+        "summary": "Review questions distinguish evidence-backed renewal hygiene from financial, tax, legal, credit, or investment advice",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Overlap and duplicate-service review list",
+        "summary": "Cancellation, signup, downgrade, upgrade, negotiation, payment, bank connection, account, vendor-contact, calendar, and messaging actions remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked account, payment, cancellation, negotiation, and vendor-contact handoff",
+        "summary": "Every subscription has a source identity, owner, cadence, amount state, renewal state, and freshness label",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

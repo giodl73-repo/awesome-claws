@@ -143,6 +143,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "subscription-manager",
+    schema: "../claws/subscription-manager/schemas/subscription-ledger.schema.json",
+    fixture: "../claws/subscription-manager/fixtures/subscription-ledger.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "civic-data-analyst",
     schema: "../claws/civic-data-analyst/schemas/civic-evidence.schema.json",
     fixture: "../claws/civic-data-analyst/fixtures/civic-evidence.example.json",
@@ -276,6 +282,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["sales-operations", (value) => value.actions[0].dealRefs.push(value.actions[0].dealRefs[0])],
     ["sports-team-watcher", (value) => value.games[0].sourceRefs.push(value.games[0].sourceRefs[0])],
     ["stock-portfolio-monitor", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
+    ["subscription-manager", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
     ["civic-data-analyst", (value) => value.measures[0].sourceRefs.push(value.measures[0].sourceRefs[0])],
   ];
   for (const [id, mutate] of mutations) {
@@ -1882,6 +1889,25 @@ test("stock portfolio monitor binds valuations to sources and blocks advice", ()
   const advice = structuredClone(cases.get("stock-portfolio-monitor").fixture);
   advice.reviewQuestions[0].question = "Should the owner buy more AAPL this week?";
   assert.equal(isValid("stock-portfolio-monitor", advice), false);
+});
+
+test("subscription manager binds renewal evidence and blocks account authority", () => {
+  const staleReceipt = structuredClone(cases.get("subscription-manager").fixture);
+  staleReceipt.sources[0].freshness = "stale";
+  assert.equal(isValid("subscription-manager", staleReceipt), false);
+
+  const bankSource = structuredClone(cases.get("subscription-manager").fixture);
+  bankSource.sources[0].kind = "bank-feed";
+  bankSource.sources[0].authority = "banking-system";
+  assert.equal(isValid("subscription-manager", bankSource), false);
+
+  const inferredAmount = structuredClone(cases.get("subscription-manager").fixture);
+  inferredAmount.subscriptions[0].amountState = "missing";
+  assert.equal(isValid("subscription-manager", inferredAmount), false);
+
+  const cancellationAdvice = structuredClone(cases.get("subscription-manager").fixture);
+  cancellationAdvice.reviewQuestions[0].question = "Should the owner cancel Disney+ now?";
+  assert.equal(isValid("subscription-manager", cancellationAdvice), false);
 });
 
 test("capstone profiles expose only their intended runtime dimensions", async () => {

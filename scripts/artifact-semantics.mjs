@@ -4945,6 +4945,94 @@ function stockPortfolioFindings(value) {
   return findings;
 }
 
+function subscriptionManagerFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const subscriptionIds = value.subscriptions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const subscriptionSet = new Set(subscriptionIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(subscriptionIds, "subscriptions", "Subscription id"),
+    ...uniqueFindings(value.renewals.map((item) => item.id), "renewals", "Renewal id"),
+    ...uniqueFindings(value.usage.map((item) => item.subscriptionRef), "usage", "Usage subscription reference"),
+    ...uniqueFindings(value.overlaps.map((item) => item.id), "overlaps", "Overlap id"),
+    ...uniqueFindings(value.reviewQuestions.map((item) => item.id), "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, source] of value.sources.entries()) {
+    if (source.kind === "bank-feed" || source.authority === "banking-system") {
+      findings.push(finding("bank_source_not_allowed", `sources.${index}`, "Subscription Manager artifacts must not depend on connected bank or card feeds."));
+    }
+  }
+  for (const [index, item] of value.subscriptions.entries()) {
+    findings.push(
+      ...uniqueFindings(item.sourceRefs, `subscriptions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `subscriptions.${index}.sourceRefs`, "Source reference"),
+    );
+    if (item.amountState === "supplied" && (item.amount === null || item.currency !== value.portfolio.currency)) {
+      findings.push(finding("unsupported_amount_state", `subscriptions.${index}.amount`, "Supplied subscription amounts require a value in the portfolio currency."));
+    }
+    if (item.amountState !== "supplied" && (item.amount !== null || item.currency !== null)) {
+      findings.push(finding("unsupported_amount_state", `subscriptions.${index}.amount`, "Missing or conflicting amounts cannot carry inferred values."));
+    }
+  }
+  for (const [index, renewal] of value.renewals.entries()) {
+    findings.push(
+      ...referenceFindings([renewal.subscriptionRef], subscriptionSet, `renewals.${index}.subscriptionRef`, "Subscription reference"),
+      ...uniqueFindings(renewal.sourceRefs, `renewals.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(renewal.sourceRefs, sourceSet, `renewals.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      renewal.windowState === "inside-review-window" &&
+      renewal.renewsAt &&
+      Date.parse(renewal.renewsAt) > Date.parse(value.portfolio.asOf) + value.portfolio.reviewWindowDays * 24 * 60 * 60 * 1000
+    ) {
+      findings.push(finding("renewal_window_mismatch", `renewals.${index}.renewsAt`, "Inside-window renewals must fall within the declared review window."));
+    }
+    if (["increase", "decrease"].includes(renewal.priceChange.state)) {
+      if (
+        renewal.priceChange.previousAmount === null ||
+        renewal.priceChange.newAmount === null ||
+        renewal.priceChange.currency !== value.portfolio.currency
+      ) {
+        findings.push(finding("unsupported_price_change", `renewals.${index}.priceChange`, "Price changes require previous and new amounts in the portfolio currency."));
+      }
+    }
+  }
+  for (const [collection, path] of [
+    [value.usage, "usage"],
+    [value.overlaps, "overlaps"],
+    [value.reviewQuestions, "reviewQuestions"],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      const refs = item.subscriptionRefs ?? [item.subscriptionRef];
+      findings.push(
+        ...uniqueFindings(refs, `${path}.${index}.subscriptionRefs`, "Subscription reference"),
+        ...referenceFindings(refs, subscriptionSet, `${path}.${index}.subscriptionRefs`, "Subscription reference"),
+        ...uniqueFindings(item.sourceRefs, `${path}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${path}.${index}.sourceRefs`, "Source reference"),
+      );
+    }
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready subscription ledgers cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    overlaps: value.overlaps.map(({ summary }) => summary),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(cancel|subscribe|downgrade|upgrade|negotiate|contact vendor|change payment|connect bank|financial advice|save money by)\b/iu.test(actionText)) {
+    findings.push(finding("account_action_content", "reviewQuestions", "Subscription review artifacts must not recommend account, payment, vendor-contact, or financial-advice actions."));
+  }
+  if (value.handoff.owner === "subscription-manager") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Subscription, payment, vendor-contact, calendar, and financial decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "care-circle-coordinator": careCircleFindings,
@@ -4969,6 +5057,7 @@ const validators = {
   "sales-operations": salesOperationsFindings,
   "sports-team-watcher": sportsTeamWatchFindings,
   "stock-portfolio-monitor": stockPortfolioFindings,
+  "subscription-manager": subscriptionManagerFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
   "work-chief-of-staff": workChiefOfStaffFindings,
 };
