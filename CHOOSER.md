@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (68)
+### Active (69)
 
 | Claw | Detail |
 | --- | --- |
@@ -49,6 +49,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Meeting intelligence](claws/meeting-intelligence) | @giodl73-repo; last verified 2026-08-19 |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | @giodl73-repo; last verified 2026-08-19 |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | @giodl73-repo; last verified 2026-08-21 |
+| [Music organizer](claws/music-organizer) | @giodl73-repo; last verified 2026-08-22 |
 | [Pet care coordinator](claws/pet-care-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | @giodl73-repo; last verified 2026-08-21 |
 | [Presentation producer](claws/presentation-producer) | @giodl73-repo; last verified 2026-08-19 |
@@ -95,7 +96,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (37)
+### Low setup (38)
 
 | Claw | Detail |
 | --- | --- |
@@ -120,6 +121,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Localization program manager](claws/localization-program-manager) | no bootstrap, external dependency, or schedule |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | no bootstrap, external dependency, or schedule |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | no bootstrap, external dependency, or schedule |
+| [Music organizer](claws/music-organizer) | no bootstrap, external dependency, or schedule |
 | [Pet care coordinator](claws/pet-care-coordinator) | no bootstrap, external dependency, or schedule |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | no bootstrap, external dependency, or schedule |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | no bootstrap, external dependency, or schedule |
@@ -182,7 +184,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (45)
+### No external dependencies (46)
 
 | Claw | Detail |
 | --- | --- |
@@ -214,6 +216,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | None |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | None |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | None |
+| [Music organizer](claws/music-organizer) | None |
 | [Pet care coordinator](claws/pet-care-coordinator) | None |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | None |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | None |
@@ -264,7 +267,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (43)
+### X3 (44)
 
 | Claw | Detail |
 | --- | --- |
@@ -290,6 +293,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Meeting intelligence](claws/meeting-intelligence) | Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts. |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | Coordinates blinded model-output evaluation, rubric calibration, and disagreement adjudication without selecting or deploying a model. |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | Organizes a personal or household movie and show watchlist with sourced availability, watched history, favorites, preferences, and watch-night shortlists without renting, buying, subscribing, rating publicly, or bypassing restrictions. |
+| [Music organizer](claws/music-organizer) | Organizes a personal or household music library, playlists, listening history, favorites, and source-backed streaming availability without account mutation, purchases, public sharing, playlist publishing, or rights bypassing. |
 | [Pet care coordinator](claws/pet-care-coordinator) | Coordinates evidence-bound routine pet care, symptom triage, medication-safe handoffs, and explicitly approved veterinary appointments. |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | Coordinates evidence-bound ornamental pond and waterfall planning, installation readiness, recirculating-system care, aquatic-habitat monitoring, and explicitly approved specialist appointments. |
 | [Presentation producer](claws/presentation-producer) | Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review. |
@@ -428,7 +432,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (16)
+### Productivity (17)
 
 | Claw | Detail |
 | --- | --- |
@@ -441,6 +445,7 @@ Categories come directly from the catalog entry.
 | [Localization program manager](claws/localization-program-manager) | X4; Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations. |
 | [Meeting intelligence](claws/meeting-intelligence) | X3; Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts. |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | X3; Organizes a personal or household movie and show watchlist with sourced availability, watched history, favorites, preferences, and watch-night shortlists without renting, buying, subscribing, rating publicly, or bypassing restrictions. |
+| [Music organizer](claws/music-organizer) | X3; Organizes a personal or household music library, playlists, listening history, favorites, and source-backed streaming availability without account mutation, purchases, public sharing, playlist publishing, or rights bypassing. |
 | [Presentation producer](claws/presentation-producer) | X3; Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review. |
 | [Project manager](claws/project-manager) | X4; Keeps projects aligned through milestones, dependencies, decisions, and accountable execution. |
 | [Sports team watcher](claws/sports-team-watcher) | X3; Tracks favorite teams across leagues and prepares sourced schedule, result, standings, roster, and watch-item digests without betting, ticketing, or claiming live completeness. |
@@ -453,7 +458,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (16)
+### Standard attention (17)
 
 | Claw | Detail |
 | --- | --- |
@@ -465,6 +470,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Knowledge curator](claws/knowledge-curator) | portable workspace artifacts only |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | portable workspace artifacts only |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | portable workspace artifacts only |
+| [Music organizer](claws/music-organizer) | portable workspace artifacts only |
 | [Pet care coordinator](claws/pet-care-coordinator) | portable workspace artifacts only |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | portable workspace artifacts only |
 | [Recruiting coordinator](claws/recruiting-coordinator) | portable workspace artifacts only |
