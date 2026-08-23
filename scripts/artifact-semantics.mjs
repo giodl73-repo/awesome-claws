@@ -454,6 +454,145 @@ function restaurantVenueFindings(value) {
   return findings;
 }
 
+function localEventsFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const venueIds = value.venues.map((item) => item.id);
+  const constraintIds = value.constraints.map((item) => item.id);
+  const eventIds = value.events.map((item) => item.id);
+  const ticketingIds = value.ticketing.map((item) => item.id);
+  const conflictIds = value.conflicts.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const venueSet = new Set(venueIds);
+  const constraintSet = new Set(constraintIds);
+  const eventSet = new Set(eventIds);
+  const ticketingSet = new Set(ticketingIds);
+  const conflictSet = new Set(conflictIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const eventById = new Map(value.events.map((item) => [item.id, item]));
+  const ticketingById = new Map(value.ticketing.map((item) => [item.id, item]));
+  const conflictById = new Map(value.conflicts.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(venueIds, "venues", "Venue id"),
+    ...uniqueFindings(constraintIds, "constraints", "Constraint id"),
+    ...uniqueFindings(eventIds, "events", "Event id"),
+    ...uniqueFindings(ticketingIds, "ticketing", "Ticketing id"),
+    ...uniqueFindings(conflictIds, "conflicts", "Conflict id"),
+    ...uniqueFindings(value.watchlist.map((item) => item.id), "watchlist", "Watchlist id"),
+    ...uniqueFindings(value.reviewQuestions.map((item) => item.id), "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, venue] of value.venues.entries()) {
+    findings.push(
+      ...uniqueFindings(venue.sourceRefs, `venues.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(venue.sourceRefs, sourceSet, `venues.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, constraint] of value.constraints.entries()) {
+    findings.push(
+      ...uniqueFindings(constraint.sourceRefs, `constraints.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(constraint.sourceRefs, sourceSet, `constraints.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, event] of value.events.entries()) {
+    findings.push(
+      ...referenceFindings([event.venueRef], venueSet, `events.${index}.venueRef`, "Venue reference"),
+      ...uniqueFindings(event.sourceRefs, `events.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(event.sourceRefs, sourceSet, `events.${index}.sourceRefs`, "Source reference"),
+    );
+    const hasSupportedSource = event.sourceRefs.some((ref) =>
+      ["official-event-page", "venue-page", "calendar-listing", "community-feed", "school-notice", "accessibility-note"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasSupportedSource) {
+      findings.push(finding("unsupported_event_source", `events.${index}.sourceRefs`, "Event facts require official, venue, calendar, community, school, or accessibility evidence."));
+    }
+  }
+  for (const [index, row] of value.ticketing.entries()) {
+    findings.push(
+      ...referenceFindings([row.eventRef], eventSet, `ticketing.${index}.eventRef`, "Event reference"),
+      ...uniqueFindings(row.sourceRefs, `ticketing.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(row.sourceRefs, sourceSet, `ticketing.${index}.sourceRefs`, "Source reference"),
+    );
+    const hasTicketingSource = row.sourceRefs.some((ref) =>
+      ["official-event-page", "ticketing-page", "venue-page", "community-feed", "school-notice"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasTicketingSource) {
+      findings.push(finding("unsupported_ticketing_source", `ticketing.${index}.sourceRefs`, "Ticketing state requires official, ticketing, venue, community, or school evidence."));
+    }
+  }
+  for (const [index, row] of value.conflicts.entries()) {
+    findings.push(
+      ...referenceFindings([row.eventRef], eventSet, `conflicts.${index}.eventRef`, "Event reference"),
+      ...uniqueFindings(row.sourceRefs, `conflicts.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(row.sourceRefs, sourceSet, `conflicts.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, item] of value.watchlist.entries()) {
+    findings.push(
+      ...referenceFindings([item.eventRef], eventSet, `watchlist.${index}.eventRef`, "Event reference"),
+      ...referenceFindings([item.ticketingRef], ticketingSet, `watchlist.${index}.ticketingRef`, "Ticketing reference"),
+      ...referenceFindings([item.conflictRef], conflictSet, `watchlist.${index}.conflictRef`, "Conflict reference"),
+      ...uniqueFindings(item.constraintRefs, `watchlist.${index}.constraintRefs`, "Constraint reference"),
+      ...referenceFindings(item.constraintRefs, constraintSet, `watchlist.${index}.constraintRefs`, "Constraint reference"),
+    );
+    const event = eventById.get(item.eventRef);
+    const ticketing = ticketingById.get(item.ticketingRef);
+    const conflict = conflictById.get(item.conflictRef);
+    if (ticketing && ticketing.eventRef !== item.eventRef) {
+      findings.push(finding("ticketing_event_mismatch", `watchlist.${index}.ticketingRef`, "Watchlist ticketing must belong to the same event."));
+    }
+    if (conflict && conflict.eventRef !== item.eventRef) {
+      findings.push(finding("conflict_event_mismatch", `watchlist.${index}.conflictRef`, "Watchlist conflict must belong to the same event."));
+    }
+    const requiredConstraints = value.constraints.filter((constraint) => constraint.required);
+    const missingRequired = requiredConstraints.some((constraint) => !item.constraintRefs.includes(constraint.id));
+    if (
+      item.state === "recommended" &&
+      (!event ||
+        !ticketing ||
+        !conflict ||
+        missingRequired ||
+        !["available", "limited", "free"].includes(ticketing.availabilityState) ||
+        !["inside-budget", "free"].includes(ticketing.priceState) ||
+        event.ageFit !== "supported" ||
+        event.accessibilityState !== "supported" ||
+        conflict.state !== "clear")
+    ) {
+      findings.push(finding("unsupported_recommendation", `watchlist.${index}`, "Recommended events require current availability, budget, age-fit, accessibility, conflict, and required-constraint support."));
+    }
+    if (
+      (item.state === "blocked" && !item.blockedReason) ||
+      (item.state !== "blocked" && item.blockedReason !== null)
+    ) {
+      findings.push(finding("incoherent_blocked_state", `watchlist.${index}.blockedReason`, "Only blocked event watchlist items may carry a blocked reason."));
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.eventRefs, `reviewQuestions.${index}.eventRefs`, "Event reference"),
+      ...referenceFindings(question.eventRefs, eventSet, `reviewQuestions.${index}.eventRefs`, "Event reference"),
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready event watchlists cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    watchlist: value.watchlist.map(({ fitReason, blockedReason }) => ({ fitReason, blockedReason })),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(buy tickets?|purchase tickets?|join waitlist|rsvp|contact venue|message|invite|arrange ride|pay|edit calendar|modify calendar|calendar edit|share location|post publicly|public post|age safe|safe for kids|guaranteed accessible)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Event artifacts must not instruct ticket purchases, waitlists, RSVPs, venue contact, messages, rides, payments, calendar edits, location sharing, public posting, or unsupported age/accessibility certainty."));
+  }
+  if (value.handoff.owner === "local-events-watcher") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Ticketing, waitlist, RSVP, contact, ride, calendar, location-sharing, and posting decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 function giftRelationshipFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const recipientIds = value.recipients.map((item) => item.id);
@@ -5483,6 +5622,7 @@ const validators = {
   "green-thumb-coordinator": greenThumbFindings,
   "home-repair-coordinator": homeRepairFindings,
   "household-steward": householdStewardFindings,
+  "local-events-watcher": localEventsFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
   "movie-streaming-organizer": movieStreamingFindings,
   "music-organizer": musicOrganizerFindings,
