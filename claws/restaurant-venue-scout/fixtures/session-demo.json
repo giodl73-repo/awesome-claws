@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "restaurant-venue-scout",
+  "scenario": "Help pick three dinner places for Saturday from the links and notes I supplied. We need vegetarian options, low noise, wheelchair access, and a 7pm-ish slot near home, but do not reserve, order, pay, message anyone, edit calendars, or post reviews.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Help pick three dinner places for Saturday from the links and notes I supplied. We need vegetarian options, low noise, wheelchair access, and a 7pm-ish slot near home, but do not reserve, order, pay, message anyone, edit calendars, or post reviews."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/restaurant-venue-scout-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Restaurant and venue scout session handoff",
+    "summary": "A source-backed venue shortlist with official/menu/review/reservation evidence, dietary and accessibility fit, hours and timing gaps, group preference tradeoffs, owner review questions, and all reservation, ordering, payment, messaging, calendar, and review-posting actions blocked.",
+    "output": "outputs/restaurant-venue-scout-handoff.md",
+    "items": [
+      {
+        "title": "Venue shortlist with source freshness",
+        "summary": "Every venue, source, dietary claim, accessibility claim, hours signal, and reservation signal has source identity, freshness, and privacy labeling",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Dietary and accessibility evidence register",
+        "summary": "Every shortlist item traces to explicit group preferences, timing, price, distance, dietary, accessibility, and source-freshness evidence without hiding gaps",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Hours, reservation, price, distance, and visit-window fit",
+        "summary": "Private addresses, group constraints, accessibility needs, and care-circle details are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Group preference and privacy review questions",
+        "summary": "Reservations, orders, payments, delivery, waitlists, messages, calls, calendar edits, and public reviews remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked reservation, order, payment, waitlist, message, calendar, and review-posting handoff",
+        "summary": "Every venue, source, dietary claim, accessibility claim, hours signal, and reservation signal has source identity, freshness, and privacy labeling",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

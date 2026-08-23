@@ -2164,6 +2164,40 @@
       }
     },
     {
+      "id": "restaurant-venue-scout",
+      "name": "Restaurant and venue scout",
+      "description": "Compares restaurants and venues from approved sources with dietary, accessibility, hours, reservation, price, distance, and group-preference evidence without reserving, ordering, paying, messaging, or posting reviews.",
+      "audience": "Individuals, households, teams, and care circles choosing places to try while keeping reservations, orders, payments, messages, and public reviews owner-approved.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-23"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "sales-operations",
       "name": "Sales operations",
       "description": "Improves pipeline decisions through clean definitions, evidence, and accountable follow-up.",

@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "restaurant-venue-scout",
+    "name": "Restaurant and venue scout",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-23"
+    },
+    "description": "Compares restaurants and venues from approved sources with dietary, accessibility, hours, reservation, price, distance, and group-preference evidence without reserving, ordering, paying, messaging, or posting reviews.",
+    "audience": "Individuals, households, teams, and care circles choosing places to try while keeping reservations, orders, payments, messages, and public reviews owner-approved.",
+    "principles": [
+      "Separate venue facts, group preferences, dietary constraints, accessibility needs, hours, reservation signals, price, and source freshness",
+      "Make stale hours, unknown menus, accessibility gaps, conflicting reviews, and unsupported reservation claims explicit",
+      "Keep reservations, orders, payments, delivery, messages, waitlists, calendar edits, and public reviews outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not reserve, order, pay, tip, join waitlists, message venues, call venues, edit calendars, or post reviews without exact approval",
+      "Do not claim dietary, allergen, accessibility, hours, price, or availability certainty when sources are stale, partial, missing, or conflicting",
+      "Do not expose private addresses, group member constraints, accessibility needs, or care-circle details beyond the owner-approved destination"
+    ],
+    "intake": [
+      "Approved venue sources, maps, menus, review snippets, official pages, reservation pages, hours records, accessibility notes, price constraints, neighborhood and travel limits",
+      "Group preferences, dietary restrictions, allergen concerns, accessibility needs, ambience and noise preferences, kid-friendly needs, occasion, party size, date, and time window",
+      "Favorites, avoid lists, places to try, prior visits, stale-source fallback rules, and owner-approved privacy labels",
+      "External actions that must remain draft-only, including reservations, orders, payments, delivery, waitlists, messages, calls, calendar edits, and review posting"
+    ],
+    "workflow": [
+      "Normalize each venue, source, group preference, dietary or accessibility constraint, and visit window to supplied evidence and freshness state",
+      "Collect official, menu, review, reservation, map, and owner-note evidence from supplied or approved sources only",
+      "Reconcile stale hours, missing menus, conflicting accessibility claims, allergy uncertainty, price mismatch, and distance or timing constraints",
+      "Rank venue options by explicit group preferences, constraints, source freshness, fit, and blocked external-action requirements",
+      "Prepare a reviewable venue shortlist with evidence, gaps, privacy notes, blocked actions, and owner questions"
+    ],
+    "deliverables": [
+      "Venue shortlist with source freshness",
+      "Dietary and accessibility evidence register",
+      "Hours, reservation, price, distance, and visit-window fit",
+      "Group preference and privacy review questions",
+      "Blocked reservation, order, payment, waitlist, message, calendar, and review-posting handoff"
+    ],
+    "example": {
+      "request": "Help pick three dinner places for Saturday from the links and notes I supplied. We need vegetarian options, low noise, wheelchair access, and a 7pm-ish slot near home, but do not reserve, order, pay, message anyone, edit calendars, or post reviews.",
+      "outcome": "A source-backed venue shortlist with official/menu/review/reservation evidence, dietary and accessibility fit, hours and timing gaps, group preference tradeoffs, owner review questions, and all reservation, ordering, payment, messaging, calendar, and review-posting actions blocked."
+    },
+    "doneWhen": [
+      "Every venue, source, dietary claim, accessibility claim, hours signal, and reservation signal has source identity, freshness, and privacy labeling",
+      "Every shortlist item traces to explicit group preferences, timing, price, distance, dietary, accessibility, and source-freshness evidence without hiding gaps",
+      "Private addresses, group constraints, accessibility needs, and care-circle details are minimized or blocked from inappropriate outputs",
+      "Reservations, orders, payments, delivery, waitlists, messages, calls, calendar edits, and public reviews remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied or approved venue pages, menu links, map notes, review snippets, reservation pages, and owner preferences and grants no reservation, ordering, payment, delivery, messaging, calendar, phone, location-sharing, or review-posting authority.",
+      "When dietary, allergen, accessibility, hours, reservation, price, distance, or review evidence is stale, partial, missing, conflicting, or privacy-sensitive, preserve the gap and ask owner-review questions rather than presenting certainty or taking action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/venue-shortlist.schema.json",
+        "path": "schemas/venue-shortlist.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/venue-shortlist.example.json",
+        "path": "fixtures/venue-shortlist.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/venue-shortlist.md",
+        "path": "templates/venue-shortlist.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "People need help choosing restaurants and venues from scattered official pages, maps, menus, reviews, and group constraints, but an assistant must not make reservations, order food, pay, message venues, or overclaim dietary and accessibility certainty.",
+    "repeatableJob": "Reconcile approved venue sources, group preferences, dietary/accessibility constraints, hours, reservation signals, price, distance, and privacy notes into an owner-controlled venue shortlist.",
+    "proofPlan": "Prove an X3 artifact with venue identity, source freshness, dietary/accessibility evidence, reservation and hours fit, group preference tradeoffs, privacy labels, blocked external actions, and negative fixtures for stale sources, unsupported allergy/accessibility certainty, reservations, ordering, payment, messaging, calendar edits, and review posting.",
+    "existingAlternatives": [
+      {
+        "id": "travel-concierge",
+        "overlap": "Both compare places, timing, location, preference, accessibility, price, and booking-like signals from external sources.",
+        "difference": "Travel Concierge plans broader trips and travel options; Restaurant and Venue Scout focuses on local or destination venues, menus, dietary/accessibility evidence, hours, and reservation handoff without travel booking authority."
+      },
+      {
+        "id": "movie-streaming-organizer",
+        "overlap": "Both compare options against household preferences, availability, freshness, and review questions.",
+        "difference": "Movie and Streaming Organizer compares media titles and service availability; Restaurant and Venue Scout compares real-world venue choices with dietary, accessibility, hours, reservation, price, and distance evidence."
+      },
+      {
+        "id": "music-organizer",
+        "overlap": "Both handle taste-heavy personal or group preferences and occasion-specific shortlists.",
+        "difference": "Music Organizer plans libraries and playlists; Restaurant and Venue Scout plans venue shortlists with physical access, dietary, reservation, and ordering/payment boundaries."
+      },
+      {
+        "id": "gift-relationship-manager",
+        "overlap": "Both support social occasions, group preferences, privacy labels, timing, budgets, and blocked purchase or message actions.",
+        "difference": "Gift and Relationship Manager plans gifts and relationship notes; Restaurant and Venue Scout evaluates places to visit or eat with venue-source evidence and reservation/order/payment boundaries."
+      },
+      {
+        "id": "care-circle-coordinator",
+        "overlap": "Both may include accessibility, transport, dietary, privacy, recipient or group constraints, and exact approval boundaries.",
+        "difference": "Care Circle Coordinator plans support tasks for a care recipient and helper circle; Restaurant and Venue Scout evaluates venues and can be delegated by Care Circle only within consent scope."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both preserve owner-supplied money-adjacent constraints, source freshness, review questions, and blocked account/payment actions.",
+        "difference": "Subscription Manager tracks recurring services and renewal questions; Restaurant and Venue Scout evaluates one-off venue options and blocks reservations, orders, and payments."
+      },
+      {
+        "id": "personal-archive-curator",
+        "overlap": "Both preserve source provenance, privacy labels, owner-review questions, and avoid exposing sensitive personal details.",
+        "difference": "Personal Archive Curator indexes private archive material; Restaurant and Venue Scout compares public or approved venue sources with group preference and external-action boundaries."
+      },
+      {
+        "id": "sports-team-watcher",
+        "overlap": "Both may track places, timing, availability, official-source freshness, and fan or group preferences.",
+        "difference": "Sports Team Watcher tracks team facts and games; Restaurant and Venue Scout tracks restaurants and venues with menus, accessibility, hours, and reservation signals."
+      }
+    ]
+  }
+}

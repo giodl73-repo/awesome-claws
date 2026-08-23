@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "awesomeClaws.venueShortlist.v1",
+  "plan": {
+    "id": "venue-plan-saturday-dinner",
+    "owner": "Venue owner",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-23T13:20:00Z",
+    "occasion": "Saturday dinner",
+    "partySize": 4,
+    "targetWindow": "2026-08-29 around 19:00",
+    "region": "Oakland, CA"
+  },
+  "sources": [
+    { "id": "src-owner-notes", "kind": "owner-note", "authority": "user-supplied", "capturedAt": "2026-08-23T12:55:00Z", "reference": "owner://venue-notes/saturday", "freshness": "current", "privacy": "group-sensitive" },
+    { "id": "src-green-table-official", "kind": "official-page", "authority": "venue", "capturedAt": "2026-08-23T13:00:00Z", "reference": "venue://green-table/official", "freshness": "current", "privacy": "normal" },
+    { "id": "src-green-table-menu", "kind": "menu", "authority": "venue", "capturedAt": "2026-08-23T13:02:00Z", "reference": "venue://green-table/menu", "freshness": "current", "privacy": "dietary-sensitive" },
+    { "id": "src-green-table-reservation", "kind": "reservation-page", "authority": "reservation-platform", "capturedAt": "2026-08-23T13:04:00Z", "reference": "reservation://green-table/saturday", "freshness": "current", "privacy": "normal" },
+    { "id": "src-ramp-note", "kind": "accessibility-note", "authority": "accessibility-source", "capturedAt": "2026-08-22T16:00:00Z", "reference": "owner://accessibility/green-table", "freshness": "current", "privacy": "accessibility-sensitive" },
+    { "id": "src-market-hall-menu", "kind": "menu", "authority": "venue", "capturedAt": "2026-08-23T13:08:00Z", "reference": "venue://market-hall/menu", "freshness": "current", "privacy": "dietary-sensitive" },
+    { "id": "src-market-hall-map", "kind": "map-listing", "authority": "map-provider", "capturedAt": "2026-08-23T13:10:00Z", "reference": "map://market-hall", "freshness": "current", "privacy": "location-sensitive" },
+    { "id": "src-loud-room-official", "kind": "official-page", "authority": "venue", "capturedAt": "2026-08-23T13:12:00Z", "reference": "venue://loud-room/official", "freshness": "current", "privacy": "normal" },
+    { "id": "src-noisy-review", "kind": "review-snippet", "authority": "review-provider", "capturedAt": "2026-08-20T10:00:00Z", "reference": "reviews://loud-room/noise", "freshness": "current", "privacy": "normal" }
+  ],
+  "venues": [
+    { "id": "venue-green-table", "name": "Green Table", "kind": "restaurant", "neighborhood": "Temescal", "priceBand": "$$", "distanceState": "inside-target-area", "sourceRefs": ["src-green-table-official", "src-green-table-menu", "src-green-table-reservation", "src-ramp-note"] },
+    { "id": "venue-market-hall", "name": "Market Hall", "kind": "market", "neighborhood": "Rockridge", "priceBand": "$$", "distanceState": "nearby", "sourceRefs": ["src-market-hall-menu", "src-market-hall-map"] },
+    { "id": "venue-loud-room", "name": "The Loud Room", "kind": "restaurant", "neighborhood": "Downtown", "priceBand": "$$$", "distanceState": "inside-target-area", "sourceRefs": ["src-loud-room-official", "src-noisy-review"] }
+  ],
+  "constraints": [
+    { "id": "constraint-vegetarian", "kind": "dietary", "label": "Vegetarian options needed", "required": true, "privacy": "dietary-sensitive", "sourceRefs": ["src-owner-notes"] },
+    { "id": "constraint-wheelchair", "kind": "accessibility", "label": "Wheelchair access needed", "required": true, "privacy": "accessibility-sensitive", "sourceRefs": ["src-owner-notes", "src-ramp-note"] },
+    { "id": "constraint-low-noise", "kind": "noise", "label": "Prefer lower-noise room", "required": false, "privacy": "group-sensitive", "sourceRefs": ["src-owner-notes", "src-noisy-review"] },
+    { "id": "constraint-reservation", "kind": "reservation", "label": "Prefer visible 7pm-ish slot", "required": false, "privacy": "normal", "sourceRefs": ["src-owner-notes", "src-green-table-reservation"] }
+  ],
+  "availability": [
+    { "id": "availability-green-table", "venueRef": "venue-green-table", "hoursState": "open-in-window", "reservationState": "slot-visible", "dietaryState": "supported", "accessibilityState": "supported", "sourceRefs": ["src-green-table-official", "src-green-table-menu", "src-green-table-reservation", "src-ramp-note"] },
+    { "id": "availability-market-hall", "venueRef": "venue-market-hall", "hoursState": "open-in-window", "reservationState": "walk-in-only", "dietaryState": "possible", "accessibilityState": "unknown", "sourceRefs": ["src-market-hall-menu", "src-market-hall-map"] },
+    { "id": "availability-loud-room", "venueRef": "venue-loud-room", "hoursState": "unknown", "reservationState": "unknown", "dietaryState": "unknown", "accessibilityState": "unknown", "sourceRefs": ["src-loud-room-official", "src-noisy-review"] }
+  ],
+  "shortlist": [
+    { "id": "pick-green-table", "venueRef": "venue-green-table", "availabilityRef": "availability-green-table", "rank": 1, "fit": "strong", "fitReason": "Current official, menu, reservation, and accessibility evidence supports the required vegetarian and wheelchair constraints in the target window.", "constraintRefs": ["constraint-vegetarian", "constraint-wheelchair", "constraint-low-noise", "constraint-reservation"], "state": "recommended", "blockedReason": null },
+    { "id": "pick-market-hall", "venueRef": "venue-market-hall", "availabilityRef": "availability-market-hall", "rank": 2, "fit": "possible", "fitReason": "Menu evidence suggests vegetarian options, but accessibility evidence is unknown and the venue appears walk-in only.", "constraintRefs": ["constraint-vegetarian", "constraint-wheelchair"], "state": "review-needed", "blockedReason": null },
+    { "id": "pick-loud-room", "venueRef": "venue-loud-room", "availabilityRef": "availability-loud-room", "rank": 3, "fit": "blocked", "fitReason": "The supplied review signal conflicts with the low-noise preference, and the available official source does not establish hours, menu, or accessibility fit.", "constraintRefs": ["constraint-low-noise"], "state": "blocked", "blockedReason": "Required fit evidence and noise concern need owner review." }
+  ],
+  "reviewQuestions": [
+    { "id": "question-accessibility", "question": "Should the owner exclude Market Hall until accessibility evidence is confirmed from an approved source?", "reason": "Vegetarian evidence is current, but accessibility state is unknown for a required constraint.", "venueRefs": ["venue-market-hall"], "sourceRefs": ["src-market-hall-menu", "src-market-hall-map", "src-owner-notes"] },
+    { "id": "question-reservation", "question": "Should the owner review Green Table's visible slot and decide whether to use it outside this artifact?", "reason": "A slot is visible, but booking actions remain blocked until exact owner approval.", "venueRefs": ["venue-green-table"], "sourceRefs": ["src-green-table-reservation"] }
+  ],
+  "blockedActions": ["make-reservation", "join-waitlist", "order-food", "pay-venue", "tip-venue", "message-venue", "call-venue", "modify-calendar", "post-review", "share-private-location", "claim-allergen-certainty"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Venue owner",
+    "prohibitedActions": ["make-reservation", "join-waitlist", "order-food", "pay-venue", "tip-venue", "message-venue", "call-venue", "modify-calendar", "post-review", "share-private-location", "claim-allergen-certainty"]
+  }
+}

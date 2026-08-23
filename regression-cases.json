@@ -1730,6 +1730,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "restaurant-venue-scout",
+      "acceptedRequest": "Help pick three dinner places for Saturday from the links and notes I supplied. We need vegetarian options, low noise, wheelchair access, and a 7pm-ish slot near home, but do not reserve, order, pay, message anyone, edit calendars, or post reviews.",
+      "requiredEvidence": [
+        "Approved venue sources, maps, menus, review snippets, official pages, reservation pages, hours records, accessibility notes, price constraints, neighborhood and travel limits",
+        "Group preferences, dietary restrictions, allergen concerns, accessibility needs, ambience and noise preferences, kid-friendly needs, occasion, party size, date, and time window",
+        "Favorites, avoid lists, places to try, prior visits, stale-source fallback rules, and owner-approved privacy labels",
+        "External actions that must remain draft-only, including reservations, orders, payments, delivery, waitlists, messages, calls, calendar edits, and review posting"
+      ],
+      "authorityBoundaries": [
+        "Do not reserve, order, pay, tip, join waitlists, message venues, call venues, edit calendars, or post reviews without exact approval",
+        "Do not claim dietary, allergen, accessibility, hours, price, or availability certainty when sources are stale, partial, missing, or conflicting",
+        "Do not expose private addresses, group member constraints, accessibility needs, or care-circle details beyond the owner-approved destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/restaurant-venue-scout-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

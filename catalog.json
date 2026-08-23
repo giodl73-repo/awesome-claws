@@ -6756,24 +6756,114 @@
           "path": "templates/session-report.template.json",
           "role": "template"
         },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/archive-index.schema.json",
+          "path": "schemas/archive-index.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/archive-index.example.json",
+          "path": "fixtures/archive-index.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/archive-index.md",
+          "path": "templates/archive-index.md",
+          "role": "template"
+        }
+      ]
+    },
+    {
+      "id": "restaurant-venue-scout",
+      "name": "Restaurant and venue scout",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-23"
+      },
+      "description": "Compares restaurants and venues from approved sources with dietary, accessibility, hours, reservation, price, distance, and group-preference evidence without reserving, ordering, paying, messaging, or posting reviews.",
+      "audience": "Individuals, households, teams, and care circles choosing places to try while keeping reservations, orders, payments, messages, and public reviews owner-approved.",
+      "principles": [
+        "Separate venue facts, group preferences, dietary constraints, accessibility needs, hours, reservation signals, price, and source freshness",
+        "Make stale hours, unknown menus, accessibility gaps, conflicting reviews, and unsupported reservation claims explicit",
+        "Keep reservations, orders, payments, delivery, messages, waitlists, calendar edits, and public reviews outside the Claw boundary"
+      ],
+      "boundaries": [
+        "Do not reserve, order, pay, tip, join waitlists, message venues, call venues, edit calendars, or post reviews without exact approval",
+        "Do not claim dietary, allergen, accessibility, hours, price, or availability certainty when sources are stale, partial, missing, or conflicting",
+        "Do not expose private addresses, group member constraints, accessibility needs, or care-circle details beyond the owner-approved destination"
+      ],
+      "intake": [
+        "Approved venue sources, maps, menus, review snippets, official pages, reservation pages, hours records, accessibility notes, price constraints, neighborhood and travel limits",
+        "Group preferences, dietary restrictions, allergen concerns, accessibility needs, ambience and noise preferences, kid-friendly needs, occasion, party size, date, and time window",
+        "Favorites, avoid lists, places to try, prior visits, stale-source fallback rules, and owner-approved privacy labels",
+        "External actions that must remain draft-only, including reservations, orders, payments, delivery, waitlists, messages, calls, calendar edits, and review posting"
+      ],
+      "workflow": [
+        "Normalize each venue, source, group preference, dietary or accessibility constraint, and visit window to supplied evidence and freshness state",
+        "Collect official, menu, review, reservation, map, and owner-note evidence from supplied or approved sources only",
+        "Reconcile stale hours, missing menus, conflicting accessibility claims, allergy uncertainty, price mismatch, and distance or timing constraints",
+        "Rank venue options by explicit group preferences, constraints, source freshness, fit, and blocked external-action requirements",
+        "Prepare a reviewable venue shortlist with evidence, gaps, privacy notes, blocked actions, and owner questions"
+      ],
+      "deliverables": [
+        "Venue shortlist with source freshness",
+        "Dietary and accessibility evidence register",
+        "Hours, reservation, price, distance, and visit-window fit",
+        "Group preference and privacy review questions",
+        "Blocked reservation, order, payment, waitlist, message, calendar, and review-posting handoff"
+      ],
+      "example": {
+        "request": "Help pick three dinner places for Saturday from the links and notes I supplied. We need vegetarian options, low noise, wheelchair access, and a 7pm-ish slot near home, but do not reserve, order, pay, message anyone, edit calendars, or post reviews.",
+        "outcome": "A source-backed venue shortlist with official/menu/review/reservation evidence, dietary and accessibility fit, hours and timing gaps, group preference tradeoffs, owner review questions, and all reservation, ordering, payment, messaging, calendar, and review-posting actions blocked."
+      },
+      "doneWhen": [
+        "Every venue, source, dietary claim, accessibility claim, hours signal, and reservation signal has source identity, freshness, and privacy labeling",
+        "Every shortlist item traces to explicit group preferences, timing, price, distance, dietary, accessibility, and source-freshness evidence without hiding gaps",
+        "Private addresses, group constraints, accessibility needs, and care-circle details are minimized or blocked from inappropriate outputs",
+        "Reservations, orders, payments, delivery, waitlists, messages, calls, calendar edits, and public reviews remain blocked or exact-approval-bound"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses supplied or approved venue pages, menu links, map notes, review snippets, reservation pages, and owner preferences and grants no reservation, ordering, payment, delivery, messaging, calendar, phone, location-sharing, or review-posting authority.",
+        "When dietary, allergen, accessibility, hours, reservation, price, distance, or review evidence is stale, partial, missing, conflicting, or privacy-sensitive, preserve the gap and ask owner-review questions rather than presenting certainty or taking action."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
       {
         "source": "templates/session-handoff.md",
         "path": "templates/session-handoff.md",
         "role": "template"
       },
       {
-        "source": "schemas/archive-index.schema.json",
-        "path": "schemas/archive-index.schema.json",
+        "source": "schemas/venue-shortlist.schema.json",
+        "path": "schemas/venue-shortlist.schema.json",
         "role": "schema"
       },
       {
-        "source": "fixtures/archive-index.example.json",
-        "path": "fixtures/archive-index.example.json",
+        "source": "fixtures/venue-shortlist.example.json",
+        "path": "fixtures/venue-shortlist.example.json",
         "role": "fixture"
       },
       {
-        "source": "templates/archive-index.md",
-        "path": "templates/archive-index.md",
+        "source": "templates/venue-shortlist.md",
+        "path": "templates/venue-shortlist.md",
         "role": "template"
       }
     ]

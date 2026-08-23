@@ -352,6 +352,108 @@ function personalArchiveFindings(value) {
   return findings;
 }
 
+function restaurantVenueFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const venueIds = value.venues.map((item) => item.id);
+  const constraintIds = value.constraints.map((item) => item.id);
+  const availabilityIds = value.availability.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const venueSet = new Set(venueIds);
+  const constraintSet = new Set(constraintIds);
+  const availabilitySet = new Set(availabilityIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const availabilityById = new Map(value.availability.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(venueIds, "venues", "Venue id"),
+    ...uniqueFindings(constraintIds, "constraints", "Constraint id"),
+    ...uniqueFindings(availabilityIds, "availability", "Availability id"),
+    ...uniqueFindings(value.shortlist.map((item) => item.id), "shortlist", "Shortlist id"),
+    ...uniqueFindings(value.reviewQuestions.map((item) => item.id), "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, venue] of value.venues.entries()) {
+    findings.push(
+      ...uniqueFindings(venue.sourceRefs, `venues.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(venue.sourceRefs, sourceSet, `venues.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, constraint] of value.constraints.entries()) {
+    findings.push(
+      ...uniqueFindings(constraint.sourceRefs, `constraints.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(constraint.sourceRefs, sourceSet, `constraints.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, row] of value.availability.entries()) {
+    findings.push(
+      ...referenceFindings([row.venueRef], venueSet, `availability.${index}.venueRef`, "Venue reference"),
+      ...uniqueFindings(row.sourceRefs, `availability.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(row.sourceRefs, sourceSet, `availability.${index}.sourceRefs`, "Source reference"),
+    );
+    const hasSupportedSource = row.sourceRefs.some((ref) =>
+      ["official-page", "menu", "reservation-page", "accessibility-note", "dietary-note"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasSupportedSource) {
+      findings.push(finding("unsupported_availability_source", `availability.${index}.sourceRefs`, "Venue availability requires official, menu, reservation, dietary, or accessibility evidence."));
+    }
+  }
+  for (const [index, pick] of value.shortlist.entries()) {
+    findings.push(
+      ...referenceFindings([pick.venueRef], venueSet, `shortlist.${index}.venueRef`, "Venue reference"),
+      ...referenceFindings([pick.availabilityRef], availabilitySet, `shortlist.${index}.availabilityRef`, "Availability reference"),
+      ...uniqueFindings(pick.constraintRefs, `shortlist.${index}.constraintRefs`, "Constraint reference"),
+      ...referenceFindings(pick.constraintRefs, constraintSet, `shortlist.${index}.constraintRefs`, "Constraint reference"),
+    );
+    const availability = availabilityById.get(pick.availabilityRef);
+    if (availability && availability.venueRef !== pick.venueRef) {
+      findings.push(finding("availability_venue_mismatch", `shortlist.${index}.availabilityRef`, "Shortlist availability must belong to the same venue."));
+    }
+    const requiredConstraints = value.constraints.filter((constraint) => constraint.required);
+    const missingRequired = requiredConstraints.some((constraint) => !pick.constraintRefs.includes(constraint.id));
+    if (
+      pick.state === "recommended" &&
+      (!availability ||
+        missingRequired ||
+        availability.hoursState !== "open-in-window" ||
+        !["slot-visible", "walk-in-only"].includes(availability.reservationState) ||
+        availability.dietaryState !== "supported" ||
+        availability.accessibilityState !== "supported")
+    ) {
+      findings.push(finding("unsupported_recommendation", `shortlist.${index}`, "Recommended venues require current open-window, dietary, accessibility, and required-constraint support."));
+    }
+    if (
+      (pick.state === "blocked" && !pick.blockedReason) ||
+      (pick.state !== "blocked" && pick.blockedReason !== null)
+    ) {
+      findings.push(finding("incoherent_blocked_state", `shortlist.${index}.blockedReason`, "Only blocked venue shortlist items may carry a blocked reason."));
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.venueRefs, `reviewQuestions.${index}.venueRefs`, "Venue reference"),
+      ...referenceFindings(question.venueRefs, venueSet, `reviewQuestions.${index}.venueRefs`, "Venue reference"),
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready venue shortlists cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    shortlist: value.shortlist.map(({ fitReason, blockedReason }) => ({ fitReason, blockedReason })),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(reserve|make a reservation|book|join waitlist|order|pay|tip|message|call|calendar|post review|leave review|share location|allergen safe|allergy safe|guaranteed accessible)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Venue artifacts must not instruct reservations, orders, payments, messages, calls, calendar edits, review posting, location sharing, or unsupported dietary/accessibility certainty."));
+  }
+  if (value.handoff.owner === "restaurant-venue-scout") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Reservation, ordering, payment, messaging, calendar, location-sharing, and review-posting decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 function giftRelationshipFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const recipientIds = value.recipients.map((item) => item.id);
@@ -5391,6 +5493,7 @@ const validators = {
   "product-manager": productFindings,
   "public-safety-monitor": publicSafetyFindings,
   "recruiting-coordinator": recruitingFindings,
+  "restaurant-venue-scout": restaurantVenueFindings,
   "research-briefing": researchFindings,
   "sales-operations": salesOperationsFindings,
   "sports-team-watcher": sportsTeamWatchFindings,
