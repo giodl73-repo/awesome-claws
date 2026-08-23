@@ -1776,6 +1776,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "school-coordinator",
+      "acceptedRequest": "Organize this week's school items from the portal export, teacher note, calendar, and supply list I supplied. Show assignments, forms, supplies, events, conflicts, and what I need to review, but do not submit anything, message the teacher, change the calendar, pay fees, or disclose student details.",
+      "requiredEvidence": [
+        "Approved school sources, assignment pages, LMS exports, teacher notes, school calendars, forms, supply lists, handbook snippets, email excerpts, portal screenshots, and guardian notes",
+        "Student-safe task details, due dates, class labels, form requirements, supply needs, event times, parent review preferences, accommodation notes, and privacy labels",
+        "Existing commitments, pickup/drop-off limits, blocked dates, recurring routines, school-contact rules, and stale-source fallback rules",
+        "External actions that must remain draft-only, including form submission, teacher messages, school contact, payments, calendar edits, enrollment changes, attendance changes, and disclosure"
+      ],
+      "authorityBoundaries": [
+        "Do not submit forms, message teachers, contact schools, pay fees, change enrollment, alter attendance, edit calendars, disclose student details, or make education, medical, legal, discipline, or accommodation decisions without exact guardian approval",
+        "Do not infer grades, diagnoses, eligibility, performance, discipline facts, or student intent from incomplete evidence",
+        "Do not expose student identifiers, addresses, school names, class details, accommodation notes, or family constraints beyond the guardian-approved destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/school-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

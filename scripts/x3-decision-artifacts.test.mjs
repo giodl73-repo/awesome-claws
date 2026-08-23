@@ -161,6 +161,12 @@ const definitions = [
     decisionField: "decisionState",
   },
   {
+    id: "school-coordinator",
+    schema: "../claws/school-coordinator/schemas/school-logistics.schema.json",
+    fixture: "../claws/school-coordinator/fixtures/school-logistics.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "sports-team-watcher",
     schema: "../claws/sports-team-watcher/schemas/sports-team-watch.schema.json",
     fixture: "../claws/sports-team-watcher/fixtures/sports-team-watch.example.json",
@@ -341,6 +347,28 @@ test("local events watcher preserves source certainty and owner authority", () =
   assert.equal(isValid("local-events-watcher", danglingEvent), false);
 });
 
+test("school coordinator preserves student privacy and guardian authority", () => {
+  const staleSource = structuredClone(cases.get("school-coordinator").fixture);
+  staleSource.sources[1].freshness = "stale";
+  assert.equal(isValid("school-coordinator", staleSource), false);
+
+  const unsupportedReady = structuredClone(cases.get("school-coordinator").fixture);
+  unsupportedReady.items[0].dueAt = null;
+  assert.equal(isValid("school-coordinator", unsupportedReady), false);
+
+  const actionAdvice = structuredClone(cases.get("school-coordinator").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Submit the form and message teacher.";
+  assert.equal(isValid("school-coordinator", actionAdvice), false);
+
+  const danglingStudent = structuredClone(cases.get("school-coordinator").fixture);
+  danglingStudent.items[0].studentRef = "missing-student";
+  assert.equal(isValid("school-coordinator", danglingStudent), false);
+
+  const agentOwned = structuredClone(cases.get("school-coordinator").fixture);
+  agentOwned.handoff.guardian = "school-coordinator";
+  assert.equal(isValid("school-coordinator", agentOwned), false);
+});
+
 test("public safety state rejects impossible time ranges and dangling alerts", () => {
   const candidate = structuredClone(cases.get("public-safety-monitor").fixture);
   candidate.alerts[0].expiresAt = candidate.alerts[0].issuedAt;
@@ -403,6 +431,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["recruiting-coordinator", (value) => value.communications[0].sessionRefs.push(value.communications[0].sessionRefs[0])],
     ["restaurant-venue-scout", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
     ["sales-operations", (value) => value.actions[0].dealRefs.push(value.actions[0].dealRefs[0])],
+    ["school-coordinator", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["sports-team-watcher", (value) => value.games[0].sourceRefs.push(value.games[0].sourceRefs[0])],
     ["stock-portfolio-monitor", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
     ["subscription-manager", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],

@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/school-coordinator/school-logistics.schema.json",
+  "title": "School Coordinator Logistics Ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "plan", "sources", "students", "items", "accommodations", "conflicts", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.schoolLogistics.v1" },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "guardian", "timezone", "asOf", "schoolWindow", "privacyMode"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^school-plan-[a-z0-9-]+$" },
+        "guardian": { "type": "string", "minLength": 1 },
+        "timezone": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "schoolWindow": { "type": "string", "minLength": 1 },
+        "privacyMode": { "enum": ["student-safe", "guardian-only", "redacted"] }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "authority", "capturedAt", "reference", "freshness", "privacy"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": { "enum": ["lms-export", "assignment-page", "teacher-note", "school-calendar", "form", "supply-list", "handbook", "portal-screenshot", "guardian-note", "accommodation-note"] },
+          "authority": { "enum": ["school", "teacher", "guardian", "student-supplied", "portal", "district", "care-team"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 },
+          "freshness": { "enum": ["current", "stale", "missing", "conflicting"] },
+          "privacy": { "enum": ["normal", "student-sensitive", "guardian-only", "accommodation-sensitive", "location-sensitive", "medical-sensitive"] }
+        }
+      }
+    },
+    "students": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^student-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "privacy": { "enum": ["student-safe", "guardian-only", "redacted"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "studentRef", "title", "courseLabel", "dueAt", "state", "privacy", "sourceRefs", "guardianAction", "blockedReason"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^item-[a-z0-9-]+$" },
+          "kind": { "enum": ["assignment", "form", "event", "supply", "teacher-note", "deadline"] },
+          "studentRef": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "courseLabel": { "type": "string", "minLength": 1 },
+          "dueAt": { "type": ["string", "null"], "format": "date-time" },
+          "state": { "enum": ["ready-for-review", "student-step", "guardian-review", "blocked", "unknown"] },
+          "privacy": { "enum": ["normal", "student-sensitive", "guardian-only", "accommodation-sensitive", "location-sensitive", "medical-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" },
+          "guardianAction": { "enum": ["none", "review", "sign", "prepare-supplies", "clarify", "blocked"] },
+          "blockedReason": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "accommodations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "studentRef", "itemRefs", "state", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^accommodation-[a-z0-9-]+$" },
+          "studentRef": { "type": "string", "minLength": 1 },
+          "itemRefs": { "$ref": "#/$defs/refs" },
+          "state": { "enum": ["supported", "possible", "unknown", "not-supported"] },
+          "privacy": { "enum": ["accommodation-sensitive", "guardian-only", "medical-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "itemRefs", "state", "reason", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^conflict-[a-z0-9-]+$" },
+          "itemRefs": { "$ref": "#/$defs/refs" },
+          "state": { "enum": ["clear", "possible", "conflicts", "unknown"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "itemRefs", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "itemRefs": { "$ref": "#/$defs/refs" },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "enum": ["submit-form", "message-teacher", "contact-school", "pay-fee", "modify-calendar", "change-enrollment", "change-attendance", "disclose-student-details", "make-education-decision", "make-medical-decision", "make-legal-decision", "make-discipline-decision"] }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "guardian", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["draft", "ready-for-guardian-review", "blocked"] },
+        "guardian": { "type": "string", "minLength": 1 },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "enum": ["submit-form", "message-teacher", "contact-school", "pay-fee", "modify-calendar", "change-enrollment", "change-attendance", "disclose-student-details", "make-education-decision", "make-medical-decision", "make-legal-decision", "make-discipline-decision"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

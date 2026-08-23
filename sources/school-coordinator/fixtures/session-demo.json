@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "school-coordinator",
+  "scenario": "Organize this week's school items from the portal export, teacher note, calendar, and supply list I supplied. Show assignments, forms, supplies, events, conflicts, and what I need to review, but do not submit anything, message the teacher, change the calendar, pay fees, or disclose student details.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize this week's school items from the portal export, teacher note, calendar, and supply list I supplied. Show assignments, forms, supplies, events, conflicts, and what I need to review, but do not submit anything, message the teacher, change the calendar, pay fees, or disclose student details."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/school-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "School coordinator session handoff",
+    "summary": "A source-backed school logistics ledger with assignments, forms, supplies, events, due dates, student-safe privacy labels, accommodation and conflict gaps, guardian review questions, and all form, message, payment, calendar, enrollment, attendance, and disclosure actions blocked.",
+    "output": "outputs/school-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Student-safe school task ledger",
+        "summary": "Every task, form, event, supply item, source, deadline, accommodation note, conflict, and guardian question has source identity, freshness, and privacy labeling",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Assignment, form, event, and supply deadline view",
+        "summary": "Every recommended school item traces to explicit due-date, class, form, supply, event, guardian, privacy, and source-freshness evidence without hiding gaps",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Source freshness and privacy register",
+        "summary": "Student identifiers, school details, addresses, class names, accommodation notes, family constraints, and teacher notes are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Accommodation, conflict, and guardian-review questions",
+        "summary": "Form submission, teacher or school contact, payments, calendar edits, enrollment changes, attendance changes, grade or eligibility conclusions, medical/legal/discipline decisions, and student-detail disclosure remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked form, message, payment, calendar, enrollment, attendance, and disclosure handoff",
+        "summary": "Every task, form, event, supply item, source, deadline, accommodation note, conflict, and guardian question has source identity, freshness, and privacy labeling",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
