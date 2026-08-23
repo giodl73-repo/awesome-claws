@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "personal-archive-curator",
+  "scenario": "Help me organize the folder export, receipt list, warranty photos, and family memory notes I supplied. Build a searchable index and tag proposal, flag duplicates and private items, but do not delete, move, upload, share, train memory, or infer sensitive facts.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Help me organize the folder export, receipt list, warranty photos, and family memory notes I supplied. Build a searchable index and tag proposal, flag duplicates and private items, but do not delete, move, upload, share, train memory, or infer sensitive facts."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/personal-archive-curator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Personal archive curator session handoff",
+    "summary": "A source-backed archive inventory with privacy and retention labels, duplicate and missing-metadata questions, folder/tag proposals, retrieval cues for receipts and warranties, sensitive-output warnings, and all irreversible or external file actions blocked.",
+    "output": "outputs/personal-archive-curator-handoff.md",
+    "items": [
+      {
+        "title": "Source-backed archive inventory",
+        "summary": "Every archive source and item has source identity, freshness, privacy, and retention-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Privacy and retention label register",
+        "summary": "Every folder, tag, duplicate, and retrieval cue traces to explicit owner-supplied or approved evidence",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Folder and tag proposal with duplicate review",
+        "summary": "Sensitive paths, addresses, faces, account ids, valuables, and private memory notes are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Retrieval handoff for receipts, warranties, photos, notes, links, and memories",
+        "summary": "Deletion, movement, renaming, sharing, uploading, publishing, permission changes, and memory training remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked delete, move, share, upload, publish, permission, and memory-training action list",
+        "summary": "Every archive source and item has source identity, freshness, privacy, and retention-review state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

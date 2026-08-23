@@ -258,6 +258,100 @@ function financialAnalysisFindings(value) {
   return findings;
 }
 
+function personalArchiveFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const itemIds = value.items.map((item) => item.id);
+  const collectionIds = value.collections.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const itemSet = new Set(itemIds);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(itemIds, "items", "Archive item id"),
+    ...uniqueFindings(collectionIds, "collections", "Collection id"),
+    ...uniqueFindings(value.duplicates.map((item) => item.id), "duplicates", "Duplicate id"),
+    ...uniqueFindings(value.retrievalCues.map((item) => item.id), "retrievalCues", "Retrieval cue id"),
+    ...uniqueFindings(value.reviewQuestions.map((item) => item.id), "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, item] of value.items.entries()) {
+    findings.push(
+      ...uniqueFindings(item.sourceRefs, `items.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `items.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      ["sensitive", "location-sensitive", "account-sensitive", "face-sensitive", "valuable-sensitive"].includes(item.privacy) &&
+      item.pathDisclosure === "owner-visible-path"
+    ) {
+      findings.push(finding("private_path_disclosure", `items.${index}.pathDisclosure`, "Sensitive archive items cannot expose owner-visible paths in general handoffs."));
+    }
+    if (["photo", "memory"].includes(item.kind) && item.retentionState !== "do-not-delete") {
+      findings.push(finding("unsafe_retention_state", `items.${index}.retentionState`, "Photo and memory archive items require do-not-delete retention until the owner reviews them."));
+    }
+  }
+  for (const [index, collection] of value.collections.entries()) {
+    findings.push(
+      ...uniqueFindings(collection.itemRefs, `collections.${index}.itemRefs`, "Archive item reference"),
+      ...referenceFindings(collection.itemRefs, itemSet, `collections.${index}.itemRefs`, "Archive item reference"),
+    );
+  }
+  for (const [index, duplicate] of value.duplicates.entries()) {
+    findings.push(
+      ...uniqueFindings(duplicate.itemRefs, `duplicates.${index}.itemRefs`, "Archive item reference"),
+      ...referenceFindings(duplicate.itemRefs, itemSet, `duplicates.${index}.itemRefs`, "Archive item reference"),
+    );
+    if (duplicate.action !== "owner-review") {
+      findings.push(finding("unsupported_duplicate_action", `duplicates.${index}.action`, "Duplicate findings must remain owner-review only and cannot authorize cleanup."));
+    }
+  }
+  for (const [index, cue] of value.retrievalCues.entries()) {
+    findings.push(
+      ...uniqueFindings(cue.itemRefs, `retrievalCues.${index}.itemRefs`, "Archive item reference"),
+      ...referenceFindings(cue.itemRefs, itemSet, `retrievalCues.${index}.itemRefs`, "Archive item reference"),
+      ...uniqueFindings(cue.sourceRefs, `retrievalCues.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(cue.sourceRefs, sourceSet, `retrievalCues.${index}.sourceRefs`, "Source reference"),
+    );
+    const hasSupportedNeedSource = cue.sourceRefs.some((ref) => {
+      const source = value.sources.find((item) => item.id === ref);
+      return source && (
+        (cue.need === "receipt" && source.kind === "receipt-list") ||
+        (cue.need === "warranty" && ["warranty-record", "receipt-list"].includes(source.kind)) ||
+        (cue.need === "photo" && source.kind === "photo-description") ||
+        (cue.need === "memory" && source.kind === "owner-memory-note") ||
+        !["receipt", "warranty", "photo", "memory"].includes(cue.need)
+      );
+    });
+    if (!hasSupportedNeedSource) {
+      findings.push(finding("unsupported_retrieval_source", `retrievalCues.${index}.sourceRefs`, "Retrieval cues require source evidence matching the retrieval need."));
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.itemRefs, `reviewQuestions.${index}.itemRefs`, "Archive item reference"),
+      ...referenceFindings(question.itemRefs, itemSet, `reviewQuestions.${index}.itemRefs`, "Archive item reference"),
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready archive indexes cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    collections: value.collections.map(({ proposedFolder, rationale }) => ({ proposedFolder, rationale })),
+    duplicates: value.duplicates.map(({ reason, action }) => ({ reason, action })),
+    retrievalCues: value.retrievalCues.map(({ cue }) => cue),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(delete|rename|upload|publish|change permissions|train memory|face recognition|identify faces|infer|private path|exact path|full path|move file|move files|share file|share files)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Archive artifacts must not instruct file mutation, sharing, upload, memory training, face recognition, private path exposure, or sensitive inference."));
+  }
+  if (value.handoff.owner === "personal-archive-curator") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Archive deletion, movement, sharing, upload, permission, memory, biometric, and sensitive-inference decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 function giftRelationshipFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const recipientIds = value.recipients.map((item) => item.id);
@@ -5290,6 +5384,7 @@ const validators = {
   "model-evaluation-adjudicator": modelEvaluationFindings,
   "movie-streaming-organizer": movieStreamingFindings,
   "music-organizer": musicOrganizerFindings,
+  "personal-archive-curator": personalArchiveFindings,
   "pet-care-coordinator": petCareFindings,
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
   "project-manager": projectFindings,

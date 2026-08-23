@@ -107,6 +107,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "personal-archive-curator",
+    schema: "../claws/personal-archive-curator/schemas/archive-index.schema.json",
+    fixture: "../claws/personal-archive-curator/fixtures/archive-index.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "pet-care-coordinator",
     schema: "../claws/pet-care-coordinator/schemas/pet-care.schema.json",
     fixture: "../claws/pet-care-coordinator/fixtures/pet-care.example.json",
@@ -257,6 +263,28 @@ test("gift relationship manager preserves privacy, budget, and owner authority",
   assert.equal(isValid("gift-relationship-manager", mismatch), false);
 });
 
+test("personal archive curator preserves privacy, retention, and owner authority", () => {
+  const staleSource = structuredClone(cases.get("personal-archive-curator").fixture);
+  staleSource.sources[0].freshness = "stale";
+  assert.equal(isValid("personal-archive-curator", staleSource), false);
+
+  const privatePath = structuredClone(cases.get("personal-archive-curator").fixture);
+  privatePath.items[2].pathDisclosure = "owner-visible-path";
+  assert.equal(isValid("personal-archive-curator", privatePath), false);
+
+  const deleteDuplicate = structuredClone(cases.get("personal-archive-curator").fixture);
+  deleteDuplicate.duplicates[0].action = "blocked-delete";
+  assert.equal(isValid("personal-archive-curator", deleteDuplicate), false);
+
+  const actionAdvice = structuredClone(cases.get("personal-archive-curator").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Delete the duplicate and upload the family photos.";
+  assert.equal(isValid("personal-archive-curator", actionAdvice), false);
+
+  const danglingCue = structuredClone(cases.get("personal-archive-curator").fixture);
+  danglingCue.retrievalCues[0].itemRefs = ["missing-item"];
+  assert.equal(isValid("personal-archive-curator", danglingCue), false);
+});
+
 test("public safety state rejects impossible time ranges and dangling alerts", () => {
   const candidate = structuredClone(cases.get("public-safety-monitor").fixture);
   candidate.alerts[0].expiresAt = candidate.alerts[0].issuedAt;
@@ -313,6 +341,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],
     ["movie-streaming-organizer", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["music-organizer", (value) => value.playlistPlan[0].preferenceRefs.push(value.playlistPlan[0].preferenceRefs[0])],
+    ["personal-archive-curator", (value) => value.retrievalCues[0].sourceRefs.push(value.retrievalCues[0].sourceRefs[0])],
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],
     ["recruiting-coordinator", (value) => value.communications[0].sessionRefs.push(value.communications[0].sessionRefs[0])],
     ["sales-operations", (value) => value.actions[0].dealRefs.push(value.actions[0].dealRefs[0])],

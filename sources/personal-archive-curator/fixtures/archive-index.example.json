@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "awesomeClaws.archiveIndex.v1",
+  "archive": {
+    "id": "archive-home-records",
+    "owner": "Archive owner",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-22T19:45:00Z",
+    "purpose": "Searchable owner-reviewed index for receipts, warranties, photos, links, and family memory notes."
+  },
+  "sources": [
+    { "id": "src-folder-export", "kind": "folder-list", "authority": "device-export", "capturedAt": "2026-08-22T18:00:00Z", "reference": "owner://exports/laptop-folders", "freshness": "current", "privacy": "private" },
+    { "id": "src-receipts", "kind": "receipt-list", "authority": "user-supplied", "capturedAt": "2026-08-22T18:10:00Z", "reference": "owner://receipts/2026", "freshness": "current", "privacy": "account-sensitive" },
+    { "id": "src-warranty", "kind": "warranty-record", "authority": "manufacturer", "capturedAt": "2026-08-22T18:12:00Z", "reference": "manufacturer://washer/warranty-card", "freshness": "current", "privacy": "normal" },
+    { "id": "src-photo-notes", "kind": "photo-description", "authority": "user-supplied", "capturedAt": "2026-08-22T18:20:00Z", "reference": "owner://photos/family-album-notes", "freshness": "current", "privacy": "face-sensitive" },
+    { "id": "src-memory-notes", "kind": "owner-memory-note", "authority": "owner-note", "capturedAt": "2026-08-22T18:25:00Z", "reference": "owner://notes/family-move", "freshness": "current", "privacy": "sensitive" }
+  ],
+  "items": [
+    { "id": "item-washer-receipt", "title": "Washer receipt PDF", "kind": "receipt", "sourceRefs": ["src-receipts", "src-folder-export"], "dateState": "known", "privacy": "account-sensitive", "retentionState": "keep", "suggestedTags": ["appliance", "receipt", "home"], "pathDisclosure": "safe-label-only" },
+    { "id": "item-washer-warranty", "title": "Washer warranty card photo", "kind": "warranty", "sourceRefs": ["src-warranty", "src-folder-export"], "dateState": "known", "privacy": "normal", "retentionState": "keep", "suggestedTags": ["appliance", "warranty", "home"], "pathDisclosure": "owner-visible-path" },
+    { "id": "item-family-photo-set", "title": "Family move photo descriptions", "kind": "photo", "sourceRefs": ["src-photo-notes"], "dateState": "approximate", "privacy": "face-sensitive", "retentionState": "do-not-delete", "suggestedTags": ["family", "move", "photos"], "pathDisclosure": "blocked-private-path" },
+    { "id": "item-move-memory-note", "title": "Move day memory note", "kind": "memory", "sourceRefs": ["src-memory-notes"], "dateState": "approximate", "privacy": "sensitive", "retentionState": "do-not-delete", "suggestedTags": ["family", "move", "memory"], "pathDisclosure": "blocked-private-path" },
+    { "id": "item-washer-receipt-copy", "title": "Washer receipt duplicate scan", "kind": "receipt", "sourceRefs": ["src-receipts"], "dateState": "known", "privacy": "account-sensitive", "retentionState": "possible-duplicate", "suggestedTags": ["appliance", "receipt", "duplicate-review"], "pathDisclosure": "safe-label-only" }
+  ],
+  "collections": [
+    { "id": "collection-appliance-records", "name": "Appliance records", "itemRefs": ["item-washer-receipt", "item-washer-warranty", "item-washer-receipt-copy"], "proposedFolder": "Home/Appliances/Washer", "privacy": "private", "rationale": "Receipt and warranty evidence belong together for owner retrieval without moving files." },
+    { "id": "collection-family-move", "name": "Family move memories", "itemRefs": ["item-family-photo-set", "item-move-memory-note"], "proposedFolder": "Memories/Family move", "privacy": "sensitive", "rationale": "Photo descriptions and owner memory notes share the supplied move context and require private handling." }
+  ],
+  "duplicates": [
+    { "id": "duplicate-washer-receipt", "itemRefs": ["item-washer-receipt", "item-washer-receipt-copy"], "confidence": "possible", "reason": "Both supplied receipt records describe the same washer purchase, but file identity was not verified.", "action": "owner-review" }
+  ],
+  "retrievalCues": [
+    { "id": "cue-warranty", "need": "warranty", "itemRefs": ["item-washer-receipt", "item-washer-warranty"], "sourceRefs": ["src-receipts", "src-warranty"], "cue": "Use the appliance tag and washer collection to retrieve purchase and warranty evidence for service questions.", "state": "ready" },
+    { "id": "cue-family-memory", "need": "memory", "itemRefs": ["item-family-photo-set", "item-move-memory-note"], "sourceRefs": ["src-photo-notes", "src-memory-notes"], "cue": "Review private move notes and photo descriptions together; expose only owner-approved labels outside the private archive.", "state": "blocked-private" }
+  ],
+  "reviewQuestions": [
+    { "id": "question-duplicate", "question": "Should the owner confirm whether the washer receipt scan and PDF are true duplicates before any cleanup plan?", "reason": "Duplicate confidence is possible, not verified, and deletion is blocked.", "itemRefs": ["item-washer-receipt", "item-washer-receipt-copy"], "sourceRefs": ["src-receipts"] },
+    { "id": "question-private-paths", "question": "Which destination is approved for sensitive family memory labels and private photo paths?", "reason": "Face-sensitive and memory-note items must not expose private paths or people details in a general handoff.", "itemRefs": ["item-family-photo-set", "item-move-memory-note"], "sourceRefs": ["src-photo-notes", "src-memory-notes"] }
+  ],
+  "blockedActions": ["delete-file", "move-file", "rename-file", "upload-file", "share-file", "publish-file", "change-permissions", "train-memory", "run-face-recognition", "infer-sensitive-fact", "expose-private-path"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Archive owner",
+    "prohibitedActions": ["delete-file", "move-file", "rename-file", "upload-file", "share-file", "publish-file", "change-permissions", "train-memory", "run-face-recognition", "infer-sensitive-fact", "expose-private-path"]
+  }
+}

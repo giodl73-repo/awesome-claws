@@ -101,6 +101,16 @@
         "difference": "Household Steward is the broad household operating layer across domains; Care Circle Coordinator is centered on one care recipient's consent-bounded practical support circle and professional-care escalation boundary."
       },
       {
+        "id": "gift-relationship-manager",
+        "overlap": "Both handle private relationship notes, named people, consent-sensitive details, owner-review questions, and blocked messaging or calendar actions.",
+        "difference": "Gift and Relationship Manager organizes occasions, preferences, gift ideas, and surprise-sensitive plans; Care Circle Coordinator organizes practical support tasks around a care recipient's approved helper circle and escalation boundaries."
+      },
+      {
+        "id": "personal-archive-curator",
+        "overlap": "Both preserve privacy labels, sensitive personal notes, owner-approved sharing boundaries, and source-backed handoffs without exposing private material.",
+        "difference": "Personal Archive Curator indexes personal files, receipts, photos, warranties, and memory pointers; Care Circle Coordinator plans practical support schedules, helper commitments, and care-recipient consent scopes."
+      },
+      {
         "id": "vehicle-service-coordinator",
         "overlap": "Both reconcile time windows, constraints, approvals, escalation paths, and exact commitments before a service or support appointment.",
         "difference": "Vehicle Service Coordinator plans owner-approved vehicle service work; Care Circle Coordinator plans human support coverage around one recipient's approved practical-care needs and private support circle."
