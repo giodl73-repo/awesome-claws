@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "plan", "sources", "venues", "constraints", "availability", "shortlist", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.venueShortlist.v1" },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "timezone", "asOf", "occasion", "partySize", "targetWindow", "region"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^venue-plan-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "timezone": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "occasion": { "type": "string", "minLength": 1 },
+        "partySize": { "type": "integer", "minimum": 1 },
+        "targetWindow": { "type": "string", "minLength": 1 },
+        "region": { "type": "string", "minLength": 1 }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "authority", "capturedAt", "reference", "freshness", "privacy"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": { "enum": ["official-page", "menu", "reservation-page", "map-listing", "review-snippet", "owner-note", "accessibility-note", "dietary-note"] },
+          "authority": { "enum": ["venue", "reservation-platform", "map-provider", "review-provider", "user-supplied", "accessibility-source"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 },
+          "freshness": { "enum": ["current", "delayed", "stale", "missing", "conflicting"] },
+          "privacy": { "enum": ["normal", "private", "location-sensitive", "accessibility-sensitive", "dietary-sensitive", "group-sensitive"] }
+        }
+      }
+    },
+    "venues": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "kind", "neighborhood", "priceBand", "distanceState", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^venue-[a-z0-9-]+$" },
+          "name": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["restaurant", "cafe", "bar", "market", "event-space", "other"] },
+          "neighborhood": { "type": "string", "minLength": 1 },
+          "priceBand": { "enum": ["unknown", "$", "$$", "$$$", "$$$$"] },
+          "distanceState": { "enum": ["inside-target-area", "nearby", "far", "unknown"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "required", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^constraint-[a-z0-9-]+$" },
+          "kind": { "enum": ["dietary", "allergen", "accessibility", "noise", "kid-friendly", "price", "distance", "ambience", "reservation", "privacy"] },
+          "label": { "type": "string", "minLength": 1 },
+          "required": { "type": "boolean" },
+          "privacy": { "enum": ["normal", "private", "accessibility-sensitive", "dietary-sensitive", "group-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "availability": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "venueRef", "hoursState", "reservationState", "dietaryState", "accessibilityState", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^availability-[a-z0-9-]+$" },
+          "venueRef": { "type": "string", "minLength": 1 },
+          "hoursState": { "enum": ["open-in-window", "closed-in-window", "unknown", "conflicting"] },
+          "reservationState": { "enum": ["slot-visible", "walk-in-only", "call-required", "unknown", "unavailable"] },
+          "dietaryState": { "enum": ["supported", "possible", "unknown", "unsupported", "conflicting"] },
+          "accessibilityState": { "enum": ["supported", "possible", "unknown", "unsupported", "conflicting"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "shortlist": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "venueRef", "availabilityRef", "rank", "fit", "fitReason", "constraintRefs", "state", "blockedReason"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^pick-[a-z0-9-]+$" },
+          "venueRef": { "type": "string", "minLength": 1 },
+          "availabilityRef": { "type": "string", "minLength": 1 },
+          "rank": { "type": "integer", "minimum": 1 },
+          "fit": { "enum": ["strong", "possible", "weak", "blocked"] },
+          "fitReason": { "type": "string", "minLength": 1 },
+          "constraintRefs": { "$ref": "#/$defs/refs" },
+          "state": { "enum": ["recommended", "review-needed", "blocked"] },
+          "blockedReason": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "venueRefs", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "venueRefs": { "$ref": "#/$defs/refs" },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 8,
+      "uniqueItems": true,
+      "items": { "enum": ["make-reservation", "join-waitlist", "order-food", "pay-venue", "tip-venue", "message-venue", "call-venue", "modify-calendar", "post-review", "share-private-location", "claim-allergen-certainty"] }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 11,
+          "uniqueItems": true,
+          "items": { "enum": ["make-reservation", "join-waitlist", "order-food", "pay-venue", "tip-venue", "message-venue", "call-venue", "modify-calendar", "post-review", "share-private-location", "claim-allergen-certainty"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

@@ -143,6 +143,12 @@ const definitions = [
     decisionField: "planState",
   },
   {
+    id: "restaurant-venue-scout",
+    schema: "../claws/restaurant-venue-scout/schemas/venue-shortlist.schema.json",
+    fixture: "../claws/restaurant-venue-scout/fixtures/venue-shortlist.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "sales-operations",
     schema: "../claws/sales-operations/schemas/pipeline-review.schema.json",
     fixture: "../claws/sales-operations/fixtures/pipeline-review.example.json",
@@ -285,6 +291,28 @@ test("personal archive curator preserves privacy, retention, and owner authority
   assert.equal(isValid("personal-archive-curator", danglingCue), false);
 });
 
+test("restaurant venue scout preserves source certainty and owner authority", () => {
+  const staleSource = structuredClone(cases.get("restaurant-venue-scout").fixture);
+  staleSource.sources[1].freshness = "stale";
+  assert.equal(isValid("restaurant-venue-scout", staleSource), false);
+
+  const unsupportedAccessibility = structuredClone(cases.get("restaurant-venue-scout").fixture);
+  unsupportedAccessibility.availability[0].accessibilityState = "unknown";
+  assert.equal(isValid("restaurant-venue-scout", unsupportedAccessibility), false);
+
+  const actionAdvice = structuredClone(cases.get("restaurant-venue-scout").fixture);
+  actionAdvice.reviewQuestions[1].reason += " Make a reservation and message the venue.";
+  assert.equal(isValid("restaurant-venue-scout", actionAdvice), false);
+
+  const mismatch = structuredClone(cases.get("restaurant-venue-scout").fixture);
+  mismatch.shortlist[0].availabilityRef = "availability-market-hall";
+  assert.equal(isValid("restaurant-venue-scout", mismatch), false);
+
+  const danglingVenue = structuredClone(cases.get("restaurant-venue-scout").fixture);
+  danglingVenue.reviewQuestions[0].venueRefs = ["missing-venue"];
+  assert.equal(isValid("restaurant-venue-scout", danglingVenue), false);
+});
+
 test("public safety state rejects impossible time ranges and dangling alerts", () => {
   const candidate = structuredClone(cases.get("public-safety-monitor").fixture);
   candidate.alerts[0].expiresAt = candidate.alerts[0].issuedAt;
@@ -344,6 +372,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["personal-archive-curator", (value) => value.retrievalCues[0].sourceRefs.push(value.retrievalCues[0].sourceRefs[0])],
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],
     ["recruiting-coordinator", (value) => value.communications[0].sessionRefs.push(value.communications[0].sessionRefs[0])],
+    ["restaurant-venue-scout", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
     ["sales-operations", (value) => value.actions[0].dealRefs.push(value.actions[0].dealRefs[0])],
     ["sports-team-watcher", (value) => value.games[0].sourceRefs.push(value.games[0].sourceRefs[0])],
     ["stock-portfolio-monitor", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],

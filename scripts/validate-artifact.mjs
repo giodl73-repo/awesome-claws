@@ -32,6 +32,7 @@ const schemaNames = {
   "product-manager": "product-decision.schema.json",
   "public-safety-monitor": "public-safety-state.schema.json",
   "recruiting-coordinator": "interview-plan.schema.json",
+  "restaurant-venue-scout": "venue-shortlist.schema.json",
   "research-briefing": "research-brief.schema.json",
   "sales-operations": "pipeline-review.schema.json",
   "sports-team-watcher": "sports-team-watch.schema.json",
