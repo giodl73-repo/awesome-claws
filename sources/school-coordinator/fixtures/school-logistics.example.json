@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "awesomeClaws.schoolLogistics.v1",
+  "plan": {
+    "id": "school-plan-week",
+    "guardian": "Guardian",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-23T22:05:00Z",
+    "schoolWindow": "2026-08-24 through 2026-08-30",
+    "privacyMode": "student-safe"
+  },
+  "sources": [
+    { "id": "src-guardian-notes", "kind": "guardian-note", "authority": "guardian", "capturedAt": "2026-08-23T21:40:00Z", "reference": "guardian://school/week", "freshness": "current", "privacy": "guardian-only" },
+    { "id": "src-lms-export", "kind": "lms-export", "authority": "portal", "capturedAt": "2026-08-23T21:45:00Z", "reference": "lms://week/export", "freshness": "current", "privacy": "student-sensitive" },
+    { "id": "src-teacher-note", "kind": "teacher-note", "authority": "teacher", "capturedAt": "2026-08-23T21:48:00Z", "reference": "teacher://note/science-project", "freshness": "current", "privacy": "student-sensitive" },
+    { "id": "src-school-calendar", "kind": "school-calendar", "authority": "school", "capturedAt": "2026-08-23T21:50:00Z", "reference": "calendar://school/open-house", "freshness": "current", "privacy": "location-sensitive" },
+    { "id": "src-field-trip-form", "kind": "form", "authority": "school", "capturedAt": "2026-08-23T21:52:00Z", "reference": "form://field-trip/permission", "freshness": "current", "privacy": "guardian-only" },
+    { "id": "src-supply-list", "kind": "supply-list", "authority": "school", "capturedAt": "2026-08-23T21:54:00Z", "reference": "supply://class/art", "freshness": "current", "privacy": "normal" },
+    { "id": "src-accommodation-note", "kind": "accommodation-note", "authority": "care-team", "capturedAt": "2026-08-20T16:00:00Z", "reference": "guardian://accommodation/testing", "freshness": "current", "privacy": "accommodation-sensitive" }
+  ],
+  "students": [
+    { "id": "student-primary", "label": "Student A", "privacy": "student-safe", "sourceRefs": ["src-guardian-notes"] }
+  ],
+  "items": [
+    { "id": "item-science-project", "kind": "assignment", "studentRef": "student-primary", "title": "Science project checkpoint", "courseLabel": "Science", "dueAt": "2026-08-27T23:59:00-07:00", "state": "student-step", "privacy": "student-sensitive", "sourceRefs": ["src-lms-export", "src-teacher-note"], "guardianAction": "review", "blockedReason": null },
+    { "id": "item-field-trip-form", "kind": "form", "studentRef": "student-primary", "title": "Field trip permission form", "courseLabel": "Homeroom", "dueAt": "2026-08-26T17:00:00-07:00", "state": "guardian-review", "privacy": "guardian-only", "sourceRefs": ["src-field-trip-form"], "guardianAction": "sign", "blockedReason": null },
+    { "id": "item-open-house", "kind": "event", "studentRef": "student-primary", "title": "Open house", "courseLabel": "School event", "dueAt": "2026-08-28T18:30:00-07:00", "state": "ready-for-review", "privacy": "location-sensitive", "sourceRefs": ["src-school-calendar"], "guardianAction": "review", "blockedReason": null },
+    { "id": "item-art-supplies", "kind": "supply", "studentRef": "student-primary", "title": "Art class supply list", "courseLabel": "Art", "dueAt": null, "state": "ready-for-review", "privacy": "normal", "sourceRefs": ["src-supply-list"], "guardianAction": "prepare-supplies", "blockedReason": null },
+    { "id": "item-portal-gap", "kind": "deadline", "studentRef": "student-primary", "title": "Unclear portal deadline", "courseLabel": "Math", "dueAt": null, "state": "blocked", "privacy": "student-sensitive", "sourceRefs": ["src-lms-export"], "guardianAction": "clarify", "blockedReason": "The exported portal item lacks a clear due date and needs guardian review before any school contact." }
+  ],
+  "accommodations": [
+    { "id": "accommodation-testing", "studentRef": "student-primary", "itemRefs": ["item-science-project"], "state": "supported", "privacy": "accommodation-sensitive", "sourceRefs": ["src-accommodation-note", "src-guardian-notes"] }
+  ],
+  "conflicts": [
+    { "id": "conflict-open-house", "itemRefs": ["item-open-house"], "state": "possible", "reason": "Open house overlaps a family dinner note and needs guardian review before any calendar change.", "sourceRefs": ["src-school-calendar", "src-guardian-notes"] },
+    { "id": "conflict-field-trip-form", "itemRefs": ["item-field-trip-form"], "state": "clear", "reason": "No supplied conflict blocks reviewing the permission form before the deadline.", "sourceRefs": ["src-field-trip-form", "src-guardian-notes"] }
+  ],
+  "reviewQuestions": [
+    { "id": "question-form", "question": "Should the guardian review the field trip form content outside this artifact?", "reason": "The form is current and due this week, but submission remains blocked until exact guardian approval.", "itemRefs": ["item-field-trip-form"], "sourceRefs": ["src-field-trip-form"] },
+    { "id": "question-conflict", "question": "Should the guardian keep open house on the review list until the family dinner conflict is resolved?", "reason": "Calendar evidence and guardian notes show a possible conflict, but calendar edits remain blocked.", "itemRefs": ["item-open-house"], "sourceRefs": ["src-school-calendar", "src-guardian-notes"] },
+    { "id": "question-gap", "question": "Should the guardian clarify the unclear math portal deadline using an approved path outside this artifact?", "reason": "The exported portal item lacks enough due-date evidence for a ready state.", "itemRefs": ["item-portal-gap"], "sourceRefs": ["src-lms-export"] }
+  ],
+  "blockedActions": ["submit-form", "message-teacher", "contact-school", "pay-fee", "modify-calendar", "change-enrollment", "change-attendance", "disclose-student-details", "make-education-decision", "make-medical-decision", "make-legal-decision", "make-discipline-decision"],
+  "handoff": {
+    "state": "ready-for-guardian-review",
+    "guardian": "Guardian",
+    "prohibitedActions": ["submit-form", "message-teacher", "contact-school", "pay-fee", "modify-calendar", "change-enrollment", "change-attendance", "disclose-student-details", "make-education-decision", "make-medical-decision", "make-legal-decision", "make-discipline-decision"]
+  }
+}

@@ -2266,6 +2266,40 @@
       }
     },
     {
+      "id": "school-coordinator",
+      "name": "School coordinator",
+      "description": "Tracks assignments, forms, teacher notes, school calendars, supply lists, events, accommodations, and parent review questions from approved sources without submitting forms, messaging teachers, changing enrollment, or making education, medical, legal, or payment decisions.",
+      "audience": "Parents, guardians, students with guardian-supported workflows, tutors, and households keeping school logistics organized while preserving student privacy and guardian authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-23"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "security-analyst",
       "name": "Security analyst",
       "description": "Assesses security questions with explicit trust boundaries and reproducible evidence.",

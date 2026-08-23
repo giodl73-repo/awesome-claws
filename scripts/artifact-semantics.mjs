@@ -593,6 +593,104 @@ function localEventsFindings(value) {
   return findings;
 }
 
+function schoolCoordinatorFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const studentIds = value.students.map((item) => item.id);
+  const itemIds = value.items.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const studentSet = new Set(studentIds);
+  const itemSet = new Set(itemIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(studentIds, "students", "Student id"),
+    ...uniqueFindings(itemIds, "items", "Item id"),
+    ...uniqueFindings(value.accommodations.map((item) => item.id), "accommodations", "Accommodation id"),
+    ...uniqueFindings(value.conflicts.map((item) => item.id), "conflicts", "Conflict id"),
+    ...uniqueFindings(value.reviewQuestions.map((item) => item.id), "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, student] of value.students.entries()) {
+    findings.push(
+      ...uniqueFindings(student.sourceRefs, `students.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(student.sourceRefs, sourceSet, `students.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, item] of value.items.entries()) {
+    findings.push(
+      ...referenceFindings([item.studentRef], studentSet, `items.${index}.studentRef`, "Student reference"),
+      ...uniqueFindings(item.sourceRefs, `items.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `items.${index}.sourceRefs`, "Source reference"),
+    );
+    const hasSupportedSource = item.sourceRefs.some((ref) =>
+      ["lms-export", "assignment-page", "teacher-note", "school-calendar", "form", "supply-list", "handbook", "portal-screenshot", "guardian-note"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasSupportedSource) {
+      findings.push(finding("unsupported_school_source", `items.${index}.sourceRefs`, "School items require LMS, assignment, teacher, calendar, form, supply, handbook, portal, or guardian evidence."));
+    }
+    if (
+      item.state !== "blocked" &&
+      item.kind !== "supply" &&
+      item.dueAt === null
+    ) {
+      findings.push(finding("unsupported_ready_state", `items.${index}.dueAt`, "Non-supply school items need a due date before leaving blocked or unknown state."));
+    }
+    if (
+      (item.state === "blocked" && !item.blockedReason) ||
+      (item.state !== "blocked" && item.blockedReason !== null)
+    ) {
+      findings.push(finding("incoherent_blocked_state", `items.${index}.blockedReason`, "Only blocked school items may carry a blocked reason."));
+    }
+  }
+  for (const [index, accommodation] of value.accommodations.entries()) {
+    findings.push(
+      ...referenceFindings([accommodation.studentRef], studentSet, `accommodations.${index}.studentRef`, "Student reference"),
+      ...uniqueFindings(accommodation.itemRefs, `accommodations.${index}.itemRefs`, "Item reference"),
+      ...referenceFindings(accommodation.itemRefs, itemSet, `accommodations.${index}.itemRefs`, "Item reference"),
+      ...uniqueFindings(accommodation.sourceRefs, `accommodations.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(accommodation.sourceRefs, sourceSet, `accommodations.${index}.sourceRefs`, "Source reference"),
+    );
+    const supported = accommodation.sourceRefs.some((ref) =>
+      ["accommodation-note", "guardian-note", "teacher-note", "handbook"].includes(sourceById.get(ref)?.kind),
+    );
+    if (accommodation.state === "supported" && !supported) {
+      findings.push(finding("unsupported_accommodation", `accommodations.${index}.sourceRefs`, "Supported accommodation state requires accommodation, guardian, teacher, or handbook evidence."));
+    }
+  }
+  for (const [index, conflict] of value.conflicts.entries()) {
+    findings.push(
+      ...uniqueFindings(conflict.itemRefs, `conflicts.${index}.itemRefs`, "Item reference"),
+      ...referenceFindings(conflict.itemRefs, itemSet, `conflicts.${index}.itemRefs`, "Item reference"),
+      ...uniqueFindings(conflict.sourceRefs, `conflicts.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(conflict.sourceRefs, sourceSet, `conflicts.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.itemRefs, `reviewQuestions.${index}.itemRefs`, "Item reference"),
+      ...referenceFindings(question.itemRefs, itemSet, `reviewQuestions.${index}.itemRefs`, "Item reference"),
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-guardian-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Guardian-ready school ledgers cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    items: value.items.map(({ title, blockedReason }) => ({ title, blockedReason })),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(submit|message teacher|email teacher|contact school|pay fee|edit calendar|modify calendar|change enrollment|change attendance|disclose|diagnose|eligible|discipline|legal advice|medical decision|education decision)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "School artifacts must not instruct form submission, teacher or school contact, payments, calendar edits, enrollment or attendance changes, disclosure, or education/medical/legal/discipline decisions."));
+  }
+  if (value.handoff.guardian === "school-coordinator") {
+    findings.push(finding("agent_owned_authority", "handoff.guardian", "School actions and student disclosure decisions must remain with the named guardian."));
+  }
+  return findings;
+}
+
 function giftRelationshipFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const recipientIds = value.recipients.map((item) => item.id);
@@ -5636,6 +5734,7 @@ const validators = {
   "restaurant-venue-scout": restaurantVenueFindings,
   "research-briefing": researchFindings,
   "sales-operations": salesOperationsFindings,
+  "school-coordinator": schoolCoordinatorFindings,
   "sports-team-watcher": sportsTeamWatchFindings,
   "stock-portfolio-monitor": stockPortfolioFindings,
   "subscription-manager": subscriptionManagerFindings,

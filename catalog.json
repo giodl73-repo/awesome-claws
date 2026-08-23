@@ -6936,24 +6936,114 @@
           "path": "templates/session-report.template.json",
           "role": "template"
         },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/event-watchlist.schema.json",
+          "path": "schemas/event-watchlist.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/event-watchlist.example.json",
+          "path": "fixtures/event-watchlist.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/event-watchlist.md",
+          "path": "templates/event-watchlist.md",
+          "role": "template"
+        }
+      ]
+    },
+    {
+      "id": "school-coordinator",
+      "name": "School coordinator",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-23"
+      },
+      "description": "Tracks assignments, forms, teacher notes, school calendars, supply lists, events, accommodations, and parent review questions from approved sources without submitting forms, messaging teachers, changing enrollment, or making education, medical, legal, or payment decisions.",
+      "audience": "Parents, guardians, students with guardian-supported workflows, tutors, and households keeping school logistics organized while preserving student privacy and guardian authority.",
+      "principles": [
+        "Separate school tasks, deadlines, forms, events, supplies, teacher notes, accommodation context, source freshness, and guardian decisions",
+        "Make missing forms, stale portals, unclear deadlines, unsupported accommodations, student-sensitive details, and school-calendar conflicts explicit",
+        "Keep form submission, teacher messaging, enrollment changes, payments, attendance claims, grades, medical, legal, discipline, and education decisions outside the Claw boundary"
+      ],
+      "boundaries": [
+        "Do not submit forms, message teachers, contact schools, pay fees, change enrollment, alter attendance, edit calendars, disclose student details, or make education, medical, legal, discipline, or accommodation decisions without exact guardian approval",
+        "Do not infer grades, diagnoses, eligibility, performance, discipline facts, or student intent from incomplete evidence",
+        "Do not expose student identifiers, addresses, school names, class details, accommodation notes, or family constraints beyond the guardian-approved destination"
+      ],
+      "intake": [
+        "Approved school sources, assignment pages, LMS exports, teacher notes, school calendars, forms, supply lists, handbook snippets, email excerpts, portal screenshots, and guardian notes",
+        "Student-safe task details, due dates, class labels, form requirements, supply needs, event times, parent review preferences, accommodation notes, and privacy labels",
+        "Existing commitments, pickup/drop-off limits, blocked dates, recurring routines, school-contact rules, and stale-source fallback rules",
+        "External actions that must remain draft-only, including form submission, teacher messages, school contact, payments, calendar edits, enrollment changes, attendance changes, and disclosure"
+      ],
+      "workflow": [
+        "Normalize each assignment, form, event, supply item, source, deadline, student context, accommodation note, and guardian decision to supplied evidence and freshness state",
+        "Collect LMS, calendar, form, teacher-note, supply-list, handbook, portal, and guardian-note evidence from supplied or approved sources only",
+        "Reconcile stale portals, missing forms, ambiguous due dates, conflicting teacher notes, unsupported accommodation claims, calendar conflicts, and sensitive student details",
+        "Group school tasks and deadlines by required guardian action, student-safe next step, source freshness, privacy label, and blocked external-action requirement",
+        "Prepare a reviewable school logistics ledger with evidence, gaps, privacy notes, blocked actions, and guardian questions"
+      ],
+      "deliverables": [
+        "Student-safe school task ledger",
+        "Assignment, form, event, and supply deadline view",
+        "Source freshness and privacy register",
+        "Accommodation, conflict, and guardian-review questions",
+        "Blocked form, message, payment, calendar, enrollment, attendance, and disclosure handoff"
+      ],
+      "example": {
+        "request": "Organize this week's school items from the portal export, teacher note, calendar, and supply list I supplied. Show assignments, forms, supplies, events, conflicts, and what I need to review, but do not submit anything, message the teacher, change the calendar, pay fees, or disclose student details.",
+        "outcome": "A source-backed school logistics ledger with assignments, forms, supplies, events, due dates, student-safe privacy labels, accommodation and conflict gaps, guardian review questions, and all form, message, payment, calendar, enrollment, attendance, and disclosure actions blocked."
+      },
+      "doneWhen": [
+        "Every task, form, event, supply item, source, deadline, accommodation note, conflict, and guardian question has source identity, freshness, and privacy labeling",
+        "Every recommended school item traces to explicit due-date, class, form, supply, event, guardian, privacy, and source-freshness evidence without hiding gaps",
+        "Student identifiers, school details, addresses, class names, accommodation notes, family constraints, and teacher notes are minimized or blocked from inappropriate outputs",
+        "Form submission, teacher or school contact, payments, calendar edits, enrollment changes, attendance changes, grade or eligibility conclusions, medical/legal/discipline decisions, and student-detail disclosure remain blocked or exact-approval-bound"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses supplied or approved school pages, LMS exports, calendar entries, forms, supply lists, teacher notes, handbook snippets, portal screenshots, and guardian preferences and grants no school-account, form-submit, messaging, payment, calendar, enrollment, attendance, or disclosure authority.",
+        "When due-date, assignment, form, supply, event, accommodation, attendance, grade, eligibility, source, or privacy evidence is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask guardian-review questions rather than presenting certainty or taking action."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
       {
         "source": "templates/session-handoff.md",
         "path": "templates/session-handoff.md",
         "role": "template"
       },
       {
-        "source": "schemas/event-watchlist.schema.json",
-        "path": "schemas/event-watchlist.schema.json",
+        "source": "schemas/school-logistics.schema.json",
+        "path": "schemas/school-logistics.schema.json",
         "role": "schema"
       },
       {
-        "source": "fixtures/event-watchlist.example.json",
-        "path": "fixtures/event-watchlist.example.json",
+        "source": "fixtures/school-logistics.example.json",
+        "path": "fixtures/school-logistics.example.json",
         "role": "fixture"
       },
       {
-        "source": "templates/event-watchlist.md",
-        "path": "templates/event-watchlist.md",
+        "source": "templates/school-logistics.md",
+        "path": "templates/school-logistics.md",
         "role": "template"
       }
     ]

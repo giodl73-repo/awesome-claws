@@ -121,6 +121,16 @@
         "difference": "Music Organizer plans music libraries and playlists; Gift and Relationship Manager plans gifts across categories and occasions with budget, shipping, and surprise-risk boundaries."
       },
       {
+        "id": "local-events-watcher",
+        "overlap": "Both can involve occasions, dates, invitations, preferences, budgets, privacy labels, and blocked purchases, messages, calendar edits, or public posts.",
+        "difference": "Local Events Watcher evaluates dated event options with ticketing, venue, accessibility, and conflict evidence; Gift and Relationship Manager plans recipients, gifts, occasions, preference evidence, surprise risks, and purchase/message handoff."
+      },
+      {
+        "id": "school-coordinator",
+        "overlap": "Both preserve private relationship or family context, dates, notes, guardian or owner review, and blocked messages, calendar edits, purchases, or disclosures.",
+        "difference": "School Coordinator manages student-safe school assignments, forms, events, supplies, and guardian-only school authority; Gift and Relationship Manager manages gift ideas, occasions, relationship notes, budgets, and surprise/privacy boundaries."
+      },
+      {
         "id": "executive-assistant",
         "overlap": "Both can prepare owner-facing summaries, reminders, draft follow-ups, and blocked-action handoffs.",
         "difference": "Executive Assistant is general productivity support; Gift and Relationship Manager is a durable relationship and occasion ledger with gift-specific privacy and purchase boundaries."
