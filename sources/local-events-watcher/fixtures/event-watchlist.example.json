@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "awesomeClaws.eventWatchlist.v1",
+  "plan": {
+    "id": "event-plan-weekend",
+    "owner": "Event owner",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-23T20:35:00Z",
+    "dateWindow": "2026-08-28 through 2026-08-30",
+    "region": "Oakland, CA",
+    "audience": "Household weekend options"
+  },
+  "sources": [
+    { "id": "src-owner-notes", "kind": "owner-note", "authority": "user-supplied", "capturedAt": "2026-08-23T20:00:00Z", "reference": "owner://event-notes/weekend", "freshness": "current", "privacy": "group-sensitive" },
+    { "id": "src-museum-official", "kind": "official-event-page", "authority": "organizer", "capturedAt": "2026-08-23T20:05:00Z", "reference": "event://museum/family-night", "freshness": "current", "privacy": "normal" },
+    { "id": "src-museum-ticketing", "kind": "ticketing-page", "authority": "ticketing-platform", "capturedAt": "2026-08-23T20:06:00Z", "reference": "tickets://museum/family-night", "freshness": "current", "privacy": "normal" },
+    { "id": "src-museum-access", "kind": "accessibility-note", "authority": "accessibility-source", "capturedAt": "2026-08-23T20:07:00Z", "reference": "venue://museum/accessibility", "freshness": "current", "privacy": "accessibility-sensitive" },
+    { "id": "src-calendar-family", "kind": "calendar-listing", "authority": "calendar-provider", "capturedAt": "2026-08-23T20:08:00Z", "reference": "calendar://family/saturday-afternoon", "freshness": "current", "privacy": "group-sensitive" },
+    { "id": "src-park-feed", "kind": "community-feed", "authority": "community-source", "capturedAt": "2026-08-23T20:10:00Z", "reference": "community://park/concert", "freshness": "current", "privacy": "normal" },
+    { "id": "src-park-map", "kind": "map-listing", "authority": "map-provider", "capturedAt": "2026-08-23T20:11:00Z", "reference": "map://park-stage", "freshness": "current", "privacy": "location-sensitive" },
+    { "id": "src-club-official", "kind": "official-event-page", "authority": "organizer", "capturedAt": "2026-08-23T20:12:00Z", "reference": "event://club/loud-show", "freshness": "current", "privacy": "normal" }
+  ],
+  "venues": [
+    { "id": "venue-museum", "name": "Lakeside Museum", "kind": "museum", "neighborhood": "Lake Merritt", "distanceState": "inside-target-area", "sourceRefs": ["src-museum-official", "src-museum-access"] },
+    { "id": "venue-park", "name": "Park Stage", "kind": "park", "neighborhood": "Rockridge", "distanceState": "nearby", "sourceRefs": ["src-park-feed", "src-park-map"] },
+    { "id": "venue-club", "name": "The Basement Club", "kind": "club", "neighborhood": "Downtown", "distanceState": "inside-target-area", "sourceRefs": ["src-club-official"] }
+  ],
+  "constraints": [
+    { "id": "constraint-family", "kind": "age-fit", "label": "Family-friendly event needed", "required": true, "privacy": "minor-sensitive", "sourceRefs": ["src-owner-notes"] },
+    { "id": "constraint-accessibility", "kind": "accessibility", "label": "Wheelchair access needed", "required": true, "privacy": "accessibility-sensitive", "sourceRefs": ["src-owner-notes", "src-museum-access"] },
+    { "id": "constraint-no-conflict", "kind": "schedule-conflict", "label": "Avoid Saturday afternoon commitment", "required": true, "privacy": "group-sensitive", "sourceRefs": ["src-owner-notes", "src-calendar-family"] },
+    { "id": "constraint-low-noise", "kind": "noise", "label": "Prefer lower-noise settings", "required": false, "privacy": "group-sensitive", "sourceRefs": ["src-owner-notes"] }
+  ],
+  "events": [
+    { "id": "event-family-night", "title": "Family Night at Lakeside Museum", "kind": "family", "startsAt": "2026-08-29T18:30:00-07:00", "venueRef": "venue-museum", "ageFit": "supported", "accessibilityState": "supported", "sourceRefs": ["src-museum-official", "src-museum-access"] },
+    { "id": "event-park-concert", "title": "Sunday Park Concert", "kind": "concert", "startsAt": "2026-08-30T16:00:00-07:00", "venueRef": "venue-park", "ageFit": "possible", "accessibilityState": "unknown", "sourceRefs": ["src-park-feed", "src-park-map"] },
+    { "id": "event-loud-show", "title": "Late Loud Show", "kind": "concert", "startsAt": "2026-08-29T14:30:00-07:00", "venueRef": "venue-club", "ageFit": "not-suitable", "accessibilityState": "unknown", "sourceRefs": ["src-club-official"] }
+  ],
+  "ticketing": [
+    { "id": "ticketing-family-night", "eventRef": "event-family-night", "availabilityState": "available", "priceState": "inside-budget", "sourceRefs": ["src-museum-ticketing"] },
+    { "id": "ticketing-park-concert", "eventRef": "event-park-concert", "availabilityState": "free", "priceState": "free", "sourceRefs": ["src-park-feed"] },
+    { "id": "ticketing-loud-show", "eventRef": "event-loud-show", "availabilityState": "limited", "priceState": "unknown", "sourceRefs": ["src-club-official"] }
+  ],
+  "conflicts": [
+    { "id": "conflict-family-night", "eventRef": "event-family-night", "state": "clear", "reason": "Evening event does not overlap the supplied Saturday afternoon commitment.", "sourceRefs": ["src-calendar-family"] },
+    { "id": "conflict-park-concert", "eventRef": "event-park-concert", "state": "clear", "reason": "Sunday timing is outside the supplied Saturday commitment.", "sourceRefs": ["src-calendar-family"] },
+    { "id": "conflict-loud-show", "eventRef": "event-loud-show", "state": "conflicts", "reason": "Event overlaps the supplied Saturday afternoon commitment.", "sourceRefs": ["src-calendar-family"] }
+  ],
+  "watchlist": [
+    { "id": "watch-family-night", "eventRef": "event-family-night", "ticketingRef": "ticketing-family-night", "conflictRef": "conflict-family-night", "rank": 1, "fit": "strong", "fitReason": "Current official, ticketing, accessibility, and calendar evidence supports the required family, access, and no-conflict constraints.", "constraintRefs": ["constraint-family", "constraint-accessibility", "constraint-no-conflict", "constraint-low-noise"], "state": "recommended", "blockedReason": null },
+    { "id": "watch-park-concert", "eventRef": "event-park-concert", "ticketingRef": "ticketing-park-concert", "conflictRef": "conflict-park-concert", "rank": 2, "fit": "possible", "fitReason": "Community evidence suggests a free outdoor concert, but accessibility and exact age fit need owner review.", "constraintRefs": ["constraint-family", "constraint-accessibility", "constraint-no-conflict"], "state": "review-needed", "blockedReason": null },
+    { "id": "watch-loud-show", "eventRef": "event-loud-show", "ticketingRef": "ticketing-loud-show", "conflictRef": "conflict-loud-show", "rank": 3, "fit": "blocked", "fitReason": "The official source does not support family fit, accessibility remains unknown, and the time conflicts with the supplied commitment.", "constraintRefs": ["constraint-family", "constraint-accessibility", "constraint-no-conflict", "constraint-low-noise"], "state": "blocked", "blockedReason": "Required family, access, and schedule constraints are not supported." }
+  ],
+  "reviewQuestions": [
+    { "id": "question-accessibility", "question": "Should the owner keep Sunday Park Concert as a possibility until accessibility evidence is confirmed from an approved source?", "reason": "The event is free and timing is clear, but accessibility state is unknown for a required constraint.", "eventRefs": ["event-park-concert"], "sourceRefs": ["src-park-feed", "src-park-map", "src-owner-notes"] },
+    { "id": "question-ticketing", "question": "Should the owner review Family Night ticket availability directly before making any decision outside this artifact?", "reason": "A current ticketing page shows availability, but ticketing actions remain blocked until exact owner approval.", "eventRefs": ["event-family-night"], "sourceRefs": ["src-museum-ticketing"] }
+  ],
+  "blockedActions": ["buy-ticket", "join-waitlist", "rsvp", "contact-venue", "message-attendees", "arrange-ride", "pay-event", "modify-calendar", "share-private-location", "post-publicly", "claim-age-safety-certainty"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Event owner",
+    "prohibitedActions": ["buy-ticket", "join-waitlist", "rsvp", "contact-venue", "message-attendees", "arrange-ride", "pay-event", "modify-calendar", "share-private-location", "post-publicly", "claim-age-safety-certainty"]
+  }
+}

@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (72)
+### Active (73)
 
 | Claw | Detail |
 | --- | --- |
@@ -44,6 +44,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Incident response](claws/incident-response) | @giodl73-repo; last verified 2026-08-19 |
 | [Knowledge curator](claws/knowledge-curator) | @giodl73-repo; last verified 2026-08-19 |
 | [Knowledge gardener](claws/knowledge-gardener) | @giodl73-repo; last verified 2026-08-19 |
+| [Local events watcher](claws/local-events-watcher) | @giodl73-repo; last verified 2026-08-23 |
 | [Localization program manager](claws/localization-program-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | @giodl73-repo; last verified 2026-08-19 |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | @giodl73-repo; last verified 2026-08-19 |
@@ -99,7 +100,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (41)
+### Low setup (42)
 
 | Claw | Detail |
 | --- | --- |
@@ -122,6 +123,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Home repair coordinator](claws/home-repair-coordinator) | no bootstrap, external dependency, or schedule |
 | [Household steward](claws/household-steward) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
+| [Local events watcher](claws/local-events-watcher) | no bootstrap, external dependency, or schedule |
 | [Localization program manager](claws/localization-program-manager) | no bootstrap, external dependency, or schedule |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | no bootstrap, external dependency, or schedule |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | no bootstrap, external dependency, or schedule |
@@ -190,7 +192,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (49)
+### No external dependencies (50)
 
 | Claw | Detail |
 | --- | --- |
@@ -219,6 +221,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Household steward](claws/household-steward) | None |
 | [Incident response](claws/incident-response) | None |
 | [Knowledge curator](claws/knowledge-curator) | None |
+| [Local events watcher](claws/local-events-watcher) | None |
 | [Localization program manager](claws/localization-program-manager) | None |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | None |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | None |
@@ -276,7 +279,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (47)
+### X3 (48)
 
 | Claw | Detail |
 | --- | --- |
@@ -299,6 +302,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Household steward](claws/household-steward) | Coordinates a multi-person household's priorities, responsibilities, specialist-Claw handoffs, shared constraints, and explicitly authorized external actions without becoming the household decision-maker. |
 | [Knowledge curator](claws/knowledge-curator) | Turns scattered information into durable, navigable, and source-linked knowledge. |
 | [Knowledge gardener](claws/knowledge-gardener) | Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work. |
+| [Local events watcher](claws/local-events-watcher) | Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries. |
 | [Meeting intelligence](claws/meeting-intelligence) | Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts. |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | Coordinates blinded model-output evaluation, rubric calibration, and disagreement adjudication without selecting or deploying a model. |
@@ -444,7 +448,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (20)
+### Productivity (21)
 
 | Claw | Detail |
 | --- | --- |
@@ -455,6 +459,7 @@ Categories come directly from the catalog entry.
 | [Gift and relationship manager](claws/gift-relationship-manager) | X3; Organizes relationship notes, occasions, gift ideas, preference evidence, budgets, and owner-review reminders without buying gifts, sending messages, editing calendars, or inferring sensitive relationship meaning. |
 | [Knowledge curator](claws/knowledge-curator) | X3; Turns scattered information into durable, navigable, and source-linked knowledge. |
 | [Knowledge gardener](claws/knowledge-gardener) | X3; Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work. |
+| [Local events watcher](claws/local-events-watcher) | X3; Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
 | [Localization program manager](claws/localization-program-manager) | X4; Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations. |
 | [Meeting intelligence](claws/meeting-intelligence) | X3; Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts. |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | X3; Organizes a personal or household movie and show watchlist with sourced availability, watched history, favorites, preferences, and watch-night shortlists without renting, buying, subscribing, rating publicly, or bypassing restrictions. |
@@ -473,7 +478,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (20)
+### Standard attention (21)
 
 | Claw | Detail |
 | --- | --- |
@@ -484,6 +489,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | portable workspace artifacts only |
 | [Home repair coordinator](claws/home-repair-coordinator) | portable workspace artifacts only |
 | [Knowledge curator](claws/knowledge-curator) | portable workspace artifacts only |
+| [Local events watcher](claws/local-events-watcher) | portable workspace artifacts only |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | portable workspace artifacts only |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | portable workspace artifacts only |
 | [Music organizer](claws/music-organizer) | portable workspace artifacts only |

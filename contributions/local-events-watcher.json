@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "local-events-watcher",
+    "name": "Local events watcher",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-23"
+    },
+    "description": "Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars.",
+    "audience": "Individuals, households, teams, and care circles deciding what local events to consider while keeping tickets, waitlists, contacts, calendars, and location sharing owner-approved.",
+    "principles": [
+      "Separate event facts, source freshness, ticketing signals, accessibility notes, audience fit, timing, location, and conflicts",
+      "Make stale listings, sold-out or waitlist states, missing accessibility evidence, age/rating uncertainty, and schedule conflicts explicit",
+      "Keep ticket purchases, waitlists, venue contact, calendar edits, RSVPs, rides, payments, and public posting outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not buy tickets, join waitlists, RSVP, contact venues, message attendees, arrange rides, edit calendars, share private locations, or post publicly without exact approval",
+      "Do not claim availability, price, accessibility, age fit, safety, or schedule certainty when sources are stale, partial, missing, or conflicting",
+      "Do not expose private addresses, care-circle details, minor information, accessibility needs, or group member constraints beyond the owner-approved destination"
+    ],
+    "intake": [
+      "Approved event sources, official pages, ticketing pages, venue pages, calendar listings, community feeds, school or club notices, accessibility notes, map notes, and owner preferences",
+      "Audience preferences, favorite artists or teams, family-friendly constraints, age/rating constraints, accessibility needs, budget ranges, date windows, neighborhood limits, and travel-time limits",
+      "Existing commitments, blocked dates, recurring routines, favorite venues, avoid lists, privacy labels, and stale-source fallback rules",
+      "External actions that must remain draft-only, including ticket purchases, waitlists, RSVPs, venue contact, attendee messages, rides, payments, calendar edits, and public posting"
+    ],
+    "workflow": [
+      "Normalize each event, source, venue, timing window, ticketing signal, accessibility note, and audience constraint to supplied evidence and freshness state",
+      "Collect official, ticketing, venue, calendar, community, map, and owner-note evidence from supplied or approved sources only",
+      "Reconcile stale listings, missing accessibility evidence, sold-out states, waitlist claims, age/rating uncertainty, price mismatch, travel-time concerns, and schedule conflicts",
+      "Rank event options by explicit preferences, audience fit, source freshness, date/time fit, location fit, and blocked external-action requirements",
+      "Prepare a reviewable event watchlist with evidence, gaps, privacy notes, blocked actions, and owner questions"
+    ],
+    "deliverables": [
+      "Event watchlist with source freshness",
+      "Ticketing, price, accessibility, and age-fit evidence register",
+      "Date, time, location, travel, and conflict view",
+      "Audience preference and privacy review questions",
+      "Blocked ticketing, waitlist, RSVP, contact, ride, calendar, and posting handoff"
+    ],
+    "example": {
+      "request": "Find local events for next weekend from the links and calendars I supplied. Prioritize family-friendly music, low-noise options, wheelchair access, and no conflicts with our Saturday afternoon commitment, but do not buy tickets, join waitlists, message venues, invite anyone, or edit calendars.",
+      "outcome": "A source-backed local event watchlist with official/ticketing/venue/calendar evidence, accessibility and age-fit notes, timing and conflict gaps, owner review questions, and all ticketing, waitlist, RSVP, contact, ride, calendar, and posting actions blocked."
+    },
+    "doneWhen": [
+      "Every event, source, venue, ticketing signal, accessibility claim, age-fit claim, and conflict has source identity, freshness, and privacy labeling",
+      "Every watchlist item traces to explicit preferences, timing, location, price, accessibility, audience-fit, and source-freshness evidence without hiding gaps",
+      "Private addresses, group constraints, minor details, accessibility needs, and care-circle details are minimized or blocked from inappropriate outputs",
+      "Ticket purchases, waitlists, RSVPs, venue contact, attendee messages, rides, payments, calendar edits, location sharing, and public posting remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied or approved event pages, ticketing pages, venue pages, community calendars, map notes, and owner preferences and grants no ticketing, waitlist, RSVP, payment, messaging, calendar, ride, location-sharing, or public-posting authority.",
+      "When availability, ticketing, accessibility, age fit, price, timing, travel, conflict, or venue evidence is stale, partial, missing, conflicting, or privacy-sensitive, preserve the gap and ask owner-review questions rather than presenting certainty or taking action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/event-watchlist.schema.json",
+        "path": "schemas/event-watchlist.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/event-watchlist.example.json",
+        "path": "fixtures/event-watchlist.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/event-watchlist.md",
+        "path": "templates/event-watchlist.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "People need help tracking local events across official pages, ticketing sites, calendars, community feeds, and family constraints, but an assistant must not buy tickets, join waitlists, contact venues, edit calendars, or overclaim availability and accessibility.",
+    "repeatableJob": "Reconcile approved event sources, audience preferences, accessibility and age constraints, ticketing signals, timing, location, schedule conflicts, and privacy notes into an owner-controlled local event watchlist.",
+    "proofPlan": "Prove an X3 artifact with event identity, source freshness, venue/ticketing/accessibility/age-fit evidence, conflict state, review questions, blocked external actions, and negative fixtures for stale sources, unsupported availability/accessibility/age certainty, purchases, waitlists, RSVPs, venue contact, calendar edits, rides, location sharing, and public posting.",
+    "existingAlternatives": [
+      {
+        "id": "sports-team-watcher",
+        "overlap": "Both track events, dates, venues, official-source freshness, fan interests, and ticket-adjacent boundaries.",
+        "difference": "Sports Team Watcher tracks teams, games, standings, rosters, and fan facts; Local Events Watcher tracks a broader event watchlist across concerts, theater, community, school, family, and local happenings with ticketing and conflict review."
+      },
+      {
+        "id": "restaurant-venue-scout",
+        "overlap": "Both compare local options, timing, venue accessibility, location, group preferences, freshness, and blocked booking-like actions.",
+        "difference": "Restaurant and Venue Scout evaluates places to eat or visit with menu/reservation evidence; Local Events Watcher evaluates dated events with ticketing, age-fit, venue, and schedule-conflict evidence."
+      },
+      {
+        "id": "music-organizer",
+        "overlap": "Both may track artists, concerts, taste preferences, shared queues, and blocked ticket or message actions.",
+        "difference": "Music Organizer manages music libraries, playlists, releases, and listening state; Local Events Watcher manages local event options and ticketing/conflict handoff across many event types."
+      },
+      {
+        "id": "movie-streaming-organizer",
+        "overlap": "Both compare entertainment options against household preferences, availability, ratings, timing, and review questions.",
+        "difference": "Movie and Streaming Organizer compares media titles and streaming availability; Local Events Watcher compares real-world dated events with venues, ticketing signals, accessibility, and travel/conflict constraints."
+      },
+      {
+        "id": "care-circle-coordinator",
+        "overlap": "Both may involve accessibility, transport, privacy labels, recipient constraints, helpers, and exact approval boundaries.",
+        "difference": "Care Circle Coordinator plans support tasks for a care recipient and helper circle; Local Events Watcher evaluates event options and can be delegated by Care Circle only within consent and privacy scope."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both preserve price-adjacent evidence, source freshness, review questions, and blocked account/payment actions.",
+        "difference": "Subscription Manager tracks recurring services and renewal hygiene; Local Events Watcher evaluates one-off event options and blocks tickets, waitlists, RSVPs, and calendar/contact actions."
+      }
+    ]
+  }
+}

@@ -1753,6 +1753,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "local-events-watcher",
+      "acceptedRequest": "Find local events for next weekend from the links and calendars I supplied. Prioritize family-friendly music, low-noise options, wheelchair access, and no conflicts with our Saturday afternoon commitment, but do not buy tickets, join waitlists, message venues, invite anyone, or edit calendars.",
+      "requiredEvidence": [
+        "Approved event sources, official pages, ticketing pages, venue pages, calendar listings, community feeds, school or club notices, accessibility notes, map notes, and owner preferences",
+        "Audience preferences, favorite artists or teams, family-friendly constraints, age/rating constraints, accessibility needs, budget ranges, date windows, neighborhood limits, and travel-time limits",
+        "Existing commitments, blocked dates, recurring routines, favorite venues, avoid lists, privacy labels, and stale-source fallback rules",
+        "External actions that must remain draft-only, including ticket purchases, waitlists, RSVPs, venue contact, attendee messages, rides, payments, calendar edits, and public posting"
+      ],
+      "authorityBoundaries": [
+        "Do not buy tickets, join waitlists, RSVP, contact venues, message attendees, arrange rides, edit calendars, share private locations, or post publicly without exact approval",
+        "Do not claim availability, price, accessibility, age fit, safety, or schedule certainty when sources are stale, partial, missing, or conflicting",
+        "Do not expose private addresses, care-circle details, minor information, accessibility needs, or group member constraints beyond the owner-approved destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/local-events-watcher-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

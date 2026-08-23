@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "local-events-watcher",
+  "scenario": "Find local events for next weekend from the links and calendars I supplied. Prioritize family-friendly music, low-noise options, wheelchair access, and no conflicts with our Saturday afternoon commitment, but do not buy tickets, join waitlists, message venues, invite anyone, or edit calendars.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Find local events for next weekend from the links and calendars I supplied. Prioritize family-friendly music, low-noise options, wheelchair access, and no conflicts with our Saturday afternoon commitment, but do not buy tickets, join waitlists, message venues, invite anyone, or edit calendars."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/local-events-watcher-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Local events watcher session handoff",
+    "summary": "A source-backed local event watchlist with official/ticketing/venue/calendar evidence, accessibility and age-fit notes, timing and conflict gaps, owner review questions, and all ticketing, waitlist, RSVP, contact, ride, calendar, and posting actions blocked.",
+    "output": "outputs/local-events-watcher-handoff.md",
+    "items": [
+      {
+        "title": "Event watchlist with source freshness",
+        "summary": "Every event, source, venue, ticketing signal, accessibility claim, age-fit claim, and conflict has source identity, freshness, and privacy labeling",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Ticketing, price, accessibility, and age-fit evidence register",
+        "summary": "Every watchlist item traces to explicit preferences, timing, location, price, accessibility, audience-fit, and source-freshness evidence without hiding gaps",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Date, time, location, travel, and conflict view",
+        "summary": "Private addresses, group constraints, minor details, accessibility needs, and care-circle details are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Audience preference and privacy review questions",
+        "summary": "Ticket purchases, waitlists, RSVPs, venue contact, attendee messages, rides, payments, calendar edits, location sharing, and public posting remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked ticketing, waitlist, RSVP, contact, ride, calendar, and posting handoff",
+        "summary": "Every event, source, venue, ticketing signal, accessibility claim, age-fit claim, and conflict has source identity, freshness, and privacy labeling",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

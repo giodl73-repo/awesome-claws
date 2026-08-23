@@ -52,7 +52,8 @@
       "music-organizer",
       "gift-relationship-manager",
       "personal-archive-curator",
-      "restaurant-venue-scout"
+      "restaurant-venue-scout",
+      "local-events-watcher"
     ]
   },
   "visualCases": [

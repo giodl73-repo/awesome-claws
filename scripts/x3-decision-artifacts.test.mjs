@@ -83,6 +83,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "local-events-watcher",
+    schema: "../claws/local-events-watcher/schemas/event-watchlist.schema.json",
+    fixture: "../claws/local-events-watcher/fixtures/event-watchlist.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "work-chief-of-staff",
     schema: "../claws/work-chief-of-staff/schemas/operating-portfolio.schema.json",
     fixture: "../claws/work-chief-of-staff/fixtures/operating-portfolio.example.json",
@@ -313,6 +319,28 @@ test("restaurant venue scout preserves source certainty and owner authority", ()
   assert.equal(isValid("restaurant-venue-scout", danglingVenue), false);
 });
 
+test("local events watcher preserves source certainty and owner authority", () => {
+  const staleSource = structuredClone(cases.get("local-events-watcher").fixture);
+  staleSource.sources[1].freshness = "stale";
+  assert.equal(isValid("local-events-watcher", staleSource), false);
+
+  const unsupportedAccessibility = structuredClone(cases.get("local-events-watcher").fixture);
+  unsupportedAccessibility.events[0].accessibilityState = "unknown";
+  assert.equal(isValid("local-events-watcher", unsupportedAccessibility), false);
+
+  const actionAdvice = structuredClone(cases.get("local-events-watcher").fixture);
+  actionAdvice.reviewQuestions[1].reason += " Buy tickets and invite the group.";
+  assert.equal(isValid("local-events-watcher", actionAdvice), false);
+
+  const mismatch = structuredClone(cases.get("local-events-watcher").fixture);
+  mismatch.watchlist[0].ticketingRef = "ticketing-park-concert";
+  assert.equal(isValid("local-events-watcher", mismatch), false);
+
+  const danglingEvent = structuredClone(cases.get("local-events-watcher").fixture);
+  danglingEvent.reviewQuestions[0].eventRefs = ["missing-event"];
+  assert.equal(isValid("local-events-watcher", danglingEvent), false);
+});
+
 test("public safety state rejects impossible time ranges and dangling alerts", () => {
   const candidate = structuredClone(cases.get("public-safety-monitor").fixture);
   candidate.alerts[0].expiresAt = candidate.alerts[0].issuedAt;
@@ -366,6 +394,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
     ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
+    ["local-events-watcher", (value) => value.watchlist[0].constraintRefs.push(value.watchlist[0].constraintRefs[0])],
     ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],
     ["movie-streaming-organizer", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["music-organizer", (value) => value.playlistPlan[0].preferenceRefs.push(value.playlistPlan[0].preferenceRefs[0])],
