@@ -1799,6 +1799,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "games-backlog-manager",
+      "acceptedRequest": "Organize my game backlog from the library exports, store pages, and notes I supplied. Show what we own, what is co-op, what is family-safe for a short session, and what needs review, but do not buy, install, launch, message anyone, join sessions, change parental controls, or post reviews.",
+      "requiredEvidence": [
+        "Approved game library exports, platform lists, store pages, subscription catalog notes, content-rating pages, co-op references, household notes, wishlists, and play-history summaries",
+        "Platforms, accounts or account labels, owned/wanted states, play status, preferred genres, co-op or multiplayer needs, age/content constraints, session length, device access, and privacy labels",
+        "Family/kid constraints, accessibility notes, avoid lists, backlog goals, subscription access, stale-source fallback rules, and owner review preferences",
+        "External actions that must remain draft-only, including purchases, installs, downloads, launches, account changes, multiplayer joins, messages, friend requests, parental controls, reviews, streaming, and public posting"
+      ],
+      "authorityBoundaries": [
+        "Do not buy, install, download, launch, join multiplayer sessions, message players, add friends, change parental controls, change accounts, post reviews, stream, or share gameplay without exact approval",
+        "Do not claim ownership, compatibility, co-op support, content suitability, subscription access, or store availability when sources are stale, partial, missing, or conflicting",
+        "Do not expose child or household player details, account identifiers, friend lists, location, play history, or private preferences beyond the owner-approved destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/games-backlog-manager-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

@@ -65,6 +65,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "games-backlog-manager",
+    schema: "../claws/games-backlog-manager/schemas/game-backlog.schema.json",
+    fixture: "../claws/games-backlog-manager/fixtures/game-backlog.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "green-thumb-coordinator",
     schema: "../claws/green-thumb-coordinator/schemas/garden-plan.schema.json",
     fixture: "../claws/green-thumb-coordinator/fixtures/garden-plan.example.json",
@@ -369,6 +375,28 @@ test("school coordinator preserves student privacy and guardian authority", () =
   assert.equal(isValid("school-coordinator", agentOwned), false);
 });
 
+test("games backlog manager preserves ownership evidence and owner authority", () => {
+  const staleSource = structuredClone(cases.get("games-backlog-manager").fixture);
+  staleSource.sources[1].freshness = "stale";
+  assert.equal(isValid("games-backlog-manager", staleSource), false);
+
+  const unsupportedContent = structuredClone(cases.get("games-backlog-manager").fixture);
+  unsupportedContent.availability[0].contentState = "unknown";
+  assert.equal(isValid("games-backlog-manager", unsupportedContent), false);
+
+  const actionAdvice = structuredClone(cases.get("games-backlog-manager").fixture);
+  actionAdvice.reviewQuestions[1].reason += " Install and launch it now.";
+  assert.equal(isValid("games-backlog-manager", actionAdvice), false);
+
+  const mismatch = structuredClone(cases.get("games-backlog-manager").fixture);
+  mismatch.shortlist[0].availabilityRef = "availability-racer";
+  assert.equal(isValid("games-backlog-manager", mismatch), false);
+
+  const danglingGame = structuredClone(cases.get("games-backlog-manager").fixture);
+  danglingGame.reviewQuestions[0].gameRefs = ["missing-game"];
+  assert.equal(isValid("games-backlog-manager", danglingGame), false);
+});
+
 test("public safety state rejects impossible time ranges and dangling alerts", () => {
   const candidate = structuredClone(cases.get("public-safety-monitor").fixture);
   candidate.alerts[0].expiresAt = candidate.alerts[0].issuedAt;
@@ -421,6 +449,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["case-continuity-coordinator", (value) => value.actions[0].evidenceRefs.push(value.actions[0].evidenceRefs[0])],
     ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
+    ["games-backlog-manager", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
     ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["local-events-watcher", (value) => value.watchlist[0].constraintRefs.push(value.watchlist[0].constraintRefs[0])],
     ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],
