@@ -691,6 +691,109 @@ function schoolCoordinatorFindings(value) {
   return findings;
 }
 
+function gamesBacklogFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const gameIds = value.games.map((item) => item.id);
+  const constraintIds = value.constraints.map((item) => item.id);
+  const availabilityIds = value.availability.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const gameSet = new Set(gameIds);
+  const constraintSet = new Set(constraintIds);
+  const availabilitySet = new Set(availabilityIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const availabilityById = new Map(value.availability.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(gameIds, "games", "Game id"),
+    ...uniqueFindings(constraintIds, "constraints", "Constraint id"),
+    ...uniqueFindings(availabilityIds, "availability", "Availability id"),
+    ...uniqueFindings(value.shortlist.map((item) => item.id), "shortlist", "Shortlist id"),
+    ...uniqueFindings(value.reviewQuestions.map((item) => item.id), "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, game] of value.games.entries()) {
+    findings.push(
+      ...uniqueFindings(game.sourceRefs, `games.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(game.sourceRefs, sourceSet, `games.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, constraint] of value.constraints.entries()) {
+    findings.push(
+      ...uniqueFindings(constraint.sourceRefs, `constraints.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(constraint.sourceRefs, sourceSet, `constraints.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, row] of value.availability.entries()) {
+    findings.push(
+      ...referenceFindings([row.gameRef], gameSet, `availability.${index}.gameRef`, "Game reference"),
+      ...uniqueFindings(row.sourceRefs, `availability.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(row.sourceRefs, sourceSet, `availability.${index}.sourceRefs`, "Source reference"),
+    );
+    const supported = row.sourceRefs.some((ref) =>
+      ["library-export", "store-page", "subscription-catalog", "rating-page", "co-op-reference", "accessibility-note"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!supported) {
+      findings.push(finding("unsupported_availability_source", `availability.${index}.sourceRefs`, "Game availability requires library, store, subscription, rating, co-op, or accessibility evidence."));
+    }
+  }
+  for (const [index, pick] of value.shortlist.entries()) {
+    findings.push(
+      ...referenceFindings([pick.gameRef], gameSet, `shortlist.${index}.gameRef`, "Game reference"),
+      ...referenceFindings([pick.availabilityRef], availabilitySet, `shortlist.${index}.availabilityRef`, "Availability reference"),
+      ...uniqueFindings(pick.constraintRefs, `shortlist.${index}.constraintRefs`, "Constraint reference"),
+      ...referenceFindings(pick.constraintRefs, constraintSet, `shortlist.${index}.constraintRefs`, "Constraint reference"),
+    );
+    const availability = availabilityById.get(pick.availabilityRef);
+    if (availability && availability.gameRef !== pick.gameRef) {
+      findings.push(finding("availability_game_mismatch", `shortlist.${index}.availabilityRef`, "Shortlist availability must belong to the same game."));
+    }
+    const requiredConstraints = value.constraints.filter((constraint) => constraint.required);
+    const missingRequired = requiredConstraints.some((constraint) => !pick.constraintRefs.includes(constraint.id));
+    if (
+      pick.state === "recommended" &&
+      (!availability ||
+        missingRequired ||
+        !["owned", "subscription-access"].includes(availability.ownershipState) ||
+        availability.platformFit !== "supported" ||
+        availability.coOpState !== "supported" ||
+        availability.contentState !== "supported" ||
+        !["short", "medium"].includes(availability.sessionFit))
+    ) {
+      findings.push(finding("unsupported_recommendation", `shortlist.${index}`, "Recommended games require owned/subscription access, platform, co-op, content, session, and required-constraint support."));
+    }
+    if (
+      (pick.state === "blocked" && !pick.blockedReason) ||
+      (pick.state !== "blocked" && pick.blockedReason !== null)
+    ) {
+      findings.push(finding("incoherent_blocked_state", `shortlist.${index}.blockedReason`, "Only blocked game shortlist items may carry a blocked reason."));
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.gameRefs, `reviewQuestions.${index}.gameRefs`, "Game reference"),
+      ...referenceFindings(question.gameRefs, gameSet, `reviewQuestions.${index}.gameRefs`, "Game reference"),
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready game backlogs cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    shortlist: value.shortlist.map(({ fitReason, blockedReason }) => ({ fitReason, blockedReason })),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(buy|purchase|install|download|launch|join multiplayer|message|add friend|parental controls|change account|post review|stream|share play history|safe for kids|guaranteed compatible)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Game backlog artifacts must not instruct purchases, installs, launches, multiplayer joins, messages, account changes, parental controls, reviews, streaming, or unsupported suitability claims."));
+  }
+  if (value.handoff.owner === "games-backlog-manager") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Purchase, install, account, multiplayer, messaging, parental-control, and posting decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 function giftRelationshipFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const recipientIds = value.recipients.map((item) => item.id);
@@ -5716,6 +5819,7 @@ const validators = {
   "data-analyst": dataAnalysisFindings,
   "delegation-coordinator": delegationFindings,
   "financial-analyst": financialAnalysisFindings,
+  "games-backlog-manager": gamesBacklogFindings,
   "gift-relationship-manager": giftRelationshipFindings,
   "green-thumb-coordinator": greenThumbFindings,
   "home-repair-coordinator": homeRepairFindings,

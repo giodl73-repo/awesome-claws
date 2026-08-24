@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "games-backlog-manager",
+    "name": "Games backlog manager",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-23"
+    },
+    "description": "Tracks owned and wanted games across platforms, stores, play status, co-op fit, family constraints, content ratings, session fit, and what-to-play shortlists without purchasing, installing, joining sessions, messaging players, changing parental controls, or altering accounts.",
+    "audience": "Players, households, families, and small groups choosing what to play next while keeping purchases, installs, account changes, messages, multiplayer joins, and parental controls owner-approved.",
+    "principles": [
+      "Separate game identity, platform ownership, store/source evidence, play status, co-op compatibility, content constraints, session fit, and source freshness",
+      "Make missing ownership evidence, stale store listings, unsupported co-op claims, content-rating uncertainty, platform mismatch, and family constraints explicit",
+      "Keep purchases, installs, downloads, account linking, multiplayer joins, messages, friend requests, parental controls, reviews, and streaming or posting outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not buy, install, download, launch, join multiplayer sessions, message players, add friends, change parental controls, change accounts, post reviews, stream, or share gameplay without exact approval",
+      "Do not claim ownership, compatibility, co-op support, content suitability, subscription access, or store availability when sources are stale, partial, missing, or conflicting",
+      "Do not expose child or household player details, account identifiers, friend lists, location, play history, or private preferences beyond the owner-approved destination"
+    ],
+    "intake": [
+      "Approved game library exports, platform lists, store pages, subscription catalog notes, content-rating pages, co-op references, household notes, wishlists, and play-history summaries",
+      "Platforms, accounts or account labels, owned/wanted states, play status, preferred genres, co-op or multiplayer needs, age/content constraints, session length, device access, and privacy labels",
+      "Family/kid constraints, accessibility notes, avoid lists, backlog goals, subscription access, stale-source fallback rules, and owner review preferences",
+      "External actions that must remain draft-only, including purchases, installs, downloads, launches, account changes, multiplayer joins, messages, friend requests, parental controls, reviews, streaming, and public posting"
+    ],
+    "workflow": [
+      "Normalize each game, platform, source, ownership state, play state, co-op capability, content rating, session constraint, and household preference to supplied evidence and freshness state",
+      "Collect library, store, rating, subscription, co-op, accessibility, wishlist, play-history, and owner-note evidence from supplied or approved sources only",
+      "Reconcile stale ownership, missing compatibility, unsupported co-op claims, subscription uncertainty, content-rating gaps, platform mismatch, and family constraints",
+      "Rank game options by explicit preferences, ownership, platform fit, co-op/session fit, content constraints, source freshness, and blocked external-action requirements",
+      "Prepare a reviewable game backlog and what-to-play shortlist with evidence, gaps, privacy notes, blocked actions, and owner questions"
+    ],
+    "deliverables": [
+      "Game backlog and ownership ledger",
+      "Platform, subscription, co-op, and compatibility evidence register",
+      "Play status, session-fit, and content-constraint view",
+      "Family, privacy, and owner-review questions",
+      "Blocked purchase, install, multiplayer, message, account, parental-control, and posting handoff"
+    ],
+    "example": {
+      "request": "Organize my game backlog from the library exports, store pages, and notes I supplied. Show what we own, what is co-op, what is family-safe for a short session, and what needs review, but do not buy, install, launch, message anyone, join sessions, change parental controls, or post reviews.",
+      "outcome": "A source-backed game backlog with platform ownership, play status, co-op and content evidence, session-fit shortlist, family and privacy review questions, and all purchase, install, multiplayer, message, account, parental-control, and posting actions blocked."
+    },
+    "doneWhen": [
+      "Every game, source, ownership state, platform, content-rating claim, co-op claim, play status, and shortlist item has source identity, freshness, and privacy labeling",
+      "Every shortlist item traces to explicit ownership, platform, co-op, session-length, content, family, privacy, and source-freshness evidence without hiding gaps",
+      "Player identifiers, household constraints, child details, account labels, friend lists, play history, and private preferences are minimized or blocked from inappropriate outputs",
+      "Purchases, installs, downloads, launches, account changes, multiplayer joins, messages, friend requests, parental controls, reviews, streaming, and public posts remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied or approved library exports, platform lists, store pages, subscription notes, rating pages, co-op references, accessibility notes, wishlists, play-history summaries, and owner preferences and grants no store, install, game-launch, account, multiplayer, messaging, parental-control, streaming, or posting authority.",
+      "When ownership, availability, compatibility, co-op, content, subscription, play-status, platform, source, or privacy evidence is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than presenting certainty or taking action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/game-backlog.schema.json",
+        "path": "schemas/game-backlog.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/game-backlog.example.json",
+        "path": "fixtures/game-backlog.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/game-backlog.md",
+        "path": "templates/game-backlog.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Players and households need help choosing what to play from scattered libraries, stores, subscriptions, ratings, co-op data, and family constraints, but an assistant must not buy or install games, join sessions, message players, change accounts, or alter parental controls.",
+    "repeatableJob": "Reconcile approved game sources, platform ownership, play status, co-op support, content constraints, family preferences, session fit, source freshness, and privacy notes into an owner-controlled game backlog and what-to-play shortlist.",
+    "proofPlan": "Prove an X3 artifact with game identity, source freshness, ownership, platform, co-op, rating/content, session-fit, review questions, blocked external actions, and negative fixtures for stale sources, unsupported ownership/co-op/content certainty, purchases, installs, multiplayer joins, messages, account changes, parental controls, reviews, streaming, and public posting.",
+    "existingAlternatives": [
+      {
+        "id": "movie-streaming-organizer",
+        "overlap": "Both organize entertainment backlogs, favorites, availability, household preferences, content constraints, and blocked account or purchase actions.",
+        "difference": "Movie and Streaming Organizer tracks passive media titles and streaming availability; Games Backlog Manager tracks playable games, platform ownership, co-op compatibility, play status, session fit, and multiplayer/account boundaries."
+      },
+      {
+        "id": "music-organizer",
+        "overlap": "Both manage taste-heavy libraries, playlists or queues, favorites, service availability, and blocked publishing or ticket-like actions.",
+        "difference": "Music Organizer manages artists, albums, playlists, releases, and listening state; Games Backlog Manager manages games, platforms, ownership, co-op, content constraints, and play-session selection."
+      },
+      {
+        "id": "local-events-watcher",
+        "overlap": "Both help choose leisure options with timing, family constraints, content or accessibility concerns, and blocked purchase/message/posting actions.",
+        "difference": "Local Events Watcher evaluates dated real-world events; Games Backlog Manager evaluates owned or wanted games and session fit across platforms without ticketing or venue semantics."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both may mention subscription access, recurring services, account boundaries, source freshness, and blocked payment/account actions.",
+        "difference": "Subscription Manager tracks recurring-service renewals and usage; Games Backlog Manager uses subscription access only as game availability evidence for play selection."
+      },
+      {
+        "id": "household-steward",
+        "overlap": "Both can support household planning, family constraints, shared preferences, privacy partitions, and specialist handoffs.",
+        "difference": "Household Steward is the household manager; Games Backlog Manager is the specialist for game backlog state, platforms, co-op fit, content constraints, and play-session handoff."
+      },
+      {
+        "id": "school-coordinator",
+        "overlap": "Both can involve minors, family constraints, content suitability, calendars, privacy labels, and guardian or owner authority.",
+        "difference": "School Coordinator manages school tasks and guardian-only school authority; Games Backlog Manager manages leisure game choices and blocks account, parental-control, messaging, multiplayer, purchase, and install actions."
+      }
+    ]
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/games-backlog-manager/game-backlog.schema.json",
+  "title": "Games Backlog Manager Game Backlog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "plan", "sources", "games", "constraints", "availability", "shortlist", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.gameBacklog.v1" },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "timezone", "asOf", "sessionGoal", "privacyMode"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^game-plan-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "timezone": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "sessionGoal": { "type": "string", "minLength": 1 },
+        "privacyMode": { "enum": ["owner-only", "household-safe", "redacted"] }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "authority", "capturedAt", "reference", "freshness", "privacy"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": { "enum": ["library-export", "store-page", "subscription-catalog", "rating-page", "co-op-reference", "accessibility-note", "wishlist", "play-history", "owner-note"] },
+          "authority": { "enum": ["platform", "store", "publisher", "rating-board", "community-source", "accessibility-source", "user-supplied"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 },
+          "freshness": { "enum": ["current", "stale", "missing", "conflicting"] },
+          "privacy": { "enum": ["normal", "account-sensitive", "child-sensitive", "household-sensitive", "play-history-sensitive"] }
+        }
+      }
+    },
+    "games": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "platforms", "playState", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^game-[a-z0-9-]+$" },
+          "title": { "type": "string", "minLength": 1 },
+          "platforms": { "$ref": "#/$defs/refs" },
+          "playState": { "enum": ["unplayed", "playing", "paused", "completed", "abandoned", "wanted", "unknown"] },
+          "privacy": { "enum": ["normal", "account-sensitive", "child-sensitive", "household-sensitive", "play-history-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "required", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^constraint-[a-z0-9-]+$" },
+          "kind": { "enum": ["platform", "co-op", "content", "session-length", "family", "accessibility", "subscription", "privacy"] },
+          "label": { "type": "string", "minLength": 1 },
+          "required": { "type": "boolean" },
+          "privacy": { "enum": ["normal", "account-sensitive", "child-sensitive", "household-sensitive", "play-history-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "availability": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "gameRef", "ownershipState", "platformFit", "coOpState", "contentState", "sessionFit", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^availability-[a-z0-9-]+$" },
+          "gameRef": { "type": "string", "minLength": 1 },
+          "ownershipState": { "enum": ["owned", "subscription-access", "wishlist", "unknown", "not-owned"] },
+          "platformFit": { "enum": ["supported", "possible", "unknown", "not-supported"] },
+          "coOpState": { "enum": ["supported", "possible", "solo-only", "unknown", "not-supported"] },
+          "contentState": { "enum": ["supported", "possible", "unknown", "not-suitable"] },
+          "sessionFit": { "enum": ["short", "medium", "long", "unknown", "not-fit"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "shortlist": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "gameRef", "availabilityRef", "rank", "fit", "fitReason", "constraintRefs", "state", "blockedReason"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^pick-[a-z0-9-]+$" },
+          "gameRef": { "type": "string", "minLength": 1 },
+          "availabilityRef": { "type": "string", "minLength": 1 },
+          "rank": { "type": "integer", "minimum": 1 },
+          "fit": { "enum": ["strong", "possible", "blocked"] },
+          "fitReason": { "type": "string", "minLength": 1 },
+          "constraintRefs": { "$ref": "#/$defs/refs" },
+          "state": { "enum": ["recommended", "review-needed", "blocked"] },
+          "blockedReason": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "gameRefs", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "gameRefs": { "$ref": "#/$defs/refs" },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "enum": ["buy-game", "install-game", "download-game", "launch-game", "join-multiplayer", "message-player", "add-friend", "change-parental-controls", "change-account", "post-review", "stream-gameplay", "share-play-history"] }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["draft", "ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "enum": ["buy-game", "install-game", "download-game", "launch-game", "join-multiplayer", "message-player", "add-friend", "change-parental-controls", "change-account", "post-review", "stream-gameplay", "share-play-history"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

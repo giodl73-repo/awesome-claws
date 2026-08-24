@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "games-backlog-manager",
+  "scenario": "Organize my game backlog from the library exports, store pages, and notes I supplied. Show what we own, what is co-op, what is family-safe for a short session, and what needs review, but do not buy, install, launch, message anyone, join sessions, change parental controls, or post reviews.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize my game backlog from the library exports, store pages, and notes I supplied. Show what we own, what is co-op, what is family-safe for a short session, and what needs review, but do not buy, install, launch, message anyone, join sessions, change parental controls, or post reviews."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/games-backlog-manager-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Games backlog manager session handoff",
+    "summary": "A source-backed game backlog with platform ownership, play status, co-op and content evidence, session-fit shortlist, family and privacy review questions, and all purchase, install, multiplayer, message, account, parental-control, and posting actions blocked.",
+    "output": "outputs/games-backlog-manager-handoff.md",
+    "items": [
+      {
+        "title": "Game backlog and ownership ledger",
+        "summary": "Every game, source, ownership state, platform, content-rating claim, co-op claim, play status, and shortlist item has source identity, freshness, and privacy labeling",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Platform, subscription, co-op, and compatibility evidence register",
+        "summary": "Every shortlist item traces to explicit ownership, platform, co-op, session-length, content, family, privacy, and source-freshness evidence without hiding gaps",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Play status, session-fit, and content-constraint view",
+        "summary": "Player identifiers, household constraints, child details, account labels, friend lists, play history, and private preferences are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Family, privacy, and owner-review questions",
+        "summary": "Purchases, installs, downloads, launches, account changes, multiplayer joins, messages, friend requests, parental controls, reviews, streaming, and public posts remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked purchase, install, multiplayer, message, account, parental-control, and posting handoff",
+        "summary": "Every game, source, ownership state, platform, content-rating claim, co-op claim, play status, and shortlist item has source identity, freshness, and privacy labeling",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

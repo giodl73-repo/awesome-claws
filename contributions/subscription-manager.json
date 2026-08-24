@@ -134,6 +134,11 @@
         "id": "school-coordinator",
         "overlap": "Both track due dates, source freshness, owner or guardian review, payment-adjacent blockers, account boundaries, and blocked contact or calendar actions.",
         "difference": "School Coordinator manages student-safe school assignments, forms, supplies, events, and guardian-only school authority; Subscription Manager tracks recurring services, renewals, price changes, usage, and account-action boundaries."
+      },
+      {
+        "id": "games-backlog-manager",
+        "overlap": "Both may use subscription access, account labels, source freshness, usage context, owner review, and blocked payment or account actions.",
+        "difference": "Games Backlog Manager uses subscription access only as game availability evidence for play selection; Subscription Manager tracks recurring services, renewal dates, price changes, usage, overlap, and account-action boundaries."
       }
     ]
   }

@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "awesomeClaws.gameBacklog.v1",
+  "plan": {
+    "id": "game-plan-family-night",
+    "owner": "Game owner",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-23T22:40:00Z",
+    "sessionGoal": "Family co-op under one hour",
+    "privacyMode": "household-safe"
+  },
+  "sources": [
+    { "id": "src-owner-notes", "kind": "owner-note", "authority": "user-supplied", "capturedAt": "2026-08-23T22:20:00Z", "reference": "owner://games/family-night", "freshness": "current", "privacy": "household-sensitive" },
+    { "id": "src-library-export", "kind": "library-export", "authority": "platform", "capturedAt": "2026-08-23T22:22:00Z", "reference": "library://console/export", "freshness": "current", "privacy": "account-sensitive" },
+    { "id": "src-puzzle-store", "kind": "store-page", "authority": "store", "capturedAt": "2026-08-23T22:24:00Z", "reference": "store://puzzle-coop", "freshness": "current", "privacy": "normal" },
+    { "id": "src-puzzle-rating", "kind": "rating-page", "authority": "rating-board", "capturedAt": "2026-08-23T22:25:00Z", "reference": "rating://puzzle-coop", "freshness": "current", "privacy": "child-sensitive" },
+    { "id": "src-puzzle-coop", "kind": "co-op-reference", "authority": "publisher", "capturedAt": "2026-08-23T22:26:00Z", "reference": "coop://puzzle-coop/local", "freshness": "current", "privacy": "normal" },
+    { "id": "src-racer-subscription", "kind": "subscription-catalog", "authority": "platform", "capturedAt": "2026-08-23T22:27:00Z", "reference": "subscription://racer", "freshness": "current", "privacy": "account-sensitive" },
+    { "id": "src-rpg-store", "kind": "store-page", "authority": "store", "capturedAt": "2026-08-23T22:28:00Z", "reference": "store://long-rpg", "freshness": "current", "privacy": "normal" }
+  ],
+  "games": [
+    { "id": "game-puzzle-coop", "title": "Puzzle Co-op", "platforms": ["Console"], "playState": "unplayed", "privacy": "household-sensitive", "sourceRefs": ["src-library-export", "src-puzzle-store"] },
+    { "id": "game-racer", "title": "Racer Party", "platforms": ["Console", "Cloud"], "playState": "paused", "privacy": "account-sensitive", "sourceRefs": ["src-library-export", "src-racer-subscription"] },
+    { "id": "game-long-rpg", "title": "Long RPG", "platforms": ["PC"], "playState": "wanted", "privacy": "normal", "sourceRefs": ["src-rpg-store"] }
+  ],
+  "constraints": [
+    { "id": "constraint-owned", "kind": "platform", "label": "Use games already available on the console", "required": true, "privacy": "account-sensitive", "sourceRefs": ["src-owner-notes", "src-library-export"] },
+    { "id": "constraint-coop", "kind": "co-op", "label": "Local co-op preferred", "required": true, "privacy": "household-sensitive", "sourceRefs": ["src-owner-notes", "src-puzzle-coop"] },
+    { "id": "constraint-family", "kind": "content", "label": "Family-suitable content needed", "required": true, "privacy": "child-sensitive", "sourceRefs": ["src-owner-notes", "src-puzzle-rating"] },
+    { "id": "constraint-short", "kind": "session-length", "label": "Under one hour", "required": false, "privacy": "normal", "sourceRefs": ["src-owner-notes"] }
+  ],
+  "availability": [
+    { "id": "availability-puzzle-coop", "gameRef": "game-puzzle-coop", "ownershipState": "owned", "platformFit": "supported", "coOpState": "supported", "contentState": "supported", "sessionFit": "short", "sourceRefs": ["src-library-export", "src-puzzle-store", "src-puzzle-rating", "src-puzzle-coop"] },
+    { "id": "availability-racer", "gameRef": "game-racer", "ownershipState": "subscription-access", "platformFit": "supported", "coOpState": "possible", "contentState": "possible", "sessionFit": "short", "sourceRefs": ["src-library-export", "src-racer-subscription"] },
+    { "id": "availability-long-rpg", "gameRef": "game-long-rpg", "ownershipState": "wishlist", "platformFit": "not-supported", "coOpState": "solo-only", "contentState": "unknown", "sessionFit": "long", "sourceRefs": ["src-rpg-store"] }
+  ],
+  "shortlist": [
+    { "id": "pick-puzzle-coop", "gameRef": "game-puzzle-coop", "availabilityRef": "availability-puzzle-coop", "rank": 1, "fit": "strong", "fitReason": "Current library, store, rating, and co-op evidence supports owned console access, local co-op, family fit, and a short session.", "constraintRefs": ["constraint-owned", "constraint-coop", "constraint-family", "constraint-short"], "state": "recommended", "blockedReason": null },
+    { "id": "pick-racer", "gameRef": "game-racer", "availabilityRef": "availability-racer", "rank": 2, "fit": "possible", "fitReason": "Subscription evidence suggests access and short-session fit, but co-op and content fit need owner review.", "constraintRefs": ["constraint-owned", "constraint-coop", "constraint-family", "constraint-short"], "state": "review-needed", "blockedReason": null },
+    { "id": "pick-long-rpg", "gameRef": "game-long-rpg", "availabilityRef": "availability-long-rpg", "rank": 3, "fit": "blocked", "fitReason": "The store source shows wishlist state, unsupported platform fit, solo-only play, unknown content fit, and a long session.", "constraintRefs": ["constraint-owned", "constraint-coop", "constraint-family"], "state": "blocked", "blockedReason": "Required ownership, platform, co-op, and content constraints are not supported." }
+  ],
+  "reviewQuestions": [
+    { "id": "question-racer", "question": "Should the owner keep Racer Party as a possibility until co-op and content evidence are confirmed from approved sources?", "reason": "Subscription access appears current, but family and co-op fit are only possible.", "gameRefs": ["game-racer"], "sourceRefs": ["src-racer-subscription", "src-owner-notes"] },
+    { "id": "question-play", "question": "Should the owner review Puzzle Co-op as the first play option outside this artifact?", "reason": "The shortlist is ready for owner review, but launching or installing remains blocked until exact owner approval.", "gameRefs": ["game-puzzle-coop"], "sourceRefs": ["src-library-export", "src-puzzle-coop"] }
+  ],
+  "blockedActions": ["buy-game", "install-game", "download-game", "launch-game", "join-multiplayer", "message-player", "add-friend", "change-parental-controls", "change-account", "post-review", "stream-gameplay", "share-play-history"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Game owner",
+    "prohibitedActions": ["buy-game", "install-game", "download-game", "launch-game", "join-multiplayer", "message-player", "add-friend", "change-parental-controls", "change-account", "post-review", "stream-gameplay", "share-play-history"]
+  }
+}
