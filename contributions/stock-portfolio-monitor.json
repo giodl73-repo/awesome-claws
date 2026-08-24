@@ -124,6 +124,16 @@
         "id": "spreadsheet-analyst",
         "overlap": "Both preserve formula lineage, supplied data, and reviewability.",
         "difference": "Spreadsheet Analyst audits arbitrary spreadsheets; Stock Portfolio Monitor has securities-specific source freshness, issuer-event, exposure, and no-advice semantics."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both track money-adjacent owner-supplied records, source freshness, cadence, review questions, and blocked account or payment authority.",
+        "difference": "Subscription Manager tracks recurring services, renewals, invoices, and cancellation handoffs; Stock Portfolio Monitor tracks declared securities, quotes, issuer events, allocation drift, and blocks buy, sell, hold, tax, legal, and trading advice."
+      },
+      {
+        "id": "home-inventory-binder",
+        "overlap": "Both preserve owner-supplied value evidence, source freshness, privacy labels, review questions, and blocked external actions.",
+        "difference": "Home Inventory Binder organizes physical possessions, rooms, serials, receipts, photos, warranties, manuals, and insurance-review gaps; Stock Portfolio Monitor tracks securities holdings and watchlists with market data, issuer events, allocation math, and strict no-advice/no-trading boundaries."
       }
     ]
   }

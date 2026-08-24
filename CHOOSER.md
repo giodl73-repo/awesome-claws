@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (75)
+### Active (76)
 
 | Claw | Detail |
 | --- | --- |
@@ -40,6 +40,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Gift and relationship manager](claws/gift-relationship-manager) | @giodl73-repo; last verified 2026-08-22 |
 | [Grant portfolio manager](claws/grant-portfolio-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | @giodl73-repo; last verified 2026-08-20 |
+| [Home inventory binder](claws/home-inventory-binder) | @giodl73-repo; last verified 2026-08-23 |
 | [Home repair coordinator](claws/home-repair-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Household steward](claws/household-steward) | @giodl73-repo; last verified 2026-08-21 |
 | [Incident response](claws/incident-response) | @giodl73-repo; last verified 2026-08-19 |
@@ -102,7 +103,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (44)
+### Low setup (45)
 
 | Claw | Detail |
 | --- | --- |
@@ -123,6 +124,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Games backlog manager](claws/games-backlog-manager) | no bootstrap, external dependency, or schedule |
 | [Gift and relationship manager](claws/gift-relationship-manager) | no bootstrap, external dependency, or schedule |
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | no bootstrap, external dependency, or schedule |
+| [Home inventory binder](claws/home-inventory-binder) | no bootstrap, external dependency, or schedule |
 | [Home repair coordinator](claws/home-repair-coordinator) | no bootstrap, external dependency, or schedule |
 | [Household steward](claws/household-steward) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
@@ -196,7 +198,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (52)
+### No external dependencies (53)
 
 | Claw | Detail |
 | --- | --- |
@@ -222,6 +224,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Gift and relationship manager](claws/gift-relationship-manager) | None |
 | [Grant portfolio manager](claws/grant-portfolio-manager) | None |
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | None |
+| [Home inventory binder](claws/home-inventory-binder) | None |
 | [Home repair coordinator](claws/home-repair-coordinator) | None |
 | [Household steward](claws/household-steward) | None |
 | [Incident response](claws/incident-response) | None |
@@ -285,7 +288,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (50)
+### X3 (51)
 
 | Claw | Detail |
 | --- | --- |
@@ -305,6 +308,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Games backlog manager](claws/games-backlog-manager) | Tracks owned and wanted games across platforms, stores, play status, co-op fit, family constraints, content ratings, session fit, and what-to-play shortlists without purchasing, installing, joining sessions, messaging players, changing parental controls, or altering accounts. |
 | [Gift and relationship manager](claws/gift-relationship-manager) | Organizes relationship notes, occasions, gift ideas, preference evidence, budgets, and owner-review reminders without buying gifts, sending messages, editing calendars, or inferring sensitive relationship meaning. |
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | Coordinates evidence-bound seasonal garden planning, plant-health triage, low-risk care, and explicitly approved landscaper appointments. |
+| [Home inventory binder](claws/home-inventory-binder) | Organizes possessions, rooms, categories, serials, receipts, photos, warranties, manuals, value evidence, and owner-review questions without filing claims, giving insurance/legal advice, sharing private addresses, or exposing valuables. |
 | [Home repair coordinator](claws/home-repair-coordinator) | Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments. |
 | [Household steward](claws/household-steward) | Coordinates a multi-person household's priorities, responsibilities, specialist-Claw handoffs, shared constraints, and explicitly authorized external actions without becoming the household decision-maker. |
 | [Knowledge curator](claws/knowledge-curator) | Turns scattered information into durable, navigable, and source-linked knowledge. |
@@ -456,7 +460,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (23)
+### Productivity (24)
 
 | Claw | Detail |
 | --- | --- |
@@ -466,6 +470,7 @@ Categories come directly from the catalog entry.
 | [Executive briefing](claws/executive-briefing) | X3; Builds a concise daily operating brief from authorized calendar, mail, document, and weather context. |
 | [Games backlog manager](claws/games-backlog-manager) | X3; Tracks owned and wanted games across platforms, stores, play status, co-op fit, family constraints, content ratings, session fit, and what-to-play shortlists without purchasing, installing, joining sessions, messaging players, changing parental controls, or altering accounts. |
 | [Gift and relationship manager](claws/gift-relationship-manager) | X3; Organizes relationship notes, occasions, gift ideas, preference evidence, budgets, and owner-review reminders without buying gifts, sending messages, editing calendars, or inferring sensitive relationship meaning. |
+| [Home inventory binder](claws/home-inventory-binder) | X3; Organizes possessions, rooms, categories, serials, receipts, photos, warranties, manuals, value evidence, and owner-review questions without filing claims, giving insurance/legal advice, sharing private addresses, or exposing valuables. |
 | [Knowledge curator](claws/knowledge-curator) | X3; Turns scattered information into durable, navigable, and source-linked knowledge. |
 | [Knowledge gardener](claws/knowledge-gardener) | X3; Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work. |
 | [Local events watcher](claws/local-events-watcher) | X3; Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
@@ -488,7 +493,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (23)
+### Standard attention (24)
 
 | Claw | Detail |
 | --- | --- |
@@ -498,6 +503,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Games backlog manager](claws/games-backlog-manager) | portable workspace artifacts only |
 | [Gift and relationship manager](claws/gift-relationship-manager) | portable workspace artifacts only |
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | portable workspace artifacts only |
+| [Home inventory binder](claws/home-inventory-binder) | portable workspace artifacts only |
 | [Home repair coordinator](claws/home-repair-coordinator) | portable workspace artifacts only |
 | [Knowledge curator](claws/knowledge-curator) | portable workspace artifacts only |
 | [Local events watcher](claws/local-events-watcher) | portable workspace artifacts only |

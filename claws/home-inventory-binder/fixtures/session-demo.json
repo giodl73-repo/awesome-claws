@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "home-inventory-binder",
+  "scenario": "Build a home inventory binder from the receipts, photos, warranty links, and room notes I supplied. Show missing serials, warranty gaps, high-value privacy risks, and review questions, but do not file claims, upload photos, contact anyone, give insurance advice, sell or discard anything, or expose my address.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Build a home inventory binder from the receipts, photos, warranty links, and room notes I supplied. Show missing serials, warranty gaps, high-value privacy risks, and review questions, but do not file claims, upload photos, contact anyone, give insurance advice, sell or discard anything, or expose my address."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/home-inventory-binder-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Home inventory binder session handoff",
+    "summary": "A source-backed inventory binder with item, room, category, serial, receipt, photo, warranty, value, condition, and privacy evidence; duplicate and gap review questions; and all claim, advice, upload, contact, sale, donation, disposal, move, and address-disclosure actions blocked.",
+    "output": "outputs/home-inventory-binder-handoff.md",
+    "items": [
+      {
+        "title": "Item, room, and category ledger",
+        "summary": "Every item, room, category, source, serial/model claim, receipt, photo, warranty, value note, and condition note has source identity, freshness, and privacy labeling",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Receipt, photo, serial, manual, and warranty evidence register",
+        "summary": "Every inventory conclusion traces to explicit receipt, photo, warranty, manual, serial, purchase, maintenance, app-export, or owner-note evidence without hiding gaps",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Value, condition, duplicate, and privacy review view",
+        "summary": "Addresses, valuables, serial numbers, photos, receipts, security details, family details, and location-sensitive room data are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Insurance, warranty, move, and owner-review questions",
+        "summary": "Insurance claims, insurance/legal advice, uploads, insurer/seller contact, public sharing, item sale/donation/disposal/move, cloud album edits, and address disclosure remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked claim, advice, upload, share, contact, sale, donation, disposal, move, and address-disclosure handoff",
+        "summary": "Every item, room, category, source, serial/model claim, receipt, photo, warranty, value note, and condition note has source identity, freshness, and privacy labeling",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

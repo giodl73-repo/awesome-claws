@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "home-inventory-binder",
+    "name": "Home inventory binder",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-23"
+    },
+    "description": "Organizes possessions, rooms, categories, serials, receipts, photos, warranties, manuals, value evidence, and owner-review questions without filing claims, giving insurance/legal advice, sharing private addresses, or exposing valuables.",
+    "audience": "Households, renters, homeowners, caregivers, and small offices keeping an inventory binder for warranties, maintenance, moves, disaster readiness, or insurance review while preserving privacy and owner authority.",
+    "principles": [
+      "Separate item identity, room, category, serial, receipt, photo, warranty, value evidence, source freshness, and privacy risk",
+      "Make missing serials, stale receipts, unsupported value estimates, warranty gaps, duplicate items, and valuables exposure explicit",
+      "Keep claim filing, insurance/legal advice, public sharing, account uploads, seller contact, disposal, sale, donation, and address disclosure outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not file insurance claims, give insurance or legal advice, upload inventories, contact insurers or sellers, sell, donate, discard, move items, edit cloud albums, or share addresses or valuables without exact approval",
+      "Do not infer value, ownership, coverage, condition, authenticity, warranty status, or claim eligibility from incomplete evidence",
+      "Do not expose addresses, security details, valuables, serial numbers, photos, receipts, family details, or location-sensitive room data beyond the owner-approved destination"
+    ],
+    "intake": [
+      "Approved item lists, room notes, photos, receipts, warranties, serial labels, manuals, app exports, maintenance notes, purchase records, valuation notes, and owner preferences",
+      "Item names, categories, rooms, owner labels, serial/model details, purchase dates, replacement value notes, warranty dates, condition notes, privacy labels, and evidence freshness",
+      "Insurance-review goals, move-prep goals, warranty lookup goals, appliance and repair links, duplicate checks, high-value item handling, and stale-source fallback rules",
+      "External actions that must remain draft-only, including claim filing, insurer contact, seller contact, uploads, sharing, disposal, sale, donation, item moves, cloud album edits, and legal/insurance conclusions"
+    ],
+    "workflow": [
+      "Normalize each item, room, category, owner label, serial/model fact, receipt, photo, warranty, manual, value note, and source to supplied evidence and freshness state",
+      "Collect receipt, photo, warranty, serial, manual, purchase, maintenance, app-export, and owner-note evidence from supplied or approved sources only",
+      "Reconcile stale receipts, missing serials, unsupported value notes, warranty uncertainty, duplicate item evidence, condition gaps, and valuables exposure",
+      "Group items by room, category, privacy risk, warranty status, evidence freshness, and owner-review need",
+      "Prepare a reviewable home inventory binder with evidence, gaps, privacy notes, blocked actions, and owner questions"
+    ],
+    "deliverables": [
+      "Item, room, and category ledger",
+      "Receipt, photo, serial, manual, and warranty evidence register",
+      "Value, condition, duplicate, and privacy review view",
+      "Insurance, warranty, move, and owner-review questions",
+      "Blocked claim, advice, upload, share, contact, sale, donation, disposal, move, and address-disclosure handoff"
+    ],
+    "example": {
+      "request": "Build a home inventory binder from the receipts, photos, warranty links, and room notes I supplied. Show missing serials, warranty gaps, high-value privacy risks, and review questions, but do not file claims, upload photos, contact anyone, give insurance advice, sell or discard anything, or expose my address.",
+      "outcome": "A source-backed inventory binder with item, room, category, serial, receipt, photo, warranty, value, condition, and privacy evidence; duplicate and gap review questions; and all claim, advice, upload, contact, sale, donation, disposal, move, and address-disclosure actions blocked."
+    },
+    "doneWhen": [
+      "Every item, room, category, source, serial/model claim, receipt, photo, warranty, value note, and condition note has source identity, freshness, and privacy labeling",
+      "Every inventory conclusion traces to explicit receipt, photo, warranty, manual, serial, purchase, maintenance, app-export, or owner-note evidence without hiding gaps",
+      "Addresses, valuables, serial numbers, photos, receipts, security details, family details, and location-sensitive room data are minimized or blocked from inappropriate outputs",
+      "Insurance claims, insurance/legal advice, uploads, insurer/seller contact, public sharing, item sale/donation/disposal/move, cloud album edits, and address disclosure remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied or approved item lists, photos, receipts, warranties, serial labels, manuals, app exports, maintenance notes, purchase records, valuation notes, and owner preferences and grants no insurance, legal, upload, sharing, marketplace, cloud-album, seller-contact, insurer-contact, or file-mutation authority.",
+      "When item, receipt, photo, serial, warranty, value, condition, ownership, source, or privacy evidence is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than presenting certainty or taking action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/home-inventory.schema.json",
+        "path": "schemas/home-inventory.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/home-inventory.example.json",
+        "path": "fixtures/home-inventory.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/home-inventory.md",
+        "path": "templates/home-inventory.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Households need a reviewable inventory of possessions, receipts, serials, photos, warranties, rooms, and value evidence, but an assistant must not file claims, give insurance/legal advice, expose addresses or valuables, upload private files, or dispose of items.",
+    "repeatableJob": "Reconcile approved item sources, rooms, categories, receipts, photos, serials, warranties, value notes, condition notes, source freshness, and privacy labels into an owner-controlled home inventory binder.",
+    "proofPlan": "Prove an X3 artifact with item identity, room/category state, receipt/photo/serial/warranty/value evidence, privacy labels, owner questions, blocked external actions, and negative fixtures for stale sources, unsupported value/warranty/ownership certainty, insurance/legal advice, claim filing, uploads, contact, public sharing, item disposal/sale/donation/move, and address or valuables disclosure.",
+    "existingAlternatives": [
+      {
+        "id": "personal-archive-curator",
+        "overlap": "Both index private files, receipts, photos, notes, privacy labels, duplicate evidence, and blocked delete/move/share/upload actions.",
+        "difference": "Personal Archive Curator organizes broad personal files and memories; Home Inventory Binder models physical possessions, rooms, serials, receipts, warranties, value evidence, and insurance/warranty review boundaries."
+      },
+      {
+        "id": "appliance-care-coordinator",
+        "overlap": "Both may track appliance identity, warranties, manuals, receipts, serials, maintenance notes, and owner review.",
+        "difference": "Appliance Care Coordinator manages appliance care and service readiness; Home Inventory Binder covers all possessions and inventory evidence without repair scheduling or care workflows."
+      },
+      {
+        "id": "home-repair-coordinator",
+        "overlap": "Both involve home context, rooms, photos, safety/privacy risks, providers, and blocked appointments or address disclosure.",
+        "difference": "Home Repair Coordinator plans repair diagnosis and provider handoff; Home Inventory Binder maintains possessions, receipts, warranties, serials, value evidence, and claim/advice blockers."
+      },
+      {
+        "id": "household-steward",
+        "overlap": "Both support household operations, shared privacy, member constraints, and specialist handoffs.",
+        "difference": "Household Steward is the household manager; Home Inventory Binder is the specialist for possession evidence and can be delegated to without absorbing household-wide authority."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both preserve owner-supplied account or purchase evidence, source freshness, review questions, and blocked payment/account actions.",
+        "difference": "Subscription Manager tracks recurring services; Home Inventory Binder tracks physical items, warranties, receipts, photos, serials, and inventory privacy."
+      },
+      {
+        "id": "gift-relationship-manager",
+        "overlap": "Both may use receipts, purchase notes, budgets, privacy labels, and blocked sale/purchase/message actions.",
+        "difference": "Gift and Relationship Manager plans gifts for recipients and occasions; Home Inventory Binder records existing possessions and evidence for warranty, move, disaster-readiness, or insurance review."
+      }
+    ]
+  }
+}

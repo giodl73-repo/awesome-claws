@@ -83,6 +83,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "home-inventory-binder",
+    schema: "../claws/home-inventory-binder/schemas/home-inventory.schema.json",
+    fixture: "../claws/home-inventory-binder/fixtures/home-inventory.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "household-steward",
     schema: "../claws/household-steward/schemas/household-operations.schema.json",
     fixture: "../claws/household-steward/fixtures/household-operations.example.json",
@@ -397,6 +403,28 @@ test("games backlog manager preserves ownership evidence and owner authority", (
   assert.equal(isValid("games-backlog-manager", danglingGame), false);
 });
 
+test("home inventory binder preserves evidence and owner disclosure authority", () => {
+  const staleSource = structuredClone(cases.get("home-inventory-binder").fixture);
+  staleSource.sources[1].freshness = "stale";
+  assert.equal(isValid("home-inventory-binder", staleSource), false);
+
+  const unsupportedReady = structuredClone(cases.get("home-inventory-binder").fixture);
+  unsupportedReady.items[0].condition = "unknown";
+  assert.equal(isValid("home-inventory-binder", unsupportedReady), false);
+
+  const actionAdvice = structuredClone(cases.get("home-inventory-binder").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Upload it and contact insurer.";
+  assert.equal(isValid("home-inventory-binder", actionAdvice), false);
+
+  const danglingItem = structuredClone(cases.get("home-inventory-binder").fixture);
+  danglingItem.evidence[0].itemRef = "missing-item";
+  assert.equal(isValid("home-inventory-binder", danglingItem), false);
+
+  const agentOwned = structuredClone(cases.get("home-inventory-binder").fixture);
+  agentOwned.handoff.owner = "home-inventory-binder";
+  assert.equal(isValid("home-inventory-binder", agentOwned), false);
+});
+
 test("public safety state rejects impossible time ranges and dangling alerts", () => {
   const candidate = structuredClone(cases.get("public-safety-monitor").fixture);
   candidate.alerts[0].expiresAt = candidate.alerts[0].issuedAt;
@@ -451,6 +479,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
     ["games-backlog-manager", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
     ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
+    ["home-inventory-binder", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["local-events-watcher", (value) => value.watchlist[0].constraintRefs.push(value.watchlist[0].constraintRefs[0])],
     ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],
     ["movie-streaming-organizer", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],

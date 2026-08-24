@@ -134,6 +134,16 @@
         "id": "sports-team-watcher",
         "overlap": "Both may track places, timing, availability, official-source freshness, and fan or group preferences.",
         "difference": "Sports Team Watcher tracks team facts and games; Restaurant and Venue Scout tracks restaurants and venues with menus, accessibility, hours, and reservation signals."
+      },
+      {
+        "id": "local-events-watcher",
+        "overlap": "Both compare local options, venue facts, timing, accessibility, location, group preferences, source freshness, and blocked reservation or ticket-adjacent actions.",
+        "difference": "Local Events Watcher evaluates dated concerts, theater, sports, school, community, and family events with ticketing and schedule-conflict evidence; Restaurant and Venue Scout evaluates places to eat or visit with menu, dietary, hours, reservation, price, and ordering/payment boundaries."
+      },
+      {
+        "id": "home-inventory-binder",
+        "overlap": "Both preserve owner-supplied evidence, privacy labels, location-sensitive details, source freshness, review questions, and blocked external actions.",
+        "difference": "Home Inventory Binder organizes physical possessions, rooms, serials, receipts, photos, warranties, manuals, and value evidence; Restaurant and Venue Scout evaluates public or approved venue options with menus, dietary/accessibility evidence, hours, reservations, price, and distance fit."
       }
     ]
   }
