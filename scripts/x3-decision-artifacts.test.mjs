@@ -101,6 +101,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "meal-grocery-planner",
+    schema: "../claws/meal-grocery-planner/schemas/meal-grocery.schema.json",
+    fixture: "../claws/meal-grocery-planner/fixtures/meal-grocery.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "work-chief-of-staff",
     schema: "../claws/work-chief-of-staff/schemas/operating-portfolio.schema.json",
     fixture: "../claws/work-chief-of-staff/fixtures/operating-portfolio.example.json",
@@ -359,6 +365,28 @@ test("local events watcher preserves source certainty and owner authority", () =
   assert.equal(isValid("local-events-watcher", danglingEvent), false);
 });
 
+test("meal grocery planner preserves pantry evidence and owner authority", () => {
+  const staleSource = structuredClone(cases.get("meal-grocery-planner").fixture);
+  staleSource.sources[1].freshness = "stale";
+  assert.equal(isValid("meal-grocery-planner", staleSource), false);
+
+  const unsupportedAllergy = structuredClone(cases.get("meal-grocery-planner").fixture);
+  unsupportedAllergy.sources.find((source) => source.id === "src-allergy").freshness = "unknown";
+  assert.equal(isValid("meal-grocery-planner", unsupportedAllergy), false);
+
+  const actionAdvice = structuredClone(cases.get("meal-grocery-planner").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Order groceries and schedule delivery.";
+  assert.equal(isValid("meal-grocery-planner", actionAdvice), false);
+
+  const danglingGrocery = structuredClone(cases.get("meal-grocery-planner").fixture);
+  danglingGrocery.meals[0].groceryRefs = ["missing-grocery"];
+  assert.equal(isValid("meal-grocery-planner", danglingGrocery), false);
+
+  const unsupportedReady = structuredClone(cases.get("meal-grocery-planner").fixture);
+  unsupportedReady.meals[0].constraintRefs = ["constraint-vegetarian"];
+  assert.equal(isValid("meal-grocery-planner", unsupportedReady), false);
+});
+
 test("school coordinator preserves student privacy and guardian authority", () => {
   const staleSource = structuredClone(cases.get("school-coordinator").fixture);
   staleSource.sources[1].freshness = "stale";
@@ -481,6 +509,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["home-inventory-binder", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["local-events-watcher", (value) => value.watchlist[0].constraintRefs.push(value.watchlist[0].constraintRefs[0])],
+    ["meal-grocery-planner", (value) => value.meals[0].constraintRefs.push(value.meals[0].constraintRefs[0])],
     ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],
     ["movie-streaming-organizer", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["music-organizer", (value) => value.playlistPlan[0].preferenceRefs.push(value.playlistPlan[0].preferenceRefs[0])],

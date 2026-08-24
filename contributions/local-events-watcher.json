@@ -129,6 +129,11 @@
         "id": "home-inventory-binder",
         "overlap": "Both preserve owner-supplied evidence, privacy labels, location-sensitive details, source freshness, review questions, and blocked external actions.",
         "difference": "Home Inventory Binder organizes physical possessions, rooms, serials, receipts, photos, warranties, manuals, and value evidence; Local Events Watcher evaluates dated local events with venues, ticketing, accessibility, age-fit, travel, and schedule-conflict evidence."
+      },
+      {
+        "id": "meal-grocery-planner",
+        "overlap": "Both handle household preferences, timing constraints, budget or price signals, source freshness, privacy labels, review questions, and blocked calendar/message/payment-like actions.",
+        "difference": "Meal and Grocery Planner prepares home meal plans, pantry use, recipe substitutions, grocery lists, and food-specific dietary/allergy evidence; Local Events Watcher evaluates dated public or community events with venue, ticketing, accessibility, age-fit, travel, and schedule-conflict evidence."
       }
     ]
   }

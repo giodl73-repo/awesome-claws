@@ -794,6 +794,141 @@ function gamesBacklogFindings(value) {
   return findings;
 }
 
+function mealGroceryFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const constraintIds = value.constraints.map((item) => item.id);
+  const inventoryIds = value.inventory.map((item) => item.id);
+  const mealIds = value.meals.map((item) => item.id);
+  const groceryIds = value.groceryItems.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const constraintSet = new Set(constraintIds);
+  const inventorySet = new Set(inventoryIds);
+  const mealSet = new Set(mealIds);
+  const grocerySet = new Set(groceryIds);
+  const questionSet = new Set(questionIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const constraintsById = new Map(value.constraints.map((item) => [item.id, item]));
+  const requiredConstraints = value.constraints.filter((constraint) => constraint.required);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(constraintIds, "constraints", "Constraint id"),
+    ...uniqueFindings(inventoryIds, "inventory", "Inventory id"),
+    ...uniqueFindings(mealIds, "meals", "Meal id"),
+    ...uniqueFindings(groceryIds, "groceryItems", "Grocery item id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+
+  for (const [index, constraint] of value.constraints.entries()) {
+    findings.push(
+      ...uniqueFindings(constraint.sourceRefs, `constraints.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(constraint.sourceRefs, sourceSet, `constraints.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, item] of value.inventory.entries()) {
+    findings.push(
+      ...uniqueFindings(item.sourceRefs, `inventory.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `inventory.${index}.sourceRefs`, "Source reference"),
+    );
+    const hasInventorySource = item.sourceRefs.some((ref) =>
+      ["pantry-note", "fridge-note", "freezer-note", "receipt", "owner-note"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasInventorySource) {
+      findings.push(finding("unsupported_inventory_source", `inventory.${index}.sourceRefs`, "Inventory state requires pantry, fridge, freezer, receipt, or owner-note evidence."));
+    }
+  }
+  for (const [index, meal] of value.meals.entries()) {
+    findings.push(
+      ...uniqueFindings(meal.recipeRefs, `meals.${index}.recipeRefs`, "Recipe source reference"),
+      ...referenceFindings(meal.recipeRefs, sourceSet, `meals.${index}.recipeRefs`, "Recipe source reference"),
+      ...uniqueFindings(meal.constraintRefs, `meals.${index}.constraintRefs`, "Constraint reference"),
+      ...referenceFindings(meal.constraintRefs, constraintSet, `meals.${index}.constraintRefs`, "Constraint reference"),
+      ...uniqueFindings(meal.inventoryRefs, `meals.${index}.inventoryRefs`, "Inventory reference"),
+      ...referenceFindings(meal.inventoryRefs, inventorySet, `meals.${index}.inventoryRefs`, "Inventory reference"),
+      ...uniqueFindings(meal.groceryRefs, `meals.${index}.groceryRefs`, "Grocery item reference"),
+      ...referenceFindings(meal.groceryRefs, grocerySet, `meals.${index}.groceryRefs`, "Grocery item reference"),
+      ...uniqueFindings(meal.sourceRefs, `meals.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(meal.sourceRefs, sourceSet, `meals.${index}.sourceRefs`, "Source reference"),
+    );
+    const hasMealSource = [...meal.recipeRefs, ...meal.sourceRefs].some((ref) =>
+      ["recipe", "owner-note", "dietary-note", "allergy-note", "care-scope"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasMealSource) {
+      findings.push(finding("unsupported_meal_source", `meals.${index}.sourceRefs`, "Meal fit requires recipe, owner, dietary, allergy, or care-scope evidence."));
+    }
+    const missingRequired = requiredConstraints.some((constraint) => !meal.constraintRefs.includes(constraint.id));
+    const requiredEvidenceProblem = meal.constraintRefs
+      .map((ref) => constraintsById.get(ref))
+      .filter(Boolean)
+      .some((constraint) =>
+        ["allergy", "dietary"].includes(constraint.kind) &&
+        constraint.sourceRefs.some((ref) => ["stale", "unknown", "conflicting"].includes(sourceById.get(ref)?.freshness)),
+      );
+    if (
+      meal.fitState === "ready-for-review" &&
+      (missingRequired || requiredEvidenceProblem || meal.blockedReason)
+    ) {
+      findings.push(finding("unsupported_meal_ready_state", `meals.${index}`, "Ready meals require all required constraints, supported dietary/allergy evidence, and no blocked reason."));
+    }
+    if (
+      (meal.fitState === "blocked" && !meal.blockedReason) ||
+      (meal.fitState !== "blocked" && meal.blockedReason && meal.fitState !== "possible")
+    ) {
+      findings.push(finding("incoherent_blocked_state", `meals.${index}.blockedReason`, "Only blocked or possible meals may carry a blocked reason."));
+    }
+  }
+  for (const [index, item] of value.groceryItems.entries()) {
+    findings.push(
+      ...uniqueFindings(item.neededForMealRefs, `groceryItems.${index}.neededForMealRefs`, "Meal reference"),
+      ...referenceFindings(item.neededForMealRefs, mealSet, `groceryItems.${index}.neededForMealRefs`, "Meal reference"),
+      ...uniqueFindings(item.sourceRefs, `groceryItems.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `groceryItems.${index}.sourceRefs`, "Source reference"),
+      ...uniqueFindings(item.substitutionRefs, `groceryItems.${index}.substitutionRefs`, "Substitution reference"),
+      ...referenceFindings(item.substitutionRefs, grocerySet, `groceryItems.${index}.substitutionRefs`, "Substitution reference"),
+    );
+    const hasGrocerySource = item.sourceRefs.some((ref) =>
+      ["store-page", "circular", "coupon", "receipt", "pantry-note", "fridge-note", "freezer-note", "owner-note"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasGrocerySource) {
+      findings.push(finding("unsupported_grocery_source", `groceryItems.${index}.sourceRefs`, "Grocery state requires store, circular, coupon, receipt, pantry, fridge, freezer, or owner-note evidence."));
+    }
+    if (
+      item.availabilityState === "in-stock" &&
+      item.sourceRefs.some((ref) => ["stale", "unknown", "conflicting"].includes(sourceById.get(ref)?.freshness))
+    ) {
+      findings.push(finding("unsupported_in_stock_state", `groceryItems.${index}.availabilityState`, "In-stock grocery claims require current or recent source evidence."));
+    }
+  }
+  const knownRefs = new Set([...sourceIds, ...constraintIds, ...inventoryIds, ...mealIds, ...groceryIds]);
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.refs, `reviewQuestions.${index}.refs`, "Review reference"),
+      ...referenceFindings(question.refs, knownRefs, `reviewQuestions.${index}.refs`, "Review reference"),
+    );
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, questionSet, "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "unknown", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready meal and grocery plans cannot depend on stale, unknown, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    meals: value.meals.map(({ blockedReason }) => blockedReason),
+    reviewQuestions: value.reviewQuestions.map(({ reason }) => reason),
+  });
+  if (/\b(order groceries|checkout|check out|schedule delivery|subscribe now|modify subscription|edit calendar|message|text them|share address|publish|discard|throw away|allergen safe|allergy safe|give medical diet advice|nutrition advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Meal and grocery artifacts must not instruct orders, checkout, delivery, subscriptions, calendar edits, messages, address sharing, publishing, discarding, allergen certainty, or medical diet advice."));
+  }
+  if (value.handoff.nextOwner === "meal-grocery-planner") {
+    findings.push(finding("agent_owned_authority", "handoff.nextOwner", "Grocery, delivery, calendar, household-message, disclosure, and medical diet decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 function homeInventoryFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const roomIds = value.rooms.map((item) => item.id);
@@ -5932,6 +6067,7 @@ const validators = {
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "local-events-watcher": localEventsFindings,
+  "meal-grocery-planner": mealGroceryFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
   "movie-streaming-organizer": movieStreamingFindings,
   "music-organizer": musicOrganizerFindings,

@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "awesomeClaws.mealGrocery.v1",
+  "sources": [
+    { "id": "src-owner-notes", "kind": "owner-note", "authority": "owner", "capturedAt": "2026-08-24T12:00:00Z", "reference": "owner://meal-notes/weeknight", "freshness": "current", "privacy": "household-sensitive" },
+    { "id": "src-pantry", "kind": "pantry-note", "authority": "owner", "capturedAt": "2026-08-24T12:05:00Z", "reference": "pantry://shelf-check", "freshness": "current", "privacy": "private" },
+    { "id": "src-fridge", "kind": "fridge-note", "authority": "owner", "capturedAt": "2026-08-24T12:07:00Z", "reference": "fridge://use-soon", "freshness": "current", "privacy": "private" },
+    { "id": "src-recipe-spinach-curry", "kind": "recipe", "authority": "recipe-publisher", "capturedAt": "2026-08-24T12:10:00Z", "reference": "recipe://spinach-chickpea-curry", "freshness": "recent", "privacy": "normal" },
+    { "id": "src-store-circular", "kind": "circular", "authority": "store", "capturedAt": "2026-08-24T12:15:00Z", "reference": "store://weekly-circular", "freshness": "current", "privacy": "budget-sensitive" },
+    { "id": "src-allergy", "kind": "allergy-note", "authority": "owner", "capturedAt": "2026-08-24T12:02:00Z", "reference": "owner://avoid-peanuts", "freshness": "current", "privacy": "allergy-sensitive" }
+  ],
+  "constraints": [
+    { "id": "constraint-vegetarian", "kind": "dietary", "label": "Vegetarian dinners", "required": true, "privacy": "dietary-sensitive", "sourceRefs": ["src-owner-notes"] },
+    { "id": "constraint-peanuts", "kind": "allergy", "label": "Avoid peanuts and peanut oil", "required": true, "privacy": "allergy-sensitive", "sourceRefs": ["src-allergy"] },
+    { "id": "constraint-budget", "kind": "budget", "label": "Stay near $90 for the grocery list", "required": false, "privacy": "budget-sensitive", "sourceRefs": ["src-owner-notes"] },
+    { "id": "constraint-use-spinach", "kind": "use-first", "label": "Use spinach before it wilts", "required": true, "privacy": "private", "sourceRefs": ["src-fridge"] }
+  ],
+  "inventory": [
+    { "id": "inv-rice", "name": "Jasmine rice", "location": "pantry", "quantityState": "supported", "freshnessState": "current", "usePriority": "normal", "sourceRefs": ["src-pantry"] },
+    { "id": "inv-spinach", "name": "Spinach", "location": "fridge", "quantityState": "estimated", "freshnessState": "use-soon", "usePriority": "use-first", "sourceRefs": ["src-fridge"] },
+    { "id": "inv-chickpeas", "name": "Canned chickpeas", "location": "pantry", "quantityState": "supported", "freshnessState": "current", "usePriority": "normal", "sourceRefs": ["src-pantry"] }
+  ],
+  "meals": [
+    {
+      "id": "meal-spinach-curry",
+      "name": "Spinach chickpea curry with rice",
+      "mealSlot": "Monday dinner",
+      "recipeRefs": ["src-recipe-spinach-curry"],
+      "constraintRefs": ["constraint-vegetarian", "constraint-peanuts", "constraint-use-spinach"],
+      "inventoryRefs": ["inv-rice", "inv-spinach", "inv-chickpeas"],
+      "groceryRefs": ["grocery-coconut-milk", "grocery-tomatoes"],
+      "fitState": "ready-for-review",
+      "sourceRefs": ["src-recipe-spinach-curry", "src-pantry", "src-fridge"],
+      "blockedReason": ""
+    },
+    {
+      "id": "meal-veggie-tacos",
+      "name": "Black bean tacos",
+      "mealSlot": "Wednesday dinner",
+      "recipeRefs": [],
+      "constraintRefs": ["constraint-vegetarian", "constraint-peanuts", "constraint-budget"],
+      "inventoryRefs": [],
+      "groceryRefs": ["grocery-tortillas", "grocery-black-beans"],
+      "fitState": "possible",
+      "sourceRefs": ["src-owner-notes", "src-store-circular"],
+      "blockedReason": "Needs owner confirmation on toppings and serving count."
+    }
+  ],
+  "groceryItems": [
+    { "id": "grocery-coconut-milk", "name": "Coconut milk", "category": "pantry", "neededForMealRefs": ["meal-spinach-curry"], "quantityState": "estimated", "priceState": "supported", "availabilityState": "possible", "sourceRefs": ["src-store-circular"], "substitutionRefs": [] },
+    { "id": "grocery-tomatoes", "name": "Canned tomatoes", "category": "pantry", "neededForMealRefs": ["meal-spinach-curry"], "quantityState": "estimated", "priceState": "supported", "availabilityState": "possible", "sourceRefs": ["src-store-circular"], "substitutionRefs": [] },
+    { "id": "grocery-tortillas", "name": "Corn tortillas", "category": "grain", "neededForMealRefs": ["meal-veggie-tacos"], "quantityState": "unknown", "priceState": "estimated", "availabilityState": "unknown", "sourceRefs": ["src-store-circular"], "substitutionRefs": ["grocery-rice-bowls"] },
+    { "id": "grocery-black-beans", "name": "Black beans", "category": "pantry", "neededForMealRefs": ["meal-veggie-tacos"], "quantityState": "estimated", "priceState": "supported", "availabilityState": "possible", "sourceRefs": ["src-store-circular"], "substitutionRefs": [] },
+    { "id": "grocery-rice-bowls", "name": "Use existing rice as bowl base if tortillas are unavailable", "category": "grain", "neededForMealRefs": ["meal-veggie-tacos"], "quantityState": "supported", "priceState": "supported", "availabilityState": "in-stock", "sourceRefs": ["src-pantry"], "substitutionRefs": [] }
+  ],
+  "reviewQuestions": [
+    { "id": "question-toppings", "reason": "Confirm taco toppings and serving count before treating Wednesday as ready.", "refs": ["meal-veggie-tacos", "grocery-tortillas"], "owner": "owner" },
+    { "id": "question-allergy", "reason": "Confirm any store-prepared items are acceptable because the circular does not provide peanut-risk evidence.", "refs": ["constraint-peanuts", "src-store-circular"], "owner": "owner" }
+  ],
+  "blockedActions": ["order-groceries", "checkout-cart", "schedule-delivery", "modify-subscription", "edit-calendar", "message-household", "share-address", "publish-list", "claim-allergen-certainty", "give-medical-diet-advice", "discard-food"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "summary": "Two vegetarian dinner options use current pantry and fridge notes, preserve allergy and budget gaps, and leave grocery ordering and medical diet decisions blocked.",
+    "reviewQuestionRefs": ["question-toppings", "question-allergy"],
+    "prohibitedActions": ["order-groceries", "checkout-cart", "schedule-delivery", "modify-subscription", "edit-calendar", "message-household", "share-address", "publish-list", "claim-allergen-certainty", "give-medical-diet-advice", "discard-food"],
+    "nextOwner": "owner"
+  }
+}

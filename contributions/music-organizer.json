@@ -124,6 +124,11 @@
         "id": "executive-assistant",
         "overlap": "Both can prepare concise owner-facing summaries, options, blocked actions, and follow-up questions.",
         "difference": "Executive Assistant is a general productivity aide; Music Organizer is a durable music library and playlist specialist with streaming, rights, and publishing boundaries."
+      },
+      {
+        "id": "meal-grocery-planner",
+        "overlap": "Both organize personal or household preferences, recurring plans, availability evidence, substitutions, review questions, and blocked account or sharing actions.",
+        "difference": "Meal and Grocery Planner prepares meals, pantry use, grocery lists, dietary/allergy evidence, and food-purchase boundaries; Music Organizer prepares music libraries, playlist plans, listening history, streaming availability, rights constraints, and playlist publishing boundaries."
       }
     ]
   }
