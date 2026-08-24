@@ -55,7 +55,8 @@
       "restaurant-venue-scout",
       "local-events-watcher",
       "school-coordinator",
-      "games-backlog-manager"
+      "games-backlog-manager",
+      "home-inventory-binder"
     ]
   },
   "visualCases": [

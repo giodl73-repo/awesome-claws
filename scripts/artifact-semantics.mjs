@@ -794,6 +794,112 @@ function gamesBacklogFindings(value) {
   return findings;
 }
 
+function homeInventoryFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const roomIds = value.rooms.map((item) => item.id);
+  const itemIds = value.items.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const roomSet = new Set(roomIds);
+  const itemSet = new Set(itemIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(roomIds, "rooms", "Room id"),
+    ...uniqueFindings(itemIds, "items", "Item id"),
+    ...uniqueFindings(value.evidence.map((item) => item.id), "evidence", "Evidence id"),
+    ...uniqueFindings(value.warranties.map((item) => item.id), "warranties", "Warranty id"),
+    ...uniqueFindings(value.reviewQuestions.map((item) => item.id), "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, room] of value.rooms.entries()) {
+    findings.push(
+      ...uniqueFindings(room.sourceRefs, `rooms.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(room.sourceRefs, sourceSet, `rooms.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, item] of value.items.entries()) {
+    findings.push(
+      ...referenceFindings([item.roomRef], roomSet, `items.${index}.roomRef`, "Room reference"),
+      ...uniqueFindings(item.sourceRefs, `items.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `items.${index}.sourceRefs`, "Source reference"),
+    );
+    const supported = item.sourceRefs.some((ref) =>
+      ["owner-note", "receipt", "photo", "warranty", "manual", "serial-label", "app-export", "maintenance-note", "purchase-record"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!supported) {
+      findings.push(finding("unsupported_item_source", `items.${index}.sourceRefs`, "Inventory items require owner, receipt, photo, warranty, manual, serial, app, maintenance, or purchase evidence."));
+    }
+    if (
+      item.state === "inventory-ready" &&
+      (item.condition !== "documented" || !["supported", "possible"].includes(item.valueState))
+    ) {
+      findings.push(finding("unsupported_ready_item", `items.${index}`, "Inventory-ready items require documented condition and supported or possible value evidence."));
+    }
+    if (
+      (item.state === "blocked" && !item.blockedReason) ||
+      (item.state !== "blocked" && item.blockedReason !== null)
+    ) {
+      findings.push(finding("incoherent_blocked_state", `items.${index}.blockedReason`, "Only blocked inventory items may carry a blocked reason."));
+    }
+  }
+  for (const [index, evidence] of value.evidence.entries()) {
+    findings.push(
+      ...referenceFindings([evidence.itemRef], itemSet, `evidence.${index}.itemRef`, "Item reference"),
+      ...uniqueFindings(evidence.sourceRefs, `evidence.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(evidence.sourceRefs, sourceSet, `evidence.${index}.sourceRefs`, "Source reference"),
+    );
+    const expectedKind = {
+      receipt: "receipt",
+      photo: "photo",
+      serial: "serial-label",
+      manual: "manual",
+      "purchase-record": "purchase-record",
+      "value-note": "valuation-note",
+      "condition-note": "maintenance-note",
+    }[evidence.kind];
+    if (evidence.state === "supported" && !evidence.sourceRefs.some((ref) => sourceById.get(ref)?.kind === expectedKind)) {
+      findings.push(finding("unsupported_evidence_source", `evidence.${index}.sourceRefs`, "Supported inventory evidence must cite a matching source kind."));
+    }
+  }
+  for (const [index, warranty] of value.warranties.entries()) {
+    findings.push(
+      ...referenceFindings([warranty.itemRef], itemSet, `warranties.${index}.itemRef`, "Item reference"),
+      ...uniqueFindings(warranty.sourceRefs, `warranties.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(warranty.sourceRefs, sourceSet, `warranties.${index}.sourceRefs`, "Source reference"),
+    );
+    if (warranty.state === "active" && !warranty.sourceRefs.some((ref) => sourceById.get(ref)?.kind === "warranty")) {
+      findings.push(finding("unsupported_warranty_source", `warranties.${index}.sourceRefs`, "Active warranty state requires warranty evidence."));
+    }
+    if (warranty.state === "active" && warranty.expiresAt === null) {
+      findings.push(finding("missing_warranty_expiry", `warranties.${index}.expiresAt`, "Active warranty state requires an expiration timestamp."));
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.itemRefs, `reviewQuestions.${index}.itemRefs`, "Item reference"),
+      ...referenceFindings(question.itemRefs, itemSet, `reviewQuestions.${index}.itemRefs`, "Item reference"),
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready inventories cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    items: value.items.map(({ blockedReason }) => blockedReason),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(file claim|insurance advice|legal advice|upload|share publicly|contact insurer|contact seller|sell|donate|discard|move item|edit cloud|disclose address|disclose valuables|claim eligible|covered by insurance)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Home inventory artifacts must not instruct claims, advice, uploads, sharing, contact, sale, donation, disposal, moves, cloud edits, or address/valuables disclosure."));
+  }
+  if (value.handoff.owner === "home-inventory-binder") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Inventory disclosure, claim, advice, upload, contact, sale, donation, disposal, and move decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 function giftRelationshipFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const recipientIds = value.recipients.map((item) => item.id);
@@ -5823,6 +5929,7 @@ const validators = {
   "gift-relationship-manager": giftRelationshipFindings,
   "green-thumb-coordinator": greenThumbFindings,
   "home-repair-coordinator": homeRepairFindings,
+  "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "local-events-watcher": localEventsFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,

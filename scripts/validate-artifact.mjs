@@ -22,6 +22,7 @@ const schemaNames = {
   "gift-relationship-manager": "gift-plan.schema.json",
   "green-thumb-coordinator": "garden-plan.schema.json",
   "home-repair-coordinator": "home-repair.schema.json",
+  "home-inventory-binder": "home-inventory.schema.json",
   "household-steward": "household-operations.schema.json",
   "local-events-watcher": "event-watchlist.schema.json",
   "model-evaluation-adjudicator": "model-evaluation.schema.json",

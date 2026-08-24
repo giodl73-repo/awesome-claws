@@ -124,6 +124,11 @@
         "id": "subscription-manager",
         "overlap": "Both preserve price-adjacent evidence, source freshness, review questions, and blocked account/payment actions.",
         "difference": "Subscription Manager tracks recurring services and renewal hygiene; Local Events Watcher evaluates one-off event options and blocks tickets, waitlists, RSVPs, and calendar/contact actions."
+      },
+      {
+        "id": "home-inventory-binder",
+        "overlap": "Both preserve owner-supplied evidence, privacy labels, location-sensitive details, source freshness, review questions, and blocked external actions.",
+        "difference": "Home Inventory Binder organizes physical possessions, rooms, serials, receipts, photos, warranties, manuals, and value evidence; Local Events Watcher evaluates dated local events with venues, ticketing, accessibility, age-fit, travel, and schedule-conflict evidence."
       }
     ]
   }

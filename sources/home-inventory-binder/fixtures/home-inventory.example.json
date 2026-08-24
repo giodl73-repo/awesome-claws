@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "awesomeClaws.homeInventory.v1",
+  "plan": {
+    "id": "inventory-plan-home-binder",
+    "owner": "Inventory owner",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-23T23:05:00Z",
+    "purpose": "Warranty and insurance review binder",
+    "privacyMode": "owner-only"
+  },
+  "sources": [
+    { "id": "src-owner-notes", "kind": "owner-note", "authority": "user-supplied", "capturedAt": "2026-08-23T22:45:00Z", "reference": "owner://inventory/rooms", "freshness": "current", "privacy": "address-sensitive" },
+    { "id": "src-washer-receipt", "kind": "receipt", "authority": "merchant", "capturedAt": "2026-08-23T22:47:00Z", "reference": "receipt://washer", "freshness": "current", "privacy": "valuable-sensitive" },
+    { "id": "src-washer-serial", "kind": "serial-label", "authority": "manufacturer", "capturedAt": "2026-08-23T22:48:00Z", "reference": "serial://washer", "freshness": "current", "privacy": "serial-sensitive" },
+    { "id": "src-washer-warranty", "kind": "warranty", "authority": "manufacturer", "capturedAt": "2026-08-23T22:49:00Z", "reference": "warranty://washer", "freshness": "current", "privacy": "normal" },
+    { "id": "src-laptop-photo", "kind": "photo", "authority": "user-supplied", "capturedAt": "2026-08-23T22:50:00Z", "reference": "photo://laptop", "freshness": "current", "privacy": "photo-sensitive" },
+    { "id": "src-laptop-record", "kind": "purchase-record", "authority": "merchant", "capturedAt": "2026-08-23T22:51:00Z", "reference": "purchase://laptop", "freshness": "current", "privacy": "valuable-sensitive" },
+    { "id": "src-watch-photo", "kind": "photo", "authority": "user-supplied", "capturedAt": "2026-08-23T22:52:00Z", "reference": "photo://watch", "freshness": "current", "privacy": "valuable-sensitive" }
+  ],
+  "rooms": [
+    { "id": "room-laundry", "label": "Laundry", "privacy": "address-sensitive", "sourceRefs": ["src-owner-notes"] },
+    { "id": "room-office", "label": "Office", "privacy": "valuable-sensitive", "sourceRefs": ["src-owner-notes"] }
+  ],
+  "items": [
+    { "id": "item-washer", "name": "Front-load washer", "category": "appliance", "roomRef": "room-laundry", "condition": "documented", "valueState": "supported", "privacy": "serial-sensitive", "sourceRefs": ["src-washer-receipt", "src-washer-serial", "src-washer-warranty"], "state": "inventory-ready", "blockedReason": null },
+    { "id": "item-laptop", "name": "Work laptop", "category": "electronics", "roomRef": "room-office", "condition": "documented", "valueState": "possible", "privacy": "valuable-sensitive", "sourceRefs": ["src-laptop-photo", "src-laptop-record"], "state": "review-needed", "blockedReason": null },
+    { "id": "item-watch", "name": "Vintage watch", "category": "jewelry", "roomRef": "room-office", "condition": "possible", "valueState": "unknown", "privacy": "valuable-sensitive", "sourceRefs": ["src-watch-photo"], "state": "blocked", "blockedReason": "Receipt, serial, value, and warranty evidence are missing; valuable details need owner review." }
+  ],
+  "evidence": [
+    { "id": "evidence-washer-receipt", "itemRef": "item-washer", "kind": "receipt", "state": "supported", "sourceRefs": ["src-washer-receipt"] },
+    { "id": "evidence-washer-serial", "itemRef": "item-washer", "kind": "serial", "state": "supported", "sourceRefs": ["src-washer-serial"] },
+    { "id": "evidence-laptop-photo", "itemRef": "item-laptop", "kind": "photo", "state": "supported", "sourceRefs": ["src-laptop-photo"] },
+    { "id": "evidence-watch-value", "itemRef": "item-watch", "kind": "value-note", "state": "missing", "sourceRefs": ["src-watch-photo"] }
+  ],
+  "warranties": [
+    { "id": "warranty-washer", "itemRef": "item-washer", "state": "active", "expiresAt": "2027-08-23T23:59:00-07:00", "sourceRefs": ["src-washer-warranty"] },
+    { "id": "warranty-laptop", "itemRef": "item-laptop", "state": "unknown", "expiresAt": null, "sourceRefs": ["src-laptop-record"] }
+  ],
+  "reviewQuestions": [
+    { "id": "question-laptop-warranty", "question": "Should the owner review the laptop warranty status using an approved source outside this artifact?", "reason": "Purchase evidence exists, but warranty state is unknown.", "itemRefs": ["item-laptop"], "sourceRefs": ["src-laptop-record"] },
+    { "id": "question-watch-evidence", "question": "Should the owner keep the vintage watch redacted until receipt, serial, and value evidence are supplied?", "reason": "Only photo evidence is present and the item is valuable-sensitive.", "itemRefs": ["item-watch"], "sourceRefs": ["src-watch-photo"] }
+  ],
+  "blockedActions": ["file-claim", "give-insurance-advice", "give-legal-advice", "upload-inventory", "share-publicly", "contact-insurer", "contact-seller", "sell-item", "donate-item", "discard-item", "move-item", "edit-cloud-album", "disclose-address", "disclose-valuables"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Inventory owner",
+    "prohibitedActions": ["file-claim", "give-insurance-advice", "give-legal-advice", "upload-inventory", "share-publicly", "contact-insurer", "contact-seller", "sell-item", "donate-item", "discard-item", "move-item", "edit-cloud-album", "disclose-address", "disclose-valuables"]
+  }
+}
