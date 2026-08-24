@@ -7206,27 +7206,117 @@
           "path": "templates/session-report.template.json",
           "role": "template"
         },
-      {
-        "source": "templates/session-handoff.md",
-        "path": "templates/session-handoff.md",
-        "role": "template"
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/home-inventory.schema.json",
+          "path": "schemas/home-inventory.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/home-inventory.example.json",
+          "path": "fixtures/home-inventory.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/home-inventory.md",
+          "path": "templates/home-inventory.md",
+          "role": "template"
+        }
+      ]
+    },
+    {
+      "id": "meal-grocery-planner",
+      "name": "Meal and grocery planner",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-24"
       },
-      {
-        "source": "schemas/home-inventory.schema.json",
-        "path": "schemas/home-inventory.schema.json",
-        "role": "schema"
+      "description": "Plans meals, pantry use, grocery lists, dietary constraints, budget fit, and store-availability evidence from approved sources without ordering food, checking out carts, changing subscriptions, editing calendars, or giving medical nutrition advice.",
+      "audience": "Individuals, households, caregivers, roommates, and small teams planning meals and grocery runs while keeping purchases, delivery, account changes, medical diet decisions, and private preferences owner-approved.",
+      "principles": [
+        "Separate meal ideas, recipe evidence, pantry inventory, grocery needs, dietary constraints, budget, store availability, and freshness state",
+        "Make stale pantry counts, missing ingredient amounts, unsupported allergen claims, expired items, price uncertainty, and preference conflicts explicit",
+        "Keep ordering, checkout, delivery, cart mutation, subscription changes, calendar edits, medical nutrition advice, and sensitive preference disclosure outside the Claw boundary"
+      ],
+      "boundaries": [
+        "Do not order groceries, check out carts, schedule delivery, modify subscriptions, edit calendars, message household members, or publish lists without exact approval",
+        "Do not claim allergen, medical diet, nutrition, price, stock, expiration, or food-safety certainty when sources are stale, partial, missing, or conflicting",
+        "Do not expose private addresses, medical conditions, allergies, household member preferences, budget constraints, or care-circle details beyond the owner-approved destination"
+      ],
+      "intake": [
+        "Approved recipes, meal preferences, dietary restrictions, allergy notes, pantry inventory, fridge/freezer notes, grocery receipts, store pages, circulars, prices, coupons, and owner budget targets",
+        "Meal windows, serving counts, prep-time limits, equipment constraints, leftovers goals, avoid lists, favorite meals, recurring staples, privacy labels, and stale-source fallback rules",
+        "Household or care-circle constraints, private preference labels, per-person dietary sensitivity, accessibility or transportation limits, and owner-approved disclosure scope",
+        "External actions that must remain draft-only, including grocery orders, cart checkout, delivery scheduling, subscription changes, calendar edits, household messages, and medical diet decisions"
+      ],
+      "workflow": [
+        "Normalize each meal, recipe, pantry item, grocery item, source, dietary constraint, budget signal, and store-availability note to supplied evidence and freshness state",
+        "Collect recipe, pantry, receipt, store, coupon, owner-note, and household-preference evidence from supplied or approved sources only",
+        "Reconcile stale counts, expired items, missing quantities, price mismatch, stock uncertainty, dietary conflicts, prep-time limits, leftovers goals, and budget tradeoffs",
+        "Prepare meal options and grocery groups by explicit preferences, pantry use, dietary fit, budget fit, prep constraints, source freshness, and blocked external-action requirements",
+        "Produce a reviewable meal plan and grocery handoff with evidence, substitutions, privacy notes, gaps, blocked actions, and owner questions"
+      ],
+      "deliverables": [
+        "Meal plan with source freshness",
+        "Pantry, fridge, and freezer use register",
+        "Grocery list grouped by source and store evidence",
+        "Dietary, allergy, budget, prep-time, and leftovers review questions",
+        "Blocked grocery order, delivery, cart, subscription, calendar, message, and medical-advice handoff"
+      ],
+      "example": {
+        "request": "Plan weeknight dinners from my pantry notes and recipe links. Keep it vegetarian, avoid peanuts, use up spinach and rice, stay near $90, and produce a grocery list, but do not order groceries, edit my calendar, message anyone, or give medical diet advice.",
+        "outcome": "A source-backed meal plan and grocery handoff with recipe/pantry/store evidence, dietary and budget gaps, use-first ingredients, substitutions, owner review questions, and all ordering, delivery, cart, subscription, calendar, messaging, and medical-advice actions blocked."
       },
-      {
-        "source": "fixtures/home-inventory.example.json",
-        "path": "fixtures/home-inventory.example.json",
-        "role": "fixture"
-      },
-      {
-        "source": "templates/home-inventory.md",
-        "path": "templates/home-inventory.md",
-        "role": "template"
-      }
-    ]
-  }
+      "doneWhen": [
+        "Every meal, recipe, pantry item, grocery item, dietary claim, budget claim, and store signal has source identity, freshness, and privacy labeling",
+        "Every meal and grocery-list item traces to explicit preferences, serving count, pantry use, dietary fit, budget fit, prep constraints, and source-freshness evidence without hiding gaps",
+        "Private addresses, medical conditions, allergies, household member preferences, care-circle details, and budget constraints are minimized or blocked from inappropriate outputs",
+        "Grocery orders, checkout, delivery, cart changes, subscription changes, calendar edits, household messages, public sharing, and medical nutrition advice remain blocked or exact-approval-bound"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses supplied or approved recipe pages, pantry notes, receipts, store pages, circulars, coupon notes, and owner preferences and grants no grocery ordering, cart, checkout, delivery, subscription, calendar, messaging, medical, or location-sharing authority.",
+        "When pantry, ingredient, dietary, allergen, nutrition, price, stock, expiration, prep-time, or budget evidence is stale, partial, missing, conflicting, or privacy-sensitive, preserve the gap and ask owner-review questions rather than presenting certainty or taking action."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/meal-grocery.schema.json",
+          "path": "schemas/meal-grocery.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/meal-grocery.example.json",
+          "path": "fixtures/meal-grocery.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/meal-grocery.md",
+          "path": "templates/meal-grocery.md",
+          "role": "template"
+        }
+      ]
+    }
   ]
 }

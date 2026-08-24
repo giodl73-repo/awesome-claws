@@ -25,6 +25,7 @@ const schemaNames = {
   "home-inventory-binder": "home-inventory.schema.json",
   "household-steward": "household-operations.schema.json",
   "local-events-watcher": "event-watchlist.schema.json",
+  "meal-grocery-planner": "meal-grocery.schema.json",
   "model-evaluation-adjudicator": "model-evaluation.schema.json",
   "movie-streaming-organizer": "movie-streaming.schema.json",
   "music-organizer": "music-library.schema.json",

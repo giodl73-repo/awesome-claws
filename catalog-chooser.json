@@ -1426,6 +1426,40 @@
       }
     },
     {
+      "id": "meal-grocery-planner",
+      "name": "Meal and grocery planner",
+      "description": "Plans meals, pantry use, grocery lists, dietary constraints, budget fit, and store-availability evidence from approved sources without ordering food, checking out carts, changing subscriptions, editing calendars, or giving medical nutrition advice.",
+      "audience": "Individuals, households, caregivers, roommates, and small teams planning meals and grocery runs while keeping purchases, delivery, account changes, medical diet decisions, and private preferences owner-approved.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-24"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "media-evidence-reviewer",
       "name": "Media evidence reviewer",
       "description": "Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries.",

@@ -1845,6 +1845,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "meal-grocery-planner",
+      "acceptedRequest": "Plan weeknight dinners from my pantry notes and recipe links. Keep it vegetarian, avoid peanuts, use up spinach and rice, stay near $90, and produce a grocery list, but do not order groceries, edit my calendar, message anyone, or give medical diet advice.",
+      "requiredEvidence": [
+        "Approved recipes, meal preferences, dietary restrictions, allergy notes, pantry inventory, fridge/freezer notes, grocery receipts, store pages, circulars, prices, coupons, and owner budget targets",
+        "Meal windows, serving counts, prep-time limits, equipment constraints, leftovers goals, avoid lists, favorite meals, recurring staples, privacy labels, and stale-source fallback rules",
+        "Household or care-circle constraints, private preference labels, per-person dietary sensitivity, accessibility or transportation limits, and owner-approved disclosure scope",
+        "External actions that must remain draft-only, including grocery orders, cart checkout, delivery scheduling, subscription changes, calendar edits, household messages, and medical diet decisions"
+      ],
+      "authorityBoundaries": [
+        "Do not order groceries, check out carts, schedule delivery, modify subscriptions, edit calendars, message household members, or publish lists without exact approval",
+        "Do not claim allergen, medical diet, nutrition, price, stock, expiration, or food-safety certainty when sources are stale, partial, missing, or conflicting",
+        "Do not expose private addresses, medical conditions, allergies, household member preferences, budget constraints, or care-circle details beyond the owner-approved destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/meal-grocery-planner-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
