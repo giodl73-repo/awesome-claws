@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "awesomeClaws.insurancePolicy.v1",
+  "binder": {
+    "id": "insurance-binder-household",
+    "owner": "Policy owner",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-25T15:30:00Z",
+    "purpose": "Household policy and claim-readiness review",
+    "privacyMode": "owner-only"
+  },
+  "sources": [
+    { "id": "src-renters-dec", "kind": "declarations-page", "authority": "carrier", "capturedAt": "2026-08-25T14:00:00Z", "reference": "carrier://renters/declarations/redacted", "freshness": "current", "privacy": "private" },
+    { "id": "src-renters-endorsement", "kind": "endorsement", "authority": "carrier", "capturedAt": "2026-08-25T14:05:00Z", "reference": "carrier://renters/endorsement/personal-property", "freshness": "current", "privacy": "private" },
+    { "id": "src-premium-notice", "kind": "premium-notice", "authority": "carrier", "capturedAt": "2026-08-25T14:10:00Z", "reference": "carrier://renters/premium/notice", "freshness": "current", "privacy": "financial-sensitive" },
+    { "id": "src-renewal-notice", "kind": "renewal-notice", "authority": "carrier", "capturedAt": "2026-08-25T14:12:00Z", "reference": "carrier://renters/renewal/notice", "freshness": "recent", "privacy": "financial-sensitive" },
+    { "id": "src-inventory-laptop", "kind": "asset-inventory", "authority": "owner", "capturedAt": "2026-08-25T14:15:00Z", "reference": "inventory://home-office/laptop", "freshness": "current", "privacy": "asset-sensitive" },
+    { "id": "src-laptop-receipt", "kind": "receipt", "authority": "merchant", "capturedAt": "2026-08-25T14:20:00Z", "reference": "receipt://laptop/redacted", "freshness": "current", "privacy": "financial-sensitive" },
+    { "id": "src-owner-note", "kind": "owner-note", "authority": "owner", "capturedAt": "2026-08-25T14:25:00Z", "reference": "owner://insurance/review-notes", "freshness": "current", "privacy": "address-sensitive" }
+  ],
+  "policies": [
+    {
+      "id": "policy-renters",
+      "policyType": "renters",
+      "carrier": "Example Mutual",
+      "policyNumberState": "redacted",
+      "status": "renewal-pending",
+      "effectiveDate": "2026-01-01T08:00:00Z",
+      "renewalDate": "2027-01-01T08:00:00Z",
+      "sourceRefs": ["src-renters-dec", "src-renewal-notice"]
+    }
+  ],
+  "coverageItems": [
+    {
+      "id": "coverage-personal-property",
+      "policyRef": "policy-renters",
+      "label": "Personal property",
+      "coverageState": "supported",
+      "limitState": "supported",
+      "deductibleState": "supported",
+      "sourceRefs": ["src-renters-dec", "src-renters-endorsement"]
+    },
+    {
+      "id": "coverage-liability",
+      "policyRef": "policy-renters",
+      "label": "Personal liability",
+      "coverageState": "supported",
+      "limitState": "supported",
+      "deductibleState": "not-applicable",
+      "sourceRefs": ["src-renters-dec"]
+    }
+  ],
+  "assets": [
+    { "id": "asset-apartment", "label": "Redacted apartment", "kind": "home", "privacy": "address-sensitive", "sourceRefs": ["src-owner-note"] },
+    { "id": "asset-laptop", "label": "Work laptop", "kind": "item", "privacy": "asset-sensitive", "sourceRefs": ["src-inventory-laptop", "src-laptop-receipt"] }
+  ],
+  "premiumItems": [
+    {
+      "id": "premium-renters-monthly",
+      "policyRef": "policy-renters",
+      "amountState": "supported",
+      "dueDateState": "supported",
+      "sourceRefs": ["src-premium-notice", "src-renewal-notice"]
+    }
+  ],
+  "claimReadiness": [
+    {
+      "id": "claim-readiness-laptop",
+      "policyRef": "policy-renters",
+      "assetRefs": ["asset-laptop"],
+      "evidenceRefs": ["src-inventory-laptop", "src-laptop-receipt"],
+      "state": "ready-for-owner-review",
+      "blockedReason": null,
+      "sourceRefs": ["src-renters-dec", "src-renters-endorsement", "src-inventory-laptop", "src-laptop-receipt"]
+    },
+    {
+      "id": "claim-readiness-address-redaction",
+      "policyRef": "policy-renters",
+      "assetRefs": ["asset-apartment"],
+      "evidenceRefs": ["src-owner-note"],
+      "state": "needs-evidence",
+      "blockedReason": "Address-sensitive owner notes need redaction before any broader review.",
+      "sourceRefs": ["src-owner-note"]
+    }
+  ],
+  "reviewQuestions": [
+    { "id": "question-deductible", "reason": "Deductible appears in the declarations evidence, but applicability for a hypothetical laptop loss remains an owner or carrier question.", "refs": ["coverage-personal-property", "claim-readiness-laptop", "src-renters-dec"], "owner": "owner" },
+    { "id": "question-renewal-premium", "reason": "The renewal notice and premium notice are both recent enough to review together, but premium correctness remains carrier-owned.", "refs": ["policy-renters", "premium-renters-monthly", "src-renewal-notice"], "owner": "carrier" }
+  ],
+  "blockedActions": ["file-claim", "change-coverage", "cancel-policy", "renew-policy", "pay-premium", "contact-carrier", "contact-agent", "edit-calendar", "share-address", "share-policy-number", "upload-documents", "give-legal-advice", "give-insurance-advice", "estimate-claim-value"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "summary": "Renters policy evidence, renewal timing, premium notice, personal-property coverage, and laptop claim-readiness evidence are organized for the policy owner; address-sensitive notes remain redacted.",
+    "reviewQuestionRefs": ["question-deductible", "question-renewal-premium"],
+    "prohibitedActions": ["file-claim", "change-coverage", "cancel-policy", "renew-policy", "pay-premium", "contact-carrier", "contact-agent", "edit-calendar", "share-address", "share-policy-number", "upload-documents", "give-legal-advice", "give-insurance-advice", "estimate-claim-value"],
+    "nextOwner": "owner"
+  }
+}

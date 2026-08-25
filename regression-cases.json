@@ -1868,6 +1868,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "insurance-policy-organizer",
+      "acceptedRequest": "Build an insurance policy organizer from the declarations pages, premium notices, renewal email, home inventory, receipts, and owner notes I supplied. Show deductible and coverage gaps, renewal questions, and claim-readiness evidence, but do not file a claim, contact the carrier, change coverage, pay anything, upload documents, edit my calendar, or give insurance or legal advice.",
+      "requiredEvidence": [
+        "Approved policy documents, declarations pages, endorsements, premium notices, renewal notices, receipts, asset inventories, claim correspondence, carrier pages, agent notes, and owner notes",
+        "Policy types, carrier names, redacted policy number state, effective and renewal dates, coverage labels, limits, deductibles, premiums, assets, privacy labels, and source freshness",
+        "Insurance-review goals, renewal-review windows, claim-prep goals, household or asset links, deductible questions, exclusion questions, and stale-source fallback rules",
+        "External actions that must remain draft-only, including claims, coverage changes, cancellations, renewals, premium payments, carrier or agent contact, document uploads, calendar edits, and legal or insurance conclusions"
+      ],
+      "authorityBoundaries": [
+        "Do not file claims, change coverage, cancel or renew policies, pay premiums, contact carriers or agents, upload documents, edit calendars, share policy numbers or addresses, or give legal, tax, financial, or insurance advice without exact approval",
+        "Do not claim coverage, eligibility, claim value, deductible applicability, premium correctness, compliance, or legal effect when evidence is stale, partial, missing, conflicting, or outside the supplied documents",
+        "Do not expose policy numbers, addresses, household assets, medical details, financial amounts, claim correspondence, or carrier account details beyond the owner-approved destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/insurance-policy-organizer-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
