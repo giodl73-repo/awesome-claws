@@ -95,6 +95,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "insurance-policy-organizer",
+    schema: "../claws/insurance-policy-organizer/schemas/insurance-policy.schema.json",
+    fixture: "../claws/insurance-policy-organizer/fixtures/insurance-policy.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "local-events-watcher",
     schema: "../claws/local-events-watcher/schemas/event-watchlist.schema.json",
     fixture: "../claws/local-events-watcher/fixtures/event-watchlist.example.json",
@@ -453,6 +459,32 @@ test("home inventory binder preserves evidence and owner disclosure authority", 
   assert.equal(isValid("home-inventory-binder", agentOwned), false);
 });
 
+test("insurance policy organizer preserves policy evidence and owner authority", () => {
+  const staleSource = structuredClone(cases.get("insurance-policy-organizer").fixture);
+  staleSource.sources[0].freshness = "stale";
+  assert.equal(isValid("insurance-policy-organizer", staleSource), false);
+
+  const unsupportedCoverage = structuredClone(cases.get("insurance-policy-organizer").fixture);
+  unsupportedCoverage.coverageItems[0].sourceRefs = ["src-owner-note"];
+  assert.equal(isValid("insurance-policy-organizer", unsupportedCoverage), false);
+
+  const unsupportedPremium = structuredClone(cases.get("insurance-policy-organizer").fixture);
+  unsupportedPremium.premiumItems[0].sourceRefs = ["src-owner-note"];
+  assert.equal(isValid("insurance-policy-organizer", unsupportedPremium), false);
+
+  const actionAdvice = structuredClone(cases.get("insurance-policy-organizer").fixture);
+  actionAdvice.reviewQuestions[0].reason += " File a claim and contact the carrier.";
+  assert.equal(isValid("insurance-policy-organizer", actionAdvice), false);
+
+  const danglingAsset = structuredClone(cases.get("insurance-policy-organizer").fixture);
+  danglingAsset.claimReadiness[0].assetRefs = ["missing-asset"];
+  assert.equal(isValid("insurance-policy-organizer", danglingAsset), false);
+
+  const unsupportedReady = structuredClone(cases.get("insurance-policy-organizer").fixture);
+  unsupportedReady.claimReadiness[0].blockedReason = "Needs more evidence.";
+  assert.equal(isValid("insurance-policy-organizer", unsupportedReady), false);
+});
+
 test("public safety state rejects impossible time ranges and dangling alerts", () => {
   const candidate = structuredClone(cases.get("public-safety-monitor").fixture);
   candidate.alerts[0].expiresAt = candidate.alerts[0].issuedAt;
@@ -508,6 +540,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["games-backlog-manager", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
     ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["home-inventory-binder", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
+    ["insurance-policy-organizer", (value) => value.coverageItems[0].sourceRefs.push(value.coverageItems[0].sourceRefs[0])],
     ["local-events-watcher", (value) => value.watchlist[0].constraintRefs.push(value.watchlist[0].constraintRefs[0])],
     ["meal-grocery-planner", (value) => value.meals[0].constraintRefs.push(value.meals[0].constraintRefs[0])],
     ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],

@@ -1035,6 +1035,137 @@ function homeInventoryFindings(value) {
   return findings;
 }
 
+function insurancePolicyFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const policyIds = value.policies.map((item) => item.id);
+  const coverageIds = value.coverageItems.map((item) => item.id);
+  const assetIds = value.assets.map((item) => item.id);
+  const premiumIds = value.premiumItems.map((item) => item.id);
+  const claimIds = value.claimReadiness.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const policySet = new Set(policyIds);
+  const assetSet = new Set(assetIds);
+  const questionSet = new Set(questionIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const knownRefs = new Set([...sourceIds, ...policyIds, ...coverageIds, ...assetIds, ...premiumIds, ...claimIds]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(policyIds, "policies", "Policy id"),
+    ...uniqueFindings(coverageIds, "coverageItems", "Coverage id"),
+    ...uniqueFindings(assetIds, "assets", "Asset id"),
+    ...uniqueFindings(premiumIds, "premiumItems", "Premium id"),
+    ...uniqueFindings(claimIds, "claimReadiness", "Claim-readiness id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+
+  for (const [index, policy] of value.policies.entries()) {
+    findings.push(
+      ...uniqueFindings(policy.sourceRefs, `policies.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(policy.sourceRefs, sourceSet, `policies.${index}.sourceRefs`, "Source reference"),
+    );
+    const hasPolicySource = policy.sourceRefs.some((ref) =>
+      ["policy-document", "declarations-page", "endorsement", "renewal-notice", "carrier-page"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasPolicySource) {
+      findings.push(finding("unsupported_policy_source", `policies.${index}.sourceRefs`, "Policy state requires policy, declarations, endorsement, renewal, or carrier evidence."));
+    }
+  }
+  for (const [index, coverage] of value.coverageItems.entries()) {
+    findings.push(
+      ...referenceFindings([coverage.policyRef], policySet, `coverageItems.${index}.policyRef`, "Policy reference"),
+      ...uniqueFindings(coverage.sourceRefs, `coverageItems.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(coverage.sourceRefs, sourceSet, `coverageItems.${index}.sourceRefs`, "Source reference"),
+    );
+    const hasCoverageSource = coverage.sourceRefs.some((ref) =>
+      ["policy-document", "declarations-page", "endorsement", "carrier-page"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasCoverageSource) {
+      findings.push(finding("unsupported_coverage_source", `coverageItems.${index}.sourceRefs`, "Coverage, limit, and deductible states require policy, declarations, endorsement, or carrier evidence."));
+    }
+    if (
+      coverage.coverageState === "supported" &&
+      (coverage.limitState === "unknown" || coverage.deductibleState === "unknown")
+    ) {
+      findings.push(finding("unsupported_coverage_certainty", `coverageItems.${index}`, "Supported coverage must keep limit and deductible state supported, not-applicable, or explicitly conflicting."));
+    }
+  }
+  for (const [index, asset] of value.assets.entries()) {
+    findings.push(
+      ...uniqueFindings(asset.sourceRefs, `assets.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(asset.sourceRefs, sourceSet, `assets.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, premium] of value.premiumItems.entries()) {
+    findings.push(
+      ...referenceFindings([premium.policyRef], policySet, `premiumItems.${index}.policyRef`, "Policy reference"),
+      ...uniqueFindings(premium.sourceRefs, `premiumItems.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(premium.sourceRefs, sourceSet, `premiumItems.${index}.sourceRefs`, "Source reference"),
+    );
+    const hasPremiumSource = premium.sourceRefs.some((ref) =>
+      ["premium-notice", "renewal-notice", "receipt", "declarations-page", "carrier-page"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasPremiumSource) {
+      findings.push(finding("unsupported_premium_source", `premiumItems.${index}.sourceRefs`, "Premium amount and due-date states require premium, renewal, receipt, declarations, or carrier evidence."));
+    }
+    if (premium.amountState === "supported" && premium.sourceRefs.some((ref) => ["stale", "unknown", "conflicting"].includes(sourceById.get(ref)?.freshness))) {
+      findings.push(finding("unsupported_premium_state", `premiumItems.${index}.amountState`, "Supported premium state requires current or recent non-conflicting evidence."));
+    }
+  }
+  for (const [index, item] of value.claimReadiness.entries()) {
+    findings.push(
+      ...referenceFindings([item.policyRef], policySet, `claimReadiness.${index}.policyRef`, "Policy reference"),
+      ...uniqueFindings(item.assetRefs, `claimReadiness.${index}.assetRefs`, "Asset reference"),
+      ...referenceFindings(item.assetRefs, assetSet, `claimReadiness.${index}.assetRefs`, "Asset reference"),
+      ...uniqueFindings(item.evidenceRefs, `claimReadiness.${index}.evidenceRefs`, "Evidence source reference"),
+      ...referenceFindings(item.evidenceRefs, sourceSet, `claimReadiness.${index}.evidenceRefs`, "Evidence source reference"),
+      ...uniqueFindings(item.sourceRefs, `claimReadiness.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `claimReadiness.${index}.sourceRefs`, "Source reference"),
+    );
+    const readinessRefs = [...item.evidenceRefs, ...item.sourceRefs];
+    const hasClaimPrepEvidence = readinessRefs.some((ref) =>
+      ["declarations-page", "endorsement", "claim-correspondence", "asset-inventory", "receipt", "carrier-page", "owner-note"].includes(sourceById.get(ref)?.kind),
+    );
+    const hasFreshnessProblem = readinessRefs.some((ref) =>
+      ["stale", "unknown", "conflicting"].includes(sourceById.get(ref)?.freshness),
+    );
+    if (item.state === "ready-for-owner-review" && (!hasClaimPrepEvidence || hasFreshnessProblem || item.blockedReason)) {
+      findings.push(finding("unsupported_claim_readiness", `claimReadiness.${index}`, "Ready claim-readiness items require current/recent policy and asset evidence and no blocked reason."));
+    }
+    if (
+      (item.state === "blocked" && !item.blockedReason) ||
+      (item.state !== "blocked" && item.state !== "needs-evidence" && item.blockedReason !== null)
+    ) {
+      findings.push(finding("incoherent_blocked_state", `claimReadiness.${index}.blockedReason`, "Only blocked or needs-evidence claim-readiness items may carry a blocked reason."));
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.refs, `reviewQuestions.${index}.refs`, "Review reference"),
+      ...referenceFindings(question.refs, knownRefs, `reviewQuestions.${index}.refs`, "Review reference"),
+    );
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, questionSet, "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "unknown", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready insurance binders cannot depend on stale, unknown, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    claimReadiness: value.claimReadiness.map(({ blockedReason }) => blockedReason),
+    reviewQuestions: value.reviewQuestions.map(({ reason }) => reason),
+    handoff: value.handoff.summary,
+  });
+  if (/\b(file (a )?claim|submit (a )?claim|change coverage|cancel policy|renew policy|pay premium|contact (the )?(carrier|agent)|upload documents|share (the )?(address|policy number)|legal advice|insurance advice|claim value|covered by insurance|coverage applies)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Insurance policy artifacts must not instruct claims, coverage changes, cancellations, renewals, payments, carrier or agent contact, uploads, disclosure, advice, claim values, or coverage certainty."));
+  }
+  return findings;
+}
+
 function giftRelationshipFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const recipientIds = value.recipients.map((item) => item.id);
@@ -6066,6 +6197,7 @@ const validators = {
   "home-repair-coordinator": homeRepairFindings,
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
+  "insurance-policy-organizer": insurancePolicyFindings,
   "local-events-watcher": localEventsFindings,
   "meal-grocery-planner": mealGroceryFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,

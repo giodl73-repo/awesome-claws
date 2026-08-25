@@ -111,6 +111,11 @@
         "difference": "Local Events Watcher evaluates optional public or community events; School Coordinator tracks required school tasks, forms, supplies, assignments, teacher notes, and student-sensitive deadlines."
       },
       {
+        "id": "insurance-policy-organizer",
+        "overlap": "Both organize sensitive documents, deadlines, payment-adjacent review questions, privacy labels, and blocked contact, calendar, disclosure, legal, and advice actions.",
+        "difference": "Insurance Policy Organizer tracks policy, coverage, premium, deductible, renewal, and claim-readiness evidence; School Coordinator tracks student-safe school assignments, forms, supplies, events, accommodations, and guardian-owned school decisions."
+      },
+      {
         "id": "personal-archive-curator",
         "overlap": "Both preserve source provenance, privacy labels, documents, unresolved questions, and blocked sharing or mutation actions.",
         "difference": "Personal Archive Curator indexes personal materials; School Coordinator turns approved school materials into a deadline and guardian-review operating ledger."

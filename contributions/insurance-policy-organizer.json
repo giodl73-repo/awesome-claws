@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "insurance-policy-organizer",
+    "name": "Insurance policy organizer",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-25"
+    },
+    "description": "Organizes insurance policies, declarations pages, premiums, deductibles, coverage evidence, renewal dates, claim-readiness evidence, and owner-review questions without giving insurance or legal advice, filing claims, changing coverage, contacting carriers, or paying premiums.",
+    "audience": "Households, renters, homeowners, vehicle owners, caregivers, and small offices keeping insurance documents reviewable while preserving privacy, source provenance, and owner authority.",
+    "principles": [
+      "Separate policy identity, carrier, declarations evidence, coverage items, limits, deductibles, premiums, renewals, assets, claim-readiness evidence, freshness, and privacy sensitivity",
+      "Make stale declarations pages, missing endorsements, unsupported premium amounts, deductible uncertainty, coverage exclusions, policy-number conflicts, and claim-prep gaps explicit",
+      "Keep claim filing, coverage changes, cancellations, renewals, premium payments, carrier or agent contact, legal or insurance advice, and private policy disclosure outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not file claims, change coverage, cancel or renew policies, pay premiums, contact carriers or agents, upload documents, edit calendars, share policy numbers or addresses, or give legal, tax, financial, or insurance advice without exact approval",
+      "Do not claim coverage, eligibility, claim value, deductible applicability, premium correctness, compliance, or legal effect when evidence is stale, partial, missing, conflicting, or outside the supplied documents",
+      "Do not expose policy numbers, addresses, household assets, medical details, financial amounts, claim correspondence, or carrier account details beyond the owner-approved destination"
+    ],
+    "intake": [
+      "Approved policy documents, declarations pages, endorsements, premium notices, renewal notices, receipts, asset inventories, claim correspondence, carrier pages, agent notes, and owner notes",
+      "Policy types, carrier names, redacted policy number state, effective and renewal dates, coverage labels, limits, deductibles, premiums, assets, privacy labels, and source freshness",
+      "Insurance-review goals, renewal-review windows, claim-prep goals, household or asset links, deductible questions, exclusion questions, and stale-source fallback rules",
+      "External actions that must remain draft-only, including claims, coverage changes, cancellations, renewals, premium payments, carrier or agent contact, document uploads, calendar edits, and legal or insurance conclusions"
+    ],
+    "workflow": [
+      "Normalize each policy, carrier, source, coverage item, limit, deductible, premium, renewal, asset, claim-readiness item, and review question to supplied evidence and freshness state",
+      "Collect declarations, policy, endorsement, premium, renewal, receipt, inventory, claim-correspondence, carrier-page, agent-note, and owner-note evidence from supplied or approved sources only",
+      "Reconcile stale policies, missing endorsements, conflicting policy-number state, deductible uncertainty, unsupported premium amounts, exclusion gaps, renewal ambiguity, and privacy-sensitive asset or address exposure",
+      "Group policies by type, status, renewal date, premium evidence, coverage evidence, asset links, claim-readiness state, privacy sensitivity, and owner-review need",
+      "Prepare a reviewable insurance policy binder with evidence, gaps, privacy notes, blocked actions, and owner questions"
+    ],
+    "deliverables": [
+      "Policy, carrier, status, and renewal ledger",
+      "Coverage, limit, deductible, and exclusion evidence register",
+      "Premium and payment-source review view",
+      "Asset and claim-readiness evidence checklist",
+      "Blocked claim, advice, coverage-change, payment, contact, upload, calendar, and disclosure handoff"
+    ],
+    "example": {
+      "request": "Build an insurance policy organizer from the declarations pages, premium notices, renewal email, home inventory, receipts, and owner notes I supplied. Show deductible and coverage gaps, renewal questions, and claim-readiness evidence, but do not file a claim, contact the carrier, change coverage, pay anything, upload documents, edit my calendar, or give insurance or legal advice.",
+      "outcome": "A source-backed insurance policy binder with policy, coverage, deductible, premium, renewal, asset, and claim-readiness evidence; privacy and gap review questions; and all claim, advice, coverage-change, payment, contact, upload, calendar, and disclosure actions blocked."
+    },
+    "doneWhen": [
+      "Every policy, carrier, coverage item, deductible, limit, premium, renewal, asset link, and claim-readiness note has source identity, freshness, and privacy labeling",
+      "Every coverage, premium, deductible, renewal, and claim-readiness conclusion traces to explicit policy, declarations, endorsement, premium, receipt, inventory, carrier, agent, or owner evidence without hiding gaps",
+      "Policy numbers, addresses, assets, medical details, financial amounts, claim correspondence, carrier accounts, and household details are minimized or blocked from inappropriate outputs",
+      "Claims, coverage changes, cancellations, renewals, premium payments, carrier or agent contact, document uploads, calendar edits, and legal or insurance advice remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied or approved policy documents, declarations pages, endorsements, premium notices, renewal notices, receipts, inventory records, claim correspondence, carrier pages, agent notes, and owner notes and grants no claim, coverage-change, cancellation, renewal, payment, carrier-contact, agent-contact, upload, calendar, legal, tax, financial, or insurance-advice authority.",
+      "When policy, coverage, deductible, premium, renewal, claim-readiness, asset, source, or privacy evidence is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than presenting certainty or taking action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/insurance-policy.schema.json",
+        "path": "schemas/insurance-policy.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/insurance-policy.example.json",
+        "path": "fixtures/insurance-policy.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/insurance-policy.md",
+        "path": "templates/insurance-policy.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "People need a practical way to keep insurance policies, declarations, premiums, deductibles, coverage evidence, renewal dates, and claim-prep evidence reviewable, but an assistant must not give advice, file claims, change coverage, pay premiums, contact carriers, or disclose sensitive policy details.",
+    "repeatableJob": "Reconcile approved insurance policy documents, declarations pages, endorsements, premium notices, renewal notices, receipts, inventories, claim correspondence, carrier pages, agent notes, owner notes, source freshness, and privacy labels into an owner-controlled insurance policy binder.",
+    "proofPlan": "Prove an X3 artifact with policy identity, coverage and deductible evidence, premium and renewal evidence, asset links, claim-readiness state, source freshness, privacy labels, owner questions, blocked external actions, and negative fixtures for stale policy evidence, unsupported coverage or premium certainty, dangling asset or source references, claim filing, coverage changes, payments, carrier or agent contact, uploads, calendar edits, disclosure, and insurance/legal advice.",
+    "existingAlternatives": [
+      {
+        "id": "home-inventory-binder",
+        "overlap": "Both support insurance review, asset evidence, receipts, photos, privacy labels, claim blockers, and owner-review questions.",
+        "difference": "Home Inventory Binder tracks possessions, rooms, serials, warranties, and value evidence; Insurance Policy Organizer tracks policy documents, declarations, coverage items, limits, deductibles, premiums, renewals, exclusions, and claim-readiness evidence."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both organize recurring bills, renewal dates, source freshness, review questions, and blocked account, payment, calendar, or vendor-contact actions.",
+        "difference": "Subscription Manager tracks recurring service subscriptions; Insurance Policy Organizer tracks regulated insurance policy evidence, coverage boundaries, deductibles, claim-prep, and advice/contact blockers."
+      },
+      {
+        "id": "school-coordinator",
+        "overlap": "Both organize deadlines, forms, sensitive household details, review questions, and blocked submission, messaging, payment, calendar, disclosure, legal, and advice actions.",
+        "difference": "School Coordinator manages student logistics and guardian-owned school tasks; Insurance Policy Organizer manages policy documents, coverage evidence, premiums, deductibles, renewals, and claim-readiness without school or student workflows."
+      },
+      {
+        "id": "restaurant-venue-scout",
+        "overlap": "Both preserve source freshness, privacy-sensitive details, review questions, and blocked contact, payment, calendar, advice, and location-disclosure actions.",
+        "difference": "Restaurant and Venue Scout compares places to visit using menu, hours, reservation, map, and accessibility evidence; Insurance Policy Organizer organizes policy, coverage, premium, renewal, deductible, and claim-readiness evidence."
+      },
+      {
+        "id": "meal-grocery-planner",
+        "overlap": "Both handle household planning evidence, privacy-sensitive constraints, source freshness, review questions, and blocked order, payment, subscription, calendar, message, disclosure, and advice actions.",
+        "difference": "Meal and Grocery Planner prepares meals, pantry use, and grocery lists; Insurance Policy Organizer prepares policy binders, coverage ledgers, premium and renewal views, and claim-readiness handoffs."
+      },
+      {
+        "id": "stock-portfolio-monitor",
+        "overlap": "Both preserve financial source provenance, freshness, owner authority, and strict boundaries against advice, transactions, tax, or legal conclusions.",
+        "difference": "Stock Portfolio Monitor tracks securities positions and market data; Insurance Policy Organizer tracks insurance coverage evidence, premiums, deductibles, renewals, assets, and claim-readiness without market or trading workflows."
+      },
+      {
+        "id": "personal-archive-curator",
+        "overlap": "Both index private documents, receipts, notes, links, privacy labels, source provenance, and blocked delete, move, share, upload, or disclosure actions.",
+        "difference": "Personal Archive Curator organizes broad personal records; Insurance Policy Organizer gives insurance documents a policy-specific ledger with coverage, premium, deductible, renewal, exclusion, and claim-readiness semantics."
+      },
+      {
+        "id": "care-circle-coordinator",
+        "overlap": "Both may involve sensitive household, medical, financial, caregiver, and recipient privacy details with legal, medical, financial, and emergency authority boundaries.",
+        "difference": "Care Circle Coordinator manages support tasks and helper commitments; Insurance Policy Organizer organizes policy evidence and can only support care-related insurance review within the owner-approved privacy scope."
+      },
+      {
+        "id": "household-steward",
+        "overlap": "Both can involve household assets, budgets, renewal timing, privacy boundaries, cross-domain questions, and specialist handoffs.",
+        "difference": "Household Steward coordinates household operations across specialist Claws; Insurance Policy Organizer is the specialist for policy documents, coverage evidence, renewals, premiums, deductibles, and claim-readiness."
+      }
+    ]
+  }
+}

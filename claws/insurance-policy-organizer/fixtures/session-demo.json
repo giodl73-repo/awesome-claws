@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "insurance-policy-organizer",
+  "scenario": "Build an insurance policy organizer from the declarations pages, premium notices, renewal email, home inventory, receipts, and owner notes I supplied. Show deductible and coverage gaps, renewal questions, and claim-readiness evidence, but do not file a claim, contact the carrier, change coverage, pay anything, upload documents, edit my calendar, or give insurance or legal advice.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Build an insurance policy organizer from the declarations pages, premium notices, renewal email, home inventory, receipts, and owner notes I supplied. Show deductible and coverage gaps, renewal questions, and claim-readiness evidence, but do not file a claim, contact the carrier, change coverage, pay anything, upload documents, edit my calendar, or give insurance or legal advice."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/insurance-policy-organizer-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Insurance policy organizer session handoff",
+    "summary": "A source-backed insurance policy binder with policy, coverage, deductible, premium, renewal, asset, and claim-readiness evidence; privacy and gap review questions; and all claim, advice, coverage-change, payment, contact, upload, calendar, and disclosure actions blocked.",
+    "output": "outputs/insurance-policy-organizer-handoff.md",
+    "items": [
+      {
+        "title": "Policy, carrier, status, and renewal ledger",
+        "summary": "Every policy, carrier, coverage item, deductible, limit, premium, renewal, asset link, and claim-readiness note has source identity, freshness, and privacy labeling",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Coverage, limit, deductible, and exclusion evidence register",
+        "summary": "Every coverage, premium, deductible, renewal, and claim-readiness conclusion traces to explicit policy, declarations, endorsement, premium, receipt, inventory, carrier, agent, or owner evidence without hiding gaps",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Premium and payment-source review view",
+        "summary": "Policy numbers, addresses, assets, medical details, financial amounts, claim correspondence, carrier accounts, and household details are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Asset and claim-readiness evidence checklist",
+        "summary": "Claims, coverage changes, cancellations, renewals, premium payments, carrier or agent contact, document uploads, calendar edits, and legal or insurance advice remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked claim, advice, coverage-change, payment, contact, upload, calendar, and disclosure handoff",
+        "summary": "Every policy, carrier, coverage item, deductible, limit, premium, renewal, asset link, and claim-readiness note has source identity, freshness, and privacy labeling",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
