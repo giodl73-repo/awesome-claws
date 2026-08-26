@@ -58,7 +58,8 @@
       "games-backlog-manager",
       "home-inventory-binder",
       "meal-grocery-planner",
-      "insurance-policy-organizer"
+      "insurance-policy-organizer",
+      "tax-document-organizer"
     ]
   },
   "visualCases": [

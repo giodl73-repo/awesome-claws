@@ -209,6 +209,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "tax-document-organizer",
+    schema: "../claws/tax-document-organizer/schemas/tax-document.schema.json",
+    fixture: "../claws/tax-document-organizer/fixtures/tax-document.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "civic-data-analyst",
     schema: "../claws/civic-data-analyst/schemas/civic-evidence.schema.json",
     fixture: "../claws/civic-data-analyst/fixtures/civic-evidence.example.json",
@@ -555,6 +561,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["sports-team-watcher", (value) => value.games[0].sourceRefs.push(value.games[0].sourceRefs[0])],
     ["stock-portfolio-monitor", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
     ["subscription-manager", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
+    ["tax-document-organizer", (value) => value.documents[0].sourceRefs.push(value.documents[0].sourceRefs[0])],
     ["civic-data-analyst", (value) => value.measures[0].sourceRefs.push(value.measures[0].sourceRefs[0])],
   ];
   for (const [id, mutate] of mutations) {
@@ -2203,6 +2210,32 @@ test("subscription manager binds renewal evidence and blocks account authority",
   const cancellationAdvice = structuredClone(cases.get("subscription-manager").fixture);
   cancellationAdvice.reviewQuestions[0].question = "Should the owner cancel Disney+ now?";
   assert.equal(isValid("subscription-manager", cancellationAdvice), false);
+});
+
+test("tax document organizer preserves document evidence and owner authority", () => {
+  const staleSource = structuredClone(cases.get("tax-document-organizer").fixture);
+  staleSource.sources[0].freshness = "stale";
+  assert.equal(isValid("tax-document-organizer", staleSource), false);
+
+  const unsupportedIncome = structuredClone(cases.get("tax-document-organizer").fixture);
+  unsupportedIncome.evidenceItems[0].sourceRefs = ["src-charity"];
+  assert.equal(isValid("tax-document-organizer", unsupportedIncome), false);
+
+  const unsupportedDeadline = structuredClone(cases.get("tax-document-organizer").fixture);
+  unsupportedDeadline.deadlines[0].sourceRefs = ["src-w2"];
+  assert.equal(isValid("tax-document-organizer", unsupportedDeadline), false);
+
+  const actionAdvice = structuredClone(cases.get("tax-document-organizer").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Claim the deduction and file the return.";
+  assert.equal(isValid("tax-document-organizer", actionAdvice), false);
+
+  const danglingDocument = structuredClone(cases.get("tax-document-organizer").fixture);
+  danglingDocument.evidenceItems[0].documentRef = "missing-document";
+  assert.equal(isValid("tax-document-organizer", danglingDocument), false);
+
+  const unsupportedReady = structuredClone(cases.get("tax-document-organizer").fixture);
+  unsupportedReady.documents[0].taxYearState = "unknown";
+  assert.equal(isValid("tax-document-organizer", unsupportedReady), false);
 });
 
 test("capstone profiles expose only their intended runtime dimensions", async () => {

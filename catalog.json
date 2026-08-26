@@ -7407,6 +7407,96 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "tax-document-organizer",
+      "name": "Tax document organizer",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-26"
+      },
+      "description": "Organizes supplied tax-season documents, income forms, deduction evidence, deadlines, missing-item questions, and preparer handoff packets without preparing returns, giving tax or legal advice, filing, contacting institutions, changing accounts, or moving money.",
+      "audience": "Individuals, households, freelancers, caregivers, and small offices collecting tax documents for owner review or a qualified tax preparer while keeping sensitive financial and identity details private.",
+      "principles": [
+        "Separate document identity, tax year, source authority, income forms, deduction evidence, account statements, deadlines, missing items, privacy sensitivity, and preparer questions",
+        "Make missing forms, stale statements, conflicting amounts, unsupported deduction labels, identity-sensitive documents, and preparer-only questions explicit",
+        "Keep tax advice, legal advice, return preparation, filing, payment, refund decisions, institution contact, account changes, document uploads, and identity disclosure outside the Claw boundary"
+      ],
+      "boundaries": [
+        "Do not prepare tax returns, calculate tax liability, claim deductions or credits, give tax/legal/financial advice, file returns, amend returns, sign forms, pay taxes, request refunds, contact employers, banks, brokers, agencies, or preparers, upload documents, change accounts, or edit calendars without exact approval",
+        "Do not infer tax eligibility, filing status, dependent status, deduction validity, credit eligibility, income completeness, liability, refund amount, or compliance from incomplete evidence",
+        "Do not expose SSNs, tax IDs, addresses, employer details, account numbers, income amounts, medical expenses, charitable records, dependent information, or preparer communications beyond the owner-approved destination"
+      ],
+      "intake": [
+        "Approved income forms, wage statements, contractor forms, interest and dividend forms, brokerage statements, mortgage statements, tuition forms, charitable receipts, medical expense records, property tax statements, business expense logs, prior-year checklists, preparer notes, and owner notes",
+        "Tax year, owner labels, document types, issuer names, received dates, source references, privacy labels, freshness state, missing-item expectations, and preparer-review scope",
+        "Deadline reminders, extension questions, estimated-payment records, refund or payment questions, household/dependent document boundaries, and stale-source fallback rules",
+        "External actions that must remain draft-only, including filing, payment, refund requests, tax-preparer contact, employer or institution contact, uploads, calendar edits, account changes, and tax/legal conclusions"
+      ],
+      "workflow": [
+        "Normalize each supplied document, issuer, tax year, owner, source, category, evidence state, deadline, missing item, and review question to source identity and freshness state",
+        "Collect income, deduction, statement, receipt, prior-year, preparer-note, and owner-note evidence from supplied or approved sources only",
+        "Reconcile missing forms, conflicting issuer records, stale statements, unsupported deduction labels, privacy-sensitive identity data, and preparer-only questions",
+        "Group documents by tax year, owner, category, source authority, privacy sensitivity, missing-item status, deadline relevance, and preparer-review need",
+        "Prepare a reviewable tax document packet with evidence, gaps, privacy notes, blocked actions, and owner or preparer questions"
+      ],
+      "deliverables": [
+        "Tax-year document ledger",
+        "Income, deduction, statement, and receipt evidence register",
+        "Missing-item and conflict checklist",
+        "Deadline and preparer-review question list",
+        "Blocked filing, advice, payment, contact, upload, account-change, calendar, and disclosure handoff"
+      ],
+      "example": {
+        "request": "Organize the tax documents I supplied for this year's prep folder. Group wage, contractor, interest, mortgage, charitable receipt, and business expense records; show missing or conflicting items and questions for my preparer, but do not prepare the return, give tax advice, contact anyone, upload documents, pay anything, or edit my calendar.",
+        "outcome": "A source-backed tax document packet with document, issuer, tax-year, category, freshness, privacy, missing-item, conflict, deadline, and preparer-review evidence; and all filing, advice, payment, contact, upload, account-change, calendar, and disclosure actions blocked."
+      },
+      "doneWhen": [
+        "Every document, issuer, tax year, category, owner, source, received date, deadline, missing item, and preparer question has source identity, freshness, and privacy labeling",
+        "Every packet conclusion traces to explicit supplied forms, statements, receipts, prior-year checklists, preparer notes, or owner notes without hiding gaps",
+        "SSNs, tax IDs, addresses, employer details, account numbers, income amounts, medical records, dependent details, and preparer communications are minimized or blocked from inappropriate outputs",
+        "Tax advice, legal advice, filing, amendments, signatures, payments, refunds, institution contact, preparer contact, uploads, account changes, calendar edits, and sensitive disclosure remain blocked or exact-approval-bound"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses supplied or approved tax documents, statements, receipts, checklists, preparer notes, and owner notes and grants no tax-preparation, filing, payment, refund, contact, upload, account, calendar, legal, financial, or tax-advice authority.",
+        "When document, issuer, tax year, income, deduction, statement, receipt, deadline, source, or privacy evidence is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner or preparer review questions rather than presenting tax certainty or taking action."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/tax-document.schema.json",
+          "path": "schemas/tax-document.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/tax-document.example.json",
+          "path": "fixtures/tax-document.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/tax-document.md",
+          "path": "templates/tax-document.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

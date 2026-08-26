@@ -1166,6 +1166,109 @@ function insurancePolicyFindings(value) {
   return findings;
 }
 
+function taxDocumentFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const documentIds = value.documents.map((item) => item.id);
+  const evidenceIds = value.evidenceItems.map((item) => item.id);
+  const deadlineIds = value.deadlines.map((item) => item.id);
+  const missingIds = value.missingItems.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const documentSet = new Set(documentIds);
+  const questionSet = new Set(questionIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const knownRefs = new Set([...sourceIds, ...documentIds, ...evidenceIds, ...deadlineIds, ...missingIds]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(documentIds, "documents", "Document id"),
+    ...uniqueFindings(evidenceIds, "evidenceItems", "Evidence id"),
+    ...uniqueFindings(deadlineIds, "deadlines", "Deadline id"),
+    ...uniqueFindings(missingIds, "missingItems", "Missing-item id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+
+  for (const [index, document] of value.documents.entries()) {
+    findings.push(
+      ...uniqueFindings(document.sourceRefs, `documents.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(document.sourceRefs, sourceSet, `documents.${index}.sourceRefs`, "Source reference"),
+    );
+    const hasDocumentSource = document.sourceRefs.some((ref) =>
+      ["wage-form", "contractor-form", "interest-form", "dividend-form", "brokerage-statement", "mortgage-statement", "tuition-form", "charitable-receipt", "medical-receipt", "property-tax-statement", "business-expense-log", "prior-year-checklist", "preparer-note", "owner-note", "agency-notice", "bank-statement"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasDocumentSource) {
+      findings.push(finding("unsupported_document_source", `documents.${index}.sourceRefs`, "Tax documents require supplied form, statement, receipt, checklist, preparer, or owner evidence."));
+    }
+    if (
+      document.receivedState === "received" &&
+      (document.taxYearState !== "supported" || document.sourceRefs.some((ref) => ["stale", "unknown", "conflicting"].includes(sourceById.get(ref)?.freshness)))
+    ) {
+      findings.push(finding("unsupported_received_document", `documents.${index}`, "Received tax documents require supported tax-year state and current or recent non-conflicting evidence."));
+    }
+  }
+  for (const [index, evidence] of value.evidenceItems.entries()) {
+    findings.push(
+      ...referenceFindings([evidence.documentRef], documentSet, `evidenceItems.${index}.documentRef`, "Document reference"),
+      ...uniqueFindings(evidence.sourceRefs, `evidenceItems.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(evidence.sourceRefs, sourceSet, `evidenceItems.${index}.sourceRefs`, "Source reference"),
+    );
+    const allowedKinds = {
+      "income-form": ["wage-form", "contractor-form", "interest-form", "dividend-form", "brokerage-statement"],
+      "deduction-receipt": ["charitable-receipt", "medical-receipt", "property-tax-statement", "mortgage-statement"],
+      "account-statement": ["bank-statement", "brokerage-statement", "mortgage-statement", "interest-form", "dividend-form"],
+      "deadline-note": ["prior-year-checklist", "preparer-note", "owner-note", "agency-notice"],
+      "preparer-question": ["preparer-note", "owner-note", "prior-year-checklist"],
+      "identity-note": ["wage-form", "contractor-form", "owner-note", "agency-notice"],
+      "expense-log": ["business-expense-log", "owner-note", "preparer-note"],
+    }[evidence.kind];
+    if (evidence.state === "supported" && !evidence.sourceRefs.some((ref) => allowedKinds.includes(sourceById.get(ref)?.kind))) {
+      findings.push(finding("unsupported_evidence_source", `evidenceItems.${index}.sourceRefs`, "Supported tax evidence must cite a matching form, statement, receipt, checklist, preparer, or owner source kind."));
+    }
+  }
+  for (const [index, deadline] of value.deadlines.entries()) {
+    findings.push(
+      ...uniqueFindings(deadline.sourceRefs, `deadlines.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(deadline.sourceRefs, sourceSet, `deadlines.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      ["owner-supplied", "preparer-supplied"].includes(deadline.deadlineState) &&
+      !deadline.sourceRefs.some((ref) => ["owner-note", "preparer-note", "agency-notice", "prior-year-checklist"].includes(sourceById.get(ref)?.kind))
+    ) {
+      findings.push(finding("unsupported_deadline_source", `deadlines.${index}.sourceRefs`, "Deadline notes require owner, preparer, agency, or checklist evidence."));
+    }
+  }
+  for (const [index, item] of value.missingItems.entries()) {
+    findings.push(
+      ...uniqueFindings(item.refs, `missingItems.${index}.refs`, "Missing-item reference"),
+      ...referenceFindings(item.refs, knownRefs, `missingItems.${index}.refs`, "Missing-item reference"),
+    );
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.refs, `reviewQuestions.${index}.refs`, "Review reference"),
+      ...referenceFindings(question.refs, knownRefs, `reviewQuestions.${index}.refs`, "Review reference"),
+    );
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, questionSet, "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "unknown", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready tax packets cannot depend on stale, unknown, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    missingItems: value.missingItems.map(({ reason }) => reason),
+    reviewQuestions: value.reviewQuestions.map(({ reason }) => reason),
+    handoff: value.handoff.summary,
+  });
+  if (/\b(prepare (the )?return|file (the )?return|amend (the )?return|sign (the )?form|pay (the )?tax|request (a )?refund|contact (the )?(employer|bank|broker|agency|preparer)|upload documents|change account|edit calendar|share (the )?(ssn|tax id)|tax advice|legal advice|estimate liability|claim (the )?deduction|eligible for (a )?(deduction|credit)|refund amount)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Tax document artifacts must not instruct return preparation, filing, amendments, signatures, payments, refunds, contact, uploads, account or calendar changes, SSN/tax-id sharing, tax/legal advice, liability estimates, or deduction/credit claims."));
+  }
+  return findings;
+}
+
 function giftRelationshipFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const recipientIds = value.recipients.map((item) => item.id);
@@ -6217,6 +6320,7 @@ const validators = {
   "sports-team-watcher": sportsTeamWatchFindings,
   "stock-portfolio-monitor": stockPortfolioFindings,
   "subscription-manager": subscriptionManagerFindings,
+  "tax-document-organizer": taxDocumentFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
   "work-chief-of-staff": workChiefOfStaffFindings,
 };

@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/tax-document-organizer/tax-document.schema.json",
+  "title": "Tax Document Organizer Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "packet", "sources", "documents", "evidenceItems", "deadlines", "missingItems", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.taxDocument.v1" },
+    "packet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "taxYear", "timezone", "asOf", "purpose", "privacyMode"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^tax-packet-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "taxYear": { "type": "integer", "minimum": 2000, "maximum": 2100 },
+        "timezone": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "purpose": { "type": "string", "minLength": 1 },
+        "privacyMode": { "enum": ["owner-only", "preparer-ready", "redacted"] }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "authority", "capturedAt", "reference", "freshness", "privacy"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": { "enum": ["wage-form", "contractor-form", "interest-form", "dividend-form", "brokerage-statement", "mortgage-statement", "tuition-form", "charitable-receipt", "medical-receipt", "property-tax-statement", "business-expense-log", "prior-year-checklist", "preparer-note", "owner-note", "agency-notice", "bank-statement"] },
+          "authority": { "enum": ["owner", "employer", "payer", "financial-institution", "broker", "school", "charity", "provider", "government", "tax-preparer", "unknown"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 },
+          "freshness": { "enum": ["current", "recent", "stale", "unknown", "conflicting"] },
+          "privacy": { "enum": ["normal", "private", "identity-sensitive", "financial-sensitive", "medical-sensitive", "dependent-sensitive", "preparer-sensitive"] }
+        }
+      }
+    },
+    "documents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "category", "issuer", "receivedState", "taxYearState", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^doc-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "category": { "enum": ["income", "deduction", "statement", "receipt", "identity", "prior-year", "preparer-note", "other"] },
+          "issuer": { "type": "string", "minLength": 1 },
+          "receivedState": { "enum": ["received", "expected", "missing", "conflicting", "not-applicable"] },
+          "taxYearState": { "enum": ["supported", "unknown", "conflicting", "not-applicable"] },
+          "privacy": { "enum": ["normal", "private", "identity-sensitive", "financial-sensitive", "medical-sensitive", "dependent-sensitive", "preparer-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "evidenceItems": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "documentRef", "kind", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^evidence-[a-z0-9-]+$" },
+          "documentRef": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["income-form", "deduction-receipt", "account-statement", "deadline-note", "preparer-question", "identity-note", "expense-log"] },
+          "state": { "enum": ["supported", "possible", "missing", "conflicting"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "deadlines": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "deadlineState", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^deadline-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "deadlineState": { "enum": ["owner-supplied", "preparer-supplied", "unknown", "conflicting"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "missingItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "expectedDocument", "state", "reason", "refs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^missing-[a-z0-9-]+$" },
+          "expectedDocument": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["needs-owner-review", "needs-preparer-review", "blocked", "resolved"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reason", "refs", "owner"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "$ref": "#/$defs/refs" },
+          "owner": { "enum": ["owner", "tax-preparer", "financial-institution", "employer", "government", "unknown"] }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 12,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/prohibitedAction" }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "summary", "reviewQuestionRefs", "prohibitedActions", "nextOwner"],
+      "properties": {
+        "state": { "enum": ["ready-for-owner-review", "blocked-on-evidence", "blocked-on-approval"] },
+        "summary": { "type": "string", "minLength": 1 },
+        "reviewQuestionRefs": { "$ref": "#/$defs/refs" },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 12,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/prohibitedAction" }
+        },
+        "nextOwner": { "enum": ["owner", "tax-preparer", "financial-institution", "employer", "government"] }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "prohibitedAction": {
+      "enum": ["prepare-return", "file-return", "amend-return", "sign-form", "pay-tax", "request-refund", "contact-employer", "contact-bank", "contact-broker", "contact-agency", "contact-preparer", "upload-documents", "change-account", "edit-calendar", "share-ssn", "share-tax-id", "give-tax-advice", "give-legal-advice", "estimate-liability", "claim-deduction"]
+    }
+  }
+}

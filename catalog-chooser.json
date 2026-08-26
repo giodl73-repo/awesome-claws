@@ -2672,6 +2672,40 @@
       }
     },
     {
+      "id": "tax-document-organizer",
+      "name": "Tax document organizer",
+      "description": "Organizes supplied tax-season documents, income forms, deduction evidence, deadlines, missing-item questions, and preparer handoff packets without preparing returns, giving tax or legal advice, filing, contacting institutions, changing accounts, or moving money.",
+      "audience": "Individuals, households, freelancers, caregivers, and small offices collecting tax documents for owner review or a qualified tax preparer while keeping sensitive financial and identity details private.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-26"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "travel-concierge",
       "name": "Travel concierge",
       "description": "Searches and compares current Expedia lodging and flight options, then prepares a traveler-controlled booking handoff without completing a transaction.",
