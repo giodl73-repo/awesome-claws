@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/child-activity-manager/activity-logistics.schema.json",
+  "title": "Child Activity Manager Logistics Ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "plan", "sources", "children", "activities", "sessions", "registrations", "fees", "waivers", "equipment", "transportation", "helpers", "conflicts", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.activityLogistics.v1" },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "guardian", "timezone", "asOf", "activityWindow", "privacyMode"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^activity-plan-[a-z0-9-]+$" },
+        "guardian": { "type": "string", "minLength": 1 },
+        "timezone": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "activityWindow": { "type": "string", "minLength": 1 },
+        "privacyMode": { "enum": ["child-safe", "guardian-only", "redacted"] }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "authority", "capturedAt", "reference", "freshness", "privacy"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": { "enum": ["team-app", "coach-note", "camp-email", "club-calendar", "lesson-schedule", "fee-notice", "waiver-link", "equipment-list", "location-page", "guardian-note", "roster"] },
+          "authority": { "enum": ["guardian", "coach", "organizer", "team-app", "camp", "club", "venue", "caregiver"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 },
+          "freshness": { "enum": ["current", "stale", "missing", "conflicting"] },
+          "privacy": { "enum": ["normal", "child-sensitive", "guardian-only", "location-sensitive", "transportation-sensitive", "medical-sensitive"] }
+        }
+      }
+    },
+    "children": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^child-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "privacy": { "enum": ["child-safe", "guardian-only", "redacted"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "activities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "childRef", "kind", "name", "organizerLabel", "state", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^activity-[a-z0-9-]+$" },
+          "childRef": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["sport", "lesson", "camp", "club", "arts", "tutoring", "other"] },
+          "name": { "type": "string", "minLength": 1 },
+          "organizerLabel": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["active", "candidate", "waitlist", "paused", "unknown"] },
+          "privacy": { "enum": ["normal", "child-sensitive", "guardian-only", "location-sensitive", "transportation-sensitive", "medical-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "sessions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "activityRef", "startsAt", "endsAt", "locationLabel", "attendanceState", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^session-[a-z0-9-]+$" },
+          "activityRef": { "type": "string", "minLength": 1 },
+          "startsAt": { "type": "string", "format": "date-time" },
+          "endsAt": { "type": "string", "format": "date-time" },
+          "locationLabel": { "type": "string", "minLength": 1 },
+          "attendanceState": { "enum": ["planned", "maybe", "blocked", "unknown"] },
+          "privacy": { "enum": ["normal", "child-sensitive", "guardian-only", "location-sensitive", "transportation-sensitive", "medical-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "registrations": { "$ref": "#/$defs/activityItems" },
+    "fees": { "$ref": "#/$defs/activityItems" },
+    "waivers": { "$ref": "#/$defs/activityItems" },
+    "equipment": { "$ref": "#/$defs/activityItems" },
+    "transportation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "sessionRefs", "mode", "state", "helperRef", "pickupCommitment", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^transport-[a-z0-9-]+$" },
+          "sessionRefs": { "$ref": "#/$defs/refs" },
+          "mode": { "enum": ["guardian-drive", "carpool", "walk", "transit", "unknown"] },
+          "state": { "enum": ["guardian-review", "approved", "blocked", "unknown"] },
+          "helperRef": { "type": ["string", "null"], "minLength": 1 },
+          "pickupCommitment": { "enum": ["none", "guardian-review", "approved", "blocked"] },
+          "privacy": { "enum": ["normal", "child-sensitive", "guardian-only", "location-sensitive", "transportation-sensitive", "medical-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "helpers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "role", "permissionState", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^helper-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "role": { "enum": ["guardian", "caregiver", "coach", "parent", "organizer", "unknown"] },
+          "permissionState": { "enum": ["approved-by-guardian", "guardian-review", "blocked", "unknown"] },
+          "privacy": { "enum": ["normal", "child-sensitive", "guardian-only", "location-sensitive", "transportation-sensitive", "medical-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "sessionRefs", "state", "reason", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^conflict-[a-z0-9-]+$" },
+          "sessionRefs": { "$ref": "#/$defs/refs" },
+          "state": { "enum": ["clear", "possible", "conflicts", "unknown"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "activityRefs", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "activityRefs": { "$ref": "#/$defs/refs" },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/prohibitedAction" }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "guardian", "reviewQuestionRefs", "prohibitedActions", "owner"],
+      "properties": {
+        "state": { "enum": ["draft", "ready-for-guardian-review", "blocked"] },
+        "guardian": { "type": "string", "minLength": 1 },
+        "reviewQuestionRefs": { "$ref": "#/$defs/refs" },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/prohibitedAction" }
+        },
+        "owner": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "activityItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "activityRef", "label", "state", "dueAt", "privacy", "sourceRefs", "blockedReason"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^(registration|fee|waiver|equipment)-[a-z0-9-]+$" },
+          "activityRef": { "type": "string", "minLength": 1 },
+          "label": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["ready-for-review", "complete", "needed", "blocked", "unknown"] },
+          "dueAt": { "type": ["string", "null"], "format": "date-time" },
+          "privacy": { "enum": ["normal", "child-sensitive", "guardian-only", "location-sensitive", "transportation-sensitive", "medical-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" },
+          "blockedReason": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "prohibitedAction": {
+      "enum": ["register-child", "pay-fee", "message-coach", "message-parent", "contact-organizer", "modify-calendar", "arrange-ride", "commit-pickup", "sign-waiver", "share-location", "disclose-child-details", "make-medical-decision", "make-legal-decision", "make-custody-decision", "make-eligibility-claim"]
+    }
+  }
+}

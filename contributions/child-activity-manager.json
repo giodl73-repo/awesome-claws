@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "child-activity-manager",
+    "name": "Child activity manager",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-27"
+    },
+    "description": "Coordinates child sports, lessons, clubs, camps, equipment, fees, schedules, locations, carpools, and guardian-review questions from approved family sources without registering, paying, messaging, sharing locations, making pickup commitments, or changing calendars without exact guardian approval.",
+    "audience": "Parents, guardians, caregivers, and households coordinating extracurricular logistics while preserving child privacy, guardian authority, and helper boundaries.",
+    "principles": [
+      "Separate activities, sessions, registrations, fees, equipment, locations, transportation, helper roles, conflicts, source freshness, and guardian decisions",
+      "Make missing waivers, stale schedules, fee uncertainty, equipment gaps, transportation conflicts, pickup ambiguity, and privacy-sensitive child details explicit",
+      "Keep registration, payment, coach or parent messaging, location sharing, pickup commitments, calendar edits, medical/legal decisions, and child-detail disclosure outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not register, pay, message coaches or parents, contact organizers, share locations, edit calendars, arrange rides, commit pickups/drop-offs, sign waivers, or disclose child details without exact guardian approval",
+      "Do not infer health, ability, discipline, eligibility, custody, medical clearance, attendance, or safety conclusions from incomplete evidence",
+      "Do not expose child names, addresses, school/team names, locations, medical notes, family routines, or transportation plans beyond the guardian-approved destination"
+    ],
+    "intake": [
+      "Approved activity rosters, coach notes, team apps, camp emails, club calendars, lesson schedules, waiver links, fee notices, equipment lists, location pages, and guardian notes",
+      "Child-safe labels, activity preferences, recurring schedule constraints, transportation limits, equipment ownership, fee review rules, carpool/helper permissions, and privacy labels",
+      "Existing commitments, blocked dates, custody or pickup constraints supplied by the guardian, emergency-contact rules, and stale-source fallback rules",
+      "External actions that must remain draft-only, including registration, payment, organizer contact, coach/parent messages, calendar edits, ride arrangements, waiver signatures, location sharing, and child-detail disclosure"
+    ],
+    "workflow": [
+      "Normalize each activity, session, source, child label, location, equipment item, fee, waiver, transportation option, helper role, and guardian decision to supplied evidence and freshness state",
+      "Collect roster, team-app, coach-note, calendar, camp-email, fee, equipment, waiver, location, and guardian-note evidence from supplied or approved sources only",
+      "Reconcile stale schedules, missing waiver or fee evidence, equipment gaps, overlapping sessions, transportation conflicts, helper-scope gaps, and privacy-sensitive details",
+      "Group activity logistics by guardian action, child-safe next step, source freshness, privacy label, conflict state, and blocked external-action requirement",
+      "Prepare a reviewable activity logistics ledger with evidence, gaps, privacy notes, blocked actions, and guardian questions"
+    ],
+    "deliverables": [
+      "Child-safe activity roster and session schedule",
+      "Registration, waiver, fee, equipment, and location evidence register",
+      "Transportation, carpool, helper-scope, and conflict view",
+      "Guardian-review questions and child-privacy notes",
+      "Blocked registration, payment, contact, ride, pickup, calendar, waiver, and disclosure handoff"
+    ],
+    "example": {
+      "request": "Organize the kids' soccer, swim lesson, and summer camp logistics from these emails, team-app screenshots, fee notices, and equipment lists. Show schedule conflicts, gear gaps, fees, carpools, and what I need to review, but do not register, pay, message anyone, share locations, sign waivers, edit calendars, or commit a pickup.",
+      "outcome": "A source-backed activity logistics ledger with sessions, registration and fee evidence, equipment gaps, location and transportation notes, carpool/helper approval state, guardian review questions, and all registration, payment, contact, ride, pickup, calendar, waiver, and disclosure actions blocked."
+    },
+    "doneWhen": [
+      "Every activity, session, source, location, fee, waiver, equipment item, helper, transportation option, conflict, and guardian question has source identity, freshness, and privacy labeling",
+      "Every recommended activity item traces to explicit schedule, location, fee, equipment, transportation, guardian, privacy, and source-freshness evidence without hiding gaps",
+      "Child identifiers, addresses, team or school details, medical notes, family routines, custody constraints, and transportation plans are minimized or blocked from inappropriate outputs",
+      "Registration, payment, coach or parent contact, organizer contact, ride arrangements, pickup/drop-off commitments, calendar edits, waiver signatures, location sharing, and medical/legal/custody/eligibility decisions remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied or approved activity rosters, team-app screenshots, coach notes, club/camp calendars, fee notices, waiver links, equipment lists, location pages, and guardian preferences and grants no registration, payment, messaging, calendar, ride, waiver, location-sharing, or disclosure authority.",
+      "When schedule, fee, registration, waiver, equipment, transportation, helper permission, source, privacy, safety, health, eligibility, custody, or location evidence is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask guardian-review questions rather than presenting certainty or taking action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/activity-logistics.schema.json",
+        "path": "schemas/activity-logistics.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/activity-logistics.example.json",
+        "path": "fixtures/activity-logistics.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/activity-logistics.md",
+        "path": "templates/activity-logistics.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Families need help coordinating sports, lessons, clubs, camps, equipment, fees, waivers, locations, carpools, and pickup/drop-off logistics, but an assistant must not register children, pay fees, message adults, share locations, sign waivers, or make guardian commitments.",
+    "repeatableJob": "Reconcile approved activity sources, child-safe labels, schedules, fees, waivers, equipment needs, locations, transportation options, helper scopes, conflicts, source freshness, privacy notes, and guardian questions into a guardian-controlled activity logistics ledger.",
+    "proofPlan": "Prove an X3 artifact with activity/session identity, source freshness, registration/waiver/fee/equipment/location evidence, transportation and helper approval state, conflicts, review questions, blocked external actions, and negative fixtures for stale ready state, unsupported recommendations, duplicate or dangling references, registration/payment/messaging/contact/calendar/ride/pickup/waiver/location-sharing overreach, and medical/legal/custody/eligibility claims.",
+    "existingAlternatives": [
+      {
+        "id": "school-coordinator",
+        "overlap": "Both track child-related schedules, forms, deadlines, supplies, privacy labels, guardian review, and blocked school/contact/payment/calendar actions.",
+        "difference": "School Coordinator owns school assignments, teacher notes, LMS/forms, supply lists, and school deadlines; Child Activity Manager owns extracurricular sports, lessons, camps, equipment, fees, carpools, pickup/drop-off, and helper scope."
+      },
+      {
+        "id": "local-events-watcher",
+        "overlap": "Both track dated activities, locations, accessibility or age fit, conflicts, price signals, and blocked ticket/contact/calendar/location actions.",
+        "difference": "Local Events Watcher evaluates optional public events to consider; Child Activity Manager manages enrolled or candidate child activities with registration, waivers, equipment, transportation, and guardian commitments."
+      },
+      {
+        "id": "care-circle-coordinator",
+        "overlap": "Both coordinate helpers, privacy scopes, transportation-like constraints, consent or guardian authority, and blocked commitments.",
+        "difference": "Care Circle Coordinator manages care-recipient support; Child Activity Manager manages child extracurricular logistics and guardian-only activity authority."
+      },
+      {
+        "id": "household-steward",
+        "overlap": "Both coordinate household commitments, member privacy, family routines, conflicts, specialist handoffs, and exact approval.",
+        "difference": "Household Steward is the cross-domain manager; Child Activity Manager is the specialist Claw for activity rosters, registration/waiver/fee/equipment evidence, carpools, and pickup/drop-off questions."
+      },
+      {
+        "id": "sports-team-watcher",
+        "overlap": "Both can involve teams, schedules, rosters, official-source facts, and sports-related events.",
+        "difference": "Sports Team Watcher is a fan tracker for favorite teams; Child Activity Manager coordinates a child's own activities, fees, gear, transportation, and guardian decisions."
+      },
+      {
+        "id": "gift-relationship-manager",
+        "overlap": "Both handle people, dates, privacy-sensitive notes, budget or fee constraints, and draft-only messaging boundaries.",
+        "difference": "Gift and Relationship Manager plans occasions and gifts; Child Activity Manager organizes child activity operations, logistics, equipment, carpools, and guardian-reviewed commitments."
+      },
+      {
+        "id": "meal-grocery-planner",
+        "overlap": "Both manage household logistics, constraints, supplies, budget or fee evidence, source freshness, and blocked order/payment/message/calendar actions.",
+        "difference": "Meal and Grocery Planner owns meal planning, pantry use, recipes, and grocery lists; Child Activity Manager owns activities, sessions, registration, waivers, equipment, locations, transportation, and pickup/drop-off boundaries."
+      },
+      {
+        "id": "home-inventory-binder",
+        "overlap": "Both preserve source-backed item evidence, privacy labels, owner questions, and blocked disclosure or external actions.",
+        "difference": "Home Inventory Binder tracks possessions and insurance-ready evidence; Child Activity Manager tracks activity-specific equipment needs only as part of schedules, fees, sessions, and guardian logistics."
+      }
+    ]
+  }
+}

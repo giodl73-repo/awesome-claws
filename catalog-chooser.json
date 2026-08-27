@@ -238,6 +238,40 @@
       }
     },
     {
+      "id": "child-activity-manager",
+      "name": "Child activity manager",
+      "description": "Coordinates child sports, lessons, clubs, camps, equipment, fees, schedules, locations, carpools, and guardian-review questions from approved family sources without registering, paying, messaging, sharing locations, making pickup commitments, or changing calendars without exact guardian approval.",
+      "audience": "Parents, guardians, caregivers, and households coordinating extracurricular logistics while preserving child privacy, guardian authority, and helper boundaries.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-27"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "civic-data-analyst",
       "name": "Civic data analyst",
       "description": "Combines public demographic, budget, service, land-use, and mobility data into reproducible civic decision evidence.",

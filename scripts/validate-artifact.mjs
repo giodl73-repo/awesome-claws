@@ -14,6 +14,7 @@ const schemaNames = {
   "care-circle-coordinator": "care-circle.schema.json",
   "case-continuity-coordinator": "case-checkpoint.schema.json",
   "change-control-operator": "change-plan.schema.json",
+  "child-activity-manager": "activity-logistics.schema.json",
   "civic-data-analyst": "civic-evidence.schema.json",
   "data-analyst": "analysis-state.schema.json",
   "delegation-coordinator": "delegation-ledger.schema.json",

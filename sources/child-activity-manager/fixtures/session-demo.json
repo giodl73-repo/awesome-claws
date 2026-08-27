@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "child-activity-manager",
+  "scenario": "Organize the kids' soccer, swim lesson, and summer camp logistics from these emails, team-app screenshots, fee notices, and equipment lists. Show schedule conflicts, gear gaps, fees, carpools, and what I need to review, but do not register, pay, message anyone, share locations, sign waivers, edit calendars, or commit a pickup.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize the kids' soccer, swim lesson, and summer camp logistics from these emails, team-app screenshots, fee notices, and equipment lists. Show schedule conflicts, gear gaps, fees, carpools, and what I need to review, but do not register, pay, message anyone, share locations, sign waivers, edit calendars, or commit a pickup."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/child-activity-manager-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Child activity manager session handoff",
+    "summary": "A source-backed activity logistics ledger with sessions, registration and fee evidence, equipment gaps, location and transportation notes, carpool/helper approval state, guardian review questions, and all registration, payment, contact, ride, pickup, calendar, waiver, and disclosure actions blocked.",
+    "output": "outputs/child-activity-manager-handoff.md",
+    "items": [
+      {
+        "title": "Child-safe activity roster and session schedule",
+        "summary": "Every activity, session, source, location, fee, waiver, equipment item, helper, transportation option, conflict, and guardian question has source identity, freshness, and privacy labeling",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Registration, waiver, fee, equipment, and location evidence register",
+        "summary": "Every recommended activity item traces to explicit schedule, location, fee, equipment, transportation, guardian, privacy, and source-freshness evidence without hiding gaps",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Transportation, carpool, helper-scope, and conflict view",
+        "summary": "Child identifiers, addresses, team or school details, medical notes, family routines, custody constraints, and transportation plans are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Guardian-review questions and child-privacy notes",
+        "summary": "Registration, payment, coach or parent contact, organizer contact, ride arrangements, pickup/drop-off commitments, calendar edits, waiver signatures, location sharing, and medical/legal/custody/eligibility decisions remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked registration, payment, contact, ride, pickup, calendar, waiver, and disclosure handoff",
+        "summary": "Every activity, session, source, location, fee, waiver, equipment item, helper, transportation option, conflict, and guardian question has source identity, freshness, and privacy labeling",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
