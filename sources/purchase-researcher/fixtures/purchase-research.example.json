@@ -1,0 +1,213 @@
+{
+  "schemaVersion": "awesomeClaws.purchaseResearch.v1",
+  "plan": {
+    "id": "purchase-plan-robot-vacuum",
+    "owner": "Maya",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-26T16:00:00Z",
+    "category": "robot vacuum",
+    "budgetCurrency": "USD",
+    "budgetMin": 350,
+    "budgetMax": 650
+  },
+  "sources": [
+    {
+      "id": "src-owner-constraints",
+      "kind": "owner-note",
+      "authority": "user-supplied",
+      "capturedAt": "2026-08-26T15:30:00Z",
+      "reference": "Owner note: pet hair, mixed carpet/hardwood, under 4 inches, no subscription-required features",
+      "freshness": "current",
+      "support": "primary"
+    },
+    {
+      "id": "src-roborun-manufacturer",
+      "kind": "manufacturer-page",
+      "authority": "manufacturer",
+      "capturedAt": "2026-08-26T15:35:00Z",
+      "reference": "RoboRun S7 product specification page",
+      "freshness": "current",
+      "support": "primary"
+    },
+    {
+      "id": "src-roborun-merchant",
+      "kind": "merchant-page",
+      "authority": "merchant",
+      "capturedAt": "2026-08-26T15:37:00Z",
+      "reference": "Merchant listing for RoboRun S7",
+      "freshness": "current",
+      "support": "primary"
+    },
+    {
+      "id": "src-roborun-review",
+      "kind": "expert-review",
+      "authority": "reviewer",
+      "capturedAt": "2026-08-26T15:41:00Z",
+      "reference": "Independent review noting pet-hair pickup and carpet performance",
+      "freshness": "current",
+      "support": "secondary"
+    },
+    {
+      "id": "src-roborun-return",
+      "kind": "return-policy",
+      "authority": "policy",
+      "capturedAt": "2026-08-26T15:45:00Z",
+      "reference": "Merchant 30-day return policy",
+      "freshness": "current",
+      "support": "primary"
+    },
+    {
+      "id": "src-roborun-warranty",
+      "kind": "warranty-policy",
+      "authority": "policy",
+      "capturedAt": "2026-08-26T15:46:00Z",
+      "reference": "Manufacturer one-year limited warranty page",
+      "freshness": "current",
+      "support": "primary"
+    },
+    {
+      "id": "src-vacmax-marketplace",
+      "kind": "marketplace-listing",
+      "authority": "marketplace",
+      "capturedAt": "2026-08-26T15:50:00Z",
+      "reference": "Marketplace listing for VacMax Mini",
+      "freshness": "current",
+      "support": "secondary"
+    },
+    {
+      "id": "src-vacmax-reviews",
+      "kind": "user-review",
+      "authority": "community",
+      "capturedAt": "2026-08-26T15:52:00Z",
+      "reference": "User reviews with recurring battery concern",
+      "freshness": "current",
+      "support": "anecdotal"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "constraint-budget",
+      "kind": "budget",
+      "label": "Stay between 350 and 650 USD",
+      "priority": "required",
+      "sourceRefs": ["src-owner-constraints"]
+    },
+    {
+      "id": "constraint-pet-hair",
+      "kind": "feature",
+      "label": "Strong pet-hair pickup",
+      "priority": "required",
+      "sourceRefs": ["src-owner-constraints"]
+    },
+    {
+      "id": "constraint-height",
+      "kind": "size-fit",
+      "label": "Under 4 inches tall",
+      "priority": "required",
+      "sourceRefs": ["src-owner-constraints"]
+    }
+  ],
+  "candidates": [
+    {
+      "id": "candidate-roborun-s7",
+      "name": "RoboRun S7",
+      "seller": "Example Merchant",
+      "price": 579,
+      "currency": "USD",
+      "availability": "available",
+      "fitState": "supported-fit",
+      "recommendationState": "recommended",
+      "blockedReason": null,
+      "sourceRefs": ["src-roborun-manufacturer", "src-roborun-merchant", "src-roborun-review"]
+    },
+    {
+      "id": "candidate-vacmax-mini",
+      "name": "VacMax Mini",
+      "seller": "Marketplace seller",
+      "price": 429,
+      "currency": "USD",
+      "availability": "limited",
+      "fitState": "possible-fit",
+      "recommendationState": "review-needed",
+      "blockedReason": null,
+      "sourceRefs": ["src-vacmax-marketplace", "src-vacmax-reviews"]
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-roborun-price",
+      "candidateRef": "candidate-roborun-s7",
+      "kind": "price",
+      "state": "supported",
+      "constraintRefs": ["constraint-budget"],
+      "sourceRefs": ["src-roborun-merchant"]
+    },
+    {
+      "id": "claim-roborun-pet-hair",
+      "candidateRef": "candidate-roborun-s7",
+      "kind": "feature",
+      "state": "supported",
+      "constraintRefs": ["constraint-pet-hair"],
+      "sourceRefs": ["src-roborun-manufacturer", "src-roborun-review"]
+    },
+    {
+      "id": "claim-roborun-height",
+      "candidateRef": "candidate-roborun-s7",
+      "kind": "fit",
+      "state": "supported",
+      "constraintRefs": ["constraint-height"],
+      "sourceRefs": ["src-roborun-manufacturer"]
+    },
+    {
+      "id": "claim-vacmax-reviews",
+      "candidateRef": "candidate-vacmax-mini",
+      "kind": "review-quality",
+      "state": "possible",
+      "constraintRefs": [],
+      "sourceRefs": ["src-vacmax-reviews"]
+    }
+  ],
+  "policyNotes": [
+    {
+      "id": "policy-roborun-return",
+      "candidateRef": "candidate-roborun-s7",
+      "kind": "return",
+      "state": "supported",
+      "summary": "Merchant page states a 30-day return window.",
+      "sourceRefs": ["src-roborun-return"]
+    },
+    {
+      "id": "policy-roborun-warranty",
+      "candidateRef": "candidate-roborun-s7",
+      "kind": "warranty",
+      "state": "supported",
+      "summary": "Manufacturer page states a one-year limited warranty.",
+      "sourceRefs": ["src-roborun-warranty"]
+    }
+  ],
+  "risks": [
+    {
+      "id": "risk-vacmax-marketplace",
+      "candidateRef": "candidate-vacmax-mini",
+      "kind": "marketplace",
+      "state": "review-needed",
+      "sourceRefs": ["src-vacmax-marketplace", "src-vacmax-reviews"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-vacmax-seller",
+      "question": "Do you want to keep marketplace sellers in scope for this purchase?",
+      "reason": "VacMax Mini has limited listing evidence and anecdotal battery concerns.",
+      "candidateRefs": ["candidate-vacmax-mini"],
+      "sourceRefs": ["src-vacmax-marketplace", "src-vacmax-reviews"]
+    }
+  ],
+  "blockedActions": ["buy", "add-to-cart", "reserve", "subscribe", "apply-credit", "contact-seller", "make-payment", "edit-account", "change-wishlist", "initiate-return", "register-warranty", "post-review", "claim-objective-best"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Maya",
+    "candidateRefs": ["candidate-roborun-s7", "candidate-vacmax-mini"],
+    "prohibitedActions": ["buy", "add-to-cart", "reserve", "subscribe", "apply-credit", "contact-seller", "make-payment", "edit-account", "change-wishlist", "initiate-return", "register-warranty", "post-review", "claim-objective-best"]
+  }
+}

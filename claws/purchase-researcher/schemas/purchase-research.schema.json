@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/purchase-researcher/purchase-research.schema.json",
+  "title": "Purchase Researcher Handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "plan", "sources", "constraints", "candidates", "claims", "policyNotes", "risks", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.purchaseResearch.v1" },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "timezone", "asOf", "category", "budgetCurrency", "budgetMin", "budgetMax"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^purchase-plan-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "timezone": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "category": { "type": "string", "minLength": 1 },
+        "budgetCurrency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "budgetMin": { "type": ["number", "null"], "minimum": 0 },
+        "budgetMax": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "authority", "capturedAt", "reference", "freshness", "support"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": { "enum": ["owner-note", "manufacturer-page", "merchant-page", "marketplace-listing", "expert-review", "user-review", "manual", "return-policy", "warranty-policy", "shipping-policy", "prior-purchase"] },
+          "authority": { "enum": ["user-supplied", "manufacturer", "merchant", "marketplace", "reviewer", "community", "policy"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 },
+          "freshness": { "enum": ["current", "stale", "missing", "conflicting"] },
+          "support": { "enum": ["primary", "secondary", "anecdotal", "unsupported"] }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "priority", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^constraint-[a-z0-9-]+$" },
+          "kind": { "enum": ["budget", "compatibility", "size-fit", "feature", "must-avoid", "accessibility", "gift", "household", "timing"] },
+          "label": { "type": "string", "minLength": 1 },
+          "priority": { "enum": ["required", "preferred", "nice-to-have"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "seller", "price", "currency", "availability", "fitState", "recommendationState", "blockedReason", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^candidate-[a-z0-9-]+$" },
+          "name": { "type": "string", "minLength": 1 },
+          "seller": { "type": "string", "minLength": 1 },
+          "price": { "type": ["number", "null"], "minimum": 0 },
+          "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+          "availability": { "enum": ["available", "limited", "backordered", "unavailable", "unknown"] },
+          "fitState": { "enum": ["supported-fit", "possible-fit", "poor-fit", "unknown", "conflicting"] },
+          "recommendationState": { "enum": ["recommended", "review-needed", "blocked"] },
+          "blockedReason": { "type": ["string", "null"], "minLength": 1 },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "candidateRef", "kind", "state", "constraintRefs", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^claim-[a-z0-9-]+$" },
+          "candidateRef": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["price", "availability", "compatibility", "feature", "review-quality", "safety", "authenticity", "fit", "shipping"] },
+          "state": { "enum": ["supported", "possible", "missing", "conflicting", "unsupported"] },
+          "constraintRefs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "policyNotes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "candidateRef", "kind", "state", "summary", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^policy-[a-z0-9-]+$" },
+          "candidateRef": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["warranty", "return", "shipping"] },
+          "state": { "enum": ["supported", "possible", "missing", "conflicting", "unsupported"] },
+          "summary": { "type": "string", "minLength": 1 },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "candidateRef", "kind", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^risk-[a-z0-9-]+$" },
+          "candidateRef": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["marketplace", "counterfeit", "review-quality", "compatibility", "budget", "privacy", "accessibility", "delivery"] },
+          "state": { "enum": ["resolved", "review-needed", "blocked"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "candidateRefs", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "candidateRefs": { "$ref": "#/$defs/refs" },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "enum": ["buy", "add-to-cart", "reserve", "subscribe", "apply-credit", "contact-seller", "make-payment", "edit-account", "change-wishlist", "initiate-return", "register-warranty", "post-review", "claim-objective-best"] }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "candidateRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["draft", "ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "candidateRefs": { "$ref": "#/$defs/refs" },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "enum": ["buy", "add-to-cart", "reserve", "subscribe", "apply-credit", "contact-seller", "make-payment", "edit-account", "change-wishlist", "initiate-return", "register-warranty", "post-review", "claim-objective-best"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}
