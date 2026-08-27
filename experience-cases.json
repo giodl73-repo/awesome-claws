@@ -63,7 +63,8 @@
       "purchase-researcher",
       "household-budget-steward",
       "life-timeline-keeper",
-      "child-activity-manager"
+      "child-activity-manager",
+      "neighborhood-operations-watcher"
     ]
   },
   "visualCases": [

@@ -1,0 +1,200 @@
+{
+  "schemaVersion": "awesomeClaws.neighborhoodOperations.v1",
+  "plan": {
+    "id": "neighborhood-plan-september",
+    "owner": "household owner",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-27T12:00:00-07:00",
+    "watchWindow": "September 2026 local operations",
+    "privacyMode": "owner-redacted"
+  },
+  "sources": [
+    {
+      "id": "src-waste-calendar",
+      "kind": "waste-calendar",
+      "authority": "waste-provider",
+      "capturedAt": "2026-08-26T08:00:00-07:00",
+      "reference": "Waste provider calendar for the supplied service zone",
+      "freshness": "current",
+      "privacy": "address-sensitive"
+    },
+    {
+      "id": "src-road-map",
+      "kind": "road-map",
+      "authority": "city",
+      "capturedAt": "2026-08-26T13:20:00-07:00",
+      "reference": "City road-closure map around the neighborhood arterial",
+      "freshness": "current",
+      "privacy": "public"
+    },
+    {
+      "id": "src-utility-notice",
+      "kind": "utility-notice",
+      "authority": "utility",
+      "capturedAt": "2026-08-25T16:10:00-07:00",
+      "reference": "Utility maintenance notice forwarded by owner",
+      "freshness": "current",
+      "privacy": "account-sensitive"
+    },
+    {
+      "id": "src-board-agenda",
+      "kind": "school-board-notice",
+      "authority": "school-board",
+      "capturedAt": "2026-08-24T09:00:00-07:00",
+      "reference": "Public school board agenda item for crossing changes",
+      "freshness": "current",
+      "privacy": "public"
+    },
+    {
+      "id": "src-owner-note",
+      "kind": "owner-note",
+      "authority": "owner",
+      "capturedAt": "2026-08-27T07:30:00-07:00",
+      "reference": "Owner note: do not expose exact address or commute routine",
+      "freshness": "current",
+      "privacy": "routine-sensitive"
+    }
+  ],
+  "zones": [
+    {
+      "id": "zone-service",
+      "label": "redacted waste service zone",
+      "scope": "service-area",
+      "privacy": "address-sensitive",
+      "sourceRefs": ["src-waste-calendar", "src-owner-note"]
+    },
+    {
+      "id": "zone-arterial",
+      "label": "nearby arterial route",
+      "scope": "route",
+      "privacy": "public",
+      "sourceRefs": ["src-road-map"]
+    }
+  ],
+  "notices": [
+    {
+      "id": "notice-recycling-delay",
+      "kind": "waste-service",
+      "title": "Recycling pickup delayed one day for the supplied zone",
+      "zoneRefs": ["zone-service"],
+      "severity": "attention",
+      "state": "current",
+      "privacy": "address-sensitive",
+      "sourceRefs": ["src-waste-calendar"]
+    },
+    {
+      "id": "notice-road-closure",
+      "kind": "road-closure",
+      "title": "Lane closure near the neighborhood arterial",
+      "zoneRefs": ["zone-arterial"],
+      "severity": "disruption",
+      "state": "watch",
+      "privacy": "public",
+      "sourceRefs": ["src-road-map"]
+    },
+    {
+      "id": "notice-utility-work",
+      "kind": "utility-work",
+      "title": "Planned utility work in the area",
+      "zoneRefs": ["zone-service"],
+      "severity": "attention",
+      "state": "watch",
+      "privacy": "account-sensitive",
+      "sourceRefs": ["src-utility-notice"]
+    },
+    {
+      "id": "notice-crossing-agenda",
+      "kind": "school-board",
+      "title": "Public agenda item on crossing changes",
+      "zoneRefs": ["zone-arterial"],
+      "severity": "routine",
+      "state": "watch",
+      "privacy": "public",
+      "sourceRefs": ["src-board-agenda"]
+    }
+  ],
+  "schedules": [
+    {
+      "id": "schedule-recycling-delay",
+      "noticeRef": "notice-recycling-delay",
+      "startsAt": "2026-09-02T06:00:00-07:00",
+      "endsAt": "2026-09-02T18:00:00-07:00",
+      "certainty": "confirmed",
+      "sourceRefs": ["src-waste-calendar"]
+    },
+    {
+      "id": "schedule-road-closure",
+      "noticeRef": "notice-road-closure",
+      "startsAt": "2026-09-03T09:00:00-07:00",
+      "endsAt": "2026-09-03T15:00:00-07:00",
+      "certainty": "confirmed",
+      "sourceRefs": ["src-road-map"]
+    },
+    {
+      "id": "schedule-utility-work",
+      "noticeRef": "notice-utility-work",
+      "startsAt": "2026-09-04T08:00:00-07:00",
+      "endsAt": "2026-09-04T12:00:00-07:00",
+      "certainty": "tentative",
+      "sourceRefs": ["src-utility-notice"]
+    }
+  ],
+  "routineImpacts": [
+    {
+      "id": "impact-bins",
+      "noticeRefs": ["notice-recycling-delay"],
+      "routine": "recycling",
+      "impact": "adjust",
+      "privacy": "routine-sensitive",
+      "sourceRefs": ["src-waste-calendar", "src-owner-note"]
+    },
+    {
+      "id": "impact-route",
+      "noticeRefs": ["notice-road-closure", "notice-crossing-agenda"],
+      "routine": "school-route",
+      "impact": "watch",
+      "privacy": "routine-sensitive",
+      "sourceRefs": ["src-road-map", "src-board-agenda", "src-owner-note"]
+    },
+    {
+      "id": "impact-utility",
+      "noticeRefs": ["notice-utility-work"],
+      "routine": "utility-use",
+      "impact": "watch",
+      "privacy": "account-sensitive",
+      "sourceRefs": ["src-utility-notice"]
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-route-agenda",
+      "noticeRefs": ["notice-road-closure", "notice-crossing-agenda"],
+      "state": "possible",
+      "reason": "Road work and crossing agenda both affect the same redacted route area, but sources do not say they are coordinated.",
+      "sourceRefs": ["src-road-map", "src-board-agenda"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-route-routine",
+      "question": "Should the owner adjust the school-route routine on the lane-closure day?",
+      "reason": "The city map shows a timed disruption, but this ledger cannot edit calendars or share commute details.",
+      "noticeRefs": ["notice-road-closure"],
+      "sourceRefs": ["src-road-map", "src-owner-note"]
+    },
+    {
+      "id": "question-utility-notice",
+      "question": "Does the owner want to verify the utility notice through the account portal?",
+      "reason": "The utility notice is supplied and tentative, but this Claw cannot contact the utility or change the account.",
+      "noticeRefs": ["notice-utility-work"],
+      "sourceRefs": ["src-utility-notice"]
+    }
+  ],
+  "blockedActions": ["file-complaint", "call-agency", "contact-utility", "submit-permit", "post-publicly", "message-neighbor", "modify-calendar", "change-account", "pay-bill", "request-service", "report-issue", "share-address", "make-legal-claim", "give-emergency-advice", "claim-area-safe"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "household owner",
+    "reviewQuestionRefs": ["question-route-routine", "question-utility-notice"],
+    "prohibitedActions": ["file-complaint", "call-agency", "contact-utility", "submit-permit", "post-publicly", "message-neighbor", "modify-calendar", "change-account", "pay-bill", "request-service", "report-issue", "share-address", "make-legal-claim", "give-emergency-advice", "claim-area-safe"]
+  }
+}

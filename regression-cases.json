@@ -2006,6 +2006,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "neighborhood-operations-watcher",
+      "acceptedRequest": "Organize the neighborhood notices from these city pages, utility emails, waste calendar, road-closure map, HOA note, and school board agenda. Show what affects our routines this month, but do not call anyone, file complaints, post publicly, message neighbors, edit calendars, change utility accounts, request service, or disclose my address.",
+      "requiredEvidence": [
+        "Approved public works pages, city notices, utility notices, waste calendars, road closure maps, permit pages, meeting agendas, school board notices, transit notices, HOA newsletters, and owner notes",
+        "Neighborhood-safe labels, affected streets or zones, service dates, notice windows, routine impacts, privacy labels, household constraints, and stale-source fallback rules",
+        "Owner review goals such as pickup reminders, road-work awareness, meeting agenda watch, permit visibility, utility-work planning, and unresolved notice questions",
+        "External actions that must remain draft-only, including complaints, calls, municipal submissions, utility contact, public posts, neighbor messages, account changes, service requests, calendar edits, and address disclosure"
+      ],
+      "authorityBoundaries": [
+        "Do not file complaints, submit permits, call agencies, contact utilities, post publicly, message neighbors, edit calendars, change accounts, pay bills, report issues, request service, or disclose addresses without exact owner approval",
+        "Do not replace emergency alerts, public safety instructions, legal advice, tenant or HOA advice, municipal guidance, or utility outage response",
+        "Do not infer exact home occupancy, presence, commute patterns, school attendance, health needs, or neighborhood safety from partial public notices"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/neighborhood-operations-watcher-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

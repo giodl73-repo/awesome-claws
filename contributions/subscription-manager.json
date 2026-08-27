@@ -141,6 +141,11 @@
         "difference": "Tax Document Organizer builds a tax-year forms, receipts, statements, missing-item, and preparer-review packet; Subscription Manager tracks recurring services, renewals, price changes, usage, overlap, and account-action boundaries."
       },
       {
+        "id": "neighborhood-operations-watcher",
+        "overlap": "Both track source freshness, date windows, recurring or scheduled service changes, owner review, privacy-sensitive context, and blocked provider-contact, account, payment, service-request, and calendar actions.",
+        "difference": "Neighborhood Operations Watcher tracks public or approved civic, utility, waste, road, permit, meeting, and service notices that affect household routines; Subscription Manager tracks account-bound recurring services, renewals, price changes, usage, and overlap."
+      },
+      {
         "id": "games-backlog-manager",
         "overlap": "Both may use subscription access, account labels, source freshness, usage context, owner review, and blocked payment or account actions.",
         "difference": "Games Backlog Manager uses subscription access only as game availability evidence for play selection; Subscription Manager tracks recurring services, renewal dates, price changes, usage, overlap, and account-action boundaries."
