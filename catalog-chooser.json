@@ -1164,6 +1164,40 @@
       }
     },
     {
+      "id": "household-budget-steward",
+      "name": "Household budget steward",
+      "description": "Reviews owner-supplied household bills, recurring expenses, categories, budget targets, variance evidence, and owner questions without banking access, payments, credit, tax/legal/financial advice, vendor contact, or cancellations.",
+      "audience": "Households and individuals who want a reviewable budget snapshot from supplied bills, receipts, statements, notes, and targets while keeping bank, payment, credit, tax, legal, and final budget authority with the owner.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-27"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "household-steward",
       "name": "Household steward",
       "description": "Coordinates a multi-person household's priorities, responsibilities, specialist-Claw handoffs, shared constraints, and explicitly authorized external actions without becoming the household decision-maker.",

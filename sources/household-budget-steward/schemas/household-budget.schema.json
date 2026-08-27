@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/household-budget-steward/household-budget.schema.json",
+  "title": "Household Budget Steward Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "budget", "sources", "categories", "incomeNotes", "bills", "expenses", "targets", "variances", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.householdBudget.v1" },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "household", "currency", "timezone", "periodStart", "periodEnd", "asOf", "privacyMode"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^budget-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "household": { "type": "string", "minLength": 1 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "timezone": { "type": "string", "minLength": 1 },
+        "periodStart": { "type": "string", "format": "date" },
+        "periodEnd": { "type": "string", "format": "date" },
+        "asOf": { "type": "string", "format": "date-time" },
+        "privacyMode": { "enum": ["owner-only", "household-safe", "redacted"] }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "authority", "capturedAt", "reference", "freshness", "privacy"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": { "enum": ["owner-note", "bill", "receipt", "invoice", "payroll-note", "statement", "subscription-ledger", "utility-notice", "rent-note", "mortgage-note", "prior-budget", "bank-feed"] },
+          "authority": { "enum": ["user-supplied", "vendor-supplied", "employer-supplied", "household-note", "banking-system"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 },
+          "freshness": { "enum": ["current", "delayed", "stale", "missing", "conflicting"] },
+          "privacy": { "enum": ["normal", "account-sensitive", "income-sensitive", "address-sensitive", "member-sensitive"] }
+        }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "kind", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^category-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["housing", "utilities", "food", "transportation", "insurance", "subscriptions", "childcare", "debt", "savings", "income", "other"] },
+          "privacy": { "enum": ["normal", "account-sensitive", "income-sensitive", "member-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "incomeNotes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "amount", "currency", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^income-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "amount": { "type": ["number", "null"], "minimum": 0 },
+          "currency": { "type": ["string", "null"], "pattern": "^[A-Z]{3}$" },
+          "state": { "enum": ["supplied", "missing", "conflicting", "not-in-scope"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "bills": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "categoryRef", "owner", "amount", "currency", "amountState", "dueDate", "cadence", "status", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^bill-[a-z0-9-]+$" },
+          "name": { "type": "string", "minLength": 1 },
+          "categoryRef": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "amount": { "type": ["number", "null"], "minimum": 0 },
+          "currency": { "type": ["string", "null"], "pattern": "^[A-Z]{3}$" },
+          "amountState": { "enum": ["supplied", "missing", "conflicting"] },
+          "dueDate": { "type": ["string", "null"], "format": "date" },
+          "cadence": { "enum": ["weekly", "monthly", "quarterly", "annual", "one-time", "unknown"] },
+          "status": { "enum": ["upcoming", "paid-by-owner", "review-needed", "missing", "conflicting"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "expenses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "categoryRef", "amount", "currency", "amountState", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^expense-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "categoryRef": { "type": "string", "minLength": 1 },
+          "amount": { "type": ["number", "null"], "minimum": 0 },
+          "currency": { "type": ["string", "null"], "pattern": "^[A-Z]{3}$" },
+          "amountState": { "enum": ["supplied", "missing", "conflicting"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "categoryRef", "amount", "currency", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^target-[a-z0-9-]+$" },
+          "categoryRef": { "type": "string", "minLength": 1 },
+          "amount": { "type": ["number", "null"], "minimum": 0 },
+          "currency": { "type": ["string", "null"], "pattern": "^[A-Z]{3}$" },
+          "state": { "enum": ["owner-supplied", "missing", "conflicting"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "variances": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "categoryRef", "actual", "target", "currency", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^variance-[a-z0-9-]+$" },
+          "categoryRef": { "type": "string", "minLength": 1 },
+          "actual": { "type": ["number", "null"], "minimum": 0 },
+          "target": { "type": ["number", "null"], "minimum": 0 },
+          "currency": { "type": ["string", "null"], "pattern": "^[A-Z]{3}$" },
+          "state": { "enum": ["supported", "missing-actual", "missing-target", "conflicting", "not-comparable"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "refs", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "$ref": "#/$defs/refs" },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 12,
+      "uniqueItems": true,
+      "items": { "enum": ["connect-bank", "connect-credit-card", "pay-bill", "move-money", "set-budget", "cancel-service", "negotiate-bill", "contact-vendor", "change-payment", "modify-account", "apply-credit", "edit-calendar", "send-message", "tax-advice", "legal-advice", "financial-advice", "investment-advice"] }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "reviewQuestionRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["draft", "ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "reviewQuestionRefs": { "$ref": "#/$defs/refs" },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 12,
+          "uniqueItems": true,
+          "items": { "enum": ["connect-bank", "connect-credit-card", "pay-bill", "move-money", "set-budget", "cancel-service", "negotiate-bill", "contact-vendor", "change-payment", "modify-account", "apply-credit", "edit-calendar", "send-message", "tax-advice", "legal-advice", "financial-advice", "investment-advice"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

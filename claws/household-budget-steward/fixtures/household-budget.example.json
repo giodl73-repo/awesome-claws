@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "awesomeClaws.householdBudget.v1",
+  "budget": {
+    "id": "budget-august-household",
+    "owner": "Maya",
+    "household": "Maya household",
+    "currency": "USD",
+    "timezone": "America/Los_Angeles",
+    "periodStart": "2026-08-01",
+    "periodEnd": "2026-08-31",
+    "asOf": "2026-08-27T09:00:00Z",
+    "privacyMode": "owner-only"
+  },
+  "sources": [
+    {
+      "id": "src-owner-targets",
+      "kind": "owner-note",
+      "authority": "user-supplied",
+      "capturedAt": "2026-08-26T18:00:00Z",
+      "reference": "Owner note with August category targets and review goals",
+      "freshness": "current",
+      "privacy": "member-sensitive"
+    },
+    {
+      "id": "src-payroll-note",
+      "kind": "payroll-note",
+      "authority": "user-supplied",
+      "capturedAt": "2026-08-26T18:05:00Z",
+      "reference": "Owner-supplied net payroll note for August",
+      "freshness": "current",
+      "privacy": "income-sensitive"
+    },
+    {
+      "id": "src-rent-note",
+      "kind": "rent-note",
+      "authority": "user-supplied",
+      "capturedAt": "2026-08-26T18:08:00Z",
+      "reference": "Lease note for September rent due date",
+      "freshness": "current",
+      "privacy": "address-sensitive"
+    },
+    {
+      "id": "src-utility-notice",
+      "kind": "utility-notice",
+      "authority": "vendor-supplied",
+      "capturedAt": "2026-08-26T18:10:00Z",
+      "reference": "Electric utility bill notice",
+      "freshness": "current",
+      "privacy": "account-sensitive"
+    },
+    {
+      "id": "src-grocery-receipts",
+      "kind": "receipt",
+      "authority": "user-supplied",
+      "capturedAt": "2026-08-26T18:12:00Z",
+      "reference": "Owner-supplied grocery receipt bundle",
+      "freshness": "current",
+      "privacy": "normal"
+    },
+    {
+      "id": "src-subscription-ledger",
+      "kind": "subscription-ledger",
+      "authority": "user-supplied",
+      "capturedAt": "2026-08-26T18:16:00Z",
+      "reference": "Subscription Manager export for household services",
+      "freshness": "current",
+      "privacy": "account-sensitive"
+    }
+  ],
+  "categories": [
+    {
+      "id": "category-income",
+      "label": "Supplied income",
+      "kind": "income",
+      "privacy": "income-sensitive",
+      "sourceRefs": ["src-payroll-note"]
+    },
+    {
+      "id": "category-housing",
+      "label": "Housing",
+      "kind": "housing",
+      "privacy": "member-sensitive",
+      "sourceRefs": ["src-rent-note", "src-owner-targets"]
+    },
+    {
+      "id": "category-utilities",
+      "label": "Utilities",
+      "kind": "utilities",
+      "privacy": "account-sensitive",
+      "sourceRefs": ["src-utility-notice", "src-owner-targets"]
+    },
+    {
+      "id": "category-food",
+      "label": "Food",
+      "kind": "food",
+      "privacy": "normal",
+      "sourceRefs": ["src-grocery-receipts", "src-owner-targets"]
+    },
+    {
+      "id": "category-subscriptions",
+      "label": "Subscriptions",
+      "kind": "subscriptions",
+      "privacy": "account-sensitive",
+      "sourceRefs": ["src-subscription-ledger", "src-owner-targets"]
+    }
+  ],
+  "incomeNotes": [
+    {
+      "id": "income-primary-payroll",
+      "label": "Owner-supplied net payroll",
+      "amount": 6200,
+      "currency": "USD",
+      "state": "supplied",
+      "sourceRefs": ["src-payroll-note"]
+    }
+  ],
+  "bills": [
+    {
+      "id": "bill-rent",
+      "name": "Rent",
+      "categoryRef": "category-housing",
+      "owner": "Maya",
+      "amount": 2400,
+      "currency": "USD",
+      "amountState": "supplied",
+      "dueDate": "2026-09-01",
+      "cadence": "monthly",
+      "status": "upcoming",
+      "sourceRefs": ["src-rent-note"]
+    },
+    {
+      "id": "bill-electric",
+      "name": "Electric utility",
+      "categoryRef": "category-utilities",
+      "owner": "Maya",
+      "amount": 188,
+      "currency": "USD",
+      "amountState": "supplied",
+      "dueDate": "2026-08-30",
+      "cadence": "monthly",
+      "status": "upcoming",
+      "sourceRefs": ["src-utility-notice"]
+    }
+  ],
+  "expenses": [
+    {
+      "id": "expense-groceries",
+      "label": "August grocery receipts",
+      "categoryRef": "category-food",
+      "amount": 715,
+      "currency": "USD",
+      "amountState": "supplied",
+      "sourceRefs": ["src-grocery-receipts"]
+    },
+    {
+      "id": "expense-subscriptions",
+      "label": "Household subscriptions",
+      "categoryRef": "category-subscriptions",
+      "amount": 146,
+      "currency": "USD",
+      "amountState": "supplied",
+      "sourceRefs": ["src-subscription-ledger"]
+    }
+  ],
+  "targets": [
+    {
+      "id": "target-housing",
+      "categoryRef": "category-housing",
+      "amount": 2400,
+      "currency": "USD",
+      "state": "owner-supplied",
+      "sourceRefs": ["src-owner-targets"]
+    },
+    {
+      "id": "target-food",
+      "categoryRef": "category-food",
+      "amount": 650,
+      "currency": "USD",
+      "state": "owner-supplied",
+      "sourceRefs": ["src-owner-targets"]
+    },
+    {
+      "id": "target-subscriptions",
+      "categoryRef": "category-subscriptions",
+      "amount": 175,
+      "currency": "USD",
+      "state": "owner-supplied",
+      "sourceRefs": ["src-owner-targets"]
+    }
+  ],
+  "variances": [
+    {
+      "id": "variance-housing",
+      "categoryRef": "category-housing",
+      "actual": 2400,
+      "target": 2400,
+      "currency": "USD",
+      "state": "supported",
+      "sourceRefs": ["src-rent-note", "src-owner-targets"]
+    },
+    {
+      "id": "variance-food",
+      "categoryRef": "category-food",
+      "actual": 715,
+      "target": 650,
+      "currency": "USD",
+      "state": "supported",
+      "sourceRefs": ["src-grocery-receipts", "src-owner-targets"]
+    },
+    {
+      "id": "variance-subscriptions",
+      "categoryRef": "category-subscriptions",
+      "actual": 146,
+      "target": 175,
+      "currency": "USD",
+      "state": "supported",
+      "sourceRefs": ["src-subscription-ledger", "src-owner-targets"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-food-target",
+      "question": "Is the 650 USD food target still the owner-supplied target for September?",
+      "reason": "Supplied grocery receipts total 715 USD for August against a 650 USD owner target.",
+      "refs": ["variance-food", "category-food", "target-food"],
+      "sourceRefs": ["src-grocery-receipts", "src-owner-targets"]
+    },
+    {
+      "id": "question-utility-timing",
+      "question": "Should the electric bill stay in the upcoming-bills review list?",
+      "reason": "The supplied utility notice has an August 30 due date and account-sensitive details.",
+      "refs": ["bill-electric", "category-utilities"],
+      "sourceRefs": ["src-utility-notice"]
+    }
+  ],
+  "blockedActions": ["connect-bank", "connect-credit-card", "pay-bill", "move-money", "set-budget", "cancel-service", "negotiate-bill", "contact-vendor", "change-payment", "modify-account", "apply-credit", "edit-calendar", "send-message", "tax-advice", "legal-advice", "financial-advice", "investment-advice"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Maya",
+    "reviewQuestionRefs": ["question-food-target", "question-utility-timing"],
+    "prohibitedActions": ["connect-bank", "connect-credit-card", "pay-bill", "move-money", "set-budget", "cancel-service", "negotiate-bill", "contact-vendor", "change-payment", "modify-account", "apply-credit", "edit-calendar", "send-message", "tax-advice", "legal-advice", "financial-advice", "investment-advice"]
+  }
+}

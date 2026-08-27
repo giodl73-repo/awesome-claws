@@ -1431,6 +1431,138 @@ function purchaseResearchFindings(value) {
   return findings;
 }
 
+function householdBudgetFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const categoryIds = value.categories.map((item) => item.id);
+  const incomeIds = value.incomeNotes.map((item) => item.id);
+  const billIds = value.bills.map((item) => item.id);
+  const expenseIds = value.expenses.map((item) => item.id);
+  const targetIds = value.targets.map((item) => item.id);
+  const varianceIds = value.variances.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const categorySet = new Set(categoryIds);
+  const questionSet = new Set(questionIds);
+  const knownRefs = new Set([...categoryIds, ...incomeIds, ...billIds, ...expenseIds, ...targetIds, ...varianceIds]);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const targetByCategory = new Map(value.targets.map((item) => [item.categoryRef, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(categoryIds, "categories", "Category id"),
+    ...uniqueFindings(incomeIds, "incomeNotes", "Income id"),
+    ...uniqueFindings(billIds, "bills", "Bill id"),
+    ...uniqueFindings(expenseIds, "expenses", "Expense id"),
+    ...uniqueFindings(targetIds, "targets", "Target id"),
+    ...uniqueFindings(varianceIds, "variances", "Variance id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+
+  if (Date.parse(value.budget.periodEnd) < Date.parse(value.budget.periodStart)) {
+    findings.push(finding("invalid_period", "budget.periodEnd", "Budget period end must not predate period start."));
+  }
+
+  for (const [index, source] of value.sources.entries()) {
+    if (source.kind === "bank-feed" || source.authority === "banking-system") {
+      findings.push(finding("bank_source_not_allowed", `sources.${index}`, "Household Budget Steward artifacts must not depend on connected bank or card feeds."));
+    }
+  }
+
+  for (const [index, category] of value.categories.entries()) {
+    findings.push(
+      ...uniqueFindings(category.sourceRefs, `categories.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(category.sourceRefs, sourceSet, `categories.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+
+  for (const [path, collection] of [
+    ["incomeNotes", value.incomeNotes],
+    ["bills", value.bills],
+    ["expenses", value.expenses],
+    ["targets", value.targets],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      if (item.categoryRef) {
+        findings.push(...referenceFindings([item.categoryRef], categorySet, `${path}.${index}.categoryRef`, "Category reference"));
+      }
+      findings.push(
+        ...uniqueFindings(item.sourceRefs, `${path}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${path}.${index}.sourceRefs`, "Source reference"),
+      );
+      if (["supplied", "owner-supplied"].includes(item.state ?? item.amountState)) {
+        if (item.amount === null || item.currency !== value.budget.currency) {
+          findings.push(finding("unsupported_amount_state", `${path}.${index}.amount`, "Supplied household budget amounts require a value in the budget currency."));
+        }
+      }
+      if (["missing", "conflicting"].includes(item.state ?? item.amountState) && item.amount !== null) {
+        findings.push(finding("inferred_amount", `${path}.${index}.amount`, "Missing or conflicting household budget amounts cannot carry inferred values."));
+      }
+    }
+  }
+
+  const actualByCategory = new Map();
+  for (const item of [...value.bills, ...value.expenses]) {
+    if (item.amountState === "supplied" && item.amount !== null && item.currency === value.budget.currency) {
+      actualByCategory.set(item.categoryRef, (actualByCategory.get(item.categoryRef) ?? 0) + item.amount);
+    }
+  }
+
+  for (const [index, variance] of value.variances.entries()) {
+    findings.push(
+      ...referenceFindings([variance.categoryRef], categorySet, `variances.${index}.categoryRef`, "Category reference"),
+      ...uniqueFindings(variance.sourceRefs, `variances.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(variance.sourceRefs, sourceSet, `variances.${index}.sourceRefs`, "Source reference"),
+    );
+    const target = targetByCategory.get(variance.categoryRef);
+    const actual = actualByCategory.get(variance.categoryRef);
+    if (variance.state === "supported") {
+      if (
+        variance.currency !== value.budget.currency ||
+        variance.actual === null ||
+        variance.target === null ||
+        actual === undefined ||
+        !target ||
+        target.amount === null ||
+        !numbersEqual(variance.actual, actual) ||
+        !numbersEqual(variance.target, target.amount)
+      ) {
+        findings.push(finding("unsupported_variance", `variances.${index}`, "Supported budget variance must equal supplied bill and expense totals against an owner-supplied target in the budget currency."));
+      }
+    }
+  }
+
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.refs, `reviewQuestions.${index}.refs`, "Review reference"),
+      ...referenceFindings(question.refs, knownRefs, `reviewQuestions.${index}.refs`, "Review reference"),
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, questionSet, "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready household budgets cannot depend on stale, missing, or conflicting sources."));
+  }
+
+  const actionText = canonicalJson({
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(connect (a )?(bank|credit card)|pay (the )?(bill|rent|invoice)|move money|set (the )?budget|cancel (the )?(service|subscription)|negotiate (the )?bill|contact (the )?(vendor|utility|landlord|lender)|change payment|modify account|apply for credit|edit calendar|send (a )?message|tax advice|legal advice|financial advice|investment advice|you should|save money by)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Household budget artifacts must not instruct banking, payments, money movement, budget commitments, cancellations, negotiation, vendor contact, account changes, credit, calendar edits, messages, advice, or financial decisions."));
+  }
+  if (value.handoff.owner === "household-budget-steward") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Budget, bill, payment, account, vendor-contact, credit, calendar, messaging, and financial decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 function giftRelationshipFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const recipientIds = value.recipients.map((item) => item.id);
@@ -6460,6 +6592,7 @@ const validators = {
   "gift-relationship-manager": giftRelationshipFindings,
   "green-thumb-coordinator": greenThumbFindings,
   "home-repair-coordinator": homeRepairFindings,
+  "household-budget-steward": householdBudgetFindings,
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,

@@ -1937,6 +1937,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "household-budget-steward",
+      "acceptedRequest": "Make a household budget review from the bills, receipts, payroll note, subscription ledger, and category targets I supplied. Show upcoming bills, category totals, target variance, stale or missing evidence, and owner questions, but do not connect accounts, pay anything, contact vendors, cancel services, apply for credit, edit calendars, or tell me what financial decision to make.",
+      "requiredEvidence": [
+        "Owner-supplied bills, receipts, statements, subscription ledgers, utility notices, rent or mortgage notes, payroll notes, household notes, category targets, and prior budget snapshots",
+        "Household members, expense owners, budget categories, periods, amounts, currencies, due dates, cadence, target ranges, split rules, privacy labels, and source freshness rules",
+        "Review goals such as upcoming bills, category totals, target variance, missing evidence, shared expense questions, bill timing, and owner-review handoff",
+        "External actions that must remain draft-only, including banking, payment, bill pay, account changes, vendor contact, cancellation, negotiation, credit, tax, legal, investment, calendar, and messaging actions"
+      ],
+      "authorityBoundaries": [
+        "Do not connect bank, broker, credit-card, payroll, lender, utility, bill-pay, tax, or vendor accounts or infer private spending beyond supplied evidence",
+        "Do not pay bills, move money, set budgets, cancel services, negotiate bills, contact vendors, change payment methods, apply for credit, edit calendars, send messages, or make account changes without exact approval",
+        "Do not provide tax, legal, credit, investment, debt, insurance, or personalized financial advice or tell the owner what financial decision to make"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/household-budget-steward-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

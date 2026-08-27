@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (80)
+### Active (81)
 
 | Claw | Detail |
 | --- | --- |
@@ -42,6 +42,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Home inventory binder](claws/home-inventory-binder) | @giodl73-repo; last verified 2026-08-23 |
 | [Home repair coordinator](claws/home-repair-coordinator) | @giodl73-repo; last verified 2026-08-20 |
+| [Household budget steward](claws/household-budget-steward) | @giodl73-repo; last verified 2026-08-27 |
 | [Household steward](claws/household-steward) | @giodl73-repo; last verified 2026-08-21 |
 | [Incident response](claws/incident-response) | @giodl73-repo; last verified 2026-08-19 |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | @giodl73-repo; last verified 2026-08-25 |
@@ -107,7 +108,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (49)
+### Low setup (50)
 
 | Claw | Detail |
 | --- | --- |
@@ -130,6 +131,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | no bootstrap, external dependency, or schedule |
 | [Home inventory binder](claws/home-inventory-binder) | no bootstrap, external dependency, or schedule |
 | [Home repair coordinator](claws/home-repair-coordinator) | no bootstrap, external dependency, or schedule |
+| [Household budget steward](claws/household-budget-steward) | no bootstrap, external dependency, or schedule |
 | [Household steward](claws/household-steward) | no bootstrap, external dependency, or schedule |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
@@ -206,7 +208,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (57)
+### No external dependencies (58)
 
 | Claw | Detail |
 | --- | --- |
@@ -234,6 +236,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | None |
 | [Home inventory binder](claws/home-inventory-binder) | None |
 | [Home repair coordinator](claws/home-repair-coordinator) | None |
+| [Household budget steward](claws/household-budget-steward) | None |
 | [Household steward](claws/household-steward) | None |
 | [Incident response](claws/incident-response) | None |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | None |
@@ -300,7 +303,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (55)
+### X3 (56)
 
 | Claw | Detail |
 | --- | --- |
@@ -322,6 +325,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | Coordinates evidence-bound seasonal garden planning, plant-health triage, low-risk care, and explicitly approved landscaper appointments. |
 | [Home inventory binder](claws/home-inventory-binder) | Organizes possessions, rooms, categories, serials, receipts, photos, warranties, manuals, value evidence, and owner-review questions without filing claims, giving insurance/legal advice, sharing private addresses, or exposing valuables. |
 | [Home repair coordinator](claws/home-repair-coordinator) | Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments. |
+| [Household budget steward](claws/household-budget-steward) | Reviews owner-supplied household bills, recurring expenses, categories, budget targets, variance evidence, and owner questions without banking access, payments, credit, tax/legal/financial advice, vendor contact, or cancellations. |
 | [Household steward](claws/household-steward) | Coordinates a multi-person household's priorities, responsibilities, specialist-Claw handoffs, shared constraints, and explicitly authorized external actions without becoming the household decision-maker. |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | Organizes insurance policies, declarations pages, premiums, deductibles, coverage evidence, renewal dates, claim-readiness evidence, and owner-review questions without giving insurance or legal advice, filing claims, changing coverage, contacting carriers, or paying premiums. |
 | [Knowledge curator](claws/knowledge-curator) | Turns scattered information into durable, navigable, and source-linked knowledge. |
@@ -476,7 +480,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (28)
+### Productivity (29)
 
 | Claw | Detail |
 | --- | --- |
@@ -487,6 +491,7 @@ Categories come directly from the catalog entry.
 | [Games backlog manager](claws/games-backlog-manager) | X3; Tracks owned and wanted games across platforms, stores, play status, co-op fit, family constraints, content ratings, session fit, and what-to-play shortlists without purchasing, installing, joining sessions, messaging players, changing parental controls, or altering accounts. |
 | [Gift and relationship manager](claws/gift-relationship-manager) | X3; Organizes relationship notes, occasions, gift ideas, preference evidence, budgets, and owner-review reminders without buying gifts, sending messages, editing calendars, or inferring sensitive relationship meaning. |
 | [Home inventory binder](claws/home-inventory-binder) | X3; Organizes possessions, rooms, categories, serials, receipts, photos, warranties, manuals, value evidence, and owner-review questions without filing claims, giving insurance/legal advice, sharing private addresses, or exposing valuables. |
+| [Household budget steward](claws/household-budget-steward) | X3; Reviews owner-supplied household bills, recurring expenses, categories, budget targets, variance evidence, and owner questions without banking access, payments, credit, tax/legal/financial advice, vendor contact, or cancellations. |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | X3; Organizes insurance policies, declarations pages, premiums, deductibles, coverage evidence, renewal dates, claim-readiness evidence, and owner-review questions without giving insurance or legal advice, filing claims, changing coverage, contacting carriers, or paying premiums. |
 | [Knowledge curator](claws/knowledge-curator) | X3; Turns scattered information into durable, navigable, and source-linked knowledge. |
 | [Knowledge gardener](claws/knowledge-gardener) | X3; Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work. |
@@ -513,7 +518,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (28)
+### Standard attention (29)
 
 | Claw | Detail |
 | --- | --- |
@@ -525,6 +530,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | portable workspace artifacts only |
 | [Home inventory binder](claws/home-inventory-binder) | portable workspace artifacts only |
 | [Home repair coordinator](claws/home-repair-coordinator) | portable workspace artifacts only |
+| [Household budget steward](claws/household-budget-steward) | portable workspace artifacts only |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | portable workspace artifacts only |
 | [Knowledge curator](claws/knowledge-curator) | portable workspace artifacts only |
 | [Local events watcher](claws/local-events-watcher) | portable workspace artifacts only |
