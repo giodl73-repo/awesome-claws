@@ -35,6 +35,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "child-activity-manager",
+    schema: "../claws/child-activity-manager/schemas/activity-logistics.schema.json",
+    fixture: "../claws/child-activity-manager/fixtures/activity-logistics.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "change-control-operator",
     schema: "../claws/change-control-operator/schemas/change-plan.schema.json",
     fixture: "../claws/change-control-operator/fixtures/change-plan.example.json",
@@ -439,6 +445,32 @@ test("school coordinator preserves student privacy and guardian authority", () =
   assert.equal(isValid("school-coordinator", agentOwned), false);
 });
 
+test("child activity manager preserves child privacy, logistics evidence, and guardian authority", () => {
+  const staleSource = structuredClone(cases.get("child-activity-manager").fixture);
+  staleSource.sources[0].freshness = "stale";
+  assert.equal(isValid("child-activity-manager", staleSource), false);
+
+  const invalidRange = structuredClone(cases.get("child-activity-manager").fixture);
+  invalidRange.sessions[0].endsAt = invalidRange.sessions[0].startsAt;
+  assert.equal(isValid("child-activity-manager", invalidRange), false);
+
+  const actionAdvice = structuredClone(cases.get("child-activity-manager").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Arrange ride, commit pickup, and share location.";
+  assert.equal(isValid("child-activity-manager", actionAdvice), false);
+
+  const danglingHelper = structuredClone(cases.get("child-activity-manager").fixture);
+  danglingHelper.transportation[0].helperRef = "missing-helper";
+  assert.equal(isValid("child-activity-manager", danglingHelper), false);
+
+  const unsupportedHelper = structuredClone(cases.get("child-activity-manager").fixture);
+  unsupportedHelper.helpers[0].sourceRefs = ["src-team-app"];
+  assert.equal(isValid("child-activity-manager", unsupportedHelper), false);
+
+  const agentOwned = structuredClone(cases.get("child-activity-manager").fixture);
+  agentOwned.handoff.owner = "child-activity-manager";
+  assert.equal(isValid("child-activity-manager", agentOwned), false);
+});
+
 test("games backlog manager preserves ownership evidence and owner authority", () => {
   const staleSource = structuredClone(cases.get("games-backlog-manager").fixture);
   staleSource.sources[1].freshness = "stale";
@@ -559,6 +591,7 @@ test("decision artifacts reject duplicate semantic references", () => {
   const mutations = [
     ["change-control-operator", (value) => value.execution.stepResults.push(structuredClone(value.execution.stepResults[0]))],
     ["case-continuity-coordinator", (value) => value.actions[0].evidenceRefs.push(value.actions[0].evidenceRefs[0])],
+    ["child-activity-manager", (value) => value.activities[0].sourceRefs.push(value.activities[0].sourceRefs[0])],
     ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
     ["games-backlog-manager", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],

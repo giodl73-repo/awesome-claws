@@ -1,0 +1,239 @@
+{
+  "schemaVersion": "awesomeClaws.activityLogistics.v1",
+  "plan": {
+    "id": "activity-plan-september",
+    "guardian": "primary guardian",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-27T12:00:00-07:00",
+    "activityWindow": "September 2026 weekday activities",
+    "privacyMode": "guardian-only"
+  },
+  "sources": [
+    {
+      "id": "src-team-app",
+      "kind": "team-app",
+      "authority": "team-app",
+      "capturedAt": "2026-08-26T18:15:00-07:00",
+      "reference": "Soccer team app schedule export supplied by guardian",
+      "freshness": "current",
+      "privacy": "child-sensitive"
+    },
+    {
+      "id": "src-swim-email",
+      "kind": "lesson-schedule",
+      "authority": "club",
+      "capturedAt": "2026-08-25T09:30:00-07:00",
+      "reference": "Swim lesson confirmation email supplied by guardian",
+      "freshness": "current",
+      "privacy": "location-sensitive"
+    },
+    {
+      "id": "src-camp-fee",
+      "kind": "fee-notice",
+      "authority": "camp",
+      "capturedAt": "2026-08-24T16:00:00-07:00",
+      "reference": "Camp balance notice PDF supplied by guardian",
+      "freshness": "current",
+      "privacy": "guardian-only"
+    },
+    {
+      "id": "src-equipment",
+      "kind": "equipment-list",
+      "authority": "coach",
+      "capturedAt": "2026-08-26T19:00:00-07:00",
+      "reference": "Coach equipment list screenshot",
+      "freshness": "current",
+      "privacy": "normal"
+    },
+    {
+      "id": "src-guardian-note",
+      "kind": "guardian-note",
+      "authority": "guardian",
+      "capturedAt": "2026-08-27T07:45:00-07:00",
+      "reference": "Guardian note: no unsupervised carpools until reviewed",
+      "freshness": "current",
+      "privacy": "transportation-sensitive"
+    }
+  ],
+  "children": [
+    {
+      "id": "child-a",
+      "label": "older child",
+      "privacy": "redacted",
+      "sourceRefs": ["src-guardian-note"]
+    },
+    {
+      "id": "child-b",
+      "label": "younger child",
+      "privacy": "redacted",
+      "sourceRefs": ["src-guardian-note"]
+    }
+  ],
+  "activities": [
+    {
+      "id": "activity-soccer",
+      "childRef": "child-a",
+      "kind": "sport",
+      "name": "weekday soccer",
+      "organizerLabel": "community league",
+      "state": "active",
+      "privacy": "child-sensitive",
+      "sourceRefs": ["src-team-app", "src-equipment"]
+    },
+    {
+      "id": "activity-swim",
+      "childRef": "child-b",
+      "kind": "lesson",
+      "name": "swim lesson",
+      "organizerLabel": "aquatic center",
+      "state": "active",
+      "privacy": "location-sensitive",
+      "sourceRefs": ["src-swim-email"]
+    },
+    {
+      "id": "activity-camp",
+      "childRef": "child-a",
+      "kind": "camp",
+      "name": "fall break day camp",
+      "organizerLabel": "parks camp",
+      "state": "candidate",
+      "privacy": "guardian-only",
+      "sourceRefs": ["src-camp-fee"]
+    }
+  ],
+  "sessions": [
+    {
+      "id": "session-soccer-practice",
+      "activityRef": "activity-soccer",
+      "startsAt": "2026-09-02T17:30:00-07:00",
+      "endsAt": "2026-09-02T18:45:00-07:00",
+      "locationLabel": "league field listed in team app",
+      "attendanceState": "planned",
+      "privacy": "location-sensitive",
+      "sourceRefs": ["src-team-app"]
+    },
+    {
+      "id": "session-swim-lesson",
+      "activityRef": "activity-swim",
+      "startsAt": "2026-09-02T18:15:00-07:00",
+      "endsAt": "2026-09-02T19:00:00-07:00",
+      "locationLabel": "aquatic center listed in confirmation email",
+      "attendanceState": "maybe",
+      "privacy": "location-sensitive",
+      "sourceRefs": ["src-swim-email"]
+    }
+  ],
+  "registrations": [
+    {
+      "id": "registration-camp",
+      "activityRef": "activity-camp",
+      "label": "camp registration still needs guardian review",
+      "state": "ready-for-review",
+      "dueAt": "2026-09-05T23:59:00-07:00",
+      "privacy": "guardian-only",
+      "sourceRefs": ["src-camp-fee"],
+      "blockedReason": null
+    }
+  ],
+  "fees": [
+    {
+      "id": "fee-camp-balance",
+      "activityRef": "activity-camp",
+      "label": "camp balance due per supplied notice",
+      "state": "ready-for-review",
+      "dueAt": "2026-09-05T23:59:00-07:00",
+      "privacy": "guardian-only",
+      "sourceRefs": ["src-camp-fee"],
+      "blockedReason": null
+    }
+  ],
+  "waivers": [
+    {
+      "id": "waiver-camp",
+      "activityRef": "activity-camp",
+      "label": "camp waiver link needs guardian signature decision",
+      "state": "needed",
+      "dueAt": "2026-09-05T23:59:00-07:00",
+      "privacy": "guardian-only",
+      "sourceRefs": ["src-camp-fee"],
+      "blockedReason": null
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equipment-soccer-cleats",
+      "activityRef": "activity-soccer",
+      "label": "confirm cleats still fit before first practice",
+      "state": "needed",
+      "dueAt": "2026-09-01T20:00:00-07:00",
+      "privacy": "normal",
+      "sourceRefs": ["src-equipment"],
+      "blockedReason": null
+    },
+    {
+      "id": "equipment-swim-goggles",
+      "activityRef": "activity-swim",
+      "label": "pack goggles and towel",
+      "state": "ready-for-review",
+      "dueAt": "2026-09-02T17:45:00-07:00",
+      "privacy": "normal",
+      "sourceRefs": ["src-swim-email"],
+      "blockedReason": null
+    }
+  ],
+  "transportation": [
+    {
+      "id": "transport-wednesday",
+      "sessionRefs": ["session-soccer-practice", "session-swim-lesson"],
+      "mode": "guardian-drive",
+      "state": "guardian-review",
+      "helperRef": null,
+      "pickupCommitment": "guardian-review",
+      "privacy": "transportation-sensitive",
+      "sourceRefs": ["src-team-app", "src-swim-email", "src-guardian-note"]
+    }
+  ],
+  "helpers": [
+    {
+      "id": "helper-guardian",
+      "label": "primary guardian",
+      "role": "guardian",
+      "permissionState": "approved-by-guardian",
+      "privacy": "guardian-only",
+      "sourceRefs": ["src-guardian-note"]
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-wednesday-overlap",
+      "sessionRefs": ["session-soccer-practice", "session-swim-lesson"],
+      "state": "possible",
+      "reason": "Soccer overlaps with swim by 30 minutes and both locations need guardian travel review.",
+      "sourceRefs": ["src-team-app", "src-swim-email"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-wednesday-transport",
+      "question": "Can the guardian handle both Wednesday activities, or should one session be skipped?",
+      "reason": "The supplied schedules overlap and no approved helper is assigned.",
+      "activityRefs": ["activity-soccer", "activity-swim"],
+      "sourceRefs": ["src-team-app", "src-swim-email", "src-guardian-note"]
+    },
+    {
+      "id": "question-camp-fee-waiver",
+      "question": "Should the guardian complete the camp registration, fee payment, and waiver before the deadline?",
+      "reason": "The camp notice lists a balance and waiver, but this Claw cannot register, pay, or sign.",
+      "activityRefs": ["activity-camp"],
+      "sourceRefs": ["src-camp-fee"]
+    }
+  ],
+  "blockedActions": ["register-child", "pay-fee", "message-coach", "message-parent", "contact-organizer", "modify-calendar", "arrange-ride", "commit-pickup", "sign-waiver", "share-location", "disclose-child-details", "make-medical-decision", "make-legal-decision", "make-custody-decision", "make-eligibility-claim"],
+  "handoff": {
+    "state": "ready-for-guardian-review",
+    "guardian": "primary guardian",
+    "reviewQuestionRefs": ["question-wednesday-transport", "question-camp-fee-waiver"],
+    "prohibitedActions": ["register-child", "pay-fee", "message-coach", "message-parent", "contact-organizer", "modify-calendar", "arrange-ride", "commit-pickup", "sign-waiver", "share-location", "disclose-child-details", "make-medical-decision", "make-legal-decision", "make-custody-decision", "make-eligibility-claim"],
+    "owner": "primary guardian"
+  }
+}

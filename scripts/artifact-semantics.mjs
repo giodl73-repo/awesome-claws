@@ -691,6 +691,150 @@ function schoolCoordinatorFindings(value) {
   return findings;
 }
 
+function childActivityFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const childIds = value.children.map((item) => item.id);
+  const activityIds = value.activities.map((item) => item.id);
+  const sessionIds = value.sessions.map((item) => item.id);
+  const helperIds = value.helpers.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const childSet = new Set(childIds);
+  const activitySet = new Set(activityIds);
+  const sessionSet = new Set(sessionIds);
+  const helperSet = new Set(helperIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(childIds, "children", "Child id"),
+    ...uniqueFindings(activityIds, "activities", "Activity id"),
+    ...uniqueFindings(sessionIds, "sessions", "Session id"),
+    ...uniqueFindings(value.registrations.map((item) => item.id), "registrations", "Registration id"),
+    ...uniqueFindings(value.fees.map((item) => item.id), "fees", "Fee id"),
+    ...uniqueFindings(value.waivers.map((item) => item.id), "waivers", "Waiver id"),
+    ...uniqueFindings(value.equipment.map((item) => item.id), "equipment", "Equipment id"),
+    ...uniqueFindings(value.transportation.map((item) => item.id), "transportation", "Transportation id"),
+    ...uniqueFindings(helperIds, "helpers", "Helper id"),
+    ...uniqueFindings(value.conflicts.map((item) => item.id), "conflicts", "Conflict id"),
+    ...uniqueFindings(value.reviewQuestions.map((item) => item.id), "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, child] of value.children.entries()) {
+    findings.push(
+      ...uniqueFindings(child.sourceRefs, `children.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(child.sourceRefs, sourceSet, `children.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, activity] of value.activities.entries()) {
+    findings.push(
+      ...referenceFindings([activity.childRef], childSet, `activities.${index}.childRef`, "Child reference"),
+      ...uniqueFindings(activity.sourceRefs, `activities.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(activity.sourceRefs, sourceSet, `activities.${index}.sourceRefs`, "Source reference"),
+    );
+    const supported = activity.sourceRefs.some((ref) =>
+      ["team-app", "coach-note", "camp-email", "club-calendar", "lesson-schedule", "fee-notice", "location-page", "guardian-note", "roster"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!supported) {
+      findings.push(finding("unsupported_activity_source", `activities.${index}.sourceRefs`, "Activities require team-app, coach, camp, club, lesson, location, roster, or guardian evidence."));
+    }
+  }
+  for (const [index, session] of value.sessions.entries()) {
+    findings.push(
+      ...referenceFindings([session.activityRef], activitySet, `sessions.${index}.activityRef`, "Activity reference"),
+      ...uniqueFindings(session.sourceRefs, `sessions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(session.sourceRefs, sourceSet, `sessions.${index}.sourceRefs`, "Source reference"),
+    );
+    if (Date.parse(session.endsAt) <= Date.parse(session.startsAt)) {
+      findings.push(finding("invalid_time_range", `sessions.${index}.endsAt`, "Activity sessions must end after they start."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["registrations", value.registrations],
+    ["fees", value.fees],
+    ["waivers", value.waivers],
+    ["equipment", value.equipment],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...referenceFindings([item.activityRef], activitySet, `${collectionName}.${index}.activityRef`, "Activity reference"),
+        ...uniqueFindings(item.sourceRefs, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+      );
+      const supported = item.sourceRefs.some((ref) =>
+        ["team-app", "coach-note", "camp-email", "club-calendar", "lesson-schedule", "fee-notice", "waiver-link", "equipment-list", "location-page", "guardian-note", "roster"].includes(sourceById.get(ref)?.kind),
+      );
+      if (!supported) {
+        findings.push(finding("unsupported_activity_item_source", `${collectionName}.${index}.sourceRefs`, "Activity logistics items require activity, fee, waiver, equipment, location, roster, or guardian evidence."));
+      }
+      if (
+        (item.state === "blocked" && !item.blockedReason) ||
+        (item.state !== "blocked" && item.blockedReason !== null && ["register", "pay", "sign", "message", "contact"].some((word) => item.blockedReason.toLowerCase().includes(word)))
+      ) {
+        findings.push(finding("incoherent_blocked_state", `${collectionName}.${index}.blockedReason`, "Only blocked items may carry action-blocking instructions as blocked reasons."));
+      }
+    }
+  }
+  for (const [index, transport] of value.transportation.entries()) {
+    findings.push(
+      ...uniqueFindings(transport.sessionRefs, `transportation.${index}.sessionRefs`, "Session reference"),
+      ...referenceFindings(transport.sessionRefs, sessionSet, `transportation.${index}.sessionRefs`, "Session reference"),
+      ...uniqueFindings(transport.sourceRefs, `transportation.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(transport.sourceRefs, sourceSet, `transportation.${index}.sourceRefs`, "Source reference"),
+    );
+    if (transport.helperRef !== null) {
+      findings.push(...referenceFindings([transport.helperRef], helperSet, `transportation.${index}.helperRef`, "Helper reference"));
+    }
+  }
+  for (const [index, helper] of value.helpers.entries()) {
+    findings.push(
+      ...uniqueFindings(helper.sourceRefs, `helpers.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(helper.sourceRefs, sourceSet, `helpers.${index}.sourceRefs`, "Source reference"),
+    );
+    const supported = helper.sourceRefs.some((ref) => sourceById.get(ref)?.kind === "guardian-note");
+    if (helper.permissionState === "approved-by-guardian" && !supported) {
+      findings.push(finding("unsupported_helper_permission", `helpers.${index}.sourceRefs`, "Approved helper permission requires guardian-note evidence."));
+    }
+  }
+  for (const [index, conflict] of value.conflicts.entries()) {
+    findings.push(
+      ...uniqueFindings(conflict.sessionRefs, `conflicts.${index}.sessionRefs`, "Session reference"),
+      ...referenceFindings(conflict.sessionRefs, sessionSet, `conflicts.${index}.sessionRefs`, "Session reference"),
+      ...uniqueFindings(conflict.sourceRefs, `conflicts.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(conflict.sourceRefs, sourceSet, `conflicts.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.activityRefs, `reviewQuestions.${index}.activityRefs`, "Activity reference"),
+      ...referenceFindings(question.activityRefs, activitySet, `reviewQuestions.${index}.activityRefs`, "Activity reference"),
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, new Set(value.reviewQuestions.map((item) => item.id)), "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-guardian-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Guardian-ready activity ledgers cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    registrations: value.registrations.map(({ label, blockedReason }) => ({ label, blockedReason })),
+    fees: value.fees.map(({ label, blockedReason }) => ({ label, blockedReason })),
+    waivers: value.waivers.map(({ label, blockedReason }) => ({ label, blockedReason })),
+    transportation: value.transportation.map(({ mode, state, pickupCommitment }) => ({ mode, state, pickupCommitment })),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(register (the )?child|register now|pay fee|pay now|message coach|message parent|contact organizer|edit calendar|modify calendar|arrange ride|commit pickup|commit drop-?off|sign waiver|share location|disclose child|medical decision|legal decision|custody decision|eligible|eligibility claim|safe to attend|cleared to play)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Activity artifacts must not instruct registration, payment, coach/parent/organizer contact, calendar edits, ride arrangements, pickup commitments, waiver signatures, location sharing, child disclosure, or medical/legal/custody/eligibility claims."));
+  }
+  if (value.handoff.owner === "child-activity-manager" || value.handoff.guardian === "child-activity-manager") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Activity, transportation, disclosure, and child-related decisions must remain with the named guardian."));
+  }
+  return findings;
+}
+
 function gamesBacklogFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const gameIds = value.games.map((item) => item.id);
@@ -6684,6 +6828,7 @@ const validators = {
   "care-circle-coordinator": careCircleFindings,
   "case-continuity-coordinator": caseContinuityFindings,
   "change-control-operator": changeControlFindings,
+  "child-activity-manager": childActivityFindings,
   "civic-data-analyst": civicDataFindings,
   "data-analyst": dataAnalysisFindings,
   "delegation-coordinator": delegationFindings,

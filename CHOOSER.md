@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (82)
+### Active (83)
 
 | Claw | Detail |
 | --- | --- |
@@ -18,6 +18,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Care Circle Coordinator](claws/care-circle-coordinator) | @giodl73-repo; last verified 2026-08-21 |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Change control operator](claws/change-control-operator) | @giodl73-repo; last verified 2026-08-19 |
+| [Child activity manager](claws/child-activity-manager) | @giodl73-repo; last verified 2026-08-27 |
 | [Civic data analyst](claws/civic-data-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Compliance reviewer](claws/compliance-reviewer) | @giodl73-repo; last verified 2026-08-19 |
@@ -109,7 +110,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (51)
+### Low setup (52)
 
 | Claw | Detail |
 | --- | --- |
@@ -119,6 +120,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Care Circle Coordinator](claws/care-circle-coordinator) | no bootstrap, external dependency, or schedule |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | no bootstrap, external dependency, or schedule |
 | [Change control operator](claws/change-control-operator) | no bootstrap, external dependency, or schedule |
+| [Child activity manager](claws/child-activity-manager) | no bootstrap, external dependency, or schedule |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | no bootstrap, external dependency, or schedule |
 | [Compliance reviewer](claws/compliance-reviewer) | no bootstrap, external dependency, or schedule |
 | [Content operations](claws/content-operations) | no bootstrap, external dependency, or schedule |
@@ -210,7 +212,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (59)
+### No external dependencies (60)
 
 | Claw | Detail |
 | --- | --- |
@@ -220,6 +222,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Care Circle Coordinator](claws/care-circle-coordinator) | None |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | None |
 | [Change control operator](claws/change-control-operator) | None |
+| [Child activity manager](claws/child-activity-manager) | None |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | None |
 | [Compliance reviewer](claws/compliance-reviewer) | None |
 | [Content operations](claws/content-operations) | None |
@@ -306,7 +309,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (57)
+### X3 (58)
 
 | Claw | Detail |
 | --- | --- |
@@ -314,6 +317,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Care Circle Coordinator](claws/care-circle-coordinator) | Coordinates a consent-bounded support plan for a person who relies on family, friends, or aides without giving medical, legal, or financial advice. |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions. |
 | [Change control operator](claws/change-control-operator) | Prepares and executes bounded workspace changes only after an accountable owner approves the exact plan digest. |
+| [Child activity manager](claws/child-activity-manager) | Coordinates child sports, lessons, clubs, camps, equipment, fees, schedules, locations, carpools, and guardian-review questions from approved family sources without registering, paying, messaging, sharing locations, making pickup commitments, or changing calendars without exact guardian approval. |
 | [Civic data analyst](claws/civic-data-analyst) | Combines public demographic, budget, service, land-use, and mobility data into reproducible civic decision evidence. |
 | [Content operations](claws/content-operations) | Runs editorial work from brief through review, publication readiness, and measurement. |
 | [Delegation coordinator](claws/delegation-coordinator) | Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
@@ -484,11 +488,12 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (30)
+### Productivity (31)
 
 | Claw | Detail |
 | --- | --- |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | X3; Coordinates a consent-bounded support plan for a person who relies on family, friends, or aides without giving medical, legal, or financial advice. |
+| [Child activity manager](claws/child-activity-manager) | X3; Coordinates child sports, lessons, clubs, camps, equipment, fees, schedules, locations, carpools, and guardian-review questions from approved family sources without registering, paying, messaging, sharing locations, making pickup commitments, or changing calendars without exact guardian approval. |
 | [Delegation coordinator](claws/delegation-coordinator) | X3; Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
 | [Executive assistant](claws/executive-assistant) | X3; Turns executive priorities into prepared decisions, communications, and reliable follow-through. |
 | [Executive briefing](claws/executive-briefing) | X3; Builds a concise daily operating brief from authorized calendar, mail, document, and weather context. |
@@ -523,12 +528,13 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (30)
+### Standard attention (31)
 
 | Claw | Detail |
 | --- | --- |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | portable workspace artifacts only |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | portable workspace artifacts only |
+| [Child activity manager](claws/child-activity-manager) | portable workspace artifacts only |
 | [Content operations](claws/content-operations) | portable workspace artifacts only |
 | [Games backlog manager](claws/games-backlog-manager) | portable workspace artifacts only |
 | [Gift and relationship manager](claws/gift-relationship-manager) | portable workspace artifacts only |

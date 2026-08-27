@@ -1983,6 +1983,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "child-activity-manager",
+      "acceptedRequest": "Organize the kids' soccer, swim lesson, and summer camp logistics from these emails, team-app screenshots, fee notices, and equipment lists. Show schedule conflicts, gear gaps, fees, carpools, and what I need to review, but do not register, pay, message anyone, share locations, sign waivers, edit calendars, or commit a pickup.",
+      "requiredEvidence": [
+        "Approved activity rosters, coach notes, team apps, camp emails, club calendars, lesson schedules, waiver links, fee notices, equipment lists, location pages, and guardian notes",
+        "Child-safe labels, activity preferences, recurring schedule constraints, transportation limits, equipment ownership, fee review rules, carpool/helper permissions, and privacy labels",
+        "Existing commitments, blocked dates, custody or pickup constraints supplied by the guardian, emergency-contact rules, and stale-source fallback rules",
+        "External actions that must remain draft-only, including registration, payment, organizer contact, coach/parent messages, calendar edits, ride arrangements, waiver signatures, location sharing, and child-detail disclosure"
+      ],
+      "authorityBoundaries": [
+        "Do not register, pay, message coaches or parents, contact organizers, share locations, edit calendars, arrange rides, commit pickups/drop-offs, sign waivers, or disclose child details without exact guardian approval",
+        "Do not infer health, ability, discipline, eligibility, custody, medical clearance, attendance, or safety conclusions from incomplete evidence",
+        "Do not expose child names, addresses, school/team names, locations, medical notes, family routines, or transportation plans beyond the guardian-approved destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/child-activity-manager-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
