@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "household-budget-steward",
+  "scenario": "Make a household budget review from the bills, receipts, payroll note, subscription ledger, and category targets I supplied. Show upcoming bills, category totals, target variance, stale or missing evidence, and owner questions, but do not connect accounts, pay anything, contact vendors, cancel services, apply for credit, edit calendars, or tell me what financial decision to make.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Make a household budget review from the bills, receipts, payroll note, subscription ledger, and category targets I supplied. Show upcoming bills, category totals, target variance, stale or missing evidence, and owner questions, but do not connect accounts, pay anything, contact vendors, cancel services, apply for credit, edit calendars, or tell me what financial decision to make."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/household-budget-steward-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Household budget steward session handoff",
+    "summary": "A source-backed household budget snapshot with supplied income and expense evidence, bill due dates, category totals, target variance, missing or stale evidence, privacy notes, owner questions, and all banking, payment, vendor, account, cancellation, credit, tax, legal, financial-advice, calendar, and messaging actions blocked.",
+    "output": "outputs/household-budget-steward-handoff.md",
+    "items": [
+      {
+        "title": "Supplied household budget snapshot",
+        "summary": "Every supplied income note, bill, expense, category target, amount, due date, cadence, owner label, source, and privacy label has source identity and freshness state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Bill, recurring expense, and due-date ledger",
+        "summary": "Every category total, bill timing, target variance, and shared-expense note traces to supplied or approved evidence without inferring private account data",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Category total and target-variance review",
+        "summary": "Stale bills, missing amounts, unsupported targets, conflicting category assignments, shared-expense uncertainty, and privacy-sensitive account details are explicit",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Source freshness, privacy, and missing-evidence register",
+        "summary": "Banking, payments, money movement, account changes, vendor contact, cancellations, negotiation, credit applications, tax/legal/financial/investment advice, budget commitments, calendar edits, and messages remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked banking, payment, account, vendor-contact, cancellation, credit, tax, legal, financial-advice, calendar, and messaging handoff",
+        "summary": "Every supplied income note, bill, expense, category target, amount, due date, cadence, owner label, source, and privacy label has source identity and freshness state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

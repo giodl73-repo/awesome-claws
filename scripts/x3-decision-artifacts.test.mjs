@@ -83,6 +83,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "household-budget-steward",
+    schema: "../claws/household-budget-steward/schemas/household-budget.schema.json",
+    fixture: "../claws/household-budget-steward/fixtures/household-budget.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "home-inventory-binder",
     schema: "../claws/home-inventory-binder/schemas/home-inventory.schema.json",
     fixture: "../claws/home-inventory-binder/fixtures/home-inventory.example.json",
@@ -551,6 +557,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
     ["games-backlog-manager", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
     ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
+    ["household-budget-steward", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
     ["home-inventory-binder", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["insurance-policy-organizer", (value) => value.coverageItems[0].sourceRefs.push(value.coverageItems[0].sourceRefs[0])],
     ["local-events-watcher", (value) => value.watchlist[0].constraintRefs.push(value.watchlist[0].constraintRefs[0])],
@@ -2273,6 +2280,37 @@ test("purchase researcher preserves source-backed fit and owner authority", () =
   const agentOwned = structuredClone(cases.get("purchase-researcher").fixture);
   agentOwned.handoff.owner = "purchase-researcher";
   assert.equal(isValid("purchase-researcher", agentOwned), false);
+});
+
+test("household budget steward preserves supplied evidence and owner authority", () => {
+  const staleSource = structuredClone(cases.get("household-budget-steward").fixture);
+  staleSource.sources[0].freshness = "stale";
+  assert.equal(isValid("household-budget-steward", staleSource), false);
+
+  const bankSource = structuredClone(cases.get("household-budget-steward").fixture);
+  bankSource.sources[0].kind = "bank-feed";
+  bankSource.sources[0].authority = "banking-system";
+  assert.equal(isValid("household-budget-steward", bankSource), false);
+
+  const inferredBill = structuredClone(cases.get("household-budget-steward").fixture);
+  inferredBill.bills[0].amountState = "missing";
+  assert.equal(isValid("household-budget-steward", inferredBill), false);
+
+  const wrongVariance = structuredClone(cases.get("household-budget-steward").fixture);
+  wrongVariance.variances[1].actual = 650;
+  assert.equal(isValid("household-budget-steward", wrongVariance), false);
+
+  const actionAdvice = structuredClone(cases.get("household-budget-steward").fixture);
+  actionAdvice.reviewQuestions[0].reason += " You should pay the bill and contact the vendor.";
+  assert.equal(isValid("household-budget-steward", actionAdvice), false);
+
+  const danglingRef = structuredClone(cases.get("household-budget-steward").fixture);
+  danglingRef.reviewQuestions[0].refs = ["missing-budget-ref"];
+  assert.equal(isValid("household-budget-steward", danglingRef), false);
+
+  const agentOwned = structuredClone(cases.get("household-budget-steward").fixture);
+  agentOwned.handoff.owner = "household-budget-steward";
+  assert.equal(isValid("household-budget-steward", agentOwned), false);
 });
 
 test("capstone profiles expose only their intended runtime dimensions", async () => {
