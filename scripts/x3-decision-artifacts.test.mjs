@@ -155,6 +155,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "neighborhood-operations-watcher",
+    schema: "../claws/neighborhood-operations-watcher/schemas/neighborhood-operations.schema.json",
+    fixture: "../claws/neighborhood-operations-watcher/fixtures/neighborhood-operations.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "personal-archive-curator",
     schema: "../claws/personal-archive-curator/schemas/archive-index.schema.json",
     fixture: "../claws/personal-archive-curator/fixtures/archive-index.example.json",
@@ -401,6 +407,29 @@ test("local events watcher preserves source certainty and owner authority", () =
   assert.equal(isValid("local-events-watcher", danglingEvent), false);
 });
 
+test("neighborhood operations watcher preserves public-source limits and owner authority", () => {
+  const staleConfirmedSchedule = structuredClone(cases.get("neighborhood-operations-watcher").fixture);
+  staleConfirmedSchedule.handoff.state = "draft";
+  staleConfirmedSchedule.sources[0].freshness = "stale";
+  assert.equal(isValid("neighborhood-operations-watcher", staleConfirmedSchedule), false);
+
+  const invalidRange = structuredClone(cases.get("neighborhood-operations-watcher").fixture);
+  invalidRange.schedules[0].endsAt = invalidRange.schedules[0].startsAt;
+  assert.equal(isValid("neighborhood-operations-watcher", invalidRange), false);
+
+  const actionAdvice = structuredClone(cases.get("neighborhood-operations-watcher").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Call city, report issue, and share address.";
+  assert.equal(isValid("neighborhood-operations-watcher", actionAdvice), false);
+
+  const danglingNotice = structuredClone(cases.get("neighborhood-operations-watcher").fixture);
+  danglingNotice.routineImpacts[0].noticeRefs = ["missing-notice"];
+  assert.equal(isValid("neighborhood-operations-watcher", danglingNotice), false);
+
+  const agentOwned = structuredClone(cases.get("neighborhood-operations-watcher").fixture);
+  agentOwned.handoff.owner = "neighborhood-operations-watcher";
+  assert.equal(isValid("neighborhood-operations-watcher", agentOwned), false);
+});
+
 test("meal grocery planner preserves pantry evidence and owner authority", () => {
   const staleSource = structuredClone(cases.get("meal-grocery-planner").fixture);
   staleSource.sources[1].freshness = "stale";
@@ -605,6 +634,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],
     ["movie-streaming-organizer", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["music-organizer", (value) => value.playlistPlan[0].preferenceRefs.push(value.playlistPlan[0].preferenceRefs[0])],
+    ["neighborhood-operations-watcher", (value) => value.notices[0].sourceRefs.push(value.notices[0].sourceRefs[0])],
     ["personal-archive-curator", (value) => value.retrievalCues[0].sourceRefs.push(value.retrievalCues[0].sourceRefs[0])],
     ["purchase-researcher", (value) => value.candidates[0].sourceRefs.push(value.candidates[0].sourceRefs[0])],
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],

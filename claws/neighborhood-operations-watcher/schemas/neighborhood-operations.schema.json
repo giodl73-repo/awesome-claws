@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/neighborhood-operations-watcher/neighborhood-operations.schema.json",
+  "title": "Neighborhood Operations Watcher Ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "plan", "sources", "zones", "notices", "schedules", "routineImpacts", "conflicts", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.neighborhoodOperations.v1" },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "timezone", "asOf", "watchWindow", "privacyMode"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^neighborhood-plan-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "timezone": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "watchWindow": { "type": "string", "minLength": 1 },
+        "privacyMode": { "enum": ["public-only", "owner-redacted", "household-private"] }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "authority", "capturedAt", "reference", "freshness", "privacy"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": { "enum": ["public-works-page", "city-notice", "utility-notice", "waste-calendar", "road-map", "permit-page", "meeting-agenda", "school-board-notice", "transit-notice", "hoa-newsletter", "owner-note"] },
+          "authority": { "enum": ["city", "county", "utility", "waste-provider", "school-board", "transit-agency", "hoa", "owner"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 },
+          "freshness": { "enum": ["current", "stale", "missing", "conflicting"] },
+          "privacy": { "enum": ["public", "owner-private", "address-sensitive", "routine-sensitive", "account-sensitive"] }
+        }
+      }
+    },
+    "zones": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "scope", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^zone-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "scope": { "enum": ["neighborhood", "street", "route", "service-area", "school-district", "unknown"] },
+          "privacy": { "enum": ["public", "owner-private", "address-sensitive", "routine-sensitive", "account-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "notices": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "title", "zoneRefs", "severity", "state", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^notice-[a-z0-9-]+$" },
+          "kind": { "enum": ["waste-service", "road-closure", "permit", "utility-work", "meeting", "school-board", "transit", "hoa", "other"] },
+          "title": { "type": "string", "minLength": 1 },
+          "zoneRefs": { "$ref": "#/$defs/refs" },
+          "severity": { "enum": ["routine", "attention", "disruption", "unknown"] },
+          "state": { "enum": ["current", "watch", "blocked", "unknown"] },
+          "privacy": { "enum": ["public", "owner-private", "address-sensitive", "routine-sensitive", "account-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "schedules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "noticeRef", "startsAt", "endsAt", "certainty", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^schedule-[a-z0-9-]+$" },
+          "noticeRef": { "type": "string", "minLength": 1 },
+          "startsAt": { "type": "string", "format": "date-time" },
+          "endsAt": { "type": "string", "format": "date-time" },
+          "certainty": { "enum": ["confirmed", "tentative", "unknown"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "routineImpacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "noticeRefs", "routine", "impact", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^impact-[a-z0-9-]+$" },
+          "noticeRefs": { "$ref": "#/$defs/refs" },
+          "routine": { "enum": ["trash", "recycling", "commute", "school-route", "parking", "delivery", "care-visit", "utility-use", "meeting-watch", "unknown"] },
+          "impact": { "enum": ["none", "watch", "adjust", "blocked", "unknown"] },
+          "privacy": { "enum": ["public", "owner-private", "address-sensitive", "routine-sensitive", "account-sensitive"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "noticeRefs", "state", "reason", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^conflict-[a-z0-9-]+$" },
+          "noticeRefs": { "$ref": "#/$defs/refs" },
+          "state": { "enum": ["clear", "possible", "conflicts", "unknown"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "noticeRefs", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "noticeRefs": { "$ref": "#/$defs/refs" },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/prohibitedAction" }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "reviewQuestionRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["draft", "ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "reviewQuestionRefs": { "$ref": "#/$defs/refs" },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/prohibitedAction" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "prohibitedAction": {
+      "enum": ["file-complaint", "call-agency", "contact-utility", "submit-permit", "post-publicly", "message-neighbor", "modify-calendar", "change-account", "pay-bill", "request-service", "report-issue", "share-address", "make-legal-claim", "give-emergency-advice", "claim-area-safe"]
+    }
+  }
+}

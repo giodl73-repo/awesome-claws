@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "neighborhood-operations-watcher",
+  "scenario": "Organize the neighborhood notices from these city pages, utility emails, waste calendar, road-closure map, HOA note, and school board agenda. Show what affects our routines this month, but do not call anyone, file complaints, post publicly, message neighbors, edit calendars, change utility accounts, request service, or disclose my address.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize the neighborhood notices from these city pages, utility emails, waste calendar, road-closure map, HOA note, and school board agenda. Show what affects our routines this month, but do not call anyone, file complaints, post publicly, message neighbors, edit calendars, change utility accounts, request service, or disclose my address."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/neighborhood-operations-watcher-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Neighborhood operations watcher session handoff",
+    "summary": "A source-backed neighborhood operations ledger with public notices, service schedules, road and utility work, permit and meeting items, routine impacts, owner questions, stale-source gaps, privacy labels, and all complaint, call, submission, posting, utility, account, calendar, service-request, and disclosure actions blocked.",
+    "output": "outputs/neighborhood-operations-watcher-handoff.md",
+    "items": [
+      {
+        "title": "Neighborhood source and notice register",
+        "summary": "Every notice, source, service, schedule, zone, meeting item, impact, routine, and owner question has source identity, freshness, and privacy labeling",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Trash, recycling, road, permit, utility, meeting, school-board, and transit schedule ledger",
+        "summary": "Every action-relevant neighborhood item traces to explicit public or approved evidence without hiding stale, partial, missing, or conflicting source state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Household routine impact and conflict view",
+        "summary": "Address details, occupancy signals, school or child routines, health needs, commute patterns, account details, and neighbor identities are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-review questions and privacy notes",
+        "summary": "Complaints, calls, permit or municipal submissions, utility contact, public posts, neighbor messages, service requests, account changes, payments, calendar edits, address disclosure, legal claims, and emergency/safety advice remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked complaint, call, submission, posting, utility, account, calendar, service-request, and disclosure handoff",
+        "summary": "Every notice, source, service, schedule, zone, meeting item, impact, routine, and owner question has source identity, freshness, and privacy labeling",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "neighborhood-operations-watcher",
+    "name": "Neighborhood operations watcher",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-27"
+    },
+    "description": "Tracks neighborhood-impacting trash and recycling schedules, road closures, permit notices, utility work, local meetings, school board items, and public notices from approved sources without filing complaints, calling agencies, posting publicly, changing accounts, or claiming safety certainty.",
+    "audience": "Households, renters, homeowners, neighborhood volunteers, and caregivers who need a reviewable local-operations ledger for routines and disruptions while preserving privacy, source limits, and owner authority.",
+    "principles": [
+      "Separate public notices, services, schedules, locations, impacted routines, source freshness, privacy scope, and owner questions",
+      "Make stale notices, unclear geographies, schedule uncertainty, partial source coverage, impacted household routines, and escalation questions explicit",
+      "Keep complaints, calls, municipal submissions, public posts, account changes, utility work orders, emergency guidance, and legal or safety claims outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not file complaints, submit permits, call agencies, contact utilities, post publicly, message neighbors, edit calendars, change accounts, pay bills, report issues, request service, or disclose addresses without exact owner approval",
+      "Do not replace emergency alerts, public safety instructions, legal advice, tenant or HOA advice, municipal guidance, or utility outage response",
+      "Do not infer exact home occupancy, presence, commute patterns, school attendance, health needs, or neighborhood safety from partial public notices"
+    ],
+    "intake": [
+      "Approved public works pages, city notices, utility notices, waste calendars, road closure maps, permit pages, meeting agendas, school board notices, transit notices, HOA newsletters, and owner notes",
+      "Neighborhood-safe labels, affected streets or zones, service dates, notice windows, routine impacts, privacy labels, household constraints, and stale-source fallback rules",
+      "Owner review goals such as pickup reminders, road-work awareness, meeting agenda watch, permit visibility, utility-work planning, and unresolved notice questions",
+      "External actions that must remain draft-only, including complaints, calls, municipal submissions, utility contact, public posts, neighbor messages, account changes, service requests, calendar edits, and address disclosure"
+    ],
+    "workflow": [
+      "Normalize each source, notice, schedule, zone, service, meeting item, impact, routine, privacy label, and owner question to supplied or approved evidence and freshness state",
+      "Collect public works, utility, waste, road, permit, agenda, school board, transit, HOA, and owner-note evidence from supplied or approved sources only",
+      "Reconcile stale notices, unclear boundaries, schedule conflicts, missing service dates, duplicate notices, routine impacts, and privacy-sensitive location details",
+      "Group neighborhood operations by service area, date window, impact type, household routine, source freshness, privacy label, and blocked external-action requirement",
+      "Prepare a reviewable neighborhood operations ledger with evidence, gaps, privacy notes, blocked actions, and owner questions"
+    ],
+    "deliverables": [
+      "Neighborhood source and notice register",
+      "Trash, recycling, road, permit, utility, meeting, school-board, and transit schedule ledger",
+      "Household routine impact and conflict view",
+      "Owner-review questions and privacy notes",
+      "Blocked complaint, call, submission, posting, utility, account, calendar, service-request, and disclosure handoff"
+    ],
+    "example": {
+      "request": "Organize the neighborhood notices from these city pages, utility emails, waste calendar, road-closure map, HOA note, and school board agenda. Show what affects our routines this month, but do not call anyone, file complaints, post publicly, message neighbors, edit calendars, change utility accounts, request service, or disclose my address.",
+      "outcome": "A source-backed neighborhood operations ledger with public notices, service schedules, road and utility work, permit and meeting items, routine impacts, owner questions, stale-source gaps, privacy labels, and all complaint, call, submission, posting, utility, account, calendar, service-request, and disclosure actions blocked."
+    },
+    "doneWhen": [
+      "Every notice, source, service, schedule, zone, meeting item, impact, routine, and owner question has source identity, freshness, and privacy labeling",
+      "Every action-relevant neighborhood item traces to explicit public or approved evidence without hiding stale, partial, missing, or conflicting source state",
+      "Address details, occupancy signals, school or child routines, health needs, commute patterns, account details, and neighbor identities are minimized or blocked from inappropriate outputs",
+      "Complaints, calls, permit or municipal submissions, utility contact, public posts, neighbor messages, service requests, account changes, payments, calendar edits, address disclosure, legal claims, and emergency/safety advice remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied or approved public works pages, city notices, utility notices, waste calendars, road maps, permit pages, meeting agendas, school board notices, transit notices, HOA newsletters, and owner notes and grants no complaint, call, posting, messaging, account, payment, calendar, service-request, utility, permit, legal, emergency, or disclosure authority.",
+      "When source coverage, zone boundaries, dates, utility state, permit status, agenda scope, route impact, school-board relevance, privacy, legal posture, or safety meaning is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than asserting certainty or taking action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/neighborhood-operations.schema.json",
+        "path": "schemas/neighborhood-operations.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/neighborhood-operations.example.json",
+        "path": "fixtures/neighborhood-operations.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/neighborhood-operations.md",
+        "path": "templates/neighborhood-operations.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "People miss neighborhood operations changes across city pages, waste calendars, utility notices, road maps, permit pages, meeting agendas, HOA notes, and school board items, but an assistant must not file complaints, contact agencies, post publicly, change accounts, or overclaim safety from partial notices.",
+    "repeatableJob": "Reconcile approved neighborhood sources, notices, service schedules, road closures, permits, utility work, agenda items, affected zones, household-routine impacts, source freshness, privacy notes, and owner questions into an owner-controlled local operations ledger.",
+    "proofPlan": "Prove an X3 artifact with source identity, notice schedules, affected zones, impact classifications, routine links, owner questions, blocked external actions, and negative fixtures for stale ready state, dangling references, unsupported certainty, duplicate references, complaint/call/submission/post/message/account/payment/calendar/service-request/location-disclosure overreach, and legal/emergency/safety claims.",
+    "existingAlternatives": [
+      {
+        "id": "local-events-watcher",
+        "overlap": "Both track local public sources, dates, locations, community calendars, conflicts, accessibility-like constraints, and blocked calendar/contact/posting actions.",
+        "difference": "Local Events Watcher evaluates optional events to attend; Neighborhood Operations Watcher tracks civic, utility, waste, road, permit, meeting, and service notices that affect household routines."
+      },
+      {
+        "id": "public-safety-monitor",
+        "overlap": "Both preserve official-source provenance, urgency, location scope, alert freshness, and do not replace emergency services or public authorities.",
+        "difference": "Public Safety Monitor synthesizes hazards and emergency-like alerts; Neighborhood Operations Watcher tracks non-emergency operational notices, routines, and owner questions without safety certainty or incident-command authority."
+      },
+      {
+        "id": "household-steward",
+        "overlap": "Both coordinate household routines, shared calendars, privacy boundaries, cross-domain conflicts, and owner-approved external actions.",
+        "difference": "Household Steward is a multi-principal manager; Neighborhood Operations Watcher is the specialist Claw for public/approved neighborhood notices and their routine impacts."
+      },
+      {
+        "id": "school-coordinator",
+        "overlap": "Both may track school calendars, board notices, family routines, privacy labels, and blocked calendar/contact/disclosure actions.",
+        "difference": "School Coordinator manages student tasks, forms, teacher notes, assignments, and guardian school actions; Neighborhood Operations Watcher tracks public school-board or neighborhood notices only as civic/routine impacts."
+      },
+      {
+        "id": "child-activity-manager",
+        "overlap": "Both can involve household schedules, location-sensitive routines, family logistics, and blocked calendar/contact/location-sharing actions.",
+        "difference": "Child Activity Manager manages a child's extracurricular activities, registration, waivers, fees, equipment, and carpools; Neighborhood Operations Watcher manages neighborhood notices such as road closures, waste pickup, utility work, and public meetings."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both track dates, source freshness, owner review, service changes, and blocked account/payment/provider-contact actions.",
+        "difference": "Subscription Manager tracks recurring services and account-bound renewals; Neighborhood Operations Watcher tracks public or approved neighborhood operations and utility notices without account authority."
+      },
+      {
+        "id": "home-repair-coordinator",
+        "overlap": "Both may involve utilities, property impacts, safety questions, providers, schedules, and blocked contact or appointment actions.",
+        "difference": "Home Repair Coordinator organizes property repair diagnosis and provider appointment handoff; Neighborhood Operations Watcher tracks external neighborhood/public works notices and does not diagnose or schedule repairs."
+      }
+    ]
+  }
+}

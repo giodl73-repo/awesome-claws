@@ -33,6 +33,7 @@ const schemaNames = {
   "model-evaluation-adjudicator": "model-evaluation.schema.json",
   "movie-streaming-organizer": "movie-streaming.schema.json",
   "music-organizer": "music-library.schema.json",
+  "neighborhood-operations-watcher": "neighborhood-operations.schema.json",
   "personal-archive-curator": "archive-index.schema.json",
   "pet-care-coordinator": "pet-care.schema.json",
   "pond-water-feature-coordinator": "pond-system.schema.json",

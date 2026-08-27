@@ -593,6 +593,95 @@ function localEventsFindings(value) {
   return findings;
 }
 
+function neighborhoodOperationsFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const zoneIds = value.zones.map((item) => item.id);
+  const noticeIds = value.notices.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const zoneSet = new Set(zoneIds);
+  const noticeSet = new Set(noticeIds);
+  const questionSet = new Set(value.reviewQuestions.map((item) => item.id));
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(zoneIds, "zones", "Zone id"),
+    ...uniqueFindings(noticeIds, "notices", "Notice id"),
+    ...uniqueFindings(value.schedules.map((item) => item.id), "schedules", "Schedule id"),
+    ...uniqueFindings(value.routineImpacts.map((item) => item.id), "routineImpacts", "Routine impact id"),
+    ...uniqueFindings(value.conflicts.map((item) => item.id), "conflicts", "Conflict id"),
+    ...uniqueFindings(value.reviewQuestions.map((item) => item.id), "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, zone] of value.zones.entries()) {
+    findings.push(
+      ...uniqueFindings(zone.sourceRefs, `zones.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(zone.sourceRefs, sourceSet, `zones.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, notice] of value.notices.entries()) {
+    findings.push(
+      ...uniqueFindings(notice.zoneRefs, `notices.${index}.zoneRefs`, "Zone reference"),
+      ...referenceFindings(notice.zoneRefs, zoneSet, `notices.${index}.zoneRefs`, "Zone reference"),
+      ...uniqueFindings(notice.sourceRefs, `notices.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(notice.sourceRefs, sourceSet, `notices.${index}.sourceRefs`, "Source reference"),
+    );
+    const supported = notice.sourceRefs.some((ref) =>
+      ["public-works-page", "city-notice", "utility-notice", "waste-calendar", "road-map", "permit-page", "meeting-agenda", "school-board-notice", "transit-notice", "hoa-newsletter", "owner-note"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!supported) {
+      findings.push(finding("unsupported_notice_source", `notices.${index}.sourceRefs`, "Neighborhood notices require public works, city, utility, waste, road, permit, agenda, transit, HOA, school-board, or owner evidence."));
+    }
+  }
+  for (const [index, schedule] of value.schedules.entries()) {
+    findings.push(
+      ...referenceFindings([schedule.noticeRef], noticeSet, `schedules.${index}.noticeRef`, "Notice reference"),
+      ...uniqueFindings(schedule.sourceRefs, `schedules.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(schedule.sourceRefs, sourceSet, `schedules.${index}.sourceRefs`, "Source reference"),
+    );
+    if (Date.parse(schedule.endsAt) <= Date.parse(schedule.startsAt)) {
+      findings.push(finding("invalid_time_range", `schedules.${index}.endsAt`, "Neighborhood schedules must end after they start."));
+    }
+    if (schedule.certainty === "confirmed" && schedule.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_certainty", `schedules.${index}.sourceRefs`, "Confirmed schedules require current source evidence."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["routineImpacts", value.routineImpacts],
+    ["conflicts", value.conflicts],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.noticeRefs, `${collectionName}.${index}.noticeRefs`, "Notice reference"),
+        ...referenceFindings(item.noticeRefs, noticeSet, `${collectionName}.${index}.noticeRefs`, "Notice reference"),
+        ...uniqueFindings(item.sourceRefs, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+      );
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, questionSet, "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready neighborhood ledgers cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    notices: value.notices.map(({ title }) => title),
+    impacts: value.routineImpacts.map(({ routine, impact }) => ({ routine, impact })),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(file complaint|call agency|call city|contact utility|submit permit|post publicly|public post|message neighbor|edit calendar|modify calendar|change account|pay bill|request service|report issue|share address|legal claim|legal advice|emergency advice|safe area|area is safe|ignore emergency)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Neighborhood artifacts must not instruct complaints, calls, submissions, utility contact, public posts, neighbor messages, account/payment changes, calendar edits, service requests, address disclosure, legal claims, emergency advice, or safety certainty."));
+  }
+  if (value.handoff.owner === "neighborhood-operations-watcher") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Neighborhood operations, disclosure, account, contact, submission, and safety decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 function schoolCoordinatorFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const studentIds = value.students.map((item) => item.id);
@@ -6847,6 +6936,7 @@ const validators = {
   "model-evaluation-adjudicator": modelEvaluationFindings,
   "movie-streaming-organizer": movieStreamingFindings,
   "music-organizer": musicOrganizerFindings,
+  "neighborhood-operations-watcher": neighborhoodOperationsFindings,
   "personal-archive-curator": personalArchiveFindings,
   "pet-care-coordinator": petCareFindings,
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
