@@ -6912,6 +6912,106 @@ function subscriptionManagerFindings(value) {
   return findings;
 }
 
+function wardrobeFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const itemIds = value.items.map((item) => item.id);
+  const gapIds = value.gaps.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const itemSet = new Set(itemIds);
+  const gapSet = new Set(gapIds);
+  const questionSet = new Set(questionIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const itemById = new Map(value.items.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(itemIds, "items", "Item id"),
+    ...uniqueFindings(value.outfits.map((item) => item.id), "outfits", "Outfit id"),
+    ...uniqueFindings(value.careTasks.map((item) => item.id), "careTasks", "Care task id"),
+    ...uniqueFindings(value.packingLists.map((item) => item.id), "packingLists", "Packing list id"),
+    ...uniqueFindings(gapIds, "gaps", "Gap id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, item] of value.items.entries()) {
+    findings.push(
+      ...uniqueFindings(item.sourceRefs, `items.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `items.${index}.sourceRefs`, "Source reference"),
+    );
+    if (item.fitState === "fits" && item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_fit_state", `items.${index}.sourceRefs`, "Fit-ready wardrobe items require current supplied evidence."));
+    }
+  }
+  for (const [index, outfit] of value.outfits.entries()) {
+    findings.push(
+      ...uniqueFindings(outfit.itemRefs, `outfits.${index}.itemRefs`, "Item reference"),
+      ...referenceFindings(outfit.itemRefs, itemSet, `outfits.${index}.itemRefs`, "Item reference"),
+      ...uniqueFindings(outfit.sourceRefs, `outfits.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(outfit.sourceRefs, sourceSet, `outfits.${index}.sourceRefs`, "Source reference"),
+    );
+    if (outfit.state === "ready-for-review") {
+      const blockedItems = outfit.itemRefs.filter((ref) => itemById.get(ref)?.careState !== "ready");
+      if (blockedItems.length > 0) {
+        findings.push(finding("outfit_blocked_by_care", `outfits.${index}.itemRefs`, "Ready-for-review outfits cannot include items with unresolved care, repair, alteration, or unknown state."));
+      }
+      if (outfit.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+        findings.push(finding("unsupported_outfit_state", `outfits.${index}.sourceRefs`, "Ready-for-review outfits require current source evidence."));
+      }
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["careTasks", value.careTasks],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.itemRefs, `${collectionName}.${index}.itemRefs`, "Item reference"),
+        ...referenceFindings(item.itemRefs, itemSet, `${collectionName}.${index}.itemRefs`, "Item reference"),
+        ...uniqueFindings(item.sourceRefs, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+      );
+    }
+  }
+  for (const [index, list] of value.packingLists.entries()) {
+    findings.push(
+      ...uniqueFindings(list.itemRefs, `packingLists.${index}.itemRefs`, "Item reference"),
+      ...referenceFindings(list.itemRefs, itemSet, `packingLists.${index}.itemRefs`, "Item reference"),
+      ...uniqueFindings(list.gapRefs, `packingLists.${index}.gapRefs`, "Gap reference"),
+      ...referenceFindings(list.gapRefs, gapSet, `packingLists.${index}.gapRefs`, "Gap reference"),
+      ...uniqueFindings(list.sourceRefs, `packingLists.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(list.sourceRefs, sourceSet, `packingLists.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, gap] of value.gaps.entries()) {
+    findings.push(
+      ...uniqueFindings(gap.sourceRefs, `gaps.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(gap.sourceRefs, sourceSet, `gaps.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, questionSet, "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready wardrobe plans cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    items: value.items.map(({ name, fitState, careState }) => ({ name, fitState, careState })),
+    outfits: value.outfits.map(({ occasion, state }) => ({ occasion, state })),
+    gaps: value.gaps.map(({ need, reason }) => ({ need, reason })),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(buy|purchase|sell|resell|donate|return item|list resale|share photo|post publicly|message tailor|message cleaner|book service|schedule pickup|change account|infer body|body shape|body size|weight|health condition|pregnancy|gender identity|medical advice|legal advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Wardrobe artifacts must not instruct purchases, sales, donations, returns, resale listings, photo sharing, public posts, messages, bookings, pickups, account changes, body or health inference, or professional advice."));
+  }
+  if (value.handoff.owner === "wardrobe-organizer") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Wardrobe purchase, resale, donation, photo, account, body-adjacent, care, alteration, and disclosure decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "care-circle-coordinator": careCircleFindings,
@@ -6954,6 +7054,7 @@ const validators = {
   "subscription-manager": subscriptionManagerFindings,
   "tax-document-organizer": taxDocumentFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
+  "wardrobe-organizer": wardrobeFindings,
   "work-chief-of-staff": workChiefOfStaffFindings,
 };
 

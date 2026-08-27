@@ -1,0 +1,168 @@
+{
+  "schemaVersion": "awesomeClaws.wardrobePlan.v1",
+  "plan": {
+    "id": "wardrobe-plan-september",
+    "owner": "wardrobe owner",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-27T15:00:00-07:00",
+    "privacyMode": "owner-redacted"
+  },
+  "sources": [
+    {
+      "id": "src-closet-list",
+      "kind": "closet-list",
+      "capturedAt": "2026-08-26T19:00:00-07:00",
+      "reference": "Owner-supplied closet list with storage locations",
+      "freshness": "current",
+      "privacy": "private"
+    },
+    {
+      "id": "src-care-labels",
+      "kind": "care-label",
+      "capturedAt": "2026-08-26T19:15:00-07:00",
+      "reference": "Owner notes from garment care labels",
+      "freshness": "current",
+      "privacy": "private"
+    },
+    {
+      "id": "src-photo-refs",
+      "kind": "photo-reference",
+      "capturedAt": "2026-08-24T11:30:00-07:00",
+      "reference": "Private photo references retained by owner",
+      "freshness": "current",
+      "privacy": "photo-sensitive"
+    },
+    {
+      "id": "src-event-note",
+      "kind": "event-requirement",
+      "capturedAt": "2026-08-25T09:00:00-07:00",
+      "reference": "Owner note: wedding is semi-formal and outdoors",
+      "freshness": "current",
+      "privacy": "private"
+    },
+    {
+      "id": "src-travel-note",
+      "kind": "travel-itinerary",
+      "capturedAt": "2026-08-27T08:00:00-07:00",
+      "reference": "Owner-supplied four-day trip packing note",
+      "freshness": "current",
+      "privacy": "travel-sensitive"
+    },
+    {
+      "id": "src-owner-note",
+      "kind": "owner-note",
+      "capturedAt": "2026-08-27T08:10:00-07:00",
+      "reference": "Owner note: do not infer body or health details",
+      "freshness": "current",
+      "privacy": "body-adjacent"
+    }
+  ],
+  "items": [
+    {
+      "id": "item-navy-blazer",
+      "name": "navy blazer",
+      "category": "outerwear",
+      "owner": "wardrobe owner",
+      "location": "front closet",
+      "sizeState": "owner-supplied",
+      "fitState": "needs-owner-check",
+      "careState": "dry-clean",
+      "privacy": "body-adjacent",
+      "sourceRefs": ["src-closet-list", "src-care-labels", "src-owner-note"]
+    },
+    {
+      "id": "item-black-dress",
+      "name": "black formal dress",
+      "category": "formalwear",
+      "owner": "wardrobe owner",
+      "location": "bedroom closet",
+      "sizeState": "owner-supplied",
+      "fitState": "fits",
+      "careState": "ready",
+      "privacy": "photo-sensitive",
+      "sourceRefs": ["src-closet-list", "src-photo-refs", "src-owner-note"]
+    },
+    {
+      "id": "item-walking-shoes",
+      "name": "walking shoes",
+      "category": "shoe",
+      "owner": "wardrobe owner",
+      "location": "entry shelf",
+      "sizeState": "known",
+      "fitState": "fits",
+      "careState": "ready",
+      "privacy": "private",
+      "sourceRefs": ["src-closet-list"]
+    }
+  ],
+  "outfits": [
+    {
+      "id": "outfit-wedding",
+      "occasion": "outdoor semi-formal wedding",
+      "itemRefs": ["item-black-dress"],
+      "state": "ready-for-review",
+      "privacy": "photo-sensitive",
+      "sourceRefs": ["src-event-note", "src-photo-refs", "src-owner-note"]
+    },
+    {
+      "id": "outfit-travel-day",
+      "occasion": "four-day trip travel day",
+      "itemRefs": ["item-walking-shoes"],
+      "state": "candidate",
+      "privacy": "travel-sensitive",
+      "sourceRefs": ["src-travel-note", "src-closet-list"]
+    }
+  ],
+  "careTasks": [
+    {
+      "id": "care-blazer-clean",
+      "itemRefs": ["item-navy-blazer"],
+      "kind": "dry-clean",
+      "state": "needs-owner-review",
+      "sourceRefs": ["src-care-labels", "src-owner-note"]
+    }
+  ],
+  "packingLists": [
+    {
+      "id": "packing-trip",
+      "tripOrEvent": "four-day trip",
+      "itemRefs": ["item-walking-shoes"],
+      "gapRefs": ["gap-rain-layer"],
+      "privacy": "travel-sensitive",
+      "sourceRefs": ["src-travel-note", "src-closet-list"]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-rain-layer",
+      "need": "rain layer for travel",
+      "reason": "The travel note mentions possible rain, but the supplied closet list does not confirm a packable rain layer.",
+      "state": "question",
+      "privacy": "travel-sensitive",
+      "sourceRefs": ["src-travel-note", "src-closet-list"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-blazer-care",
+      "question": "Should the owner handle the blazer dry-cleaning before the wedding window?",
+      "reason": "The care label says dry-clean, but this ledger keeps cleaner coordination and pickup logistics with the owner.",
+      "itemRefs": ["item-navy-blazer"],
+      "sourceRefs": ["src-care-labels", "src-owner-note"]
+    },
+    {
+      "id": "question-rain-layer",
+      "question": "Does the owner already have a packable rain layer for the trip?",
+      "reason": "The trip note creates a packing gap, but this Claw cannot take retail, return, or sensitive-inference actions.",
+      "itemRefs": [],
+      "sourceRefs": ["src-travel-note", "src-owner-note"]
+    }
+  ],
+  "blockedActions": ["buy-clothing", "sell-item", "donate-item", "return-item", "list-resale", "share-photo", "post-publicly", "message-tailor", "message-cleaner", "book-service", "schedule-pickup", "change-account", "infer-body", "infer-health", "give-medical-advice", "give-legal-advice"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "wardrobe owner",
+    "reviewQuestionRefs": ["question-blazer-care", "question-rain-layer"],
+    "prohibitedActions": ["buy-clothing", "sell-item", "donate-item", "return-item", "list-resale", "share-photo", "post-publicly", "message-tailor", "message-cleaner", "book-service", "schedule-pickup", "change-account", "infer-body", "infer-health", "give-medical-advice", "give-legal-advice"]
+  }
+}

@@ -161,6 +161,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "wardrobe-organizer",
+    schema: "../claws/wardrobe-organizer/schemas/wardrobe-plan.schema.json",
+    fixture: "../claws/wardrobe-organizer/fixtures/wardrobe-plan.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "personal-archive-curator",
     schema: "../claws/personal-archive-curator/schemas/archive-index.schema.json",
     fixture: "../claws/personal-archive-curator/fixtures/archive-index.example.json",
@@ -635,6 +641,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["movie-streaming-organizer", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["music-organizer", (value) => value.playlistPlan[0].preferenceRefs.push(value.playlistPlan[0].preferenceRefs[0])],
     ["neighborhood-operations-watcher", (value) => value.notices[0].sourceRefs.push(value.notices[0].sourceRefs[0])],
+    ["wardrobe-organizer", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["personal-archive-curator", (value) => value.retrievalCues[0].sourceRefs.push(value.retrievalCues[0].sourceRefs[0])],
     ["purchase-researcher", (value) => value.candidates[0].sourceRefs.push(value.candidates[0].sourceRefs[0])],
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],
@@ -2294,6 +2301,37 @@ test("subscription manager binds renewal evidence and blocks account authority",
   const cancellationAdvice = structuredClone(cases.get("subscription-manager").fixture);
   cancellationAdvice.reviewQuestions[0].question = "Should the owner cancel Disney+ now?";
   assert.equal(isValid("subscription-manager", cancellationAdvice), false);
+});
+
+test("wardrobe organizer preserves wardrobe evidence and body-adjacent authority", () => {
+  const staleReady = structuredClone(cases.get("wardrobe-organizer").fixture);
+  staleReady.sources[0].freshness = "stale";
+  assert.equal(isValid("wardrobe-organizer", staleReady), false);
+
+  const staleFit = structuredClone(cases.get("wardrobe-organizer").fixture);
+  staleFit.handoff.state = "draft";
+  staleFit.sources[2].freshness = "stale";
+  assert.equal(isValid("wardrobe-organizer", staleFit), false);
+
+  const careBlockedOutfit = structuredClone(cases.get("wardrobe-organizer").fixture);
+  careBlockedOutfit.outfits[0].itemRefs.push("item-navy-blazer");
+  assert.equal(isValid("wardrobe-organizer", careBlockedOutfit), false);
+
+  const actionAdvice = structuredClone(cases.get("wardrobe-organizer").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Message cleaner, book service, and share photo.";
+  assert.equal(isValid("wardrobe-organizer", actionAdvice), false);
+
+  const bodyInference = structuredClone(cases.get("wardrobe-organizer").fixture);
+  bodyInference.gaps[0].reason += " Infer body size and health condition from the closet notes.";
+  assert.equal(isValid("wardrobe-organizer", bodyInference), false);
+
+  const danglingItem = structuredClone(cases.get("wardrobe-organizer").fixture);
+  danglingItem.careTasks[0].itemRefs = ["missing-item"];
+  assert.equal(isValid("wardrobe-organizer", danglingItem), false);
+
+  const agentOwned = structuredClone(cases.get("wardrobe-organizer").fixture);
+  agentOwned.handoff.owner = "wardrobe-organizer";
+  assert.equal(isValid("wardrobe-organizer", agentOwned), false);
 });
 
 test("tax document organizer preserves document evidence and owner authority", () => {

@@ -2029,6 +2029,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "wardrobe-organizer",
+      "acceptedRequest": "Organize this closet list, receipt folder, care-label notes, and outfit ideas for next month. Show what works for travel and the wedding, what needs cleaning or alterations, and what gaps I should review, but do not buy, sell, donate, share photos, message anyone, book services, or infer anything about my body or health.",
+      "requiredEvidence": [
+        "Supplied clothing lists, photos or photo references, receipts, care labels, size notes, fit notes, outfit ideas, event requirements, weather or travel constraints, laundry or dry-cleaning notes, alteration notes, and owner preferences",
+        "Privacy labels for photos, body-adjacent notes, sentimental items, school/work uniforms, travel packing, shared household closets, and gift or donation candidates",
+        "Owner review goals such as outfit planning, packing, care queue, alteration queue, gap list, duplicate items, seasonal rotation, and shopping questions",
+        "External actions that must remain draft-only, including purchases, returns, resale listings, donations, photo sharing, public posting, messaging, appointments, account changes, pickup scheduling, and disposal"
+      ],
+      "authorityBoundaries": [
+        "Do not buy clothing, sell items, donate items, return items, list items, alter accounts, share photos, post publicly, message tailors or cleaners, book services, or schedule pickup without exact owner approval",
+        "Do not infer body size, body shape, weight, health, pregnancy, gender identity, socioeconomic status, or sensitive personal attributes from clothing data",
+        "Do not replace professional tailoring, medical, safety, school-uniform, workplace dress-code, or legal advice"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/wardrobe-organizer-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

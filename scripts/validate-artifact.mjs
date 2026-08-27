@@ -51,6 +51,7 @@ const schemaNames = {
   "subscription-manager": "subscription-ledger.schema.json",
   "tax-document-organizer": "tax-document.schema.json",
   "vehicle-service-coordinator": "vehicle-service.schema.json",
+  "wardrobe-organizer": "wardrobe-plan.schema.json",
   "work-chief-of-staff": "operating-portfolio.schema.json",
 };
 const schemaName = schemaNames[id];

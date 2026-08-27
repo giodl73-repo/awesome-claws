@@ -101,6 +101,16 @@
         "difference": "Personal Archive Curator organizes broad personal files and memories; Home Inventory Binder models physical possessions, rooms, serials, receipts, warranties, value evidence, and insurance/warranty review boundaries."
       },
       {
+        "id": "tax-document-organizer",
+        "overlap": "Both preserve receipts, statements, value-adjacent evidence, source freshness, document privacy, deadlines or review questions, and blocked legal, tax, filing, payment, sharing, and account actions.",
+        "difference": "Tax Document Organizer builds a tax-year document packet for owner or preparer review; Home Inventory Binder maintains possession, room, serial, warranty, photo, and value evidence without tax preparation or filing semantics."
+      },
+      {
+        "id": "wardrobe-organizer",
+        "overlap": "Both track owned physical items, storage locations, photos, receipts, condition or care state, privacy labels, and blocked sale, donation, disposal, sharing, and purchase-adjacent actions.",
+        "difference": "Wardrobe Organizer specializes in clothing fit, outfits, events, packing, care, alterations, and body-adjacent privacy; Home Inventory Binder covers general possessions, warranties, serials, rooms, value evidence, and insurance-ready review."
+      },
+      {
         "id": "appliance-care-coordinator",
         "overlap": "Both may track appliance identity, warranties, manuals, receipts, serials, maintenance notes, and owner review.",
         "difference": "Appliance Care Coordinator manages appliance care and service readiness; Home Inventory Binder covers all possessions and inventory evidence without repair scheduling or care workflows."

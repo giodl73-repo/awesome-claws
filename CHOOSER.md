@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (84)
+### Active (85)
 
 | Claw | Detail |
 | --- | --- |
@@ -92,6 +92,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [UX research synthesizer](claws/ux-research-synthesizer) | @giodl73-repo; last verified 2026-08-19 |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Video concept producer](claws/video-concept-producer) | @giodl73-repo; last verified 2026-08-19 |
+| [Wardrobe organizer](claws/wardrobe-organizer) | @giodl73-repo; last verified 2026-08-27 |
 | [Web evidence researcher](claws/web-evidence-researcher) | @giodl73-repo; last verified 2026-08-19 |
 | [Website evidence collector](claws/website-evidence-collector) | @giodl73-repo; last verified 2026-08-19 |
 | [Work chief of staff](claws/work-chief-of-staff) | @giodl73-repo; last verified 2026-08-21 |
@@ -111,7 +112,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (53)
+### Low setup (54)
 
 | Claw | Detail |
 | --- | --- |
@@ -167,6 +168,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Tax document organizer](claws/tax-document-organizer) | no bootstrap, external dependency, or schedule |
 | [UX research synthesizer](claws/ux-research-synthesizer) | no bootstrap, external dependency, or schedule |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | no bootstrap, external dependency, or schedule |
+| [Wardrobe organizer](claws/wardrobe-organizer) | no bootstrap, external dependency, or schedule |
 | [Work chief of staff](claws/work-chief-of-staff) | no bootstrap, external dependency, or schedule |
 
 ### Medium setup (27)
@@ -214,7 +216,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (61)
+### No external dependencies (62)
 
 | Claw | Detail |
 | --- | --- |
@@ -278,6 +280,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Tax document organizer](claws/tax-document-organizer) | None |
 | [UX research synthesizer](claws/ux-research-synthesizer) | None |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | None |
+| [Wardrobe organizer](claws/wardrobe-organizer) | None |
 | [Work chief of staff](claws/work-chief-of-staff) | None |
 
 ### External dependencies declared (23)
@@ -312,7 +315,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (59)
+### X3 (60)
 
 | Claw | Detail |
 | --- | --- |
@@ -371,6 +374,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Travel planner](claws/travel-planner) | Builds a reviewable trip plan from current public sources without booking, paying, or retaining sensitive traveler records. |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle. |
 | [Video concept producer](claws/video-concept-producer) | Generates reviewable PixVerse video concepts from approved prompts or workspace assets without publishing or impersonating people. |
+| [Wardrobe organizer](claws/wardrobe-organizer) | Tracks clothing inventory, sizes, fit notes, outfit needs, events, packing lists, care tasks, alterations, gaps, and owner review questions from supplied evidence without buying, selling, donating, sharing photos, inferring body or health details, or changing accounts. |
 | [Web evidence researcher](claws/web-evidence-researcher) | Uses Tavily search and extraction to build bounded, source-linked evidence sets without publishing or acting on retrieved content. |
 | [Website evidence collector](claws/website-evidence-collector) | Collects and normalizes an approved set of public web pages through Firecrawl for reviewable evidence and change analysis. |
 | [Work chief of staff](claws/work-chief-of-staff) | Coordinates a multi-leader operating portfolio across specialist-Claw artifacts, shared resources, decision forums, and explicitly authorized commitments without becoming the executive or functional decision-maker. |
@@ -492,7 +496,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (32)
+### Productivity (33)
 
 | Claw | Detail |
 | --- | --- |
@@ -528,12 +532,13 @@ Categories come directly from the catalog entry.
 | [Travel concierge](claws/travel-concierge) | X5; Searches and compares current Expedia lodging and flight options, then prepares a traveler-controlled booking handoff without completing a transaction. |
 | [Travel planner](claws/travel-planner) | X3; Builds a reviewable trip plan from current public sources without booking, paying, or retaining sensitive traveler records. |
 | [Video concept producer](claws/video-concept-producer) | X3; Generates reviewable PixVerse video concepts from approved prompts or workspace assets without publishing or impersonating people. |
+| [Wardrobe organizer](claws/wardrobe-organizer) | X3; Tracks clothing inventory, sizes, fit notes, outfit needs, events, packing lists, care tasks, alterations, gaps, and owner review questions from supplied evidence without buying, selling, donating, sharing photos, inferring body or health details, or changing accounts. |
 
 ## By boundary attention
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (32)
+### Standard attention (33)
 
 | Claw | Detail |
 | --- | --- |
@@ -569,6 +574,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Subscription manager](claws/subscription-manager) | portable workspace artifacts only |
 | [Tax document organizer](claws/tax-document-organizer) | portable workspace artifacts only |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | portable workspace artifacts only |
+| [Wardrobe organizer](claws/wardrobe-organizer) | portable workspace artifacts only |
 
 ### Guarded attention (38)
 
