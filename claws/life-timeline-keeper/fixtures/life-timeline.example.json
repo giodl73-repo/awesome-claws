@@ -1,0 +1,185 @@
+{
+  "schemaVersion": "awesomeClaws.lifeTimeline.v1",
+  "timeline": {
+    "id": "timeline-family-milestones",
+    "owner": "Maya",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-27T12:30:00Z",
+    "purpose": "Family milestone and trip chronology for owner review",
+    "privacyMode": "owner-only"
+  },
+  "sources": [
+    {
+      "id": "src-owner-memory",
+      "kind": "owner-memory",
+      "authority": "user-supplied",
+      "capturedAt": "2026-08-27T12:00:00Z",
+      "reference": "Owner memory notes about first Seattle trip and move",
+      "freshness": "current",
+      "privacy": "memory-sensitive"
+    },
+    {
+      "id": "src-photo-list",
+      "kind": "photo-list",
+      "authority": "user-supplied",
+      "capturedAt": "2026-08-27T12:05:00Z",
+      "reference": "Owner-supplied photo filenames and album labels",
+      "freshness": "current",
+      "privacy": "person-sensitive"
+    },
+    {
+      "id": "src-travel-record",
+      "kind": "travel-record",
+      "authority": "document-supplied",
+      "capturedAt": "2026-08-27T12:08:00Z",
+      "reference": "Trip confirmation PDF pointer",
+      "freshness": "current",
+      "privacy": "document-sensitive"
+    },
+    {
+      "id": "src-school-certificate",
+      "kind": "certificate",
+      "authority": "document-supplied",
+      "capturedAt": "2026-08-27T12:10:00Z",
+      "reference": "Scanned school award certificate pointer",
+      "freshness": "current",
+      "privacy": "minor-sensitive"
+    },
+    {
+      "id": "src-move-record",
+      "kind": "document-pointer",
+      "authority": "user-supplied",
+      "capturedAt": "2026-08-27T12:12:00Z",
+      "reference": "Move checklist document pointer",
+      "freshness": "current",
+      "privacy": "location-sensitive"
+    }
+  ],
+  "people": [
+    {
+      "id": "person-maya",
+      "label": "Maya",
+      "role": "owner",
+      "privacy": "normal",
+      "sourceRefs": ["src-owner-memory"]
+    },
+    {
+      "id": "person-child",
+      "label": "Child - redacted",
+      "role": "family",
+      "privacy": "minor-sensitive",
+      "sourceRefs": ["src-school-certificate", "src-photo-list"]
+    }
+  ],
+  "places": [
+    {
+      "id": "place-seattle",
+      "label": "Seattle",
+      "privacy": "normal",
+      "sourceRefs": ["src-travel-record", "src-owner-memory"]
+    },
+    {
+      "id": "place-new-home",
+      "label": "New home - redacted",
+      "privacy": "home-sensitive",
+      "sourceRefs": ["src-move-record"]
+    }
+  ],
+  "pointers": [
+    {
+      "id": "pointer-seattle-photos",
+      "kind": "photo",
+      "label": "Seattle trip photo list",
+      "privacy": "person-sensitive",
+      "sourceRefs": ["src-photo-list"]
+    },
+    {
+      "id": "pointer-trip-pdf",
+      "kind": "document",
+      "label": "Trip confirmation PDF",
+      "privacy": "document-sensitive",
+      "sourceRefs": ["src-travel-record"]
+    },
+    {
+      "id": "pointer-award-certificate",
+      "kind": "document",
+      "label": "School award certificate scan",
+      "privacy": "minor-sensitive",
+      "sourceRefs": ["src-school-certificate"]
+    },
+    {
+      "id": "pointer-move-checklist",
+      "kind": "document",
+      "label": "Move checklist pointer",
+      "privacy": "location-sensitive",
+      "sourceRefs": ["src-move-record"]
+    }
+  ],
+  "events": [
+    {
+      "id": "event-seattle-trip",
+      "title": "First Seattle family trip",
+      "kind": "trip",
+      "date": "2022-07-14",
+      "dateEnd": "2022-07-17",
+      "dateState": "range",
+      "certainty": "supported",
+      "privacy": "person-sensitive",
+      "personRefs": ["person-maya", "person-child"],
+      "placeRefs": ["place-seattle"],
+      "pointerRefs": ["pointer-seattle-photos", "pointer-trip-pdf"],
+      "sourceRefs": ["src-owner-memory", "src-photo-list", "src-travel-record"]
+    },
+    {
+      "id": "event-school-award",
+      "title": "School award milestone",
+      "kind": "achievement",
+      "date": "2023-05-12",
+      "dateEnd": null,
+      "dateState": "exact",
+      "certainty": "supported",
+      "privacy": "minor-sensitive",
+      "personRefs": ["person-child"],
+      "placeRefs": [],
+      "pointerRefs": ["pointer-award-certificate"],
+      "sourceRefs": ["src-school-certificate"]
+    },
+    {
+      "id": "event-household-move",
+      "title": "Household move",
+      "kind": "move",
+      "date": "2024-09-01",
+      "dateEnd": null,
+      "dateState": "approximate",
+      "certainty": "owner-memory",
+      "privacy": "location-sensitive",
+      "personRefs": ["person-maya"],
+      "placeRefs": ["place-new-home"],
+      "pointerRefs": ["pointer-move-checklist"],
+      "sourceRefs": ["src-owner-memory", "src-move-record"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-move-date",
+      "question": "Is September 1, 2024 the exact move date or only an approximate marker?",
+      "reason": "The move event has owner memory plus a checklist pointer but no exact dated record in the supplied sources.",
+      "refs": ["event-household-move", "pointer-move-checklist"],
+      "sourceRefs": ["src-owner-memory", "src-move-record"]
+    },
+    {
+      "id": "question-sharing",
+      "question": "Which events, if any, are approved for family-review sharing?",
+      "reason": "The current timeline includes minor-sensitive and location-sensitive events.",
+      "refs": ["event-school-award", "event-household-move", "person-child", "place-new-home"],
+      "sourceRefs": ["src-school-certificate", "src-move-record"]
+    }
+  ],
+  "blockedActions": ["post-publicly", "share-timeline", "identify-faces", "tag-people", "contact-people", "edit-album", "move-files", "delete-files", "publish", "change-permissions", "legal-claim", "medical-claim", "genealogical-claim", "sensitive-disclosure"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Maya",
+    "reviewQuestionRefs": ["question-move-date", "question-sharing"],
+    "prohibitedActions": ["post-publicly", "share-timeline", "identify-faces", "tag-people", "contact-people", "edit-album", "move-files", "delete-files", "publish", "change-permissions", "legal-claim", "medical-claim", "genealogical-claim", "sensitive-disclosure"]
+  }
+}

@@ -7677,6 +7677,96 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "life-timeline-keeper",
+      "name": "Life timeline keeper",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-27"
+      },
+      "description": "Maintains an owner-reviewed timeline of important trips, moves, milestones, family events, achievements, and document or media pointers without posting publicly, identifying faces, making legal claims, or disclosing sensitive memories.",
+      "audience": "People, families, caregivers, and personal archivists who want a reviewable life timeline from supplied memories, notes, photos, documents, and event records while keeping privacy, interpretation, and sharing authority with the owner.",
+      "principles": [
+        "Separate dated events, people, places, media pointers, document pointers, source freshness, privacy scope, memory certainty, and owner questions",
+        "Make uncertain dates, conflicting memories, sensitive people, missing media, unclear sharing consent, and unsupported interpretations explicit",
+        "Keep public posting, sharing, face recognition, identity inference, legal interpretation, sensitive disclosure, account changes, file moves, and memory rewriting outside the Claw boundary"
+      ],
+      "boundaries": [
+        "Do not post publicly, share timelines, identify faces, infer sensitive facts, tag people, contact people, edit albums, move files, delete files, publish, or change permissions without exact approval",
+        "Do not make legal, medical, genealogical, immigration, custody, identity, relationship, or ownership claims from incomplete memories or documents",
+        "Do not disclose sensitive dates, locations, people, documents, photos, family details, or private memories beyond the owner-approved audience"
+      ],
+      "intake": [
+        "Owner-supplied memories, notes, journals, photos, videos, calendar exports, travel records, school notes, certificates, messages, document pointers, archive references, and family event notes",
+        "Event dates or ranges, people, places, source certainty, privacy scope, media or document links, unresolved questions, and sharing audience labels",
+        "Review goals such as milestone chronology, trip history, family timeline, move history, achievement list, document pointer map, and unresolved memory questions",
+        "External actions that must remain draft-only, including posting, sharing, face recognition, tagging, contacting people, editing albums, moving files, deleting files, publishing, permission changes, and legal/medical/genealogical conclusions"
+      ],
+      "workflow": [
+        "Normalize each event, date, person, place, media pointer, document pointer, memory source, certainty label, privacy scope, and audience label to supplied evidence",
+        "Order events by date or date range while preserving approximate, conflicting, missing, or owner-review-needed chronology",
+        "Reconcile duplicated memories, conflicting dates, sensitive people or places, unsupported interpretations, missing media, unclear consent, and sharing limits",
+        "Group events into owner-safe timeline sections with source-backed summaries, unresolved questions, and privacy notes",
+        "Prepare a life timeline handoff with evidence, gaps, blocked actions, and owner-controlled sharing review"
+      ],
+      "deliverables": [
+        "Dated life event timeline",
+        "People, place, media, and document pointer register",
+        "Certainty, privacy, and sharing-scope review",
+        "Unresolved memory and source-conflict questions",
+        "Blocked posting, sharing, face-recognition, tagging, file, contact, permission, and sensitive-claim handoff"
+      ],
+      "example": {
+        "request": "Build a life timeline from the trip notes, family photos list, school certificate, move records, and memories I supplied. Show dates, people, places, media pointers, document pointers, uncertain memories, and sharing questions, but do not post, share, identify faces, contact anyone, move files, change permissions, or make legal or family-history claims.",
+        "outcome": "A source-backed life timeline with dated events, people/place/media/document pointers, certainty and privacy labels, unresolved memory questions, and all posting, sharing, face-recognition, tagging, contact, file, permission, and sensitive-claim actions blocked."
+      },
+      "doneWhen": [
+        "Every timeline event, date or range, person, place, media pointer, document pointer, source, certainty label, privacy scope, and sharing audience has explicit provenance",
+        "Approximate dates, conflicting memories, missing media, sensitive people or places, unclear consent, and unsupported interpretations are preserved as review questions",
+        "Timeline summaries distinguish supplied facts from inferred chronology or interpretation and do not rewrite, erase, or overstate memories",
+        "Posting, sharing, face recognition, tagging, contact, album edits, file moves/deletes, publishing, permission changes, and legal/medical/genealogical/sensitive claims remain blocked or exact-approval-bound"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses supplied or approved memories, notes, journals, photos, videos, calendar exports, travel records, school notes, certificates, messages, document pointers, archive references, and family event notes and grants no posting, sharing, face-recognition, tagging, contact, file-mutation, publishing, permission, legal, medical, or genealogical authority.",
+        "When dates, people, places, media, documents, memories, consent, sharing audience, or interpretation are stale, partial, missing, conflicting, sensitive, or source-limited, preserve the gap and ask owner-review questions rather than asserting certainty or taking action."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/life-timeline.schema.json",
+          "path": "schemas/life-timeline.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/life-timeline.example.json",
+          "path": "fixtures/life-timeline.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/life-timeline.md",
+          "path": "templates/life-timeline.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

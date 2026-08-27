@@ -107,6 +107,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "life-timeline-keeper",
+    schema: "../claws/life-timeline-keeper/schemas/life-timeline.schema.json",
+    fixture: "../claws/life-timeline-keeper/fixtures/life-timeline.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "local-events-watcher",
     schema: "../claws/local-events-watcher/schemas/event-watchlist.schema.json",
     fixture: "../claws/local-events-watcher/fixtures/event-watchlist.example.json",
@@ -560,6 +566,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["household-budget-steward", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
     ["home-inventory-binder", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["insurance-policy-organizer", (value) => value.coverageItems[0].sourceRefs.push(value.coverageItems[0].sourceRefs[0])],
+    ["life-timeline-keeper", (value) => value.events[0].sourceRefs.push(value.events[0].sourceRefs[0])],
     ["local-events-watcher", (value) => value.watchlist[0].constraintRefs.push(value.watchlist[0].constraintRefs[0])],
     ["meal-grocery-planner", (value) => value.meals[0].constraintRefs.push(value.meals[0].constraintRefs[0])],
     ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],
@@ -2311,6 +2318,32 @@ test("household budget steward preserves supplied evidence and owner authority",
   const agentOwned = structuredClone(cases.get("household-budget-steward").fixture);
   agentOwned.handoff.owner = "household-budget-steward";
   assert.equal(isValid("household-budget-steward", agentOwned), false);
+});
+
+test("life timeline keeper preserves chronology, privacy, and owner authority", () => {
+  const staleSource = structuredClone(cases.get("life-timeline-keeper").fixture);
+  staleSource.sources[0].freshness = "stale";
+  assert.equal(isValid("life-timeline-keeper", staleSource), false);
+
+  const unsupportedCertainty = structuredClone(cases.get("life-timeline-keeper").fixture);
+  unsupportedCertainty.events[1].sourceRefs = ["src-owner-memory"];
+  assert.equal(isValid("life-timeline-keeper", unsupportedCertainty), false);
+
+  const invalidRange = structuredClone(cases.get("life-timeline-keeper").fixture);
+  invalidRange.events[0].dateEnd = "2022-07-01";
+  assert.equal(isValid("life-timeline-keeper", invalidRange), false);
+
+  const actionAdvice = structuredClone(cases.get("life-timeline-keeper").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Share the timeline and tag the people in the album.";
+  assert.equal(isValid("life-timeline-keeper", actionAdvice), false);
+
+  const danglingPointer = structuredClone(cases.get("life-timeline-keeper").fixture);
+  danglingPointer.events[0].pointerRefs = ["missing-pointer"];
+  assert.equal(isValid("life-timeline-keeper", danglingPointer), false);
+
+  const agentOwned = structuredClone(cases.get("life-timeline-keeper").fixture);
+  agentOwned.handoff.owner = "life-timeline-keeper";
+  assert.equal(isValid("life-timeline-keeper", agentOwned), false);
 });
 
 test("capstone profiles expose only their intended runtime dimensions", async () => {

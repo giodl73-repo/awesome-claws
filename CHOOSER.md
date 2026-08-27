@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (81)
+### Active (82)
 
 | Claw | Detail |
 | --- | --- |
@@ -48,6 +48,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Insurance policy organizer](claws/insurance-policy-organizer) | @giodl73-repo; last verified 2026-08-25 |
 | [Knowledge curator](claws/knowledge-curator) | @giodl73-repo; last verified 2026-08-19 |
 | [Knowledge gardener](claws/knowledge-gardener) | @giodl73-repo; last verified 2026-08-19 |
+| [Life timeline keeper](claws/life-timeline-keeper) | @giodl73-repo; last verified 2026-08-27 |
 | [Local events watcher](claws/local-events-watcher) | @giodl73-repo; last verified 2026-08-23 |
 | [Localization program manager](claws/localization-program-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | @giodl73-repo; last verified 2026-08-19 |
@@ -108,7 +109,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (50)
+### Low setup (51)
 
 | Claw | Detail |
 | --- | --- |
@@ -135,6 +136,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Household steward](claws/household-steward) | no bootstrap, external dependency, or schedule |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
+| [Life timeline keeper](claws/life-timeline-keeper) | no bootstrap, external dependency, or schedule |
 | [Local events watcher](claws/local-events-watcher) | no bootstrap, external dependency, or schedule |
 | [Localization program manager](claws/localization-program-manager) | no bootstrap, external dependency, or schedule |
 | [Meal and grocery planner](claws/meal-grocery-planner) | no bootstrap, external dependency, or schedule |
@@ -208,7 +210,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (58)
+### No external dependencies (59)
 
 | Claw | Detail |
 | --- | --- |
@@ -241,6 +243,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Incident response](claws/incident-response) | None |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | None |
 | [Knowledge curator](claws/knowledge-curator) | None |
+| [Life timeline keeper](claws/life-timeline-keeper) | None |
 | [Local events watcher](claws/local-events-watcher) | None |
 | [Localization program manager](claws/localization-program-manager) | None |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | None |
@@ -303,7 +306,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (56)
+### X3 (57)
 
 | Claw | Detail |
 | --- | --- |
@@ -330,6 +333,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Insurance policy organizer](claws/insurance-policy-organizer) | Organizes insurance policies, declarations pages, premiums, deductibles, coverage evidence, renewal dates, claim-readiness evidence, and owner-review questions without giving insurance or legal advice, filing claims, changing coverage, contacting carriers, or paying premiums. |
 | [Knowledge curator](claws/knowledge-curator) | Turns scattered information into durable, navigable, and source-linked knowledge. |
 | [Knowledge gardener](claws/knowledge-gardener) | Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work. |
+| [Life timeline keeper](claws/life-timeline-keeper) | Maintains an owner-reviewed timeline of important trips, moves, milestones, family events, achievements, and document or media pointers without posting publicly, identifying faces, making legal claims, or disclosing sensitive memories. |
 | [Local events watcher](claws/local-events-watcher) | Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
 | [Meal and grocery planner](claws/meal-grocery-planner) | Plans meals, pantry use, grocery lists, dietary constraints, budget fit, and store-availability evidence from approved sources without ordering food, checking out carts, changing subscriptions, editing calendars, or giving medical nutrition advice. |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries. |
@@ -480,7 +484,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (29)
+### Productivity (30)
 
 | Claw | Detail |
 | --- | --- |
@@ -495,6 +499,7 @@ Categories come directly from the catalog entry.
 | [Insurance policy organizer](claws/insurance-policy-organizer) | X3; Organizes insurance policies, declarations pages, premiums, deductibles, coverage evidence, renewal dates, claim-readiness evidence, and owner-review questions without giving insurance or legal advice, filing claims, changing coverage, contacting carriers, or paying premiums. |
 | [Knowledge curator](claws/knowledge-curator) | X3; Turns scattered information into durable, navigable, and source-linked knowledge. |
 | [Knowledge gardener](claws/knowledge-gardener) | X3; Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work. |
+| [Life timeline keeper](claws/life-timeline-keeper) | X3; Maintains an owner-reviewed timeline of important trips, moves, milestones, family events, achievements, and document or media pointers without posting publicly, identifying faces, making legal claims, or disclosing sensitive memories. |
 | [Local events watcher](claws/local-events-watcher) | X3; Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
 | [Localization program manager](claws/localization-program-manager) | X4; Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations. |
 | [Meal and grocery planner](claws/meal-grocery-planner) | X3; Plans meals, pantry use, grocery lists, dietary constraints, budget fit, and store-availability evidence from approved sources without ordering food, checking out carts, changing subscriptions, editing calendars, or giving medical nutrition advice. |
@@ -518,7 +523,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (29)
+### Standard attention (30)
 
 | Claw | Detail |
 | --- | --- |
@@ -533,6 +538,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Household budget steward](claws/household-budget-steward) | portable workspace artifacts only |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | portable workspace artifacts only |
 | [Knowledge curator](claws/knowledge-curator) | portable workspace artifacts only |
+| [Life timeline keeper](claws/life-timeline-keeper) | portable workspace artifacts only |
 | [Local events watcher](claws/local-events-watcher) | portable workspace artifacts only |
 | [Meal and grocery planner](claws/meal-grocery-planner) | portable workspace artifacts only |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | portable workspace artifacts only |

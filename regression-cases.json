@@ -1960,6 +1960,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "life-timeline-keeper",
+      "acceptedRequest": "Build a life timeline from the trip notes, family photos list, school certificate, move records, and memories I supplied. Show dates, people, places, media pointers, document pointers, uncertain memories, and sharing questions, but do not post, share, identify faces, contact anyone, move files, change permissions, or make legal or family-history claims.",
+      "requiredEvidence": [
+        "Owner-supplied memories, notes, journals, photos, videos, calendar exports, travel records, school notes, certificates, messages, document pointers, archive references, and family event notes",
+        "Event dates or ranges, people, places, source certainty, privacy scope, media or document links, unresolved questions, and sharing audience labels",
+        "Review goals such as milestone chronology, trip history, family timeline, move history, achievement list, document pointer map, and unresolved memory questions",
+        "External actions that must remain draft-only, including posting, sharing, face recognition, tagging, contacting people, editing albums, moving files, deleting files, publishing, permission changes, and legal/medical/genealogical conclusions"
+      ],
+      "authorityBoundaries": [
+        "Do not post publicly, share timelines, identify faces, infer sensitive facts, tag people, contact people, edit albums, move files, delete files, publish, or change permissions without exact approval",
+        "Do not make legal, medical, genealogical, immigration, custody, identity, relationship, or ownership claims from incomplete memories or documents",
+        "Do not disclose sensitive dates, locations, people, documents, photos, family details, or private memories beyond the owner-approved audience"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/life-timeline-keeper-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
