@@ -7012,6 +7012,84 @@ function wardrobeFindings(value) {
   return findings;
 }
 
+function medicalAppointmentFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const appointmentIds = value.appointments.map((item) => item.id);
+  const appointmentSet = new Set(appointmentIds);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const questionSet = new Set(questionIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(appointmentIds, "appointments", "Appointment id"),
+    ...uniqueFindings(value.concerns.map((item) => item.id), "concerns", "Concern id"),
+    ...uniqueFindings(value.medications.map((item) => item.id), "medications", "Medication id"),
+    ...uniqueFindings(value.priorInstructions.map((item) => item.id), "priorInstructions", "Prior instruction id"),
+    ...uniqueFindings(value.documents.map((item) => item.id), "documents", "Document id"),
+    ...uniqueFindings(value.logistics.map((item) => item.id), "logistics", "Logistics id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, appointment] of value.appointments.entries()) {
+    findings.push(
+      ...uniqueFindings(appointment.sourceRefs, `appointments.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(appointment.sourceRefs, sourceSet, `appointments.${index}.sourceRefs`, "Source reference"),
+    );
+    if (appointment.preparationState === "ready-for-owner-review" && appointment.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_preparation_state", `appointments.${index}.sourceRefs`, "Ready appointment packets require current source evidence."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["concerns", value.concerns],
+    ["priorInstructions", value.priorInstructions],
+    ["documents", value.documents],
+    ["logistics", value.logistics],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.appointmentRefs, `${collectionName}.${index}.appointmentRefs`, "Appointment reference"),
+        ...referenceFindings(item.appointmentRefs, appointmentSet, `${collectionName}.${index}.appointmentRefs`, "Appointment reference"),
+        ...uniqueFindings(item.sourceRefs, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+      );
+    }
+  }
+  for (const [index, med] of value.medications.entries()) {
+    findings.push(
+      ...uniqueFindings(med.sourceRefs, `medications.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(med.sourceRefs, sourceSet, `medications.${index}.sourceRefs`, "Source reference"),
+    );
+    if (med.freshness === "current" && med.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_medication_freshness", `medications.${index}.sourceRefs`, "Current medication lists require current source evidence."));
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, questionSet, "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready appointment packets cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    concerns: value.concerns.map(({ label, ownerReported }) => ({ label, ownerReported })),
+    priorInstructions: value.priorInstructions.map(({ label }) => label),
+    documents: value.documents.map(({ label }) => label),
+    logistics: value.logistics.map(({ note }) => note),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(diagnos(?:e|is)|triage|recommend treatment|treatment recommendation|change med(?:ication)?s?|change medication|advise dosage|dosage advice|interpret test results?|decide urgency|urgent decision|emergency determination|schedule appointments?|cancel appointments?|message providers?|contact providers?|submit portal forms?|portal submission|upload records?|pay bills?|file insurance claims?|contact insurers?|billing advice|insurance advice|medical advice|legal advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Medical appointment packets must not instruct diagnosis, triage, treatment, medication, scheduling, provider-contact, portal, upload, billing, insurance, legal, or emergency actions."));
+  }
+  if (value.handoff.owner === "medical-appointment-prep") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Clinical, scheduling, provider-contact, portal, billing, insurance, legal, and emergency authority must remain with the named owner or qualified humans."));
+  }
+  return findings;
+}
+
 function documentRenewalFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const documentIds = value.documents.map((item) => item.id);
@@ -7110,6 +7188,7 @@ const validators = {
   "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
   "meal-grocery-planner": mealGroceryFindings,
+  "medical-appointment-prep": medicalAppointmentFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
   "movie-streaming-organizer": movieStreamingFindings,
   "music-organizer": musicOrganizerFindings,

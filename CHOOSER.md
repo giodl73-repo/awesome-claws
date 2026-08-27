@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (86)
+### Active (87)
 
 | Claw | Detail |
 | --- | --- |
@@ -56,6 +56,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | @giodl73-repo; last verified 2026-08-19 |
 | [Meal and grocery planner](claws/meal-grocery-planner) | @giodl73-repo; last verified 2026-08-24 |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | @giodl73-repo; last verified 2026-08-19 |
+| [Medical appointment prep](claws/medical-appointment-prep) | @giodl73-repo; last verified 2026-08-27 |
 | [Meeting intelligence](claws/meeting-intelligence) | @giodl73-repo; last verified 2026-08-19 |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | @giodl73-repo; last verified 2026-08-19 |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | @giodl73-repo; last verified 2026-08-21 |
@@ -113,7 +114,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (55)
+### Low setup (56)
 
 | Claw | Detail |
 | --- | --- |
@@ -146,6 +147,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Local events watcher](claws/local-events-watcher) | no bootstrap, external dependency, or schedule |
 | [Localization program manager](claws/localization-program-manager) | no bootstrap, external dependency, or schedule |
 | [Meal and grocery planner](claws/meal-grocery-planner) | no bootstrap, external dependency, or schedule |
+| [Medical appointment prep](claws/medical-appointment-prep) | no bootstrap, external dependency, or schedule |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | no bootstrap, external dependency, or schedule |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | no bootstrap, external dependency, or schedule |
 | [Music organizer](claws/music-organizer) | no bootstrap, external dependency, or schedule |
@@ -218,7 +220,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (63)
+### No external dependencies (64)
 
 | Claw | Detail |
 | --- | --- |
@@ -258,6 +260,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Localization program manager](claws/localization-program-manager) | None |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | None |
 | [Meal and grocery planner](claws/meal-grocery-planner) | None |
+| [Medical appointment prep](claws/medical-appointment-prep) | None |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | None |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | None |
 | [Music organizer](claws/music-organizer) | None |
@@ -318,7 +321,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (61)
+### X3 (62)
 
 | Claw | Detail |
 | --- | --- |
@@ -351,6 +354,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Local events watcher](claws/local-events-watcher) | Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
 | [Meal and grocery planner](claws/meal-grocery-planner) | Plans meals, pantry use, grocery lists, dietary constraints, budget fit, and store-availability evidence from approved sources without ordering food, checking out carts, changing subscriptions, editing calendars, or giving medical nutrition advice. |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries. |
+| [Medical appointment prep](claws/medical-appointment-prep) | Prepares source-backed appointment packets from owner-supplied concerns, medication lists, prior instructions, visit logistics, documents, accessibility needs, and questions without diagnosing, triaging, recommending treatment, scheduling, messaging providers, changing portals, or handling billing or insurance. |
 | [Meeting intelligence](claws/meeting-intelligence) | Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts. |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | Coordinates blinded model-output evaluation, rubric calibration, and disagreement adjudication without selecting or deploying a model. |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | Organizes a personal or household movie and show watchlist with sourced availability, watched history, favorites, preferences, and watch-night shortlists without renting, buying, subscribing, rating publicly, or bypassing restrictions. |
@@ -500,7 +504,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (34)
+### Productivity (35)
 
 | Claw | Detail |
 | --- | --- |
@@ -521,6 +525,7 @@ Categories come directly from the catalog entry.
 | [Local events watcher](claws/local-events-watcher) | X3; Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
 | [Localization program manager](claws/localization-program-manager) | X4; Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations. |
 | [Meal and grocery planner](claws/meal-grocery-planner) | X3; Plans meals, pantry use, grocery lists, dietary constraints, budget fit, and store-availability evidence from approved sources without ordering food, checking out carts, changing subscriptions, editing calendars, or giving medical nutrition advice. |
+| [Medical appointment prep](claws/medical-appointment-prep) | X3; Prepares source-backed appointment packets from owner-supplied concerns, medication lists, prior instructions, visit logistics, documents, accessibility needs, and questions without diagnosing, triaging, recommending treatment, scheduling, messaging providers, changing portals, or handling billing or insurance. |
 | [Meeting intelligence](claws/meeting-intelligence) | X3; Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts. |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | X3; Organizes a personal or household movie and show watchlist with sourced availability, watched history, favorites, preferences, and watch-night shortlists without renting, buying, subscribing, rating publicly, or bypassing restrictions. |
 | [Music organizer](claws/music-organizer) | X3; Organizes a personal or household music library, playlists, listening history, favorites, and source-backed streaming availability without account mutation, purchases, public sharing, playlist publishing, or rights bypassing. |
@@ -543,7 +548,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (34)
+### Standard attention (35)
 
 | Claw | Detail |
 | --- | --- |
@@ -563,6 +568,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Life timeline keeper](claws/life-timeline-keeper) | portable workspace artifacts only |
 | [Local events watcher](claws/local-events-watcher) | portable workspace artifacts only |
 | [Meal and grocery planner](claws/meal-grocery-planner) | portable workspace artifacts only |
+| [Medical appointment prep](claws/medical-appointment-prep) | portable workspace artifacts only |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | portable workspace artifacts only |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | portable workspace artifacts only |
 | [Music organizer](claws/music-organizer) | portable workspace artifacts only |

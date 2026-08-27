@@ -2075,6 +2075,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "medical-appointment-prep",
+      "acceptedRequest": "Organize my prep for next week's follow-up from the appointment reminder, discharge note, medication list, and notes I supplied. Make a question list and documents-to-review checklist, but do not diagnose anything, tell me what treatment to choose, change meds, message the clinic, upload forms, pay bills, file insurance, or decide if symptoms are urgent.",
+      "requiredEvidence": [
+        "Owner-supplied appointment date, provider or clinic label, visit type, concerns, symptoms as reported, questions, medication and supplement list, allergies as supplied, prior instructions, discharge notes, lab or imaging pointers, forms, transportation notes, accessibility needs, caregiver authority, and privacy labels",
+        "Approved sources such as visit reminders, portal exports, medication lists, discharge instructions, referral notes, owner notes, appointment cards, clinic preparation pages, and caregiver notes",
+        "Owner review goals such as question list, documents to bring, medication list freshness, conflicting instructions, accessibility/logistics needs, caregiver handoff, and source gaps",
+        "External actions that must remain draft-only, including scheduling, provider messages, portal submissions, uploads, payments, insurance contact, medication changes, and emergency escalation"
+      ],
+      "authorityBoundaries": [
+        "Do not diagnose, triage, recommend treatment, interpret test results, change medication, advise dosage, decide urgency, or replace clinicians or emergency services",
+        "Do not schedule, cancel, message providers, submit portal forms, upload records, disclose protected health information, change accounts, pay bills, file insurance claims, or contact insurers without exact owner approval",
+        "Do not infer health status, eligibility, prognosis, disability, pregnancy, mental health, or sensitive identity facts from incomplete evidence"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/medical-appointment-prep-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
