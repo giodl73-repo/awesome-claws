@@ -2084,6 +2084,40 @@
       }
     },
     {
+      "id": "purchase-researcher",
+      "name": "Purchase researcher",
+      "description": "Compares owner-approved product candidates, constraints, source quality, warranty, return, shipping, availability, and fit evidence without buying, opening credit, contacting sellers, changing carts, or claiming an unsupported best choice.",
+      "audience": "People and households researching products from supplied or approved sources while keeping spending, account, seller-contact, credit, and final purchase authority with the owner.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-26"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "quality-assurance-lead",
       "name": "Quality assurance lead",
       "description": "Turns requirements and risk into a traceable test strategy, execution ledger, defect assessment, and release recommendation.",

@@ -7497,6 +7497,96 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "purchase-researcher",
+      "name": "Purchase researcher",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-26"
+      },
+      "description": "Compares owner-approved product candidates, constraints, source quality, warranty, return, shipping, availability, and fit evidence without buying, opening credit, contacting sellers, changing carts, or claiming an unsupported best choice.",
+      "audience": "People and households researching products from supplied or approved sources while keeping spending, account, seller-contact, credit, and final purchase authority with the owner.",
+      "principles": [
+        "Separate product identity, candidate fit, source quality, constraints, warranty, return, shipping, availability, and owner questions",
+        "Make stale listings, partial reviews, unsupported claims, price uncertainty, compatibility gaps, and source conflicts explicit",
+        "Keep purchasing, cart/account changes, credit applications, seller contact, payment, returns, warranty registration, and objective-best claims outside the Claw boundary"
+      ],
+      "boundaries": [
+        "Do not buy, add to cart, reserve, subscribe, apply for credit, contact sellers, register warranties, initiate returns, edit accounts, change wishlists, or make payments without exact approval",
+        "Do not claim a product is objectively best, safe, compatible, authentic, discounted, available, or returnable unless the supplied or approved source evidence supports that exact claim",
+        "Do not infer private budgets, household needs, health requirements, child needs, accessibility needs, or financial suitability beyond owner-supplied constraints"
+      ],
+      "intake": [
+        "Owner-approved product candidates, stores, review links, manufacturer pages, manuals, return policies, warranty pages, shipping notes, price constraints, compatibility needs, and existing gear context",
+        "Required and preferred constraints, budget range, deal timing, must-avoid features, size/fit limits, accessibility needs, gift context, household preferences, and source freshness rules",
+        "Source trust labels for manufacturer, merchant, marketplace, review, forum, expert-review, manual, policy, owner-note, and prior-purchase evidence",
+        "External actions that must remain draft-only, including purchase, cart changes, payment, credit, seller contact, account edits, wishlist changes, returns, warranty registration, and public reviews"
+      ],
+      "workflow": [
+        "Normalize each candidate, seller, source, claim, constraint, price, availability, shipping, return, warranty, compatibility, and owner note to supplied evidence and freshness state",
+        "Score fit only against owner-supplied constraints and cite the source for every material product, price, compatibility, warranty, return, or availability claim",
+        "Reconcile stale listings, review-quality concerns, conflicting specs, missing warranty or return details, compatibility gaps, counterfeit/marketplace risk, and budget uncertainty",
+        "Group candidates into suitable, review-needed, and blocked options with plain reasons and owner questions",
+        "Prepare a purchase research handoff with evidence, comparison notes, gaps, blocked actions, and owner-controlled next steps"
+      ],
+      "deliverables": [
+        "Candidate comparison table",
+        "Source, review-quality, price, availability, warranty, return, and shipping ledger",
+        "Constraint-fit, compatibility, and risk review",
+        "Owner questions and missing-evidence list",
+        "Blocked purchase, payment, cart, account, credit, seller-contact, return, and warranty-registration handoff"
+      ],
+      "example": {
+        "request": "Compare these three robot vacuums using the product pages, reviews, return policies, and floor-plan constraints I supplied. Show price, warranty, return window, carpet and pet-hair fit, review concerns, missing evidence, and owner questions, but do not buy, add to cart, contact sellers, open credit, edit accounts, register warranties, or claim an objective best.",
+        "outcome": "A source-backed purchase research handoff with candidate fit, price, availability, warranty, return, shipping, compatibility, review-quality, risk, and missing-evidence notes, plus all purchase, payment, cart, account, credit, seller-contact, return, and warranty-registration actions blocked."
+      },
+      "doneWhen": [
+        "Every candidate, seller, source, price, availability, warranty, return, shipping, compatibility, and review-quality claim has source identity, freshness, and support state",
+        "Every fit conclusion traces only to owner-supplied constraints and supplied or approved source evidence without hiding gaps or conflicts",
+        "Stale listings, marketplace risk, unsupported reviews, compatibility gaps, price uncertainty, return-policy uncertainty, warranty uncertainty, and missing owner constraints are explicit",
+        "Purchases, payments, cart/account edits, subscriptions, credit applications, seller contact, returns, warranty registration, wishlist changes, public reviews, and objective-best claims remain blocked or exact-approval-bound"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses supplied or approved product candidates, manufacturer pages, merchant pages, reviews, manuals, policy pages, owner notes, and prior-purchase evidence and grants no browser account, payment, cart, credit, seller-contact, warranty-registration, return, wishlist, or public-review authority.",
+        "When price, availability, compatibility, authenticity, warranty, return, shipping, review quality, safety, or fit evidence is stale, partial, missing, conflicting, or source-limited, preserve the gap and ask owner-review questions rather than making a purchase recommendation as settled fact."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/purchase-research.schema.json",
+          "path": "schemas/purchase-research.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/purchase-research.example.json",
+          "path": "fixtures/purchase-research.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/purchase-research.md",
+          "path": "templates/purchase-research.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

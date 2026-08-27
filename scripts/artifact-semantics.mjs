@@ -1269,6 +1269,168 @@ function taxDocumentFindings(value) {
   return findings;
 }
 
+function purchaseResearchFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const constraintIds = value.constraints.map((item) => item.id);
+  const candidateIds = value.candidates.map((item) => item.id);
+  const claimIds = value.claims.map((item) => item.id);
+  const policyIds = value.policyNotes.map((item) => item.id);
+  const riskIds = value.risks.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const constraintSet = new Set(constraintIds);
+  const candidateSet = new Set(candidateIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const claimsByCandidate = Map.groupBy(value.claims, (item) => item.candidateRef);
+  const policiesByCandidate = Map.groupBy(value.policyNotes, (item) => item.candidateRef);
+  const risksByCandidate = Map.groupBy(value.risks, (item) => item.candidateRef);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(constraintIds, "constraints", "Constraint id"),
+    ...uniqueFindings(candidateIds, "candidates", "Candidate id"),
+    ...uniqueFindings(claimIds, "claims", "Claim id"),
+    ...uniqueFindings(policyIds, "policyNotes", "Policy id"),
+    ...uniqueFindings(riskIds, "risks", "Risk id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+
+  for (const [index, constraint] of value.constraints.entries()) {
+    findings.push(
+      ...uniqueFindings(constraint.sourceRefs, `constraints.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(constraint.sourceRefs, sourceSet, `constraints.${index}.sourceRefs`, "Source reference"),
+    );
+    if (!constraint.sourceRefs.some((ref) => sourceById.get(ref)?.kind === "owner-note")) {
+      findings.push(finding("unsupported_constraint_source", `constraints.${index}.sourceRefs`, "Purchase constraints require owner-supplied evidence."));
+    }
+  }
+  for (const [index, candidate] of value.candidates.entries()) {
+    findings.push(
+      ...uniqueFindings(candidate.sourceRefs, `candidates.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(candidate.sourceRefs, sourceSet, `candidates.${index}.sourceRefs`, "Source reference"),
+    );
+    const hasProductSource = candidate.sourceRefs.some((ref) =>
+      ["manufacturer-page", "merchant-page", "marketplace-listing", "manual", "prior-purchase"].includes(sourceById.get(ref)?.kind),
+    );
+    if (!hasProductSource) {
+      findings.push(finding("unsupported_candidate_source", `candidates.${index}.sourceRefs`, "Product candidates require manufacturer, merchant, marketplace, manual, or prior-purchase evidence."));
+    }
+    if (candidate.currency !== value.plan.budgetCurrency) {
+      findings.push(finding("currency_mismatch", `candidates.${index}.currency`, "Candidate prices must use the plan budget currency."));
+    }
+    if (
+      candidate.price !== null &&
+      ((value.plan.budgetMin !== null && candidate.price < value.plan.budgetMin) ||
+        (value.plan.budgetMax !== null && candidate.price > value.plan.budgetMax)) &&
+      candidate.recommendationState === "recommended"
+    ) {
+      findings.push(finding("budget_mismatch", `candidates.${index}.price`, "Recommended candidates must fit the owner-supplied budget range."));
+    }
+    const candidateClaims = claimsByCandidate.get(candidate.id) ?? [];
+    const candidatePolicies = policiesByCandidate.get(candidate.id) ?? [];
+    const candidateRisks = risksByCandidate.get(candidate.id) ?? [];
+    const hasSupportedPrice = candidateClaims.some((item) => item.kind === "price" && item.state === "supported");
+    const hasSupportedFit = candidateClaims.some((item) => ["fit", "compatibility", "feature"].includes(item.kind) && item.state === "supported");
+    const hasReturn = candidatePolicies.some((item) => item.kind === "return" && item.state === "supported");
+    const hasWarranty = candidatePolicies.some((item) => item.kind === "warranty" && item.state === "supported");
+    const hasOpenRisk = candidateRisks.some((item) => item.state !== "resolved");
+    const hasBadSource = candidate.sourceRefs.some((ref) =>
+      ["stale", "missing", "conflicting"].includes(sourceById.get(ref)?.freshness) ||
+      ["anecdotal", "unsupported"].includes(sourceById.get(ref)?.support),
+    );
+    if (
+      candidate.recommendationState === "recommended" &&
+      (candidate.availability !== "available" ||
+        candidate.fitState !== "supported-fit" ||
+        hasBadSource ||
+        !hasSupportedPrice ||
+        !hasSupportedFit ||
+        !hasReturn ||
+        !hasWarranty ||
+        hasOpenRisk)
+    ) {
+      findings.push(finding("unsupported_recommendation", `candidates.${index}`, "Recommended candidates require available, supported-fit, current primary/secondary evidence, supported price and fit claims, supported return and warranty notes, and no open risks."));
+    }
+    if (
+      (candidate.recommendationState === "blocked" && !candidate.blockedReason) ||
+      (candidate.recommendationState !== "blocked" && candidate.blockedReason !== null)
+    ) {
+      findings.push(finding("incoherent_blocked_state", `candidates.${index}.blockedReason`, "Only blocked purchase candidates may carry a blocked reason."));
+    }
+  }
+  for (const [index, claim] of value.claims.entries()) {
+    findings.push(
+      ...referenceFindings([claim.candidateRef], candidateSet, `claims.${index}.candidateRef`, "Candidate reference"),
+      ...uniqueFindings(claim.constraintRefs, `claims.${index}.constraintRefs`, "Constraint reference"),
+      ...referenceFindings(claim.constraintRefs, constraintSet, `claims.${index}.constraintRefs`, "Constraint reference"),
+      ...uniqueFindings(claim.sourceRefs, `claims.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(claim.sourceRefs, sourceSet, `claims.${index}.sourceRefs`, "Source reference"),
+    );
+    const allowedKinds = {
+      price: ["merchant-page", "marketplace-listing", "owner-note", "prior-purchase"],
+      availability: ["merchant-page", "marketplace-listing", "manufacturer-page"],
+      compatibility: ["manufacturer-page", "manual", "expert-review", "owner-note", "prior-purchase"],
+      feature: ["manufacturer-page", "manual", "expert-review", "owner-note"],
+      "review-quality": ["expert-review", "user-review", "owner-note"],
+      safety: ["manufacturer-page", "manual", "expert-review"],
+      authenticity: ["manufacturer-page", "merchant-page", "marketplace-listing"],
+      fit: ["manufacturer-page", "manual", "expert-review", "owner-note", "prior-purchase"],
+      shipping: ["shipping-policy", "merchant-page", "marketplace-listing"],
+    }[claim.kind];
+    if (claim.state === "supported" && !claim.sourceRefs.some((ref) => allowedKinds.includes(sourceById.get(ref)?.kind))) {
+      findings.push(finding("unsupported_claim_source", `claims.${index}.sourceRefs`, "Supported purchase claims must cite a matching owner, product, policy, merchant, marketplace, review, manual, or prior-purchase source kind."));
+    }
+  }
+  for (const [index, policy] of value.policyNotes.entries()) {
+    findings.push(
+      ...referenceFindings([policy.candidateRef], candidateSet, `policyNotes.${index}.candidateRef`, "Candidate reference"),
+      ...uniqueFindings(policy.sourceRefs, `policyNotes.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(policy.sourceRefs, sourceSet, `policyNotes.${index}.sourceRefs`, "Source reference"),
+    );
+    const expectedKind = `${policy.kind}-policy`;
+    if (policy.state === "supported" && !policy.sourceRefs.some((ref) => sourceById.get(ref)?.kind === expectedKind)) {
+      findings.push(finding("unsupported_policy_source", `policyNotes.${index}.sourceRefs`, "Supported warranty, return, and shipping notes require matching policy evidence."));
+    }
+  }
+  for (const [index, risk] of value.risks.entries()) {
+    findings.push(
+      ...referenceFindings([risk.candidateRef], candidateSet, `risks.${index}.candidateRef`, "Candidate reference"),
+      ...uniqueFindings(risk.sourceRefs, `risks.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(risk.sourceRefs, sourceSet, `risks.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.candidateRefs, `reviewQuestions.${index}.candidateRefs`, "Candidate reference"),
+      ...referenceFindings(question.candidateRefs, candidateSet, `reviewQuestions.${index}.candidateRefs`, "Candidate reference"),
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.candidateRefs, "handoff.candidateRefs", "Candidate reference"),
+    ...referenceFindings(value.handoff.candidateRefs, candidateSet, "handoff.candidateRefs", "Candidate reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready purchase research cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    candidates: value.candidates.map(({ blockedReason }) => blockedReason),
+    policyNotes: value.policyNotes.map(({ summary }) => summary),
+    risks: value.risks.map(({ kind, state }) => ({ kind, state })),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(buy|purchase now|complete (the )?purchase|add to cart|reserve|subscribe|apply for credit|open credit|contact (the )?(seller|merchant|manufacturer)|make payment|pay now|checkout|edit account|change wishlist|initiate return|return it|register warranty|post review|objective best|best choice|guaranteed compatible|safe for|authentic product)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Purchase research artifacts must not instruct purchases, cart/account changes, credit, seller contact, payments, returns, warranty registration, public reviews, or unsupported best/safe/authentic/compatible claims."));
+  }
+  if (value.handoff.owner === "purchase-researcher") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Purchase, payment, account, credit, seller-contact, return, warranty, and final choice authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 function giftRelationshipFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const recipientIds = value.recipients.map((item) => item.id);
@@ -6311,6 +6473,7 @@ const validators = {
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
   "project-manager": projectFindings,
   "product-manager": productFindings,
+  "purchase-researcher": purchaseResearchFindings,
   "public-safety-monitor": publicSafetyFindings,
   "recruiting-coordinator": recruitingFindings,
   "restaurant-venue-scout": restaurantVenueFindings,

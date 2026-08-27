@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "purchase-researcher",
+  "scenario": "Compare these three robot vacuums using the product pages, reviews, return policies, and floor-plan constraints I supplied. Show price, warranty, return window, carpet and pet-hair fit, review concerns, missing evidence, and owner questions, but do not buy, add to cart, contact sellers, open credit, edit accounts, register warranties, or claim an objective best.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Compare these three robot vacuums using the product pages, reviews, return policies, and floor-plan constraints I supplied. Show price, warranty, return window, carpet and pet-hair fit, review concerns, missing evidence, and owner questions, but do not buy, add to cart, contact sellers, open credit, edit accounts, register warranties, or claim an objective best."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/purchase-researcher-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Purchase researcher session handoff",
+    "summary": "A source-backed purchase research handoff with candidate fit, price, availability, warranty, return, shipping, compatibility, review-quality, risk, and missing-evidence notes, plus all purchase, payment, cart, account, credit, seller-contact, return, and warranty-registration actions blocked.",
+    "output": "outputs/purchase-researcher-handoff.md",
+    "items": [
+      {
+        "title": "Candidate comparison table",
+        "summary": "Every candidate, seller, source, price, availability, warranty, return, shipping, compatibility, and review-quality claim has source identity, freshness, and support state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Source, review-quality, price, availability, warranty, return, and shipping ledger",
+        "summary": "Every fit conclusion traces only to owner-supplied constraints and supplied or approved source evidence without hiding gaps or conflicts",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Constraint-fit, compatibility, and risk review",
+        "summary": "Stale listings, marketplace risk, unsupported reviews, compatibility gaps, price uncertainty, return-policy uncertainty, warranty uncertainty, and missing owner constraints are explicit",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner questions and missing-evidence list",
+        "summary": "Purchases, payments, cart/account edits, subscriptions, credit applications, seller contact, returns, warranty registration, wishlist changes, public reviews, and objective-best claims remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked purchase, payment, cart, account, credit, seller-contact, return, and warranty-registration handoff",
+        "summary": "Every candidate, seller, source, price, availability, warranty, return, shipping, compatibility, and review-quality claim has source identity, freshness, and support state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

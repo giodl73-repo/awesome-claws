@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (79)
+### Active (80)
 
 | Claw | Detail |
 | --- | --- |
@@ -66,6 +66,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Project manager](claws/project-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Public company watcher](claws/public-company-watcher) | @giodl73-repo; last verified 2026-08-19 |
 | [Public safety monitor](claws/public-safety-monitor) | @giodl73-repo; last verified 2026-08-19 |
+| [Purchase researcher](claws/purchase-researcher) | @giodl73-repo; last verified 2026-08-26 |
 | [Quality assurance lead](claws/quality-assurance-lead) | @giodl73-repo; last verified 2026-08-19 |
 | [Recruiting coordinator](claws/recruiting-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Release coordinator](claws/release-coordinator) | @giodl73-repo; last verified 2026-08-19 |
@@ -106,7 +107,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (48)
+### Low setup (49)
 
 | Claw | Detail |
 | --- | --- |
@@ -144,6 +145,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Privacy request coordinator](claws/privacy-request-coordinator) | no bootstrap, external dependency, or schedule |
 | [Product manager](claws/product-manager) | no bootstrap, external dependency, or schedule |
 | [Project manager](claws/project-manager) | no bootstrap, external dependency, or schedule |
+| [Purchase researcher](claws/purchase-researcher) | no bootstrap, external dependency, or schedule |
 | [Quality assurance lead](claws/quality-assurance-lead) | no bootstrap, external dependency, or schedule |
 | [Recruiting coordinator](claws/recruiting-coordinator) | no bootstrap, external dependency, or schedule |
 | [Research briefing](claws/research-briefing) | no bootstrap, external dependency, or schedule |
@@ -204,7 +206,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (56)
+### No external dependencies (57)
 
 | Claw | Detail |
 | --- | --- |
@@ -250,6 +252,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Procurement evaluator](claws/procurement-evaluator) | None |
 | [Product manager](claws/product-manager) | None |
 | [Project manager](claws/project-manager) | None |
+| [Purchase researcher](claws/purchase-researcher) | None |
 | [Quality assurance lead](claws/quality-assurance-lead) | None |
 | [Recruiting coordinator](claws/recruiting-coordinator) | None |
 | [Research briefing](claws/research-briefing) | None |
@@ -297,7 +300,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (54)
+### X3 (55)
 
 | Claw | Detail |
 | --- | --- |
@@ -336,6 +339,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Presentation producer](claws/presentation-producer) | Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review. |
 | [Public company watcher](claws/public-company-watcher) | Tracks material public-company disclosures from authoritative sources and produces a private, timestamped change brief without trading or investor-relations contact. |
 | [Public safety monitor](claws/public-safety-monitor) | Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services. |
+| [Purchase researcher](claws/purchase-researcher) | Compares owner-approved product candidates, constraints, source quality, warranty, return, shipping, availability, and fit evidence without buying, opening credit, contacting sellers, changing carts, or claiming an unsupported best choice. |
 | [Recruiting coordinator](claws/recruiting-coordinator) | Coordinates candidate logistics with clear handoffs, consistency, and privacy. |
 | [Research monitor](claws/research-monitor) | Runs a bounded source watch and produces a private evidence digest for a named decision area. |
 | [Research scout](claws/research-scout) | Monitors public scholarly sources for decision-relevant evidence changes, including new studies, corrections, retractions, and trial updates. |
@@ -472,7 +476,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (27)
+### Productivity (28)
 
 | Claw | Detail |
 | --- | --- |
@@ -495,6 +499,7 @@ Categories come directly from the catalog entry.
 | [Personal archive curator](claws/personal-archive-curator) | X3; Organizes supplied personal files, notes, links, receipts, photos, warranties, and memories into a privacy-labeled retrieval index without deleting, moving, sharing, uploading, training memory, or inferring sensitive facts. |
 | [Presentation producer](claws/presentation-producer) | X3; Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review. |
 | [Project manager](claws/project-manager) | X4; Keeps projects aligned through milestones, dependencies, decisions, and accountable execution. |
+| [Purchase researcher](claws/purchase-researcher) | X3; Compares owner-approved product candidates, constraints, source quality, warranty, return, shipping, availability, and fit evidence without buying, opening credit, contacting sellers, changing carts, or claiming an unsupported best choice. |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | X3; Compares restaurants and venues from approved sources with dietary, accessibility, hours, reservation, price, distance, and group-preference evidence without reserving, ordering, paying, messaging, or posting reviews. |
 | [School coordinator](claws/school-coordinator) | X3; Tracks assignments, forms, teacher notes, school calendars, supply lists, events, accommodations, and parent review questions from approved sources without submitting forms, messaging teachers, changing enrollment, or making education, medical, legal, or payment decisions. |
 | [Sports team watcher](claws/sports-team-watcher) | X3; Tracks favorite teams across leagues and prepares sourced schedule, result, standings, roster, and watch-item digests without betting, ticketing, or claiming live completeness. |
@@ -508,7 +513,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (27)
+### Standard attention (28)
 
 | Claw | Detail |
 | --- | --- |
@@ -530,6 +535,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Personal archive curator](claws/personal-archive-curator) | portable workspace artifacts only |
 | [Pet care coordinator](claws/pet-care-coordinator) | portable workspace artifacts only |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | portable workspace artifacts only |
+| [Purchase researcher](claws/purchase-researcher) | portable workspace artifacts only |
 | [Recruiting coordinator](claws/recruiting-coordinator) | portable workspace artifacts only |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | portable workspace artifacts only |
 | [Sales operations](claws/sales-operations) | portable workspace artifacts only |

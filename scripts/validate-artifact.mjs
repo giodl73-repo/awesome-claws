@@ -35,6 +35,7 @@ const schemaNames = {
   "pond-water-feature-coordinator": "pond-system.schema.json",
   "project-manager": "project-state.schema.json",
   "product-manager": "product-decision.schema.json",
+  "purchase-researcher": "purchase-research.schema.json",
   "public-safety-monitor": "public-safety-state.schema.json",
   "recruiting-coordinator": "interview-plan.schema.json",
   "restaurant-venue-scout": "venue-shortlist.schema.json",

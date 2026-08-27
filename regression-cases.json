@@ -1914,6 +1914,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "purchase-researcher",
+      "acceptedRequest": "Compare these three robot vacuums using the product pages, reviews, return policies, and floor-plan constraints I supplied. Show price, warranty, return window, carpet and pet-hair fit, review concerns, missing evidence, and owner questions, but do not buy, add to cart, contact sellers, open credit, edit accounts, register warranties, or claim an objective best.",
+      "requiredEvidence": [
+        "Owner-approved product candidates, stores, review links, manufacturer pages, manuals, return policies, warranty pages, shipping notes, price constraints, compatibility needs, and existing gear context",
+        "Required and preferred constraints, budget range, deal timing, must-avoid features, size/fit limits, accessibility needs, gift context, household preferences, and source freshness rules",
+        "Source trust labels for manufacturer, merchant, marketplace, review, forum, expert-review, manual, policy, owner-note, and prior-purchase evidence",
+        "External actions that must remain draft-only, including purchase, cart changes, payment, credit, seller contact, account edits, wishlist changes, returns, warranty registration, and public reviews"
+      ],
+      "authorityBoundaries": [
+        "Do not buy, add to cart, reserve, subscribe, apply for credit, contact sellers, register warranties, initiate returns, edit accounts, change wishlists, or make payments without exact approval",
+        "Do not claim a product is objectively best, safe, compatible, authentic, discounted, available, or returnable unless the supplied or approved source evidence supports that exact claim",
+        "Do not infer private budgets, household needs, health requirements, child needs, accessibility needs, or financial suitability beyond owner-supplied constraints"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/purchase-researcher-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

@@ -143,6 +143,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "purchase-researcher",
+    schema: "../claws/purchase-researcher/schemas/purchase-research.schema.json",
+    fixture: "../claws/purchase-researcher/fixtures/purchase-research.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "pet-care-coordinator",
     schema: "../claws/pet-care-coordinator/schemas/pet-care.schema.json",
     fixture: "../claws/pet-care-coordinator/fixtures/pet-care.example.json",
@@ -553,6 +559,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["movie-streaming-organizer", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["music-organizer", (value) => value.playlistPlan[0].preferenceRefs.push(value.playlistPlan[0].preferenceRefs[0])],
     ["personal-archive-curator", (value) => value.retrievalCues[0].sourceRefs.push(value.retrievalCues[0].sourceRefs[0])],
+    ["purchase-researcher", (value) => value.candidates[0].sourceRefs.push(value.candidates[0].sourceRefs[0])],
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],
     ["recruiting-coordinator", (value) => value.communications[0].sessionRefs.push(value.communications[0].sessionRefs[0])],
     ["restaurant-venue-scout", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
@@ -2236,6 +2243,36 @@ test("tax document organizer preserves document evidence and owner authority", (
   const unsupportedReady = structuredClone(cases.get("tax-document-organizer").fixture);
   unsupportedReady.documents[0].taxYearState = "unknown";
   assert.equal(isValid("tax-document-organizer", unsupportedReady), false);
+});
+
+test("purchase researcher preserves source-backed fit and owner authority", () => {
+  const staleSource = structuredClone(cases.get("purchase-researcher").fixture);
+  staleSource.sources[1].freshness = "stale";
+  assert.equal(isValid("purchase-researcher", staleSource), false);
+
+  const unsupportedRecommendation = structuredClone(cases.get("purchase-researcher").fixture);
+  unsupportedRecommendation.candidates[0].availability = "unknown";
+  assert.equal(isValid("purchase-researcher", unsupportedRecommendation), false);
+
+  const unsupportedPolicy = structuredClone(cases.get("purchase-researcher").fixture);
+  unsupportedPolicy.policyNotes[0].sourceRefs = ["src-roborun-review"];
+  assert.equal(isValid("purchase-researcher", unsupportedPolicy), false);
+
+  const unsupportedClaim = structuredClone(cases.get("purchase-researcher").fixture);
+  unsupportedClaim.claims[0].sourceRefs = ["src-roborun-review"];
+  assert.equal(isValid("purchase-researcher", unsupportedClaim), false);
+
+  const actionAdvice = structuredClone(cases.get("purchase-researcher").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Add it to cart and buy now.";
+  assert.equal(isValid("purchase-researcher", actionAdvice), false);
+
+  const danglingCandidate = structuredClone(cases.get("purchase-researcher").fixture);
+  danglingCandidate.claims[0].candidateRef = "missing-candidate";
+  assert.equal(isValid("purchase-researcher", danglingCandidate), false);
+
+  const agentOwned = structuredClone(cases.get("purchase-researcher").fixture);
+  agentOwned.handoff.owner = "purchase-researcher";
+  assert.equal(isValid("purchase-researcher", agentOwned), false);
 });
 
 test("capstone profiles expose only their intended runtime dimensions", async () => {
