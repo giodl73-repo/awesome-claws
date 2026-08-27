@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "wardrobe-organizer",
+  "scenario": "Organize this closet list, receipt folder, care-label notes, and outfit ideas for next month. Show what works for travel and the wedding, what needs cleaning or alterations, and what gaps I should review, but do not buy, sell, donate, share photos, message anyone, book services, or infer anything about my body or health.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize this closet list, receipt folder, care-label notes, and outfit ideas for next month. Show what works for travel and the wedding, what needs cleaning or alterations, and what gaps I should review, but do not buy, sell, donate, share photos, message anyone, book services, or infer anything about my body or health."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/wardrobe-organizer-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Wardrobe organizer session handoff",
+    "summary": "A private source-backed wardrobe ledger with outfit options, packing checklist, care and alteration queue, gap questions, stale or sensitive evidence labels, and all purchase, sale, donation, photo-sharing, messaging, booking, account, and body/health inference actions blocked.",
+    "output": "outputs/wardrobe-organizer-handoff.md",
+    "items": [
+      {
+        "title": "Wardrobe item ledger",
+        "summary": "Every item, outfit, event need, packing item, care task, alteration task, and gap has source identity, freshness, privacy labeling, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Outfit and event plan",
+        "summary": "Every fit, size, care, event, packing, and gap claim traces to supplied or approved evidence without hiding stale, partial, missing, or conflicting source state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Care, alteration, and repair queue",
+        "summary": "Photos, measurements, body-adjacent notes, uniforms, sentimental items, travel plans, and shared closet details are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Packing and seasonal rotation checklist",
+        "summary": "Purchases, returns, resale listings, donations, disposal, account changes, photo sharing, public posts, messaging, appointments, pickup scheduling, body or health inference, and professional advice remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Gap, duplicate, and owner-review question list",
+        "summary": "Every item, outfit, event need, packing item, care task, alteration task, and gap has source identity, freshness, privacy labeling, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked purchase, resale, donation, photo-sharing, account, messaging, booking, and sensitive-inference handoff",
+        "summary": "Every fit, size, care, event, packing, and gap claim traces to supplied or approved evidence without hiding stale, partial, missing, or conflicting source state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

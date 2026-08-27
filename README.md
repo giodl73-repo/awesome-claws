@@ -40,12 +40,12 @@ copyable reference is optimized for a small package that is easy to rename and
 adapt. The other starters demonstrate different application shapes between
 those two points; they are not expected to contain the same components.
 
-The 84-Claw catalog now also has a practical personal-agent lane. Vehicle, home,
+The 85-Claw catalog now also has a practical personal-agent lane. Vehicle, home,
 garden, pet, pond, appliance, care-circle, sports-team, stock-portfolio,
 movie-and-streaming, subscription, music, gift-and-relationship,
 personal-archive, restaurant-and-venue, local-events, school, games-backlog,
 home-inventory, meal-and-grocery, insurance-policy, tax-document,
-purchase-research, household-budget, life-timeline, child-activity, and neighborhood-operations starters cover everyday bounded
+purchase-research, household-budget, life-timeline, child-activity, neighborhood-operations, and wardrobe starters cover everyday bounded
 workflows with explicit owner authority. Household Steward, Work Chief of
 Staff, and Care Circle Coordinator show the manager-Claw pattern: they
 coordinate specialist-Claw artifacts, conflicts, and accountable decisions
@@ -91,7 +91,7 @@ does not execute or grade an LLM, replace installed lifecycle proof, or claim
 live-provider behavior.
 
 The table below highlights the main reviewed application shapes. Use the
-chooser or explorer for the complete 84-Claw catalog.
+chooser or explorer for the complete 85-Claw catalog.
 
 | Claw | Category | Capabilities | Focus |
 | --- | --- | --- | --- |
@@ -265,7 +265,7 @@ regression coverage, content quality, and basic secret hygiene. Maintainers can 
 `CLAWS_CLI_ENTRY` and run
 `npm run inspect` to inspect every package with a standalone Claws reference
 CLI. With `CLAWS_CLI_ENTRY` and `OPENCLAW_CLI_ENTRY` set to compatible built
-checkouts, `npm run proof:openclaw` dry-runs all 84 packages through the
+checkouts, `npm run proof:openclaw` dry-runs all 85 packages through the
 OpenClaw adapter in disposable state.
 
 ### Catalog invariants
@@ -273,7 +273,7 @@ OpenClaw adapter in disposable state.
 - `catalog.json` owns catalog metadata and resource declarations.
   `sources/<claw-id>/` owns the declared resource bodies in their native file
   formats. `npm run build` materializes both, and `npm run check` requires
-  byte-for-byte agreement with all 84 generated packages and rejects missing
+  byte-for-byte agreement with all 85 generated packages and rejects missing
   or undeclared source files.
 - Harness profiles use the conventional `profiles/openclaw.yml` path, strict
   schema version 1, exact pinned extension releases, and unique extension ids
@@ -298,7 +298,7 @@ OpenClaw adapter in disposable state.
   It does not mutate state or prove provider behavior.
 - `npm run proof:portfolio` first checks deterministic materialization, then
   exercises inspect, consent-bound add, status, export inspection, and removal
-  for all 84 packages in isolated local state. Executive Assistant additionally
+  for all 85 packages in isolated local state. Executive Assistant additionally
   proves a real managed-resource update from a checked-in previous-version fixture,
   stale-consent rejection, reverse rollback, and repeat upgrade while preserving user-owned state. Its
   agent turn uses the checked-in OpenAI-compatible fixture, so it proves runtime

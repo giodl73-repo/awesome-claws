@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/wardrobe-plan.schema.json",
+  "title": "Wardrobe Organizer Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "plan", "sources", "items", "outfits", "careTasks", "packingLists", "gaps", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.wardrobePlan.v1" },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "timezone", "asOf", "privacyMode"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "owner": { "type": "string", "minLength": 3 },
+        "timezone": { "type": "string", "minLength": 3 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "privacyMode": { "enum": ["private", "owner-redacted", "shared-household"] }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/source" }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/item" }
+    },
+    "outfits": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/outfit" }
+    },
+    "careTasks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/careTask" }
+    },
+    "packingLists": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/packingList" }
+    },
+    "gaps": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/gap" }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/reviewQuestion" }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 3 }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "reviewQuestionRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["draft", "needs-owner-review", "ready-for-owner-review"] },
+        "owner": { "type": "string", "minLength": 3 },
+        "reviewQuestionRefs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 3 }
+        },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 3 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "capturedAt", "reference", "freshness", "privacy"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "kind": { "enum": ["closet-list", "owner-note", "receipt", "care-label", "photo-reference", "event-requirement", "weather-note", "travel-itinerary", "alteration-note", "laundry-note"] },
+        "capturedAt": { "type": "string", "format": "date-time" },
+        "reference": { "type": "string", "minLength": 3 },
+        "freshness": { "enum": ["current", "stale", "missing", "conflicting"] },
+        "privacy": { "enum": ["private", "photo-sensitive", "body-adjacent", "shared-household", "travel-sensitive", "public"] }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "category", "owner", "location", "sizeState", "fitState", "careState", "privacy", "sourceRefs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "name": { "type": "string", "minLength": 3 },
+        "category": { "enum": ["top", "bottom", "dress", "outerwear", "shoe", "accessory", "formalwear", "uniform", "travel", "other"] },
+        "owner": { "type": "string", "minLength": 3 },
+        "location": { "type": "string", "minLength": 3 },
+        "sizeState": { "enum": ["known", "owner-supplied", "unknown", "conflicting"] },
+        "fitState": { "enum": ["fits", "needs-owner-check", "needs-alteration", "unknown", "not-assessed"] },
+        "careState": { "enum": ["ready", "laundry", "dry-clean", "repair", "alteration", "unknown"] },
+        "privacy": { "enum": ["private", "photo-sensitive", "body-adjacent", "shared-household", "travel-sensitive"] },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 3 }
+        }
+      }
+    },
+    "outfit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "occasion", "itemRefs", "state", "privacy", "sourceRefs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "occasion": { "type": "string", "minLength": 3 },
+        "itemRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 3 }
+        },
+        "state": { "enum": ["candidate", "needs-owner-check", "blocked-by-care", "ready-for-review"] },
+        "privacy": { "enum": ["private", "photo-sensitive", "body-adjacent", "shared-household", "travel-sensitive"] },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 3 }
+        }
+      }
+    },
+    "careTask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "itemRefs", "kind", "state", "sourceRefs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "itemRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 3 }
+        },
+        "kind": { "enum": ["laundry", "dry-clean", "repair", "alteration", "owner-check"] },
+        "state": { "enum": ["queued", "needs-owner-review", "blocked", "done"] },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 3 }
+        }
+      }
+    },
+    "packingList": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "tripOrEvent", "itemRefs", "gapRefs", "privacy", "sourceRefs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "tripOrEvent": { "type": "string", "minLength": 3 },
+        "itemRefs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 3 }
+        },
+        "gapRefs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 3 }
+        },
+        "privacy": { "enum": ["private", "photo-sensitive", "body-adjacent", "shared-household", "travel-sensitive"] },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 3 }
+        }
+      }
+    },
+    "gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "need", "reason", "state", "privacy", "sourceRefs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "need": { "type": "string", "minLength": 3 },
+        "reason": { "type": "string", "minLength": 3 },
+        "state": { "enum": ["question", "candidate", "blocked", "resolved"] },
+        "privacy": { "enum": ["private", "photo-sensitive", "body-adjacent", "shared-household", "travel-sensitive"] },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 3 }
+        }
+      }
+    },
+    "reviewQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "question", "reason", "itemRefs", "sourceRefs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "question": { "type": "string", "minLength": 3 },
+        "reason": { "type": "string", "minLength": 3 },
+        "itemRefs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 3 }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 3 }
+        }
+      }
+    }
+  }
+}

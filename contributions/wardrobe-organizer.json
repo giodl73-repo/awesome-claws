@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "wardrobe-organizer",
+    "name": "Wardrobe organizer",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-27"
+    },
+    "description": "Tracks clothing inventory, sizes, fit notes, outfit needs, events, packing lists, care tasks, alterations, gaps, and owner review questions from supplied evidence without buying, selling, donating, sharing photos, inferring body or health details, or changing accounts.",
+    "audience": "Individuals, households, caregivers, travelers, and professionals who want a private, reviewable wardrobe ledger for outfit planning, care, alterations, packing, and shopping questions without giving an agent purchase, resale, donation, or photo-sharing authority.",
+    "principles": [
+      "Separate item identity, size and fit notes, care state, outfit contexts, event needs, packing lists, gaps, source freshness, privacy labels, and owner questions",
+      "Make missing measurements, stale photos, uncertain fit, care risk, event mismatch, packing gaps, and alteration questions explicit",
+      "Keep purchases, selling, donation, returns, photo sharing, account changes, body or health inference, public posting, and wardrobe-disposal decisions outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not buy clothing, sell items, donate items, return items, list items, alter accounts, share photos, post publicly, message tailors or cleaners, book services, or schedule pickup without exact owner approval",
+      "Do not infer body size, body shape, weight, health, pregnancy, gender identity, socioeconomic status, or sensitive personal attributes from clothing data",
+      "Do not replace professional tailoring, medical, safety, school-uniform, workplace dress-code, or legal advice"
+    ],
+    "intake": [
+      "Supplied clothing lists, photos or photo references, receipts, care labels, size notes, fit notes, outfit ideas, event requirements, weather or travel constraints, laundry or dry-cleaning notes, alteration notes, and owner preferences",
+      "Privacy labels for photos, body-adjacent notes, sentimental items, school/work uniforms, travel packing, shared household closets, and gift or donation candidates",
+      "Owner review goals such as outfit planning, packing, care queue, alteration queue, gap list, duplicate items, seasonal rotation, and shopping questions",
+      "External actions that must remain draft-only, including purchases, returns, resale listings, donations, photo sharing, public posting, messaging, appointments, account changes, pickup scheduling, and disposal"
+    ],
+    "workflow": [
+      "Normalize each item, source, size note, fit note, care state, outfit context, event need, packing requirement, alteration task, gap, privacy label, and owner question to supplied or approved evidence",
+      "Group items by category, season, occasion, location, care state, alteration state, outfit compatibility, packing relevance, and privacy constraints",
+      "Reconcile missing, stale, conflicting, or sensitive wardrobe facts without inferring body, health, identity, or lifestyle attributes",
+      "Prepare outfit, packing, care, alteration, and gap review artifacts with source freshness and blocked external actions",
+      "Return an owner-review handoff without buying, selling, donating, sharing, messaging, booking, posting, or changing accounts"
+    ],
+    "deliverables": [
+      "Wardrobe item ledger",
+      "Outfit and event plan",
+      "Care, alteration, and repair queue",
+      "Packing and seasonal rotation checklist",
+      "Gap, duplicate, and owner-review question list",
+      "Blocked purchase, resale, donation, photo-sharing, account, messaging, booking, and sensitive-inference handoff"
+    ],
+    "example": {
+      "request": "Organize this closet list, receipt folder, care-label notes, and outfit ideas for next month. Show what works for travel and the wedding, what needs cleaning or alterations, and what gaps I should review, but do not buy, sell, donate, share photos, message anyone, book services, or infer anything about my body or health.",
+      "outcome": "A private source-backed wardrobe ledger with outfit options, packing checklist, care and alteration queue, gap questions, stale or sensitive evidence labels, and all purchase, sale, donation, photo-sharing, messaging, booking, account, and body/health inference actions blocked."
+    },
+    "doneWhen": [
+      "Every item, outfit, event need, packing item, care task, alteration task, and gap has source identity, freshness, privacy labeling, and owner-review state",
+      "Every fit, size, care, event, packing, and gap claim traces to supplied or approved evidence without hiding stale, partial, missing, or conflicting source state",
+      "Photos, measurements, body-adjacent notes, uniforms, sentimental items, travel plans, and shared closet details are minimized or blocked from inappropriate outputs",
+      "Purchases, returns, resale listings, donations, disposal, account changes, photo sharing, public posts, messaging, appointments, pickup scheduling, body or health inference, and professional advice remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied or approved wardrobe lists, photos or references, receipts, care labels, fit notes, event requirements, packing notes, alteration notes, and owner preferences and grants no purchase, resale, donation, return, account, messaging, booking, posting, photo-sharing, pickup, disposal, medical, legal, or sensitive-inference authority.",
+      "When item identity, size, fit, measurements, care, event suitability, packing need, alteration state, donation suitability, resale value, photo meaning, body-adjacent context, or privacy scope is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than asserting certainty or taking action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/wardrobe-plan.schema.json",
+        "path": "schemas/wardrobe-plan.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/wardrobe-plan.example.json",
+        "path": "fixtures/wardrobe-plan.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/wardrobe-plan.md",
+        "path": "templates/wardrobe-plan.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "People lose track of what clothing fits, needs care or alteration, works for upcoming events, or should be packed, but wardrobe help can easily overreach into purchases, body inference, image sharing, resale, donations, or sensitive personal details.",
+    "repeatableJob": "Reconcile supplied clothing items, fit and size notes, care labels, outfit contexts, events, packing needs, alteration tasks, gaps, source freshness, privacy labels, and owner questions into an owner-controlled wardrobe plan.",
+    "proofPlan": "Prove an X3 artifact with source identity, item ledger, fit and care evidence, outfit/event planning, packing checklist, alteration queue, gap questions, privacy labels, blocked external actions, and negative fixtures for stale ready state, dangling references, unsupported fit claims, duplicate references, purchase/resale/donation/photo-sharing/messaging/booking/account overreach, and body or health inference.",
+    "existingAlternatives": [
+      {
+        "id": "home-inventory-binder",
+        "overlap": "Both track possessions, rooms or storage, receipts, photos, condition, ownership evidence, privacy labels, and blocked selling, donation, sharing, account, legal, or insurance-like actions.",
+        "difference": "Home Inventory Binder creates general possession and insurance-ready evidence; Wardrobe Organizer specializes in clothing fit, outfits, events, packing, care, alterations, seasonal rotation, and body-adjacent privacy boundaries."
+      },
+      {
+        "id": "purchase-researcher",
+        "overlap": "Both may surface gaps, fit-to-constraints, candidate items, reviews, warranties, prices, returns, and purchase handoff questions while blocking purchases.",
+        "difference": "Purchase Researcher compares future products to buy; Wardrobe Organizer starts from owned clothing and supplied wardrobe notes, only producing shopping questions as one review output."
+      },
+      {
+        "id": "gift-relationship-manager",
+        "overlap": "Both can track recipient preferences, sizes, occasions, budgets, privacy, and purchase or shipping blockers.",
+        "difference": "Gift and Relationship Manager manages gifts and relationship occasions; Wardrobe Organizer manages the owner's or household's clothing inventory, outfit planning, care, alterations, and packing."
+      },
+      {
+        "id": "personal-archive-curator",
+        "overlap": "Both organize private photos, receipts, notes, memories, tags, source freshness, privacy labels, and blocked sharing, moving, deletion, or publication.",
+        "difference": "Personal Archive Curator indexes broad personal material; Wardrobe Organizer converts wardrobe-specific evidence into item, outfit, care, alteration, packing, and gap artifacts."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both track owner-supplied service or item evidence, date windows, source freshness, review questions, and blocked account/payment/provider-contact actions.",
+        "difference": "Subscription Manager tracks recurring account-bound services and renewals; Wardrobe Organizer tracks clothing inventory, care, alterations, outfits, packing, and shopping questions without subscription semantics."
+      },
+      {
+        "id": "household-steward",
+        "overlap": "Both can coordinate household routines, shared ownership, member privacy, care tasks, conflicts, and owner-approved external actions.",
+        "difference": "Household Steward is a multi-principal manager; Wardrobe Organizer is the specialist Claw for wardrobe evidence and can be delegated to by a manager Claw."
+      },
+      {
+        "id": "travel-concierge",
+        "overlap": "Both can use trip dates, weather or event constraints, packing needs, preferences, and blocked booking or purchase handoffs.",
+        "difference": "Travel Concierge plans travel inventory and booking decisions; Wardrobe Organizer maintains clothing inventory and packing/outfit readiness as a reusable personal wardrobe ledger."
+      }
+    ]
+  }
+}

@@ -126,6 +126,11 @@
         "difference": "Local Events Watcher evaluates dated event options with ticketing, venue, accessibility, and conflict evidence; Gift and Relationship Manager plans recipients, gifts, occasions, preference evidence, surprise risks, and purchase/message handoff."
       },
       {
+        "id": "wardrobe-organizer",
+        "overlap": "Both can track sizes, preferences, occasions, budgets or gaps, privacy-sensitive notes, photo-adjacent context, and blocked purchase, return, message, posting, and disclosure actions.",
+        "difference": "Wardrobe Organizer manages owned clothing, outfit planning, care, alterations, packing, and body-adjacent privacy; Gift and Relationship Manager manages recipient occasions, gift ideas, gift history, surprise risk, and relationship notes."
+      },
+      {
         "id": "school-coordinator",
         "overlap": "Both preserve private relationship or family context, dates, notes, guardian or owner review, and blocked messages, calendar edits, purchases, or disclosures.",
         "difference": "School Coordinator manages student-safe school assignments, forms, events, supplies, and guardian-only school authority; Gift and Relationship Manager manages gift ideas, occasions, relationship notes, budgets, and surprise/privacy boundaries."

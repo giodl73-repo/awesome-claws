@@ -111,6 +111,16 @@
         "difference": "Tax Document Organizer creates a tax-year packet with income, deduction, statement, deadline, missing-item, and preparer-review semantics; Personal Archive Curator is the broad retrieval index for mixed personal files, photos, warranties, links, receipts, and memories."
       },
       {
+        "id": "home-inventory-binder",
+        "overlap": "Both organize receipts, photos, warranty-like records, item notes, private source references, duplicates, privacy labels, and blocked upload, sharing, deletion, disposal, sale, donation, or disclosure actions.",
+        "difference": "Home Inventory Binder models physical possessions, rooms, serials, warranties, condition, value evidence, and insurance-ready review; Personal Archive Curator indexes broad personal files, links, photos, notes, memories, and retrieval cues without possession-inventory semantics."
+      },
+      {
+        "id": "wardrobe-organizer",
+        "overlap": "Both handle private photos or references, receipts, item notes, privacy labels, source freshness, retrieval needs, and blocked sharing, posting, deletion, sale, donation, purchase, or sensitive-inference actions.",
+        "difference": "Wardrobe Organizer turns clothing evidence into outfit, care, alteration, packing, and body-adjacent privacy artifacts; Personal Archive Curator keeps a broad archive retrieval index across mixed personal materials."
+      },
+      {
         "id": "music-organizer",
         "overlap": "Both can organize personal collections, ownership/listening evidence, links, service exports, and privacy-sensitive taste state.",
         "difference": "Music Organizer plans music libraries and playlists; Personal Archive Curator organizes mixed files, notes, receipts, photos, warranties, and memories with duplicate, retention, and no-file-mutation boundaries."
