@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/document-renewal.schema.json",
+  "title": "Document Renewal Tracker Ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "ledger", "sources", "documents", "renewalWindows", "materials", "conflicts", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.documentRenewal.v1" },
+    "ledger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "timezone", "asOf", "privacyMode"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "owner": { "type": "string", "minLength": 3 },
+        "timezone": { "type": "string", "minLength": 3 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "privacyMode": { "enum": ["private", "owner-redacted", "dependent-redacted"] }
+      }
+    },
+    "sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/source" } },
+    "documents": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/document" } },
+    "renewalWindows": { "type": "array", "items": { "$ref": "#/$defs/renewalWindow" } },
+    "materials": { "type": "array", "items": { "$ref": "#/$defs/material" } },
+    "conflicts": { "type": "array", "items": { "$ref": "#/$defs/conflict" } },
+    "reviewQuestions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/reviewQuestion" } },
+    "blockedActions": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 } },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "reviewQuestionRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["draft", "needs-owner-review", "ready-for-owner-review"] },
+        "owner": { "type": "string", "minLength": 3 },
+        "reviewQuestionRefs": { "type": "array", "items": { "type": "string", "minLength": 3 } },
+        "prohibitedActions": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 } }
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "authority", "capturedAt", "reference", "freshness", "privacy"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "kind": { "enum": ["official-page", "renewal-notice", "owner-note", "receipt", "portal-export", "appointment-note", "travel-note", "school-note", "employer-note", "licensing-board-page"] },
+        "authority": { "type": "string", "minLength": 3 },
+        "capturedAt": { "type": "string", "format": "date-time" },
+        "reference": { "type": "string", "minLength": 3 },
+        "freshness": { "enum": ["current", "stale", "missing", "conflicting"] },
+        "privacy": { "enum": ["private", "identity-sensitive", "dependent-sensitive", "travel-sensitive", "account-sensitive", "public"] }
+      }
+    },
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "label", "holder", "authority", "expiresAt", "expirationState", "privacy", "sourceRefs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "kind": { "enum": ["passport", "driver-license", "state-id", "visa", "vehicle-registration", "professional-certification", "permit", "membership", "school-id", "other"] },
+        "label": { "type": "string", "minLength": 3 },
+        "holder": { "type": "string", "minLength": 3 },
+        "authority": { "type": "string", "minLength": 3 },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "expirationState": { "enum": ["current", "renew-soon", "expired", "unknown", "conflicting"] },
+        "privacy": { "enum": ["private", "identity-sensitive", "dependent-sensitive", "travel-sensitive", "account-sensitive"] },
+        "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 } }
+      }
+    },
+    "renewalWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "documentRef", "opensAt", "dueAt", "urgency", "sourceRefs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "documentRef": { "type": "string", "minLength": 3 },
+        "opensAt": { "type": "string", "format": "date-time" },
+        "dueAt": { "type": "string", "format": "date-time" },
+        "urgency": { "enum": ["watch", "review-soon", "urgent", "blocked"] },
+        "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 } }
+      }
+    },
+    "material": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "documentRef", "label", "state", "privacy", "sourceRefs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "documentRef": { "type": "string", "minLength": 3 },
+        "label": { "type": "string", "minLength": 3 },
+        "state": { "enum": ["supplied", "missing", "owner-review", "not-applicable", "conflicting"] },
+        "privacy": { "enum": ["private", "identity-sensitive", "dependent-sensitive", "travel-sensitive", "account-sensitive"] },
+        "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 } }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "documentRefs", "state", "reason", "sourceRefs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "documentRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 } },
+        "state": { "enum": ["possible", "confirmed", "resolved"] },
+        "reason": { "type": "string", "minLength": 3 },
+        "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 } }
+      }
+    },
+    "reviewQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "question", "reason", "documentRefs", "sourceRefs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "question": { "type": "string", "minLength": 3 },
+        "reason": { "type": "string", "minLength": 3 },
+        "documentRefs": { "type": "array", "items": { "type": "string", "minLength": 3 } },
+        "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 3 } }
+      }
+    }
+  }
+}

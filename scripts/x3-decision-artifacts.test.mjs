@@ -59,6 +59,12 @@ const definitions = [
     decisionField: "synthesis.state",
   },
   {
+    id: "document-renewal-tracker",
+    schema: "../claws/document-renewal-tracker/schemas/document-renewal.schema.json",
+    fixture: "../claws/document-renewal-tracker/fixtures/document-renewal.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "financial-analyst",
     schema: "../claws/financial-analyst/schemas/financial-scenario.schema.json",
     fixture: "../claws/financial-analyst/fixtures/financial-scenario.example.json",
@@ -628,6 +634,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["case-continuity-coordinator", (value) => value.actions[0].evidenceRefs.push(value.actions[0].evidenceRefs[0])],
     ["child-activity-manager", (value) => value.activities[0].sourceRefs.push(value.activities[0].sourceRefs[0])],
     ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],
+    ["document-renewal-tracker", (value) => value.documents[0].sourceRefs.push(value.documents[0].sourceRefs[0])],
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
     ["games-backlog-manager", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
     ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
@@ -2301,6 +2308,37 @@ test("subscription manager binds renewal evidence and blocks account authority",
   const cancellationAdvice = structuredClone(cases.get("subscription-manager").fixture);
   cancellationAdvice.reviewQuestions[0].question = "Should the owner cancel Disney+ now?";
   assert.equal(isValid("subscription-manager", cancellationAdvice), false);
+});
+
+test("document renewal tracker preserves official-source limits and owner authority", () => {
+  const staleReady = structuredClone(cases.get("document-renewal-tracker").fixture);
+  staleReady.sources[0].freshness = "stale";
+  assert.equal(isValid("document-renewal-tracker", staleReady), false);
+
+  const staleDocument = structuredClone(cases.get("document-renewal-tracker").fixture);
+  staleDocument.handoff.state = "draft";
+  staleDocument.sources[1].freshness = "stale";
+  assert.equal(isValid("document-renewal-tracker", staleDocument), false);
+
+  const invalidWindow = structuredClone(cases.get("document-renewal-tracker").fixture);
+  invalidWindow.renewalWindows[0].dueAt = invalidWindow.renewalWindows[0].opensAt;
+  assert.equal(isValid("document-renewal-tracker", invalidWindow), false);
+
+  const actionAdvice = structuredClone(cases.get("document-renewal-tracker").fixture);
+  actionAdvice.reviewQuestions[0].reason += " File forms, pay fees, and upload documents.";
+  assert.equal(isValid("document-renewal-tracker", actionAdvice), false);
+
+  const eligibilityAdvice = structuredClone(cases.get("document-renewal-tracker").fixture);
+  eligibilityAdvice.conflicts[0].reason += " Certify eligibility and provide immigration advice.";
+  assert.equal(isValid("document-renewal-tracker", eligibilityAdvice), false);
+
+  const danglingDocument = structuredClone(cases.get("document-renewal-tracker").fixture);
+  danglingDocument.materials[0].documentRef = "missing-document";
+  assert.equal(isValid("document-renewal-tracker", danglingDocument), false);
+
+  const agentOwned = structuredClone(cases.get("document-renewal-tracker").fixture);
+  agentOwned.handoff.owner = "document-renewal-tracker";
+  assert.equal(isValid("document-renewal-tracker", agentOwned), false);
 });
 
 test("wardrobe organizer preserves wardrobe evidence and body-adjacent authority", () => {

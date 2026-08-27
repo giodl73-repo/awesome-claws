@@ -65,7 +65,8 @@
       "life-timeline-keeper",
       "child-activity-manager",
       "neighborhood-operations-watcher",
-      "wardrobe-organizer"
+      "wardrobe-organizer",
+      "document-renewal-tracker"
     ]
   },
   "visualCases": [

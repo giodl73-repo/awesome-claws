@@ -18,6 +18,7 @@ const schemaNames = {
   "civic-data-analyst": "civic-evidence.schema.json",
   "data-analyst": "analysis-state.schema.json",
   "delegation-coordinator": "delegation-ledger.schema.json",
+  "document-renewal-tracker": "document-renewal.schema.json",
   "financial-analyst": "financial-scenario.schema.json",
   "games-backlog-manager": "game-backlog.schema.json",
   "gift-relationship-manager": "gift-plan.schema.json",

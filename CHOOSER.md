@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (85)
+### Active (86)
 
 | Claw | Detail |
 | --- | --- |
@@ -29,6 +29,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Data migration planner](claws/data-migration-planner) | @giodl73-repo; last verified 2026-08-19 |
 | [Delegation coordinator](claws/delegation-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Document intake analyst](claws/document-intake-analyst) | @giodl73-repo; last verified 2026-08-19 |
+| [Document renewal tracker](claws/document-renewal-tracker) | @giodl73-repo; last verified 2026-08-27 |
 | [Event operations director](claws/event-operations-director) | @giodl73-repo; last verified 2026-08-19 |
 | [Executive assistant](claws/executive-assistant) | @giodl73-repo; last verified 2026-08-19 |
 | [Executive briefing](claws/executive-briefing) | @giodl73-repo; last verified 2026-08-19 |
@@ -112,7 +113,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (54)
+### Low setup (55)
 
 | Claw | Detail |
 | --- | --- |
@@ -130,6 +131,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Data governance steward](claws/data-governance-steward) | no bootstrap, external dependency, or schedule |
 | [Data migration planner](claws/data-migration-planner) | no bootstrap, external dependency, or schedule |
 | [Delegation coordinator](claws/delegation-coordinator) | no bootstrap, external dependency, or schedule |
+| [Document renewal tracker](claws/document-renewal-tracker) | no bootstrap, external dependency, or schedule |
 | [Experimentation lead](claws/experimentation-lead) | no bootstrap, external dependency, or schedule |
 | [Games backlog manager](claws/games-backlog-manager) | no bootstrap, external dependency, or schedule |
 | [Gift and relationship manager](claws/gift-relationship-manager) | no bootstrap, external dependency, or schedule |
@@ -216,7 +218,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (62)
+### No external dependencies (63)
 
 | Claw | Detail |
 | --- | --- |
@@ -234,6 +236,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Data governance steward](claws/data-governance-steward) | None |
 | [Data migration planner](claws/data-migration-planner) | None |
 | [Delegation coordinator](claws/delegation-coordinator) | None |
+| [Document renewal tracker](claws/document-renewal-tracker) | None |
 | [Event operations director](claws/event-operations-director) | None |
 | [Executive assistant](claws/executive-assistant) | None |
 | [Experimentation lead](claws/experimentation-lead) | None |
@@ -315,7 +318,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (60)
+### X3 (61)
 
 | Claw | Detail |
 | --- | --- |
@@ -328,6 +331,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Content operations](claws/content-operations) | Runs editorial work from brief through review, publication readiness, and measurement. |
 | [Delegation coordinator](claws/delegation-coordinator) | Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
 | [Document intake analyst](claws/document-intake-analyst) | Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty. |
+| [Document renewal tracker](claws/document-renewal-tracker) | Tracks passports, IDs, licenses, permits, registrations, certifications, memberships, expiration windows, source freshness, required owner documents, and review questions without filing forms, paying fees, changing accounts, submitting documents, or giving legal, immigration, tax, medical, or eligibility advice. |
 | [Executive assistant](claws/executive-assistant) | Turns executive priorities into prepared decisions, communications, and reliable follow-through. |
 | [Executive briefing](claws/executive-briefing) | Builds a concise daily operating brief from authorized calendar, mail, document, and weather context. |
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | Tracks an approved set of RSS and Atom sources and produces a private, source-linked change digest. |
@@ -496,13 +500,14 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (33)
+### Productivity (34)
 
 | Claw | Detail |
 | --- | --- |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | X3; Coordinates a consent-bounded support plan for a person who relies on family, friends, or aides without giving medical, legal, or financial advice. |
 | [Child activity manager](claws/child-activity-manager) | X3; Coordinates child sports, lessons, clubs, camps, equipment, fees, schedules, locations, carpools, and guardian-review questions from approved family sources without registering, paying, messaging, sharing locations, making pickup commitments, or changing calendars without exact guardian approval. |
 | [Delegation coordinator](claws/delegation-coordinator) | X3; Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
+| [Document renewal tracker](claws/document-renewal-tracker) | X3; Tracks passports, IDs, licenses, permits, registrations, certifications, memberships, expiration windows, source freshness, required owner documents, and review questions without filing forms, paying fees, changing accounts, submitting documents, or giving legal, immigration, tax, medical, or eligibility advice. |
 | [Executive assistant](claws/executive-assistant) | X3; Turns executive priorities into prepared decisions, communications, and reliable follow-through. |
 | [Executive briefing](claws/executive-briefing) | X3; Builds a concise daily operating brief from authorized calendar, mail, document, and weather context. |
 | [Games backlog manager](claws/games-backlog-manager) | X3; Tracks owned and wanted games across platforms, stores, play status, co-op fit, family constraints, content ratings, session fit, and what-to-play shortlists without purchasing, installing, joining sessions, messaging players, changing parental controls, or altering accounts. |
@@ -538,7 +543,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (33)
+### Standard attention (34)
 
 | Claw | Detail |
 | --- | --- |
@@ -546,6 +551,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Care Circle Coordinator](claws/care-circle-coordinator) | portable workspace artifacts only |
 | [Child activity manager](claws/child-activity-manager) | portable workspace artifacts only |
 | [Content operations](claws/content-operations) | portable workspace artifacts only |
+| [Document renewal tracker](claws/document-renewal-tracker) | portable workspace artifacts only |
 | [Games backlog manager](claws/games-backlog-manager) | portable workspace artifacts only |
 | [Gift and relationship manager](claws/gift-relationship-manager) | portable workspace artifacts only |
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | portable workspace artifacts only |

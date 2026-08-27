@@ -7012,6 +7012,82 @@ function wardrobeFindings(value) {
   return findings;
 }
 
+function documentRenewalFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const documentIds = value.documents.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const documentSet = new Set(documentIds);
+  const questionSet = new Set(questionIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(documentIds, "documents", "Document id"),
+    ...uniqueFindings(value.renewalWindows.map((item) => item.id), "renewalWindows", "Renewal window id"),
+    ...uniqueFindings(value.materials.map((item) => item.id), "materials", "Material id"),
+    ...uniqueFindings(value.conflicts.map((item) => item.id), "conflicts", "Conflict id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, doc] of value.documents.entries()) {
+    findings.push(
+      ...uniqueFindings(doc.sourceRefs, `documents.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(doc.sourceRefs, sourceSet, `documents.${index}.sourceRefs`, "Source reference"),
+    );
+    if (["current", "renew-soon"].includes(doc.expirationState) && doc.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_expiration_state", `documents.${index}.sourceRefs`, "Current or renew-soon document states require current source evidence."));
+    }
+  }
+  for (const [index, window] of value.renewalWindows.entries()) {
+    findings.push(
+      ...referenceFindings([window.documentRef], documentSet, `renewalWindows.${index}.documentRef`, "Document reference"),
+      ...uniqueFindings(window.sourceRefs, `renewalWindows.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(window.sourceRefs, sourceSet, `renewalWindows.${index}.sourceRefs`, "Source reference"),
+    );
+    if (Date.parse(window.dueAt) <= Date.parse(window.opensAt)) {
+      findings.push(finding("invalid_renewal_window", `renewalWindows.${index}.dueAt`, "Renewal windows must be due after they open."));
+    }
+    if (["review-soon", "urgent"].includes(window.urgency) && window.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_urgency", `renewalWindows.${index}.sourceRefs`, "Urgent or review-soon renewal windows require current source evidence."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["materials", value.materials],
+    ["conflicts", value.conflicts],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      const refs = item.documentRefs ?? [item.documentRef];
+      findings.push(
+        ...uniqueFindings(refs, `${collectionName}.${index}.documentRefs`, "Document reference"),
+        ...referenceFindings(refs, documentSet, `${collectionName}.${index}.documentRefs`, "Document reference"),
+        ...uniqueFindings(item.sourceRefs, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+      );
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, questionSet, "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready renewal ledgers cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    conflicts: value.conflicts.map(({ reason }) => reason),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(file forms?|submit documents?|pay fees?|book appointments?|contact agenc(?:y|ies)|change accounts?|upload documents?|certify eligibility|legal advice|immigration advice|tax advice|medical advice|licensing advice|identity decision)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Document renewal artifacts must not instruct filing, submission, payment, appointment booking, agency contact, uploads, account changes, eligibility certification, or professional advice."));
+  }
+  if (value.handoff.owner === "document-renewal-tracker") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Renewal, filing, payment, appointment, account, upload, eligibility, legal, immigration, tax, medical, licensing, and identity authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "care-circle-coordinator": careCircleFindings,
@@ -7021,6 +7097,7 @@ const validators = {
   "civic-data-analyst": civicDataFindings,
   "data-analyst": dataAnalysisFindings,
   "delegation-coordinator": delegationFindings,
+  "document-renewal-tracker": documentRenewalFindings,
   "financial-analyst": financialAnalysisFindings,
   "games-backlog-manager": gamesBacklogFindings,
   "gift-relationship-manager": giftRelationshipFindings,
