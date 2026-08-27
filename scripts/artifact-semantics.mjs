@@ -1563,6 +1563,106 @@ function householdBudgetFindings(value) {
   return findings;
 }
 
+function lifeTimelineFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const personIds = value.people.map((item) => item.id);
+  const placeIds = value.places.map((item) => item.id);
+  const eventIds = value.events.map((item) => item.id);
+  const pointerIds = value.pointers.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const personSet = new Set(personIds);
+  const placeSet = new Set(placeIds);
+  const pointerSet = new Set(pointerIds);
+  const questionSet = new Set(questionIds);
+  const knownRefs = new Set([...personIds, ...placeIds, ...eventIds, ...pointerIds]);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(personIds, "people", "Person id"),
+    ...uniqueFindings(placeIds, "places", "Place id"),
+    ...uniqueFindings(eventIds, "events", "Event id"),
+    ...uniqueFindings(pointerIds, "pointers", "Pointer id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+
+  for (const [path, collection] of [
+    ["people", value.people],
+    ["places", value.places],
+    ["pointers", value.pointers],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.sourceRefs, `${path}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${path}.${index}.sourceRefs`, "Source reference"),
+      );
+    }
+  }
+
+  for (const [index, event] of value.events.entries()) {
+    findings.push(
+      ...uniqueFindings(event.personRefs, `events.${index}.personRefs`, "Person reference"),
+      ...referenceFindings(event.personRefs, personSet, `events.${index}.personRefs`, "Person reference"),
+      ...uniqueFindings(event.placeRefs, `events.${index}.placeRefs`, "Place reference"),
+      ...referenceFindings(event.placeRefs, placeSet, `events.${index}.placeRefs`, "Place reference"),
+      ...uniqueFindings(event.pointerRefs, `events.${index}.pointerRefs`, "Pointer reference"),
+      ...referenceFindings(event.pointerRefs, pointerSet, `events.${index}.pointerRefs`, "Pointer reference"),
+      ...uniqueFindings(event.sourceRefs, `events.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(event.sourceRefs, sourceSet, `events.${index}.sourceRefs`, "Source reference"),
+    );
+    if (event.dateEnd !== null && event.date !== null && Date.parse(event.dateEnd) < Date.parse(event.date)) {
+      findings.push(finding("invalid_event_range", `events.${index}.dateEnd`, "Timeline event end date must not predate its start date."));
+    }
+    if (event.dateState === "exact" && (event.date === null || event.dateEnd !== null)) {
+      findings.push(finding("invalid_exact_date", `events.${index}.date`, "Exact timeline events require one date and no date range."));
+    }
+    if (event.dateState === "range" && (event.date === null || event.dateEnd === null)) {
+      findings.push(finding("invalid_date_range", `events.${index}.dateEnd`, "Range timeline events require a start and end date."));
+    }
+    if (event.certainty === "supported") {
+      const hasDocumentedSource = event.sourceRefs.some((ref) =>
+        ["photo-list", "video-list", "calendar-export", "travel-record", "school-record", "certificate", "message-export", "document-pointer", "archive-reference"].includes(sourceById.get(ref)?.kind),
+      );
+      if (!hasDocumentedSource) {
+        findings.push(finding("unsupported_event_certainty", `events.${index}.sourceRefs`, "Supported timeline events require documentary, media, calendar, message, travel, school, certificate, or archive evidence."));
+      }
+    }
+  }
+
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.refs, `reviewQuestions.${index}.refs`, "Review reference"),
+      ...referenceFindings(question.refs, knownRefs, `reviewQuestions.${index}.refs`, "Review reference"),
+      ...uniqueFindings(question.sourceRefs, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(question.sourceRefs, sourceSet, `reviewQuestions.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, questionSet, "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready life timelines cannot depend on stale, missing, or conflicting sources."));
+  }
+
+  const actionText = canonicalJson({
+    events: value.events.map(({ title }) => title),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(post|publish|share (the )?(timeline|album|photos?)|identify (the )?(face|faces|person)|tag (the )?(person|people)|contact (the )?(person|people|family)|edit (the )?album|move (the )?files?|delete (the )?files?|change permissions|legal claim|medical claim|genealogical claim|family history proves|custody|immigration|diagnosis|disclose)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Life timeline artifacts must not instruct posting, publishing, sharing, face identification, tagging, contact, album/file mutations, permission changes, sensitive disclosure, or legal/medical/genealogical claims."));
+  }
+  if (value.handoff.owner === "life-timeline-keeper") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Timeline sharing, posting, tagging, contact, file, permission, interpretation, and sensitive-disclosure decisions must remain with the named owner."));
+  }
+  return findings;
+}
+
 function giftRelationshipFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const recipientIds = value.recipients.map((item) => item.id);
@@ -6596,6 +6696,7 @@ const validators = {
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,
+  "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
   "meal-grocery-planner": mealGroceryFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
