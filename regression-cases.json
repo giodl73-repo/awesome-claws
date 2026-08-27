@@ -1891,6 +1891,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "tax-document-organizer",
+      "acceptedRequest": "Organize the tax documents I supplied for this year's prep folder. Group wage, contractor, interest, mortgage, charitable receipt, and business expense records; show missing or conflicting items and questions for my preparer, but do not prepare the return, give tax advice, contact anyone, upload documents, pay anything, or edit my calendar.",
+      "requiredEvidence": [
+        "Approved income forms, wage statements, contractor forms, interest and dividend forms, brokerage statements, mortgage statements, tuition forms, charitable receipts, medical expense records, property tax statements, business expense logs, prior-year checklists, preparer notes, and owner notes",
+        "Tax year, owner labels, document types, issuer names, received dates, source references, privacy labels, freshness state, missing-item expectations, and preparer-review scope",
+        "Deadline reminders, extension questions, estimated-payment records, refund or payment questions, household/dependent document boundaries, and stale-source fallback rules",
+        "External actions that must remain draft-only, including filing, payment, refund requests, tax-preparer contact, employer or institution contact, uploads, calendar edits, account changes, and tax/legal conclusions"
+      ],
+      "authorityBoundaries": [
+        "Do not prepare tax returns, calculate tax liability, claim deductions or credits, give tax/legal/financial advice, file returns, amend returns, sign forms, pay taxes, request refunds, contact employers, banks, brokers, agencies, or preparers, upload documents, change accounts, or edit calendars without exact approval",
+        "Do not infer tax eligibility, filing status, dependent status, deduction validity, credit eligibility, income completeness, liability, refund amount, or compliance from incomplete evidence",
+        "Do not expose SSNs, tax IDs, addresses, employer details, account numbers, income amounts, medical expenses, charitable records, dependent information, or preparer communications beyond the owner-approved destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/tax-document-organizer-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "awesomeClaws.taxDocument.v1",
+  "packet": {
+    "id": "tax-packet-household",
+    "owner": "Tax packet owner",
+    "taxYear": 2025,
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-26T12:30:00Z",
+    "purpose": "Owner and preparer document review",
+    "privacyMode": "owner-only"
+  },
+  "sources": [
+    { "id": "src-w2", "kind": "wage-form", "authority": "employer", "capturedAt": "2026-08-26T11:00:00Z", "reference": "folder://tax/2025/w2-redacted", "freshness": "current", "privacy": "identity-sensitive" },
+    { "id": "src-1099", "kind": "contractor-form", "authority": "payer", "capturedAt": "2026-08-26T11:05:00Z", "reference": "folder://tax/2025/1099-nec-redacted", "freshness": "current", "privacy": "financial-sensitive" },
+    { "id": "src-interest", "kind": "interest-form", "authority": "financial-institution", "capturedAt": "2026-08-26T11:10:00Z", "reference": "folder://tax/2025/1099-int-redacted", "freshness": "current", "privacy": "financial-sensitive" },
+    { "id": "src-mortgage", "kind": "mortgage-statement", "authority": "financial-institution", "capturedAt": "2026-08-26T11:15:00Z", "reference": "folder://tax/2025/mortgage-redacted", "freshness": "current", "privacy": "financial-sensitive" },
+    { "id": "src-charity", "kind": "charitable-receipt", "authority": "charity", "capturedAt": "2026-08-26T11:20:00Z", "reference": "folder://tax/2025/charity-receipt", "freshness": "current", "privacy": "private" },
+    { "id": "src-expenses", "kind": "business-expense-log", "authority": "owner", "capturedAt": "2026-08-26T11:25:00Z", "reference": "folder://tax/2025/expense-log", "freshness": "current", "privacy": "financial-sensitive" },
+    { "id": "src-preparer-note", "kind": "preparer-note", "authority": "tax-preparer", "capturedAt": "2026-08-26T11:30:00Z", "reference": "preparer://checklist/2025", "freshness": "recent", "privacy": "preparer-sensitive" },
+    { "id": "src-owner-note", "kind": "owner-note", "authority": "owner", "capturedAt": "2026-08-26T11:35:00Z", "reference": "owner://tax/2025/questions", "freshness": "current", "privacy": "private" }
+  ],
+  "documents": [
+    { "id": "doc-w2", "label": "Redacted W-2", "category": "income", "issuer": "Example Employer", "receivedState": "received", "taxYearState": "supported", "privacy": "identity-sensitive", "sourceRefs": ["src-w2"] },
+    { "id": "doc-1099", "label": "Redacted contractor form", "category": "income", "issuer": "Example Client", "receivedState": "received", "taxYearState": "supported", "privacy": "financial-sensitive", "sourceRefs": ["src-1099"] },
+    { "id": "doc-interest", "label": "Interest form", "category": "income", "issuer": "Example Bank", "receivedState": "received", "taxYearState": "supported", "privacy": "financial-sensitive", "sourceRefs": ["src-interest"] },
+    { "id": "doc-mortgage", "label": "Mortgage statement", "category": "statement", "issuer": "Example Lender", "receivedState": "received", "taxYearState": "supported", "privacy": "financial-sensitive", "sourceRefs": ["src-mortgage"] },
+    { "id": "doc-charity", "label": "Charitable receipt", "category": "deduction", "issuer": "Example Charity", "receivedState": "received", "taxYearState": "supported", "privacy": "private", "sourceRefs": ["src-charity"] },
+    { "id": "doc-expenses", "label": "Owner business expense log", "category": "deduction", "issuer": "Owner", "receivedState": "received", "taxYearState": "supported", "privacy": "financial-sensitive", "sourceRefs": ["src-expenses"] }
+  ],
+  "evidenceItems": [
+    { "id": "evidence-w2", "documentRef": "doc-w2", "kind": "income-form", "state": "supported", "sourceRefs": ["src-w2"] },
+    { "id": "evidence-1099", "documentRef": "doc-1099", "kind": "income-form", "state": "supported", "sourceRefs": ["src-1099"] },
+    { "id": "evidence-mortgage", "documentRef": "doc-mortgage", "kind": "account-statement", "state": "supported", "sourceRefs": ["src-mortgage"] },
+    { "id": "evidence-charity", "documentRef": "doc-charity", "kind": "deduction-receipt", "state": "supported", "sourceRefs": ["src-charity"] },
+    { "id": "evidence-expenses", "documentRef": "doc-expenses", "kind": "expense-log", "state": "supported", "sourceRefs": ["src-expenses"] },
+    { "id": "evidence-preparer", "documentRef": "doc-expenses", "kind": "preparer-question", "state": "possible", "sourceRefs": ["src-preparer-note"] }
+  ],
+  "deadlines": [
+    { "id": "deadline-owner-review", "label": "Owner review before preparer handoff", "deadlineState": "owner-supplied", "sourceRefs": ["src-owner-note"] },
+    { "id": "deadline-preparer-packet", "label": "Preparer packet target", "deadlineState": "preparer-supplied", "sourceRefs": ["src-preparer-note"] }
+  ],
+  "missingItems": [
+    { "id": "missing-brokerage", "expectedDocument": "Brokerage statement", "state": "needs-owner-review", "reason": "The prior-year checklist includes a brokerage account, but no current brokerage statement source was supplied.", "refs": ["src-preparer-note", "src-owner-note"] }
+  ],
+  "reviewQuestions": [
+    { "id": "question-expenses", "reason": "Business expense categories are owner supplied and should be reviewed by the owner or preparer before any tax treatment is assumed.", "refs": ["doc-expenses", "evidence-expenses", "src-preparer-note"], "owner": "tax-preparer" },
+    { "id": "question-brokerage", "reason": "The brokerage statement is expected from prior-year checklist evidence but is not present in the supplied packet.", "refs": ["missing-brokerage", "src-preparer-note"], "owner": "owner" }
+  ],
+  "blockedActions": ["prepare-return", "file-return", "amend-return", "sign-form", "pay-tax", "request-refund", "contact-employer", "contact-bank", "contact-broker", "contact-agency", "contact-preparer", "upload-documents", "change-account", "edit-calendar", "share-ssn", "share-tax-id", "give-tax-advice", "give-legal-advice", "estimate-liability", "claim-deduction"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "summary": "Income forms, mortgage statement, charitable receipt, owner expense log, preparer checklist, and missing brokerage question are organized for owner review before any preparer handoff.",
+    "reviewQuestionRefs": ["question-expenses", "question-brokerage"],
+    "prohibitedActions": ["prepare-return", "file-return", "amend-return", "sign-form", "pay-tax", "request-refund", "contact-employer", "contact-bank", "contact-broker", "contact-agency", "contact-preparer", "upload-documents", "change-account", "edit-calendar", "share-ssn", "share-tax-id", "give-tax-advice", "give-legal-advice", "estimate-liability", "claim-deduction"],
+    "nextOwner": "owner"
+  }
+}

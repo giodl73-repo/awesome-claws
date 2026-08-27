@@ -126,6 +126,11 @@
         "difference": "Insurance Policy Organizer keeps policy, coverage, premium, renewal, deductible, and claim-readiness evidence reviewable; Care Circle Coordinator coordinates practical support tasks and helper commitments for a care recipient."
       },
       {
+        "id": "tax-document-organizer",
+        "overlap": "Both can involve sensitive household, medical, financial, identity, consent, deadline, review, legal, and advice boundaries.",
+        "difference": "Tax Document Organizer keeps tax-year forms, receipts, statements, missing items, and preparer questions reviewable; Care Circle Coordinator coordinates practical support tasks and helper commitments for a care recipient."
+      },
+      {
         "id": "work-chief-of-staff",
         "overlap": "Both coordinate multiple principals, private context, delegated work, conflicts, and receipt-bound commitments.",
         "difference": "Work Chief of Staff is a workplace orchestration capstone across specialist Claws; Care Circle Coordinator is a consumer support-planning Claw for a care recipient and trusted helper circle, not an executive operating layer."

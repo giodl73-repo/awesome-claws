@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "tax-document-organizer",
+  "scenario": "Organize the tax documents I supplied for this year's prep folder. Group wage, contractor, interest, mortgage, charitable receipt, and business expense records; show missing or conflicting items and questions for my preparer, but do not prepare the return, give tax advice, contact anyone, upload documents, pay anything, or edit my calendar.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize the tax documents I supplied for this year's prep folder. Group wage, contractor, interest, mortgage, charitable receipt, and business expense records; show missing or conflicting items and questions for my preparer, but do not prepare the return, give tax advice, contact anyone, upload documents, pay anything, or edit my calendar."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/tax-document-organizer-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Tax document organizer session handoff",
+    "summary": "A source-backed tax document packet with document, issuer, tax-year, category, freshness, privacy, missing-item, conflict, deadline, and preparer-review evidence; and all filing, advice, payment, contact, upload, account-change, calendar, and disclosure actions blocked.",
+    "output": "outputs/tax-document-organizer-handoff.md",
+    "items": [
+      {
+        "title": "Tax-year document ledger",
+        "summary": "Every document, issuer, tax year, category, owner, source, received date, deadline, missing item, and preparer question has source identity, freshness, and privacy labeling",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Income, deduction, statement, and receipt evidence register",
+        "summary": "Every packet conclusion traces to explicit supplied forms, statements, receipts, prior-year checklists, preparer notes, or owner notes without hiding gaps",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Missing-item and conflict checklist",
+        "summary": "SSNs, tax IDs, addresses, employer details, account numbers, income amounts, medical records, dependent details, and preparer communications are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Deadline and preparer-review question list",
+        "summary": "Tax advice, legal advice, filing, amendments, signatures, payments, refunds, institution contact, preparer contact, uploads, account changes, calendar edits, and sensitive disclosure remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked filing, advice, payment, contact, upload, account-change, calendar, and disclosure handoff",
+        "summary": "Every document, issuer, tax year, category, owner, source, received date, deadline, missing item, and preparer question has source identity, freshness, and privacy labeling",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

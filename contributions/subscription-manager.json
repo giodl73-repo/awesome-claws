@@ -136,6 +136,11 @@
         "difference": "School Coordinator manages student-safe school assignments, forms, supplies, events, and guardian-only school authority; Subscription Manager tracks recurring services, renewals, price changes, usage, and account-action boundaries."
       },
       {
+        "id": "tax-document-organizer",
+        "overlap": "Both handle owner-supplied financial records, due-date or deadline review, account-adjacent evidence, source freshness, and blocked payment, contact, calendar, account, tax, legal, or financial-advice actions.",
+        "difference": "Tax Document Organizer builds a tax-year forms, receipts, statements, missing-item, and preparer-review packet; Subscription Manager tracks recurring services, renewals, price changes, usage, overlap, and account-action boundaries."
+      },
+      {
         "id": "games-backlog-manager",
         "overlap": "Both may use subscription access, account labels, source freshness, usage context, owner review, and blocked payment or account actions.",
         "difference": "Games Backlog Manager uses subscription access only as game availability evidence for play selection; Subscription Manager tracks recurring services, renewal dates, price changes, usage, overlap, and account-action boundaries."
