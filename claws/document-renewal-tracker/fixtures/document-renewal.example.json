@@ -1,0 +1,168 @@
+{
+  "schemaVersion": "awesomeClaws.documentRenewal.v1",
+  "ledger": {
+    "id": "renewal-ledger-2026",
+    "owner": "document owner",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-27T16:00:00-07:00",
+    "privacyMode": "owner-redacted"
+  },
+  "sources": [
+    {
+      "id": "src-passport-page",
+      "kind": "official-page",
+      "authority": "passport agency",
+      "capturedAt": "2026-08-26T10:00:00-07:00",
+      "reference": "Official passport renewal checklist page",
+      "freshness": "current",
+      "privacy": "public"
+    },
+    {
+      "id": "src-owner-passport",
+      "kind": "owner-note",
+      "authority": "owner",
+      "capturedAt": "2026-08-27T08:00:00-07:00",
+      "reference": "Owner note with redacted passport expiration month",
+      "freshness": "current",
+      "privacy": "identity-sensitive"
+    },
+    {
+      "id": "src-license-notice",
+      "kind": "renewal-notice",
+      "authority": "state motor vehicle agency",
+      "capturedAt": "2026-08-24T09:30:00-07:00",
+      "reference": "Driver license renewal notice with partial identifier",
+      "freshness": "current",
+      "privacy": "identity-sensitive"
+    },
+    {
+      "id": "src-cert-board",
+      "kind": "licensing-board-page",
+      "authority": "professional certification board",
+      "capturedAt": "2026-08-25T11:15:00-07:00",
+      "reference": "Certification renewal continuing-education requirements",
+      "freshness": "current",
+      "privacy": "public"
+    },
+    {
+      "id": "src-travel-note",
+      "kind": "travel-note",
+      "authority": "owner",
+      "capturedAt": "2026-08-27T07:50:00-07:00",
+      "reference": "Owner note: possible spring travel, do not expose itinerary details",
+      "freshness": "current",
+      "privacy": "travel-sensitive"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-passport",
+      "kind": "passport",
+      "label": "redacted passport",
+      "holder": "document owner",
+      "authority": "passport agency",
+      "expiresAt": "2027-03-15T00:00:00-07:00",
+      "expirationState": "renew-soon",
+      "privacy": "identity-sensitive",
+      "sourceRefs": ["src-owner-passport", "src-passport-page"]
+    },
+    {
+      "id": "doc-driver-license",
+      "kind": "driver-license",
+      "label": "redacted driver license",
+      "holder": "document owner",
+      "authority": "state motor vehicle agency",
+      "expiresAt": "2027-01-10T00:00:00-08:00",
+      "expirationState": "renew-soon",
+      "privacy": "identity-sensitive",
+      "sourceRefs": ["src-license-notice"]
+    },
+    {
+      "id": "doc-certification",
+      "kind": "professional-certification",
+      "label": "professional certification",
+      "holder": "document owner",
+      "authority": "professional certification board",
+      "expiresAt": "2027-06-30T00:00:00-07:00",
+      "expirationState": "current",
+      "privacy": "private",
+      "sourceRefs": ["src-cert-board"]
+    }
+  ],
+  "renewalWindows": [
+    {
+      "id": "window-passport",
+      "documentRef": "doc-passport",
+      "opensAt": "2026-09-15T00:00:00-07:00",
+      "dueAt": "2027-03-15T00:00:00-07:00",
+      "urgency": "review-soon",
+      "sourceRefs": ["src-passport-page", "src-owner-passport", "src-travel-note"]
+    },
+    {
+      "id": "window-license",
+      "documentRef": "doc-driver-license",
+      "opensAt": "2026-11-10T00:00:00-08:00",
+      "dueAt": "2027-01-10T00:00:00-08:00",
+      "urgency": "watch",
+      "sourceRefs": ["src-license-notice"]
+    }
+  ],
+  "materials": [
+    {
+      "id": "mat-passport-photo",
+      "documentRef": "doc-passport",
+      "label": "renewal photo requirement",
+      "state": "owner-review",
+      "privacy": "identity-sensitive",
+      "sourceRefs": ["src-passport-page"]
+    },
+    {
+      "id": "mat-license-notice",
+      "documentRef": "doc-driver-license",
+      "label": "renewal notice and address confirmation",
+      "state": "owner-review",
+      "privacy": "identity-sensitive",
+      "sourceRefs": ["src-license-notice"]
+    },
+    {
+      "id": "mat-cert-ce",
+      "documentRef": "doc-certification",
+      "label": "continuing education record",
+      "state": "missing",
+      "privacy": "private",
+      "sourceRefs": ["src-cert-board"]
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-passport-travel",
+      "documentRefs": ["doc-passport"],
+      "state": "possible",
+      "reason": "Passport expiration may be close to possible spring travel, but the owner did not approve exposing itinerary details.",
+      "sourceRefs": ["src-owner-passport", "src-travel-note"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-passport-window",
+      "question": "Should the owner review passport renewal timing before confirming spring travel?",
+      "reason": "The ledger has current owner and official-page sources, but all application delivery, fee, appointment, and professional-advice decisions stay with the owner.",
+      "documentRefs": ["doc-passport"],
+      "sourceRefs": ["src-passport-page", "src-owner-passport", "src-travel-note"]
+    },
+    {
+      "id": "question-cert-material",
+      "question": "Where is the continuing-education record for the certification renewal?",
+      "reason": "The board page lists a material requirement, but the supplied evidence does not include the record.",
+      "documentRefs": ["doc-certification"],
+      "sourceRefs": ["src-cert-board"]
+    }
+  ],
+  "blockedActions": ["file-form", "submit-document", "pay-fee", "book-appointment", "contact-agency", "change-account", "upload-document", "certify-eligibility", "give-legal-advice", "give-immigration-advice", "give-tax-advice", "give-medical-advice"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "document owner",
+    "reviewQuestionRefs": ["question-passport-window", "question-cert-material"],
+    "prohibitedActions": ["file-form", "submit-document", "pay-fee", "book-appointment", "contact-agency", "change-account", "upload-document", "certify-eligibility", "give-legal-advice", "give-immigration-advice", "give-tax-advice", "give-medical-advice"]
+  }
+}

@@ -111,6 +111,21 @@
         "difference": "Personal Archive Curator indexes personal files, receipts, photos, warranties, and memory pointers; Care Circle Coordinator plans practical support schedules, helper commitments, and care-recipient consent scopes."
       },
       {
+        "id": "child-activity-manager",
+        "overlap": "Both coordinate helpers, schedules, transportation, approvals, privacy boundaries, blocked payments, and exact commitments around family logistics.",
+        "difference": "Child Activity Manager owns extracurricular registrations, waivers, fees, gear, pickup, and guardian logistics for minors; Care Circle Coordinator owns practical support coverage for one care recipient and their approved helper circle."
+      },
+      {
+        "id": "school-coordinator",
+        "overlap": "Both handle sensitive people-centered tasks, due dates, forms, privacy labels, review questions, and blocked school/contact/payment or professional-advice actions.",
+        "difference": "School Coordinator tracks student assignments, school forms, teacher notes, calendars, and supply logistics; Care Circle Coordinator tracks recipient-approved rides, meals, check-ins, respite, and helper coverage."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both can involve sensitive identity or care-adjacent documents, deadlines, privacy labels, owner review, blocked booking, legal, medical, payment, and account-change actions.",
+        "difference": "Document Renewal Tracker maintains official expiration windows and required renewal materials for credentials or registrations; Care Circle Coordinator maintains human support tasks, helper commitments, consent scopes, and escalation limits."
+      },
+      {
         "id": "vehicle-service-coordinator",
         "overlap": "Both reconcile time windows, constraints, approvals, escalation paths, and exact commitments before a service or support appointment.",
         "difference": "Vehicle Service Coordinator plans owner-approved vehicle service work; Care Circle Coordinator plans human support coverage around one recipient's approved practical-care needs and private support circle."

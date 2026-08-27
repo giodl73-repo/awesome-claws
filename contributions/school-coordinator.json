@@ -106,9 +106,29 @@
         "difference": "Household Steward is a household manager; School Coordinator is the specialist Claw for school evidence, student privacy, LMS/form/calendar/source freshness, and guardian review."
       },
       {
+        "id": "child-activity-manager",
+        "overlap": "Both handle minors, guardian authority, schedules, fees, forms, transportation-adjacent details, privacy labels, conflicts, and blocked contact or payment actions.",
+        "difference": "Child Activity Manager owns extracurricular rosters, registrations, waivers, gear, pickup, and helper logistics; School Coordinator owns coursework, LMS tasks, school forms, supplies, school events, teacher notes, and student-safe school deadlines."
+      },
+      {
+        "id": "tax-document-organizer",
+        "overlap": "Both organize sensitive documents, due dates, missing items, source freshness, owner review questions, and blocked filing, payment, upload, calendar, legal, or advice actions.",
+        "difference": "Tax Document Organizer builds a tax-year evidence packet around forms, receipts, statements, deductions, and preparer questions; School Coordinator builds a guardian-controlled school logistics ledger around assignments, school forms, teacher notes, events, supplies, and accommodations."
+      },
+      {
         "id": "local-events-watcher",
         "overlap": "Both track dated events, calendars, accessibility, family constraints, conflicts, and blocked calendar/contact actions.",
         "difference": "Local Events Watcher evaluates optional public or community events; School Coordinator tracks required school tasks, forms, supplies, assignments, teacher notes, and student-sensitive deadlines."
+      },
+      {
+        "id": "neighborhood-operations-watcher",
+        "overlap": "Both track source-backed calendars, public or institutional notices, conflicts, household impacts, privacy concerns, and blocked contact, posting, submission, payment, or calendar actions.",
+        "difference": "Neighborhood Operations Watcher tracks civic, utility, waste, road, permit, HOA, and meeting operations for a place; School Coordinator tracks student-specific school assignments, forms, teacher notes, supplies, accommodations, and guardian decisions."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both track documents, due dates, required materials, source freshness, privacy labels, review questions, and blocked submission, payment, contact, upload, calendar, legal, or eligibility actions.",
+        "difference": "Document Renewal Tracker owns expiration and renewal state for official credentials, IDs, permits, registrations, and memberships; School Coordinator owns school-task and form logistics for students under guardian authority."
       },
       {
         "id": "insurance-policy-organizer",

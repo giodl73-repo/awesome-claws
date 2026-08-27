@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "document-renewal-tracker",
+  "scenario": "Build a renewal tracker from these passport, driver license, professional certification, vehicle registration, and school ID notes. Show what is expiring in the next year, what materials I need to review, and which dates conflict, but do not file forms, pay fees, upload documents, book appointments, contact agencies, change accounts, or tell me legal or immigration advice.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Build a renewal tracker from these passport, driver license, professional certification, vehicle registration, and school ID notes. Show what is expiring in the next year, what materials I need to review, and which dates conflict, but do not file forms, pay fees, upload documents, book appointments, contact agencies, change accounts, or tell me legal or immigration advice."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/document-renewal-tracker-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Document renewal tracker session handoff",
+    "summary": "A private source-backed renewal ledger with expiration windows, official-source references, missing materials, conflict notes, dependent or travel-sensitive flags, owner questions, and all filing, submission, payment, booking, contact, account, upload, legal, immigration, tax, medical, licensing, and eligibility actions blocked.",
+    "output": "outputs/document-renewal-tracker-handoff.md",
+    "items": [
+      {
+        "title": "Document and credential renewal ledger",
+        "summary": "Every document, authority, expiration, renewal window, required material, dependency, conflict, and owner question has source identity, freshness, privacy labeling, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Expiration and renewal-window timeline",
+        "summary": "Every renewal date, material requirement, and readiness claim traces to supplied or approved evidence without hiding stale, partial, missing, or conflicting source state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Required materials and missing-evidence checklist",
+        "summary": "Document numbers, addresses, birth dates, biometrics, dependent details, travel plans, eligibility facts, and account information are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Dependent-person, travel-sensitive, and privacy review notes",
+        "summary": "Forms, submissions, payments, appointments, agency contact, account changes, uploads, eligibility certification, and legal, immigration, tax, medical, licensing, or identity advice remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Conflicting-source and stale-source question list",
+        "summary": "Every document, authority, expiration, renewal window, required material, dependency, conflict, and owner question has source identity, freshness, privacy labeling, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked filing, submission, payment, appointment, agency-contact, account-change, upload, and advice handoff",
+        "summary": "Every renewal date, material requirement, and readiness claim traces to supplied or approved evidence without hiding stale, partial, missing, or conflicting source state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

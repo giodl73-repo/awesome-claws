@@ -2052,6 +2052,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "document-renewal-tracker",
+      "acceptedRequest": "Build a renewal tracker from these passport, driver license, professional certification, vehicle registration, and school ID notes. Show what is expiring in the next year, what materials I need to review, and which dates conflict, but do not file forms, pay fees, upload documents, book appointments, contact agencies, change accounts, or tell me legal or immigration advice.",
+      "requiredEvidence": [
+        "Owner-supplied document names, issuing authorities, expiration dates, renewal windows, partial identifiers, receipt or portal notes, official checklist links, appointment notes, dependent authority notes, and privacy labels",
+        "Approved sources such as official agency pages, licensing-board pages, school or employer renewal notes, membership notices, registration notices, receipts, owner notes, and travel constraints",
+        "Owner review goals such as upcoming expirations, renewal readiness, missing materials, conflicting dates, dependent-document handoff, and travel-risk timing",
+        "External actions that must remain draft-only, including forms, submissions, payments, appointments, agency contact, account changes, document uploads, eligibility claims, and legal or immigration advice"
+      ],
+      "authorityBoundaries": [
+        "Do not file forms, submit documents, pay fees, book appointments, contact agencies, change accounts, certify eligibility, or make legal, immigration, tax, medical, licensing, or identity decisions without exact owner approval",
+        "Do not store, expose, or transmit full document numbers, addresses, birth dates, biometric details, dependent details, or travel plans unless explicitly supplied for a private owner-reviewed artifact",
+        "Do not replace official government, licensing-board, school, employer, immigration, tax, legal, medical, or credentialing instructions"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/document-renewal-tracker-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

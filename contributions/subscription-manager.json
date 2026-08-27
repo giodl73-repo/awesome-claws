@@ -121,9 +121,24 @@
         "difference": "Household Steward coordinates broad household work; Subscription Manager is the specialist ledger for recurring services and can be delegated to by a manager Claw."
       },
       {
+        "id": "household-budget-steward",
+        "overlap": "Both use owner-supplied bills or expense evidence, amounts, cadence, renewal dates, source freshness, privacy labels, and blocked banking, payment, account, vendor-contact, tax, legal, or financial-advice actions.",
+        "difference": "Household Budget Steward summarizes household spending categories, bills, targets, and budget variance from supplied evidence; Subscription Manager keeps a service-level recurring-subscription ledger with renewals, price changes, usage, and overlap questions."
+      },
+      {
         "id": "movie-streaming-organizer",
         "overlap": "Both may mention services, household access, subscription state, and entertainment account boundaries.",
         "difference": "Movie and Streaming Organizer helps choose what to watch from declared services; Subscription Manager tracks renewals, price changes, usage, and overlap across all recurring services."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both track renewal windows, due dates, source freshness, required owner review, account-adjacent blockers, privacy labels, and blocked payment, contact, calendar, upload, account-change, legal, or advice actions.",
+        "difference": "Document Renewal Tracker owns official credential, ID, permit, registration, certification, and membership expiration state; Subscription Manager owns recurring paid or free service state, usage evidence, price changes, and service overlap."
+      },
+      {
+        "id": "insurance-policy-organizer",
+        "overlap": "Both track renewals, amounts, source freshness, account or payment-adjacent records, owner review questions, and blocked cancellation, contact, payment, calendar, legal, or advice actions.",
+        "difference": "Insurance Policy Organizer tracks policy, coverage, premium, deductible, renewal, beneficiary, asset, and claim-readiness evidence; Subscription Manager tracks recurring service subscriptions, usage, price changes, and overlap without policy or claim semantics."
       },
       {
         "id": "restaurant-venue-scout",
@@ -139,6 +154,11 @@
         "id": "tax-document-organizer",
         "overlap": "Both handle owner-supplied financial records, due-date or deadline review, account-adjacent evidence, source freshness, and blocked payment, contact, calendar, account, tax, legal, or financial-advice actions.",
         "difference": "Tax Document Organizer builds a tax-year forms, receipts, statements, missing-item, and preparer-review packet; Subscription Manager tracks recurring services, renewals, price changes, usage, overlap, and account-action boundaries."
+      },
+      {
+        "id": "purchase-researcher",
+        "overlap": "Both compare source-backed price, availability, warranty, account, owner constraints, review questions, and blocked purchase, payment, cart, seller-contact, return, warranty, or account actions.",
+        "difference": "Purchase Researcher compares prospective products before an owner buy decision; Subscription Manager tracks already-declared recurring services, renewals, price changes, usage, overlap, and account-action boundaries."
       },
       {
         "id": "neighborhood-operations-watcher",
