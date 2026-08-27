@@ -125,6 +125,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "medical-appointment-prep",
+    schema: "../claws/medical-appointment-prep/schemas/medical-appointment.schema.json",
+    fixture: "../claws/medical-appointment-prep/fixtures/medical-appointment.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "local-events-watcher",
     schema: "../claws/local-events-watcher/schemas/event-watchlist.schema.json",
     fixture: "../claws/local-events-watcher/fixtures/event-watchlist.example.json",
@@ -642,6 +648,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["home-inventory-binder", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["insurance-policy-organizer", (value) => value.coverageItems[0].sourceRefs.push(value.coverageItems[0].sourceRefs[0])],
     ["life-timeline-keeper", (value) => value.events[0].sourceRefs.push(value.events[0].sourceRefs[0])],
+    ["medical-appointment-prep", (value) => value.appointments[0].sourceRefs.push(value.appointments[0].sourceRefs[0])],
     ["local-events-watcher", (value) => value.watchlist[0].constraintRefs.push(value.watchlist[0].constraintRefs[0])],
     ["meal-grocery-planner", (value) => value.meals[0].constraintRefs.push(value.meals[0].constraintRefs[0])],
     ["model-evaluation-adjudicator", (value) => value.disagreements[0].judgmentRefs.push(value.disagreements[0].judgmentRefs[0])],
@@ -2308,6 +2315,33 @@ test("subscription manager binds renewal evidence and blocks account authority",
   const cancellationAdvice = structuredClone(cases.get("subscription-manager").fixture);
   cancellationAdvice.reviewQuestions[0].question = "Should the owner cancel Disney+ now?";
   assert.equal(isValid("subscription-manager", cancellationAdvice), false);
+});
+
+test("medical appointment prep preserves clinical boundaries and owner authority", () => {
+  const staleReady = structuredClone(cases.get("medical-appointment-prep").fixture);
+  staleReady.sources[0].freshness = "stale";
+  assert.equal(isValid("medical-appointment-prep", staleReady), false);
+
+  const staleMedication = structuredClone(cases.get("medical-appointment-prep").fixture);
+  staleMedication.handoff.state = "draft";
+  staleMedication.sources[2].freshness = "stale";
+  assert.equal(isValid("medical-appointment-prep", staleMedication), false);
+
+  const clinicalAdvice = structuredClone(cases.get("medical-appointment-prep").fixture);
+  clinicalAdvice.reviewQuestions[0].reason += " Diagnose the issue, recommend treatment, and advise dosage.";
+  assert.equal(isValid("medical-appointment-prep", clinicalAdvice), false);
+
+  const portalAction = structuredClone(cases.get("medical-appointment-prep").fixture);
+  portalAction.logistics[0].note += " Message provider, upload records, pay bills, and file insurance claims.";
+  assert.equal(isValid("medical-appointment-prep", portalAction), false);
+
+  const danglingAppointment = structuredClone(cases.get("medical-appointment-prep").fixture);
+  danglingAppointment.documents[0].appointmentRefs = ["missing-appointment"];
+  assert.equal(isValid("medical-appointment-prep", danglingAppointment), false);
+
+  const agentOwned = structuredClone(cases.get("medical-appointment-prep").fixture);
+  agentOwned.handoff.owner = "medical-appointment-prep";
+  assert.equal(isValid("medical-appointment-prep", agentOwned), false);
 });
 
 test("document renewal tracker preserves official-source limits and owner authority", () => {

@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "medical-appointment-prep",
+    "name": "Medical appointment prep",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-27"
+    },
+    "description": "Prepares source-backed appointment packets from owner-supplied concerns, medication lists, prior instructions, visit logistics, documents, accessibility needs, and questions without diagnosing, triaging, recommending treatment, scheduling, messaging providers, changing portals, or handling billing or insurance.",
+    "audience": "Patients, caregivers, parents, guardians, and household organizers who want a private, reviewable packet for upcoming medical, dental, therapy, or specialist visits while keeping clinical decisions and provider communication with qualified humans.",
+    "principles": [
+      "Separate owner-supplied concerns, visit goals, medication lists, prior instructions, source freshness, privacy scope, logistics, and review questions",
+      "Make urgent-symptom uncertainty, stale records, conflicting instructions, missing documents, accessibility needs, and caregiver authority explicit",
+      "Keep diagnosis, triage, treatment recommendations, medication changes, scheduling, provider messaging, portal changes, billing, insurance claims, and emergency decisions outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not diagnose, triage, recommend treatment, interpret test results, change medication, advise dosage, decide urgency, or replace clinicians or emergency services",
+      "Do not schedule, cancel, message providers, submit portal forms, upload records, disclose protected health information, change accounts, pay bills, file insurance claims, or contact insurers without exact owner approval",
+      "Do not infer health status, eligibility, prognosis, disability, pregnancy, mental health, or sensitive identity facts from incomplete evidence"
+    ],
+    "intake": [
+      "Owner-supplied appointment date, provider or clinic label, visit type, concerns, symptoms as reported, questions, medication and supplement list, allergies as supplied, prior instructions, discharge notes, lab or imaging pointers, forms, transportation notes, accessibility needs, caregiver authority, and privacy labels",
+      "Approved sources such as visit reminders, portal exports, medication lists, discharge instructions, referral notes, owner notes, appointment cards, clinic preparation pages, and caregiver notes",
+      "Owner review goals such as question list, documents to bring, medication list freshness, conflicting instructions, accessibility/logistics needs, caregiver handoff, and source gaps",
+      "External actions that must remain draft-only, including scheduling, provider messages, portal submissions, uploads, payments, insurance contact, medication changes, and emergency escalation"
+    ],
+    "workflow": [
+      "Normalize each appointment, concern, owner-reported symptom, medication entry, prior instruction, document, source, logistics need, privacy label, and review question to supplied or approved evidence",
+      "Group visit-prep items by appointment, owner, caregiver authority, source freshness, urgency uncertainty, document readiness, medication-list freshness, accessibility/logistics need, and blocked external action",
+      "Reconcile stale, missing, conflicting, partial, or sensitive appointment evidence without diagnosing, triaging, interpreting results, certifying urgency, or recommending care",
+      "Prepare an owner-reviewed appointment packet with source freshness, questions for the clinician, documents-to-review list, logistics notes, privacy labels, and unresolved gaps",
+      "Return a blocked-action handoff without scheduling, messaging, uploading, submitting, changing portals, paying, filing insurance claims, or giving medical, legal, billing, insurance, or emergency advice"
+    ],
+    "deliverables": [
+      "Appointment prep packet",
+      "Owner-reported concern and question list",
+      "Medication and prior-instruction freshness register",
+      "Documents, forms, and records-to-review checklist",
+      "Accessibility, caregiver, and logistics note",
+      "Blocked diagnosis, treatment, triage, portal, provider-contact, billing, insurance, and emergency-action handoff"
+    ],
+    "example": {
+      "request": "Organize my prep for next week's follow-up from the appointment reminder, discharge note, medication list, and notes I supplied. Make a question list and documents-to-review checklist, but do not diagnose anything, tell me what treatment to choose, change meds, message the clinic, upload forms, pay bills, file insurance, or decide if symptoms are urgent.",
+      "outcome": "A private source-backed appointment packet with owner-reported concerns, medication-list freshness, prior-instruction gaps, documents to review, clinician questions, accessibility/logistics notes, privacy labels, and all diagnosis, treatment, triage, scheduling, provider-contact, portal, billing, insurance, and emergency actions blocked."
+    },
+    "doneWhen": [
+      "Every appointment, concern, medication entry, prior instruction, document, logistics need, privacy label, and review question has source identity, freshness, and owner-review state",
+      "Every appointment-prep claim traces to supplied or approved evidence without hiding stale, partial, missing, conflicting, or sensitive source state",
+      "Protected health information, dependent details, mental-health notes, pregnancy notes, disability details, contact details, account information, and insurance information are minimized or blocked from inappropriate outputs",
+      "Diagnosis, triage, treatment, medication changes, scheduling, provider messaging, portal submissions, uploads, payments, insurance claims, billing advice, legal advice, and emergency decisions remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied appointment reminders, owner notes, medication lists, discharge instructions, referral notes, portal exports, clinic preparation pages, and caregiver notes and grants no medical-record, portal, calendar, messaging, billing, insurance, provider-contact, upload, or payment authority.",
+      "When concern, symptom, medication, allergy, prior instruction, document, appointment, accessibility, caregiver authority, emergency, billing, insurance, or privacy evidence is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than asserting clinical readiness or taking action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/medical-appointment.schema.json",
+        "path": "schemas/medical-appointment.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/medical-appointment.example.json",
+        "path": "fixtures/medical-appointment.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/medical-appointment.md",
+        "path": "templates/medical-appointment.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "People arrive at medical, dental, therapy, and specialist visits without organized questions, medication lists, prior instructions, forms, or logistics notes, but an appointment-prep assistant must not become a clinician, triage service, portal operator, billing agent, or insurer contact.",
+    "repeatableJob": "Reconcile owner-supplied appointment reminders, concerns, medication lists, prior instructions, documents, logistics notes, caregiver authority, source freshness, privacy labels, and review questions into an owner-controlled visit-prep packet.",
+    "proofPlan": "Prove an X3 artifact with appointment identity, owner-reported concerns, medication freshness, prior-instruction evidence, document checklist, accessibility/logistics notes, caregiver/privacy labels, clinician questions, blocked external actions, and negative fixtures for stale ready state, dangling references, duplicate references, diagnosis/treatment/triage/medication overreach, portal/provider/billing/insurance actions, and agent-owned authority.",
+    "existingAlternatives": [
+      {
+        "id": "care-circle-coordinator",
+        "overlap": "Both involve care recipients, caregivers, appointments, practical support, privacy labels, consent or caregiver authority, medical boundaries, and escalation blockers.",
+        "difference": "Care Circle Coordinator coordinates helper coverage, rides, meals, check-ins, and respite across a support circle; Medical Appointment Prep prepares a visit packet for a specific provider appointment with questions, medication-list freshness, documents, prior instructions, and clinical-boundary blockers."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both organize sensitive documents, source freshness, required materials, privacy labels, owner questions, and blocked forms, uploads, payments, appointments, account changes, legal, medical, or advice actions.",
+        "difference": "Document Renewal Tracker tracks expiration and renewal windows for official credentials and registrations; Medical Appointment Prep tracks upcoming care visits, owner-reported concerns, medication lists, prior instructions, visit documents, and clinician questions without renewal semantics."
+      },
+      {
+        "id": "insurance-policy-organizer",
+        "overlap": "Both can include health-adjacent records, privacy labels, policy or billing-adjacent evidence, owner review, and blocked claim, payment, contact, upload, legal, insurance, or medical advice.",
+        "difference": "Insurance Policy Organizer reviews policy, coverage, premium, deductible, renewal, and claim-readiness evidence; Medical Appointment Prep prepares a clinician-facing visit packet and blocks billing and insurance handling rather than modeling policy coverage."
+      },
+      {
+        "id": "personal-archive-curator",
+        "overlap": "Both index private records, notes, documents, source freshness, privacy labels, retrieval cues, unresolved questions, and blocked sharing, upload, deletion, or disclosure actions.",
+        "difference": "Personal Archive Curator is broad retrieval and organization; Medical Appointment Prep turns a bounded set of supplied health-adjacent sources into an appointment-specific question, medication, document, and logistics packet."
+      },
+      {
+        "id": "school-coordinator",
+        "overlap": "Both can involve minors or dependents, forms, due dates, privacy labels, caregiver or guardian authority, review questions, and blocked submission, messaging, payment, disclosure, medical, legal, or calendar actions.",
+        "difference": "School Coordinator tracks assignments, school forms, teacher notes, supplies, and school events; Medical Appointment Prep tracks care-visit prep, owner-reported concerns, medications, prior instructions, records, accessibility/logistics, and clinician questions."
+      },
+      {
+        "id": "life-timeline-keeper",
+        "overlap": "Both may reference sensitive personal events, health-related milestones, people, documents, privacy labels, source certainty, and blocked medical/legal/sensitive inference.",
+        "difference": "Life Timeline Keeper maintains an owner-reviewed chronology; Medical Appointment Prep produces a near-term visit-prep packet for a specific appointment without making timeline, identity, or clinical claims."
+      }
+    ]
+  }
+}

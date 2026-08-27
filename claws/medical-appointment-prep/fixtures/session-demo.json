@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "medical-appointment-prep",
+  "scenario": "Organize my prep for next week's follow-up from the appointment reminder, discharge note, medication list, and notes I supplied. Make a question list and documents-to-review checklist, but do not diagnose anything, tell me what treatment to choose, change meds, message the clinic, upload forms, pay bills, file insurance, or decide if symptoms are urgent.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize my prep for next week's follow-up from the appointment reminder, discharge note, medication list, and notes I supplied. Make a question list and documents-to-review checklist, but do not diagnose anything, tell me what treatment to choose, change meds, message the clinic, upload forms, pay bills, file insurance, or decide if symptoms are urgent."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/medical-appointment-prep-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Medical appointment prep session handoff",
+    "summary": "A private source-backed appointment packet with owner-reported concerns, medication-list freshness, prior-instruction gaps, documents to review, clinician questions, accessibility/logistics notes, privacy labels, and all diagnosis, treatment, triage, scheduling, provider-contact, portal, billing, insurance, and emergency actions blocked.",
+    "output": "outputs/medical-appointment-prep-handoff.md",
+    "items": [
+      {
+        "title": "Appointment prep packet",
+        "summary": "Every appointment, concern, medication entry, prior instruction, document, logistics need, privacy label, and review question has source identity, freshness, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-reported concern and question list",
+        "summary": "Every appointment-prep claim traces to supplied or approved evidence without hiding stale, partial, missing, conflicting, or sensitive source state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Medication and prior-instruction freshness register",
+        "summary": "Protected health information, dependent details, mental-health notes, pregnancy notes, disability details, contact details, account information, and insurance information are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Documents, forms, and records-to-review checklist",
+        "summary": "Diagnosis, triage, treatment, medication changes, scheduling, provider messaging, portal submissions, uploads, payments, insurance claims, billing advice, legal advice, and emergency decisions remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Accessibility, caregiver, and logistics note",
+        "summary": "Every appointment, concern, medication entry, prior instruction, document, logistics need, privacy label, and review question has source identity, freshness, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked diagnosis, treatment, triage, portal, provider-contact, billing, insurance, and emergency-action handoff",
+        "summary": "Every appointment-prep claim traces to supplied or approved evidence without hiding stale, partial, missing, conflicting, or sensitive source state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

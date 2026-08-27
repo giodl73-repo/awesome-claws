@@ -1678,6 +1678,40 @@
       }
     },
     {
+      "id": "medical-appointment-prep",
+      "name": "Medical appointment prep",
+      "description": "Prepares source-backed appointment packets from owner-supplied concerns, medication lists, prior instructions, visit logistics, documents, accessibility needs, and questions without diagnosing, triaging, recommending treatment, scheduling, messaging providers, changing portals, or handling billing or insurance.",
+      "audience": "Patients, caregivers, parents, guardians, and household organizers who want a private, reviewable packet for upcoming medical, dental, therapy, or specialist visits while keeping clinical decisions and provider communication with qualified humans.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-27"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "meeting-intelligence",
       "name": "Meeting intelligence",
       "description": "Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts.",

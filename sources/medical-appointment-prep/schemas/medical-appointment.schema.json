@@ -1,0 +1,521 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/medical-appointment.schema.json",
+  "title": "Medical Appointment Prep Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "owner",
+    "sources",
+    "appointments",
+    "concerns",
+    "medications",
+    "priorInstructions",
+    "documents",
+    "logistics",
+    "reviewQuestions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "medical-appointment-prep.v1"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "appointments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/appointment"
+      }
+    },
+    "concerns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/concern"
+      }
+    },
+    "medications": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/medication"
+      }
+    },
+    "priorInstructions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/priorInstruction"
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/document"
+      }
+    },
+    "logistics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/logistics"
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/reviewQuestion"
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "summary",
+        "reviewQuestionRefs",
+        "blockedActions"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "draft",
+            "needs-owner-review",
+            "ready-for-owner-review",
+            "blocked"
+          ]
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 800
+        },
+        "reviewQuestionRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/idRef"
+          }
+        },
+        "blockedActions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 140
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,80}$"
+    },
+    "idRef": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,80}$"
+    },
+    "sourceRefList": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/idRef"
+      }
+    },
+    "appointmentRefList": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/idRef"
+      }
+    },
+    "privacyLabel": {
+      "enum": [
+        "owner-private",
+        "caregiver-approved",
+        "clinician-review",
+        "dependent-sensitive",
+        "billing-sensitive"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "kind",
+        "freshness",
+        "privacy",
+        "observedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "kind": {
+          "enum": [
+            "appointment-reminder",
+            "owner-note",
+            "medication-list",
+            "prior-instruction",
+            "portal-export",
+            "clinic-page",
+            "form",
+            "caregiver-note",
+            "insurance-note"
+          ]
+        },
+        "freshness": {
+          "enum": [
+            "current",
+            "stale",
+            "missing",
+            "conflicting"
+          ]
+        },
+        "privacy": {
+          "$ref": "#/$defs/privacyLabel"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 400
+        }
+      }
+    },
+    "appointment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "visitType",
+        "scheduledFor",
+        "preparationState",
+        "privacy",
+        "sourceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "visitType": {
+          "enum": [
+            "primary-care",
+            "specialist",
+            "dental",
+            "therapy",
+            "urgent-follow-up",
+            "lab-or-imaging",
+            "other"
+          ]
+        },
+        "scheduledFor": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "preparationState": {
+          "enum": [
+            "ready-for-owner-review",
+            "needs-owner-review",
+            "blocked-by-stale-source",
+            "blocked-by-missing-source",
+            "blocked-by-conflict"
+          ]
+        },
+        "privacy": {
+          "$ref": "#/$defs/privacyLabel"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefList"
+        }
+      }
+    },
+    "concern": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "appointmentRefs",
+        "label",
+        "ownerReported",
+        "urgencyUncertainty",
+        "privacy",
+        "sourceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "appointmentRefs": {
+          "$ref": "#/$defs/appointmentRefList"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "ownerReported": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "urgencyUncertainty": {
+          "enum": [
+            "owner-to-review",
+            "ask-clinician",
+            "emergency-boundary"
+          ]
+        },
+        "privacy": {
+          "$ref": "#/$defs/privacyLabel"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefList"
+        }
+      }
+    },
+    "medication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "ownerReported",
+        "freshness",
+        "privacy",
+        "sourceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "ownerReported": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "freshness": {
+          "enum": [
+            "current",
+            "owner-review-needed",
+            "stale",
+            "conflicting"
+          ]
+        },
+        "privacy": {
+          "$ref": "#/$defs/privacyLabel"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefList"
+        }
+      }
+    },
+    "priorInstruction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "appointmentRefs",
+        "label",
+        "status",
+        "privacy",
+        "sourceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "appointmentRefs": {
+          "$ref": "#/$defs/appointmentRefList"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "status": {
+          "enum": [
+            "bring-to-visit",
+            "ask-clinician",
+            "conflicting",
+            "missing"
+          ]
+        },
+        "privacy": {
+          "$ref": "#/$defs/privacyLabel"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefList"
+        }
+      }
+    },
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "appointmentRefs",
+        "label",
+        "status",
+        "privacy",
+        "sourceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "appointmentRefs": {
+          "$ref": "#/$defs/appointmentRefList"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "status": {
+          "enum": [
+            "ready-for-owner-review",
+            "needs-owner-review",
+            "missing",
+            "conflicting"
+          ]
+        },
+        "privacy": {
+          "$ref": "#/$defs/privacyLabel"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefList"
+        }
+      }
+    },
+    "logistics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "appointmentRefs",
+        "kind",
+        "status",
+        "note",
+        "privacy",
+        "sourceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "appointmentRefs": {
+          "$ref": "#/$defs/appointmentRefList"
+        },
+        "kind": {
+          "enum": [
+            "transportation",
+            "accessibility",
+            "caregiver-authority",
+            "forms",
+            "billing-note",
+            "arrival"
+          ]
+        },
+        "status": {
+          "enum": [
+            "ready-for-owner-review",
+            "needs-owner-review",
+            "blocked",
+            "missing"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "privacy": {
+          "$ref": "#/$defs/privacyLabel"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefList"
+        }
+      }
+    },
+    "reviewQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "appointmentRefs",
+        "question",
+        "reason",
+        "privacy",
+        "sourceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "appointmentRefs": {
+          "$ref": "#/$defs/appointmentRefList"
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "privacy": {
+          "$ref": "#/$defs/privacyLabel"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefList"
+        }
+      }
+    }
+  }
+}

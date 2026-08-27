@@ -1,0 +1,204 @@
+{
+  "schemaVersion": "medical-appointment-prep.v1",
+  "generatedAt": "2026-08-27T16:45:00Z",
+  "owner": "Avery",
+  "sources": [
+    {
+      "id": "src-appointment-reminder",
+      "label": "Clinic reminder for follow-up visit",
+      "kind": "appointment-reminder",
+      "freshness": "current",
+      "privacy": "owner-private",
+      "observedAt": "2026-08-26T18:20:00Z",
+      "note": "Owner supplied the reminder text and asked for a private prep packet."
+    },
+    {
+      "id": "src-discharge-note",
+      "label": "Discharge instruction excerpt supplied by owner",
+      "kind": "prior-instruction",
+      "freshness": "current",
+      "privacy": "clinician-review",
+      "observedAt": "2026-08-24T15:10:00Z"
+    },
+    {
+      "id": "src-med-list",
+      "label": "Owner-maintained medication and supplement list",
+      "kind": "medication-list",
+      "freshness": "current",
+      "privacy": "clinician-review",
+      "observedAt": "2026-08-25T20:00:00Z"
+    },
+    {
+      "id": "src-owner-notes",
+      "label": "Owner notes for questions and logistics",
+      "kind": "owner-note",
+      "freshness": "current",
+      "privacy": "owner-private",
+      "observedAt": "2026-08-26T19:30:00Z"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "appt-follow-up",
+      "label": "Follow-up visit with clinic",
+      "visitType": "urgent-follow-up",
+      "scheduledFor": "2026-09-02T17:30:00Z",
+      "preparationState": "ready-for-owner-review",
+      "privacy": "owner-private",
+      "sourceRefs": [
+        "src-appointment-reminder",
+        "src-owner-notes"
+      ]
+    }
+  ],
+  "concerns": [
+    {
+      "id": "concern-energy",
+      "appointmentRefs": [
+        "appt-follow-up"
+      ],
+      "label": "Owner-reported energy change",
+      "ownerReported": "Owner noted lower energy since the prior visit and wants to ask the clinician how to discuss it.",
+      "urgencyUncertainty": "ask-clinician",
+      "privacy": "clinician-review",
+      "sourceRefs": [
+        "src-owner-notes"
+      ]
+    },
+    {
+      "id": "concern-warning-boundary",
+      "appointmentRefs": [
+        "appt-follow-up"
+      ],
+      "label": "Urgency boundary note",
+      "ownerReported": "Owner wants the packet to preserve that urgent or worsening symptoms should be handled by qualified humans or emergency services, not this packet.",
+      "urgencyUncertainty": "emergency-boundary",
+      "privacy": "owner-private",
+      "sourceRefs": [
+        "src-owner-notes"
+      ]
+    }
+  ],
+  "medications": [
+    {
+      "id": "med-list-current",
+      "label": "Medication list to review with clinician",
+      "ownerReported": "Owner supplied the current list and wants to ask whether it is still accurate at the visit.",
+      "freshness": "current",
+      "privacy": "clinician-review",
+      "sourceRefs": [
+        "src-med-list"
+      ]
+    }
+  ],
+  "priorInstructions": [
+    {
+      "id": "instruction-bring-note",
+      "appointmentRefs": [
+        "appt-follow-up"
+      ],
+      "label": "Bring discharge instruction excerpt for review",
+      "status": "bring-to-visit",
+      "privacy": "clinician-review",
+      "sourceRefs": [
+        "src-discharge-note"
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-visit-summary",
+      "appointmentRefs": [
+        "appt-follow-up"
+      ],
+      "label": "Prior visit summary excerpt",
+      "status": "ready-for-owner-review",
+      "privacy": "clinician-review",
+      "sourceRefs": [
+        "src-discharge-note"
+      ]
+    },
+    {
+      "id": "doc-intake-form",
+      "appointmentRefs": [
+        "appt-follow-up"
+      ],
+      "label": "Clinic intake form status",
+      "status": "needs-owner-review",
+      "privacy": "owner-private",
+      "sourceRefs": [
+        "src-appointment-reminder"
+      ]
+    }
+  ],
+  "logistics": [
+    {
+      "id": "log-arrival",
+      "appointmentRefs": [
+        "appt-follow-up"
+      ],
+      "kind": "arrival",
+      "status": "ready-for-owner-review",
+      "note": "Reminder says to review arrival instructions privately before leaving.",
+      "privacy": "owner-private",
+      "sourceRefs": [
+        "src-appointment-reminder"
+      ]
+    },
+    {
+      "id": "log-caregiver",
+      "appointmentRefs": [
+        "appt-follow-up"
+      ],
+      "kind": "caregiver-authority",
+      "status": "needs-owner-review",
+      "note": "Owner noted a caregiver may attend, but sharing scope must be confirmed by the owner.",
+      "privacy": "caregiver-approved",
+      "sourceRefs": [
+        "src-owner-notes"
+      ]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-med-list",
+      "appointmentRefs": [
+        "appt-follow-up"
+      ],
+      "question": "Which medication-list items should the owner ask the clinician to review for accuracy?",
+      "reason": "The packet has a current owner-supplied list, but any medication, treatment, dose, urgency, billing, portal, or insurance decision stays outside this artifact.",
+      "privacy": "clinician-review",
+      "sourceRefs": [
+        "src-med-list",
+        "src-owner-notes"
+      ]
+    },
+    {
+      "id": "question-documents",
+      "appointmentRefs": [
+        "appt-follow-up"
+      ],
+      "question": "Which supplied documents should the owner review before the visit and decide whether to bring?",
+      "reason": "The reminder and discharge note identify possible visit materials, but the owner controls disclosure and any portal or provider communication.",
+      "privacy": "owner-private",
+      "sourceRefs": [
+        "src-appointment-reminder",
+        "src-discharge-note"
+      ]
+    }
+  ],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Avery",
+    "summary": "Owner-reviewed follow-up packet with supplied appointment reminder, medication-list freshness, prior instruction excerpt, document checklist, logistics notes, clinician questions, and unresolved caregiver-sharing scope.",
+    "reviewQuestionRefs": [
+      "question-med-list",
+      "question-documents"
+    ],
+    "blockedActions": [
+      "No diagnosis, triage, treatment recommendation, medication change, dosage advice, urgency decision, or emergency determination",
+      "No scheduling, provider messaging, portal submission, record upload, account change, payment, billing handling, or insurance claim action",
+      "No disclosure of protected health information beyond owner-approved review"
+    ]
+  }
+}
