@@ -7445,6 +7445,113 @@ function benefitsEnrollmentFindings(value) {
   return findings;
 }
 
+function warrantyReturnsFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const itemIds = value.items.map((item) => item.id);
+  const itemSet = new Set(itemIds);
+  const returnIds = value.returnWindows.map((item) => item.id);
+  const termIds = value.warrantyTerms.map((item) => item.id);
+  const issueIds = value.issuePackets.map((item) => item.id);
+  const gapIds = value.gaps.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const crossRefs = new Set([
+    ...sourceIds,
+    ...itemIds,
+    ...returnIds,
+    ...termIds,
+    ...issueIds,
+    ...gapIds,
+    ...questionIds,
+  ]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(itemIds, "items", "Item id"),
+    ...uniqueFindings(returnIds, "returnWindows", "Return window id"),
+    ...uniqueFindings(termIds, "warrantyTerms", "Warranty term id"),
+    ...uniqueFindings(issueIds, "issuePackets", "Issue packet id"),
+    ...uniqueFindings(gapIds, "gaps", "Gap id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, item] of value.items.entries()) {
+    findings.push(
+      ...uniqueFindings(item.sourceRefs, `items.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `items.${index}.sourceRefs`, "Source reference"),
+    );
+    if (item.purchaseState === "supported" && item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_purchase_state", `items.${index}.sourceRefs`, "Supported purchase states require current source evidence."));
+    }
+  }
+  for (const [index, item] of value.returnWindows.entries()) {
+    findings.push(
+      ...referenceFindings([item.itemRef], itemSet, `returnWindows.${index}.itemRef`, "Item reference"),
+      ...uniqueFindings(item.sourceRefs, `returnWindows.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `returnWindows.${index}.sourceRefs`, "Source reference"),
+    );
+    if (Date.parse(item.closesAt) <= Date.parse(item.opensAt)) {
+      findings.push(finding("invalid_return_window", `returnWindows.${index}.closesAt`, "Return windows must close after they open."));
+    }
+    if (["open", "closing-soon"].includes(item.state) && item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_return_state", `returnWindows.${index}.sourceRefs`, "Open return windows require current source evidence."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["warrantyTerms", value.warrantyTerms],
+    ["issuePackets", value.issuePackets],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...referenceFindings([item.itemRef], itemSet, `${collectionName}.${index}.itemRef`, "Item reference"),
+        ...uniqueFindings(item.sourceRefs, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+      );
+      if (
+        ["supported", "ready-for-owner-review"].includes(item.state ?? item.readiness) &&
+        item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+      ) {
+        findings.push(finding("unsupported_ready_item", `${collectionName}.${index}.sourceRefs`, "Supported warranty terms and ready issue packets require current source evidence."));
+      }
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["gaps", value.gaps],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.refs, `${collectionName}.${index}.refs`, "Reference"),
+        ...referenceFindings(item.refs, crossRefs, `${collectionName}.${index}.refs`, "Reference"),
+      );
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, new Set(questionIds), "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting", "sensitive"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready warranty packets cannot depend on stale, missing, conflicting, or sensitive sources."));
+  }
+  const actionText = canonicalJson({
+    items: value.items.map(({ label, purchaseState, serialState, conditionState }) => ({ label, purchaseState, serialState, conditionState })),
+    returnWindows: value.returnWindows.map(({ label, state }) => ({ label, state })),
+    warrantyTerms: value.warrantyTerms.map(({ label, state }) => ({ label, state })),
+    issuePackets: value.issuePackets.map(({ label, readiness }) => ({ label, readiness })),
+    gaps: value.gaps.map(({ reason }) => reason),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(initiate returns?|start returns?|file warranty claims?|submit claims?|contact sellers?|contact manufacturers?|contact carriers?|create shipping labels?|request refunds?|dispute charges?|change accounts?|order replacements?|schedule repairs?|sell item|donate item|discard item|dispose|legal advice|financial advice|tax advice|safety advice|repair advice|warranty advice|insurance advice|consumer-rights advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Warranty artifacts must not instruct returns, claims, contacts, labels, refunds, chargebacks, account changes, replacements, repairs, disposal, resale, donation, or professional advice."));
+  }
+  if (value.handoff.owner === "warranty-returns-manager") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Return, warranty, contact, shipping, refund, chargeback, account, replacement, repair, disposal, resale, donation, and professional-advice authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 function documentRenewalFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const documentIds = value.documents.map((item) => item.id);
@@ -7569,6 +7676,7 @@ const validators = {
   "tax-document-organizer": taxDocumentFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
   "wardrobe-organizer": wardrobeFindings,
+  "warranty-returns-manager": warrantyReturnsFindings,
   "work-chief-of-staff": workChiefOfStaffFindings,
 };
 

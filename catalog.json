@@ -8492,6 +8492,97 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "warranty-returns-manager",
+      "name": "Warranty and returns manager",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-28"
+      },
+      "description": "Organizes owner-supplied receipts, order confirmations, product records, return windows, warranty terms, serial numbers, issue notes, packaging status, and review questions without initiating returns, filing warranty claims, contacting sellers, creating shipping labels, requesting refunds, changing accounts, or giving legal, financial, tax, safety, repair, or consumer-rights advice.",
+      "audience": "Households, renters, parents, office managers, and personal organizers who need a source-backed warranty and return packet for purchases they already own while keeping claims, contacts, refunds, shipping, repairs, disposal, account, and advice decisions with the owner.",
+      "principles": [
+        "Separate item identity, purchase evidence, return window, warranty term, condition note, packaging status, serial evidence, source freshness, and owner-review state",
+        "Make stale receipts, missing serials, conflicting policies, expired windows, unclear ownership, safety-sensitive defects, and privacy-sensitive order data explicit",
+        "Keep return submission, warranty claims, seller contact, carrier contact, shipping labels, refunds, chargebacks, repairs, disposal, account changes, and professional advice outside the Claw boundary"
+      ],
+      "boundaries": [
+        "Do not initiate returns, file warranty claims, contact sellers, contact manufacturers, contact carriers, create shipping labels, request refunds, dispute charges, change accounts, order replacements, schedule repairs, sell, donate, discard, or dispose of items without exact owner approval",
+        "Do not give legal, financial, tax, safety, repair, warranty, insurance, or consumer-rights advice",
+        "Do not expose order numbers, serial numbers, addresses, payment details, account ids, photos, defects, valuable items, or household details beyond the owner-approved destination"
+      ],
+      "intake": [
+        "Owner-supplied receipts, order confirmations, invoices, packing slips, product photos, product manuals, warranty cards, manufacturer pages, retailer policy excerpts, serial-number notes, issue notes, packaging status, payment proofs, and owner constraints",
+        "Item labels, purchase dates, sellers, return deadlines, warranty windows, evidence freshness, policy confidence, issue status, privacy labels, and owner-review goals",
+        "Review goals such as return-window readiness, warranty-claim packet, missing receipt, serial lookup, packaging checklist, defect evidence, replacement research handoff, and unresolved seller/manufacturer questions",
+        "External actions that must remain blocked or draft-only, including return starts, claim submissions, seller/manufacturer/carrier contact, shipping labels, refunds, chargebacks, account changes, repair booking, disposal, resale, donation, and professional advice"
+      ],
+      "workflow": [
+        "Normalize each item, purchase source, return window, warranty term, issue note, packaging requirement, serial record, evidence gap, and review question to supplied or approved evidence",
+        "Group items by owner, seller, product category, purchase date, return deadline, warranty term, source freshness, privacy label, issue status, and blocked external action",
+        "Reconcile stale, missing, conflicting, partial, expired, duplicate, safety-sensitive, or private evidence without making claim, refund, safety, repair, or legal conclusions",
+        "Prepare an owner-reviewed warranty and returns packet with source ledger, window timeline, item checklist, claim/return readiness notes, and unresolved questions",
+        "Return a blocked-action handoff without starting returns, filing claims, contacting sellers or manufacturers, creating labels, requesting refunds, changing accounts, or giving professional advice"
+      ],
+      "deliverables": [
+        "Receipt, order, and product source ledger",
+        "Return-window and warranty-term timeline",
+        "Item, serial, packaging, and issue evidence checklist",
+        "Claim or return packet readiness notes",
+        "Missing, stale, conflicting, expired, safety-sensitive, and privacy evidence question list",
+        "Blocked return, claim, contact, label, refund, chargeback, account, repair, disposal, resale, donation, and advice handoff"
+      ],
+      "example": {
+        "request": "Organize the warranty and return options for the appliance, headphones, and office chair from the receipts, order emails, warranty card, retailer policy excerpts, serial notes, photos, and issue notes I supplied. Show return windows, warranty terms, missing evidence, and a packet checklist, but do not start a return, file a claim, contact sellers, create labels, request refunds, dispute charges, change accounts, book repairs, discard anything, or give legal, financial, tax, safety, repair, warranty, insurance, or consumer-rights advice.",
+        "outcome": "A source-backed warranty and returns packet with receipt/product ledger, return-window and warranty timeline, serial/packaging/issue checklist, stale or missing evidence questions, and all return, claim, contact, label, refund, chargeback, account, repair, disposal, resale, donation, and professional-advice actions blocked."
+      },
+      "doneWhen": [
+        "Every item, purchase source, return window, warranty term, issue note, packaging requirement, serial record, evidence gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+        "Every window, warranty, readiness, or checklist claim traces to supplied or approved evidence without hiding stale, missing, conflicting, partial, expired, safety-sensitive, or private evidence",
+        "Order numbers, serial numbers, addresses, payment details, account ids, photos, defects, valuable items, and household details are minimized or blocked from inappropriate outputs",
+        "Return submission, warranty claims, seller/manufacturer/carrier contact, labels, refunds, chargebacks, replacements, repairs, account changes, disposal, resale, donation, and legal/financial/tax/safety/repair/warranty/insurance/consumer-rights advice remain blocked or exact-approval-bound"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses supplied receipts, order confirmations, invoices, product photos, manuals, warranty cards, policy excerpts, serial notes, issue notes, packaging status, and owner notes and grants no retailer, manufacturer, carrier, account, payment, messaging, shipping, repair, resale, donation, disposal, or claim authority.",
+        "When item, receipt, serial, policy, return, warranty, issue, packaging, safety, privacy, payment, account, or source evidence is stale, partial, missing, conflicting, expired, or sensitive, preserve the gap and ask owner-review questions rather than taking action or asserting entitlement."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/warranty-returns.schema.json",
+          "path": "schemas/warranty-returns.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/warranty-returns.example.json",
+          "path": "fixtures/warranty-returns.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/warranty-returns.md",
+          "path": "templates/warranty-returns.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

@@ -2167,6 +2167,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "warranty-returns-manager",
+      "acceptedRequest": "Organize the warranty and return options for the appliance, headphones, and office chair from the receipts, order emails, warranty card, retailer policy excerpts, serial notes, photos, and issue notes I supplied. Show return windows, warranty terms, missing evidence, and a packet checklist, but do not start a return, file a claim, contact sellers, create labels, request refunds, dispute charges, change accounts, book repairs, discard anything, or give legal, financial, tax, safety, repair, warranty, insurance, or consumer-rights advice.",
+      "requiredEvidence": [
+        "Owner-supplied receipts, order confirmations, invoices, packing slips, product photos, product manuals, warranty cards, manufacturer pages, retailer policy excerpts, serial-number notes, issue notes, packaging status, payment proofs, and owner constraints",
+        "Item labels, purchase dates, sellers, return deadlines, warranty windows, evidence freshness, policy confidence, issue status, privacy labels, and owner-review goals",
+        "Review goals such as return-window readiness, warranty-claim packet, missing receipt, serial lookup, packaging checklist, defect evidence, replacement research handoff, and unresolved seller/manufacturer questions",
+        "External actions that must remain blocked or draft-only, including return starts, claim submissions, seller/manufacturer/carrier contact, shipping labels, refunds, chargebacks, account changes, repair booking, disposal, resale, donation, and professional advice"
+      ],
+      "authorityBoundaries": [
+        "Do not initiate returns, file warranty claims, contact sellers, contact manufacturers, contact carriers, create shipping labels, request refunds, dispute charges, change accounts, order replacements, schedule repairs, sell, donate, discard, or dispose of items without exact owner approval",
+        "Do not give legal, financial, tax, safety, repair, warranty, insurance, or consumer-rights advice",
+        "Do not expose order numbers, serial numbers, addresses, payment details, account ids, photos, defects, valuable items, or household details beyond the owner-approved destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/warranty-returns-manager-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

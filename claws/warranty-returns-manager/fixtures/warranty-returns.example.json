@@ -1,0 +1,160 @@
+{
+  "schemaVersion": "awesomeClaws.warrantyReturns.v1",
+  "portfolio": {
+    "id": "warranty-home-office",
+    "owner": "Morgan Lee",
+    "asOf": "2026-08-28",
+    "timezone": "America/Los_Angeles"
+  },
+  "sources": [
+    {
+      "id": "source-receipt-chair",
+      "kind": "receipt",
+      "label": "Owner-supplied office chair receipt",
+      "freshness": "current",
+      "privacy": "redact-before-sharing",
+      "asOf": "2026-08-10"
+    },
+    {
+      "id": "source-order-email",
+      "kind": "order-confirmation",
+      "label": "Order confirmation for headphones",
+      "freshness": "current",
+      "privacy": "owner-only",
+      "asOf": "2026-08-12"
+    },
+    {
+      "id": "source-policy-old",
+      "kind": "retailer-policy",
+      "label": "Retailer policy excerpt saved last year",
+      "freshness": "stale",
+      "privacy": "shareable-after-review",
+      "asOf": "2025-12-01"
+    },
+    {
+      "id": "source-serial-note",
+      "kind": "serial-note",
+      "label": "Owner note says serial number still needs confirmation",
+      "freshness": "missing",
+      "privacy": "owner-only",
+      "asOf": "2026-08-28"
+    },
+    {
+      "id": "source-issue-note",
+      "kind": "issue-note",
+      "label": "Owner-reported issue note and photo pointer",
+      "freshness": "sensitive",
+      "privacy": "owner-only",
+      "asOf": "2026-08-28"
+    }
+  ],
+  "items": [
+    {
+      "id": "item-office-chair",
+      "label": "Office chair",
+      "purchaseState": "supported",
+      "serialState": "not-applicable",
+      "conditionState": "owner-reported",
+      "sourceRefs": ["source-receipt-chair"]
+    },
+    {
+      "id": "item-headphones",
+      "label": "Noise-canceling headphones",
+      "purchaseState": "supported",
+      "serialState": "missing",
+      "conditionState": "needs-review",
+      "sourceRefs": ["source-order-email"]
+    }
+  ],
+  "returnWindows": [
+    {
+      "id": "return-chair",
+      "itemRef": "item-office-chair",
+      "label": "Office chair return window from receipt and stale policy context",
+      "opensAt": "2026-08-10",
+      "closesAt": "2026-09-09",
+      "state": "needs-review",
+      "sourceRefs": ["source-receipt-chair", "source-policy-old"]
+    }
+  ],
+  "warrantyTerms": [
+    {
+      "id": "term-headphones",
+      "itemRef": "item-headphones",
+      "label": "Headphones warranty term needs current manufacturer evidence",
+      "state": "missing",
+      "sourceRefs": ["source-order-email", "source-serial-note"]
+    }
+  ],
+  "issuePackets": [
+    {
+      "id": "issue-headphones-static",
+      "itemRef": "item-headphones",
+      "label": "Owner-reported headphones issue packet",
+      "readiness": "blocked",
+      "sourceRefs": ["source-order-email", "source-serial-note", "source-issue-note"]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-policy-current",
+      "kind": "stale-policy",
+      "reason": "The saved retailer policy is stale and cannot support a current return packet without owner review.",
+      "refs": ["source-policy-old", "return-chair"]
+    },
+    {
+      "id": "gap-serial",
+      "kind": "missing-serial",
+      "reason": "The headphones serial number is missing, so the warranty packet remains blocked.",
+      "refs": ["source-serial-note", "item-headphones", "term-headphones", "issue-headphones-static"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-current-policy",
+      "question": "Do you have a current retailer return policy or account export for the office chair?",
+      "reason": "The return window should keep the stale policy visible without treating it as current.",
+      "refs": ["gap-policy-current"],
+      "owner": "Morgan Lee"
+    },
+    {
+      "id": "question-serial",
+      "question": "Can you confirm the headphones serial number from the product label before preparing the owner-reviewed packet?",
+      "reason": "The warranty packet needs owner-supplied serial evidence before any external claim packet can be reviewed.",
+      "refs": ["gap-serial"],
+      "owner": "Morgan Lee"
+    }
+  ],
+  "blockedActions": [
+    "initiate-return",
+    "file-warranty-claim",
+    "contact-seller",
+    "contact-manufacturer",
+    "contact-carrier",
+    "create-shipping-label",
+    "request-refund",
+    "dispute-charge",
+    "change-account",
+    "order-replacement",
+    "schedule-repair",
+    "sell-item",
+    "donate-item",
+    "discard-item",
+    "dispose-item",
+    "legal-advice",
+    "financial-advice",
+    "tax-advice",
+    "safety-advice",
+    "repair-advice",
+    "consumer-rights-advice"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Morgan Lee",
+    "reviewQuestionRefs": ["question-current-policy", "question-serial"],
+    "prohibitedActions": [
+      "Do not initiate returns, file warranty claims, contact sellers, manufacturers, or carriers, create labels, request refunds, dispute charges, or change accounts.",
+      "Do not order replacements, schedule repairs, sell, donate, discard, dispose of items, or give legal, financial, tax, safety, repair, warranty, insurance, or consumer-rights advice."
+    ]
+  }
+}
