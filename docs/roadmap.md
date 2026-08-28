@@ -1,6 +1,6 @@
 # Awesome Claws roadmap
 
-Awesome Claws has 87 maintained starter Claws. The catalog now covers a broad
+Awesome Claws has 88 maintained starter Claws. The catalog now covers a broad
 personal-agent lane, a work-operations lane, and several capstone examples that
 show how Claws compose into larger managed workflows.
 
@@ -8,7 +8,7 @@ show how Claws compose into larger managed workflows.
 
 | Category | Count | Current emphasis |
 | --- | ---: | --- |
-| Productivity | 35 | Personal operating systems, personal media, household planning, documents, travel, meetings, and knowledge work |
+| Productivity | 36 | Personal operating systems, personal media, fantasy sports, household planning, documents, travel, meetings, and knowledge work |
 | Operations | 21 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
 | Analysis | 16 | Research, evidence collection, financial monitoring, public/company watching, data work, and model evaluation |
 | Engineering | 8 | Software delivery, incidents, release readiness, security, migration, QA, and controlled local change execution |
@@ -17,7 +17,7 @@ show how Claws compose into larger managed workflows.
 
 The strongest recent expansion is practical personal work: vehicle service,
 home repair, garden care, pet care, pond and water features, appliance care,
-care-circle coordination, favorite sports teams, stock portfolios, movies and
+care-circle coordination, favorite sports teams, fantasy sports, stock portfolios, movies and
 streaming, subscriptions, music, relationships and gifts, personal archives,
 restaurants and venues, local events, school logistics, games backlogs, home
 inventory, meals and groceries, insurance policies, tax documents, purchase
@@ -44,7 +44,6 @@ of existing Claws.
 
 | Candidate | Why it is distinct | Nearest existing Claws |
 | --- | --- | --- |
-| Fantasy Sports Manager | Manages fantasy rosters, league rules, waiver windows, trades, matchup evidence, injury uncertainty, and owner-approved lineup decisions. It is adjacent to sports watching, but the job is portfolio/league operations, not fan tracking. | Sports Team Watcher, Games Backlog Manager, Stock Portfolio Monitor |
 | Health Records Binder | Organizes longitudinal medical records, labs, imaging references, medication history, provider summaries, and sharing packets. It complements appointment prep but is not tied to a single visit. | Medical Appointment Prep, Document Renewal Tracker, Personal Archive Curator |
 | Benefits and Open Enrollment Planner | Tracks employer benefits, coverage options, deadlines, dependent eligibility, plan comparisons, and owner questions without selecting coverage or giving legal/financial advice. | Insurance Policy Organizer, Medical Appointment Prep, Household Budget Steward |
 | Home Project Planner | Coordinates multi-step renovations or moving projects with estimates, permits, vendors, budgets, sequencing, and resident constraints. It is broader than repair triage. | Home Repair Coordinator, Facilities Operations Coordinator, Household Steward |
@@ -70,15 +69,14 @@ introduces a materially different workflow:
 
 ## Roadmap Order
 
-1. Add Fantasy Sports Manager as the next personal-agent specialist, because it
-   pairs naturally with Sports Team Watcher while proving that Claws can manage
-   owner-controlled competitive decisions without betting or account mutation.
-2. Add Health Records Binder or Benefits and Open Enrollment Planner next,
+1. Add Health Records Binder or Benefits and Open Enrollment Planner next,
    because the medical/document/insurance lane is now strong enough to support a
    useful manager-level story.
-3. Add Warranty and Returns Manager to close the ownership lifecycle between
+2. Add Warranty and Returns Manager to close the ownership lifecycle between
    Purchase Researcher, Home Inventory Binder, Appliance Care Coordinator, and
    Subscription Manager.
+3. Add Home Project Planner or Travel Loyalty and Points Organizer as the next
+   lifecycle specialist after the health and warranty lanes.
 4. Promote manager-Claw examples in README and chooser copy once at least one
    more specialist is present in each manager lane.
 5. Keep Product and Governance expansion selective. Those categories are smaller

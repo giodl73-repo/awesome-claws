@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "awesomeClaws.fantasyRoster.v1",
+  "league": {
+    "id": "league-week-three",
+    "teamName": "Sunday Review",
+    "sport": "football",
+    "platform": "Example fantasy platform",
+    "scoringFormat": "PPR",
+    "week": "2026 Week 3",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-28T16:00:00Z",
+    "owner": "Fantasy owner"
+  },
+  "sources": [
+    { "id": "src-roster", "kind": "fantasy-roster", "authority": "fantasy-platform", "capturedAt": "2026-08-28T15:30:00Z", "reference": "fantasy://league/week-3/roster", "freshness": "current" },
+    { "id": "src-rules", "kind": "league-rules", "authority": "league-settings", "capturedAt": "2026-08-28T15:32:00Z", "reference": "fantasy://league/settings", "freshness": "current" },
+    { "id": "src-matchup", "kind": "matchup-page", "authority": "fantasy-platform", "capturedAt": "2026-08-28T15:35:00Z", "reference": "fantasy://league/week-3/matchup", "freshness": "current" },
+    { "id": "src-projections", "kind": "projection-snapshot", "authority": "projection-provider", "capturedAt": "2026-08-28T15:40:00Z", "reference": "provider://fantasy/projections/week-3", "freshness": "delayed" },
+    { "id": "src-news", "kind": "player-news", "authority": "trusted-sports-source", "capturedAt": "2026-08-28T15:45:00Z", "reference": "news://players/week-3-availability", "freshness": "current" },
+    { "id": "src-owner-note", "kind": "owner-note", "authority": "user-supplied", "capturedAt": "2026-08-28T15:50:00Z", "reference": "owner://fantasy/preferences/week-3", "freshness": "current" }
+  ],
+  "rules": [
+    { "id": "rule-lineup-lock", "kind": "lineup-lock", "summary": "Individual player slots lock at scheduled kickoff.", "state": "current", "sourceRefs": ["src-rules"] },
+    { "id": "rule-waiver", "kind": "waiver", "summary": "Waiver claims process overnight after the Tuesday deadline.", "state": "current", "sourceRefs": ["src-rules"] },
+    { "id": "rule-trade-deadline", "kind": "trade-deadline", "summary": "Trade deadline remains open for owner-reviewed ideas.", "state": "current", "sourceRefs": ["src-rules"] }
+  ],
+  "players": [
+    { "id": "player-qb", "name": "Casey North", "team": "SEA", "position": "QB", "rosterState": "starter", "availability": "available", "projection": { "points": 21.4, "state": "supported", "sourceRef": "src-projections" }, "sourceRefs": ["src-roster", "src-projections"] },
+    { "id": "player-rb", "name": "Jordan Vale", "team": "SF", "position": "RB", "rosterState": "starter", "availability": "questionable", "projection": { "points": 13.2, "state": "delayed", "sourceRef": "src-projections" }, "sourceRefs": ["src-roster", "src-projections", "src-news"] },
+    { "id": "player-wr", "name": "Morgan Lane", "team": "DET", "position": "WR", "rosterState": "bench", "availability": "available", "projection": { "points": 12.8, "state": "supported", "sourceRef": "src-projections" }, "sourceRefs": ["src-roster", "src-projections"] },
+    { "id": "player-waiver", "name": "Avery Fields", "team": "DAL", "position": "WR", "rosterState": "waiver-candidate", "availability": "available", "projection": { "points": 10.1, "state": "supported", "sourceRef": "src-projections" }, "sourceRefs": ["src-matchup", "src-projections", "src-owner-note"] },
+    { "id": "player-trade", "name": "Riley Stone", "team": "MIA", "position": "RB", "rosterState": "trade-target", "availability": "unknown", "projection": { "points": null, "state": "missing", "sourceRef": null }, "sourceRefs": ["src-owner-note", "src-news"] }
+  ],
+  "lineup": [
+    { "id": "lineup-qb", "slot": "QB", "playerRef": "player-qb", "lockState": "open", "reviewState": "ready-for-owner-review", "reason": "Starter slot is open and supported by current roster plus delayed projection evidence.", "sourceRefs": ["src-roster", "src-rules", "src-projections"] },
+    { "id": "lineup-rb", "slot": "RB", "playerRef": "player-rb", "lockState": "open", "reviewState": "needs-owner-review", "reason": "Questionable availability and delayed projection require owner review before any lineup decision.", "sourceRefs": ["src-roster", "src-news", "src-projections"] },
+    { "id": "lineup-flex", "slot": "FLEX", "playerRef": "player-wr", "lockState": "open", "reviewState": "needs-owner-review", "reason": "Bench receiver is a possible flex review item, not an automatic lineup change.", "sourceRefs": ["src-roster", "src-projections", "src-owner-note"] }
+  ],
+  "waiverWatch": [
+    { "id": "waiver-wr-depth", "playerRef": "player-waiver", "windowState": "future", "rosterImpact": "Could cover receiver depth if the owner approves a claim and a separate drop decision.", "reviewState": "owner-review", "sourceRefs": ["src-rules", "src-matchup", "src-projections"] }
+  ],
+  "tradeIdeas": [
+    { "id": "trade-rb-depth", "playerRefs": ["player-rb", "player-trade"], "deadlineState": "open", "riskSummary": "Availability uncertainty and missing projection evidence make this a review idea only.", "reviewState": "owner-review", "sourceRefs": ["src-rules", "src-news", "src-owner-note"] }
+  ],
+  "matchupRisks": [
+    { "id": "risk-rb-availability", "playerRefs": ["player-rb"], "summary": "Questionable status should stay unresolved until a current source confirms availability.", "state": "current", "sourceRefs": ["src-news"] },
+    { "id": "risk-projection-delay", "playerRefs": ["player-qb", "player-rb", "player-wr", "player-waiver"], "summary": "Projection snapshot is delayed and cannot be treated as live certainty.", "state": "delayed", "sourceRefs": ["src-projections"] }
+  ],
+  "reviewQuestions": [
+    { "id": "question-rb-status", "question": "Should the owner wait for a fresher availability source before reviewing the RB slot?", "reason": "The current player-news source says the starter is questionable and the projection source is delayed.", "refs": ["player-rb", "lineup-rb", "risk-rb-availability", "src-news", "src-projections"], "owner": "Fantasy owner" },
+    { "id": "question-waiver-drop", "question": "Which player, if any, would the owner separately approve as a drop if the waiver candidate remains interesting?", "reason": "The waiver item has possible roster impact but no drop authority or owner approval.", "refs": ["waiver-wr-depth", "player-waiver", "rule-waiver"], "owner": "Fantasy owner" },
+    { "id": "question-trade-risk", "question": "Should the trade idea remain parked until player availability and projection evidence are fresher?", "reason": "The trade target has missing projection evidence and unknown availability.", "refs": ["trade-rb-depth", "player-trade", "rule-trade-deadline"], "owner": "Fantasy owner" }
+  ],
+  "blockedActions": ["submit-lineup", "claim-waiver", "drop-player", "propose-trade", "accept-trade", "enter-contest", "place-bet", "send-league-message", "pay-fee", "change-league-settings", "change-account"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Fantasy owner",
+    "reviewQuestionRefs": ["question-rb-status", "question-waiver-drop", "question-trade-risk"],
+    "prohibitedActions": ["submit-lineup", "claim-waiver", "drop-player", "propose-trade", "accept-trade", "enter-contest", "place-bet", "send-league-message", "pay-fee", "change-league-settings", "change-account"]
+  }
+}

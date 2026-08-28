@@ -895,6 +895,40 @@
       }
     },
     {
+      "id": "fantasy-sports-manager",
+      "name": "Fantasy sports manager",
+      "description": "Manages fantasy-team rosters, league rules, matchup evidence, waiver windows, trade ideas, injury uncertainty, and owner-review lineup decisions without submitting changes, joining contests, betting, messaging managers, or giving gambling advice.",
+      "audience": "Fantasy sports players, league co-managers, families, and office leagues who want a source-backed roster and matchup review while keeping final lineup, waiver, trade, contest, and message actions owner-approved.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-28"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "feed-intelligence-monitor",
       "name": "Feed intelligence monitor",
       "description": "Tracks an approved set of RSS and Atom sources and produces a private, source-linked change digest.",

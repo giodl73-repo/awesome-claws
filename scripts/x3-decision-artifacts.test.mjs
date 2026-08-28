@@ -71,6 +71,12 @@ const definitions = [
     decisionField: "decisionState",
   },
   {
+    id: "fantasy-sports-manager",
+    schema: "../claws/fantasy-sports-manager/schemas/fantasy-roster.schema.json",
+    fixture: "../claws/fantasy-sports-manager/fixtures/fantasy-roster.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "gift-relationship-manager",
     schema: "../claws/gift-relationship-manager/schemas/gift-plan.schema.json",
     fixture: "../claws/gift-relationship-manager/fixtures/gift-plan.example.json",
@@ -642,6 +648,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],
     ["document-renewal-tracker", (value) => value.documents[0].sourceRefs.push(value.documents[0].sourceRefs[0])],
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
+    ["fantasy-sports-manager", (value) => value.lineup[0].sourceRefs.push(value.lineup[0].sourceRefs[0])],
     ["games-backlog-manager", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
     ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
     ["household-budget-steward", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
@@ -2236,6 +2243,41 @@ test("sports team watcher preserves sourced fan facts and blocks wagering conten
   const bettingContent = structuredClone(cases.get("sports-team-watcher").fixture);
   bettingContent.watchItems[0].whyItMatters += " Include the betting spread.";
   assert.equal(isValid("sports-team-watcher", bettingContent), false);
+});
+
+test("fantasy sports manager preserves roster evidence and owner authority", () => {
+  const staleReady = structuredClone(cases.get("fantasy-sports-manager").fixture);
+  staleReady.sources[0].freshness = "stale";
+  assert.equal(isValid("fantasy-sports-manager", staleReady), false);
+
+  const staleRule = structuredClone(cases.get("fantasy-sports-manager").fixture);
+  staleRule.handoff.state = "blocked";
+  staleRule.sources[1].freshness = "stale";
+  assert.equal(isValid("fantasy-sports-manager", staleRule), false);
+
+  const lockedLineup = structuredClone(cases.get("fantasy-sports-manager").fixture);
+  lockedLineup.lineup[0].lockState = "locked";
+  assert.equal(isValid("fantasy-sports-manager", lockedLineup), false);
+
+  const unsupportedProjection = structuredClone(cases.get("fantasy-sports-manager").fixture);
+  unsupportedProjection.players[0].projection.sourceRef = null;
+  assert.equal(isValid("fantasy-sports-manager", unsupportedProjection), false);
+
+  const closedTrade = structuredClone(cases.get("fantasy-sports-manager").fixture);
+  closedTrade.tradeIdeas[0].deadlineState = "closed";
+  assert.equal(isValid("fantasy-sports-manager", closedTrade), false);
+
+  const actionAdvice = structuredClone(cases.get("fantasy-sports-manager").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Set lineup, claim waiver, and place bet.";
+  assert.equal(isValid("fantasy-sports-manager", actionAdvice), false);
+
+  const danglingPlayer = structuredClone(cases.get("fantasy-sports-manager").fixture);
+  danglingPlayer.waiverWatch[0].playerRef = "missing-player";
+  assert.equal(isValid("fantasy-sports-manager", danglingPlayer), false);
+
+  const agentOwned = structuredClone(cases.get("fantasy-sports-manager").fixture);
+  agentOwned.handoff.owner = "fantasy-sports-manager";
+  assert.equal(isValid("fantasy-sports-manager", agentOwned), false);
 });
 
 test("movie and streaming organizer preserves availability and blocks account actions", () => {
