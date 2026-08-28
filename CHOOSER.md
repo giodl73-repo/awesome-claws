@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (93)
+### Active (94)
 
 | Claw | Detail |
 | --- | --- |
@@ -73,6 +73,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Privacy request coordinator](claws/privacy-request-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Procurement evaluator](claws/procurement-evaluator) | @giodl73-repo; last verified 2026-08-19 |
 | [Product manager](claws/product-manager) | @giodl73-repo; last verified 2026-08-19 |
+| [Professional networking follow-up](claws/professional-networking-followup) | @giodl73-repo; last verified 2026-08-28 |
 | [Project manager](claws/project-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Public company watcher](claws/public-company-watcher) | @giodl73-repo; last verified 2026-08-19 |
 | [Public safety monitor](claws/public-safety-monitor) | @giodl73-repo; last verified 2026-08-19 |
@@ -120,7 +121,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (62)
+### Low setup (63)
 
 | Claw | Detail |
 | --- | --- |
@@ -167,6 +168,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | no bootstrap, external dependency, or schedule |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | no bootstrap, external dependency, or schedule |
 | [Product manager](claws/product-manager) | no bootstrap, external dependency, or schedule |
+| [Professional networking follow-up](claws/professional-networking-followup) | no bootstrap, external dependency, or schedule |
 | [Project manager](claws/project-manager) | no bootstrap, external dependency, or schedule |
 | [Purchase researcher](claws/purchase-researcher) | no bootstrap, external dependency, or schedule |
 | [Quality assurance lead](claws/quality-assurance-lead) | no bootstrap, external dependency, or schedule |
@@ -232,7 +234,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (70)
+### No external dependencies (71)
 
 | Claw | Detail |
 | --- | --- |
@@ -287,6 +289,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Privacy request coordinator](claws/privacy-request-coordinator) | None |
 | [Procurement evaluator](claws/procurement-evaluator) | None |
 | [Product manager](claws/product-manager) | None |
+| [Professional networking follow-up](claws/professional-networking-followup) | None |
 | [Project manager](claws/project-manager) | None |
 | [Purchase researcher](claws/purchase-researcher) | None |
 | [Quality assurance lead](claws/quality-assurance-lead) | None |
@@ -339,7 +342,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (68)
+### X3 (69)
 
 | Claw | Detail |
 | --- | --- |
@@ -386,6 +389,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Pet care coordinator](claws/pet-care-coordinator) | Coordinates evidence-bound routine pet care, symptom triage, medication-safe handoffs, and explicitly approved veterinary appointments. |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | Coordinates evidence-bound ornamental pond and waterfall planning, installation readiness, recirculating-system care, aquatic-habitat monitoring, and explicitly approved specialist appointments. |
 | [Presentation producer](claws/presentation-producer) | Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review. |
+| [Professional networking follow-up](claws/professional-networking-followup) | Organizes owner-supplied professional contacts, meeting notes, event context, introduction requests, follow-up drafts, relationship tags, and reminder questions into a private networking ledger without sending messages, making introductions, scheduling meetings, changing accounts, scraping contacts, committing referrals, or giving career, legal, financial, recruiting, or sales advice. |
 | [Public company watcher](claws/public-company-watcher) | Tracks material public-company disclosures from authoritative sources and produces a private, timestamped change brief without trading or investor-relations contact. |
 | [Public safety monitor](claws/public-safety-monitor) | Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services. |
 | [Purchase researcher](claws/purchase-researcher) | Compares owner-approved product candidates, constraints, source quality, warranty, return, shipping, availability, and fit evidence without buying, opening credit, contacting sellers, changing carts, or claiming an unsupported best choice. |
@@ -528,7 +532,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (41)
+### Productivity (42)
 
 | Claw | Detail |
 | --- | --- |
@@ -560,6 +564,7 @@ Categories come directly from the catalog entry.
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | X3; Tracks neighborhood-impacting trash and recycling schedules, road closures, permit notices, utility work, local meetings, school board items, and public notices from approved sources without filing complaints, calling agencies, posting publicly, changing accounts, or claiming safety certainty. |
 | [Personal archive curator](claws/personal-archive-curator) | X3; Organizes supplied personal files, notes, links, receipts, photos, warranties, and memories into a privacy-labeled retrieval index without deleting, moving, sharing, uploading, training memory, or inferring sensitive facts. |
 | [Presentation producer](claws/presentation-producer) | X3; Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review. |
+| [Professional networking follow-up](claws/professional-networking-followup) | X3; Organizes owner-supplied professional contacts, meeting notes, event context, introduction requests, follow-up drafts, relationship tags, and reminder questions into a private networking ledger without sending messages, making introductions, scheduling meetings, changing accounts, scraping contacts, committing referrals, or giving career, legal, financial, recruiting, or sales advice. |
 | [Project manager](claws/project-manager) | X4; Keeps projects aligned through milestones, dependencies, decisions, and accountable execution. |
 | [Purchase researcher](claws/purchase-researcher) | X3; Compares owner-approved product candidates, constraints, source quality, warranty, return, shipping, availability, and fit evidence without buying, opening credit, contacting sellers, changing carts, or claiming an unsupported best choice. |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | X3; Compares restaurants and venues from approved sources with dietary, accessibility, hours, reservation, price, distance, and group-preference evidence without reserving, ordering, paying, messaging, or posting reviews. |
@@ -578,7 +583,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (41)
+### Standard attention (42)
 
 | Claw | Detail |
 | --- | --- |
@@ -610,6 +615,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Personal archive curator](claws/personal-archive-curator) | portable workspace artifacts only |
 | [Pet care coordinator](claws/pet-care-coordinator) | portable workspace artifacts only |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | portable workspace artifacts only |
+| [Professional networking follow-up](claws/professional-networking-followup) | portable workspace artifacts only |
 | [Purchase researcher](claws/purchase-researcher) | portable workspace artifacts only |
 | [Recruiting coordinator](claws/recruiting-coordinator) | portable workspace artifacts only |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | portable workspace artifacts only |

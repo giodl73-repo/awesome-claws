@@ -117,6 +117,11 @@
         "difference": "Personal Archive Curator indexes broad personal material; Wardrobe Organizer converts wardrobe-specific evidence into item, outfit, care, alteration, packing, and gap artifacts."
       },
       {
+        "id": "professional-networking-followup",
+        "overlap": "Both can involve events, reminders, private notes, relationship-sensitive presentation context, source freshness, privacy labels, and blocked messaging, scheduling, account, or advice authority.",
+        "difference": "Professional Networking Follow-up manages contacts, interactions, introductions, and follow-up drafts; Wardrobe Organizer manages clothing inventory, outfits, packing, care, alterations, and body-adjacent privacy boundaries."
+      },
+      {
         "id": "subscription-manager",
         "overlap": "Both track owner-supplied service or item evidence, date windows, source freshness, review questions, and blocked account/payment/provider-contact actions.",
         "difference": "Subscription Manager tracks recurring account-bound services and renewals; Wardrobe Organizer tracks clothing inventory, care, alterations, outfits, packing, and shopping questions without subscription semantics."

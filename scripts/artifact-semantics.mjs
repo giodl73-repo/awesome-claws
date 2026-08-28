@@ -7866,6 +7866,126 @@ function travelLoyaltyFindings(value) {
   return findings;
 }
 
+function professionalNetworkingFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const contactIds = value.contacts.map((item) => item.id);
+  const contactSet = new Set(contactIds);
+  const interactionIds = value.interactions.map((item) => item.id);
+  const followupIds = value.followUps.map((item) => item.id);
+  const introIds = value.introductions.map((item) => item.id);
+  const reminderIds = value.reminders.map((item) => item.id);
+  const gapIds = value.gaps.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const crossRefs = new Set([
+    ...sourceIds,
+    ...contactIds,
+    ...interactionIds,
+    ...followupIds,
+    ...introIds,
+    ...reminderIds,
+    ...gapIds,
+    ...questionIds,
+  ]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(contactIds, "contacts", "Contact id"),
+    ...uniqueFindings(interactionIds, "interactions", "Interaction id"),
+    ...uniqueFindings(followupIds, "followUps", "Follow-up id"),
+    ...uniqueFindings(introIds, "introductions", "Introduction id"),
+    ...uniqueFindings(reminderIds, "reminders", "Reminder id"),
+    ...uniqueFindings(gapIds, "gaps", "Gap id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, contact] of value.contacts.entries()) {
+    findings.push(
+      ...uniqueFindings(contact.sourceRefs, `contacts.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(contact.sourceRefs, sourceSet, `contacts.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, interaction] of value.interactions.entries()) {
+    findings.push(
+      ...uniqueFindings(interaction.contactRefs, `interactions.${index}.contactRefs`, "Contact reference"),
+      ...referenceFindings(interaction.contactRefs, contactSet, `interactions.${index}.contactRefs`, "Contact reference"),
+      ...uniqueFindings(interaction.sourceRefs, `interactions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(interaction.sourceRefs, sourceSet, `interactions.${index}.sourceRefs`, "Source reference"),
+    );
+    if (interaction.state === "current" && interaction.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_interaction_state", `interactions.${index}.sourceRefs`, "Current networking interactions require current source evidence."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["followUps", value.followUps],
+    ["reminders", value.reminders],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...referenceFindings([item.contactRef], contactSet, `${collectionName}.${index}.contactRef`, "Contact reference"),
+        ...uniqueFindings(item.sourceRefs, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+      );
+      if (
+        ["sent-by-owner", "completed-by-owner"].includes(item.state) &&
+        item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+      ) {
+        findings.push(finding("unsupported_completed_item", `${collectionName}.${index}.sourceRefs`, "Sent or completed networking items require current source evidence."));
+      }
+    }
+  }
+  for (const [index, intro] of value.introductions.entries()) {
+    findings.push(
+      ...uniqueFindings(intro.contactRefs, `introductions.${index}.contactRefs`, "Contact reference"),
+      ...referenceFindings(intro.contactRefs, contactSet, `introductions.${index}.contactRefs`, "Contact reference"),
+      ...uniqueFindings(intro.sourceRefs, `introductions.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(intro.sourceRefs, sourceSet, `introductions.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      intro.state === "needs-owner-review" &&
+      intro.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+    ) {
+      findings.push(finding("unsupported_introduction_state", `introductions.${index}.sourceRefs`, "Owner-review introductions require current consent evidence."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["gaps", value.gaps],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.refs, `${collectionName}.${index}.refs`, "Reference"),
+        ...referenceFindings(item.refs, crossRefs, `${collectionName}.${index}.refs`, "Reference"),
+      );
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, new Set(questionIds), "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting", "sensitive"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready networking packets cannot depend on stale, missing, conflicting, or sensitive sources."));
+  }
+  const actionText = canonicalJson({
+    contacts: value.contacts.map(({ name, organization, relationship }) => ({ name, organization, relationship })),
+    interactions: value.interactions.map(({ label, state }) => ({ label, state })),
+    followUps: value.followUps.map(({ label, state }) => ({ label, state })),
+    introductions: value.introductions.map(({ label, state }) => ({ label, state })),
+    reminders: value.reminders.map(({ label, state }) => ({ label, state })),
+    gaps: value.gaps.map(({ reason }) => reason),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(send messages?|make introductions?|schedule meetings?|cancel meetings?|commit referrals?|contact employers?|contact prospects?|change accounts?|scrape contacts?|update crm|recruiting actions?|sales outreach|career advice|legal advice|financial advice|employment advice|compensation advice|immigration advice|privacy advice|relationship advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Networking artifacts must not instruct outbound messages, introductions, scheduling, scraping, account changes, referral commitments, recruiting actions, sales outreach, or professional advice."));
+  }
+  if (value.handoff.owner === "professional-networking-followup") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Messaging, introduction, scheduling, scraping, CRM, account, referral, recruiting, sales, and professional-advice authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
@@ -7900,6 +8020,7 @@ const validators = {
   "personal-archive-curator": personalArchiveFindings,
   "pet-care-coordinator": petCareFindings,
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
+  "professional-networking-followup": professionalNetworkingFindings,
   "project-manager": projectFindings,
   "product-manager": productFindings,
   "purchase-researcher": purchaseResearchFindings,
