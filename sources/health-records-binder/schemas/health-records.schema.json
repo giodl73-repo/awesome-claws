@@ -1,0 +1,283 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/health-records.schema.json",
+  "title": "Health records binder artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "binder",
+    "sources",
+    "records",
+    "timeline",
+    "medicationReview",
+    "sharingPackets",
+    "gaps",
+    "reviewQuestions",
+    "blockedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.healthRecords.v1"
+    },
+    "binder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "subject", "timezone", "asOf", "purpose"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^health-records-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "subject": { "type": "string", "minLength": 1 },
+        "timezone": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date" },
+        "purpose": {
+          "type": "string",
+          "enum": [
+            "personal-retrieval",
+            "appointment-handoff",
+            "dependent-binder",
+            "school-activity-packet",
+            "second-opinion-packet",
+            "travel-health-packet",
+            "medication-review",
+            "archive-cleanup"
+          ]
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "authority", "freshness", "privacy", "asOf"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "portal-export",
+              "visit-summary",
+              "discharge-instruction",
+              "lab-report",
+              "imaging-report",
+              "medication-list",
+              "immunization-record",
+              "insurance-eob",
+              "caregiver-note",
+              "owner-note"
+            ]
+          },
+          "label": { "type": "string", "minLength": 1 },
+          "authority": {
+            "type": "string",
+            "enum": [
+              "patient-supplied",
+              "provider-portal",
+              "clinic-document",
+              "lab-provider",
+              "imaging-provider",
+              "pharmacy-record",
+              "insurer-document",
+              "caregiver-supplied"
+            ]
+          },
+          "freshness": {
+            "type": "string",
+            "enum": ["current", "stale", "missing", "conflicting", "sensitive"]
+          },
+          "privacy": {
+            "type": "string",
+            "enum": ["owner-only", "dependent-sensitive", "shareable-after-review", "redact-before-sharing"]
+          },
+          "asOf": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "dateState", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^record-[a-z0-9-]+$" },
+          "kind": {
+            "type": "string",
+            "enum": ["visit", "lab", "imaging", "medication", "immunization", "insurance", "admin-note", "caregiver-note"]
+          },
+          "label": { "type": "string", "minLength": 1 },
+          "date": { "type": "string", "format": "date" },
+          "dateState": { "type": "string", "enum": ["known", "approximate", "missing", "conflicting"] },
+          "privacy": {
+            "type": "string",
+            "enum": ["owner-only", "dependent-sensitive", "shareable-after-review", "redact-before-sharing"]
+          },
+          "sourceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" }
+          }
+        }
+      }
+    },
+    "timeline": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "recordRefs", "summary", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^timeline-[a-z0-9-]+$" },
+          "recordRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^record-[a-z0-9-]+$" }
+          },
+          "summary": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["current", "stale", "missing", "conflicting", "sensitive"] },
+          "sourceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" }
+          }
+        }
+      }
+    },
+    "medicationReview": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "freshness", "recordRefs", "ownerQuestion", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^med-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "freshness": { "type": "string", "enum": ["current", "stale", "missing", "conflicting"] },
+          "recordRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^record-[a-z0-9-]+$" }
+          },
+          "ownerQuestion": { "type": "string", "minLength": 1 },
+          "sourceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" }
+          }
+        }
+      }
+    },
+    "sharingPackets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "purpose", "recordRefs", "privacyState", "reviewState", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^packet-[a-z0-9-]+$" },
+          "purpose": { "type": "string", "minLength": 1 },
+          "recordRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^record-[a-z0-9-]+$" }
+          },
+          "privacyState": {
+            "type": "string",
+            "enum": ["owner-approved", "needs-owner-review", "redact-before-sharing", "do-not-share"]
+          },
+          "reviewState": { "type": "string", "enum": ["ready-for-owner-review", "blocked"] },
+          "sourceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" }
+          }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "reason", "refs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^gap-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["missing-record", "stale-source", "conflict", "privacy", "authority", "sensitive"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^(source|record|timeline|med|packet)-[a-z0-9-]+$" }
+          }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "refs", "owner"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^(source|record|timeline|med|packet|gap)-[a-z0-9-]+$" }
+          },
+          "owner": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 9,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "diagnose",
+          "triage",
+          "recommend-treatment",
+          "interpret-results",
+          "change-medication",
+          "message-provider",
+          "upload-records",
+          "share-phi",
+          "schedule-appointment",
+          "pay-bill",
+          "file-insurance-claim",
+          "change-account",
+          "emergency-advice",
+          "legal-advice"
+        ]
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "reviewQuestionRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "type": "string", "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "reviewQuestionRefs": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^question-[a-z0-9-]+$" }
+        },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

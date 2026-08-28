@@ -95,6 +95,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "health-records-binder",
+    schema: "../claws/health-records-binder/schemas/health-records.schema.json",
+    fixture: "../claws/health-records-binder/fixtures/health-records.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "home-repair-coordinator",
     schema: "../claws/home-repair-coordinator/schemas/home-repair.schema.json",
     fixture: "../claws/home-repair-coordinator/fixtures/home-repair.example.json",
@@ -387,6 +393,33 @@ test("personal archive curator preserves privacy, retention, and owner authority
   assert.equal(isValid("personal-archive-curator", danglingCue), false);
 });
 
+test("health records binder preserves source freshness, privacy, and owner authority", () => {
+  const readyWithStaleSource = structuredClone(cases.get("health-records-binder").fixture);
+  readyWithStaleSource.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("health-records-binder", readyWithStaleSource), false);
+
+  const staleMedication = structuredClone(cases.get("health-records-binder").fixture);
+  staleMedication.medicationReview[0].sourceRefs = ["source-imaging-old"];
+  assert.equal(isValid("health-records-binder", staleMedication), false);
+
+  const unsafePacket = structuredClone(cases.get("health-records-binder").fixture);
+  unsafePacket.sharingPackets[0].privacyState = "owner-approved";
+  unsafePacket.sharingPackets[0].reviewState = "ready-for-owner-review";
+  assert.equal(isValid("health-records-binder", unsafePacket), false);
+
+  const actionAdvice = structuredClone(cases.get("health-records-binder").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Interpret test results and message the provider.";
+  assert.equal(isValid("health-records-binder", actionAdvice), false);
+
+  const danglingRecord = structuredClone(cases.get("health-records-binder").fixture);
+  danglingRecord.timeline[0].recordRefs = ["record-missing"];
+  assert.equal(isValid("health-records-binder", danglingRecord), false);
+
+  const agentOwned = structuredClone(cases.get("health-records-binder").fixture);
+  agentOwned.handoff.owner = "health-records-binder";
+  assert.equal(isValid("health-records-binder", agentOwned), false);
+});
+
 test("restaurant venue scout preserves source certainty and owner authority", () => {
   const staleSource = structuredClone(cases.get("restaurant-venue-scout").fixture);
   staleSource.sources[1].freshness = "stale";
@@ -651,6 +684,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["fantasy-sports-manager", (value) => value.lineup[0].sourceRefs.push(value.lineup[0].sourceRefs[0])],
     ["games-backlog-manager", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
     ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],
+    ["health-records-binder", (value) => value.records[0].sourceRefs.push(value.records[0].sourceRefs[0])],
     ["household-budget-steward", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
     ["home-inventory-binder", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["insurance-policy-organizer", (value) => value.coverageItems[0].sourceRefs.push(value.coverageItems[0].sourceRefs[0])],

@@ -2121,6 +2121,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "health-records-binder",
+      "acceptedRequest": "Build a private health records binder from the portal export, visit summaries, medication list, immunization PDF, lab report pointers, imaging notes, and caregiver notes I supplied. Make a timeline and a sharing packet for my next appointment, but do not diagnose anything, interpret results, change meds, message the clinic, upload records, share PHI, schedule, pay, file insurance, or decide urgency.",
+      "requiredEvidence": [
+        "Owner-supplied portal exports, visit summaries, discharge instructions, lab reports, imaging reports, medication and supplement lists, allergies as supplied, immunization records, insurance or EOB pointers, caregiver notes, owner notes, and privacy labels",
+        "Approved record purposes such as personal retrieval, upcoming appointment handoff, dependent-person binder, school or activity packet, second-opinion packet, travel health packet, medication-list review, and archive clean-up",
+        "Owner review goals such as source freshness, missing documents, conflicting records, medication-list uncertainty, privacy and sharing limits, dependent authority, and questions for a clinician or records office",
+        "External actions that must remain blocked or draft-only, including provider messaging, portal uploads, PHI sharing, scheduling, billing, insurance claims, account changes, medical advice, and emergency escalation"
+      ],
+      "authorityBoundaries": [
+        "Do not diagnose, triage, recommend treatment, interpret test results, change medication, advise dosage, decide urgency, certify completeness, or replace clinicians or emergency services",
+        "Do not message providers, submit portal forms, upload records, share protected health information, schedule appointments, change accounts, pay bills, contact insurers, or file insurance claims without exact owner approval",
+        "Do not infer health status, eligibility, prognosis, disability, pregnancy, mental health, family history, sensitive identity facts, or legal meaning from incomplete records"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/health-records-binder-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

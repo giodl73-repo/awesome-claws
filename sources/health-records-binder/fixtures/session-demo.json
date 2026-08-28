@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "health-records-binder",
+  "scenario": "Build a private health records binder from the portal export, visit summaries, medication list, immunization PDF, lab report pointers, imaging notes, and caregiver notes I supplied. Make a timeline and a sharing packet for my next appointment, but do not diagnose anything, interpret results, change meds, message the clinic, upload records, share PHI, schedule, pay, file insurance, or decide urgency.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Build a private health records binder from the portal export, visit summaries, medication list, immunization PDF, lab report pointers, imaging notes, and caregiver notes I supplied. Make a timeline and a sharing packet for my next appointment, but do not diagnose anything, interpret results, change meds, message the clinic, upload records, share PHI, schedule, pay, file insurance, or decide urgency."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/health-records-binder-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Health records binder session handoff",
+    "summary": "A source-backed longitudinal health-record binder with record timeline, medication and immunization freshness, lab and imaging pointers, privacy-reviewed sharing packet, missing/conflicting evidence questions, and all diagnosis, treatment, portal, provider-contact, PHI-sharing, scheduling, billing, insurance, account, and emergency actions blocked.",
+    "output": "outputs/health-records-binder-handoff.md",
+    "items": [
+      {
+        "title": "Health record source ledger",
+        "summary": "Every source, record, timeline item, medication-list item, sharing packet, evidence gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Longitudinal visit, lab, imaging, medication, and immunization timeline",
+        "summary": "Every binder claim traces to supplied or approved evidence without hiding stale, partial, missing, conflicting, duplicate, sensitive, or dependent-person source state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Medication and record freshness register",
+        "summary": "Protected health information, dependent details, mental-health notes, pregnancy notes, disability details, genetic or family-history details, account information, insurance information, and contact details are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-reviewed sharing packet and privacy checklist",
+        "summary": "Diagnosis, triage, treatment, medication changes, result interpretation, provider messaging, portal submissions, uploads, PHI sharing, scheduling, payments, billing, insurance claims, legal advice, and emergency decisions remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Missing, stale, conflicting, and sensitive evidence question list",
+        "summary": "Every source, record, timeline item, medication-list item, sharing packet, evidence gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked diagnosis, treatment, portal, provider-contact, PHI-sharing, scheduling, billing, insurance, emergency, and account-action handoff",
+        "summary": "Every binder claim traces to supplied or approved evidence without hiding stale, partial, missing, conflicting, duplicate, sensitive, or dependent-person source state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -7211,6 +7211,126 @@ function medicalAppointmentFindings(value) {
   return findings;
 }
 
+function healthRecordsFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const recordIds = value.records.map((item) => item.id);
+  const recordSet = new Set(recordIds);
+  const timelineIds = value.timeline.map((item) => item.id);
+  const medIds = value.medicationReview.map((item) => item.id);
+  const packetIds = value.sharingPackets.map((item) => item.id);
+  const gapIds = value.gaps.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const crossRefs = new Set([
+    ...sourceIds,
+    ...recordIds,
+    ...timelineIds,
+    ...medIds,
+    ...packetIds,
+    ...gapIds,
+    ...questionIds,
+  ]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(recordIds, "records", "Record id"),
+    ...uniqueFindings(timelineIds, "timeline", "Timeline id"),
+    ...uniqueFindings(medIds, "medicationReview", "Medication review id"),
+    ...uniqueFindings(packetIds, "sharingPackets", "Sharing packet id"),
+    ...uniqueFindings(gapIds, "gaps", "Gap id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, record] of value.records.entries()) {
+    findings.push(
+      ...uniqueFindings(record.sourceRefs, `records.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(record.sourceRefs, sourceSet, `records.${index}.sourceRefs`, "Source reference"),
+    );
+    if (record.dateState === "known" && !record.date) {
+      findings.push(finding("missing_record_date", `records.${index}.date`, "Known health record dates must include the supplied date."));
+    }
+    if (
+      record.privacy === "shareable-after-review" &&
+      record.sourceRefs.some((ref) => ["owner-only", "dependent-sensitive", "redact-before-sharing"].includes(sourceById.get(ref)?.privacy))
+    ) {
+      findings.push(finding("unsafe_record_privacy", `records.${index}.privacy`, "Records cannot be marked shareable when any supporting source still requires owner-only, dependent-sensitive, or redaction review."));
+    }
+  }
+  for (const [index, item] of value.timeline.entries()) {
+    findings.push(
+      ...uniqueFindings(item.recordRefs, `timeline.${index}.recordRefs`, "Record reference"),
+      ...referenceFindings(item.recordRefs, recordSet, `timeline.${index}.recordRefs`, "Record reference"),
+      ...uniqueFindings(item.sourceRefs, `timeline.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `timeline.${index}.sourceRefs`, "Source reference"),
+    );
+    if (item.state === "current" && item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_timeline_state", `timeline.${index}.sourceRefs`, "Current timeline items require current source evidence."));
+    }
+  }
+  for (const [index, item] of value.medicationReview.entries()) {
+    findings.push(
+      ...uniqueFindings(item.recordRefs, `medicationReview.${index}.recordRefs`, "Record reference"),
+      ...referenceFindings(item.recordRefs, recordSet, `medicationReview.${index}.recordRefs`, "Record reference"),
+      ...uniqueFindings(item.sourceRefs, `medicationReview.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `medicationReview.${index}.sourceRefs`, "Source reference"),
+    );
+    if (item.freshness === "current" && item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_medication_freshness", `medicationReview.${index}.sourceRefs`, "Current medication review entries require current source evidence."));
+    }
+  }
+  for (const [index, item] of value.sharingPackets.entries()) {
+    findings.push(
+      ...uniqueFindings(item.recordRefs, `sharingPackets.${index}.recordRefs`, "Record reference"),
+      ...referenceFindings(item.recordRefs, recordSet, `sharingPackets.${index}.recordRefs`, "Record reference"),
+      ...uniqueFindings(item.sourceRefs, `sharingPackets.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `sharingPackets.${index}.sourceRefs`, "Source reference"),
+    );
+    if (item.reviewState === "ready-for-owner-review" && item.privacyState !== "owner-approved") {
+      findings.push(finding("unapproved_sharing_packet", `sharingPackets.${index}.privacyState`, "Ready sharing packets require explicit owner-approved privacy state."));
+    }
+    if (
+      item.privacyState === "owner-approved" &&
+      item.sourceRefs.some((ref) => ["owner-only", "dependent-sensitive", "redact-before-sharing"].includes(sourceById.get(ref)?.privacy))
+    ) {
+      findings.push(finding("unsafe_sharing_privacy", `sharingPackets.${index}.sourceRefs`, "Sharing packets cannot be owner-approved while any supporting source still requires redaction, owner-only handling, or dependent-sensitive handling."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["gaps", value.gaps],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.refs, `${collectionName}.${index}.refs`, "Reference"),
+        ...referenceFindings(item.refs, crossRefs, `${collectionName}.${index}.refs`, "Reference"),
+      );
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, new Set(questionIds), "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting", "sensitive"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready health records binders cannot depend on stale, missing, conflicting, or sensitive sources."));
+  }
+  const actionText = canonicalJson({
+    timeline: value.timeline.map(({ summary }) => summary),
+    medicationReview: value.medicationReview.map(({ label, ownerQuestion }) => ({ label, ownerQuestion })),
+    sharingPackets: value.sharingPackets.map(({ purpose }) => purpose),
+    gaps: value.gaps.map(({ reason }) => reason),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(diagnos(?:e|is)|triage|recommend treatment|treatment recommendation|interpret results?|interpret test results?|change med(?:ication)?s?|change medication|advise dosage|dosage advice|decide urgency|urgent decision|emergency advice|message providers?|contact providers?|submit portal forms?|portal submission|upload records?|share phi|share protected health|schedule appointments?|pay bills?|file insurance claims?|contact insurers?|change accounts?|billing advice|insurance advice|medical advice|legal advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Health records binders must not instruct diagnosis, triage, treatment, result interpretation, medication, portal, provider-contact, upload, PHI-sharing, scheduling, billing, insurance, account, legal, or emergency actions."));
+  }
+  if (value.handoff.owner === "health-records-binder") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Clinical, portal, provider-contact, upload, PHI-sharing, scheduling, billing, insurance, account, legal, and emergency authority must remain with the named owner or qualified humans."));
+  }
+  return findings;
+}
+
 function documentRenewalFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const documentIds = value.documents.map((item) => item.id);
@@ -7302,6 +7422,7 @@ const validators = {
   "games-backlog-manager": gamesBacklogFindings,
   "gift-relationship-manager": giftRelationshipFindings,
   "green-thumb-coordinator": greenThumbFindings,
+  "health-records-binder": healthRecordsFindings,
   "home-repair-coordinator": homeRepairFindings,
   "household-budget-steward": householdBudgetFindings,
   "home-inventory-binder": homeInventoryFindings,

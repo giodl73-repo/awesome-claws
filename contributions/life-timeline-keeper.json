@@ -101,6 +101,11 @@
         "difference": "Personal Archive Curator indexes broad archive items for retrieval; Life Timeline Keeper builds a dated event chronology with people, places, media/document pointers, memory certainty, and sharing-scope review."
       },
       {
+        "id": "health-records-binder",
+        "overlap": "Both may handle sensitive dates, documents, caregiver or family context, privacy labels, source certainty, review questions, and blocked medical or disclosure authority.",
+        "difference": "Health Records Binder organizes clinical records, medication and immunization freshness, lab and imaging pointers, and PHI sharing packets; Life Timeline Keeper preserves owner-reviewed life events and memories without building a medical record binder or clinical handoff."
+      },
+      {
         "id": "gift-relationship-manager",
         "overlap": "Both handle people, relationships, occasions, memories, private notes, dates, and blocked message/purchase/share actions.",
         "difference": "Gift and Relationship Manager plans occasions and gifts; Life Timeline Keeper preserves a source-backed personal timeline without buying, messaging, or relationship-management workflows."

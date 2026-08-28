@@ -1,0 +1,214 @@
+{
+  "schemaVersion": "awesomeClaws.healthRecords.v1",
+  "binder": {
+    "id": "health-records-family-followup",
+    "owner": "Avery Chen",
+    "subject": "Avery Chen",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-28",
+    "purpose": "appointment-handoff"
+  },
+  "sources": [
+    {
+      "id": "source-portal-export",
+      "kind": "portal-export",
+      "label": "Owner-supplied patient portal export, 2026-08-25",
+      "authority": "provider-portal",
+      "freshness": "current",
+      "privacy": "owner-only",
+      "asOf": "2026-08-25"
+    },
+    {
+      "id": "source-visit-summary",
+      "kind": "visit-summary",
+      "label": "Clinic visit summary, 2026-08-15",
+      "authority": "clinic-document",
+      "freshness": "current",
+      "privacy": "redact-before-sharing",
+      "asOf": "2026-08-15"
+    },
+    {
+      "id": "source-med-list",
+      "kind": "medication-list",
+      "label": "Pharmacy medication list, 2026-08-20",
+      "authority": "pharmacy-record",
+      "freshness": "current",
+      "privacy": "redact-before-sharing",
+      "asOf": "2026-08-20"
+    },
+    {
+      "id": "source-immunization",
+      "kind": "immunization-record",
+      "label": "Immunization PDF supplied by owner",
+      "authority": "patient-supplied",
+      "freshness": "current",
+      "privacy": "shareable-after-review",
+      "asOf": "2026-08-01"
+    },
+    {
+      "id": "source-imaging-old",
+      "kind": "imaging-report",
+      "label": "Imaging report pointer from older portal archive",
+      "authority": "imaging-provider",
+      "freshness": "stale",
+      "privacy": "owner-only",
+      "asOf": "2025-11-03"
+    },
+    {
+      "id": "source-caregiver-note",
+      "kind": "caregiver-note",
+      "label": "Caregiver note supplied for appointment logistics",
+      "authority": "caregiver-supplied",
+      "freshness": "sensitive",
+      "privacy": "dependent-sensitive",
+      "asOf": "2026-08-24"
+    }
+  ],
+  "records": [
+    {
+      "id": "record-followup-visit",
+      "kind": "visit",
+      "label": "Follow-up visit summary and instructions",
+      "date": "2026-08-15",
+      "dateState": "known",
+      "privacy": "redact-before-sharing",
+      "sourceRefs": ["source-visit-summary", "source-portal-export"]
+    },
+    {
+      "id": "record-lab-panel",
+      "kind": "lab",
+      "label": "Lab report pointer listed in portal export",
+      "date": "2026-08-18",
+      "dateState": "known",
+      "privacy": "owner-only",
+      "sourceRefs": ["source-portal-export"]
+    },
+    {
+      "id": "record-med-list",
+      "kind": "medication",
+      "label": "Medication and supplement list for clinician review",
+      "date": "2026-08-20",
+      "dateState": "known",
+      "privacy": "redact-before-sharing",
+      "sourceRefs": ["source-med-list"]
+    },
+    {
+      "id": "record-immunization",
+      "kind": "immunization",
+      "label": "Immunization record PDF",
+      "date": "2026-08-01",
+      "dateState": "known",
+      "privacy": "shareable-after-review",
+      "sourceRefs": ["source-immunization"]
+    },
+    {
+      "id": "record-imaging-pointer",
+      "kind": "imaging",
+      "label": "Older imaging report pointer requiring owner refresh",
+      "date": "2025-11-03",
+      "dateState": "known",
+      "privacy": "owner-only",
+      "sourceRefs": ["source-imaging-old"]
+    },
+    {
+      "id": "record-caregiver-context",
+      "kind": "caregiver-note",
+      "label": "Caregiver logistics and privacy note",
+      "date": "2026-08-24",
+      "dateState": "known",
+      "privacy": "dependent-sensitive",
+      "sourceRefs": ["source-caregiver-note"]
+    }
+  ],
+  "timeline": [
+    {
+      "id": "timeline-followup",
+      "recordRefs": ["record-followup-visit", "record-lab-panel"],
+      "summary": "Follow-up visit and lab pointer are current owner-supplied records for the next appointment handoff.",
+      "state": "current",
+      "sourceRefs": ["source-visit-summary", "source-portal-export"]
+    },
+    {
+      "id": "timeline-imaging-gap",
+      "recordRefs": ["record-imaging-pointer"],
+      "summary": "Older imaging report pointer is retained as a retrieval gap, not as current clinical evidence.",
+      "state": "stale",
+      "sourceRefs": ["source-imaging-old"]
+    }
+  ],
+  "medicationReview": [
+    {
+      "id": "med-owner-review",
+      "label": "Medication and supplement list freshness",
+      "freshness": "current",
+      "recordRefs": ["record-med-list"],
+      "ownerQuestion": "Confirm with the clinician whether the supplied medication list is still the list you want reviewed.",
+      "sourceRefs": ["source-med-list"]
+    }
+  ],
+  "sharingPackets": [
+    {
+      "id": "packet-next-appointment",
+      "purpose": "Owner-reviewed next appointment packet",
+      "recordRefs": ["record-followup-visit", "record-med-list", "record-immunization", "record-imaging-pointer"],
+      "privacyState": "needs-owner-review",
+      "reviewState": "blocked",
+      "sourceRefs": ["source-visit-summary", "source-med-list", "source-immunization", "source-imaging-old"]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-imaging-refresh",
+      "kind": "stale-source",
+      "reason": "The imaging pointer is retained for retrieval, but the source is stale and cannot support a current sharing packet without owner review.",
+      "refs": ["source-imaging-old", "record-imaging-pointer", "packet-next-appointment"]
+    },
+    {
+      "id": "gap-caregiver-privacy",
+      "kind": "privacy",
+      "reason": "Caregiver context is sensitive and should not be included in an appointment packet unless the owner approves the exact disclosure.",
+      "refs": ["source-caregiver-note", "record-caregiver-context"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-imaging-current",
+      "question": "Do you have a newer imaging report or portal export for this pointer?",
+      "reason": "The binder should keep stale imaging evidence visible without treating it as current.",
+      "refs": ["gap-imaging-refresh"],
+      "owner": "Avery Chen"
+    },
+    {
+      "id": "question-packet-redactions",
+      "question": "Which medication, immunization, and caregiver details should be redacted before sharing any packet?",
+      "reason": "The Claw can prepare a review checklist but cannot disclose protected details or decide redactions for the owner.",
+      "refs": ["packet-next-appointment", "record-med-list", "record-caregiver-context"],
+      "owner": "Avery Chen"
+    }
+  ],
+  "blockedActions": [
+    "diagnose",
+    "triage",
+    "recommend-treatment",
+    "interpret-results",
+    "change-medication",
+    "message-provider",
+    "upload-records",
+    "share-phi",
+    "schedule-appointment",
+    "pay-bill",
+    "file-insurance-claim",
+    "change-account",
+    "emergency-advice",
+    "legal-advice"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Avery Chen",
+    "reviewQuestionRefs": ["question-imaging-current", "question-packet-redactions"],
+    "prohibitedActions": [
+      "Do not diagnose, triage, recommend treatment, interpret results, or change medication.",
+      "Do not message providers, upload records, share PHI, schedule appointments, pay bills, file insurance claims, or change accounts."
+    ]
+  }
+}
