@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "awesomeClaws.travelLoyalty.v1",
+  "portfolio": { "id": "travel-loyalty-morgan", "owner": "Morgan Lee", "asOf": "2026-08-28", "timezone": "America/Los_Angeles" },
+  "sources": [
+    { "id": "source-air-statement", "kind": "airline-statement", "label": "Masked airline miles statement", "freshness": "current", "privacy": "redact-before-sharing", "asOf": "2026-08-26" },
+    { "id": "source-hotel-certificate", "kind": "certificate-notice", "label": "Hotel free-night certificate email", "freshness": "current", "privacy": "owner-only", "asOf": "2026-08-22" },
+    { "id": "source-card-points", "kind": "credit-card-statement", "label": "Credit-card rewards statement", "freshness": "sensitive", "privacy": "owner-only", "asOf": "2026-08-27" },
+    { "id": "source-transfer-page-old", "kind": "transfer-page", "label": "Saved transfer partner page", "freshness": "stale", "privacy": "shareable-after-review", "asOf": "2026-05-01" },
+    { "id": "source-trip-goal", "kind": "trip-goal", "label": "Owner note for winter family trip", "freshness": "current", "privacy": "owner-only", "asOf": "2026-08-28" },
+    { "id": "source-award-note", "kind": "award-search-note", "label": "Owner-supplied award-search notes", "freshness": "conflicting", "privacy": "owner-only", "asOf": "2026-08-20" }
+  ],
+  "programs": [
+    { "id": "program-air", "name": "Northstar Air", "kind": "airline", "accountLabel": "masked-air-8842", "privacy": "redact-before-sharing", "sourceRefs": ["source-air-statement"] },
+    { "id": "program-hotel", "name": "Harbor Hotels", "kind": "hotel", "accountLabel": "masked-hotel-2210", "privacy": "owner-only", "sourceRefs": ["source-hotel-certificate"] },
+    { "id": "program-card", "name": "Everyday Rewards", "kind": "transferable-points", "accountLabel": "masked-card-4431", "privacy": "owner-only", "sourceRefs": ["source-card-points"] }
+  ],
+  "balances": [
+    { "id": "balance-air", "programRef": "program-air", "amount": 62000, "unit": "miles", "expiration": "2027-03-31", "state": "current", "sourceRefs": ["source-air-statement"] },
+    { "id": "balance-card", "programRef": "program-card", "amount": 94000, "unit": "points", "expiration": null, "state": "sensitive", "sourceRefs": ["source-card-points"] }
+  ],
+  "certificates": [
+    { "id": "certificate-hotel-night", "programRef": "program-hotel", "label": "One free-night certificate", "expiresAt": "2026-11-15", "state": "usable-after-owner-review", "sourceRefs": ["source-hotel-certificate"] }
+  ],
+  "benefits": [
+    { "id": "benefit-air-bag", "programRef": "program-air", "label": "Checked-bag benefit noted on current statement", "state": "supported", "sourceRefs": ["source-air-statement"] },
+    { "id": "benefit-hotel-late-checkout", "programRef": "program-hotel", "label": "Late checkout language needs owner review", "state": "needs-owner-review", "sourceRefs": ["source-hotel-certificate"] }
+  ],
+  "tripGoals": [
+    { "id": "trip-winter-family", "label": "Winter family trip idea", "window": "December school break", "party": "Two adults and one child", "sourceRefs": ["source-trip-goal"] }
+  ],
+  "redemptionCandidates": [
+    { "id": "candidate-air-winter", "tripRef": "trip-winter-family", "programRef": "program-air", "balanceRefs": ["balance-air"], "label": "Air miles candidate for winter trip review", "state": "needs-evidence", "riskRefs": ["gap-award-conflict"], "sourceRefs": ["source-air-statement", "source-award-note"] },
+    { "id": "candidate-hotel-night", "tripRef": "trip-winter-family", "programRef": "program-hotel", "balanceRefs": ["balance-air"], "label": "Hotel certificate date-fit review", "state": "review-candidate", "riskRefs": ["gap-certificate-expiration"], "sourceRefs": ["source-hotel-certificate", "source-trip-goal"] }
+  ],
+  "gaps": [
+    { "id": "gap-card-sensitive", "kind": "privacy", "reason": "Credit-card rewards details remain owner-only and cannot support a shared packet without redaction.", "refs": ["source-card-points", "program-card", "balance-card"] },
+    { "id": "gap-transfer-stale", "kind": "transfer-risk", "reason": "The saved transfer page is stale, so transfer assumptions stay unresolved.", "refs": ["source-transfer-page-old", "program-card"] },
+    { "id": "gap-award-conflict", "kind": "blackout-risk", "reason": "Owner notes show conflicting award-search results for the winter trip.", "refs": ["source-award-note", "candidate-air-winter"] },
+    { "id": "gap-certificate-expiration", "kind": "certificate-risk", "reason": "The hotel certificate expires before some possible winter dates.", "refs": ["certificate-hotel-night", "trip-winter-family", "candidate-hotel-night"] }
+  ],
+  "reviewQuestions": [
+    { "id": "question-redaction", "question": "Which account labels may appear in a shared travel packet?", "reason": "Account-sensitive program details need owner redaction choices.", "refs": ["gap-card-sensitive"], "owner": "Morgan Lee" },
+    { "id": "question-trip-window", "question": "Which exact dates are in scope for the winter trip review?", "reason": "Certificate and award notes cannot be matched to dates until the owner narrows the window.", "refs": ["trip-winter-family", "gap-certificate-expiration", "gap-award-conflict"], "owner": "Morgan Lee" },
+    { "id": "question-transfer-evidence", "question": "Do you have a current transfer partner page or statement export?", "reason": "The stale transfer page stays visible as a gap rather than a current assumption.", "refs": ["gap-transfer-stale"], "owner": "Morgan Lee" }
+  ],
+  "blockedActions": ["book-travel", "redeem-award", "transfer-points", "buy-points", "apply-certificate", "change-account", "pay-fee", "contact-provider", "alter-itinerary", "assign-cash-value", "tax-advice", "legal-advice", "financial-advice", "credit-card-advice", "travel-advice", "immigration-advice", "insurance-advice", "loyalty-program-advice"],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Morgan Lee",
+    "reviewQuestionRefs": ["question-redaction", "question-trip-window", "question-transfer-evidence"],
+    "prohibitedActions": [
+      "Do not book travel, redeem awards, transfer points, buy points, apply certificates, pay fees, contact providers, change accounts, or alter itineraries.",
+      "Do not assign cash value or give tax, legal, financial, credit-card, travel, immigration, insurance, or loyalty-program advice."
+    ]
+  }
+}

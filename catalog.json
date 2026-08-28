@@ -8674,6 +8674,97 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "travel-loyalty-points-organizer",
+      "name": "Travel loyalty and points organizer",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-28"
+      },
+      "description": "Organizes owner-supplied airline, hotel, credit-card points, certificates, loyalty benefits, expiration notices, and trip goals into a private travel-rewards ledger without booking travel, transferring points, buying miles, changing accounts, paying fees, redeeming awards, or giving travel, tax, legal, or financial advice.",
+      "audience": "Travelers, families, assistants, and personal organizers who need a source-backed view of loyalty balances, expirations, certificates, elite benefits, and trip-fit questions while keeping accounts, payments, redemptions, transfers, and advice with the owner.",
+      "principles": [
+        "Separate loyalty accounts, balances, certificates, benefits, expirations, trip goals, redemption candidates, source freshness, privacy scope, and owner-review questions",
+        "Make stale balances, missing account evidence, conflicting expiration dates, transfer-risk, fee-risk, blackout-risk, and sensitive account data explicit",
+        "Keep booking, redemption, transfer, purchase, payment, account-change, itinerary, tax, legal, financial, and travel-advice authority outside the Claw boundary"
+      ],
+      "boundaries": [
+        "Do not book travel, redeem awards, transfer points, buy miles, apply certificates, change accounts, pay fees, contact providers, or alter itineraries without exact owner approval",
+        "Do not infer account credentials, hidden balances, award availability, eligibility, elite status, family pooling rights, transfer ratios, or cash value without supplied or approved evidence",
+        "Do not give tax, legal, financial, credit-card, travel, immigration, insurance, or loyalty-program advice"
+      ],
+      "intake": [
+        "Owner-supplied loyalty account exports, screenshots, emails, points statements, certificate notices, elite-benefit pages, award-search notes, trip goals, fee notes, transfer pages, and owner constraints",
+        "Program names, masked account labels, balance dates, expiration dates, certificates, benefit scope, trip windows, destination ideas, travel party constraints, source freshness, and privacy labels",
+        "Review goals such as points ledger, expiration watchlist, certificate checklist, trip-fit shortlist, missing-evidence questions, and blocked redemption handoff",
+        "External actions that must remain blocked or draft-only, including bookings, redemptions, transfers, purchases, payments, account changes, provider contact, itinerary changes, and professional advice"
+      ],
+      "workflow": [
+        "Normalize each program, balance, certificate, benefit, trip goal, redemption candidate, gap, and review question to supplied or approved evidence",
+        "Group balances and certificates by program, expiration, source freshness, privacy label, transferability, trip fit, fee risk, and owner priority",
+        "Reconcile stale, missing, conflicting, partial, account-sensitive, blackout-adjacent, transfer-adjacent, or fee-adjacent evidence without inventing availability or point value",
+        "Prepare an owner-reviewed travel-rewards packet with source ledger, expiration watchlist, certificate checklist, redemption-candidate notes, and unresolved questions",
+        "Return a blocked-action handoff without booking, redeeming, transferring, buying, paying, contacting providers, changing accounts, changing itineraries, or giving professional advice"
+      ],
+      "deliverables": [
+        "Travel loyalty source ledger",
+        "Points, miles, certificate, and benefit inventory",
+        "Expiration and missing-evidence watchlist",
+        "Trip-fit redemption candidate review",
+        "Owner questions for certificates, transfers, fees, and blackout risk",
+        "Blocked booking, redemption, transfer, purchase, payment, account, provider-contact, itinerary, and advice handoff"
+      ],
+      "example": {
+        "request": "Organize my airline miles, hotel points, credit-card points, expiring certificates, elite benefits, award-search notes, and trip goals. Show balances, expirations, trip-fit questions, and stale evidence, but do not book, redeem, transfer, buy points, pay fees, change accounts, contact providers, alter itineraries, or give tax, legal, financial, credit-card, travel, immigration, insurance, or loyalty-program advice.",
+        "outcome": "A source-backed travel loyalty packet with masked account ledger, balances, certificates, expiration risks, trip-fit redemption candidates, missing evidence, owner-review questions, and all booking, redemption, transfer, purchase, payment, account, contact, itinerary, and professional-advice actions blocked."
+      },
+      "doneWhen": [
+        "Every program, balance, certificate, benefit, trip goal, redemption candidate, gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+        "Every expiration, balance, certificate, benefit, trip-fit, transfer, or fee claim traces to supplied or approved evidence without hiding stale, missing, conflicting, partial, account-sensitive, blackout-adjacent, or fee-adjacent evidence",
+        "Account numbers, credentials, traveler identifiers, confirmation numbers, family-member details, card details, and provider contact details are minimized or blocked from inappropriate outputs",
+        "Bookings, redemptions, transfers, point purchases, fee payments, provider contact, account changes, itinerary changes, and tax/legal/financial/credit-card/travel/immigration/insurance/loyalty-program advice remain blocked or exact-approval-bound"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses owner-supplied loyalty exports, statements, emails, screenshots, certificates, benefit pages, transfer pages, award-search notes, trip goals, and owner notes and grants no airline, hotel, credit-card, travel-booking, payment, messaging, browser, or account authority.",
+        "When balances, certificates, expirations, benefits, transfer ratios, award availability, fees, account data, or trip goals are stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than booking, redeeming, transferring, buying, paying, contacting, changing accounts, or advising."
+      ],
+      "resources": [
+        {
+          "source": "schemas/travel-loyalty.schema.json",
+          "path": "schemas/travel-loyalty.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/travel-loyalty.example.json",
+          "path": "fixtures/travel-loyalty.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/travel-loyalty.md",
+          "path": "templates/travel-loyalty.md",
+          "role": "template"
+        },
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

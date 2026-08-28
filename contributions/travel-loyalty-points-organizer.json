@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "travel-loyalty-points-organizer",
+    "name": "Travel loyalty and points organizer",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-28"
+    },
+    "description": "Organizes owner-supplied airline, hotel, credit-card points, certificates, loyalty benefits, expiration notices, and trip goals into a private travel-rewards ledger without booking travel, transferring points, buying miles, changing accounts, paying fees, redeeming awards, or giving travel, tax, legal, or financial advice.",
+    "audience": "Travelers, families, assistants, and personal organizers who need a source-backed view of loyalty balances, expirations, certificates, elite benefits, and trip-fit questions while keeping accounts, payments, redemptions, transfers, and advice with the owner.",
+    "principles": [
+      "Separate loyalty accounts, balances, certificates, benefits, expirations, trip goals, redemption candidates, source freshness, privacy scope, and owner-review questions",
+      "Make stale balances, missing account evidence, conflicting expiration dates, transfer-risk, fee-risk, blackout-risk, and sensitive account data explicit",
+      "Keep booking, redemption, transfer, purchase, payment, account-change, itinerary, tax, legal, financial, and travel-advice authority outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not book travel, redeem awards, transfer points, buy miles, apply certificates, change accounts, pay fees, contact providers, or alter itineraries without exact owner approval",
+      "Do not infer account credentials, hidden balances, award availability, eligibility, elite status, family pooling rights, transfer ratios, or cash value without supplied or approved evidence",
+      "Do not give tax, legal, financial, credit-card, travel, immigration, insurance, or loyalty-program advice"
+    ],
+    "intake": [
+      "Owner-supplied loyalty account exports, screenshots, emails, points statements, certificate notices, elite-benefit pages, award-search notes, trip goals, fee notes, transfer pages, and owner constraints",
+      "Program names, masked account labels, balance dates, expiration dates, certificates, benefit scope, trip windows, destination ideas, travel party constraints, source freshness, and privacy labels",
+      "Review goals such as points ledger, expiration watchlist, certificate checklist, trip-fit shortlist, missing-evidence questions, and blocked redemption handoff",
+      "External actions that must remain blocked or draft-only, including bookings, redemptions, transfers, purchases, payments, account changes, provider contact, itinerary changes, and professional advice"
+    ],
+    "workflow": [
+      "Normalize each program, balance, certificate, benefit, trip goal, redemption candidate, gap, and review question to supplied or approved evidence",
+      "Group balances and certificates by program, expiration, source freshness, privacy label, transferability, trip fit, fee risk, and owner priority",
+      "Reconcile stale, missing, conflicting, partial, account-sensitive, blackout-adjacent, transfer-adjacent, or fee-adjacent evidence without inventing availability or point value",
+      "Prepare an owner-reviewed travel-rewards packet with source ledger, expiration watchlist, certificate checklist, redemption-candidate notes, and unresolved questions",
+      "Return a blocked-action handoff without booking, redeeming, transferring, buying, paying, contacting providers, changing accounts, changing itineraries, or giving professional advice"
+    ],
+    "deliverables": [
+      "Travel loyalty source ledger",
+      "Points, miles, certificate, and benefit inventory",
+      "Expiration and missing-evidence watchlist",
+      "Trip-fit redemption candidate review",
+      "Owner questions for certificates, transfers, fees, and blackout risk",
+      "Blocked booking, redemption, transfer, purchase, payment, account, provider-contact, itinerary, and advice handoff"
+    ],
+    "example": {
+      "request": "Organize my airline miles, hotel points, credit-card points, expiring certificates, elite benefits, award-search notes, and trip goals. Show balances, expirations, trip-fit questions, and stale evidence, but do not book, redeem, transfer, buy points, pay fees, change accounts, contact providers, alter itineraries, or give tax, legal, financial, credit-card, travel, immigration, insurance, or loyalty-program advice.",
+      "outcome": "A source-backed travel loyalty packet with masked account ledger, balances, certificates, expiration risks, trip-fit redemption candidates, missing evidence, owner-review questions, and all booking, redemption, transfer, purchase, payment, account, contact, itinerary, and professional-advice actions blocked."
+    },
+    "doneWhen": [
+      "Every program, balance, certificate, benefit, trip goal, redemption candidate, gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+      "Every expiration, balance, certificate, benefit, trip-fit, transfer, or fee claim traces to supplied or approved evidence without hiding stale, missing, conflicting, partial, account-sensitive, blackout-adjacent, or fee-adjacent evidence",
+      "Account numbers, credentials, traveler identifiers, confirmation numbers, family-member details, card details, and provider contact details are minimized or blocked from inappropriate outputs",
+      "Bookings, redemptions, transfers, point purchases, fee payments, provider contact, account changes, itinerary changes, and tax/legal/financial/credit-card/travel/immigration/insurance/loyalty-program advice remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses owner-supplied loyalty exports, statements, emails, screenshots, certificates, benefit pages, transfer pages, award-search notes, trip goals, and owner notes and grants no airline, hotel, credit-card, travel-booking, payment, messaging, browser, or account authority.",
+      "When balances, certificates, expirations, benefits, transfer ratios, award availability, fees, account data, or trip goals are stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than booking, redeeming, transferring, buying, paying, contacting, changing accounts, or advising."
+    ],
+    "resources": [
+      {
+        "source": "schemas/travel-loyalty.schema.json",
+        "path": "schemas/travel-loyalty.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/travel-loyalty.example.json",
+        "path": "fixtures/travel-loyalty.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/travel-loyalty.md",
+        "path": "templates/travel-loyalty.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Travelers accumulate points, miles, certificates, elite benefits, and expiration notices across programs, but an organizer must not access accounts, book travel, redeem awards, transfer points, pay fees, or make financial/travel decisions.",
+    "repeatableJob": "Reconcile supplied travel-loyalty evidence into an owner-reviewed ledger, expiration watchlist, certificate checklist, trip-fit redemption candidate packet, and blocked-action handoff while preserving account, payment, redemption, transfer, itinerary, and advice boundaries.",
+    "proofPlan": "Prove the generated X3 loyalty packet with a strict schema, fixture, semantic negative tests, public artifact validation, current Control UI screenshot, focused prepare/test proof, contribution review, and full npm run check.",
+    "existingAlternatives": [
+      {
+        "id": "travel-concierge",
+        "overlap": "Both involve trips, destinations, travel constraints, itineraries, bookings, provider evidence, and blocked travel decisions.",
+        "difference": "Travel Concierge plans trip options and booking handoff; Travel Loyalty and Points Organizer tracks loyalty balances, certificates, expirations, benefits, transfer risks, and redemption-candidate evidence before any itinerary or booking decision."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both track recurring account-adjacent services, dates, fees, source freshness, privacy labels, and blocked account, payment, cancellation, and advice authority.",
+        "difference": "Subscription Manager manages recurring paid services and renewal hygiene; Travel Loyalty and Points Organizer manages points, miles, certificates, elite benefits, expirations, and award-redemption evidence across travel programs."
+      },
+      {
+        "id": "purchase-researcher",
+        "overlap": "Both compare owner-supplied options, prices or fees, policy evidence, source quality, availability uncertainty, and blocked purchase/payment/account authority.",
+        "difference": "Purchase Researcher compares products before buying; Travel Loyalty and Points Organizer compares loyalty inventory and possible award-use candidates without recommending purchases, transfers, redemptions, or bookings."
+      },
+      {
+        "id": "stock-portfolio-monitor",
+        "overlap": "Both organize balances, valuation-adjacent evidence, source freshness, issuer or program events, privacy, and blocked buy/sell/transfer/tax/financial advice authority.",
+        "difference": "Stock Portfolio Monitor tracks securities holdings and market data; Travel Loyalty and Points Organizer tracks travel-rewards balances and expirations without assigning cash value, investment meaning, or financial advice."
+      },
+      {
+        "id": "benefits-open-enrollment-planner",
+        "overlap": "Both organize benefit-like entitlements, deadlines, documents, owner questions, account-sensitive evidence, and blocked selection, submission, payment, contact, and advice authority.",
+        "difference": "Benefits and Open Enrollment Planner manages employer benefit elections; Travel Loyalty and Points Organizer manages voluntary travel-program benefits, certificates, expirations, and reward-use review packets."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both track expiration dates, official or program evidence, required materials, owner questions, privacy labels, and blocked submissions, bookings, uploads, payments, account changes, and advice.",
+        "difference": "Document Renewal Tracker manages credential and official-document renewals; Travel Loyalty and Points Organizer manages loyalty balances, certificates, benefits, transfer questions, and reward-use evidence."
+      },
+      {
+        "id": "warranty-returns-manager",
+        "overlap": "Both organize account-adjacent evidence, expiration or window dates, certificates or terms, source freshness, missing evidence, and blocked provider contact, payment, account, claim, and advice authority.",
+        "difference": "Warranty and Returns Manager handles product ownership, return windows, warranty claims, shipping, and vendor support; Travel Loyalty and Points Organizer handles travel-program points, miles, certificates, elite benefits, and redemption-candidate review."
+      },
+      {
+        "id": "job-application-tracker",
+        "overlap": "Both organize owner-supplied account-sensitive records, deadlines, source freshness, private notes, review questions, and blocked submissions, contacts, scheduling, account changes, and advice.",
+        "difference": "Job Application Tracker manages candidate-side job-search applications and interviews; Travel Loyalty and Points Organizer manages travel-rewards balances, certificates, expirations, benefits, transfer questions, and trip-fit reward evidence."
+      }
+    ]
+  }
+}
