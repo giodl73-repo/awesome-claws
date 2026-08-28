@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "health-records-binder",
+    "name": "Health records binder",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-28"
+    },
+    "description": "Organizes owner-supplied health records, portal exports, visit summaries, lab and imaging reports, medication lists, immunization records, insurance document pointers, and caregiver notes into a private longitudinal binder without diagnosing, interpreting results, changing care, messaging providers, uploading records, sharing PHI, scheduling, billing, or filing insurance claims.",
+    "audience": "Patients, caregivers, parents, guardians, and household organizers who need a source-backed health-record binder for retrieval, handoff, and owner-reviewed sharing while keeping clinical, portal, provider, billing, insurance, and emergency decisions with qualified humans.",
+    "principles": [
+      "Separate source identity, record type, freshness, privacy scope, clinical/non-clinical status, and owner-review state for every health record",
+      "Preserve stale, missing, conflicting, sensitive, and dependent-person evidence as review questions instead of treating the binder as medically complete",
+      "Keep diagnosis, triage, treatment, result interpretation, medication changes, portal operations, provider contact, PHI disclosure, scheduling, billing, insurance claims, and emergency decisions outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not diagnose, triage, recommend treatment, interpret test results, change medication, advise dosage, decide urgency, certify completeness, or replace clinicians or emergency services",
+      "Do not message providers, submit portal forms, upload records, share protected health information, schedule appointments, change accounts, pay bills, contact insurers, or file insurance claims without exact owner approval",
+      "Do not infer health status, eligibility, prognosis, disability, pregnancy, mental health, family history, sensitive identity facts, or legal meaning from incomplete records"
+    ],
+    "intake": [
+      "Owner-supplied portal exports, visit summaries, discharge instructions, lab reports, imaging reports, medication and supplement lists, allergies as supplied, immunization records, insurance or EOB pointers, caregiver notes, owner notes, and privacy labels",
+      "Approved record purposes such as personal retrieval, upcoming appointment handoff, dependent-person binder, school or activity packet, second-opinion packet, travel health packet, medication-list review, and archive clean-up",
+      "Owner review goals such as source freshness, missing documents, conflicting records, medication-list uncertainty, privacy and sharing limits, dependent authority, and questions for a clinician or records office",
+      "External actions that must remain blocked or draft-only, including provider messaging, portal uploads, PHI sharing, scheduling, billing, insurance claims, account changes, medical advice, and emergency escalation"
+    ],
+    "workflow": [
+      "Normalize each source, health record, timeline event, medication-list item, sharing packet, evidence gap, and review question to supplied or approved evidence",
+      "Group records by owner, subject, date, record type, source authority, freshness, privacy label, dependent-person scope, and clinical/non-clinical handoff purpose",
+      "Reconcile stale, missing, conflicting, partial, duplicate, or sensitive health evidence without diagnosing, interpreting results, certifying urgency, or recommending care",
+      "Prepare a longitudinal binder with source ledger, record timeline, medication and immunization freshness, lab and imaging document pointers, sharing packet candidates, and unresolved gaps",
+      "Return an owner-reviewed handoff with blocked medical, portal, provider-contact, upload, PHI-sharing, scheduling, billing, insurance, account, legal, and emergency actions"
+    ],
+    "deliverables": [
+      "Health record source ledger",
+      "Longitudinal visit, lab, imaging, medication, and immunization timeline",
+      "Medication and record freshness register",
+      "Owner-reviewed sharing packet and privacy checklist",
+      "Missing, stale, conflicting, and sensitive evidence question list",
+      "Blocked diagnosis, treatment, portal, provider-contact, PHI-sharing, scheduling, billing, insurance, emergency, and account-action handoff"
+    ],
+    "example": {
+      "request": "Build a private health records binder from the portal export, visit summaries, medication list, immunization PDF, lab report pointers, imaging notes, and caregiver notes I supplied. Make a timeline and a sharing packet for my next appointment, but do not diagnose anything, interpret results, change meds, message the clinic, upload records, share PHI, schedule, pay, file insurance, or decide urgency.",
+      "outcome": "A source-backed longitudinal health-record binder with record timeline, medication and immunization freshness, lab and imaging pointers, privacy-reviewed sharing packet, missing/conflicting evidence questions, and all diagnosis, treatment, portal, provider-contact, PHI-sharing, scheduling, billing, insurance, account, and emergency actions blocked."
+    },
+    "doneWhen": [
+      "Every source, record, timeline item, medication-list item, sharing packet, evidence gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+      "Every binder claim traces to supplied or approved evidence without hiding stale, partial, missing, conflicting, duplicate, sensitive, or dependent-person source state",
+      "Protected health information, dependent details, mental-health notes, pregnancy notes, disability details, genetic or family-history details, account information, insurance information, and contact details are minimized or blocked from inappropriate outputs",
+      "Diagnosis, triage, treatment, medication changes, result interpretation, provider messaging, portal submissions, uploads, PHI sharing, scheduling, payments, billing, insurance claims, legal advice, and emergency decisions remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied health records, portal exports, visit summaries, medication lists, immunization records, lab and imaging report pointers, insurance document pointers, caregiver notes, and owner notes and grants no medical-record portal, provider-contact, calendar, messaging, upload, sharing, billing, insurance, account, or payment authority.",
+      "When record, source, medication, immunization, lab, imaging, caregiver, dependent, privacy, emergency, billing, insurance, or authority evidence is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than asserting medical completeness or taking action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/health-records.schema.json",
+          "path": "schemas/health-records.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/health-records.example.json",
+          "path": "fixtures/health-records.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/health-records.md",
+          "path": "templates/health-records.md",
+          "role": "template"
+        }
+      ]
+  },
+  "contribution": {
+    "problem": "People accumulate health records across portals, visits, labs, imaging centers, pharmacies, schools, insurers, and caregiver notes, then need a private source-backed binder that is useful for retrieval and handoff without becoming medical advice or portal automation.",
+    "repeatableJob": "Reconcile supplied health-record evidence into a longitudinal owner-reviewed binder, freshness register, and sharing packet while preserving clinical, privacy, portal, provider, billing, insurance, and emergency boundaries.",
+    "proofPlan": "Prove the generated X3 binder with a strict schema, fixture, semantic negative tests, public artifact validation, current Control UI screenshot, focused prepare/test proof, contribution review, and full npm run check.",
+    "existingAlternatives": [
+      {
+        "id": "medical-appointment-prep",
+        "overlap": "Both handle owner-supplied health documents, medication lists, visit context, clinician questions, privacy limits, and blocked clinical/provider actions.",
+        "difference": "Medical Appointment Prep is organized around one upcoming visit packet; Health Records Binder maintains a longitudinal record ledger, timeline, freshness register, and reusable sharing packets across visits and sources."
+      },
+      {
+        "id": "personal-archive-curator",
+        "overlap": "Both index supplied files, notes, links, photos, receipts, and memories with privacy labels and blocked delete/move/share/upload authority.",
+        "difference": "Personal Archive Curator is a generic retrieval archive; Health Records Binder adds health-specific source authority, clinical/non-clinical boundaries, medication/immunization freshness, lab/imaging pointers, and PHI sharing review."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both track documents, stale or missing evidence, dependent-person privacy, and owner-reviewed external actions.",
+        "difference": "Document Renewal Tracker manages expirations and renewal windows for credentials; Health Records Binder manages record provenance, timelines, medication/immunization freshness, and health-record sharing packets without filing or renewal workflows."
+      },
+      {
+        "id": "insurance-policy-organizer",
+        "overlap": "Both may include insurance/EOB pointers, privacy controls, stale-source questions, and blocked carrier, claim, payment, and advice authority.",
+        "difference": "Insurance Policy Organizer reviews policy and claim-readiness evidence; Health Records Binder treats insurance artifacts only as source pointers for a health-record binder and does not evaluate coverage, claim value, or policy meaning."
+      }
+    ]
+  }
+}
