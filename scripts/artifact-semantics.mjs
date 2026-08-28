@@ -7628,6 +7628,109 @@ function documentRenewalFindings(value) {
   return findings;
 }
 
+function jobApplicationFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const applicationIds = value.applications.map((item) => item.id);
+  const applicationSet = new Set(applicationIds);
+  const materialIds = value.materials.map((item) => item.id);
+  const interviewIds = value.interviews.map((item) => item.id);
+  const followupIds = value.followUps.map((item) => item.id);
+  const offerIds = value.offerQuestions.map((item) => item.id);
+  const gapIds = value.gaps.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const crossRefs = new Set([
+    ...sourceIds,
+    ...applicationIds,
+    ...materialIds,
+    ...interviewIds,
+    ...followupIds,
+    ...offerIds,
+    ...gapIds,
+    ...questionIds,
+  ]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(applicationIds, "applications", "Application id"),
+    ...uniqueFindings(materialIds, "materials", "Material id"),
+    ...uniqueFindings(interviewIds, "interviews", "Interview id"),
+    ...uniqueFindings(followupIds, "followUps", "Follow-up id"),
+    ...uniqueFindings(offerIds, "offerQuestions", "Offer question id"),
+    ...uniqueFindings(gapIds, "gaps", "Gap id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, application] of value.applications.entries()) {
+    findings.push(
+      ...uniqueFindings(application.sourceRefs, `applications.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(application.sourceRefs, sourceSet, `applications.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      application.status === "ready-for-owner-review" &&
+      application.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+    ) {
+      findings.push(finding("unsupported_application_state", `applications.${index}.sourceRefs`, "Owner-ready applications require current source evidence."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["materials", value.materials],
+    ["interviews", value.interviews],
+    ["followUps", value.followUps],
+    ["offerQuestions", value.offerQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...referenceFindings([item.applicationRef], applicationSet, `${collectionName}.${index}.applicationRef`, "Application reference"),
+        ...uniqueFindings(item.sourceRefs, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+      );
+      if (
+        ["supplied", "scheduled-by-owner", "sent-by-owner", "answered-by-owner"].includes(item.state) &&
+        item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+      ) {
+        findings.push(finding("unsupported_ready_item", `${collectionName}.${index}.sourceRefs`, "Supplied, scheduled, sent, or answered job-search items require current source evidence."));
+      }
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["gaps", value.gaps],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.refs, `${collectionName}.${index}.refs`, "Reference"),
+        ...referenceFindings(item.refs, crossRefs, `${collectionName}.${index}.refs`, "Reference"),
+      );
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, new Set(questionIds), "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting", "sensitive"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready job-search packets cannot depend on stale, missing, conflicting, or sensitive sources."));
+  }
+  const actionText = canonicalJson({
+    applications: value.applications.map(({ role, company, status, priority }) => ({ role, company, status, priority })),
+    materials: value.materials.map(({ label, state }) => ({ label, state })),
+    interviews: value.interviews.map(({ label, state }) => ({ label, state })),
+    followUps: value.followUps.map(({ label, state }) => ({ label, state })),
+    offerQuestions: value.offerQuestions.map(({ question, state }) => ({ question, state })),
+    gaps: value.gaps.map(({ reason }) => reason),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(submit applications?|upload resumes?|message recruiters?|contact employers?|schedule interviews?|cancel interviews?|change accounts?|fabricate|fake credential|accept offers?|reject offers?|negotiate terms?|legal advice|immigration advice|tax advice|financial advice|employment advice|career advice|salary advice|benefits advice|relocation advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Job application artifacts must not instruct submissions, uploads, recruiter or employer contact, scheduling, account changes, credential fabrication, offer decisions, negotiation, or professional advice."));
+  }
+  if (value.handoff.owner === "job-application-tracker") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Application, upload, contact, scheduling, account, credential, offer, negotiation, and professional-advice authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
@@ -7650,6 +7753,7 @@ const validators = {
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,
+  "job-application-tracker": jobApplicationFindings,
   "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
   "meal-grocery-planner": mealGroceryFindings,

@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "awesomeClaws.jobApplication.v1",
+  "search": {
+    "id": "job-search-morgan-ops",
+    "owner": "Morgan Lee",
+    "asOf": "2026-08-28",
+    "timezone": "America/Los_Angeles"
+  },
+  "sources": [
+    { "id": "source-posting-product-ops", "kind": "job-posting", "label": "Owner-supplied product operations posting", "freshness": "current", "privacy": "shareable-after-review", "asOf": "2026-08-27" },
+    { "id": "source-resume-ops", "kind": "resume-draft", "label": "Owner's operations resume draft", "freshness": "current", "privacy": "redact-before-sharing", "asOf": "2026-08-26" },
+    { "id": "source-portfolio", "kind": "portfolio-link", "label": "Owner-approved portfolio link list", "freshness": "current", "privacy": "shareable-after-review", "asOf": "2026-08-25" },
+    { "id": "source-recruiter-note", "kind": "recruiter-note", "label": "Private recruiter note with direct contact details", "freshness": "sensitive", "privacy": "owner-only", "asOf": "2026-08-28" },
+    { "id": "source-platform-invite", "kind": "interview-invite", "label": "Platform PM screen invite saved by owner", "freshness": "current", "privacy": "owner-only", "asOf": "2026-08-28" },
+    { "id": "source-offer-old", "kind": "offer-letter", "label": "Older contract offer note retained for comparison", "freshness": "stale", "privacy": "owner-only", "asOf": "2026-06-20" },
+    { "id": "source-reference-missing", "kind": "owner-note", "label": "Owner note says references still need confirmation", "freshness": "missing", "privacy": "owner-only", "asOf": "2026-08-28" }
+  ],
+  "applications": [
+    { "id": "application-product-ops", "role": "Product operations manager", "company": "Northstar Systems", "deadline": "2026-09-04", "status": "materials-needed", "priority": "high", "sourceRefs": ["source-posting-product-ops", "source-recruiter-note"] },
+    { "id": "application-platform-pm", "role": "Platform PM", "company": "Harborline Labs", "deadline": null, "status": "interviewing", "priority": "medium", "sourceRefs": ["source-platform-invite"] }
+  ],
+  "materials": [
+    { "id": "material-ops-resume", "applicationRef": "application-product-ops", "kind": "resume", "label": "Operations resume draft", "state": "supplied", "privacy": "redact-before-sharing", "sourceRefs": ["source-resume-ops"] },
+    { "id": "material-ops-cover-letter", "applicationRef": "application-product-ops", "kind": "cover-letter", "label": "Cover letter outline", "state": "needs-owner-review", "privacy": "owner-only", "sourceRefs": ["source-posting-product-ops"] },
+    { "id": "material-platform-reference", "applicationRef": "application-platform-pm", "kind": "reference", "label": "Reference list", "state": "missing", "privacy": "owner-only", "sourceRefs": ["source-reference-missing"] },
+    { "id": "material-platform-portfolio", "applicationRef": "application-platform-pm", "kind": "portfolio", "label": "Platform portfolio links", "state": "supplied", "privacy": "shareable-after-review", "sourceRefs": ["source-portfolio"] }
+  ],
+  "interviews": [
+    { "id": "interview-platform-screen", "applicationRef": "application-platform-pm", "label": "Recruiter screen invite awaiting owner-reviewed time choice", "state": "needs-owner-review", "sourceRefs": ["source-platform-invite", "source-recruiter-note"] }
+  ],
+  "followUps": [
+    { "id": "followup-product-status", "applicationRef": "application-product-ops", "kind": "status-check", "label": "Owner-reviewed status check draft", "state": "draft-for-owner-review", "sourceRefs": ["source-posting-product-ops", "source-recruiter-note"] }
+  ],
+  "offerQuestions": [
+    { "id": "offer-contract-comparison", "applicationRef": "application-product-ops", "question": "Which compensation, location, and start-date fields does the owner want to compare if an offer arrives?", "state": "needs-owner-review", "sourceRefs": ["source-offer-old"] }
+  ],
+  "gaps": [
+    { "id": "gap-reference", "kind": "missing-material", "reason": "Reference names and sharing scope are not owner-confirmed.", "refs": ["source-reference-missing", "material-platform-reference"] },
+    { "id": "gap-sensitive-contact", "kind": "privacy", "reason": "Direct recruiter details stay owner-only until the owner approves any external wording.", "refs": ["source-recruiter-note", "interview-platform-screen", "followup-product-status"] },
+    { "id": "gap-old-offer-note", "kind": "stale-posting", "reason": "The older offer note is retained as context only and cannot support a current commitment.", "refs": ["source-offer-old", "offer-contract-comparison"] }
+  ],
+  "reviewQuestions": [
+    { "id": "question-reference-scope", "question": "Which references, if any, are approved for this search?", "reason": "Reference sharing needs explicit owner confirmation before any packet is treated as complete.", "refs": ["gap-reference"], "owner": "Morgan Lee" },
+    { "id": "question-interview-window", "question": "Which interview windows should stay visible for owner review?", "reason": "The Claw can preserve options, but the exact external step remains owner-controlled.", "refs": ["interview-platform-screen", "gap-sensitive-contact"], "owner": "Morgan Lee" },
+    { "id": "question-offer-fields", "question": "Which offer fields should be tracked as questions rather than decisions?", "reason": "Compensation and location comparisons remain a review packet, not a recommendation.", "refs": ["offer-contract-comparison", "gap-old-offer-note"], "owner": "Morgan Lee" }
+  ],
+  "blockedActions": [
+    "submit-application",
+    "upload-resume",
+    "message-recruiter",
+    "contact-employer",
+    "schedule-interview",
+    "change-account",
+    "fabricate-credential",
+    "accept-offer",
+    "reject-offer",
+    "negotiate-terms",
+    "legal-advice",
+    "immigration-advice",
+    "tax-advice",
+    "financial-advice",
+    "employment-advice",
+    "career-advice",
+    "salary-advice",
+    "benefits-advice",
+    "relocation-advice"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Morgan Lee",
+    "reviewQuestionRefs": ["question-reference-scope", "question-interview-window", "question-offer-fields"],
+    "prohibitedActions": [
+      "Do not apply, upload files, contact employers, contact recruiters, change job-board or email accounts, or choose interview times without exact owner approval.",
+      "Do not fabricate credentials, accept or reject offers, negotiate terms, or give legal, immigration, tax, financial, employment, career, salary, benefits, or relocation advice."
+    ]
+  }
+}

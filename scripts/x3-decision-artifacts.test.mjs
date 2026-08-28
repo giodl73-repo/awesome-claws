@@ -137,6 +137,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "job-application-tracker",
+    schema: "../claws/job-application-tracker/schemas/job-application.schema.json",
+    fixture: "../claws/job-application-tracker/fixtures/job-application.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "life-timeline-keeper",
     schema: "../claws/life-timeline-keeper/schemas/life-timeline.schema.json",
     fixture: "../claws/life-timeline-keeper/fixtures/life-timeline.example.json",
@@ -691,6 +697,32 @@ test("insurance policy organizer preserves policy evidence and owner authority",
   assert.equal(isValid("insurance-policy-organizer", unsupportedReady), false);
 });
 
+test("job application tracker preserves candidate evidence and owner authority", () => {
+  const readyWithStaleSource = structuredClone(cases.get("job-application-tracker").fixture);
+  readyWithStaleSource.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("job-application-tracker", readyWithStaleSource), false);
+
+  const suppliedWithStaleSource = structuredClone(cases.get("job-application-tracker").fixture);
+  suppliedWithStaleSource.materials[0].sourceRefs = ["source-offer-old"];
+  assert.equal(isValid("job-application-tracker", suppliedWithStaleSource), false);
+
+  const actionAdvice = structuredClone(cases.get("job-application-tracker").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Submit applications and message recruiters.";
+  assert.equal(isValid("job-application-tracker", actionAdvice), false);
+
+  const danglingApplication = structuredClone(cases.get("job-application-tracker").fixture);
+  danglingApplication.materials[0].applicationRef = "application-missing";
+  assert.equal(isValid("job-application-tracker", danglingApplication), false);
+
+  const danglingQuestion = structuredClone(cases.get("job-application-tracker").fixture);
+  danglingQuestion.handoff.reviewQuestionRefs = ["question-missing"];
+  assert.equal(isValid("job-application-tracker", danglingQuestion), false);
+
+  const agentOwned = structuredClone(cases.get("job-application-tracker").fixture);
+  agentOwned.handoff.owner = "job-application-tracker";
+  assert.equal(isValid("job-application-tracker", agentOwned), false);
+});
+
 test("public safety state rejects impossible time ranges and dangling alerts", () => {
   const candidate = structuredClone(cases.get("public-safety-monitor").fixture);
   candidate.alerts[0].expiresAt = candidate.alerts[0].issuedAt;
@@ -753,6 +785,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["household-budget-steward", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
     ["home-inventory-binder", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["insurance-policy-organizer", (value) => value.coverageItems[0].sourceRefs.push(value.coverageItems[0].sourceRefs[0])],
+    ["job-application-tracker", (value) => value.applications[0].sourceRefs.push(value.applications[0].sourceRefs[0])],
     ["life-timeline-keeper", (value) => value.events[0].sourceRefs.push(value.events[0].sourceRefs[0])],
     ["medical-appointment-prep", (value) => value.appointments[0].sourceRefs.push(value.appointments[0].sourceRefs[0])],
     ["local-events-watcher", (value) => value.watchlist[0].constraintRefs.push(value.watchlist[0].constraintRefs[0])],

@@ -31,6 +31,7 @@ const schemaNames = {
   "home-inventory-binder": "home-inventory.schema.json",
   "household-steward": "household-operations.schema.json",
   "insurance-policy-organizer": "insurance-policy.schema.json",
+  "job-application-tracker": "job-application.schema.json",
   "life-timeline-keeper": "life-timeline.schema.json",
   "local-events-watcher": "event-watchlist.schema.json",
   "meal-grocery-planner": "meal-grocery.schema.json",
