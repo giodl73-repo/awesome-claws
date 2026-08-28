@@ -29,6 +29,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "benefits-open-enrollment-planner",
+    schema: "../claws/benefits-open-enrollment-planner/schemas/benefits-enrollment.schema.json",
+    fixture: "../claws/benefits-open-enrollment-planner/fixtures/benefits-enrollment.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "care-circle-coordinator",
     schema: "../claws/care-circle-coordinator/schemas/care-circle.schema.json",
     fixture: "../claws/care-circle-coordinator/fixtures/care-circle.example.json",
@@ -420,6 +426,32 @@ test("health records binder preserves source freshness, privacy, and owner autho
   assert.equal(isValid("health-records-binder", agentOwned), false);
 });
 
+test("benefits open enrollment planner preserves deadlines, evidence, and owner authority", () => {
+  const invalidWindow = structuredClone(cases.get("benefits-open-enrollment-planner").fixture);
+  invalidWindow.windows[0].closesAt = invalidWindow.windows[0].opensAt;
+  assert.equal(isValid("benefits-open-enrollment-planner", invalidWindow), false);
+
+  const staleAvailableOption = structuredClone(cases.get("benefits-open-enrollment-planner").fixture);
+  staleAvailableOption.options[0].status = "available";
+  assert.equal(isValid("benefits-open-enrollment-planner", staleAvailableOption), false);
+
+  const readyWithStaleSource = structuredClone(cases.get("benefits-open-enrollment-planner").fixture);
+  readyWithStaleSource.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("benefits-open-enrollment-planner", readyWithStaleSource), false);
+
+  const actionAdvice = structuredClone(cases.get("benefits-open-enrollment-planner").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Choose the plan and submit elections.";
+  assert.equal(isValid("benefits-open-enrollment-planner", actionAdvice), false);
+
+  const danglingCost = structuredClone(cases.get("benefits-open-enrollment-planner").fixture);
+  danglingCost.options[0].costRefs = ["cost-missing"];
+  assert.equal(isValid("benefits-open-enrollment-planner", danglingCost), false);
+
+  const agentOwned = structuredClone(cases.get("benefits-open-enrollment-planner").fixture);
+  agentOwned.handoff.owner = "benefits-open-enrollment-planner";
+  assert.equal(isValid("benefits-open-enrollment-planner", agentOwned), false);
+});
+
 test("restaurant venue scout preserves source certainty and owner authority", () => {
   const staleSource = structuredClone(cases.get("restaurant-venue-scout").fixture);
   staleSource.sources[1].freshness = "stale";
@@ -677,6 +709,7 @@ test("decision artifacts reject duplicate semantic references", () => {
   const mutations = [
     ["change-control-operator", (value) => value.execution.stepResults.push(structuredClone(value.execution.stepResults[0]))],
     ["case-continuity-coordinator", (value) => value.actions[0].evidenceRefs.push(value.actions[0].evidenceRefs[0])],
+    ["benefits-open-enrollment-planner", (value) => value.options[0].sourceRefs.push(value.options[0].sourceRefs[0])],
     ["child-activity-manager", (value) => value.activities[0].sourceRefs.push(value.activities[0].sourceRefs[0])],
     ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],
     ["document-renewal-tracker", (value) => value.documents[0].sourceRefs.push(value.documents[0].sourceRefs[0])],

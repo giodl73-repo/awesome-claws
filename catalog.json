@@ -8401,6 +8401,97 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "benefits-open-enrollment-planner",
+      "name": "Benefits and open enrollment planner",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-28"
+      },
+      "description": "Organizes owner-supplied benefits packets, plan options, enrollment windows, dependent documents, payroll impact notes, coverage-change evidence, and review questions without choosing benefits, submitting elections, changing payroll, filing claims, or giving medical, legal, tax, financial, or insurance advice.",
+      "audience": "Employees, households, caregivers, and benefits organizers who need a private source-backed open-enrollment packet while keeping plan selection, dependent eligibility, payroll, medical, legal, tax, financial, and insurance decisions with qualified humans.",
+      "principles": [
+        "Separate enrollment windows, plan options, source freshness, dependent scope, required documents, payroll-impact evidence, coverage-change flags, and owner-review questions",
+        "Make missing documents, stale benefits packets, conflicting plan summaries, unclear dependent authority, and privacy-sensitive details explicit",
+        "Keep benefit elections, plan recommendations, dependent certification, payroll changes, claims, carrier contact, employer contact, account changes, payments, and professional advice outside the Claw boundary"
+      ],
+      "boundaries": [
+        "Do not choose plans, recommend coverage, certify eligibility, submit elections, change payroll, enroll dependents, cancel benefits, file claims, contact employers or carriers, pay premiums, or change accounts without exact owner approval",
+        "Do not give medical, legal, tax, financial, insurance, employment, immigration, benefits, or eligibility advice",
+        "Do not expose SSNs, dependent details, health information, salary data, payroll deductions, account ids, addresses, or family status beyond the owner-approved destination"
+      ],
+      "intake": [
+        "Owner-supplied enrollment guide, plan comparison sheets, rate tables, payroll deduction notes, HSA/FSA notes, dependent document checklist, prior-year elections, life-event notes, employer notices, carrier notices, and owner constraints",
+        "Enrollment dates, deadline timezone, decision owner, household/dependent scope, documents needed, plan option labels, cost fields as supplied, coverage-change notes, and privacy labels",
+        "Review goals such as deadline readiness, missing documents, stale or conflicting plan evidence, dependent-authority questions, payroll-impact questions, and handoff notes for HR, benefits admins, tax preparers, or clinicians",
+        "External actions that must remain draft-only, including enrollment submission, plan election, payroll changes, dependent changes, carrier contact, employer contact, claims, payments, account changes, and professional advice"
+      ],
+      "workflow": [
+        "Normalize each source, enrollment window, benefit option, dependent requirement, cost note, coverage-change item, evidence gap, and review question to supplied or approved evidence",
+        "Group options by benefit type, source authority, freshness, enrollment deadline, owner constraints, dependent scope, payroll impact, and blocked decision authority",
+        "Reconcile stale, missing, conflicting, partial, or sensitive benefits evidence without recommending coverage, certifying eligibility, or submitting changes",
+        "Prepare an owner-reviewed enrollment packet with deadlines, options, cost/source ledger, required-document checklist, coverage-change flags, and unresolved questions",
+        "Return a blocked-action handoff without submitting elections, changing payroll, contacting employers or carriers, filing claims, paying premiums, changing accounts, or giving professional advice"
+      ],
+      "deliverables": [
+        "Open enrollment deadline and source ledger",
+        "Benefit option comparison packet",
+        "Required dependent and document checklist",
+        "Payroll-impact and coverage-change evidence register",
+        "Missing, stale, conflicting, and sensitive evidence question list",
+        "Blocked election, payroll, claim, contact, payment, account-change, eligibility, and advice handoff"
+      ],
+      "example": {
+        "request": "Organize my open enrollment packet from the benefits guide, rate sheet, HSA note, prior elections, dependent checklist, and employer notice I supplied. Make the deadlines, options, payroll-impact notes, and questions clear, but do not choose a plan, submit elections, change payroll, certify eligibility, contact HR or carriers, pay anything, file claims, or give medical, tax, legal, financial, employment, or insurance advice.",
+        "outcome": "A source-backed open-enrollment packet with enrollment windows, plan option ledger, payroll-impact notes, dependent document checklist, stale/conflicting evidence questions, and all election, payroll, eligibility, claim, contact, payment, account, and professional-advice actions blocked."
+      },
+      "doneWhen": [
+        "Every enrollment window, option, dependent requirement, cost note, coverage-change item, source, privacy label, and review question has source identity, freshness, and owner-review state",
+        "Every comparison or readiness claim traces to supplied or approved evidence without hiding stale, missing, conflicting, partial, sensitive, or dependent-person evidence",
+        "Dependent details, health information, SSNs, salary data, payroll amounts, family status, account identifiers, addresses, and employer/carrier details are minimized or blocked from inappropriate outputs",
+        "Plan choice, enrollment submission, payroll changes, dependent enrollment, eligibility certification, claims, payments, employer or carrier contact, account changes, and medical/legal/tax/financial/insurance/employment advice remain blocked or exact-approval-bound"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses supplied benefits packets, plan summaries, rate tables, payroll notes, HSA/FSA notes, dependent checklists, prior elections, employer notices, carrier notices, and owner notes and grants no employer, benefits portal, carrier, payroll, calendar, messaging, payment, account, or claim authority.",
+        "When benefits, enrollment, plan, rate, payroll, dependent, eligibility, privacy, medical, legal, tax, financial, insurance, employment, or source evidence is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than choosing or submitting benefits."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/benefits-enrollment.schema.json",
+          "path": "schemas/benefits-enrollment.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/benefits-enrollment.example.json",
+          "path": "fixtures/benefits-enrollment.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/benefits-enrollment.md",
+          "path": "templates/benefits-enrollment.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

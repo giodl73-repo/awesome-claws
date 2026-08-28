@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "benefits-open-enrollment-planner",
+  "scenario": "Organize my open enrollment packet from the benefits guide, rate sheet, HSA note, prior elections, dependent checklist, and employer notice I supplied. Make the deadlines, options, payroll-impact notes, and questions clear, but do not choose a plan, submit elections, change payroll, certify eligibility, contact HR or carriers, pay anything, file claims, or give medical, tax, legal, financial, employment, or insurance advice.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize my open enrollment packet from the benefits guide, rate sheet, HSA note, prior elections, dependent checklist, and employer notice I supplied. Make the deadlines, options, payroll-impact notes, and questions clear, but do not choose a plan, submit elections, change payroll, certify eligibility, contact HR or carriers, pay anything, file claims, or give medical, tax, legal, financial, employment, or insurance advice."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/benefits-open-enrollment-planner-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Benefits and open enrollment planner session handoff",
+    "summary": "A source-backed open-enrollment packet with enrollment windows, plan option ledger, payroll-impact notes, dependent document checklist, stale/conflicting evidence questions, and all election, payroll, eligibility, claim, contact, payment, account, and professional-advice actions blocked.",
+    "output": "outputs/benefits-open-enrollment-planner-handoff.md",
+    "items": [
+      {
+        "title": "Open enrollment deadline and source ledger",
+        "summary": "Every enrollment window, option, dependent requirement, cost note, coverage-change item, source, privacy label, and review question has source identity, freshness, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Benefit option comparison packet",
+        "summary": "Every comparison or readiness claim traces to supplied or approved evidence without hiding stale, missing, conflicting, partial, sensitive, or dependent-person evidence",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Required dependent and document checklist",
+        "summary": "Dependent details, health information, SSNs, salary data, payroll amounts, family status, account identifiers, addresses, and employer/carrier details are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Payroll-impact and coverage-change evidence register",
+        "summary": "Plan choice, enrollment submission, payroll changes, dependent enrollment, eligibility certification, claims, payments, employer or carrier contact, account changes, and medical/legal/tax/financial/insurance/employment advice remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Missing, stale, conflicting, and sensitive evidence question list",
+        "summary": "Every enrollment window, option, dependent requirement, cost note, coverage-change item, source, privacy label, and review question has source identity, freshness, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked election, payroll, claim, contact, payment, account-change, eligibility, and advice handoff",
+        "summary": "Every comparison or readiness claim traces to supplied or approved evidence without hiding stale, missing, conflicting, partial, sensitive, or dependent-person evidence",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/benefits-enrollment.schema.json",
+  "title": "Benefits open enrollment artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "enrollment",
+    "sources",
+    "windows",
+    "options",
+    "dependentRequirements",
+    "costNotes",
+    "coverageChanges",
+    "gaps",
+    "reviewQuestions",
+    "blockedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.benefitsEnrollment.v1" },
+    "enrollment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "employerOrSponsor", "planYear", "timezone", "asOf"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^benefits-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "employerOrSponsor": { "type": "string", "minLength": 1 },
+        "planYear": { "type": "integer", "minimum": 2020 },
+        "timezone": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "authority", "freshness", "privacy", "asOf"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "enrollment-guide",
+              "plan-summary",
+              "rate-table",
+              "payroll-note",
+              "hsa-fsa-note",
+              "dependent-checklist",
+              "prior-election",
+              "employer-notice",
+              "carrier-notice",
+              "owner-note"
+            ]
+          },
+          "label": { "type": "string", "minLength": 1 },
+          "authority": {
+            "type": "string",
+            "enum": ["owner-supplied", "employer-document", "carrier-document", "payroll-document", "benefits-admin-document"]
+          },
+          "freshness": { "type": "string", "enum": ["current", "stale", "missing", "conflicting", "sensitive"] },
+          "privacy": { "type": "string", "enum": ["owner-only", "dependent-sensitive", "payroll-sensitive", "shareable-after-review"] },
+          "asOf": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "windows": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "opensAt", "closesAt", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^window-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "opensAt": { "type": "string", "format": "date-time" },
+          "closesAt": { "type": "string", "format": "date-time" },
+          "state": { "type": "string", "enum": ["future", "open", "closing-soon", "closed", "unknown"] },
+          "sourceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" }
+          }
+        }
+      }
+    },
+    "options": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "benefitType", "label", "status", "costRefs", "coverageChangeRefs", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^option-[a-z0-9-]+$" },
+          "benefitType": { "type": "string", "enum": ["medical", "dental", "vision", "hsa", "fsa", "life", "disability", "other"] },
+          "label": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["available", "needs-review", "stale", "conflicting"] },
+          "costRefs": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^cost-[a-z0-9-]+$" }
+          },
+          "coverageChangeRefs": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^change-[a-z0-9-]+$" }
+          },
+          "sourceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" }
+          }
+        }
+      }
+    },
+    "dependentRequirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "state", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^dependent-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["complete", "missing", "needs-owner-review", "conflicting"] },
+          "privacy": { "type": "string", "enum": ["owner-only", "dependent-sensitive", "shareable-after-review"] },
+          "sourceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" }
+          }
+        }
+      }
+    },
+    "costNotes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "amountState", "payrollImpact", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^cost-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "amountState": { "type": "string", "enum": ["supplied", "missing", "stale", "conflicting"] },
+          "payrollImpact": { "type": "string", "enum": ["supplied", "needs-owner-review", "not-applicable", "unknown"] },
+          "sourceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" }
+          }
+        }
+      }
+    },
+    "coverageChanges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^change-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["confirmed", "needs-review", "stale", "conflicting"] },
+          "sourceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" }
+          }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "reason", "refs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^gap-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["missing-document", "stale-source", "conflict", "privacy", "dependent-authority", "payroll", "eligibility"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^(source|window|option|dependent|cost|change)-[a-z0-9-]+$" }
+          }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "refs", "owner"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^(source|window|option|dependent|cost|change|gap)-[a-z0-9-]+$" }
+          },
+          "owner": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 9,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "choose-plan",
+          "recommend-coverage",
+          "submit-election",
+          "change-payroll",
+          "enroll-dependent",
+          "certify-eligibility",
+          "file-claim",
+          "contact-employer",
+          "contact-carrier",
+          "pay-premium",
+          "change-account",
+          "medical-advice",
+          "legal-advice",
+          "tax-advice",
+          "financial-advice",
+          "insurance-advice",
+          "employment-advice"
+        ]
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "reviewQuestionRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "type": "string", "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "reviewQuestionRefs": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^question-[a-z0-9-]+$" }
+        },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
