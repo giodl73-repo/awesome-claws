@@ -6515,6 +6515,127 @@ function sportsTeamWatchFindings(value) {
   return findings;
 }
 
+function fantasySportsFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const ruleIds = value.rules.map((item) => item.id);
+  const playerIds = value.players.map((item) => item.id);
+  const lineupIds = value.lineup.map((item) => item.id);
+  const waiverIds = value.waiverWatch.map((item) => item.id);
+  const tradeIds = value.tradeIdeas.map((item) => item.id);
+  const riskIds = value.matchupRisks.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const playerSet = new Set(playerIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const playerById = new Map(value.players.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(ruleIds, "rules", "Rule id"),
+    ...uniqueFindings(playerIds, "players", "Player id"),
+    ...uniqueFindings(lineupIds, "lineup", "Lineup id"),
+    ...uniqueFindings(waiverIds, "waiverWatch", "Waiver id"),
+    ...uniqueFindings(tradeIds, "tradeIdeas", "Trade id"),
+    ...uniqueFindings(riskIds, "matchupRisks", "Risk id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, rule] of value.rules.entries()) {
+    findings.push(
+      ...uniqueFindings(rule.sourceRefs, `rules.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(rule.sourceRefs, sourceSet, `rules.${index}.sourceRefs`, "Source reference"),
+    );
+    if (rule.state === "current" && rule.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_rule_state", `rules.${index}.sourceRefs`, "Current fantasy rules require current source evidence."));
+    }
+  }
+  for (const [index, player] of value.players.entries()) {
+    findings.push(
+      ...uniqueFindings(player.sourceRefs, `players.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(player.sourceRefs, sourceSet, `players.${index}.sourceRefs`, "Source reference"),
+    );
+    if (player.projection.sourceRef !== null) {
+      findings.push(
+        ...referenceFindings([player.projection.sourceRef], sourceSet, `players.${index}.projection.sourceRef`, "Projection source"),
+      );
+    }
+    if (player.projection.state === "supported" && player.projection.sourceRef === null) {
+      findings.push(finding("unsupported_projection_state", `players.${index}.projection.sourceRef`, "Supported projections require a source."));
+    }
+    if (player.availability === "available" && player.sourceRefs.some((ref) => sourceById.get(ref)?.freshness === "stale")) {
+      findings.push(finding("unsupported_availability", `players.${index}.sourceRefs`, "Available players cannot depend on stale source evidence."));
+    }
+  }
+  for (const [index, slot] of value.lineup.entries()) {
+    findings.push(
+      ...referenceFindings([slot.playerRef], playerSet, `lineup.${index}.playerRef`, "Player reference"),
+      ...uniqueFindings(slot.sourceRefs, `lineup.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(slot.sourceRefs, sourceSet, `lineup.${index}.sourceRefs`, "Source reference"),
+    );
+    const player = playerById.get(slot.playerRef);
+    if (slot.reviewState === "ready-for-owner-review" && (slot.lockState !== "open" || !player || !["available", "questionable"].includes(player.availability))) {
+      findings.push(finding("unsupported_lineup_state", `lineup.${index}.reviewState`, "Ready lineup review requires an open slot and a player with supported availability."));
+    }
+    if (slot.reviewState === "ready-for-owner-review" && slot.sourceRefs.some((ref) => ["stale", "missing", "conflicting"].includes(sourceById.get(ref)?.freshness))) {
+      findings.push(finding("unsupported_lineup_sources", `lineup.${index}.sourceRefs`, "Ready lineup review cannot depend on stale, missing, or conflicting sources."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["waiverWatch", value.waiverWatch],
+    ["matchupRisks", value.matchupRisks],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      const refs = item.playerRefs ?? [item.playerRef];
+      findings.push(
+        ...uniqueFindings(refs, `${collectionName}.${index}.playerRefs`, "Player reference"),
+        ...referenceFindings(refs, playerSet, `${collectionName}.${index}.playerRefs`, "Player reference"),
+        ...uniqueFindings(item.sourceRefs, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+      );
+    }
+  }
+  for (const [index, idea] of value.tradeIdeas.entries()) {
+    findings.push(
+      ...uniqueFindings(idea.playerRefs, `tradeIdeas.${index}.playerRefs`, "Player reference"),
+      ...referenceFindings(idea.playerRefs, playerSet, `tradeIdeas.${index}.playerRefs`, "Player reference"),
+      ...uniqueFindings(idea.sourceRefs, `tradeIdeas.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(idea.sourceRefs, sourceSet, `tradeIdeas.${index}.sourceRefs`, "Source reference"),
+    );
+    if (idea.reviewState === "owner-review" && idea.deadlineState !== "open") {
+      findings.push(finding("unsupported_trade_state", `tradeIdeas.${index}.deadlineState`, "Owner-review trade ideas require an open deadline state."));
+    }
+  }
+  const knownRefs = new Set([...sourceIds, ...ruleIds, ...playerIds, ...lineupIds, ...waiverIds, ...tradeIds, ...riskIds]);
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.refs, `reviewQuestions.${index}.refs`, "Review reference"),
+      ...referenceFindings(question.refs, knownRefs, `reviewQuestions.${index}.refs`, "Review reference"),
+    );
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, new Set(questionIds), "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready fantasy roster packets cannot depend on stale, missing, or conflicting sources."));
+  }
+  const actionText = canonicalJson({
+    lineup: value.lineup.map(({ reason }) => reason),
+    waiverWatch: value.waiverWatch.map(({ rosterImpact }) => rosterImpact),
+    tradeIdeas: value.tradeIdeas.map(({ riskSummary }) => riskSummary),
+    matchupRisks: value.matchupRisks.map(({ summary }) => summary),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(submit lineup|set lineup|claim waiver|drop player|add player|propose trade|accept trade|enter contest|place bet|betting advice|gambling advice|message league|pay fee|change settings|change account|guaranteed points|lock it in)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Fantasy roster artifacts must not instruct lineup, waiver, trade, contest, betting, payment, message, settings, or account actions."));
+  }
+  if (value.handoff.owner === "fantasy-sports-manager") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Fantasy lineup, waiver, trade, contest, betting, payment, messaging, settings, and account authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 function movieStreamingFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const titleIds = value.titles.map((item) => item.id);
@@ -7177,6 +7298,7 @@ const validators = {
   "delegation-coordinator": delegationFindings,
   "document-renewal-tracker": documentRenewalFindings,
   "financial-analyst": financialAnalysisFindings,
+  "fantasy-sports-manager": fantasySportsFindings,
   "games-backlog-manager": gamesBacklogFindings,
   "gift-relationship-manager": giftRelationshipFindings,
   "green-thumb-coordinator": greenThumbFindings,

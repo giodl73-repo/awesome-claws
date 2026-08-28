@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "league", "sources", "rules", "players", "lineup", "waiverWatch", "tradeIdeas", "matchupRisks", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.fantasyRoster.v1" },
+    "league": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "teamName", "sport", "platform", "scoringFormat", "week", "timezone", "asOf", "owner"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^league-[a-z0-9-]+$" },
+        "teamName": { "type": "string", "minLength": 1 },
+        "sport": { "enum": ["football", "baseball", "basketball", "hockey", "soccer", "other"] },
+        "platform": { "type": "string", "minLength": 1 },
+        "scoringFormat": { "type": "string", "minLength": 1 },
+        "week": { "type": "string", "minLength": 1 },
+        "timezone": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "owner": { "type": "string", "minLength": 1 }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "authority", "capturedAt", "reference", "freshness"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": { "enum": ["fantasy-roster", "league-rules", "matchup-page", "projection-snapshot", "player-news", "schedule", "owner-note"] },
+          "authority": { "enum": ["fantasy-platform", "league-settings", "official-league", "trusted-sports-source", "projection-provider", "user-supplied"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "type": "string", "minLength": 1 },
+          "freshness": { "enum": ["current", "delayed", "stale", "missing", "conflicting"] }
+        }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "summary", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^rule-[a-z0-9-]+$" },
+          "kind": { "enum": ["scoring", "lineup-lock", "waiver", "trade-deadline", "roster-limit"] },
+          "summary": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["current", "delayed", "stale", "missing", "conflicting"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "players": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "team", "position", "rosterState", "availability", "projection", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^player-[a-z0-9-]+$" },
+          "name": { "type": "string", "minLength": 1 },
+          "team": { "type": "string", "minLength": 1 },
+          "position": { "type": "string", "minLength": 1 },
+          "rosterState": { "enum": ["starter", "bench", "injured-reserve", "watchlist", "waiver-candidate", "trade-target"] },
+          "availability": { "enum": ["available", "questionable", "out", "bye", "unknown"] },
+          "projection": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["points", "state", "sourceRef"],
+            "properties": {
+              "points": { "type": ["number", "null"], "minimum": 0 },
+              "state": { "enum": ["supported", "delayed", "missing", "conflicting"] },
+              "sourceRef": { "type": ["string", "null"] }
+            }
+          },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "lineup": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "slot", "playerRef", "lockState", "reviewState", "reason", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^lineup-[a-z0-9-]+$" },
+          "slot": { "type": "string", "minLength": 1 },
+          "playerRef": { "type": "string", "minLength": 1 },
+          "lockState": { "enum": ["open", "locked", "unknown"] },
+          "reviewState": { "enum": ["ready-for-owner-review", "needs-owner-review", "blocked"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "waiverWatch": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "playerRef", "windowState", "rosterImpact", "reviewState", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^waiver-[a-z0-9-]+$" },
+          "playerRef": { "type": "string", "minLength": 1 },
+          "windowState": { "enum": ["open", "future", "closed", "unknown"] },
+          "rosterImpact": { "type": "string", "minLength": 1 },
+          "reviewState": { "enum": ["owner-review", "blocked"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "tradeIdeas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "playerRefs", "deadlineState", "riskSummary", "reviewState", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^trade-[a-z0-9-]+$" },
+          "playerRefs": { "$ref": "#/$defs/refs" },
+          "deadlineState": { "enum": ["open", "future", "closed", "unknown"] },
+          "riskSummary": { "type": "string", "minLength": 1 },
+          "reviewState": { "enum": ["owner-review", "blocked"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "matchupRisks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "playerRefs", "summary", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^risk-[a-z0-9-]+$" },
+          "playerRefs": { "$ref": "#/$defs/refs" },
+          "summary": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["current", "delayed", "stale", "missing", "conflicting"] },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "refs", "owner"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "$ref": "#/$defs/refs" },
+          "owner": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 9,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/blockedAction" }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "reviewQuestionRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "reviewQuestionRefs": { "$ref": "#/$defs/refs" },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 11,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/blockedAction" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "blockedAction": {
+      "enum": [
+        "submit-lineup",
+        "claim-waiver",
+        "drop-player",
+        "propose-trade",
+        "accept-trade",
+        "enter-contest",
+        "place-bet",
+        "send-league-message",
+        "pay-fee",
+        "change-league-settings",
+        "change-account"
+      ]
+    }
+  }
+}

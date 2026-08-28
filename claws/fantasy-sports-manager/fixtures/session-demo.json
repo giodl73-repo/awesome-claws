@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "fantasy-sports-manager",
+  "scenario": "Review my fantasy football roster for Week 3 from these league settings, roster screenshots, matchup page, and player news. Show lineup questions, waiver watch items, bye/injury risks, and trade ideas to review, but do not submit lineups, add or drop players, propose trades, message the league, enter contests, or give betting advice.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Review my fantasy football roster for Week 3 from these league settings, roster screenshots, matchup page, and player news. Show lineup questions, waiver watch items, bye/injury risks, and trade ideas to review, but do not submit lineups, add or drop players, propose trades, message the league, enter contests, or give betting advice."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/fantasy-sports-manager-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Fantasy sports manager session handoff",
+    "summary": "A source-backed fantasy roster packet with league rules, roster slots, lock times, player availability, projection freshness, start-sit questions, waiver and trade review ideas, matchup risks, privacy labels, and all lineup, waiver, trade, contest, betting, payment, messaging, settings, and account actions blocked.",
+    "output": "outputs/fantasy-sports-manager-handoff.md",
+    "items": [
+      {
+        "title": "Fantasy roster and league-rule ledger",
+        "summary": "Every league, team, roster slot, player, rule, projection, injury note, waiver candidate, trade idea, and matchup claim has source identity, freshness, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Lineup lock and start-sit review",
+        "summary": "Every lineup, waiver, trade, and matchup observation traces to explicit platform, league-rule, projection, player-news, schedule, or owner-note evidence without hiding stale, partial, missing, locked, or conflicting source state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Waiver and roster-depth watchlist",
+        "summary": "Private league names, manager identities, chat content, entry fees, account labels, payment details, and roster strategy are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Trade and matchup risk notes",
+        "summary": "Lineup submission, waiver claims, drops, trades, contest entry, betting, payments, league messages, league settings, and account changes remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked lineup, waiver, trade, contest, betting, message, payment, settings, and account-action handoff",
+        "summary": "Every league, team, roster slot, player, rule, projection, injury note, waiver candidate, trade idea, and matchup claim has source identity, freshness, and owner-review state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

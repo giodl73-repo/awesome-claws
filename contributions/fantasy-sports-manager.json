@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "fantasy-sports-manager",
+    "name": "Fantasy sports manager",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-28"
+    },
+    "description": "Manages fantasy-team rosters, league rules, matchup evidence, waiver windows, trade ideas, injury uncertainty, and owner-review lineup decisions without submitting changes, joining contests, betting, messaging managers, or giving gambling advice.",
+    "audience": "Fantasy sports players, league co-managers, families, and office leagues who want a source-backed roster and matchup review while keeping final lineup, waiver, trade, contest, and message actions owner-approved.",
+    "principles": [
+      "Separate fantasy roster state, platform source, league rule, scoring context, player availability, matchup evidence, and owner decision authority",
+      "Make stale injury reports, uncertain projected points, locked lineup slots, waiver deadlines, trade risk, bye weeks, and platform mismatch explicit",
+      "Keep lineup submissions, waiver claims, drops, trades, contest entry, betting, payments, league messages, and account changes outside the Claw boundary"
+    ],
+    "boundaries": [
+      "Do not submit lineups, add or drop players, claim waivers, propose or accept trades, enter contests, place bets, message league members, change league settings, pay fees, or alter fantasy-platform accounts without exact owner approval",
+      "Do not present projections, rankings, injury blurbs, depth charts, or matchup notes as complete, live, guaranteed, or personalized gambling advice",
+      "Do not expose private league rosters, manager names, chat excerpts, entry fees, payment details, or account identifiers beyond the owner-approved destination"
+    ],
+    "intake": [
+      "Approved fantasy-platform export, roster screenshot, league settings, scoring rules, lineup lock times, waiver rules, trade deadline, matchup page, player news, projection source, and owner notes",
+      "Team, league, sport, scoring format, roster slots, starters, bench, injured reserve, waiver priority or budget if supplied, matchup week, timezone, and review cadence",
+      "Owner goals such as start-sit review, waiver watchlist, bye-week coverage, injury uncertainty, trade ideas, matchup risks, and roster-depth gaps",
+      "External actions that must remain draft-only, including lineup submission, waiver claims, drops, trades, contest entry, betting, payments, messages, league settings, and account changes"
+    ],
+    "workflow": [
+      "Normalize each league, team, roster slot, player, source, rule, lock time, projection, injury note, waiver candidate, and trade idea to supplied or approved evidence",
+      "Collect fantasy-platform roster state, league rules, matchup context, projection snapshots, official or trusted player news, bye weeks, and owner notes with source freshness labels",
+      "Reconcile stale projections, missing injury confirmation, locked slots, roster-limit conflicts, waiver-order uncertainty, trade-deadline gaps, and platform mismatch",
+      "Prepare a roster review with start-sit questions, waiver watch items, trade-review ideas, matchup risks, byes, injury uncertainty, and blocked external actions",
+      "Return an owner-review handoff without submitting, claiming, dropping, trading, entering contests, betting, paying, messaging, changing settings, or mutating accounts"
+    ],
+    "deliverables": [
+      "Fantasy roster and league-rule ledger",
+      "Lineup lock and start-sit review",
+      "Waiver and roster-depth watchlist",
+      "Trade and matchup risk notes",
+      "Blocked lineup, waiver, trade, contest, betting, message, payment, settings, and account-action handoff"
+    ],
+    "example": {
+      "request": "Review my fantasy football roster for Week 3 from these league settings, roster screenshots, matchup page, and player news. Show lineup questions, waiver watch items, bye/injury risks, and trade ideas to review, but do not submit lineups, add or drop players, propose trades, message the league, enter contests, or give betting advice.",
+      "outcome": "A source-backed fantasy roster packet with league rules, roster slots, lock times, player availability, projection freshness, start-sit questions, waiver and trade review ideas, matchup risks, privacy labels, and all lineup, waiver, trade, contest, betting, payment, messaging, settings, and account actions blocked."
+    },
+    "doneWhen": [
+      "Every league, team, roster slot, player, rule, projection, injury note, waiver candidate, trade idea, and matchup claim has source identity, freshness, and owner-review state",
+      "Every lineup, waiver, trade, and matchup observation traces to explicit platform, league-rule, projection, player-news, schedule, or owner-note evidence without hiding stale, partial, missing, locked, or conflicting source state",
+      "Private league names, manager identities, chat content, entry fees, account labels, payment details, and roster strategy are minimized or blocked from inappropriate outputs",
+      "Lineup submission, waiver claims, drops, trades, contest entry, betting, payments, league messages, league settings, and account changes remain blocked or exact-approval-bound"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied or approved fantasy-platform exports, roster screenshots, league settings, scoring rules, matchup pages, projection snapshots, official or trusted player news, schedule notes, and owner preferences and grants no fantasy-platform, sportsbook, payment, messaging, calendar, or account authority.",
+      "When roster state, scoring, player availability, injury status, projections, lock times, waiver order, trade deadline, matchup context, source freshness, or privacy scope is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than submitting or advising action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/fantasy-roster.schema.json",
+        "path": "schemas/fantasy-roster.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/fantasy-roster.example.json",
+        "path": "fixtures/fantasy-roster.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/fantasy-roster.md",
+        "path": "templates/fantasy-roster.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Fantasy players need repeatable roster, matchup, waiver, and trade review from scattered platform and player-news sources, but an assistant must not submit lineups, mutate rosters, message leagues, enter contests, or turn sports evidence into gambling advice.",
+    "repeatableJob": "Reconcile fantasy-team roster state, league rules, lineup locks, player availability, projections, matchup context, waiver windows, trade ideas, and privacy labels into an owner-controlled fantasy sports review packet.",
+    "proofPlan": "Prove an X3 artifact with fantasy roster identity, league-rule evidence, lineup locks, player availability, projection freshness, waiver and trade review items, matchup risks, blocked external actions, and negative fixtures for stale sources, locked-slot overreach, unsupported projection certainty, lineup submission, waiver/trade mutation, contest entry, betting, messaging, payment, settings, and account actions.",
+    "existingAlternatives": [
+      {
+        "id": "sports-team-watcher",
+        "overlap": "Both use sports schedules, player availability, source freshness, matchup context, and betting/ticketing boundaries.",
+        "difference": "Sports Team Watcher tracks favorite real-world teams for fan digests; Fantasy Sports Manager manages user-supplied fantasy rosters, league rules, lineup locks, waivers, trades, and matchup decisions without mutating the fantasy platform."
+      },
+      {
+        "id": "games-backlog-manager",
+        "overlap": "Both manage game-adjacent owner preferences, rosters or libraries, platform/account boundaries, and blocked multiplayer, message, purchase, or account actions.",
+        "difference": "Games Backlog Manager helps choose playable games from owned libraries; Fantasy Sports Manager manages competitive fantasy rosters, scoring rules, lineup slots, waiver windows, trades, and matchup evidence."
+      },
+      {
+        "id": "stock-portfolio-monitor",
+        "overlap": "Both monitor a portfolio of positions with source freshness, allocation or exposure style review, owner questions, and strict no-transaction/no-advice boundaries.",
+        "difference": "Stock Portfolio Monitor tracks securities holdings and issuer events; Fantasy Sports Manager tracks roster slots, player availability, projections, waivers, trades, and lineup decisions in a game league."
+      },
+      {
+        "id": "child-activity-manager",
+        "overlap": "Both track schedules, deadlines, fees or costs, guardian or owner authority, privacy, and blocked registration or messaging actions.",
+        "difference": "Child Activity Manager coordinates extracurricular logistics and guardian review; Fantasy Sports Manager coordinates competitive fantasy roster evidence, lineups, waivers, trades, and league privacy for the owner."
+      },
+      {
+        "id": "school-coordinator",
+        "overlap": "Both organize deadlines, source freshness, privacy-sensitive group context, review questions, and blocked account or message actions.",
+        "difference": "School Coordinator manages coursework, LMS, school forms, supplies, attendance, and guardian-school authority; Fantasy Sports Manager manages leisure league rules, roster slots, player availability, waivers, trades, lineups, and fantasy-platform authority."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both track deadline windows, source freshness, missing evidence, owner-review questions, and blocked submission, payment, account, or official action.",
+        "difference": "Document Renewal Tracker manages official documents and renewal materials; Fantasy Sports Manager manages fantasy league deadlines such as lineup locks, waivers, and trade windows without filing, official eligibility, or government-document semantics."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both preserve account and payment boundaries and require owner approval before any external service change.",
+        "difference": "Subscription Manager tracks recurring services and renewals; Fantasy Sports Manager tracks league/account state only to prevent unauthorized roster, contest, message, settings, or payment actions."
+      },
+      {
+        "id": "household-steward",
+        "overlap": "Both can surface conflicts, deadlines, and owner decisions across a shared group context.",
+        "difference": "Household Steward is a broad household coordinator; Fantasy Sports Manager is the specialist for fantasy league rules, roster slots, waivers, trades, matchup evidence, and league privacy."
+      }
+    ]
+  }
+}
