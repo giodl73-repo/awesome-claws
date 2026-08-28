@@ -197,6 +197,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "warranty-returns-manager",
+    schema: "../claws/warranty-returns-manager/schemas/warranty-returns.schema.json",
+    fixture: "../claws/warranty-returns-manager/fixtures/warranty-returns.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "personal-archive-curator",
     schema: "../claws/personal-archive-curator/schemas/archive-index.schema.json",
     fixture: "../claws/personal-archive-curator/fixtures/archive-index.example.json",
@@ -450,6 +456,32 @@ test("benefits open enrollment planner preserves deadlines, evidence, and owner 
   const agentOwned = structuredClone(cases.get("benefits-open-enrollment-planner").fixture);
   agentOwned.handoff.owner = "benefits-open-enrollment-planner";
   assert.equal(isValid("benefits-open-enrollment-planner", agentOwned), false);
+});
+
+test("warranty returns manager preserves windows, evidence, and owner authority", () => {
+  const invalidWindow = structuredClone(cases.get("warranty-returns-manager").fixture);
+  invalidWindow.returnWindows[0].closesAt = invalidWindow.returnWindows[0].opensAt;
+  assert.equal(isValid("warranty-returns-manager", invalidWindow), false);
+
+  const openWithStalePolicy = structuredClone(cases.get("warranty-returns-manager").fixture);
+  openWithStalePolicy.returnWindows[0].state = "open";
+  assert.equal(isValid("warranty-returns-manager", openWithStalePolicy), false);
+
+  const readyWithStaleSource = structuredClone(cases.get("warranty-returns-manager").fixture);
+  readyWithStaleSource.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("warranty-returns-manager", readyWithStaleSource), false);
+
+  const actionAdvice = structuredClone(cases.get("warranty-returns-manager").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Start returns and contact sellers.";
+  assert.equal(isValid("warranty-returns-manager", actionAdvice), false);
+
+  const danglingTermItem = structuredClone(cases.get("warranty-returns-manager").fixture);
+  danglingTermItem.warrantyTerms[0].itemRef = "item-missing";
+  assert.equal(isValid("warranty-returns-manager", danglingTermItem), false);
+
+  const agentOwned = structuredClone(cases.get("warranty-returns-manager").fixture);
+  agentOwned.handoff.owner = "warranty-returns-manager";
+  assert.equal(isValid("warranty-returns-manager", agentOwned), false);
 });
 
 test("restaurant venue scout preserves source certainty and owner authority", () => {
@@ -730,6 +762,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["music-organizer", (value) => value.playlistPlan[0].preferenceRefs.push(value.playlistPlan[0].preferenceRefs[0])],
     ["neighborhood-operations-watcher", (value) => value.notices[0].sourceRefs.push(value.notices[0].sourceRefs[0])],
     ["wardrobe-organizer", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
+    ["warranty-returns-manager", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["personal-archive-curator", (value) => value.retrievalCues[0].sourceRefs.push(value.retrievalCues[0].sourceRefs[0])],
     ["purchase-researcher", (value) => value.candidates[0].sourceRefs.push(value.candidates[0].sourceRefs[0])],
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],

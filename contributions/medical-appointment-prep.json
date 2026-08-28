@@ -107,6 +107,16 @@
         "difference": "Document Renewal Tracker tracks expiration and renewal windows for official credentials and registrations; Medical Appointment Prep tracks upcoming care visits, owner-reported concerns, medication lists, prior instructions, visit documents, and clinician questions without renewal semantics."
       },
       {
+        "id": "health-records-binder",
+        "overlap": "Both organize owner-supplied health records, medication lists, visit context, source freshness, privacy labels, caregiver context, clinician questions, and blocked clinical, portal, provider, upload, billing, insurance, and emergency actions.",
+        "difference": "Health Records Binder maintains a longitudinal record ledger, timeline, freshness register, and reusable sharing packets across visits and sources; Medical Appointment Prep creates a bounded packet for one upcoming appointment."
+      },
+      {
+        "id": "benefits-open-enrollment-planner",
+        "overlap": "Both may involve health-adjacent documents, dependent-sensitive details, deadlines, source freshness, privacy labels, owner questions, and blocked medical, insurance, account, payment, contact, and advice authority.",
+        "difference": "Benefits and Open Enrollment Planner manages benefits options, enrollment windows, payroll-impact evidence, dependent requirements, and election blockers; Medical Appointment Prep manages appointment-specific concerns, medications, prior instructions, documents, and clinician questions."
+      },
+      {
         "id": "insurance-policy-organizer",
         "overlap": "Both can include health-adjacent records, privacy labels, policy or billing-adjacent evidence, owner review, and blocked claim, payment, contact, upload, legal, insurance, or medical advice.",
         "difference": "Insurance Policy Organizer reviews policy, coverage, premium, deductible, renewal, and claim-readiness evidence; Medical Appointment Prep prepares a clinician-facing visit packet and blocks billing and insurance handling rather than modeling policy coverage."

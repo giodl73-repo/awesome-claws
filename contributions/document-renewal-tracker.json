@@ -102,6 +102,16 @@
         "difference": "Tax Document Organizer builds a tax-year packet for tax/preparer review; Document Renewal Tracker maintains expiration and renewal windows for identity, credential, permit, registration, and membership documents without tax-return semantics."
       },
       {
+        "id": "benefits-open-enrollment-planner",
+        "overlap": "Both track deadline windows, required documents, dependent-sensitive evidence, stale or conflicting sources, and blocked submission, payment, contact, account, eligibility, and professional-advice authority.",
+        "difference": "Benefits and Open Enrollment Planner manages employer or sponsor benefit options, payroll-impact evidence, dependent requirements, and election blockers; Document Renewal Tracker manages credential expiration and renewal materials without benefit-plan or payroll workflows."
+      },
+      {
+        "id": "warranty-returns-manager",
+        "overlap": "Both track time-bound windows, required materials, source freshness, missing evidence, privacy-sensitive records, and blocked submission, payment, contact, upload, account, and advice authority.",
+        "difference": "Warranty and Returns Manager manages already-owned product receipts, return windows, warranty terms, serials, packaging, and issue packets; Document Renewal Tracker manages official credential renewals and related materials."
+      },
+      {
         "id": "insurance-policy-organizer",
         "overlap": "Both track official records, renewal periods, coverage or authority details, source freshness, account-sensitive evidence, owner questions, and blocked claims, payments, account changes, or legal advice.",
         "difference": "Insurance Policy Organizer tracks insurance policies, coverage, premiums, claims, and beneficiaries; Document Renewal Tracker tracks expiring documents and required renewal materials across issuing authorities."

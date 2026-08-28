@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/warranty-returns.schema.json",
+  "title": "Warranty and returns artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "portfolio", "sources", "items", "returnWindows", "warrantyTerms", "issuePackets", "gaps", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.warrantyReturns.v1" },
+    "portfolio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "asOf", "timezone"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^warranty-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date" },
+        "timezone": { "type": "string", "minLength": 1 }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "freshness", "privacy", "asOf"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["receipt", "order-confirmation", "invoice", "packing-slip", "product-photo", "manual", "warranty-card", "retailer-policy", "manufacturer-page", "serial-note", "issue-note", "payment-proof", "owner-note"] },
+          "label": { "type": "string", "minLength": 1 },
+          "freshness": { "type": "string", "enum": ["current", "stale", "missing", "conflicting", "sensitive"] },
+          "privacy": { "type": "string", "enum": ["owner-only", "redact-before-sharing", "shareable-after-review"] },
+          "asOf": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "purchaseState", "serialState", "conditionState", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^item-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "purchaseState": { "type": "string", "enum": ["supported", "missing", "stale", "conflicting"] },
+          "serialState": { "type": "string", "enum": ["supplied", "missing", "redact-before-sharing", "not-applicable"] },
+          "conditionState": { "type": "string", "enum": ["owner-reported", "needs-review", "safety-sensitive", "unknown"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "returnWindows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "itemRef", "label", "opensAt", "closesAt", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^return-[a-z0-9-]+$" },
+          "itemRef": { "type": "string", "pattern": "^item-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "opensAt": { "type": "string", "format": "date" },
+          "closesAt": { "type": "string", "format": "date" },
+          "state": { "type": "string", "enum": ["open", "closing-soon", "closed", "unknown", "needs-review"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "warrantyTerms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "itemRef", "label", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^term-[a-z0-9-]+$" },
+          "itemRef": { "type": "string", "pattern": "^item-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["supported", "stale", "missing", "conflicting", "expired", "needs-review"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "issuePackets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "itemRef", "label", "readiness", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^issue-[a-z0-9-]+$" },
+          "itemRef": { "type": "string", "pattern": "^item-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "readiness": { "type": "string", "enum": ["ready-for-owner-review", "blocked", "needs-evidence", "safety-escalation"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "reason", "refs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^gap-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["missing-receipt", "missing-serial", "stale-policy", "conflict", "expired-window", "privacy", "safety-sensitive"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(source|item|return|term|issue)-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "refs", "owner"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(source|item|return|term|issue|gap)-[a-z0-9-]+$" } },
+          "owner": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 9,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["initiate-return", "file-warranty-claim", "contact-seller", "contact-manufacturer", "contact-carrier", "create-shipping-label", "request-refund", "dispute-charge", "change-account", "order-replacement", "schedule-repair", "sell-item", "donate-item", "discard-item", "dispose-item", "legal-advice", "financial-advice", "tax-advice", "safety-advice", "repair-advice", "consumer-rights-advice"] }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "reviewQuestionRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "type": "string", "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "reviewQuestionRefs": { "type": "array", "items": { "type": "string", "pattern": "^question-[a-z0-9-]+$" } },
+        "prohibitedActions": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      }
+    }
+  }
+}
