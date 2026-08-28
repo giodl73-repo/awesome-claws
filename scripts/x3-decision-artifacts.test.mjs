@@ -233,6 +233,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "professional-networking-followup",
+    schema: "../claws/professional-networking-followup/schemas/networking-followup.schema.json",
+    fixture: "../claws/professional-networking-followup/fixtures/networking-followup.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "vehicle-service-coordinator",
     schema: "../claws/vehicle-service-coordinator/schemas/vehicle-service.schema.json",
     fixture: "../claws/vehicle-service-coordinator/fixtures/vehicle-service.example.json",
@@ -755,6 +761,32 @@ test("travel loyalty organizer preserves rewards evidence and owner authority", 
   assert.equal(isValid("travel-loyalty-points-organizer", agentOwned), false);
 });
 
+test("professional networking follow-up preserves contact evidence and owner authority", () => {
+  const readyWithSensitiveSource = structuredClone(cases.get("professional-networking-followup").fixture);
+  readyWithSensitiveSource.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("professional-networking-followup", readyWithSensitiveSource), false);
+
+  const staleInteraction = structuredClone(cases.get("professional-networking-followup").fixture);
+  staleInteraction.interactions[0].sourceRefs = ["source-old-email"];
+  assert.equal(isValid("professional-networking-followup", staleInteraction), false);
+
+  const unsupportedIntro = structuredClone(cases.get("professional-networking-followup").fixture);
+  unsupportedIntro.introductions[0].state = "needs-owner-review";
+  assert.equal(isValid("professional-networking-followup", unsupportedIntro), false);
+
+  const actionAdvice = structuredClone(cases.get("professional-networking-followup").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Send message and make introduction.";
+  assert.equal(isValid("professional-networking-followup", actionAdvice), false);
+
+  const danglingContact = structuredClone(cases.get("professional-networking-followup").fixture);
+  danglingContact.followUps[0].contactRef = "contact-missing";
+  assert.equal(isValid("professional-networking-followup", danglingContact), false);
+
+  const agentOwned = structuredClone(cases.get("professional-networking-followup").fixture);
+  agentOwned.handoff.owner = "professional-networking-followup";
+  assert.equal(isValid("professional-networking-followup", agentOwned), false);
+});
+
 test("public safety state rejects impossible time ranges and dangling alerts", () => {
   const candidate = structuredClone(cases.get("public-safety-monitor").fixture);
   candidate.alerts[0].expiresAt = candidate.alerts[0].issuedAt;
@@ -830,6 +862,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["warranty-returns-manager", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["personal-archive-curator", (value) => value.retrievalCues[0].sourceRefs.push(value.retrievalCues[0].sourceRefs[0])],
     ["purchase-researcher", (value) => value.candidates[0].sourceRefs.push(value.candidates[0].sourceRefs[0])],
+    ["professional-networking-followup", (value) => value.contacts[0].sourceRefs.push(value.contacts[0].sourceRefs[0])],
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],
     ["recruiting-coordinator", (value) => value.communications[0].sessionRefs.push(value.communications[0].sessionRefs[0])],
     ["restaurant-venue-scout", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],

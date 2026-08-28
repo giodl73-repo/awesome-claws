@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "awesomeClaws.networkingFollowup.v1",
+  "network": { "id": "network-morgan-conference", "owner": "Morgan Lee", "asOf": "2026-08-28", "timezone": "America/Los_Angeles" },
+  "sources": [
+    { "id": "source-event-note", "kind": "event-note", "label": "Owner note from product conference", "freshness": "current", "privacy": "owner-only", "asOf": "2026-08-26" },
+    { "id": "source-card-avery", "kind": "business-card", "label": "Business card from Avery", "freshness": "current", "privacy": "redact-before-sharing", "asOf": "2026-08-26" },
+    { "id": "source-coffee-summary", "kind": "meeting-summary", "label": "Coffee chat summary", "freshness": "sensitive", "privacy": "owner-only", "asOf": "2026-08-27" },
+    { "id": "source-intro-ask", "kind": "introduction-request", "label": "Intro ask copied into owner notes", "freshness": "missing", "privacy": "owner-only", "asOf": "2026-08-28" },
+    { "id": "source-old-email", "kind": "email-snippet", "label": "Older email snippet from prior role", "freshness": "stale", "privacy": "owner-only", "asOf": "2026-04-18" },
+    { "id": "source-draft", "kind": "draft", "label": "Owner-written follow-up draft", "freshness": "current", "privacy": "owner-only", "asOf": "2026-08-28" }
+  ],
+  "contacts": [
+    { "id": "contact-avery", "name": "Avery Chen", "organization": "Northstar Systems", "relationship": "new-contact", "privacy": "redact-before-sharing", "sourceRefs": ["source-card-avery", "source-event-note"] },
+    { "id": "contact-riley", "name": "Riley Patel", "organization": "Harborline Labs", "relationship": "mentor", "privacy": "owner-only", "sourceRefs": ["source-coffee-summary"] },
+    { "id": "contact-jordan", "name": "Jordan Kim", "organization": null, "relationship": "unknown", "privacy": "owner-only", "sourceRefs": ["source-intro-ask"] }
+  ],
+  "interactions": [
+    { "id": "interaction-avery-event", "contactRefs": ["contact-avery"], "label": "Product conference hallway conversation", "state": "current", "sourceRefs": ["source-event-note", "source-card-avery"] },
+    { "id": "interaction-riley-coffee", "contactRefs": ["contact-riley"], "label": "Coffee chat about platform operations", "state": "sensitive", "sourceRefs": ["source-coffee-summary"] }
+  ],
+  "followUps": [
+    { "id": "followup-avery", "contactRef": "contact-avery", "label": "Owner-reviewed follow-up draft about conference topic", "state": "draft-for-owner-review", "sourceRefs": ["source-draft", "source-event-note"] },
+    { "id": "followup-riley", "contactRef": "contact-riley", "label": "Sensitive mentor note remains blocked", "state": "blocked", "sourceRefs": ["source-coffee-summary"] }
+  ],
+  "introductions": [
+    { "id": "intro-jordan-avery", "contactRefs": ["contact-jordan", "contact-avery"], "label": "Possible intro requires consent from both sides", "state": "missing-consent", "sourceRefs": ["source-intro-ask", "source-card-avery"] }
+  ],
+  "reminders": [
+    { "id": "reminder-avery", "contactRef": "contact-avery", "label": "Owner-visible reminder to review conference follow-up", "due": "2026-09-02", "state": "owner-visible", "sourceRefs": ["source-event-note"] }
+  ],
+  "gaps": [
+    { "id": "gap-intro-consent", "kind": "missing-consent", "reason": "The intro request lacks explicit consent from both contacts.", "refs": ["source-intro-ask", "intro-jordan-avery"] },
+    { "id": "gap-sensitive-mentor", "kind": "privacy", "reason": "The mentor coffee summary contains owner-only context.", "refs": ["source-coffee-summary", "interaction-riley-coffee", "followup-riley"] },
+    { "id": "gap-old-email", "kind": "stale-context", "reason": "The older email snippet should not support a current relationship claim.", "refs": ["source-old-email", "contact-riley"] }
+  ],
+  "reviewQuestions": [
+    { "id": "question-intro-consent", "question": "Which contacts have explicitly approved an introduction?", "reason": "Intro readiness needs owner-confirmed consent before any external step.", "refs": ["gap-intro-consent"], "owner": "Morgan Lee" },
+    { "id": "question-followup-tone", "question": "Which follow-up draft should stay private until owner review?", "reason": "Sensitive relationship context should not be exposed in a general packet.", "refs": ["followup-riley", "gap-sensitive-mentor"], "owner": "Morgan Lee" },
+    { "id": "question-stale-context", "question": "Is the older email snippet still relevant to this contact?", "reason": "Stale context remains visible as a gap rather than a current fact.", "refs": ["gap-old-email"], "owner": "Morgan Lee" }
+  ],
+  "blockedActions": ["send-message", "make-introduction", "schedule-meeting", "cancel-meeting", "commit-referral", "contact-employer", "contact-prospect", "change-account", "scrape-contacts", "update-crm", "recruiting-action", "sales-outreach", "career-advice", "legal-advice", "financial-advice", "employment-advice", "compensation-advice", "immigration-advice", "privacy-advice", "relationship-advice"],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Morgan Lee",
+    "reviewQuestionRefs": ["question-intro-consent", "question-followup-tone", "question-stale-context"],
+    "prohibitedActions": [
+      "Do not send messages, make introductions, schedule or cancel meetings, scrape contacts, update CRM/address books, change accounts, or commit referrals.",
+      "Do not perform recruiting actions, sales outreach, employer or prospect contact, or give career, legal, financial, employment, compensation, immigration, privacy, or relationship advice."
+    ]
+  }
+}

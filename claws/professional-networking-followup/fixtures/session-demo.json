@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "professional-networking-followup",
+  "scenario": "Organize my conference contacts, coffee-chat notes, intro asks, referral notes, and follow-up drafts. Build a follow-up queue and reminder questions, but do not send messages, make introductions, schedule meetings, scrape contacts, change accounts, commit referrals, do sales or recruiting outreach, or give career, legal, financial, employment, immigration, privacy, recruiting, sales, compensation, or relationship advice.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize my conference contacts, coffee-chat notes, intro asks, referral notes, and follow-up drafts. Build a follow-up queue and reminder questions, but do not send messages, make introductions, schedule meetings, scrape contacts, change accounts, commit referrals, do sales or recruiting outreach, or give career, legal, financial, employment, immigration, privacy, recruiting, sales, compensation, or relationship advice."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/professional-networking-followup-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Professional networking follow-up session handoff",
+    "summary": "A source-backed networking packet with contact ledger, follow-up queue, draft review, introduction-readiness questions, stale or sensitive context gaps, and all outbound messaging, introductions, scheduling, scraping, account, referral, recruiting, sales, and professional-advice actions blocked.",
+    "output": "outputs/professional-networking-followup-handoff.md",
+    "items": [
+      {
+        "title": "Professional contact source ledger",
+        "summary": "Every contact, source, interaction, follow-up draft, introduction request, reminder, gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Networking follow-up queue",
+        "summary": "Every relationship, follow-up, introduction, reminder, referral, recruiting-adjacent, or sales-adjacent claim traces to supplied or approved evidence without hiding stale, missing, conflicting, duplicate, partial, or sensitive context",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Introduction and referral-readiness checklist",
+        "summary": "Personal contact details, employer context, private notes, referral details, meeting summaries, and account identifiers are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Follow-up draft review packet",
+        "summary": "Messages, introductions, scheduling, scraping, account changes, referral commitments, recruiting actions, sales outreach, and career/legal/financial/recruiting/sales/employment/compensation/immigration/privacy/relationship advice remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Relationship reminder and stale-context questions",
+        "summary": "Every contact, source, interaction, follow-up draft, introduction request, reminder, gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked messaging, introduction, scheduling, account, scraping, referral, recruiting, sales, and advice handoff",
+        "summary": "Every relationship, follow-up, introduction, reminder, referral, recruiting-adjacent, or sales-adjacent claim traces to supplied or approved evidence without hiding stale, missing, conflicting, duplicate, partial, or sensitive context",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
