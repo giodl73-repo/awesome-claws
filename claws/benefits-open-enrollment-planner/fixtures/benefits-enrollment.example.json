@@ -1,0 +1,179 @@
+{
+  "schemaVersion": "awesomeClaws.benefitsEnrollment.v1",
+  "enrollment": {
+    "id": "benefits-2027-household",
+    "owner": "Jordan Rivera",
+    "employerOrSponsor": "Northstar Studio",
+    "planYear": 2027,
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-28"
+  },
+  "sources": [
+    {
+      "id": "source-enrollment-guide",
+      "kind": "enrollment-guide",
+      "label": "Open enrollment guide supplied by owner",
+      "authority": "employer-document",
+      "freshness": "current",
+      "privacy": "shareable-after-review",
+      "asOf": "2026-08-20"
+    },
+    {
+      "id": "source-rate-table",
+      "kind": "rate-table",
+      "label": "Plan year rate table",
+      "authority": "benefits-admin-document",
+      "freshness": "current",
+      "privacy": "payroll-sensitive",
+      "asOf": "2026-08-20"
+    },
+    {
+      "id": "source-payroll-note",
+      "kind": "payroll-note",
+      "label": "Owner-supplied payroll deduction note",
+      "authority": "owner-supplied",
+      "freshness": "current",
+      "privacy": "payroll-sensitive",
+      "asOf": "2026-08-21"
+    },
+    {
+      "id": "source-dependent-checklist",
+      "kind": "dependent-checklist",
+      "label": "Dependent document checklist",
+      "authority": "benefits-admin-document",
+      "freshness": "current",
+      "privacy": "dependent-sensitive",
+      "asOf": "2026-08-20"
+    },
+    {
+      "id": "source-carrier-notice-old",
+      "kind": "carrier-notice",
+      "label": "Prior carrier notice from owner archive",
+      "authority": "carrier-document",
+      "freshness": "stale",
+      "privacy": "owner-only",
+      "asOf": "2025-10-15"
+    }
+  ],
+  "windows": [
+    {
+      "id": "window-open-enrollment",
+      "label": "Annual open enrollment window from employer guide",
+      "opensAt": "2026-10-15T08:00:00-07:00",
+      "closesAt": "2026-10-31T23:59:00-07:00",
+      "state": "future",
+      "sourceRefs": ["source-enrollment-guide"]
+    }
+  ],
+  "options": [
+    {
+      "id": "option-medical-ppo",
+      "benefitType": "medical",
+      "label": "Medical PPO option from supplied guide",
+      "status": "needs-review",
+      "costRefs": ["cost-medical-ppo"],
+      "coverageChangeRefs": ["change-carrier-notice"],
+      "sourceRefs": ["source-enrollment-guide", "source-rate-table", "source-carrier-notice-old"]
+    },
+    {
+      "id": "option-hsa",
+      "benefitType": "hsa",
+      "label": "HSA contribution note from supplied guide",
+      "status": "available",
+      "costRefs": ["cost-hsa-contribution"],
+      "coverageChangeRefs": [],
+      "sourceRefs": ["source-enrollment-guide", "source-payroll-note"]
+    }
+  ],
+  "dependentRequirements": [
+    {
+      "id": "dependent-verification",
+      "label": "Dependent verification document checklist",
+      "state": "needs-owner-review",
+      "privacy": "dependent-sensitive",
+      "sourceRefs": ["source-dependent-checklist"]
+    }
+  ],
+  "costNotes": [
+    {
+      "id": "cost-medical-ppo",
+      "label": "Medical PPO payroll deduction listed in rate table",
+      "amountState": "supplied",
+      "payrollImpact": "needs-owner-review",
+      "sourceRefs": ["source-rate-table"]
+    },
+    {
+      "id": "cost-hsa-contribution",
+      "label": "Owner-supplied HSA contribution note",
+      "amountState": "supplied",
+      "payrollImpact": "needs-owner-review",
+      "sourceRefs": ["source-payroll-note"]
+    }
+  ],
+  "coverageChanges": [
+    {
+      "id": "change-carrier-notice",
+      "label": "Carrier notice from prior year retained as stale context only",
+      "state": "stale",
+      "sourceRefs": ["source-carrier-notice-old"]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-stale-carrier-notice",
+      "kind": "stale-source",
+      "reason": "The prior carrier notice is useful context but cannot support a current enrollment decision without newer evidence.",
+      "refs": ["source-carrier-notice-old", "change-carrier-notice", "option-medical-ppo"]
+    },
+    {
+      "id": "gap-dependent-authority",
+      "kind": "dependent-authority",
+      "reason": "Dependent verification requirements remain sensitive and need owner review before any enrollment packet is submitted.",
+      "refs": ["source-dependent-checklist", "dependent-verification"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-carrier-notice",
+      "question": "Do you have the current-year carrier notice or plan summary for the medical option?",
+      "reason": "The old notice is stale and should not drive a benefits election.",
+      "refs": ["gap-stale-carrier-notice"],
+      "owner": "Jordan Rivera"
+    },
+    {
+      "id": "question-payroll-review",
+      "question": "Which payroll deduction and HSA contribution amounts do you want to review with the benefits administrator or tax preparer?",
+      "reason": "The Claw can show supplied amounts and route professional questions to the owner.",
+      "refs": ["cost-medical-ppo", "cost-hsa-contribution"],
+      "owner": "Jordan Rivera"
+    }
+  ],
+  "blockedActions": [
+    "choose-plan",
+    "recommend-coverage",
+    "submit-election",
+    "change-payroll",
+    "enroll-dependent",
+    "certify-eligibility",
+    "file-claim",
+    "contact-employer",
+    "contact-carrier",
+    "pay-premium",
+    "change-account",
+    "medical-advice",
+    "legal-advice",
+    "tax-advice",
+    "financial-advice",
+    "insurance-advice",
+    "employment-advice"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Jordan Rivera",
+    "reviewQuestionRefs": ["question-carrier-notice", "question-payroll-review"],
+    "prohibitedActions": [
+      "Do not choose or recommend benefit plans, submit elections, change payroll, enroll dependents, certify eligibility, or file claims.",
+      "Do not contact employers or carriers, pay premiums, change accounts, or give medical, legal, tax, financial, insurance, employment, or benefits advice."
+    ]
+  }
+}

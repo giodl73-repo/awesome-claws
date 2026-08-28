@@ -11,6 +11,7 @@ if (!id || !input) {
 }
 const schemaNames = {
   "appliance-care-coordinator": "appliance-care.schema.json",
+  "benefits-open-enrollment-planner": "benefits-enrollment.schema.json",
   "care-circle-coordinator": "care-circle.schema.json",
   "case-continuity-coordinator": "case-checkpoint.schema.json",
   "change-control-operator": "change-plan.schema.json",

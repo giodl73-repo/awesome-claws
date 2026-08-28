@@ -7331,6 +7331,120 @@ function healthRecordsFindings(value) {
   return findings;
 }
 
+function benefitsEnrollmentFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const windowIds = value.windows.map((item) => item.id);
+  const optionIds = value.options.map((item) => item.id);
+  const dependentIds = value.dependentRequirements.map((item) => item.id);
+  const costIds = value.costNotes.map((item) => item.id);
+  const costSet = new Set(costIds);
+  const changeIds = value.coverageChanges.map((item) => item.id);
+  const changeSet = new Set(changeIds);
+  const gapIds = value.gaps.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const crossRefs = new Set([
+    ...sourceIds,
+    ...windowIds,
+    ...optionIds,
+    ...dependentIds,
+    ...costIds,
+    ...changeIds,
+    ...gapIds,
+    ...questionIds,
+  ]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(windowIds, "windows", "Window id"),
+    ...uniqueFindings(optionIds, "options", "Option id"),
+    ...uniqueFindings(dependentIds, "dependentRequirements", "Dependent requirement id"),
+    ...uniqueFindings(costIds, "costNotes", "Cost note id"),
+    ...uniqueFindings(changeIds, "coverageChanges", "Coverage change id"),
+    ...uniqueFindings(gapIds, "gaps", "Gap id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, item] of value.windows.entries()) {
+    findings.push(
+      ...uniqueFindings(item.sourceRefs, `windows.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `windows.${index}.sourceRefs`, "Source reference"),
+    );
+    if (Date.parse(item.closesAt) <= Date.parse(item.opensAt)) {
+      findings.push(finding("invalid_enrollment_window", `windows.${index}.closesAt`, "Enrollment windows must close after they open."));
+    }
+    if (["open", "closing-soon", "future"].includes(item.state) && item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_window_state", `windows.${index}.sourceRefs`, "Active or future enrollment windows require current source evidence."));
+    }
+  }
+  for (const [index, item] of value.options.entries()) {
+    findings.push(
+      ...uniqueFindings(item.costRefs, `options.${index}.costRefs`, "Cost reference"),
+      ...referenceFindings(item.costRefs, costSet, `options.${index}.costRefs`, "Cost reference"),
+      ...uniqueFindings(item.coverageChangeRefs, `options.${index}.coverageChangeRefs`, "Coverage change reference"),
+      ...referenceFindings(item.coverageChangeRefs, changeSet, `options.${index}.coverageChangeRefs`, "Coverage change reference"),
+      ...uniqueFindings(item.sourceRefs, `options.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `options.${index}.sourceRefs`, "Source reference"),
+    );
+    if (item.status === "available" && item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_option_status", `options.${index}.sourceRefs`, "Available benefit options require current source evidence."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["dependentRequirements", value.dependentRequirements],
+    ["costNotes", value.costNotes],
+    ["coverageChanges", value.coverageChanges],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.sourceRefs, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+      );
+      if (
+        ["complete", "supplied", "confirmed"].includes(item.state ?? item.amountState) &&
+        item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+      ) {
+        findings.push(finding("unsupported_ready_item", `${collectionName}.${index}.sourceRefs`, "Complete, supplied, or confirmed benefits items require current source evidence."));
+      }
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["gaps", value.gaps],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.refs, `${collectionName}.${index}.refs`, "Reference"),
+        ...referenceFindings(item.refs, crossRefs, `${collectionName}.${index}.refs`, "Reference"),
+      );
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, new Set(questionIds), "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting", "sensitive"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready benefits packets cannot depend on stale, missing, conflicting, or sensitive sources."));
+  }
+  const actionText = canonicalJson({
+    options: value.options.map(({ label, status }) => ({ label, status })),
+    dependentRequirements: value.dependentRequirements.map(({ label, state }) => ({ label, state })),
+    costNotes: value.costNotes.map(({ label, payrollImpact }) => ({ label, payrollImpact })),
+    coverageChanges: value.coverageChanges.map(({ label, state }) => ({ label, state })),
+    gaps: value.gaps.map(({ reason }) => reason),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(choose plans?|choose benefits?|recommend coverage|submit elections?|change payroll|enroll dependents?|certify eligibility|file claims?|contact employers?|contact carriers?|pay premiums?|change accounts?|medical advice|legal advice|tax advice|financial advice|insurance advice|employment advice|benefits advice|eligibility advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Benefits enrollment artifacts must not instruct plan choice, coverage recommendations, election submission, payroll changes, dependent enrollment, eligibility certification, claims, employer or carrier contact, premium payments, account changes, or professional advice."));
+  }
+  if (value.handoff.owner === "benefits-open-enrollment-planner") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Benefits election, payroll, dependent, eligibility, claim, contact, payment, account, and professional-advice authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 function documentRenewalFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const documentIds = value.documents.map((item) => item.id);
@@ -7409,6 +7523,7 @@ function documentRenewalFindings(value) {
 
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
+  "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
   "care-circle-coordinator": careCircleFindings,
   "case-continuity-coordinator": caseContinuityFindings,
   "change-control-operator": changeControlFindings,

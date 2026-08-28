@@ -8,13 +8,14 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (89)
+### Active (90)
 
 | Claw | Detail |
 | --- | --- |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [API integration engineer](claws/api-integration-engineer) | @giodl73-repo; last verified 2026-08-19 |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | @giodl73-repo; last verified 2026-08-21 |
+| [Benefits and open enrollment planner](claws/benefits-open-enrollment-planner) | @giodl73-repo; last verified 2026-08-28 |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | @giodl73-repo; last verified 2026-08-21 |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Change control operator](claws/change-control-operator) | @giodl73-repo; last verified 2026-08-19 |
@@ -116,13 +117,14 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (58)
+### Low setup (59)
 
 | Claw | Detail |
 | --- | --- |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | no bootstrap, external dependency, or schedule |
 | [API integration engineer](claws/api-integration-engineer) | no bootstrap, external dependency, or schedule |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | no bootstrap, external dependency, or schedule |
+| [Benefits and open enrollment planner](claws/benefits-open-enrollment-planner) | no bootstrap, external dependency, or schedule |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | no bootstrap, external dependency, or schedule |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | no bootstrap, external dependency, or schedule |
 | [Change control operator](claws/change-control-operator) | no bootstrap, external dependency, or schedule |
@@ -224,13 +226,14 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (66)
+### No external dependencies (67)
 
 | Claw | Detail |
 | --- | --- |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | None |
 | [API integration engineer](claws/api-integration-engineer) | None |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | None |
+| [Benefits and open enrollment planner](claws/benefits-open-enrollment-planner) | None |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | None |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | None |
 | [Change control operator](claws/change-control-operator) | None |
@@ -327,11 +330,12 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (64)
+### X3 (65)
 
 | Claw | Detail |
 | --- | --- |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | Maintains a longitudinal appliance inventory, model-bound care calendar, warranty and recall state, lifecycle cost evidence, and explicitly approved manufacturer or authorized-servicer appointments. |
+| [Benefits and open enrollment planner](claws/benefits-open-enrollment-planner) | Organizes owner-supplied benefits packets, plan options, enrollment windows, dependent documents, payroll impact notes, coverage-change evidence, and review questions without choosing benefits, submitting elections, changing payroll, filing claims, or giving medical, legal, tax, financial, or insurance advice. |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | Coordinates a consent-bounded support plan for a person who relies on family, friends, or aides without giving medical, legal, or financial advice. |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions. |
 | [Change control operator](claws/change-control-operator) | Prepares and executes bounded workspace changes only after an accountable owner approves the exact plan digest. |
@@ -512,10 +516,11 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (37)
+### Productivity (38)
 
 | Claw | Detail |
 | --- | --- |
+| [Benefits and open enrollment planner](claws/benefits-open-enrollment-planner) | X3; Organizes owner-supplied benefits packets, plan options, enrollment windows, dependent documents, payroll impact notes, coverage-change evidence, and review questions without choosing benefits, submitting elections, changing payroll, filing claims, or giving medical, legal, tax, financial, or insurance advice. |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | X3; Coordinates a consent-bounded support plan for a person who relies on family, friends, or aides without giving medical, legal, or financial advice. |
 | [Child activity manager](claws/child-activity-manager) | X3; Coordinates child sports, lessons, clubs, camps, equipment, fees, schedules, locations, carpools, and guardian-review questions from approved family sources without registering, paying, messaging, sharing locations, making pickup commitments, or changing calendars without exact guardian approval. |
 | [Delegation coordinator](claws/delegation-coordinator) | X3; Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
@@ -558,11 +563,12 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (37)
+### Standard attention (38)
 
 | Claw | Detail |
 | --- | --- |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | portable workspace artifacts only |
+| [Benefits and open enrollment planner](claws/benefits-open-enrollment-planner) | portable workspace artifacts only |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | portable workspace artifacts only |
 | [Child activity manager](claws/child-activity-manager) | portable workspace artifacts only |
 | [Content operations](claws/content-operations) | portable workspace artifacts only |
