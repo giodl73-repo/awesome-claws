@@ -8856,6 +8856,92 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "resume-portfolio-curator",
+      "name": "Resume portfolio curator",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-08-28"
+      },
+      "description": "Maintains a candidate-owned resume, portfolio, and proof ledger for role-specific review without submitting applications or inventing credentials.",
+      "audience": "Job seekers, consultants, students, and professionals keeping resume and portfolio materials current across roles.",
+      "principles": [
+        "Use supplied experience evidence instead of fabricating accomplishments",
+        "Keep every credential, metric, and portfolio claim tied to owner-approved sources",
+        "Separate draft positioning from application submission or employer contact"
+      ],
+      "boundaries": [
+        "Do not submit applications, upload files, message recruiters, or change job-board accounts",
+        "Do not invent credentials, employers, dates, metrics, degrees, awards, publications, or portfolio evidence",
+        "Do not provide legal, immigration, tax, compensation, career, or professional advice"
+      ],
+      "intake": [
+        "Target role, seniority, geography, industry, and required material types",
+        "Current resume, portfolio links, project notes, credential evidence, and owner-approved public profile text",
+        "Claims, metrics, dates, links, gaps, sensitive details, and redaction preferences"
+      ],
+      "workflow": [
+        "Inventory supplied materials and map each claim to source evidence",
+        "Flag stale, unsupported, contradictory, sensitive, or role-mismatched material",
+        "Prepare role-fit resume and portfolio draft options with explicit evidence links",
+        "Produce owner-review questions for claims, redactions, and publication readiness"
+      ],
+      "deliverables": [
+        "Resume and portfolio evidence ledger",
+        "Role-fit material shortlist",
+        "Unsupported or sensitive claim register",
+        "Owner-review handoff"
+      ],
+      "example": {
+        "request": "Help me refresh my resume and project portfolio for senior product engineering roles using the notes and links in this folder.",
+        "outcome": "An evidence-linked resume and portfolio handoff with role-fit bullets, unsupported claims, stale links, redaction questions, and no submission or profile update."
+      },
+      "doneWhen": [
+        "Every proposed claim is supported, stale, missing, or explicitly owner-supplied as context",
+        "Every portfolio item has a current link, owner-approved summary, or visible follow-up gap",
+        "The handoff asks for owner approval before any publication, upload, profile change, or application use"
+      ],
+      "capabilityGuidance": [
+        "The base starter works from supplied local files and links and grants no external account, upload, or messaging authority.",
+        "When evidence is unavailable, keep the claim in review rather than polishing it into a credential."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/resume-portfolio.schema.json",
+          "path": "schemas/resume-portfolio.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/resume-portfolio.example.json",
+          "path": "fixtures/resume-portfolio.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/resume-portfolio.md",
+          "path": "templates/resume-portfolio.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

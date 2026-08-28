@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "resume-portfolio-curator",
+  "scenario": "Help me refresh my resume and project portfolio for senior product engineering roles using the notes and links in this folder.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Help me refresh my resume and project portfolio for senior product engineering roles using the notes and links in this folder."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/resume-portfolio-curator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Resume portfolio curator session handoff",
+    "summary": "An evidence-linked resume and portfolio handoff with role-fit bullets, unsupported claims, stale links, redaction questions, and no submission or profile update.",
+    "output": "outputs/resume-portfolio-curator-handoff.md",
+    "items": [
+      {
+        "title": "Resume and portfolio evidence ledger",
+        "summary": "Every proposed claim is supported, stale, missing, or explicitly owner-supplied as context",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Role-fit material shortlist",
+        "summary": "Every portfolio item has a current link, owner-approved summary, or visible follow-up gap",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Unsupported or sensitive claim register",
+        "summary": "The handoff asks for owner approval before any publication, upload, profile change, or application use",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-review handoff",
+        "summary": "Every proposed claim is supported, stale, missing, or explicitly owner-supplied as context",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

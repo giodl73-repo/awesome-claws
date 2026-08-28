@@ -1,0 +1,159 @@
+{
+  "schemaVersion": "awesomeClaws.resumePortfolio.v1",
+  "portfolio": {
+    "id": "portfolio-senior-product-engineering",
+    "owner": "Gio",
+    "targetRole": "Senior product engineering roles",
+    "asOf": "2026-08-28",
+    "timezone": "America/Los_Angeles"
+  },
+  "sources": [
+    {
+      "id": "source-resume-2026",
+      "kind": "resume-draft",
+      "label": "Current resume draft",
+      "freshness": "current",
+      "privacy": "owner-only",
+      "asOf": "2026-08-28"
+    },
+    {
+      "id": "source-portfolio-links",
+      "kind": "portfolio-link",
+      "label": "Owner-supplied project portfolio links",
+      "freshness": "current",
+      "privacy": "shareable-after-review",
+      "asOf": "2026-08-27"
+    },
+    {
+      "id": "source-project-notes",
+      "kind": "project-note",
+      "label": "Architecture and launch notes for agent tooling projects",
+      "freshness": "current",
+      "privacy": "redact-before-sharing",
+      "asOf": "2026-08-26"
+    },
+    {
+      "id": "source-certification-record",
+      "kind": "credential-record",
+      "label": "Cloud certification record",
+      "freshness": "stale",
+      "privacy": "owner-only",
+      "asOf": "2024-11-15"
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-agent-platform",
+      "kind": "project",
+      "claim": "Led agent platform work that coordinated tools, skills, and review gates across multiple repositories.",
+      "state": "supported",
+      "privacy": "redact-before-sharing",
+      "sourceRefs": ["source-project-notes"]
+    },
+    {
+      "id": "claim-portfolio-links",
+      "kind": "public-profile",
+      "claim": "Portfolio can highlight three owner-approved agent tooling case studies.",
+      "state": "needs-owner-review",
+      "privacy": "shareable-after-review",
+      "sourceRefs": ["source-portfolio-links"]
+    },
+    {
+      "id": "claim-certification",
+      "kind": "credential",
+      "claim": "Cloud certification may be expired or needs current verification before inclusion.",
+      "state": "stale",
+      "privacy": "owner-only",
+      "sourceRefs": ["source-certification-record"]
+    }
+  ],
+  "materials": [
+    {
+      "id": "material-role-resume",
+      "kind": "resume",
+      "label": "Role-fit resume draft",
+      "state": "draft-for-owner-review",
+      "claimRefs": ["claim-agent-platform", "claim-portfolio-links"],
+      "sourceRefs": ["source-resume-2026", "source-project-notes", "source-portfolio-links"]
+    },
+    {
+      "id": "material-portfolio-shortlist",
+      "kind": "portfolio",
+      "label": "Portfolio case-study shortlist",
+      "state": "ready-for-owner-review",
+      "claimRefs": ["claim-agent-platform", "claim-portfolio-links"],
+      "sourceRefs": ["source-portfolio-links", "source-project-notes"]
+    },
+    {
+      "id": "material-credential-list",
+      "kind": "credential-list",
+      "label": "Credential section",
+      "state": "stale",
+      "claimRefs": ["claim-certification"],
+      "sourceRefs": ["source-certification-record"]
+    }
+  ],
+  "roleFits": [
+    {
+      "id": "fit-platform-architecture",
+      "roleNeed": "Platform architecture and cross-repo execution",
+      "fit": "Use the agent platform claim and portfolio case studies, with repo names redacted until owner approves.",
+      "state": "needs-owner-review",
+      "claimRefs": ["claim-agent-platform"],
+      "materialRefs": ["material-role-resume", "material-portfolio-shortlist"]
+    }
+  ],
+  "redactions": [
+    {
+      "id": "redaction-private-repos",
+      "reason": "Project notes include internal repository names and should be generalized before sharing.",
+      "state": "needs-owner-review",
+      "refs": ["source-project-notes", "claim-agent-platform", "material-role-resume"]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-certification-current",
+      "kind": "credential-risk",
+      "reason": "The certification source is stale; confirm current status before using it as a credential claim.",
+      "refs": ["source-certification-record", "claim-certification", "material-credential-list"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-redaction",
+      "question": "Which internal project names may be generalized or included in the portfolio draft?",
+      "reason": "Publication readiness requires owner-approved redactions before sharing.",
+      "refs": ["redaction-private-repos", "claim-agent-platform", "material-role-resume"],
+      "owner": "Gio"
+    },
+    {
+      "id": "question-certification",
+      "question": "Should the stale cloud certification be removed, updated, or left out until verified?",
+      "reason": "The artifact must not polish stale credential evidence into a current claim.",
+      "refs": ["gap-certification-current", "claim-certification", "material-credential-list"],
+      "owner": "Gio"
+    }
+  ],
+  "blockedActions": [
+    "submit-application",
+    "upload-file",
+    "publish-profile",
+    "update-portfolio",
+    "message-recruiter",
+    "contact-employer",
+    "change-account",
+    "fabricate-credential",
+    "invent-metric",
+    "alter-employment-date",
+    "career-advice"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Gio",
+    "reviewQuestionRefs": ["question-redaction", "question-certification"],
+    "prohibitedActions": [
+      "Do not submit, upload, publish, update profiles, message recruiters, contact employers, change accounts, fabricate credentials, invent metrics, alter employment dates, or give professional advice."
+    ]
+  }
+}
