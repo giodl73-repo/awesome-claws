@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "certification-renewal-planner",
+  "scenario": "Help me organize these certification records and CE certificates before my cloud and security renewals this fall.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Help me organize these certification records and CE certificates before my cloud and security renewals this fall."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/certification-renewal-planner-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Certification renewal planner session handoff",
+    "summary": "A renewal-readiness handoff with credential windows, CE evidence, stale issuer links, missing proof, owner actions, and no filing or payment.",
+    "output": "outputs/certification-renewal-planner-handoff.md",
+    "items": [
+      {
+        "title": "Certification renewal ledger",
+        "summary": "Every credential has issuer, deadline, and evidence state recorded or a visible gap",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Continuing-education evidence map",
+        "summary": "Every continuing-education or exam requirement is supported, stale, missing, conflicting, or not applicable",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Deadline and requirement gap register",
+        "summary": "The handoff names the owner decision gate before any renewal submission, payment, issuer contact, course enrollment, or account change",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner renewal-readiness handoff",
+        "summary": "Every credential has issuer, deadline, and evidence state recorded or a visible gap",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

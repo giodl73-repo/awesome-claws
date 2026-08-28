@@ -59,6 +59,12 @@ const definitions = [
     decisionField: "decision.state",
   },
   {
+    id: "certification-renewal-planner",
+    schema: "../claws/certification-renewal-planner/schemas/certification-renewal.schema.json",
+    fixture: "../claws/certification-renewal-planner/fixtures/certification-renewal.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "delegation-coordinator",
     schema: "../claws/delegation-coordinator/schemas/delegation-ledger.schema.json",
     fixture: "../claws/delegation-coordinator/fixtures/delegation-ledger.example.json",
@@ -715,6 +721,36 @@ test("insurance policy organizer preserves policy evidence and owner authority",
   assert.equal(isValid("insurance-policy-organizer", unsupportedReady), false);
 });
 
+test("certification renewal planner preserves issuer evidence and owner authority", () => {
+  const readyWithStaleSource = structuredClone(cases.get("certification-renewal-planner").fixture);
+  readyWithStaleSource.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("certification-renewal-planner", readyWithStaleSource), false);
+
+  const currentWithStaleSource = structuredClone(cases.get("certification-renewal-planner").fixture);
+  currentWithStaleSource.credentials[1].status = "current";
+  assert.equal(isValid("certification-renewal-planner", currentWithStaleSource), false);
+
+  const satisfiedWithStaleSource = structuredClone(cases.get("certification-renewal-planner").fixture);
+  satisfiedWithStaleSource.requirements[2].state = "satisfied";
+  assert.equal(isValid("certification-renewal-planner", satisfiedWithStaleSource), false);
+
+  const evidenceWithStaleSource = structuredClone(cases.get("certification-renewal-planner").fixture);
+  evidenceWithStaleSource.evidenceItems[1].state = "available";
+  assert.equal(isValid("certification-renewal-planner", evidenceWithStaleSource), false);
+
+  const actionAdvice = structuredClone(cases.get("certification-renewal-planner").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Submit renewal and pay fee.";
+  assert.equal(isValid("certification-renewal-planner", actionAdvice), false);
+
+  const danglingCredential = structuredClone(cases.get("certification-renewal-planner").fixture);
+  danglingCredential.requirements[0].credentialRef = "credential-missing";
+  assert.equal(isValid("certification-renewal-planner", danglingCredential), false);
+
+  const agentOwned = structuredClone(cases.get("certification-renewal-planner").fixture);
+  agentOwned.handoff.owner = "certification-renewal-planner";
+  assert.equal(isValid("certification-renewal-planner", agentOwned), false);
+});
+
 test("job application tracker preserves candidate evidence and owner authority", () => {
   const readyWithStaleSource = structuredClone(cases.get("job-application-tracker").fixture);
   readyWithStaleSource.handoff.state = "ready-for-owner-review";
@@ -874,6 +910,7 @@ test("decision artifacts reject duplicate semantic references", () => {
   const mutations = [
     ["change-control-operator", (value) => value.execution.stepResults.push(structuredClone(value.execution.stepResults[0]))],
     ["case-continuity-coordinator", (value) => value.actions[0].evidenceRefs.push(value.actions[0].evidenceRefs[0])],
+    ["certification-renewal-planner", (value) => value.credentials[0].sourceRefs.push(value.credentials[0].sourceRefs[0])],
     ["benefits-open-enrollment-planner", (value) => value.options[0].sourceRefs.push(value.options[0].sourceRefs[0])],
     ["child-activity-manager", (value) => value.activities[0].sourceRefs.push(value.activities[0].sourceRefs[0])],
     ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],

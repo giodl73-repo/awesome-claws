@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "awesomeClaws.certificationRenewal.v1",
+  "portfolio": {
+    "id": "cert-portfolio-professional-2026",
+    "owner": "Gio",
+    "asOf": "2026-08-28",
+    "timezone": "America/Los_Angeles"
+  },
+  "sources": [
+    {
+      "id": "source-cloud-issuer",
+      "kind": "issuer-page",
+      "label": "Cloud certification renewal requirements",
+      "freshness": "current",
+      "privacy": "shareable-after-review",
+      "asOf": "2026-08-27"
+    },
+    {
+      "id": "source-security-email",
+      "kind": "issuer-email",
+      "label": "Security credential renewal notice",
+      "freshness": "current",
+      "privacy": "owner-only",
+      "asOf": "2026-08-20"
+    },
+    {
+      "id": "source-ce-records",
+      "kind": "ce-record",
+      "label": "Continuing education certificates folder",
+      "freshness": "current",
+      "privacy": "redact-before-sharing",
+      "asOf": "2026-08-25"
+    },
+    {
+      "id": "source-old-policy",
+      "kind": "employer-policy",
+      "label": "Old employer credential reimbursement policy",
+      "freshness": "stale",
+      "privacy": "owner-only",
+      "asOf": "2025-03-01"
+    }
+  ],
+  "credentials": [
+    {
+      "id": "credential-cloud-architect",
+      "name": "Cloud Architect Professional",
+      "issuer": "Example Cloud",
+      "status": "renewal-needed",
+      "expiresOn": "2026-10-31",
+      "sourceRefs": ["source-cloud-issuer"]
+    },
+    {
+      "id": "credential-security-practitioner",
+      "name": "Security Practitioner",
+      "issuer": "Example Security Board",
+      "status": "unknown",
+      "expiresOn": null,
+      "sourceRefs": ["source-security-email", "source-old-policy"]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "requirement-cloud-ce",
+      "credentialRef": "credential-cloud-architect",
+      "kind": "continuing-education",
+      "label": "Thirty continuing-education credits",
+      "state": "needs-owner-review",
+      "dueOn": "2026-10-15",
+      "sourceRefs": ["source-cloud-issuer", "source-ce-records"]
+    },
+    {
+      "id": "requirement-cloud-fee",
+      "credentialRef": "credential-cloud-architect",
+      "kind": "fee",
+      "label": "Renewal fee before expiration",
+      "state": "needs-owner-review",
+      "dueOn": "2026-10-31",
+      "sourceRefs": ["source-cloud-issuer"]
+    },
+    {
+      "id": "requirement-security-expiration",
+      "credentialRef": "credential-security-practitioner",
+      "kind": "attestation",
+      "label": "Confirm current expiration and attestation requirements",
+      "state": "stale",
+      "dueOn": null,
+      "sourceRefs": ["source-security-email", "source-old-policy"]
+    }
+  ],
+  "evidenceItems": [
+    {
+      "id": "evidence-ce-folder",
+      "requirementRefs": ["requirement-cloud-ce"],
+      "label": "CE certificate folder appears complete but needs owner review before attaching",
+      "state": "needs-owner-review",
+      "privacy": "redact-before-sharing",
+      "sourceRefs": ["source-ce-records"]
+    },
+    {
+      "id": "evidence-security-attestation",
+      "requirementRefs": ["requirement-security-expiration"],
+      "label": "Security attestation evidence is not current",
+      "state": "stale",
+      "privacy": "owner-only",
+      "sourceRefs": ["source-security-email", "source-old-policy"]
+    }
+  ],
+  "deadlineRisks": [
+    {
+      "id": "risk-cloud-deadline",
+      "credentialRef": "credential-cloud-architect",
+      "severity": "medium",
+      "reason": "Renewal window is approaching and CE evidence needs owner review before use.",
+      "sourceRefs": ["source-cloud-issuer", "source-ce-records"]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-security-current",
+      "kind": "stale-requirement",
+      "reason": "Security credential requirements include a stale employer policy and need current issuer/account evidence.",
+      "refs": ["credential-security-practitioner", "requirement-security-expiration", "source-old-policy"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-ce-use",
+      "question": "Which CE certificates should be included in the owner-reviewed renewal packet?",
+      "reason": "The Claw can organize CE evidence but cannot attach or submit it.",
+      "refs": ["requirement-cloud-ce", "evidence-ce-folder"],
+      "owner": "Gio"
+    },
+    {
+      "id": "question-security-status",
+      "question": "Can you provide a current issuer export or account screenshot for the security credential?",
+      "reason": "The credential status cannot be treated as current from stale policy evidence.",
+      "refs": ["gap-security-current", "credential-security-practitioner"],
+      "owner": "Gio"
+    }
+  ],
+  "blockedActions": [
+    "submit-renewal",
+    "pay-fee",
+    "contact-issuer",
+    "change-account",
+    "schedule-exam",
+    "enroll-course",
+    "claim-validity",
+    "claim-compliance",
+    "issue-certificate",
+    "change-employer-record",
+    "professional-advice"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Gio",
+    "reviewQuestionRefs": ["question-ce-use", "question-security-status"],
+    "prohibitedActions": [
+      "Do not submit renewals, pay fees, contact issuers, change accounts, schedule exams, enroll in courses, claim validity or compliance, issue certificates, change employer records, or give professional advice."
+    ]
+  }
+}

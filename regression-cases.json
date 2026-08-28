@@ -2281,6 +2281,28 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "certification-renewal-planner",
+      "acceptedRequest": "Help me organize these certification records and CE certificates before my cloud and security renewals this fall.",
+      "requiredEvidence": [
+        "Credential names, issuers, account labels, expiration dates, renewal periods, and owner",
+        "Issuer requirements, continuing-education records, exam windows, fees, receipts, certificates, and notices",
+        "Missing evidence, stale links, jurisdiction notes, employer requirements, and privacy preferences"
+      ],
+      "authorityBoundaries": [
+        "Do not submit renewals, pay fees, contact issuers, change accounts, schedule exams, or enroll in courses",
+        "Do not claim a credential is valid without current issuer or owner-supplied evidence",
+        "Do not provide legal, compliance, employment, education, tax, immigration, financial, or professional advice"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/certification-renewal-planner-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
