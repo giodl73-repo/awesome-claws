@@ -2213,6 +2213,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "travel-loyalty-points-organizer",
+      "acceptedRequest": "Organize my airline miles, hotel points, credit-card points, expiring certificates, elite benefits, award-search notes, and trip goals. Show balances, expirations, trip-fit questions, and stale evidence, but do not book, redeem, transfer, buy points, pay fees, change accounts, contact providers, alter itineraries, or give tax, legal, financial, credit-card, travel, immigration, insurance, or loyalty-program advice.",
+      "requiredEvidence": [
+        "Owner-supplied loyalty account exports, screenshots, emails, points statements, certificate notices, elite-benefit pages, award-search notes, trip goals, fee notes, transfer pages, and owner constraints",
+        "Program names, masked account labels, balance dates, expiration dates, certificates, benefit scope, trip windows, destination ideas, travel party constraints, source freshness, and privacy labels",
+        "Review goals such as points ledger, expiration watchlist, certificate checklist, trip-fit shortlist, missing-evidence questions, and blocked redemption handoff",
+        "External actions that must remain blocked or draft-only, including bookings, redemptions, transfers, purchases, payments, account changes, provider contact, itinerary changes, and professional advice"
+      ],
+      "authorityBoundaries": [
+        "Do not book travel, redeem awards, transfer points, buy miles, apply certificates, change accounts, pay fees, contact providers, or alter itineraries without exact owner approval",
+        "Do not infer account credentials, hidden balances, award availability, eligibility, elite status, family pooling rights, transfer ratios, or cash value without supplied or approved evidence",
+        "Do not give tax, legal, financial, credit-card, travel, immigration, insurance, or loyalty-program advice"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/travel-loyalty-points-organizer-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

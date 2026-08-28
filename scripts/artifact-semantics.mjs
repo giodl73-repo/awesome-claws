@@ -7731,6 +7731,141 @@ function jobApplicationFindings(value) {
   return findings;
 }
 
+function travelLoyaltyFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const programIds = value.programs.map((item) => item.id);
+  const programSet = new Set(programIds);
+  const balanceIds = value.balances.map((item) => item.id);
+  const balanceSet = new Set(balanceIds);
+  const certificateIds = value.certificates.map((item) => item.id);
+  const benefitIds = value.benefits.map((item) => item.id);
+  const tripIds = value.tripGoals.map((item) => item.id);
+  const tripSet = new Set(tripIds);
+  const candidateIds = value.redemptionCandidates.map((item) => item.id);
+  const gapIds = value.gaps.map((item) => item.id);
+  const gapSet = new Set(gapIds);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const crossRefs = new Set([
+    ...sourceIds,
+    ...programIds,
+    ...balanceIds,
+    ...certificateIds,
+    ...benefitIds,
+    ...tripIds,
+    ...candidateIds,
+    ...gapIds,
+    ...questionIds,
+  ]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(programIds, "programs", "Program id"),
+    ...uniqueFindings(balanceIds, "balances", "Balance id"),
+    ...uniqueFindings(certificateIds, "certificates", "Certificate id"),
+    ...uniqueFindings(benefitIds, "benefits", "Benefit id"),
+    ...uniqueFindings(tripIds, "tripGoals", "Trip goal id"),
+    ...uniqueFindings(candidateIds, "redemptionCandidates", "Redemption candidate id"),
+    ...uniqueFindings(gapIds, "gaps", "Gap id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, program] of value.programs.entries()) {
+    findings.push(
+      ...uniqueFindings(program.sourceRefs, `programs.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(program.sourceRefs, sourceSet, `programs.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, balance] of value.balances.entries()) {
+    findings.push(
+      ...referenceFindings([balance.programRef], programSet, `balances.${index}.programRef`, "Program reference"),
+      ...uniqueFindings(balance.sourceRefs, `balances.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(balance.sourceRefs, sourceSet, `balances.${index}.sourceRefs`, "Source reference"),
+    );
+    if (balance.state === "current" && balance.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")) {
+      findings.push(finding("unsupported_balance_state", `balances.${index}.sourceRefs`, "Current loyalty balances require current source evidence."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["certificates", value.certificates],
+    ["benefits", value.benefits],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...referenceFindings([item.programRef], programSet, `${collectionName}.${index}.programRef`, "Program reference"),
+        ...uniqueFindings(item.sourceRefs, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+      );
+      if (
+        ["usable-after-owner-review", "supported"].includes(item.state) &&
+        item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+      ) {
+        findings.push(finding("unsupported_ready_item", `${collectionName}.${index}.sourceRefs`, "Usable certificates and supported benefits require current source evidence."));
+      }
+    }
+  }
+  for (const [index, trip] of value.tripGoals.entries()) {
+    findings.push(
+      ...uniqueFindings(trip.sourceRefs, `tripGoals.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(trip.sourceRefs, sourceSet, `tripGoals.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, candidate] of value.redemptionCandidates.entries()) {
+    findings.push(
+      ...referenceFindings([candidate.tripRef], tripSet, `redemptionCandidates.${index}.tripRef`, "Trip reference"),
+      ...referenceFindings([candidate.programRef], programSet, `redemptionCandidates.${index}.programRef`, "Program reference"),
+      ...uniqueFindings(candidate.balanceRefs, `redemptionCandidates.${index}.balanceRefs`, "Balance reference"),
+      ...referenceFindings(candidate.balanceRefs, balanceSet, `redemptionCandidates.${index}.balanceRefs`, "Balance reference"),
+      ...uniqueFindings(candidate.riskRefs, `redemptionCandidates.${index}.riskRefs`, "Gap reference"),
+      ...referenceFindings(candidate.riskRefs, gapSet, `redemptionCandidates.${index}.riskRefs`, "Gap reference"),
+      ...uniqueFindings(candidate.sourceRefs, `redemptionCandidates.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(candidate.sourceRefs, sourceSet, `redemptionCandidates.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      candidate.state === "review-candidate" &&
+      candidate.sourceRefs.some((ref) => !["current"].includes(sourceById.get(ref)?.freshness))
+    ) {
+      findings.push(finding("unsupported_redemption_candidate", `redemptionCandidates.${index}.sourceRefs`, "Reviewable redemption candidates require current source evidence."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["gaps", value.gaps],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.refs, `${collectionName}.${index}.refs`, "Reference"),
+        ...referenceFindings(item.refs, crossRefs, `${collectionName}.${index}.refs`, "Reference"),
+      );
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, new Set(questionIds), "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting", "sensitive"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready loyalty packets cannot depend on stale, missing, conflicting, or sensitive sources."));
+  }
+  const actionText = canonicalJson({
+    programs: value.programs.map(({ name, accountLabel }) => ({ name, accountLabel })),
+    balances: value.balances.map(({ state }) => state),
+    certificates: value.certificates.map(({ label, state }) => ({ label, state })),
+    benefits: value.benefits.map(({ label, state }) => ({ label, state })),
+    redemptionCandidates: value.redemptionCandidates.map(({ label, state }) => ({ label, state })),
+    gaps: value.gaps.map(({ reason }) => reason),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(book travel|redeem awards?|transfer points?|buy points?|buy miles?|apply certificates?|change accounts?|pay fees?|contact providers?|alter itinerar(?:y|ies)|assign cash value|tax advice|legal advice|financial advice|credit-card advice|travel advice|immigration advice|insurance advice|loyalty-program advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Travel loyalty artifacts must not instruct booking, redemption, transfers, point purchases, certificate use, payments, provider contact, account changes, itinerary changes, cash valuation, or professional advice."));
+  }
+  if (value.handoff.owner === "travel-loyalty-points-organizer") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Booking, redemption, transfer, purchase, payment, provider-contact, account, itinerary, cash-value, and professional-advice authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
@@ -7778,6 +7913,7 @@ const validators = {
   "stock-portfolio-monitor": stockPortfolioFindings,
   "subscription-manager": subscriptionManagerFindings,
   "tax-document-organizer": taxDocumentFindings,
+  "travel-loyalty-points-organizer": travelLoyaltyFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
   "wardrobe-organizer": wardrobeFindings,
   "warranty-returns-manager": warrantyReturnsFindings,

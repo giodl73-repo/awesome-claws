@@ -293,6 +293,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "travel-loyalty-points-organizer",
+    schema: "../claws/travel-loyalty-points-organizer/schemas/travel-loyalty.schema.json",
+    fixture: "../claws/travel-loyalty-points-organizer/fixtures/travel-loyalty.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "civic-data-analyst",
     schema: "../claws/civic-data-analyst/schemas/civic-evidence.schema.json",
     fixture: "../claws/civic-data-analyst/fixtures/civic-evidence.example.json",
@@ -723,6 +729,32 @@ test("job application tracker preserves candidate evidence and owner authority",
   assert.equal(isValid("job-application-tracker", agentOwned), false);
 });
 
+test("travel loyalty organizer preserves rewards evidence and owner authority", () => {
+  const readyWithSensitiveSource = structuredClone(cases.get("travel-loyalty-points-organizer").fixture);
+  readyWithSensitiveSource.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("travel-loyalty-points-organizer", readyWithSensitiveSource), false);
+
+  const staleBalance = structuredClone(cases.get("travel-loyalty-points-organizer").fixture);
+  staleBalance.balances[0].sourceRefs = ["source-transfer-page-old"];
+  assert.equal(isValid("travel-loyalty-points-organizer", staleBalance), false);
+
+  const unsupportedCandidate = structuredClone(cases.get("travel-loyalty-points-organizer").fixture);
+  unsupportedCandidate.redemptionCandidates[0].state = "review-candidate";
+  assert.equal(isValid("travel-loyalty-points-organizer", unsupportedCandidate), false);
+
+  const actionAdvice = structuredClone(cases.get("travel-loyalty-points-organizer").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Redeem award and transfer points.";
+  assert.equal(isValid("travel-loyalty-points-organizer", actionAdvice), false);
+
+  const danglingProgram = structuredClone(cases.get("travel-loyalty-points-organizer").fixture);
+  danglingProgram.balances[0].programRef = "program-missing";
+  assert.equal(isValid("travel-loyalty-points-organizer", danglingProgram), false);
+
+  const agentOwned = structuredClone(cases.get("travel-loyalty-points-organizer").fixture);
+  agentOwned.handoff.owner = "travel-loyalty-points-organizer";
+  assert.equal(isValid("travel-loyalty-points-organizer", agentOwned), false);
+});
+
 test("public safety state rejects impossible time ranges and dangling alerts", () => {
   const candidate = structuredClone(cases.get("public-safety-monitor").fixture);
   candidate.alerts[0].expiresAt = candidate.alerts[0].issuedAt;
@@ -807,6 +839,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["stock-portfolio-monitor", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
     ["subscription-manager", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
     ["tax-document-organizer", (value) => value.documents[0].sourceRefs.push(value.documents[0].sourceRefs[0])],
+    ["travel-loyalty-points-organizer", (value) => value.programs[0].sourceRefs.push(value.programs[0].sourceRefs[0])],
     ["civic-data-analyst", (value) => value.measures[0].sourceRefs.push(value.measures[0].sourceRefs[0])],
   ];
   for (const [id, mutate] of mutations) {

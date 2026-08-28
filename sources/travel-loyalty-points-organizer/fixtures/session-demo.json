@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "travel-loyalty-points-organizer",
+  "scenario": "Organize my airline miles, hotel points, credit-card points, expiring certificates, elite benefits, award-search notes, and trip goals. Show balances, expirations, trip-fit questions, and stale evidence, but do not book, redeem, transfer, buy points, pay fees, change accounts, contact providers, alter itineraries, or give tax, legal, financial, credit-card, travel, immigration, insurance, or loyalty-program advice.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize my airline miles, hotel points, credit-card points, expiring certificates, elite benefits, award-search notes, and trip goals. Show balances, expirations, trip-fit questions, and stale evidence, but do not book, redeem, transfer, buy points, pay fees, change accounts, contact providers, alter itineraries, or give tax, legal, financial, credit-card, travel, immigration, insurance, or loyalty-program advice."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/travel-loyalty-points-organizer-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Travel loyalty and points organizer session handoff",
+    "summary": "A source-backed travel loyalty packet with masked account ledger, balances, certificates, expiration risks, trip-fit redemption candidates, missing evidence, owner-review questions, and all booking, redemption, transfer, purchase, payment, account, contact, itinerary, and professional-advice actions blocked.",
+    "output": "outputs/travel-loyalty-points-organizer-handoff.md",
+    "items": [
+      {
+        "title": "Travel loyalty source ledger",
+        "summary": "Every program, balance, certificate, benefit, trip goal, redemption candidate, gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Points, miles, certificate, and benefit inventory",
+        "summary": "Every expiration, balance, certificate, benefit, trip-fit, transfer, or fee claim traces to supplied or approved evidence without hiding stale, missing, conflicting, partial, account-sensitive, blackout-adjacent, or fee-adjacent evidence",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Expiration and missing-evidence watchlist",
+        "summary": "Account numbers, credentials, traveler identifiers, confirmation numbers, family-member details, card details, and provider contact details are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Trip-fit redemption candidate review",
+        "summary": "Bookings, redemptions, transfers, point purchases, fee payments, provider contact, account changes, itinerary changes, and tax/legal/financial/credit-card/travel/immigration/insurance/loyalty-program advice remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner questions for certificates, transfers, fees, and blackout risk",
+        "summary": "Every program, balance, certificate, benefit, trip goal, redemption candidate, gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked booking, redemption, transfer, purchase, payment, account, provider-contact, itinerary, and advice handoff",
+        "summary": "Every expiration, balance, certificate, benefit, trip-fit, transfer, or fee claim traces to supplied or approved evidence without hiding stale, missing, conflicting, partial, account-sensitive, blackout-adjacent, or fee-adjacent evidence",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

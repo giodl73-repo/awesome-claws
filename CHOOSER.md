@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (92)
+### Active (93)
 
 | Claw | Detail |
 | --- | --- |
@@ -94,6 +94,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Subscription manager](claws/subscription-manager) | @giodl73-repo; last verified 2026-08-21 |
 | [Tax document organizer](claws/tax-document-organizer) | @giodl73-repo; last verified 2026-08-26 |
 | [Travel concierge](claws/travel-concierge) | @giodl73-repo; last verified 2026-08-19 |
+| [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | @giodl73-repo; last verified 2026-08-28 |
 | [Travel planner](claws/travel-planner) | @giodl73-repo; last verified 2026-08-19 |
 | [UX research synthesizer](claws/ux-research-synthesizer) | @giodl73-repo; last verified 2026-08-19 |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | @giodl73-repo; last verified 2026-08-20 |
@@ -119,7 +120,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (61)
+### Low setup (62)
 
 | Claw | Detail |
 | --- | --- |
@@ -179,6 +180,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | no bootstrap, external dependency, or schedule |
 | [Subscription manager](claws/subscription-manager) | no bootstrap, external dependency, or schedule |
 | [Tax document organizer](claws/tax-document-organizer) | no bootstrap, external dependency, or schedule |
+| [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | no bootstrap, external dependency, or schedule |
 | [UX research synthesizer](claws/ux-research-synthesizer) | no bootstrap, external dependency, or schedule |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | no bootstrap, external dependency, or schedule |
 | [Wardrobe organizer](claws/wardrobe-organizer) | no bootstrap, external dependency, or schedule |
@@ -230,7 +232,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (69)
+### No external dependencies (70)
 
 | Claw | Detail |
 | --- | --- |
@@ -298,6 +300,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | None |
 | [Subscription manager](claws/subscription-manager) | None |
 | [Tax document organizer](claws/tax-document-organizer) | None |
+| [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | None |
 | [UX research synthesizer](claws/ux-research-synthesizer) | None |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | None |
 | [Wardrobe organizer](claws/wardrobe-organizer) | None |
@@ -336,7 +339,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (67)
+### X3 (68)
 
 | Claw | Detail |
 | --- | --- |
@@ -398,6 +401,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | Monitors a user-supplied stock portfolio or watchlist with sourced prices, holdings, allocation drift, issuer events, and review questions without investment advice or trade execution. |
 | [Subscription manager](claws/subscription-manager) | Tracks user-supplied recurring subscriptions, renewals, price changes, usage evidence, overlap, and owner review questions without banking access, cancellation, subscription changes, negotiation, or financial advice. |
 | [Tax document organizer](claws/tax-document-organizer) | Organizes supplied tax-season documents, income forms, deduction evidence, deadlines, missing-item questions, and preparer handoff packets without preparing returns, giving tax or legal advice, filing, contacting institutions, changing accounts, or moving money. |
+| [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | Organizes owner-supplied airline, hotel, credit-card points, certificates, loyalty benefits, expiration notices, and trip goals into a private travel-rewards ledger without booking travel, transferring points, buying miles, changing accounts, paying fees, redeeming awards, or giving travel, tax, legal, or financial advice. |
 | [Travel planner](claws/travel-planner) | Builds a reviewable trip plan from current public sources without booking, paying, or retaining sensitive traveler records. |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle. |
 | [Video concept producer](claws/video-concept-producer) | Generates reviewable PixVerse video concepts from approved prompts or workspace assets without publishing or impersonating people. |
@@ -524,7 +528,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (40)
+### Productivity (41)
 
 | Claw | Detail |
 | --- | --- |
@@ -564,6 +568,7 @@ Categories come directly from the catalog entry.
 | [Subscription manager](claws/subscription-manager) | X3; Tracks user-supplied recurring subscriptions, renewals, price changes, usage evidence, overlap, and owner review questions without banking access, cancellation, subscription changes, negotiation, or financial advice. |
 | [Tax document organizer](claws/tax-document-organizer) | X3; Organizes supplied tax-season documents, income forms, deduction evidence, deadlines, missing-item questions, and preparer handoff packets without preparing returns, giving tax or legal advice, filing, contacting institutions, changing accounts, or moving money. |
 | [Travel concierge](claws/travel-concierge) | X5; Searches and compares current Expedia lodging and flight options, then prepares a traveler-controlled booking handoff without completing a transaction. |
+| [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | X3; Organizes owner-supplied airline, hotel, credit-card points, certificates, loyalty benefits, expiration notices, and trip goals into a private travel-rewards ledger without booking travel, transferring points, buying miles, changing accounts, paying fees, redeeming awards, or giving travel, tax, legal, or financial advice. |
 | [Travel planner](claws/travel-planner) | X3; Builds a reviewable trip plan from current public sources without booking, paying, or retaining sensitive traveler records. |
 | [Video concept producer](claws/video-concept-producer) | X3; Generates reviewable PixVerse video concepts from approved prompts or workspace assets without publishing or impersonating people. |
 | [Wardrobe organizer](claws/wardrobe-organizer) | X3; Tracks clothing inventory, sizes, fit notes, outfit needs, events, packing lists, care tasks, alterations, gaps, and owner review questions from supplied evidence without buying, selling, donating, sharing photos, inferring body or health details, or changing accounts. |
@@ -573,7 +578,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (40)
+### Standard attention (41)
 
 | Claw | Detail |
 | --- | --- |
@@ -614,6 +619,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | portable workspace artifacts only |
 | [Subscription manager](claws/subscription-manager) | portable workspace artifacts only |
 | [Tax document organizer](claws/tax-document-organizer) | portable workspace artifacts only |
+| [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | portable workspace artifacts only |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | portable workspace artifacts only |
 | [Wardrobe organizer](claws/wardrobe-organizer) | portable workspace artifacts only |
 | [Warranty and returns manager](claws/warranty-returns-manager) | portable workspace artifacts only |
