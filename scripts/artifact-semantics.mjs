@@ -7731,6 +7731,117 @@ function jobApplicationFindings(value) {
   return findings;
 }
 
+function resumePortfolioFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const claimIds = value.claims.map((item) => item.id);
+  const claimSet = new Set(claimIds);
+  const claimById = new Map(value.claims.map((item) => [item.id, item]));
+  const materialIds = value.materials.map((item) => item.id);
+  const materialSet = new Set(materialIds);
+  const fitIds = value.roleFits.map((item) => item.id);
+  const redactionIds = value.redactions.map((item) => item.id);
+  const gapIds = value.gaps.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const crossRefs = new Set([
+    ...sourceIds,
+    ...claimIds,
+    ...materialIds,
+    ...fitIds,
+    ...redactionIds,
+    ...gapIds,
+    ...questionIds,
+  ]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(claimIds, "claims", "Claim id"),
+    ...uniqueFindings(materialIds, "materials", "Material id"),
+    ...uniqueFindings(fitIds, "roleFits", "Role-fit id"),
+    ...uniqueFindings(redactionIds, "redactions", "Redaction id"),
+    ...uniqueFindings(gapIds, "gaps", "Gap id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, claim] of value.claims.entries()) {
+    findings.push(
+      ...uniqueFindings(claim.sourceRefs, `claims.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(claim.sourceRefs, sourceSet, `claims.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      claim.state === "supported" &&
+      claim.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+    ) {
+      findings.push(finding("unsupported_claim_state", `claims.${index}.sourceRefs`, "Supported resume and portfolio claims require current source evidence."));
+    }
+  }
+  for (const [index, material] of value.materials.entries()) {
+    findings.push(
+      ...uniqueFindings(material.claimRefs, `materials.${index}.claimRefs`, "Claim reference"),
+      ...referenceFindings(material.claimRefs, claimSet, `materials.${index}.claimRefs`, "Claim reference"),
+      ...uniqueFindings(material.sourceRefs, `materials.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(material.sourceRefs, sourceSet, `materials.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      material.state === "ready-for-owner-review" &&
+      (material.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current") ||
+        material.claimRefs.some((ref) => !["supported", "needs-owner-review"].includes(claimById.get(ref)?.state)))
+    ) {
+      findings.push(finding("unsupported_material_state", `materials.${index}`, "Owner-ready career materials require current sources and supported or owner-review claims."));
+    }
+  }
+  for (const [index, fit] of value.roleFits.entries()) {
+    findings.push(
+      ...uniqueFindings(fit.claimRefs, `roleFits.${index}.claimRefs`, "Claim reference"),
+      ...referenceFindings(fit.claimRefs, claimSet, `roleFits.${index}.claimRefs`, "Claim reference"),
+      ...uniqueFindings(fit.materialRefs, `roleFits.${index}.materialRefs`, "Material reference"),
+      ...referenceFindings(fit.materialRefs, materialSet, `roleFits.${index}.materialRefs`, "Material reference"),
+    );
+    if (
+      fit.state === "supported" &&
+      fit.claimRefs.some((ref) => claimById.get(ref)?.state !== "supported")
+    ) {
+      findings.push(finding("unsupported_role_fit", `roleFits.${index}.claimRefs`, "Supported role-fit statements require supported claims."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["redactions", value.redactions],
+    ["gaps", value.gaps],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.refs, `${collectionName}.${index}.refs`, "Reference"),
+        ...referenceFindings(item.refs, crossRefs, `${collectionName}.${index}.refs`, "Reference"),
+      );
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, new Set(questionIds), "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting", "sensitive"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready resume portfolio packets cannot depend on stale, missing, conflicting, or sensitive sources."));
+  }
+  const actionText = canonicalJson({
+    claims: value.claims.map(({ kind, claim, state }) => ({ kind, claim, state })),
+    materials: value.materials.map(({ label, state }) => ({ label, state })),
+    roleFits: value.roleFits.map(({ roleNeed, fit, state }) => ({ roleNeed, fit, state })),
+    redactions: value.redactions.map(({ reason, state }) => ({ reason, state })),
+    gaps: value.gaps.map(({ reason }) => reason),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(submit applications?|upload files?|publish profiles?|update portfolios?|message recruiters?|contact employers?|change accounts?|fabricate|invent metrics?|alter employment dates?|claim degrees?|claim awards?|claim publications?|legal advice|immigration advice|tax advice|compensation advice|career advice|employment advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Resume portfolio artifacts must not instruct submissions, uploads, publication, profile or portfolio updates, recruiter or employer contact, account changes, credential fabrication, invented metrics, altered dates, unsupported claims, or professional advice."));
+  }
+  if (value.handoff.owner === "resume-portfolio-curator") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Application, upload, publication, profile, portfolio, contact, account, credential, metrics, employment-date, and professional-advice authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 function travelLoyaltyFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const sourceSet = new Set(sourceIds);
@@ -8021,6 +8132,7 @@ const validators = {
   "pet-care-coordinator": petCareFindings,
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
   "professional-networking-followup": professionalNetworkingFindings,
+  "resume-portfolio-curator": resumePortfolioFindings,
   "project-manager": projectFindings,
   "product-manager": productFindings,
   "purchase-researcher": purchaseResearchFindings,

@@ -2259,6 +2259,28 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "resume-portfolio-curator",
+      "acceptedRequest": "Help me refresh my resume and project portfolio for senior product engineering roles using the notes and links in this folder.",
+      "requiredEvidence": [
+        "Target role, seniority, geography, industry, and required material types",
+        "Current resume, portfolio links, project notes, credential evidence, and owner-approved public profile text",
+        "Claims, metrics, dates, links, gaps, sensitive details, and redaction preferences"
+      ],
+      "authorityBoundaries": [
+        "Do not submit applications, upload files, message recruiters, or change job-board accounts",
+        "Do not invent credentials, employers, dates, metrics, degrees, awards, publications, or portfolio evidence",
+        "Do not provide legal, immigration, tax, compensation, career, or professional advice"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/resume-portfolio-curator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

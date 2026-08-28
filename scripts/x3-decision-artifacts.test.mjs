@@ -239,6 +239,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "resume-portfolio-curator",
+    schema: "../claws/resume-portfolio-curator/schemas/resume-portfolio.schema.json",
+    fixture: "../claws/resume-portfolio-curator/fixtures/resume-portfolio.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "vehicle-service-coordinator",
     schema: "../claws/vehicle-service-coordinator/schemas/vehicle-service.schema.json",
     fixture: "../claws/vehicle-service-coordinator/fixtures/vehicle-service.example.json",
@@ -787,6 +793,37 @@ test("professional networking follow-up preserves contact evidence and owner aut
   assert.equal(isValid("professional-networking-followup", agentOwned), false);
 });
 
+test("resume portfolio curator preserves claim evidence and owner authority", () => {
+  const readyWithStaleSource = structuredClone(cases.get("resume-portfolio-curator").fixture);
+  readyWithStaleSource.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("resume-portfolio-curator", readyWithStaleSource), false);
+
+  const danglingSource = structuredClone(cases.get("resume-portfolio-curator").fixture);
+  danglingSource.claims[0].sourceRefs = ["source-missing"];
+  assert.equal(isValid("resume-portfolio-curator", danglingSource), false);
+
+  const unsupportedClaim = structuredClone(cases.get("resume-portfolio-curator").fixture);
+  unsupportedClaim.claims[2].state = "supported";
+  assert.equal(isValid("resume-portfolio-curator", unsupportedClaim), false);
+
+  const unsupportedMaterial = structuredClone(cases.get("resume-portfolio-curator").fixture);
+  unsupportedMaterial.materials[1].claimRefs = ["claim-certification"];
+  assert.equal(isValid("resume-portfolio-curator", unsupportedMaterial), false);
+
+  const unsupportedFit = structuredClone(cases.get("resume-portfolio-curator").fixture);
+  unsupportedFit.roleFits[0].state = "supported";
+  unsupportedFit.roleFits[0].claimRefs = ["claim-portfolio-links"];
+  assert.equal(isValid("resume-portfolio-curator", unsupportedFit), false);
+
+  const actionAdvice = structuredClone(cases.get("resume-portfolio-curator").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Publish profile and upload files.";
+  assert.equal(isValid("resume-portfolio-curator", actionAdvice), false);
+
+  const agentOwned = structuredClone(cases.get("resume-portfolio-curator").fixture);
+  agentOwned.handoff.owner = "resume-portfolio-curator";
+  assert.equal(isValid("resume-portfolio-curator", agentOwned), false);
+});
+
 test("public safety state rejects impossible time ranges and dangling alerts", () => {
   const candidate = structuredClone(cases.get("public-safety-monitor").fixture);
   candidate.alerts[0].expiresAt = candidate.alerts[0].issuedAt;
@@ -863,6 +900,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["personal-archive-curator", (value) => value.retrievalCues[0].sourceRefs.push(value.retrievalCues[0].sourceRefs[0])],
     ["purchase-researcher", (value) => value.candidates[0].sourceRefs.push(value.candidates[0].sourceRefs[0])],
     ["professional-networking-followup", (value) => value.contacts[0].sourceRefs.push(value.contacts[0].sourceRefs[0])],
+    ["resume-portfolio-curator", (value) => value.claims[0].sourceRefs.push(value.claims[0].sourceRefs[0])],
     ["public-safety-monitor", (value) => value.actions[0].alertRefs.push(value.actions[0].alertRefs[0])],
     ["recruiting-coordinator", (value) => value.communications[0].sessionRefs.push(value.communications[0].sessionRefs[0])],
     ["restaurant-venue-scout", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
