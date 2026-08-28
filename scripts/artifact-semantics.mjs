@@ -7445,6 +7445,120 @@ function benefitsEnrollmentFindings(value) {
   return findings;
 }
 
+function certificationRenewalFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const credentialIds = value.credentials.map((item) => item.id);
+  const credentialSet = new Set(credentialIds);
+  const requirementIds = value.requirements.map((item) => item.id);
+  const requirementSet = new Set(requirementIds);
+  const evidenceIds = value.evidenceItems.map((item) => item.id);
+  const riskIds = value.deadlineRisks.map((item) => item.id);
+  const gapIds = value.gaps.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const crossRefs = new Set([
+    ...sourceIds,
+    ...credentialIds,
+    ...requirementIds,
+    ...evidenceIds,
+    ...riskIds,
+    ...gapIds,
+    ...questionIds,
+  ]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(credentialIds, "credentials", "Credential id"),
+    ...uniqueFindings(requirementIds, "requirements", "Requirement id"),
+    ...uniqueFindings(evidenceIds, "evidenceItems", "Evidence id"),
+    ...uniqueFindings(riskIds, "deadlineRisks", "Deadline risk id"),
+    ...uniqueFindings(gapIds, "gaps", "Gap id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, credential] of value.credentials.entries()) {
+    findings.push(
+      ...uniqueFindings(credential.sourceRefs, `credentials.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(credential.sourceRefs, sourceSet, `credentials.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      credential.status === "current" &&
+      credential.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+    ) {
+      findings.push(finding("unsupported_credential_state", `credentials.${index}.sourceRefs`, "Current credential status requires current issuer or owner-supplied evidence."));
+    }
+  }
+  for (const [index, requirement] of value.requirements.entries()) {
+    findings.push(
+      ...referenceFindings([requirement.credentialRef], credentialSet, `requirements.${index}.credentialRef`, "Credential reference"),
+      ...uniqueFindings(requirement.sourceRefs, `requirements.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(requirement.sourceRefs, sourceSet, `requirements.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      requirement.state === "satisfied" &&
+      requirement.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+    ) {
+      findings.push(finding("unsupported_requirement_state", `requirements.${index}.sourceRefs`, "Satisfied renewal requirements require current source evidence."));
+    }
+  }
+  for (const [index, item] of value.evidenceItems.entries()) {
+    findings.push(
+      ...uniqueFindings(item.requirementRefs, `evidenceItems.${index}.requirementRefs`, "Requirement reference"),
+      ...referenceFindings(item.requirementRefs, requirementSet, `evidenceItems.${index}.requirementRefs`, "Requirement reference"),
+      ...uniqueFindings(item.sourceRefs, `evidenceItems.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(item.sourceRefs, sourceSet, `evidenceItems.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      item.state === "available" &&
+      item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+    ) {
+      findings.push(finding("unsupported_evidence_state", `evidenceItems.${index}.sourceRefs`, "Available renewal evidence requires current source evidence."));
+    }
+  }
+  for (const [index, risk] of value.deadlineRisks.entries()) {
+    findings.push(
+      ...referenceFindings([risk.credentialRef], credentialSet, `deadlineRisks.${index}.credentialRef`, "Credential reference"),
+      ...uniqueFindings(risk.sourceRefs, `deadlineRisks.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(risk.sourceRefs, sourceSet, `deadlineRisks.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [collectionName, collection] of [
+    ["gaps", value.gaps],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.refs, `${collectionName}.${index}.refs`, "Reference"),
+        ...referenceFindings(item.refs, crossRefs, `${collectionName}.${index}.refs`, "Reference"),
+      );
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, new Set(questionIds), "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting", "sensitive"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready certification renewal packets cannot depend on stale, missing, conflicting, or sensitive sources."));
+  }
+  const actionText = canonicalJson({
+    credentials: value.credentials.map(({ name, issuer, status }) => ({ name, issuer, status })),
+    requirements: value.requirements.map(({ label, state }) => ({ label, state })),
+    evidenceItems: value.evidenceItems.map(({ label, state }) => ({ label, state })),
+    deadlineRisks: value.deadlineRisks.map(({ reason }) => reason),
+    gaps: value.gaps.map(({ reason }) => reason),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(submit renewals?|pay fees?|contact issuers?|change accounts?|schedule exams?|enroll (?:in )?courses?|claim validity|claim compliance|issue certificates?|change employer records?|legal advice|compliance advice|education advice|employment advice|tax advice|immigration advice|financial advice|professional advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Certification renewal artifacts must not instruct filing, payment, issuer contact, account changes, exam scheduling, course enrollment, validity or compliance claims, certificate issuance, employer-record changes, or professional advice."));
+  }
+  if (value.handoff.owner === "certification-renewal-planner") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Renewal, payment, issuer-contact, account, exam, course, validity, compliance, certificate, employer-record, and professional-advice authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 function warrantyReturnsFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const sourceSet = new Set(sourceIds);
@@ -8102,6 +8216,7 @@ const validators = {
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
   "care-circle-coordinator": careCircleFindings,
   "case-continuity-coordinator": caseContinuityFindings,
+  "certification-renewal-planner": certificationRenewalFindings,
   "change-control-operator": changeControlFindings,
   "child-activity-manager": childActivityFindings,
   "civic-data-analyst": civicDataFindings,

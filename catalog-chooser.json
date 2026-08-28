@@ -236,6 +236,40 @@
       }
     },
     {
+      "id": "certification-renewal-planner",
+      "name": "Certification renewal planner",
+      "description": "Tracks professional certifications, renewal windows, continuing-education evidence, and owner-submitted renewal packets without filing renewals or claiming credential advice.",
+      "audience": "Professionals who must keep certifications, licenses, badges, and continuing-education records current.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-08-28"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "change-control-operator",
       "name": "Change control operator",
       "description": "Prepares and executes bounded workspace changes only after an accountable owner approves the exact plan digest.",

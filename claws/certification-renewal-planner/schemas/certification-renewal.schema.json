@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/certification-renewal.schema.json",
+  "title": "Certification renewal planner artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "portfolio", "sources", "credentials", "requirements", "evidenceItems", "deadlineRisks", "gaps", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.certificationRenewal.v1" },
+    "portfolio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "asOf", "timezone"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^cert-portfolio-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date" },
+        "timezone": { "type": "string", "minLength": 1 }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "freshness", "privacy", "asOf"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["issuer-page", "issuer-email", "account-export", "certificate", "ce-record", "exam-notice", "receipt", "employer-policy", "jurisdiction-note", "owner-note"] },
+          "label": { "type": "string", "minLength": 1 },
+          "freshness": { "type": "string", "enum": ["current", "stale", "missing", "conflicting", "sensitive"] },
+          "privacy": { "type": "string", "enum": ["owner-only", "redact-before-sharing", "shareable-after-review"] },
+          "asOf": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "credentials": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "issuer", "status", "expiresOn", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^credential-[a-z0-9-]+$" },
+          "name": { "type": "string", "minLength": 1 },
+          "issuer": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["current", "renewal-needed", "expired", "unknown", "conflicting"] },
+          "expiresOn": { "type": ["string", "null"], "format": "date" },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "credentialRef", "kind", "label", "state", "dueOn", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^requirement-[a-z0-9-]+$" },
+          "credentialRef": { "type": "string", "pattern": "^credential-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["continuing-education", "exam", "fee", "attestation", "work-experience", "ethics", "identity", "employer-approval", "jurisdiction"] },
+          "label": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["satisfied", "needs-owner-review", "missing", "stale", "conflicting", "not-applicable"] },
+          "dueOn": { "type": ["string", "null"], "format": "date" },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "evidenceItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "requirementRefs", "label", "state", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^evidence-[a-z0-9-]+$" },
+          "requirementRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^requirement-[a-z0-9-]+$" } },
+          "label": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["available", "needs-owner-review", "missing", "stale", "conflicting", "sensitive"] },
+          "privacy": { "type": "string", "enum": ["owner-only", "redact-before-sharing", "shareable-after-review"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "deadlineRisks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "credentialRef", "severity", "reason", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^risk-[a-z0-9-]+$" },
+          "credentialRef": { "type": "string", "pattern": "^credential-[a-z0-9-]+$" },
+          "severity": { "type": "string", "enum": ["high", "medium", "low", "blocked"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "reason", "refs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^gap-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["missing-issuer-evidence", "stale-requirement", "missing-ce-proof", "conflicting-expiration", "privacy", "jurisdiction-risk", "employer-policy-risk", "payment-risk"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(source|credential|requirement|evidence|risk)-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "refs", "owner"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(source|credential|requirement|evidence|risk|gap)-[a-z0-9-]+$" } },
+          "owner": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 9,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["submit-renewal", "pay-fee", "contact-issuer", "change-account", "schedule-exam", "enroll-course", "claim-validity", "claim-compliance", "issue-certificate", "change-employer-record", "legal-advice", "compliance-advice", "education-advice", "employment-advice", "tax-advice", "immigration-advice", "financial-advice", "professional-advice"] }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "reviewQuestionRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "type": "string", "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "reviewQuestionRefs": { "type": "array", "items": { "type": "string", "pattern": "^question-[a-z0-9-]+$" } },
+        "prohibitedActions": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      }
+    }
+  }
+}

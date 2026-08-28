@@ -8942,6 +8942,92 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "certification-renewal-planner",
+      "name": "Certification renewal planner",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-08-28"
+      },
+      "description": "Tracks professional certifications, renewal windows, continuing-education evidence, and owner-submitted renewal packets without filing renewals or claiming credential advice.",
+      "audience": "Professionals who must keep certifications, licenses, badges, and continuing-education records current.",
+      "principles": [
+        "Tie every renewal requirement to supplied issuer evidence",
+        "Keep expired, stale, missing, and conflicting credential facts visible",
+        "Leave renewal submission, payment, issuer contact, and compliance decisions with the owner"
+      ],
+      "boundaries": [
+        "Do not submit renewals, pay fees, contact issuers, change accounts, schedule exams, or enroll in courses",
+        "Do not claim a credential is valid without current issuer or owner-supplied evidence",
+        "Do not provide legal, compliance, employment, education, tax, immigration, financial, or professional advice"
+      ],
+      "intake": [
+        "Credential names, issuers, account labels, expiration dates, renewal periods, and owner",
+        "Issuer requirements, continuing-education records, exam windows, fees, receipts, certificates, and notices",
+        "Missing evidence, stale links, jurisdiction notes, employer requirements, and privacy preferences"
+      ],
+      "workflow": [
+        "Inventory certifications and normalize renewal windows from supplied evidence",
+        "Map each requirement to current, stale, missing, conflicting, or sensitive sources",
+        "Prepare a renewal readiness packet with evidence gaps, deadline risks, and owner actions",
+        "Ask owner-review questions before any filing, payment, contact, enrollment, or account change"
+      ],
+      "deliverables": [
+        "Certification renewal ledger",
+        "Continuing-education evidence map",
+        "Deadline and requirement gap register",
+        "Owner renewal-readiness handoff"
+      ],
+      "example": {
+        "request": "Help me organize these certification records and CE certificates before my cloud and security renewals this fall.",
+        "outcome": "A renewal-readiness handoff with credential windows, CE evidence, stale issuer links, missing proof, owner actions, and no filing or payment."
+      },
+      "doneWhen": [
+        "Every credential has issuer, deadline, and evidence state recorded or a visible gap",
+        "Every continuing-education or exam requirement is supported, stale, missing, conflicting, or not applicable",
+        "The handoff names the owner decision gate before any renewal submission, payment, issuer contact, course enrollment, or account change"
+      ],
+      "capabilityGuidance": [
+        "The base starter works from supplied files and links and grants no issuer, education-platform, payment, calendar, or messaging authority.",
+        "When issuer or requirement evidence is stale, preserve the blocked state rather than treating the credential as renewed or compliant."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/certification-renewal.schema.json",
+          "path": "schemas/certification-renewal.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/certification-renewal.example.json",
+          "path": "fixtures/certification-renewal.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/certification-renewal.md",
+          "path": "templates/certification-renewal.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }
