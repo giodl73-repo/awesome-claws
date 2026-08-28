@@ -1476,6 +1476,40 @@
       }
     },
     {
+      "id": "job-application-tracker",
+      "name": "Job application tracker",
+      "description": "Organizes owner-supplied job postings, application materials, recruiter notes, interview schedules, follow-up drafts, status evidence, and offer questions into a private job-search pipeline without applying to jobs, fabricating credentials, contacting employers, changing accounts, accepting offers, negotiating commitments, or giving legal, immigration, tax, financial, or career advice.",
+      "audience": "Job seekers, students, career changers, contractors, and personal organizers who need a source-backed application tracker and interview-prep handoff while keeping submissions, communications, credentials, offers, negotiations, and professional advice with the owner.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-28"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "knowledge-curator",
       "name": "Knowledge curator",
       "description": "Turns scattered information into durable, navigable, and source-linked knowledge.",

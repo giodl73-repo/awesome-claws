@@ -107,6 +107,11 @@
         "difference": "Document Renewal Tracker manages renewing credentials; Benefits and Open Enrollment Planner manages benefits options, enrollment windows, payroll-impact evidence, and blocked benefit elections."
       },
       {
+        "id": "job-application-tracker",
+        "overlap": "Both organize owner-supplied employment-adjacent documents, deadlines, sensitive personal data, review questions, and blocked account, submission, contact, decision, and advice authority.",
+        "difference": "Job Application Tracker manages candidate-side postings, application materials, interviews, follow-up drafts, and offer questions; Benefits and Open Enrollment Planner manages employer benefit elections, dependent requirements, payroll impact, and coverage-change review."
+      },
+      {
         "id": "health-records-binder",
         "overlap": "Both may involve health-related records, dependent scope, privacy labels, missing evidence, and blocked medical/provider/account actions.",
         "difference": "Health Records Binder organizes longitudinal health records and PHI sharing packets; Benefits and Open Enrollment Planner organizes employer or plan benefits evidence and explicitly avoids clinical record interpretation or plan selection."

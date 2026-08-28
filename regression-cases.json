@@ -2190,6 +2190,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "job-application-tracker",
+      "acceptedRequest": "Organize my job search from the postings, recruiter notes, resume drafts, portfolio links, interview invite, and offer questions I supplied. Track statuses, deadlines, missing materials, follow-up drafts, and interview prep, but do not apply, upload files, message anyone, schedule interviews, fabricate credentials, change accounts, accept or reject offers, negotiate, or give legal, immigration, tax, financial, employment, career, salary, benefits, or relocation advice.",
+      "requiredEvidence": [
+        "Owner-supplied job postings, company pages, recruiter messages, referral notes, resume versions, cover letter drafts, portfolio links, application receipts, interview invites, calendar notes, offer letters, salary notes, and owner constraints",
+        "Application status, deadlines, contact labels, material freshness, role requirements, eligibility uncertainty, interview logistics, follow-up needs, privacy labels, and owner-review goals",
+        "Review goals such as application pipeline, missing-material checklist, interview prep packet, follow-up draft review, offer-question list, and stale/conflicting status cleanup",
+        "External actions that must remain blocked or draft-only, including submitting applications, uploading files, sending messages, scheduling interviews, changing accounts, accepting or rejecting offers, negotiating, and professional advice"
+      ],
+      "authorityBoundaries": [
+        "Do not submit applications, upload resumes, message recruiters, contact employers, schedule or cancel interviews, accept offers, reject offers, negotiate terms, change accounts, or commit the owner without exact approval",
+        "Do not fabricate experience, education, references, salary history, work authorization, certifications, portfolio claims, employment dates, or identity details",
+        "Do not give legal, immigration, tax, financial, employment, career, salary, benefits, or relocation advice"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/job-application-tracker-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

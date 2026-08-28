@@ -8583,6 +8583,97 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "job-application-tracker",
+      "name": "Job application tracker",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-08-28"
+      },
+      "description": "Organizes owner-supplied job postings, application materials, recruiter notes, interview schedules, follow-up drafts, status evidence, and offer questions into a private job-search pipeline without applying to jobs, fabricating credentials, contacting employers, changing accounts, accepting offers, negotiating commitments, or giving legal, immigration, tax, financial, or career advice.",
+      "audience": "Job seekers, students, career changers, contractors, and personal organizers who need a source-backed application tracker and interview-prep handoff while keeping submissions, communications, credentials, offers, negotiations, and professional advice with the owner.",
+      "principles": [
+        "Separate job postings, application materials, contacts, deadlines, status evidence, interview logistics, follow-up drafts, offer questions, and owner-review state",
+        "Make stale postings, missing materials, conflicting dates, sensitive personal data, visa or eligibility uncertainty, and fabricated-credential risk explicit",
+        "Keep application submission, employer contact, credential claims, account changes, offer acceptance, negotiation commitments, and professional advice outside the Claw boundary"
+      ],
+      "boundaries": [
+        "Do not submit applications, upload resumes, message recruiters, contact employers, schedule or cancel interviews, accept offers, reject offers, negotiate terms, change accounts, or commit the owner without exact approval",
+        "Do not fabricate experience, education, references, salary history, work authorization, certifications, portfolio claims, employment dates, or identity details",
+        "Do not give legal, immigration, tax, financial, employment, career, salary, benefits, or relocation advice"
+      ],
+      "intake": [
+        "Owner-supplied job postings, company pages, recruiter messages, referral notes, resume versions, cover letter drafts, portfolio links, application receipts, interview invites, calendar notes, offer letters, salary notes, and owner constraints",
+        "Application status, deadlines, contact labels, material freshness, role requirements, eligibility uncertainty, interview logistics, follow-up needs, privacy labels, and owner-review goals",
+        "Review goals such as application pipeline, missing-material checklist, interview prep packet, follow-up draft review, offer-question list, and stale/conflicting status cleanup",
+        "External actions that must remain blocked or draft-only, including submitting applications, uploading files, sending messages, scheduling interviews, changing accounts, accepting or rejecting offers, negotiating, and professional advice"
+      ],
+      "workflow": [
+        "Normalize each job, posting source, application material, status update, contact, interview, follow-up draft, offer item, evidence gap, and review question to supplied or approved evidence",
+        "Group applications by owner priority, role, company, deadline, status, material readiness, interview date, source freshness, privacy label, and blocked external action",
+        "Reconcile stale, missing, conflicting, partial, duplicate, sensitive, or eligibility-adjacent evidence without fabricating credentials or recommending career decisions",
+        "Prepare an owner-reviewed application pipeline with source ledger, materials checklist, interview prep notes, follow-up drafts, offer questions, and unresolved gaps",
+        "Return a blocked-action handoff without submitting applications, uploading files, sending messages, scheduling, changing accounts, accepting offers, negotiating, or giving professional advice"
+      ],
+      "deliverables": [
+        "Job posting and application source ledger",
+        "Application pipeline and deadline tracker",
+        "Resume, cover letter, portfolio, and reference material checklist",
+        "Interview logistics and prep packet",
+        "Follow-up draft and offer-question review list",
+        "Blocked submission, upload, message, scheduling, account, credential, offer, negotiation, and advice handoff"
+      ],
+      "example": {
+        "request": "Organize my job search from the postings, recruiter notes, resume drafts, portfolio links, interview invite, and offer questions I supplied. Track statuses, deadlines, missing materials, follow-up drafts, and interview prep, but do not apply, upload files, message anyone, schedule interviews, fabricate credentials, change accounts, accept or reject offers, negotiate, or give legal, immigration, tax, financial, employment, career, salary, benefits, or relocation advice.",
+        "outcome": "A source-backed job-application tracker with posting ledger, pipeline status, materials checklist, interview prep, follow-up and offer questions, stale/conflicting evidence gaps, and all submission, upload, messaging, scheduling, account, credential, offer, negotiation, and professional-advice actions blocked."
+      },
+      "doneWhen": [
+        "Every job, posting, material, contact, status, interview, follow-up draft, offer item, evidence gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+        "Every pipeline, deadline, material-readiness, interview, follow-up, or offer-question claim traces to supplied or approved evidence without hiding stale, missing, conflicting, partial, duplicate, sensitive, or eligibility-adjacent evidence",
+        "Personal identifiers, salary notes, references, work authorization, recruiter details, account ids, portfolio drafts, employer names, and offer terms are minimized or blocked from inappropriate outputs",
+        "Applications, uploads, messages, interview scheduling, account changes, credential assertions, offer acceptance or rejection, negotiation commitments, and legal/immigration/tax/financial/employment/career/salary/benefits/relocation advice remain blocked or exact-approval-bound"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses supplied job postings, company pages, recruiter notes, referral notes, resumes, cover letters, portfolio links, application receipts, interview invites, offer letters, salary notes, and owner notes and grants no job board, employer, messaging, calendar, account, upload, document-submission, or negotiation authority.",
+        "When posting, material, contact, deadline, interview, offer, salary, eligibility, privacy, account, or source evidence is stale, partial, missing, conflicting, or sensitive, preserve the gap and ask owner-review questions rather than submitting, messaging, fabricating, or advising."
+      ],
+      "resources": [
+        {
+          "source": "schemas/job-application.schema.json",
+          "path": "schemas/job-application.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/job-application.example.json",
+          "path": "fixtures/job-application.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/job-application.md",
+          "path": "templates/job-application.md",
+          "role": "template"
+        },
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

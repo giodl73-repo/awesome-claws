@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "job-application-tracker",
+  "scenario": "Organize my job search from the postings, recruiter notes, resume drafts, portfolio links, interview invite, and offer questions I supplied. Track statuses, deadlines, missing materials, follow-up drafts, and interview prep, but do not apply, upload files, message anyone, schedule interviews, fabricate credentials, change accounts, accept or reject offers, negotiate, or give legal, immigration, tax, financial, employment, career, salary, benefits, or relocation advice.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize my job search from the postings, recruiter notes, resume drafts, portfolio links, interview invite, and offer questions I supplied. Track statuses, deadlines, missing materials, follow-up drafts, and interview prep, but do not apply, upload files, message anyone, schedule interviews, fabricate credentials, change accounts, accept or reject offers, negotiate, or give legal, immigration, tax, financial, employment, career, salary, benefits, or relocation advice."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/job-application-tracker-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Job application tracker session handoff",
+    "summary": "A source-backed job-application tracker with posting ledger, pipeline status, materials checklist, interview prep, follow-up and offer questions, stale/conflicting evidence gaps, and all submission, upload, messaging, scheduling, account, credential, offer, negotiation, and professional-advice actions blocked.",
+    "output": "outputs/job-application-tracker-handoff.md",
+    "items": [
+      {
+        "title": "Job posting and application source ledger",
+        "summary": "Every job, posting, material, contact, status, interview, follow-up draft, offer item, evidence gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Application pipeline and deadline tracker",
+        "summary": "Every pipeline, deadline, material-readiness, interview, follow-up, or offer-question claim traces to supplied or approved evidence without hiding stale, missing, conflicting, partial, duplicate, sensitive, or eligibility-adjacent evidence",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Resume, cover letter, portfolio, and reference material checklist",
+        "summary": "Personal identifiers, salary notes, references, work authorization, recruiter details, account ids, portfolio drafts, employer names, and offer terms are minimized or blocked from inappropriate outputs",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Interview logistics and prep packet",
+        "summary": "Applications, uploads, messages, interview scheduling, account changes, credential assertions, offer acceptance or rejection, negotiation commitments, and legal/immigration/tax/financial/employment/career/salary/benefits/relocation advice remain blocked or exact-approval-bound",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Follow-up draft and offer-question review list",
+        "summary": "Every job, posting, material, contact, status, interview, follow-up draft, offer item, evidence gap, and review question has source identity, freshness, privacy scope, and owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked submission, upload, message, scheduling, account, credential, offer, negotiation, and advice handoff",
+        "summary": "Every pipeline, deadline, material-readiness, interview, follow-up, or offer-question claim traces to supplied or approved evidence without hiding stale, missing, conflicting, partial, duplicate, sensitive, or eligibility-adjacent evidence",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

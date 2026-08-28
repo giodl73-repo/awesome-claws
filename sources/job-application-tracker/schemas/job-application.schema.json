@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/job-application.schema.json",
+  "title": "Job application tracker artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "search", "sources", "applications", "materials", "interviews", "followUps", "offerQuestions", "gaps", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.jobApplication.v1" },
+    "search": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "asOf", "timezone"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^job-search-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date" },
+        "timezone": { "type": "string", "minLength": 1 }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "freshness", "privacy", "asOf"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["job-posting", "company-page", "recruiter-note", "referral-note", "resume-draft", "cover-letter-draft", "portfolio-link", "application-receipt", "interview-invite", "calendar-note", "offer-letter", "salary-note", "owner-note"] },
+          "label": { "type": "string", "minLength": 1 },
+          "freshness": { "type": "string", "enum": ["current", "stale", "missing", "conflicting", "sensitive"] },
+          "privacy": { "type": "string", "enum": ["owner-only", "redact-before-sharing", "shareable-after-review"] },
+          "asOf": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "applications": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "role", "company", "deadline", "status", "priority", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^application-[a-z0-9-]+$" },
+          "role": { "type": "string", "minLength": 1 },
+          "company": { "type": "string", "minLength": 1 },
+          "deadline": { "type": ["string", "null"], "format": "date" },
+          "status": { "type": "string", "enum": ["prospect", "materials-needed", "ready-for-owner-review", "applied", "interviewing", "offer-review", "closed"] },
+          "priority": { "type": "string", "enum": ["high", "medium", "low", "blocked"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "materials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "applicationRef", "kind", "label", "state", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^material-[a-z0-9-]+$" },
+          "applicationRef": { "type": "string", "pattern": "^application-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["resume", "cover-letter", "portfolio", "reference", "work-sample", "transcript", "certification", "owner-note"] },
+          "label": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["supplied", "missing", "stale", "needs-owner-review"] },
+          "privacy": { "type": "string", "enum": ["owner-only", "redact-before-sharing", "shareable-after-review"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "interviews": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "applicationRef", "label", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^interview-[a-z0-9-]+$" },
+          "applicationRef": { "type": "string", "pattern": "^application-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["invited", "scheduled-by-owner", "needs-owner-review", "conflicting", "completed"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "followUps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "applicationRef", "kind", "label", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^followup-[a-z0-9-]+$" },
+          "applicationRef": { "type": "string", "pattern": "^application-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["thank-you", "status-check", "recruiter-reply", "referral-note", "offer-question"] },
+          "label": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["draft-for-owner-review", "blocked", "sent-by-owner"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "offerQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "applicationRef", "question", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^offer-[a-z0-9-]+$" },
+          "applicationRef": { "type": "string", "pattern": "^application-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["needs-owner-review", "blocked", "answered-by-owner"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "reason", "refs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^gap-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["missing-material", "stale-posting", "conflict", "privacy", "credential-risk", "eligibility", "deadline"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(source|application|material|interview|followup|offer)-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "refs", "owner"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(source|application|material|interview|followup|offer|gap)-[a-z0-9-]+$" } },
+          "owner": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 9,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["submit-application", "upload-resume", "message-recruiter", "contact-employer", "schedule-interview", "change-account", "fabricate-credential", "accept-offer", "reject-offer", "negotiate-terms", "legal-advice", "immigration-advice", "tax-advice", "financial-advice", "employment-advice", "career-advice", "salary-advice", "benefits-advice", "relocation-advice"] }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "reviewQuestionRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "type": "string", "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "reviewQuestionRefs": { "type": "array", "items": { "type": "string", "pattern": "^question-[a-z0-9-]+$" } },
+        "prohibitedActions": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      }
+    }
+  }
+}
