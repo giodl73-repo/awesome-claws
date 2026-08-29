@@ -2369,6 +2369,28 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "moving-checklist-coordinator",
+      "acceptedRequest": "Turn these move dates, quotes, inventory notes, and utility lists into one checklist without booking or contacting anyone.",
+      "requiredEvidence": [
+        "Origin and destination details, target dates, lease or sale milestones, access rules, household members, pets, vehicles, and accessibility needs",
+        "Inventory, packing state, vendor quotes, service records, utilities, documents, budgets, travel plans, and owner assignments",
+        "Address-change list, school or care constraints, insurance requirements, approvals, risks, and move-day dependencies"
+      ],
+      "authorityBoundaries": [
+        "Do not book movers or travel, sign leases or contracts, pay deposits or fees, contact vendors or landlords, change addresses, utilities, insurance, registrations, mail, schools, or accounts",
+        "Do not invent quotes, availability, dates, access rules, inventory, property condition, legal duties, service status, or household consent",
+        "Do not provide legal, financial, tax, insurance, real-estate, immigration, safety, accessibility, or professional advice"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/moving-checklist-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

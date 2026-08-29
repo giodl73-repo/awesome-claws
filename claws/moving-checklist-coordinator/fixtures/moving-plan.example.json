@@ -1,0 +1,1128 @@
+{
+  "schemaVersion": "awesomeClaws.movingPlan.v1",
+  "plan": {
+    "id": "move-river-to-cedar-2026",
+    "ownerRef": "member-alex",
+    "asOf": "2026-08-29",
+    "timezone": "America/Los_Angeles",
+    "moveDateState": "known",
+    "moveDate": "2026-10-15",
+    "dateCandidates": [
+      {
+        "date": "2026-10-15",
+        "sourceRef": "source-owner-plan"
+      }
+    ],
+    "sourceRefs": ["source-owner-plan"]
+  },
+  "sources": [
+    {
+      "id": "source-owner-plan",
+      "kind": "owner-plan",
+      "label": "Owner-supplied move goals and target date",
+      "provenance": "owner-supplied",
+      "privacy": "household-shared",
+      "freshness": "current",
+      "asOf": "2026-08-29"
+    },
+    {
+      "id": "source-origin-lease",
+      "kind": "lease-or-sale-record",
+      "label": "[owner-only location record]",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "locationDataHandling": "owner-only-reference",
+      "freshness": "current",
+      "asOf": "2026-08-27",
+      "subjectRef": "location-origin"
+    },
+    {
+      "id": "source-destination-lease",
+      "kind": "lease-or-sale-record",
+      "label": "[owner-only location record]",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "locationDataHandling": "owner-only-reference",
+      "freshness": "current",
+      "asOf": "2026-08-27",
+      "subjectRef": "location-destination"
+    },
+    {
+      "id": "source-destination-access",
+      "kind": "access-rule",
+      "label": "Destination elevator reservation notes disagree on available window",
+      "provenance": "provider-document",
+      "privacy": "private",
+      "freshness": "conflicting",
+      "asOf": "2026-08-28",
+      "subjectRef": "location-destination"
+    },
+    {
+      "id": "source-inventory",
+      "kind": "inventory-record",
+      "label": "Room-level inventory and packing status",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "subjectRef": "workstream-packing"
+    },
+    {
+      "id": "source-mover-quote",
+      "kind": "vendor-quote",
+      "label": "Mover estimate awaiting refresh",
+      "provenance": "provider-document",
+      "privacy": "private",
+      "freshness": "stale",
+      "asOf": "2026-08-01",
+      "validThrough": "2026-08-20",
+      "subjectRef": "workstream-moving-service"
+    },
+    {
+      "id": "source-utility-list",
+      "kind": "utility-record",
+      "label": "Owner-supplied origin and destination utility list",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "subjectRef": "workstream-utilities"
+    },
+    {
+      "id": "source-consent-alex",
+      "kind": "consent-record",
+      "label": "Alex confirmed the shared moving assignments",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "subjectRef": "member-alex"
+    },
+    {
+      "id": "source-consent-sam",
+      "kind": "consent-record",
+      "label": "Sam confirmed the shared moving assignments",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "subjectRef": "member-sam"
+    },
+    {
+      "id": "source-assignment-origin",
+      "kind": "assignment-record",
+      "label": "Owner-supplied origin handoff assignment",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "workstreamRef": "workstream-origin",
+      "memberRefs": ["member-alex"]
+    },
+    {
+      "id": "source-assignment-destination",
+      "kind": "assignment-record",
+      "label": "Owner-supplied destination access assignment",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "workstreamRef": "workstream-destination",
+      "memberRefs": ["member-alex"]
+    },
+    {
+      "id": "source-assignment-packing",
+      "kind": "assignment-record",
+      "label": "Owner-supplied packing assignments",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "workstreamRef": "workstream-packing",
+      "memberRefs": ["member-alex", "member-sam"]
+    },
+    {
+      "id": "source-assignment-moving-service",
+      "kind": "assignment-record",
+      "label": "Owner-supplied moving service assignment",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "workstreamRef": "workstream-moving-service",
+      "memberRefs": ["member-alex"]
+    },
+    {
+      "id": "source-assignment-utilities",
+      "kind": "assignment-record",
+      "label": "Owner-supplied utility assignment",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "workstreamRef": "workstream-utilities",
+      "memberRefs": ["member-alex"]
+    },
+    {
+      "id": "source-assignment-administration",
+      "kind": "assignment-record",
+      "label": "Owner-supplied administrative assignment",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "workstreamRef": "workstream-administration",
+      "memberRefs": ["member-alex"]
+    },
+    {
+      "id": "source-assignment-school",
+      "kind": "assignment-record",
+      "label": "Owner-supplied school transition assignment",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "workstreamRef": "workstream-school",
+      "memberRefs": ["member-alex"]
+    },
+    {
+      "id": "source-assignment-travel",
+      "kind": "assignment-record",
+      "label": "Owner-supplied travel assignments",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "workstreamRef": "workstream-travel",
+      "memberRefs": ["member-alex", "member-sam"]
+    },
+    {
+      "id": "source-assignment-move-day",
+      "kind": "assignment-record",
+      "label": "Owner-supplied move-day assignments",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "workstreamRef": "workstream-move-day",
+      "memberRefs": ["member-alex", "member-sam"]
+    },
+    {
+      "id": "source-school-gap",
+      "kind": "school-or-care-record",
+      "label": "School transition date has not been supplied",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "missing",
+      "asOf": "2026-08-29",
+      "subjectRef": "workstream-school"
+    },
+    {
+      "id": "source-travel-plan",
+      "kind": "travel-plan",
+      "label": "Owner-supplied move-day travel constraints",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "subjectRef": "workstream-travel"
+    },
+    {
+      "id": "source-mail-confirmation",
+      "kind": "owner-action-record",
+      "label": "Alex supplied mail-forwarding confirmation",
+      "provenance": "owner-supplied",
+      "privacy": "private",
+      "freshness": "current",
+      "asOf": "2026-08-29",
+      "workstreamRef": "workstream-administration",
+      "action": "change-mail",
+      "ownerRef": "member-alex"
+    },
+    {
+      "id": "source-destination-access-secondary",
+      "kind": "access-rule",
+      "label": "Second destination access window from provider",
+      "provenance": "provider-document",
+      "privacy": "private",
+      "freshness": "conflicting",
+      "asOf": "2026-08-28",
+      "subjectRef": "location-destination"
+    }
+  ],
+  "evidenceRecords": [
+    {
+      "id": "evidence-move-date",
+      "sourceRef": "source-owner-plan",
+      "sourceKind": "owner-plan",
+      "claimKind": "move-date",
+      "subjectRef": "move-river-to-cedar-2026",
+      "workstreamRef": null,
+      "readinessKind": null,
+      "assertedDate": "2026-10-15",
+      "assertedValue": null
+    },
+    {
+      "id": "evidence-origin-handoff-date",
+      "sourceRef": "source-origin-lease",
+      "sourceKind": "lease-or-sale-record",
+      "claimKind": "milestone-date",
+      "subjectRef": "milestone-origin-handoff",
+      "workstreamRef": "workstream-origin",
+      "readinessKind": null,
+      "assertedDate": "2026-10-16",
+      "assertedValue": null
+    },
+    {
+      "id": "evidence-destination-access-date-one",
+      "sourceRef": "source-destination-access",
+      "sourceKind": "access-rule",
+      "claimKind": "milestone-date",
+      "subjectRef": "milestone-destination-access",
+      "workstreamRef": "workstream-destination",
+      "readinessKind": null,
+      "assertedDate": "2026-10-15",
+      "assertedValue": null
+    },
+    {
+      "id": "evidence-destination-access-date-two",
+      "sourceRef": "source-destination-access-secondary",
+      "sourceKind": "access-rule",
+      "claimKind": "milestone-date",
+      "subjectRef": "milestone-destination-access",
+      "workstreamRef": "workstream-destination",
+      "readinessKind": null,
+      "assertedDate": "2026-10-16",
+      "assertedValue": null
+    },
+    {
+      "id": "evidence-school-date-missing",
+      "sourceRef": "source-school-gap",
+      "sourceKind": "school-or-care-record",
+      "claimKind": "milestone-date",
+      "subjectRef": "milestone-school-transition",
+      "workstreamRef": "workstream-school",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "missing"
+    },
+    {
+      "id": "evidence-move-day-date",
+      "sourceRef": "source-owner-plan",
+      "sourceKind": "owner-plan",
+      "claimKind": "milestone-date",
+      "subjectRef": "milestone-move-day",
+      "workstreamRef": "workstream-move-day",
+      "readinessKind": null,
+      "assertedDate": "2026-10-15",
+      "assertedValue": null
+    },
+    {
+      "id": "evidence-readiness-origin",
+      "sourceRef": "source-origin-lease",
+      "sourceKind": "lease-or-sale-record",
+      "claimKind": "readiness",
+      "subjectRef": "readiness-origin",
+      "workstreamRef": "workstream-origin",
+      "readinessKind": "access",
+      "assertedDate": null,
+      "assertedValue": "ready-for-owner-review"
+    },
+    {
+      "id": "evidence-readiness-destination",
+      "sourceRef": "source-destination-access",
+      "sourceKind": "access-rule",
+      "claimKind": "readiness",
+      "subjectRef": "readiness-destination",
+      "workstreamRef": "workstream-destination",
+      "readinessKind": "access",
+      "assertedDate": null,
+      "assertedValue": "blocked"
+    },
+    {
+      "id": "evidence-readiness-packing",
+      "sourceRef": "source-inventory",
+      "sourceKind": "inventory-record",
+      "claimKind": "readiness",
+      "subjectRef": "readiness-packing",
+      "workstreamRef": "workstream-packing",
+      "readinessKind": "inventory",
+      "assertedDate": null,
+      "assertedValue": "ready-for-owner-review"
+    },
+    {
+      "id": "evidence-readiness-mover",
+      "sourceRef": "source-mover-quote",
+      "sourceKind": "vendor-quote",
+      "claimKind": "readiness",
+      "subjectRef": "readiness-mover",
+      "workstreamRef": "workstream-moving-service",
+      "readinessKind": "vendor",
+      "assertedDate": null,
+      "assertedValue": "needs-evidence"
+    },
+    {
+      "id": "evidence-readiness-utilities",
+      "sourceRef": "source-utility-list",
+      "sourceKind": "utility-record",
+      "claimKind": "readiness",
+      "subjectRef": "readiness-utilities",
+      "workstreamRef": "workstream-utilities",
+      "readinessKind": "service",
+      "assertedDate": null,
+      "assertedValue": "ready-for-owner-review"
+    },
+    {
+      "id": "evidence-readiness-administration",
+      "sourceRef": "source-owner-plan",
+      "sourceKind": "owner-plan",
+      "claimKind": "readiness",
+      "subjectRef": "readiness-administration",
+      "workstreamRef": "workstream-administration",
+      "readinessKind": "document",
+      "assertedDate": null,
+      "assertedValue": "needs-evidence"
+    },
+    {
+      "id": "evidence-readiness-school",
+      "sourceRef": "source-school-gap",
+      "sourceKind": "school-or-care-record",
+      "claimKind": "readiness",
+      "subjectRef": "readiness-school",
+      "workstreamRef": "workstream-school",
+      "readinessKind": "date",
+      "assertedDate": null,
+      "assertedValue": "needs-evidence"
+    },
+    {
+      "id": "evidence-readiness-travel",
+      "sourceRef": "source-travel-plan",
+      "sourceKind": "travel-plan",
+      "claimKind": "readiness",
+      "subjectRef": "readiness-travel",
+      "workstreamRef": "workstream-travel",
+      "readinessKind": "travel",
+      "assertedDate": null,
+      "assertedValue": "ready-for-owner-review"
+    },
+    {
+      "id": "evidence-readiness-move-day",
+      "sourceRef": "source-destination-access",
+      "sourceKind": "access-rule",
+      "claimKind": "readiness",
+      "subjectRef": "readiness-move-day",
+      "workstreamRef": "workstream-move-day",
+      "readinessKind": "move-day",
+      "assertedDate": null,
+      "assertedValue": "blocked"
+    },
+    {
+      "id": "evidence-gate-contract-applicability",
+      "sourceRef": "source-mover-quote",
+      "sourceKind": "vendor-quote",
+      "claimKind": "gate-applicability",
+      "subjectRef": "gate-contract",
+      "workstreamRef": "workstream-moving-service",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "applicable"
+    },
+    {
+      "id": "evidence-gate-booking-applicability",
+      "sourceRef": "source-mover-quote",
+      "sourceKind": "vendor-quote",
+      "claimKind": "gate-applicability",
+      "subjectRef": "gate-booking",
+      "workstreamRef": "workstream-moving-service",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "applicable"
+    },
+    {
+      "id": "evidence-gate-payment-applicability",
+      "sourceRef": "source-mover-quote",
+      "sourceKind": "vendor-quote",
+      "claimKind": "gate-applicability",
+      "subjectRef": "gate-payment",
+      "workstreamRef": "workstream-moving-service",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "applicable"
+    },
+    {
+      "id": "evidence-gate-message-applicability",
+      "sourceRef": "source-mover-quote",
+      "sourceKind": "vendor-quote",
+      "claimKind": "gate-applicability",
+      "subjectRef": "gate-message",
+      "workstreamRef": "workstream-moving-service",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "applicable"
+    },
+    {
+      "id": "evidence-gate-address-applicability",
+      "sourceRef": "source-destination-lease",
+      "sourceKind": "lease-or-sale-record",
+      "claimKind": "gate-applicability",
+      "subjectRef": "gate-address",
+      "workstreamRef": "workstream-administration",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "applicable"
+    },
+    {
+      "id": "evidence-gate-utility-applicability",
+      "sourceRef": "source-utility-list",
+      "sourceKind": "utility-record",
+      "claimKind": "gate-applicability",
+      "subjectRef": "gate-utility",
+      "workstreamRef": "workstream-utilities",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "applicable"
+    },
+    {
+      "id": "evidence-gate-insurance-applicability",
+      "sourceRef": "source-owner-plan",
+      "sourceKind": "owner-plan",
+      "claimKind": "gate-applicability",
+      "subjectRef": "gate-insurance",
+      "workstreamRef": "workstream-administration",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "applicable"
+    },
+    {
+      "id": "evidence-gate-school-applicability",
+      "sourceRef": "source-school-gap",
+      "sourceKind": "school-or-care-record",
+      "claimKind": "gate-applicability",
+      "subjectRef": "gate-school",
+      "workstreamRef": "workstream-school",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "applicable"
+    },
+    {
+      "id": "evidence-gate-registration-applicability",
+      "sourceRef": "source-owner-plan",
+      "sourceKind": "owner-plan",
+      "claimKind": "gate-applicability",
+      "subjectRef": "gate-registration",
+      "workstreamRef": "workstream-administration",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "applicable"
+    },
+    {
+      "id": "evidence-gate-mail-applicability",
+      "sourceRef": "source-owner-plan",
+      "sourceKind": "owner-plan",
+      "claimKind": "gate-applicability",
+      "subjectRef": "gate-mail",
+      "workstreamRef": "workstream-administration",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "applicable"
+    },
+    {
+      "id": "evidence-gate-travel-applicability",
+      "sourceRef": "source-travel-plan",
+      "sourceKind": "travel-plan",
+      "claimKind": "gate-applicability",
+      "subjectRef": "gate-travel",
+      "workstreamRef": "workstream-travel",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "applicable"
+    },
+    {
+      "id": "evidence-gate-account-applicability",
+      "sourceRef": "source-owner-plan",
+      "sourceKind": "owner-plan",
+      "claimKind": "gate-applicability",
+      "subjectRef": "gate-account",
+      "workstreamRef": "workstream-administration",
+      "readinessKind": null,
+      "assertedDate": null,
+      "assertedValue": "applicable"
+    }
+  ],
+  "locations": [
+    {
+      "id": "location-origin",
+      "role": "origin",
+      "alias": "origin-location",
+      "addressState": "supplied",
+      "sourceRefs": ["source-origin-lease"],
+      "privateAddressSourceRefs": ["source-origin-lease"]
+    },
+    {
+      "id": "location-destination",
+      "role": "destination",
+      "alias": "destination-location",
+      "addressState": "supplied",
+      "sourceRefs": ["source-destination-lease", "source-destination-access", "source-destination-access-secondary"],
+      "privateAddressSourceRefs": ["source-destination-lease"]
+    }
+  ],
+  "members": [
+    {
+      "id": "member-alex",
+      "displayName": "Alex",
+      "role": "owner",
+      "consentState": "confirmed",
+      "assignmentEligible": true,
+      "sourceRefs": ["source-owner-plan", "source-consent-alex"],
+      "privateDetailSourceRefs": []
+    },
+    {
+      "id": "member-sam",
+      "displayName": "Sam",
+      "role": "resident",
+      "consentState": "confirmed",
+      "assignmentEligible": true,
+      "sourceRefs": ["source-consent-sam"],
+      "privateDetailSourceRefs": []
+    },
+    {
+      "id": "member-child",
+      "displayName": "Child resident",
+      "role": "dependent",
+      "consentState": "not-required",
+      "assignmentEligible": false,
+      "sourceRefs": ["source-school-gap"],
+      "privateDetailSourceRefs": ["source-school-gap"]
+    }
+  ],
+  "workstreams": [
+    {
+      "id": "workstream-origin",
+      "kind": "origin-property",
+      "title": "Origin handoff",
+      "state": "current",
+      "locationRefs": ["location-origin"],
+      "ownerRef": "member-alex",
+      "assignedMemberRefs": ["member-alex"],
+      "applicableActions": [],
+      "sourceRefs": ["source-origin-lease", "source-assignment-origin"]
+    },
+    {
+      "id": "workstream-destination",
+      "kind": "destination-property",
+      "title": "Destination access",
+      "state": "conflicting",
+      "locationRefs": ["location-destination"],
+      "ownerRef": "member-alex",
+      "assignedMemberRefs": ["member-alex"],
+      "applicableActions": [],
+      "sourceRefs": ["source-destination-lease", "source-destination-access", "source-assignment-destination"]
+    },
+    {
+      "id": "workstream-packing",
+      "kind": "packing",
+      "title": "Inventory and packing",
+      "state": "current",
+      "locationRefs": ["location-origin"],
+      "ownerRef": "member-sam",
+      "assignedMemberRefs": ["member-alex", "member-sam"],
+      "applicableActions": [],
+      "sourceRefs": ["source-inventory", "source-consent-alex", "source-consent-sam", "source-assignment-packing"]
+    },
+    {
+      "id": "workstream-moving-service",
+      "kind": "moving-service",
+      "title": "Moving service",
+      "state": "stale",
+      "locationRefs": ["location-origin", "location-destination"],
+      "ownerRef": "member-alex",
+      "assignedMemberRefs": ["member-alex"],
+      "applicableActions": ["sign-contract", "make-booking", "make-payment", "send-message"],
+      "sourceRefs": ["source-mover-quote", "source-assignment-moving-service"]
+    },
+    {
+      "id": "workstream-utilities",
+      "kind": "utilities",
+      "title": "Utility transition",
+      "state": "owner-review",
+      "locationRefs": ["location-origin", "location-destination"],
+      "ownerRef": "member-alex",
+      "assignedMemberRefs": ["member-alex"],
+      "applicableActions": ["change-utility"],
+      "sourceRefs": ["source-utility-list", "source-assignment-utilities"]
+    },
+    {
+      "id": "workstream-administration",
+      "kind": "documents-and-address",
+      "title": "Address, mail, insurance, registration, and accounts",
+      "state": "owner-review",
+      "locationRefs": ["location-origin", "location-destination"],
+      "ownerRef": "member-alex",
+      "assignedMemberRefs": ["member-alex"],
+      "applicableActions": ["change-address", "change-insurance", "change-registration", "change-mail", "change-account"],
+      "sourceRefs": ["source-owner-plan", "source-mail-confirmation", "source-assignment-administration"]
+    },
+    {
+      "id": "workstream-school",
+      "kind": "school-and-care",
+      "title": "School transition",
+      "state": "missing",
+      "locationRefs": ["location-destination"],
+      "ownerRef": "member-alex",
+      "assignedMemberRefs": ["member-alex"],
+      "applicableActions": ["change-school"],
+      "sourceRefs": ["source-school-gap", "source-assignment-school"]
+    },
+    {
+      "id": "workstream-travel",
+      "kind": "travel",
+      "title": "Household move-day travel",
+      "state": "owner-review",
+      "locationRefs": ["location-origin", "location-destination"],
+      "ownerRef": "member-sam",
+      "assignedMemberRefs": ["member-alex", "member-sam"],
+      "applicableActions": ["book-travel"],
+      "sourceRefs": ["source-travel-plan", "source-consent-alex", "source-consent-sam", "source-assignment-travel"]
+    },
+    {
+      "id": "workstream-move-day",
+      "kind": "move-day",
+      "title": "Move-day handoff",
+      "state": "blocked",
+      "locationRefs": ["location-origin", "location-destination"],
+      "ownerRef": "member-alex",
+      "assignedMemberRefs": ["member-alex", "member-sam"],
+      "applicableActions": [],
+      "sourceRefs": ["source-owner-plan", "source-consent-alex", "source-consent-sam", "source-destination-access", "source-assignment-move-day"]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "milestone-origin-handoff",
+      "workstreamRef": "workstream-origin",
+      "ownerRef": "member-alex",
+      "title": "Origin handoff window",
+      "phase": "post-move",
+      "dateState": "known",
+      "date": "2026-10-16",
+      "dateCandidates": [
+        {
+          "date": "2026-10-16",
+          "sourceRef": "source-origin-lease"
+        }
+      ],
+      "status": "pending",
+      "sourceRefs": ["source-origin-lease"],
+      "completionEvidenceRefs": []
+    },
+    {
+      "id": "milestone-destination-access",
+      "workstreamRef": "workstream-destination",
+      "ownerRef": "member-alex",
+      "title": "Destination access window",
+      "phase": "move-day",
+      "dateState": "conflicting",
+      "date": null,
+      "dateCandidates": [
+        {
+          "date": "2026-10-15",
+          "sourceRef": "source-destination-access"
+        },
+        {
+          "date": "2026-10-16",
+          "sourceRef": "source-destination-access-secondary"
+        }
+      ],
+      "status": "blocked",
+      "sourceRefs": ["source-destination-access", "source-destination-access-secondary"],
+      "completionEvidenceRefs": []
+    },
+    {
+      "id": "milestone-school-transition",
+      "workstreamRef": "workstream-school",
+      "ownerRef": "member-alex",
+      "title": "School transition deadline",
+      "phase": "pre-move",
+      "dateState": "missing",
+      "date": null,
+      "dateCandidates": [],
+      "status": "blocked",
+      "sourceRefs": ["source-school-gap"],
+      "completionEvidenceRefs": []
+    },
+    {
+      "id": "milestone-move-day",
+      "workstreamRef": "workstream-move-day",
+      "ownerRef": "member-alex",
+      "title": "Household move day",
+      "phase": "move-day",
+      "dateState": "known",
+      "date": "2026-10-15",
+      "dateCandidates": [
+        {
+          "date": "2026-10-15",
+          "sourceRef": "source-owner-plan"
+        }
+      ],
+      "status": "blocked",
+      "sourceRefs": ["source-owner-plan"],
+      "completionEvidenceRefs": []
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "dependency-access-before-move-day",
+      "prerequisiteRef": "workstream-destination",
+      "dependentRef": "workstream-move-day",
+      "state": "blocked",
+      "sourceRefs": ["source-destination-access"]
+    },
+    {
+      "id": "dependency-packing-before-move-day",
+      "prerequisiteRef": "workstream-packing",
+      "dependentRef": "workstream-move-day",
+      "state": "active",
+      "sourceRefs": ["source-inventory"]
+    },
+    {
+      "id": "dependency-mover-before-move-day",
+      "prerequisiteRef": "workstream-moving-service",
+      "dependentRef": "workstream-move-day",
+      "state": "blocked",
+      "sourceRefs": ["source-mover-quote"]
+    },
+    {
+      "id": "dependency-move-before-origin-handoff",
+      "prerequisiteRef": "workstream-move-day",
+      "dependentRef": "workstream-origin",
+      "state": "active",
+      "sourceRefs": ["source-origin-lease", "source-owner-plan"]
+    }
+  ],
+  "readinessItems": [
+    {
+      "id": "readiness-origin",
+      "workstreamRef": "workstream-origin",
+      "kind": "access",
+      "state": "ready-for-owner-review",
+      "ownerRef": "member-alex",
+      "evidenceRefs": ["source-origin-lease"]
+    },
+    {
+      "id": "readiness-destination",
+      "workstreamRef": "workstream-destination",
+      "kind": "access",
+      "state": "blocked",
+      "ownerRef": "member-alex",
+      "evidenceRefs": ["source-destination-access"]
+    },
+    {
+      "id": "readiness-packing",
+      "workstreamRef": "workstream-packing",
+      "kind": "inventory",
+      "state": "ready-for-owner-review",
+      "ownerRef": "member-sam",
+      "evidenceRefs": ["source-inventory", "source-consent-alex", "source-consent-sam"]
+    },
+    {
+      "id": "readiness-mover",
+      "workstreamRef": "workstream-moving-service",
+      "kind": "vendor",
+      "state": "needs-evidence",
+      "ownerRef": "member-alex",
+      "evidenceRefs": ["source-mover-quote"]
+    },
+    {
+      "id": "readiness-utilities",
+      "workstreamRef": "workstream-utilities",
+      "kind": "service",
+      "state": "ready-for-owner-review",
+      "ownerRef": "member-alex",
+      "evidenceRefs": ["source-utility-list"]
+    },
+    {
+      "id": "readiness-administration",
+      "workstreamRef": "workstream-administration",
+      "kind": "document",
+      "state": "needs-evidence",
+      "ownerRef": "member-alex",
+      "evidenceRefs": ["source-owner-plan"]
+    },
+    {
+      "id": "readiness-school",
+      "workstreamRef": "workstream-school",
+      "kind": "date",
+      "state": "needs-evidence",
+      "ownerRef": "member-alex",
+      "evidenceRefs": ["source-school-gap"]
+    },
+    {
+      "id": "readiness-travel",
+      "workstreamRef": "workstream-travel",
+      "kind": "travel",
+      "state": "ready-for-owner-review",
+      "ownerRef": "member-sam",
+      "evidenceRefs": ["source-travel-plan", "source-consent-alex", "source-consent-sam"]
+    },
+    {
+      "id": "readiness-move-day",
+      "workstreamRef": "workstream-move-day",
+      "kind": "move-day",
+      "state": "blocked",
+      "ownerRef": "member-alex",
+      "evidenceRefs": ["source-owner-plan", "source-destination-access"]
+    }
+  ],
+  "actionGates": [
+    {
+      "id": "gate-contract",
+      "workstreamRef": "workstream-moving-service",
+      "action": "sign-contract",
+      "state": "blocked",
+      "applicability": {
+        "state": "applicable",
+        "rationale": "The moving-service workstream requires an owner-controlled service contract decision.",
+        "evidenceRefs": ["source-mover-quote"]
+      },
+      "ownerRef": "member-alex",
+      "requiredMemberRefs": ["member-alex"],
+      "consentSourceRefs": ["source-consent-alex"],
+      "evidenceRefs": ["source-mover-quote"]
+    },
+    {
+      "id": "gate-booking",
+      "workstreamRef": "workstream-moving-service",
+      "action": "make-booking",
+      "state": "blocked",
+      "applicability": {
+        "state": "applicable",
+        "rationale": "The moving-service workstream requires an owner-controlled booking decision.",
+        "evidenceRefs": ["source-mover-quote"]
+      },
+      "ownerRef": "member-alex",
+      "requiredMemberRefs": ["member-alex"],
+      "consentSourceRefs": ["source-consent-alex"],
+      "evidenceRefs": ["source-mover-quote"]
+    },
+    {
+      "id": "gate-payment",
+      "workstreamRef": "workstream-moving-service",
+      "action": "make-payment",
+      "state": "blocked",
+      "applicability": {
+        "state": "applicable",
+        "rationale": "The moving-service workstream includes an owner-controlled payment decision.",
+        "evidenceRefs": ["source-mover-quote"]
+      },
+      "ownerRef": "member-alex",
+      "requiredMemberRefs": ["member-alex"],
+      "consentSourceRefs": ["source-consent-alex"],
+      "evidenceRefs": ["source-mover-quote"]
+    },
+    {
+      "id": "gate-message",
+      "workstreamRef": "workstream-moving-service",
+      "action": "send-message",
+      "state": "pending-owner-decision",
+      "applicability": {
+        "state": "applicable",
+        "rationale": "The moving-service workstream requires owner-controlled vendor communication.",
+        "evidenceRefs": ["source-mover-quote"]
+      },
+      "ownerRef": "member-alex",
+      "requiredMemberRefs": ["member-alex"],
+      "consentSourceRefs": ["source-consent-alex"],
+      "evidenceRefs": ["source-mover-quote"]
+    },
+    {
+      "id": "gate-address",
+      "workstreamRef": "workstream-administration",
+      "action": "change-address",
+      "state": "pending-owner-decision",
+      "applicability": {
+        "state": "applicable",
+        "rationale": "The documents-and-address workstream requires an owner-controlled address change.",
+        "evidenceRefs": ["source-destination-lease"]
+      },
+      "ownerRef": "member-alex",
+      "requiredMemberRefs": ["member-alex", "member-sam"],
+      "consentSourceRefs": ["source-consent-alex", "source-consent-sam"],
+      "evidenceRefs": ["source-destination-lease", "source-consent-alex", "source-consent-sam"]
+    },
+    {
+      "id": "gate-utility",
+      "workstreamRef": "workstream-utilities",
+      "action": "change-utility",
+      "state": "pending-owner-decision",
+      "applicability": {
+        "state": "applicable",
+        "rationale": "The utility-transition workstream requires owner-controlled utility changes.",
+        "evidenceRefs": ["source-utility-list"]
+      },
+      "ownerRef": "member-alex",
+      "requiredMemberRefs": ["member-alex"],
+      "consentSourceRefs": ["source-consent-alex"],
+      "evidenceRefs": ["source-utility-list"]
+    },
+    {
+      "id": "gate-insurance",
+      "workstreamRef": "workstream-administration",
+      "action": "change-insurance",
+      "state": "blocked",
+      "applicability": {
+        "state": "applicable",
+        "rationale": "The owner included insurance in the administrative move workstream.",
+        "evidenceRefs": ["source-owner-plan"]
+      },
+      "ownerRef": "member-alex",
+      "requiredMemberRefs": ["member-alex"],
+      "consentSourceRefs": ["source-consent-alex"],
+      "evidenceRefs": ["source-owner-plan"]
+    },
+    {
+      "id": "gate-school",
+      "workstreamRef": "workstream-school",
+      "action": "change-school",
+      "state": "blocked",
+      "applicability": {
+        "state": "applicable",
+        "rationale": "The school transition workstream requires an owner-controlled school change.",
+        "evidenceRefs": ["source-school-gap"]
+      },
+      "ownerRef": "member-alex",
+      "requiredMemberRefs": ["member-alex"],
+      "consentSourceRefs": ["source-consent-alex"],
+      "evidenceRefs": ["source-school-gap"]
+    },
+    {
+      "id": "gate-registration",
+      "workstreamRef": "workstream-administration",
+      "action": "change-registration",
+      "state": "blocked",
+      "applicability": {
+        "state": "applicable",
+        "rationale": "The owner included registrations in the administrative move workstream.",
+        "evidenceRefs": ["source-owner-plan"]
+      },
+      "ownerRef": "member-alex",
+      "requiredMemberRefs": ["member-alex"],
+      "consentSourceRefs": ["source-consent-alex"],
+      "evidenceRefs": ["source-owner-plan"]
+    },
+    {
+      "id": "gate-mail",
+      "workstreamRef": "workstream-administration",
+      "action": "change-mail",
+      "state": "completed-by-owner",
+      "applicability": {
+        "state": "applicable",
+        "rationale": "The owner included mail forwarding in the administrative move workstream.",
+        "evidenceRefs": ["source-owner-plan"]
+      },
+      "ownerRef": "member-alex",
+      "requiredMemberRefs": ["member-alex"],
+      "consentSourceRefs": ["source-consent-alex"],
+      "evidenceRefs": ["source-mail-confirmation"]
+    },
+    {
+      "id": "gate-travel",
+      "workstreamRef": "workstream-travel",
+      "action": "book-travel",
+      "state": "pending-owner-decision",
+      "applicability": {
+        "state": "applicable",
+        "rationale": "The supplied travel plan identifies an owner-controlled booking decision.",
+        "evidenceRefs": ["source-travel-plan"]
+      },
+      "ownerRef": "member-alex",
+      "requiredMemberRefs": ["member-alex", "member-sam"],
+      "consentSourceRefs": ["source-consent-alex", "source-consent-sam"],
+      "evidenceRefs": ["source-travel-plan", "source-consent-alex", "source-consent-sam"]
+    },
+    {
+      "id": "gate-account",
+      "workstreamRef": "workstream-administration",
+      "action": "change-account",
+      "state": "blocked",
+      "applicability": {
+        "state": "applicable",
+        "rationale": "The owner included account changes in the administrative move workstream.",
+        "evidenceRefs": ["source-owner-plan"]
+      },
+      "ownerRef": "member-alex",
+      "requiredMemberRefs": ["member-alex"],
+      "consentSourceRefs": ["source-consent-alex"],
+      "evidenceRefs": ["source-owner-plan"]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-destination-access",
+      "kind": "conflicting-evidence",
+      "reason": "The destination elevator access window conflicts across supplied notes.",
+      "ownerRef": "member-alex",
+      "refs": ["source-destination-access", "workstream-destination", "milestone-destination-access"]
+    },
+    {
+      "id": "gap-mover-quote",
+      "kind": "stale-evidence",
+      "reason": "The mover estimate expired and cannot support a contract, booking, or payment decision.",
+      "ownerRef": "member-alex",
+      "refs": ["source-mover-quote", "workstream-moving-service", "gate-contract"]
+    },
+    {
+      "id": "gap-school-date",
+      "kind": "missing-date",
+      "reason": "No supported school transition date is available.",
+      "ownerRef": "member-alex",
+      "refs": ["source-school-gap", "workstream-school", "milestone-school-transition"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-destination-access",
+      "question": "Which supplied destination access window should Alex use for move-day planning?",
+      "reason": "The destination handoff remains blocked while access evidence conflicts.",
+      "ownerRef": "member-alex",
+      "refs": ["gap-destination-access", "dependency-access-before-move-day"]
+    },
+    {
+      "id": "question-mover-quote",
+      "question": "Does Alex have a current mover estimate to review before any contract, booking, or payment?",
+      "reason": "The only supplied estimate is stale.",
+      "ownerRef": "member-alex",
+      "refs": ["gap-mover-quote", "gate-contract", "gate-booking", "gate-payment"]
+    },
+    {
+      "id": "question-school-date",
+      "question": "What school transition date has the responsible owner confirmed?",
+      "reason": "The date is missing and must not be inferred.",
+      "ownerRef": "member-alex",
+      "refs": ["gap-school-date", "gate-school"]
+    }
+  ],
+  "blockedActions": [
+    "sign-contract",
+    "make-booking",
+    "make-payment",
+    "send-message",
+    "change-address",
+    "change-utility",
+    "change-insurance",
+    "change-school",
+    "change-registration",
+    "change-mail",
+    "book-travel",
+    "change-account"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "ownerRef": "member-alex",
+    "reviewQuestionRefs": ["question-destination-access", "question-mover-quote", "question-school-date"],
+    "blockingRefs": ["gap-destination-access", "gap-mover-quote", "gap-school-date", "workstream-move-day"],
+    "prohibitedActions": [
+      "Do not sign contracts, make bookings or payments, send messages, disclose addresses, or change utilities, insurance, school, registrations, mail, travel, or accounts."
+    ]
+  }
+}

@@ -41,6 +41,7 @@ const schemaNames = {
   "meal-grocery-planner": "meal-grocery.schema.json",
   "medical-appointment-prep": "medical-appointment.schema.json",
   "model-evaluation-adjudicator": "model-evaluation.schema.json",
+  "moving-checklist-coordinator": "moving-plan.schema.json",
   "movie-streaming-organizer": "movie-streaming.schema.json",
   "music-organizer": "music-library.schema.json",
   "neighborhood-operations-watcher": "neighborhood-operations.schema.json",

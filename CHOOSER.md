@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (99)
+### Active (100)
 
 | Claw | Detail |
 | --- | --- |
@@ -68,6 +68,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Meeting intelligence](claws/meeting-intelligence) | @giodl73-repo; last verified 2026-08-19 |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | @giodl73-repo; last verified 2026-08-19 |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | @giodl73-repo; last verified 2026-08-21 |
+| [Moving checklist coordinator](claws/moving-checklist-coordinator) | @giodl73; last verified 2026-08-29 |
 | [Music organizer](claws/music-organizer) | @giodl73-repo; last verified 2026-08-22 |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | @giodl73-repo; last verified 2026-08-27 |
 | [Personal archive curator](claws/personal-archive-curator) | @giodl73-repo; last verified 2026-08-22 |
@@ -126,7 +127,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (68)
+### Low setup (69)
 
 | Claw | Detail |
 | --- | --- |
@@ -170,6 +171,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Medical appointment prep](claws/medical-appointment-prep) | no bootstrap, external dependency, or schedule |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | no bootstrap, external dependency, or schedule |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | no bootstrap, external dependency, or schedule |
+| [Moving checklist coordinator](claws/moving-checklist-coordinator) | no bootstrap, external dependency, or schedule |
 | [Music organizer](claws/music-organizer) | no bootstrap, external dependency, or schedule |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | no bootstrap, external dependency, or schedule |
 | [Personal archive curator](claws/personal-archive-curator) | no bootstrap, external dependency, or schedule |
@@ -244,7 +246,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (76)
+### No external dependencies (77)
 
 | Claw | Detail |
 | --- | --- |
@@ -295,6 +297,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Medical appointment prep](claws/medical-appointment-prep) | None |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | None |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | None |
+| [Moving checklist coordinator](claws/moving-checklist-coordinator) | None |
 | [Music organizer](claws/music-organizer) | None |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | None |
 | [Personal archive curator](claws/personal-archive-curator) | None |
@@ -357,7 +360,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (74)
+### X3 (75)
 
 | Claw | Detail |
 | --- | --- |
@@ -402,6 +405,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Meeting intelligence](claws/meeting-intelligence) | Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts. |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | Coordinates blinded model-output evaluation, rubric calibration, and disagreement adjudication without selecting or deploying a model. |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | Organizes a personal or household movie and show watchlist with sourced availability, watched history, favorites, preferences, and watch-night shortlists without renting, buying, subscribing, rating publicly, or bypassing restrictions. |
+| [Moving checklist coordinator](claws/moving-checklist-coordinator) | Coordinates a household move across dates, inventory, services, documents, vendors, and dependencies without booking, paying, contacting parties, or changing addresses or accounts. |
 | [Music organizer](claws/music-organizer) | Organizes a personal or household music library, playlists, listening history, favorites, and source-backed streaming availability without account mutation, purchases, public sharing, playlist publishing, or rights bypassing. |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | Tracks neighborhood-impacting trash and recycling schedules, road closures, permit notices, utility work, local meetings, school board items, and public notices from approved sources without filing complaints, calling agencies, posting publicly, changing accounts, or claiming safety certainty. |
 | [Personal archive curator](claws/personal-archive-curator) | Organizes supplied personal files, notes, links, receipts, photos, warranties, and memories into a privacy-labeled retrieval index without deleting, moving, sharing, uploading, training memory, or inferring sensitive facts. |
@@ -518,7 +522,7 @@ Categories come directly from the catalog entry.
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 
-### Operations (21)
+### Operations (22)
 
 | Claw | Detail |
 | --- | --- |
@@ -534,6 +538,7 @@ Categories come directly from the catalog entry.
 | [Home repair coordinator](claws/home-repair-coordinator) | X3; Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments. |
 | [Household steward](claws/household-steward) | X3; Coordinates a multi-person household's priorities, responsibilities, specialist-Claw handoffs, shared constraints, and explicitly authorized external actions without becoming the household decision-maker. |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | X5; Builds a constraint-led production plan and exception handoff from approved demand, capacity, material, quality, and maintenance evidence. |
+| [Moving checklist coordinator](claws/moving-checklist-coordinator) | X3; Coordinates a household move across dates, inventory, services, documents, vendors, and dependencies without booking, paying, contacting parties, or changing addresses or accounts. |
 | [Pet care coordinator](claws/pet-care-coordinator) | X3; Coordinates evidence-bound routine pet care, symptom triage, medication-safe handoffs, and explicitly approved veterinary appointments. |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | X3; Coordinates evidence-bound ornamental pond and waterfall planning, installation readiness, recirculating-system care, aquatic-habitat monitoring, and explicitly approved specialist appointments. |
 | [Procurement evaluator](claws/procurement-evaluator) | X5; Builds a traceable vendor evaluation from approved requirements, evidence, risks, and accountable purchasing decisions. |
@@ -608,7 +613,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (47)
+### Standard attention (48)
 
 | Claw | Detail |
 | --- | --- |
@@ -639,6 +644,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Medical appointment prep](claws/medical-appointment-prep) | portable workspace artifacts only |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | portable workspace artifacts only |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | portable workspace artifacts only |
+| [Moving checklist coordinator](claws/moving-checklist-coordinator) | portable workspace artifacts only |
 | [Music organizer](claws/music-organizer) | portable workspace artifacts only |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | portable workspace artifacts only |
 | [Personal archive curator](claws/personal-archive-curator) | portable workspace artifacts only |
