@@ -8,6 +8,7 @@
     "schemaVersion",
     "plan",
     "sources",
+    "evidenceRecords",
     "locations",
     "members",
     "workstreams",
@@ -25,7 +26,7 @@
     "plan": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "ownerRef", "asOf", "timezone", "moveDateState", "moveDate", "sourceRefs"],
+      "required": ["id", "ownerRef", "asOf", "timezone", "moveDateState", "moveDate", "dateCandidates", "sourceRefs"],
       "properties": {
         "id": { "type": "string", "pattern": "^move-[a-z0-9-]+$" },
         "ownerRef": { "type": "string", "pattern": "^member-[a-z0-9-]+$" },
@@ -38,6 +39,7 @@
             { "type": "null" }
           ]
         },
+        "dateCandidates": { "$ref": "#/$defs/dateCandidateArray" },
         "sourceRefs": { "$ref": "#/$defs/sourceRefArray" }
       },
       "allOf": [
@@ -52,6 +54,11 @@
       "type": "array",
       "minItems": 1,
       "items": { "$ref": "#/$defs/source" }
+    },
+    "evidenceRecords": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/evidenceRecord" }
     },
     "locations": {
       "type": "array",
@@ -94,7 +101,6 @@
     },
     "reviewQuestions": {
       "type": "array",
-      "minItems": 1,
       "items": { "$ref": "#/$defs/reviewQuestion" }
     },
     "blockedActions": {
@@ -157,35 +163,49 @@
         "change-account"
       ]
     },
+    "sourceKind": {
+      "type": "string",
+      "enum": [
+        "owner-plan",
+        "lease-or-sale-record",
+        "access-rule",
+        "inventory-record",
+        "vendor-quote",
+        "service-record",
+        "utility-record",
+        "document-record",
+        "budget-record",
+        "travel-plan",
+        "school-or-care-record",
+        "insurance-record",
+        "registration-record",
+        "mail-record",
+        "account-record",
+        "consent-record",
+        "assignment-record",
+        "owner-action-record"
+      ]
+    },
+    "dateCandidateArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["date", "sourceRef"],
+        "properties": {
+          "date": { "type": "string", "format": "date" },
+          "sourceRef": { "type": "string", "pattern": "^source-[a-z0-9-]+$" }
+        }
+      }
+    },
     "source": {
       "type": "object",
       "additionalProperties": false,
       "required": ["id", "kind", "label", "provenance", "privacy", "freshness", "asOf"],
       "properties": {
         "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
-        "kind": {
-          "type": "string",
-          "enum": [
-            "owner-plan",
-            "lease-or-sale-record",
-            "access-rule",
-            "inventory-record",
-            "vendor-quote",
-            "service-record",
-            "utility-record",
-            "document-record",
-            "budget-record",
-            "travel-plan",
-            "school-or-care-record",
-            "insurance-record",
-            "registration-record",
-            "mail-record",
-            "account-record",
-            "consent-record",
-            "assignment-record",
-            "owner-action-record"
-          ]
-        },
+        "kind": { "$ref": "#/$defs/sourceKind" },
         "label": { "type": "string", "minLength": 1 },
         "provenance": { "type": "string", "enum": ["owner-supplied", "official-public", "provider-document"] },
         "privacy": { "type": "string", "enum": ["private", "household-shared"] },
@@ -198,6 +218,10 @@
           ]
         },
         "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "locationDataHandling": {
+          "type": "string",
+          "enum": ["owner-only-reference", "redacted"]
+        },
         "subjectRef": { "type": "string", "pattern": "^(location|member|workstream|milestone|gate)-[a-z0-9-]+$" },
         "workstreamRef": { "type": "string", "pattern": "^workstream-[a-z0-9-]+$" },
         "action": { "$ref": "#/$defs/externalAction" },
@@ -210,6 +234,27 @@
         }
       },
       "allOf": [
+        {
+          "if": {
+            "properties": {
+              "locationDataHandling": {
+                "enum": ["owner-only-reference", "redacted"]
+              }
+            },
+            "required": ["locationDataHandling"]
+          },
+          "then": {
+            "properties": {
+              "privacy": { "const": "private" },
+              "label": {
+                "enum": [
+                  "[owner-only location record]",
+                  "[redacted location record]"
+                ]
+              }
+            }
+          }
+        },
         {
           "if": { "properties": { "provenance": { "const": "official-public" } }, "required": ["provenance"] },
           "then": {
@@ -247,14 +292,82 @@
         }
       ]
     },
+    "evidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "sourceRef",
+        "sourceKind",
+        "claimKind",
+        "subjectRef",
+        "workstreamRef",
+        "readinessKind",
+        "assertedDate",
+        "assertedValue"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^evidence-[a-z0-9-]+$" },
+        "sourceRef": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+        "sourceKind": { "$ref": "#/$defs/sourceKind" },
+        "claimKind": {
+          "type": "string",
+          "enum": ["move-date", "milestone-date", "readiness", "gate-applicability"]
+        },
+        "subjectRef": {
+          "type": "string",
+          "pattern": "^(move|milestone|readiness|gate)-[a-z0-9-]+$"
+        },
+        "workstreamRef": {
+          "anyOf": [
+            { "type": "string", "pattern": "^workstream-[a-z0-9-]+$" },
+            { "type": "null" }
+          ]
+        },
+        "readinessKind": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": ["date", "access", "inventory", "vendor", "service", "document", "budget", "travel", "resident", "consent", "approval", "move-day"]
+            },
+            { "type": "null" }
+          ]
+        },
+        "assertedDate": {
+          "anyOf": [
+            { "type": "string", "format": "date" },
+            { "type": "null" }
+          ]
+        },
+        "assertedValue": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "missing",
+                "ready-for-owner-review",
+                "needs-evidence",
+                "blocked",
+                "not-applicable",
+                "applicable"
+              ]
+            },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
     "location": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "role", "label", "addressState", "sourceRefs", "privateAddressSourceRefs"],
+      "required": ["id", "role", "alias", "addressState", "sourceRefs", "privateAddressSourceRefs"],
       "properties": {
         "id": { "type": "string", "pattern": "^location-[a-z0-9-]+$" },
         "role": { "type": "string", "enum": ["origin", "destination"] },
-        "label": { "type": "string", "minLength": 1 },
+        "alias": {
+          "type": "string",
+          "enum": ["origin-location", "destination-location"]
+        },
         "addressState": { "type": "string", "enum": ["withheld", "supplied", "missing", "conflicting"] },
         "sourceRefs": { "$ref": "#/$defs/sourceRefArray" },
         "privateAddressSourceRefs": {
@@ -285,7 +398,7 @@
     "workstream": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "kind", "title", "state", "locationRefs", "ownerRef", "assignedMemberRefs", "sourceRefs"],
+      "required": ["id", "kind", "title", "state", "locationRefs", "ownerRef", "assignedMemberRefs", "applicableActions", "sourceRefs"],
       "properties": {
         "id": { "type": "string", "pattern": "^workstream-[a-z0-9-]+$" },
         "kind": {
@@ -317,13 +430,18 @@
         },
         "ownerRef": { "type": "string", "pattern": "^member-[a-z0-9-]+$" },
         "assignedMemberRefs": { "$ref": "#/$defs/memberRefArray" },
+        "applicableActions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/externalAction" }
+        },
         "sourceRefs": { "$ref": "#/$defs/sourceRefArray" }
       }
     },
     "milestone": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "workstreamRef", "title", "phase", "dateState", "date", "status", "sourceRefs"],
+      "required": ["id", "workstreamRef", "title", "phase", "dateState", "date", "dateCandidates", "status", "sourceRefs"],
       "properties": {
         "id": { "type": "string", "pattern": "^milestone-[a-z0-9-]+$" },
         "workstreamRef": { "type": "string", "pattern": "^workstream-[a-z0-9-]+$" },
@@ -336,6 +454,7 @@
             { "type": "null" }
           ]
         },
+        "dateCandidates": { "$ref": "#/$defs/dateCandidateArray" },
         "status": { "type": "string", "enum": ["pending", "blocked", "completed"] },
         "sourceRefs": { "$ref": "#/$defs/sourceRefArray" }
       },
@@ -375,12 +494,22 @@
     "actionGate": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "workstreamRef", "action", "state", "ownerRef", "requiredMemberRefs", "consentSourceRefs", "evidenceRefs"],
+      "required": ["id", "workstreamRef", "action", "state", "applicability", "ownerRef", "requiredMemberRefs", "consentSourceRefs", "evidenceRefs"],
       "properties": {
         "id": { "type": "string", "pattern": "^gate-[a-z0-9-]+$" },
         "workstreamRef": { "type": "string", "pattern": "^workstream-[a-z0-9-]+$" },
         "action": { "$ref": "#/$defs/externalAction" },
         "state": { "type": "string", "enum": ["blocked", "pending-owner-decision", "completed-by-owner", "not-applicable"] },
+        "applicability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "rationale", "evidenceRefs"],
+          "properties": {
+            "state": { "type": "string", "enum": ["applicable", "not-applicable"] },
+            "rationale": { "type": "string", "minLength": 1 },
+            "evidenceRefs": { "$ref": "#/$defs/sourceRefArray" }
+          }
+        },
         "ownerRef": { "type": "string", "pattern": "^member-[a-z0-9-]+$" },
         "requiredMemberRefs": { "$ref": "#/$defs/memberRefArray" },
         "consentSourceRefs": {
@@ -389,7 +518,28 @@
           "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" }
         },
         "evidenceRefs": { "$ref": "#/$defs/sourceRefArray" }
-      }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "state": { "const": "not-applicable" } }, "required": ["state"] },
+          "then": {
+            "properties": {
+              "applicability": {
+                "type": "object",
+                "properties": { "state": { "const": "not-applicable" } }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "applicability": {
+                "type": "object",
+                "properties": { "state": { "const": "applicable" } }
+              }
+            }
+          }
+        }
+      ]
     },
     "gap": {
       "type": "object",

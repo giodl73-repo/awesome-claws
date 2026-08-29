@@ -367,6 +367,123 @@ function isValid(id, candidate) {
   return item.validate(candidate) && validateArtifactSemantics(id, candidate).length === 0;
 }
 
+function resolvedMovingPlan(fixture) {
+  const value = structuredClone(fixture);
+  value.plan.asOf = "2026-10-16";
+  for (const source of value.sources) {
+    source.freshness = "current";
+    if (source.id === "source-mover-quote") {
+      source.validThrough = "2026-12-31";
+    }
+  }
+  for (const workstream of value.workstreams) {
+    workstream.state = "complete";
+  }
+  const destinationMilestone = value.milestones.find(
+    (item) => item.id === "milestone-destination-access",
+  );
+  destinationMilestone.dateState = "known";
+  destinationMilestone.date = "2026-10-15";
+  destinationMilestone.dateCandidates[1].date = "2026-10-15";
+  value.evidenceRecords.find(
+    (item) => item.id === "evidence-destination-access-date-two",
+  ).assertedDate = "2026-10-15";
+  const schoolMilestone = value.milestones.find(
+    (item) => item.id === "milestone-school-transition",
+  );
+  schoolMilestone.dateState = "known";
+  schoolMilestone.date = "2026-10-14";
+  schoolMilestone.dateCandidates = [
+    { date: "2026-10-14", sourceRef: "source-school-gap" },
+  ];
+  const schoolDateEvidence = value.evidenceRecords.find(
+    (item) => item.id === "evidence-school-date-missing",
+  );
+  schoolDateEvidence.assertedDate = "2026-10-14";
+  schoolDateEvidence.assertedValue = null;
+  const milestoneWorkstreamRefs = new Set(
+    value.milestones.map((item) => item.workstreamRef),
+  );
+  for (const workstream of value.workstreams) {
+    if (milestoneWorkstreamRefs.has(workstream.id)) {
+      continue;
+    }
+    const suffix = workstream.id.slice("workstream-".length);
+    const milestoneId = `milestone-${suffix}-completion`;
+    value.milestones.push({
+      id: milestoneId,
+      workstreamRef: workstream.id,
+      title: `${workstream.title} completion`,
+      phase: "pre-move",
+      dateState: "known",
+      date: "2026-10-14",
+      dateCandidates: [
+        { date: "2026-10-14", sourceRef: "source-owner-plan" },
+      ],
+      status: "completed",
+      sourceRefs: ["source-owner-plan"],
+    });
+    value.evidenceRecords.push({
+      id: `evidence-${suffix}-completion-date`,
+      sourceRef: "source-owner-plan",
+      sourceKind: "owner-plan",
+      claimKind: "milestone-date",
+      subjectRef: milestoneId,
+      workstreamRef: workstream.id,
+      readinessKind: null,
+      assertedDate: "2026-10-14",
+      assertedValue: null,
+    });
+  }
+  for (const milestone of value.milestones) {
+    milestone.status = "completed";
+  }
+  for (const readiness of value.readinessItems) {
+    readiness.state = "ready-for-owner-review";
+    value.evidenceRecords.find(
+      (record) =>
+        record.claimKind === "readiness" && record.subjectRef === readiness.id,
+    ).assertedValue = "ready-for-owner-review";
+  }
+  for (const dependency of value.dependencies) {
+    dependency.state = "satisfied";
+  }
+  for (const gate of value.actionGates) {
+    gate.state = "completed-by-owner";
+    let actionSource = value.sources.find(
+      (source) =>
+        source.kind === "owner-action-record" &&
+        source.workstreamRef === gate.workstreamRef &&
+        source.action === gate.action &&
+        source.ownerRef === gate.ownerRef,
+    );
+    if (!actionSource) {
+      actionSource = {
+        id: `source-owner-action-${gate.id.slice("gate-".length)}`,
+        kind: "owner-action-record",
+        label: `Owner-supplied ${gate.action} completion record`,
+        provenance: "owner-supplied",
+        privacy: "private",
+        freshness: "current",
+        asOf: "2026-10-16",
+        workstreamRef: gate.workstreamRef,
+        action: gate.action,
+        ownerRef: gate.ownerRef,
+      };
+      value.sources.push(actionSource);
+    }
+    if (!gate.evidenceRefs.includes(actionSource.id)) {
+      gate.evidenceRefs.push(actionSource.id);
+    }
+  }
+  value.gaps = [];
+  value.reviewQuestions = [];
+  value.handoff.state = "ready-for-owner-review";
+  value.handoff.reviewQuestionRefs = [];
+  value.handoff.blockingRefs = [];
+  return value;
+}
+
 for (const item of cases.values()) {
   test(`${item.id} accepts its packaged decision artifact`, () => {
     assert.equal(isValid(item.id, item.fixture), true, JSON.stringify(item.validate.errors));
@@ -1053,8 +1170,63 @@ test("moving checklist preserves source, location, and freshness integrity", () 
   assert.equal(isValid("moving-checklist-coordinator", unsupportedAddress), false);
 
   const rawAddress = structuredClone(fixture);
-  rawAddress.locations[0].label = "123 River Street";
+  rawAddress.locations[0].alias = "origin-12-n-main-pkwy";
   assert.equal(isValid("moving-checklist-coordinator", rawAddress), false);
+
+  const exposedOwnerOnlyLabel = structuredClone(fixture);
+  exposedOwnerOnlyLabel.sources[1].label = "12 N Main Pkwy, Unit 4";
+  assert.equal(
+    isValid("moving-checklist-coordinator", exposedOwnerOnlyLabel),
+    false,
+  );
+
+  const unclassifiedAddressEvidence = structuredClone(fixture);
+  delete unclassifiedAddressEvidence.sources[1].locationDataHandling;
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      unclassifiedAddressEvidence,
+    ).some((item) => item.code === "public_address_evidence"),
+    true,
+  );
+
+  const addressEvidenceForWrongLocation = structuredClone(fixture);
+  addressEvidenceForWrongLocation.sources[1].subjectRef =
+    "location-destination";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      addressEvidenceForWrongLocation,
+    ).some((item) => item.code === "unbound_address_evidence"),
+    true,
+  );
+
+  const addressInHandoffText = structuredClone(fixture);
+  addressInHandoffText.handoff.prohibitedActions[0] +=
+    " Keep 44 North Main Parkway private.";
+  assert.equal(isValid("moving-checklist-coordinator", addressInHandoffText), false);
+
+  const alphanumericAddressInSharedLabel = structuredClone(fixture);
+  alphanumericAddressInSharedLabel.sources[0].label =
+    "Owner plan for 221B Baker Street";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      alphanumericAddressInSharedLabel,
+    ).some((item) => item.code === "private_address_exposure"),
+    true,
+  );
+
+  const addressInApplicabilityRationale = structuredClone(fixture);
+  addressInApplicabilityRationale.actionGates[0].applicability.rationale =
+    "Required for 221B Baker Street.";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      addressInApplicabilityRationale,
+    ).some((item) => item.code === "private_address_exposure"),
+    true,
+  );
 
   const duplicateOrigin = structuredClone(fixture);
   duplicateOrigin.locations[1].role = "origin";
@@ -1076,6 +1248,58 @@ test("moving checklist preserves date chronology and an acyclic dependency graph
   fabricatedMoveDate.plan.moveDateState = "missing";
   assert.equal(isValid("moving-checklist-coordinator", fabricatedMoveDate), false);
 
+  const unrelatedMoveDateEvidence = structuredClone(fixture);
+  unrelatedMoveDateEvidence.plan.sourceRefs = ["source-consent-alex"];
+  unrelatedMoveDateEvidence.plan.dateCandidates[0].sourceRef = "source-consent-alex";
+  const moveDateEvidence = unrelatedMoveDateEvidence.evidenceRecords.find(
+    (item) => item.id === "evidence-move-date",
+  );
+  moveDateEvidence.sourceRef = "source-consent-alex";
+  moveDateEvidence.sourceKind = "consent-record";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      unrelatedMoveDateEvidence,
+    ).some((item) => item.code === "invalid_move_date_evidence"),
+    true,
+  );
+
+  const mismatchedMoveDateAssertion = structuredClone(fixture);
+  mismatchedMoveDateAssertion.evidenceRecords.find(
+    (item) => item.id === "evidence-move-date",
+  ).assertedDate = "2026-10-14";
+  assert.equal(isValid("moving-checklist-coordinator", mismatchedMoveDateAssertion), false);
+
+  const unrelatedMilestoneSource = structuredClone(fixture);
+  unrelatedMilestoneSource.milestones[0].sourceRefs = [
+    "source-destination-lease",
+  ];
+  unrelatedMilestoneSource.milestones[0].dateCandidates[0].sourceRef =
+    "source-destination-lease";
+  const originMilestoneEvidence = unrelatedMilestoneSource.evidenceRecords.find(
+    (item) => item.id === "evidence-origin-handoff-date",
+  );
+  originMilestoneEvidence.sourceRef = "source-destination-lease";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      unrelatedMilestoneSource,
+    ).some((item) => item.code === "invalid_milestone_date_evidence"),
+    true,
+  );
+
+  const wrongEvidenceSourceKind = structuredClone(fixture);
+  wrongEvidenceSourceKind.evidenceRecords.find(
+    (item) => item.id === "evidence-move-date",
+  ).sourceKind = "consent-record";
+  assert.equal(isValid("moving-checklist-coordinator", wrongEvidenceSourceKind), false);
+
+  const wrongMoveDateSubject = structuredClone(fixture);
+  wrongMoveDateSubject.evidenceRecords.find(
+    (item) => item.id === "evidence-move-date",
+  ).subjectRef = "move-unrelated";
+  assert.equal(isValid("moving-checklist-coordinator", wrongMoveDateSubject), false);
+
   const preMoveAfterMove = structuredClone(fixture);
   preMoveAfterMove.milestones[2].dateState = "known";
   preMoveAfterMove.milestones[2].date = "2026-10-16";
@@ -1085,6 +1309,21 @@ test("moving checklist preserves date chronology and an acyclic dependency graph
   const wrongMoveDay = structuredClone(fixture);
   wrongMoveDay.milestones[3].date = "2026-10-14";
   assert.equal(isValid("moving-checklist-coordinator", wrongMoveDay), false);
+
+  const collapsedConflict = structuredClone(fixture);
+  collapsedConflict.milestones[1].dateCandidates.pop();
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      collapsedConflict,
+    ).some((item) => item.code === "unsupported_date_state"),
+    true,
+  );
+
+  const unboundConflictCandidate = structuredClone(fixture);
+  unboundConflictCandidate.milestones[1].dateCandidates[1].sourceRef =
+    "source-destination-access";
+  assert.equal(isValid("moving-checklist-coordinator", unboundConflictCandidate), false);
 
   const unsupportedMissingDate = structuredClone(fixture);
   unsupportedMissingDate.milestones[2].sourceRefs = ["source-owner-plan"];
@@ -1150,6 +1389,58 @@ test("moving checklist enforces complete readiness, assignments, and consent", (
   staleReadyItem.readinessItems[0].evidenceRefs = ["source-mover-quote"];
   assert.equal(isValid("moving-checklist-coordinator", staleReadyItem), false);
 
+  const wrongReadinessSubject = structuredClone(fixture);
+  wrongReadinessSubject.evidenceRecords.find(
+    (item) => item.id === "evidence-readiness-origin",
+  ).subjectRef = "readiness-destination";
+  assert.equal(isValid("moving-checklist-coordinator", wrongReadinessSubject), false);
+
+  const wrongReadinessWorkstream = structuredClone(fixture);
+  wrongReadinessWorkstream.evidenceRecords.find(
+    (item) => item.id === "evidence-readiness-origin",
+  ).workstreamRef = "workstream-destination";
+  assert.equal(isValid("moving-checklist-coordinator", wrongReadinessWorkstream), false);
+
+  const wrongReadinessKind = structuredClone(fixture);
+  wrongReadinessKind.evidenceRecords.find(
+    (item) => item.id === "evidence-readiness-origin",
+  ).readinessKind = "consent";
+  assert.equal(isValid("moving-checklist-coordinator", wrongReadinessKind), false);
+
+  const wrongReadinessValue = structuredClone(fixture);
+  wrongReadinessValue.evidenceRecords.find(
+    (item) => item.id === "evidence-readiness-origin",
+  ).assertedValue = "blocked";
+  assert.equal(isValid("moving-checklist-coordinator", wrongReadinessValue), false);
+
+  const consentAsReadinessEvidence = structuredClone(fixture);
+  const readinessEvidence = consentAsReadinessEvidence.evidenceRecords.find(
+    (item) => item.id === "evidence-readiness-origin",
+  );
+  readinessEvidence.sourceRef = "source-consent-alex";
+  readinessEvidence.sourceKind = "consent-record";
+  consentAsReadinessEvidence.readinessItems[0].evidenceRefs = [
+    "source-consent-alex",
+  ];
+  assert.equal(isValid("moving-checklist-coordinator", consentAsReadinessEvidence), false);
+
+  const unrelatedReadinessSubject = structuredClone(fixture);
+  unrelatedReadinessSubject.readinessItems[0].evidenceRefs = [
+    "source-destination-lease",
+  ];
+  const originReadinessEvidence =
+    unrelatedReadinessSubject.evidenceRecords.find(
+      (item) => item.id === "evidence-readiness-origin",
+    );
+  originReadinessEvidence.sourceRef = "source-destination-lease";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      unrelatedReadinessSubject,
+    ).some((item) => item.code === "invalid_readiness_evidence"),
+    true,
+  );
+
   const wrongReadinessOwner = structuredClone(fixture);
   wrongReadinessOwner.readinessItems[0].ownerRef = "member-sam";
   assert.equal(isValid("moving-checklist-coordinator", wrongReadinessOwner), false);
@@ -1185,11 +1476,85 @@ test("moving checklist enforces complete readiness, assignments, and consent", (
 
   const unsupportedComplete = structuredClone(fixture);
   unsupportedComplete.workstreams[1].state = "complete";
-  assert.equal(isValid("moving-checklist-coordinator", unsupportedComplete), false);
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      unsupportedComplete,
+    ).some((item) => item.code === "unsupported_complete_workstream"),
+    true,
+  );
+
+  const completeWithoutMilestone = structuredClone(fixture);
+  completeWithoutMilestone.workstreams[2].state = "complete";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      completeWithoutMilestone,
+    ).some((item) => item.code === "unsupported_complete_workstream"),
+    true,
+  );
 
   const falseReadyHandoff = structuredClone(fixture);
   falseReadyHandoff.handoff.state = "ready-for-owner-review";
   assert.equal(isValid("moving-checklist-coordinator", falseReadyHandoff), false);
+
+  const resolved = resolvedMovingPlan(fixture);
+  assert.equal(
+    isValid("moving-checklist-coordinator", resolved),
+    true,
+    JSON.stringify({
+      schemaErrors: cases.get("moving-checklist-coordinator").validate.errors,
+      semanticFindings: validateArtifactSemantics(
+        "moving-checklist-coordinator",
+        resolved,
+      ),
+    }),
+  );
+
+  const readyWithPendingMoveDay = structuredClone(resolved);
+  readyWithPendingMoveDay.milestones.find(
+    (item) => item.id === "milestone-move-day",
+  ).status = "pending";
+  const readyWithPendingFindings = validateArtifactSemantics(
+    "moving-checklist-coordinator",
+    readyWithPendingMoveDay,
+  );
+  assert.equal(
+    readyWithPendingFindings.some(
+      (item) => item.code === "unsupported_complete_workstream",
+    ),
+    true,
+  );
+  assert.equal(
+    readyWithPendingFindings.some((item) => item.code === "unsupported_ready_state"),
+    true,
+  );
+
+  const readyWithoutMoveDayMilestone = structuredClone(resolved);
+  readyWithoutMoveDayMilestone.milestones =
+    readyWithoutMoveDayMilestone.milestones.filter(
+      (item) => item.workstreamRef !== "workstream-move-day",
+    );
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      readyWithoutMoveDayMilestone,
+    ).some((item) => item.code === "missing_move_day_milestone"),
+    true,
+  );
+
+  const readyWithoutMoveDayWorkstream = structuredClone(resolved);
+  readyWithoutMoveDayWorkstream.workstreams =
+    readyWithoutMoveDayWorkstream.workstreams.filter(
+      (item) => item.id !== "workstream-move-day",
+    );
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      readyWithoutMoveDayWorkstream,
+    ).some((item) => item.code === "invalid_move_day_workstream_count"),
+    true,
+  );
 
   const blockedWithoutRefs = structuredClone(fixture);
   blockedWithoutRefs.handoff.blockingRefs = [];
@@ -1202,6 +1567,136 @@ test("moving checklist keeps every external action with exact named-owner eviden
   const missingGateKind = structuredClone(fixture);
   missingGateKind.actionGates[0].action = "make-booking";
   assert.equal(isValid("moving-checklist-coordinator", missingGateKind), false);
+
+  const notApplicableTravel = structuredClone(fixture);
+  const travelWorkstream = notApplicableTravel.workstreams.find(
+    (item) => item.id === "workstream-travel",
+  );
+  travelWorkstream.applicableActions = [];
+  const travelGate = notApplicableTravel.actionGates.find(
+    (item) => item.id === "gate-travel",
+  );
+  travelGate.state = "not-applicable";
+  travelGate.applicability.state = "not-applicable";
+  travelGate.applicability.rationale =
+    "The owner supplied a driving plan that requires no travel booking.";
+  notApplicableTravel.evidenceRecords.find(
+    (item) => item.id === "evidence-gate-travel-applicability",
+  ).assertedValue = "not-applicable";
+  assert.equal(isValid("moving-checklist-coordinator", notApplicableTravel), true);
+
+  const missingApplicabilityRationale = structuredClone(notApplicableTravel);
+  missingApplicabilityRationale.actionGates.find(
+    (item) => item.id === "gate-travel",
+  ).applicability.rationale = "";
+  assert.equal(
+    isValid("moving-checklist-coordinator", missingApplicabilityRationale),
+    false,
+  );
+
+  const whitespaceApplicabilityRationale = structuredClone(notApplicableTravel);
+  whitespaceApplicabilityRationale.actionGates.find(
+    (item) => item.id === "gate-travel",
+  ).applicability.rationale = "   ";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      whitespaceApplicabilityRationale,
+    ).some((item) => item.code === "unsupported_not_applicable_gate"),
+    true,
+  );
+
+  const unrelatedApplicabilityEvidence = structuredClone(notApplicableTravel);
+  unrelatedApplicabilityEvidence.actionGates.find(
+    (item) => item.id === "gate-travel",
+  ).applicability.evidenceRefs = ["source-consent-alex"];
+  assert.equal(
+    isValid("moving-checklist-coordinator", unrelatedApplicabilityEvidence),
+    false,
+  );
+
+  const wrongKindApplicabilityEvidence = structuredClone(fixture);
+  wrongKindApplicabilityEvidence.actionGates.find(
+    (item) => item.id === "gate-utility",
+  ).applicability.evidenceRefs = ["source-inventory"];
+  const utilityApplicabilityRecord =
+    wrongKindApplicabilityEvidence.evidenceRecords.find(
+      (item) => item.id === "evidence-gate-utility-applicability",
+    );
+  utilityApplicabilityRecord.sourceRef = "source-inventory";
+  utilityApplicabilityRecord.sourceKind = "inventory-record";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      wrongKindApplicabilityEvidence,
+    ).some((item) => item.code === "invalid_gate_applicability_evidence"),
+    true,
+  );
+
+  const scopedOwnerPlanEvidence = structuredClone(fixture);
+  scopedOwnerPlanEvidence.sources.find(
+    (item) => item.id === "source-owner-plan",
+  ).subjectRef = "workstream-origin";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      scopedOwnerPlanEvidence,
+    ).some(
+      (item) =>
+        item.code === "invalid_readiness_evidence" ||
+        item.code === "invalid_gate_applicability_evidence",
+    ),
+    true,
+  );
+
+  const bypassedIntrinsicGate = structuredClone(fixture);
+  const contractGate = bypassedIntrinsicGate.actionGates.find(
+    (item) => item.id === "gate-contract",
+  );
+  contractGate.state = "not-applicable";
+  contractGate.applicability.state = "not-applicable";
+  bypassedIntrinsicGate.evidenceRecords.find(
+    (item) => item.id === "evidence-gate-contract-applicability",
+  ).assertedValue = "not-applicable";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      bypassedIntrinsicGate,
+    ).some((item) => item.code === "intrinsic_action_not_applicable"),
+    true,
+  );
+
+  const omittedIntrinsicAction = structuredClone(fixture);
+  omittedIntrinsicAction.workstreams.find(
+    (item) => item.id === "workstream-moving-service",
+  ).applicableActions = ["make-booking", "make-payment", "send-message"];
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      omittedIntrinsicAction,
+    ).some((item) => item.code === "missing_intrinsic_action"),
+    true,
+  );
+
+  const actionGateOnWrongApplicableWorkstream = structuredClone(fixture);
+  actionGateOnWrongApplicableWorkstream.workstreams.push({
+    id: "workstream-insurance",
+    kind: "insurance",
+    title: "Insurance transition",
+    state: "blocked",
+    locationRefs: ["location-destination"],
+    ownerRef: "member-alex",
+    assignedMemberRefs: ["member-alex"],
+    applicableActions: ["change-insurance"],
+    sourceRefs: ["source-owner-plan", "source-assignment-administration"],
+  });
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      actionGateOnWrongApplicableWorkstream,
+    ).some((item) => item.code === "missing_applicable_action_gate"),
+    true,
+  );
 
   const missingBlockedAction = structuredClone(fixture);
   missingBlockedAction.blockedActions =
@@ -1236,19 +1731,27 @@ test("moving checklist keeps every external action with exact named-owner eviden
   assert.equal(isValid("moving-checklist-coordinator", completedWithoutRecord), false);
 
   const wrongActionRecord = structuredClone(fixture);
-  wrongActionRecord.sources.at(-1).action = "change-account";
+  wrongActionRecord.sources.find(
+    (source) => source.id === "source-mail-confirmation",
+  ).action = "change-account";
   assert.equal(isValid("moving-checklist-coordinator", wrongActionRecord), false);
 
   const wrongWorkstreamRecord = structuredClone(fixture);
-  wrongWorkstreamRecord.sources.at(-1).workstreamRef = "workstream-utilities";
+  wrongWorkstreamRecord.sources.find(
+    (source) => source.id === "source-mail-confirmation",
+  ).workstreamRef = "workstream-utilities";
   assert.equal(isValid("moving-checklist-coordinator", wrongWorkstreamRecord), false);
 
   const wrongOwnerRecord = structuredClone(fixture);
-  wrongOwnerRecord.sources.at(-1).ownerRef = "member-sam";
+  wrongOwnerRecord.sources.find(
+    (source) => source.id === "source-mail-confirmation",
+  ).ownerRef = "member-sam";
   assert.equal(isValid("moving-checklist-coordinator", wrongOwnerRecord), false);
 
   const staleOwnerRecord = structuredClone(fixture);
-  staleOwnerRecord.sources.at(-1).freshness = "stale";
+  staleOwnerRecord.sources.find(
+    (source) => source.id === "source-mail-confirmation",
+  ).freshness = "stale";
   assert.equal(isValid("moving-checklist-coordinator", staleOwnerRecord), false);
 
   const nonblockingReference = structuredClone(fixture);

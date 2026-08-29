@@ -9233,6 +9233,13 @@ function movingPlanFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const sourceSet = new Set(sourceIds);
   const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const evidenceIds = value.evidenceRecords.map((item) => item.id);
+  const evidenceBySource = new Map();
+  for (const item of value.evidenceRecords) {
+    const records = evidenceBySource.get(item.sourceRef) ?? [];
+    records.push(item);
+    evidenceBySource.set(item.sourceRef, records);
+  }
   const locationIds = value.locations.map((item) => item.id);
   const locationSet = new Set(locationIds);
   const locationById = new Map(value.locations.map((item) => [item.id, item]));
@@ -9243,9 +9250,15 @@ function movingPlanFindings(value) {
   const workstreamSet = new Set(workstreamIds);
   const workstreamById = new Map(value.workstreams.map((item) => [item.id, item]));
   const milestoneIds = value.milestones.map((item) => item.id);
+  const milestoneSet = new Set(milestoneIds);
+  const milestoneById = new Map(value.milestones.map((item) => [item.id, item]));
   const dependencyIds = value.dependencies.map((item) => item.id);
   const readinessIds = value.readinessItems.map((item) => item.id);
+  const readinessSet = new Set(readinessIds);
+  const readinessById = new Map(value.readinessItems.map((item) => [item.id, item]));
   const gateIds = value.actionGates.map((item) => item.id);
+  const gateSet = new Set(gateIds);
+  const gateById = new Map(value.actionGates.map((item) => [item.id, item]));
   const gapIds = value.gaps.map((item) => item.id);
   const questionIds = value.reviewQuestions.map((item) => item.id);
   const crossRefs = new Set([
@@ -9283,8 +9296,74 @@ function movingPlanFindings(value) {
     "book-travel": new Set(["travel"]),
     "change-account": new Set(["accounts", "documents-and-address"]),
   };
+  const intrinsicActionsByWorkstreamKind = {
+    "moving-service": new Set([
+      "sign-contract",
+      "make-booking",
+      "make-payment",
+      "send-message",
+    ]),
+    utilities: new Set(["change-utility"]),
+    "documents-and-address": new Set(["change-address"]),
+    insurance: new Set(["change-insurance"]),
+    "school-and-care": new Set(["change-school"]),
+    registration: new Set(["change-registration"]),
+    mail: new Set(["change-mail"]),
+    accounts: new Set(["change-account"]),
+  };
+  const applicabilitySourceKinds = {
+    "sign-contract": new Set(["owner-plan", "vendor-quote", "service-record"]),
+    "make-booking": new Set(["owner-plan", "vendor-quote", "service-record"]),
+    "make-payment": new Set(["owner-plan", "vendor-quote", "budget-record"]),
+    "send-message": new Set(["owner-plan", "vendor-quote", "service-record"]),
+    "change-address": new Set([
+      "owner-plan",
+      "lease-or-sale-record",
+      "document-record",
+    ]),
+    "change-utility": new Set([
+      "owner-plan",
+      "utility-record",
+      "service-record",
+    ]),
+    "change-insurance": new Set(["owner-plan", "insurance-record"]),
+    "change-school": new Set(["owner-plan", "school-or-care-record"]),
+    "change-registration": new Set(["owner-plan", "registration-record"]),
+    "change-mail": new Set(["owner-plan", "mail-record"]),
+    "book-travel": new Set(["owner-plan", "travel-plan"]),
+    "change-account": new Set(["owner-plan", "account-record"]),
+  };
+  const readinessSourceKinds = {
+    date: new Set(["owner-plan", "lease-or-sale-record", "school-or-care-record"]),
+    access: new Set(["lease-or-sale-record", "access-rule"]),
+    inventory: new Set(["inventory-record"]),
+    vendor: new Set(["vendor-quote"]),
+    service: new Set(["service-record", "utility-record"]),
+    document: new Set([
+      "owner-plan",
+      "document-record",
+      "insurance-record",
+      "registration-record",
+      "mail-record",
+      "account-record",
+    ]),
+    budget: new Set(["budget-record"]),
+    travel: new Set(["travel-plan"]),
+    resident: new Set(["owner-plan", "school-or-care-record"]),
+    consent: new Set(["consent-record"]),
+    approval: new Set(["owner-plan", "owner-action-record"]),
+    "move-day": new Set([
+      "owner-plan",
+      "lease-or-sale-record",
+      "access-rule",
+      "inventory-record",
+      "vendor-quote",
+      "travel-plan",
+    ]),
+  };
   const findings = [
     ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(evidenceIds, "evidenceRecords", "Evidence record id"),
     ...uniqueFindings(locationIds, "locations", "Location id"),
     ...uniqueFindings(memberIds, "members", "Member id"),
     ...uniqueFindings(workstreamIds, "workstreams", "Workstream id"),
@@ -9320,6 +9399,18 @@ function movingPlanFindings(value) {
         ),
       ),
   ];
+  const moveDayWorkstreams = value.workstreams.filter(
+    (item) => item.kind === "move-day",
+  );
+  if (moveDayWorkstreams.length !== 1) {
+    findings.push(
+      finding(
+        "invalid_move_day_workstream_count",
+        "workstreams",
+        "A moving plan requires exactly one move-day workstream.",
+      ),
+    );
+  }
 
   const owner = memberById.get(value.plan.ownerRef);
   if (!owner || owner.role !== "owner") {
@@ -9349,18 +9440,112 @@ function movingPlanFindings(value) {
       "Source reference",
     ),
   );
-  const expectedMoveDateFreshness =
-    value.plan.moveDateState === "known" ? "current" : value.plan.moveDateState;
-  if (
-    !value.plan.sourceRefs.some(
-      (ref) => sourceById.get(ref)?.freshness === expectedMoveDateFreshness,
-    )
-  ) {
+
+  function hasEvidenceRecord(sourceRefs, predicate) {
+    return sourceRefs.some((ref) =>
+      (evidenceBySource.get(ref) ?? []).some(predicate),
+    );
+  }
+
+  function sourceSupportsWorkstream(source, workstreamRef) {
+    const workstream = workstreamById.get(workstreamRef);
+    return (
+      (source?.kind === "owner-plan" &&
+        !source.workstreamRef &&
+        !source.subjectRef) ||
+      source?.workstreamRef === workstreamRef ||
+      source?.subjectRef === workstreamRef ||
+      workstream?.locationRefs.includes(source?.subjectRef)
+    );
+  }
+
+  const candidateFindings = (candidates, path, claimKind, subjectRef, workstreamRef) => {
+    const results = [
+      ...referenceFindings(
+        candidates.map((item) => item.sourceRef),
+        sourceSet,
+        path,
+        "Date candidate source reference",
+      ),
+    ];
+    for (const [index, candidate] of candidates.entries()) {
+      if (!value.plan.sourceRefs.includes(candidate.sourceRef) && claimKind === "move-date") {
+        results.push(
+          finding(
+            "unbound_date_candidate",
+            `${path}.${index}.sourceRef`,
+            "Every move-date candidate source must be included in plan.sourceRefs.",
+          ),
+        );
+      }
+      if (
+        !hasEvidenceRecord([candidate.sourceRef], (record) =>
+          record.claimKind === claimKind &&
+          record.subjectRef === subjectRef &&
+          record.workstreamRef === workstreamRef &&
+          record.readinessKind === null &&
+          record.assertedDate === candidate.date &&
+          record.assertedValue === null
+        )
+      ) {
+        results.push(
+          finding(
+            "unsupported_date_candidate",
+            `${path}.${index}`,
+            "Every candidate date requires a source-bound record for the exact claim, subject, workstream, and date.",
+          ),
+        );
+      }
+    }
+    return results;
+  };
+
+  findings.push(
+    ...candidateFindings(
+      value.plan.dateCandidates,
+      "plan.dateCandidates",
+      "move-date",
+      value.plan.id,
+      null,
+    ),
+  );
+  const moveCandidateDates = new Set(
+    value.plan.dateCandidates.map((item) => item.date),
+  );
+  const moveDateStateSupported =
+    (value.plan.moveDateState === "known" &&
+      moveCandidateDates.size === 1 &&
+      moveCandidateDates.has(value.plan.moveDate) &&
+      value.plan.sourceRefs.every(
+        (ref) => sourceById.get(ref)?.freshness === "current",
+      ) &&
+      value.plan.dateCandidates.every(
+        (item) => sourceById.get(item.sourceRef)?.freshness === "current",
+      )) ||
+    (value.plan.moveDateState === "missing" &&
+      value.plan.dateCandidates.length === 0 &&
+      hasEvidenceRecord(value.plan.sourceRefs, (record) =>
+        record.claimKind === "move-date" &&
+        record.subjectRef === value.plan.id &&
+        record.workstreamRef === null &&
+        record.readinessKind === null &&
+        record.assertedDate === null &&
+        record.assertedValue === "missing" &&
+        sourceById.get(record.sourceRef)?.freshness === "missing"
+      )) ||
+    (value.plan.moveDateState === "conflicting" &&
+      moveCandidateDates.size >= 2 &&
+      value.plan.dateCandidates.every((item) =>
+        ["current", "conflicting"].includes(
+          sourceById.get(item.sourceRef)?.freshness,
+        ),
+      ));
+  if (!moveDateStateSupported) {
     findings.push(
       finding(
         "unsupported_move_date",
-        "plan.sourceRefs",
-        "The move date state requires source evidence with matching freshness.",
+        "plan",
+        "The move date state and resolved value require exact source-bound candidate dates or an exact missing-date record.",
       ),
     );
   }
@@ -9485,6 +9670,104 @@ function movingPlanFindings(value) {
     }
   }
 
+  for (const [index, record] of value.evidenceRecords.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [record.sourceRef],
+        sourceSet,
+        `evidenceRecords.${index}.sourceRef`,
+        "Source reference",
+      ),
+    );
+    const source = sourceById.get(record.sourceRef);
+    if (source && source.kind !== record.sourceKind) {
+      findings.push(
+        finding(
+          "evidence_source_kind_mismatch",
+          `evidenceRecords.${index}.sourceKind`,
+          "Evidence records must repeat the exact kind of their referenced source.",
+        ),
+      );
+    }
+    if (record.claimKind === "move-date") {
+      if (
+        record.subjectRef !== value.plan.id ||
+        record.workstreamRef !== null ||
+        record.readinessKind !== null ||
+        ((record.assertedDate === null) ===
+          (record.assertedValue !== "missing")) ||
+        !["owner-plan", "lease-or-sale-record"].includes(record.sourceKind)
+      ) {
+        findings.push(
+          finding(
+            "invalid_move_date_evidence",
+            `evidenceRecords.${index}`,
+            "Move-date evidence must bind the plan and use an owner plan or lease/sale source.",
+          ),
+        );
+      }
+    } else if (record.claimKind === "milestone-date") {
+      const milestone = milestoneById.get(record.subjectRef);
+      if (
+        !milestoneSet.has(record.subjectRef) ||
+        record.workstreamRef !== milestone?.workstreamRef ||
+        record.readinessKind !== null ||
+        ((record.assertedDate === null) ===
+          (record.assertedValue !== "missing")) ||
+        !sourceSupportsWorkstream(source, record.workstreamRef) ||
+        ["consent-record", "assignment-record", "owner-action-record"].includes(
+          record.sourceKind,
+        )
+      ) {
+        findings.push(
+          finding(
+            "invalid_milestone_date_evidence",
+            `evidenceRecords.${index}`,
+            "Milestone-date evidence must bind the exact milestone and workstream and use date-relevant source evidence.",
+          ),
+        );
+      }
+    } else if (record.claimKind === "readiness") {
+      const readiness = readinessById.get(record.subjectRef);
+      if (
+        !readinessSet.has(record.subjectRef) ||
+        record.workstreamRef !== readiness?.workstreamRef ||
+        record.readinessKind !== readiness?.kind ||
+        record.assertedDate !== null ||
+        record.assertedValue !== readiness?.state ||
+        !sourceSupportsWorkstream(source, record.workstreamRef) ||
+        !readinessSourceKinds[readiness?.kind]?.has(record.sourceKind)
+      ) {
+        findings.push(
+          finding(
+            "invalid_readiness_evidence",
+            `evidenceRecords.${index}`,
+            "Readiness evidence must bind the exact readiness item, workstream, kind, state, and a semantically relevant source kind.",
+          ),
+        );
+      }
+    } else if (record.claimKind === "gate-applicability") {
+      const gate = gateById.get(record.subjectRef);
+      if (
+        !gateSet.has(record.subjectRef) ||
+        record.workstreamRef !== gate?.workstreamRef ||
+        record.readinessKind !== null ||
+        record.assertedDate !== null ||
+        record.assertedValue !== gate?.applicability.state ||
+        !applicabilitySourceKinds[gate?.action]?.has(record.sourceKind) ||
+        !sourceSupportsWorkstream(source, record.workstreamRef)
+      ) {
+        findings.push(
+          finding(
+            "invalid_gate_applicability_evidence",
+            `evidenceRecords.${index}`,
+            "Gate applicability evidence must bind the exact gate, workstream, applicability state, and a source kind and subject relevant to that action.",
+          ),
+        );
+      }
+    }
+  }
+
   for (const [index, location] of value.locations.entries()) {
     findings.push(
       ...uniqueFindings(location.sourceRefs, `locations.${index}.sourceRefs`, "Source reference"),
@@ -9508,14 +9791,42 @@ function movingPlanFindings(value) {
     );
     if (
       location.privateAddressSourceRefs.some(
-        (ref) => sourceById.get(ref)?.privacy !== "private",
+        (ref) =>
+          sourceById.get(ref)?.privacy !== "private" ||
+          !["owner-only-reference", "redacted"].includes(
+            sourceById.get(ref)?.locationDataHandling,
+          ),
       )
     ) {
       findings.push(
         finding(
           "public_address_evidence",
           `locations.${index}.privateAddressSourceRefs`,
-          "Exact address evidence must remain in private sources.",
+          "Exact address evidence must remain an owner-only or redacted reference.",
+        ),
+      );
+    }
+    if (
+      location.privateAddressSourceRefs.some(
+        (ref) =>
+          !location.sourceRefs.includes(ref) ||
+          sourceById.get(ref)?.subjectRef !== location.id,
+      )
+    ) {
+      findings.push(
+        finding(
+          "unbound_address_evidence",
+          `locations.${index}.privateAddressSourceRefs`,
+          "Private address references must also belong to the location and identify that exact location as their subject.",
+        ),
+      );
+    }
+    if (!location.alias.startsWith(`${location.role}-`)) {
+      findings.push(
+        finding(
+          "invalid_location_alias",
+          `locations.${index}.alias`,
+          "Location aliases must identify their origin or destination role without containing address data.",
         ),
       );
     }
@@ -9667,6 +9978,36 @@ function movingPlanFindings(value) {
       ),
     );
     const assigned = new Set(workstream.assignedMemberRefs);
+    const applicableActions = new Set(workstream.applicableActions);
+    for (const action of intrinsicActionsByWorkstreamKind[workstream.kind] ?? []) {
+      if (!applicableActions.has(action)) {
+        findings.push(
+          finding(
+            "missing_intrinsic_action",
+            `workstreams.${index}.applicableActions`,
+            `The intrinsic ${action} action cannot be omitted from this workstream.`,
+          ),
+        );
+      }
+    }
+    for (const action of applicableActions) {
+      if (
+        !value.actionGates.some(
+          (gate) =>
+            gate.workstreamRef === workstream.id &&
+            gate.action === action &&
+            gate.state !== "not-applicable",
+        )
+      ) {
+        findings.push(
+          finding(
+            "missing_applicable_action_gate",
+            `workstreams.${index}.applicableActions`,
+            `Applicable action ${JSON.stringify(action)} requires a non-bypassed gate on this exact workstream.`,
+          ),
+        );
+      }
+    }
     if (!assigned.has(workstream.ownerRef)) {
       findings.push(
         finding(
@@ -9717,6 +10058,20 @@ function movingPlanFindings(value) {
           "missing_readiness",
           `workstreams.${index}.id`,
           "Every workstream requires at least one readiness item.",
+        ),
+      );
+    }
+    if (
+      workstream.kind === "move-day" &&
+      !(milestonesByWorkstream.get(workstream.id) ?? []).some(
+        (item) => item.phase === "move-day",
+      )
+    ) {
+      findings.push(
+        finding(
+          "missing_move_day_milestone",
+          `workstreams.${index}.id`,
+          "The move-day workstream requires a move-day milestone.",
         ),
       );
     }
@@ -9779,13 +10134,17 @@ function movingPlanFindings(value) {
       ) ||
         (readinessByWorkstream.get(workstream.id) ?? []).some(
           (item) => !["ready-for-owner-review", "not-applicable"].includes(item.state),
-        ))
+        ) ||
+        (milestonesByWorkstream.get(workstream.id) ?? []).some(
+          (item) => item.dateState !== "known" || item.status !== "completed",
+        ) ||
+        !milestonesByWorkstream.has(workstream.id))
     ) {
       findings.push(
         finding(
           "unsupported_complete_workstream",
           `workstreams.${index}.state`,
-          "Complete workstreams require current evidence and resolved readiness.",
+          "Complete workstreams require current evidence, resolved readiness, and every declared milestone completed on a known date.",
         ),
       );
     }
@@ -9811,31 +10170,65 @@ function movingPlanFindings(value) {
         "Source reference",
       ),
     );
+    findings.push(
+      ...candidateFindings(
+        milestone.dateCandidates,
+        `milestones.${index}.dateCandidates`,
+        "milestone-date",
+        milestone.id,
+        milestone.workstreamRef,
+      ),
+    );
     if (
-      milestone.dateState !== "known" &&
-      !milestone.sourceRefs.some(
-        (ref) => sourceById.get(ref)?.freshness === milestone.dateState,
+      milestone.dateCandidates.some(
+        (candidate) => !milestone.sourceRefs.includes(candidate.sourceRef),
       )
     ) {
       findings.push(
         finding(
-          "unsupported_date_state",
-          `milestones.${index}.dateState`,
-          "Missing or conflicting dates require evidence with the same visible gap state.",
+          "unbound_date_candidate",
+          `milestones.${index}.dateCandidates`,
+          "Every milestone date candidate source must be included in milestone.sourceRefs.",
         ),
       );
     }
-    if (
-      milestone.dateState === "known" &&
-      milestone.sourceRefs.some(
-        (ref) => sourceById.get(ref)?.freshness !== "current",
-      )
-    ) {
+    const candidateDates = new Set(
+      milestone.dateCandidates.map((item) => item.date),
+    );
+    const dateStateSupported =
+      (milestone.dateState === "known" &&
+        candidateDates.size === 1 &&
+        candidateDates.has(milestone.date) &&
+        milestone.sourceRefs.every(
+          (ref) => sourceById.get(ref)?.freshness === "current",
+        ) &&
+        milestone.dateCandidates.every(
+          (item) => sourceById.get(item.sourceRef)?.freshness === "current",
+        )) ||
+      (milestone.dateState === "missing" &&
+        milestone.dateCandidates.length === 0 &&
+        hasEvidenceRecord(milestone.sourceRefs, (record) =>
+          record.claimKind === "milestone-date" &&
+          record.subjectRef === milestone.id &&
+          record.workstreamRef === milestone.workstreamRef &&
+          record.readinessKind === null &&
+          record.assertedDate === null &&
+          record.assertedValue === "missing" &&
+          sourceById.get(record.sourceRef)?.freshness === "missing"
+        )) ||
+      (milestone.dateState === "conflicting" &&
+        candidateDates.size >= 2 &&
+        milestone.dateCandidates.every((item) =>
+          ["current", "conflicting"].includes(
+            sourceById.get(item.sourceRef)?.freshness,
+          ),
+        ));
+    if (!dateStateSupported) {
       findings.push(
         finding(
           "unsupported_date_state",
-          `milestones.${index}.sourceRefs`,
-          "Known milestone dates require only current source evidence.",
+          `milestones.${index}`,
+          "Milestone date state and resolved value require exact source-bound candidate dates or an exact missing-date record.",
         ),
       );
     }
@@ -10021,6 +10414,25 @@ function movingPlanFindings(value) {
       );
     }
     if (
+      !hasEvidenceRecord(readiness.evidenceRefs, (record) =>
+        record.claimKind === "readiness" &&
+        record.subjectRef === readiness.id &&
+        record.workstreamRef === readiness.workstreamRef &&
+        record.readinessKind === readiness.kind &&
+        record.assertedDate === null &&
+        record.assertedValue === readiness.state &&
+        readinessSourceKinds[readiness.kind].has(record.sourceKind)
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_ready_item",
+          `readinessItems.${index}.evidenceRefs`,
+          "Readiness requires evidence for the exact item, workstream, kind, and asserted state.",
+        ),
+      );
+    }
+    if (
       readiness.state === "ready-for-owner-review" &&
       readiness.evidenceRefs.some(
         (ref) => sourceById.get(ref)?.freshness !== "current",
@@ -10097,6 +10509,78 @@ function movingPlanFindings(value) {
           "invalid_gate_workstream",
           `actionGates.${index}.workstreamRef`,
           `The ${gate.action} gate is not attached to an applicable moving workstream.`,
+        ),
+      );
+    }
+    const workstream = workstreamById.get(gate.workstreamRef);
+    const declaredApplicable = workstream?.applicableActions.includes(gate.action);
+    if (
+      (gate.applicability.state === "applicable" && !declaredApplicable) ||
+      (gate.applicability.state === "not-applicable" && declaredApplicable)
+    ) {
+      findings.push(
+        finding(
+          "gate_applicability_mismatch",
+          `actionGates.${index}.applicability.state`,
+          "Gate applicability must match the action list declared by its workstream.",
+        ),
+      );
+    }
+    if (
+      gate.state === "not-applicable" &&
+      intrinsicActionsByWorkstreamKind[workstreamKind]?.has(gate.action)
+    ) {
+      findings.push(
+        finding(
+          "intrinsic_action_not_applicable",
+          `actionGates.${index}.state`,
+          "An action intrinsic to the corresponding workstream cannot be marked not applicable.",
+        ),
+      );
+    }
+    if (
+      gate.state === "not-applicable" &&
+      (gate.applicability.rationale.trim().length === 0 ||
+        gate.applicability.evidenceRefs.some(
+          (ref) => sourceById.get(ref)?.freshness !== "current",
+        ))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_not_applicable_gate",
+          `actionGates.${index}.applicability`,
+          "A not-applicable gate requires a substantive rationale and current exact applicability evidence.",
+        ),
+      );
+    }
+    findings.push(
+      ...uniqueFindings(
+        gate.applicability.evidenceRefs,
+        `actionGates.${index}.applicability.evidenceRefs`,
+        "Applicability evidence reference",
+      ),
+      ...referenceFindings(
+        gate.applicability.evidenceRefs,
+        sourceSet,
+        `actionGates.${index}.applicability.evidenceRefs`,
+        "Applicability evidence reference",
+      ),
+    );
+    if (
+      !hasEvidenceRecord(gate.applicability.evidenceRefs, (record) =>
+        record.claimKind === "gate-applicability" &&
+        record.subjectRef === gate.id &&
+        record.workstreamRef === gate.workstreamRef &&
+        record.readinessKind === null &&
+        record.assertedDate === null &&
+        record.assertedValue === gate.applicability.state
+      )
+    ) {
+      findings.push(
+        finding(
+          "missing_gate_applicability_evidence",
+          `actionGates.${index}.applicability.evidenceRefs`,
+          "Every action gate requires exact structured applicability evidence.",
         ),
       );
     }
@@ -10227,8 +10711,9 @@ function movingPlanFindings(value) {
     value.sources.some((item) =>
       ["stale", "missing", "conflicting"].includes(item.freshness),
     ) ||
-    value.workstreams.some((item) =>
-      ["stale", "missing", "blocked", "conflicting"].includes(item.state),
+    value.workstreams.some((item) => item.state !== "complete") ||
+    value.milestones.some(
+      (item) => item.dateState !== "known" || item.status !== "completed",
     ) ||
     value.readinessItems.some(
       (item) => !["ready-for-owner-review", "not-applicable"].includes(item.state),
@@ -10237,7 +10722,8 @@ function movingPlanFindings(value) {
     value.actionGates.some(
       (item) => !["completed-by-owner", "not-applicable"].includes(item.state),
     ) ||
-    value.gaps.length > 0;
+    value.gaps.length > 0 ||
+    value.reviewQuestions.length > 0;
   if (value.handoff.state === "ready-for-owner-review" && unresolved) {
     findings.push(
       finding(
@@ -10270,7 +10756,7 @@ function movingPlanFindings(value) {
     ]),
     ...value.milestones.map((item) => [
       item.id,
-      item.status === "blocked" || item.dateState !== "known",
+      item.status !== "completed" || item.dateState !== "known",
     ]),
     ...value.dependencies.map((item) => [item.id, item.state === "blocked"]),
     ...value.readinessItems.map((item) => [
@@ -10298,7 +10784,7 @@ function movingPlanFindings(value) {
 
   const publicText = canonicalJson({
     sources: value.sources.map(({ label }) => label),
-    locations: value.locations.map(({ label }) => label),
+    locations: value.locations.map(({ alias }) => alias),
     members: value.members.map(({ displayName }) => displayName),
     workstreams: value.workstreams.map(({ title }) => title),
     milestones: value.milestones.map(({ title }) => title),
@@ -10307,10 +10793,15 @@ function movingPlanFindings(value) {
       question,
       reason,
     })),
+    applicabilityRationales: value.actionGates.map(
+      ({ applicability }) => applicability.rationale,
+    ),
+    handoff: value.handoff.prohibitedActions,
   });
+  const addressScanText = publicText.replaceAll("-", " ");
   if (
-    /\b\d{1,6}\s+[\p{L}0-9.'-]+(?:\s+[\p{L}0-9.'-]+){0,4}\s+(?:street|st|avenue|ave|road|rd|boulevard|blvd|drive|dr|lane|ln|court|ct|way)\b/iu.test(
-      publicText,
+    /\b\d{1,6}[\p{L}]?(?:[-/]\d{1,6}[\p{L}]?)?\s+[\p{L}0-9.'-]+(?:\s+[\p{L}0-9.'-]+){0,5}\s+(?:street|st|avenue|ave|road|rd|boulevard|blvd|drive|dr|lane|ln|court|ct|way|parkway|pkwy|place|pl|terrace|ter|trail|trl|circle|cir|highway|hwy)\b/iu.test(
+      addressScanText,
     )
   ) {
     findings.push(

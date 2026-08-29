@@ -15,7 +15,8 @@ Coordinates a household move across dates, inventory, services, documents, vendo
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
 - Capability boundary: The base starter works from supplied records and grants no messaging, booking, payment, mapping, account, utility, government, school, or property-system authority.
-- Capability boundary: When dates, access, household consent, or vendor evidence conflict, keep the affected workstream blocked and surface the owner decision.
+- Capability boundary: When dates, access, household consent, or vendor evidence conflict, preserve source-bound candidates, keep the resolved value null and the affected workstream blocked, and surface the owner decision.
+- Capability boundary: Use role-prefixed location aliases in shared text; keep exact locations only in owner-only references or fixed redacted records.
 
 Review the package before applying it. Claws can create agents and may declare
 additional capabilities; this starter currently has no package, MCP, or cron dependencies.

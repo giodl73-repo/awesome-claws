@@ -11,7 +11,8 @@ Ask for or confirm:
 ## Included capability boundaries
 
 - The base starter works from supplied records and grants no messaging, booking, payment, mapping, account, utility, government, school, or property-system authority.
-- When dates, access, household consent, or vendor evidence conflict, keep the affected workstream blocked and surface the owner decision.
+- When dates, access, household consent, or vendor evidence conflict, preserve source-bound candidates, keep the resolved value null and the affected workstream blocked, and surface the owner decision.
+- Use role-prefixed location aliases in shared text; keep exact locations only in owner-only references or fixed redacted records.
 
 ## Structured decision artifact contract
 
