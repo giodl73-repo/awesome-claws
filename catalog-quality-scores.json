@@ -1,0 +1,3819 @@
+{
+  "schemaVersion": "awesomeClaws.catalogQuality.v1",
+  "rubricVersion": 1,
+  "asOf": "2026-08-29",
+  "methodology": "Deterministic repository-observable evidence; no live-model or real-world outcome claims.",
+  "dimensions": {
+    "distinctness": 15,
+    "operatingContract": 20,
+    "evidenceModel": 20,
+    "authoritySafety": 20,
+    "experience": 10,
+    "verificationPortability": 10,
+    "stewardship": 5
+  },
+  "summary": {
+    "entryCount": 100,
+    "average": 90.3,
+    "median": 94.5,
+    "qualifiedCount": 100,
+    "bands": {
+      "exemplary": 57,
+      "strong": 21,
+      "solid": 21,
+      "needs-uplift": 1,
+      "priority-remediation": 0
+    },
+    "dimensionAverages": {
+      "distinctness": 12.3,
+      "operatingContract": 20,
+      "evidenceModel": 15,
+      "authoritySafety": 18.8,
+      "experience": 10,
+      "verificationPortability": 9.2,
+      "stewardship": 5
+    },
+    "evidenceCoverage": {
+      "contributionRecords": 46,
+      "schemas": 80,
+      "semanticValidators": 58,
+      "screenshots": 100
+    }
+  },
+  "scores": [
+    {
+      "id": "incident-response",
+      "name": "Incident response",
+      "category": "engineering",
+      "total": 87,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 14,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "cron",
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 61
+    },
+    {
+      "id": "software-maintainer",
+      "name": "Software maintainer",
+      "category": "engineering",
+      "total": 78,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "profile-extension",
+          "oauth-mcp",
+          "workspace-execution"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 86
+    },
+    {
+      "id": "security-analyst",
+      "name": "Security analyst",
+      "category": "engineering",
+      "total": 86,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 14,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 65
+    },
+    {
+      "id": "data-analyst",
+      "name": "Data analyst",
+      "category": "analysis",
+      "total": 94,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
+      ],
+      "rank": 51
+    },
+    {
+      "id": "research-briefing",
+      "name": "Research briefing",
+      "category": "analysis",
+      "total": 95,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
+      ],
+      "rank": 50
+    },
+    {
+      "id": "financial-analyst",
+      "name": "Financial analyst",
+      "category": "analysis",
+      "total": 89,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 14,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill",
+          "bootstrap"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
+      ],
+      "rank": 58
+    },
+    {
+      "id": "customer-support",
+      "name": "Customer support",
+      "category": "operations",
+      "total": 86,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 14,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "clawhub-skill",
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 63
+    },
+    {
+      "id": "sales-operations",
+      "name": "Sales operations",
+      "category": "operations",
+      "total": 94,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
+      ],
+      "rank": 55
+    },
+    {
+      "id": "recruiting-coordinator",
+      "name": "Recruiting coordinator",
+      "category": "operations",
+      "total": 94,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
+      ],
+      "rank": 54
+    },
+    {
+      "id": "content-operations",
+      "name": "Content operations",
+      "category": "operations",
+      "total": 78,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 84
+    },
+    {
+      "id": "executive-assistant",
+      "name": "Executive assistant",
+      "category": "productivity",
+      "total": 73,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 14,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "bootstrap"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 91
+    },
+    {
+      "id": "project-manager",
+      "name": "Project manager",
+      "category": "productivity",
+      "total": 94,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
+      ],
+      "rank": 53
+    },
+    {
+      "id": "product-manager",
+      "name": "Product manager",
+      "category": "product",
+      "total": 94,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
+      ],
+      "rank": 52
+    },
+    {
+      "id": "compliance-reviewer",
+      "name": "Compliance reviewer",
+      "category": "governance",
+      "total": 86,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 14,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 62
+    },
+    {
+      "id": "knowledge-curator",
+      "name": "Knowledge curator",
+      "category": "productivity",
+      "total": 78,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 85
+    },
+    {
+      "id": "executive-briefing",
+      "name": "Executive briefing",
+      "category": "productivity",
+      "total": 73,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 14,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill",
+          "cron"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 92
+    },
+    {
+      "id": "meeting-intelligence",
+      "name": "Meeting intelligence",
+      "category": "productivity",
+      "total": 73,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 14,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 96
+    },
+    {
+      "id": "spreadsheet-analyst",
+      "name": "Spreadsheet analyst",
+      "category": "analysis",
+      "total": 73,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 14,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 99
+    },
+    {
+      "id": "knowledge-gardener",
+      "name": "Knowledge gardener",
+      "category": "productivity",
+      "total": 73,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 14,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 94
+    },
+    {
+      "id": "research-monitor",
+      "name": "Research monitor",
+      "category": "analysis",
+      "total": 73,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 14,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-plugin",
+          "cron"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 98
+    },
+    {
+      "id": "presentation-producer",
+      "name": "Presentation producer",
+      "category": "productivity",
+      "total": 73,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 14,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 97
+    },
+    {
+      "id": "document-intake-analyst",
+      "name": "Document intake analyst",
+      "category": "analysis",
+      "total": 69,
+      "band": "needs-uplift",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 10,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 100
+    },
+    {
+      "id": "media-evidence-reviewer",
+      "name": "Media evidence reviewer",
+      "category": "analysis",
+      "total": 73,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 14,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 95
+    },
+    {
+      "id": "release-coordinator",
+      "name": "Release coordinator",
+      "category": "engineering",
+      "total": 86,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 14,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "clawhub-skill",
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 64
+    },
+    {
+      "id": "feed-intelligence-monitor",
+      "name": "Feed intelligence monitor",
+      "category": "analysis",
+      "total": 73,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 14,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill",
+          "cron"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 93
+    },
+    {
+      "id": "travel-planner",
+      "name": "Travel planner",
+      "category": "productivity",
+      "total": 74,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 15,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 90
+    },
+    {
+      "id": "travel-concierge",
+      "name": "Travel concierge",
+      "category": "productivity",
+      "total": 78,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 5,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 5,
+        "capabilityClasses": [
+          "profile-extension",
+          "oauth-mcp",
+          "cron",
+          "bootstrap",
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 87
+    },
+    {
+      "id": "web-evidence-researcher",
+      "name": "Web evidence researcher",
+      "category": "analysis",
+      "total": 79,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-plugin"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 81
+    },
+    {
+      "id": "website-evidence-collector",
+      "name": "Website evidence collector",
+      "category": "analysis",
+      "total": 79,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-plugin"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 82
+    },
+    {
+      "id": "video-concept-producer",
+      "name": "Video concept producer",
+      "category": "productivity",
+      "total": 79,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-plugin"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 80
+    },
+    {
+      "id": "workflow-operator",
+      "name": "Workflow operator",
+      "category": "operations",
+      "total": 79,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-plugin"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 83
+    },
+    {
+      "id": "public-company-watcher",
+      "name": "Public company watcher",
+      "category": "analysis",
+      "total": 74,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 15,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill",
+          "cron"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 88
+    },
+    {
+      "id": "research-scout",
+      "name": "Research scout",
+      "category": "analysis",
+      "total": 74,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 6,
+        "authoritySafety": 15,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": false,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill",
+          "cron"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+      ],
+      "rank": 89
+    },
+    {
+      "id": "public-safety-monitor",
+      "name": "Public safety monitor",
+      "category": "operations",
+      "total": 90,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 15,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill",
+          "cron"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
+      ],
+      "rank": 57
+    },
+    {
+      "id": "civic-data-analyst",
+      "name": "Civic data analyst",
+      "category": "analysis",
+      "total": 90,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 15,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "clawhub-skill"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
+      ],
+      "rank": 56
+    },
+    {
+      "id": "event-operations-director",
+      "name": "Event operations director",
+      "category": "operations",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 5,
+        "capabilityClasses": [
+          "bootstrap",
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 69
+    },
+    {
+      "id": "api-integration-engineer",
+      "name": "API integration engineer",
+      "category": "engineering",
+      "total": 87,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 14,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 5,
+        "capabilityClasses": [
+          "visual",
+          "workspace-execution"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 59
+    },
+    {
+      "id": "procurement-evaluator",
+      "name": "Procurement evaluator",
+      "category": "operations",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 5,
+        "capabilityClasses": [
+          "bootstrap",
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 76
+    },
+    {
+      "id": "grant-portfolio-manager",
+      "name": "Grant portfolio manager",
+      "category": "operations",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 5,
+        "capabilityClasses": [
+          "bootstrap",
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 72
+    },
+    {
+      "id": "privacy-request-coordinator",
+      "name": "Privacy request coordinator",
+      "category": "governance",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 5,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 75
+    },
+    {
+      "id": "manufacturing-operations-planner",
+      "name": "Manufacturing operations planner",
+      "category": "operations",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 5,
+        "capabilityClasses": [
+          "bootstrap",
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 74
+    },
+    {
+      "id": "facilities-operations-coordinator",
+      "name": "Facilities operations coordinator",
+      "category": "operations",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "bootstrap",
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 71
+    },
+    {
+      "id": "ux-research-synthesizer",
+      "name": "UX research synthesizer",
+      "category": "product",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 78
+    },
+    {
+      "id": "experimentation-lead",
+      "name": "Experimentation lead",
+      "category": "product",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 70
+    },
+    {
+      "id": "data-migration-planner",
+      "name": "Data migration planner",
+      "category": "engineering",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 68
+    },
+    {
+      "id": "localization-program-manager",
+      "name": "Localization program manager",
+      "category": "productivity",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 73
+    },
+    {
+      "id": "accessibility-review-coordinator",
+      "name": "Accessibility review coordinator",
+      "category": "governance",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 66
+    },
+    {
+      "id": "quality-assurance-lead",
+      "name": "Quality assurance lead",
+      "category": "engineering",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 77
+    },
+    {
+      "id": "cloud-cost-analyst",
+      "name": "Cloud cost analyst",
+      "category": "analysis",
+      "total": 81,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 8,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 67
+    },
+    {
+      "id": "fundraising-campaign-manager",
+      "name": "Fundraising campaign manager",
+      "category": "operations",
+      "total": 79,
+      "band": "solid",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 11,
+        "authoritySafety": 15,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "bootstrap"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 79
+    },
+    {
+      "id": "data-governance-steward",
+      "name": "Data governance steward",
+      "category": "governance",
+      "total": 87,
+      "band": "strong",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 14,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 8,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": false,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
+        "Add semantic validation for cross-field evidence and authority invariants."
+      ],
+      "rank": 60
+    },
+    {
+      "id": "change-control-operator",
+      "name": "Change control operator",
+      "category": "engineering",
+      "total": 95,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "workspace-execution"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
+      ],
+      "rank": 48
+    },
+    {
+      "id": "case-continuity-coordinator",
+      "name": "Case continuity coordinator",
+      "category": "operations",
+      "total": 95,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
+      ],
+      "rank": 47
+    },
+    {
+      "id": "delegation-coordinator",
+      "name": "Delegation coordinator",
+      "category": "productivity",
+      "total": 95,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 10,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": false,
+        "comparedAlternatives": 0,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "delegated-sessions"
+        ],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [
+        "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
+      ],
+      "rank": 49
+    },
+    {
+      "id": "model-evaluation-adjudicator",
+      "name": "Model evaluation adjudicator",
+      "category": "analysis",
+      "total": 99,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 3,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 10
+      },
+      "recommendations": [],
+      "rank": 45
+    },
+    {
+      "id": "vehicle-service-coordinator",
+      "name": "Vehicle service coordinator",
+      "category": "operations",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 6,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 9
+      },
+      "recommendations": [],
+      "rank": 41
+    },
+    {
+      "id": "home-repair-coordinator",
+      "name": "Home repair coordinator",
+      "category": "operations",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 6,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 9
+      },
+      "recommendations": [],
+      "rank": 14
+    },
+    {
+      "id": "green-thumb-coordinator",
+      "name": "Green Thumb coordinator",
+      "category": "operations",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 5,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 9
+      },
+      "recommendations": [],
+      "rank": 11
+    },
+    {
+      "id": "pet-care-coordinator",
+      "name": "Pet care coordinator",
+      "category": "operations",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 5,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 9
+      },
+      "recommendations": [],
+      "rank": 29
+    },
+    {
+      "id": "appliance-care-coordinator",
+      "name": "Appliance care coordinator",
+      "category": "operations",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 3,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 8
+      },
+      "recommendations": [],
+      "rank": 1
+    },
+    {
+      "id": "pond-water-feature-coordinator",
+      "name": "Pond and water feature coordinator",
+      "category": "operations",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 4,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 8
+      },
+      "recommendations": [],
+      "rank": 30
+    },
+    {
+      "id": "household-steward",
+      "name": "Household steward",
+      "category": "operations",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 5,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "delegated-sessions"
+        ],
+        "maintenanceAgeDays": 8
+      },
+      "recommendations": [],
+      "rank": 16
+    },
+    {
+      "id": "work-chief-of-staff",
+      "name": "Work chief of staff",
+      "category": "operations",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 6,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [
+          "delegated-sessions"
+        ],
+        "maintenanceAgeDays": 8
+      },
+      "recommendations": [],
+      "rank": 44
+    },
+    {
+      "id": "care-circle-coordinator",
+      "name": "Care Circle Coordinator",
+      "category": "productivity",
+      "total": 96,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 16,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 14,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 8
+      },
+      "recommendations": [],
+      "rank": 46
+    },
+    {
+      "id": "stock-portfolio-monitor",
+      "name": "Stock portfolio monitor",
+      "category": "analysis",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 8,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 8
+      },
+      "recommendations": [],
+      "rank": 37
+    },
+    {
+      "id": "sports-team-watcher",
+      "name": "Sports team watcher",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 8,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 8
+      },
+      "recommendations": [],
+      "rank": 36
+    },
+    {
+      "id": "movie-streaming-organizer",
+      "name": "Movie and streaming organizer",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 8,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 8
+      },
+      "recommendations": [],
+      "rank": 24
+    },
+    {
+      "id": "subscription-manager",
+      "name": "Subscription manager",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 15,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 8
+      },
+      "recommendations": [],
+      "rank": 38
+    },
+    {
+      "id": "music-organizer",
+      "name": "Music organizer",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 7,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 7
+      },
+      "recommendations": [],
+      "rank": 26
+    },
+    {
+      "id": "gift-relationship-manager",
+      "name": "Gift and relationship manager",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 9,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 7
+      },
+      "recommendations": [],
+      "rank": 10
+    },
+    {
+      "id": "personal-archive-curator",
+      "name": "Personal archive curator",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 13,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 7
+      },
+      "recommendations": [],
+      "rank": 28
+    },
+    {
+      "id": "restaurant-venue-scout",
+      "name": "Restaurant and venue scout",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 10,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 6
+      },
+      "recommendations": [],
+      "rank": 33
+    },
+    {
+      "id": "local-events-watcher",
+      "name": "Local events watcher",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 8,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 6
+      },
+      "recommendations": [],
+      "rank": 21
+    },
+    {
+      "id": "school-coordinator",
+      "name": "School coordinator",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 11,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 6
+      },
+      "recommendations": [],
+      "rank": 35
+    },
+    {
+      "id": "games-backlog-manager",
+      "name": "Games backlog manager",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 6,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 6
+      },
+      "recommendations": [],
+      "rank": 9
+    },
+    {
+      "id": "home-inventory-binder",
+      "name": "Home inventory binder",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 8,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 6
+      },
+      "recommendations": [],
+      "rank": 13
+    },
+    {
+      "id": "meal-grocery-planner",
+      "name": "Meal and grocery planner",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 6,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 5
+      },
+      "recommendations": [],
+      "rank": 22
+    },
+    {
+      "id": "insurance-policy-organizer",
+      "name": "Insurance policy organizer",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 9,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 4
+      },
+      "recommendations": [],
+      "rank": 17
+    },
+    {
+      "id": "tax-document-organizer",
+      "name": "Tax document organizer",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 8,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 3
+      },
+      "recommendations": [],
+      "rank": 39
+    },
+    {
+      "id": "purchase-researcher",
+      "name": "Purchase researcher",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 5,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 3
+      },
+      "recommendations": [],
+      "rank": 32
+    },
+    {
+      "id": "household-budget-steward",
+      "name": "Household budget steward",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 6,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 2
+      },
+      "recommendations": [],
+      "rank": 15
+    },
+    {
+      "id": "life-timeline-keeper",
+      "name": "Life timeline keeper",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 7,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 2
+      },
+      "recommendations": [],
+      "rank": 20
+    },
+    {
+      "id": "child-activity-manager",
+      "name": "Child activity manager",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 8,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 2
+      },
+      "recommendations": [],
+      "rank": 4
+    },
+    {
+      "id": "neighborhood-operations-watcher",
+      "name": "Neighborhood operations watcher",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 7,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 2
+      },
+      "recommendations": [],
+      "rank": 27
+    },
+    {
+      "id": "wardrobe-organizer",
+      "name": "Wardrobe organizer",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 8,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 2
+      },
+      "recommendations": [],
+      "rank": 42
+    },
+    {
+      "id": "document-renewal-tracker",
+      "name": "Document renewal tracker",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 9,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 2
+      },
+      "recommendations": [],
+      "rank": 6
+    },
+    {
+      "id": "medical-appointment-prep",
+      "name": "Medical appointment prep",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 8,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 2
+      },
+      "recommendations": [],
+      "rank": 23
+    },
+    {
+      "id": "fantasy-sports-manager",
+      "name": "Fantasy sports manager",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 8,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 1
+      },
+      "recommendations": [],
+      "rank": 7
+    },
+    {
+      "id": "health-records-binder",
+      "name": "Health records binder",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 4,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 1
+      },
+      "recommendations": [],
+      "rank": 12
+    },
+    {
+      "id": "benefits-open-enrollment-planner",
+      "name": "Benefits and open enrollment planner",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 5,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 1
+      },
+      "recommendations": [],
+      "rank": 2
+    },
+    {
+      "id": "warranty-returns-manager",
+      "name": "Warranty and returns manager",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 5,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 1
+      },
+      "recommendations": [],
+      "rank": 43
+    },
+    {
+      "id": "job-application-tracker",
+      "name": "Job application tracker",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 6,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 1
+      },
+      "recommendations": [],
+      "rank": 19
+    },
+    {
+      "id": "travel-loyalty-points-organizer",
+      "name": "Travel loyalty and points organizer",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 8,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 1
+      },
+      "recommendations": [],
+      "rank": 40
+    },
+    {
+      "id": "professional-networking-followup",
+      "name": "Professional networking follow-up",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 9,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 1
+      },
+      "recommendations": [],
+      "rank": 31
+    },
+    {
+      "id": "resume-portfolio-curator",
+      "name": "Resume portfolio curator",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 5,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 1
+      },
+      "recommendations": [],
+      "rank": 34
+    },
+    {
+      "id": "certification-renewal-planner",
+      "name": "Certification renewal planner",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 4,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 1
+      },
+      "recommendations": [],
+      "rank": 3
+    },
+    {
+      "id": "freelance-client-pipeline",
+      "name": "Freelance client pipeline",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 4,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 1
+      },
+      "recommendations": [],
+      "rank": 8
+    },
+    {
+      "id": "invoice-payment-followup",
+      "name": "Invoice and payment follow-up",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 4,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 0
+      },
+      "recommendations": [],
+      "rank": 18
+    },
+    {
+      "id": "conference-opportunity-scout",
+      "name": "Conference opportunity scout",
+      "category": "productivity",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 8,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 0
+      },
+      "recommendations": [],
+      "rank": 5
+    },
+    {
+      "id": "moving-checklist-coordinator",
+      "name": "Moving checklist coordinator",
+      "category": "operations",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 9,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 0
+      },
+      "recommendations": [],
+      "rank": 25
+    }
+  ]
+}

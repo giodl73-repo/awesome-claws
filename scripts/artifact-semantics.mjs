@@ -10993,6 +10993,10 @@ const validators = {
   "work-chief-of-staff": workChiefOfStaffFindings,
 };
 
+export function hasArtifactSemanticValidator(id) {
+  return Object.hasOwn(validators, id);
+}
+
 export function validateArtifactSemantics(id, value) {
   const validate = validators[id];
   if (!validate) {

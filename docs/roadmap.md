@@ -1,6 +1,6 @@
 # Awesome Claws roadmap
 
-Awesome Claws has 88 maintained starter Claws. The catalog now covers a broad
+Awesome Claws has 100 maintained starter Claws. The catalog now covers a broad
 personal-agent lane, a work-operations lane, and several capstone examples that
 show how Claws compose into larger managed workflows.
 
@@ -8,8 +8,8 @@ show how Claws compose into larger managed workflows.
 
 | Category | Count | Current emphasis |
 | --- | ---: | --- |
-| Productivity | 36 | Personal operating systems, personal media, fantasy sports, household planning, documents, travel, meetings, and knowledge work |
-| Operations | 21 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
+| Productivity | 47 | Personal operating systems, personal media, fantasy sports, household planning, documents, travel, meetings, and knowledge work |
+| Operations | 22 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
 | Analysis | 16 | Research, evidence collection, financial monitoring, public/company watching, data work, and model evaluation |
 | Engineering | 8 | Software delivery, incidents, release readiness, security, migration, QA, and controlled local change execution |
 | Governance | 4 | Compliance, privacy requests, accessibility review, and data governance |
@@ -36,22 +36,26 @@ read specialist artifacts, surface conflicts, and prepare owner decisions.
 | Care Circle Coordinator | Medical Appointment Prep, Document Renewal Tracker, Meal and Grocery Planner, Home Repair Coordinator, Pet Care Coordinator, Child Activity Manager, Gift and Relationship Manager | Coordinates helpers, privacy, consent, logistics, and recipient needs without making care, clinical, financial, legal, scheduling, or messaging decisions |
 | Delegation Coordinator | Software Maintainer, Research Briefing, Data Analyst, Document Intake Analyst, Presentation Producer, Spreadsheet Analyst, Model Evaluation Adjudicator | Tracks worker-session scope, evidence, provenance, and handoff quality without granting hidden authority to workers |
 
-## Next Gaps
+## Quality Uplift
 
-These are good next candidates because they appear to need distinct evidence
-models, authority boundaries, or recurring artifacts, not just renamed versions
-of existing Claws.
+The [catalog quality scorecard](catalog-quality-scorecard.md) is now the primary
+post-100 prioritization tool. The first baseline has 100 of 100 Claws passing
+the non-negotiable package, regression, resource, and Experience gates. The
+highest-value portfolio work is depth rather than count:
 
-| Candidate | Why it is distinct | Nearest existing Claws |
-| --- | --- | --- |
-| Health Records Binder | Organizes longitudinal medical records, labs, imaging references, medication history, provider summaries, and sharing packets. It complements appointment prep but is not tied to a single visit. | Medical Appointment Prep, Document Renewal Tracker, Personal Archive Curator |
-| Benefits and Open Enrollment Planner | Tracks employer benefits, coverage options, deadlines, dependent eligibility, plan comparisons, and owner questions without selecting coverage or giving legal/financial advice. | Insurance Policy Organizer, Medical Appointment Prep, Household Budget Steward |
-| Home Project Planner | Coordinates multi-step renovations or moving projects with estimates, permits, vendors, budgets, sequencing, and resident constraints. It is broader than repair triage. | Home Repair Coordinator, Facilities Operations Coordinator, Household Steward |
-| Travel Loyalty and Points Organizer | Tracks airline, hotel, credit-card rewards, expirations, transfer rules, trip fit, and blocked booking/account actions. It is related to travel planning but has a different evidence and value model. | Travel Concierge, Subscription Manager, Stock Portfolio Monitor |
-| Warranty and Returns Manager | Tracks return windows, warranty coverage, repair claims, receipts, serial numbers, and owner-approved escalation without filing claims or contacting merchants. | Home Inventory Binder, Appliance Care Coordinator, Purchase Researcher |
-| Civic Services Navigator | Organizes local services, permits, trash/recycling rules, transit, municipal contacts, and deadlines without submitting forms or contacting agencies. | Neighborhood Operations Watcher, Civic Data Analyst, Document Renewal Tracker |
-| Learning Plan Coordinator | Tracks courses, assignments, credentials, study plans, learning resources, and review evidence for adults. This is not student logistics or child activities. | School Coordinator, Knowledge Curator, Project Manager |
-| Legal Matter Organizer | Organizes supplied legal documents, deadlines, facts, counsel questions, and evidence packets without legal advice, filing, or contacting parties. | Document Renewal Tracker, Tax Document Organizer, Privacy Request Coordinator |
+| Uplift | Baseline | Goal |
+| --- | ---: | --- |
+| Retrospective admission records | 46 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 80 of 100 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 58 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
+
+Potential additions remain subject to the
+[contribution admission policy](contribution-admission.md). Civic Services
+Navigator, Learning Plan Coordinator, and Legal Matter Organizer remain
+plausible candidates. Home Project Planner should first be tested as an
+improvement or composition of Moving Checklist Coordinator, Home Repair
+Coordinator, Facilities Operations Coordinator, and Household Steward.
 
 ## Add Or Improve Existing
 
@@ -69,16 +73,14 @@ introduces a materially different workflow:
 
 ## Roadmap Order
 
-1. Add Health Records Binder or Benefits and Open Enrollment Planner next,
-   because the medical/document/insurance lane is now strong enough to support a
-   useful manager-level story.
-2. Add Warranty and Returns Manager to close the ownership lifecycle between
-   Purchase Researcher, Home Inventory Binder, Appliance Care Coordinator, and
-   Subscription Manager.
-3. Add Home Project Planner or Travel Loyalty and Points Organizer as the next
-   lifecycle specialist after the health and warranty lanes.
-4. Promote manager-Claw examples in README and chooser copy once at least one
-   more specialist is present in each manager lane.
-5. Keep Product and Governance expansion selective. Those categories are smaller
+1. Add structured artifacts and semantic validation to the lowest-scoring
+   Claws where the workflow has real cross-field invariants.
+2. Backfill legacy contribution records in coherent topic batches, preserving
+   the distinction between "not recorded" and "failed admission."
+3. Audit privacy and sensitive-data boundaries in high-risk domains; add
+   proportional rules rather than keyword-padding the contract.
+4. Promote manager-Claw examples in README and chooser copy as their specialist
+   lanes become deeper and more interoperable.
+5. Keep all category expansion selective. Product and Governance are smaller
    by design; new entries should only land when they bring a new evidence model
    or authority boundary.
