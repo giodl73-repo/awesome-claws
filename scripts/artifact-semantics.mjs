@@ -9234,6 +9234,7 @@ function movingPlanFindings(value) {
   const sourceSet = new Set(sourceIds);
   const sourceById = new Map(value.sources.map((item) => [item.id, item]));
   const evidenceIds = value.evidenceRecords.map((item) => item.id);
+  const evidenceById = new Map(value.evidenceRecords.map((item) => [item.id, item]));
   const evidenceBySource = new Map();
   for (const item of value.evidenceRecords) {
     const records = evidenceBySource.get(item.sourceRef) ?? [];
@@ -9252,6 +9253,7 @@ function movingPlanFindings(value) {
   const milestoneIds = value.milestones.map((item) => item.id);
   const milestoneSet = new Set(milestoneIds);
   const milestoneById = new Map(value.milestones.map((item) => [item.id, item]));
+  const evidenceSet = new Set(evidenceIds);
   const dependencyIds = value.dependencies.map((item) => item.id);
   const readinessIds = value.readinessItems.map((item) => item.id);
   const readinessSet = new Set(readinessIds);
@@ -9600,6 +9602,23 @@ function movingPlanFindings(value) {
         ),
       );
     }
+    if (
+      source.kind === "milestone-completion-record" &&
+      (source.provenance !== "owner-supplied" ||
+        source.privacy !== "private" ||
+        source.freshness !== "current" ||
+        !milestoneSet.has(source.subjectRef) ||
+        source.workstreamRef !== milestoneById.get(source.subjectRef)?.workstreamRef ||
+        source.ownerRef !== milestoneById.get(source.subjectRef)?.ownerRef)
+    ) {
+      findings.push(
+        finding(
+          "invalid_milestone_completion_source",
+          `sources.${index}`,
+          "Milestone completion sources must be current, private, owner-supplied, and bind the exact milestone, workstream, and accountable owner.",
+        ),
+      );
+    }
     if (source.workstreamRef) {
       findings.push(
         ...referenceFindings(
@@ -9724,6 +9743,29 @@ function movingPlanFindings(value) {
             "invalid_milestone_date_evidence",
             `evidenceRecords.${index}`,
             "Milestone-date evidence must bind the exact milestone and workstream and use date-relevant source evidence.",
+          ),
+        );
+      }
+    } else if (record.claimKind === "milestone-completion") {
+      const milestone = milestoneById.get(record.subjectRef);
+      if (
+        !milestone ||
+        record.workstreamRef !== milestone.workstreamRef ||
+        record.ownerRef !== milestone.ownerRef ||
+        record.readinessKind !== null ||
+        record.assertedDate !== null ||
+        record.assertedValue !== "completed" ||
+        source?.kind !== "milestone-completion-record" ||
+        source.subjectRef !== milestone.id ||
+        source.workstreamRef !== milestone.workstreamRef ||
+        source.ownerRef !== milestone.ownerRef ||
+        source.freshness !== "current"
+      ) {
+        findings.push(
+          finding(
+            "invalid_milestone_completion_evidence",
+            `evidenceRecords.${index}`,
+            "Milestone completion evidence must bind a current completion source to the exact milestone, workstream, and accountable owner.",
           ),
         );
       }
@@ -10169,7 +10211,30 @@ function movingPlanFindings(value) {
         `milestones.${index}.sourceRefs`,
         "Source reference",
       ),
+      ...uniqueFindings(
+        milestone.completionEvidenceRefs,
+        `milestones.${index}.completionEvidenceRefs`,
+        "Completion evidence reference",
+      ),
+      ...referenceFindings(
+        milestone.completionEvidenceRefs,
+        evidenceSet,
+        `milestones.${index}.completionEvidenceRefs`,
+        "Completion evidence reference",
+      ),
     );
+    if (
+      !memberSet.has(milestone.ownerRef) ||
+      milestone.ownerRef !== workstreamById.get(milestone.workstreamRef)?.ownerRef
+    ) {
+      findings.push(
+        finding(
+          "invalid_milestone_owner",
+          `milestones.${index}.ownerRef`,
+          "A milestone accountable owner must match the owner of its workstream.",
+        ),
+      );
+    }
     findings.push(
       ...candidateFindings(
         milestone.dateCandidates,
@@ -10253,13 +10318,25 @@ function movingPlanFindings(value) {
         milestone.date > value.plan.asOf ||
         milestone.sourceRefs.some(
           (ref) => sourceById.get(ref)?.freshness !== "current",
-        ))
+        ) ||
+        milestone.completionEvidenceRefs.length === 0 ||
+        milestone.completionEvidenceRefs.some((ref) => {
+          const record = evidenceById.get(ref);
+          return (
+            record?.claimKind !== "milestone-completion" ||
+            record.subjectRef !== milestone.id ||
+            record.workstreamRef !== milestone.workstreamRef ||
+            record.ownerRef !== milestone.ownerRef ||
+            record.assertedValue !== "completed" ||
+            sourceById.get(record.sourceRef)?.freshness !== "current"
+          );
+        }))
     ) {
       findings.push(
         finding(
           "unsupported_completed_milestone",
           `milestones.${index}.status`,
-          "Completed milestones require a known past-or-present date and current evidence.",
+          "Completed milestones require a known past-or-present date plus current completion evidence bound to the exact milestone, workstream, and accountable owner.",
         ),
       );
     }
@@ -10782,8 +10859,21 @@ function movingPlanFindings(value) {
     }
   }
 
+  const decodeUrlForPrivacyScan = (url) => {
+    if (typeof url !== "string") {
+      return url;
+    }
+    try {
+      return decodeURIComponent(url);
+    } catch {
+      return url;
+    }
+  };
   const publicText = canonicalJson({
-    sources: value.sources.map(({ label }) => label),
+    sources: value.sources.map(({ label, url }) => ({
+      label,
+      url: decodeUrlForPrivacyScan(url),
+    })),
     locations: value.locations.map(({ alias }) => alias),
     members: value.members.map(({ displayName }) => displayName),
     workstreams: value.workstreams.map(({ title }) => title),
@@ -10798,7 +10888,7 @@ function movingPlanFindings(value) {
     ),
     handoff: value.handoff.prohibitedActions,
   });
-  const addressScanText = publicText.replaceAll("-", " ");
+  const addressScanText = publicText.replace(/[-/_+]/gu, " ");
   if (
     /\b\d{1,6}[\p{L}]?(?:[-/]\d{1,6}[\p{L}]?)?\s+[\p{L}0-9.'-]+(?:\s+[\p{L}0-9.'-]+){0,5}\s+(?:street|st|avenue|ave|road|rd|boulevard|blvd|drive|dr|lane|ln|court|ct|way|parkway|pkwy|place|pl|terrace|ter|trail|trl|circle|cir|highway|hwy)\b/iu.test(
       addressScanText,
@@ -10808,7 +10898,7 @@ function movingPlanFindings(value) {
       finding(
         "private_address_exposure",
         "locations",
-        "Shared moving-plan text must not expose an exact street address.",
+        "Moving-plan text and source URLs must not expose an exact street address.",
       ),
     );
   }

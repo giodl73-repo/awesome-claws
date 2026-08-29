@@ -413,6 +413,7 @@ function resolvedMovingPlan(fixture) {
     value.milestones.push({
       id: milestoneId,
       workstreamRef: workstream.id,
+      ownerRef: workstream.ownerRef,
       title: `${workstream.title} completion`,
       phase: "pre-move",
       dateState: "known",
@@ -422,6 +423,7 @@ function resolvedMovingPlan(fixture) {
       ],
       status: "completed",
       sourceRefs: ["source-owner-plan"],
+      completionEvidenceRefs: [],
     });
     value.evidenceRecords.push({
       id: `evidence-${suffix}-completion-date`,
@@ -437,6 +439,33 @@ function resolvedMovingPlan(fixture) {
   }
   for (const milestone of value.milestones) {
     milestone.status = "completed";
+    const completionSource = {
+      id: `source-${milestone.id.slice("milestone-".length)}-completion`,
+      kind: "milestone-completion-record",
+      label: `Owner-supplied completion record for ${milestone.title}`,
+      provenance: "owner-supplied",
+      privacy: "private",
+      freshness: "current",
+      asOf: "2026-10-16",
+      subjectRef: milestone.id,
+      workstreamRef: milestone.workstreamRef,
+      ownerRef: milestone.ownerRef,
+    };
+    const completionEvidence = {
+      id: `evidence-${milestone.id.slice("milestone-".length)}-completion`,
+      sourceRef: completionSource.id,
+      sourceKind: "milestone-completion-record",
+      claimKind: "milestone-completion",
+      subjectRef: milestone.id,
+      workstreamRef: milestone.workstreamRef,
+      ownerRef: milestone.ownerRef,
+      readinessKind: null,
+      assertedDate: null,
+      assertedValue: "completed",
+    };
+    value.sources.push(completionSource);
+    value.evidenceRecords.push(completionEvidence);
+    milestone.completionEvidenceRefs = [completionEvidence.id];
   }
   for (const readiness of value.readinessItems) {
     readiness.state = "ready-for-owner-review";
@@ -1228,6 +1257,30 @@ test("moving checklist preserves source, location, and freshness integrity", () 
     true,
   );
 
+  const addressInSourceUrl = structuredClone(fixture);
+  addressInSourceUrl.sources[0].url =
+    "https://records.example.test/moves/221B-Baker-Street";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      addressInSourceUrl,
+    ).some((item) => item.code === "private_address_exposure"),
+    true,
+  );
+
+  const encodedAddressInSourceUrl = structuredClone(fixture);
+  encodedAddressInSourceUrl.sources[0].url =
+    "https://records.example.test/moves/44%20North%20Main%20Parkway";
+  assert.equal(
+    isValid("moving-checklist-coordinator", encodedAddressInSourceUrl),
+    false,
+  );
+
+  const safeSourceUrl = structuredClone(fixture);
+  safeSourceUrl.sources[0].url =
+    "https://records.example.test/moves/owner-plan-2026";
+  assert.equal(isValid("moving-checklist-coordinator", safeSourceUrl), true);
+
   const duplicateOrigin = structuredClone(fixture);
   duplicateOrigin.locations[1].role = "origin";
   assert.equal(isValid("moving-checklist-coordinator", duplicateOrigin), false);
@@ -1336,6 +1389,34 @@ test("moving checklist preserves date chronology and an acyclic dependency graph
   const prematureCompletion = structuredClone(fixture);
   prematureCompletion.milestones[0].status = "completed";
   assert.equal(isValid("moving-checklist-coordinator", prematureCompletion), false);
+
+  const supportedCompletion = resolvedMovingPlan(fixture);
+  assert.equal(isValid("moving-checklist-coordinator", supportedCompletion), true);
+
+  const unsupportedCompletion = structuredClone(supportedCompletion);
+  const completionEvidence = unsupportedCompletion.evidenceRecords.find(
+    (item) => item.id === "evidence-origin-handoff-completion",
+  );
+  completionEvidence.ownerRef = "member-sam";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      unsupportedCompletion,
+    ).some((item) => item.code === "invalid_milestone_completion_evidence"),
+    true,
+  );
+
+  const completionForWrongMilestone = structuredClone(supportedCompletion);
+  completionForWrongMilestone.evidenceRecords.find(
+    (item) => item.id === "evidence-origin-handoff-completion",
+  ).subjectRef = "milestone-move-day";
+  assert.equal(
+    validateArtifactSemantics(
+      "moving-checklist-coordinator",
+      completionForWrongMilestone,
+    ).some((item) => item.code === "invalid_milestone_completion_evidence"),
+    true,
+  );
 
   const danglingDependency = structuredClone(fixture);
   danglingDependency.dependencies[0].prerequisiteRef = "workstream-missing";

@@ -9,10 +9,10 @@ Source-bound candidate dates: {{plan.dateCandidates}}
 ## Privacy-safe household and locations
 
 Use only the required role-prefixed location aliases in this shared handoff.
-Never place an exact address in an alias, source label, workstream title,
-milestone title, gap, question, or handoff text. Exact origin and destination
-locations must stay outside the shared artifact behind an owner-only source
-reference, or be represented by the fixed redacted marker. Keep access
+Never place an exact address in an alias, source label, source URL, workstream
+title, milestone title, gap, question, or handoff text. Exact origin and
+destination locations must stay outside the shared artifact behind an owner-only
+source reference, or be represented by the fixed redacted marker. Keep access
 instructions, resident details, account data, and school or care details in
 private source records. Show whether each detail is supplied, withheld, missing,
 or conflicting without copying the private value.
@@ -20,9 +20,10 @@ or conflicting without copying the private value.
 ## Sources and freshness
 
 List every owner record, lease or sale record, access rule, inventory, quote,
-service record, document, budget, travel plan, consent, assignment, and owner
-action record with provenance, privacy, observed date, validity window, and
-freshness. For every date, readiness state, or gate-applicability claim, add an
+service record, document, budget, travel plan, consent, assignment, owner
+action, and milestone completion record with provenance, privacy, observed date,
+validity window, and freshness. For every date, milestone completion, readiness
+state, or gate-applicability claim, add an
 evidence record that repeats the exact source kind, subject, workstream,
 readiness kind when relevant, and asserted date or value. General consent or an
 unrelated current source never proves a date, readiness state, or applicability
@@ -44,8 +45,11 @@ source-bound candidate. Leave the resolved date null until the owner resolves
 conflicting candidates; never replace a conflict with one selected or estimated
 date. Pre-move milestones must not fall after a known move date, move-day
 milestones must match it, and post-move milestones must not precede it. Show
-dependency direction and reject self-dependencies, duplicate edges, dangling
-references, or cycles.
+the accountable owner on every milestone. Completed milestones require a
+current, private, owner-supplied completion record and an exact evidence record
+bound to that milestone, workstream, and accountable owner; a date record or
+general plan note is not completion proof. Show dependency direction and reject
+self-dependencies, duplicate edges, dangling references, or cycles.
 
 ## Readiness, assignments, and consent
 

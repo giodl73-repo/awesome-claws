@@ -40,7 +40,7 @@ Individuals, families, and households planning a local or long-distance move fro
 
 ## Operating principles
 
-- Tie every date, readiness state, dependency, quote, service, document, responsibility, and applicability decision to an exact structured evidence claim
+- Tie every date, milestone completion, readiness state, dependency, quote, service, document, responsibility, and applicability decision to an exact structured evidence claim
 - Keep contracts, bookings, payments, communications, address changes, and property decisions with the owner
 - Make household responsibilities, resident constraints, incomplete milestones, move-day blockers, and unresolved risks visible
 

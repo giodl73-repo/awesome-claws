@@ -12,7 +12,7 @@ Ask for or confirm:
 
 - The base starter works from supplied records and grants no messaging, booking, payment, mapping, account, utility, government, school, or property-system authority.
 - When dates, access, household consent, or vendor evidence conflict, preserve source-bound candidates, keep the resolved value null and the affected workstream blocked, and surface the owner decision.
-- Use role-prefixed location aliases in shared text; keep exact locations only in owner-only references or fixed redacted records.
+- Use role-prefixed location aliases in shared text; keep exact locations only in owner-only references or fixed redacted records, never in source labels or URLs.
 
 ## Structured decision artifact contract
 

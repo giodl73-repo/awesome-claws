@@ -701,6 +701,7 @@
     {
       "id": "milestone-origin-handoff",
       "workstreamRef": "workstream-origin",
+      "ownerRef": "member-alex",
       "title": "Origin handoff window",
       "phase": "post-move",
       "dateState": "known",
@@ -712,11 +713,13 @@
         }
       ],
       "status": "pending",
-      "sourceRefs": ["source-origin-lease"]
+      "sourceRefs": ["source-origin-lease"],
+      "completionEvidenceRefs": []
     },
     {
       "id": "milestone-destination-access",
       "workstreamRef": "workstream-destination",
+      "ownerRef": "member-alex",
       "title": "Destination access window",
       "phase": "move-day",
       "dateState": "conflicting",
@@ -732,22 +735,26 @@
         }
       ],
       "status": "blocked",
-      "sourceRefs": ["source-destination-access", "source-destination-access-secondary"]
+      "sourceRefs": ["source-destination-access", "source-destination-access-secondary"],
+      "completionEvidenceRefs": []
     },
     {
       "id": "milestone-school-transition",
       "workstreamRef": "workstream-school",
+      "ownerRef": "member-alex",
       "title": "School transition deadline",
       "phase": "pre-move",
       "dateState": "missing",
       "date": null,
       "dateCandidates": [],
       "status": "blocked",
-      "sourceRefs": ["source-school-gap"]
+      "sourceRefs": ["source-school-gap"],
+      "completionEvidenceRefs": []
     },
     {
       "id": "milestone-move-day",
       "workstreamRef": "workstream-move-day",
+      "ownerRef": "member-alex",
       "title": "Household move day",
       "phase": "move-day",
       "dateState": "known",
@@ -759,7 +766,8 @@
         }
       ],
       "status": "blocked",
-      "sourceRefs": ["source-owner-plan"]
+      "sourceRefs": ["source-owner-plan"],
+      "completionEvidenceRefs": []
     }
   ],
   "dependencies": [
