@@ -40,7 +40,7 @@ copyable reference is optimized for a small package that is easy to rename and
 adapt. The other starters demonstrate different application shapes between
 those two points; they are not expected to contain the same components.
 
-The 88-Claw catalog now also has a practical personal-agent lane. Vehicle, home,
+The 100-Claw catalog now also has a practical personal-agent lane. Vehicle, home,
 garden, pet, pond, appliance, care-circle, sports-team, stock-portfolio,
 movie-and-streaming, subscription, music, gift-and-relationship,
 personal-archive, restaurant-and-venue, local-events, school, games-backlog,
@@ -57,6 +57,9 @@ Experience proof tier, category, and boundary-attention level. The same derived 
 [`catalog-chooser.json`](catalog-chooser.json) for tools and other catalogs.
 For the maintainer view of current coverage, manager-Claw composition, and the
 next likely gaps, see the [Awesome Claws roadmap](docs/roadmap.md).
+For a repository-evidence quality baseline across all 100 Claws, see the
+[catalog quality rubric](docs/catalog-quality-rubric.md) and generated
+[scorecard](docs/catalog-quality-scorecard.md).
 For interactive search and shareable filters across proof lanes, capabilities,
 authority attention, ownership, and review freshness, open the generated
 [catalog explorer](https://giodl73-repo.github.io/awesome-claws/). Its
@@ -93,7 +96,7 @@ does not execute or grade an LLM, replace installed lifecycle proof, or claim
 live-provider behavior.
 
 The table below highlights the main reviewed application shapes. Use the
-chooser or explorer for the complete 88-Claw catalog.
+chooser or explorer for the complete 100-Claw catalog.
 
 | Claw | Category | Capabilities | Focus |
 | --- | --- | --- | --- |
@@ -267,7 +270,7 @@ regression coverage, content quality, and basic secret hygiene. Maintainers can 
 `CLAWS_CLI_ENTRY` and run
 `npm run inspect` to inspect every package with a standalone Claws reference
 CLI. With `CLAWS_CLI_ENTRY` and `OPENCLAW_CLI_ENTRY` set to compatible built
-checkouts, `npm run proof:openclaw` dry-runs all 88 packages through the
+checkouts, `npm run proof:openclaw` dry-runs all 100 packages through the
 OpenClaw adapter in disposable state.
 
 ### Catalog invariants
@@ -275,7 +278,7 @@ OpenClaw adapter in disposable state.
 - `catalog.json` owns catalog metadata and resource declarations.
   `sources/<claw-id>/` owns the declared resource bodies in their native file
   formats. `npm run build` materializes both, and `npm run check` requires
-  byte-for-byte agreement with all 88 generated packages and rejects missing
+  byte-for-byte agreement with all 100 generated packages and rejects missing
   or undeclared source files.
 - Harness profiles use the conventional `profiles/openclaw.yml` path, strict
   schema version 1, exact pinned extension releases, and unique extension ids
@@ -300,7 +303,7 @@ OpenClaw adapter in disposable state.
   It does not mutate state or prove provider behavior.
 - `npm run proof:portfolio` first checks deterministic materialization, then
   exercises inspect, consent-bound add, status, export inspection, and removal
-  for all 88 packages in isolated local state. Executive Assistant additionally
+  for all 100 packages in isolated local state. Executive Assistant additionally
   proves a real managed-resource update from a checked-in previous-version fixture,
   stale-consent rejection, reverse rollback, and repeat upgrade while preserving user-owned state. Its
   agent turn uses the checked-in OpenAI-compatible fixture, so it proves runtime
