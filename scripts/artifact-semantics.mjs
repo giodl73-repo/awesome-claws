@@ -8072,6 +8072,18 @@ function freelancePipelineFindings(value) {
 }
 
 function invoiceReceivablesFindings(value) {
+  const requiredBlockedActions = [
+    "issue-invoice",
+    "alter-invoice",
+    "send-reminder",
+    "contact-client",
+    "collect-payment",
+    "initiate-refund",
+    "apply-fee",
+    "write-off-balance",
+    "change-account",
+    "change-payment-instructions",
+  ];
   const sourceIds = value.sources.map((item) => item.id);
   const sourceSet = new Set(sourceIds);
   const sourceById = new Map(value.sources.map((item) => [item.id, item]));
@@ -8081,6 +8093,7 @@ function invoiceReceivablesFindings(value) {
   const invoiceSet = new Set(invoiceIds);
   const invoiceById = new Map(value.invoices.map((item) => [item.id, item]));
   const paymentIds = value.paymentEvidence.map((item) => item.id);
+  const adjustmentIds = value.adjustments.map((item) => item.id);
   const discrepancyIds = value.discrepancies.map((item) => item.id);
   const followupIds = value.followUps.map((item) => item.id);
   const questionIds = value.reviewQuestions.map((item) => item.id);
@@ -8089,6 +8102,7 @@ function invoiceReceivablesFindings(value) {
     ...clientIds,
     ...invoiceIds,
     ...paymentIds,
+    ...adjustmentIds,
     ...discrepancyIds,
     ...followupIds,
     ...questionIds,
@@ -8098,10 +8112,31 @@ function invoiceReceivablesFindings(value) {
     ...uniqueFindings(clientIds, "clients", "Client id"),
     ...uniqueFindings(invoiceIds, "invoices", "Invoice id"),
     ...uniqueFindings(paymentIds, "paymentEvidence", "Payment evidence id"),
+    ...uniqueFindings(adjustmentIds, "adjustments", "Adjustment id"),
     ...uniqueFindings(discrepancyIds, "discrepancies", "Discrepancy id"),
     ...uniqueFindings(followupIds, "followUps", "Follow-up id"),
     ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+    ...requiredBlockedActions
+      .filter((action) => !value.blockedActions.includes(action))
+      .map((action) =>
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Required owner authority gate ${JSON.stringify(action)} is missing.`,
+        ),
+      ),
   ];
+  for (const [index, source] of value.sources.entries()) {
+    if (source.asOf > value.ledger.asOf) {
+      findings.push(
+        finding(
+          "future_source_evidence",
+          `sources.${index}.asOf`,
+          "Receivables source evidence must not postdate the ledger as-of date.",
+        ),
+      );
+    }
+  }
   for (const [index, client] of value.clients.entries()) {
     findings.push(
       ...uniqueFindings(client.sourceRefs, `clients.${index}.sourceRefs`, "Source reference"),
@@ -8123,11 +8158,67 @@ function invoiceReceivablesFindings(value) {
     if (invoice.balanceDue > invoice.originalAmount) {
       findings.push(finding("invalid_invoice_balance", `invoices.${index}.balanceDue`, "Balance due must not exceed the supplied original invoice amount."));
     }
+    if (invoice.dueDate < invoice.issueDate) {
+      findings.push(finding("invalid_invoice_chronology", `invoices.${index}.dueDate`, "Invoice due date must not be before its issue date."));
+    }
+    if (invoice.issueDate > value.ledger.asOf) {
+      findings.push(finding("future_invoice_issue", `invoices.${index}.issueDate`, "Invoice issue date must not postdate the ledger as-of date."));
+    }
     if (invoice.status === "paid" && !numbersEqual(invoice.balanceDue, 0)) {
       findings.push(finding("invalid_paid_balance", `invoices.${index}.balanceDue`, "Paid invoices must have a zero balance due."));
     }
     if (invoice.status === "partial" && (numbersEqual(invoice.balanceDue, 0) || numbersEqual(invoice.balanceDue, invoice.originalAmount))) {
       findings.push(finding("invalid_partial_balance", `invoices.${index}.balanceDue`, "Partially paid invoices must have a positive balance below the original amount."));
+    }
+    if (["open", "overdue"].includes(invoice.status) && numbersEqual(invoice.balanceDue, 0)) {
+      findings.push(finding("invalid_open_balance", `invoices.${index}.balanceDue`, "Open and overdue invoices must have a positive balance due."));
+    }
+    if (invoice.status === "overdue" && invoice.dueDate >= value.ledger.asOf) {
+      findings.push(finding("premature_overdue_state", `invoices.${index}.status`, "An overdue invoice must have a due date before the ledger as-of date."));
+    }
+    const confirmedAmount = value.paymentEvidence
+      .filter(
+        (payment) =>
+          payment.invoiceRef === invoice.id &&
+          payment.state === "confirmed" &&
+          payment.currency === invoice.currency,
+      )
+      .reduce((total, payment) => total + payment.amount, 0);
+    const confirmedAdjustmentAmount = value.adjustments
+      .filter(
+        (adjustment) =>
+          adjustment.invoiceRef === invoice.id &&
+          adjustment.state === "confirmed" &&
+          adjustment.currency === invoice.currency,
+      )
+      .reduce((total, adjustment) => total + adjustment.amount, 0);
+    const reconciles = numbersEqual(
+      confirmedAmount + confirmedAdjustmentAmount,
+      invoice.originalAmount - invoice.balanceDue,
+    );
+    const hasDiscrepancy = value.discrepancies.some(
+      (discrepancy) => discrepancy.invoiceRef === invoice.id,
+    );
+    if (
+      ["open", "paid", "partial", "overdue"].includes(invoice.status) &&
+      !reconciles
+    ) {
+      findings.push(
+        finding(
+          "unreconciled_invoice_balance",
+          `invoices.${index}.balanceDue`,
+          "Resolved invoice states must reconcile the original amount and balance due with confirmed same-currency payment evidence.",
+        ),
+      );
+    }
+    if (["disputed", "conflicting"].includes(invoice.status) && !hasDiscrepancy) {
+      findings.push(
+        finding(
+          "missing_invoice_discrepancy",
+          `invoices.${index}.status`,
+          "Disputed and conflicting invoice states require an explicit discrepancy.",
+        ),
+      );
     }
   }
   for (const [index, payment] of value.paymentEvidence.entries()) {
@@ -8145,6 +8236,36 @@ function invoiceReceivablesFindings(value) {
       payment.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
     ) {
       findings.push(finding("unsupported_payment_state", `paymentEvidence.${index}.sourceRefs`, "Confirmed payment evidence requires current source evidence."));
+    }
+    if (
+      payment.state === "confirmed" &&
+      !payment.sourceRefs.some((ref) => sourceById.get(ref)?.kind === "payment-record")
+    ) {
+      findings.push(
+        finding(
+          "missing_payment_evidence",
+          `paymentEvidence.${index}.sourceRefs`,
+          "Confirmed payments require at least one current payment-record source.",
+        ),
+      );
+    }
+  }
+  for (const [index, adjustment] of value.adjustments.entries()) {
+    findings.push(
+      ...referenceFindings([adjustment.invoiceRef], invoiceSet, `adjustments.${index}.invoiceRef`, "Invoice reference"),
+      ...uniqueFindings(adjustment.sourceRefs, `adjustments.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(adjustment.sourceRefs, sourceSet, `adjustments.${index}.sourceRefs`, "Source reference"),
+    );
+    const invoice = invoiceById.get(adjustment.invoiceRef);
+    if (invoice && adjustment.currency !== invoice.currency) {
+      findings.push(finding("adjustment_currency_mismatch", `adjustments.${index}.currency`, "Adjustment currency must match its referenced invoice."));
+    }
+    if (
+      adjustment.state === "confirmed" &&
+      (adjustment.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current") ||
+        !adjustment.sourceRefs.some((ref) => sourceById.get(ref)?.kind === "credit-note"))
+    ) {
+      findings.push(finding("unsupported_adjustment_state", `adjustments.${index}.sourceRefs`, "Confirmed adjustments require a current credit-note source."));
     }
   }
   for (const [index, discrepancy] of value.discrepancies.entries()) {
@@ -8167,6 +8288,20 @@ function invoiceReceivablesFindings(value) {
         ["stale", "conflicting", "unknown"].includes(invoice?.status))
     ) {
       findings.push(finding("unsupported_followup_state", `followUps.${index}`, "Review-ready or owner-sent follow-ups require a current, resolved invoice and current source evidence."));
+    }
+    if (
+      followup.state === "sent-by-owner" &&
+      !followup.sourceRefs.some((ref) =>
+        ["owner-note", "followup-history"].includes(sourceById.get(ref)?.kind),
+      )
+    ) {
+      findings.push(
+        finding(
+          "missing_owner_action_evidence",
+          `followUps.${index}.sourceRefs`,
+          "Owner-sent follow-ups require a current owner-note or followup-history source.",
+        ),
+      );
     }
   }
   for (const [index, question] of value.reviewQuestions.entries()) {
@@ -8197,12 +8332,28 @@ function invoiceReceivablesFindings(value) {
     clients: value.clients.map(({ name }) => ({ name })),
     invoices: value.invoices.map(({ invoiceNumber, status }) => ({ invoiceNumber, status })),
     paymentEvidence: value.paymentEvidence.map(({ state }) => ({ state })),
+    adjustments: value.adjustments.map(({ label, state }) => ({ label, state })),
     discrepancies: value.discrepancies.map(({ reason }) => reason),
     followUps: value.followUps.map(({ label, state }) => ({ label, state })),
-    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+    reviewQuestionReasons: value.reviewQuestions.map(({ reason }) => reason),
   });
-  if (/\b(issue invoices?|alter invoices?|send reminders?|contact clients?|collect payments?|initiate refunds?|apply fees?|write off balances?|change accounts?|change payment instructions?|invent balances?|invent due dates?|invent payment status|invent contract terms?|invent tax treatment|invent disputes?|accounting advice|tax advice|legal advice|debt-collection advice|credit advice|financial advice)\b/iu.test(actionText)) {
+  const prohibitedActionPattern = /\b(issue (?:an? |the )?invoices?|alter (?:an? |the )?invoices?|send (?:a |the )?reminders?|contact (?:a |the )?clients?|collect (?:a |the )?payments?|initiate (?:a |the )?refunds?|apply (?:a |the )?fees?|write off (?:a |the )?balances?|change (?:an? |the )?accounts?|change (?:a |the )?payment instructions?|invent (?:a |the )?balances?|invent (?:a |the )?due dates?|invent (?:a |the )?payment status|invent (?:a |the )?contract terms?|invent (?:a |the )?tax treatment|invent (?:a |the )?disputes?|accounting advice|tax advice|legal advice|debt-collection advice|credit advice|financial advice)\b/iu;
+  if (prohibitedActionPattern.test(actionText)) {
     findings.push(finding("external_action_content", "reviewQuestions", "Receivables artifacts must not instruct invoice changes, outbound reminders, client contact, collection, refunds, fees, write-offs, account or payment-instruction changes, invented financial facts, or professional advice."));
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    if (
+      prohibitedActionPattern.test(question.question) &&
+      !question.question.toLocaleLowerCase().includes(question.owner.toLocaleLowerCase())
+    ) {
+      findings.push(
+        finding(
+          "ungated_owner_action",
+          `reviewQuestions.${index}.question`,
+          "Questions about prohibited actions must name the accountable owner who would decide or act.",
+        ),
+      );
+    }
   }
   if (value.handoff.owner === "invoice-payment-followup") {
     findings.push(finding("agent_owned_authority", "handoff.owner", "Invoice, communication, collection, refund, fee, write-off, account, payment, financial-fact, and professional-advice authority must remain with the named owner."));

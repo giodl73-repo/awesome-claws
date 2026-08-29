@@ -4,7 +4,7 @@
   "title": "Invoice and payment follow-up artifact",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "ledger", "sources", "clients", "invoices", "paymentEvidence", "discrepancies", "followUps", "reviewQuestions", "blockedActions", "handoff"],
+  "required": ["schemaVersion", "ledger", "sources", "clients", "invoices", "paymentEvidence", "adjustments", "discrepancies", "followUps", "reviewQuestions", "blockedActions", "handoff"],
   "properties": {
     "schemaVersion": { "const": "awesomeClaws.invoiceReceivables.v1" },
     "ledger": {
@@ -89,6 +89,23 @@
         }
       }
     },
+    "adjustments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "invoiceRef", "label", "amount", "currency", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^adjustment-[a-z0-9-]+$" },
+          "invoiceRef": { "type": "string", "pattern": "^invoice-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "amount": { "type": "number", "exclusiveMinimum": 0 },
+          "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+          "state": { "type": "string", "enum": ["confirmed", "pending-owner-review", "conflicting"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
     "discrepancies": {
       "type": "array",
       "items": {
@@ -100,7 +117,7 @@
           "invoiceRef": { "type": "string", "pattern": "^invoice-[a-z0-9-]+$" },
           "severity": { "type": "string", "enum": ["high", "medium", "low"] },
           "reason": { "type": "string", "minLength": 1 },
-          "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(source|client|invoice|payment|discrepancy|followup|question)-[a-z0-9-]+$" } }
+          "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(source|client|invoice|payment|adjustment|discrepancy|followup|question)-[a-z0-9-]+$" } }
         }
       }
     },
@@ -130,7 +147,7 @@
           "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
           "question": { "type": "string", "minLength": 1 },
           "reason": { "type": "string", "minLength": 1 },
-          "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(source|client|invoice|payment|discrepancy|followup|question)-[a-z0-9-]+$" } },
+          "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(source|client|invoice|payment|adjustment|discrepancy|followup|question)-[a-z0-9-]+$" } },
           "owner": { "type": "string", "minLength": 1 }
         }
       }

@@ -82,6 +82,7 @@
       "sourceRefs": ["source-bank-record"]
     }
   ],
+  "adjustments": [],
   "discrepancies": [],
   "followUps": [
     {
@@ -96,7 +97,7 @@
     {
       "id": "question-atlas-balance",
       "question": "Does the owner want to use the supplied partial-payment record when reviewing the remaining balance?",
-      "reason": "The Claw can reconcile supplied evidence but cannot choose the financial truth or contact the client.",
+      "reason": "The Claw can reconcile supplied evidence, while financial truth and client communication remain owner-controlled.",
       "refs": ["invoice-atlas-1042", "payment-atlas-partial", "followup-atlas-owner-draft"],
       "owner": "Gio"
     }

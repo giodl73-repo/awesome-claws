@@ -19,9 +19,9 @@ alter, void, reissue, discount, write off, or otherwise change invoices.
 
 ## Payment Evidence And Discrepancies
 
-Map supplied payment records, credits, disputes, and conflicting totals to the
-affected invoices. Keep uncertain balances and payment states in review instead
-of choosing a financial truth.
+Map supplied payment records, structured credit adjustments, disputes, and
+conflicting totals to the affected invoices. Keep uncertain balances, credits,
+and payment states in review instead of choosing a financial truth.
 
 ## Follow-Up Draft Queue
 
