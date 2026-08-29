@@ -10863,11 +10863,19 @@ function movingPlanFindings(value) {
     if (typeof url !== "string") {
       return url;
     }
-    try {
-      return decodeURIComponent(url);
-    } catch {
-      return url;
+    let decoded = url;
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      try {
+        const next = decodeURIComponent(decoded);
+        if (next === decoded) {
+          break;
+        }
+        decoded = next;
+      } catch {
+        break;
+      }
     }
+    return decoded;
   };
   const publicText = canonicalJson({
     sources: value.sources.map(({ label, url }) => ({

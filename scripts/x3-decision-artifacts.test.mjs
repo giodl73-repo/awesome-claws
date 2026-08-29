@@ -1276,6 +1276,14 @@ test("moving checklist preserves source, location, and freshness integrity", () 
     false,
   );
 
+  const doubleEncodedAddressInSourceUrl = structuredClone(fixture);
+  doubleEncodedAddressInSourceUrl.sources[0].url =
+    "https://records.example.test/moves/44%2520North%2520Main%2520Parkway";
+  assert.equal(
+    isValid("moving-checklist-coordinator", doubleEncodedAddressInSourceUrl),
+    false,
+  );
+
   const safeSourceUrl = structuredClone(fixture);
   safeSourceUrl.sources[0].url =
     "https://records.example.test/moves/owner-plan-2026";
