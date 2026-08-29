@@ -83,6 +83,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "document-intake-analyst",
+    schema: "../claws/document-intake-analyst/schemas/document-intake.schema.json",
+    fixture: "../claws/document-intake-analyst/fixtures/document-intake.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "financial-analyst",
     schema: "../claws/financial-analyst/schemas/financial-scenario.schema.json",
     fixture: "../claws/financial-analyst/fixtures/financial-scenario.example.json",
@@ -549,6 +555,339 @@ test("the public artifact validator accepts every packaged X3 fixture", () => {
     });
     assert.equal(result.status, 0, `${item.id}: ${result.stderr || result.stdout}`);
     assert.equal(JSON.parse(result.stdout).valid, true, item.id);
+  }
+});
+
+test("document intake preserves lineage, fidelity, processing authority, and owner control", () => {
+  const fixture = cases.get("document-intake-analyst").fixture;
+  const readyArtifact = () => {
+    const value = structuredClone(fixture);
+    for (const source of value.sources) source.state = "converted";
+    for (const output of value.outputs) {
+      output.conversionState = "complete";
+      output.fidelityState = "sampled-pass";
+      output.reviewState = "ready";
+      output.limitations = [];
+    }
+    for (const finding of value.findings) finding.state = "resolved";
+    value.handoff.state = "ready-for-owner-review";
+    value.handoff.blockingFindingRefs = [];
+    return value;
+  };
+
+  const danglingSource = structuredClone(fixture);
+  danglingSource.outputs[0].sourceRef = "source-missing";
+  assert.equal(isValid("document-intake-analyst", danglingSource), false);
+
+  const externalInLocalBoundary = structuredClone(fixture);
+  externalInLocalBoundary.sources[0].processingAuthorization = "external-approved";
+  externalInLocalBoundary.sources[0].provider = "Example OCR";
+  assert.equal(isValid("document-intake-analyst", externalInLocalBoundary), false);
+
+  const localWithProvider = structuredClone(fixture);
+  localWithProvider.sources[0].provider = "Example OCR";
+  assert.equal(isValid("document-intake-analyst", localWithProvider), false);
+
+  const unauthorizedConversion = structuredClone(fixture);
+  unauthorizedConversion.sources[0].processingAuthorization = "external-not-approved";
+  assert.equal(isValid("document-intake-analyst", unauthorizedConversion), true);
+
+  const unauthorizedExternalConversion = structuredClone(fixture);
+  unauthorizedExternalConversion.outputs[0].processingMode = "external";
+  assert.equal(
+    isValid("document-intake-analyst", unauthorizedExternalConversion),
+    false,
+  );
+
+  const processedWithoutOutput = structuredClone(fixture);
+  processedWithoutOutput.outputs = processedWithoutOutput.outputs.filter(
+    (item) => item.sourceRef !== "source-overview-pdf",
+  );
+  processedWithoutOutput.handoff.outputRefs =
+    processedWithoutOutput.handoff.outputRefs.filter(
+      (id) => id !== "output-overview",
+    );
+  assert.equal(isValid("document-intake-analyst", processedWithoutOutput), false);
+
+  const exceptionWithoutFinding = structuredClone(fixture);
+  exceptionWithoutFinding.findings = exceptionWithoutFinding.findings.filter(
+    (item) => item.outputRef !== "output-contract",
+  );
+  assert.equal(isValid("document-intake-analyst", exceptionWithoutFinding), false);
+
+  const unsupportedReadyOutput = structuredClone(fixture);
+  unsupportedReadyOutput.outputs[1].reviewState = "ready";
+  assert.equal(isValid("document-intake-analyst", unsupportedReadyOutput), false);
+
+  const notProducedReadyOutput = readyArtifact();
+  notProducedReadyOutput.outputs[0].conversionState = "not-produced";
+  assert.equal(isValid("document-intake-analyst", notProducedReadyOutput), false);
+
+  const partialReadyOutput = readyArtifact();
+  partialReadyOutput.outputs[0].conversionState = "partial";
+  assert.equal(isValid("document-intake-analyst", partialReadyOutput), false);
+
+  const convertedWithoutProducedOutput = structuredClone(fixture);
+  convertedWithoutProducedOutput.outputs[0].processingMode = "none";
+  convertedWithoutProducedOutput.outputs[0].conversionState = "not-produced";
+  convertedWithoutProducedOutput.outputs[0].fidelityState = "blocked";
+  convertedWithoutProducedOutput.outputs[0].reviewState = "blocked";
+  assert.equal(
+    isValid("document-intake-analyst", convertedWithoutProducedOutput),
+    false,
+  );
+
+  for (const unsafePath of [
+    "outputs/../outside.md",
+    "outputs/a/../../outside.md",
+    "outputs/a//outside.md",
+  ]) {
+    const traversalOutput = structuredClone(fixture);
+    traversalOutput.outputs[0].path = unsafePath;
+    assert.equal(isValid("document-intake-analyst", traversalOutput), false);
+  }
+
+  const portablePathCollision = structuredClone(fixture);
+  portablePathCollision.outputs[1].path =
+    "outputs/normalized/COMPANY-OVERVIEW.md";
+  assert.equal(isValid("document-intake-analyst", portablePathCollision), false);
+
+  const mismatchedFindingSource = structuredClone(fixture);
+  mismatchedFindingSource.findings[0].sourceRefs = ["source-overview-pdf"];
+  assert.equal(isValid("document-intake-analyst", mismatchedFindingSource), false);
+
+  const mismatchedQuestionSource = structuredClone(fixture);
+  mismatchedQuestionSource.reviewQuestions[0].sourceRefs = [
+    "source-contract-docx",
+  ];
+  assert.equal(isValid("document-intake-analyst", mismatchedQuestionSource), false);
+
+  const missingBlocker = structuredClone(fixture);
+  missingBlocker.handoff.blockingFindingRefs = ["finding-roadmap-chart"];
+  assert.equal(isValid("document-intake-analyst", missingBlocker), false);
+
+  const unsupportedReadyHandoff = structuredClone(fixture);
+  unsupportedReadyHandoff.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("document-intake-analyst", unsupportedReadyHandoff), false);
+
+  const readyWithHiddenBlockedSource = readyArtifact();
+  readyWithHiddenBlockedSource.sources[0].state = "blocked";
+  readyWithHiddenBlockedSource.outputs =
+    readyWithHiddenBlockedSource.outputs.filter(
+      (item) => item.sourceRef !== "source-overview-pdf",
+    );
+  readyWithHiddenBlockedSource.handoff.outputRefs =
+    readyWithHiddenBlockedSource.handoff.outputRefs.filter(
+      (id) => id !== "output-overview",
+    );
+  assert.equal(
+    isValid("document-intake-analyst", readyWithHiddenBlockedSource),
+    false,
+  );
+
+  const readyWithReviewNeededSource = readyArtifact();
+  readyWithReviewNeededSource.sources[0].state = "review-needed";
+  assert.equal(
+    isValid("document-intake-analyst", readyWithReviewNeededSource),
+    false,
+  );
+
+  const blockedSourceWithVisibleOutput = structuredClone(fixture);
+  blockedSourceWithVisibleOutput.sources[0].state = "blocked";
+  blockedSourceWithVisibleOutput.outputs[0].processingMode = "none";
+  blockedSourceWithVisibleOutput.outputs[0].conversionState = "not-produced";
+  blockedSourceWithVisibleOutput.outputs[0].fidelityState = "blocked";
+  blockedSourceWithVisibleOutput.outputs[0].reviewState = "blocked";
+  assert.equal(
+    isValid("document-intake-analyst", blockedSourceWithVisibleOutput),
+    true,
+  );
+
+  const incompleteReadyHandoff = readyArtifact();
+  incompleteReadyHandoff.handoff.outputRefs =
+    incompleteReadyHandoff.handoff.outputRefs.filter(
+      (id) => id !== "output-contract",
+    );
+  assert.equal(isValid("document-intake-analyst", incompleteReadyHandoff), false);
+
+  const unresolvedReadyClaim = structuredClone(fixture);
+  unresolvedReadyClaim.outputs[1].fidelityState = "sampled-pass";
+  unresolvedReadyClaim.outputs[1].reviewState = "ready";
+  assert.equal(isValid("document-intake-analyst", unresolvedReadyClaim), false);
+
+  const missingAuthorityGate = structuredClone(fixture);
+  missingAuthorityGate.blockedActions =
+    missingAuthorityGate.blockedActions.filter(
+      (action) => action !== "external-processing",
+    );
+  assert.equal(isValid("document-intake-analyst", missingAuthorityGate), false);
+
+  const actionAdvice = structuredClone(fixture);
+  actionAdvice.reviewQuestions[0].reason +=
+    " Upload the source to an external provider now.";
+  assert.equal(isValid("document-intake-analyst", actionAdvice), false);
+
+  const directActionAdvice = structuredClone(fixture);
+  directActionAdvice.reviewQuestions[0].reason =
+    "Upload the source to an external OCR provider.";
+  assert.equal(isValid("document-intake-analyst", directActionAdvice), false);
+
+  const mandatoryActionAdvice = structuredClone(fixture);
+  mandatoryActionAdvice.reviewQuestions[0].reason =
+    "You must upload the source to an external OCR provider.";
+  assert.equal(isValid("document-intake-analyst", mandatoryActionAdvice), false);
+
+  const teamActionAdvice = structuredClone(fixture);
+  teamActionAdvice.reviewQuestions[0].reason =
+    "We must upload the source to an external OCR provider.";
+  assert.equal(isValid("document-intake-analyst", teamActionAdvice), false);
+
+  const analystActionAdvice = structuredClone(fixture);
+  analystActionAdvice.reviewQuestions[0].reason =
+    "The analyst needs to share the output externally.";
+  assert.equal(isValid("document-intake-analyst", analystActionAdvice), false);
+
+  for (const prohibitedDirective of [
+    "Change permissions on the output now.",
+    "Externally process the source now.",
+    "Process the file externally now.",
+    "The output has perfect fidelity.",
+    "This conversion achieves lossless fidelity.",
+  ]) {
+    const prohibitedActionAdvice = structuredClone(fixture);
+    prohibitedActionAdvice.reviewQuestions[0].reason = prohibitedDirective;
+    assert.equal(
+      isValid("document-intake-analyst", prohibitedActionAdvice),
+      false,
+    );
+  }
+
+  const changedOriginal = structuredClone(fixture);
+  changedOriginal.outputs[0].originalState = "changed";
+  assert.equal(isValid("document-intake-analyst", changedOriginal), false);
+
+  const hiddenOriginalMutation = structuredClone(fixture);
+  hiddenOriginalMutation.outputs[0].conversionMethod =
+    "Overwrote the original in place";
+  assert.equal(isValid("document-intake-analyst", hiddenOriginalMutation), false);
+
+  const replacedOriginal = structuredClone(fixture);
+  replacedOriginal.outputs[0].conversionMethod =
+    "Replaced the original with normalized Markdown";
+  assert.equal(isValid("document-intake-analyst", replacedOriginal), false);
+
+  const redactedOriginal = structuredClone(fixture);
+  redactedOriginal.outputs[0].conversionMethod =
+    "Redacted the original in place before local extraction";
+  assert.equal(isValid("document-intake-analyst", redactedOriginal), false);
+
+  const overwrittenOriginal = structuredClone(fixture);
+  overwrittenOriginal.outputs[0].conversionMethod =
+    "The original was overwritten in place";
+  assert.equal(isValid("document-intake-analyst", overwrittenOriginal), false);
+
+  const mixedOriginalMutation = structuredClone(fixture);
+  mixedOriginalMutation.outputs[0].limitations = [
+    "The original was not overwritten and the original was deleted.",
+  ];
+  assert.equal(isValid("document-intake-analyst", mixedOriginalMutation), false);
+
+  const mutationQuestion = structuredClone(fixture);
+  mutationQuestion.reviewQuestions[0].question =
+    "Was the original deleted before extraction?";
+  assert.equal(isValid("document-intake-analyst", mutationQuestion), false);
+
+  const thirdPersonMutation = structuredClone(fixture);
+  thirdPersonMutation.outputs[0].conversionMethod =
+    "The converter deletes the original after extraction";
+  assert.equal(isValid("document-intake-analyst", thirdPersonMutation), false);
+
+  const pluralOriginalMutation = structuredClone(fixture);
+  pluralOriginalMutation.outputs[0].conversionMethod =
+    "The converter deletes the originals after extraction";
+  assert.equal(isValid("document-intake-analyst", pluralOriginalMutation), false);
+
+  const ownerGatedQuestion = structuredClone(fixture);
+  ownerGatedQuestion.reviewQuestions[0].question =
+    "Should the diligence lead share the reviewed output after approving the destination?";
+  assert.equal(isValid("document-intake-analyst", ownerGatedQuestion), true);
+
+  for (const question of [
+    "Should the diligence lead share the locally processed output?",
+    "Should the diligence lead share the claims summary?",
+    "Should the diligence lead claim perfect fidelity?",
+  ]) {
+    const benignOwnerQuestion = structuredClone(fixture);
+    benignOwnerQuestion.reviewQuestions[0].question = question;
+    assert.equal(isValid("document-intake-analyst", benignOwnerQuestion), true);
+  }
+
+  const substringOwnerGate = structuredClone(fixture);
+  substringOwnerGate.handoff.owner = "Ann";
+  substringOwnerGate.reviewQuestions[0].question =
+    "Should planning share the reviewed output after approval?";
+  assert.equal(isValid("document-intake-analyst", substringOwnerGate), false);
+
+  const ownerAsRecipient = structuredClone(fixture);
+  ownerAsRecipient.reviewQuestions[0].question =
+    "Should the analyst share the reviewed output with the Diligence lead?";
+  assert.equal(isValid("document-intake-analyst", ownerAsRecipient), false);
+
+  for (const question of [
+    "Should the analyst claim perfect fidelity?",
+    "The analyst should claim lossless fidelity.",
+  ]) {
+    const nonOwnerFidelityClaim = structuredClone(fixture);
+    nonOwnerFidelityClaim.reviewQuestions[0].question = question;
+    assert.equal(
+      isValid("document-intake-analyst", nonOwnerFidelityClaim),
+      false,
+    );
+  }
+
+  for (const question of [
+    "Should the diligence lead share the reviewed output, and should the analyst upload the source?",
+    "Should the diligence lead share the reviewed output, or should the analyst upload the source?",
+    "Should the diligence lead share the reviewed output; should the analyst upload the source?",
+    "Should the diligence lead share the reviewed output, and the analyst upload the source?",
+    "Should the diligence lead share the reviewed output while the analyst uploads the source?",
+    "Should the diligence lead process and the analyst upload the source externally?",
+    "Should the diligence lead process the source that the analyst uploads externally?",
+  ]) {
+    const mixedActorQuestion = structuredClone(fixture);
+    mixedActorQuestion.reviewQuestions[0].question = question;
+    assert.equal(isValid("document-intake-analyst", mixedActorQuestion), false);
+  }
+
+  const agentOwned = structuredClone(fixture);
+  agentOwned.handoff.owner = "document-intake-analyst";
+  assert.equal(isValid("document-intake-analyst", agentOwned), false);
+
+  const displayNameOwned = structuredClone(fixture);
+  displayNameOwned.handoff.owner = "Document Intake Analyst";
+  assert.equal(isValid("document-intake-analyst", displayNameOwned), false);
+
+  const assistantOwned = structuredClone(fixture);
+  assistantOwned.handoff.owner = "Document Intake Assistant";
+  assert.equal(isValid("document-intake-analyst", assistantOwned), false);
+
+  const prefixedAgentOwner = structuredClone(fixture);
+  prefixedAgentOwner.handoff.owner = "The Document Intake Analyst";
+  assert.equal(isValid("document-intake-analyst", prefixedAgentOwner), false);
+
+  for (const automatedOwner of [
+    "Document Intake Bot",
+    "Automation Bot",
+    "Automation Agent",
+    "AI assistant",
+    "GPT",
+  ]) {
+    const automatedOwnerArtifact = structuredClone(fixture);
+    automatedOwnerArtifact.handoff.owner = automatedOwner;
+    assert.equal(
+      isValid("document-intake-analyst", automatedOwnerArtifact),
+      false,
+    );
   }
 });
 

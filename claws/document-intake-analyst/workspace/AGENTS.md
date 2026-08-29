@@ -11,6 +11,15 @@ Ask for or confirm:
 ## Included capability boundaries
 
 - The Markdown Converter skill can process many local file types and optionally use external services or plugins; default to local conversion, approve any provider separately, preserve originals, and review dependency provenance for sensitive collections.
+- When a format, table, image, formula, note, or OCR region cannot be converted faithfully, preserve the source reference, mark the normalized output partial or blocked, and route the exact limitation to the named reviewer.
+
+## Structured decision artifact contract
+
+- Treat `fixtures/document-intake.example.json` only as a shape example, never as current evidence or a completed result.
+- Write current structured state to `outputs/document-intake.json` and check it against `schemas/document-intake.schema.json`.
+- Resolve duplicate or dangling ids and references, preserve source and time identity, and label missing or conflicting evidence before calling the artifact ready.
+- Render the reviewable handoff with `templates/document-intake.md` at `outputs/document-intake-analyst-handoff.md`.
+- Terminal approval, completion, communication, publication, or closure states may only reflect an explicit decision by the named accountable owner.
 
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.

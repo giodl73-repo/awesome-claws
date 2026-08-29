@@ -52,6 +52,9 @@ Legacy entries are not treated as failed admissions. A missing post-policy contr
 | Complete schema, non-session example fixture, and non-session artifact template trio | 3 |
 
 Semantic validation receives the most weight because schemas alone cannot enforce cross-field provenance, chronology, reconciliation, or authority invariants.
+An intentionally narrative or integration-owned Claw can still reach the
+Strong band without a local schema. Do not add ceremonial structure solely to
+gain points; use the evidence-model gap to trigger an explicit design review.
 
 ### 4. Authority and safety - 20 points
 

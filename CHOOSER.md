@@ -31,7 +31,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Data governance steward](claws/data-governance-steward) | @giodl73-repo; last verified 2026-08-19 |
 | [Data migration planner](claws/data-migration-planner) | @giodl73-repo; last verified 2026-08-19 |
 | [Delegation coordinator](claws/delegation-coordinator) | @giodl73-repo; last verified 2026-08-19 |
-| [Document intake analyst](claws/document-intake-analyst) | @giodl73-repo; last verified 2026-08-19 |
+| [Document intake analyst](claws/document-intake-analyst) | @giodl73-repo; last verified 2026-08-29 |
 | [Document renewal tracker](claws/document-renewal-tracker) | @giodl73-repo; last verified 2026-08-27 |
 | [Event operations director](claws/event-operations-director) | @giodl73-repo; last verified 2026-08-19 |
 | [Executive assistant](claws/executive-assistant) | @giodl73-repo; last verified 2026-08-19 |

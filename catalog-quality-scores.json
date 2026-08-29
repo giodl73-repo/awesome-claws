@@ -14,29 +14,29 @@
   },
   "summary": {
     "entryCount": 100,
-    "average": 90.3,
+    "average": 90.5,
     "median": 94.5,
     "qualifiedCount": 100,
     "bands": {
-      "exemplary": 57,
+      "exemplary": 58,
       "strong": 21,
       "solid": 21,
-      "needs-uplift": 1,
+      "needs-uplift": 0,
       "priority-remediation": 0
     },
     "dimensionAverages": {
       "distinctness": 12.3,
       "operatingContract": 20,
-      "evidenceModel": 15,
-      "authoritySafety": 18.8,
+      "evidenceModel": 15.1,
+      "authoritySafety": 18.9,
       "experience": 10,
       "verificationPortability": 9.2,
       "stewardship": 5
     },
     "evidenceCoverage": {
-      "contributionRecords": 46,
-      "schemas": 80,
-      "semanticValidators": 58,
+      "contributionRecords": 47,
+      "schemas": 81,
+      "semanticValidators": 59,
       "screenshots": 100
     }
   },
@@ -80,7 +80,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 61
+      "rank": 62
     },
     {
       "id": "software-maintainer",
@@ -120,9 +120,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 86
+      "rank": 87
     },
     {
       "id": "security-analyst",
@@ -162,7 +162,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 65
+      "rank": 66
     },
     {
       "id": "data-analyst",
@@ -280,7 +280,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 58
+      "rank": 59
     },
     {
       "id": "customer-support",
@@ -321,7 +321,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 63
+      "rank": 64
     },
     {
       "id": "sales-operations",
@@ -358,7 +358,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 55
+      "rank": 56
     },
     {
       "id": "recruiting-coordinator",
@@ -395,7 +395,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 54
+      "rank": 55
     },
     {
       "id": "content-operations",
@@ -431,9 +431,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 84
+      "rank": 85
     },
     {
       "id": "executive-assistant",
@@ -471,9 +471,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 91
+      "rank": 92
     },
     {
       "id": "project-manager",
@@ -512,7 +512,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 53
+      "rank": 54
     },
     {
       "id": "product-manager",
@@ -551,7 +551,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 52
+      "rank": 53
     },
     {
       "id": "compliance-reviewer",
@@ -591,7 +591,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 62
+      "rank": 63
     },
     {
       "id": "knowledge-curator",
@@ -627,9 +627,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 85
+      "rank": 86
     },
     {
       "id": "executive-briefing",
@@ -668,9 +668,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 92
+      "rank": 93
     },
     {
       "id": "meeting-intelligence",
@@ -708,9 +708,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 96
+      "rank": 97
     },
     {
       "id": "spreadsheet-analyst",
@@ -748,9 +748,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 99
+      "rank": 100
     },
     {
       "id": "knowledge-gardener",
@@ -788,9 +788,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 94
+      "rank": 95
     },
     {
       "id": "research-monitor",
@@ -829,9 +829,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 98
+      "rank": 99
     },
     {
       "id": "presentation-producer",
@@ -869,23 +869,23 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 97
+      "rank": 98
     },
     {
       "id": "document-intake-analyst",
       "name": "Document intake analyst",
       "category": "analysis",
-      "total": 69,
-      "band": "needs-uplift",
+      "total": 94,
+      "band": "exemplary",
       "dimensions": {
-        "distinctness": 10,
+        "distinctness": 15,
         "operatingContract": 20,
-        "evidenceModel": 6,
-        "authoritySafety": 10,
+        "evidenceModel": 20,
+        "authoritySafety": 14,
         "experience": 10,
-        "verificationPortability": 8,
+        "verificationPortability": 10,
         "stewardship": 5
       },
       "gates": {
@@ -896,22 +896,19 @@
         "qualified": true
       },
       "evidence": {
-        "contributionRecord": false,
-        "comparedAlternatives": 0,
-        "schema": false,
-        "semanticValidator": false,
+        "contributionRecord": true,
+        "comparedAlternatives": 7,
+        "schema": true,
+        "semanticValidator": true,
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [
           "clawhub-skill"
         ],
-        "maintenanceAgeDays": 10
+        "maintenanceAgeDays": 0
       },
-      "recommendations": [
-        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
-      ],
-      "rank": 100
+      "recommendations": [],
+      "rank": 52
     },
     {
       "id": "media-evidence-reviewer",
@@ -949,9 +946,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 95
+      "rank": 96
     },
     {
       "id": "release-coordinator",
@@ -992,7 +989,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 64
+      "rank": 65
     },
     {
       "id": "feed-intelligence-monitor",
@@ -1031,9 +1028,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 93
+      "rank": 94
     },
     {
       "id": "travel-planner",
@@ -1071,9 +1068,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 90
+      "rank": 91
     },
     {
       "id": "travel-concierge",
@@ -1117,7 +1114,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 87
+      "rank": 88
     },
     {
       "id": "web-evidence-researcher",
@@ -1155,9 +1152,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 81
+      "rank": 82
     },
     {
       "id": "website-evidence-collector",
@@ -1195,9 +1192,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 82
+      "rank": 83
     },
     {
       "id": "video-concept-producer",
@@ -1235,9 +1232,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 80
+      "rank": 81
     },
     {
       "id": "workflow-operator",
@@ -1275,9 +1272,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 83
+      "rank": 84
     },
     {
       "id": "public-company-watcher",
@@ -1316,9 +1313,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 88
+      "rank": 89
     },
     {
       "id": "research-scout",
@@ -1357,9 +1354,9 @@
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add a structured decision artifact with a schema, example fixture, and semantic validator."
+        "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract."
       ],
-      "rank": 89
+      "rank": 90
     },
     {
       "id": "public-safety-monitor",
@@ -1399,7 +1396,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 57
+      "rank": 58
     },
     {
       "id": "civic-data-analyst",
@@ -1438,7 +1435,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 56
+      "rank": 57
     },
     {
       "id": "event-operations-director",
@@ -1479,7 +1476,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 69
+      "rank": 70
     },
     {
       "id": "api-integration-engineer",
@@ -1520,7 +1517,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 59
+      "rank": 60
     },
     {
       "id": "procurement-evaluator",
@@ -1561,7 +1558,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 76
+      "rank": 77
     },
     {
       "id": "grant-portfolio-manager",
@@ -1602,7 +1599,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 72
+      "rank": 73
     },
     {
       "id": "privacy-request-coordinator",
@@ -1642,7 +1639,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 75
+      "rank": 76
     },
     {
       "id": "manufacturing-operations-planner",
@@ -1683,7 +1680,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 74
+      "rank": 75
     },
     {
       "id": "facilities-operations-coordinator",
@@ -1724,7 +1721,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 71
+      "rank": 72
     },
     {
       "id": "ux-research-synthesizer",
@@ -1764,7 +1761,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 78
+      "rank": 79
     },
     {
       "id": "experimentation-lead",
@@ -1804,7 +1801,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 70
+      "rank": 71
     },
     {
       "id": "data-migration-planner",
@@ -1844,7 +1841,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 68
+      "rank": 69
     },
     {
       "id": "localization-program-manager",
@@ -1884,7 +1881,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 73
+      "rank": 74
     },
     {
       "id": "accessibility-review-coordinator",
@@ -1924,7 +1921,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 66
+      "rank": 67
     },
     {
       "id": "quality-assurance-lead",
@@ -1964,7 +1961,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 77
+      "rank": 78
     },
     {
       "id": "cloud-cost-analyst",
@@ -2004,7 +2001,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 67
+      "rank": 68
     },
     {
       "id": "fundraising-campaign-manager",
@@ -2044,7 +2041,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 79
+      "rank": 80
     },
     {
       "id": "data-governance-steward",
@@ -2084,7 +2081,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 60
+      "rank": 61
     },
     {
       "id": "change-control-operator",

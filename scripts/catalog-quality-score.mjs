@@ -207,7 +207,7 @@ async function scoreEntry({
   }
   if (!hasSchema) {
     recommendations.push(
-      "Add a structured decision artifact with a schema, example fixture, and semantic validator.",
+      "Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract.",
     );
   } else if (!hasSemanticValidator) {
     recommendations.push(

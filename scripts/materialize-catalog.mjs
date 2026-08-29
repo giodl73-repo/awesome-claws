@@ -234,6 +234,7 @@ Keep working notes concise, preserve source links when available, and make the n
       name: `@awesome-claws/${entry.id}`,
       version: "0.1.0",
       private: true,
+      license: "MIT",
       type: "module",
       openclaw: { claw: "CLAW.md" },
     },
