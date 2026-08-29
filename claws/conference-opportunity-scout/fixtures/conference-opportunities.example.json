@@ -153,6 +153,14 @@
       "state": "blocked",
       "owner": "Gio",
       "evidenceRefs": ["source-owner-draft", "source-systems-summit-rights"]
+    },
+    {
+      "id": "gate-systems-summit-calendar",
+      "opportunityRef": "opportunity-systems-summit-speaking",
+      "action": "change-calendar",
+      "state": "blocked",
+      "owner": "Gio",
+      "evidenceRefs": ["source-systems-summit-event", "source-owner-availability"]
     }
   ],
   "reviewQuestions": [

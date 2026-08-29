@@ -17,7 +17,10 @@ For each event, show dates, format, location, and official status. For each
 speaking, attendance, sponsorship, or networking opportunity, show its parent
 event, deadline, eligibility, cost, rights, evidence state, and source
 references. Preserve stale, closed, missing, conflicting, and owner-review
-states rather than inferring availability.
+states rather than inferring availability. Omit the deadline or render it as
+unknown when official evidence is missing or conflicting; never invent a date.
+An early closed state must cite current official cancellation or closure
+evidence, or an exact owner action record for that opportunity.
 
 ## Fit and readiness
 
@@ -31,7 +34,9 @@ credentials, acceptance odds, costs, benefits, or organizer commitments.
 Name the accountable owner for every submission, registration, travel booking,
 ticket purchase, fee payment, organizer contact, abstract publication, calendar
 change, or account change. These actions remain blocked unless a current
-owner-supplied action record proves the named owner completed them.
+owner-supplied action record proves the named owner completed the exact action
+for the exact opportunity. Include every intrinsic gate for the opportunity
+kind and never duplicate an opportunity/action pair.
 
 ## Review questions
 

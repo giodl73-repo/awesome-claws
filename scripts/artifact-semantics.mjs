@@ -8088,6 +8088,7 @@ function conferenceOpportunityFindings(value) {
     "official-cfp",
     "official-registration",
     "official-rights",
+    "official-closure",
   ]);
   const ownerKinds = new Set([
     "owner-goals",
@@ -8114,7 +8115,38 @@ function conferenceOpportunityFindings(value) {
   );
   const readinessIds = value.readinessItems.map((item) => item.id);
   const gateIds = value.actionGates.map((item) => item.id);
+  const gatePairs = value.actionGates.map(
+    (item) => `${item.opportunityRef}\u0000${item.action}`,
+  );
   const questionIds = value.reviewQuestions.map((item) => item.id);
+  const intrinsicActions = {
+    speaking: ["submit-proposal", "contact-organizer", "publish-abstract", "change-calendar"],
+    attendance: [
+      "register",
+      "book-travel",
+      "buy-ticket",
+      "pay-fee",
+      "contact-organizer",
+      "change-calendar",
+      "change-account",
+    ],
+    sponsorship: ["pay-fee", "contact-organizer", "change-account"],
+    networking: [
+      "register",
+      "book-travel",
+      "buy-ticket",
+      "pay-fee",
+      "contact-organizer",
+      "change-calendar",
+      "change-account",
+    ],
+  };
+  const closureActions = {
+    speaking: new Set(["submit-proposal"]),
+    attendance: new Set(["register", "buy-ticket"]),
+    sponsorship: new Set(["pay-fee"]),
+    networking: new Set(["register"]),
+  };
   const crossRefs = new Set([
     ...sourceIds,
     ...eventIds,
@@ -8131,6 +8163,7 @@ function conferenceOpportunityFindings(value) {
     ...uniqueFindings(fitIds, "fitAssessments", "Fit assessment id"),
     ...uniqueFindings(readinessIds, "readinessItems", "Readiness item id"),
     ...uniqueFindings(gateIds, "actionGates", "Action gate id"),
+    ...uniqueFindings(gatePairs, "actionGates", "Opportunity/action gate pair"),
     ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
     ...requiredBlockedActions
       .filter((action) => !value.blockedActions.includes(action))
@@ -8173,6 +8206,27 @@ function conferenceOpportunityFindings(value) {
         ),
       );
     }
+    if (
+      ["official-closure", "owner-action-record"].includes(source.kind) &&
+      !opportunitySet.has(source.opportunityRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `sources.${index}.opportunityRef`,
+          `Opportunity reference ${JSON.stringify(source.opportunityRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (source.kind === "owner-action-record" && source.owner !== value.scout.owner) {
+      findings.push(
+        finding(
+          "owner_mismatch",
+          `sources.${index}.owner`,
+          "Owner action records must name the scout owner.",
+        ),
+      );
+    }
   }
   for (const [index, event] of value.events.entries()) {
     findings.push(
@@ -8199,6 +8253,21 @@ function conferenceOpportunityFindings(value) {
           "unsupported_event_state",
           `events.${index}.sourceRefs`,
           "Scheduled events require a current official-event source.",
+        ),
+      );
+    }
+    if (
+      event.status === "cancelled" &&
+      !event.sourceRefs.some((ref) => {
+        const source = sourceById.get(ref);
+        return source?.kind === "official-event" && source.freshness === "current";
+      })
+    ) {
+      findings.push(
+        finding(
+          "unsupported_event_state",
+          `events.${index}.sourceRefs`,
+          "Cancelled events require a current official-event source.",
         ),
       );
     }
@@ -8237,7 +8306,8 @@ function conferenceOpportunityFindings(value) {
       ),
     );
     const event = eventById.get(opportunity.eventRef);
-    if (event && opportunity.deadline > event.startDate) {
+    const hasDeadline = typeof opportunity.deadline === "string";
+    if (event && hasDeadline && opportunity.deadline > event.startDate) {
       findings.push(
         finding(
           "invalid_deadline_chronology",
@@ -8261,21 +8331,60 @@ function conferenceOpportunityFindings(value) {
         ),
       );
     }
-    if (opportunity.state === "current" && opportunity.deadline < value.scout.asOf) {
+    if (
+      opportunity.state === "current" &&
+      (!hasDeadline || opportunity.deadline < value.scout.asOf)
+    ) {
       findings.push(
         finding(
           "expired_current_opportunity",
           `opportunities.${index}.deadline`,
-          "A current opportunity deadline must not precede the scout as-of date.",
+          "A current opportunity requires a known deadline on or after the scout as-of date.",
         ),
       );
     }
-    if (opportunity.state === "closed" && opportunity.deadline >= value.scout.asOf) {
+    const exactOwnerActionEvidence = value.actionGates.some(
+      (gate) =>
+        gate.opportunityRef === opportunity.id &&
+        gate.state === "completed-by-owner" &&
+        gate.owner === value.scout.owner &&
+        closureActions[opportunity.kind].has(gate.action) &&
+        gate.evidenceRefs.some((ref) => {
+          const source = sourceById.get(ref);
+          return (
+            source?.kind === "owner-action-record" &&
+            source.freshness === "current" &&
+            source.owner === value.scout.owner &&
+            source.opportunityRef === gate.opportunityRef &&
+            source.action === gate.action
+          );
+        }),
+    );
+    const currentOfficialClosure =
+      opportunity.sourceRefs.some((ref) => {
+        const source = sourceById.get(ref);
+        return (
+          source?.kind === "official-closure" &&
+          source.freshness === "current" &&
+          source.opportunityRef === opportunity.id
+        );
+      }) ||
+      (event?.status === "cancelled" &&
+        event.sourceRefs.some((ref) => {
+          const source = sourceById.get(ref);
+          return source?.kind === "official-event" && source.freshness === "current";
+        }));
+    if (
+      opportunity.state === "closed" &&
+      (!hasDeadline || opportunity.deadline >= value.scout.asOf) &&
+      !currentOfficialClosure &&
+      !exactOwnerActionEvidence
+    ) {
       findings.push(
         finding(
-          "premature_closed_opportunity",
+          "unsupported_early_closure",
           `opportunities.${index}.state`,
-          "A closed opportunity deadline must precede the scout as-of date.",
+          "Closure before a known deadline expires requires current official cancellation or closure evidence, or an exact current owner action record.",
         ),
       );
     }
@@ -8291,6 +8400,22 @@ function conferenceOpportunityFindings(value) {
           "Current opportunities must belong to scheduled or tentative events.",
         ),
       );
+    }
+    for (const action of intrinsicActions[opportunity.kind]) {
+      if (
+        !value.actionGates.some(
+          (gate) =>
+            gate.opportunityRef === opportunity.id && gate.action === action,
+        )
+      ) {
+        findings.push(
+          finding(
+            "missing_intrinsic_action_gate",
+            "actionGates",
+            `Opportunity ${JSON.stringify(opportunity.id)} requires an ${JSON.stringify(action)} gate.`,
+          ),
+        );
+      }
     }
   }
   for (const [index, fit] of value.fitAssessments.entries()) {
@@ -8406,14 +8531,20 @@ function conferenceOpportunityFindings(value) {
       gate.state === "completed-by-owner" &&
       !gate.evidenceRefs.some((ref) => {
         const source = sourceById.get(ref);
-        return source?.kind === "owner-action-record" && source.freshness === "current";
+        return (
+          source?.kind === "owner-action-record" &&
+          source.freshness === "current" &&
+          source.owner === gate.owner &&
+          source.opportunityRef === gate.opportunityRef &&
+          source.action === gate.action
+        );
       })
     ) {
       findings.push(
         finding(
           "missing_owner_action_evidence",
           `actionGates.${index}.evidenceRefs`,
-          "Completed external actions require a current owner-action-record source.",
+          "Completed external actions require a current owner-action-record source bound to the exact owner, opportunity, and action.",
         ),
       );
     }

@@ -16,6 +16,8 @@ Tracks conferences, calls for proposals, speaking or attendance fit, deadlines, 
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
 - Capability boundary: The base starter works from supplied files and public sources and grants no browser submission, messaging, calendar, payment, booking, or account authority.
 - Capability boundary: When official details are missing or stale, keep the opportunity blocked or provisional rather than inferring eligibility or availability.
+- Capability boundary: Represent missing or conflicting deadlines as unknown instead of fabricating dates, and require current evidence for claimed-current deadlines or early closure.
+- Capability boundary: Create every intrinsic external-action gate for each opportunity; completed gates require a current owner action record bound to the exact owner, opportunity, and action.
 
 Review the package before applying it. Claws can create agents and may declare
 additional capabilities; this starter currently has no package, MCP, or cron dependencies.

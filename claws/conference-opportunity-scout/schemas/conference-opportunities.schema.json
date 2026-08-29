@@ -27,13 +27,40 @@
         "required": ["id", "kind", "label", "provenance", "freshness", "asOf"],
         "properties": {
           "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
-          "kind": { "type": "string", "enum": ["official-event", "official-cfp", "official-registration", "official-rights", "owner-goals", "owner-availability", "owner-budget", "owner-credentials", "owner-portfolio", "owner-draft", "owner-approval", "owner-action-record"] },
+          "kind": { "type": "string", "enum": ["official-event", "official-cfp", "official-registration", "official-rights", "official-closure", "owner-goals", "owner-availability", "owner-budget", "owner-credentials", "owner-portfolio", "owner-draft", "owner-approval", "owner-action-record"] },
           "label": { "type": "string", "minLength": 1 },
           "provenance": { "type": "string", "enum": ["official-public", "owner-supplied"] },
           "url": { "type": "string", "format": "uri", "pattern": "^https://" },
           "freshness": { "type": "string", "enum": ["current", "stale", "missing", "conflicting"] },
-          "asOf": { "type": "string", "format": "date" }
-        }
+          "asOf": { "type": "string", "format": "date" },
+          "opportunityRef": { "type": "string", "pattern": "^opportunity-[a-z0-9-]+$" },
+          "action": { "type": "string", "enum": ["submit-proposal", "register", "book-travel", "buy-ticket", "pay-fee", "contact-organizer", "publish-abstract", "change-calendar", "change-account"] },
+          "owner": { "type": "string", "minLength": 1 },
+          "closureState": { "type": "string", "enum": ["closed", "cancelled"] }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "kind": { "const": "official-closure" } }, "required": ["kind"] },
+            "then": {
+              "required": ["opportunityRef", "closureState"],
+              "properties": {
+                "opportunityRef": { "type": "string", "pattern": "^opportunity-[a-z0-9-]+$" },
+                "closureState": { "type": "string", "enum": ["closed", "cancelled"] }
+              }
+            }
+          },
+          {
+            "if": { "properties": { "kind": { "const": "owner-action-record" } }, "required": ["kind"] },
+            "then": {
+              "required": ["opportunityRef", "action", "owner"],
+              "properties": {
+                "opportunityRef": { "type": "string", "pattern": "^opportunity-[a-z0-9-]+$" },
+                "action": { "type": "string", "enum": ["submit-proposal", "register", "book-travel", "buy-ticket", "pay-fee", "contact-organizer", "publish-abstract", "change-calendar", "change-account"] },
+                "owner": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        ]
       }
     },
     "events": {
@@ -61,19 +88,35 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "eventRef", "kind", "title", "deadline", "state", "eligibility", "cost", "rights", "sourceRefs"],
+        "required": ["id", "eventRef", "kind", "title", "state", "eligibility", "cost", "rights", "sourceRefs"],
         "properties": {
           "id": { "type": "string", "pattern": "^opportunity-[a-z0-9-]+$" },
           "eventRef": { "type": "string", "pattern": "^event-[a-z0-9-]+$" },
           "kind": { "type": "string", "enum": ["speaking", "attendance", "sponsorship", "networking"] },
           "title": { "type": "string", "minLength": 1 },
-          "deadline": { "type": "string", "format": "date" },
+          "deadline": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ]
+          },
           "state": { "type": "string", "enum": ["current", "stale", "closed", "missing", "conflicting", "owner-review"] },
           "eligibility": { "type": "string", "enum": ["eligible", "ineligible", "unclear", "not-applicable"] },
           "cost": { "type": "string", "minLength": 1 },
           "rights": { "type": "string", "minLength": 1 },
           "sourceRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
-        }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "state": { "const": "current" } }, "required": ["state"] },
+            "then": {
+              "required": ["deadline"],
+              "properties": {
+                "deadline": { "type": "string", "format": "date" }
+              }
+            }
+          }
+        ]
       }
     },
     "fitAssessments": {
