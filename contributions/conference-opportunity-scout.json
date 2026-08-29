@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "conference-opportunity-scout",
+    "name": "Conference opportunity scout",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73"
+      ],
+      "lastVerified": "2026-08-29"
+    },
+    "description": "Tracks conferences, calls for proposals, speaking or attendance fit, deadlines, and submission drafts without applying, publishing, booking, or contacting organizers.",
+    "audience": "Professionals, researchers, creators, and teams evaluating conference attendance, speaking, sponsorship, or community opportunities.",
+    "principles": [
+      "Use current official sources for deadlines, eligibility, formats, costs, and event status",
+      "Separate evidence-backed fit from promotional claims and owner preferences",
+      "Keep submissions, publication, travel, spending, and organizer communication with the owner"
+    ],
+    "boundaries": [
+      "Do not submit proposals, register, book travel, buy tickets, pay fees, contact organizers, publish abstracts, or change calendars or accounts",
+      "Do not invent deadlines, acceptance odds, eligibility, speaker credentials, audience reach, costs, benefits, or organizer commitments",
+      "Do not provide legal, tax, financial, visa, immigration, employment, sponsorship, or professional advice"
+    ],
+    "intake": [
+      "Conference names, official event and call-for-proposal sources, dates, locations, formats, tracks, and deadlines",
+      "Owner goals, topics, abstracts, credentials, portfolio evidence, travel constraints, budget limits, accessibility needs, and availability",
+      "Registration, sponsorship, publication, recording, rights, visa, employer, and approval constraints"
+    ],
+    "workflow": [
+      "Inventory candidate conferences and capture current official-source facts",
+      "Compare speaking, attendance, sponsorship, and networking opportunities with owner goals and evidence",
+      "Flag stale calls, eligibility gaps, schedule conflicts, costs, rights, travel constraints, and unsupported claims",
+      "Prepare an owner-review shortlist and submission-readiness handoff without taking external action"
+    ],
+    "deliverables": [
+      "Conference opportunity watchlist",
+      "Fit, deadline, and constraint matrix",
+      "Proposal and attendance readiness register",
+      "Owner decision and action-gate handoff"
+    ],
+    "example": {
+      "request": "Compare these conferences and CFPs against my topics and availability, and prepare what I should review before applying or booking.",
+      "outcome": "A source-backed conference shortlist with deadline freshness, topic fit, costs, conflicts, draft readiness, and blocked external actions."
+    },
+    "doneWhen": [
+      "Every opportunity has a current, stale, closed, missing, conflicting, or owner-review evidence state",
+      "Every fit claim, deadline, cost, eligibility condition, and draft references an official source or owner-supplied evidence",
+      "The handoff names owner decisions before any submission, registration, payment, booking, publication, calendar, contact, or account action"
+    ],
+    "capabilityGuidance": [
+      "The base starter works from supplied files and public sources and grants no browser submission, messaging, calendar, payment, booking, or account authority.",
+      "When official details are missing or stale, keep the opportunity blocked or provisional rather than inferring eligibility or availability."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/conference-opportunities.schema.json",
+        "path": "schemas/conference-opportunities.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/conference-opportunities.example.json",
+        "path": "fixtures/conference-opportunities.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/conference-opportunities.md",
+        "path": "templates/conference-opportunities.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "People evaluating conferences must reconcile changing CFPs, event facts, topic fit, credentials, costs, travel constraints, and deadlines before committing externally.",
+    "repeatableJob": "Maintain a source-backed conference opportunity shortlist and prepare speaking or attendance decisions for owner review.",
+    "proofPlan": "Prove an X3 conference-opportunity artifact that enforces official-source freshness, rejects unsupported fit and authority claims, and keeps submissions, publication, booking, payment, and contact with the owner.",
+    "existingAlternatives": [
+      {
+        "id": "local-events-watcher",
+        "overlap": "Both track events, dates, locations, availability, accessibility, costs, conflicts, and owner-controlled ticketing or calendar action.",
+        "difference": "Local Events Watcher discovers personal local activities; Conference Opportunity Scout evaluates professional CFP, speaking, attendance, sponsorship, rights, and travel-readiness evidence."
+      },
+      {
+        "id": "professional-networking-followup",
+        "overlap": "Both support professional relationships, event context, introductions, follow-up drafts, privacy, and owner-only messaging.",
+        "difference": "Professional Networking Follow-up maintains known-contact relationships; Conference Opportunity Scout owns event and CFP discovery, fit, deadline, and submission-readiness state."
+      },
+      {
+        "id": "research-scout",
+        "overlap": "Both discover candidates from sources, compare relevance, preserve uncertainty, and produce a reviewable shortlist.",
+        "difference": "Research Scout gathers sources for a research question; Conference Opportunity Scout maintains time-bound event opportunities, eligibility, costs, rights, and owner action gates."
+      },
+      {
+        "id": "resume-portfolio-curator",
+        "overlap": "Both use credentials, portfolio evidence, role-fit claims, drafts, and owner-controlled publication.",
+        "difference": "Resume Portfolio Curator prepares reusable career materials; Conference Opportunity Scout evaluates conference-specific speaking or attendance fit and deadline readiness."
+      },
+      {
+        "id": "certification-renewal-planner",
+        "overlap": "Both track professional credentials, issuer or organizer requirements, eligibility evidence, fees, and time-sensitive deadlines.",
+        "difference": "Certification Renewal Planner maintains credential-renewal readiness; Conference Opportunity Scout evaluates distinct event, CFP, speaking, attendance, sponsorship, rights, and travel opportunities."
+      },
+      {
+        "id": "freelance-client-pipeline",
+        "overlap": "Both maintain opportunity evidence, fit and readiness states, drafts, deadlines, owner decisions, and blocked outbound commitments.",
+        "difference": "Freelance Client Pipeline advances prospective client work through scope and commercial review; Conference Opportunity Scout evaluates organizer-published event and CFP facts, speaker rights, attendance constraints, and conference-specific action gates."
+      },
+      {
+        "id": "invoice-payment-followup",
+        "overlap": "Both require current source evidence, expose conflicting facts, prepare owner-review drafts, and keep contact, account, and payment actions blocked.",
+        "difference": "Invoice Payment Follow-up reconciles existing receivables and client payment evidence; Conference Opportunity Scout compares future professional events and CFPs before any submission, registration, travel, publication, or organizer contact."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both track official requirements, eligibility, deadlines, fees, missing evidence, and owner-controlled external actions.",
+        "difference": "Document Renewal Tracker manages renewal readiness for owner documents; Conference Opportunity Scout relates events to speaking, attendance, sponsorship, and networking opportunities with fit, proposal, rights, schedule, and travel evidence."
+      }
+    ]
+  }
+}

@@ -65,6 +65,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "conference-opportunity-scout",
+    schema: "../claws/conference-opportunity-scout/schemas/conference-opportunities.schema.json",
+    fixture: "../claws/conference-opportunity-scout/fixtures/conference-opportunities.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "delegation-coordinator",
     schema: "../claws/delegation-coordinator/schemas/delegation-ledger.schema.json",
     fixture: "../claws/delegation-coordinator/fixtures/delegation-ledger.example.json",
@@ -558,6 +564,154 @@ test("invoice payment follow-up preserves receivables evidence and owner authori
   const agentOwned = structuredClone(cases.get("invoice-payment-followup").fixture);
   agentOwned.handoff.owner = "invoice-payment-followup";
   assert.equal(isValid("invoice-payment-followup", agentOwned), false);
+});
+
+test("conference opportunity scout preserves source, chronology, readiness, and owner authority", () => {
+  const fixture = cases.get("conference-opportunity-scout").fixture;
+
+  const danglingEvent = structuredClone(fixture);
+  danglingEvent.opportunities[0].eventRef = "event-missing";
+  assert.equal(isValid("conference-opportunity-scout", danglingEvent), false);
+
+  const danglingSource = structuredClone(fixture);
+  danglingSource.fitAssessments[0].officialSourceRefs = ["source-missing"];
+  assert.equal(isValid("conference-opportunity-scout", danglingSource), false);
+
+  const futureSource = structuredClone(fixture);
+  futureSource.sources[0].asOf = "2026-08-30";
+  assert.equal(isValid("conference-opportunity-scout", futureSource), false);
+
+  const reversedEvent = structuredClone(fixture);
+  reversedEvent.events[0].endDate = "2026-10-18";
+  assert.equal(isValid("conference-opportunity-scout", reversedEvent), false);
+
+  const staleScheduledEvent = structuredClone(fixture);
+  staleScheduledEvent.events[0].startDate = "2026-08-20";
+  staleScheduledEvent.events[0].endDate = "2026-08-21";
+  staleScheduledEvent.opportunities[0].deadline = "2026-08-19";
+  staleScheduledEvent.opportunities[0].state = "closed";
+  assert.equal(isValid("conference-opportunity-scout", staleScheduledEvent), false);
+
+  const prematureCompletedEvent = structuredClone(fixture);
+  prematureCompletedEvent.events[0].status = "completed";
+  assert.equal(isValid("conference-opportunity-scout", prematureCompletedEvent), false);
+
+  const currentCancelledEventOpportunity = structuredClone(fixture);
+  currentCancelledEventOpportunity.events[0].status = "cancelled";
+  assert.equal(isValid("conference-opportunity-scout", currentCancelledEventOpportunity), false);
+
+  const lateDeadline = structuredClone(fixture);
+  lateDeadline.opportunities[0].deadline = "2026-10-22";
+  assert.equal(isValid("conference-opportunity-scout", lateDeadline), false);
+
+  const expiredCurrentOpportunity = structuredClone(fixture);
+  expiredCurrentOpportunity.opportunities[0].deadline = "2026-08-28";
+  assert.equal(isValid("conference-opportunity-scout", expiredCurrentOpportunity), false);
+
+  const prematureClosedOpportunity = structuredClone(fixture);
+  prematureClosedOpportunity.opportunities[0].state = "closed";
+  assert.equal(isValid("conference-opportunity-scout", prematureClosedOpportunity), false);
+
+  const staleOfficialEvent = structuredClone(fixture);
+  staleOfficialEvent.sources[0].freshness = "stale";
+  assert.equal(isValid("conference-opportunity-scout", staleOfficialEvent), false);
+
+  const staleCfp = structuredClone(fixture);
+  staleCfp.sources[1].freshness = "stale";
+  assert.equal(isValid("conference-opportunity-scout", staleCfp), false);
+
+  const wrongOfficialProvenance = structuredClone(fixture);
+  wrongOfficialProvenance.sources[1].provenance = "owner-supplied";
+  assert.equal(isValid("conference-opportunity-scout", wrongOfficialProvenance), false);
+
+  const missingOfficialUrl = structuredClone(fixture);
+  delete missingOfficialUrl.sources[1].url;
+  assert.equal(isValid("conference-opportunity-scout", missingOfficialUrl), false);
+
+  const unsupportedFit = structuredClone(fixture);
+  unsupportedFit.fitAssessments[0].ownerEvidenceRefs = ["source-systems-summit-cfp"];
+  assert.equal(isValid("conference-opportunity-scout", unsupportedFit), false);
+
+  const staleOwnerFitEvidence = structuredClone(fixture);
+  staleOwnerFitEvidence.sources[3].freshness = "stale";
+  assert.equal(isValid("conference-opportunity-scout", staleOwnerFitEvidence), false);
+
+  const readinessWithoutFit = structuredClone(fixture);
+  readinessWithoutFit.fitAssessments[0].state = "partial";
+  assert.equal(isValid("conference-opportunity-scout", readinessWithoutFit), false);
+
+  const staleReadinessEvidence = structuredClone(fixture);
+  staleReadinessEvidence.sources[5].freshness = "stale";
+  assert.equal(isValid("conference-opportunity-scout", staleReadinessEvidence), false);
+
+  const readinessWithoutOwnerEvidence = structuredClone(fixture);
+  readinessWithoutOwnerEvidence.readinessItems[0].evidenceRefs = [
+    "source-systems-summit-cfp",
+  ];
+  assert.equal(isValid("conference-opportunity-scout", readinessWithoutOwnerEvidence), false);
+
+  const readinessWithoutOfficialEvidence = structuredClone(fixture);
+  readinessWithoutOfficialEvidence.readinessItems[0].evidenceRefs = [
+    "source-owner-draft",
+  ];
+  assert.equal(isValid("conference-opportunity-scout", readinessWithoutOfficialEvidence), false);
+
+  const completedWithoutOwnerRecord = structuredClone(fixture);
+  completedWithoutOwnerRecord.actionGates[0].state = "completed-by-owner";
+  assert.equal(isValid("conference-opportunity-scout", completedWithoutOwnerRecord), false);
+
+  for (const requiredAction of [
+    "submit-proposal",
+    "register",
+    "book-travel",
+    "buy-ticket",
+    "pay-fee",
+    "contact-organizer",
+    "publish-abstract",
+    "change-calendar",
+    "change-account",
+  ]) {
+    const missingAuthorityGate = structuredClone(fixture);
+    missingAuthorityGate.blockedActions = missingAuthorityGate.blockedActions.filter(
+      (action) => action !== requiredAction,
+    );
+    missingAuthorityGate.blockedActions.push("legal-advice");
+    assert.equal(isValid("conference-opportunity-scout", missingAuthorityGate), false);
+  }
+
+  const wrongReadinessOwner = structuredClone(fixture);
+  wrongReadinessOwner.readinessItems[0].owner = "Someone Else";
+  assert.equal(isValid("conference-opportunity-scout", wrongReadinessOwner), false);
+
+  const wrongGateOwner = structuredClone(fixture);
+  wrongGateOwner.actionGates[0].owner = "Someone Else";
+  assert.equal(isValid("conference-opportunity-scout", wrongGateOwner), false);
+
+  const actionAdvice = structuredClone(fixture);
+  actionAdvice.reviewQuestions[0].reason += " Submit the proposal now.";
+  assert.equal(isValid("conference-opportunity-scout", actionAdvice), false);
+
+  const ungatedActionQuestion = structuredClone(fixture);
+  ungatedActionQuestion.reviewQuestions[0].question =
+    "Submit the proposal after reviewing the rights?";
+  assert.equal(isValid("conference-opportunity-scout", ungatedActionQuestion), false);
+
+  const ownerGatedQuestion = structuredClone(fixture);
+  ownerGatedQuestion.reviewQuestions[0].question =
+    "Should Gio submit the proposal after reviewing the rights?";
+  assert.equal(isValid("conference-opportunity-scout", ownerGatedQuestion), true);
+
+  const readyWithBlockedReadiness = structuredClone(fixture);
+  readyWithBlockedReadiness.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("conference-opportunity-scout", readyWithBlockedReadiness), false);
+
+  const wrongQuestionOwner = structuredClone(fixture);
+  wrongQuestionOwner.reviewQuestions[0].owner = "Someone Else";
+  assert.equal(isValid("conference-opportunity-scout", wrongQuestionOwner), false);
+
+  const agentOwned = structuredClone(fixture);
+  agentOwned.handoff.owner = "conference-opportunity-scout";
+  assert.equal(isValid("conference-opportunity-scout", agentOwned), false);
 });
 
 test("gift relationship manager preserves privacy, budget, and owner authority", () => {
@@ -1086,6 +1240,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["document-renewal-tracker", (value) => value.documents[0].sourceRefs.push(value.documents[0].sourceRefs[0])],
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
     ["freelance-client-pipeline", (value) => value.opportunities[0].sourceRefs.push(value.opportunities[0].sourceRefs[0])],
+    ["conference-opportunity-scout", (value) => value.opportunities[0].sourceRefs.push(value.opportunities[0].sourceRefs[0])],
     ["fantasy-sports-manager", (value) => value.lineup[0].sourceRefs.push(value.lineup[0].sourceRefs[0])],
     ["games-backlog-manager", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
     ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],

@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "awesomeClaws.conferenceOpportunities.v1",
+  "scout": {
+    "id": "conference-scout-fall-2026",
+    "owner": "Gio",
+    "asOf": "2026-08-29",
+    "timezone": "America/Los_Angeles"
+  },
+  "sources": [
+    {
+      "id": "source-systems-summit-event",
+      "kind": "official-event",
+      "label": "Systems Summit 2026 official event page",
+      "provenance": "official-public",
+      "url": "https://events.example.org/systems-summit-2026",
+      "freshness": "current",
+      "asOf": "2026-08-28"
+    },
+    {
+      "id": "source-systems-summit-cfp",
+      "kind": "official-cfp",
+      "label": "Systems Summit 2026 call for proposals",
+      "provenance": "official-public",
+      "url": "https://events.example.org/systems-summit-2026/cfp",
+      "freshness": "current",
+      "asOf": "2026-08-28"
+    },
+    {
+      "id": "source-systems-summit-rights",
+      "kind": "official-rights",
+      "label": "Systems Summit speaker recording and publication terms",
+      "provenance": "official-public",
+      "url": "https://events.example.org/systems-summit-2026/speaker-terms",
+      "freshness": "current",
+      "asOf": "2026-08-28"
+    },
+    {
+      "id": "source-owner-goals",
+      "kind": "owner-goals",
+      "label": "Owner-supplied goal to share reliability lessons with platform engineers",
+      "provenance": "owner-supplied",
+      "freshness": "current",
+      "asOf": "2026-08-29"
+    },
+    {
+      "id": "source-owner-credentials",
+      "kind": "owner-credentials",
+      "label": "Owner-supplied platform engineering biography",
+      "provenance": "owner-supplied",
+      "freshness": "current",
+      "asOf": "2026-08-29"
+    },
+    {
+      "id": "source-owner-draft",
+      "kind": "owner-draft",
+      "label": "Owner-supplied reliability talk abstract draft",
+      "provenance": "owner-supplied",
+      "freshness": "current",
+      "asOf": "2026-08-29"
+    },
+    {
+      "id": "source-owner-availability",
+      "kind": "owner-availability",
+      "label": "Owner-supplied October availability",
+      "provenance": "owner-supplied",
+      "freshness": "current",
+      "asOf": "2026-08-29"
+    }
+  ],
+  "events": [
+    {
+      "id": "event-systems-summit-2026",
+      "name": "Systems Summit 2026",
+      "startDate": "2026-10-19",
+      "endDate": "2026-10-21",
+      "format": "hybrid",
+      "location": "Seattle, WA and online",
+      "status": "scheduled",
+      "sourceRefs": ["source-systems-summit-event"]
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "opportunity-systems-summit-speaking",
+      "eventRef": "event-systems-summit-2026",
+      "kind": "speaking",
+      "title": "Reliability and platform engineering track CFP",
+      "deadline": "2026-09-12",
+      "state": "current",
+      "eligibility": "eligible",
+      "cost": "No submission fee; travel support is not stated",
+      "rights": "Recording permission is requested under the published speaker terms",
+      "sourceRefs": ["source-systems-summit-cfp", "source-systems-summit-rights"]
+    }
+  ],
+  "fitAssessments": [
+    {
+      "id": "fit-systems-summit-speaking",
+      "opportunityRef": "opportunity-systems-summit-speaking",
+      "state": "supported",
+      "rationale": "The official reliability track matches the owner-supplied platform engineering goal and biography.",
+      "officialSourceRefs": ["source-systems-summit-cfp"],
+      "ownerEvidenceRefs": ["source-owner-goals", "source-owner-credentials"]
+    }
+  ],
+  "readinessItems": [
+    {
+      "id": "readiness-systems-summit-abstract",
+      "opportunityRef": "opportunity-systems-summit-speaking",
+      "kind": "abstract",
+      "state": "ready-for-owner-review",
+      "owner": "Gio",
+      "evidenceRefs": ["source-systems-summit-cfp", "source-owner-draft"]
+    },
+    {
+      "id": "readiness-systems-summit-availability",
+      "opportunityRef": "opportunity-systems-summit-speaking",
+      "kind": "availability",
+      "state": "ready-for-owner-review",
+      "owner": "Gio",
+      "evidenceRefs": ["source-systems-summit-event", "source-owner-availability"]
+    },
+    {
+      "id": "readiness-systems-summit-rights",
+      "opportunityRef": "opportunity-systems-summit-speaking",
+      "kind": "rights",
+      "state": "blocked",
+      "owner": "Gio",
+      "evidenceRefs": ["source-systems-summit-rights"]
+    }
+  ],
+  "actionGates": [
+    {
+      "id": "gate-systems-summit-submit",
+      "opportunityRef": "opportunity-systems-summit-speaking",
+      "action": "submit-proposal",
+      "state": "blocked",
+      "owner": "Gio",
+      "evidenceRefs": ["source-systems-summit-cfp", "source-owner-draft"]
+    },
+    {
+      "id": "gate-systems-summit-contact",
+      "opportunityRef": "opportunity-systems-summit-speaking",
+      "action": "contact-organizer",
+      "state": "blocked",
+      "owner": "Gio",
+      "evidenceRefs": ["source-systems-summit-event"]
+    },
+    {
+      "id": "gate-systems-summit-publish",
+      "opportunityRef": "opportunity-systems-summit-speaking",
+      "action": "publish-abstract",
+      "state": "blocked",
+      "owner": "Gio",
+      "evidenceRefs": ["source-owner-draft", "source-systems-summit-rights"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-systems-summit-rights",
+      "question": "Does Gio accept the published recording terms before Gio submits the proposal?",
+      "reason": "The abstract is ready for review, but publication and submission authority remain with the owner.",
+      "owner": "Gio",
+      "refs": ["opportunity-systems-summit-speaking", "readiness-systems-summit-rights", "gate-systems-summit-submit"]
+    }
+  ],
+  "blockedActions": [
+    "submit-proposal",
+    "register",
+    "book-travel",
+    "buy-ticket",
+    "pay-fee",
+    "contact-organizer",
+    "publish-abstract",
+    "change-calendar",
+    "change-account"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Gio",
+    "reviewQuestionRefs": ["question-systems-summit-rights"],
+    "prohibitedActions": [
+      "Do not submit proposals, register, book travel, buy tickets, pay fees, contact organizers, publish abstracts, or change calendars or accounts."
+    ]
+  }
+}

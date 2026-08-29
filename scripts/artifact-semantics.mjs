@@ -8071,6 +8071,445 @@ function freelancePipelineFindings(value) {
   return findings;
 }
 
+function conferenceOpportunityFindings(value) {
+  const requiredBlockedActions = [
+    "submit-proposal",
+    "register",
+    "book-travel",
+    "buy-ticket",
+    "pay-fee",
+    "contact-organizer",
+    "publish-abstract",
+    "change-calendar",
+    "change-account",
+  ];
+  const officialKinds = new Set([
+    "official-event",
+    "official-cfp",
+    "official-registration",
+    "official-rights",
+  ]);
+  const ownerKinds = new Set([
+    "owner-goals",
+    "owner-availability",
+    "owner-budget",
+    "owner-credentials",
+    "owner-portfolio",
+    "owner-draft",
+    "owner-approval",
+    "owner-action-record",
+  ]);
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const eventIds = value.events.map((item) => item.id);
+  const eventSet = new Set(eventIds);
+  const eventById = new Map(value.events.map((item) => [item.id, item]));
+  const opportunityIds = value.opportunities.map((item) => item.id);
+  const opportunitySet = new Set(opportunityIds);
+  const opportunityById = new Map(value.opportunities.map((item) => [item.id, item]));
+  const fitIds = value.fitAssessments.map((item) => item.id);
+  const fitByOpportunity = new Map(
+    value.fitAssessments.map((item) => [item.opportunityRef, item]),
+  );
+  const readinessIds = value.readinessItems.map((item) => item.id);
+  const gateIds = value.actionGates.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const crossRefs = new Set([
+    ...sourceIds,
+    ...eventIds,
+    ...opportunityIds,
+    ...fitIds,
+    ...readinessIds,
+    ...gateIds,
+    ...questionIds,
+  ]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(eventIds, "events", "Event id"),
+    ...uniqueFindings(opportunityIds, "opportunities", "Opportunity id"),
+    ...uniqueFindings(fitIds, "fitAssessments", "Fit assessment id"),
+    ...uniqueFindings(readinessIds, "readinessItems", "Readiness item id"),
+    ...uniqueFindings(gateIds, "actionGates", "Action gate id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+    ...requiredBlockedActions
+      .filter((action) => !value.blockedActions.includes(action))
+      .map((action) =>
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Required owner authority gate ${JSON.stringify(action)} is missing.`,
+        ),
+      ),
+  ];
+  for (const [index, source] of value.sources.entries()) {
+    if (source.asOf > value.scout.asOf) {
+      findings.push(
+        finding(
+          "future_source_evidence",
+          `sources.${index}.asOf`,
+          "Conference source evidence must not postdate the scout as-of date.",
+        ),
+      );
+    }
+    if (
+      (officialKinds.has(source.kind) && source.provenance !== "official-public") ||
+      (ownerKinds.has(source.kind) && source.provenance !== "owner-supplied")
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_provenance",
+          `sources.${index}.provenance`,
+          "Official source kinds require official-public provenance and owner source kinds require owner-supplied provenance.",
+        ),
+      );
+    }
+    if (source.provenance === "official-public" && !source.url) {
+      findings.push(
+        finding(
+          "missing_official_url",
+          `sources.${index}.url`,
+          "Official public evidence requires an HTTPS source URL.",
+        ),
+      );
+    }
+  }
+  for (const [index, event] of value.events.entries()) {
+    findings.push(
+      ...referenceFindings(event.sourceRefs, sourceSet, `events.${index}.sourceRefs`, "Source reference"),
+    );
+    if (event.startDate > event.endDate) {
+      findings.push(
+        finding(
+          "invalid_event_chronology",
+          `events.${index}.endDate`,
+          "Conference end date must not precede its start date.",
+        ),
+      );
+    }
+    if (
+      event.status === "scheduled" &&
+      !event.sourceRefs.some((ref) => {
+        const source = sourceById.get(ref);
+        return source?.kind === "official-event" && source.freshness === "current";
+      })
+    ) {
+      findings.push(
+        finding(
+          "unsupported_event_state",
+          `events.${index}.sourceRefs`,
+          "Scheduled events require a current official-event source.",
+        ),
+      );
+    }
+    if (event.status === "scheduled" && event.endDate < value.scout.asOf) {
+      findings.push(
+        finding(
+          "stale_scheduled_event",
+          `events.${index}.status`,
+          "A scheduled event must not have ended before the scout as-of date.",
+        ),
+      );
+    }
+    if (event.status === "completed" && event.endDate >= value.scout.asOf) {
+      findings.push(
+        finding(
+          "premature_completed_event",
+          `events.${index}.status`,
+          "A completed event must have ended before the scout as-of date.",
+        ),
+      );
+    }
+  }
+  for (const [index, opportunity] of value.opportunities.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [opportunity.eventRef],
+        eventSet,
+        `opportunities.${index}.eventRef`,
+        "Event reference",
+      ),
+      ...referenceFindings(
+        opportunity.sourceRefs,
+        sourceSet,
+        `opportunities.${index}.sourceRefs`,
+        "Source reference",
+      ),
+    );
+    const event = eventById.get(opportunity.eventRef);
+    if (event && opportunity.deadline > event.startDate) {
+      findings.push(
+        finding(
+          "invalid_deadline_chronology",
+          `opportunities.${index}.deadline`,
+          "Opportunity deadline must not be after the event starts.",
+        ),
+      );
+    }
+    const requiredKind =
+      opportunity.kind === "speaking" ? "official-cfp" : "official-registration";
+    const hasCurrentOfficialSource = opportunity.sourceRefs.some((ref) => {
+      const source = sourceById.get(ref);
+      return source?.kind === requiredKind && source.freshness === "current";
+    });
+    if (opportunity.state === "current" && !hasCurrentOfficialSource) {
+      findings.push(
+        finding(
+          "unsupported_opportunity_state",
+          `opportunities.${index}.sourceRefs`,
+          `Current ${opportunity.kind} opportunities require a current ${requiredKind} source.`,
+        ),
+      );
+    }
+    if (opportunity.state === "current" && opportunity.deadline < value.scout.asOf) {
+      findings.push(
+        finding(
+          "expired_current_opportunity",
+          `opportunities.${index}.deadline`,
+          "A current opportunity deadline must not precede the scout as-of date.",
+        ),
+      );
+    }
+    if (opportunity.state === "closed" && opportunity.deadline >= value.scout.asOf) {
+      findings.push(
+        finding(
+          "premature_closed_opportunity",
+          `opportunities.${index}.state`,
+          "A closed opportunity deadline must precede the scout as-of date.",
+        ),
+      );
+    }
+    if (
+      opportunity.state === "current" &&
+      event &&
+      !["scheduled", "tentative"].includes(event.status)
+    ) {
+      findings.push(
+        finding(
+          "invalid_event_opportunity_state",
+          `opportunities.${index}.state`,
+          "Current opportunities must belong to scheduled or tentative events.",
+        ),
+      );
+    }
+  }
+  for (const [index, fit] of value.fitAssessments.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [fit.opportunityRef],
+        opportunitySet,
+        `fitAssessments.${index}.opportunityRef`,
+        "Opportunity reference",
+      ),
+      ...referenceFindings(
+        fit.officialSourceRefs,
+        sourceSet,
+        `fitAssessments.${index}.officialSourceRefs`,
+        "Official source reference",
+      ),
+      ...referenceFindings(
+        fit.ownerEvidenceRefs,
+        sourceSet,
+        `fitAssessments.${index}.ownerEvidenceRefs`,
+        "Owner evidence reference",
+      ),
+    );
+    if (
+      fit.state === "supported" &&
+      (!fit.officialSourceRefs.every((ref) => {
+        const source = sourceById.get(ref);
+        return source?.provenance === "official-public" && source.freshness === "current";
+      }) ||
+        !fit.ownerEvidenceRefs.every((ref) => {
+          const source = sourceById.get(ref);
+          return source?.provenance === "owner-supplied" && source.freshness === "current";
+        }))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_fit_state",
+          `fitAssessments.${index}`,
+          "Supported fit requires current official opportunity evidence and current owner-supplied evidence.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of value.readinessItems.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [item.opportunityRef],
+        opportunitySet,
+        `readinessItems.${index}.opportunityRef`,
+        "Opportunity reference",
+      ),
+      ...referenceFindings(
+        item.evidenceRefs,
+        sourceSet,
+        `readinessItems.${index}.evidenceRefs`,
+        "Evidence reference",
+      ),
+    );
+    if (item.owner !== value.scout.owner || item.owner !== value.handoff.owner) {
+      findings.push(
+        finding(
+          "owner_mismatch",
+          `readinessItems.${index}.owner`,
+          "Readiness ownership must name the scout and handoff owner.",
+        ),
+      );
+    }
+    if (
+      item.state === "ready-for-owner-review" &&
+      (fitByOpportunity.get(item.opportunityRef)?.state !== "supported" ||
+        item.evidenceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current") ||
+        !item.evidenceRefs.some(
+          (ref) => sourceById.get(ref)?.provenance === "official-public",
+        ) ||
+        !item.evidenceRefs.some(
+          (ref) => sourceById.get(ref)?.provenance === "owner-supplied",
+        ))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_readiness_state",
+          `readinessItems.${index}`,
+          "Review-ready items require supported fit plus current official and owner-supplied evidence.",
+        ),
+      );
+    }
+  }
+  for (const [index, gate] of value.actionGates.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [gate.opportunityRef],
+        opportunitySet,
+        `actionGates.${index}.opportunityRef`,
+        "Opportunity reference",
+      ),
+      ...referenceFindings(
+        gate.evidenceRefs,
+        sourceSet,
+        `actionGates.${index}.evidenceRefs`,
+        "Evidence reference",
+      ),
+    );
+    if (gate.owner !== value.scout.owner || gate.owner !== value.handoff.owner) {
+      findings.push(
+        finding(
+          "owner_mismatch",
+          `actionGates.${index}.owner`,
+          "External action gates must name the scout and handoff owner.",
+        ),
+      );
+    }
+    if (
+      gate.state === "completed-by-owner" &&
+      !gate.evidenceRefs.some((ref) => {
+        const source = sourceById.get(ref);
+        return source?.kind === "owner-action-record" && source.freshness === "current";
+      })
+    ) {
+      findings.push(
+        finding(
+          "missing_owner_action_evidence",
+          `actionGates.${index}.evidenceRefs`,
+          "Completed external actions require a current owner-action-record source.",
+        ),
+      );
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...referenceFindings(question.refs, crossRefs, `reviewQuestions.${index}.refs`, "Reference"),
+    );
+    if (question.owner !== value.scout.owner || question.owner !== value.handoff.owner) {
+      findings.push(
+        finding(
+          "owner_mismatch",
+          `reviewQuestions.${index}.owner`,
+          "Review questions must name the scout and handoff owner.",
+        ),
+      );
+    }
+  }
+  findings.push(
+    ...referenceFindings(
+      value.handoff.reviewQuestionRefs,
+      new Set(questionIds),
+      "handoff.reviewQuestionRefs",
+      "Review question reference",
+    ),
+  );
+  if (value.handoff.owner !== value.scout.owner) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "handoff.owner",
+        "Handoff authority must remain with the named scout owner.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    (value.opportunities.some((item) => item.state !== "current") ||
+      value.fitAssessments.some((item) => item.state !== "supported") ||
+      value.readinessItems.some((item) => item.state === "blocked" || item.state === "needs-evidence"))
+  ) {
+    findings.push(
+      finding(
+        "unsupported_ready_state",
+        "handoff.state",
+        "Owner-ready handoffs require current opportunities, supported fit, and no blocked or evidence-missing readiness items.",
+      ),
+    );
+  }
+  const prohibitedActionPattern =
+    /\b(submit (?:a |the )?proposals?|register|book (?:a |the )?travel|buy (?:a |the )?tickets?|pay (?:a |the )?fees?|contact (?:an? |the )?organizers?|publish (?:an? |the )?abstracts?|change (?:a |the )?calendars?|change (?:an? |the )?accounts?|legal advice|tax advice|financial advice|visa advice|immigration advice|employment advice|sponsorship advice|professional advice)\b/iu;
+  const actionText = canonicalJson({
+    events: value.events.map(({ name }) => name),
+    opportunities: value.opportunities.map(({ title, cost, rights }) => ({
+      title,
+      cost,
+      rights,
+    })),
+    fitRationales: value.fitAssessments.map(({ rationale }) => rationale),
+    reviewQuestionReasons: value.reviewQuestions.map(({ reason }) => reason),
+  });
+  if (prohibitedActionPattern.test(actionText)) {
+    findings.push(
+      finding(
+        "external_action_content",
+        "reviewQuestions",
+        "Conference artifacts must not instruct submissions, registration, booking, payment, organizer contact, publication, account or calendar changes, or professional advice.",
+      ),
+    );
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    if (
+      prohibitedActionPattern.test(question.question) &&
+      !question.question.toLocaleLowerCase().includes(question.owner.toLocaleLowerCase())
+    ) {
+      findings.push(
+        finding(
+          "ungated_owner_action",
+          `reviewQuestions.${index}.question`,
+          "Questions about external actions must name the accountable owner who would decide or act.",
+        ),
+      );
+    }
+  }
+  if (value.handoff.owner === "conference-opportunity-scout") {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Submission, registration, travel, payment, contact, publication, calendar, account, and professional-advice authority must remain with the named owner.",
+      ),
+    );
+  }
+  return findings;
+}
+
 function invoiceReceivablesFindings(value) {
   const requiredBlockedActions = [
     "issue-invoice",
@@ -8622,6 +9061,7 @@ const validators = {
   "care-circle-coordinator": careCircleFindings,
   "case-continuity-coordinator": caseContinuityFindings,
   "certification-renewal-planner": certificationRenewalFindings,
+  "conference-opportunity-scout": conferenceOpportunityFindings,
   "change-control-operator": changeControlFindings,
   "child-activity-manager": childActivityFindings,
   "civic-data-analyst": civicDataFindings,

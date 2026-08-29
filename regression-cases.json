@@ -2347,6 +2347,28 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "conference-opportunity-scout",
+      "acceptedRequest": "Compare these conferences and CFPs against my topics and availability, and prepare what I should review before applying or booking.",
+      "requiredEvidence": [
+        "Conference names, official event and call-for-proposal sources, dates, locations, formats, tracks, and deadlines",
+        "Owner goals, topics, abstracts, credentials, portfolio evidence, travel constraints, budget limits, accessibility needs, and availability",
+        "Registration, sponsorship, publication, recording, rights, visa, employer, and approval constraints"
+      ],
+      "authorityBoundaries": [
+        "Do not submit proposals, register, book travel, buy tickets, pay fees, contact organizers, publish abstracts, or change calendars or accounts",
+        "Do not invent deadlines, acceptance odds, eligibility, speaker credentials, audience reach, costs, benefits, or organizer commitments",
+        "Do not provide legal, tax, financial, visa, immigration, employment, sponsorship, or professional advice"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/conference-opportunity-scout-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
