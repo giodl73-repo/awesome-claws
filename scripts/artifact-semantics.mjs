@@ -10863,19 +10863,25 @@ function movingPlanFindings(value) {
     if (typeof url !== "string") {
       return url;
     }
-    let decoded = url;
-    for (let attempt = 0; attempt < 4; attempt += 1) {
-      try {
-        const next = decodeURIComponent(decoded);
-        if (next === decoded) {
-          break;
+    return url
+      .split(/([/?&=#])/u)
+      .map((component) => {
+        let decoded = component;
+        for (let attempt = 0; attempt < 4; attempt += 1) {
+          try {
+            const decodable = decoded.replace(/%(?![0-9a-f]{2})/giu, "%25");
+            const next = decodeURIComponent(decodable);
+            if (next === decoded) {
+              break;
+            }
+            decoded = next;
+          } catch {
+            break;
+          }
         }
-        decoded = next;
-      } catch {
-        break;
-      }
-    }
-    return decoded;
+        return decoded;
+      })
+      .join("");
   };
   const publicText = canonicalJson({
     sources: value.sources.map(({ label, url }) => ({
