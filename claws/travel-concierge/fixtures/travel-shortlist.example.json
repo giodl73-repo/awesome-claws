@@ -1,0 +1,296 @@
+{
+  "schemaVersion": "awesomeClaws.travelShortlist.v1",
+  "trip": {
+    "id": "trip-seattle-chicago-october",
+    "owner": "Jordan Lee",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-29T18:30:00Z",
+    "origin": "Seattle, WA",
+    "destinations": ["Chicago, IL"],
+    "departureDate": "2026-10-15",
+    "returnDate": "2026-10-19",
+    "adults": 2,
+    "children": 0,
+    "rooms": 1,
+    "currency": "USD",
+    "budgetAmount": 2600,
+    "requestedKinds": ["flight", "lodging"],
+    "state": "ready-for-traveler-review"
+  },
+  "sources": [
+    {
+      "id": "src-traveler-request",
+      "kind": "traveler-note",
+      "authority": "user-supplied",
+      "capturedAt": "2026-08-29T18:10:00Z",
+      "reference": "owner://trip/seattle-chicago-october",
+      "freshness": "current",
+      "scope": "Two adults, four nights, refundable Riverwalk lodging, nonstop flights, and a USD 2,600 trip budget."
+    },
+    {
+      "id": "src-expedia-lodging",
+      "kind": "expedia-lodging-search",
+      "authority": "expedia",
+      "capturedAt": "2026-08-29T18:22:00Z",
+      "reference": "expedia://search/chicago-lodging-2026-10-15",
+      "freshness": "current",
+      "scope": "Chicago lodging for one room and two adults from 2026-10-15 through 2026-10-19."
+    },
+    {
+      "id": "src-expedia-flights",
+      "kind": "expedia-flight-search",
+      "authority": "expedia",
+      "capturedAt": "2026-08-29T18:25:00Z",
+      "reference": "expedia://search/sea-chi-flights-2026-10-15",
+      "freshness": "current",
+      "scope": "Round-trip nonstop flights for two adults from Seattle to Chicago."
+    },
+    {
+      "id": "src-mapbox-riverwalk",
+      "kind": "mapbox-place",
+      "authority": "mapbox",
+      "capturedAt": "2026-08-29T18:27:00Z",
+      "reference": "mapbox://place/chicago-riverwalk",
+      "freshness": "current",
+      "scope": "Approximate lodging proximity to the Chicago Riverwalk; not inventory or price evidence."
+    }
+  ],
+  "constraints": [
+    {
+      "id": "constraint-dates",
+      "kind": "dates",
+      "label": "Depart October 15 and return October 19, 2026.",
+      "required": true,
+      "sourceRefs": ["src-traveler-request"]
+    },
+    {
+      "id": "constraint-budget",
+      "kind": "budget",
+      "label": "Keep the compared flight and lodging total at or below USD 2,600.",
+      "required": true,
+      "sourceRefs": ["src-traveler-request"]
+    },
+    {
+      "id": "constraint-riverwalk",
+      "kind": "location",
+      "label": "Prefer lodging near the Chicago Riverwalk.",
+      "required": true,
+      "sourceRefs": ["src-traveler-request", "src-mapbox-riverwalk"]
+    },
+    {
+      "id": "constraint-refundable",
+      "kind": "cancellation",
+      "label": "Lodging must show refundable terms in the current Expedia result.",
+      "required": true,
+      "sourceRefs": ["src-traveler-request"]
+    },
+    {
+      "id": "constraint-nonstop",
+      "kind": "nonstop",
+      "label": "Flights must be nonstop in both directions.",
+      "required": true,
+      "sourceRefs": ["src-traveler-request"]
+    },
+    {
+      "id": "constraint-baggage",
+      "kind": "baggage",
+      "label": "Show carry-on and checked-bag caveats before traveler review.",
+      "required": true,
+      "sourceRefs": ["src-traveler-request"]
+    }
+  ],
+  "options": [
+    {
+      "id": "option-river-north-hotel",
+      "kind": "lodging",
+      "name": "River North refundable hotel",
+      "provider": "Expedia Group",
+      "retrievedAt": "2026-08-29T18:22:00Z",
+      "sourceUrl": "https://www.expedia.com/example-river-north-hotel",
+      "sourceRefs": ["src-expedia-lodging", "src-mapbox-riverwalk"],
+      "price": {
+        "amount": 1048,
+        "currency": "USD",
+        "basis": "trip-total",
+        "includesTaxesAndFees": "yes"
+      },
+      "availabilityState": "visible",
+      "cancellationState": "refundable",
+      "baggageSummary": null,
+      "locationSummary": "Mapbox place evidence places the property about 0.4 miles from the Riverwalk.",
+      "constraintRefs": ["constraint-dates", "constraint-budget", "constraint-riverwalk", "constraint-refundable"],
+      "state": "recommended",
+      "fitReason": "The current Expedia result shows refundable terms and a trip total within the lodging share of the budget; Mapbox supports the requested area.",
+      "caveats": [
+        "Price and availability are volatile and must be rechecked by the traveler on Expedia.",
+        "The traveler must verify the exact cancellation deadline and room terms before purchase."
+      ],
+      "blockedReason": null
+    },
+    {
+      "id": "option-loop-hotel",
+      "kind": "lodging",
+      "name": "Loop flexible-rate hotel",
+      "provider": "Expedia Group",
+      "retrievedAt": "2026-08-29T18:22:00Z",
+      "sourceUrl": "https://www.expedia.com/example-loop-hotel",
+      "sourceRefs": ["src-expedia-lodging", "src-mapbox-riverwalk"],
+      "price": {
+        "amount": 972,
+        "currency": "USD",
+        "basis": "trip-total",
+        "includesTaxesAndFees": "unknown"
+      },
+      "availabilityState": "visible",
+      "cancellationState": "refundable",
+      "baggageSummary": null,
+      "locationSummary": "Mapbox place evidence places the property about 0.7 miles from the Riverwalk.",
+      "constraintRefs": ["constraint-dates", "constraint-budget", "constraint-riverwalk", "constraint-refundable"],
+      "state": "review-needed",
+      "fitReason": "The displayed base total is lower, but the result does not establish whether all taxes and fees are included.",
+      "caveats": [
+        "Taxes and fees are not confirmed in the displayed total.",
+        "The traveler must verify availability and cancellation terms on Expedia."
+      ],
+      "blockedReason": null
+    },
+    {
+      "id": "option-mag-mile-hotel",
+      "kind": "lodging",
+      "name": "Magnificent Mile hotel",
+      "provider": "Expedia Group",
+      "retrievedAt": "2026-08-29T18:22:00Z",
+      "sourceUrl": "https://www.expedia.com/example-mag-mile-hotel",
+      "sourceRefs": ["src-expedia-lodging", "src-mapbox-riverwalk"],
+      "price": {
+        "amount": 1186,
+        "currency": "USD",
+        "basis": "trip-total",
+        "includesTaxesAndFees": "yes"
+      },
+      "availabilityState": "visible",
+      "cancellationState": "partially-refundable",
+      "baggageSummary": null,
+      "locationSummary": "Mapbox place evidence places the property about 0.8 miles from the Riverwalk.",
+      "constraintRefs": ["constraint-dates", "constraint-budget", "constraint-riverwalk"],
+      "state": "review-needed",
+      "fitReason": "The location and total fit, but the displayed cancellation policy does not meet the fully refundable preference.",
+      "caveats": [
+        "The displayed rate becomes nonrefundable after its stated deadline.",
+        "The traveler must recheck the policy and current price before purchase."
+      ],
+      "blockedReason": null
+    },
+    {
+      "id": "option-morning-nonstop",
+      "kind": "flight",
+      "name": "Morning SEA-CHI nonstop round trip",
+      "provider": "Expedia Group",
+      "retrievedAt": "2026-08-29T18:25:00Z",
+      "sourceUrl": "https://www.expedia.com/example-morning-nonstop",
+      "sourceRefs": ["src-expedia-flights"],
+      "price": {
+        "amount": 934,
+        "currency": "USD",
+        "basis": "trip-total",
+        "includesTaxesAndFees": "yes"
+      },
+      "availabilityState": "visible",
+      "cancellationState": "nonrefundable",
+      "baggageSummary": "Carry-on shown as included; checked-bag price must be verified with the operating carrier.",
+      "locationSummary": "SEA to Chicago nonstop in both directions.",
+      "constraintRefs": ["constraint-dates", "constraint-budget", "constraint-nonstop", "constraint-baggage"],
+      "state": "recommended",
+      "fitReason": "The current Expedia result matches the requested dates and nonstop routing and keeps the combined top hotel-and-flight comparison within budget.",
+      "caveats": [
+        "Fare, seat, and baggage availability are volatile.",
+        "The traveler must verify the operating carrier, airports, fare rules, and baggage charges before purchase."
+      ],
+      "blockedReason": null
+    },
+    {
+      "id": "option-evening-nonstop",
+      "kind": "flight",
+      "name": "Evening SEA-CHI nonstop round trip",
+      "provider": "Expedia Group",
+      "retrievedAt": "2026-08-29T18:25:00Z",
+      "sourceUrl": "https://www.expedia.com/example-evening-nonstop",
+      "sourceRefs": ["src-expedia-flights"],
+      "price": {
+        "amount": 1012,
+        "currency": "USD",
+        "basis": "trip-total",
+        "includesTaxesAndFees": "yes"
+      },
+      "availabilityState": "limited",
+      "cancellationState": "nonrefundable",
+      "baggageSummary": "Carry-on terms are displayed; checked-bag charges remain subject to carrier verification.",
+      "locationSummary": "SEA to Chicago nonstop in both directions.",
+      "constraintRefs": ["constraint-dates", "constraint-budget", "constraint-nonstop", "constraint-baggage"],
+      "state": "review-needed",
+      "fitReason": "The routing fits, but Expedia shows limited remaining availability and a higher current total.",
+      "caveats": [
+        "Limited availability is not guaranteed until the traveler verifies it on Expedia.",
+        "The traveler must verify airports, schedule, fare rules, and baggage charges."
+      ],
+      "blockedReason": null
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-fee-tradeoff",
+      "question": "Does Jordan prefer the lower displayed Loop hotel price despite unconfirmed taxes and fees?",
+      "reason": "The River North option has a confirmed trip total, while the Loop option has a lower but incomplete displayed total.",
+      "optionRefs": ["option-river-north-hotel", "option-loop-hotel"],
+      "sourceRefs": ["src-expedia-lodging"]
+    },
+    {
+      "id": "question-flight-time",
+      "question": "Does Jordan prefer the lower morning flight or the later limited-availability flight?",
+      "reason": "Both are nonstop, but timing, availability, and displayed totals differ.",
+      "optionRefs": ["option-morning-nonstop", "option-evening-nonstop"],
+      "sourceRefs": ["src-expedia-flights"]
+    }
+  ],
+  "blockedActions": [
+    "book",
+    "reserve",
+    "purchase",
+    "cancel",
+    "modify-reservation",
+    "check-in",
+    "submit-traveler-data",
+    "submit-payment-data",
+    "accept-terms",
+    "contact-provider",
+    "send-verification-email",
+    "store-verification-code"
+  ],
+  "handoff": {
+    "state": "ready-for-traveler-review",
+    "owner": "Jordan Lee",
+    "optionRefs": [
+      "option-river-north-hotel",
+      "option-loop-hotel",
+      "option-mag-mile-hotel",
+      "option-morning-nonstop",
+      "option-evening-nonstop"
+    ],
+    "blockingOptionRefs": [],
+    "reviewQuestionRefs": ["question-fee-tradeoff", "question-flight-time"],
+    "prohibitedActions": [
+      "book",
+      "reserve",
+      "purchase",
+      "cancel",
+      "modify-reservation",
+      "check-in",
+      "submit-traveler-data",
+      "submit-payment-data",
+      "accept-terms",
+      "contact-provider",
+      "send-verification-email",
+      "store-verification-code"
+    ]
+  }
+}

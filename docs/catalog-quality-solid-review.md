@@ -1,18 +1,18 @@
 # Solid-band review
 
-This review covers the 20 Claws remaining in the Solid band after Document
-Intake Analyst moved from 69 to 94 and Fundraising Campaign Manager moved from
-79 to 95 on 2026-08-29. All 20 pass the non-negotiable package,
+This review covers the 19 Claws remaining in the Solid band after Document
+Intake Analyst moved from 69 to 94, Fundraising Campaign Manager moved from 79
+to 95, and Travel Concierge moved from 78 to 100 on 2026-08-29. All 19 pass the non-negotiable package,
 regression, resource, and Experience gates. Their lower scores describe
 reviewability and artifact-depth gaps, not observed live-model failures.
 
 ## Shared pattern
 
-- All 20 are grandfathered entries without retrospective contribution records.
+- All 19 are grandfathered entries without retrospective contribution records.
   That is a five-point documentation gap, not a failed admission.
-- All 20 lack registered semantic validators.
-- Nineteen lack a local structured-artifact schema.
-- All 20 have complete operating contracts, screenshots, regression cases, and
+- All 19 lack registered semantic validators.
+- All 19 lack a local structured-artifact schema.
+- All 19 have complete operating contracts, screenshots, regression cases, and
   active maintenance.
 
 ## Current entries
@@ -23,7 +23,6 @@ reviewability and artifact-depth gaps, not observed live-model failures.
 | `video-concept-producer` | 79 | No local schema or semantic validator | A concept/shot/evidence manifest may help, but only if it governs the generated asset |
 | `website-evidence-collector` | 79 | No local schema or semantic validator | A collection ledger can add source, freshness, extraction, and failure invariants beyond plugin types |
 | `web-evidence-researcher` | 79 | No local schema or semantic validator | A research-evidence ledger can add claim/source and freshness guarantees beyond plugin types |
-| `travel-concierge` | 78 | Schema exists; no semantic validator, example fixture, or artifact template | Complete the existing travel-shortlist contract |
 | `software-maintainer` | 78 | No local schema or semantic validator | Prefer code/test/diff evidence unless a stable change-plan artifact proves useful |
 | `knowledge-curator` | 78 | No local schema or semantic validator | Keep narrative knowledge structure unless a durable index contract emerges |
 | `content-operations` | 78 | No local schema or semantic validator | A claim/approval ledger could help; avoid schema for prose itself |
@@ -44,10 +43,9 @@ reviewability and artifact-depth gaps, not observed live-model failures.
 
 ### 1. Finish existing structured contracts
 
-Start with `travel-concierge`. It already declares a schema, so examples,
-templates, semantic invariants, and a retrospective admission record deepen an
-existing design rather than inventing one. Fundraising Campaign Manager
-completed this path on 2026-08-29.
+Travel Concierge completed this path on 2026-08-29. Its existing shortlist
+schema now has a realistic fixture, matching Markdown template, semantic
+invariants, public validation, and a retrospective admission record.
 
 ### 2. Add evidence ledgers where the job naturally owns state
 
@@ -69,13 +67,14 @@ duplicated merely to raise a score.
 
 ## Recommended order
 
-1. `travel-concierge`: complete the existing shortlist contract with chronology,
-   cost, source freshness, traveler constraints, and booking boundaries.
-2. `media-evidence-reviewer`: define a timestamped observation and transcript
+1. `media-evidence-reviewer`: define a timestamped observation and transcript
    confidence ledger because consent, redaction, ambiguity, and source location
    are already central to the job.
-3. `spreadsheet-analyst`: add a transformation, lineage, and exception manifest
+2. `spreadsheet-analyst`: add a transformation, lineage, and exception manifest
    that complements rather than duplicates user-owned workbooks.
+3. `travel-planner`: define itinerary chronology, constraints, costs, source
+   freshness, and traveler-controlled booking gates without duplicating the
+   Expedia-specific Travel Concierge shortlist.
 
 Backfill contribution records alongside substantive work. For entries already
 at 78-79, a retrospective record alone may move the score into Strong, but it

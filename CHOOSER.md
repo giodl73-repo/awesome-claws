@@ -100,7 +100,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | @giodl73-repo; last verified 2026-08-21 |
 | [Subscription manager](claws/subscription-manager) | @giodl73-repo; last verified 2026-08-21 |
 | [Tax document organizer](claws/tax-document-organizer) | @giodl73-repo; last verified 2026-08-26 |
-| [Travel concierge](claws/travel-concierge) | @giodl73-repo; last verified 2026-08-19 |
+| [Travel concierge](claws/travel-concierge) | @giodl73-repo; last verified 2026-08-29 |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | @giodl73-repo; last verified 2026-08-28 |
 | [Travel planner](claws/travel-planner) | @giodl73-repo; last verified 2026-08-19 |
 | [UX research synthesizer](claws/ux-research-synthesizer) | @giodl73-repo; last verified 2026-08-19 |

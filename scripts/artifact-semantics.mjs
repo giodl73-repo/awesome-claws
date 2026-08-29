@@ -11474,6 +11474,412 @@ function movingPlanFindings(value) {
   return findings;
 }
 
+function travelShortlistFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const constraintIds = value.constraints.map((item) => item.id);
+  const optionIds = value.options.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const constraintSet = new Set(constraintIds);
+  const optionSet = new Set(optionIds);
+  const questionSet = new Set(questionIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const constraintById = new Map(value.constraints.map((item) => [item.id, item]));
+  const optionById = new Map(value.options.map((item) => [item.id, item]));
+  const requiredActions = [
+    "book",
+    "reserve",
+    "purchase",
+    "cancel",
+    "modify-reservation",
+    "check-in",
+    "submit-traveler-data",
+    "submit-payment-data",
+    "accept-terms",
+    "contact-provider",
+    "send-verification-email",
+    "store-verification-code",
+  ];
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(constraintIds, "constraints", "Constraint id"),
+    ...uniqueFindings(optionIds, "options", "Option id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+
+  if (value.trip.departureDate > value.trip.returnDate) {
+    findings.push(
+      finding(
+        "invalid_trip_chronology",
+        "trip.departureDate",
+        "Trip departure date must not follow the return date.",
+      ),
+    );
+  }
+
+  const expectedSourceAuthority = {
+    "expedia-flight-search": "expedia",
+    "expedia-lodging-search": "expedia",
+    "mapbox-place": "mapbox",
+    "mapbox-route": "mapbox",
+    "traveler-note": "user-supplied",
+  };
+  for (const [index, source] of value.sources.entries()) {
+    if (source.authority !== expectedSourceAuthority[source.kind]) {
+      findings.push(
+        finding(
+          "source_authority_mismatch",
+          `sources.${index}.authority`,
+          `${source.kind} evidence must use its declared source authority.`,
+        ),
+      );
+    }
+    if (Date.parse(source.capturedAt) > Date.parse(value.trip.asOf)) {
+      findings.push(
+        finding(
+          "future_source_evidence",
+          `sources.${index}.capturedAt`,
+          "Travel evidence must not postdate the shortlist as-of time.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, constraint] of value.constraints.entries()) {
+    findings.push(
+      ...referenceFindings(
+        constraint.sourceRefs,
+        sourceSet,
+        `constraints.${index}.sourceRefs`,
+        "Constraint source reference",
+      ),
+    );
+  }
+
+  const applicableConstraintKinds = {
+    flight: new Set(["dates", "budget", "accessibility", "baggage", "nonstop", "loyalty", "party", "other"]),
+    lodging: new Set(["dates", "budget", "location", "accessibility", "cancellation", "loyalty", "party", "room", "other"]),
+  };
+  for (const [index, option] of value.options.entries()) {
+    findings.push(
+      ...referenceFindings(
+        option.sourceRefs,
+        sourceSet,
+        `options.${index}.sourceRefs`,
+        "Option source reference",
+      ),
+      ...referenceFindings(
+        option.constraintRefs,
+        constraintSet,
+        `options.${index}.constraintRefs`,
+        "Option constraint reference",
+      ),
+    );
+    const sources = option.sourceRefs.map((ref) => sourceById.get(ref)).filter(Boolean);
+    const expectedKind =
+      option.kind === "flight" ? "expedia-flight-search" : "expedia-lodging-search";
+    if (
+      !sources.some(
+        (source) => source.kind === expectedKind && source.authority === "expedia",
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_option_source",
+          `options.${index}.sourceRefs`,
+          `${option.kind} options require matching Expedia search evidence.`,
+        ),
+      );
+    }
+    if (Date.parse(option.retrievedAt) > Date.parse(value.trip.asOf)) {
+      findings.push(
+        finding(
+          "future_option_evidence",
+          `options.${index}.retrievedAt`,
+          "Travel options must not postdate the shortlist as-of time.",
+        ),
+      );
+    }
+    if (option.price.currency !== value.trip.currency) {
+      findings.push(
+        finding(
+          "currency_mismatch",
+          `options.${index}.price.currency`,
+          "Option currency must match the trip comparison currency.",
+        ),
+      );
+    }
+    if (
+      (option.kind === "flight" && option.baggageSummary === null) ||
+      (option.kind === "lodging" && option.baggageSummary !== null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_baggage_summary",
+          `options.${index}.baggageSummary`,
+          "Flights require a baggage summary and lodging options must leave it null.",
+        ),
+      );
+    }
+    const missingRequiredConstraints = value.constraints.filter(
+      (constraint) =>
+        constraint.required &&
+        applicableConstraintKinds[option.kind].has(constraint.kind) &&
+        !option.constraintRefs.includes(constraint.id),
+    );
+    if (
+      option.state === "recommended" &&
+      (option.availabilityState !== "visible" ||
+        sources.some((source) => source.freshness !== "current") ||
+        missingRequiredConstraints.length > 0 ||
+        (option.kind === "lodging" &&
+          value.constraints.some(
+            (constraint) => constraint.required && constraint.kind === "cancellation",
+          ) &&
+          option.cancellationState !== "refundable"))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_recommendation",
+          `options.${index}.state`,
+          "Recommended travel options require current matching evidence, visible availability, every applicable required constraint, and refundable lodging when required.",
+        ),
+      );
+    }
+    if (
+      (option.state === "blocked" && option.blockedReason === null) ||
+      (option.state !== "blocked" && option.blockedReason !== null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_blocked_state",
+          `options.${index}.blockedReason`,
+          "Only blocked travel options may carry a blocked reason.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...referenceFindings(
+        question.optionRefs,
+        optionSet,
+        `reviewQuestions.${index}.optionRefs`,
+        "Review question option reference",
+      ),
+      ...referenceFindings(
+        question.sourceRefs,
+        sourceSet,
+        `reviewQuestions.${index}.sourceRefs`,
+        "Review question source reference",
+      ),
+    );
+  }
+
+  findings.push(
+    ...referenceFindings(
+      value.handoff.optionRefs,
+      optionSet,
+      "handoff.optionRefs",
+      "Handoff option reference",
+    ),
+    ...referenceFindings(
+      value.handoff.blockingOptionRefs,
+      optionSet,
+      "handoff.blockingOptionRefs",
+      "Blocking option reference",
+    ),
+    ...referenceFindings(
+      value.handoff.reviewQuestionRefs,
+      questionSet,
+      "handoff.reviewQuestionRefs",
+      "Handoff question reference",
+    ),
+  );
+  if (value.handoff.owner !== value.trip.owner) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "handoff.owner",
+        "The trip and handoff must name the same accountable traveler.",
+      ),
+    );
+  }
+  if (
+    /^(?:the )?(?:agent|assistant|claw)$/iu.test(value.handoff.owner.trim()) ||
+    /\b(?:ai|bot|gpt|language model|travel concierge)\b/iu.test(value.handoff.owner)
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Travel review and transaction authority must remain with a named traveler.",
+      ),
+    );
+  }
+
+  const blockedOptionIds = value.options
+    .filter((option) => option.state === "blocked")
+    .map((option) => option.id);
+  if (
+    value.handoff.state === "blocked" &&
+    (blockedOptionIds.some(
+      (id) => !value.handoff.blockingOptionRefs.includes(id),
+    ) ||
+      (blockedOptionIds.length === 0 &&
+        value.trip.state === "ready-for-traveler-review"))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff",
+        "Blocked handoffs must include every blocked option and retain a visible trip or option blocker.",
+      ),
+    );
+  }
+  if (
+    value.handoff.blockingOptionRefs.some(
+      (ref) => optionById.get(ref)?.state !== "blocked",
+    )
+  ) {
+    findings.push(
+      finding(
+        "resolved_blocking_option",
+        "handoff.blockingOptionRefs",
+        "Only blocked options may remain handoff blockers.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-traveler-review" &&
+    (value.trip.state !== "ready-for-traveler-review" ||
+      blockedOptionIds.length > 0 ||
+      value.handoff.blockingOptionRefs.length > 0 ||
+      optionIds.some((id) => !value.handoff.optionRefs.includes(id)) ||
+      questionIds.some((id) => !value.handoff.reviewQuestionRefs.includes(id)) ||
+      value.trip.requestedKinds.some(
+        (kind) =>
+          !value.options.some(
+            (option) => option.kind === kind && option.state === "recommended",
+          ),
+      ))
+  ) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "Traveler-ready handoffs require matching trip readiness, complete option and question references, no blockers, and a supported recommendation for every requested kind.",
+      ),
+    );
+  }
+  if (
+    value.trip.state === "ready-for-traveler-review" &&
+    value.handoff.state !== "ready-for-traveler-review"
+  ) {
+    findings.push(
+      finding(
+        "inconsistent_ready_state",
+        "trip.state",
+        "A trip cannot claim traveler-review readiness while its handoff remains blocked.",
+      ),
+    );
+  }
+
+  for (const action of requiredActions) {
+    if (
+      !value.blockedActions.includes(action) ||
+      !value.handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Travel artifacts must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+  const actionVerb =
+    String.raw`(?:(?:(?:re|pre)[- ]?)?(?:book(?:s|ed|ing)?|reserv(?:e|es|ed|ing)|purchas(?:e|es|ed|ing)|cancel(?:s|ed|ing|led|ling)?)|buy(?:s|ing)?|bought|modif(?:y|ies|ied|ying) (?:the )?(?:trip|reservation|booking)|check(?:s|ed|ing)? in|submit(?:s|ted|ting)? (?:the )?(?:traveler|passenger|payment|card) (?:data|details|information)|accept(?:s|ed|ing)? (?:the )?terms|contact(?:s|ed|ing)? (?:the )?(?:provider|hotel|airline|Expedia)|(?:send(?:s|ing)?|sent) (?:the )?(?:signup|verification|authentication) email|stor(?:e|es|ed|ing) (?:the )?verification code)`;
+  const actionOccurrencePattern = new RegExp(String.raw`\b${actionVerb}\b`, "giu");
+  const normalizedOwner = value.handoff.owner
+    .toLowerCase()
+    .replaceAll(/[^a-z0-9]+/gu, " ")
+    .trim();
+  const ownerActorPattern = new RegExp(
+    String.raw`(?:the\s+)?(?:traveler|owner|${normalizedOwner.replaceAll(" ", String.raw`\s+`)})\s+(?:must|should|can|may|will|is|was|will be|may be|needs? to|chooses? to|decides? to)(?:\s+personally)?\s*$`,
+    "iu",
+  );
+  const contrastiveActionPattern = new RegExp(
+    String.raw`\s+(?:and|but|yet)(?:\s+then)?\s+(?=(?:please\s+)?${actionVerb}\b)`,
+    "iu",
+  );
+  const statements = [
+    ...value.sources.map((item, index) => ({
+      path: `sources.${index}.scope`,
+      text: item.scope,
+    })),
+    ...value.constraints.map((item, index) => ({
+      path: `constraints.${index}.label`,
+      text: item.label,
+    })),
+    ...value.options.flatMap((item, index) => [
+      { path: `options.${index}.fitReason`, text: item.fitReason },
+      ...item.caveats.map((text, caveatIndex) => ({
+        path: `options.${index}.caveats.${caveatIndex}`,
+        text,
+      })),
+      ...(item.blockedReason === null
+        ? []
+        : [{ path: `options.${index}.blockedReason`, text: item.blockedReason }]),
+    ]),
+    ...value.reviewQuestions.flatMap((item, index) => [
+      { path: `reviewQuestions.${index}.question`, text: item.question },
+      { path: `reviewQuestions.${index}.reason`, text: item.reason },
+    ]),
+  ];
+  for (const { path, text } of statements) {
+    const clauses = text
+      .replaceAll("’", "'")
+      .split(/[.!?]\s*/u)
+      .flatMap((sentence) =>
+        sentence.split(
+          /\s*[;:]\s*|\s+(?:and|but|or|yet)\s+(?=(?:(?:you|the(?:\s+\S+){1,4})\s+)?(?:do not|does not|don't|doesn't|must|mustn't|should|shouldn't|can|can not|can't|cannot|couldn't|may|may not|shall|shall not|will|will not|won't|wouldn't|need(?:s)? to|never)\b)/iu,
+        ),
+      )
+      .flatMap((clause) => clause.split(contrastiveActionPattern));
+    if (
+      clauses.some((clause) => {
+        const trimmed = clause.trim();
+        if (!trimmed) return false;
+        const negated =
+          /^(?:\S+\s+){0,5}(?:do not|does not|don't|doesn't|must not|mustn't|should not|shouldn't|can not|cannot|can't|could not|couldn't|may not|shall not|will not|would not|wouldn't|won't|never)\b/iu.test(
+            trimmed,
+          );
+        if (negated) return false;
+        return [...trimmed.matchAll(actionOccurrencePattern)].some((match) => {
+          const prefix = trimmed.slice(0, match.index);
+          const nominalUse =
+            /\b(?:before|after|without|for|at|until|prior to)\s+(?:any\s+)?$/iu.test(
+              prefix,
+            );
+          return !nominalUse && !ownerActorPattern.test(prefix);
+        });
+      })
+    ) {
+      findings.push(
+        finding(
+          "external_action_content",
+          path,
+          "Travel artifacts must not instruct booking, purchase, account, provider-contact, traveler-data, payment-data, or verification-code actions.",
+        ),
+      );
+    }
+  }
+  return findings;
+}
+
 function fundraisingCampaignFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const claimIds = value.claims.map((item) => item.id);
@@ -12053,6 +12459,7 @@ const validators = {
   "stock-portfolio-monitor": stockPortfolioFindings,
   "subscription-manager": subscriptionManagerFindings,
   "tax-document-organizer": taxDocumentFindings,
+  "travel-concierge": travelShortlistFindings,
   "travel-loyalty-points-organizer": travelLoyaltyFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
   "wardrobe-organizer": wardrobeFindings,

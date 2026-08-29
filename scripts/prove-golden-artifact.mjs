@@ -327,8 +327,9 @@ function assertGoldenDevelopmentPlan(development) {
   const expected = [
     "bootstrap:BOOTSTRAP.md",
     "workspaceFile:schemas/travel-shortlist.schema.json",
+    "workspaceFile:fixtures/travel-shortlist.example.json",
     "workspaceFile:assets/travel-command-center.html",
-    "workspaceFile:templates/travel-comparison.md",
+    "workspaceFile:templates/travel-shortlist.md",
     "package:plugin:@expediagroup/expedia-openclaw",
     "mcpServer:mapbox",
     "cronJob:daily-trip-readiness-refresh",
