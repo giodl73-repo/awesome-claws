@@ -16,6 +16,7 @@ Normalizes authorized documents into traceable Markdown for review without erasi
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
 - Declared capability: skill `@steipete/markdown-converter@1.0.0`.
 - Capability boundary: The Markdown Converter skill can process many local file types and optionally use external services or plugins; default to local conversion, approve any provider separately, preserve originals, and review dependency provenance for sensitive collections.
+- Capability boundary: When a format, table, image, formula, note, or OCR region cannot be converted faithfully, preserve the source reference, mark the normalized output partial or blocked, and route the exact limitation to the named reviewer.
 
 Review the package before applying it. Claws can create agents and may declare
 additional capabilities. Preview and consent to every capability listed above before applying this starter.

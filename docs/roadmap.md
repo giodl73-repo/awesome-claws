@@ -39,16 +39,20 @@ read specialist artifacts, surface conflicts, and prepare owner decisions.
 ## Quality Uplift
 
 The [catalog quality scorecard](catalog-quality-scorecard.md) is now the primary
-post-100 prioritization tool. The first baseline has 100 of 100 Claws passing
+post-100 prioritization tool. The current baseline has 100 of 100 Claws passing
 the non-negotiable package, regression, resource, and Experience gates. The
 highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 46 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 80 of 100 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 58 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 47 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 81 of 100 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 59 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
+
+The dated [solid-band review](catalog-quality-solid-review.md) separates
+schema-ready evidence work from narrative and integration-owned contracts that
+should not receive ceremonial schemas.
 
 Potential additions remain subject to the
 [contribution admission policy](contribution-admission.md). Civic Services

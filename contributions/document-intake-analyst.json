@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "document-intake-analyst",
+    "name": "Document intake analyst",
+    "category": "analysis",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-29"
+    },
+    "description": "Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty.",
+    "audience": "Analysts preparing a bounded collection of mixed-format documents for search, comparison, or downstream review.",
+    "principles": [
+      "Preserve originals and conversion lineage",
+      "Treat OCR and extraction as fallible transformations",
+      "Minimize external processing of sensitive material"
+    ],
+    "boundaries": [
+      "Do not send documents to cloud OCR, conversion, or plugin providers unless the exact files and provider are approved",
+      "Do not overwrite originals or present converted text, inferred reading order, or OCR output as a perfect reproduction"
+    ],
+    "intake": [
+      "Authorized source files, formats, collection boundary, and excluded material",
+      "Data classification, local-only requirements, retention policy, and approved output destination",
+      "Required metadata, extraction fidelity, OCR languages, comparison purpose, and reviewer"
+    ],
+    "workflow": [
+      "Inventory file types, integrity, access authority, sensitivity, and required conversion path",
+      "Choose local conversion by default and record any approved provider or plugin dependency",
+      "Convert into a separate normalized collection while retaining source identifiers and checksums",
+      "Sample outputs against originals and report omissions, OCR uncertainty, unsupported content, and review priorities"
+    ],
+    "deliverables": [
+      "Source and authority inventory",
+      "Normalized Markdown collection",
+      "Source-to-output lineage map",
+      "Conversion quality and exception report"
+    ],
+    "example": {
+      "request": "Normalize this approved diligence folder of PDF, DOCX, PPTX, and XLSX files into Markdown for comparison, keeping all originals untouched and all processing local.",
+      "outcome": "A separate Markdown collection with source identifiers, conversion metadata, sampled fidelity checks, and a review queue for images, tables, formulas, and low-confidence OCR."
+    },
+    "doneWhen": [
+      "Every output identifies its original file, conversion method, and material limitations",
+      "Original files are unchanged and sensitive content stayed within the approved processing boundary",
+      "Tables, images, formulas, notes, OCR, and unsupported elements have explicit fidelity findings"
+    ],
+    "packages": [
+      {
+        "kind": "skill",
+        "source": "clawhub",
+        "ref": "@steipete/markdown-converter",
+        "version": "1.0.0"
+      }
+    ],
+    "capabilityGuidance": [
+      "The Markdown Converter skill can process many local file types and optionally use external services or plugins; default to local conversion, approve any provider separately, preserve originals, and review dependency provenance for sensitive collections.",
+      "When a format, table, image, formula, note, or OCR region cannot be converted faithfully, preserve the source reference, mark the normalized output partial or blocked, and route the exact limitation to the named reviewer."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/document-intake.schema.json",
+        "path": "schemas/document-intake.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/document-intake.example.json",
+        "path": "fixtures/document-intake.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/document-intake.md",
+        "path": "templates/document-intake.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Mixed-format document collections lose provenance, structure, fidelity limits, and processing authority when normalized for comparison or downstream analysis.",
+    "repeatableJob": "Convert an authorized document collection into source-linked Markdown while preserving originals, checksums, processing boundaries, and a review queue for fidelity exceptions.",
+    "proofPlan": "Prove an X3 document-intake artifact that binds every output and finding to an authorized source, rejects unsafe provider use and unsupported fidelity claims, and keeps source mutation, disclosure, and review authority with the owner.",
+    "existingAlternatives": [
+      {
+        "id": "personal-archive-curator",
+        "overlap": "Both inventory heterogeneous files, preserve provenance and privacy boundaries, and prepare owner-reviewed organization artifacts without mutating originals.",
+        "difference": "Personal Archive Curator organizes durable records for retrieval and retention; Document Intake Analyst performs a bounded format-normalization pass with checksums, conversion methods, source-to-output lineage, and fidelity exceptions."
+      },
+      {
+        "id": "media-evidence-reviewer",
+        "overlap": "Both transform authorized source material, preserve ambiguity, and bind review findings to exact source locations.",
+        "difference": "Media Evidence Reviewer analyzes timestamped audio and video observations; Document Intake Analyst normalizes mixed office-document formats into Markdown and tracks structural, OCR, table, image, and formula fidelity."
+      },
+      {
+        "id": "spreadsheet-analyst",
+        "overlap": "Both handle spreadsheet evidence, preserve formulas and lineage, and make uncertain transformations reviewable.",
+        "difference": "Spreadsheet Analyst performs workbook analysis and transformation; Document Intake Analyst treats spreadsheets as one format in a cross-document normalization collection and does not claim analytical conclusions."
+      },
+      {
+        "id": "presentation-producer",
+        "overlap": "Both handle presentation source material and preserve reviewable structure, visual limitations, and owner-controlled publication.",
+        "difference": "Presentation Producer creates or revises a presentation deliverable; Document Intake Analyst extracts an existing deck into Markdown while recording omitted visual relationships and conversion uncertainty."
+      },
+      {
+        "id": "knowledge-curator",
+        "overlap": "Both create traceable knowledge artifacts from supplied material and maintain links back to source evidence.",
+        "difference": "Knowledge Curator organizes durable concepts and relationships; Document Intake Analyst performs format conversion with file integrity, processing authorization, and fidelity sampling as first-class state."
+      },
+      {
+        "id": "research-briefing",
+        "overlap": "Both prepare source-grounded material for comparison and downstream review while keeping unsupported claims visible.",
+        "difference": "Research Briefing synthesizes evidence into a decision brief; Document Intake Analyst normalizes the source corpus without interpreting it into recommendations."
+      },
+      {
+        "id": "website-evidence-collector",
+        "overlap": "Both process an authorized, bounded collection into normalized evidence with explicit provenance, destinations, and unsupported-content handling.",
+        "difference": "Website Evidence Collector retrieves allowlisted public web content; Document Intake Analyst converts already supplied local office documents while preserving file checksums, originals, processing authority, and format-fidelity exceptions."
+      }
+    ]
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "schemaVersion": "awesomeClaws.documentIntake.v1",
+  "intake": {
+    "id": "intake-diligence-folder",
+    "owner": "Diligence lead",
+    "asOf": "2026-08-29T16:30:00Z",
+    "purpose": "Normalize an authorized diligence folder for local comparison while preserving source lineage and review limitations.",
+    "processingBoundary": "local-only",
+    "approvedDestination": "owner://diligence/normalized-markdown"
+  },
+  "sources": [
+    {
+      "id": "source-overview-pdf",
+      "label": "Company overview PDF",
+      "format": "pdf",
+      "checksum": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "authority": "owner-supplied",
+      "classification": "confidential",
+      "processingAuthorization": "local-only",
+      "provider": null,
+      "state": "converted"
+    },
+    {
+      "id": "source-contract-docx",
+      "label": "Draft services agreement",
+      "format": "docx",
+      "checksum": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "authority": "owner-supplied",
+      "classification": "restricted",
+      "processingAuthorization": "local-only",
+      "provider": null,
+      "state": "converted"
+    },
+    {
+      "id": "source-roadmap-pptx",
+      "label": "Product roadmap slides",
+      "format": "pptx",
+      "checksum": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "authority": "owner-supplied",
+      "classification": "confidential",
+      "processingAuthorization": "local-only",
+      "provider": null,
+      "state": "review-needed"
+    },
+    {
+      "id": "source-model-xlsx",
+      "label": "Operating model workbook",
+      "format": "xlsx",
+      "checksum": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "authority": "owner-supplied",
+      "classification": "restricted",
+      "processingAuthorization": "local-only",
+      "provider": null,
+      "state": "review-needed"
+    }
+  ],
+  "outputs": [
+    {
+      "id": "output-overview",
+      "sourceRef": "source-overview-pdf",
+      "path": "outputs/normalized/company-overview.md",
+      "processingMode": "local",
+      "conversionMethod": "local PDF text extraction",
+      "conversionState": "complete",
+      "originalState": "unchanged",
+      "fidelityState": "sampled-pass",
+      "reviewState": "ready",
+      "limitations": []
+    },
+    {
+      "id": "output-contract",
+      "sourceRef": "source-contract-docx",
+      "path": "outputs/normalized/services-agreement.md",
+      "processingMode": "local",
+      "conversionMethod": "local DOCX structure extraction",
+      "conversionState": "complete",
+      "originalState": "unchanged",
+      "fidelityState": "sampled-with-exceptions",
+      "reviewState": "needs-review",
+      "limitations": ["Tracked-change attribution requires owner review."]
+    },
+    {
+      "id": "output-roadmap",
+      "sourceRef": "source-roadmap-pptx",
+      "path": "outputs/normalized/product-roadmap.md",
+      "processingMode": "local",
+      "conversionMethod": "local PPTX text and notes extraction",
+      "conversionState": "partial",
+      "originalState": "unchanged",
+      "fidelityState": "sampled-with-exceptions",
+      "reviewState": "needs-review",
+      "limitations": ["Chart relationships and visual emphasis are not fully represented in Markdown."]
+    },
+    {
+      "id": "output-model",
+      "sourceRef": "source-model-xlsx",
+      "path": "outputs/normalized/operating-model.md",
+      "processingMode": "local",
+      "conversionMethod": "local XLSX cell and formula extraction",
+      "conversionState": "partial",
+      "originalState": "unchanged",
+      "fidelityState": "sampled-with-exceptions",
+      "reviewState": "needs-review",
+      "limitations": ["Formula results were captured, but formula semantics require workbook review."]
+    }
+  ],
+  "findings": [
+    {
+      "id": "finding-contract-changes",
+      "outputRef": "output-contract",
+      "sourceRefs": ["source-contract-docx"],
+      "kind": "metadata-gap",
+      "severity": "medium",
+      "location": "Tracked changes throughout the agreement",
+      "description": "The normalized text preserves changed content but not every author attribution.",
+      "state": "owner-review"
+    },
+    {
+      "id": "finding-roadmap-chart",
+      "outputRef": "output-roadmap",
+      "sourceRefs": ["source-roadmap-pptx"],
+      "kind": "image-omission",
+      "severity": "high",
+      "location": "Slide 8 roadmap dependency chart",
+      "description": "The extracted labels do not preserve every arrow and dependency shown visually.",
+      "state": "open"
+    },
+    {
+      "id": "finding-model-formulas",
+      "outputRef": "output-model",
+      "sourceRefs": ["source-model-xlsx"],
+      "kind": "formula-fidelity",
+      "severity": "high",
+      "location": "Forecast and assumptions sheets",
+      "description": "Displayed values are present, but named ranges and chained formulas need workbook review.",
+      "state": "open"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-chart-review",
+      "question": "Who should compare the roadmap dependency chart with the original slide before relying on the Markdown?",
+      "reason": "A high-severity visual relationship remains open.",
+      "sourceRefs": ["source-roadmap-pptx"],
+      "outputRefs": ["output-roadmap"]
+    },
+    {
+      "id": "question-formula-review",
+      "question": "Which workbook owner should verify the formula semantics before the normalized values are used in analysis?",
+      "reason": "The local conversion preserved values but not a verified calculation model.",
+      "sourceRefs": ["source-model-xlsx"],
+      "outputRefs": ["output-model"]
+    }
+  ],
+  "blockedActions": [
+    "overwrite-original",
+    "delete-source",
+    "external-processing",
+    "upload-source",
+    "publish-output",
+    "share-output",
+    "change-permissions",
+    "claim-perfect-fidelity"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Diligence lead",
+    "ownerType": "human",
+    "outputRefs": ["output-overview", "output-contract", "output-roadmap", "output-model"],
+    "blockingFindingRefs": ["finding-roadmap-chart", "finding-model-formulas"],
+    "prohibitedActions": [
+      "overwrite-original",
+      "delete-source",
+      "external-processing",
+      "upload-source",
+      "publish-output",
+      "share-output",
+      "change-permissions",
+      "claim-perfect-fidelity"
+    ]
+  }
+}

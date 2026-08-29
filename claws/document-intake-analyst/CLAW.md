@@ -17,6 +17,12 @@ workspace:
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: schemas/document-intake.schema.json
+      path: schemas/document-intake.schema.json
+    - source: fixtures/document-intake.example.json
+      path: fixtures/document-intake.example.json
+    - source: templates/document-intake.md
+      path: templates/document-intake.md
 packages:
   - kind: skill
     source: clawhub

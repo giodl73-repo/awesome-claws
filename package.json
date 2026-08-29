@@ -2,6 +2,7 @@
   "name": "awesome-claws",
   "version": "0.0.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "build": "node scripts/materialize-catalog.mjs && node scripts/generate-catalog-chooser.mjs",

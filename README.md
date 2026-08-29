@@ -71,6 +71,14 @@ All current Claws are actively maintained by
 supports additional maintainers and eventual ownership transfer without changing
 the portable package contract.
 
+## License
+
+Awesome Claws and its generated Claw packages are licensed under the
+[MIT License](LICENSE), matching OpenClaw. Contributions are accepted under the
+same license. Third-party dependencies and externally referenced capabilities
+retain their own licenses; notices for incorporated or adapted implementation
+material are recorded in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
 Every starter also gives its generated `SOUL.md` a role-specific identity. The
 collection intentionally ranges from light theming, such as the copyable
 Executive Assistant, to a more distinctive professional voice, such as the

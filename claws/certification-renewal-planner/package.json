@@ -2,6 +2,7 @@
   "name": "@awesome-claws/certification-renewal-planner",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "openclaw": {
     "claw": "CLAW.md"

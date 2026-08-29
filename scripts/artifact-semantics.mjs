@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { isSafePackagePath, portablePathKey } from "./portable-paths.mjs";
 
 function finding(code, path, message) {
   return { code, path, message };
@@ -193,6 +194,547 @@ function researchFindings(value) {
         known,
         `options.${index}.claimRefs`,
         "Claim reference",
+      ),
+    );
+  }
+  return findings;
+}
+
+function documentIntakeFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const outputIds = value.outputs.map((item) => item.id);
+  const findingIds = value.findings.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const outputSet = new Set(outputIds);
+  const findingSet = new Set(findingIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(outputIds, "outputs", "Output id"),
+    ...uniqueFindings(
+      value.outputs.map((item) => portablePathKey(item.path)),
+      "outputs",
+      "Portable output path",
+    ),
+    ...uniqueFindings(findingIds, "findings", "Finding id"),
+    ...uniqueFindings(
+      value.reviewQuestions.map((item) => item.id),
+      "reviewQuestions",
+      "Review question id",
+    ),
+  ];
+
+  for (const [index, source] of value.sources.entries()) {
+    const external = source.processingAuthorization === "external-approved";
+    if (
+      (external &&
+        (typeof source.provider !== "string" || !source.provider.trim())) ||
+      (!external && source.provider !== null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_provider_authority",
+          `sources.${index}.provider`,
+          "Only externally approved processing may name a provider, and approved external processing must name one.",
+        ),
+      );
+    }
+    if (
+      value.intake.processingBoundary === "local-only" &&
+      source.processingAuthorization === "external-approved"
+    ) {
+      findings.push(
+        finding(
+          "processing_boundary_violation",
+          `sources.${index}.processingAuthorization`,
+          "A local-only intake cannot authorize external processing.",
+        ),
+      );
+    }
+    const sourceOutputs = value.outputs.filter(
+      (output) => output.sourceRef === source.id,
+    );
+    if (source.state !== "excluded" && sourceOutputs.length === 0) {
+      findings.push(
+        finding(
+          "missing_source_output",
+          `sources.${index}.state`,
+          "Every non-excluded source requires a source-linked output record.",
+        ),
+      );
+    }
+    if (
+      ["converted", "review-needed"].includes(source.state) &&
+      !sourceOutputs.some((output) => output.conversionState !== "not-produced")
+    ) {
+      findings.push(
+        finding(
+          "missing_produced_output",
+          `sources.${index}.state`,
+          "Every converted or review-needed source requires a produced normalized output.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, output] of value.outputs.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [output.sourceRef],
+        sourceSet,
+        `outputs.${index}.sourceRef`,
+        "Source reference",
+      ),
+    );
+    const source = sourceById.get(output.sourceRef);
+    if (
+      !isSafePackagePath(output.path) ||
+      !output.path.startsWith("outputs/")
+    ) {
+      findings.push(
+        finding(
+          "unsafe_output_path",
+          `outputs.${index}.path`,
+          "Normalized output paths must remain inside outputs/ without empty or traversal segments.",
+        ),
+      );
+    }
+    if (
+      output.processingMode === "external" &&
+      source?.processingAuthorization !== "external-approved"
+    ) {
+      findings.push(
+        finding(
+          "unauthorized_processing",
+          `outputs.${index}.processingMode`,
+          "External conversion requires explicit source-level external approval.",
+        ),
+      );
+    }
+    if (
+      output.processingMode === "external" &&
+      value.intake.processingBoundary === "local-only"
+    ) {
+      findings.push(
+        finding(
+          "processing_boundary_violation",
+          `outputs.${index}.processingMode`,
+          "A local-only intake cannot contain externally processed outputs.",
+        ),
+      );
+    }
+    if (
+      (output.conversionState === "not-produced" &&
+        (output.processingMode !== "none" ||
+          output.fidelityState !== "blocked" ||
+          output.reviewState !== "blocked")) ||
+      (output.conversionState !== "not-produced" &&
+        output.processingMode === "none")
+    ) {
+      findings.push(
+        finding(
+          "incoherent_conversion_state",
+          `outputs.${index}.conversionState`,
+          "Not-produced outputs must use no processing and blocked fidelity/review states; produced outputs require a processing mode.",
+        ),
+      );
+    }
+    if (output.originalState !== "unchanged") {
+      findings.push(
+        finding(
+          "original_not_preserved",
+          `outputs.${index}.originalState`,
+          "Every normalized output must record that its original source remained unchanged.",
+        ),
+      );
+    }
+    if (
+      source &&
+      ["blocked", "excluded"].includes(source.state) &&
+      output.conversionState !== "not-produced"
+    ) {
+      findings.push(
+        finding(
+          "output_from_unprocessed_source",
+          `outputs.${index}.conversionState`,
+          "Blocked or excluded sources cannot have a produced normalized output.",
+        ),
+      );
+    }
+    const outputFindings = value.findings.filter(
+      (item) => item.outputRef === output.id,
+    );
+    const unresolvedOutputFindings = outputFindings.filter(
+      (item) => item.state !== "resolved",
+    );
+    if (
+      output.fidelityState === "sampled-with-exceptions" &&
+      (output.limitations.length === 0 || outputFindings.length === 0)
+    ) {
+      findings.push(
+        finding(
+          "missing_fidelity_exception",
+          `outputs.${index}.fidelityState`,
+          "Sampled outputs with exceptions require explicit limitations and linked findings.",
+        ),
+      );
+    }
+    if (
+      output.conversionState === "partial" &&
+      (output.limitations.length === 0 ||
+        outputFindings.length === 0 ||
+        output.fidelityState !== "sampled-with-exceptions" ||
+        !["needs-review", "blocked"].includes(output.reviewState))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_partial_output",
+          `outputs.${index}.conversionState`,
+          "Partial outputs require explicit limitations, linked findings, exception fidelity, and a non-ready review state.",
+        ),
+      );
+    }
+    if (
+      output.reviewState === "ready" &&
+      output.fidelityState !== "sampled-pass"
+    ) {
+      findings.push(
+        finding(
+          "unsupported_ready_output",
+          `outputs.${index}.reviewState`,
+          "Ready outputs require sampled-pass fidelity.",
+        ),
+      );
+    }
+    if (
+      unresolvedOutputFindings.length > 0 &&
+      (output.fidelityState !== "sampled-with-exceptions" ||
+        !["needs-review", "blocked"].includes(output.reviewState))
+    ) {
+      findings.push(
+        finding(
+          "unresolved_fidelity_claim",
+          `outputs.${index}.fidelityState`,
+          "Outputs with unresolved findings must retain exception fidelity and a non-ready review state.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, item] of value.findings.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [item.outputRef],
+        outputSet,
+        `findings.${index}.outputRef`,
+        "Output reference",
+      ),
+      ...uniqueFindings(
+        item.sourceRefs,
+        `findings.${index}.sourceRefs`,
+        "Source reference",
+      ),
+      ...referenceFindings(
+        item.sourceRefs,
+        sourceSet,
+        `findings.${index}.sourceRefs`,
+        "Source reference",
+      ),
+    );
+    const output = value.outputs.find((candidate) => candidate.id === item.outputRef);
+    if (output && !item.sourceRefs.includes(output.sourceRef)) {
+      findings.push(
+        finding(
+          "finding_source_mismatch",
+          `findings.${index}.sourceRefs`,
+          "A fidelity finding must include the source linked to its output.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(
+        question.sourceRefs,
+        `reviewQuestions.${index}.sourceRefs`,
+        "Source reference",
+      ),
+      ...referenceFindings(
+        question.sourceRefs,
+        sourceSet,
+        `reviewQuestions.${index}.sourceRefs`,
+        "Source reference",
+      ),
+      ...uniqueFindings(
+        question.outputRefs,
+        `reviewQuestions.${index}.outputRefs`,
+        "Output reference",
+      ),
+      ...referenceFindings(
+        question.outputRefs,
+        outputSet,
+        `reviewQuestions.${index}.outputRefs`,
+        "Output reference",
+      ),
+    );
+    for (const outputRef of question.outputRefs) {
+      const output = value.outputs.find((item) => item.id === outputRef);
+      if (output && !question.sourceRefs.includes(output.sourceRef)) {
+        findings.push(
+          finding(
+            "review_source_mismatch",
+            `reviewQuestions.${index}.sourceRefs`,
+            "Every reviewed output must be paired with its own source reference.",
+          ),
+        );
+      }
+    }
+  }
+
+  findings.push(
+    ...uniqueFindings(
+      value.handoff.outputRefs,
+      "handoff.outputRefs",
+      "Output reference",
+    ),
+    ...referenceFindings(
+      value.handoff.outputRefs,
+      outputSet,
+      "handoff.outputRefs",
+      "Output reference",
+    ),
+    ...uniqueFindings(
+      value.handoff.blockingFindingRefs,
+      "handoff.blockingFindingRefs",
+      "Finding reference",
+    ),
+    ...referenceFindings(
+      value.handoff.blockingFindingRefs,
+      findingSet,
+      "handoff.blockingFindingRefs",
+      "Finding reference",
+    ),
+  );
+
+  const unresolvedHighFindings = value.findings
+    .filter((item) => item.severity === "high" && item.state !== "resolved")
+    .map((item) => item.id);
+  if (
+    unresolvedHighFindings.some(
+      (id) => !value.handoff.blockingFindingRefs.includes(id),
+    )
+  ) {
+    findings.push(
+      finding(
+        "missing_blocking_finding",
+        "handoff.blockingFindingRefs",
+        "Every unresolved high-severity fidelity finding must block the handoff.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    (value.sources.some((item) =>
+      ["blocked", "review-needed"].includes(item.state),
+    ) ||
+      unresolvedHighFindings.length > 0 ||
+      value.outputs.some((item) =>
+        item.conversionState === "not-produced" ||
+        ["unreviewed", "blocked"].includes(item.fidelityState) ||
+        item.reviewState === "blocked",
+      ))
+  ) {
+    findings.push(
+      finding(
+        "unsupported_ready_state",
+        "handoff.state",
+        "Owner-ready document intake requires no unresolved high-severity findings or unreviewed outputs.",
+      ),
+    );
+  }
+  const producedOutputIds = value.outputs
+    .filter((item) => item.conversionState !== "not-produced")
+    .map((item) => item.id);
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    producedOutputIds.some((id) => !value.handoff.outputRefs.includes(id))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.outputRefs",
+        "Owner-ready handoffs must include every produced normalized output.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.handoff.blockingFindingRefs.length > 0
+  ) {
+    findings.push(
+      finding(
+        "ready_with_blockers",
+        "handoff.blockingFindingRefs",
+        "Owner-ready handoffs cannot retain blocking findings.",
+      ),
+    );
+  }
+  if (
+    value.handoff.blockingFindingRefs.some(
+      (id) => value.findings.find((item) => item.id === id)?.state === "resolved",
+    )
+  ) {
+    findings.push(
+      finding(
+        "resolved_blocking_finding",
+        "handoff.blockingFindingRefs",
+        "Resolved findings cannot remain handoff blockers.",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "overwrite-original",
+    "delete-source",
+    "external-processing",
+    "upload-source",
+    "publish-output",
+    "share-output",
+    "change-permissions",
+    "claim-perfect-fidelity",
+  ];
+  for (const action of requiredActions) {
+    if (
+      !value.blockedActions.includes(action) ||
+      !value.handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Document intake must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+  const mutationPattern =
+    /\b(?:overwrites?|overwrote|overwritten|replaces?|replaced|modif(?:y|ies|ied)|edits?|edited|alters?|altered|deletes?|deleted|redacts?|redacted|truncates?|truncated|sanitizes?|sanitized)\b/iu;
+  const originalPattern = /\boriginals?\b/iu;
+  const actionProseStatements = [
+    ...value.outputs.flatMap((item) => [
+      item.conversionMethod,
+      ...item.limitations,
+    ]),
+    ...value.findings.map((item) => item.description),
+    ...value.reviewQuestions.map((item) => item.reason),
+  ];
+  const mutationStatements = [
+    ...actionProseStatements,
+    ...value.reviewQuestions.map((item) => item.question),
+  ];
+  if (
+    mutationStatements.some(
+      (statement) =>
+        originalPattern.test(statement) && mutationPattern.test(statement),
+    )
+  ) {
+    findings.push(
+      finding(
+        "external_action_content",
+        "reviewQuestions",
+        "Document-intake artifacts must not instruct external processing, file mutation, publication, or sharing.",
+      ),
+    );
+  }
+  const actionVerb =
+    String.raw`(?:uploads?|publishes?|shares?|deletes?|overwrites?|replaces?|sends?|changes?\s+(?:the\s+)?permissions?|process(?:es|ed|ing)?\b[^.!?]{0,40}\bexternally|externally\b[^.!?]{0,40}\bprocess(?:es|ed|ing)?|claims?\s+(?:perfect|lossless)\s+fidelity)`;
+  const unsupportedFidelityPattern = /\b(?:perfect|lossless)\s+fidelity\b/iu;
+  const directActionPattern =
+    new RegExp(
+      String.raw`^(?:(?:please|must|need to|you (?:should|must|need to)|the agent (?:should|must|needs to))\s+)?${actionVerb}\b`,
+      "iu",
+    );
+  const actionOccurrencePattern =
+    /\b(?:uploads?|publishes?|shares?|deletes?|overwrites?|replaces?|sends?)\b|\bchanges?\s+(?:the\s+)?permissions?\b|\bprocess(?:es|ed|ing)?\b(?=[^.!?]{0,40}\bexternally\b)|\bexternally\b(?=[^.!?]{0,40}\bprocess(?:es|ed|ing)?\b)|\bclaims?\b(?=[^.!?]{0,20}\b(?:perfect|lossless)\s+fidelity\b)/giu;
+  const mandatoryActionPattern = new RegExp(
+    String.raw`\b(?:must|needs? to|should)\b[^.!?]{0,60}\b${actionVerb}\b`,
+    "iu",
+  );
+  const normalizedOwner = value.handoff.owner
+    .toLowerCase()
+    .replaceAll(/[^a-z0-9]+/gu, " ")
+    .trim();
+  const ownerQuestionPrefix = /^(?:should|can|may|will)\b/iu;
+  const ownerActorPattern = new RegExp(
+    String.raw`^(?:should|can|may|will) (?:the )?${normalizedOwner.replaceAll(" ", String.raw`\s+`)} ${actionVerb}\b`,
+    "iu",
+  );
+  const actionStatements = [
+    ...actionProseStatements.map((statement) => ({
+      statement,
+      question: false,
+    })),
+    ...value.reviewQuestions.map((item) => ({
+      statement: item.question,
+      question: true,
+    })),
+  ];
+  if (
+    actionStatements.some(({ statement, question }) =>
+      statement
+        .split(/[.!?]\s*/u)
+        .flatMap((sentence) =>
+          sentence.split(
+            /(?:\s*[,;:]\s*|\s+(?:and|but|or|yet)\s+)(?=(?:should|can|may|will)\b)/iu,
+          ),
+        )
+        .some((sentence) => {
+          const trimmed = sentence.trim();
+          const normalized = trimmed
+            .toLowerCase()
+            .replaceAll(/[^a-z0-9]+/gu, " ")
+            .trim();
+          const actionCount = [
+            ...normalized.matchAll(actionOccurrencePattern),
+          ].length;
+          const ownerGated =
+            question &&
+            actionCount === 1 &&
+            ownerQuestionPrefix.test(trimmed) &&
+            ownerActorPattern.test(normalized);
+          return (
+            (!question && unsupportedFidelityPattern.test(trimmed)) ||
+            (!ownerGated &&
+              (directActionPattern.test(trimmed) ||
+                mandatoryActionPattern.test(trimmed)))
+          );
+        }),
+    )
+  ) {
+    findings.push(
+      finding(
+        "external_action_content",
+        "reviewQuestions",
+        "Document-intake artifacts must not instruct external processing, file mutation, publication, or sharing.",
+      ),
+    );
+  }
+  if (
+    /^(?:the )?(?:agent|assistant|claw)$/u.test(normalizedOwner) ||
+    /(?:^| )document intake (?:analyst|assistant|bot)(?: |$)/u.test(
+      normalizedOwner,
+    ) ||
+    /(?:^| )(?:ai|gpt|bot|language model)(?: |$)/u.test(normalizedOwner) ||
+    /(?:^| )(?:automation|automated|ai) (?:agent|assistant)(?: |$)/u.test(
+      normalizedOwner,
+    )
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Processing, source mutation, disclosure, and fidelity acceptance must remain with the named owner.",
       ),
     );
   }
@@ -10945,6 +11487,7 @@ const validators = {
   "data-analyst": dataAnalysisFindings,
   "delegation-coordinator": delegationFindings,
   "document-renewal-tracker": documentRenewalFindings,
+  "document-intake-analyst": documentIntakeFindings,
   "financial-analyst": financialAnalysisFindings,
   "freelance-client-pipeline": freelancePipelineFindings,
   "fantasy-sports-manager": fantasySportsFindings,

@@ -1,0 +1,81 @@
+# Solid-band review
+
+This review covers the 21 Claws in the Solid band after Document Intake Analyst
+moved from 69 to 94 on 2026-08-29. All 21 pass the non-negotiable package,
+regression, resource, and Experience gates. Their lower scores describe
+reviewability and artifact-depth gaps, not observed live-model failures.
+
+## Shared pattern
+
+- All 21 are grandfathered entries without retrospective contribution records.
+  That is a five-point documentation gap, not a failed admission.
+- All 21 lack registered semantic validators.
+- Nineteen lack a local structured-artifact schema.
+- All 21 have complete operating contracts, screenshots, regression cases, and
+  active maintenance.
+
+## Current entries
+
+| Claw | Score | Evidence / verification gap | Review |
+| --- | ---: | --- | --- |
+| `fundraising-campaign-manager` | 79 | Schema exists; no semantic validator or non-session example | Complete the existing claim-ledger contract first |
+| `workflow-operator` | 79 | No local schema or semantic validator | Lobster owns typed workflow state; avoid duplicating its contract without a concrete handoff need |
+| `video-concept-producer` | 79 | No local schema or semantic validator | A concept/shot/evidence manifest may help, but only if it governs the generated asset |
+| `website-evidence-collector` | 79 | No local schema or semantic validator | A collection ledger can add source, freshness, extraction, and failure invariants beyond plugin types |
+| `web-evidence-researcher` | 79 | No local schema or semantic validator | A research-evidence ledger can add claim/source and freshness guarantees beyond plugin types |
+| `travel-concierge` | 78 | Schema exists; no semantic validator, example fixture, or artifact template | Complete the existing travel-shortlist contract |
+| `software-maintainer` | 78 | No local schema or semantic validator | Prefer code/test/diff evidence unless a stable change-plan artifact proves useful |
+| `knowledge-curator` | 78 | No local schema or semantic validator | Keep narrative knowledge structure unless a durable index contract emerges |
+| `content-operations` | 78 | No local schema or semantic validator | A claim/approval ledger could help; avoid schema for prose itself |
+| `research-scout` | 74 | No local schema or semantic validator | A recurring evidence-delta ledger is a natural structured artifact |
+| `travel-planner` | 74 | No local schema or semantic validator | Itinerary chronology, constraints, costs, and booking gates justify structure |
+| `public-company-watcher` | 74 | No local schema or semantic validator | A filing/event/change ledger is a natural structured artifact |
+| `knowledge-gardener` | 73 | No local schema or semantic validator | Notion owns page structure; add local state only for reviewable change plans |
+| `research-monitor` | 73 | No local schema or semantic validator | A watchlist and evidence-delta ledger is a natural structured artifact |
+| `presentation-producer` | 73 | No local schema or semantic validator | Keep the deck as the primary artifact unless a claim/source/approval manifest is needed |
+| `feed-intelligence-monitor` | 73 | No local schema or semantic validator | A feed-item evidence and deduplication ledger is a natural structured artifact |
+| `meeting-intelligence` | 73 | No local schema or semantic validator | A consented transcript/action/decision ledger can add durable invariants |
+| `executive-briefing` | 73 | No local schema or semantic validator | A source/freshness/priority ledger may help, but the briefing remains narrative |
+| `executive-assistant` | 73 | No local schema or semantic validator | Prefer a narrow commitment/approval ledger over schematizing correspondence |
+| `spreadsheet-analyst` | 73 | No local schema or semantic validator | A transformation/lineage/exception manifest can complement user-owned workbooks |
+| `media-evidence-reviewer` | 73 | No local schema or semantic validator | Timestamped observations, transcript confidence, consent, and redaction warrant structure |
+
+## Uplift batches
+
+### 1. Finish existing structured contracts
+
+Start with `fundraising-campaign-manager` and `travel-concierge`. Both already
+declare schemas, so examples, templates, semantic invariants, and retrospective
+admission records deepen an existing design rather than inventing one.
+
+### 2. Add evidence ledgers where the job naturally owns state
+
+The strongest candidates are `media-evidence-reviewer`, `spreadsheet-analyst`,
+`travel-planner`, `public-company-watcher`, `research-scout`,
+`research-monitor`, `feed-intelligence-monitor`, `web-evidence-researcher`,
+`website-evidence-collector`, and `meeting-intelligence`. Their recurring work
+already depends on source identity, freshness, lineage, chronology, confidence,
+or consent that JSON Schema plus semantic checks can enforce.
+
+### 3. Review narrative and integration-owned contracts before adding schemas
+
+For `software-maintainer`, `content-operations`, `executive-assistant`,
+`executive-briefing`, `knowledge-curator`, `knowledge-gardener`,
+`presentation-producer`, `video-concept-producer`, and `workflow-operator`,
+first identify a stable state object that the Claw itself owns. External plugin
+types, source documents, code diffs, and prose deliverables should not be
+duplicated merely to raise a score.
+
+## Recommended order
+
+1. `fundraising-campaign-manager`: highest-leverage completion of an existing
+   schema, with claim provenance and solicitation authority as semantic gates.
+2. `travel-concierge`: complete the existing shortlist contract with chronology,
+   cost, source freshness, traveler constraints, and booking boundaries.
+3. `media-evidence-reviewer`: define a timestamped observation and transcript
+   confidence ledger because consent, redaction, ambiguity, and source location
+   are already central to the job.
+
+Backfill contribution records alongside substantive work. For entries already
+at 78-79, a retrospective record alone may move the score into Strong, but it
+should capture a real distinctness decision rather than serve as score padding.

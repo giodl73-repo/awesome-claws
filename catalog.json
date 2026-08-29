@@ -2017,7 +2017,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-29"
       },
       "description": "Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty.",
       "audience": "Analysts preparing a bounded collection of mixed-format documents for search, comparison, or downstream review.",
@@ -2065,7 +2065,8 @@
         }
       ],
       "capabilityGuidance": [
-        "The Markdown Converter skill can process many local file types and optionally use external services or plugins; default to local conversion, approve any provider separately, preserve originals, and review dependency provenance for sensitive collections."
+        "The Markdown Converter skill can process many local file types and optionally use external services or plugins; default to local conversion, approve any provider separately, preserve originals, and review dependency provenance for sensitive collections.",
+        "When a format, table, image, formula, note, or OCR region cannot be converted faithfully, preserve the source reference, mark the normalized output partial or blocked, and route the exact limitation to the named reviewer."
       ],
       "resources": [
         {
@@ -2081,6 +2082,21 @@
         {
           "source": "templates/session-handoff.md",
           "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/document-intake.schema.json",
+          "path": "schemas/document-intake.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/document-intake.example.json",
+          "path": "fixtures/document-intake.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/document-intake.md",
+          "path": "templates/document-intake.md",
           "role": "template"
         }
       ]
