@@ -89,6 +89,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "invoice-payment-followup",
+    schema: "../claws/invoice-payment-followup/schemas/invoice-receivables.schema.json",
+    fixture: "../claws/invoice-payment-followup/fixtures/invoice-receivables.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "fantasy-sports-manager",
     schema: "../claws/fantasy-sports-manager/schemas/fantasy-roster.schema.json",
     fixture: "../claws/fantasy-sports-manager/fixtures/fantasy-roster.example.json",
@@ -422,6 +428,41 @@ test("freelance client pipeline preserves opportunity evidence and owner authori
   const agentOwned = structuredClone(cases.get("freelance-client-pipeline").fixture);
   agentOwned.handoff.owner = "freelance-client-pipeline";
   assert.equal(isValid("freelance-client-pipeline", agentOwned), false);
+});
+
+test("invoice payment follow-up preserves receivables evidence and owner authority", () => {
+  const readyWithStaleSource = structuredClone(cases.get("invoice-payment-followup").fixture);
+  readyWithStaleSource.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("invoice-payment-followup", readyWithStaleSource), false);
+
+  const paidWithStaleSource = structuredClone(cases.get("invoice-payment-followup").fixture);
+  paidWithStaleSource.invoices[0].status = "paid";
+  paidWithStaleSource.invoices[0].sourceRefs = ["source-old-statement"];
+  assert.equal(isValid("invoice-payment-followup", paidWithStaleSource), false);
+
+  const confirmedWithStaleSource = structuredClone(cases.get("invoice-payment-followup").fixture);
+  confirmedWithStaleSource.paymentEvidence[0].sourceRefs = ["source-old-statement"];
+  assert.equal(isValid("invoice-payment-followup", confirmedWithStaleSource), false);
+
+  const readyFollowUpWithStaleSource = structuredClone(cases.get("invoice-payment-followup").fixture);
+  readyFollowUpWithStaleSource.followUps[0].sourceRefs = ["source-old-statement"];
+  assert.equal(isValid("invoice-payment-followup", readyFollowUpWithStaleSource), false);
+
+  const actionAdvice = structuredClone(cases.get("invoice-payment-followup").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Send a reminder and collect payment.";
+  assert.equal(isValid("invoice-payment-followup", actionAdvice), false);
+
+  const danglingInvoice = structuredClone(cases.get("invoice-payment-followup").fixture);
+  danglingInvoice.paymentEvidence[0].invoiceRef = "invoice-missing";
+  assert.equal(isValid("invoice-payment-followup", danglingInvoice), false);
+
+  const wrongOwner = structuredClone(cases.get("invoice-payment-followup").fixture);
+  wrongOwner.reviewQuestions[0].owner = "Someone Else";
+  assert.equal(isValid("invoice-payment-followup", wrongOwner), false);
+
+  const agentOwned = structuredClone(cases.get("invoice-payment-followup").fixture);
+  agentOwned.handoff.owner = "invoice-payment-followup";
+  assert.equal(isValid("invoice-payment-followup", agentOwned), false);
 });
 
 test("gift relationship manager preserves privacy, budget, and owner authority", () => {
@@ -957,6 +998,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["household-budget-steward", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
     ["home-inventory-binder", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["insurance-policy-organizer", (value) => value.coverageItems[0].sourceRefs.push(value.coverageItems[0].sourceRefs[0])],
+    ["invoice-payment-followup", (value) => value.invoices[0].sourceRefs.push(value.invoices[0].sourceRefs[0])],
     ["job-application-tracker", (value) => value.applications[0].sourceRefs.push(value.applications[0].sourceRefs[0])],
     ["life-timeline-keeper", (value) => value.events[0].sourceRefs.push(value.events[0].sourceRefs[0])],
     ["medical-appointment-prep", (value) => value.appointments[0].sourceRefs.push(value.appointments[0].sourceRefs[0])],

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "invoice-payment-followup",
+  "scenario": "Reconcile these invoices and payment notes, then draft what I should review before following up with clients.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile these invoices and payment notes, then draft what I should review before following up with clients."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/invoice-payment-followup-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Invoice and payment follow-up session handoff",
+    "summary": "A source-backed receivables ledger with payment states, discrepancies, overdue items, draft follow-ups, and explicit owner action gates.",
+    "output": "outputs/invoice-payment-followup-handoff.md",
+    "items": [
+      {
+        "title": "Invoice and receivables ledger",
+        "summary": "Every invoice has a current, paid, partial, overdue, disputed, stale, conflicting, or unknown evidence state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Payment evidence and discrepancy register",
+        "summary": "Every amount, due date, payment, credit, dispute, and follow-up draft points to supplied evidence or a visible gap",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-review follow-up draft queue",
+        "summary": "The handoff names owner decisions before any invoice change, client contact, collection, fee, refund, write-off, account, or payment action",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Escalation and action-gate handoff",
+        "summary": "Every invoice has a current, paid, partial, overdue, disputed, stale, conflicting, or unknown evidence state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

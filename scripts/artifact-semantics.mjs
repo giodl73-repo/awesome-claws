@@ -8071,6 +8071,145 @@ function freelancePipelineFindings(value) {
   return findings;
 }
 
+function invoiceReceivablesFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const clientIds = value.clients.map((item) => item.id);
+  const clientSet = new Set(clientIds);
+  const invoiceIds = value.invoices.map((item) => item.id);
+  const invoiceSet = new Set(invoiceIds);
+  const invoiceById = new Map(value.invoices.map((item) => [item.id, item]));
+  const paymentIds = value.paymentEvidence.map((item) => item.id);
+  const discrepancyIds = value.discrepancies.map((item) => item.id);
+  const followupIds = value.followUps.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const crossRefs = new Set([
+    ...sourceIds,
+    ...clientIds,
+    ...invoiceIds,
+    ...paymentIds,
+    ...discrepancyIds,
+    ...followupIds,
+    ...questionIds,
+  ]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(clientIds, "clients", "Client id"),
+    ...uniqueFindings(invoiceIds, "invoices", "Invoice id"),
+    ...uniqueFindings(paymentIds, "paymentEvidence", "Payment evidence id"),
+    ...uniqueFindings(discrepancyIds, "discrepancies", "Discrepancy id"),
+    ...uniqueFindings(followupIds, "followUps", "Follow-up id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, client] of value.clients.entries()) {
+    findings.push(
+      ...uniqueFindings(client.sourceRefs, `clients.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(client.sourceRefs, sourceSet, `clients.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, invoice] of value.invoices.entries()) {
+    findings.push(
+      ...referenceFindings([invoice.clientRef], clientSet, `invoices.${index}.clientRef`, "Client reference"),
+      ...uniqueFindings(invoice.sourceRefs, `invoices.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(invoice.sourceRefs, sourceSet, `invoices.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      ["open", "paid", "partial", "overdue"].includes(invoice.status) &&
+      invoice.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+    ) {
+      findings.push(finding("unsupported_invoice_state", `invoices.${index}.sourceRefs`, "Open, paid, partial, and overdue invoice states require current source evidence."));
+    }
+    if (invoice.balanceDue > invoice.originalAmount) {
+      findings.push(finding("invalid_invoice_balance", `invoices.${index}.balanceDue`, "Balance due must not exceed the supplied original invoice amount."));
+    }
+    if (invoice.status === "paid" && !numbersEqual(invoice.balanceDue, 0)) {
+      findings.push(finding("invalid_paid_balance", `invoices.${index}.balanceDue`, "Paid invoices must have a zero balance due."));
+    }
+    if (invoice.status === "partial" && (numbersEqual(invoice.balanceDue, 0) || numbersEqual(invoice.balanceDue, invoice.originalAmount))) {
+      findings.push(finding("invalid_partial_balance", `invoices.${index}.balanceDue`, "Partially paid invoices must have a positive balance below the original amount."));
+    }
+  }
+  for (const [index, payment] of value.paymentEvidence.entries()) {
+    findings.push(
+      ...referenceFindings([payment.invoiceRef], invoiceSet, `paymentEvidence.${index}.invoiceRef`, "Invoice reference"),
+      ...uniqueFindings(payment.sourceRefs, `paymentEvidence.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(payment.sourceRefs, sourceSet, `paymentEvidence.${index}.sourceRefs`, "Source reference"),
+    );
+    const invoice = invoiceById.get(payment.invoiceRef);
+    if (invoice && payment.currency !== invoice.currency) {
+      findings.push(finding("payment_currency_mismatch", `paymentEvidence.${index}.currency`, "Payment evidence currency must match its referenced invoice."));
+    }
+    if (
+      payment.state === "confirmed" &&
+      payment.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+    ) {
+      findings.push(finding("unsupported_payment_state", `paymentEvidence.${index}.sourceRefs`, "Confirmed payment evidence requires current source evidence."));
+    }
+  }
+  for (const [index, discrepancy] of value.discrepancies.entries()) {
+    findings.push(
+      ...referenceFindings([discrepancy.invoiceRef], invoiceSet, `discrepancies.${index}.invoiceRef`, "Invoice reference"),
+      ...uniqueFindings(discrepancy.refs, `discrepancies.${index}.refs`, "Reference"),
+      ...referenceFindings(discrepancy.refs, crossRefs, `discrepancies.${index}.refs`, "Reference"),
+    );
+  }
+  for (const [index, followup] of value.followUps.entries()) {
+    findings.push(
+      ...referenceFindings([followup.invoiceRef], invoiceSet, `followUps.${index}.invoiceRef`, "Invoice reference"),
+      ...uniqueFindings(followup.sourceRefs, `followUps.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(followup.sourceRefs, sourceSet, `followUps.${index}.sourceRefs`, "Source reference"),
+    );
+    const invoice = invoiceById.get(followup.invoiceRef);
+    if (
+      ["draft-for-owner-review", "sent-by-owner"].includes(followup.state) &&
+      (followup.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current") ||
+        ["stale", "conflicting", "unknown"].includes(invoice?.status))
+    ) {
+      findings.push(finding("unsupported_followup_state", `followUps.${index}`, "Review-ready or owner-sent follow-ups require a current, resolved invoice and current source evidence."));
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...uniqueFindings(question.refs, `reviewQuestions.${index}.refs`, "Reference"),
+      ...referenceFindings(question.refs, crossRefs, `reviewQuestions.${index}.refs`, "Reference"),
+    );
+    if (question.owner !== value.ledger.owner || question.owner !== value.handoff.owner) {
+      findings.push(finding("owner_mismatch", `reviewQuestions.${index}.owner`, "Review questions and handoff authority must name the ledger owner."));
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, new Set(questionIds), "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (value.handoff.owner !== value.ledger.owner) {
+    findings.push(finding("owner_mismatch", "handoff.owner", "Handoff authority must remain with the named ledger owner."));
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    (value.sources.some((item) => ["stale", "missing", "conflicting", "sensitive"].includes(item.freshness)) ||
+      value.invoices.some((item) => ["stale", "conflicting", "unknown"].includes(item.status)) ||
+      value.discrepancies.length > 0)
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready receivables handoffs cannot depend on stale, missing, conflicting, or sensitive sources, unresolved invoice states, or discrepancies."));
+  }
+  const actionText = canonicalJson({
+    clients: value.clients.map(({ name }) => ({ name })),
+    invoices: value.invoices.map(({ invoiceNumber, status }) => ({ invoiceNumber, status })),
+    paymentEvidence: value.paymentEvidence.map(({ state }) => ({ state })),
+    discrepancies: value.discrepancies.map(({ reason }) => reason),
+    followUps: value.followUps.map(({ label, state }) => ({ label, state })),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(issue invoices?|alter invoices?|send reminders?|contact clients?|collect payments?|initiate refunds?|apply fees?|write off balances?|change accounts?|change payment instructions?|invent balances?|invent due dates?|invent payment status|invent contract terms?|invent tax treatment|invent disputes?|accounting advice|tax advice|legal advice|debt-collection advice|credit advice|financial advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Receivables artifacts must not instruct invoice changes, outbound reminders, client contact, collection, refunds, fees, write-offs, account or payment-instruction changes, invented financial facts, or professional advice."));
+  }
+  if (value.handoff.owner === "invoice-payment-followup") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Invoice, communication, collection, refund, fee, write-off, account, payment, financial-fact, and professional-advice authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 function travelLoyaltyFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const sourceSet = new Set(sourceIds);
@@ -8350,6 +8489,7 @@ const validators = {
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,
+  "invoice-payment-followup": invoiceReceivablesFindings,
   "job-application-tracker": jobApplicationFindings,
   "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
