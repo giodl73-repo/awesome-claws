@@ -1,24 +1,24 @@
 # Solid-band review
 
-This review covers the 21 Claws in the Solid band after Document Intake Analyst
-moved from 69 to 94 on 2026-08-29. All 21 pass the non-negotiable package,
+This review covers the 20 Claws remaining in the Solid band after Document
+Intake Analyst moved from 69 to 94 and Fundraising Campaign Manager moved from
+79 to 95 on 2026-08-29. All 20 pass the non-negotiable package,
 regression, resource, and Experience gates. Their lower scores describe
 reviewability and artifact-depth gaps, not observed live-model failures.
 
 ## Shared pattern
 
-- All 21 are grandfathered entries without retrospective contribution records.
+- All 20 are grandfathered entries without retrospective contribution records.
   That is a five-point documentation gap, not a failed admission.
-- All 21 lack registered semantic validators.
+- All 20 lack registered semantic validators.
 - Nineteen lack a local structured-artifact schema.
-- All 21 have complete operating contracts, screenshots, regression cases, and
+- All 20 have complete operating contracts, screenshots, regression cases, and
   active maintenance.
 
 ## Current entries
 
 | Claw | Score | Evidence / verification gap | Review |
 | --- | ---: | --- | --- |
-| `fundraising-campaign-manager` | 79 | Schema exists; no semantic validator or non-session example | Complete the existing claim-ledger contract first |
 | `workflow-operator` | 79 | No local schema or semantic validator | Lobster owns typed workflow state; avoid duplicating its contract without a concrete handoff need |
 | `video-concept-producer` | 79 | No local schema or semantic validator | A concept/shot/evidence manifest may help, but only if it governs the generated asset |
 | `website-evidence-collector` | 79 | No local schema or semantic validator | A collection ledger can add source, freshness, extraction, and failure invariants beyond plugin types |
@@ -44,9 +44,10 @@ reviewability and artifact-depth gaps, not observed live-model failures.
 
 ### 1. Finish existing structured contracts
 
-Start with `fundraising-campaign-manager` and `travel-concierge`. Both already
-declare schemas, so examples, templates, semantic invariants, and retrospective
-admission records deepen an existing design rather than inventing one.
+Start with `travel-concierge`. It already declares a schema, so examples,
+templates, semantic invariants, and a retrospective admission record deepen an
+existing design rather than inventing one. Fundraising Campaign Manager
+completed this path on 2026-08-29.
 
 ### 2. Add evidence ledgers where the job naturally owns state
 
@@ -68,13 +69,13 @@ duplicated merely to raise a score.
 
 ## Recommended order
 
-1. `fundraising-campaign-manager`: highest-leverage completion of an existing
-   schema, with claim provenance and solicitation authority as semantic gates.
-2. `travel-concierge`: complete the existing shortlist contract with chronology,
+1. `travel-concierge`: complete the existing shortlist contract with chronology,
    cost, source freshness, traveler constraints, and booking boundaries.
-3. `media-evidence-reviewer`: define a timestamped observation and transcript
+2. `media-evidence-reviewer`: define a timestamped observation and transcript
    confidence ledger because consent, redaction, ambiguity, and source location
    are already central to the job.
+3. `spreadsheet-analyst`: add a transformation, lineage, and exception manifest
+   that complements rather than duplicates user-owned workbooks.
 
 Backfill contribution records alongside substantive work. For entries already
 at 78-79, a retrospective record alone may move the score into Strong, but it

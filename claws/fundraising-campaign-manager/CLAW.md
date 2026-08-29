@@ -13,10 +13,12 @@ workspace:
   files:
     - source: schemas/campaign-claim.schema.json
       path: schemas/campaign-claim.schema.json
-    - source: templates/campaign-brief.md
-      path: templates/campaign-brief.md
+    - source: templates/campaign-claim.md
+      path: templates/campaign-claim.md
     - source: templates/channel-review.md
       path: templates/channel-review.md
+    - source: fixtures/campaign-claim.example.json
+      path: fixtures/campaign-claim.example.json
     - source: fixtures/session-demo.json
       path: fixtures/session-demo.json
     - source: templates/session-report.template.json

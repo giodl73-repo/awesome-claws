@@ -4,23 +4,23 @@ This report scores all 100 maintained Claws as of 2026-08-29. It uses only repos
 
 ## Portfolio result
 
-- Average: **90.5/100**
-- Median: **94.5/100**
+- Average: **90.7/100**
+- Median: **95/100**
 - Qualified through all non-negotiable gates: **100/100**
 
 | Band | Count |
 | --- | ---: |
-| exemplary | 58 |
+| exemplary | 59 |
 | strong | 21 |
-| solid | 21 |
+| solid | 20 |
 | needs-uplift | 0 |
 | priority-remediation | 0 |
 
 | Dimension | Maximum | Portfolio average |
 | --- | ---: | ---: |
-| Distinct job and admission case | 15 | 12.3 |
+| Distinct job and admission case | 15 | 12.4 |
 | Operating contract completeness | 20 | 20 |
-| Evidence and artifact model | 20 | 15.1 |
+| Evidence and artifact model | 20 | 15.2 |
 | Authority and safety | 20 | 18.9 |
 | Experience and usability | 10 | 10 |
 | Verification and portability | 10 | 9.2 |
@@ -101,37 +101,37 @@ The queue is ordered from lowest score upward. It is a documentation and contrac
 | 47 | `case-continuity-coordinator` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
 | 48 | `change-control-operator` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
 | 49 | `delegation-coordinator` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 50 | `research-briefing` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 51 | `data-analyst` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 52 | `document-intake-analyst` | 94 | exemplary | 15 | 20 | 20 | 14 | 10 | 10 | 5 |
-| 53 | `product-manager` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 54 | `project-manager` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 55 | `recruiting-coordinator` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 56 | `sales-operations` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 57 | `civic-data-analyst` | 90 | exemplary | 10 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 58 | `public-safety-monitor` | 90 | exemplary | 10 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 59 | `financial-analyst` | 89 | strong | 10 | 20 | 20 | 14 | 10 | 10 | 5 |
-| 60 | `api-integration-engineer` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
-| 61 | `data-governance-steward` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
-| 62 | `incident-response` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
-| 63 | `compliance-reviewer` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
-| 64 | `customer-support` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
-| 65 | `release-coordinator` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
-| 66 | `security-analyst` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
-| 67 | `accessibility-review-coordinator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 68 | `cloud-cost-analyst` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 69 | `data-migration-planner` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 70 | `event-operations-director` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 71 | `experimentation-lead` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 72 | `facilities-operations-coordinator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 73 | `grant-portfolio-manager` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 74 | `localization-program-manager` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 75 | `manufacturing-operations-planner` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 76 | `privacy-request-coordinator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 77 | `procurement-evaluator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 78 | `quality-assurance-lead` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 79 | `ux-research-synthesizer` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 80 | `fundraising-campaign-manager` | 79 | solid | 10 | 20 | 11 | 15 | 10 | 8 | 5 |
+| 50 | `fundraising-campaign-manager` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 51 | `research-briefing` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 52 | `data-analyst` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 53 | `document-intake-analyst` | 94 | exemplary | 15 | 20 | 20 | 14 | 10 | 10 | 5 |
+| 54 | `product-manager` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 55 | `project-manager` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 56 | `recruiting-coordinator` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 57 | `sales-operations` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 58 | `civic-data-analyst` | 90 | exemplary | 10 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 59 | `public-safety-monitor` | 90 | exemplary | 10 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 60 | `financial-analyst` | 89 | strong | 10 | 20 | 20 | 14 | 10 | 10 | 5 |
+| 61 | `api-integration-engineer` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
+| 62 | `data-governance-steward` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
+| 63 | `incident-response` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
+| 64 | `compliance-reviewer` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
+| 65 | `customer-support` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
+| 66 | `release-coordinator` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
+| 67 | `security-analyst` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
+| 68 | `accessibility-review-coordinator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 69 | `cloud-cost-analyst` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 70 | `data-migration-planner` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 71 | `event-operations-director` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 72 | `experimentation-lead` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 73 | `facilities-operations-coordinator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 74 | `grant-portfolio-manager` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 75 | `localization-program-manager` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 76 | `manufacturing-operations-planner` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 77 | `privacy-request-coordinator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 78 | `procurement-evaluator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 79 | `quality-assurance-lead` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 80 | `ux-research-synthesizer` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
 | 81 | `video-concept-producer` | 79 | solid | 10 | 20 | 6 | 20 | 10 | 8 | 5 |
 | 82 | `web-evidence-researcher` | 79 | solid | 10 | 20 | 6 | 20 | 10 | 8 | 5 |
 | 83 | `website-evidence-collector` | 79 | solid | 10 | 20 | 6 | 20 | 10 | 8 | 5 |

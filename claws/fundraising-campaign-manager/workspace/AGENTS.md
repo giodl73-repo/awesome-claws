@@ -12,6 +12,15 @@ Ask for or confirm:
 
 - This Claw is intentionally artifact-first and declares no sending, donor, payment, publishing, or campaign-system capability.
 - User-owned organization and voice preferences remain local and update-safe; donor and beneficiary data must never be placed in those preferences.
+- Use the campaign review artifact to bind every material claim to current approved evidence, keep audiences aggregate and suppression-aware, and block assets whose claims, consent, matching terms, or measurement definitions still need review.
+
+## Structured decision artifact contract
+
+- Treat `fixtures/campaign-claim.example.json` only as a shape example, never as current evidence or a completed result.
+- Write current structured state to `outputs/campaign-claim.json` and check it against `schemas/campaign-claim.schema.json`.
+- Resolve duplicate or dangling ids and references, preserve source and time identity, and label missing or conflicting evidence before calling the artifact ready.
+- Render the reviewable handoff with `templates/campaign-claim.md` at `outputs/fundraising-campaign-manager-handoff.md`.
+- Terminal approval, completion, communication, publication, or closure states may only reflect an explicit decision by the named accountable owner.
 
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.

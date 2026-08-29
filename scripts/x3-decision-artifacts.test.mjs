@@ -101,6 +101,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "fundraising-campaign-manager",
+    schema: "../claws/fundraising-campaign-manager/schemas/campaign-claim.schema.json",
+    fixture: "../claws/fundraising-campaign-manager/fixtures/campaign-claim.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "invoice-payment-followup",
     schema: "../claws/invoice-payment-followup/schemas/invoice-receivables.schema.json",
     fixture: "../claws/invoice-payment-followup/fixtures/invoice-receivables.example.json",
@@ -889,6 +895,272 @@ test("document intake preserves lineage, fidelity, processing authority, and own
       false,
     );
   }
+});
+
+test("fundraising campaign preserves evidence, consent, and owner authority", () => {
+  const fixture = cases.get("fundraising-campaign-manager").fixture;
+  assert.equal(isValid("fundraising-campaign-manager", fixture), true);
+
+  const invalidChronology = structuredClone(fixture);
+  invalidChronology.campaign.startDate = "2027-01-01";
+  assert.equal(
+    isValid("fundraising-campaign-manager", invalidChronology),
+    false,
+  );
+
+  const futureEvidence = structuredClone(fixture);
+  futureEvidence.sources[0].asOf = "2026-08-30";
+  assert.equal(isValid("fundraising-campaign-manager", futureEvidence), false);
+
+  const unsupportedClaim = structuredClone(fixture);
+  unsupportedClaim.sources[0].freshness = "stale";
+  assert.equal(isValid("fundraising-campaign-manager", unsupportedClaim), false);
+
+  const wrongClaimEvidence = structuredClone(fixture);
+  wrongClaimEvidence.sources[0].kind = "brand-guidance";
+  assert.equal(
+    isValid("fundraising-campaign-manager", wrongClaimEvidence),
+    false,
+  );
+
+  const danglingClaimSource = structuredClone(fixture);
+  danglingClaimSource.claims[0].sourceRefs = ["source-missing"];
+  assert.equal(
+    isValid("fundraising-campaign-manager", danglingClaimSource),
+    false,
+  );
+
+  const unsupportedAsset = structuredClone(fixture);
+  unsupportedAsset.assets[1].state = "ready-for-owner-review";
+  assert.equal(
+    isValid("fundraising-campaign-manager", unsupportedAsset),
+    false,
+  );
+
+  const wrongChannel = structuredClone(fixture);
+  wrongChannel.assets[0].channel = "social";
+  wrongChannel.claims[0].allowedChannels = ["email"];
+  assert.equal(isValid("fundraising-campaign-manager", wrongChannel), false);
+
+  const unsupportedConsent = structuredClone(fixture);
+  unsupportedConsent.sources[2].approval = "review-needed";
+  assert.equal(
+    isValid("fundraising-campaign-manager", unsupportedConsent),
+    false,
+  );
+
+  const wrongMetricEvidence = structuredClone(fixture);
+  wrongMetricEvidence.metrics[0].sourceRefs = ["source-brand-guide"];
+  assert.equal(
+    isValid("fundraising-campaign-manager", wrongMetricEvidence),
+    false,
+  );
+
+  const unresolvedAssetMetric = structuredClone(fixture);
+  unresolvedAssetMetric.metrics[0].state = "review-needed";
+  assert.equal(
+    isValid("fundraising-campaign-manager", unresolvedAssetMetric),
+    false,
+  );
+
+  const prematureReady = structuredClone(fixture);
+  prematureReady.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("fundraising-campaign-manager", prematureReady), false);
+
+  const campaignReadyWithBlockedHandoff = structuredClone(fixture);
+  campaignReadyWithBlockedHandoff.campaign.state = "ready-for-owner-review";
+  assert.equal(
+    isValid("fundraising-campaign-manager", campaignReadyWithBlockedHandoff),
+    false,
+  );
+
+  const readyArtifact = structuredClone(fixture);
+  readyArtifact.campaign.state = "ready-for-owner-review";
+  readyArtifact.sources[3].freshness = "current";
+  readyArtifact.sources[3].approval = "approved-for-campaign";
+  readyArtifact.claims[1].state = "supported";
+  readyArtifact.assets[1].state = "ready-for-owner-review";
+  readyArtifact.reviewQuestions = [];
+  readyArtifact.handoff.state = "ready-for-owner-review";
+  readyArtifact.handoff.blockingClaimRefs = [];
+  readyArtifact.handoff.reviewQuestionRefs = [];
+  assert.equal(isValid("fundraising-campaign-manager", readyArtifact), true);
+
+  const blockedByAssetAndMetric = structuredClone(readyArtifact);
+  blockedByAssetAndMetric.campaign.state = "review-needed";
+  for (const asset of blockedByAssetAndMetric.assets) {
+    asset.state = "review-needed";
+  }
+  blockedByAssetAndMetric.metrics[0].state = "review-needed";
+  blockedByAssetAndMetric.handoff.state = "blocked";
+  assert.equal(
+    isValid("fundraising-campaign-manager", blockedByAssetAndMetric),
+    true,
+  );
+
+  const blockedWithoutBlocker = structuredClone(readyArtifact);
+  blockedWithoutBlocker.handoff.state = "blocked";
+  assert.equal(
+    isValid("fundraising-campaign-manager", blockedWithoutBlocker),
+    false,
+  );
+
+  const incompleteHandoff = structuredClone(readyArtifact);
+  incompleteHandoff.handoff.assetRefs = ["asset-email-draft"];
+  assert.equal(
+    isValid("fundraising-campaign-manager", incompleteHandoff),
+    false,
+  );
+
+  const resolvedBlocker = structuredClone(fixture);
+  resolvedBlocker.handoff.blockingClaimRefs = ["claim-learning-hours"];
+  assert.equal(isValid("fundraising-campaign-manager", resolvedBlocker), false);
+
+  const missingClaimBlocker = structuredClone(fixture);
+  missingClaimBlocker.handoff.blockingClaimRefs = [];
+  assert.equal(
+    isValid("fundraising-campaign-manager", missingClaimBlocker),
+    false,
+  );
+
+  const missingQuestionBlocker = structuredClone(fixture);
+  missingQuestionBlocker.handoff.reviewQuestionRefs = [];
+  assert.equal(
+    isValid("fundraising-campaign-manager", missingQuestionBlocker),
+    false,
+  );
+
+  const missingAuthorityGate = structuredClone(fixture);
+  missingAuthorityGate.blockedActions =
+    missingAuthorityGate.blockedActions.filter(
+      (action) => action !== "send-solicitation",
+    );
+  assert.equal(
+    isValid("fundraising-campaign-manager", missingAuthorityGate),
+    false,
+  );
+
+  const donorRecords = structuredClone(fixture);
+  donorRecords.audiences[0].recordsUsed = true;
+  assert.equal(isValid("fundraising-campaign-manager", donorRecords), false);
+
+  const actionAdvice = structuredClone(fixture);
+  actionAdvice.reviewQuestions[0].reason =
+    "Send the solicitation to donors now.";
+  assert.equal(isValid("fundraising-campaign-manager", actionAdvice), false);
+
+  for (const unsafeMixedInstruction of [
+    "Do not wait; send the solicitation now.",
+    "Never skip review, but publish the campaign now.",
+    "Do not wait; contact the donors now.",
+    "Do not wait and you must send the solicitation now.",
+  ]) {
+    const mixedActionAdvice = structuredClone(fixture);
+    mixedActionAdvice.reviewQuestions[0].reason = unsafeMixedInstruction;
+    assert.equal(
+      isValid("fundraising-campaign-manager", mixedActionAdvice),
+      false,
+    );
+  }
+
+  for (const donorAction of [
+    "Contact the donors now.",
+    "Segment the donors now.",
+  ]) {
+    const donorActionAdvice = structuredClone(fixture);
+    donorActionAdvice.reviewQuestions[0].reason = donorAction;
+    assert.equal(
+      isValid("fundraising-campaign-manager", donorActionAdvice),
+      false,
+    );
+  }
+
+  for (const restriction of [
+    "Do not send solicitation.",
+    "You must not send solicitation.",
+    "The agent must not send solicitation.",
+    "You should not publish the campaign.",
+    "Do not claim that gifts are tax deductible.",
+  ]) {
+    const safetyRestriction = structuredClone(fixture);
+    safetyRestriction.claims[0].restrictions.push(restriction);
+    assert.equal(
+      isValid("fundraising-campaign-manager", safetyRestriction),
+      true,
+    );
+  }
+
+  const ownerQuestion = structuredClone(fixture);
+  ownerQuestion.reviewQuestions[0].question =
+    "Should the Development and Communications leads publish the campaign page?";
+  assert.equal(isValid("fundraising-campaign-manager", ownerQuestion), true);
+
+  const ownerTypeMismatch = structuredClone(fixture);
+  ownerTypeMismatch.handoff.ownerType = "human";
+  assert.equal(
+    isValid("fundraising-campaign-manager", ownerTypeMismatch),
+    false,
+  );
+
+  const objectiveAction = structuredClone(fixture);
+  objectiveAction.campaign.objective = "Send the solicitation now.";
+  assert.deepEqual(
+    validateArtifactSemantics(
+      "fundraising-campaign-manager",
+      objectiveAction,
+    ).map(({ code, path }) => ({ code, path })),
+    [{ code: "external_action_content", path: "campaign.objective" }],
+  );
+
+  const accessibilityAction = structuredClone(fixture);
+  accessibilityAction.assets[0].accessibilityChecks[0] =
+    "Publish the campaign now.";
+  assert.deepEqual(
+    validateArtifactSemantics(
+      "fundraising-campaign-manager",
+      accessibilityAction,
+    ).map(({ code, path }) => ({ code, path })),
+    [
+      {
+        code: "external_action_content",
+        path: "assets.0.accessibilityChecks.0",
+      },
+    ],
+  );
+
+  const taxAction = structuredClone(fixture);
+  taxAction.reviewQuestions[0].reason = "The team must make tax claims.";
+  assert.deepEqual(
+    validateArtifactSemantics("fundraising-campaign-manager", taxAction).map(
+      ({ code, path }) => ({ code, path }),
+    ),
+    [
+      {
+        code: "external_action_content",
+        path: "reviewQuestions.0.reason",
+      },
+    ],
+  );
+
+  const hyphenatedTaxClaim = structuredClone(fixture);
+  hyphenatedTaxClaim.claims[0].statement = "Gifts are tax-deductible.";
+  assert.deepEqual(
+    validateArtifactSemantics(
+      "fundraising-campaign-manager",
+      hyphenatedTaxClaim,
+    ).map(({ code, path }) => ({ code, path })),
+    [{ code: "external_action_content", path: "claims.0.statement" }],
+  );
+
+  const blankOwner = structuredClone(fixture);
+  blankOwner.campaign.owner = " ";
+  blankOwner.handoff.owner = " ";
+  assert.equal(isValid("fundraising-campaign-manager", blankOwner), false);
+
+  const agentOwned = structuredClone(fixture);
+  agentOwned.campaign.owner = "Fundraising Campaign Manager";
+  agentOwned.handoff.owner = "Fundraising Campaign Manager";
+  assert.equal(isValid("fundraising-campaign-manager", agentOwned), false);
 });
 
 test("financial analysis rejects dangling source and scenario references", () => {

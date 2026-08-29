@@ -16,6 +16,7 @@ Prepares an approval-bound nonprofit fundraising campaign, stewardship plan, aud
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
 - Capability boundary: This Claw is intentionally artifact-first and declares no sending, donor, payment, publishing, or campaign-system capability.
 - Capability boundary: User-owned organization and voice preferences remain local and update-safe; donor and beneficiary data must never be placed in those preferences.
+- Capability boundary: Use the campaign review artifact to bind every material claim to current approved evidence, keep audiences aggregate and suppression-aware, and block assets whose claims, consent, matching terms, or measurement definitions still need review.
 - `BOOTSTRAP.md` guides first-run setup and creates local preferences without packaging answers.
 
 Review the package before applying it. Claws can create agents and may declare

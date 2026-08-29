@@ -42,7 +42,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | @giodl73-repo; last verified 2026-08-19 |
 | [Financial analyst](claws/financial-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | @giodl73; last verified 2026-08-28 |
-| [Fundraising campaign manager](claws/fundraising-campaign-manager) | @giodl73-repo; last verified 2026-08-19 |
+| [Fundraising campaign manager](claws/fundraising-campaign-manager) | @giodl73-repo; last verified 2026-08-29 |
 | [Games backlog manager](claws/games-backlog-manager) | @giodl73-repo; last verified 2026-08-23 |
 | [Gift and relationship manager](claws/gift-relationship-manager) | @giodl73-repo; last verified 2026-08-22 |
 | [Grant portfolio manager](claws/grant-portfolio-manager) | @giodl73-repo; last verified 2026-08-19 |
