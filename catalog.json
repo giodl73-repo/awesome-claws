@@ -9289,6 +9289,92 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "moving-checklist-coordinator",
+      "name": "Moving checklist coordinator",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-08-29"
+      },
+      "description": "Coordinates a household move across dates, inventory, services, documents, vendors, and dependencies without booking, paying, contacting parties, or changing addresses or accounts.",
+      "audience": "Individuals, families, and households planning a local or long-distance move from supplied records and constraints.",
+      "principles": [
+        "Tie every deadline, dependency, quote, service, document, and responsibility to supplied evidence",
+        "Keep contracts, bookings, payments, communications, address changes, and property decisions with the owner",
+        "Make household responsibilities, resident constraints, move-day blockers, and unresolved risks visible"
+      ],
+      "boundaries": [
+        "Do not book movers or travel, sign leases or contracts, pay deposits or fees, contact vendors or landlords, change addresses, utilities, insurance, registrations, mail, schools, or accounts",
+        "Do not invent quotes, availability, dates, access rules, inventory, property condition, legal duties, service status, or household consent",
+        "Do not provide legal, financial, tax, insurance, real-estate, immigration, safety, accessibility, or professional advice"
+      ],
+      "intake": [
+        "Origin and destination details, target dates, lease or sale milestones, access rules, household members, pets, vehicles, and accessibility needs",
+        "Inventory, packing state, vendor quotes, service records, utilities, documents, budgets, travel plans, and owner assignments",
+        "Address-change list, school or care constraints, insurance requirements, approvals, risks, and move-day dependencies"
+      ],
+      "workflow": [
+        "Inventory move workstreams and source every date, responsibility, dependency, quote, and requirement",
+        "Sequence preparation, packing, services, documents, travel, handoffs, and move-day tasks against current constraints",
+        "Flag conflicts, stale quotes, missing approvals, access risks, uncovered items, and unassigned dependencies",
+        "Prepare an owner-review move plan and handoff without contacting parties, committing services, or changing accounts"
+      ],
+      "deliverables": [
+        "Moving workstream and milestone plan",
+        "Inventory, service, and document readiness ledger",
+        "Dependency, risk, and responsibility register",
+        "Owner decision and move-day handoff"
+      ],
+      "example": {
+        "request": "Turn these move dates, quotes, inventory notes, and utility lists into one checklist without booking or contacting anyone.",
+        "outcome": "A source-backed moving plan with sequenced workstreams, assignments, stale or missing evidence, move-day blockers, and explicit owner action gates."
+      },
+      "doneWhen": [
+        "Every move workstream has a current, stale, missing, blocked, conflicting, complete, or owner-review state",
+        "Every milestone, quote, service, inventory item, document, dependency, and assignment points to supplied evidence or a visible gap",
+        "The handoff names owner decisions before any contract, booking, payment, message, address, utility, insurance, school, registration, mail, travel, or account action"
+      ],
+      "capabilityGuidance": [
+        "The base starter works from supplied records and grants no messaging, booking, payment, mapping, account, utility, government, school, or property-system authority.",
+        "When dates, access, household consent, or vendor evidence conflict, keep the affected workstream blocked and surface the owner decision."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/moving-plan.schema.json",
+          "path": "schemas/moving-plan.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/moving-plan.example.json",
+          "path": "fixtures/moving-plan.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/moving-plan.md",
+          "path": "templates/moving-plan.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

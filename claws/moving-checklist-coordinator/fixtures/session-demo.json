@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "moving-checklist-coordinator",
+  "scenario": "Turn these move dates, quotes, inventory notes, and utility lists into one checklist without booking or contacting anyone.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Turn these move dates, quotes, inventory notes, and utility lists into one checklist without booking or contacting anyone."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/moving-checklist-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Moving checklist coordinator session handoff",
+    "summary": "A source-backed moving plan with sequenced workstreams, assignments, stale or missing evidence, move-day blockers, and explicit owner action gates.",
+    "output": "outputs/moving-checklist-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Moving workstream and milestone plan",
+        "summary": "Every move workstream has a current, stale, missing, blocked, conflicting, complete, or owner-review state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Inventory, service, and document readiness ledger",
+        "summary": "Every milestone, quote, service, inventory item, document, dependency, and assignment points to supplied evidence or a visible gap",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Dependency, risk, and responsibility register",
+        "summary": "The handoff names owner decisions before any contract, booking, payment, message, address, utility, insurance, school, registration, mail, travel, or account action",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner decision and move-day handoff",
+        "summary": "Every move workstream has a current, stale, missing, blocked, conflicting, complete, or owner-review state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

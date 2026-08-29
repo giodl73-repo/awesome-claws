@@ -9215,6 +9215,1128 @@ function professionalNetworkingFindings(value) {
   return findings;
 }
 
+function movingPlanFindings(value) {
+  const requiredActions = [
+    "sign-contract",
+    "make-booking",
+    "make-payment",
+    "send-message",
+    "change-address",
+    "change-utility",
+    "change-insurance",
+    "change-school",
+    "change-registration",
+    "change-mail",
+    "book-travel",
+    "change-account",
+  ];
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const locationIds = value.locations.map((item) => item.id);
+  const locationSet = new Set(locationIds);
+  const locationById = new Map(value.locations.map((item) => [item.id, item]));
+  const memberIds = value.members.map((item) => item.id);
+  const memberSet = new Set(memberIds);
+  const memberById = new Map(value.members.map((item) => [item.id, item]));
+  const workstreamIds = value.workstreams.map((item) => item.id);
+  const workstreamSet = new Set(workstreamIds);
+  const workstreamById = new Map(value.workstreams.map((item) => [item.id, item]));
+  const milestoneIds = value.milestones.map((item) => item.id);
+  const dependencyIds = value.dependencies.map((item) => item.id);
+  const readinessIds = value.readinessItems.map((item) => item.id);
+  const gateIds = value.actionGates.map((item) => item.id);
+  const gapIds = value.gaps.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const crossRefs = new Set([
+    ...sourceIds,
+    ...locationIds,
+    ...memberIds,
+    ...workstreamIds,
+    ...milestoneIds,
+    ...dependencyIds,
+    ...readinessIds,
+    ...gateIds,
+    ...gapIds,
+    ...questionIds,
+  ]);
+  const gatePairs = value.actionGates.map(
+    (item) => `${item.workstreamRef}\u0000${item.action}`,
+  );
+  const dependencyPairs = value.dependencies.map(
+    (item) => `${item.prerequisiteRef}\u0000${item.dependentRef}`,
+  );
+  const readinessPairs = value.readinessItems.map(
+    (item) => `${item.workstreamRef}\u0000${item.kind}`,
+  );
+  const gateWorkstreamKinds = {
+    "sign-contract": new Set(["moving-service"]),
+    "make-booking": new Set(["moving-service"]),
+    "make-payment": new Set(["moving-service"]),
+    "send-message": new Set(["moving-service"]),
+    "change-address": new Set(["documents-and-address"]),
+    "change-utility": new Set(["utilities"]),
+    "change-insurance": new Set(["insurance", "documents-and-address"]),
+    "change-school": new Set(["school-and-care"]),
+    "change-registration": new Set(["registration", "documents-and-address"]),
+    "change-mail": new Set(["mail", "documents-and-address"]),
+    "book-travel": new Set(["travel"]),
+    "change-account": new Set(["accounts", "documents-and-address"]),
+  };
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(locationIds, "locations", "Location id"),
+    ...uniqueFindings(memberIds, "members", "Member id"),
+    ...uniqueFindings(workstreamIds, "workstreams", "Workstream id"),
+    ...uniqueFindings(milestoneIds, "milestones", "Milestone id"),
+    ...uniqueFindings(dependencyIds, "dependencies", "Dependency id"),
+    ...uniqueFindings(dependencyPairs, "dependencies", "Dependency edge"),
+    ...uniqueFindings(readinessIds, "readinessItems", "Readiness id"),
+    ...uniqueFindings(
+      readinessPairs,
+      "readinessItems",
+      "Workstream/readiness-kind pair",
+    ),
+    ...uniqueFindings(gateIds, "actionGates", "Action gate id"),
+    ...uniqueFindings(gatePairs, "actionGates", "Workstream/action gate pair"),
+    ...uniqueFindings(gapIds, "gaps", "Gap id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+    ...requiredActions
+      .filter((action) => !value.blockedActions.includes(action))
+      .map((action) =>
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Required moving authority gate ${JSON.stringify(action)} is missing.`,
+        ),
+      ),
+    ...requiredActions
+      .filter((action) => !value.actionGates.some((gate) => gate.action === action))
+      .map((action) =>
+        finding(
+          "missing_action_gate",
+          "actionGates",
+          `The moving plan requires an explicit ${JSON.stringify(action)} gate.`,
+        ),
+      ),
+  ];
+
+  const owner = memberById.get(value.plan.ownerRef);
+  if (!owner || owner.role !== "owner") {
+    findings.push(
+      finding(
+        "invalid_plan_owner",
+        "plan.ownerRef",
+        "The plan owner must resolve to a member with the owner role.",
+      ),
+    );
+  }
+  if (value.handoff.ownerRef !== value.plan.ownerRef) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "handoff.ownerRef",
+        "The handoff must remain with the named plan owner.",
+      ),
+    );
+  }
+  findings.push(
+    ...uniqueFindings(value.plan.sourceRefs, "plan.sourceRefs", "Source reference"),
+    ...referenceFindings(
+      value.plan.sourceRefs,
+      sourceSet,
+      "plan.sourceRefs",
+      "Source reference",
+    ),
+  );
+  const expectedMoveDateFreshness =
+    value.plan.moveDateState === "known" ? "current" : value.plan.moveDateState;
+  if (
+    !value.plan.sourceRefs.some(
+      (ref) => sourceById.get(ref)?.freshness === expectedMoveDateFreshness,
+    )
+  ) {
+    findings.push(
+      finding(
+        "unsupported_move_date",
+        "plan.sourceRefs",
+        "The move date state requires source evidence with matching freshness.",
+      ),
+    );
+  }
+
+  const roles = value.locations.map((item) => item.role);
+  for (const role of ["origin", "destination"]) {
+    if (roles.filter((candidate) => candidate === role).length !== 1) {
+      findings.push(
+        finding(
+          "invalid_location_roles",
+          "locations",
+          `A moving plan requires exactly one ${role} location.`,
+        ),
+      );
+    }
+  }
+
+  for (const [index, source] of value.sources.entries()) {
+    if (source.asOf > value.plan.asOf) {
+      findings.push(
+        finding(
+          "future_source_evidence",
+          `sources.${index}.asOf`,
+          "Moving evidence must not postdate the plan as-of date.",
+        ),
+      );
+    }
+    if (
+      source.freshness === "current" &&
+      typeof source.validThrough === "string" &&
+      source.validThrough < value.plan.asOf
+    ) {
+      findings.push(
+        finding(
+          "expired_current_source",
+          `sources.${index}.freshness`,
+          "Evidence past its validity window cannot remain current.",
+        ),
+      );
+    }
+    if (
+      source.kind === "owner-action-record" &&
+      (source.provenance !== "owner-supplied" ||
+        source.privacy !== "private" ||
+        source.ownerRef !== value.plan.ownerRef)
+    ) {
+      findings.push(
+        finding(
+          "invalid_owner_action_record",
+          `sources.${index}`,
+          "Owner action records must be private, owner-supplied, and name the plan owner.",
+        ),
+      );
+    }
+    if (source.workstreamRef) {
+      findings.push(
+        ...referenceFindings(
+          [source.workstreamRef],
+          workstreamSet,
+          `sources.${index}.workstreamRef`,
+          "Workstream reference",
+        ),
+      );
+    }
+    if (source.ownerRef) {
+      findings.push(
+        ...referenceFindings(
+          [source.ownerRef],
+          memberSet,
+          `sources.${index}.ownerRef`,
+          "Member reference",
+        ),
+      );
+    }
+    if (source.memberRefs) {
+      findings.push(
+        ...uniqueFindings(
+          source.memberRefs,
+          `sources.${index}.memberRefs`,
+          "Member reference",
+        ),
+        ...referenceFindings(
+          source.memberRefs,
+          memberSet,
+          `sources.${index}.memberRefs`,
+          "Member reference",
+        ),
+      );
+    }
+    if (
+      ["consent-record", "assignment-record"].includes(source.kind) &&
+      (source.provenance !== "owner-supplied" || source.privacy !== "private")
+    ) {
+      findings.push(
+        finding(
+          "invalid_member_authority_record",
+          `sources.${index}`,
+          "Consent and assignment records must be private owner-supplied evidence.",
+        ),
+      );
+    }
+    if (
+      source.kind === "consent-record" &&
+      (!source.subjectRef || !memberSet.has(source.subjectRef))
+    ) {
+      findings.push(
+        finding(
+          "invalid_consent_subject",
+          `sources.${index}.subjectRef`,
+          "Consent records must identify the exact household member.",
+        ),
+      );
+    }
+    if (source.subjectRef && !crossRefs.has(source.subjectRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `sources.${index}.subjectRef`,
+          `Subject reference ${JSON.stringify(source.subjectRef)} does not resolve.`,
+        ),
+      );
+    }
+  }
+
+  for (const [index, location] of value.locations.entries()) {
+    findings.push(
+      ...uniqueFindings(location.sourceRefs, `locations.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(
+        location.sourceRefs,
+        sourceSet,
+        `locations.${index}.sourceRefs`,
+        "Source reference",
+      ),
+      ...uniqueFindings(
+        location.privateAddressSourceRefs,
+        `locations.${index}.privateAddressSourceRefs`,
+        "Private address source reference",
+      ),
+      ...referenceFindings(
+        location.privateAddressSourceRefs,
+        sourceSet,
+        `locations.${index}.privateAddressSourceRefs`,
+        "Private address source reference",
+      ),
+    );
+    if (
+      location.privateAddressSourceRefs.some(
+        (ref) => sourceById.get(ref)?.privacy !== "private",
+      )
+    ) {
+      findings.push(
+        finding(
+          "public_address_evidence",
+          `locations.${index}.privateAddressSourceRefs`,
+          "Exact address evidence must remain in private sources.",
+        ),
+      );
+    }
+    if (
+      location.addressState === "supplied" &&
+      !location.privateAddressSourceRefs.some(
+        (ref) => sourceById.get(ref)?.freshness === "current",
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_address_state",
+          `locations.${index}.addressState`,
+          "A supplied address requires current private address evidence.",
+        ),
+      );
+    }
+    if (
+      ["missing", "conflicting"].includes(location.addressState) &&
+      !location.sourceRefs.some(
+        (ref) => sourceById.get(ref)?.freshness === location.addressState,
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_address_state",
+          `locations.${index}.addressState`,
+          "Missing or conflicting addresses require evidence with the same visible gap state.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, member] of value.members.entries()) {
+    findings.push(
+      ...uniqueFindings(member.sourceRefs, `members.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(
+        member.sourceRefs,
+        sourceSet,
+        `members.${index}.sourceRefs`,
+        "Source reference",
+      ),
+      ...uniqueFindings(
+        member.privateDetailSourceRefs,
+        `members.${index}.privateDetailSourceRefs`,
+        "Private detail source reference",
+      ),
+      ...referenceFindings(
+        member.privateDetailSourceRefs,
+        sourceSet,
+        `members.${index}.privateDetailSourceRefs`,
+        "Private detail source reference",
+      ),
+    );
+    if (
+      member.privateDetailSourceRefs.some(
+        (ref) => sourceById.get(ref)?.privacy !== "private",
+      )
+    ) {
+      findings.push(
+        finding(
+          "public_resident_detail",
+          `members.${index}.privateDetailSourceRefs`,
+          "Resident details must remain in private sources.",
+        ),
+      );
+    }
+    if (
+      member.assignmentEligible &&
+      !["confirmed", "not-required"].includes(member.consentState)
+    ) {
+      findings.push(
+        finding(
+          "assignment_without_consent",
+          `members.${index}.assignmentEligible`,
+          "Assignment eligibility requires confirmed or not-required consent.",
+        ),
+      );
+    }
+    if (
+      member.assignmentEligible &&
+      member.consentState === "confirmed" &&
+      !member.sourceRefs.some((ref) => {
+        const source = sourceById.get(ref);
+        return (
+          source?.kind === "consent-record" &&
+          source.freshness === "current" &&
+          source.subjectRef === member.id
+        );
+      })
+    ) {
+      findings.push(
+        finding(
+          "unsupported_member_consent",
+          `members.${index}.sourceRefs`,
+          "Confirmed assignment consent requires exact current member consent evidence.",
+        ),
+      );
+    }
+  }
+
+  const readinessByWorkstream = new Map();
+  for (const item of value.readinessItems) {
+    const list = readinessByWorkstream.get(item.workstreamRef) ?? [];
+    list.push(item);
+    readinessByWorkstream.set(item.workstreamRef, list);
+  }
+  const milestonesByWorkstream = new Map();
+  for (const item of value.milestones) {
+    const list = milestonesByWorkstream.get(item.workstreamRef) ?? [];
+    list.push(item);
+    milestonesByWorkstream.set(item.workstreamRef, list);
+  }
+
+  for (const [index, workstream] of value.workstreams.entries()) {
+    findings.push(
+      ...uniqueFindings(
+        workstream.locationRefs,
+        `workstreams.${index}.locationRefs`,
+        "Location reference",
+      ),
+      ...referenceFindings(
+        workstream.locationRefs,
+        locationSet,
+        `workstreams.${index}.locationRefs`,
+        "Location reference",
+      ),
+      ...referenceFindings(
+        [workstream.ownerRef, ...workstream.assignedMemberRefs],
+        memberSet,
+        `workstreams.${index}.assignedMemberRefs`,
+        "Member reference",
+      ),
+      ...uniqueFindings(
+        workstream.assignedMemberRefs,
+        `workstreams.${index}.assignedMemberRefs`,
+        "Assigned member reference",
+      ),
+      ...uniqueFindings(
+        workstream.sourceRefs,
+        `workstreams.${index}.sourceRefs`,
+        "Source reference",
+      ),
+      ...referenceFindings(
+        workstream.sourceRefs,
+        sourceSet,
+        `workstreams.${index}.sourceRefs`,
+        "Source reference",
+      ),
+    );
+    const assigned = new Set(workstream.assignedMemberRefs);
+    if (!assigned.has(workstream.ownerRef)) {
+      findings.push(
+        finding(
+          "owner_not_assigned",
+          `workstreams.${index}.assignedMemberRefs`,
+          "The accountable workstream owner must also be an assigned member.",
+        ),
+      );
+    }
+    for (const memberRef of assigned) {
+      const member = memberById.get(memberRef);
+      if (
+        member &&
+        (!member.assignmentEligible ||
+          !["confirmed", "not-required"].includes(member.consentState))
+      ) {
+        findings.push(
+          finding(
+            "invalid_member_assignment",
+            `workstreams.${index}.assignedMemberRefs`,
+            `Assigned member ${JSON.stringify(memberRef)} is not eligible with sufficient consent.`,
+          ),
+        );
+      }
+    }
+    const locationRoles = new Set(
+      workstream.locationRefs
+        .map((ref) => locationById.get(ref)?.role)
+        .filter(Boolean),
+    );
+    if (
+      (workstream.kind === "origin-property" && !locationRoles.has("origin")) ||
+      (workstream.kind === "destination-property" && !locationRoles.has("destination")) ||
+      (["moving-service", "move-day"].includes(workstream.kind) &&
+        (!locationRoles.has("origin") || !locationRoles.has("destination")))
+    ) {
+      findings.push(
+        finding(
+          "invalid_workstream_location",
+          `workstreams.${index}.locationRefs`,
+          "Property and move-through workstreams must reference their required origin or destination roles.",
+        ),
+      );
+    }
+    if (!readinessByWorkstream.has(workstream.id)) {
+      findings.push(
+        finding(
+          "missing_readiness",
+          `workstreams.${index}.id`,
+          "Every workstream requires at least one readiness item.",
+        ),
+      );
+    }
+    const exactAssignments = workstream.sourceRefs.some((ref) => {
+      const source = sourceById.get(ref);
+      return (
+        source?.kind === "assignment-record" &&
+        source.freshness === "current" &&
+        source.workstreamRef === workstream.id &&
+        source.memberRefs?.length === workstream.assignedMemberRefs.length &&
+        source.memberRefs.every((memberRef) => assigned.has(memberRef))
+      );
+    });
+    if (!exactAssignments) {
+      findings.push(
+        finding(
+          "missing_assignment_evidence",
+          `workstreams.${index}.sourceRefs`,
+          "Every workstream requires a current exact assignment record.",
+        ),
+      );
+    }
+    const expectedFreshness = {
+      stale: "stale",
+      missing: "missing",
+      conflicting: "conflicting",
+    }[workstream.state];
+    if (
+      expectedFreshness &&
+      !workstream.sourceRefs.some(
+        (ref) => sourceById.get(ref)?.freshness === expectedFreshness,
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_workstream_state",
+          `workstreams.${index}.state`,
+          `The ${workstream.state} workstream state requires matching source freshness.`,
+        ),
+      );
+    }
+    if (
+      ["current", "owner-review"].includes(workstream.state) &&
+      workstream.sourceRefs.some(
+        (ref) => sourceById.get(ref)?.freshness !== "current",
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_workstream_state",
+          `workstreams.${index}.state`,
+          "Current and owner-review workstreams require only current source evidence.",
+        ),
+      );
+    }
+    if (
+      workstream.state === "complete" &&
+      (workstream.sourceRefs.some(
+        (ref) => sourceById.get(ref)?.freshness !== "current",
+      ) ||
+        (readinessByWorkstream.get(workstream.id) ?? []).some(
+          (item) => !["ready-for-owner-review", "not-applicable"].includes(item.state),
+        ))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_complete_workstream",
+          `workstreams.${index}.state`,
+          "Complete workstreams require current evidence and resolved readiness.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, milestone] of value.milestones.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [milestone.workstreamRef],
+        workstreamSet,
+        `milestones.${index}.workstreamRef`,
+        "Workstream reference",
+      ),
+      ...uniqueFindings(
+        milestone.sourceRefs,
+        `milestones.${index}.sourceRefs`,
+        "Source reference",
+      ),
+      ...referenceFindings(
+        milestone.sourceRefs,
+        sourceSet,
+        `milestones.${index}.sourceRefs`,
+        "Source reference",
+      ),
+    );
+    if (
+      milestone.dateState !== "known" &&
+      !milestone.sourceRefs.some(
+        (ref) => sourceById.get(ref)?.freshness === milestone.dateState,
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_date_state",
+          `milestones.${index}.dateState`,
+          "Missing or conflicting dates require evidence with the same visible gap state.",
+        ),
+      );
+    }
+    if (
+      milestone.dateState === "known" &&
+      milestone.sourceRefs.some(
+        (ref) => sourceById.get(ref)?.freshness !== "current",
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_date_state",
+          `milestones.${index}.sourceRefs`,
+          "Known milestone dates require only current source evidence.",
+        ),
+      );
+    }
+    if (value.plan.moveDateState === "known" && milestone.dateState === "known") {
+      if (
+        (milestone.phase === "pre-move" && milestone.date > value.plan.moveDate) ||
+        (milestone.phase === "move-day" && milestone.date !== value.plan.moveDate) ||
+        (milestone.phase === "post-move" && milestone.date < value.plan.moveDate)
+      ) {
+        findings.push(
+          finding(
+            "invalid_milestone_chronology",
+            `milestones.${index}.date`,
+            "Milestone phase and date must be chronological relative to the known move date.",
+          ),
+        );
+      }
+    }
+    if (
+      milestone.status === "completed" &&
+      (milestone.dateState !== "known" ||
+        milestone.date > value.plan.asOf ||
+        milestone.sourceRefs.some(
+          (ref) => sourceById.get(ref)?.freshness !== "current",
+        ))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_completed_milestone",
+          `milestones.${index}.status`,
+          "Completed milestones require a known past-or-present date and current evidence.",
+        ),
+      );
+    }
+    if (
+      milestone.status === "pending" &&
+      milestone.dateState === "known" &&
+      milestone.date < value.plan.asOf
+    ) {
+      findings.push(
+        finding(
+          "overdue_pending_milestone",
+          `milestones.${index}.status`,
+          "A known milestone before the plan as-of date cannot remain pending.",
+        ),
+      );
+    }
+  }
+
+  const dependencyGraph = new Map(workstreamIds.map((id) => [id, []]));
+  for (const [index, dependency] of value.dependencies.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [dependency.prerequisiteRef, dependency.dependentRef],
+        workstreamSet,
+        `dependencies.${index}`,
+        "Workstream reference",
+      ),
+      ...uniqueFindings(
+        dependency.sourceRefs,
+        `dependencies.${index}.sourceRefs`,
+        "Source reference",
+      ),
+      ...referenceFindings(
+        dependency.sourceRefs,
+        sourceSet,
+        `dependencies.${index}.sourceRefs`,
+        "Source reference",
+      ),
+    );
+    if (dependency.prerequisiteRef === dependency.dependentRef) {
+      findings.push(
+        finding(
+          "self_dependency",
+          `dependencies.${index}`,
+          "A workstream cannot depend on itself.",
+        ),
+      );
+    }
+    dependencyGraph
+      .get(dependency.prerequisiteRef)
+      ?.push(dependency.dependentRef);
+    const prerequisiteDates = (milestonesByWorkstream.get(
+      dependency.prerequisiteRef,
+    ) ?? [])
+      .filter((item) => item.dateState === "known")
+      .map((item) => item.date);
+    const dependentDates = (milestonesByWorkstream.get(dependency.dependentRef) ?? [])
+      .filter((item) => item.dateState === "known")
+      .map((item) => item.date);
+    if (
+      prerequisiteDates.length > 0 &&
+      dependentDates.length > 0 &&
+      prerequisiteDates.sort().at(-1) > dependentDates.sort().at(0)
+    ) {
+      findings.push(
+        finding(
+          "invalid_dependency_chronology",
+          `dependencies.${index}`,
+          "Known prerequisite milestones must not occur after known dependent milestones.",
+        ),
+      );
+    }
+    if (
+      dependency.state === "satisfied" &&
+      (workstreamById.get(dependency.prerequisiteRef)?.state !== "complete" ||
+        dependency.sourceRefs.some(
+          (ref) => sourceById.get(ref)?.freshness !== "current",
+        ))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_satisfied_dependency",
+          `dependencies.${index}.state`,
+          "Satisfied dependencies require a complete prerequisite and current evidence.",
+        ),
+      );
+    }
+  }
+  const visiting = new Set();
+  const visited = new Set();
+  function visitWorkstream(id) {
+    if (visiting.has(id)) {
+      return true;
+    }
+    if (visited.has(id)) {
+      return false;
+    }
+    visiting.add(id);
+    for (const next of dependencyGraph.get(id) ?? []) {
+      if (visitWorkstream(next)) {
+        return true;
+      }
+    }
+    visiting.delete(id);
+    visited.add(id);
+    return false;
+  }
+  if (workstreamIds.some((id) => visitWorkstream(id))) {
+    findings.push(
+      finding(
+        "dependency_cycle",
+        "dependencies",
+        "Moving workstream dependencies must remain acyclic.",
+      ),
+    );
+  }
+
+  for (const [index, readiness] of value.readinessItems.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [readiness.workstreamRef],
+        workstreamSet,
+        `readinessItems.${index}.workstreamRef`,
+        "Workstream reference",
+      ),
+      ...referenceFindings(
+        [readiness.ownerRef],
+        memberSet,
+        `readinessItems.${index}.ownerRef`,
+        "Member reference",
+      ),
+      ...uniqueFindings(
+        readiness.evidenceRefs,
+        `readinessItems.${index}.evidenceRefs`,
+        "Evidence reference",
+      ),
+      ...referenceFindings(
+        readiness.evidenceRefs,
+        sourceSet,
+        `readinessItems.${index}.evidenceRefs`,
+        "Evidence reference",
+      ),
+    );
+    const workstream = workstreamById.get(readiness.workstreamRef);
+    if (workstream && readiness.ownerRef !== workstream.ownerRef) {
+      findings.push(
+        finding(
+          "readiness_owner_mismatch",
+          `readinessItems.${index}.ownerRef`,
+          "Readiness must remain with the named workstream owner.",
+        ),
+      );
+    }
+    if (
+      readiness.state === "ready-for-owner-review" &&
+      readiness.evidenceRefs.some(
+        (ref) => sourceById.get(ref)?.freshness !== "current",
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_ready_item",
+          `readinessItems.${index}.state`,
+          "Ready moving items require only current evidence.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, gate] of value.actionGates.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [gate.workstreamRef],
+        workstreamSet,
+        `actionGates.${index}.workstreamRef`,
+        "Workstream reference",
+      ),
+      ...referenceFindings(
+        [gate.ownerRef, ...gate.requiredMemberRefs],
+        memberSet,
+        `actionGates.${index}.requiredMemberRefs`,
+        "Member reference",
+      ),
+      ...uniqueFindings(
+        gate.requiredMemberRefs,
+        `actionGates.${index}.requiredMemberRefs`,
+        "Required member reference",
+      ),
+      ...uniqueFindings(
+        gate.consentSourceRefs,
+        `actionGates.${index}.consentSourceRefs`,
+        "Consent source reference",
+      ),
+      ...referenceFindings(
+        gate.consentSourceRefs,
+        sourceSet,
+        `actionGates.${index}.consentSourceRefs`,
+        "Consent source reference",
+      ),
+      ...uniqueFindings(
+        gate.evidenceRefs,
+        `actionGates.${index}.evidenceRefs`,
+        "Evidence reference",
+      ),
+      ...referenceFindings(
+        gate.evidenceRefs,
+        sourceSet,
+        `actionGates.${index}.evidenceRefs`,
+        "Evidence reference",
+      ),
+    );
+    if (gate.ownerRef !== value.plan.ownerRef) {
+      findings.push(
+        finding(
+          "gate_owner_mismatch",
+          `actionGates.${index}.ownerRef`,
+          "External moving actions must remain with the named plan owner.",
+        ),
+      );
+    }
+    const workstreamKind = workstreamById.get(gate.workstreamRef)?.kind;
+    if (
+      workstreamKind &&
+      !gateWorkstreamKinds[gate.action].has(workstreamKind)
+    ) {
+      findings.push(
+        finding(
+          "invalid_gate_workstream",
+          `actionGates.${index}.workstreamRef`,
+          `The ${gate.action} gate is not attached to an applicable moving workstream.`,
+        ),
+      );
+    }
+    if (!gate.requiredMemberRefs.includes(gate.ownerRef)) {
+      findings.push(
+        finding(
+          "missing_owner_consent",
+          `actionGates.${index}.requiredMemberRefs`,
+          "The named action owner must be included among required principals.",
+        ),
+      );
+    }
+    if (
+      gate.requiredMemberRefs.some((ref) => {
+        const member = memberById.get(ref);
+        return member && !["confirmed", "not-required"].includes(member.consentState);
+      })
+    ) {
+      findings.push(
+        finding(
+          "insufficient_member_consent",
+          `actionGates.${index}.requiredMemberRefs`,
+          "Required principals must have confirmed or not-required consent.",
+        ),
+      );
+    }
+    for (const memberRef of gate.requiredMemberRefs) {
+      if (
+        !gate.consentSourceRefs.some((ref) => {
+          const source = sourceById.get(ref);
+          return (
+            source?.kind === "consent-record" &&
+            source.freshness === "current" &&
+            source.subjectRef === memberRef
+          );
+        })
+      ) {
+        findings.push(
+          finding(
+            "missing_consent_evidence",
+            `actionGates.${index}.consentSourceRefs`,
+            `Required principal ${JSON.stringify(memberRef)} needs exact current consent evidence.`,
+          ),
+        );
+      }
+    }
+    if (gate.state === "completed-by-owner") {
+      const exactRecord = gate.evidenceRefs.some((ref) => {
+        const source = sourceById.get(ref);
+        return (
+          source?.kind === "owner-action-record" &&
+          source.freshness === "current" &&
+          source.provenance === "owner-supplied" &&
+          source.ownerRef === gate.ownerRef &&
+          source.workstreamRef === gate.workstreamRef &&
+          source.action === gate.action
+        );
+      });
+      if (!exactRecord) {
+        findings.push(
+          finding(
+            "missing_exact_action_evidence",
+            `actionGates.${index}.evidenceRefs`,
+            "Completed owner actions require a current exact owner, workstream, and action record.",
+          ),
+        );
+      }
+    }
+  }
+
+  for (const [collectionName, collection] of [
+    ["gaps", value.gaps],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...referenceFindings(
+          [item.ownerRef],
+          memberSet,
+          `${collectionName}.${index}.ownerRef`,
+          "Member reference",
+        ),
+        ...uniqueFindings(item.refs, `${collectionName}.${index}.refs`, "Reference"),
+        ...referenceFindings(
+          item.refs,
+          crossRefs,
+          `${collectionName}.${index}.refs`,
+          "Reference",
+        ),
+      );
+      if (item.ownerRef !== value.plan.ownerRef) {
+        findings.push(
+          finding(
+            "owner_mismatch",
+            `${collectionName}.${index}.ownerRef`,
+            "Move gaps and owner decisions must remain with the named plan owner.",
+          ),
+        );
+      }
+    }
+  }
+  findings.push(
+    ...uniqueFindings(
+      value.handoff.reviewQuestionRefs,
+      "handoff.reviewQuestionRefs",
+      "Review question reference",
+    ),
+    ...referenceFindings(
+      value.handoff.reviewQuestionRefs,
+      new Set(questionIds),
+      "handoff.reviewQuestionRefs",
+      "Review question reference",
+    ),
+    ...uniqueFindings(
+      value.handoff.blockingRefs,
+      "handoff.blockingRefs",
+      "Blocking reference",
+    ),
+    ...referenceFindings(
+      value.handoff.blockingRefs,
+      crossRefs,
+      "handoff.blockingRefs",
+      "Blocking reference",
+    ),
+  );
+  const unresolved =
+    value.plan.moveDateState !== "known" ||
+    value.sources.some((item) =>
+      ["stale", "missing", "conflicting"].includes(item.freshness),
+    ) ||
+    value.workstreams.some((item) =>
+      ["stale", "missing", "blocked", "conflicting"].includes(item.state),
+    ) ||
+    value.readinessItems.some(
+      (item) => !["ready-for-owner-review", "not-applicable"].includes(item.state),
+    ) ||
+    value.dependencies.some((item) => item.state !== "satisfied") ||
+    value.actionGates.some(
+      (item) => !["completed-by-owner", "not-applicable"].includes(item.state),
+    ) ||
+    value.gaps.length > 0;
+  if (value.handoff.state === "ready-for-owner-review" && unresolved) {
+    findings.push(
+      finding(
+        "unsupported_ready_state",
+        "handoff.state",
+        "An owner-ready moving handoff requires resolved dates, evidence, workstreams, readiness, dependencies, action gates, and gaps.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "blocked" &&
+    value.handoff.blockingRefs.length === 0
+  ) {
+    findings.push(
+      finding(
+        "missing_blocking_reference",
+        "handoff.blockingRefs",
+        "A blocked moving handoff must name at least one blocking reference.",
+      ),
+    );
+  }
+  const blockingStateById = new Map([
+    ...value.sources.map((item) => [
+      item.id,
+      ["stale", "missing", "conflicting"].includes(item.freshness),
+    ]),
+    ...value.workstreams.map((item) => [
+      item.id,
+      ["stale", "missing", "blocked", "conflicting"].includes(item.state),
+    ]),
+    ...value.milestones.map((item) => [
+      item.id,
+      item.status === "blocked" || item.dateState !== "known",
+    ]),
+    ...value.dependencies.map((item) => [item.id, item.state === "blocked"]),
+    ...value.readinessItems.map((item) => [
+      item.id,
+      ["needs-evidence", "blocked"].includes(item.state),
+    ]),
+    ...value.actionGates.map((item) => [
+      item.id,
+      ["blocked", "pending-owner-decision"].includes(item.state),
+    ]),
+    ...value.gaps.map((item) => [item.id, true]),
+    ...value.reviewQuestions.map((item) => [item.id, true]),
+  ]);
+  for (const [index, ref] of value.handoff.blockingRefs.entries()) {
+    if (blockingStateById.has(ref) && !blockingStateById.get(ref)) {
+      findings.push(
+        finding(
+          "nonblocking_handoff_reference",
+          `handoff.blockingRefs.${index}`,
+          `Handoff reference ${JSON.stringify(ref)} is not in a blocking state.`,
+        ),
+      );
+    }
+  }
+
+  const publicText = canonicalJson({
+    sources: value.sources.map(({ label }) => label),
+    locations: value.locations.map(({ label }) => label),
+    members: value.members.map(({ displayName }) => displayName),
+    workstreams: value.workstreams.map(({ title }) => title),
+    milestones: value.milestones.map(({ title }) => title),
+    gaps: value.gaps.map(({ reason }) => reason),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({
+      question,
+      reason,
+    })),
+  });
+  if (
+    /\b\d{1,6}\s+[\p{L}0-9.'-]+(?:\s+[\p{L}0-9.'-]+){0,4}\s+(?:street|st|avenue|ave|road|rd|boulevard|blvd|drive|dr|lane|ln|court|ct|way)\b/iu.test(
+      publicText,
+    )
+  ) {
+    findings.push(
+      finding(
+        "private_address_exposure",
+        "locations",
+        "Shared moving-plan text must not expose an exact street address.",
+      ),
+    );
+  }
+  if (
+    /\b(?:book|reserve|sign|pay|send|contact|change|submit|enroll|register|forward)\b[^.!?]{0,80}\b(?:now|immediately|for (?:me|us|the owner)|on (?:my|our|their) behalf)\b/iu.test(
+      publicText,
+    )
+  ) {
+    findings.push(
+      finding(
+        "external_action_content",
+        "reviewQuestions",
+        "Moving artifacts must not instruct the agent to execute external actions.",
+      ),
+    );
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
@@ -9247,6 +10369,7 @@ const validators = {
   "meal-grocery-planner": mealGroceryFindings,
   "medical-appointment-prep": medicalAppointmentFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
+  "moving-checklist-coordinator": movingPlanFindings,
   "movie-streaming-organizer": movieStreamingFindings,
   "music-organizer": musicOrganizerFindings,
   "neighborhood-operations-watcher": neighborhoodOperationsFindings,

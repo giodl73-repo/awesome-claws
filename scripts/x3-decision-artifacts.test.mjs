@@ -203,6 +203,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "moving-checklist-coordinator",
+    schema: "../claws/moving-checklist-coordinator/schemas/moving-plan.schema.json",
+    fixture: "../claws/moving-checklist-coordinator/fixtures/moving-plan.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "movie-streaming-organizer",
     schema: "../claws/movie-streaming-organizer/schemas/movie-streaming.schema.json",
     fixture: "../claws/movie-streaming-organizer/fixtures/movie-streaming.example.json",
@@ -1007,6 +1013,252 @@ test("conference opportunity scout preserves source, chronology, readiness, and 
   const agentOwned = structuredClone(fixture);
   agentOwned.handoff.owner = "conference-opportunity-scout";
   assert.equal(isValid("conference-opportunity-scout", agentOwned), false);
+});
+
+test("moving checklist preserves source, location, and freshness integrity", () => {
+  const fixture = cases.get("moving-checklist-coordinator").fixture;
+
+  const danglingSource = structuredClone(fixture);
+  danglingSource.locations[0].sourceRefs = ["source-missing"];
+  assert.equal(isValid("moving-checklist-coordinator", danglingSource), false);
+
+  const duplicateSource = structuredClone(fixture);
+  duplicateSource.workstreams[0].sourceRefs.push(
+    duplicateSource.workstreams[0].sourceRefs[0],
+  );
+  assert.equal(isValid("moving-checklist-coordinator", duplicateSource), false);
+
+  const futureSource = structuredClone(fixture);
+  futureSource.sources[0].asOf = "2026-08-30";
+  assert.equal(isValid("moving-checklist-coordinator", futureSource), false);
+
+  const unsupportedMoveDate = structuredClone(fixture);
+  unsupportedMoveDate.plan.sourceRefs = ["source-mover-quote"];
+  assert.equal(isValid("moving-checklist-coordinator", unsupportedMoveDate), false);
+
+  const expiredCurrentSource = structuredClone(fixture);
+  expiredCurrentSource.sources[5].freshness = "current";
+  assert.equal(isValid("moving-checklist-coordinator", expiredCurrentSource), false);
+
+  const danglingSubject = structuredClone(fixture);
+  danglingSubject.sources[0].subjectRef = "workstream-missing";
+  assert.equal(isValid("moving-checklist-coordinator", danglingSubject), false);
+
+  const publicAddress = structuredClone(fixture);
+  publicAddress.sources[1].privacy = "household-shared";
+  assert.equal(isValid("moving-checklist-coordinator", publicAddress), false);
+
+  const unsupportedAddress = structuredClone(fixture);
+  unsupportedAddress.sources[1].freshness = "stale";
+  assert.equal(isValid("moving-checklist-coordinator", unsupportedAddress), false);
+
+  const rawAddress = structuredClone(fixture);
+  rawAddress.locations[0].label = "123 River Street";
+  assert.equal(isValid("moving-checklist-coordinator", rawAddress), false);
+
+  const duplicateOrigin = structuredClone(fixture);
+  duplicateOrigin.locations[1].role = "origin";
+  assert.equal(isValid("moving-checklist-coordinator", duplicateOrigin), false);
+
+  const wrongLocation = structuredClone(fixture);
+  wrongLocation.workstreams[0].locationRefs = ["location-destination"];
+  assert.equal(isValid("moving-checklist-coordinator", wrongLocation), false);
+
+  const hiddenStaleEvidence = structuredClone(fixture);
+  hiddenStaleEvidence.workstreams[0].sourceRefs.push("source-mover-quote");
+  assert.equal(isValid("moving-checklist-coordinator", hiddenStaleEvidence), false);
+});
+
+test("moving checklist preserves date chronology and an acyclic dependency graph", () => {
+  const fixture = cases.get("moving-checklist-coordinator").fixture;
+
+  const fabricatedMoveDate = structuredClone(fixture);
+  fabricatedMoveDate.plan.moveDateState = "missing";
+  assert.equal(isValid("moving-checklist-coordinator", fabricatedMoveDate), false);
+
+  const preMoveAfterMove = structuredClone(fixture);
+  preMoveAfterMove.milestones[2].dateState = "known";
+  preMoveAfterMove.milestones[2].date = "2026-10-16";
+  preMoveAfterMove.milestones[2].sourceRefs = ["source-owner-plan"];
+  assert.equal(isValid("moving-checklist-coordinator", preMoveAfterMove), false);
+
+  const wrongMoveDay = structuredClone(fixture);
+  wrongMoveDay.milestones[3].date = "2026-10-14";
+  assert.equal(isValid("moving-checklist-coordinator", wrongMoveDay), false);
+
+  const unsupportedMissingDate = structuredClone(fixture);
+  unsupportedMissingDate.milestones[2].sourceRefs = ["source-owner-plan"];
+  assert.equal(isValid("moving-checklist-coordinator", unsupportedMissingDate), false);
+
+  const staleKnownDate = structuredClone(fixture);
+  staleKnownDate.milestones[0].sourceRefs.push("source-mover-quote");
+  assert.equal(isValid("moving-checklist-coordinator", staleKnownDate), false);
+
+  const prematureCompletion = structuredClone(fixture);
+  prematureCompletion.milestones[0].status = "completed";
+  assert.equal(isValid("moving-checklist-coordinator", prematureCompletion), false);
+
+  const danglingDependency = structuredClone(fixture);
+  danglingDependency.dependencies[0].prerequisiteRef = "workstream-missing";
+  assert.equal(isValid("moving-checklist-coordinator", danglingDependency), false);
+
+  const selfDependency = structuredClone(fixture);
+  selfDependency.dependencies[0].dependentRef =
+    selfDependency.dependencies[0].prerequisiteRef;
+  assert.equal(isValid("moving-checklist-coordinator", selfDependency), false);
+
+  const duplicateDependency = structuredClone(fixture);
+  duplicateDependency.dependencies.push({
+    ...duplicateDependency.dependencies[0],
+    id: "dependency-duplicate-access",
+  });
+  assert.equal(isValid("moving-checklist-coordinator", duplicateDependency), false);
+
+  const cyclicDependency = structuredClone(fixture);
+  cyclicDependency.dependencies.push({
+    id: "dependency-move-day-before-destination",
+    prerequisiteRef: "workstream-move-day",
+    dependentRef: "workstream-destination",
+    state: "active",
+    sourceRefs: ["source-owner-plan"],
+  });
+  assert.equal(isValid("moving-checklist-coordinator", cyclicDependency), false);
+
+  const unsupportedSatisfied = structuredClone(fixture);
+  unsupportedSatisfied.dependencies[1].state = "satisfied";
+  assert.equal(isValid("moving-checklist-coordinator", unsupportedSatisfied), false);
+
+  const reversedDependencyDates = structuredClone(fixture);
+  reversedDependencyDates.dependencies[3].prerequisiteRef = "workstream-origin";
+  reversedDependencyDates.dependencies[3].dependentRef = "workstream-move-day";
+  assert.equal(
+    isValid("moving-checklist-coordinator", reversedDependencyDates),
+    false,
+  );
+});
+
+test("moving checklist enforces complete readiness, assignments, and consent", () => {
+  const fixture = cases.get("moving-checklist-coordinator").fixture;
+
+  const missingReadiness = structuredClone(fixture);
+  missingReadiness.readinessItems = missingReadiness.readinessItems.filter(
+    (item) => item.workstreamRef !== "workstream-origin",
+  );
+  assert.equal(isValid("moving-checklist-coordinator", missingReadiness), false);
+
+  const staleReadyItem = structuredClone(fixture);
+  staleReadyItem.readinessItems[0].evidenceRefs = ["source-mover-quote"];
+  assert.equal(isValid("moving-checklist-coordinator", staleReadyItem), false);
+
+  const wrongReadinessOwner = structuredClone(fixture);
+  wrongReadinessOwner.readinessItems[0].ownerRef = "member-sam";
+  assert.equal(isValid("moving-checklist-coordinator", wrongReadinessOwner), false);
+
+  const ownerNotAssigned = structuredClone(fixture);
+  ownerNotAssigned.workstreams[2].assignedMemberRefs = ["member-alex"];
+  assert.equal(isValid("moving-checklist-coordinator", ownerNotAssigned), false);
+
+  const unsupportedAssignment = structuredClone(fixture);
+  unsupportedAssignment.sources.find(
+    (source) => source.id === "source-assignment-packing",
+  ).memberRefs = ["member-sam"];
+  assert.equal(isValid("moving-checklist-coordinator", unsupportedAssignment), false);
+
+  const ineligibleAssignment = structuredClone(fixture);
+  ineligibleAssignment.workstreams[2].assignedMemberRefs.push("member-child");
+  assert.equal(isValid("moving-checklist-coordinator", ineligibleAssignment), false);
+
+  const pendingConsentAssignment = structuredClone(fixture);
+  pendingConsentAssignment.members[1].consentState = "pending";
+  assert.equal(
+    isValid("moving-checklist-coordinator", pendingConsentAssignment),
+    false,
+  );
+
+  const invalidPlanOwner = structuredClone(fixture);
+  invalidPlanOwner.plan.ownerRef = "member-sam";
+  assert.equal(isValid("moving-checklist-coordinator", invalidPlanOwner), false);
+
+  const wrongHandoffOwner = structuredClone(fixture);
+  wrongHandoffOwner.handoff.ownerRef = "member-sam";
+  assert.equal(isValid("moving-checklist-coordinator", wrongHandoffOwner), false);
+
+  const unsupportedComplete = structuredClone(fixture);
+  unsupportedComplete.workstreams[1].state = "complete";
+  assert.equal(isValid("moving-checklist-coordinator", unsupportedComplete), false);
+
+  const falseReadyHandoff = structuredClone(fixture);
+  falseReadyHandoff.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("moving-checklist-coordinator", falseReadyHandoff), false);
+
+  const blockedWithoutRefs = structuredClone(fixture);
+  blockedWithoutRefs.handoff.blockingRefs = [];
+  assert.equal(isValid("moving-checklist-coordinator", blockedWithoutRefs), false);
+});
+
+test("moving checklist keeps every external action with exact named-owner evidence", () => {
+  const fixture = cases.get("moving-checklist-coordinator").fixture;
+
+  const missingGateKind = structuredClone(fixture);
+  missingGateKind.actionGates[0].action = "make-booking";
+  assert.equal(isValid("moving-checklist-coordinator", missingGateKind), false);
+
+  const missingBlockedAction = structuredClone(fixture);
+  missingBlockedAction.blockedActions =
+    missingBlockedAction.blockedActions.filter(
+      (action) => action !== "change-insurance",
+    );
+  assert.equal(isValid("moving-checklist-coordinator", missingBlockedAction), false);
+
+  const wrongGateOwner = structuredClone(fixture);
+  wrongGateOwner.actionGates[0].ownerRef = "member-sam";
+  assert.equal(isValid("moving-checklist-coordinator", wrongGateOwner), false);
+
+  const wrongGateWorkstream = structuredClone(fixture);
+  wrongGateWorkstream.actionGates[0].workstreamRef = "workstream-utilities";
+  assert.equal(isValid("moving-checklist-coordinator", wrongGateWorkstream), false);
+
+  const ownerMissingFromConsent = structuredClone(fixture);
+  ownerMissingFromConsent.actionGates[0].requiredMemberRefs = [];
+  assert.equal(
+    isValid("moving-checklist-coordinator", ownerMissingFromConsent),
+    false,
+  );
+
+  const missingExactConsent = structuredClone(fixture);
+  missingExactConsent.actionGates[10].consentSourceRefs = [
+    "source-consent-alex",
+  ];
+  assert.equal(isValid("moving-checklist-coordinator", missingExactConsent), false);
+
+  const completedWithoutRecord = structuredClone(fixture);
+  completedWithoutRecord.actionGates[0].state = "completed-by-owner";
+  assert.equal(isValid("moving-checklist-coordinator", completedWithoutRecord), false);
+
+  const wrongActionRecord = structuredClone(fixture);
+  wrongActionRecord.sources.at(-1).action = "change-account";
+  assert.equal(isValid("moving-checklist-coordinator", wrongActionRecord), false);
+
+  const wrongWorkstreamRecord = structuredClone(fixture);
+  wrongWorkstreamRecord.sources.at(-1).workstreamRef = "workstream-utilities";
+  assert.equal(isValid("moving-checklist-coordinator", wrongWorkstreamRecord), false);
+
+  const wrongOwnerRecord = structuredClone(fixture);
+  wrongOwnerRecord.sources.at(-1).ownerRef = "member-sam";
+  assert.equal(isValid("moving-checklist-coordinator", wrongOwnerRecord), false);
+
+  const staleOwnerRecord = structuredClone(fixture);
+  staleOwnerRecord.sources.at(-1).freshness = "stale";
+  assert.equal(isValid("moving-checklist-coordinator", staleOwnerRecord), false);
+
+  const nonblockingReference = structuredClone(fixture);
+  nonblockingReference.handoff.blockingRefs[0] = "workstream-origin";
+  assert.equal(isValid("moving-checklist-coordinator", nonblockingReference), false);
+
+  const externalInstruction = structuredClone(fixture);
+  externalInstruction.reviewQuestions[0].question =
+    "Book the movers now on our behalf.";
+  assert.equal(isValid("moving-checklist-coordinator", externalInstruction), false);
 });
 
 test("gift relationship manager preserves privacy, budget, and owner authority", () => {
