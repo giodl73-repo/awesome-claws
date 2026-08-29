@@ -65,6 +65,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "conference-opportunity-scout",
+    schema: "../claws/conference-opportunity-scout/schemas/conference-opportunities.schema.json",
+    fixture: "../claws/conference-opportunity-scout/fixtures/conference-opportunities.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "delegation-coordinator",
     schema: "../claws/delegation-coordinator/schemas/delegation-ledger.schema.json",
     fixture: "../claws/delegation-coordinator/fixtures/delegation-ledger.example.json",
@@ -558,6 +564,449 @@ test("invoice payment follow-up preserves receivables evidence and owner authori
   const agentOwned = structuredClone(cases.get("invoice-payment-followup").fixture);
   agentOwned.handoff.owner = "invoice-payment-followup";
   assert.equal(isValid("invoice-payment-followup", agentOwned), false);
+});
+
+test("conference opportunity scout preserves source, chronology, readiness, and owner authority", () => {
+  const fixture = cases.get("conference-opportunity-scout").fixture;
+
+  const danglingEvent = structuredClone(fixture);
+  danglingEvent.opportunities[0].eventRef = "event-missing";
+  assert.equal(isValid("conference-opportunity-scout", danglingEvent), false);
+
+  const danglingSource = structuredClone(fixture);
+  danglingSource.fitAssessments[0].officialSourceRefs = ["source-missing"];
+  assert.equal(isValid("conference-opportunity-scout", danglingSource), false);
+
+  const futureSource = structuredClone(fixture);
+  futureSource.sources[0].asOf = "2026-08-30";
+  assert.equal(isValid("conference-opportunity-scout", futureSource), false);
+
+  const reversedEvent = structuredClone(fixture);
+  reversedEvent.events[0].endDate = "2026-10-18";
+  assert.equal(isValid("conference-opportunity-scout", reversedEvent), false);
+
+  const staleScheduledEvent = structuredClone(fixture);
+  staleScheduledEvent.events[0].startDate = "2026-08-20";
+  staleScheduledEvent.events[0].endDate = "2026-08-21";
+  staleScheduledEvent.opportunities[0].deadline = "2026-08-19";
+  staleScheduledEvent.opportunities[0].state = "closed";
+  assert.equal(isValid("conference-opportunity-scout", staleScheduledEvent), false);
+
+  const prematureCompletedEvent = structuredClone(fixture);
+  prematureCompletedEvent.events[0].status = "completed";
+  assert.equal(isValid("conference-opportunity-scout", prematureCompletedEvent), false);
+
+  const currentCancelledEventOpportunity = structuredClone(fixture);
+  currentCancelledEventOpportunity.events[0].status = "cancelled";
+  assert.equal(isValid("conference-opportunity-scout", currentCancelledEventOpportunity), false);
+
+  const lateDeadline = structuredClone(fixture);
+  lateDeadline.opportunities[0].deadline = "2026-10-22";
+  assert.equal(isValid("conference-opportunity-scout", lateDeadline), false);
+
+  const expiredCurrentOpportunity = structuredClone(fixture);
+  expiredCurrentOpportunity.opportunities[0].deadline = "2026-08-28";
+  assert.equal(isValid("conference-opportunity-scout", expiredCurrentOpportunity), false);
+
+  const currentWithoutDeadline = structuredClone(fixture);
+  delete currentWithoutDeadline.opportunities[0].deadline;
+  assert.equal(isValid("conference-opportunity-scout", currentWithoutDeadline), false);
+
+  const currentWithNullDeadline = structuredClone(fixture);
+  currentWithNullDeadline.opportunities[0].deadline = null;
+  assert.equal(isValid("conference-opportunity-scout", currentWithNullDeadline), false);
+
+  const missingDeadline = structuredClone(fixture);
+  missingDeadline.opportunities[0].state = "missing";
+  delete missingDeadline.opportunities[0].deadline;
+  assert.equal(isValid("conference-opportunity-scout", missingDeadline), true);
+
+  const conflictingDeadline = structuredClone(fixture);
+  conflictingDeadline.opportunities[0].state = "conflicting";
+  conflictingDeadline.opportunities[0].deadline = null;
+  assert.equal(isValid("conference-opportunity-scout", conflictingDeadline), true);
+
+  const prematureClosedOpportunity = structuredClone(fixture);
+  prematureClosedOpportunity.opportunities[0].state = "closed";
+  assert.equal(isValid("conference-opportunity-scout", prematureClosedOpportunity), false);
+
+  const officiallyClosedOpportunity = structuredClone(fixture);
+  officiallyClosedOpportunity.sources.push({
+    id: "source-systems-summit-closure",
+    kind: "official-closure",
+    label: "Official CFP cancellation notice",
+    provenance: "official-public",
+    url: "https://events.example.org/systems-summit-2026/cfp-closure",
+    freshness: "current",
+    asOf: "2026-08-29",
+    opportunityRef: "opportunity-systems-summit-speaking",
+    closureState: "cancelled",
+  });
+  officiallyClosedOpportunity.opportunities[0].state = "closed";
+  officiallyClosedOpportunity.opportunities[0].deadline = null;
+  officiallyClosedOpportunity.opportunities[0].sourceRefs.push(
+    "source-systems-summit-closure",
+  );
+  assert.equal(isValid("conference-opportunity-scout", officiallyClosedOpportunity), true);
+
+  const staleOfficialClosure = structuredClone(officiallyClosedOpportunity);
+  staleOfficialClosure.sources.at(-1).freshness = "stale";
+  assert.equal(isValid("conference-opportunity-scout", staleOfficialClosure), false);
+
+  const cancelledEventClosure = structuredClone(fixture);
+  cancelledEventClosure.events[0].status = "cancelled";
+  cancelledEventClosure.opportunities[0].state = "closed";
+  assert.equal(isValid("conference-opportunity-scout", cancelledEventClosure), true);
+
+  const staleOfficialEvent = structuredClone(fixture);
+  staleOfficialEvent.sources[0].freshness = "stale";
+  assert.equal(isValid("conference-opportunity-scout", staleOfficialEvent), false);
+
+  const tentativeWithCurrentOfficialEvent = structuredClone(fixture);
+  tentativeWithCurrentOfficialEvent.events[0].status = "tentative";
+  assert.equal(isValid("conference-opportunity-scout", tentativeWithCurrentOfficialEvent), true);
+
+  const tentativeWithStaleOfficialEvent = structuredClone(
+    tentativeWithCurrentOfficialEvent,
+  );
+  tentativeWithStaleOfficialEvent.sources[0].freshness = "stale";
+  assert.equal(isValid("conference-opportunity-scout", tentativeWithStaleOfficialEvent), false);
+
+  const staleCfp = structuredClone(fixture);
+  staleCfp.sources[1].freshness = "stale";
+  assert.equal(isValid("conference-opportunity-scout", staleCfp), false);
+
+  const wrongOfficialProvenance = structuredClone(fixture);
+  wrongOfficialProvenance.sources[1].provenance = "owner-supplied";
+  assert.equal(isValid("conference-opportunity-scout", wrongOfficialProvenance), false);
+
+  const missingOfficialUrl = structuredClone(fixture);
+  delete missingOfficialUrl.sources[1].url;
+  assert.equal(isValid("conference-opportunity-scout", missingOfficialUrl), false);
+
+  const unsupportedFit = structuredClone(fixture);
+  unsupportedFit.fitAssessments[0].ownerEvidenceRefs = ["source-systems-summit-cfp"];
+  assert.equal(isValid("conference-opportunity-scout", unsupportedFit), false);
+
+  const staleOwnerFitEvidence = structuredClone(fixture);
+  staleOwnerFitEvidence.sources[3].freshness = "stale";
+  assert.equal(isValid("conference-opportunity-scout", staleOwnerFitEvidence), false);
+
+  const readinessWithoutFit = structuredClone(fixture);
+  readinessWithoutFit.fitAssessments[0].state = "partial";
+  assert.equal(isValid("conference-opportunity-scout", readinessWithoutFit), false);
+
+  const staleReadinessEvidence = structuredClone(fixture);
+  staleReadinessEvidence.sources[5].freshness = "stale";
+  assert.equal(isValid("conference-opportunity-scout", staleReadinessEvidence), false);
+
+  const readinessWithoutOwnerEvidence = structuredClone(fixture);
+  readinessWithoutOwnerEvidence.readinessItems[0].evidenceRefs = [
+    "source-systems-summit-cfp",
+  ];
+  assert.equal(isValid("conference-opportunity-scout", readinessWithoutOwnerEvidence), false);
+
+  const readinessWithoutOfficialEvidence = structuredClone(fixture);
+  readinessWithoutOfficialEvidence.readinessItems[0].evidenceRefs = [
+    "source-owner-draft",
+  ];
+  assert.equal(isValid("conference-opportunity-scout", readinessWithoutOfficialEvidence), false);
+
+  const completedWithoutOwnerRecord = structuredClone(fixture);
+  completedWithoutOwnerRecord.actionGates[0].state = "completed-by-owner";
+  assert.equal(isValid("conference-opportunity-scout", completedWithoutOwnerRecord), false);
+
+  const completedWithExactOwnerRecord = structuredClone(fixture);
+  completedWithExactOwnerRecord.sources.push({
+    id: "source-owner-submission-record",
+    kind: "owner-action-record",
+    label: "Owner-supplied proposal submission confirmation",
+    provenance: "owner-supplied",
+    freshness: "current",
+    asOf: "2026-08-29",
+    opportunityRef: "opportunity-systems-summit-speaking",
+    action: "submit-proposal",
+    owner: "Gio",
+  });
+  completedWithExactOwnerRecord.actionGates[0].state = "completed-by-owner";
+  completedWithExactOwnerRecord.actionGates[0].evidenceRefs.push(
+    "source-owner-submission-record",
+  );
+  completedWithExactOwnerRecord.opportunities[0].state = "closed";
+  assert.equal(isValid("conference-opportunity-scout", completedWithExactOwnerRecord), true);
+
+  const completedWithWrongActionRecord = structuredClone(completedWithExactOwnerRecord);
+  completedWithWrongActionRecord.sources.at(-1).action = "contact-organizer";
+  assert.equal(isValid("conference-opportunity-scout", completedWithWrongActionRecord), false);
+
+  const completedWithWrongOwnerRecord = structuredClone(completedWithExactOwnerRecord);
+  completedWithWrongOwnerRecord.sources.at(-1).owner = "Someone Else";
+  assert.equal(isValid("conference-opportunity-scout", completedWithWrongOwnerRecord), false);
+
+  const completedNonterminalAction = structuredClone(fixture);
+  completedNonterminalAction.sources.push({
+    id: "source-owner-contact-record",
+    kind: "owner-action-record",
+    label: "Owner-supplied organizer contact confirmation",
+    provenance: "owner-supplied",
+    freshness: "current",
+    asOf: "2026-08-29",
+    opportunityRef: "opportunity-systems-summit-speaking",
+    action: "contact-organizer",
+    owner: "Gio",
+  });
+  completedNonterminalAction.actionGates[1].state = "completed-by-owner";
+  completedNonterminalAction.actionGates[1].evidenceRefs.push(
+    "source-owner-contact-record",
+  );
+  completedNonterminalAction.opportunities[0].state = "closed";
+  assert.equal(isValid("conference-opportunity-scout", completedNonterminalAction), false);
+
+  const completedWithWrongOpportunityRecord = structuredClone(
+    completedWithExactOwnerRecord,
+  );
+  const secondOpportunity = structuredClone(
+    completedWithWrongOpportunityRecord.opportunities[0],
+  );
+  secondOpportunity.id = "opportunity-systems-summit-other";
+  secondOpportunity.state = "missing";
+  secondOpportunity.deadline = null;
+  completedWithWrongOpportunityRecord.opportunities.push(secondOpportunity);
+  for (const gate of structuredClone(completedWithWrongOpportunityRecord.actionGates)) {
+    gate.id = `${gate.id}-other`;
+    gate.opportunityRef = secondOpportunity.id;
+    gate.state = "blocked";
+    completedWithWrongOpportunityRecord.actionGates.push(gate);
+  }
+  completedWithWrongOpportunityRecord.sources.at(-1).opportunityRef =
+    secondOpportunity.id;
+  assert.equal(isValid("conference-opportunity-scout", completedWithWrongOpportunityRecord), false);
+
+  for (const requiredGate of [
+    "submit-proposal",
+    "contact-organizer",
+    "publish-abstract",
+    "change-calendar",
+  ]) {
+    const missingIntrinsicGate = structuredClone(fixture);
+    missingIntrinsicGate.actionGates = missingIntrinsicGate.actionGates.filter(
+      (gate) => gate.action !== requiredGate,
+    );
+    assert.equal(isValid("conference-opportunity-scout", missingIntrinsicGate), false);
+  }
+
+  const intrinsicActionsByKind = {
+    attendance: [
+      "register",
+      "book-travel",
+      "buy-ticket",
+      "pay-fee",
+      "contact-organizer",
+      "change-calendar",
+      "change-account",
+    ],
+    sponsorship: ["pay-fee", "contact-organizer", "change-account"],
+    networking: [
+      "register",
+      "book-travel",
+      "buy-ticket",
+      "pay-fee",
+      "contact-organizer",
+      "change-calendar",
+      "change-account",
+    ],
+  };
+  for (const [kind, actions] of Object.entries(intrinsicActionsByKind)) {
+    const applicableGates = structuredClone(fixture);
+    applicableGates.sources.push({
+      id: "source-systems-summit-registration",
+      kind: "official-registration",
+      label: "Official registration page",
+      provenance: "official-public",
+      url: "https://events.example.org/systems-summit-2026/register",
+      freshness: "current",
+      asOf: "2026-08-29",
+    });
+    applicableGates.opportunities[0].kind = kind;
+    applicableGates.opportunities[0].sourceRefs.push(
+      "source-systems-summit-registration",
+    );
+    applicableGates.actionGates = actions.map((action) => ({
+      id: `gate-systems-summit-${kind}-${action}`,
+      opportunityRef: "opportunity-systems-summit-speaking",
+      action,
+      state: "blocked",
+      owner: "Gio",
+      evidenceRefs: ["source-systems-summit-registration"],
+    }));
+    applicableGates.reviewQuestions[0].refs = [
+      "opportunity-systems-summit-speaking",
+      "readiness-systems-summit-rights",
+      applicableGates.actionGates[0].id,
+    ];
+    assert.equal(isValid("conference-opportunity-scout", applicableGates), true);
+
+    applicableGates.actionGates.pop();
+    assert.equal(isValid("conference-opportunity-scout", applicableGates), false);
+  }
+
+  const duplicateGatePair = structuredClone(fixture);
+  duplicateGatePair.actionGates.push({
+    ...structuredClone(duplicateGatePair.actionGates[0]),
+    id: "gate-systems-summit-submit-duplicate",
+  });
+  assert.equal(isValid("conference-opportunity-scout", duplicateGatePair), false);
+
+  for (const requiredAction of [
+    "submit-proposal",
+    "register",
+    "book-travel",
+    "buy-ticket",
+    "pay-fee",
+    "contact-organizer",
+    "publish-abstract",
+    "change-calendar",
+    "change-account",
+  ]) {
+    const missingAuthorityGate = structuredClone(fixture);
+    missingAuthorityGate.blockedActions = missingAuthorityGate.blockedActions.filter(
+      (action) => action !== requiredAction,
+    );
+    missingAuthorityGate.blockedActions.push("legal-advice");
+    assert.equal(isValid("conference-opportunity-scout", missingAuthorityGate), false);
+  }
+
+  const wrongReadinessOwner = structuredClone(fixture);
+  wrongReadinessOwner.readinessItems[0].owner = "Someone Else";
+  assert.equal(isValid("conference-opportunity-scout", wrongReadinessOwner), false);
+
+  const wrongGateOwner = structuredClone(fixture);
+  wrongGateOwner.actionGates[0].owner = "Someone Else";
+  assert.equal(isValid("conference-opportunity-scout", wrongGateOwner), false);
+
+  const actionAdvice = structuredClone(fixture);
+  actionAdvice.reviewQuestions[0].reason += " Submit the proposal now.";
+  assert.equal(isValid("conference-opportunity-scout", actionAdvice), false);
+
+  const ungatedActionQuestion = structuredClone(fixture);
+  ungatedActionQuestion.reviewQuestions[0].question =
+    "Submit the proposal after reviewing the rights?";
+  assert.equal(isValid("conference-opportunity-scout", ungatedActionQuestion), false);
+
+  const ownerGatedQuestion = structuredClone(fixture);
+  ownerGatedQuestion.reviewQuestions[0].question =
+    "Should Gio submit the proposal after reviewing the rights?";
+  assert.equal(isValid("conference-opportunity-scout", ownerGatedQuestion), true);
+
+  const readyWithBlockedReadiness = structuredClone(fixture);
+  readyWithBlockedReadiness.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("conference-opportunity-scout", readyWithBlockedReadiness), false);
+
+  const fullyReady = structuredClone(fixture);
+  fullyReady.sources.push({
+    id: "source-owner-rights-review",
+    kind: "owner-approval",
+    label: "Owner-supplied rights review",
+    provenance: "owner-supplied",
+    freshness: "current",
+    asOf: "2026-08-29",
+  });
+  fullyReady.readinessItems[2].state = "ready-for-owner-review";
+  fullyReady.readinessItems[2].evidenceRefs.push("source-owner-rights-review");
+  fullyReady.readinessItems.push({
+    id: "readiness-systems-summit-eligibility",
+    opportunityRef: "opportunity-systems-summit-speaking",
+    kind: "eligibility",
+    state: "ready-for-owner-review",
+    owner: "Gio",
+    evidenceRefs: ["source-systems-summit-cfp", "source-owner-credentials"],
+  });
+  fullyReady.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("conference-opportunity-scout", fullyReady), true);
+
+  const twoFullyReadyOpportunities = structuredClone(fullyReady);
+  twoFullyReadyOpportunities.opportunities.push({
+    ...structuredClone(twoFullyReadyOpportunities.opportunities[0]),
+    id: "opportunity-systems-summit-speaking-two",
+    title: "Second reliability session CFP",
+  });
+  twoFullyReadyOpportunities.fitAssessments.push({
+    ...structuredClone(twoFullyReadyOpportunities.fitAssessments[0]),
+    id: "fit-systems-summit-speaking-two",
+    opportunityRef: "opportunity-systems-summit-speaking-two",
+  });
+  for (const item of structuredClone(twoFullyReadyOpportunities.readinessItems)) {
+    item.id = `${item.id}-two`;
+    item.opportunityRef = "opportunity-systems-summit-speaking-two";
+    twoFullyReadyOpportunities.readinessItems.push(item);
+  }
+  for (const gate of structuredClone(twoFullyReadyOpportunities.actionGates)) {
+    gate.id = `${gate.id}-two`;
+    gate.opportunityRef = "opportunity-systems-summit-speaking-two";
+    twoFullyReadyOpportunities.actionGates.push(gate);
+  }
+  assert.equal(isValid("conference-opportunity-scout", twoFullyReadyOpportunities), true);
+
+  const readyOpportunityWithoutFit = structuredClone(twoFullyReadyOpportunities);
+  readyOpportunityWithoutFit.fitAssessments =
+    readyOpportunityWithoutFit.fitAssessments.filter(
+      (fit) => fit.opportunityRef !== "opportunity-systems-summit-speaking-two",
+    );
+  assert.equal(isValid("conference-opportunity-scout", readyOpportunityWithoutFit), false);
+
+  const readyWithoutEligibilityCoverage = structuredClone(fullyReady);
+  readyWithoutEligibilityCoverage.readinessItems =
+    readyWithoutEligibilityCoverage.readinessItems.filter(
+      (item) => item.kind !== "eligibility",
+    );
+  assert.equal(isValid("conference-opportunity-scout", readyWithoutEligibilityCoverage), false);
+
+  const readyWithUnresolvedCoverage = structuredClone(fullyReady);
+  readyWithUnresolvedCoverage.readinessItems.at(-1).state = "needs-evidence";
+  assert.equal(isValid("conference-opportunity-scout", readyWithUnresolvedCoverage), false);
+
+  const readyWithExtraBlockedReadiness = structuredClone(fullyReady);
+  readyWithExtraBlockedReadiness.readinessItems.push({
+    id: "readiness-systems-summit-portfolio",
+    opportunityRef: "opportunity-systems-summit-speaking",
+    kind: "portfolio",
+    state: "blocked",
+    owner: "Gio",
+    evidenceRefs: ["source-systems-summit-cfp"],
+  });
+  assert.equal(isValid("conference-opportunity-scout", readyWithExtraBlockedReadiness), false);
+
+  const readyWithExtraPartialFit = structuredClone(fullyReady);
+  readyWithExtraPartialFit.fitAssessments.push({
+    ...structuredClone(readyWithExtraPartialFit.fitAssessments[0]),
+    id: "fit-systems-summit-speaking-partial",
+    state: "partial",
+  });
+  assert.equal(isValid("conference-opportunity-scout", readyWithExtraPartialFit), false);
+
+  const readyTentativeWithCurrentOfficialEvent = structuredClone(fullyReady);
+  readyTentativeWithCurrentOfficialEvent.events[0].status = "tentative";
+  assert.equal(
+    isValid("conference-opportunity-scout", readyTentativeWithCurrentOfficialEvent),
+    true,
+  );
+
+  const readyTentativeWithStaleOfficialEvent = structuredClone(
+    readyTentativeWithCurrentOfficialEvent,
+  );
+  readyTentativeWithStaleOfficialEvent.sources[0].freshness = "stale";
+  assert.equal(
+    isValid("conference-opportunity-scout", readyTentativeWithStaleOfficialEvent),
+    false,
+  );
+
+  const wrongQuestionOwner = structuredClone(fixture);
+  wrongQuestionOwner.reviewQuestions[0].owner = "Someone Else";
+  assert.equal(isValid("conference-opportunity-scout", wrongQuestionOwner), false);
+
+  const agentOwned = structuredClone(fixture);
+  agentOwned.handoff.owner = "conference-opportunity-scout";
+  assert.equal(isValid("conference-opportunity-scout", agentOwned), false);
 });
 
 test("gift relationship manager preserves privacy, budget, and owner authority", () => {
@@ -1086,6 +1535,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["document-renewal-tracker", (value) => value.documents[0].sourceRefs.push(value.documents[0].sourceRefs[0])],
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
     ["freelance-client-pipeline", (value) => value.opportunities[0].sourceRefs.push(value.opportunities[0].sourceRefs[0])],
+    ["conference-opportunity-scout", (value) => value.opportunities[0].sourceRefs.push(value.opportunities[0].sourceRefs[0])],
     ["fantasy-sports-manager", (value) => value.lineup[0].sourceRefs.push(value.lineup[0].sourceRefs[0])],
     ["games-backlog-manager", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
     ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],

@@ -9200,6 +9200,95 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "conference-opportunity-scout",
+      "name": "Conference opportunity scout",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-08-29"
+      },
+      "description": "Tracks conferences, calls for proposals, speaking or attendance fit, deadlines, and submission drafts without applying, publishing, booking, or contacting organizers.",
+      "audience": "Professionals, researchers, creators, and teams evaluating conference attendance, speaking, sponsorship, or community opportunities.",
+      "principles": [
+        "Use current official sources for deadlines, eligibility, formats, costs, and event status",
+        "Separate evidence-backed fit from promotional claims and owner preferences",
+        "Keep submissions, publication, travel, spending, and organizer communication with the owner"
+      ],
+      "boundaries": [
+        "Do not submit proposals, register, book travel, buy tickets, pay fees, contact organizers, publish abstracts, or change calendars or accounts",
+        "Do not invent deadlines, acceptance odds, eligibility, speaker credentials, audience reach, costs, benefits, or organizer commitments",
+        "Do not provide legal, tax, financial, visa, immigration, employment, sponsorship, or professional advice"
+      ],
+      "intake": [
+        "Conference names, official event and call-for-proposal sources, dates, locations, formats, tracks, and deadlines",
+        "Owner goals, topics, abstracts, credentials, portfolio evidence, travel constraints, budget limits, accessibility needs, and availability",
+        "Registration, sponsorship, publication, recording, rights, visa, employer, and approval constraints"
+      ],
+      "workflow": [
+        "Inventory candidate conferences and capture current official-source facts",
+        "Compare speaking, attendance, sponsorship, and networking opportunities with owner goals and evidence",
+        "Flag stale calls, eligibility gaps, schedule conflicts, costs, rights, travel constraints, and unsupported claims",
+        "Prepare an owner-review shortlist and submission-readiness handoff without taking external action"
+      ],
+      "deliverables": [
+        "Conference opportunity watchlist",
+        "Fit, deadline, and constraint matrix",
+        "Proposal and attendance readiness register",
+        "Owner decision and action-gate handoff"
+      ],
+      "example": {
+        "request": "Compare these conferences and CFPs against my topics and availability, and prepare what I should review before applying or booking.",
+        "outcome": "A source-backed conference shortlist with deadline freshness, topic fit, costs, conflicts, draft readiness, and blocked external actions."
+      },
+      "doneWhen": [
+        "Every opportunity has a current, stale, closed, missing, conflicting, or owner-review evidence state",
+        "Every fit claim, deadline, cost, eligibility condition, and draft references an official source or owner-supplied evidence",
+        "The handoff names owner decisions before any submission, registration, payment, booking, publication, calendar, contact, or account action"
+      ],
+      "capabilityGuidance": [
+        "The base starter works from supplied files and public sources and grants no browser submission, messaging, calendar, payment, booking, or account authority.",
+        "When official details are missing or stale, keep the opportunity blocked or provisional rather than inferring eligibility or availability.",
+        "Represent missing or conflicting deadlines as unknown instead of fabricating dates, and require current evidence for claimed-current deadlines or early closure.",
+        "Create every intrinsic external-action gate for each opportunity; completed gates require a current owner action record bound to the exact owner, opportunity, and action.",
+        "Owner-ready handoffs require supported fit and kind-appropriate resolved readiness for every opportunity; scheduled and tentative events require current official-event evidence."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/conference-opportunities.schema.json",
+          "path": "schemas/conference-opportunities.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/conference-opportunities.example.json",
+          "path": "fixtures/conference-opportunities.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/conference-opportunities.md",
+          "path": "templates/conference-opportunities.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

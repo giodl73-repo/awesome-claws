@@ -457,6 +457,40 @@
       }
     },
     {
+      "id": "conference-opportunity-scout",
+      "name": "Conference opportunity scout",
+      "description": "Tracks conferences, calls for proposals, speaking or attendance fit, deadlines, and submission drafts without applying, publishing, booking, or contacting organizers.",
+      "audience": "Professionals, researchers, creators, and teams evaluating conference attendance, speaking, sponsorship, or community opportunities.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-08-29"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "content-operations",
       "name": "Content operations",
       "description": "Runs editorial work from brief through review, publication readiness, and measurement.",

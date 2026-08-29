@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "conference-opportunity-scout",
+  "scenario": "Compare these conferences and CFPs against my topics and availability, and prepare what I should review before applying or booking.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Compare these conferences and CFPs against my topics and availability, and prepare what I should review before applying or booking."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/conference-opportunity-scout-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Conference opportunity scout session handoff",
+    "summary": "A source-backed conference shortlist with deadline freshness, topic fit, costs, conflicts, draft readiness, and blocked external actions.",
+    "output": "outputs/conference-opportunity-scout-handoff.md",
+    "items": [
+      {
+        "title": "Conference opportunity watchlist",
+        "summary": "Every opportunity has a current, stale, closed, missing, conflicting, or owner-review evidence state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Fit, deadline, and constraint matrix",
+        "summary": "Every fit claim, deadline, cost, eligibility condition, and draft references an official source or owner-supplied evidence",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Proposal and attendance readiness register",
+        "summary": "The handoff names owner decisions before any submission, registration, payment, booking, publication, calendar, contact, or account action",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner decision and action-gate handoff",
+        "summary": "Every opportunity has a current, stale, closed, missing, conflicting, or owner-review evidence state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
