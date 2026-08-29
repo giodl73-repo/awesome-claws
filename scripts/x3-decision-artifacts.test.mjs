@@ -89,6 +89,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "invoice-payment-followup",
+    schema: "../claws/invoice-payment-followup/schemas/invoice-receivables.schema.json",
+    fixture: "../claws/invoice-payment-followup/fixtures/invoice-receivables.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "fantasy-sports-manager",
     schema: "../claws/fantasy-sports-manager/schemas/fantasy-roster.schema.json",
     fixture: "../claws/fantasy-sports-manager/fixtures/fantasy-roster.example.json",
@@ -422,6 +428,136 @@ test("freelance client pipeline preserves opportunity evidence and owner authori
   const agentOwned = structuredClone(cases.get("freelance-client-pipeline").fixture);
   agentOwned.handoff.owner = "freelance-client-pipeline";
   assert.equal(isValid("freelance-client-pipeline", agentOwned), false);
+});
+
+test("invoice payment follow-up preserves receivables evidence and owner authority", () => {
+  const readyWithStaleSource = structuredClone(cases.get("invoice-payment-followup").fixture);
+  readyWithStaleSource.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("invoice-payment-followup", readyWithStaleSource), false);
+
+  const paidWithStaleSource = structuredClone(cases.get("invoice-payment-followup").fixture);
+  paidWithStaleSource.invoices[0].status = "paid";
+  paidWithStaleSource.invoices[0].sourceRefs = ["source-old-statement"];
+  assert.equal(isValid("invoice-payment-followup", paidWithStaleSource), false);
+
+  const confirmedWithStaleSource = structuredClone(cases.get("invoice-payment-followup").fixture);
+  confirmedWithStaleSource.paymentEvidence[0].sourceRefs = ["source-old-statement"];
+  assert.equal(isValid("invoice-payment-followup", confirmedWithStaleSource), false);
+
+  const unreconciledPayment = structuredClone(cases.get("invoice-payment-followup").fixture);
+  unreconciledPayment.paymentEvidence[0].amount = 100;
+  assert.equal(isValid("invoice-payment-followup", unreconciledPayment), false);
+
+  const zeroBalanceOverdue = structuredClone(cases.get("invoice-payment-followup").fixture);
+  zeroBalanceOverdue.invoices[0].status = "overdue";
+  zeroBalanceOverdue.invoices[0].balanceDue = 0;
+  zeroBalanceOverdue.paymentEvidence[0].amount = 2400;
+  assert.equal(isValid("invoice-payment-followup", zeroBalanceOverdue), false);
+
+  const invalidChronology = structuredClone(cases.get("invoice-payment-followup").fixture);
+  invalidChronology.invoices[0].dueDate = "2026-08-19";
+  assert.equal(isValid("invoice-payment-followup", invalidChronology), false);
+
+  const prematureOverdue = structuredClone(cases.get("invoice-payment-followup").fixture);
+  prematureOverdue.invoices[0].status = "overdue";
+  prematureOverdue.invoices[0].dueDate = "2026-08-30";
+  assert.equal(isValid("invoice-payment-followup", prematureOverdue), false);
+
+  const futureInvoice = structuredClone(cases.get("invoice-payment-followup").fixture);
+  futureInvoice.invoices[0].issueDate = "2026-08-30";
+  futureInvoice.invoices[0].dueDate = "2026-09-06";
+  assert.equal(isValid("invoice-payment-followup", futureInvoice), false);
+
+  const futureSource = structuredClone(cases.get("invoice-payment-followup").fixture);
+  futureSource.sources[1].asOf = "2026-08-30";
+  assert.equal(isValid("invoice-payment-followup", futureSource), false);
+
+  const paymentWithoutPaymentRecord = structuredClone(cases.get("invoice-payment-followup").fixture);
+  paymentWithoutPaymentRecord.paymentEvidence[0].sourceRefs = ["source-contract-note"];
+  assert.equal(isValid("invoice-payment-followup", paymentWithoutPaymentRecord), false);
+
+  const sentWithoutOwnerEvidence = structuredClone(cases.get("invoice-payment-followup").fixture);
+  sentWithoutOwnerEvidence.followUps[0].state = "sent-by-owner";
+  assert.equal(isValid("invoice-payment-followup", sentWithoutOwnerEvidence), false);
+
+  for (const requiredAction of [
+    "issue-invoice",
+    "alter-invoice",
+    "send-reminder",
+    "contact-client",
+    "collect-payment",
+    "initiate-refund",
+    "apply-fee",
+    "write-off-balance",
+    "change-account",
+    "change-payment-instructions",
+  ]) {
+    const missingAuthorityGate = structuredClone(cases.get("invoice-payment-followup").fixture);
+    missingAuthorityGate.blockedActions = missingAuthorityGate.blockedActions.filter(
+      (action) => action !== requiredAction,
+    );
+    missingAuthorityGate.blockedActions.push("accounting-advice");
+    assert.equal(isValid("invoice-payment-followup", missingAuthorityGate), false);
+  }
+
+  const missingDiscrepancy = structuredClone(cases.get("invoice-payment-followup").fixture);
+  missingDiscrepancy.invoices[0].status = "conflicting";
+  assert.equal(isValid("invoice-payment-followup", missingDiscrepancy), false);
+
+  const readyFollowUpWithStaleSource = structuredClone(cases.get("invoice-payment-followup").fixture);
+  readyFollowUpWithStaleSource.followUps[0].sourceRefs = ["source-old-statement"];
+  assert.equal(isValid("invoice-payment-followup", readyFollowUpWithStaleSource), false);
+
+  const actionAdvice = structuredClone(cases.get("invoice-payment-followup").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Send a reminder and collect payment.";
+  assert.equal(isValid("invoice-payment-followup", actionAdvice), false);
+
+  const articleActionAdvice = structuredClone(cases.get("invoice-payment-followup").fixture);
+  articleActionAdvice.reviewQuestions[0].reason += " Send the reminder and collect the payment now.";
+  assert.equal(isValid("invoice-payment-followup", articleActionAdvice), false);
+
+  const ownerGatedQuestion = structuredClone(cases.get("invoice-payment-followup").fixture);
+  ownerGatedQuestion.reviewQuestions[0].question =
+    "Should Gio send the reminder after reviewing the evidence?";
+  assert.equal(isValid("invoice-payment-followup", ownerGatedQuestion), true);
+
+  const ungatedActionQuestion = structuredClone(cases.get("invoice-payment-followup").fixture);
+  ungatedActionQuestion.reviewQuestions[0].question =
+    "Send the reminder after reviewing the evidence?";
+  assert.equal(isValid("invoice-payment-followup", ungatedActionQuestion), false);
+
+  const creditedInvoice = structuredClone(cases.get("invoice-payment-followup").fixture);
+  creditedInvoice.sources.push({
+    id: "source-credit-note",
+    kind: "credit-note",
+    label: "Owner-supplied credit note",
+    freshness: "current",
+    privacy: "owner-only",
+    asOf: "2026-08-29",
+  });
+  creditedInvoice.adjustments.push({
+    id: "adjustment-credit",
+    invoiceRef: "invoice-atlas-1042",
+    label: "Approved service credit",
+    amount: 100,
+    currency: "USD",
+    state: "confirmed",
+    sourceRefs: ["source-credit-note"],
+  });
+  creditedInvoice.invoices[0].balanceDue = 800;
+  assert.equal(isValid("invoice-payment-followup", creditedInvoice), true);
+
+  const danglingInvoice = structuredClone(cases.get("invoice-payment-followup").fixture);
+  danglingInvoice.paymentEvidence[0].invoiceRef = "invoice-missing";
+  assert.equal(isValid("invoice-payment-followup", danglingInvoice), false);
+
+  const wrongOwner = structuredClone(cases.get("invoice-payment-followup").fixture);
+  wrongOwner.reviewQuestions[0].owner = "Someone Else";
+  assert.equal(isValid("invoice-payment-followup", wrongOwner), false);
+
+  const agentOwned = structuredClone(cases.get("invoice-payment-followup").fixture);
+  agentOwned.handoff.owner = "invoice-payment-followup";
+  assert.equal(isValid("invoice-payment-followup", agentOwned), false);
 });
 
 test("gift relationship manager preserves privacy, budget, and owner authority", () => {
@@ -957,6 +1093,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["household-budget-steward", (value) => value.reviewQuestions[0].sourceRefs.push(value.reviewQuestions[0].sourceRefs[0])],
     ["home-inventory-binder", (value) => value.items[0].sourceRefs.push(value.items[0].sourceRefs[0])],
     ["insurance-policy-organizer", (value) => value.coverageItems[0].sourceRefs.push(value.coverageItems[0].sourceRefs[0])],
+    ["invoice-payment-followup", (value) => value.invoices[0].sourceRefs.push(value.invoices[0].sourceRefs[0])],
     ["job-application-tracker", (value) => value.applications[0].sourceRefs.push(value.applications[0].sourceRefs[0])],
     ["life-timeline-keeper", (value) => value.events[0].sourceRefs.push(value.events[0].sourceRefs[0])],
     ["medical-appointment-prep", (value) => value.appointments[0].sourceRefs.push(value.appointments[0].sourceRefs[0])],

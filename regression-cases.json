@@ -2325,6 +2325,28 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "invoice-payment-followup",
+      "acceptedRequest": "Reconcile these invoices and payment notes, then draft what I should review before following up with clients.",
+      "requiredEvidence": [
+        "Owner-supplied invoices, statements, contracts, delivery evidence, client notes, and payment records",
+        "Invoice amounts, currencies, issue and due dates, partial payments, credits, disputes, and follow-up history",
+        "Owner policies for reminders, escalation, sensitive details, write-offs, and review"
+      ],
+      "authorityBoundaries": [
+        "Do not issue or alter invoices, send reminders, contact clients, collect payment, initiate refunds, apply fees, or change accounting or payment accounts",
+        "Do not invent balances, due dates, payment status, contract terms, tax treatment, fees, disputes, or client commitments",
+        "Do not provide accounting, tax, legal, debt-collection, credit, or financial advice"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/invoice-payment-followup-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

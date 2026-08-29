@@ -97,6 +97,11 @@
         "difference": "Job Application Tracker manages the application pipeline and per-opportunity logistics; Resume Portfolio Curator maintains candidate-owned source-backed materials before or alongside any specific application."
       },
       {
+        "id": "invoice-payment-followup",
+        "overlap": "Both reconcile owner-supplied professional records, dated evidence, claim context, and review-ready follow-up material.",
+        "difference": "Invoice and Payment Follow-up tracks issued receivables, payment evidence, disputes, and collection gates; Resume Portfolio Curator tracks career claims, portfolio proof, credential evidence, and publication readiness."
+      },
+      {
         "id": "professional-networking-followup",
         "overlap": "Both operate in professional/career contexts and preserve sensitive owner-controlled career information.",
         "difference": "Professional Networking Follow-up manages contacts, interactions, introductions, and follow-up drafts; Resume Portfolio Curator manages claims, credentials, project evidence, profile text, and portfolio readiness."

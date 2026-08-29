@@ -9114,6 +9114,92 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "invoice-payment-followup",
+      "name": "Invoice and payment follow-up",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-08-29"
+      },
+      "description": "Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money.",
+      "audience": "Freelancers, consultants, small-business owners, and operators reconciling receivables from supplied records.",
+      "principles": [
+        "Tie every balance, due date, payment state, and follow-up draft to supplied evidence",
+        "Keep accounting judgments, client communication, and collection authority with the owner",
+        "Surface stale records, disputes, partial payments, and conflicting totals before follow-up"
+      ],
+      "boundaries": [
+        "Do not issue or alter invoices, send reminders, contact clients, collect payment, initiate refunds, apply fees, or change accounting or payment accounts",
+        "Do not invent balances, due dates, payment status, contract terms, tax treatment, fees, disputes, or client commitments",
+        "Do not provide accounting, tax, legal, debt-collection, credit, or financial advice"
+      ],
+      "intake": [
+        "Owner-supplied invoices, statements, contracts, delivery evidence, client notes, and payment records",
+        "Invoice amounts, currencies, issue and due dates, partial payments, credits, disputes, and follow-up history",
+        "Owner policies for reminders, escalation, sensitive details, write-offs, and review"
+      ],
+      "workflow": [
+        "Inventory invoices and source every amount, date, client, and payment fact",
+        "Reconcile open, paid, partial, disputed, stale, and unknown states against current evidence",
+        "Draft owner-review follow-ups and flag conflicts, missing delivery proof, overdue risk, and escalation questions",
+        "Prepare a receivables handoff without issuing invoices, contacting clients, or moving money"
+      ],
+      "deliverables": [
+        "Invoice and receivables ledger",
+        "Payment evidence and discrepancy register",
+        "Owner-review follow-up draft queue",
+        "Escalation and action-gate handoff"
+      ],
+      "example": {
+        "request": "Reconcile these invoices and payment notes, then draft what I should review before following up with clients.",
+        "outcome": "A source-backed receivables ledger with payment states, discrepancies, overdue items, draft follow-ups, and explicit owner action gates."
+      },
+      "doneWhen": [
+        "Every invoice has a current, paid, partial, overdue, disputed, stale, conflicting, or unknown evidence state",
+        "Every amount, due date, payment, credit, dispute, and follow-up draft points to supplied evidence or a visible gap",
+        "The handoff names owner decisions before any invoice change, client contact, collection, fee, refund, write-off, account, or payment action"
+      ],
+      "capabilityGuidance": [
+        "The base starter works from supplied records and grants no messaging, accounting-system, payment, banking, or client-account authority.",
+        "When balances, payment evidence, or contract terms conflict, preserve the discrepancy and require owner review rather than choosing a financial truth."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/invoice-receivables.schema.json",
+          "path": "schemas/invoice-receivables.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/invoice-receivables.example.json",
+          "path": "fixtures/invoice-receivables.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/invoice-receivables.md",
+          "path": "templates/invoice-receivables.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }
