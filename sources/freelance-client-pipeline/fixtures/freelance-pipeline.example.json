@@ -1,0 +1,167 @@
+{
+  "schemaVersion": "awesomeClaws.freelancePipeline.v1",
+  "pipeline": {
+    "id": "freelance-pipeline-august",
+    "owner": "Gio",
+    "asOf": "2026-08-28",
+    "timezone": "America/Los_Angeles"
+  },
+  "sources": [
+    {
+      "id": "source-referral-note",
+      "kind": "referral-note",
+      "label": "Referral note for Atlas Labs",
+      "freshness": "current",
+      "privacy": "owner-only",
+      "asOf": "2026-08-26"
+    },
+    {
+      "id": "source-discovery-summary",
+      "kind": "meeting-summary",
+      "label": "Discovery summary for launch dashboard project",
+      "freshness": "current",
+      "privacy": "redact-before-sharing",
+      "asOf": "2026-08-27"
+    },
+    {
+      "id": "source-pricing-note",
+      "kind": "pricing-note",
+      "label": "Owner draft pricing ranges",
+      "freshness": "current",
+      "privacy": "owner-only",
+      "asOf": "2026-08-28"
+    },
+    {
+      "id": "source-old-contract",
+      "kind": "contract-note",
+      "label": "Old contract template note",
+      "freshness": "stale",
+      "privacy": "owner-only",
+      "asOf": "2025-10-01"
+    }
+  ],
+  "clients": [
+    {
+      "id": "client-atlas-labs",
+      "name": "Atlas Labs",
+      "relationship": "referred",
+      "privacy": "redact-before-sharing",
+      "sourceRefs": ["source-referral-note"]
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "opportunity-launch-dashboard",
+      "clientRef": "client-atlas-labs",
+      "label": "Launch dashboard and reporting setup",
+      "stage": "proposal-draft",
+      "priority": "high",
+      "sourceRefs": ["source-referral-note", "source-discovery-summary"]
+    }
+  ],
+  "scopeItems": [
+    {
+      "id": "scope-dashboard",
+      "opportunityRef": "opportunity-launch-dashboard",
+      "label": "Build a dashboard from supplied launch metrics and weekly reporting needs",
+      "state": "supported",
+      "sourceRefs": ["source-discovery-summary"]
+    },
+    {
+      "id": "scope-analytics-support",
+      "opportunityRef": "opportunity-launch-dashboard",
+      "label": "Post-launch analytics support duration needs owner confirmation",
+      "state": "needs-owner-review",
+      "sourceRefs": ["source-discovery-summary"]
+    }
+  ],
+  "proposalItems": [
+    {
+      "id": "proposal-scope-draft",
+      "opportunityRef": "opportunity-launch-dashboard",
+      "kind": "scope",
+      "label": "Scope section draft",
+      "state": "ready-for-owner-review",
+      "sourceRefs": ["source-discovery-summary"]
+    },
+    {
+      "id": "proposal-pricing-range",
+      "opportunityRef": "opportunity-launch-dashboard",
+      "kind": "pricing",
+      "label": "Pricing range needs owner approval before sharing",
+      "state": "draft-for-owner-review",
+      "sourceRefs": ["source-pricing-note"]
+    },
+    {
+      "id": "proposal-terms-note",
+      "opportunityRef": "opportunity-launch-dashboard",
+      "kind": "terms-note",
+      "label": "Contract template is stale and cannot be treated as ready",
+      "state": "stale",
+      "sourceRefs": ["source-old-contract"]
+    }
+  ],
+  "followUps": [
+    {
+      "id": "followup-owner-draft",
+      "opportunityRef": "opportunity-launch-dashboard",
+      "label": "Draft follow-up asking owner whether to send proposal after pricing approval",
+      "state": "draft-for-owner-review",
+      "sourceRefs": ["source-referral-note", "source-discovery-summary"]
+    }
+  ],
+  "commitmentRisks": [
+    {
+      "id": "risk-availability",
+      "opportunityRef": "opportunity-launch-dashboard",
+      "severity": "medium",
+      "reason": "Scope is plausible, but availability and support duration are not owner-approved.",
+      "sourceRefs": ["source-discovery-summary"]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-contract-stale",
+      "kind": "contract-risk",
+      "reason": "The contract template note is stale and needs owner review before any proposal is sent.",
+      "refs": ["source-old-contract", "proposal-terms-note", "risk-availability"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-pricing",
+      "question": "Which pricing range, if any, should be approved for owner sharing?",
+      "reason": "The Claw can organize pricing notes but cannot quote binding terms.",
+      "refs": ["proposal-pricing-range", "source-pricing-note"],
+      "owner": "Gio"
+    },
+    {
+      "id": "question-contract",
+      "question": "Should the stale contract note be replaced before the proposal is considered ready?",
+      "reason": "Proposal readiness must preserve stale contract evidence instead of treating it as approved terms.",
+      "refs": ["gap-contract-stale", "proposal-terms-note"],
+      "owner": "Gio"
+    }
+  ],
+  "blockedActions": [
+    "send-message",
+    "contact-client",
+    "submit-proposal",
+    "sign-contract",
+    "accept-work",
+    "quote-binding-price",
+    "promise-availability",
+    "invoice-client",
+    "collect-payment",
+    "change-account",
+    "professional-advice"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Gio",
+    "reviewQuestionRefs": ["question-pricing", "question-contract"],
+    "prohibitedActions": [
+      "Do not send messages, contact clients, submit proposals, sign contracts, accept work, quote binding prices, promise availability, invoice, collect payment, change accounts, invent requirements, or provide professional advice."
+    ]
+  }
+}

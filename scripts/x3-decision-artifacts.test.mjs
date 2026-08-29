@@ -83,6 +83,12 @@ const definitions = [
     decisionField: "decisionState",
   },
   {
+    id: "freelance-client-pipeline",
+    schema: "../claws/freelance-client-pipeline/schemas/freelance-pipeline.schema.json",
+    fixture: "../claws/freelance-client-pipeline/fixtures/freelance-pipeline.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "fantasy-sports-manager",
     schema: "../claws/fantasy-sports-manager/schemas/fantasy-roster.schema.json",
     fixture: "../claws/fantasy-sports-manager/fixtures/fantasy-roster.example.json",
@@ -389,6 +395,33 @@ test("financial analysis rejects dangling source and scenario references", () =>
   candidate.assumptions[0].sourceRefs = ["actuals-q2"];
   candidate.risks[0].scenarioRefs = ["missing-scenario"];
   assert.equal(isValid("financial-analyst", candidate), false);
+});
+
+test("freelance client pipeline preserves opportunity evidence and owner authority", () => {
+  const readyWithStaleSource = structuredClone(cases.get("freelance-client-pipeline").fixture);
+  readyWithStaleSource.handoff.state = "ready-for-owner-review";
+  assert.equal(isValid("freelance-client-pipeline", readyWithStaleSource), false);
+
+  const advancedWithStaleSource = structuredClone(cases.get("freelance-client-pipeline").fixture);
+  advancedWithStaleSource.opportunities[0].stage = "owner-review";
+  advancedWithStaleSource.opportunities[0].sourceRefs = ["source-old-contract"];
+  assert.equal(isValid("freelance-client-pipeline", advancedWithStaleSource), false);
+
+  const readyProposalWithStaleSource = structuredClone(cases.get("freelance-client-pipeline").fixture);
+  readyProposalWithStaleSource.proposalItems[0].sourceRefs = ["source-old-contract"];
+  assert.equal(isValid("freelance-client-pipeline", readyProposalWithStaleSource), false);
+
+  const actionAdvice = structuredClone(cases.get("freelance-client-pipeline").fixture);
+  actionAdvice.reviewQuestions[0].reason += " Submit proposal and contact client.";
+  assert.equal(isValid("freelance-client-pipeline", actionAdvice), false);
+
+  const danglingOpportunity = structuredClone(cases.get("freelance-client-pipeline").fixture);
+  danglingOpportunity.scopeItems[0].opportunityRef = "opportunity-missing";
+  assert.equal(isValid("freelance-client-pipeline", danglingOpportunity), false);
+
+  const agentOwned = structuredClone(cases.get("freelance-client-pipeline").fixture);
+  agentOwned.handoff.owner = "freelance-client-pipeline";
+  assert.equal(isValid("freelance-client-pipeline", agentOwned), false);
 });
 
 test("gift relationship manager preserves privacy, budget, and owner authority", () => {
@@ -916,6 +949,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],
     ["document-renewal-tracker", (value) => value.documents[0].sourceRefs.push(value.documents[0].sourceRefs[0])],
     ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
+    ["freelance-client-pipeline", (value) => value.opportunities[0].sourceRefs.push(value.opportunities[0].sourceRefs[0])],
     ["fantasy-sports-manager", (value) => value.lineup[0].sourceRefs.push(value.lineup[0].sourceRefs[0])],
     ["games-backlog-manager", (value) => value.shortlist[0].constraintRefs.push(value.shortlist[0].constraintRefs[0])],
     ["gift-relationship-manager", (value) => value.shortlist[0].preferenceRefs.push(value.shortlist[0].preferenceRefs[0])],

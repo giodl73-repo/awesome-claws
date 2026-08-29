@@ -1088,6 +1088,40 @@
       }
     },
     {
+      "id": "freelance-client-pipeline",
+      "name": "Freelance client pipeline",
+      "description": "Tracks freelance prospects, scopes, proposals, client follow-ups, and commitment gaps without sending messages, quoting binding terms, or accepting work.",
+      "audience": "Freelancers, consultants, agencies, and independent operators managing client opportunities from supplied notes and drafts.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-08-28"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "fundraising-campaign-manager",
       "name": "Fundraising campaign manager",
       "description": "Prepares an approval-bound nonprofit fundraising campaign, stewardship plan, audience assets, and measurement handoff without soliciting or sending.",

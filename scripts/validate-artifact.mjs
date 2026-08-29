@@ -23,6 +23,7 @@ const schemaNames = {
   "document-renewal-tracker": "document-renewal.schema.json",
   "fantasy-sports-manager": "fantasy-roster.schema.json",
   "financial-analyst": "financial-scenario.schema.json",
+  "freelance-client-pipeline": "freelance-pipeline.schema.json",
   "games-backlog-manager": "game-backlog.schema.json",
   "gift-relationship-manager": "gift-plan.schema.json",
   "green-thumb-coordinator": "garden-plan.schema.json",

@@ -2303,6 +2303,28 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "freelance-client-pipeline",
+      "acceptedRequest": "Organize these client notes and proposal drafts so I know what to follow up on this week without sending anything.",
+      "requiredEvidence": [
+        "Prospect names, client notes, referral context, meeting summaries, and opportunity stage",
+        "Scope drafts, pricing notes, availability constraints, portfolio evidence, proposal drafts, and deadlines",
+        "Contract constraints, approval requirements, sensitive details, follow-up history, and owner preferences"
+      ],
+      "authorityBoundaries": [
+        "Do not send messages, contact clients, submit proposals, sign contracts, accept work, invoice, collect payment, or change accounts",
+        "Do not invent client requirements, pricing, availability, credentials, case studies, references, or legal terms",
+        "Do not provide legal, tax, financial, accounting, employment, contracting, or professional advice"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/freelance-client-pipeline-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
