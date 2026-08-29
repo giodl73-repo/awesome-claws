@@ -4738,7 +4738,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-29"
       },
       "description": "Prepares an approval-bound nonprofit fundraising campaign, stewardship plan, audience assets, and measurement handoff without soliciting or sending.",
       "audience": "Nonprofit development and communications teams planning a bounded campaign with accountable fundraising, legal, and brand review.",
@@ -4788,14 +4788,19 @@
           "role": "schema"
         },
         {
-          "source": "templates/campaign-brief.md",
-          "path": "templates/campaign-brief.md",
+          "source": "templates/campaign-claim.md",
+          "path": "templates/campaign-claim.md",
           "role": "template"
         },
         {
           "source": "templates/channel-review.md",
           "path": "templates/channel-review.md",
           "role": "template"
+        },
+        {
+          "source": "fixtures/campaign-claim.example.json",
+          "path": "fixtures/campaign-claim.example.json",
+          "role": "fixture"
         },
         {
           "source": "fixtures/session-demo.json",
@@ -4815,7 +4820,8 @@
       ],
       "capabilityGuidance": [
         "This Claw is intentionally artifact-first and declares no sending, donor, payment, publishing, or campaign-system capability.",
-        "User-owned organization and voice preferences remain local and update-safe; donor and beneficiary data must never be placed in those preferences."
+        "User-owned organization and voice preferences remain local and update-safe; donor and beneficiary data must never be placed in those preferences.",
+        "Use the campaign review artifact to bind every material claim to current approved evidence, keep audiences aggregate and suppression-aware, and block assets whose claims, consent, matching terms, or measurement definitions still need review."
       ]
     },
     {

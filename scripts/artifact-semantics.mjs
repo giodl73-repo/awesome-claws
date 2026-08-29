@@ -11474,6 +11474,529 @@ function movingPlanFindings(value) {
   return findings;
 }
 
+function fundraisingCampaignFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const claimIds = value.claims.map((item) => item.id);
+  const audienceIds = value.audiences.map((item) => item.id);
+  const assetIds = value.assets.map((item) => item.id);
+  const stewardshipIds = value.stewardship.map((item) => item.id);
+  const metricIds = value.metrics.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const claimSet = new Set(claimIds);
+  const audienceSet = new Set(audienceIds);
+  const assetSet = new Set(assetIds);
+  const questionSet = new Set(questionIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const claimById = new Map(value.claims.map((item) => [item.id, item]));
+  const audienceById = new Map(value.audiences.map((item) => [item.id, item]));
+  const allIds = new Set([
+    ...sourceIds,
+    ...claimIds,
+    ...audienceIds,
+    ...assetIds,
+    ...stewardshipIds,
+    ...metricIds,
+    ...questionIds,
+  ]);
+  const requiredActions = [
+    "contact-donors",
+    "segment-donors",
+    "send-solicitation",
+    "publish-assets",
+    "process-gifts",
+    "issue-receipts",
+    "make-tax-claims",
+    "accept-terms",
+    "alter-donor-records",
+  ];
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(claimIds, "claims", "Claim id"),
+    ...uniqueFindings(audienceIds, "audiences", "Audience id"),
+    ...uniqueFindings(assetIds, "assets", "Asset id"),
+    ...uniqueFindings(stewardshipIds, "stewardship", "Stewardship id"),
+    ...uniqueFindings(metricIds, "metrics", "Metric id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  if (value.campaign.startDate > value.campaign.endDate) {
+    findings.push(
+      finding(
+        "invalid_campaign_chronology",
+        "campaign.startDate",
+        "Campaign start date must not follow its end date.",
+      ),
+    );
+  }
+  for (const [index, source] of value.sources.entries()) {
+    if (source.asOf > value.campaign.asOf) {
+      findings.push(
+        finding(
+          "future_source_evidence",
+          `sources.${index}.asOf`,
+          "Campaign evidence must not postdate the artifact as-of date.",
+        ),
+      );
+    }
+  }
+  const requiredKinds = {
+    impact: ["program-results", "impact-report"],
+    program: ["program-results", "impact-report"],
+    "financial-need": ["program-results", "impact-report", "offer-terms"],
+    matching: ["matching-terms"],
+    urgency: ["offer-terms"],
+    endorsement: ["legal-review", "owner-note"],
+    "restricted-fund": ["restriction-policy"],
+    tax: ["legal-review"],
+  };
+  for (const [index, claim] of value.claims.entries()) {
+    findings.push(
+      ...referenceFindings(
+        claim.sourceRefs,
+        sourceSet,
+        `claims.${index}.sourceRefs`,
+        "Claim source reference",
+      ),
+    );
+    const sources = claim.sourceRefs
+      .map((ref) => sourceById.get(ref))
+      .filter(Boolean);
+    if (
+      claim.state === "supported" &&
+      sources.some(
+        (source) =>
+          source.freshness !== "current" ||
+          source.approval !== "approved-for-campaign",
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_claim_state",
+          `claims.${index}`,
+          "Supported claims require current, campaign-approved evidence.",
+        ),
+      );
+    }
+    if (
+      claim.state === "supported" &&
+      !sources.some((source) => requiredKinds[claim.kind].includes(source.kind))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_claim_kind",
+          `claims.${index}.sourceRefs`,
+          `Supported ${claim.kind} claims require evidence of the matching source kind.`,
+        ),
+      );
+    }
+  }
+  for (const [index, audience] of value.audiences.entries()) {
+    findings.push(
+      ...referenceFindings(
+        audience.sourceRefs,
+        sourceSet,
+        `audiences.${index}.sourceRefs`,
+        "Audience source reference",
+      ),
+    );
+    if (
+      audience.consentState === "documented" &&
+      !audience.sourceRefs.some(
+        (ref) =>
+          sourceById.get(ref)?.kind === "consent-policy" &&
+          sourceById.get(ref)?.freshness === "current" &&
+          sourceById.get(ref)?.approval === "approved-for-campaign",
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_consent_state",
+          `audiences.${index}.consentState`,
+          "Documented consent requires a current, campaign-approved consent policy.",
+        ),
+      );
+    }
+  }
+  for (const [index, asset] of value.assets.entries()) {
+    findings.push(
+      ...referenceFindings(
+        asset.audienceRefs,
+        audienceSet,
+        `assets.${index}.audienceRefs`,
+        "Asset audience reference",
+      ),
+      ...referenceFindings(
+        asset.claimRefs,
+        claimSet,
+        `assets.${index}.claimRefs`,
+        "Asset claim reference",
+      ),
+    );
+    const claims = asset.claimRefs
+      .map((ref) => claimById.get(ref))
+      .filter(Boolean);
+    if (
+      asset.state === "ready-for-owner-review" &&
+      (claims.some(
+        (claim) =>
+          claim.state !== "supported" ||
+          !claim.allowedChannels.includes(asset.channel),
+      ) ||
+        asset.audienceRefs.some(
+          (ref) => audienceById.get(ref)?.consentState !== "documented",
+        ) ||
+        value.metrics.some((metric) => metric.state !== "defined"))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_asset_state",
+          `assets.${index}.state`,
+          "Owner-ready assets require supported channel-approved claims and documented audience consent.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of value.stewardship.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [item.audienceRef],
+        audienceSet,
+        `stewardship.${index}.audienceRef`,
+        "Stewardship audience reference",
+      ),
+      ...referenceFindings(
+        item.sourceRefs,
+        sourceSet,
+        `stewardship.${index}.sourceRefs`,
+        "Stewardship source reference",
+      ),
+    );
+  }
+  for (const [index, metric] of value.metrics.entries()) {
+    findings.push(
+      ...referenceFindings(
+        metric.sourceRefs,
+        sourceSet,
+        `metrics.${index}.sourceRefs`,
+        "Metric source reference",
+      ),
+    );
+    if (
+      metric.state === "defined" &&
+      (metric.sourceRefs.some(
+        (ref) =>
+          sourceById.get(ref)?.freshness !== "current" ||
+          sourceById.get(ref)?.approval !== "approved-for-campaign",
+      ) ||
+        !metric.sourceRefs.some(
+          (ref) => sourceById.get(ref)?.kind === "measurement-plan",
+        ))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_metric_state",
+          `metrics.${index}.state`,
+          "Defined metrics require current, campaign-approved source definitions.",
+        ),
+      );
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...referenceFindings(
+        question.refs,
+        allIds,
+        `reviewQuestions.${index}.refs`,
+        "Review question reference",
+      ),
+    );
+  }
+  findings.push(
+    ...referenceFindings(
+      value.handoff.assetRefs,
+      assetSet,
+      "handoff.assetRefs",
+      "Handoff asset reference",
+    ),
+    ...referenceFindings(
+      value.handoff.blockingClaimRefs,
+      claimSet,
+      "handoff.blockingClaimRefs",
+      "Blocking claim reference",
+    ),
+    ...referenceFindings(
+      value.handoff.reviewQuestionRefs,
+      questionSet,
+      "handoff.reviewQuestionRefs",
+      "Handoff question reference",
+    ),
+  );
+  if (
+    value.handoff.owner !== value.campaign.owner ||
+    value.handoff.ownerType !== value.campaign.ownerType
+  ) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "handoff.owner",
+        "The campaign and handoff must name the same accountable owner and owner type.",
+      ),
+    );
+  }
+  if (
+    /^(?:the )?(?:agent|assistant|claw)$/iu.test(value.handoff.owner.trim()) ||
+    /\b(?:ai|bot|gpt|language model|fundraising campaign manager)\b/iu.test(
+      value.handoff.owner,
+    )
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Fundraising approval and publication authority must remain with a named human or team.",
+      ),
+    );
+  }
+  const unresolvedClaims = value.claims.filter(
+    (claim) => claim.state !== "supported",
+  );
+  const missingBlockingClaims = unresolvedClaims.filter(
+    (claim) => !value.handoff.blockingClaimRefs.includes(claim.id),
+  );
+  const missingReviewQuestions = questionIds.filter(
+    (id) => !value.handoff.reviewQuestionRefs.includes(id),
+  );
+  const hasNonReferenceBlocker =
+    value.campaign.state !== "ready-for-owner-review" ||
+    value.assets.some((asset) => asset.state !== "ready-for-owner-review") ||
+    value.audiences.some(
+      (audience) => audience.consentState !== "documented",
+    ) ||
+    value.metrics.some((metric) => metric.state !== "defined");
+  if (
+    value.handoff.state === "blocked" &&
+    (missingBlockingClaims.length > 0 ||
+      missingReviewQuestions.length > 0 ||
+      (unresolvedClaims.length === 0 &&
+        questionIds.length === 0 &&
+        !hasNonReferenceBlocker))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff",
+        "Blocked campaign handoffs must include every unresolved claim and review question and retain at least one blocker.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    (value.campaign.state !== "ready-for-owner-review" ||
+      unresolvedClaims.length > 0 ||
+      value.assets.some((asset) => asset.state !== "ready-for-owner-review") ||
+      value.audiences.some(
+        (audience) => audience.consentState !== "documented",
+      ) ||
+      value.metrics.some((metric) => metric.state !== "defined") ||
+      value.reviewQuestions.length > 0 ||
+      value.handoff.blockingClaimRefs.length > 0 ||
+      value.handoff.reviewQuestionRefs.length > 0)
+  ) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "Owner-ready campaign handoffs require supported claims, review-ready assets, documented consent, defined metrics, and no unresolved questions or blockers.",
+      ),
+    );
+  }
+  if (
+    value.campaign.state === "ready-for-owner-review" &&
+    value.handoff.state !== "ready-for-owner-review"
+  ) {
+    findings.push(
+      finding(
+        "inconsistent_ready_state",
+        "campaign.state",
+        "A campaign cannot claim owner-review readiness while its handoff remains blocked.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    assetIds.some((id) => !value.handoff.assetRefs.includes(id))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.assetRefs",
+        "Owner-ready campaign handoffs must include every draft asset.",
+      ),
+    );
+  }
+  if (
+    value.handoff.blockingClaimRefs.some(
+      (ref) => claimById.get(ref)?.state === "supported",
+    )
+  ) {
+    findings.push(
+      finding(
+        "resolved_blocking_claim",
+        "handoff.blockingClaimRefs",
+        "Supported claims cannot remain handoff blockers.",
+      ),
+    );
+  }
+  for (const action of requiredActions) {
+    if (
+      !value.blockedActions.includes(action) ||
+      !value.handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Fundraising artifacts must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+  const actionVerb =
+    String.raw`(?:contact (?:the )?donors?|segment (?:the )?donors?|send (?:the )?(?:appeal|solicitation|message|email)|publish (?:the )?(?:asset|campaign|page|post)|process (?:a )?(?:gift|donation|payment)|issue (?:a )?(?:receipt|tax receipt)|make tax claims?|accept (?:the )?(?:terms|offer)|alter donor records?|change donor records?|donate|give)`;
+  const directActionPattern = new RegExp(
+    String.raw`^(?:(?:please|must|need to|you (?:should|must|need to)|the agent (?:should|must|needs to))\s+)?${actionVerb}\b`,
+    "iu",
+  );
+  const mandatoryActionPattern = new RegExp(
+    String.raw`\b(?:must|needs? to|should)\b[^.!?]{0,60}\b${actionVerb}\b`,
+    "iu",
+  );
+  const actionOccurrencePattern = new RegExp(actionVerb, "giu");
+  const normalizedOwner = value.handoff.owner
+    .toLowerCase()
+    .replaceAll(/[^a-z0-9]+/gu, " ")
+    .trim();
+  const ownerActorPattern = new RegExp(
+    String.raw`^(?:should|can|may|will) (?:the )?${normalizedOwner.replaceAll(" ", String.raw`\s+`)} ${actionVerb}\b`,
+    "iu",
+  );
+  const statements = [
+    {
+      path: "campaign.objective",
+      text: value.campaign.objective,
+      question: false,
+    },
+    {
+      path: "campaign.approvedProgram",
+      text: value.campaign.approvedProgram,
+      question: false,
+    },
+    ...value.claims.flatMap((item, index) => [
+      {
+        path: `claims.${index}.statement`,
+        text: item.statement,
+        question: false,
+      },
+      ...item.restrictions.map((text, restrictionIndex) => ({
+        path: `claims.${index}.restrictions.${restrictionIndex}`,
+        text,
+        question: false,
+      })),
+    ]),
+    ...value.audiences.flatMap((item, index) => [
+      { path: `audiences.${index}.basis`, text: item.basis, question: false },
+      ...item.suppressionRules.map((text, ruleIndex) => ({
+        path: `audiences.${index}.suppressionRules.${ruleIndex}`,
+        text,
+        question: false,
+      })),
+    ]),
+    ...value.assets.flatMap((item, index) => [
+      {
+        path: `assets.${index}.title`,
+        text: item.title,
+        question: false,
+      },
+      ...item.accessibilityChecks.map((text, checkIndex) => ({
+        path: `assets.${index}.accessibilityChecks.${checkIndex}`,
+        text,
+        question: false,
+      })),
+    ]),
+    ...value.stewardship.map((item, index) => ({
+      path: `stewardship.${index}.description`,
+      text: item.description,
+      question: false,
+    })),
+    ...value.metrics.map((item, index) => ({
+      path: `metrics.${index}.definition`,
+      text: item.definition,
+      question: false,
+    })),
+    ...value.reviewQuestions.flatMap((item, index) => [
+      {
+        path: `reviewQuestions.${index}.question`,
+        text: item.question,
+        question: true,
+      },
+      {
+        path: `reviewQuestions.${index}.reason`,
+        text: item.reason,
+        question: false,
+      },
+    ]),
+  ];
+  for (const { path, text, question } of statements) {
+    const clauses = text
+      .split(/[.!?]\s*/u)
+      .flatMap((sentence) =>
+        sentence.split(
+          /\s*[;:]\s*|\s*,\s*(?:and|but|or|yet)\s+|\s+(?:and|but|or|yet)\s+(?=(?:(?:you|the(?:\s+\S+){1,4})\s+)?(?:do not|does not|must|should|can|may|will|need(?:s)? to|never)\b)/iu,
+        ),
+      );
+    for (const sentence of clauses) {
+      const trimmed = sentence.trim();
+      if (!trimmed) continue;
+      const negated =
+        /^(?:\S+\s+){0,5}(?:do not|does not|must not|should not|need not|needs not|cannot|can't|never)\b/iu.test(
+          trimmed,
+        );
+      if (
+        !negated &&
+        (/\b(?:tax[- ]deductible|guaranteed match)\b/iu.test(trimmed) ||
+          (() => {
+            const normalized = trimmed
+              .toLowerCase()
+              .replaceAll(/[^a-z0-9]+/gu, " ")
+              .trim();
+            const actionCount = [
+              ...normalized.matchAll(actionOccurrencePattern),
+            ].length;
+            const ownerGated =
+              question &&
+              actionCount === 1 &&
+              ownerActorPattern.test(normalized);
+            return (
+              !ownerGated &&
+              (directActionPattern.test(trimmed) ||
+                mandatoryActionPattern.test(trimmed))
+            );
+          })())
+      ) {
+        findings.push(
+          finding(
+            "external_action_content",
+            path,
+            "Fundraising artifacts must not instruct donor contact or segmentation, solicitation, publication, gift processing, receipts, tax claims, term acceptance, or donor-record changes.",
+          ),
+        );
+        break;
+      }
+    }
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
@@ -11490,6 +12013,7 @@ const validators = {
   "document-intake-analyst": documentIntakeFindings,
   "financial-analyst": financialAnalysisFindings,
   "freelance-client-pipeline": freelancePipelineFindings,
+  "fundraising-campaign-manager": fundraisingCampaignFindings,
   "fantasy-sports-manager": fantasySportsFindings,
   "games-backlog-manager": gamesBacklogFindings,
   "gift-relationship-manager": giftRelationshipFindings,

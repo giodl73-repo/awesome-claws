@@ -14,29 +14,29 @@
   },
   "summary": {
     "entryCount": 100,
-    "average": 90.5,
-    "median": 94.5,
+    "average": 90.7,
+    "median": 95,
     "qualifiedCount": 100,
     "bands": {
-      "exemplary": 58,
+      "exemplary": 59,
       "strong": 21,
-      "solid": 21,
+      "solid": 20,
       "needs-uplift": 0,
       "priority-remediation": 0
     },
     "dimensionAverages": {
-      "distinctness": 12.3,
+      "distinctness": 12.4,
       "operatingContract": 20,
-      "evidenceModel": 15.1,
+      "evidenceModel": 15.2,
       "authoritySafety": 18.9,
       "experience": 10,
       "verificationPortability": 9.2,
       "stewardship": 5
     },
     "evidenceCoverage": {
-      "contributionRecords": 47,
+      "contributionRecords": 48,
       "schemas": 81,
-      "semanticValidators": 59,
+      "semanticValidators": 60,
       "screenshots": 100
     }
   },
@@ -80,7 +80,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 62
+      "rank": 63
     },
     {
       "id": "software-maintainer",
@@ -162,7 +162,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 66
+      "rank": 67
     },
     {
       "id": "data-analyst",
@@ -201,7 +201,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 51
+      "rank": 52
     },
     {
       "id": "research-briefing",
@@ -240,7 +240,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 50
+      "rank": 51
     },
     {
       "id": "financial-analyst",
@@ -280,7 +280,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 59
+      "rank": 60
     },
     {
       "id": "customer-support",
@@ -321,7 +321,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 64
+      "rank": 65
     },
     {
       "id": "sales-operations",
@@ -358,7 +358,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 56
+      "rank": 57
     },
     {
       "id": "recruiting-coordinator",
@@ -395,7 +395,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 55
+      "rank": 56
     },
     {
       "id": "content-operations",
@@ -512,7 +512,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 54
+      "rank": 55
     },
     {
       "id": "product-manager",
@@ -551,7 +551,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 53
+      "rank": 54
     },
     {
       "id": "compliance-reviewer",
@@ -591,7 +591,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 63
+      "rank": 64
     },
     {
       "id": "knowledge-curator",
@@ -908,7 +908,7 @@
         "maintenanceAgeDays": 0
       },
       "recommendations": [],
-      "rank": 52
+      "rank": 53
     },
     {
       "id": "media-evidence-reviewer",
@@ -989,7 +989,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 65
+      "rank": 66
     },
     {
       "id": "feed-intelligence-monitor",
@@ -1396,7 +1396,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 58
+      "rank": 59
     },
     {
       "id": "civic-data-analyst",
@@ -1435,7 +1435,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 57
+      "rank": 58
     },
     {
       "id": "event-operations-director",
@@ -1476,7 +1476,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 70
+      "rank": 71
     },
     {
       "id": "api-integration-engineer",
@@ -1517,7 +1517,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 60
+      "rank": 61
     },
     {
       "id": "procurement-evaluator",
@@ -1558,7 +1558,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 77
+      "rank": 78
     },
     {
       "id": "grant-portfolio-manager",
@@ -1599,7 +1599,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 73
+      "rank": 74
     },
     {
       "id": "privacy-request-coordinator",
@@ -1639,7 +1639,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 76
+      "rank": 77
     },
     {
       "id": "manufacturing-operations-planner",
@@ -1680,7 +1680,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 75
+      "rank": 76
     },
     {
       "id": "facilities-operations-coordinator",
@@ -1721,7 +1721,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 72
+      "rank": 73
     },
     {
       "id": "ux-research-synthesizer",
@@ -1761,7 +1761,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 79
+      "rank": 80
     },
     {
       "id": "experimentation-lead",
@@ -1801,7 +1801,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 71
+      "rank": 72
     },
     {
       "id": "data-migration-planner",
@@ -1841,7 +1841,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 69
+      "rank": 70
     },
     {
       "id": "localization-program-manager",
@@ -1881,7 +1881,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 74
+      "rank": 75
     },
     {
       "id": "accessibility-review-coordinator",
@@ -1921,7 +1921,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 67
+      "rank": 68
     },
     {
       "id": "quality-assurance-lead",
@@ -1961,7 +1961,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 78
+      "rank": 79
     },
     {
       "id": "cloud-cost-analyst",
@@ -2001,21 +2001,21 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 68
+      "rank": 69
     },
     {
       "id": "fundraising-campaign-manager",
       "name": "Fundraising campaign manager",
       "category": "operations",
-      "total": 79,
-      "band": "solid",
+      "total": 95,
+      "band": "exemplary",
       "dimensions": {
-        "distinctness": 10,
+        "distinctness": 15,
         "operatingContract": 20,
-        "evidenceModel": 11,
+        "evidenceModel": 20,
         "authoritySafety": 15,
         "experience": 10,
-        "verificationPortability": 8,
+        "verificationPortability": 10,
         "stewardship": 5
       },
       "gates": {
@@ -2026,22 +2026,19 @@
         "qualified": true
       },
       "evidence": {
-        "contributionRecord": false,
-        "comparedAlternatives": 0,
+        "contributionRecord": true,
+        "comparedAlternatives": 6,
         "schema": true,
-        "semanticValidator": false,
+        "semanticValidator": true,
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [
           "bootstrap"
         ],
-        "maintenanceAgeDays": 10
+        "maintenanceAgeDays": 0
       },
-      "recommendations": [
-        "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
-        "Add semantic validation for cross-field evidence and authority invariants."
-      ],
-      "rank": 80
+      "recommendations": [],
+      "rank": 50
     },
     {
       "id": "data-governance-steward",
@@ -2081,7 +2078,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 61
+      "rank": 62
     },
     {
       "id": "change-control-operator",

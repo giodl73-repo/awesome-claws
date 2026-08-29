@@ -1,1 +1,279 @@
-{"type":"object","required":["claim","evidence","reviewer","state"],"properties":{"claim":{"type":"string"},"evidence":{"type":"string"},"reviewer":{"type":"string"},"state":{"type":"string"}}}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/campaign-claim.schema.json",
+  "title": "Fundraising campaign review artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "campaign",
+    "sources",
+    "claims",
+    "audiences",
+    "assets",
+    "stewardship",
+    "metrics",
+    "reviewQuestions",
+    "blockedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.fundraisingCampaign.v1" },
+    "campaign": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "organization",
+        "owner",
+        "ownerType",
+        "asOf",
+        "startDate",
+        "endDate",
+        "currency",
+        "goalAmount",
+        "objective",
+        "approvedProgram",
+        "state"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^campaign-[a-z0-9-]+$" },
+        "organization": { "type": "string", "minLength": 1 },
+        "owner": { "type": "string", "minLength": 1, "pattern": "\\S" },
+        "ownerType": { "enum": ["human", "team"] },
+        "asOf": { "type": "string", "format": "date" },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "goalAmount": { "type": "number", "exclusiveMinimum": 0 },
+        "objective": { "type": "string", "minLength": 1 },
+        "approvedProgram": { "type": "string", "minLength": 1 },
+        "state": { "enum": ["draft", "review-needed", "ready-for-owner-review"] }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "asOf", "freshness", "approval", "classification"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "program-results",
+              "impact-report",
+              "brand-guidance",
+              "offer-terms",
+              "matching-terms",
+              "restriction-policy",
+              "consent-policy",
+              "suppression-policy",
+              "accessibility-guidance",
+              "legal-review",
+              "measurement-plan",
+              "owner-note"
+            ]
+          },
+          "label": { "type": "string", "minLength": 1 },
+          "asOf": { "type": "string", "format": "date" },
+          "freshness": { "enum": ["current", "stale", "missing", "conflicting"] },
+          "approval": { "enum": ["approved-for-campaign", "review-needed", "not-approved"] },
+          "classification": { "enum": ["public", "internal", "confidential", "restricted"] }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "statement", "sourceRefs", "reviewer", "state", "allowedChannels", "restrictions"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^claim-[a-z0-9-]+$" },
+          "kind": { "enum": ["impact", "program", "financial-need", "matching", "urgency", "endorsement", "restricted-fund", "tax"] },
+          "statement": { "type": "string", "minLength": 1 },
+          "sourceRefs": { "$ref": "#/$defs/refs" },
+          "reviewer": { "type": "string", "minLength": 1, "pattern": "\\S" },
+          "state": { "enum": ["supported", "review-needed", "blocked"] },
+          "allowedChannels": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "enum": ["email", "web", "social", "print", "internal"] }
+          },
+          "restrictions": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "audiences": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "basis", "recordsUsed", "consentState", "suppressionRules", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^audience-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "basis": { "type": "string", "minLength": 1 },
+          "recordsUsed": { "const": false },
+          "consentState": { "enum": ["documented", "review-needed"] },
+          "suppressionRules": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "assets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "channel", "title", "audienceRefs", "claimRefs", "accessibilityChecks", "state", "publicationState"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^asset-[a-z0-9-]+$" },
+          "channel": { "enum": ["email", "web", "social", "print", "internal"] },
+          "title": { "type": "string", "minLength": 1 },
+          "audienceRefs": { "$ref": "#/$defs/refs" },
+          "claimRefs": { "$ref": "#/$defs/refs" },
+          "accessibilityChecks": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "state": { "enum": ["draft", "review-needed", "ready-for-owner-review"] },
+          "publicationState": { "const": "not-published" }
+        }
+      }
+    },
+    "stewardship": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "stage", "audienceRef", "description", "owner", "consentRequired", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^stewardship-[a-z0-9-]+$" },
+          "stage": { "enum": ["acknowledgment", "impact-update", "renewal-review", "suppression-review"] },
+          "audienceRef": { "type": "string", "pattern": "^audience-[a-z0-9-]+$" },
+          "description": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1, "pattern": "\\S" },
+          "consentRequired": { "type": "boolean" },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "definition", "sourceRefs", "state"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^metric-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "definition": { "type": "string", "minLength": 1 },
+          "sourceRefs": { "$ref": "#/$defs/refs" },
+          "state": { "enum": ["defined", "review-needed", "blocked"] }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "refs", "owner"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "$ref": "#/$defs/refs" },
+          "owner": { "type": "string", "minLength": 1, "pattern": "\\S" }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "contact-donors",
+          "segment-donors",
+          "send-solicitation",
+          "publish-assets",
+          "process-gifts",
+          "issue-receipts",
+          "make-tax-claims",
+          "accept-terms",
+          "alter-donor-records"
+        ]
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "ownerType", "assetRefs", "blockingClaimRefs", "reviewQuestionRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1, "pattern": "\\S" },
+        "ownerType": { "enum": ["human", "team"] },
+        "assetRefs": { "$ref": "#/$defs/refs" },
+        "blockingClaimRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^claim-[a-z0-9-]+$" }
+        },
+        "reviewQuestionRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^question-[a-z0-9-]+$" }
+        },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "contact-donors",
+              "segment-donors",
+              "send-solicitation",
+              "publish-assets",
+              "process-gifts",
+              "issue-receipts",
+              "make-tax-claims",
+              "accept-terms",
+              "alter-donor-records"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "schemaVersion": "awesomeClaws.fundraisingCampaign.v1",
+  "campaign": {
+    "id": "campaign-year-end-literacy",
+    "organization": "Northstar Literacy Network",
+    "owner": "Development and Communications leads",
+    "ownerType": "team",
+    "asOf": "2026-08-29",
+    "startDate": "2026-11-02",
+    "endDate": "2026-12-31",
+    "currency": "USD",
+    "goalAmount": 125000,
+    "objective": "Prepare a reviewable year-end campaign package for the approved adult literacy program.",
+    "approvedProgram": "Adult literacy tutoring",
+    "state": "review-needed"
+  },
+  "sources": [
+    {
+      "id": "source-program-results",
+      "kind": "program-results",
+      "label": "FY2026 approved literacy outcomes",
+      "asOf": "2026-08-20",
+      "freshness": "current",
+      "approval": "approved-for-campaign",
+      "classification": "internal"
+    },
+    {
+      "id": "source-brand-guide",
+      "kind": "brand-guidance",
+      "label": "2026 campaign voice and accessibility guide",
+      "asOf": "2026-07-15",
+      "freshness": "current",
+      "approval": "approved-for-campaign",
+      "classification": "internal"
+    },
+    {
+      "id": "source-consent-policy",
+      "kind": "consent-policy",
+      "label": "Donor communication consent and suppression policy",
+      "asOf": "2026-06-01",
+      "freshness": "current",
+      "approval": "approved-for-campaign",
+      "classification": "confidential"
+    },
+    {
+      "id": "source-match-letter",
+      "kind": "matching-terms",
+      "label": "Draft sponsor matching letter",
+      "asOf": "2026-08-26",
+      "freshness": "conflicting",
+      "approval": "review-needed",
+      "classification": "confidential"
+    },
+    {
+      "id": "source-measurement-plan",
+      "kind": "measurement-plan",
+      "label": "Approved campaign measurement definitions",
+      "asOf": "2026-08-18",
+      "freshness": "current",
+      "approval": "approved-for-campaign",
+      "classification": "internal"
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-learning-hours",
+      "kind": "impact",
+      "statement": "Volunteer tutors delivered 18,420 learner-hours in FY2026.",
+      "sourceRefs": ["source-program-results"],
+      "reviewer": "Program Evaluation lead",
+      "state": "supported",
+      "allowedChannels": ["email", "web", "social", "print"],
+      "restrictions": ["Use the fiscal-year qualifier", "Do not infer individual learner outcomes"]
+    },
+    {
+      "id": "claim-match",
+      "kind": "matching",
+      "statement": "Year-end gifts may qualify for a sponsor match.",
+      "sourceRefs": ["source-match-letter"],
+      "reviewer": "Development lead",
+      "state": "review-needed",
+      "allowedChannels": ["email", "web"],
+      "restrictions": ["Do not state a ratio, cap, or deadline until signed terms are approved"]
+    }
+  ],
+  "audiences": [
+    {
+      "id": "audience-consented-supporters",
+      "label": "Consented supporters",
+      "basis": "Policy-defined aggregate audience criteria only",
+      "recordsUsed": false,
+      "consentState": "documented",
+      "suppressionRules": ["Exclude opted-out contacts", "Exclude do-not-solicit records", "Apply channel-specific consent"],
+      "sourceRefs": ["source-consent-policy"]
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-email-draft",
+      "channel": "email",
+      "title": "Year-end literacy campaign email draft",
+      "audienceRefs": ["audience-consented-supporters"],
+      "claimRefs": ["claim-learning-hours"],
+      "accessibilityChecks": ["Descriptive link text", "Plain-text fallback", "Heading order"],
+      "state": "ready-for-owner-review",
+      "publicationState": "not-published"
+    },
+    {
+      "id": "asset-web-match-draft",
+      "channel": "web",
+      "title": "Matching-gift web module draft",
+      "audienceRefs": ["audience-consented-supporters"],
+      "claimRefs": ["claim-match"],
+      "accessibilityChecks": ["Heading order", "Match terms available as text"],
+      "state": "review-needed",
+      "publicationState": "not-published"
+    }
+  ],
+  "stewardship": [
+    {
+      "id": "stewardship-impact-update",
+      "stage": "impact-update",
+      "audienceRef": "audience-consented-supporters",
+      "description": "Prepare an owner-reviewed impact update after campaign reporting closes.",
+      "owner": "Donor Stewardship lead",
+      "consentRequired": true,
+      "sourceRefs": ["source-consent-policy", "source-program-results"]
+    }
+  ],
+  "metrics": [
+    {
+      "id": "metric-qualified-response",
+      "label": "Qualified response rate",
+      "definition": "Owner-system responses divided by delivered messages after suppression.",
+      "sourceRefs": ["source-measurement-plan", "source-consent-policy"],
+      "state": "defined"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-match-terms",
+      "question": "Has the Development lead approved the signed matching ratio, cap, and eligible period?",
+      "reason": "The draft sponsor letter conflicts with the proposed campaign language.",
+      "refs": ["source-match-letter", "claim-match", "asset-web-match-draft"],
+      "owner": "Development lead"
+    }
+  ],
+  "blockedActions": [
+    "contact-donors",
+    "segment-donors",
+    "send-solicitation",
+    "publish-assets",
+    "process-gifts",
+    "issue-receipts",
+    "make-tax-claims",
+    "accept-terms",
+    "alter-donor-records"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Development and Communications leads",
+    "ownerType": "team",
+    "assetRefs": ["asset-email-draft", "asset-web-match-draft"],
+    "blockingClaimRefs": ["claim-match"],
+    "reviewQuestionRefs": ["question-match-terms"],
+    "prohibitedActions": [
+      "contact-donors",
+      "segment-donors",
+      "send-solicitation",
+      "publish-assets",
+      "process-gifts",
+      "issue-receipts",
+      "make-tax-claims",
+      "accept-terms",
+      "alter-donor-records"
+    ]
+  }
+}
