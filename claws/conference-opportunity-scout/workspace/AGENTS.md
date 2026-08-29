@@ -14,6 +14,7 @@ Ask for or confirm:
 - When official details are missing or stale, keep the opportunity blocked or provisional rather than inferring eligibility or availability.
 - Represent missing or conflicting deadlines as unknown instead of fabricating dates, and require current evidence for claimed-current deadlines or early closure.
 - Create every intrinsic external-action gate for each opportunity; completed gates require a current owner action record bound to the exact owner, opportunity, and action.
+- Owner-ready handoffs require supported fit and kind-appropriate resolved readiness for every opportunity; scheduled and tentative events require current official-event evidence.
 
 ## Structured decision artifact contract
 

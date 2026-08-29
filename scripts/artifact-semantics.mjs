@@ -8141,6 +8141,12 @@ function conferenceOpportunityFindings(value) {
       "change-account",
     ],
   };
+  const requiredReadinessKinds = {
+    speaking: ["abstract", "eligibility", "availability", "rights"],
+    attendance: ["budget", "availability", "travel", "accessibility"],
+    sponsorship: ["budget", "rights", "employer-approval"],
+    networking: ["budget", "availability", "travel", "accessibility"],
+  };
   const closureActions = {
     speaking: new Set(["submit-proposal"]),
     attendance: new Set(["register", "buy-ticket"]),
@@ -8242,7 +8248,7 @@ function conferenceOpportunityFindings(value) {
       );
     }
     if (
-      event.status === "scheduled" &&
+      ["scheduled", "tentative"].includes(event.status) &&
       !event.sourceRefs.some((ref) => {
         const source = sourceById.get(ref);
         return source?.kind === "official-event" && source.freshness === "current";
@@ -8252,7 +8258,7 @@ function conferenceOpportunityFindings(value) {
         finding(
           "unsupported_event_state",
           `events.${index}.sourceRefs`,
-          "Scheduled events require a current official-event source.",
+          "Scheduled and tentative events require a current official-event source.",
         ),
       );
     }
@@ -8581,18 +8587,41 @@ function conferenceOpportunityFindings(value) {
     );
   }
   if (
-    value.handoff.state === "ready-for-owner-review" &&
-    (value.opportunities.some((item) => item.state !== "current") ||
-      value.fitAssessments.some((item) => item.state !== "supported") ||
-      value.readinessItems.some((item) => item.state === "blocked" || item.state === "needs-evidence"))
+    value.handoff.state === "ready-for-owner-review"
   ) {
-    findings.push(
-      finding(
-        "unsupported_ready_state",
-        "handoff.state",
-        "Owner-ready handoffs require current opportunities, supported fit, and no blocked or evidence-missing readiness items.",
-      ),
-    );
+    for (const opportunity of value.opportunities) {
+      const fits = value.fitAssessments.filter(
+        (item) => item.opportunityRef === opportunity.id,
+      );
+      const readiness = value.readinessItems.filter(
+        (item) => item.opportunityRef === opportunity.id,
+      );
+      const missingReadiness = requiredReadinessKinds[opportunity.kind].filter(
+        (kind) =>
+          !readiness.some(
+            (item) =>
+              item.kind === kind &&
+              ["ready-for-owner-review", "not-applicable"].includes(item.state),
+          ),
+      );
+      if (
+        opportunity.state !== "current" ||
+        fits.length === 0 ||
+        fits.some((item) => item.state !== "supported") ||
+        readiness.some((item) =>
+          ["blocked", "needs-evidence"].includes(item.state),
+        ) ||
+        missingReadiness.length > 0
+      ) {
+        findings.push(
+          finding(
+            "unsupported_ready_state",
+            "handoff.state",
+            `Owner-ready opportunity ${JSON.stringify(opportunity.id)} requires current state, supported fit, and resolved ${requiredReadinessKinds[opportunity.kind].join(", ")} readiness coverage.`,
+          ),
+        );
+      }
+    }
   }
   const prohibitedActionPattern =
     /\b(submit (?:a |the )?proposals?|register|book (?:a |the )?travel|buy (?:a |the )?tickets?|pay (?:a |the )?fees?|contact (?:an? |the )?organizers?|publish (?:an? |the )?abstracts?|change (?:a |the )?calendars?|change (?:an? |the )?accounts?|legal advice|tax advice|financial advice|visa advice|immigration advice|employment advice|sponsorship advice|professional advice)\b/iu;

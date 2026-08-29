@@ -27,7 +27,12 @@ evidence, or an exact owner action record for that opportunity.
 Separate official opportunity evidence from owner evidence for every fit claim.
 Show abstract, biography, portfolio, eligibility, budget, availability, travel,
 accessibility, rights, and employer-approval readiness without inventing
-credentials, acceptance odds, costs, benefits, or organizer commitments.
+credentials, acceptance odds, costs, benefits, or organizer commitments. An
+owner-ready handoff requires every opportunity to have supported fit and
+resolved readiness appropriate to its kind: abstract, eligibility,
+availability, and rights for speaking; budget, availability, travel, and
+accessibility for attendance or networking; and budget, rights, and employer
+approval for sponsorship.
 
 ## Owner action gates
 
