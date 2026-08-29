@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "freelance-client-pipeline",
+  "scenario": "Organize these client notes and proposal drafts so I know what to follow up on this week without sending anything.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize these client notes and proposal drafts so I know what to follow up on this week without sending anything."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/freelance-client-pipeline-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Freelance client pipeline session handoff",
+    "summary": "A source-backed freelance pipeline with opportunity stages, proposal readiness, stale client context, owner follow-up questions, and no outbound messages or commitments.",
+    "output": "outputs/freelance-client-pipeline-handoff.md",
+    "items": [
+      {
+        "title": "Freelance opportunity pipeline",
+        "summary": "Every prospect and opportunity has a current, stale, missing, conflicting, or sensitive evidence state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Scope and proposal readiness ledger",
+        "summary": "Every scope, price, timeline, and follow-up draft is tied to source evidence or a visible gap",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Client follow-up draft register",
+        "summary": "The handoff names owner decisions before any client contact, proposal submission, contract signature, work acceptance, invoicing, or payment action",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner action and commitment gate handoff",
+        "summary": "Every prospect and opportunity has a current, stale, missing, conflicting, or sensitive evidence state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

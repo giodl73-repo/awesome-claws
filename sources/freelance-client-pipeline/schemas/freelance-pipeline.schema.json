@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/freelance-pipeline.schema.json",
+  "title": "Freelance client pipeline artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "pipeline", "sources", "clients", "opportunities", "scopeItems", "proposalItems", "followUps", "commitmentRisks", "gaps", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.freelancePipeline.v1" },
+    "pipeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "asOf", "timezone"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^freelance-pipeline-[a-z0-9-]+$" },
+        "owner": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date" },
+        "timezone": { "type": "string", "minLength": 1 }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "freshness", "privacy", "asOf"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["client-note", "meeting-summary", "referral-note", "email-snippet", "scope-draft", "proposal-draft", "pricing-note", "availability-note", "portfolio-evidence", "contract-note", "invoice-note", "owner-note"] },
+          "label": { "type": "string", "minLength": 1 },
+          "freshness": { "type": "string", "enum": ["current", "stale", "missing", "conflicting", "sensitive"] },
+          "privacy": { "type": "string", "enum": ["owner-only", "redact-before-sharing", "shareable-after-review"] },
+          "asOf": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "clients": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "relationship", "privacy", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^client-[a-z0-9-]+$" },
+          "name": { "type": "string", "minLength": 1 },
+          "relationship": { "type": "string", "enum": ["new-lead", "referred", "past-client", "active-client", "partner", "unknown"] },
+          "privacy": { "type": "string", "enum": ["owner-only", "redact-before-sharing", "shareable-after-review"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "opportunities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "clientRef", "label", "stage", "priority", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^opportunity-[a-z0-9-]+$" },
+          "clientRef": { "type": "string", "pattern": "^client-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "stage": { "type": "string", "enum": ["lead", "discovery", "scope-needed", "proposal-draft", "owner-review", "waiting-on-client", "won-by-owner", "lost", "blocked"] },
+          "priority": { "type": "string", "enum": ["high", "medium", "low", "blocked"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "scopeItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "opportunityRef", "label", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^scope-[a-z0-9-]+$" },
+          "opportunityRef": { "type": "string", "pattern": "^opportunity-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["supported", "needs-owner-review", "missing", "stale", "conflicting", "sensitive"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "proposalItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "opportunityRef", "kind", "label", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^proposal-[a-z0-9-]+$" },
+          "opportunityRef": { "type": "string", "pattern": "^opportunity-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["scope", "pricing", "timeline", "availability", "case-study", "reference", "terms-note"] },
+          "label": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["draft-for-owner-review", "ready-for-owner-review", "blocked", "missing-evidence", "stale", "conflicting"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "followUps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "opportunityRef", "label", "state", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^followup-[a-z0-9-]+$" },
+          "opportunityRef": { "type": "string", "pattern": "^opportunity-[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "enum": ["draft-for-owner-review", "blocked", "sent-by-owner", "needs-evidence"] },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "commitmentRisks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "opportunityRef", "severity", "reason", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^risk-[a-z0-9-]+$" },
+          "opportunityRef": { "type": "string", "pattern": "^opportunity-[a-z0-9-]+$" },
+          "severity": { "type": "string", "enum": ["high", "medium", "low", "blocked"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "sourceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "reason", "refs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^gap-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["missing-scope", "stale-client-context", "unsupported-price", "availability-conflict", "privacy", "contract-risk", "payment-risk", "portfolio-risk", "commitment-risk"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(source|client|opportunity|scope|proposal|followup|risk)-[a-z0-9-]+$" } }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "refs", "owner"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(source|client|opportunity|scope|proposal|followup|risk|gap)-[a-z0-9-]+$" } },
+          "owner": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 9,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["send-message", "contact-client", "submit-proposal", "sign-contract", "accept-work", "quote-binding-price", "promise-availability", "invoice-client", "collect-payment", "change-account", "invent-requirement", "invent-price", "invent-credential", "invent-case-study", "legal-advice", "tax-advice", "financial-advice", "accounting-advice", "employment-advice", "contracting-advice", "professional-advice"] }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "reviewQuestionRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "type": "string", "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "reviewQuestionRefs": { "type": "array", "items": { "type": "string", "pattern": "^question-[a-z0-9-]+$" } },
+        "prohibitedActions": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      }
+    }
+  }
+}

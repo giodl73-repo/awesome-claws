@@ -7956,6 +7956,121 @@ function resumePortfolioFindings(value) {
   return findings;
 }
 
+function freelancePipelineFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const clientIds = value.clients.map((item) => item.id);
+  const clientSet = new Set(clientIds);
+  const opportunityIds = value.opportunities.map((item) => item.id);
+  const opportunitySet = new Set(opportunityIds);
+  const scopeIds = value.scopeItems.map((item) => item.id);
+  const proposalIds = value.proposalItems.map((item) => item.id);
+  const followupIds = value.followUps.map((item) => item.id);
+  const riskIds = value.commitmentRisks.map((item) => item.id);
+  const gapIds = value.gaps.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const crossRefs = new Set([
+    ...sourceIds,
+    ...clientIds,
+    ...opportunityIds,
+    ...scopeIds,
+    ...proposalIds,
+    ...followupIds,
+    ...riskIds,
+    ...gapIds,
+    ...questionIds,
+  ]);
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(clientIds, "clients", "Client id"),
+    ...uniqueFindings(opportunityIds, "opportunities", "Opportunity id"),
+    ...uniqueFindings(scopeIds, "scopeItems", "Scope id"),
+    ...uniqueFindings(proposalIds, "proposalItems", "Proposal id"),
+    ...uniqueFindings(followupIds, "followUps", "Follow-up id"),
+    ...uniqueFindings(riskIds, "commitmentRisks", "Commitment risk id"),
+    ...uniqueFindings(gapIds, "gaps", "Gap id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  for (const [index, client] of value.clients.entries()) {
+    findings.push(
+      ...uniqueFindings(client.sourceRefs, `clients.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(client.sourceRefs, sourceSet, `clients.${index}.sourceRefs`, "Source reference"),
+    );
+  }
+  for (const [index, opportunity] of value.opportunities.entries()) {
+    findings.push(
+      ...referenceFindings([opportunity.clientRef], clientSet, `opportunities.${index}.clientRef`, "Client reference"),
+      ...uniqueFindings(opportunity.sourceRefs, `opportunities.${index}.sourceRefs`, "Source reference"),
+      ...referenceFindings(opportunity.sourceRefs, sourceSet, `opportunities.${index}.sourceRefs`, "Source reference"),
+    );
+    if (
+      ["owner-review", "waiting-on-client", "won-by-owner"].includes(opportunity.stage) &&
+      opportunity.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+    ) {
+      findings.push(finding("unsupported_opportunity_stage", `opportunities.${index}.sourceRefs`, "Advanced freelance opportunity stages require current source evidence."));
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["scopeItems", value.scopeItems],
+    ["proposalItems", value.proposalItems],
+    ["followUps", value.followUps],
+    ["commitmentRisks", value.commitmentRisks],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...referenceFindings([item.opportunityRef], opportunitySet, `${collectionName}.${index}.opportunityRef`, "Opportunity reference"),
+        ...uniqueFindings(item.sourceRefs, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+        ...referenceFindings(item.sourceRefs, sourceSet, `${collectionName}.${index}.sourceRefs`, "Source reference"),
+      );
+      if (
+        ["supported", "ready-for-owner-review", "sent-by-owner"].includes(item.state) &&
+        item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current")
+      ) {
+        findings.push(finding("unsupported_ready_item", `${collectionName}.${index}.sourceRefs`, "Supported, ready, or sent freelance pipeline items require current source evidence."));
+      }
+    }
+  }
+  for (const [collectionName, collection] of [
+    ["gaps", value.gaps],
+    ["reviewQuestions", value.reviewQuestions],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...uniqueFindings(item.refs, `${collectionName}.${index}.refs`, "Reference"),
+        ...referenceFindings(item.refs, crossRefs, `${collectionName}.${index}.refs`, "Reference"),
+      );
+    }
+  }
+  findings.push(
+    ...uniqueFindings(value.handoff.reviewQuestionRefs, "handoff.reviewQuestionRefs", "Review question reference"),
+    ...referenceFindings(value.handoff.reviewQuestionRefs, new Set(questionIds), "handoff.reviewQuestionRefs", "Review question reference"),
+  );
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    value.sources.some((item) => ["stale", "missing", "conflicting", "sensitive"].includes(item.freshness))
+  ) {
+    findings.push(finding("unsupported_ready_state", "handoff.state", "Owner-ready freelance pipeline packets cannot depend on stale, missing, conflicting, or sensitive sources."));
+  }
+  const actionText = canonicalJson({
+    clients: value.clients.map(({ name, relationship }) => ({ name, relationship })),
+    opportunities: value.opportunities.map(({ label, stage, priority }) => ({ label, stage, priority })),
+    scopeItems: value.scopeItems.map(({ label, state }) => ({ label, state })),
+    proposalItems: value.proposalItems.map(({ label, state }) => ({ label, state })),
+    followUps: value.followUps.map(({ label, state }) => ({ label, state })),
+    commitmentRisks: value.commitmentRisks.map(({ reason }) => reason),
+    gaps: value.gaps.map(({ reason }) => reason),
+    reviewQuestions: value.reviewQuestions.map(({ question, reason }) => ({ question, reason })),
+  });
+  if (/\b(send messages?|contact clients?|submit proposals?|sign contracts?|accept work|quote binding prices?|promise availability|invoice clients?|collect payments?|change accounts?|invent requirements?|invent prices?|invent credentials?|invent case studies?|legal advice|tax advice|financial advice|accounting advice|employment advice|contracting advice|professional advice)\b/iu.test(actionText)) {
+    findings.push(finding("external_action_content", "reviewQuestions", "Freelance pipeline artifacts must not instruct messaging, client contact, proposal submission, contracts, work acceptance, binding prices, availability promises, invoicing, payment collection, account changes, invented evidence, or professional advice."));
+  }
+  if (value.handoff.owner === "freelance-client-pipeline") {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "Messaging, client-contact, proposal, contract, acceptance, pricing, availability, invoice, payment, account, evidence, and professional-advice authority must remain with the named owner."));
+  }
+  return findings;
+}
+
 function travelLoyaltyFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const sourceSet = new Set(sourceIds);
@@ -8224,6 +8339,7 @@ const validators = {
   "delegation-coordinator": delegationFindings,
   "document-renewal-tracker": documentRenewalFindings,
   "financial-analyst": financialAnalysisFindings,
+  "freelance-client-pipeline": freelancePipelineFindings,
   "fantasy-sports-manager": fantasySportsFindings,
   "games-backlog-manager": gamesBacklogFindings,
   "gift-relationship-manager": giftRelationshipFindings,

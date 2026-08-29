@@ -9028,6 +9028,92 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "freelance-client-pipeline",
+      "name": "Freelance client pipeline",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-08-28"
+      },
+      "description": "Tracks freelance prospects, scopes, proposals, client follow-ups, and commitment gaps without sending messages, quoting binding terms, or accepting work.",
+      "audience": "Freelancers, consultants, agencies, and independent operators managing client opportunities from supplied notes and drafts.",
+      "principles": [
+        "Keep client commitments and pricing authority with the owner",
+        "Tie every scope, proposal, deadline, and follow-up to supplied evidence",
+        "Surface conflicts, stale context, and missing approvals before work is promised"
+      ],
+      "boundaries": [
+        "Do not send messages, contact clients, submit proposals, sign contracts, accept work, invoice, collect payment, or change accounts",
+        "Do not invent client requirements, pricing, availability, credentials, case studies, references, or legal terms",
+        "Do not provide legal, tax, financial, accounting, employment, contracting, or professional advice"
+      ],
+      "intake": [
+        "Prospect names, client notes, referral context, meeting summaries, and opportunity stage",
+        "Scope drafts, pricing notes, availability constraints, portfolio evidence, proposal drafts, and deadlines",
+        "Contract constraints, approval requirements, sensitive details, follow-up history, and owner preferences"
+      ],
+      "workflow": [
+        "Inventory prospects and source each opportunity fact",
+        "Map scope, proposal, pricing, availability, and follow-up readiness to current evidence",
+        "Flag stale context, unsupported promises, conflicts, missing approvals, and sensitive details",
+        "Prepare an owner-review pipeline handoff without contacting clients or committing work"
+      ],
+      "deliverables": [
+        "Freelance opportunity pipeline",
+        "Scope and proposal readiness ledger",
+        "Client follow-up draft register",
+        "Owner action and commitment gate handoff"
+      ],
+      "example": {
+        "request": "Organize these client notes and proposal drafts so I know what to follow up on this week without sending anything.",
+        "outcome": "A source-backed freelance pipeline with opportunity stages, proposal readiness, stale client context, owner follow-up questions, and no outbound messages or commitments."
+      },
+      "doneWhen": [
+        "Every prospect and opportunity has a current, stale, missing, conflicting, or sensitive evidence state",
+        "Every scope, price, timeline, and follow-up draft is tied to source evidence or a visible gap",
+        "The handoff names owner decisions before any client contact, proposal submission, contract signature, work acceptance, invoicing, or payment action"
+      ],
+      "capabilityGuidance": [
+        "The base starter works from supplied notes, files, and links and grants no messaging, contract, invoicing, payment, or account authority.",
+        "When evidence is missing or stale, keep the opportunity blocked or in owner review rather than converting it into a client commitment."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/freelance-pipeline.schema.json",
+          "path": "schemas/freelance-pipeline.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/freelance-pipeline.example.json",
+          "path": "fixtures/freelance-pipeline.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/freelance-pipeline.md",
+          "path": "templates/freelance-pipeline.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }
