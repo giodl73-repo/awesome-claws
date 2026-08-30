@@ -1,0 +1,760 @@
+{
+  "schemaVersion": "awesomeClaws.itineraryPlan.v1",
+  "trip": {
+    "id": "trip-seattle-lisbon-october",
+    "owner": "Jordan Lee",
+    "timezone": "Europe/Lisbon",
+    "asOf": "2026-08-30T02:00:00Z",
+    "origin": "Seattle, WA, USA",
+    "destinations": ["Lisbon, Portugal"],
+    "startDate": "2026-10-12",
+    "endDate": "2026-10-16",
+    "partySize": 2,
+    "budgetCurrency": "USD",
+    "budgetLimit": 4000,
+    "state": "ready"
+  },
+  "sources": [
+    {
+      "id": "source-traveler-brief",
+      "kind": "traveler-note",
+      "authority": "traveler",
+      "reference": "traveler://trip/seattle-lisbon-october/brief",
+      "retrievedAt": "2026-08-29T23:00:00Z",
+      "effectiveDate": null,
+      "validThrough": null,
+      "freshness": "current",
+      "scope": "Five-day Lisbon plan for two adults with a moderate pace, step-free routes, public transit, an October date window, and a USD 4,000 planning ceiling."
+    },
+    {
+      "id": "source-portugal-entry",
+      "kind": "government-entry",
+      "authority": "government",
+      "reference": "https://vistos.mne.gov.pt/en/",
+      "retrievedAt": "2026-08-30T00:00:00Z",
+      "effectiveDate": "2026-08-30",
+      "validThrough": null,
+      "freshness": "current",
+      "scope": "Portuguese government entry and visa guidance; traveler-specific applicability still requires final official verification."
+    },
+    {
+      "id": "source-us-advisory",
+      "kind": "government-advisory",
+      "authority": "government",
+      "reference": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/portugal-travel-advisory.html",
+      "retrievedAt": "2026-08-30T00:05:00Z",
+      "effectiveDate": "2026-08-30",
+      "validThrough": null,
+      "freshness": "current",
+      "scope": "Current Portugal travel advisory for United States travelers; not a safety guarantee."
+    },
+    {
+      "id": "source-portugal-health",
+      "kind": "government-health",
+      "authority": "government",
+      "reference": "https://www.sns24.gov.pt/en/",
+      "retrievedAt": "2026-08-30T00:10:00Z",
+      "effectiveDate": "2026-08-30",
+      "validThrough": null,
+      "freshness": "current",
+      "scope": "Portuguese public-health travel context and official health-service guidance."
+    },
+    {
+      "id": "source-carris-metro",
+      "kind": "official-transit",
+      "authority": "official-operator",
+      "reference": "https://www.metrolisboa.pt/en/",
+      "retrievedAt": "2026-08-30T00:15:00Z",
+      "effectiveDate": "2026-08-30",
+      "validThrough": "2026-10-16",
+      "freshness": "current",
+      "scope": "Lisbon Metro network, accessibility information, service hours, and disruption notices."
+    },
+    {
+      "id": "source-airport-operator",
+      "kind": "official-operator",
+      "authority": "official-operator",
+      "reference": "https://www.ana.pt/en/lis/home",
+      "retrievedAt": "2026-08-30T00:20:00Z",
+      "effectiveDate": "2026-08-30",
+      "validThrough": null,
+      "freshness": "current",
+      "scope": "Lisbon Airport arrival, accessibility, and ground-transport information."
+    },
+    {
+      "id": "source-oceanario",
+      "kind": "official-venue",
+      "authority": "official-venue",
+      "reference": "https://www.oceanario.pt/en/",
+      "retrievedAt": "2026-08-30T00:25:00Z",
+      "effectiveDate": "2026-08-30",
+      "validThrough": "2026-10-16",
+      "freshness": "current",
+      "scope": "Oceanario de Lisboa opening hours, accessibility guidance, and public admission information; live availability and price require traveler recheck."
+    },
+    {
+      "id": "source-gulbenkian",
+      "kind": "official-venue",
+      "authority": "official-venue",
+      "reference": "https://gulbenkian.pt/museu/en/",
+      "retrievedAt": "2026-08-30T00:30:00Z",
+      "effectiveDate": "2026-08-30",
+      "validThrough": "2026-10-16",
+      "freshness": "current",
+      "scope": "Museum hours, accessibility guidance, and visitor information; live availability and price require traveler recheck."
+    },
+    {
+      "id": "source-openstreetmap",
+      "kind": "openstreetmap",
+      "authority": "openstreetmap",
+      "reference": "https://www.openstreetmap.org/relation/5400890",
+      "retrievedAt": "2026-08-30T00:35:00Z",
+      "effectiveDate": null,
+      "validThrough": null,
+      "freshness": "current",
+      "scope": "Place and route context for Lisbon; not evidence of venue hours, accessibility guarantees, inventory, or price."
+    },
+    {
+      "id": "source-open-meteo",
+      "kind": "open-meteo",
+      "authority": "open-meteo",
+      "reference": "https://open-meteo.com/en/docs",
+      "retrievedAt": "2026-08-30T00:40:00Z",
+      "effectiveDate": "2026-08-30",
+      "validThrough": "2026-08-30",
+      "freshness": "current",
+      "scope": "Seasonal weather context only; an October forecast is not yet available and must be refreshed near departure."
+    },
+    {
+      "id": "source-lisbon-gtfs",
+      "kind": "gtfs",
+      "authority": "gtfs-publisher",
+      "reference": "https://www.portalviva.pt/lx/pt/homepage/dados-abertos/",
+      "retrievedAt": "2026-08-30T00:45:00Z",
+      "effectiveDate": "2026-08-30",
+      "validThrough": "2026-10-16",
+      "freshness": "current",
+      "scope": "Published Lisbon-area scheduled transit data; official operator alerts supersede static schedules."
+    }
+  ],
+  "constraints": [
+    {
+      "id": "constraint-dates",
+      "kind": "dates",
+      "description": "Use October 12 through October 16, 2026.",
+      "required": true,
+      "sourceRefs": ["source-traveler-brief"]
+    },
+    {
+      "id": "constraint-budget",
+      "kind": "budget",
+      "description": "Keep the complete planning range at or below USD 4,000.",
+      "required": true,
+      "sourceRefs": ["source-traveler-brief"]
+    },
+    {
+      "id": "constraint-pace",
+      "kind": "pace",
+      "description": "Plan no more than two substantial activities per full day.",
+      "required": true,
+      "sourceRefs": ["source-traveler-brief"]
+    },
+    {
+      "id": "constraint-mobility",
+      "kind": "accessibility-mobility",
+      "description": "Prefer step-free transit and seated rest at least every two hours.",
+      "required": true,
+      "sourceRefs": ["source-traveler-brief"]
+    },
+    {
+      "id": "constraint-interests",
+      "kind": "interests",
+      "description": "Prioritize maritime history, local neighborhoods, gardens, and one museum.",
+      "required": true,
+      "sourceRefs": ["source-traveler-brief"]
+    },
+    {
+      "id": "constraint-arrival",
+      "kind": "fixed-commitment",
+      "description": "Keep arrival day light after the morning airport arrival.",
+      "required": true,
+      "sourceRefs": ["source-traveler-brief"]
+    },
+    {
+      "id": "constraint-lodging",
+      "kind": "lodging-preference",
+      "description": "Use a central step-free lodging area near a Metro station; no property is selected or reserved.",
+      "required": true,
+      "sourceRefs": ["source-traveler-brief"]
+    },
+    {
+      "id": "constraint-transit",
+      "kind": "transport-preference",
+      "description": "Use public transit when an accessible route is currently confirmed.",
+      "required": true,
+      "sourceRefs": ["source-traveler-brief"]
+    },
+    {
+      "id": "constraint-risk",
+      "kind": "risk-tolerance",
+      "description": "Avoid tight connections and retain a weather or service-disruption alternative.",
+      "required": true,
+      "sourceRefs": ["source-traveler-brief"]
+    }
+  ],
+  "places": [
+    {
+      "id": "place-lisbon-airport",
+      "name": "Humberto Delgado Airport",
+      "destination": "Lisbon, Portugal",
+      "sourceRefs": ["source-airport-operator", "source-openstreetmap"],
+      "accessibilityNotes": "Use the airport operator's current assistance and lift guidance; confirm conditions before departure."
+    },
+    {
+      "id": "place-central-lodging-area",
+      "name": "Central Lisbon lodging search area",
+      "destination": "Lisbon, Portugal",
+      "sourceRefs": ["source-openstreetmap", "source-traveler-brief"],
+      "accessibilityNotes": "A planning area only; the traveler must verify step-free property access before selecting lodging."
+    },
+    {
+      "id": "place-belem",
+      "name": "Belem riverside area",
+      "destination": "Lisbon, Portugal",
+      "sourceRefs": ["source-openstreetmap", "source-carris-metro", "source-lisbon-gtfs"],
+      "accessibilityNotes": "Use mapped level riverside segments and verify elevator or platform status with the operator."
+    },
+    {
+      "id": "place-gulbenkian",
+      "name": "Calouste Gulbenkian Museum and Garden",
+      "destination": "Lisbon, Portugal",
+      "sourceRefs": ["source-gulbenkian", "source-openstreetmap"],
+      "accessibilityNotes": "Official visitor guidance identifies accessible facilities; confirm any temporary closures."
+    },
+    {
+      "id": "place-alfama",
+      "name": "Lower Alfama",
+      "destination": "Lisbon, Portugal",
+      "sourceRefs": ["source-openstreetmap"],
+      "accessibilityNotes": "Steep and uneven streets remain a material limitation; the plan stays on a lower, shorter route."
+    },
+    {
+      "id": "place-oceanario",
+      "name": "Oceanario de Lisboa",
+      "destination": "Lisbon, Portugal",
+      "sourceRefs": ["source-oceanario", "source-openstreetmap", "source-lisbon-gtfs"],
+      "accessibilityNotes": "Use official venue accessibility guidance and confirm live lift or exhibit restrictions."
+    }
+  ],
+  "itineraryDays": [
+    {
+      "id": "day-2026-10-12",
+      "date": "2026-10-12",
+      "timezone": "Europe/Lisbon",
+      "items": [
+        {
+          "id": "item-airport-arrival",
+          "kind": "arrival",
+          "title": "Arrive and use the planned airport assistance route",
+          "startAt": "2026-10-12T10:00:00+01:00",
+          "endAt": "2026-10-12T11:00:00+01:00",
+          "placeRef": "place-lisbon-airport",
+          "sourceRefs": ["source-airport-operator", "source-traveler-brief"],
+          "constraintRefs": ["constraint-dates", "constraint-mobility", "constraint-arrival"],
+          "transferBufferBeforeMinutes": 0,
+          "accessibilityNotes": "Allow extra time for assistance, baggage, lifts, and an unhurried exit.",
+          "status": "planned",
+          "requiresDisruptionAlternative": false,
+          "alternatives": []
+        },
+        {
+          "id": "item-airport-hotel-transfer",
+          "kind": "transfer",
+          "title": "Transfer to the central lodging area",
+          "startAt": "2026-10-12T11:30:00+01:00",
+          "endAt": "2026-10-12T12:30:00+01:00",
+          "placeRef": "place-central-lodging-area",
+          "sourceRefs": ["source-carris-metro", "source-lisbon-gtfs", "source-openstreetmap"],
+          "constraintRefs": ["constraint-mobility", "constraint-transit", "constraint-risk"],
+          "transferBufferBeforeMinutes": 30,
+          "accessibilityNotes": "Use only a currently step-free route and keep an operator-confirmed surface alternative.",
+          "status": "planned",
+          "requiresDisruptionAlternative": true,
+          "alternatives": [
+            {
+              "id": "alternative-airport-bus",
+              "title": "Use an official accessible surface connection",
+              "reason": "Use if the planned Metro lift or line is disrupted.",
+              "placeRef": "place-central-lodging-area",
+              "sourceRefs": ["source-airport-operator", "source-carris-metro"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "day-2026-10-13",
+      "date": "2026-10-13",
+      "timezone": "Europe/Lisbon",
+      "items": [
+        {
+          "id": "item-belem-riverside",
+          "kind": "activity",
+          "title": "Explore the Belem riverside at a moderate pace",
+          "startAt": "2026-10-13T10:00:00+01:00",
+          "endAt": "2026-10-13T12:00:00+01:00",
+          "placeRef": "place-belem",
+          "sourceRefs": ["source-openstreetmap", "source-carris-metro", "source-lisbon-gtfs"],
+          "constraintRefs": ["constraint-pace", "constraint-mobility", "constraint-interests", "constraint-transit"],
+          "transferBufferBeforeMinutes": 0,
+          "accessibilityNotes": "Use the level riverside segment and schedule seated breaks.",
+          "status": "planned",
+          "requiresDisruptionAlternative": true,
+          "alternatives": [
+            {
+              "id": "alternative-belem-short-route",
+              "title": "Use the shorter sheltered riverside route",
+              "reason": "Use if rain, heat, fatigue, or transit disruption makes the longer route unsuitable.",
+              "placeRef": "place-belem",
+              "sourceRefs": ["source-openstreetmap", "source-open-meteo"]
+            }
+          ]
+        },
+        {
+          "id": "item-belem-rest",
+          "kind": "rest",
+          "title": "Long seated lunch and recovery break",
+          "startAt": "2026-10-13T12:30:00+01:00",
+          "endAt": "2026-10-13T14:00:00+01:00",
+          "placeRef": "place-belem",
+          "sourceRefs": ["source-openstreetmap"],
+          "constraintRefs": ["constraint-pace", "constraint-mobility"],
+          "transferBufferBeforeMinutes": 30,
+          "accessibilityNotes": "Select a level-access location after checking conditions in person.",
+          "status": "planned",
+          "requiresDisruptionAlternative": false,
+          "alternatives": []
+        }
+      ]
+    },
+    {
+      "id": "day-2026-10-14",
+      "date": "2026-10-14",
+      "timezone": "Europe/Lisbon",
+      "items": [
+        {
+          "id": "item-gulbenkian",
+          "kind": "activity",
+          "title": "Museum and garden visit",
+          "startAt": "2026-10-14T10:30:00+01:00",
+          "endAt": "2026-10-14T13:00:00+01:00",
+          "placeRef": "place-gulbenkian",
+          "sourceRefs": ["source-gulbenkian", "source-openstreetmap"],
+          "constraintRefs": ["constraint-pace", "constraint-mobility", "constraint-interests"],
+          "transferBufferBeforeMinutes": 0,
+          "accessibilityNotes": "Use official accessible entrances and keep the garden portion optional.",
+          "status": "planned",
+          "requiresDisruptionAlternative": true,
+          "alternatives": [
+            {
+              "id": "alternative-gulbenkian-indoor",
+              "title": "Limit the visit to accessible indoor galleries",
+              "reason": "Use if weather or garden conditions are unsuitable.",
+              "placeRef": "place-gulbenkian",
+              "sourceRefs": ["source-gulbenkian", "source-open-meteo"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "day-2026-10-15",
+      "date": "2026-10-15",
+      "timezone": "Europe/Lisbon",
+      "items": [
+        {
+          "id": "item-lower-alfama",
+          "kind": "activity",
+          "title": "Short lower-Alfama neighborhood route",
+          "startAt": "2026-10-15T10:00:00+01:00",
+          "endAt": "2026-10-15T11:30:00+01:00",
+          "placeRef": "place-alfama",
+          "sourceRefs": ["source-openstreetmap", "source-traveler-brief"],
+          "constraintRefs": ["constraint-pace", "constraint-mobility", "constraint-interests", "constraint-risk"],
+          "transferBufferBeforeMinutes": 0,
+          "accessibilityNotes": "Avoid steep mapped segments and turn back if surfaces do not match the plan.",
+          "status": "planned",
+          "requiresDisruptionAlternative": true,
+          "alternatives": [
+            {
+              "id": "alternative-alfama-oceanario",
+              "title": "Replace the neighborhood route with the Oceanario",
+              "reason": "Use if slopes, paving, weather, or fatigue make Alfama unsuitable.",
+              "placeRef": "place-oceanario",
+              "sourceRefs": ["source-oceanario", "source-lisbon-gtfs"]
+            }
+          ]
+        },
+        {
+          "id": "item-oceanario",
+          "kind": "activity",
+          "title": "Optional Oceanario visit",
+          "startAt": "2026-10-15T13:00:00+01:00",
+          "endAt": "2026-10-15T15:30:00+01:00",
+          "placeRef": "place-oceanario",
+          "sourceRefs": ["source-oceanario", "source-lisbon-gtfs", "source-openstreetmap"],
+          "constraintRefs": ["constraint-pace", "constraint-mobility", "constraint-interests", "constraint-transit"],
+          "transferBufferBeforeMinutes": 90,
+          "accessibilityNotes": "Confirm current venue access and transit lift status before leaving.",
+          "status": "planned",
+          "requiresDisruptionAlternative": false,
+          "alternatives": []
+        }
+      ]
+    },
+    {
+      "id": "day-2026-10-16",
+      "date": "2026-10-16",
+      "timezone": "Europe/Lisbon",
+      "items": [
+        {
+          "id": "item-departure-transfer",
+          "kind": "transfer",
+          "title": "Transfer from the central lodging area to the airport",
+          "startAt": "2026-10-16T08:30:00+01:00",
+          "endAt": "2026-10-16T09:30:00+01:00",
+          "placeRef": "place-lisbon-airport",
+          "sourceRefs": ["source-carris-metro", "source-airport-operator", "source-lisbon-gtfs"],
+          "constraintRefs": ["constraint-dates", "constraint-mobility", "constraint-transit", "constraint-risk"],
+          "transferBufferBeforeMinutes": 0,
+          "accessibilityNotes": "Recheck operator alerts and allow the traveler's chosen airport processing margin.",
+          "status": "planned",
+          "requiresDisruptionAlternative": true,
+          "alternatives": [
+            {
+              "id": "alternative-departure-surface",
+              "title": "Use an official accessible surface connection",
+              "reason": "Use if the planned rail route is disrupted.",
+              "placeRef": "place-lisbon-airport",
+              "sourceRefs": ["source-airport-operator", "source-carris-metro"]
+            }
+          ]
+        },
+        {
+          "id": "item-airport-departure",
+          "kind": "departure",
+          "title": "Airport departure readiness window",
+          "startAt": "2026-10-16T10:00:00+01:00",
+          "endAt": "2026-10-16T12:00:00+01:00",
+          "placeRef": "place-lisbon-airport",
+          "sourceRefs": ["source-airport-operator", "source-traveler-brief"],
+          "constraintRefs": ["constraint-dates", "constraint-mobility", "constraint-risk"],
+          "transferBufferBeforeMinutes": 30,
+          "accessibilityNotes": "The traveler selects the final processing margin after checking carrier guidance.",
+          "status": "planned",
+          "requiresDisruptionAlternative": false,
+          "alternatives": []
+        }
+      ]
+    }
+  ],
+  "budget": {
+    "items": [
+      {
+        "id": "budget-intercity-transport",
+        "category": "transport",
+        "description": "Traveler planning allowance for round-trip air transport; no inventory or fare is claimed.",
+        "minimum": 900,
+        "maximum": 1100,
+        "currency": "USD",
+        "sourceRefs": ["source-traveler-brief"],
+        "inclusionState": "included"
+      },
+      {
+        "id": "budget-lodging",
+        "category": "lodging",
+        "description": "Traveler planning allowance for four nights in a central step-free lodging area; no property price is claimed.",
+        "minimum": 900,
+        "maximum": 1100,
+        "currency": "USD",
+        "sourceRefs": ["source-traveler-brief", "source-openstreetmap"],
+        "inclusionState": "included"
+      },
+      {
+        "id": "budget-local-transit",
+        "category": "transport",
+        "description": "Public-transit planning range for two adults.",
+        "minimum": 80,
+        "maximum": 120,
+        "currency": "USD",
+        "sourceRefs": ["source-carris-metro", "source-lisbon-gtfs"],
+        "inclusionState": "included"
+      },
+      {
+        "id": "budget-food",
+        "category": "food",
+        "description": "Traveler-supplied moderate meal allowance.",
+        "minimum": 400,
+        "maximum": 550,
+        "currency": "USD",
+        "sourceRefs": ["source-traveler-brief"],
+        "inclusionState": "included"
+      },
+      {
+        "id": "budget-activities",
+        "category": "activity",
+        "description": "Planning range for the museum and Oceanario, subject to live traveler verification.",
+        "minimum": 80,
+        "maximum": 140,
+        "currency": "USD",
+        "sourceRefs": ["source-gulbenkian", "source-oceanario"],
+        "inclusionState": "included"
+      },
+      {
+        "id": "budget-contingency",
+        "category": "contingency",
+        "description": "Owner-approved buffer for accessibility, weather, or transit changes.",
+        "minimum": 200,
+        "maximum": 300,
+        "currency": "USD",
+        "sourceRefs": ["source-traveler-brief"],
+        "inclusionState": "contingency"
+      },
+      {
+        "id": "budget-optional-taxi",
+        "category": "transport",
+        "description": "Excluded comparison range for an optional taxi; not part of the ready plan total.",
+        "minimum": 50,
+        "maximum": 70,
+        "currency": "USD",
+        "sourceRefs": ["source-traveler-brief"],
+        "inclusionState": "excluded"
+      }
+    ],
+    "totalMinimum": 2560,
+    "totalMaximum": 3310,
+    "currency": "USD"
+  },
+  "readinessChecks": [
+    {
+      "id": "check-entry-visa",
+      "kind": "entry-visa",
+      "mandatory": true,
+      "sourceRefs": ["source-portugal-entry", "source-traveler-brief"],
+      "verifiedAt": "2026-08-30T01:00:00Z",
+      "status": "passed",
+      "recheckDeadline": "2026-10-05T17:00:00Z",
+      "recheckState": "scheduled",
+      "notes": "The applicable official entry-rule page is identified; the travelers must recheck eligibility and requirements directly."
+    },
+    {
+      "id": "check-passport-readiness",
+      "kind": "passport-readiness",
+      "mandatory": true,
+      "sourceRefs": ["source-portugal-entry", "source-traveler-brief"],
+      "verifiedAt": "2026-08-30T01:05:00Z",
+      "status": "passed",
+      "recheckDeadline": "2026-10-05T17:00:00Z",
+      "recheckState": "scheduled",
+      "notes": "The travelers reported document-validity readiness; no document identifier or image is retained."
+    },
+    {
+      "id": "check-health",
+      "kind": "health",
+      "mandatory": true,
+      "sourceRefs": ["source-portugal-health"],
+      "verifiedAt": "2026-08-30T01:10:00Z",
+      "status": "passed",
+      "recheckDeadline": "2026-10-05T17:00:00Z",
+      "recheckState": "scheduled",
+      "notes": "The official health guidance source is recorded without personal medical information or a medical guarantee."
+    },
+    {
+      "id": "check-safety",
+      "kind": "safety-advisory",
+      "mandatory": true,
+      "sourceRefs": ["source-us-advisory"],
+      "verifiedAt": "2026-08-30T01:15:00Z",
+      "status": "passed",
+      "recheckDeadline": "2026-10-05T17:00:00Z",
+      "recheckState": "scheduled",
+      "notes": "The current official advisory is linked; conditions can change and no safety outcome is guaranteed."
+    },
+    {
+      "id": "check-weather",
+      "kind": "weather",
+      "mandatory": true,
+      "sourceRefs": ["source-open-meteo"],
+      "verifiedAt": "2026-08-30T01:20:00Z",
+      "status": "passed",
+      "recheckDeadline": "2026-10-07T17:00:00Z",
+      "recheckState": "scheduled",
+      "notes": "Only seasonal context is used now; retrieve a current forecast near departure."
+    },
+    {
+      "id": "check-transit",
+      "kind": "transit",
+      "mandatory": true,
+      "sourceRefs": ["source-carris-metro", "source-lisbon-gtfs"],
+      "verifiedAt": "2026-08-30T01:25:00Z",
+      "status": "passed",
+      "recheckDeadline": "2026-10-11T17:00:00Z",
+      "recheckState": "scheduled",
+      "notes": "Official network and schedule sources support the draft routes; live disruption and lift status require recheck."
+    },
+    {
+      "id": "check-accessibility",
+      "kind": "accessibility",
+      "mandatory": true,
+      "sourceRefs": ["source-airport-operator", "source-carris-metro", "source-gulbenkian", "source-oceanario"],
+      "verifiedAt": "2026-08-30T01:30:00Z",
+      "status": "passed",
+      "recheckDeadline": "2026-10-05T17:00:00Z",
+      "recheckState": "scheduled",
+      "notes": "Official accessibility guidance is linked for the airport, transit, and planned venues; temporary outages require recheck."
+    },
+    {
+      "id": "check-opening-hours",
+      "kind": "opening-hours",
+      "mandatory": true,
+      "sourceRefs": ["source-gulbenkian", "source-oceanario"],
+      "verifiedAt": "2026-08-30T01:35:00Z",
+      "status": "passed",
+      "recheckDeadline": "2026-10-05T17:00:00Z",
+      "recheckState": "scheduled",
+      "notes": "Official venue hours are recorded and must be rechecked for temporary closures."
+    },
+    {
+      "id": "check-booking-price",
+      "kind": "booking-availability-price",
+      "mandatory": true,
+      "sourceRefs": ["source-traveler-brief", "source-gulbenkian", "source-oceanario"],
+      "verifiedAt": "2026-08-30T01:40:00Z",
+      "status": "passed",
+      "recheckDeadline": "2026-10-05T17:00:00Z",
+      "recheckState": "scheduled",
+      "notes": "Budget allowances are distinguished from live inventory; the travelers own all live price, availability, and purchase verification."
+    },
+    {
+      "id": "check-packing",
+      "kind": "packing",
+      "mandatory": true,
+      "sourceRefs": ["source-traveler-brief", "source-open-meteo"],
+      "verifiedAt": "2026-08-30T01:45:00Z",
+      "status": "passed",
+      "recheckDeadline": "2026-10-09T17:00:00Z",
+      "recheckState": "scheduled",
+      "notes": "The packing list includes mobility supplies, weather layers, and traveler-controlled document readiness."
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-pace",
+      "question": "Should the Oceanario remain optional after the Alfama route?",
+      "reason": "The travelers requested a moderate pace and rest flexibility.",
+      "refs": ["constraint-pace", "item-lower-alfama", "item-oceanario"],
+      "status": "resolved",
+      "resolution": "Yes. Keep the Oceanario optional and drop it if the morning route or transfer is tiring."
+    },
+    {
+      "id": "question-lodging-area",
+      "question": "Is a central Metro-adjacent search area acceptable without selecting a property?",
+      "reason": "Travel Planner owns itinerary readiness, not provider-specific lodging inventory or transactions.",
+      "refs": ["constraint-lodging", "place-central-lodging-area"],
+      "status": "resolved",
+      "resolution": "Yes. The travelers will compare and verify properties separately."
+    }
+  ],
+  "blockers": [],
+  "blockedActions": [
+    "book",
+    "reserve",
+    "purchase",
+    "cancel",
+    "modify-booking",
+    "check-in",
+    "submit-form",
+    "contact-provider",
+    "mutate-calendar",
+    "send-message",
+    "submit-sensitive-traveler-data",
+    "store-sensitive-traveler-data",
+    "submit-payment-data",
+    "store-payment-data",
+    "submit-verification-data",
+    "store-verification-data",
+    "accept-terms",
+    "guarantee-visa",
+    "guarantee-medical",
+    "guarantee-legal",
+    "guarantee-safety"
+  ],
+  "handoff": {
+    "state": "ready",
+    "owner": "Jordan Lee",
+    "dayRefs": [
+      "day-2026-10-12",
+      "day-2026-10-13",
+      "day-2026-10-14",
+      "day-2026-10-15",
+      "day-2026-10-16"
+    ],
+    "itineraryItemRefs": [
+      "item-airport-arrival",
+      "item-airport-hotel-transfer",
+      "item-belem-riverside",
+      "item-belem-rest",
+      "item-gulbenkian",
+      "item-lower-alfama",
+      "item-oceanario",
+      "item-departure-transfer",
+      "item-airport-departure"
+    ],
+    "budgetItemRefs": [
+      "budget-intercity-transport",
+      "budget-lodging",
+      "budget-local-transit",
+      "budget-food",
+      "budget-activities",
+      "budget-contingency",
+      "budget-optional-taxi"
+    ],
+    "checkRefs": [
+      "check-entry-visa",
+      "check-passport-readiness",
+      "check-health",
+      "check-safety",
+      "check-weather",
+      "check-transit",
+      "check-accessibility",
+      "check-opening-hours",
+      "check-booking-price",
+      "check-packing"
+    ],
+    "reviewQuestionRefs": ["question-pace", "question-lodging-area"],
+    "blockerRefs": [],
+    "prohibitedActions": [
+      "book",
+      "reserve",
+      "purchase",
+      "cancel",
+      "modify-booking",
+      "check-in",
+      "submit-form",
+      "contact-provider",
+      "mutate-calendar",
+      "send-message",
+      "submit-sensitive-traveler-data",
+      "store-sensitive-traveler-data",
+      "submit-payment-data",
+      "store-payment-data",
+      "submit-verification-data",
+      "store-verification-data",
+      "accept-terms",
+      "guarantee-visa",
+      "guarantee-medical",
+      "guarantee-legal",
+      "guarantee-safety"
+    ]
+  }
+}

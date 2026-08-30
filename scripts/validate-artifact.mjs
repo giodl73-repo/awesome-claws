@@ -68,6 +68,7 @@ const schemaNames = {
   "subscription-manager": "subscription-ledger.schema.json",
   "tax-document-organizer": "tax-document.schema.json",
   "travel-concierge": "travel-shortlist.schema.json",
+  "travel-planner": "itinerary-plan.schema.json",
   "travel-loyalty-points-organizer": "travel-loyalty.schema.json",
   "vehicle-service-coordinator": "vehicle-service.schema.json",
   "wardrobe-organizer": "wardrobe-plan.schema.json",

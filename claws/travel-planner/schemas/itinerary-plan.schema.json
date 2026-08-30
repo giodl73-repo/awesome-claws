@@ -1,0 +1,471 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/itinerary-plan.schema.json",
+  "title": "Travel itinerary and readiness plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "trip",
+    "sources",
+    "constraints",
+    "places",
+    "itineraryDays",
+    "budget",
+    "readinessChecks",
+    "reviewQuestions",
+    "blockers",
+    "blockedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.itineraryPlan.v1" },
+    "trip": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "owner",
+        "timezone",
+        "asOf",
+        "origin",
+        "destinations",
+        "startDate",
+        "endDate",
+        "partySize",
+        "budgetCurrency",
+        "budgetLimit",
+        "state"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^trip-[a-z0-9-]+$" },
+        "owner": { "$ref": "#/$defs/text" },
+        "timezone": { "$ref": "#/$defs/text" },
+        "asOf": { "type": "string", "format": "date-time" },
+        "origin": { "$ref": "#/$defs/text" },
+        "destinations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/text" }
+        },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "partySize": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "budgetCurrency": { "$ref": "#/$defs/currency" },
+        "budgetLimit": { "type": "number", "exclusiveMinimum": 0 },
+        "state": { "enum": ["draft", "blocked", "ready"] }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "authority",
+          "reference",
+          "retrievedAt",
+          "effectiveDate",
+          "validThrough",
+          "freshness",
+          "scope"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "government-entry",
+              "government-advisory",
+              "government-health",
+              "official-transit",
+              "official-operator",
+              "official-venue",
+              "openstreetmap",
+              "open-meteo",
+              "gtfs",
+              "traveler-note"
+            ]
+          },
+          "authority": {
+            "enum": [
+              "government",
+              "official-operator",
+              "official-venue",
+              "openstreetmap",
+              "open-meteo",
+              "gtfs-publisher",
+              "traveler"
+            ]
+          },
+          "reference": { "$ref": "#/$defs/reference" },
+          "retrievedAt": { "type": "string", "format": "date-time" },
+          "effectiveDate": {
+            "type": ["string", "null"],
+            "format": "date"
+          },
+          "validThrough": {
+            "type": ["string", "null"],
+            "format": "date"
+          },
+          "freshness": {
+            "enum": ["current", "delayed", "stale", "missing", "conflicting"]
+          },
+          "scope": { "$ref": "#/$defs/text" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "description", "required", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^constraint-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "dates",
+              "budget",
+              "pace",
+              "accessibility-mobility",
+              "interests",
+              "fixed-commitment",
+              "lodging-preference",
+              "transport-preference",
+              "risk-tolerance",
+              "other"
+            ]
+          },
+          "description": { "$ref": "#/$defs/text" },
+          "required": { "type": "boolean" },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "places": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "destination",
+          "sourceRefs",
+          "accessibilityNotes"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^place-[a-z0-9-]+$" },
+          "name": { "$ref": "#/$defs/text" },
+          "destination": { "$ref": "#/$defs/text" },
+          "sourceRefs": { "$ref": "#/$defs/refs" },
+          "accessibilityNotes": { "$ref": "#/$defs/text" }
+        }
+      }
+    },
+    "itineraryDays": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "date", "timezone", "items"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^day-[a-z0-9-]+$" },
+          "date": { "type": "string", "format": "date" },
+          "timezone": { "$ref": "#/$defs/text" },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/$defs/itineraryItem" }
+          }
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["items", "totalMinimum", "totalMaximum", "currency"],
+      "properties": {
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "category",
+              "description",
+              "minimum",
+              "maximum",
+              "currency",
+              "sourceRefs",
+              "inclusionState"
+            ],
+            "properties": {
+              "id": { "type": "string", "pattern": "^budget-[a-z0-9-]+$" },
+              "category": {
+                "enum": [
+                  "transport",
+                  "lodging",
+                  "activity",
+                  "food",
+                  "fees",
+                  "insurance",
+                  "contingency",
+                  "other"
+                ]
+              },
+              "description": { "$ref": "#/$defs/text" },
+              "minimum": { "type": "number", "minimum": 0 },
+              "maximum": { "type": "number", "minimum": 0 },
+              "currency": { "$ref": "#/$defs/currency" },
+              "sourceRefs": { "$ref": "#/$defs/refs" },
+              "inclusionState": {
+                "enum": ["included", "contingency", "excluded"]
+              }
+            }
+          }
+        },
+        "totalMinimum": { "type": "number", "minimum": 0 },
+        "totalMaximum": { "type": "number", "minimum": 0 },
+        "currency": { "$ref": "#/$defs/currency" }
+      }
+    },
+    "readinessChecks": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "mandatory",
+          "sourceRefs",
+          "verifiedAt",
+          "status",
+          "recheckDeadline",
+          "recheckState",
+          "notes"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^check-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "entry-visa",
+              "passport-readiness",
+              "health",
+              "safety-advisory",
+              "weather",
+              "transit",
+              "accessibility",
+              "opening-hours",
+              "booking-availability-price",
+              "packing"
+            ]
+          },
+          "mandatory": { "type": "boolean" },
+          "sourceRefs": { "$ref": "#/$defs/refs" },
+          "verifiedAt": { "type": "string", "format": "date-time" },
+          "status": { "enum": ["passed", "pending", "failed", "not-applicable"] },
+          "recheckDeadline": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "recheckState": {
+            "enum": ["not-required", "scheduled", "due", "overdue", "complete"]
+          },
+          "notes": { "$ref": "#/$defs/text" }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "refs", "status", "resolution"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "$ref": "#/$defs/text" },
+          "reason": { "$ref": "#/$defs/text" },
+          "refs": { "$ref": "#/$defs/refs" },
+          "status": { "enum": ["open", "resolved"] },
+          "resolution": { "type": ["string", "null"], "minLength": 1, "maxLength": 2000 }
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "description", "refs", "status"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^blocker-[a-z0-9-]+$" },
+          "description": { "$ref": "#/$defs/text" },
+          "refs": { "$ref": "#/$defs/refs" },
+          "status": { "enum": ["open", "resolved"] }
+        }
+      }
+    },
+    "blockedActions": { "$ref": "#/$defs/actions" },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "dayRefs",
+        "itineraryItemRefs",
+        "budgetItemRefs",
+        "checkRefs",
+        "reviewQuestionRefs",
+        "blockerRefs",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": { "enum": ["draft", "blocked", "ready"] },
+        "owner": { "$ref": "#/$defs/text" },
+        "dayRefs": { "$ref": "#/$defs/possiblyEmptyRefs" },
+        "itineraryItemRefs": { "$ref": "#/$defs/possiblyEmptyRefs" },
+        "budgetItemRefs": { "$ref": "#/$defs/possiblyEmptyRefs" },
+        "checkRefs": { "$ref": "#/$defs/possiblyEmptyRefs" },
+        "reviewQuestionRefs": { "$ref": "#/$defs/possiblyEmptyRefs" },
+        "blockerRefs": { "$ref": "#/$defs/possiblyEmptyRefs" },
+        "prohibitedActions": { "$ref": "#/$defs/actions" }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S"
+    },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "^(?:https://|traveler://)"
+    },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "possiblyEmptyRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "alternative": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "reason", "placeRef", "sourceRefs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^alternative-[a-z0-9-]+$" },
+        "title": { "$ref": "#/$defs/text" },
+        "reason": { "$ref": "#/$defs/text" },
+        "placeRef": { "type": ["string", "null"], "minLength": 1 },
+        "sourceRefs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "itineraryItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "title",
+        "startAt",
+        "endAt",
+        "placeRef",
+        "sourceRefs",
+        "constraintRefs",
+        "transferBufferBeforeMinutes",
+        "accessibilityNotes",
+        "status",
+        "requiresDisruptionAlternative",
+        "alternatives"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^item-[a-z0-9-]+$" },
+        "kind": {
+          "enum": [
+            "arrival",
+            "departure",
+            "transfer",
+            "lodging",
+            "activity",
+            "meal",
+            "fixed-commitment",
+            "rest",
+            "other"
+          ]
+        },
+        "title": { "$ref": "#/$defs/text" },
+        "startAt": { "type": "string", "format": "date-time" },
+        "endAt": { "type": "string", "format": "date-time" },
+        "placeRef": { "type": ["string", "null"], "minLength": 1 },
+        "sourceRefs": { "$ref": "#/$defs/refs" },
+        "constraintRefs": { "$ref": "#/$defs/refs" },
+        "transferBufferBeforeMinutes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 720
+        },
+        "accessibilityNotes": { "$ref": "#/$defs/text" },
+        "status": { "enum": ["planned", "tentative", "blocked"] },
+        "requiresDisruptionAlternative": { "type": "boolean" },
+        "alternatives": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/alternative" }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 21,
+      "maxItems": 21,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "book",
+          "reserve",
+          "purchase",
+          "cancel",
+          "modify-booking",
+          "check-in",
+          "submit-form",
+          "contact-provider",
+          "mutate-calendar",
+          "send-message",
+          "submit-sensitive-traveler-data",
+          "store-sensitive-traveler-data",
+          "submit-payment-data",
+          "store-payment-data",
+          "submit-verification-data",
+          "store-verification-data",
+          "accept-terms",
+          "guarantee-visa",
+          "guarantee-medical",
+          "guarantee-legal",
+          "guarantee-safety"
+        ]
+      }
+    }
+  }
+}

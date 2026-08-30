@@ -365,6 +365,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "travel-planner",
+    schema: "../claws/travel-planner/schemas/itinerary-plan.schema.json",
+    fixture: "../claws/travel-planner/fixtures/itinerary-plan.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "civic-data-analyst",
     schema: "../claws/civic-data-analyst/schemas/civic-evidence.schema.json",
     fixture: "../claws/civic-data-analyst/fixtures/civic-evidence.example.json",

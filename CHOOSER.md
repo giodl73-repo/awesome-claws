@@ -102,7 +102,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Tax document organizer](claws/tax-document-organizer) | @giodl73-repo; last verified 2026-08-26 |
 | [Travel concierge](claws/travel-concierge) | @giodl73-repo; last verified 2026-08-29 |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | @giodl73-repo; last verified 2026-08-28 |
-| [Travel planner](claws/travel-planner) | @giodl73-repo; last verified 2026-08-19 |
+| [Travel planner](claws/travel-planner) | @giodl73-repo; last verified 2026-08-30 |
 | [UX research synthesizer](claws/ux-research-synthesizer) | @giodl73-repo; last verified 2026-08-19 |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Video concept producer](claws/video-concept-producer) | @giodl73-repo; last verified 2026-08-19 |
