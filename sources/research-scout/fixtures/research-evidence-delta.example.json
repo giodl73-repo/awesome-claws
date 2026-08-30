@@ -1,0 +1,788 @@
+{
+  "schemaVersion": "awesomeClaws.researchEvidenceDelta.v1",
+  "watch": {
+    "id": "watch-cgm-basal-insulin",
+    "question": "For adults with type 2 diabetes treated with basal insulin, which public studies, trial updates, corrections, retractions, or contradictions should change the Evidence Review Team's evidence-review protocol?",
+    "questionClassification": "private",
+    "queryDisclosure": "approved-authorities-only",
+    "decisionOwner": "Evidence Review Team",
+    "outputClassification": "private",
+    "destination": "outputs/research-scout-handoff.md",
+    "cadence": {
+      "schedule": "Every weekday at 15:00",
+      "timezone": "UTC"
+    },
+    "window": {
+      "start": "2025-08-01T00:00:00Z",
+      "end": "2025-08-29T23:59:59Z"
+    },
+    "baseline": {
+      "id": "baseline-cgm-2025-07",
+      "runId": "run-cgm-2025-07",
+      "asOf": "2025-07-31T23:59:59Z",
+      "sourceRefs": [
+        "source-crossref-mobile",
+        "source-pubmed-mobile",
+        "source-crossref-pilot"
+      ],
+      "evidenceItemRefs": [
+        "evidence-mobile-trial",
+        "evidence-retracted-pilot",
+        "evidence-trial-registry"
+      ],
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "run": {
+      "id": "run-cgm-2025-08",
+      "startedAt": "2025-08-29T18:00:00Z",
+      "completedAt": "2025-08-29T19:00:00Z",
+      "asOf": "2025-08-29T19:00:00Z"
+    },
+    "protocol": {
+      "inclusionCriteria": [
+        "Public records describe adults with type 2 diabetes receiving basal insulin or a directly relevant registered trial update.",
+        "The record reports a study design, population or dataset, outcome, correction, retraction, or contradiction relevant to the named protocol."
+      ],
+      "exclusionCriteria": [
+        "Exclude records that do not match the declared population, intervention context, or evidence-review outcome.",
+        "Exclude restricted full text, marketing summaries, unsourced citation counts, and records without a persistent identifier."
+      ],
+      "qualityRubric": {
+        "id": "rubric-cgm-evidence-v1",
+        "version": "1.0",
+        "dimensions": [
+          "Study design and comparison",
+          "Population and outcome fit",
+          "Risk of bias and missingness",
+          "Publication state and correction lineage",
+          "Conflict disclosure and reproducibility"
+        ]
+      },
+      "authorities": [
+        {
+          "id": "authority-crossref",
+          "provider": "crossref",
+          "domains": ["api.crossref.org"],
+          "purpose": "scholarly-index"
+        },
+        {
+          "id": "authority-pubmed",
+          "provider": "pubmed",
+          "domains": ["pubmed.ncbi.nlm.nih.gov"],
+          "purpose": "scholarly-index"
+        },
+        {
+          "id": "authority-arxiv",
+          "provider": "arxiv",
+          "domains": ["arxiv.org"],
+          "purpose": "scholarly-index"
+        },
+        {
+          "id": "authority-clinicaltrials",
+          "provider": "clinicaltrials",
+          "domains": ["clinicaltrials.gov"],
+          "purpose": "trial-registry"
+        },
+        {
+          "id": "authority-orcid",
+          "provider": "orcid",
+          "domains": ["orcid.org"],
+          "purpose": "author-registry"
+        },
+        {
+          "id": "authority-jama",
+          "provider": "journal",
+          "domains": ["jamanetwork.com"],
+          "purpose": "journal-correction-or-retraction"
+        }
+      ],
+      "queries": [
+        {
+          "id": "query-crossref-cgm",
+          "authorityRef": "authority-crossref",
+          "query": "type 2 diabetes basal insulin continuous glucose monitoring",
+          "executedAt": "2025-08-29T18:05:00Z",
+          "resultSourceRefs": [
+            "source-crossref-mobile",
+            "source-crossref-pilot"
+          ]
+        },
+        {
+          "id": "query-pubmed-cgm",
+          "authorityRef": "authority-pubmed",
+          "query": "(type 2 diabetes) AND basal insulin AND continuous glucose monitoring",
+          "executedAt": "2025-08-29T18:10:00Z",
+          "resultSourceRefs": ["source-pubmed-mobile"]
+        },
+        {
+          "id": "query-arxiv-method",
+          "authorityRef": "authority-arxiv",
+          "query": "continuous glucose monitoring evidence synthesis",
+          "executedAt": "2025-08-29T18:15:00Z",
+          "resultSourceRefs": ["source-arxiv-followup"]
+        },
+        {
+          "id": "query-trial-registry",
+          "authorityRef": "authority-clinicaltrials",
+          "query": "NCT03566693",
+          "executedAt": "2025-08-29T18:20:00Z",
+          "resultSourceRefs": ["source-clinicaltrials-mobile"]
+        },
+        {
+          "id": "query-orcid-attribution",
+          "authorityRef": "authority-orcid",
+          "query": "0000-0002-1825-0097",
+          "executedAt": "2025-08-29T18:25:00Z",
+          "resultSourceRefs": ["source-orcid-attribution"]
+        },
+        {
+          "id": "query-journal-lifecycle",
+          "authorityRef": "authority-jama",
+          "query": "continuous glucose monitoring correction retraction",
+          "executedAt": "2025-08-29T18:30:00Z",
+          "resultSourceRefs": [
+            "source-journal-correction",
+            "source-journal-retraction"
+          ]
+        }
+      ]
+    },
+    "state": "ready"
+  },
+  "sources": [
+    {
+      "id": "source-crossref-mobile",
+      "authorityRef": "authority-crossref",
+      "provider": "crossref",
+      "recordType": "bibliographic-record",
+      "persistentId": {
+        "kind": "doi",
+        "value": "10.1001/jama.2021.7449"
+      },
+      "canonicalUrl": "https://api.crossref.org/works/10.1001%2Fjama.2021.7449",
+      "title": "Effect of Continuous Glucose Monitoring on Glycemic Control in Patients With Type 2 Diabetes Treated With Basal Insulin",
+      "publishedAt": "2021-06-02T00:00:00Z",
+      "updatedAt": "2025-07-30T12:00:00Z",
+      "retrievedAt": "2025-08-29T18:06:00Z",
+      "publicationState": "version-of-record",
+      "version": "version-of-record",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": null,
+      "retractsSourceRef": null,
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "freshness": "current",
+      "screeningState": "included",
+      "screeningRationale": "The randomized study matches the declared population, intervention context, and glycemic outcome.",
+      "scope": "Canonical bibliographic record retained in the declared baseline."
+    },
+    {
+      "id": "source-pubmed-mobile",
+      "authorityRef": "authority-pubmed",
+      "provider": "pubmed",
+      "recordType": "bibliographic-record",
+      "persistentId": {
+        "kind": "pmid",
+        "value": "34077499"
+      },
+      "canonicalUrl": "https://pubmed.ncbi.nlm.nih.gov/34077499/",
+      "title": "Effect of Continuous Glucose Monitoring on Glycemic Control in Patients With Type 2 Diabetes Treated With Basal Insulin",
+      "publishedAt": "2021-06-02T00:00:00Z",
+      "updatedAt": "2025-07-30T12:00:00Z",
+      "retrievedAt": "2025-08-29T18:11:00Z",
+      "publicationState": "peer-reviewed",
+      "version": "pubmed-indexed-record",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": null,
+      "retractsSourceRef": null,
+      "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "freshness": "current",
+      "screeningState": "included",
+      "screeningRationale": "The indexed record confirms the persistent identifier and publication metadata for the included trial.",
+      "scope": "Canonical PubMed record paired with the DOI record for deduplication."
+    },
+    {
+      "id": "source-crossref-pilot",
+      "authorityRef": "authority-crossref",
+      "provider": "crossref",
+      "recordType": "bibliographic-record",
+      "persistentId": {
+        "kind": "doi",
+        "value": "10.1001/jama.2020.0001"
+      },
+      "canonicalUrl": "https://api.crossref.org/works/10.1001%2Fjama.2020.0001",
+      "title": "Representative pilot record retained to demonstrate retraction lineage in this fixture",
+      "publishedAt": "2020-05-01T00:00:00Z",
+      "updatedAt": "2025-07-30T12:10:00Z",
+      "retrievedAt": "2025-08-29T18:07:00Z",
+      "publicationState": "version-of-record",
+      "version": "version-of-record",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": null,
+      "retractsSourceRef": null,
+      "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "freshness": "current",
+      "screeningState": "included",
+      "screeningRationale": "The baseline retained this representative record; its later lifecycle notice must remain visible rather than silently removed.",
+      "scope": "Fixture-only historical record used to demonstrate a public retraction transition."
+    },
+    {
+      "id": "source-arxiv-followup",
+      "authorityRef": "authority-arxiv",
+      "provider": "arxiv",
+      "recordType": "preprint-record",
+      "persistentId": {
+        "kind": "arxiv",
+        "value": "2508.12345"
+      },
+      "canonicalUrl": "https://arxiv.org/abs/2508.12345",
+      "title": "Representative preprint on continuous glucose monitoring evidence synthesis",
+      "publishedAt": "2025-08-08T00:00:00Z",
+      "updatedAt": "2025-08-20T00:00:00Z",
+      "retrievedAt": "2025-08-29T18:16:00Z",
+      "publicationState": "preprint",
+      "version": "v2",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": null,
+      "retractsSourceRef": null,
+      "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "freshness": "current",
+      "screeningState": "included",
+      "screeningRationale": "The preprint meets the declared methods and outcome rule but remains explicitly separate from reviewed evidence.",
+      "scope": "New public preprint; no consensus or clinical conclusion is inferred from this source."
+    },
+    {
+      "id": "source-clinicaltrials-mobile",
+      "authorityRef": "authority-clinicaltrials",
+      "provider": "clinicaltrials",
+      "recordType": "trial-record",
+      "persistentId": {
+        "kind": "nct",
+        "value": "NCT03566693"
+      },
+      "canonicalUrl": "https://clinicaltrials.gov/study/NCT03566693",
+      "title": "Continuous Glucose Monitoring in Type 2 Diabetes Treated With Basal Insulin",
+      "publishedAt": "2018-06-25T00:00:00Z",
+      "updatedAt": "2025-08-15T00:00:00Z",
+      "retrievedAt": "2025-08-29T18:21:00Z",
+      "publicationState": "trial-update",
+      "version": "registry-update-2025-08-15",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": null,
+      "retractsSourceRef": null,
+      "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "freshness": "current",
+      "screeningState": "included",
+      "screeningRationale": "The registry update is a public primary record for a trial already present in the declared baseline.",
+      "scope": "Registry update only; no participant contact, enrollment, or clinical action is authorized."
+    },
+    {
+      "id": "source-orcid-attribution",
+      "authorityRef": "authority-orcid",
+      "provider": "orcid",
+      "recordType": "author-record",
+      "persistentId": {
+        "kind": "orcid",
+        "value": "0000-0002-1825-0097"
+      },
+      "canonicalUrl": "https://orcid.org/0000-0002-1825-0097",
+      "title": "Public ORCID attribution record",
+      "publishedAt": "2025-01-01T00:00:00Z",
+      "updatedAt": "2025-08-01T00:00:00Z",
+      "retrievedAt": "2025-08-29T18:26:00Z",
+      "publicationState": "author-record",
+      "version": "public-profile",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": null,
+      "retractsSourceRef": null,
+      "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "freshness": "current",
+      "screeningState": "excluded",
+      "screeningRationale": "Attribution metadata does not itself meet the protocol's study or trial evidence rule.",
+      "scope": "Public attribution context only; it cannot establish an evidence claim."
+    },
+    {
+      "id": "source-journal-correction",
+      "authorityRef": "authority-jama",
+      "provider": "journal",
+      "recordType": "journal-notice",
+      "persistentId": {
+        "kind": "journal-notice",
+        "value": "correction-mobile-trial-2025"
+      },
+      "canonicalUrl": "https://jamanetwork.com/journals/jama/fullarticle/2781086",
+      "title": "Representative journal correction notice for the included trial",
+      "publishedAt": "2025-08-12T00:00:00Z",
+      "updatedAt": "2025-08-12T00:00:00Z",
+      "retrievedAt": "2025-08-29T18:31:00Z",
+      "publicationState": "corrected",
+      "version": "correction-notice",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": "source-crossref-mobile",
+      "retractsSourceRef": null,
+      "digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "freshness": "current",
+      "screeningState": "included",
+      "screeningRationale": "A correction notice changes the lifecycle state of an evidence item already in the baseline.",
+      "scope": "Fixture-only correction lineage that must be re-verified against the canonical journal notice before use."
+    },
+    {
+      "id": "source-journal-retraction",
+      "authorityRef": "authority-jama",
+      "provider": "journal",
+      "recordType": "journal-notice",
+      "persistentId": {
+        "kind": "journal-notice",
+        "value": "retraction-pilot-2025"
+      },
+      "canonicalUrl": "https://jamanetwork.com/journals/jama/fullarticle/2781087",
+      "title": "Representative journal retraction notice for the historical pilot",
+      "publishedAt": "2025-08-13T00:00:00Z",
+      "updatedAt": "2025-08-13T00:00:00Z",
+      "retrievedAt": "2025-08-29T18:32:00Z",
+      "publicationState": "retracted",
+      "version": "retraction-notice",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": null,
+      "retractsSourceRef": "source-crossref-pilot",
+      "digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "freshness": "current",
+      "screeningState": "included",
+      "screeningRationale": "A retraction notice changes the status of baseline evidence and must remain in the ledger.",
+      "scope": "Fixture-only retraction lineage that must be re-verified against the canonical journal notice before use."
+    }
+  ],
+  "evidenceItems": [
+    {
+      "id": "evidence-mobile-trial",
+      "deduplicationKey": "study-mobile-cgm-2021",
+      "persistentIds": [
+        {
+          "kind": "doi",
+          "value": "10.1001/jama.2021.7449"
+        },
+        {
+          "kind": "pmid",
+          "value": "34077499"
+        },
+        {
+          "kind": "journal-notice",
+          "value": "correction-mobile-trial-2025"
+        }
+      ],
+      "sourceRefs": [
+        "source-crossref-mobile",
+        "source-pubmed-mobile",
+        "source-journal-correction"
+      ],
+      "studyType": "randomized-trial",
+      "design": "Randomized clinical trial comparing continuous glucose monitoring with usual blood glucose meter monitoring.",
+      "populationOrDataset": "Adults with type 2 diabetes treated with one or two daily basal insulin injections.",
+      "outcomes": [
+        "Change in glycated hemoglobin",
+        "Time in target glucose range"
+      ],
+      "limitations": [
+        "The fixture records only metadata-level evidence; the accountable reviewer must assess the full public methods and correction notice."
+      ],
+      "conflicts": {
+        "state": "not-reported",
+        "notes": "Conflict disclosure requires review in the canonical record; this fixture does not reproduce the article."
+      },
+      "publicationState": "corrected",
+      "lifecycle": [
+        {
+          "state": "version-of-record",
+          "observedAt": "2021-06-02T00:00:00Z",
+          "sourceRef": "source-crossref-mobile"
+        },
+        {
+          "state": "corrected",
+          "observedAt": "2025-08-12T00:00:00Z",
+          "sourceRef": "source-journal-correction"
+        }
+      ],
+      "quality": {
+        "rubricRef": "rubric-cgm-evidence-v1",
+        "rating": "moderate",
+        "rationale": "The randomized design and population match support review, while correction details and complete bias assessment remain owner-reviewed."
+      },
+      "confidence": {
+        "rating": "moderate",
+        "rationale": "Crossref, PubMed, and the journal notice provide persistent public identity and lifecycle evidence."
+      },
+      "claimLinks": [
+        {
+          "id": "claim-mobile-outcome",
+          "claim": "The included trial reports glycemic outcomes for the declared basal-insulin population.",
+          "sourceRefs": [
+            "source-crossref-mobile",
+            "source-pubmed-mobile"
+          ]
+        },
+        {
+          "id": "claim-mobile-correction",
+          "claim": "A correction notice requires the owner to review the controlling record before retaining the baseline interpretation.",
+          "sourceRefs": ["source-journal-correction"]
+        }
+      ]
+    },
+    {
+      "id": "evidence-retracted-pilot",
+      "deduplicationKey": "study-historical-pilot",
+      "persistentIds": [
+        {
+          "kind": "doi",
+          "value": "10.1001/jama.2020.0001"
+        },
+        {
+          "kind": "journal-notice",
+          "value": "retraction-pilot-2025"
+        }
+      ],
+      "sourceRefs": [
+        "source-crossref-pilot",
+        "source-journal-retraction"
+      ],
+      "studyType": "observational-study",
+      "design": "Historical pilot record retained only to show lifecycle retraction handling in this fixture.",
+      "populationOrDataset": "Representative historical baseline population.",
+      "outcomes": [
+        "Historical outcome record withdrawn by the linked lifecycle notice"
+      ],
+      "limitations": [
+        "Retraction removes this record from current support; no conclusion may rely on it."
+      ],
+      "conflicts": {
+        "state": "unknown",
+        "notes": "This fixture does not infer a conflict explanation from a retraction notice."
+      },
+      "publicationState": "retracted",
+      "lifecycle": [
+        {
+          "state": "version-of-record",
+          "observedAt": "2020-05-01T00:00:00Z",
+          "sourceRef": "source-crossref-pilot"
+        },
+        {
+          "state": "retracted",
+          "observedAt": "2025-08-13T00:00:00Z",
+          "sourceRef": "source-journal-retraction"
+        }
+      ],
+      "quality": {
+        "rubricRef": "rubric-cgm-evidence-v1",
+        "rating": "insufficient",
+        "rationale": "A retracted record cannot contribute current support to the evidence-review protocol."
+      },
+      "confidence": {
+        "rating": "high",
+        "rationale": "The public journal notice provides direct lifecycle evidence that the prior record is retracted."
+      },
+      "claimLinks": [
+        {
+          "id": "claim-pilot-retraction",
+          "claim": "The historical pilot is retained solely as a retracted baseline record and is not current supporting evidence.",
+          "sourceRefs": ["source-journal-retraction"]
+        }
+      ]
+    },
+    {
+      "id": "evidence-followup-preprint",
+      "deduplicationKey": "study-preprint-cgm-synthesis-2025",
+      "persistentIds": [
+        {
+          "kind": "arxiv",
+          "value": "2508.12345"
+        }
+      ],
+      "sourceRefs": ["source-arxiv-followup"],
+      "studyType": "preprint",
+      "design": "Preprint evidence-synthesis methodology study.",
+      "populationOrDataset": "Publicly described continuous glucose monitoring evidence records.",
+      "outcomes": [
+        "Reported reproducibility approach for evidence synthesis"
+      ],
+      "limitations": [
+        "The record is a preprint and has no verified peer-review or version-of-record status."
+      ],
+      "conflicts": {
+        "state": "unknown",
+        "notes": "The owner must review disclosures in the canonical public record before relying on them."
+      },
+      "publicationState": "preprint",
+      "lifecycle": [
+        {
+          "state": "preprint",
+          "observedAt": "2025-08-08T00:00:00Z",
+          "sourceRef": "source-arxiv-followup"
+        }
+      ],
+      "quality": {
+        "rubricRef": "rubric-cgm-evidence-v1",
+        "rating": "low",
+        "rationale": "The methodological lead is relevant but remains unreviewed and cannot establish a clinical or consensus conclusion."
+      },
+      "confidence": {
+        "rating": "low",
+        "rationale": "The public preprint identifier and version are traceable, while its results require independent domain review."
+      },
+      "claimLinks": [
+        {
+          "id": "claim-preprint-method",
+          "claim": "The new preprint identifies a reproducibility approach that may warrant a methodology review.",
+          "sourceRefs": ["source-arxiv-followup"]
+        }
+      ]
+    },
+    {
+      "id": "evidence-trial-registry",
+      "deduplicationKey": "study-mobile-registry",
+      "persistentIds": [
+        {
+          "kind": "nct",
+          "value": "NCT03566693"
+        }
+      ],
+      "sourceRefs": ["source-clinicaltrials-mobile"],
+      "studyType": "registry-record",
+      "design": "Public clinical trial registry record for a randomized continuous glucose monitoring study.",
+      "populationOrDataset": "Adults with type 2 diabetes treated with basal insulin as described by the public registry.",
+      "outcomes": [
+        "Registry-reported status and outcome metadata"
+      ],
+      "limitations": [
+        "A registry update is not a substitute for peer-reviewed outcome reporting or a clinical decision."
+      ],
+      "conflicts": {
+        "state": "not-reported",
+        "notes": "No conflict determination is made from registry metadata alone."
+      },
+      "publicationState": "trial-update",
+      "lifecycle": [
+        {
+          "state": "trial-update",
+          "observedAt": "2025-08-15T00:00:00Z",
+          "sourceRef": "source-clinicaltrials-mobile"
+        }
+      ],
+      "quality": {
+        "rubricRef": "rubric-cgm-evidence-v1",
+        "rating": "moderate",
+        "rationale": "The registry is authoritative for its public record state but has limited outcome interpretation value."
+      },
+      "confidence": {
+        "rating": "moderate",
+        "rationale": "The NCT-bound registry record is current and directly traceable."
+      },
+      "claimLinks": [
+        {
+          "id": "claim-registry-update",
+          "claim": "The public trial registry has an updated record that should be reconciled with the baseline protocol.",
+          "sourceRefs": ["source-clinicaltrials-mobile"]
+        }
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "id": "delta-mobile-correction",
+      "classification": "corrected",
+      "evidenceItemRefs": ["evidence-mobile-trial"],
+      "baselineEvidenceItemRefs": ["evidence-mobile-trial"],
+      "contradictsDeltaRefs": [],
+      "summary": "The baseline trial has a linked correction notice, so its controlling version and any protocol implication require accountable review.",
+      "decisionRelevance": {
+        "state": "decision-relevant",
+        "rationale": "The correction may change the owner’s interpretation of an item already included in the protocol baseline."
+      }
+    },
+    {
+      "id": "delta-pilot-retraction",
+      "classification": "retracted",
+      "evidenceItemRefs": ["evidence-retracted-pilot"],
+      "baselineEvidenceItemRefs": ["evidence-retracted-pilot"],
+      "contradictsDeltaRefs": [],
+      "summary": "The historical pilot now has a public retraction notice and cannot remain supporting evidence.",
+      "decisionRelevance": {
+        "state": "decision-relevant",
+        "rationale": "The owner must remove the retracted record from any retained rationale and trace the affected baseline."
+      }
+    },
+    {
+      "id": "delta-new-preprint",
+      "classification": "new",
+      "evidenceItemRefs": ["evidence-followup-preprint"],
+      "baselineEvidenceItemRefs": [],
+      "contradictsDeltaRefs": ["delta-mobile-correction"],
+      "summary": "A new preprint proposes a different evidence-synthesis approach but remains explicitly unreviewed.",
+      "decisionRelevance": {
+        "state": "monitor",
+        "rationale": "The preprint can queue methodology review without changing the protocol or implying consensus."
+      }
+    },
+    {
+      "id": "delta-trial-update",
+      "classification": "updated",
+      "evidenceItemRefs": ["evidence-trial-registry"],
+      "baselineEvidenceItemRefs": ["evidence-trial-registry"],
+      "contradictsDeltaRefs": [],
+      "summary": "The registered trial record has a new public update that must be reconciled with its baseline registry state.",
+      "decisionRelevance": {
+        "state": "monitor",
+        "rationale": "Registry metadata may alter follow-up work but does not independently establish an outcome conclusion."
+      }
+    },
+    {
+      "id": "delta-contradictory-method",
+      "classification": "contradictory",
+      "evidenceItemRefs": ["evidence-followup-preprint"],
+      "baselineEvidenceItemRefs": ["evidence-mobile-trial"],
+      "contradictsDeltaRefs": ["delta-mobile-correction"],
+      "summary": "The preprint’s methodology framing is recorded as potentially contradictory to the retained baseline approach, not as a resolved result.",
+      "decisionRelevance": {
+        "state": "monitor",
+        "rationale": "A named domain reviewer must assess whether the reported methods are actually comparable before any protocol change."
+      }
+    },
+    {
+      "id": "delta-unchanged-record",
+      "classification": "unchanged",
+      "evidenceItemRefs": ["evidence-trial-registry"],
+      "baselineEvidenceItemRefs": ["evidence-trial-registry"],
+      "contradictsDeltaRefs": [],
+      "summary": "The underlying registered-trial identity remains retained after its metadata update.",
+      "decisionRelevance": {
+        "state": "no-change",
+        "rationale": "The identity record remains visible to preserve baseline lineage without claiming a new conclusion."
+      }
+    }
+  ],
+  "reviewQueue": [
+    {
+      "id": "review-correction-control",
+      "kind": "domain-review",
+      "question": "Does the correction change any retained interpretation of the randomized trial?",
+      "owner": "Evidence Review Team",
+      "evidenceItemRefs": ["evidence-mobile-trial"],
+      "deltaRefs": ["delta-mobile-correction"],
+      "status": "resolved",
+      "resolution": "The owner will re-read the canonical correction before any future protocol decision; this artifact does not make that decision."
+    },
+    {
+      "id": "review-preprint-replication",
+      "kind": "replication",
+      "question": "Is the preprint’s methodology reproducible and independently corroborated?",
+      "owner": "Evidence Review Team",
+      "evidenceItemRefs": ["evidence-followup-preprint"],
+      "deltaRefs": [
+        "delta-new-preprint",
+        "delta-contradictory-method"
+      ],
+      "status": "resolved",
+      "resolution": "Keep the preprint in the monitored queue until an accountable reviewer locates independent corroboration."
+    },
+    {
+      "id": "review-retraction-cleanup",
+      "kind": "methodology",
+      "question": "Which prior baseline notes cited the retracted pilot and need correction?",
+      "owner": "Evidence Review Team",
+      "evidenceItemRefs": ["evidence-retracted-pilot"],
+      "deltaRefs": ["delta-pilot-retraction"],
+      "status": "resolved",
+      "resolution": "The retracted item is retained only for lineage and is excluded from current supporting evidence."
+    },
+    {
+      "id": "review-registry-reconciliation",
+      "kind": "decision",
+      "question": "Should the trial update change monitoring cadence or only the next review agenda?",
+      "owner": "Evidence Review Team",
+      "evidenceItemRefs": ["evidence-trial-registry"],
+      "deltaRefs": ["delta-trial-update"],
+      "status": "resolved",
+      "resolution": "Add the registry update to the next private agenda; the decision owner retains any protocol change."
+    }
+  ],
+  "gapsAndBlockers": [
+    {
+      "id": "gap-preprint-peer-review",
+      "kind": "gap",
+      "description": "The new preprint has no verified peer-review or version-of-record state.",
+      "owner": "Evidence Review Team",
+      "sourceRefs": ["source-arxiv-followup"],
+      "evidenceItemRefs": ["evidence-followup-preprint"],
+      "deltaRefs": [
+        "delta-new-preprint",
+        "delta-contradictory-method"
+      ],
+      "status": "resolved"
+    }
+  ],
+  "synthesis": {
+    "consensus": {
+      "state": "not-inferred",
+      "rationale": "This delta ledger records traceable lifecycle and evidence changes; it does not infer scientific consensus.",
+      "evidenceItemRefs": []
+    },
+    "summary": "The ledger preserves a correction, retraction, new preprint, registry update, and potential methodological contradiction for private owner review without changing conclusions autonomously."
+  },
+  "blockedActions": [
+    "bypass-access-controls",
+    "reproduce-restricted-text",
+    "contact-authors",
+    "enroll-subjects",
+    "publish-conclusions",
+    "make-clinical-decision",
+    "fabricate-evidence-or-identifiers",
+    "disclose-sensitive-research-question",
+    "change-decision-autonomously"
+  ],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Evidence Review Team",
+    "classification": "private",
+    "destination": "outputs/research-scout-handoff.md",
+    "sourceRefs": [
+      "source-crossref-mobile",
+      "source-pubmed-mobile",
+      "source-crossref-pilot",
+      "source-arxiv-followup",
+      "source-clinicaltrials-mobile",
+      "source-orcid-attribution",
+      "source-journal-correction",
+      "source-journal-retraction"
+    ],
+    "evidenceItemRefs": [
+      "evidence-mobile-trial",
+      "evidence-retracted-pilot",
+      "evidence-followup-preprint",
+      "evidence-trial-registry"
+    ],
+    "deltaRefs": [
+      "delta-mobile-correction",
+      "delta-pilot-retraction",
+      "delta-new-preprint",
+      "delta-trial-update",
+      "delta-contradictory-method",
+      "delta-unchanged-record"
+    ],
+    "reviewQueueRefs": [
+      "review-correction-control",
+      "review-preprint-replication",
+      "review-retraction-cleanup",
+      "review-registry-reconciliation"
+    ],
+    "gapAndBlockerRefs": ["gap-preprint-peer-review"],
+    "blockerRefs": [],
+    "prohibitedActions": [
+      "bypass-access-controls",
+      "reproduce-restricted-text",
+      "contact-authors",
+      "enroll-subjects",
+      "publish-conclusions",
+      "make-clinical-decision",
+      "fabricate-evidence-or-identifiers",
+      "disclose-sensitive-research-question",
+      "change-decision-autonomously"
+    ]
+  }
+}

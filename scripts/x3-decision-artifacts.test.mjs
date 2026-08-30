@@ -325,6 +325,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "research-scout",
+    schema: "../claws/research-scout/schemas/research-evidence-delta.schema.json",
+    fixture: "../claws/research-scout/fixtures/research-evidence-delta.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "restaurant-venue-scout",
     schema: "../claws/restaurant-venue-scout/schemas/venue-shortlist.schema.json",
     fixture: "../claws/restaurant-venue-scout/fixtures/venue-shortlist.example.json",

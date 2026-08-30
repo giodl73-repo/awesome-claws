@@ -1,0 +1,929 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/research-evidence-delta.schema.json",
+  "title": "Research evidence delta ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "watch",
+    "sources",
+    "evidenceItems",
+    "deltas",
+    "reviewQueue",
+    "gapsAndBlockers",
+    "synthesis",
+    "blockedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.researchEvidenceDelta.v1"
+    },
+    "watch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "question",
+        "questionClassification",
+        "queryDisclosure",
+        "decisionOwner",
+        "outputClassification",
+        "destination",
+        "cadence",
+        "window",
+        "baseline",
+        "run",
+        "protocol",
+        "state"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^watch-[a-z0-9-]+$"
+        },
+        "question": {
+          "$ref": "#/$defs/text"
+        },
+        "questionClassification": {
+          "const": "private"
+        },
+        "queryDisclosure": {
+          "const": "approved-authorities-only"
+        },
+        "decisionOwner": {
+          "$ref": "#/$defs/text"
+        },
+        "outputClassification": {
+          "const": "private"
+        },
+        "destination": {
+          "type": "string",
+          "pattern": "^outputs/[A-Za-z0-9._/-]+$"
+        },
+        "cadence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["schedule", "timezone"],
+          "properties": {
+            "schedule": {
+              "$ref": "#/$defs/text"
+            },
+            "timezone": {
+              "type": "string",
+              "pattern": "^[A-Za-z_]+/[A-Za-z_]+$|^UTC$"
+            }
+          }
+        },
+        "window": {
+          "$ref": "#/$defs/timestampWindow"
+        },
+        "baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "runId",
+            "asOf",
+            "sourceRefs",
+            "evidenceItemRefs",
+            "digest"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^baseline-[a-z0-9-]+$"
+            },
+            "runId": {
+              "type": "string",
+              "pattern": "^run-[a-z0-9-]+$"
+            },
+            "asOf": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "sourceRefs": {
+              "$ref": "#/$defs/sourceRefs"
+            },
+            "evidenceItemRefs": {
+              "$ref": "#/$defs/evidenceRefs"
+            },
+            "digest": {
+              "$ref": "#/$defs/digest"
+            }
+          }
+        },
+        "run": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "startedAt", "completedAt", "asOf"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^run-[a-z0-9-]+$"
+            },
+            "startedAt": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "completedAt": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "asOf": {
+              "$ref": "#/$defs/timestamp"
+            }
+          }
+        },
+        "protocol": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "inclusionCriteria",
+            "exclusionCriteria",
+            "qualityRubric",
+            "authorities",
+            "queries"
+          ],
+          "properties": {
+            "inclusionCriteria": {
+              "$ref": "#/$defs/textList"
+            },
+            "exclusionCriteria": {
+              "$ref": "#/$defs/textList"
+            },
+            "qualityRubric": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "version", "dimensions"],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^rubric-[a-z0-9-]+$"
+                },
+                "version": {
+                  "$ref": "#/$defs/text"
+                },
+                "dimensions": {
+                  "$ref": "#/$defs/textList"
+                }
+              }
+            },
+            "authorities": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/authority"
+              }
+            },
+            "queries": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "authorityRef",
+                  "query",
+                  "executedAt",
+                  "resultSourceRefs"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^query-[a-z0-9-]+$"
+                  },
+                  "authorityRef": {
+                    "type": "string",
+                    "pattern": "^authority-[a-z0-9-]+$"
+                  },
+                  "query": {
+                    "$ref": "#/$defs/text"
+                  },
+                  "executedAt": {
+                    "$ref": "#/$defs/timestamp"
+                  },
+                  "resultSourceRefs": {
+                    "$ref": "#/$defs/possiblyEmptySourceRefs"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "state": {
+          "enum": ["draft", "blocked", "ready"]
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "authorityRef",
+          "provider",
+          "recordType",
+          "persistentId",
+          "canonicalUrl",
+          "title",
+          "publishedAt",
+          "updatedAt",
+          "retrievedAt",
+          "publicationState",
+          "version",
+          "supersedesSourceRef",
+          "correctsSourceRef",
+          "retractsSourceRef",
+          "digest",
+          "freshness",
+          "screeningState",
+          "screeningRationale",
+          "scope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^source-[a-z0-9-]+$"
+          },
+          "authorityRef": {
+            "type": "string",
+            "pattern": "^authority-[a-z0-9-]+$"
+          },
+          "provider": {
+            "enum": [
+              "crossref",
+              "pubmed",
+              "arxiv",
+              "clinicaltrials",
+              "orcid",
+              "journal"
+            ]
+          },
+          "recordType": {
+            "enum": [
+              "bibliographic-record",
+              "preprint-record",
+              "trial-record",
+              "author-record",
+              "journal-notice"
+            ]
+          },
+          "persistentId": {
+            "$ref": "#/$defs/persistentId"
+          },
+          "canonicalUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "$ref": "#/$defs/text"
+          },
+          "publishedAt": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "updatedAt": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "retrievedAt": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "publicationState": {
+            "$ref": "#/$defs/publicationState"
+          },
+          "version": {
+            "$ref": "#/$defs/text"
+          },
+          "supersedesSourceRef": {
+            "$ref": "#/$defs/nullableSourceRef"
+          },
+          "correctsSourceRef": {
+            "$ref": "#/$defs/nullableSourceRef"
+          },
+          "retractsSourceRef": {
+            "$ref": "#/$defs/nullableSourceRef"
+          },
+          "digest": {
+            "$ref": "#/$defs/digest"
+          },
+          "freshness": {
+            "enum": ["current", "stale"]
+          },
+          "screeningState": {
+            "enum": ["included", "excluded"]
+          },
+          "screeningRationale": {
+            "$ref": "#/$defs/text"
+          },
+          "scope": {
+            "$ref": "#/$defs/text"
+          }
+        }
+      }
+    },
+    "evidenceItems": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "deduplicationKey",
+          "persistentIds",
+          "sourceRefs",
+          "studyType",
+          "design",
+          "populationOrDataset",
+          "outcomes",
+          "limitations",
+          "conflicts",
+          "publicationState",
+          "lifecycle",
+          "quality",
+          "confidence",
+          "claimLinks"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^evidence-[a-z0-9-]+$"
+          },
+          "deduplicationKey": {
+            "type": "string",
+            "pattern": "^study-[a-z0-9-]+$"
+          },
+          "persistentIds": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/$defs/persistentId"
+            }
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/sourceRefs"
+          },
+          "studyType": {
+            "enum": [
+              "randomized-trial",
+              "observational-study",
+              "systematic-review",
+              "benchmark-evaluation",
+              "dataset",
+              "protocol",
+              "registry-record",
+              "preprint",
+              "correction-notice",
+              "retraction-notice",
+              "author-record"
+            ]
+          },
+          "design": {
+            "$ref": "#/$defs/text"
+          },
+          "populationOrDataset": {
+            "$ref": "#/$defs/text"
+          },
+          "outcomes": {
+            "$ref": "#/$defs/textList"
+          },
+          "limitations": {
+            "$ref": "#/$defs/textList"
+          },
+          "conflicts": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["state", "notes"],
+            "properties": {
+              "state": {
+                "enum": ["declared", "not-reported", "unknown"]
+              },
+              "notes": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          },
+          "publicationState": {
+            "$ref": "#/$defs/publicationState"
+          },
+          "lifecycle": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["state", "observedAt", "sourceRef"],
+              "properties": {
+                "state": {
+                  "$ref": "#/$defs/publicationState"
+                },
+                "observedAt": {
+                  "$ref": "#/$defs/timestamp"
+                },
+                "sourceRef": {
+                  "type": "string",
+                  "pattern": "^source-[a-z0-9-]+$"
+                }
+              }
+            }
+          },
+          "quality": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["rubricRef", "rating", "rationale"],
+            "properties": {
+              "rubricRef": {
+                "type": "string",
+                "pattern": "^rubric-[a-z0-9-]+$"
+              },
+              "rating": {
+                "enum": ["high", "moderate", "low", "insufficient"]
+              },
+              "rationale": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          },
+          "confidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["rating", "rationale"],
+            "properties": {
+              "rating": {
+                "enum": ["high", "moderate", "low", "insufficient"]
+              },
+              "rationale": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          },
+          "claimLinks": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "claim", "sourceRefs"],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^claim-[a-z0-9-]+$"
+                },
+                "claim": {
+                  "$ref": "#/$defs/text"
+                },
+                "sourceRefs": {
+                  "$ref": "#/$defs/sourceRefs"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "deltas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "classification",
+          "evidenceItemRefs",
+          "baselineEvidenceItemRefs",
+          "contradictsDeltaRefs",
+          "summary",
+          "decisionRelevance"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^delta-[a-z0-9-]+$"
+          },
+          "classification": {
+            "enum": [
+              "new",
+              "updated",
+              "corrected",
+              "retracted",
+              "contradictory",
+              "unchanged"
+            ]
+          },
+          "evidenceItemRefs": {
+            "$ref": "#/$defs/evidenceRefs"
+          },
+          "baselineEvidenceItemRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^evidence-[a-z0-9-]+$"
+            }
+          },
+          "contradictsDeltaRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^delta-[a-z0-9-]+$"
+            }
+          },
+          "summary": {
+            "$ref": "#/$defs/text"
+          },
+          "decisionRelevance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["state", "rationale"],
+            "properties": {
+              "state": {
+                "enum": [
+                  "decision-relevant",
+                  "monitor",
+                  "no-change",
+                  "unresolved"
+                ]
+              },
+              "rationale": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        }
+      }
+    },
+    "reviewQueue": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "question",
+          "owner",
+          "evidenceItemRefs",
+          "deltaRefs",
+          "status",
+          "resolution"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^review-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": ["domain-review", "replication", "methodology", "decision"]
+          },
+          "question": {
+            "$ref": "#/$defs/text"
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "evidenceItemRefs": {
+            "$ref": "#/$defs/evidenceRefs"
+          },
+          "deltaRefs": {
+            "$ref": "#/$defs/deltaRefs"
+          },
+          "status": {
+            "enum": ["open", "resolved"]
+          },
+          "resolution": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    },
+    "gapsAndBlockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "description",
+          "owner",
+          "sourceRefs",
+          "evidenceItemRefs",
+          "deltaRefs",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^gap-[a-z0-9-]+$|^blocker-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": ["gap", "blocker"]
+          },
+          "description": {
+            "$ref": "#/$defs/text"
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "sourceRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^source-[a-z0-9-]+$"
+            }
+          },
+          "evidenceItemRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^evidence-[a-z0-9-]+$"
+            }
+          },
+          "deltaRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^delta-[a-z0-9-]+$"
+            }
+          },
+          "status": {
+            "enum": ["open", "resolved"]
+          }
+        }
+      }
+    },
+    "synthesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["consensus", "summary"],
+      "properties": {
+        "consensus": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "rationale", "evidenceItemRefs"],
+          "properties": {
+            "state": {
+              "enum": ["not-inferred", "reviewed-with-cited-evidence"]
+            },
+            "rationale": {
+              "$ref": "#/$defs/text"
+            },
+            "evidenceItemRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^evidence-[a-z0-9-]+$"
+              }
+            }
+          }
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "blockedActions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "bypass-access-controls",
+          "reproduce-restricted-text",
+          "contact-authors",
+          "enroll-subjects",
+          "publish-conclusions",
+          "make-clinical-decision",
+          "fabricate-evidence-or-identifiers",
+          "disclose-sensitive-research-question",
+          "change-decision-autonomously"
+        ]
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "classification",
+        "destination",
+        "sourceRefs",
+        "evidenceItemRefs",
+        "deltaRefs",
+        "reviewQueueRefs",
+        "gapAndBlockerRefs",
+        "blockerRefs",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": {
+          "enum": ["draft", "blocked", "ready-for-owner-review"]
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "classification": {
+          "const": "private"
+        },
+        "destination": {
+          "type": "string",
+          "pattern": "^outputs/[A-Za-z0-9._/-]+$"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "evidenceItemRefs": {
+          "$ref": "#/$defs/evidenceRefs"
+        },
+        "deltaRefs": {
+          "$ref": "#/$defs/deltaRefs"
+        },
+        "reviewQueueRefs": {
+          "$ref": "#/$defs/reviewRefs"
+        },
+        "gapAndBlockerRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^gap-[a-z0-9-]+$|^blocker-[a-z0-9-]+$"
+          }
+        },
+        "blockerRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^blocker-[a-z0-9-]+$"
+          }
+        },
+        "prohibitedActions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "bypass-access-controls",
+              "reproduce-restricted-text",
+              "contact-authors",
+              "enroll-subjects",
+              "publish-conclusions",
+              "make-clinical-decision",
+              "fabricate-evidence-or-identifiers",
+              "disclose-sensitive-research-question",
+              "change-decision-autonomously"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "textList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timestampWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "end": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "persistentId": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": {
+          "enum": ["doi", "pmid", "arxiv", "nct", "orcid", "journal-notice"]
+        },
+        "value": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "publicationState": {
+      "enum": [
+        "preprint",
+        "peer-reviewed",
+        "version-of-record",
+        "corrected",
+        "retracted",
+        "trial-update",
+        "author-record"
+      ]
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "provider", "domains", "purpose"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^authority-[a-z0-9-]+$"
+        },
+        "provider": {
+          "enum": [
+            "crossref",
+            "pubmed",
+            "arxiv",
+            "clinicaltrials",
+            "orcid",
+            "journal"
+          ]
+        },
+        "domains": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9.-]+$"
+          }
+        },
+        "purpose": {
+          "enum": [
+            "scholarly-index",
+            "trial-registry",
+            "author-registry",
+            "journal-correction-or-retraction"
+          ]
+        }
+      }
+    },
+    "sourceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^source-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptySourceRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^source-[a-z0-9-]+$"
+      }
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^evidence-[a-z0-9-]+$"
+      }
+    },
+    "deltaRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^delta-[a-z0-9-]+$"
+      }
+    },
+    "reviewRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^review-[a-z0-9-]+$"
+      }
+    },
+    "nullableSourceRef": {
+      "type": ["string", "null"],
+      "pattern": "^source-[a-z0-9-]+$"
+    }
+  }
+}
