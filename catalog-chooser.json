@@ -1033,15 +1033,15 @@
     {
       "id": "feed-intelligence-monitor",
       "name": "Feed intelligence monitor",
-      "description": "Tracks an approved set of RSS and Atom sources and produces a private, source-linked change digest.",
-      "audience": "Teams monitoring known official blogs, advisories, release feeds, or industry sources on a repeatable cadence.",
+      "description": "Maintains a private feed-intelligence delta and triage ledger that reconciles owner-approved recurring feed subscriptions, cursors, item identity, lineage, signals, and queues against a prior checkpoint without subscribing, notifying, publishing, or acting.",
+      "audience": "Teams repeatedly triaging known official advisory, release, blog, and industry feeds into a private owner-controlled review queue.",
       "category": "analysis",
       "maintenance": {
         "status": "active",
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-30"
       },
       "setup": {
         "level": "medium",

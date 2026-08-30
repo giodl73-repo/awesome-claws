@@ -25,6 +25,7 @@ const schemaNames = {
   "document-renewal-tracker": "document-renewal.schema.json",
   "fantasy-sports-manager": "fantasy-roster.schema.json",
   "financial-analyst": "financial-scenario.schema.json",
+  "feed-intelligence-monitor": "feed-intelligence-delta-ledger.schema.json",
   "freelance-client-pipeline": "freelance-pipeline.schema.json",
   "fundraising-campaign-manager": "campaign-claim.schema.json",
   "games-backlog-manager": "game-backlog.schema.json",

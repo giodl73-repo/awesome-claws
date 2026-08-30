@@ -4,11 +4,13 @@
   "output": "outputs/feed-intelligence-monitor-handoff.md",
   "sections": [
     "request",
-    "known_facts",
-    "assumptions",
-    "evidence",
-    "decisions_or_recommendations",
-    "blocked_actions",
+    "monitor_control",
+    "approved_subscriptions",
+    "feed_item_and_signal_ledger",
+    "checkpoint_deltas",
+    "private_review_and_delivery_queues",
+    "gaps_and_blockers",
+    "authority_gates",
     "next_owner"
   ],
   "itemShape": {
@@ -18,5 +20,5 @@
       "string"
     ]
   },
-  "fallback": "Render the same sections as Markdown when widgets or rich clients are unavailable."
+  "fallback": "Render the same private feed-intelligence ledger sections as Markdown when widgets or rich clients are unavailable."
 }

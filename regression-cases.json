@@ -580,13 +580,16 @@
       "id": "feed-intelligence-monitor",
       "acceptedRequest": "Watch the official security advisory and release feeds for our five critical dependencies each weekday and report only entries that may require patching or compatibility review.",
       "requiredEvidence": [
-        "Approved feed URLs, source owners, topic scope, exclusions, and expected publishing cadence",
-        "Baseline date, material-change criteria, deduplication rules, and authority hierarchy",
-        "Review timezone, private output destination, accountable owner, retention, and escalation criteria"
+        "Bounded routing intent and no more than five routing questions, named human or team owner, private classification and destination, cadence, timezone, review window, checkpoint, and current run identity",
+        "Owner-approved RSS, Atom, or JSON Feed subscriptions with canonical feed identities, provider and feed types, approved public domains, cursor/checkpoint rules, retrieval, freshness, and recheck policy",
+        "Feed-item GUID, canonical URL, content-digest deduplication and lineage rules; typed signal, confidence, uncertainty, relevance, priority, disposition, contradiction, recheck, and retained-item coverage rules",
+        "Owner-defined triage thresholds, private idempotent delivery and review queue rules, gap and blocker handling, readiness requirements, and prohibited actions"
       ],
       "authorityBoundaries": [
-        "Do not add, remove, or broaden monitored sources without review of ownership, relevance, access, and trust",
-        "Do not publish or act on a feed item automatically, and do not treat publisher claims or feed ordering as verified fact"
+        "Do not subscribe, unsubscribe, add, remove, or broaden feeds; change accounts; disclose credentials; bypass access controls; or reproduce restricted content",
+        "Do not publish, contact, notify, message, or externally deliver a feed item; delivery queues are private review handoffs only",
+        "Do not fabricate feeds, items, signals, chronology, provenance, or deduplication results; do not infer consensus, causality, applicability, or a required action from feed ordering or repeated items",
+        "Do not patch, change a dependency, make a decision, or take another autonomous action; the named human or team owner retains terminal authority"
       ],
       "experience": {
         "target": 3,
@@ -598,7 +601,7 @@
         "clawhub-skill",
         "cron"
       ],
-      "capabilityDigest": "sha256:8ef68d402070c37e14c0a5cc05cdcc22700d0cbd416398676c19fd40c339e5b1"
+      "capabilityDigest": "sha256:83b546245eec7c23b4cdec518318b71d206c5502e6e4e3b0580e6bf2c940fb83"
     },
     {
       "id": "travel-planner",

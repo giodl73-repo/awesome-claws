@@ -45,9 +45,9 @@ highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 55 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 87 of 100 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 67 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 56 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 88 of 100 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 68 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
@@ -68,6 +68,14 @@ priority, and owner-review controls make a general decision-relevant watch
 reviewable without becoming scholarly study assessment, feed-item triage,
 bounded web investigation, website collection, issuer monitoring, or an
 autonomous decision maker.
+
+Feed Intelligence Monitor now owns the complementary recurring feed-item lane:
+owner-approved feed subscriptions, canonical feed identity, cursor/checkpoint
+state, GUID/URL/digest deduplication, item provenance and lifecycle lineage,
+typed signals, complete checkpoint dispositions, and private idempotent owner
+queues. It remains distinct from Research Monitor's broad authority-bound
+queries, Research Scout's scholarly lifecycle and quality contract, Website
+Evidence Collector's capture ledger, and narrative briefing.
 
 Potential additions remain subject to the
 [contribution admission policy](contribution-admission.md). Civic Services
