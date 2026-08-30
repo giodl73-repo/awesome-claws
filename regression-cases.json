@@ -780,14 +780,16 @@
       "id": "research-scout",
       "acceptedRequest": "Monitor public research on retrieval-augmented generation evaluation and report only evidence that changes our current benchmark design.",
       "requiredEvidence": [
-        "Research question, population or system, outcomes, time window, exclusions, and decision owner",
-        "Approved public indexes, journals, registries, authors, identifiers, and known baseline evidence",
-        "Evidence-quality rubric, contradiction and retraction rules, review cadence, and private output destination"
+        "Private bounded research question, population, system or dataset, outcomes, decision owner, sensitive-question classification, cadence, timezone, and review window",
+        "Approved public Crossref, PubMed, arXiv, ClinicalTrials.gov, ORCID, and official journal correction or retraction authorities and domains; reproducible queries; known baseline and run identity",
+        "Inclusion and exclusion criteria, evidence-quality rubric, publication-state, correction, retraction, contradiction, deduplication, and freshness rules",
+        "Accountable domain-review and replication owners, private classification, workspace output destination, and rules for gaps, blockers, and owner handoff"
       ],
       "authorityBoundaries": [
         "Do not present a preprint, abstract, press release, citation count, or model summary as validated scientific consensus",
         "Do not bypass publisher access controls, reproduce restricted full text, or expose confidential research questions through unnecessary third-party services",
-        "Do not provide clinical diagnosis or treatment direction from literature monitoring"
+        "Do not contact authors, enroll subjects, publish conclusions, or provide clinical diagnosis, treatment direction, or another clinical decision from literature monitoring",
+        "Do not fabricate evidence, persistent identifiers, corrections, retractions, or contradictions, and do not autonomously change the owner's decision or protocol"
       ],
       "experience": {
         "target": 3,

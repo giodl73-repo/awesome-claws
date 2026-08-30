@@ -88,7 +88,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Release coordinator](claws/release-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Research briefing](claws/research-briefing) | @giodl73-repo; last verified 2026-08-19 |
 | [Research monitor](claws/research-monitor) | @giodl73-repo; last verified 2026-08-19 |
-| [Research scout](claws/research-scout) | @giodl73-repo; last verified 2026-08-19 |
+| [Research scout](claws/research-scout) | @giodl73-repo; last verified 2026-08-29 |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | @giodl73-repo; last verified 2026-08-23 |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | @giodl73; last verified 2026-08-28 |
 | [Sales operations](claws/sales-operations) | @giodl73-repo; last verified 2026-08-19 |
@@ -418,7 +418,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Purchase researcher](claws/purchase-researcher) | Compares owner-approved product candidates, constraints, source quality, warranty, return, shipping, availability, and fit evidence without buying, opening credit, contacting sellers, changing carts, or claiming an unsupported best choice. |
 | [Recruiting coordinator](claws/recruiting-coordinator) | Coordinates candidate logistics with clear handoffs, consistency, and privacy. |
 | [Research monitor](claws/research-monitor) | Runs a bounded source watch and produces a private evidence digest for a named decision area. |
-| [Research scout](claws/research-scout) | Monitors public scholarly sources for decision-relevant evidence changes, including new studies, corrections, retractions, and trial updates. |
+| [Research scout](claws/research-scout) | Maintains a private, protocol-bound scholarly evidence delta ledger that reconciles canonical public records, publication lifecycle changes, evidence quality, and contradictions against a declared baseline without inferring consensus or changing decisions. |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | Compares restaurants and venues from approved sources with dietary, accessibility, hours, reservation, price, distance, and group-preference evidence without reserving, ordering, paying, messaging, or posting reviews. |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | Maintains a candidate-owned resume, portfolio, and proof ledger for role-specific review without submitting applications or inventing credentials. |
 | [Sales operations](claws/sales-operations) | Improves pipeline decisions through clean definitions, evidence, and accountable follow-up. |
@@ -494,7 +494,7 @@ Categories come directly from the catalog entry.
 | [Public company watcher](claws/public-company-watcher) | X3; Reconciles filed public-company disclosures against a declared issuer baseline and produces a private, owner-materiality delta ledger without holdings, quotes, portfolio analysis, advice, trading, issuer contact, or publication. |
 | [Research briefing](claws/research-briefing) | X4; Synthesizes supplied sources into concise, source-grounded briefs for time-sensitive decisions. |
 | [Research monitor](claws/research-monitor) | X3; Runs a bounded source watch and produces a private evidence digest for a named decision area. |
-| [Research scout](claws/research-scout) | X3; Monitors public scholarly sources for decision-relevant evidence changes, including new studies, corrections, retractions, and trial updates. |
+| [Research scout](claws/research-scout) | X3; Maintains a private, protocol-bound scholarly evidence delta ledger that reconciles canonical public records, publication lifecycle changes, evidence quality, and contradictions against a declared baseline without inferring consensus or changing decisions. |
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | X3; Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability. |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | X3; Monitors a user-supplied stock portfolio or watchlist with sourced prices, holdings, allocation drift, issuer events, and review questions without investment advice or trade execution. |
 | [Web evidence researcher](claws/web-evidence-researcher) | X3; Uses Tavily search and extraction to build bounded, source-linked evidence sets without publishing or acting on retrieved content. |
