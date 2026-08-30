@@ -1,20 +1,21 @@
 # Solid-band review
 
-This review covers the 16 Claws remaining in the Solid band after Document
+This review covers the 15 Claws remaining in the Solid band after Document
 Intake Analyst moved from 69 to 94, Fundraising Campaign Manager moved from 79
 to 95, Travel Concierge moved from 78 to 100, and Media Evidence Reviewer moved
 from 73 to 95, Spreadsheet Analyst moved from 73 to 95 on 2026-08-29, and Travel
-Planner completed its public-source itinerary and readiness artifact uplift on
-2026-08-30. All 16 pass the non-negotiable package,
+Planner completed its public-source itinerary and readiness artifact uplift, and
+Public Company Watcher completed its filed-disclosure delta-ledger uplift on
+2026-08-30. All 15 pass the non-negotiable package,
 regression, resource, and Experience gates. Their lower scores describe
 reviewability and artifact-depth gaps, not observed live-model failures.
 
 ## Shared pattern
 
-- All 16 are grandfathered entries without retrospective contribution records.
+- All 15 are grandfathered entries without retrospective contribution records.
   That is a five-point documentation gap, not a failed admission.
-- All 16 lack registered semantic validators.
-- All 16 lack a local structured-artifact schema.
+- All 15 lack registered semantic validators.
+- All 15 lack a local structured-artifact schema.
 - All 16 have complete operating contracts, screenshots, regression cases, and
   active maintenance.
 
@@ -30,7 +31,6 @@ reviewability and artifact-depth gaps, not observed live-model failures.
 | `knowledge-curator` | 78 | No local schema or semantic validator | Keep narrative knowledge structure unless a durable index contract emerges |
 | `content-operations` | 78 | No local schema or semantic validator | A claim/approval ledger could help; avoid schema for prose itself |
 | `research-scout` | 74 | No local schema or semantic validator | A recurring evidence-delta ledger is a natural structured artifact |
-| `public-company-watcher` | 74 | No local schema or semantic validator | A filing/event/change ledger is a natural structured artifact |
 | `knowledge-gardener` | 73 | No local schema or semantic validator | Notion owns page structure; add local state only for reviewable change plans |
 | `research-monitor` | 73 | No local schema or semantic validator | A watchlist and evidence-delta ledger is a natural structured artifact |
 | `presentation-producer` | 73 | No local schema or semantic validator | Keep the deck as the primary artifact unless a claim/source/approval manifest is needed |
@@ -51,9 +51,12 @@ check, exception, authority, and owner-handoff manifest on 2026-08-29.
 
 ### 2. Add evidence ledgers where the job naturally owns state
 
-The strongest candidates are `public-company-watcher`, `research-scout`,
-`research-monitor`, `feed-intelligence-monitor`, `web-evidence-researcher`,
-`website-evidence-collector`, and `meeting-intelligence`. Their recurring work
+Public Company Watcher completed this path on 2026-08-30 with an issuer,
+source, amendment, filed-fact, comparability, owner-materiality, interpretation,
+and private-handoff ledger. The remaining strongest candidates are
+`research-scout`, `research-monitor`, `feed-intelligence-monitor`,
+`web-evidence-researcher`, `website-evidence-collector`, and
+`meeting-intelligence`. Their recurring work
 already depends on source identity, freshness, lineage, chronology, confidence,
 or consent that JSON Schema plus semantic checks can enforce.
 
@@ -68,8 +71,8 @@ duplicated merely to raise a score.
 
 ## Recommended order
 
-1. `public-company-watcher`: define a filing and issuer-event evidence ledger
-   with freshness, materiality, and no-trading authority boundaries.
+1. `research-scout`: define a recurring scholarly evidence-delta ledger with
+   publication-state, correction, retraction, contradiction, and quality rules.
 
 Backfill contribution records alongside substantive work. For entries already
 at 78-79, a retrospective record alone may move the score into Strong, but it

@@ -1,0 +1,826 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/company-disclosure-ledger.schema.json",
+  "title": "Public company disclosure delta ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "watch",
+    "issuers",
+    "sources",
+    "filedFacts",
+    "comparisons",
+    "interpretations",
+    "reviewQuestions",
+    "gapsAndBlockers",
+    "blockedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.companyDisclosureLedger.v1"
+    },
+    "watch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "owner",
+        "outputClassification",
+        "destination",
+        "asOf",
+        "baselinePeriod",
+        "reviewPeriod",
+        "reportingCurrency",
+        "materialityPolicy",
+        "state"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^watch-[a-z0-9-]+$"
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "outputClassification": {
+          "const": "private"
+        },
+        "destination": {
+          "type": "string",
+          "pattern": "^outputs/[A-Za-z0-9._/-]+$"
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "baselinePeriod": {
+          "$ref": "#/$defs/period"
+        },
+        "reviewPeriod": {
+          "$ref": "#/$defs/period"
+        },
+        "reportingCurrency": {
+          "$ref": "#/$defs/currency"
+        },
+        "materialityPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "owner", "description", "thresholds"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^policy-[a-z0-9-]+$"
+            },
+            "owner": {
+              "$ref": "#/$defs/text"
+            },
+            "description": {
+              "$ref": "#/$defs/text"
+            },
+            "thresholds": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "category",
+                  "measure",
+                  "operator",
+                  "value",
+                  "unit",
+                  "currency"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^threshold-[a-z0-9-]+$"
+                  },
+                  "category": {
+                    "enum": [
+                      "reported-figure",
+                      "guidance",
+                      "risk",
+                      "governance",
+                      "ownership",
+                      "filed-event"
+                    ]
+                  },
+                  "measure": {
+                    "enum": ["absolute-change", "percent-change", "qualitative"]
+                  },
+                  "operator": {
+                    "enum": ["gte", "owner-judgment"]
+                  },
+                  "value": {
+                    "type": ["number", "null"],
+                    "minimum": 0
+                  },
+                  "unit": {
+                    "type": ["string", "null"]
+                  },
+                  "currency": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/$defs/currency"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "state": {
+          "enum": ["draft", "blocked", "ready"]
+        }
+      }
+    },
+    "issuers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "legalName",
+          "ticker",
+          "exchange",
+          "regulator",
+          "jurisdiction",
+          "regulatorIdentifier",
+          "sourceDomains",
+          "watchQuestions"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^issuer-[a-z0-9-]+$"
+          },
+          "legalName": {
+            "$ref": "#/$defs/text"
+          },
+          "ticker": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9.-]{0,14}$"
+          },
+          "exchange": {
+            "$ref": "#/$defs/text"
+          },
+          "regulator": {
+            "$ref": "#/$defs/text"
+          },
+          "jurisdiction": {
+            "$ref": "#/$defs/text"
+          },
+          "regulatorIdentifier": {
+            "$ref": "#/$defs/text"
+          },
+          "sourceDomains": {
+            "type": "object",
+            "additionalProperties": false,
+            "minProperties": 1,
+            "properties": {
+              "regulator": { "$ref": "#/$defs/domains" },
+              "exchange": { "$ref": "#/$defs/domains" },
+              "issuer": { "$ref": "#/$defs/domains" },
+              "context": { "$ref": "#/$defs/domains" }
+            }
+          },
+          "watchQuestions": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "issuerRef",
+          "kind",
+          "authority",
+          "canonicalUrl",
+          "publishedAt",
+          "retrievedAt",
+          "accession",
+          "documentId",
+          "version",
+          "amendsSourceRef",
+          "reportingPeriod",
+          "digest",
+          "freshness",
+          "scope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^source-[a-z0-9-]+$"
+          },
+          "issuerRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "regulator-filing",
+              "amended-regulator-filing",
+              "regulator-ownership-filing",
+              "exchange-notice",
+              "issuer-ir-release",
+              "news",
+              "market-context"
+            ]
+          },
+          "authority": {
+            "enum": [
+              "regulator",
+              "exchange",
+              "issuer",
+              "news-provider",
+              "market-data-provider"
+            ]
+          },
+          "canonicalUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "retrievedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "accession": {
+            "type": ["string", "null"],
+            "minLength": 1
+          },
+          "documentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "enum": ["original", "amended"]
+          },
+          "amendsSourceRef": {
+            "type": ["string", "null"]
+          },
+          "reportingPeriod": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/period"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          },
+          "freshness": {
+            "enum": ["current", "delayed", "stale", "conflicting"]
+          },
+          "scope": {
+            "$ref": "#/$defs/text"
+          }
+        }
+      }
+    },
+    "filedFacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "issuerRef",
+          "sourceRefs",
+          "category",
+          "label",
+          "value",
+          "valueType",
+          "unit",
+          "currency",
+          "period",
+          "accountingBasis",
+          "definition",
+          "confidence",
+          "evidenceState"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^fact-[a-z0-9-]+$"
+          },
+          "issuerRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "category": {
+            "enum": [
+              "reported-figure",
+              "guidance",
+              "risk",
+              "governance",
+              "ownership",
+              "filed-event"
+            ]
+          },
+          "label": {
+            "$ref": "#/$defs/text"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "valueType": {
+            "enum": ["number", "text", "boolean", "date", "not-reported"]
+          },
+          "unit": {
+            "type": ["string", "null"]
+          },
+          "currency": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/currency"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "period": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/period"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accountingBasis": {
+            "type": ["string", "null"]
+          },
+          "definition": {
+            "$ref": "#/$defs/text"
+          },
+          "confidence": {
+            "enum": ["high", "medium", "low"]
+          },
+          "evidenceState": {
+            "enum": ["confirmed", "uncertain", "conflicting", "not-reported"]
+          }
+        }
+      }
+    },
+    "comparisons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "issuerRef",
+          "baselineFactRef",
+          "currentFactRef",
+          "comparability",
+          "reconciliation",
+          "numericDelta",
+          "changeSummary",
+          "materiality"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^comparison-[a-z0-9-]+$"
+          },
+          "issuerRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "baselineFactRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "currentFactRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "comparability": {
+            "enum": ["comparable", "noncomparable", "blocked"]
+          },
+          "reconciliation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "period",
+              "unit",
+              "currency",
+              "accountingBasis",
+              "definition",
+              "amendmentLineage",
+              "notes"
+            ],
+            "properties": {
+              "period": {
+                "$ref": "#/$defs/reconciliationState"
+              },
+              "unit": {
+                "$ref": "#/$defs/reconciliationState"
+              },
+              "currency": {
+                "$ref": "#/$defs/reconciliationState"
+              },
+              "accountingBasis": {
+                "$ref": "#/$defs/reconciliationState"
+              },
+              "definition": {
+                "$ref": "#/$defs/reconciliationState"
+              },
+              "amendmentLineage": {
+                "$ref": "#/$defs/reconciliationState"
+              },
+              "notes": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          },
+          "numericDelta": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["absolute", "percent"],
+                "properties": {
+                  "absolute": {
+                    "type": "number"
+                  },
+                  "percent": {
+                    "type": ["number", "null"]
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "changeSummary": {
+            "$ref": "#/$defs/text"
+          },
+          "materiality": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "state",
+              "policyRef",
+              "thresholdRef",
+              "rationale"
+            ],
+            "properties": {
+              "state": {
+                "enum": ["material", "not-material", "unresolved"]
+              },
+              "policyRef": {
+                "type": "string",
+                "minLength": 1
+              },
+              "thresholdRef": {
+                "type": ["string", "null"]
+              },
+              "rationale": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        }
+      }
+    },
+    "interpretations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "issuerRef",
+          "kind",
+          "summary",
+          "factRefs",
+          "comparisonRefs",
+          "sourceRefs",
+          "confidence",
+          "uncertainty"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^interpretation-[a-z0-9-]+$"
+          },
+          "issuerRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": ["sourcing", "procurement", "operational"]
+          },
+          "summary": {
+            "$ref": "#/$defs/text"
+          },
+          "factRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "comparisonRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "confidence": {
+            "enum": ["high", "medium", "low"]
+          },
+          "uncertainty": {
+            "$ref": "#/$defs/text"
+          }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "question",
+          "owner",
+          "issuerRefs",
+          "factRefs",
+          "comparisonRefs",
+          "status",
+          "resolution"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^question-[a-z0-9-]+$"
+          },
+          "question": {
+            "$ref": "#/$defs/text"
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "issuerRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "factRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "comparisonRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "status": {
+            "enum": ["open", "resolved"]
+          },
+          "resolution": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    },
+    "gapsAndBlockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "description",
+          "issuerRefs",
+          "sourceRefs",
+          "factRefs",
+          "comparisonRefs",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^gap-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": ["gap", "blocker"]
+          },
+          "description": {
+            "$ref": "#/$defs/text"
+          },
+          "issuerRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "factRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "comparisonRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "status": {
+            "enum": ["open", "resolved"]
+          }
+        }
+      }
+    },
+    "blockedActions": {
+      "$ref": "#/$defs/actions"
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "classification",
+        "destination",
+        "issuerRefs",
+        "sourceRefs",
+        "factRefs",
+        "comparisonRefs",
+        "interpretationRefs",
+        "reviewQuestionRefs",
+        "gapAndBlockerRefs",
+        "blockerRefs",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": {
+          "enum": ["draft", "blocked", "ready-for-owner-review"]
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "classification": {
+          "const": "private"
+        },
+        "destination": {
+          "type": "string",
+          "pattern": "^outputs/[A-Za-z0-9._/-]+$"
+        },
+        "issuerRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "factRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "comparisonRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "interpretationRefs": {
+          "$ref": "#/$defs/possiblyEmptyRefs"
+        },
+        "reviewQuestionRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "gapAndBlockerRefs": {
+          "$ref": "#/$defs/possiblyEmptyRefs"
+        },
+        "blockerRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "prohibitedActions": {
+          "$ref": "#/$defs/actions"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": {
+          "type": "string",
+          "format": "date"
+        },
+        "end": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "possiblyEmptyRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "domains": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}$"
+      }
+    },
+    "reconciliationState": {
+      "enum": ["matched", "not-applicable", "mismatch", "unresolved"]
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 18,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "connect-trading-account",
+          "place-trade-or-order",
+          "recommend-buy",
+          "recommend-sell",
+          "recommend-hold",
+          "recommend-allocation",
+          "give-tax-advice",
+          "give-legal-advice",
+          "give-investment-advice",
+          "give-accounting-advice",
+          "contact-issuer-or-ir",
+          "purchase-subscription",
+          "submit-or-amend-filing",
+          "publish-or-communicate-publicly",
+          "disclose-private-output",
+          "infer-nonpublic-information",
+          "infer-issuer-intent",
+          "fabricate-evidence"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,483 @@
+{
+  "schemaVersion": "awesomeClaws.companyDisclosureLedger.v1",
+  "watch": {
+    "id": "watch-strategic-suppliers",
+    "owner": "Strategic Sourcing Review Team",
+    "outputClassification": "private",
+    "destination": "outputs/public-company-watcher-handoff.md",
+    "asOf": "2025-08-30T20:00:00Z",
+    "baselinePeriod": {
+      "start": "2023-07-01",
+      "end": "2024-06-30"
+    },
+    "reviewPeriod": {
+      "start": "2024-07-01",
+      "end": "2025-06-30"
+    },
+    "reportingCurrency": "USD",
+    "materialityPolicy": {
+      "id": "policy-supplier-review",
+      "owner": "Strategic Sourcing Review Team",
+      "description": "Flag an annual reported-figure change when its absolute change is at least USD 10,000 million; qualitative changes remain owner judgments.",
+      "thresholds": [
+        {
+          "id": "threshold-revenue-absolute",
+          "category": "reported-figure",
+          "measure": "absolute-change",
+          "operator": "gte",
+          "value": 10000,
+          "unit": "USD millions",
+          "currency": "USD"
+        },
+        {
+          "id": "threshold-governance-qualitative",
+          "category": "governance",
+          "measure": "qualitative",
+          "operator": "owner-judgment",
+          "value": null,
+          "unit": null,
+          "currency": null
+        }
+      ]
+    },
+    "state": "ready"
+  },
+  "issuers": [
+    {
+      "id": "issuer-microsoft",
+      "legalName": "Microsoft Corporation",
+      "ticker": "MSFT",
+      "exchange": "Nasdaq",
+      "regulator": "U.S. Securities and Exchange Commission",
+      "jurisdiction": "United States",
+      "regulatorIdentifier": "SEC CIK 0000789019",
+      "sourceDomains": {
+        "regulator": ["sec.gov"],
+        "exchange": ["nasdaq.com"],
+        "issuer": ["microsoft.com"],
+        "context": ["reuters.com", "nasdaq.com"]
+      },
+      "watchQuestions": [
+        "Did annual reported revenue change enough to cross the owner-defined sourcing-review threshold?",
+        "Did filed governance, ownership, risk, guidance, or event disclosures change the supplier review questions?"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-msft-2024-10k",
+      "issuerRef": "issuer-microsoft",
+      "kind": "regulator-filing",
+      "authority": "regulator",
+      "canonicalUrl": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/msft-20240630.htm",
+      "publishedAt": "2024-07-30T16:06:24Z",
+      "retrievedAt": "2025-08-30T17:00:00Z",
+      "accession": "0000950170-24-087843",
+      "documentId": "msft-20240630",
+      "version": "original",
+      "amendsSourceRef": null,
+      "reportingPeriod": {
+        "start": "2023-07-01",
+        "end": "2024-06-30"
+      },
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "freshness": "current",
+      "scope": "Fiscal 2024 Form 10-K reported figures used for the declared baseline period."
+    },
+    {
+      "id": "source-msft-2024-8k",
+      "issuerRef": "issuer-microsoft",
+      "kind": "regulator-filing",
+      "authority": "regulator",
+      "canonicalUrl": "https://www.sec.gov/Archives/edgar/data/789019/000119312524011295/d708866d8k.htm",
+      "publishedAt": "2024-01-19T21:39:35Z",
+      "retrievedAt": "2025-08-30T17:01:00Z",
+      "accession": "0001193125-24-011295",
+      "documentId": "d708866d8k",
+      "version": "original",
+      "amendsSourceRef": null,
+      "reportingPeriod": {
+        "start": "2024-01-17",
+        "end": "2024-01-17"
+      },
+      "digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "freshness": "current",
+      "scope": "Original Form 8-K event disclosure later controlled by the linked Form 8-K/A."
+    },
+    {
+      "id": "source-msft-2024-8ka",
+      "issuerRef": "issuer-microsoft",
+      "kind": "amended-regulator-filing",
+      "authority": "regulator",
+      "canonicalUrl": "https://www.sec.gov/Archives/edgar/data/789019/000119312524062997/d808756d8ka.htm",
+      "publishedAt": "2024-03-08T18:58:04Z",
+      "retrievedAt": "2025-08-30T17:02:00Z",
+      "accession": "0001193125-24-062997",
+      "documentId": "d808756d8ka",
+      "version": "amended",
+      "amendsSourceRef": "source-msft-2024-8k",
+      "reportingPeriod": {
+        "start": "2024-01-17",
+        "end": "2024-01-17"
+      },
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "freshness": "current",
+      "scope": "Form 8-K/A amendment controlling the linked January 17, 2024 event disclosure."
+    },
+    {
+      "id": "source-msft-2025-10k",
+      "issuerRef": "issuer-microsoft",
+      "kind": "regulator-filing",
+      "authority": "regulator",
+      "canonicalUrl": "https://www.sec.gov/Archives/edgar/data/789019/000095017025100235/msft-20250630.htm",
+      "publishedAt": "2025-07-30T16:08:00Z",
+      "retrievedAt": "2025-08-30T17:05:00Z",
+      "accession": "0000950170-25-100235",
+      "documentId": "msft-20250630",
+      "version": "original",
+      "amendsSourceRef": null,
+      "reportingPeriod": {
+        "start": "2024-07-01",
+        "end": "2025-06-30"
+      },
+      "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "freshness": "current",
+      "scope": "Fiscal 2025 Form 10-K reported figures and risk disclosures."
+    },
+    {
+      "id": "source-msft-form4",
+      "issuerRef": "issuer-microsoft",
+      "kind": "regulator-ownership-filing",
+      "authority": "regulator",
+      "canonicalUrl": "https://www.sec.gov/Archives/edgar/data/789019/000106299325014619/xslF345X05/form4.xml",
+      "publishedAt": "2025-08-19T02:00:28Z",
+      "retrievedAt": "2025-08-30T17:10:00Z",
+      "accession": "0001062993-25-014619",
+      "documentId": "form4",
+      "version": "original",
+      "amendsSourceRef": null,
+      "reportingPeriod": null,
+      "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "freshness": "current",
+      "scope": "Regulator ownership filing retained as ownership evidence, not as a trading signal."
+    },
+    {
+      "id": "source-nasdaq-notice",
+      "issuerRef": "issuer-microsoft",
+      "kind": "exchange-notice",
+      "authority": "exchange",
+      "canonicalUrl": "https://listingcenter.nasdaq.com/Material_Search.aspx?mcd=LQ",
+      "publishedAt": "2025-08-21T14:00:00Z",
+      "retrievedAt": "2025-08-30T17:15:00Z",
+      "accession": null,
+      "documentId": "nasdaq-msft-20250821",
+      "version": "original",
+      "amendsSourceRef": null,
+      "reportingPeriod": null,
+      "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "freshness": "current",
+      "scope": "Exchange notice included as authoritative exchange disclosure evidence."
+    },
+    {
+      "id": "source-msft-ir-release",
+      "issuerRef": "issuer-microsoft",
+      "kind": "issuer-ir-release",
+      "authority": "issuer",
+      "canonicalUrl": "https://www.microsoft.com/en-us/Investor/earnings/FY-2025-Q4/press-release-webcast",
+      "publishedAt": "2025-07-30T20:00:00Z",
+      "retrievedAt": "2025-08-30T17:20:00Z",
+      "accession": null,
+      "documentId": "fy2025-q4-press-release",
+      "version": "original",
+      "amendsSourceRef": null,
+      "reportingPeriod": {
+        "start": "2024-07-01",
+        "end": "2025-06-30"
+      },
+      "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "freshness": "current",
+      "scope": "Issuer investor-relations release used for issuer-attributed guidance and reconciliation to the filed period."
+    },
+    {
+      "id": "source-context-news",
+      "issuerRef": "issuer-microsoft",
+      "kind": "news",
+      "authority": "news-provider",
+      "canonicalUrl": "https://www.reuters.com/technology/",
+      "publishedAt": "2025-08-01T12:00:00Z",
+      "retrievedAt": "2025-08-30T17:25:00Z",
+      "accession": null,
+      "documentId": "news-context-20250801",
+      "version": "original",
+      "amendsSourceRef": null,
+      "reportingPeriod": null,
+      "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "freshness": "delayed",
+      "scope": "Optional public context only; it cannot support a filed fact."
+    },
+    {
+      "id": "source-market-context",
+      "issuerRef": "issuer-microsoft",
+      "kind": "market-context",
+      "authority": "market-data-provider",
+      "canonicalUrl": "https://www.nasdaq.com/market-activity/stocks/msft",
+      "publishedAt": "2025-08-29T20:00:00Z",
+      "retrievedAt": "2025-08-30T17:30:00Z",
+      "accession": null,
+      "documentId": "market-context-20250829",
+      "version": "original",
+      "amendsSourceRef": null,
+      "reportingPeriod": null,
+      "digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "freshness": "delayed",
+      "scope": "Delayed market context only; no quote, performance, allocation, or recommendation enters this ledger."
+    }
+  ],
+  "filedFacts": [
+    {
+      "id": "fact-revenue-fy2024",
+      "issuerRef": "issuer-microsoft",
+      "sourceRefs": ["source-msft-2024-10k"],
+      "category": "reported-figure",
+      "label": "Revenue",
+      "value": 245122,
+      "valueType": "number",
+      "unit": "USD millions",
+      "currency": "USD",
+      "period": {
+        "start": "2023-07-01",
+        "end": "2024-06-30"
+      },
+      "accountingBasis": "U.S. GAAP",
+      "definition": "Revenue as reported in the consolidated statements of income for the full fiscal year.",
+      "confidence": "high",
+      "evidenceState": "confirmed"
+    },
+    {
+      "id": "fact-revenue-fy2025",
+      "issuerRef": "issuer-microsoft",
+      "sourceRefs": ["source-msft-2025-10k"],
+      "category": "reported-figure",
+      "label": "Revenue",
+      "value": 281724,
+      "valueType": "number",
+      "unit": "USD millions",
+      "currency": "USD",
+      "period": {
+        "start": "2024-07-01",
+        "end": "2025-06-30"
+      },
+      "accountingBasis": "U.S. GAAP",
+      "definition": "Revenue as reported in the consolidated statements of income for the full fiscal year.",
+      "confidence": "high",
+      "evidenceState": "confirmed"
+    },
+    {
+      "id": "fact-guidance-capacity",
+      "issuerRef": "issuer-microsoft",
+      "sourceRefs": ["source-msft-ir-release"],
+      "category": "guidance",
+      "label": "Issuer-attributed capacity commentary",
+      "value": "Demand and capacity commentary remains an issuer statement for procurement review.",
+      "valueType": "text",
+      "unit": null,
+      "currency": null,
+      "period": {
+        "start": "2024-07-01",
+        "end": "2025-06-30"
+      },
+      "accountingBasis": null,
+      "definition": "Issuer-attributed forward-looking commentary, kept separate from reported figures.",
+      "confidence": "medium",
+      "evidenceState": "confirmed"
+    },
+    {
+      "id": "fact-ownership-filing",
+      "issuerRef": "issuer-microsoft",
+      "sourceRefs": ["source-msft-form4"],
+      "category": "ownership",
+      "label": "Filed insider ownership event",
+      "value": "A regulator ownership filing was published during the review window.",
+      "valueType": "text",
+      "unit": null,
+      "currency": null,
+      "period": null,
+      "accountingBasis": null,
+      "definition": "Existence of the filed ownership event only; no intent or trading inference.",
+      "confidence": "high",
+      "evidenceState": "confirmed"
+    },
+    {
+      "id": "fact-amended-filed-event",
+      "issuerRef": "issuer-microsoft",
+      "sourceRefs": ["source-msft-2024-8ka"],
+      "category": "filed-event",
+      "label": "Amended filed event",
+      "value": "A Form 8-K/A controls the linked original event disclosure.",
+      "valueType": "text",
+      "unit": null,
+      "currency": null,
+      "period": {
+        "start": "2024-01-17",
+        "end": "2024-01-17"
+      },
+      "accountingBasis": null,
+      "definition": "Presence and lineage of the amended filed event only.",
+      "confidence": "high",
+      "evidenceState": "confirmed"
+    },
+    {
+      "id": "fact-exchange-notice",
+      "issuerRef": "issuer-microsoft",
+      "sourceRefs": ["source-nasdaq-notice"],
+      "category": "filed-event",
+      "label": "Exchange notice",
+      "value": "An exchange notice was present in the declared review scope.",
+      "valueType": "text",
+      "unit": null,
+      "currency": null,
+      "period": null,
+      "accountingBasis": null,
+      "definition": "Exchange-published event presence, without legal or investment conclusion.",
+      "confidence": "high",
+      "evidenceState": "confirmed"
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "comparison-revenue-fy2025",
+      "issuerRef": "issuer-microsoft",
+      "baselineFactRef": "fact-revenue-fy2024",
+      "currentFactRef": "fact-revenue-fy2025",
+      "comparability": "comparable",
+      "reconciliation": {
+        "period": "matched",
+        "unit": "matched",
+        "currency": "matched",
+        "accountingBasis": "matched",
+        "definition": "matched",
+        "amendmentLineage": "matched",
+        "notes": "Both facts are full fiscal-year revenue, in USD millions, under U.S. GAAP, and use the same reported revenue definition."
+      },
+      "numericDelta": {
+        "absolute": 36602,
+        "percent": 14.93215623240672
+      },
+      "changeSummary": "Reported annual revenue increased by USD 36,602 million, or approximately 14.93 percent, between the comparable fiscal years.",
+      "materiality": {
+        "state": "material",
+        "policyRef": "policy-supplier-review",
+        "thresholdRef": "threshold-revenue-absolute",
+        "rationale": "The absolute change of USD 36,602 million exceeds the owner-declared USD 10,000 million threshold."
+      }
+    }
+  ],
+  "interpretations": [
+    {
+      "id": "interpretation-sourcing-capacity",
+      "issuerRef": "issuer-microsoft",
+      "kind": "sourcing",
+      "summary": "The sourcing review should examine whether the reported scale change and issuer-attributed capacity commentary alter dependency or capacity questions.",
+      "factRefs": ["fact-revenue-fy2025", "fact-guidance-capacity"],
+      "comparisonRefs": ["comparison-revenue-fy2025"],
+      "sourceRefs": ["source-context-news", "source-market-context"],
+      "confidence": "medium",
+      "uncertainty": "Public disclosures do not establish supplier-specific capacity, contract performance, management intent, or nonpublic operating conditions."
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-supplier-dependency",
+      "question": "Does the owner want procurement to compare the disclosed scale and capacity commentary with current supplier-dependency assumptions?",
+      "owner": "Strategic Sourcing Review Team",
+      "issuerRefs": ["issuer-microsoft"],
+      "factRefs": ["fact-revenue-fy2025", "fact-guidance-capacity"],
+      "comparisonRefs": ["comparison-revenue-fy2025"],
+      "status": "resolved",
+      "resolution": "Include the evidence in the next private sourcing review; procurement retains all supplier decisions."
+    }
+  ],
+  "gapsAndBlockers": [
+    {
+      "id": "gap-supplier-specific-capacity",
+      "kind": "gap",
+      "description": "The public disclosures do not provide supplier-contract-specific capacity or performance evidence.",
+      "issuerRefs": ["issuer-microsoft"],
+      "sourceRefs": ["source-msft-2025-10k", "source-msft-ir-release"],
+      "factRefs": ["fact-guidance-capacity"],
+      "comparisonRefs": ["comparison-revenue-fy2025"],
+      "status": "resolved"
+    }
+  ],
+  "blockedActions": [
+    "connect-trading-account",
+    "place-trade-or-order",
+    "recommend-buy",
+    "recommend-sell",
+    "recommend-hold",
+    "recommend-allocation",
+    "give-tax-advice",
+    "give-legal-advice",
+    "give-investment-advice",
+    "give-accounting-advice",
+    "contact-issuer-or-ir",
+    "purchase-subscription",
+    "submit-or-amend-filing",
+    "publish-or-communicate-publicly",
+    "disclose-private-output",
+    "infer-nonpublic-information",
+    "infer-issuer-intent",
+    "fabricate-evidence"
+  ],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Strategic Sourcing Review Team",
+    "classification": "private",
+    "destination": "outputs/public-company-watcher-handoff.md",
+    "issuerRefs": ["issuer-microsoft"],
+    "sourceRefs": [
+      "source-msft-2024-10k",
+      "source-msft-2024-8k",
+      "source-msft-2024-8ka",
+      "source-msft-2025-10k",
+      "source-msft-form4",
+      "source-nasdaq-notice",
+      "source-msft-ir-release",
+      "source-context-news",
+      "source-market-context"
+    ],
+    "factRefs": [
+      "fact-revenue-fy2024",
+      "fact-revenue-fy2025",
+      "fact-guidance-capacity",
+      "fact-ownership-filing",
+      "fact-amended-filed-event",
+      "fact-exchange-notice"
+    ],
+    "comparisonRefs": ["comparison-revenue-fy2025"],
+    "interpretationRefs": ["interpretation-sourcing-capacity"],
+    "reviewQuestionRefs": ["question-supplier-dependency"],
+    "gapAndBlockerRefs": ["gap-supplier-specific-capacity"],
+    "blockerRefs": [],
+    "prohibitedActions": [
+      "connect-trading-account",
+      "place-trade-or-order",
+      "recommend-buy",
+      "recommend-sell",
+      "recommend-hold",
+      "recommend-allocation",
+      "give-tax-advice",
+      "give-legal-advice",
+      "give-investment-advice",
+      "give-accounting-advice",
+      "contact-issuer-or-ir",
+      "purchase-subscription",
+      "submit-or-amend-filing",
+      "publish-or-communicate-publicly",
+      "disclose-private-output",
+      "infer-nonpublic-information",
+      "infer-issuer-intent",
+      "fabricate-evidence"
+    ]
+  }
+}

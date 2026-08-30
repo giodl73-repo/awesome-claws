@@ -2535,7 +2535,7 @@
     {
       "id": "public-company-watcher",
       "name": "Public company watcher",
-      "description": "Tracks material public-company disclosures from authoritative sources and produces a private, timestamped change brief without trading or investor-relations contact.",
+      "description": "Reconciles filed public-company disclosures against a declared issuer baseline and produces a private, owner-materiality delta ledger without holdings, quotes, portfolio analysis, advice, trading, issuer contact, or publication.",
       "audience": "Finance, strategy, procurement, and competitive-intelligence teams monitoring a declared set of public companies.",
       "category": "analysis",
       "maintenance": {
@@ -2543,7 +2543,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-30"
       },
       "setup": {
         "level": "medium",

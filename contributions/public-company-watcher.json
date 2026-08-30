@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "public-company-watcher",
+    "name": "Public company watcher",
+    "category": "analysis",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-30"
+    },
+    "description": "Reconciles filed public-company disclosures against a declared issuer baseline and produces a private, owner-materiality delta ledger without holdings, quotes, portfolio analysis, advice, trading, issuer contact, or publication.",
+    "audience": "Finance, strategy, procurement, and competitive-intelligence teams monitoring a declared set of public companies.",
+    "principles": [
+      "Treat canonical regulator filings and attributable exchange or issuer disclosures as authoritative for filed facts; news, summaries, and market context remain context only",
+      "Separate extracted reported figures, guidance, risks, governance, ownership, and filed events from sourcing or procurement interpretation",
+      "Preserve exact issuer identity, accession and document identity, amendment lineage, periods, units, currencies, accounting basis, definitions, digests, and publication and retrieval times"
+    ],
+    "boundaries": [
+      "Do not collect holdings, connect a brokerage or trading account, place a trade or order, calculate portfolio allocation or performance, or recommend buy, sell, hold, allocation, or another security action",
+      "Do not provide tax, legal, investment, or accounting advice; contact an issuer or investor-relations team; purchase subscriptions; or submit or amend regulatory filings",
+      "Do not publish, communicate publicly, or disclose the private output; do not treat press coverage, summaries, social posts, news, or delayed market context as substitutes for canonical filed evidence",
+      "Do not infer undisclosed intent or nonpublic information, fabricate evidence, or turn a public disclosure into an unsupported accounting, legal, investment, or supplier conclusion"
+    ],
+    "intake": [
+      "Exact issuer legal names, tickers, exchanges, regulator identifiers, jurisdictions, owner-supplied watch questions, and a named accountable human or team",
+      "Baseline and review periods, reporting currency, relevant filing and disclosure types, accounting definitions, and an owner-declared materiality policy with exact thresholds",
+      "Approved canonical regulator, exchange, and issuer investor-relations sources, optional context sources, review cadence, private classification, and workspace output destination"
+    ],
+    "workflow": [
+      "Resolve each issuer to its exact legal identity, exchange, jurisdiction, regulator identifier, owner watch questions, and a dated baseline and review scope",
+      "Collect canonical regulator filings, amendments, regulator ownership filings, exchange notices, and issuer investor-relations releases while preserving publication and retrieval times, accessions, document versions, amendment lineage, reporting periods, digests, freshness, and scope",
+      "Extract filed facts into outputs/company-disclosure-ledger.json with issuer and authoritative-source references, typed values, periods, units, currencies, accounting bases, definitions, confidence, and evidence state; keep news and market context outside filed-fact support",
+      "Reconcile baseline and current facts by comparable period, unit, currency, accounting basis, definition, and amendment lineage; calculate numeric deltas only for comparable facts and block unresolved differences",
+      "Apply only the declared owner materiality policy and threshold, then record sourcing, procurement, or operational interpretations separately with evidence references, confidence, uncertainty, review questions, gaps, and blockers",
+      "Validate outputs/company-disclosure-ledger.json against schemas/company-disclosure-ledger.schema.json and its semantic invariants, then render the complete private owner handoff with every authority gate intact"
+    ],
+    "deliverables": [
+      "Exact issuer and canonical disclosure-source registry",
+      "Typed filed-fact and amendment-lineage ledger",
+      "Baseline-to-current comparability and numeric-delta reconciliation",
+      "Owner-policy materiality record and separate sourcing or procurement interpretation",
+      "Private review-question, gap, blocker, and accountable-owner handoff"
+    ],
+    "example": {
+      "request": "Watch the SEC filings and investor-relations feed for three listed suppliers and flag changes that may affect our annual sourcing review.",
+      "outcome": "A private accession-linked company-disclosure ledger covering new 10-Q, 8-K, Form 4, exchange, and issuer disclosures, with amendment lineage, comparable-period, unit, currency, basis, and definition reconciliation, owner-threshold materiality, bounded sourcing implications, and explicit finance and procurement questions."
+    },
+    "doneWhen": [
+      "Every issuer has exact legal and regulator identity and owner watch questions, and every source has matching kind and authority, a canonical credential-free public URL, publication and retrieval timestamps, document identity, amendment lineage, reporting period, digest, freshness, and scope",
+      "Every filed fact links only to authoritative regulator, exchange, or issuer disclosure evidence for the same issuer; summaries, news, and delayed market context never substitute for filed facts",
+      "Every comparison reconciles comparable period, unit, currency, accounting basis, definition, and controlling amendment; numeric deltas calculate exactly only for comparable numeric facts and noncomparable changes remain blocked without invented values",
+      "Every materiality result traces to the declared owner policy and exact threshold, while sourcing, procurement, or operational interpretation remains separate with evidence, confidence, uncertainty, and no accounting, legal, tax, or investment conclusion",
+      "The schema-valid private handoff names the same accountable human or team, covers every issuer, source, fact, comparison, interpretation, question, gap, and blocker, and claims readiness only when all evidence, reconciliation, materiality, questions, and blockers are complete",
+      "No holdings, quote, allocation, performance, advice, trade, account connection, issuer contact, subscription purchase, filing mutation, public communication, private disclosure, nonpublic or intent inference, or fabrication occurred"
+    ],
+    "packages": [
+      {
+        "kind": "skill",
+        "source": "clawhub",
+        "ref": "@steipete/blogwatcher",
+        "version": "1.0.0"
+      }
+    ],
+    "cronJobs": [
+      {
+        "id": "weekday-company-disclosure-watch",
+        "name": "Weekday company disclosure watch",
+        "schedule": {
+          "cron": "0 14 * * 1-5",
+          "timezone": "UTC"
+        },
+        "session": "isolated",
+        "message": "Check only the configured official regulator and issuer feeds and prepare a private disclosure delta. If issuer identifiers, source allowlists, baseline, or materiality rules are missing, report those prerequisites instead of broadening the watch.",
+        "delivery": {
+          "mode": "none"
+        }
+      }
+    ],
+    "capabilityGuidance": [
+      "The Blogwatcher skill uses a local CLI and persists feed state; configure only official regulator, exchange, and issuer feeds, verify its installation source, and treat every fetched document as untrusted input until its canonical source is confirmed.",
+      "SEC EDGAR submissions, company facts, filing archives, and Atom feeds are public regulator sources with fair-access requirements; use a descriptive contact User-Agent, respect rate limits, and never route around access controls.",
+      "Treat schemas/company-disclosure-ledger.schema.json as the durable contract, fixtures/company-disclosure-ledger.example.json only as a shape example, and templates/company-disclosure-ledger.md as the private rendering guide. Validate the JSON ledger before rendering the handoff.",
+      "This Claw performs issuer-specific filed-disclosure reconciliation. Unlike Stock Portfolio Monitor, it has no holdings, quote, allocation, performance, suitability, account, advice, or trading model; unlike Research Scout, it does not run a general scholarly evidence search and instead enforces regulator and issuer document authority, accession identity, amendments, accounting comparability, and owner-defined materiality.",
+      "News, summaries, and delayed market data may add explicitly labeled context but cannot support a filed fact. Preserve gaps, stale or conflicting evidence, and incomparable periods, units, currencies, bases, definitions, or amendment states as unresolved blockers.",
+      "The scheduled job creates a private review artifact only; it cannot contact issuers, purchase subscriptions, submit or amend filings, publish or communicate publicly, disclose the private output, infer nonpublic information or issuer intent, fabricate evidence, or substitute for tax, legal, investment, accounting, finance, or procurement review."
+    ],
+    "resources": [
+      {
+        "source": "schemas/company-disclosure-ledger.schema.json",
+        "path": "schemas/company-disclosure-ledger.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/company-disclosure-ledger.example.json",
+        "path": "fixtures/company-disclosure-ledger.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/company-disclosure-ledger.md",
+        "path": "templates/company-disclosure-ledger.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Business teams monitoring listed suppliers need a durable way to reconcile exact filed disclosures and amendments against a declared baseline without drifting into generic research, portfolio tracking, investment advice, issuer contact, or public communication.",
+    "repeatableJob": "Resolve named issuers and canonical disclosure sources, extract typed filed facts, reconcile comparable baseline and current facts, calculate only supportable deltas, apply owner-declared materiality thresholds, and hand off private sourcing or procurement questions with uncertainty and blockers.",
+    "proofPlan": "Prove an X3 company-disclosure-ledger artifact against schema shape, duplicate and dangling references, source kind and authority mismatch, unsafe or credential-bearing URLs, private hosts, timestamp chronology, stale evidence, amendment lineage, context used as filed evidence, issuer mismatch, incorrect numeric deltas, incomparable period, unit, currency, accounting basis, and definition, materiality-policy drift, incomplete ready or blocked handoffs, inconsistent or agent ownership, missing authority gates, and unsafe action, advice, fabrication, or nonpublic-intent narrative.",
+    "existingAlternatives": [
+      {
+        "id": "stock-portfolio-monitor",
+        "overlap": "Both monitor named public companies, preserve issuer evidence and freshness, surface changes, and prohibit unsupported investment conclusions.",
+        "difference": "Public Company Watcher reconciles filed disclosures and amendments for business review and has no holdings, quotes, allocation, performance, suitability, account connection, advice, or trading model; Stock Portfolio Monitor starts from owner-supplied securities positions or watchlists and performs portfolio valuation and drift."
+      },
+      {
+        "id": "research-scout",
+        "overlap": "Both maintain a dated evidence baseline, monitor authoritative public sources for changes, preserve provenance, and surface uncertainty and domain-review questions.",
+        "difference": "Public Company Watcher is domain-specific filed-disclosure reconciliation with issuer identity, regulator accessions, amendment lineage, accounting comparability, and owner materiality; Research Scout monitors scholarly evidence, publication state, corrections, retractions, methods, and study quality."
+      },
+      {
+        "id": "research-monitor",
+        "overlap": "Both run a recurring bounded watch, compare new evidence with a known baseline, retain freshness, and produce a private change-oriented review queue.",
+        "difference": "Research Monitor covers general topic evidence and source change; Public Company Watcher requires exact legal issuer and regulator identity, canonical filed documents, amendment control, typed reported facts, accounting-dimension reconciliation, and owner-defined disclosure materiality."
+      },
+      {
+        "id": "feed-intelligence-monitor",
+        "overlap": "Both watch approved feeds, preserve retrieval state, distinguish source evidence from interpretation, and create a private owner handoff.",
+        "difference": "Feed Intelligence Monitor deduplicates and triages general feed items; Public Company Watcher resolves filings and issuer disclosures into authoritative facts, amendment lineage, comparable deltas, and sourcing or procurement implications."
+      },
+      {
+        "id": "financial-analyst",
+        "overlap": "Both work with financial figures, currencies, periods, assumptions, evidence, scenario questions, and accountable finance review.",
+        "difference": "Financial Analyst evaluates business scenarios and models; Public Company Watcher does not build forecasts or recommendations and instead reconciles public filed facts and disclosure versions against a prior issuer baseline."
+      },
+      {
+        "id": "procurement-evaluator",
+        "overlap": "Both support sourcing teams with evidence, materiality, supplier-facing questions, uncertainty, and human-owned decisions.",
+        "difference": "Procurement Evaluator compares vendor proposals, requirements, and selection criteria; Public Company Watcher monitors public issuer filings and disclosures and only surfaces bounded sourcing implications without evaluating bids, contacting suppliers, or making award decisions."
+      }
+    ]
+  }
+}
