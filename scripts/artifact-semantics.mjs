@@ -11474,6 +11474,460 @@ function movingPlanFindings(value) {
   return findings;
 }
 
+function mediaEvidenceFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const evidenceIds = value.evidence.map((item) => item.id);
+  const observationIds = value.observations.map((item) => item.id);
+  const gapIds = value.gaps.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const evidenceSet = new Set(evidenceIds);
+  const observationSet = new Set(observationIds);
+  const gapSet = new Set(gapIds);
+  const questionSet = new Set(questionIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const evidenceById = new Map(value.evidence.map((item) => [item.id, item]));
+  const observationById = new Map(value.observations.map((item) => [item.id, item]));
+  const requiredUses = [
+    "local-frame-extraction",
+    "local-transcription",
+    "question-focused-analysis",
+    "redacted-internal-handoff",
+  ];
+  const requiredActions = [
+    "identify-person",
+    "infer-identity",
+    "infer-intent",
+    "fill-missing-events",
+    "fabricate-quotation",
+    "process-out-of-scope",
+    "retain-beyond-policy",
+    "distribute-media",
+    "publish-evidence",
+    "upload-external",
+    "disable-redaction",
+  ];
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(evidenceIds, "evidence", "Evidence id"),
+    ...uniqueFindings(
+      value.evidence.map((item) => portablePathKey(item.path)),
+      "evidence",
+      "Evidence path",
+    ),
+    ...uniqueFindings(observationIds, "observations", "Observation id"),
+    ...uniqueFindings(gapIds, "gaps", "Gap id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+
+  if (
+    value.review.windowStartSeconds > value.review.windowEndSeconds ||
+    value.review.windowEndSeconds > value.review.sourceDurationSeconds
+  ) {
+    findings.push(
+      finding(
+        "invalid_review_window",
+        "review.windowEndSeconds",
+        "The review window must be ordered and remain within the source duration.",
+      ),
+    );
+  }
+  if (
+    !isSafePackagePath(value.review.destination) ||
+    !value.review.destination.startsWith("outputs/")
+  ) {
+    findings.push(
+      finding(
+        "unsafe_handoff_destination",
+        "review.destination",
+        "The media-review destination must remain a portable path under outputs/.",
+      ),
+    );
+  }
+
+  const expectedSourceAuthority = {
+    "media-file": "media-owner",
+    "authority-record": "data-controller",
+    "consent-record": "data-controller",
+    "retention-policy": "policy-owner",
+    "reviewer-note": "reviewer",
+  };
+  for (const [index, source] of value.sources.entries()) {
+    if (source.authority !== expectedSourceAuthority[source.kind]) {
+      findings.push(
+        finding(
+          "source_authority_mismatch",
+          `sources.${index}.authority`,
+          `${source.kind} evidence must use its declared authority.`,
+        ),
+      );
+    }
+    if (Date.parse(source.capturedAt) > Date.parse(value.review.asOf)) {
+      findings.push(
+        finding(
+          "future_source_evidence",
+          `sources.${index}.capturedAt`,
+          "Media-review sources must not postdate the artifact as-of time.",
+        ),
+      );
+    }
+    if (
+      (source.kind === "media-file" && source.sha256 === null) ||
+      (source.kind !== "media-file" && source.sha256 !== null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_source_digest",
+          `sources.${index}.sha256`,
+          "Media files require a digest and non-media authority records must leave it null.",
+        ),
+      );
+    }
+  }
+
+  const authorityRefs = [
+    ["authoritySourceRef", "authority-record"],
+    ["consentSourceRef", "consent-record"],
+    ["retentionSourceRef", "retention-policy"],
+  ];
+  for (const [field, expectedKind] of authorityRefs) {
+    const source = sourceById.get(value.authority[field]);
+    if (!source || source.kind !== expectedKind || source.integrity !== "verified") {
+      findings.push(
+        finding(
+          "invalid_authority_reference",
+          `authority.${field}`,
+          `${field} must reference verified ${expectedKind} evidence.`,
+        ),
+      );
+    }
+  }
+
+  for (const [index, item] of value.evidence.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [item.sourceRef],
+        sourceSet,
+        `evidence.${index}.sourceRef`,
+        "Evidence source reference",
+      ),
+    );
+    if (
+      item.startSeconds > item.endSeconds ||
+      item.startSeconds < value.review.windowStartSeconds ||
+      item.endSeconds > value.review.windowEndSeconds
+    ) {
+      findings.push(
+        finding(
+          "evidence_outside_review_window",
+          `evidence.${index}.startSeconds`,
+          "Evidence timestamps must be ordered and remain inside the authorized review window.",
+        ),
+      );
+    }
+    if (!isSafePackagePath(item.path)) {
+      findings.push(
+        finding(
+          "unsafe_evidence_path",
+          `evidence.${index}.path`,
+          "Evidence paths must remain portable and workspace-relative.",
+        ),
+      );
+    }
+    if (sourceById.get(item.sourceRef)?.kind !== "media-file") {
+      findings.push(
+        finding(
+          "invalid_media_source",
+          `evidence.${index}.sourceRef`,
+          "Frames, clips, and transcripts must derive from a media-file source.",
+        ),
+      );
+    }
+    if (
+      (item.kind === "transcript" && item.transcript === null) ||
+      (item.kind !== "transcript" && item.transcript !== null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_transcript",
+          `evidence.${index}.transcript`,
+          "Transcript evidence requires transcript detail and non-transcript evidence must leave it null.",
+        ),
+      );
+    }
+    const redactionApproval = sourceById.get(item.redactionApprovalSourceRef);
+    if (
+      (item.redactionState === "approved-unredacted" &&
+        (!redactionApproval ||
+          !["authority-record", "consent-record"].includes(
+            redactionApproval.kind,
+          ) ||
+          redactionApproval.integrity !== "verified")) ||
+      (item.redactionState !== "approved-unredacted" &&
+        item.redactionApprovalSourceRef !== null)
+    ) {
+      findings.push(
+        finding(
+          "invalid_redaction_approval",
+          `evidence.${index}.redactionApprovalSourceRef`,
+          "Approved unredacted evidence requires a verified authority or consent source, and other redaction states must not claim one.",
+        ),
+      );
+    }
+    if (item.sensitivity.length > 0 && item.redactionState === "not-required") {
+      findings.push(
+        finding(
+          "missing_sensitive_evidence_redaction",
+          `evidence.${index}.redactionState`,
+          "Evidence with declared sensitivity must be redacted, pending redaction, or explicitly approved unredacted.",
+        ),
+      );
+    }
+    if (
+      item.transcript &&
+      item.transcript.confidence < 0.8 &&
+      item.transcript.ambiguity === null
+    ) {
+      findings.push(
+        finding(
+          "unmarked_transcript_ambiguity",
+          `evidence.${index}.transcript.ambiguity`,
+          "Low-confidence transcripts must explain their ambiguity.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, item] of value.observations.entries()) {
+    findings.push(
+      ...referenceFindings(
+        item.evidenceRefs,
+        evidenceSet,
+        `observations.${index}.evidenceRefs`,
+        "Observation evidence reference",
+      ),
+    );
+    const evidence = item.evidenceRefs
+      .map((ref) => evidenceById.get(ref))
+      .filter(Boolean);
+    if (
+      item.state === "supported" &&
+      (evidence.some(
+        (record) =>
+          record.extractionState !== "complete" ||
+          record.redactionState === "pending" ||
+          sourceById.get(record.sourceRef)?.integrity !== "verified",
+      ) ||
+        item.confidence === "low")
+    ) {
+      findings.push(
+        finding(
+          "unsupported_observation_state",
+          `observations.${index}.state`,
+          "Supported observations require complete, reviewable evidence from verified media and cannot have low confidence.",
+        ),
+      );
+    }
+    if (
+      ["identity", "intent", "missing-event"].includes(item.kind) &&
+      item.state !== "blocked"
+    ) {
+      findings.push(
+        finding(
+          "prohibited_inference_state",
+          `observations.${index}.state`,
+          "Identity, intent, and missing-event claims must remain blocked.",
+        ),
+      );
+    }
+    if (
+      item.exactQuote &&
+      !evidence.some(
+        (record) =>
+          record.kind === "transcript" &&
+          record.transcript?.confidence >= 0.9 &&
+          record.transcript.ambiguity === null,
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_exact_quote",
+          `observations.${index}.exactQuote`,
+          "Exact quotations require unambiguous transcript evidence with confidence of at least 0.9.",
+        ),
+      );
+    }
+    if (item.state !== "supported" && item.limitations.length === 0) {
+      findings.push(
+        finding(
+          "missing_observation_limitation",
+          `observations.${index}.limitations`,
+          "Uncertain or blocked observations must preserve a visible limitation.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, gap] of value.gaps.entries()) {
+    findings.push(
+      ...referenceFindings(
+        gap.evidenceRefs,
+        evidenceSet,
+        `gaps.${index}.evidenceRefs`,
+        "Gap evidence reference",
+      ),
+    );
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...referenceFindings(
+        question.observationRefs,
+        observationSet,
+        `reviewQuestions.${index}.observationRefs`,
+        "Question observation reference",
+      ),
+      ...referenceFindings(
+        question.gapRefs,
+        gapSet,
+        `reviewQuestions.${index}.gapRefs`,
+        "Question gap reference",
+      ),
+    );
+  }
+
+  findings.push(
+    ...referenceFindings(
+      value.handoff.observationRefs,
+      observationSet,
+      "handoff.observationRefs",
+      "Handoff observation reference",
+    ),
+    ...referenceFindings(
+      value.handoff.gapRefs,
+      gapSet,
+      "handoff.gapRefs",
+      "Handoff gap reference",
+    ),
+    ...referenceFindings(
+      value.handoff.reviewQuestionRefs,
+      questionSet,
+      "handoff.reviewQuestionRefs",
+      "Handoff question reference",
+    ),
+    ...referenceFindings(
+      value.handoff.blockingObservationRefs,
+      observationSet,
+      "handoff.blockingObservationRefs",
+      "Blocking observation reference",
+    ),
+  );
+  if (value.handoff.owner !== value.review.owner) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "handoff.owner",
+        "The review and handoff must name the same accountable owner.",
+      ),
+    );
+  }
+  if (
+    /^(?:the )?(?:agent|assistant|claw)$/iu.test(value.handoff.owner.trim()) ||
+    /\b(?:ai|bot|gpt|language model|media evidence reviewer)\b/iu.test(
+      value.handoff.owner,
+    )
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Media-processing and disclosure authority must remain with a named human or team.",
+      ),
+    );
+  }
+
+  const blockedObservationIds = value.observations
+    .filter((item) => item.state === "blocked")
+    .map((item) => item.id);
+  if (
+    value.handoff.blockingObservationRefs.some(
+      (ref) => observationById.get(ref)?.state !== "blocked",
+    )
+  ) {
+    findings.push(
+      finding(
+        "resolved_blocking_observation",
+        "handoff.blockingObservationRefs",
+        "Only blocked observations may remain handoff blockers.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "blocked" &&
+    (blockedObservationIds.some(
+      (id) => !value.handoff.blockingObservationRefs.includes(id),
+    ) ||
+      (blockedObservationIds.length === 0 &&
+        value.review.state === "ready-for-owner-review"))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff",
+        "Blocked handoffs must include every blocked observation and retain a visible blocker.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    (value.review.state !== "ready-for-owner-review" ||
+      !value.authority.processingAuthorized ||
+      value.authority.consentState !== "verified" ||
+      requiredUses.some((use) => !value.authority.authorizedUses.includes(use)) ||
+      value.sources.some((source) => source.integrity !== "verified") ||
+      value.evidence.some((item) => item.redactionState === "pending") ||
+      blockedObservationIds.length > 0 ||
+      value.handoff.blockingObservationRefs.length > 0 ||
+      observationIds.some((id) => !value.handoff.observationRefs.includes(id)) ||
+      gapIds.some((id) => !value.handoff.gapRefs.includes(id)) ||
+      questionIds.some((id) => !value.handoff.reviewQuestionRefs.includes(id)))
+  ) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "Owner-ready handoffs require verified authority, consent, uses, source integrity, completed redaction, complete references, and no blocked observations.",
+      ),
+    );
+  }
+  if (
+    value.review.state === "ready-for-owner-review" &&
+    value.handoff.state !== "ready-for-owner-review"
+  ) {
+    findings.push(
+      finding(
+        "inconsistent_ready_state",
+        "review.state",
+        "A media review cannot claim owner-review readiness while its handoff remains blocked.",
+      ),
+    );
+  }
+  for (const action of requiredActions) {
+    if (
+      !value.blockedActions.includes(action) ||
+      !value.handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Media evidence artifacts must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+  return findings;
+}
+
 function travelShortlistFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const constraintIds = value.constraints.map((item) => item.id);
@@ -12435,6 +12889,7 @@ const validators = {
   "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
   "meal-grocery-planner": mealGroceryFindings,
+  "media-evidence-reviewer": mediaEvidenceFindings,
   "medical-appointment-prep": medicalAppointmentFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
   "moving-checklist-coordinator": movingPlanFindings,

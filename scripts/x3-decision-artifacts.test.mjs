@@ -143,6 +143,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "media-evidence-reviewer",
+    schema: "../claws/media-evidence-reviewer/schemas/media-evidence.schema.json",
+    fixture: "../claws/media-evidence-reviewer/fixtures/media-evidence.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "home-repair-coordinator",
     schema: "../claws/home-repair-coordinator/schemas/home-repair.schema.json",
     fixture: "../claws/home-repair-coordinator/fixtures/home-repair.example.json",

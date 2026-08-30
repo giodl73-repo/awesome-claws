@@ -533,7 +533,8 @@
       ],
       "authorityBoundaries": [
         "Do not process, retain, identify people in, or distribute media without verified authority, consent, and an approved destination",
-        "Do not infer identity, intent, missing events, or exact quotations when frames, audio, timestamps, or transcription are ambiguous"
+        "Do not infer identity, intent, missing events, or exact quotations when frames, audio, timestamps, or transcription are ambiguous",
+        "Do not upload source media or derived evidence to external services, disable required redaction, or retain artifacts beyond the approved policy"
       ],
       "experience": {
         "target": 3,

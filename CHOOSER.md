@@ -63,7 +63,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Localization program manager](claws/localization-program-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | @giodl73-repo; last verified 2026-08-19 |
 | [Meal and grocery planner](claws/meal-grocery-planner) | @giodl73-repo; last verified 2026-08-24 |
-| [Media evidence reviewer](claws/media-evidence-reviewer) | @giodl73-repo; last verified 2026-08-19 |
+| [Media evidence reviewer](claws/media-evidence-reviewer) | @giodl73-repo; last verified 2026-08-29 |
 | [Medical appointment prep](claws/medical-appointment-prep) | @giodl73-repo; last verified 2026-08-27 |
 | [Meeting intelligence](claws/meeting-intelligence) | @giodl73-repo; last verified 2026-08-19 |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | @giodl73-repo; last verified 2026-08-19 |

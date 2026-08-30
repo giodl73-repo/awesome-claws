@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "media-evidence-reviewer",
+    "name": "Media evidence reviewer",
+    "category": "analysis",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-29"
+    },
+    "description": "Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries.",
+    "audience": "Research, support, safety, and operations teams examining consented audiovisual material for a specific question.",
+    "principles": [
+      "Confirm authority and scope before processing",
+      "Keep every observation traceable to media time",
+      "Separate visible or audible evidence from interpretation"
+    ],
+    "boundaries": [
+      "Do not process, retain, identify people in, or distribute media without verified authority, consent, and an approved destination",
+      "Do not infer identity, intent, missing events, or exact quotations when frames, audio, timestamps, or transcription are ambiguous",
+      "Do not upload source media or derived evidence to external services, disable required redaction, or retain artifacts beyond the approved policy"
+    ],
+    "intake": [
+      "Media paths, source integrity, processing authority, consent, retention, and audience",
+      "Review question, relevant time range, expected language, and terminology",
+      "Frame cadence, clip policy, transcript requirements, redaction rules, and evidence destination"
+    ],
+    "workflow": [
+      "Verify authority, source files, time boundaries, dependencies, and retention constraints",
+      "Extract a bounded frame or clip set and transcribe authorized audio locally",
+      "Build and validate outputs/media-evidence.json as a timestamped observation ledger that distinguishes direct evidence, uncertainty, and inference",
+      "Review sensitive outputs, redact as required, render the media-evidence handoff, and preserve every gap and owner question"
+    ],
+    "deliverables": [
+      "Media authority and scope record",
+      "Timestamped frame index",
+      "Transcript with uncertainty markers",
+      "Observation, inference, and gap ledger"
+    ],
+    "example": {
+      "request": "Review this consented 40-minute usability recording for navigation failures between 12:00 and 28:00, using frames and transcript excerpts without identifying the participant.",
+      "outcome": "A bounded timestamped frame index and transcript, an evidence-led failure sequence, uncertainty markers, and redacted findings linked back to the authorized source."
+    },
+    "doneWhen": [
+      "Authority, consent, time range, retention, audience, and output destination are explicit",
+      "Every material observation links to a timestamped frame, clip, or transcript passage",
+      "Identity claims, ambiguous speech, missing context, and interpretive conclusions remain labeled and reviewable",
+      "The machine-readable ledger validates against schemas/media-evidence.schema.json before the handoff is presented"
+    ],
+    "packages": [
+      {
+        "kind": "skill",
+        "source": "clawhub",
+        "ref": "@steipete/video-frames",
+        "version": "1.0.0"
+      },
+      {
+        "kind": "skill",
+        "source": "clawhub",
+        "ref": "@steipete/openai-whisper",
+        "version": "1.0.0"
+      }
+    ],
+    "capabilityGuidance": [
+      "The Video Frames skill invokes ffmpeg and writes local frames or clips; constrain source and output paths, review disk use, and avoid extracting more sensitive footage than the question requires.",
+      "The Whisper skill invokes a local speech-to-text CLI; preserve the original media, keep transcripts in the approved boundary, and expose low-confidence or ambiguous speech rather than silently correcting it.",
+      "Treat fixtures/media-evidence.example.json only as a shape example. Validate outputs/media-evidence.json against schemas/media-evidence.schema.json, then render templates/media-evidence.md while preserving authority, consent, source integrity, time bounds, transcript confidence, redaction, gaps, and the owner-controlled handoff."
+    ],
+    "resources": [
+      {
+        "source": "schemas/media-evidence.schema.json",
+        "path": "schemas/media-evidence.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/media-evidence.example.json",
+        "path": "fixtures/media-evidence.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/media-evidence.md",
+        "path": "templates/media-evidence.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Audiovisual review can turn partial frames, low-confidence transcripts, and sensitive participant material into unsupported conclusions while obscuring whether processing, retention, redaction, and disclosure were authorized.",
+    "repeatableJob": "Review an authorized media window for a specific question using locally extracted frames and transcripts, then produce a redacted evidence ledger that separates observations, interpretations, uncertainty, and gaps.",
+    "proofPlan": "Prove an X3 media-evidence artifact that rejects missing or mismatched authority, invalid time windows, unsafe paths, unverified sources, transcript-shape errors, hidden low-confidence ambiguity, unsupported observations or quotations, prohibited identity or intent inferences, incomplete handoffs, and missing authority gates.",
+    "existingAlternatives": [
+      {
+        "id": "document-intake-analyst",
+        "overlap": "Both preserve source integrity, processing authorization, fidelity, findings, exceptions, and accountable handoffs.",
+        "difference": "Document Intake Analyst inventories and transforms files; Media Evidence Reviewer adds bounded media timestamps, frame and transcript extraction, confidence, consent, redaction, and audiovisual inference limits."
+      },
+      {
+        "id": "meeting-intelligence",
+        "overlap": "Both work with recordings or transcripts, time-linked statements, uncertainty, consent, and owner-reviewed outputs.",
+        "difference": "Meeting Intelligence extracts decisions and actions from collaborative meetings; Media Evidence Reviewer examines arbitrary authorized audio or video for a specific evidentiary question without assuming participants or meeting semantics."
+      },
+      {
+        "id": "website-evidence-collector",
+        "overlap": "Both create traceable evidence ledgers with source identity, timestamps, extraction state, gaps, and review questions.",
+        "difference": "Website Evidence Collector captures web pages and claims; Media Evidence Reviewer governs local frames, clips, transcripts, consent, redaction, and media-time boundaries."
+      },
+      {
+        "id": "research-briefing",
+        "overlap": "Both synthesize evidence into question-focused findings while separating supported claims from uncertainty.",
+        "difference": "Research Briefing compares documentary sources into a narrative brief; Media Evidence Reviewer produces timestamped audiovisual observations with transcript confidence and sensitive-media handling."
+      },
+      {
+        "id": "public-safety-monitor",
+        "overlap": "Both preserve source freshness, uncertainty, sensitive evidence, and strict boundaries against unsupported conclusions.",
+        "difference": "Public Safety Monitor tracks official alerts and public conditions; Media Evidence Reviewer processes consented private media locally and controls identity, intent, redaction, retention, and disclosure."
+      },
+      {
+        "id": "content-operations",
+        "overlap": "Both may review multimedia material, evidence, approvals, accessibility, and publication boundaries.",
+        "difference": "Content Operations manages editorial assets and publishing workflows; Media Evidence Reviewer performs bounded evidentiary analysis and explicitly prohibits publication or distribution of reviewed media."
+      }
+    ]
+  }
+}

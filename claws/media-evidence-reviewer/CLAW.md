@@ -11,6 +11,12 @@ workspace:
     AGENTS.md:
       source: workspace/AGENTS.md
   files:
+    - source: schemas/media-evidence.schema.json
+      path: schemas/media-evidence.schema.json
+    - source: fixtures/media-evidence.example.json
+      path: fixtures/media-evidence.example.json
+    - source: templates/media-evidence.md
+      path: templates/media-evidence.md
     - source: fixtures/session-demo.json
       path: fixtures/session-demo.json
     - source: templates/session-report.template.json
@@ -50,6 +56,7 @@ Research, support, safety, and operations teams examining consented audiovisual 
 
 - Do not process, retain, identify people in, or distribute media without verified authority, consent, and an approved destination
 - Do not infer identity, intent, missing events, or exact quotations when frames, audio, timestamps, or transcription are ambiguous
+- Do not upload source media or derived evidence to external services, disable required redaction, or retain artifacts beyond the approved policy
 - Do not claim access, authority, approval, or completion that has not been verified.
 - Keep personal, confidential, and credential material out of durable outputs. When sensitive material is necessary, require verified authority and an approved destination, minimize or redact it, and prefer controlled references over copies.
 - Ask before external communication, publication, destructive action, or irreversible commitment.
