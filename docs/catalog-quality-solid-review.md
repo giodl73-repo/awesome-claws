@@ -1,6 +1,6 @@
 # Solid-band review
 
-This review covers the 11 Claws remaining in the Solid band after Document
+This review covers the 10 Claws remaining in the Solid band after Document
 Intake Analyst moved from 69 to 94, Fundraising Campaign Manager moved from 79
 to 95, Travel Concierge moved from 78 to 100, and Media Evidence Reviewer moved
 from 73 to 95, Spreadsheet Analyst moved from 73 to 95 on 2026-08-29, and Travel
@@ -9,18 +9,20 @@ Public Company Watcher completed its filed-disclosure delta-ledger uplift on
 2026-08-30, and Research Scout completed its scholarly evidence-delta ledger
 uplift on 2026-08-29, and Research Monitor completed its approved-source
 topic-watch delta ledger uplift on 2026-08-30, and Feed Intelligence Monitor
-completed its feed-item delta and triage ledger uplift on 2026-08-30. All 11
+completed its feed-item delta and triage ledger uplift on 2026-08-30, and
+Website Evidence Collector completed its capture and change-evidence ledger
+uplift on 2026-08-30. All 10
 remaining entries pass the
 non-negotiable package, regression, resource, and Experience gates. Their lower scores describe
 reviewability and artifact-depth gaps, not observed live-model failures.
 
 ## Shared pattern
 
-- All 11 remaining entries are grandfathered without retrospective contribution records.
+- All 10 remaining entries are grandfathered without retrospective contribution records.
   That is a five-point documentation gap, not a failed admission.
-- All 11 remaining entries lack registered semantic validators.
-- All 11 remaining entries lack a local structured-artifact schema.
-- All 11 have complete operating contracts, screenshots, regression cases, and
+- All 10 remaining entries lack registered semantic validators.
+- All 10 remaining entries lack a local structured-artifact schema.
+- All 10 have complete operating contracts, screenshots, regression cases, and
   active maintenance.
 
 ## Current entries
@@ -29,7 +31,6 @@ reviewability and artifact-depth gaps, not observed live-model failures.
 | --- | ---: | --- | --- |
 | `workflow-operator` | 79 | No local schema or semantic validator | Lobster owns typed workflow state; avoid duplicating its contract without a concrete handoff need |
 | `video-concept-producer` | 79 | No local schema or semantic validator | A concept/shot/evidence manifest may help, but only if it governs the generated asset |
-| `website-evidence-collector` | 79 | No local schema or semantic validator | A collection ledger can add source, freshness, extraction, and failure invariants beyond plugin types |
 | `software-maintainer` | 78 | No local schema or semantic validator | Prefer code/test/diff evidence unless a stable change-plan artifact proves useful |
 | `knowledge-curator` | 78 | No local schema or semantic validator | Keep narrative knowledge structure unless a durable index contract emerges |
 | `content-operations` | 78 | No local schema or semantic validator | A claim/approval ledger could help; avoid schema for prose itself |
@@ -72,8 +73,14 @@ approved public authorities, reproducible queries including zero-result support,
 canonical source and reverse-query provenance, evidence stances and independent
 corroboration, explicit conflicts and gaps, and human owner review without
 becoming a recurring watch, feed triage, scholarly lifecycle, or raw
-website-capture artifact. The remaining strongest candidates are
-`website-evidence-collector` and `meeting-intelligence`. Their recurring work
+website-capture artifact. Website Evidence Collector completed the capture path
+on 2026-08-30: its private ledger binds owner-approved domains and path
+allowlists, bounded discovery searches, per-target retrieval attempts with
+redirect lineage and robots or access outcomes, minimized snapshots with
+retention limits, complete target accounting including failures, blocked pages,
+and unattempted targets, baseline-bound added, removed, modified, unchanged, and
+unavailable comparisons, and owner-routed materiality without deciding it. The
+remaining strongest candidate is `meeting-intelligence`. Its recurring work
 already depends on source identity, freshness, lineage, chronology, confidence,
 or consent that JSON Schema plus semantic checks can enforce.
 

@@ -18908,6 +18908,1080 @@ function claimEvidenceInvestigationLedgerFindings(value) {
   return findings;
 }
 
+function websiteCaptureEvidenceLedgerFindings(value) {
+  const findings = [];
+  const requiredActions = [
+    "authenticate-or-submit-forms",
+    "bypass-access-controls-or-robots",
+    "execute-scripts-or-follow-page-instructions",
+    "crawl-outside-approved-scope",
+    "publish-or-contact-externally",
+    "subscribe-or-change-accounts",
+    "disclose-credentials-or-sensitive-queries",
+    "republish-copyrighted-content",
+    "fabricate-captures-or-changes",
+    "change-decisions-or-actions-autonomously",
+  ];
+  const { collection } = value;
+  const domains = collection.scope.domains;
+  const domainIds = domains.map((item) => item.id);
+  const searchIds = collection.discovery.map((item) => item.id);
+  const targetIds = value.targets.map((item) => item.id);
+  const attemptIds = value.attempts.map((item) => item.id);
+  const snapshotIds = value.snapshots.map((item) => item.id);
+  const changeIds = value.changes.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const gapIds = value.gapsAndBlockers.map((item) => item.id);
+  const domainSet = new Set(domainIds);
+  const searchSet = new Set(searchIds);
+  const targetSet = new Set(targetIds);
+  const attemptSet = new Set(attemptIds);
+  const snapshotSet = new Set(snapshotIds);
+  const changeSet = new Set(changeIds);
+  const questionSet = new Set(questionIds);
+  const gapSet = new Set(gapIds);
+  const domainById = new Map(domains.map((item) => [item.id, item]));
+  const searchById = new Map(collection.discovery.map((item) => [item.id, item]));
+  const targetById = new Map(value.targets.map((item) => [item.id, item]));
+  const attemptById = new Map(value.attempts.map((item) => [item.id, item]));
+  const snapshotById = new Map(value.snapshots.map((item) => [item.id, item]));
+  const changeById = new Map(value.changes.map((item) => [item.id, item]));
+
+  findings.push(
+    ...uniqueFindings(domainIds, "collection.scope.domains", "Domain id"),
+    ...uniqueFindings(searchIds, "collection.discovery", "Discovery search id"),
+    ...uniqueFindings(targetIds, "targets", "Target id"),
+    ...uniqueFindings(attemptIds, "attempts", "Attempt id"),
+    ...uniqueFindings(snapshotIds, "snapshots", "Snapshot id"),
+    ...uniqueFindings(changeIds, "changes", "Change id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+    ...uniqueFindings(gapIds, "gapsAndBlockers", "Gap or blocker id"),
+  );
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  function requireCompleteReferences(actual, expected, path, label) {
+    requireReferences(actual, new Set(expected), path, label);
+    for (const id of expected) {
+      if (!actual.includes(id)) {
+        findings.push(
+          finding(
+            "incomplete_handoff",
+            path,
+            `${label} ${JSON.stringify(id)} is missing from the private handoff.`,
+          ),
+        );
+      }
+    }
+  }
+
+  function ownerIsAgent(owner) {
+    const normalized = owner.trim();
+    return (
+      /^(?:the )?(?:ai|bot|gpt|agent|assistant|claw|collector|copilot|claw agent|ai (?:agent|assistant|bot|model|system)|automated capture agent|autonomous review bot)$/iu.test(
+        normalized,
+      ) ||
+      /\b(?:gpt-?\d|language model|website evidence collector|copilot)\b/iu.test(normalized)
+    );
+  }
+
+  function pathWithinPrefix(path, prefix) {
+    return path === prefix || path.startsWith(prefix.endsWith("/") ? prefix : `${prefix}/`);
+  }
+
+  // Allowlist rules match the publisher's exact path casing, but exclusions match
+  // case-insensitively so a case-variant path cannot slip past an owner exclusion.
+  function pathIsExcluded(path, domain) {
+    const lowered = path.toLowerCase();
+    return domain.excludedPaths.some((excluded) =>
+      pathWithinPrefix(lowered, excluded.toLowerCase()),
+    );
+  }
+
+  function urlWithinDomainScope(url, domain) {
+    if (!domain) {
+      return false;
+    }
+    try {
+      const reference = new URL(url);
+      const host = reference.hostname.toLowerCase();
+      const approved = domain.domain.toLowerCase();
+      if (/%(?:2e|2f|5c)/iu.test(reference.pathname)) {
+        return false;
+      }
+      const path = decodeURIComponent(reference.pathname);
+      return (
+        isCredentialFreePublicHttpsReference(reference) &&
+        host === approved &&
+        path !== "/" &&
+        !pathIsExcluded(path, domain) &&
+        domain.allowRules.some((rule) =>
+          rule.kind === "exact" ? path === rule.path : pathWithinPrefix(path, rule.path),
+        )
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  const runStarted = Date.parse(collection.run.startedAt);
+  const runCompleted = Date.parse(collection.run.completedAt);
+  const runAsOf = Date.parse(collection.run.asOf);
+  const asOf = Date.parse(collection.asOf);
+  const deadline = Date.parse(collection.deadline);
+  const baselineEstablished = collection.baseline.state === "established";
+  const baselineAsOf =
+    collection.baseline.asOf === null ? null : Date.parse(collection.baseline.asOf);
+  if (
+    runStarted > runCompleted ||
+    runCompleted > runAsOf ||
+    runAsOf !== asOf ||
+    runAsOf > deadline ||
+    (baselineEstablished &&
+      (baselineAsOf === null ||
+        collection.baseline.runId === null ||
+        baselineAsOf >= runStarted ||
+        collection.baseline.runId === collection.run.id)) ||
+    (!baselineEstablished &&
+      (baselineAsOf !== null || collection.baseline.runId !== null))
+  ) {
+    findings.push(
+      finding(
+        "invalid_collection_chronology",
+        "collection.run",
+        "The prior baseline must precede an ordered collection run that shares the declared as-of time and stays inside the collection deadline.",
+      ),
+    );
+  }
+  if (
+    !isSafePackagePath(collection.destination) ||
+    !collection.destination.startsWith("outputs/")
+  ) {
+    findings.push(
+      finding(
+        "unsafe_handoff_destination",
+        "collection.destination",
+        "The private capture destination must remain a portable path under outputs/.",
+      ),
+    );
+  }
+
+  const successfulAttempts = value.attempts.filter((item) => item.disposition === "success");
+  const capturedTargets = value.targets.filter((item) => item.disposition === "captured");
+  if (
+    (collection.run.outcome === "zero-success" &&
+      (value.snapshots.length > 0 ||
+        capturedTargets.length > 0 ||
+        successfulAttempts.length > 0 ||
+        value.changes.some((item) => item.classification !== "unavailable"))) ||
+    (collection.run.outcome === "captured" && value.snapshots.length === 0)
+  ) {
+    findings.push(
+      finding(
+        "invalid_zero_success_run",
+        "collection.run.outcome",
+        "A zero-success run must say so explicitly and retain no capture, no successful attempt, and only unavailable comparisons.",
+      ),
+    );
+  }
+
+  const domainHosts = new Set();
+  for (const [index, domain] of domains.entries()) {
+    const host = domain.domain.toLowerCase();
+    if (domainHosts.has(host)) {
+      findings.push(
+        finding(
+          "duplicate_reference",
+          `collection.scope.domains.${index}.domain`,
+          `Approved domain ${JSON.stringify(domain.domain)} is duplicated.`,
+        ),
+      );
+    }
+    domainHosts.add(host);
+    const rulePaths = domain.allowRules.map((rule) => `${rule.kind}\u0000${rule.path}`);
+    if (
+      new Set(rulePaths).size !== rulePaths.length ||
+      domain.allowRules.some((rule) => pathIsExcluded(rule.path, domain))
+    ) {
+      findings.push(
+        finding(
+          "invalid_domain_scope",
+          `collection.scope.domains.${index}`,
+          "Owner-approved domains require distinct allowlist rules that are not entirely excluded by their own excluded paths.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, search] of collection.discovery.entries()) {
+    requireReferences(
+      [search.domainRef],
+      domainSet,
+      `collection.discovery.${index}.domainRef`,
+      "Discovery domain reference",
+    );
+    requireReferences(
+      search.resultTargetRefs,
+      targetSet,
+      `collection.discovery.${index}.resultTargetRefs`,
+      "Discovery result target reference",
+    );
+    const executedAt = Date.parse(search.executedAt);
+    if (executedAt < runStarted || executedAt > runCompleted) {
+      findings.push(
+        finding(
+          "search_outside_collection_run",
+          `collection.discovery.${index}.executedAt`,
+          "Every bounded discovery search must execute inside the declared collection run.",
+        ),
+      );
+    }
+    if (
+      search.resultTargetRefs.some(
+        (ref) => targetById.get(ref)?.domainRef !== search.domainRef,
+      )
+    ) {
+      findings.push(
+        finding(
+          "discovery_domain_mismatch",
+          `collection.discovery.${index}.resultTargetRefs`,
+          "A discovery search may return only targets on its declared owner-approved domain.",
+        ),
+      );
+    }
+    if (
+      search.resultTargetRefs.some((ref) => {
+        const target = targetById.get(ref);
+        return target?.origin !== "search-discovered" || target.discoveryRef !== search.id;
+      })
+    ) {
+      findings.push(
+        finding(
+          "invalid_discovery_provenance",
+          `collection.discovery.${index}.resultTargetRefs`,
+          "Every discovered target must name the same discovery search in its retained provenance.",
+        ),
+      );
+    }
+  }
+
+  const targetUrls = new Map();
+  for (const [index, target] of value.targets.entries()) {
+    requireReferences(
+      [target.domainRef],
+      domainSet,
+      `targets.${index}.domainRef`,
+      "Target domain reference",
+    );
+    requireReferences(
+      target.attemptRefs,
+      attemptSet,
+      `targets.${index}.attemptRefs`,
+      "Target attempt reference",
+    );
+    requireReferences(
+      [target.changeRef],
+      changeSet,
+      `targets.${index}.changeRef`,
+      "Target change reference",
+    );
+    if (target.snapshotRef !== null) {
+      requireReferences(
+        [target.snapshotRef],
+        snapshotSet,
+        `targets.${index}.snapshotRef`,
+        "Target snapshot reference",
+      );
+    }
+    if (target.discoveryRef !== null) {
+      requireReferences(
+        [target.discoveryRef],
+        searchSet,
+        `targets.${index}.discoveryRef`,
+        "Target discovery reference",
+      );
+    }
+    const domain = domainById.get(target.domainRef);
+    try {
+      const normalizedTargetUrl = new URL(target.requestedUrl).href;
+      const priorTarget = targetUrls.get(normalizedTargetUrl);
+      if (priorTarget) {
+        findings.push(
+          finding(
+            "duplicate_reference",
+            `targets.${index}.requestedUrl`,
+            `Requested URL ${JSON.stringify(target.requestedUrl)} belongs to both ${priorTarget} and ${target.id}.`,
+          ),
+        );
+      }
+      targetUrls.set(normalizedTargetUrl, target.id);
+    } catch {
+      // URL scope validation below reports malformed references.
+    }
+    if (
+      !urlWithinDomainScope(target.requestedUrl, domain) ||
+      !domain?.pageTypes.includes(target.pageType)
+    ) {
+      findings.push(
+        finding(
+          "target_outside_approved_scope",
+          `targets.${index}.requestedUrl`,
+          "Every planned target requires a credential-free public HTTPS URL on an owner-approved domain, inside the path allowlist, outside every excluded path, and of an approved page type.",
+        ),
+      );
+    }
+    const discovery = target.discoveryRef === null ? null : searchById.get(target.discoveryRef);
+    if (
+      target.origin === "search-discovered"
+        ? discovery === null ||
+          discovery === undefined ||
+          discovery.domainRef !== target.domainRef ||
+          !discovery.resultTargetRefs.includes(target.id)
+        : target.discoveryRef !== null
+    ) {
+      findings.push(
+        finding(
+          "invalid_discovery_provenance",
+          `targets.${index}.discoveryRef`,
+          "Search-discovered targets must be returned by a same-domain discovery search; owner-supplied targets must not claim one.",
+        ),
+      );
+    }
+    const attempts = target.attemptRefs
+      .map((id) => attemptById.get(id))
+      .filter(Boolean);
+    const successes = attempts.filter((item) => item.disposition === "success");
+    const failures = attempts.filter((item) => item.disposition === "failure");
+    const blocked = attempts.filter((item) => item.disposition === "blocked");
+    const omitted = Boolean(target.omissionReason?.trim());
+    const validAccounting =
+      attempts.every((item) => item.targetRef === target.id) &&
+      (target.disposition === "captured"
+        ? successes.length === 1 &&
+          target.snapshotRef !== null &&
+          successes[0].snapshotRef === target.snapshotRef &&
+          target.omissionReason === null &&
+          target.freshness !== "unavailable"
+        : target.disposition === "failed"
+          ? successes.length === 0 &&
+            failures.length > 0 &&
+            target.snapshotRef === null &&
+            omitted &&
+            target.freshness === "unavailable"
+          : target.disposition === "blocked"
+            ? successes.length === 0 &&
+              blocked.length > 0 &&
+              target.snapshotRef === null &&
+              omitted &&
+              target.freshness === "unavailable"
+            : target.attemptRefs.length === 0 &&
+              target.snapshotRef === null &&
+              omitted &&
+              target.freshness === "unavailable");
+    if (!validAccounting) {
+      findings.push(
+        finding(
+          "invalid_target_accounting",
+          `targets.${index}`,
+          "Every planned target must resolve to exactly one captured snapshot or to a failed, blocked, or unattempted disposition with a recorded omission reason.",
+        ),
+      );
+    }
+    const change = changeById.get(target.changeRef);
+    if (!change || change.targetRef !== target.id) {
+      findings.push(
+        finding(
+          "unclassified_target",
+          `targets.${index}.changeRef`,
+          `Target ${JSON.stringify(target.id)} must own exactly one baseline comparison record.`,
+        ),
+      );
+    }
+    const baselineIdentity = [
+      target.baseline.runId,
+      target.baseline.capturedAt,
+      target.baseline.contentHash,
+      target.baseline.snapshotRef,
+    ];
+    const baselineIdentityValid =
+      target.baseline.state === "recorded"
+        ? baselineIdentity.every((item) => item !== null) &&
+          target.baseline.runId === collection.baseline.runId &&
+          Date.parse(target.baseline.capturedAt) <= baselineAsOf &&
+          Date.parse(target.baseline.capturedAt) < runStarted
+        : baselineIdentity.every((item) => item === null);
+    if (!baselineIdentityValid) {
+      findings.push(
+        finding(
+          "unsupported_baseline_claim",
+          `targets.${index}.baseline`,
+          "A recorded target baseline requires complete prior identity from the declared baseline run before this collection; a first capture has no prior identity.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, attempt] of value.attempts.entries()) {
+    requireReferences(
+      [attempt.targetRef],
+      targetSet,
+      `attempts.${index}.targetRef`,
+      "Attempt target reference",
+    );
+    if (attempt.snapshotRef !== null) {
+      requireReferences(
+        [attempt.snapshotRef],
+        snapshotSet,
+        `attempts.${index}.snapshotRef`,
+        "Attempt snapshot reference",
+      );
+    }
+    const target = targetById.get(attempt.targetRef);
+    if (!target?.attemptRefs.includes(attempt.id)) {
+      findings.push(
+        finding(
+          "incomplete_target_coverage",
+          `attempts.${index}.targetRef`,
+          `Attempt ${JSON.stringify(attempt.id)} must be retained by the target it requested.`,
+        ),
+      );
+    }
+    const domain = domainById.get(target?.domainRef);
+    const requestedAt = Date.parse(attempt.requestedAt);
+    const completedAt = Date.parse(attempt.completedAt);
+    if (
+      requestedAt < runStarted ||
+      requestedAt > completedAt ||
+      completedAt > runCompleted
+    ) {
+      findings.push(
+        finding(
+          "invalid_attempt_chronology",
+          `attempts.${index}`,
+          "Every retrieval attempt must be ordered and contained by the declared collection run.",
+        ),
+      );
+    }
+    if (
+      attempt.requestedUrl !== target?.requestedUrl ||
+      [attempt.requestedUrl, attempt.finalUrl, ...attempt.redirectChain].some(
+        (url) => !urlWithinDomainScope(url, domain),
+      )
+    ) {
+      findings.push(
+        finding(
+          "capture_outside_approved_scope",
+          `attempts.${index}`,
+          "The requested URL, every redirect hop, and the final canonical URL must stay credential-free, public, and inside the target's approved domain and path scope.",
+        ),
+      );
+    }
+    if (
+      (attempt.redirectChain.length === 0 && attempt.finalUrl !== attempt.requestedUrl) ||
+      (attempt.redirectChain.length > 0 &&
+        (attempt.redirectChain.at(-1) !== attempt.finalUrl ||
+          attempt.redirectChain.includes(attempt.requestedUrl)))
+    ) {
+      findings.push(
+        finding(
+          "invalid_redirect_lineage",
+          `attempts.${index}.redirectChain`,
+          "Redirect lineage must end at the recorded final URL without looping back to the requested URL.",
+        ),
+      );
+    }
+    const status = attempt.httpStatus;
+    const validDisposition =
+      attempt.disposition === "success"
+        ? status !== null &&
+          status >= 200 &&
+          status <= 299 &&
+          attempt.robots === "allowed" &&
+          attempt.accessOutcome === "public" &&
+          Boolean(attempt.contentType?.trim()) &&
+          attempt.bytes !== null &&
+          attempt.bytes > 0 &&
+          attempt.contentHash !== null &&
+          attempt.snapshotRef !== null
+        : attempt.snapshotRef === null &&
+          attempt.contentHash === null &&
+          attempt.bytes === null &&
+          attempt.contentType === null &&
+          (attempt.disposition === "failure"
+            ? attempt.robots !== "disallowed" &&
+              ["not-found", "provider-error", "timeout", "rate-limited"].includes(
+                attempt.accessOutcome,
+              ) &&
+              (status === null || status >= 400)
+            : attempt.robots === "disallowed" ||
+              ["authentication-required", "paywalled", "forbidden"].includes(
+                attempt.accessOutcome,
+              ));
+    if (!validDisposition) {
+      findings.push(
+        finding(
+          "invalid_attempt_disposition",
+          `attempts.${index}`,
+          "Successful attempts require a public 2xx retrieval with content identity; failed and blocked attempts must retain their access outcome and no content.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, snapshot] of value.snapshots.entries()) {
+    requireReferences(
+      [snapshot.targetRef],
+      targetSet,
+      `snapshots.${index}.targetRef`,
+      "Snapshot target reference",
+    );
+    requireReferences(
+      [snapshot.attemptRef],
+      attemptSet,
+      `snapshots.${index}.attemptRef`,
+      "Snapshot attempt reference",
+    );
+    const target = targetById.get(snapshot.targetRef);
+    const attempt = attemptById.get(snapshot.attemptRef);
+    if (
+      attempt?.targetRef !== snapshot.targetRef ||
+      attempt?.snapshotRef !== snapshot.id ||
+      target?.snapshotRef !== snapshot.id ||
+      attempt?.finalUrl !== snapshot.canonicalUrl ||
+      attempt?.contentHash !== snapshot.contentHash ||
+      attempt?.bytes !== snapshot.bytes ||
+      Date.parse(snapshot.capturedAt) !== Date.parse(attempt?.completedAt ?? "")
+    ) {
+      findings.push(
+        finding(
+          "invalid_snapshot_binding",
+          `snapshots.${index}`,
+          "Every snapshot must bind to its own successful attempt and preserve that attempt's final URL, content hash, byte count, and retrieval time.",
+        ),
+      );
+    }
+    const excerptLength = snapshot.excerpt === null ? 0 : snapshot.excerpt.length;
+    if (
+      snapshot.excerptCharacters !== excerptLength ||
+      excerptLength > collection.retentionPolicy.maxExcerptCharacters ||
+      (snapshot.retention === "excerpt-and-hash" && excerptLength === 0) ||
+      (snapshot.retention !== "excerpt-and-hash" && snapshot.excerpt !== null) ||
+      (snapshot.excerpt !== null &&
+        snapshot.excerpt.trim() === snapshot.analystNote.trim())
+    ) {
+      findings.push(
+        finding(
+          "excessive_retained_content",
+          `snapshots.${index}`,
+          "Retained page text must stay inside the declared excerpt limit, match its recorded length and retention mode, and remain distinct from the analyst note.",
+        ),
+      );
+    }
+  }
+
+  const bytesRetained = value.snapshots.reduce((sum, item) => sum + item.bytes, 0);
+  const providerRequests = value.attempts.length + collection.discovery.length;
+  if (
+    collection.usage.urlsRequested !== value.targets.length ||
+    collection.usage.pagesRetrieved !== successfulAttempts.length ||
+    collection.usage.bytesRetained !== bytesRetained ||
+    collection.usage.providerRequests !== providerRequests
+  ) {
+    findings.push(
+      finding(
+        "invalid_usage_accounting",
+        "collection.usage",
+        "Declared usage must equal the retained targets, successful retrievals, snapshot bytes, and provider requests.",
+      ),
+    );
+  }
+  if (
+    collection.usage.urlsRequested > collection.caps.maxUrls ||
+    collection.usage.pagesRetrieved > collection.caps.maxPages ||
+    collection.usage.bytesRetained > collection.caps.maxBytes ||
+    collection.usage.providerRequests > collection.caps.maxProviderRequests
+  ) {
+    findings.push(
+      finding(
+        "exceeded_collection_cap",
+        "collection.usage",
+        "A bounded collection cannot exceed its declared URL, page, byte, or provider-request caps.",
+      ),
+    );
+  }
+
+  for (const [index, change] of value.changes.entries()) {
+    requireReferences(
+      [change.targetRef],
+      targetSet,
+      `changes.${index}.targetRef`,
+      "Change target reference",
+    );
+    if (change.currentSnapshotRef !== null) {
+      requireReferences(
+        [change.currentSnapshotRef],
+        snapshotSet,
+        `changes.${index}.currentSnapshotRef`,
+        "Change snapshot reference",
+      );
+    }
+    const target = targetById.get(change.targetRef);
+    if (target?.changeRef !== change.id) {
+      findings.push(
+        finding(
+          "unclassified_target",
+          `changes.${index}.targetRef`,
+          `Comparison ${JSON.stringify(change.id)} must be claimed by the target it compares.`,
+        ),
+      );
+    }
+    const comparedAt = Date.parse(change.comparedAt);
+    const latestAttemptCompletedAt = Math.max(
+      ...(target?.attemptRefs ?? [])
+        .map((attemptRef) => Date.parse(attemptById.get(attemptRef)?.completedAt ?? ""))
+        .filter(Number.isFinite),
+      runStarted,
+    );
+    const currentSnapshotCapturedAt =
+      change.currentSnapshotRef === null
+        ? runStarted
+        : Date.parse(snapshotById.get(change.currentSnapshotRef)?.capturedAt ?? "");
+    if (
+      comparedAt < runStarted ||
+      comparedAt > runAsOf ||
+      comparedAt < latestAttemptCompletedAt ||
+      comparedAt < currentSnapshotCapturedAt
+    ) {
+      findings.push(
+        finding(
+          "invalid_collection_chronology",
+          `changes.${index}.comparedAt`,
+          "Every baseline comparison must happen inside the declared collection run.",
+        ),
+      );
+    }
+    const baseline = target?.baseline;
+    const priorEmpty =
+      change.priorSnapshotRef === null &&
+      change.priorContentHash === null &&
+      change.priorCapturedAt === null;
+    const baselineBound =
+      baseline?.state === "recorded" &&
+      baseline.runId === collection.baseline.runId &&
+      change.priorSnapshotRef === baseline.snapshotRef &&
+      change.priorContentHash === baseline.contentHash &&
+      change.priorCapturedAt === baseline.capturedAt;
+    const requiresBaseline = ["removed", "modified", "unchanged"].includes(
+      change.classification,
+    );
+    const baselineClaimValid =
+      change.classification === "added"
+        ? baseline?.state === "none" && priorEmpty
+        : requiresBaseline
+          ? baselineBound
+          : baseline?.state === "recorded"
+            ? baselineBound
+            : priorEmpty;
+    if (!baselineClaimValid) {
+      findings.push(
+        finding(
+          "unsupported_baseline_claim",
+          `changes.${index}`,
+          "A comparison may cite only the target's recorded baseline identity, and a first capture cannot claim a prior snapshot.",
+        ),
+      );
+    }
+    const currentSnapshot =
+      change.currentSnapshotRef === null ? null : snapshotById.get(change.currentSnapshotRef);
+    const currentBound =
+      change.currentSnapshotRef === null
+        ? change.currentContentHash === null
+        : currentSnapshot?.targetRef === change.targetRef &&
+          target?.snapshotRef === change.currentSnapshotRef &&
+          change.currentContentHash === currentSnapshot?.contentHash;
+    const removedByNotFound =
+      target?.disposition === "failed" &&
+      target.attemptRefs.some(
+        (id) => attemptById.get(id)?.accessOutcome === "not-found",
+      );
+    const classificationValid =
+      currentBound &&
+      (["added", "modified", "unchanged"].includes(change.classification)
+        ? target?.disposition === "captured" && change.currentSnapshotRef !== null
+        : change.classification === "removed"
+          ? removedByNotFound && change.currentSnapshotRef === null
+          : ["failed", "blocked", "not-attempted"].includes(target?.disposition) &&
+            change.currentSnapshotRef === null &&
+            (!removedByNotFound || target?.baseline.state !== "recorded"));
+    if (!classificationValid) {
+      findings.push(
+        finding(
+          "invalid_change_classification",
+          `changes.${index}`,
+          "Added, modified, unchanged, removed, and unavailable comparisons must match the target's retained capture disposition and snapshot identity.",
+        ),
+      );
+    }
+    if (
+      change.priorContentHash !== null &&
+      change.currentContentHash !== null &&
+      ((change.priorContentHash === change.currentContentHash &&
+        change.classification !== "unchanged") ||
+        (change.priorContentHash !== change.currentContentHash &&
+          change.classification !== "modified"))
+    ) {
+      findings.push(
+        finding(
+          "false_change_claim",
+          `changes.${index}.classification`,
+          "Identical normalized content hashes are unchanged and differing hashes are modified; neither may be relabelled.",
+        ),
+      );
+    }
+    const materialityValid =
+      change.classification === "unchanged"
+        ? change.materiality.state === "no-change"
+        : change.classification === "unavailable"
+          ? change.materiality.state === "not-assessable"
+          : change.materiality.state === "owner-review-required";
+    if (!materialityValid) {
+      findings.push(
+        finding(
+          "invalid_materiality_state",
+          `changes.${index}.materiality`,
+          "Materiality is an owner-review routing state: real changes require owner review, identical captures are no-change, and missing captures are not assessable.",
+        ),
+      );
+    }
+    if (
+      change.materiality.state === "owner-review-required" &&
+      !value.reviewQuestions.some(
+        (question) =>
+          question.changeRefs.includes(change.id) &&
+          question.targetRefs.includes(change.targetRef),
+      )
+    ) {
+      findings.push(
+        finding(
+          "missing_owner_review_routing",
+          `changes.${index}.materiality`,
+          `Comparison ${JSON.stringify(change.id)} needs an owner review question that names its change and target.`,
+        ),
+      );
+    }
+  }
+  for (const target of value.targets) {
+    if (target.disposition === "captured") {
+      continue;
+    }
+    const routed =
+      value.reviewQuestions.some((item) => item.targetRefs.includes(target.id)) ||
+      value.gapsAndBlockers.some((item) => item.targetRefs.includes(target.id));
+    if (!routed) {
+      findings.push(
+        finding(
+          "missing_owner_review_routing",
+          "targets",
+          `Uncaptured target ${JSON.stringify(target.id)} needs an explicit owner review question, gap, or blocker.`,
+        ),
+      );
+    }
+  }
+
+  if (collection.state === "ready") {
+    for (const [index, target] of value.targets.entries()) {
+      const snapshot =
+        target.snapshotRef === null ? undefined : snapshotById.get(target.snapshotRef);
+      const staleCapture =
+        target.disposition === "captured"
+          ? target.freshness !== "current" ||
+            target.recheckState !== "current" ||
+            snapshot === undefined ||
+            runAsOf - Date.parse(snapshot.capturedAt) >
+              collection.freshnessPolicy.maxAgeHours * 3_600_000
+          : target.recheckState !== "recheck-required";
+      if (staleCapture) {
+        findings.push(
+          finding(
+            "stale_capture",
+            `targets.${index}`,
+            "A ready handoff requires every captured target to be current and inside the freshness window and every uncaptured target to request a recheck.",
+          ),
+        );
+      }
+    }
+  }
+
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    requireReferences(
+      question.targetRefs,
+      targetSet,
+      `reviewQuestions.${index}.targetRefs`,
+      "Review question target reference",
+    );
+    requireReferences(
+      question.changeRefs,
+      changeSet,
+      `reviewQuestions.${index}.changeRefs`,
+      "Review question change reference",
+    );
+    if (
+      question.owner !== collection.decisionOwner ||
+      (question.status === "resolved" && !question.resolution?.trim()) ||
+      (question.status === "open" && question.resolution !== null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_review_question",
+          `reviewQuestions.${index}`,
+          "Review questions must remain owner-owned and have a resolution only when resolved.",
+        ),
+      );
+    }
+  }
+  for (const [index, gap] of value.gapsAndBlockers.entries()) {
+    requireReferences(
+      gap.targetRefs,
+      targetSet,
+      `gapsAndBlockers.${index}.targetRefs`,
+      "Gap target reference",
+    );
+    requireReferences(
+      gap.changeRefs,
+      changeSet,
+      `gapsAndBlockers.${index}.changeRefs`,
+      "Gap change reference",
+    );
+    if (gap.owner !== collection.decisionOwner) {
+      findings.push(
+        finding(
+          "owner_mismatch",
+          `gapsAndBlockers.${index}.owner`,
+          "Every gap or blocker must belong to the named decision owner.",
+        ),
+      );
+    }
+  }
+
+  const handoff = value.handoff;
+  if (
+    handoff.owner !== collection.decisionOwner ||
+    value.ownerReview.owner !== collection.decisionOwner
+  ) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "handoff.owner",
+        "The owner review and handoff must remain assigned to the collection decision owner.",
+      ),
+    );
+  }
+  for (const owner of [
+    collection.decisionOwner,
+    handoff.owner,
+    value.ownerReview.owner,
+    ...value.reviewQuestions.map((item) => item.owner),
+    ...value.gapsAndBlockers.map((item) => item.owner),
+  ]) {
+    if (ownerIsAgent(owner)) {
+      findings.push(
+        finding(
+          "agent_owned_authority",
+          "collection.decisionOwner",
+          "A named accountable human or team, not an agent, must own the capture scope, materiality review, and handoff.",
+        ),
+      );
+      break;
+    }
+  }
+  if (
+    handoff.classification !== collection.classification ||
+    handoff.destination !== collection.destination ||
+    handoff.ownerReviewRef !== value.ownerReview.id
+  ) {
+    findings.push(
+      finding(
+        "private_handoff_mismatch",
+        "handoff",
+        "The private handoff must preserve the declared classification, destination, and owner review.",
+      ),
+    );
+  }
+  if (
+    !isSafePackagePath(handoff.destination) ||
+    !handoff.destination.startsWith("outputs/")
+  ) {
+    findings.push(
+      finding(
+        "unsafe_handoff_destination",
+        "handoff.destination",
+        "The private handoff destination must remain a portable path under outputs/.",
+      ),
+    );
+  }
+  requireCompleteReferences(handoff.targetRefs, targetIds, "handoff.targetRefs", "Target");
+  requireCompleteReferences(handoff.attemptRefs, attemptIds, "handoff.attemptRefs", "Attempt");
+  requireCompleteReferences(
+    handoff.snapshotRefs,
+    snapshotIds,
+    "handoff.snapshotRefs",
+    "Snapshot",
+  );
+  requireCompleteReferences(handoff.changeRefs, changeIds, "handoff.changeRefs", "Comparison");
+  requireCompleteReferences(
+    handoff.questionRefs,
+    questionIds,
+    "handoff.questionRefs",
+    "Review question",
+  );
+  requireCompleteReferences(
+    handoff.gapAndBlockerRefs,
+    gapIds,
+    "handoff.gapAndBlockerRefs",
+    "Gap or blocker",
+  );
+  requireCompleteReferences(
+    value.ownerReview.targetRefs,
+    targetIds,
+    "ownerReview.targetRefs",
+    "Owner-review target",
+  );
+  requireCompleteReferences(
+    value.ownerReview.changeRefs,
+    changeIds,
+    "ownerReview.changeRefs",
+    "Owner-review comparison",
+  );
+  requireCompleteReferences(
+    value.ownerReview.questionRefs,
+    questionIds,
+    "ownerReview.questionRefs",
+    "Owner-review question",
+  );
+  requireCompleteReferences(
+    value.ownerReview.gapAndBlockerRefs,
+    gapIds,
+    "ownerReview.gapAndBlockerRefs",
+    "Owner-review gap or blocker",
+  );
+  const openBlockers = value.gapsAndBlockers
+    .filter((item) => item.kind === "blocker" && item.status === "open")
+    .map((item) => item.id);
+  requireReferences(
+    handoff.blockerRefs,
+    gapSet,
+    "handoff.blockerRefs",
+    "Handoff blocker reference",
+  );
+  if (
+    openBlockers.some((id) => !handoff.blockerRefs.includes(id)) ||
+    handoff.blockerRefs.some((id) => !openBlockers.includes(id))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff.blockerRefs",
+        "Every and only open blockers must remain visible in the private handoff.",
+      ),
+    );
+  }
+  const expectedHandoffState =
+    collection.state === "ready" ? "ready-for-owner-review" : collection.state;
+  if (handoff.state !== expectedHandoffState) {
+    findings.push(
+      finding(
+        "inconsistent_ready_state",
+        "handoff.state",
+        "The collection and handoff state must remain consistent.",
+      ),
+    );
+  }
+  if (
+    handoff.state === "ready-for-owner-review" &&
+    (collection.run.outcome === "zero-success" ||
+      value.reviewQuestions.some((item) => item.status !== "resolved") ||
+      value.gapsAndBlockers.some((item) => item.status !== "resolved") ||
+      openBlockers.length > 0 ||
+      value.ownerReview.status !== "completed" ||
+      !value.ownerReview.resolution?.trim() ||
+      Date.parse(value.ownerReview.reviewedAt) <
+        Math.max(
+          runCompleted,
+          ...value.changes.map((item) => Date.parse(item.comparedAt)),
+        ) ||
+      Date.parse(value.ownerReview.reviewedAt) > runAsOf)
+  ) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "Ready handoffs cannot hide a zero-success run, unresolved questions, gaps, blockers, or an incomplete owner review.",
+      ),
+    );
+  }
+  if (
+    (value.ownerReview.status === "completed" && !value.ownerReview.resolution?.trim()) ||
+    (value.ownerReview.status === "pending" && value.ownerReview.resolution !== null)
+  ) {
+    findings.push(
+      finding(
+        "incoherent_owner_review",
+        "ownerReview",
+        "A completed owner review requires a recorded human resolution; a pending review cannot have one.",
+      ),
+    );
+  }
+  for (const action of requiredActions) {
+    if (
+      !value.blockedActions.includes(action) ||
+      !handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `The collection and private handoff must preserve the ${action} authority gate.`,
+        ),
+      );
+    }
+  }
+  const narrativeTexts = [
+    collection.purpose,
+    collection.decision,
+    ...collection.scope.excludedAreas,
+    ...collection.stopConditions,
+    ...collection.discovery.map((item) => item.query),
+    ...value.targets.flatMap((item) => [item.label, item.omissionReason ?? ""]),
+    ...value.attempts.map((item) => item.note),
+    ...value.snapshots.flatMap((item) => [
+      item.excerpt ?? "",
+      item.analystNote,
+      ...item.normalization,
+    ]),
+    ...value.changes.flatMap((item) => [item.summary, item.materiality.rationale]),
+    ...value.reviewQuestions.flatMap((item) => [item.question, item.resolution ?? ""]),
+    ...value.gapsAndBlockers.map((item) => item.description),
+    value.ownerReview.resolution ?? "",
+  ];
+  const prohibitedNarrative =
+    /\b(?:(?:authenticate(?:d|ing)?)(?:\s+(?:to|into))?|(?:log(?:ged|ging)?|sign(?:ed|ing)?)\s+in(?:to)?)\s+(?:a |the )?(?:private |vendor |publisher |customer )?(?:page|site|portal|account|tenant)|\b(?:submit|submitted|submitting) (?:a |the )?(?:login |sign-?in |search )?form|\b(?:bypass|circumvent)(?:ed|ing)? (?:the )?(?:publisher )?(?:access controls?|robots|rate limits?)|\b(?:ignor(?:e|ed|ing)|disregard(?:ed|ing)?|overrid(?:e|den|ing)|overrode) (?:the )?robots|\b(?:execut(?:e|ed|ing)|run(?:ning)?) (?:a |the )?(?:page |embedded )?(?:script|javascript)|\b(?:follow(?:ed|ing)?|obey(?:ed|ing)?|act(?:ed|ing)? on) (?:the |an? )?(?:page|embedded|retrieved|in-page) instructions?|\b(?:crawl(?:ed|ing)?|spider(?:ed|ing)?|scrap(?:e|ed|ing)) (?:the )?(?:entire|whole|full) (?:site|domain|website)|\bcrawl(?:ed|ing)? (?:outside|beyond) (?:the )?(?:approved )?(?:scope|allowlist|domain)|\b(?:publish(?:ed|ing)?|post(?:ed|ing)?|communicat(?:e|ed|ing)|contact(?:ed|ing)?|notif(?:y|ied|ying)|email(?:ed|ing)?|messag(?:e|ed|ing)) (?:an? |the )?(?:external|source|authority|audience|party|vendor|publisher)|\b(?:subscribe|subscribed|subscribing|unsubscribe|unsubscribed|unsubscribing) (?:to |from )?(?:a |the )?(?:vendor |publisher |site |page )?(?:feed|subscription|newsletter|alert)|\b(?:change|changed|changing|creat(?:e|ed|ing)|updat(?:e|ed|ing)) (?:an? )?account|\b(?:disclos(?:e|ed|ing)|leak(?:ed|ing)?|expos(?:e|ed|ing)|send(?:ing|sent)?) (?:(?:a|the) )?(?:credential|secret|token|api key|password)|\b(?:republish(?:ed|ing)?|reproduc(?:e|ed|ing)|copy(?:ing)?|mirror(?:ed|ing)?|archiv(?:e|ed|ing)) (?:the )?(?:full|entire|whole) (?:page|article|document|text)|\b(?:republish(?:ed|ing)?|reproduc(?:e|ed|ing)) (?:the |this |that )?(?:restricted|paywalled|copyrighted) (?:content|text|material)|\b(?:fabricat(?:e|ed|ing)|invent(?:ed|ing)?|synthesiz(?:e|ed|ing)) (?:a |the )?(?:capture|snapshot|hash|change|evidence)|\b(?:autonomously|automatically) (?:chang(?:e|ed|ing)|updat(?:e|ed|ing)|mak(?:e|ing)|tak(?:e|ing)) (?:a |the )?(?:decision|action)|\b(?:chang(?:e|ed|ing)|updat(?:e|ed|ing)|mak(?:e|ing)|tak(?:e|ing)) (?:a |the )?(?:decision|action) (?:autonomously|without (?:the )?(?:owner|review))|\b(?:declar(?:e|ed|ing)|conclud(?:e|ed|ing)|determin(?:e|ed|ing)|decid(?:e|ed|ing)) (?:that )?(?:the |this )?(?:change|difference)s? (?:is|are|was|were) (?:material|significant)/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unsafe_narrative_content",
+        "collection",
+        "Website capture artifacts must not authenticate, submit forms, bypass access controls or robots, execute scripts, follow page instructions, crawl outside scope, publish or contact externally, subscribe or change accounts, disclose credentials, republish copyrighted content, fabricate captures, or decide materiality or actions autonomously.",
+      ),
+    );
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
@@ -18977,6 +20051,7 @@ const validators = {
   "wardrobe-organizer": wardrobeFindings,
   "web-evidence-researcher": claimEvidenceInvestigationLedgerFindings,
   "warranty-returns-manager": warrantyReturnsFindings,
+  "website-evidence-collector": websiteCaptureEvidenceLedgerFindings,
   "work-chief-of-staff": workChiefOfStaffFindings,
 };
 

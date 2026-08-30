@@ -78,6 +78,7 @@ const schemaNames = {
   "vehicle-service-coordinator": "vehicle-service.schema.json",
   "wardrobe-organizer": "wardrobe-plan.schema.json",
   "warranty-returns-manager": "warranty-returns.schema.json",
+  "website-evidence-collector": "website-capture-evidence-ledger.schema.json",
   "work-chief-of-staff": "operating-portfolio.schema.json",
 };
 const schemaName = schemaNames[id];

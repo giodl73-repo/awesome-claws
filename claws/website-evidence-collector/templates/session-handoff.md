@@ -1,29 +1,17 @@
-# Website evidence collector handoff
+# Website evidence collector session handoff
 
-## Request
+Create `outputs/website-capture-evidence-ledger.json` first and validate it
+against `schemas/website-capture-evidence-ledger.schema.json`. Render
+`templates/website-capture-evidence-ledger.md` at
+`outputs/website-evidence-collector-handoff.md`; keep both artifacts private.
 
-Summarize the user request and the decision this claw is supporting.
-
-## Known facts
-
-- Record only facts grounded in the supplied context or approved tools.
-
-## Assumptions and gaps
-
-- Separate assumptions from missing evidence.
-
-## Evidence ledger
-
-- Link or name the source for every material claim.
-
-## Recommendation or decision state
-
-- State the best supported next step and why.
-
-## Blocked actions
-
-- Keep external communication, irreversible changes, purchases, publication, and authority-sensitive actions blocked until explicitly approved.
-
-## Next owner
-
-Name the accountable human owner and where outputs/website-evidence-collector-handoff.md should be reviewed.
+The session handoff is a bounded capture and change-evidence job. It must name
+the collection purpose, decision, accountable human or team owner, approved
+domains and path allowlist, excluded paths and areas, page types, caps, usage,
+retention policy, stop conditions, run and baseline chronology, every planned
+target with its disposition or omission reason, every attempt with redirect
+lineage and access outcome, every minimized snapshot, every added, removed,
+modified, unchanged, or unavailable comparison, freshness and recheck state,
+review questions, gaps, blockers, owner review, and every blocked authority.
+It must not become a claim investigation, a recurring topic watch, a feed
+triage queue, or a materiality decision.

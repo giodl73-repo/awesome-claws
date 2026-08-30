@@ -1,15 +1,15 @@
 {
   "schemaVersion": "awesomeClaws.sessionDemo.v1",
   "claw": "website-evidence-collector",
-  "scenario": "Collect the current public security, privacy, and subprocessors pages for five approved SaaS vendors and flag material changes since last quarter.",
+  "scenario": "Capture the approved public security, privacy, and subprocessor pages for our two contracted vendors and record what changed since the last approved quarterly capture.",
   "messages": [
     {
       "role": "user",
-      "text": "Collect the current public security, privacy, and subprocessors pages for five approved SaaS vendors and flag material changes since last quarter."
+      "text": "Capture the approved public security, privacy, and subprocessor pages for our two contracted vendors and record what changed since the last approved quarterly capture."
     },
     {
       "role": "agent",
-      "text": "I identified the website decision, the evidence needed, and the boundary that must stay human-owned."
+      "text": "I recorded the bounded collection control, the accountable Vendor Risk Review Board owner, the approved domains and path allowlist, the caps and retention policy, and the prior baseline before requesting any page."
     },
     {
       "role": "user",
@@ -17,41 +17,41 @@
     },
     {
       "role": "agent",
-      "text": "I produced outputs/website-evidence-collector-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+      "text": "I produced the validated private capture ledger and outputs/website-evidence-collector-handoff.md, accounting for every target including the robots-blocked page, the removed URL, and the unattempted target, and left materiality to the owner."
     }
   ],
   "report": {
     "title": "Website evidence collector session handoff",
-    "summary": "A capped, allowlisted Firecrawl retrieval with timestamps and hashes, normalized change evidence, original links, collection failures, and reviewer questions without authentication or publication.",
+    "summary": "A private website capture evidence ledger with owner-approved domains and path allowlists, a bounded retrieval ledger including a robots-blocked page and a removed URL, minimized snapshots, added, modified, unchanged, and unavailable comparisons, owner-routed materiality, and no authentication, crawl, or publication.",
     "output": "outputs/website-evidence-collector-handoff.md",
     "items": [
       {
-        "title": "Collection scope and allowlist",
-        "summary": "Every retrieval is inside the approved domain and path scope and records final URL, time, status, and evidence identity",
+        "title": "Bounded collection control",
+        "summary": "The purpose, decision, Vendor Risk Review Board owner, approved domains, path allowlist, exclusions, caps, retention policy, stop conditions, run, and prior baseline are explicit",
         "tags": [
           "fact-based",
           "reviewable"
         ]
       },
       {
-        "title": "Retrieval and error ledger",
-        "summary": "Collection stayed within the declared page, byte, usage, and retention limits",
+        "title": "Retrieval and omission ledger",
+        "summary": "Every planned target is accounted for once with redirect lineage, final canonical URL, status, content identity, robots and access outcome, or a recorded omission reason",
         "tags": [
           "evidence",
           "owner-visible"
         ]
       },
       {
-        "title": "Normalized evidence set",
-        "summary": "Do not crawl outside the approved domains or paths, evade robots or access controls, authenticate, submit forms, or retrieve personal, confidential, paywalled, or prohibited content",
+        "title": "Minimized snapshots and baseline comparison",
+        "summary": "Snapshots keep bounded excerpts, hashes, and analyst notes separate, and every comparison cites a recorded baseline without reporting identical content as changed",
         "tags": [
           "approval-gated",
           "safe fallback"
         ]
       },
       {
-        "title": "Content-change comparison",
-        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "title": "Owner-reviewed private handoff",
+        "summary": "Review questions, gaps, blockers, authority gates, and the completed human owner review remain visible; materiality stays with the owner.",
         "tags": [
           "handoff",
           "durable"

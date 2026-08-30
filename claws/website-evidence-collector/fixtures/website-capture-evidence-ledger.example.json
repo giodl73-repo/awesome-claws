@@ -1,0 +1,701 @@
+{
+  "schemaVersion": "awesomeClaws.websiteCaptureEvidenceLedger.v1",
+  "collection": {
+    "id": "collection-vendor-trust-pages-2026q3",
+    "purpose": "Capture the approved public trust, privacy, and subprocessor pages for two contracted vendors and record what changed since the approved 2026Q2 capture.",
+    "decision": "Give the Vendor Risk Review Board a reviewable capture set so it can decide which vendor policy changes need a contract review this quarter.",
+    "decisionOwner": "Vendor Risk Review Board",
+    "classification": "private",
+    "destination": "outputs/website-evidence-collector-handoff.md",
+    "deadline": "2026-08-31T17:00:00Z",
+    "asOf": "2026-08-30T16:00:00Z",
+    "run": {
+      "id": "run-vendor-trust-capture-20260830",
+      "startedAt": "2026-08-30T15:00:00Z",
+      "completedAt": "2026-08-30T15:45:00Z",
+      "asOf": "2026-08-30T16:00:00Z",
+      "outcome": "captured"
+    },
+    "baseline": {
+      "state": "established",
+      "runId": "run-vendor-trust-capture-20260529",
+      "asOf": "2026-05-29T16:00:00Z"
+    },
+    "scope": {
+      "domains": [
+        {
+          "id": "domain-northwind",
+          "domain": "trust.northwind.example",
+          "ownerApproved": true,
+          "allowRules": [
+            { "kind": "exact", "path": "/security/overview" },
+            { "kind": "path-prefix", "path": "/legal" }
+          ],
+          "excludedPaths": ["/legal/archive", "/account"],
+          "pageTypes": ["security-overview", "privacy-notice", "subprocessor-list"]
+        },
+        {
+          "id": "domain-contoso",
+          "domain": "policies.contoso.example",
+          "ownerApproved": true,
+          "allowRules": [{ "kind": "path-prefix", "path": "/trust" }],
+          "excludedPaths": ["/trust/internal"],
+          "pageTypes": ["security-overview", "subprocessor-list", "status-notice"]
+        }
+      ],
+      "excludedAreas": [
+        "Customer portals, sign-in pages, support consoles, and any path that requires an account or form submission.",
+        "Archived legal history, internal trust material, marketing campaigns, and non-approved vendor domains."
+      ]
+    },
+    "caps": {
+      "maxUrls": 12,
+      "maxPages": 8,
+      "maxBytes": 1500000,
+      "maxProviderRequests": 8
+    },
+    "usage": {
+      "urlsRequested": 7,
+      "pagesRetrieved": 4,
+      "bytesRetained": 171747,
+      "providerRequests": 8
+    },
+    "retentionPolicy": {
+      "maxExcerptCharacters": 400,
+      "retainFullPage": false,
+      "retentionDays": 180,
+      "disposition": "delete-after-owner-review"
+    },
+    "stopConditions": [
+      "Stop when the approved page cap, byte cap, or provider-request cap is reached and record every unattempted target as an explicit omission.",
+      "Stop a target when robots, access control, authentication, a form, or a paywall stands between the request and the public page.",
+      "Stop and escalate to the owner when a redirect leaves the approved domain and path scope."
+    ],
+    "freshnessPolicy": {
+      "maxAgeHours": 72,
+      "recheckOn": ["capture-age", "capture-failure", "change-detected", "owner-request"]
+    },
+    "discovery": [
+      {
+        "id": "search-northwind-subprocessors",
+        "domainRef": "domain-northwind",
+        "query": "site:trust.northwind.example/legal subprocessor list",
+        "executedAt": "2026-08-30T15:05:00Z",
+        "resultTargetRefs": ["target-northwind-subprocessors"]
+      },
+      {
+        "id": "search-contoso-subprocessor-update",
+        "domainRef": "domain-contoso",
+        "query": "site:policies.contoso.example/trust subprocessor change notice 2026",
+        "executedAt": "2026-08-30T15:08:00Z",
+        "resultTargetRefs": []
+      }
+    ],
+    "state": "ready"
+  },
+  "targets": [
+    {
+      "id": "target-northwind-security",
+      "domainRef": "domain-northwind",
+      "label": "Northwind public security overview",
+      "pageType": "security-overview",
+      "requestedUrl": "https://trust.northwind.example/security/overview",
+      "origin": "owner-supplied",
+      "discoveryRef": null,
+      "attemptRefs": ["attempt-northwind-security"],
+      "disposition": "captured",
+      "snapshotRef": "snapshot-northwind-security",
+      "changeRef": "change-northwind-security",
+      "baseline": {
+        "state": "recorded",
+        "runId": "run-vendor-trust-capture-20260529",
+        "capturedAt": "2026-05-29T15:12:00Z",
+        "contentHash": "sha256:1b0f4c8ad2e5471fb9c6a3d8e07f215c4a6b9d03e8f1c72a5d4b6e09f3a17c82",
+        "snapshotRef": "snapshot-northwind-security-20260529"
+      },
+      "freshness": "current",
+      "recheckState": "current",
+      "omissionReason": null
+    },
+    {
+      "id": "target-northwind-privacy",
+      "domainRef": "domain-northwind",
+      "label": "Northwind public privacy notice",
+      "pageType": "privacy-notice",
+      "requestedUrl": "https://trust.northwind.example/legal/privacy-notice",
+      "origin": "owner-supplied",
+      "discoveryRef": null,
+      "attemptRefs": ["attempt-northwind-privacy"],
+      "disposition": "captured",
+      "snapshotRef": "snapshot-northwind-privacy",
+      "changeRef": "change-northwind-privacy",
+      "baseline": {
+        "state": "recorded",
+        "runId": "run-vendor-trust-capture-20260529",
+        "capturedAt": "2026-05-29T15:15:00Z",
+        "contentHash": "sha256:5d3a91c7be04628f1a7c05d93e6b48fa20c7d5e1930a4b86cf72d10e5a94b3d7",
+        "snapshotRef": "snapshot-northwind-privacy-20260529"
+      },
+      "freshness": "current",
+      "recheckState": "current",
+      "omissionReason": null
+    },
+    {
+      "id": "target-northwind-subprocessors",
+      "domainRef": "domain-northwind",
+      "label": "Northwind public subprocessor list",
+      "pageType": "subprocessor-list",
+      "requestedUrl": "https://trust.northwind.example/legal/subprocessors",
+      "origin": "search-discovered",
+      "discoveryRef": "search-northwind-subprocessors",
+      "attemptRefs": ["attempt-northwind-subprocessors"],
+      "disposition": "captured",
+      "snapshotRef": "snapshot-northwind-subprocessors",
+      "changeRef": "change-northwind-subprocessors",
+      "baseline": {
+        "state": "none",
+        "runId": null,
+        "capturedAt": null,
+        "contentHash": null,
+        "snapshotRef": null
+      },
+      "freshness": "current",
+      "recheckState": "current",
+      "omissionReason": null
+    },
+    {
+      "id": "target-contoso-security",
+      "domainRef": "domain-contoso",
+      "label": "Contoso public trust and security page",
+      "pageType": "security-overview",
+      "requestedUrl": "https://policies.contoso.example/trust/security",
+      "origin": "owner-supplied",
+      "discoveryRef": null,
+      "attemptRefs": ["attempt-contoso-security"],
+      "disposition": "captured",
+      "snapshotRef": "snapshot-contoso-security",
+      "changeRef": "change-contoso-security",
+      "baseline": {
+        "state": "recorded",
+        "runId": "run-vendor-trust-capture-20260529",
+        "capturedAt": "2026-05-29T15:20:00Z",
+        "contentHash": "sha256:9f26c07b4e1d385a0c7fb2916d84e3570ab1c9d6f402e837b5a0c1d94e62f083",
+        "snapshotRef": "snapshot-contoso-security-20260529"
+      },
+      "freshness": "current",
+      "recheckState": "current",
+      "omissionReason": null
+    },
+    {
+      "id": "target-contoso-subprocessors",
+      "domainRef": "domain-contoso",
+      "label": "Contoso public subprocessor list",
+      "pageType": "subprocessor-list",
+      "requestedUrl": "https://policies.contoso.example/trust/subprocessors",
+      "origin": "owner-supplied",
+      "discoveryRef": null,
+      "attemptRefs": ["attempt-contoso-subprocessors"],
+      "disposition": "blocked",
+      "snapshotRef": null,
+      "changeRef": "change-contoso-subprocessors",
+      "baseline": {
+        "state": "recorded",
+        "runId": "run-vendor-trust-capture-20260529",
+        "capturedAt": "2026-05-29T15:24:00Z",
+        "contentHash": "sha256:3c85f019ad72b6e4109c5d8fa3b70e26df41905c8b7a2e63d0f9147ba52c6e8d",
+        "snapshotRef": "snapshot-contoso-subprocessors-20260529"
+      },
+      "freshness": "unavailable",
+      "recheckState": "recheck-required",
+      "omissionReason": "The publisher's robots policy now disallows automated retrieval of this path, so no current capture exists and the 2026Q2 identity is retained without any change claim."
+    },
+    {
+      "id": "target-contoso-status-notice",
+      "domainRef": "domain-contoso",
+      "label": "Contoso 2026Q2 trust status notice",
+      "pageType": "status-notice",
+      "requestedUrl": "https://policies.contoso.example/trust/status-notice-2026q2",
+      "origin": "owner-supplied",
+      "discoveryRef": null,
+      "attemptRefs": ["attempt-contoso-status-notice"],
+      "disposition": "failed",
+      "snapshotRef": null,
+      "changeRef": "change-contoso-status-notice",
+      "baseline": {
+        "state": "recorded",
+        "runId": "run-vendor-trust-capture-20260529",
+        "capturedAt": "2026-05-29T15:28:00Z",
+        "contentHash": "sha256:7a41d6082be95c3f10d7b48ae2f5069c3d18b7e05a94c2f61b830d7ec4590a2f",
+        "snapshotRef": "snapshot-contoso-status-notice-20260529"
+      },
+      "freshness": "unavailable",
+      "recheckState": "recheck-required",
+      "omissionReason": "The approved public URL now returns 404, so the page cannot be captured this quarter and only its 2026Q2 identity remains on record."
+    },
+    {
+      "id": "target-northwind-retention-appendix",
+      "domainRef": "domain-northwind",
+      "label": "Northwind data retention appendix",
+      "pageType": "privacy-notice",
+      "requestedUrl": "https://trust.northwind.example/legal/retention-appendix",
+      "origin": "owner-supplied",
+      "discoveryRef": null,
+      "attemptRefs": [],
+      "disposition": "not-attempted",
+      "snapshotRef": null,
+      "changeRef": "change-northwind-retention-appendix",
+      "baseline": {
+        "state": "none",
+        "runId": null,
+        "capturedAt": null,
+        "contentHash": null,
+        "snapshotRef": null
+      },
+      "freshness": "unavailable",
+      "recheckState": "recheck-required",
+      "omissionReason": "The run reached the declared provider-request stop condition before this target was requested, so no retrieval was attempted and no capture is claimed."
+    }
+  ],
+  "attempts": [
+    {
+      "id": "attempt-northwind-security",
+      "targetRef": "target-northwind-security",
+      "provider": "firecrawl-scrape",
+      "requestedUrl": "https://trust.northwind.example/security/overview",
+      "finalUrl": "https://trust.northwind.example/security/overview",
+      "redirectChain": [],
+      "requestedAt": "2026-08-30T15:10:00Z",
+      "completedAt": "2026-08-30T15:10:04Z",
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 48120,
+      "contentHash": "sha256:c4e70b91a5d3286f0b7c14e9a6d5382f70b1c9a4e6d038f752b0a1c93de647b5",
+      "robots": "allowed",
+      "accessOutcome": "public",
+      "disposition": "success",
+      "snapshotRef": "snapshot-northwind-security",
+      "note": "Public page retrieved without authentication, form submission, or script execution."
+    },
+    {
+      "id": "attempt-northwind-privacy",
+      "targetRef": "target-northwind-privacy",
+      "provider": "firecrawl-scrape",
+      "requestedUrl": "https://trust.northwind.example/legal/privacy-notice",
+      "finalUrl": "https://trust.northwind.example/legal/privacy-notice",
+      "redirectChain": [],
+      "requestedAt": "2026-08-30T15:12:00Z",
+      "completedAt": "2026-08-30T15:12:03Z",
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 61340,
+      "contentHash": "sha256:5d3a91c7be04628f1a7c05d93e6b48fa20c7d5e1930a4b86cf72d10e5a94b3d7",
+      "robots": "allowed",
+      "accessOutcome": "public",
+      "disposition": "success",
+      "snapshotRef": "snapshot-northwind-privacy",
+      "note": "Public page retrieved and reduced to a hash-only record because no excerpt is needed for an unchanged page."
+    },
+    {
+      "id": "attempt-northwind-subprocessors",
+      "targetRef": "target-northwind-subprocessors",
+      "provider": "firecrawl-scrape",
+      "requestedUrl": "https://trust.northwind.example/legal/subprocessors",
+      "finalUrl": "https://trust.northwind.example/legal/subprocessors",
+      "redirectChain": [],
+      "requestedAt": "2026-08-30T15:14:00Z",
+      "completedAt": "2026-08-30T15:14:05Z",
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 22415,
+      "contentHash": "sha256:8b1e05c7a94d2360f8a5c7b019e4d3f26a70c85b1d9f3e042a6c78b5d1039e4c",
+      "robots": "allowed",
+      "accessOutcome": "public",
+      "disposition": "success",
+      "snapshotRef": "snapshot-northwind-subprocessors",
+      "note": "First approved capture of this public path; there is no earlier identity to compare against."
+    },
+    {
+      "id": "attempt-contoso-security",
+      "targetRef": "target-contoso-security",
+      "provider": "firecrawl-scrape",
+      "requestedUrl": "https://policies.contoso.example/trust/security",
+      "finalUrl": "https://policies.contoso.example/trust/security-overview",
+      "redirectChain": ["https://policies.contoso.example/trust/security-overview"],
+      "requestedAt": "2026-08-30T15:20:00Z",
+      "completedAt": "2026-08-30T15:20:06Z",
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 39872,
+      "contentHash": "sha256:9f26c07b4e1d385a0c7fb2916d84e3570ab1c9d6f402e837b5a0c1d94e62f083",
+      "robots": "allowed",
+      "accessOutcome": "public",
+      "disposition": "success",
+      "snapshotRef": "snapshot-contoso-security",
+      "note": "The publisher redirected the approved path to a renamed public path inside the same approved domain and path scope."
+    },
+    {
+      "id": "attempt-contoso-subprocessors",
+      "targetRef": "target-contoso-subprocessors",
+      "provider": "firecrawl-scrape",
+      "requestedUrl": "https://policies.contoso.example/trust/subprocessors",
+      "finalUrl": "https://policies.contoso.example/trust/subprocessors",
+      "redirectChain": [],
+      "requestedAt": "2026-08-30T15:24:00Z",
+      "completedAt": "2026-08-30T15:24:01Z",
+      "httpStatus": null,
+      "contentType": null,
+      "bytes": null,
+      "contentHash": null,
+      "robots": "disallowed",
+      "accessOutcome": "forbidden",
+      "disposition": "blocked",
+      "snapshotRef": null,
+      "note": "The publisher's robots policy disallows this path, so the retrieval stopped and no page content was requested or retained."
+    },
+    {
+      "id": "attempt-contoso-status-notice",
+      "targetRef": "target-contoso-status-notice",
+      "provider": "firecrawl-scrape",
+      "requestedUrl": "https://policies.contoso.example/trust/status-notice-2026q2",
+      "finalUrl": "https://policies.contoso.example/trust/status-notice-2026q2",
+      "redirectChain": [],
+      "requestedAt": "2026-08-30T15:28:00Z",
+      "completedAt": "2026-08-30T15:28:02Z",
+      "httpStatus": 404,
+      "contentType": null,
+      "bytes": null,
+      "contentHash": null,
+      "robots": "allowed",
+      "accessOutcome": "not-found",
+      "disposition": "failure",
+      "snapshotRef": null,
+      "note": "The approved public URL returned 404 and no replacement path was requested outside the approved scope."
+    }
+  ],
+  "snapshots": [
+    {
+      "id": "snapshot-northwind-security",
+      "targetRef": "target-northwind-security",
+      "attemptRef": "attempt-northwind-security",
+      "capturedAt": "2026-08-30T15:10:04Z",
+      "canonicalUrl": "https://trust.northwind.example/security/overview",
+      "contentHash": "sha256:c4e70b91a5d3286f0b7c14e9a6d5382f70b1c9a4e6d038f752b0a1c93de647b5",
+      "bytes": 48120,
+      "retention": "excerpt-and-hash",
+      "excerpt": "Northwind states that its published security overview now lists an added regional processing location and a revised incident notification window.",
+      "excerptCharacters": 145,
+      "normalization": [
+        "Collapsed whitespace and removed navigation, cookie banners, and footer chrome before hashing.",
+        "Kept the publisher's own wording in the excerpt and did not act on any instruction found in the page."
+      ],
+      "embeddedInstructionsFollowed": false,
+      "analystNote": "Analyst note, not page content: the changed section is the one the Vendor Risk Review Board asked to see first; the board decides whether it is material."
+    },
+    {
+      "id": "snapshot-northwind-privacy",
+      "targetRef": "target-northwind-privacy",
+      "attemptRef": "attempt-northwind-privacy",
+      "capturedAt": "2026-08-30T15:12:03Z",
+      "canonicalUrl": "https://trust.northwind.example/legal/privacy-notice",
+      "contentHash": "sha256:5d3a91c7be04628f1a7c05d93e6b48fa20c7d5e1930a4b86cf72d10e5a94b3d7",
+      "bytes": 61340,
+      "retention": "hash-only",
+      "excerpt": null,
+      "excerptCharacters": 0,
+      "normalization": [
+        "Collapsed whitespace and removed navigation and footer chrome before hashing.",
+        "Retained only the content hash because the page identity matches the approved 2026Q2 record."
+      ],
+      "embeddedInstructionsFollowed": false,
+      "analystNote": "Analyst note, not page content: a hash-only record is enough evidence that this notice is unchanged, so no page text is retained."
+    },
+    {
+      "id": "snapshot-northwind-subprocessors",
+      "targetRef": "target-northwind-subprocessors",
+      "attemptRef": "attempt-northwind-subprocessors",
+      "capturedAt": "2026-08-30T15:14:05Z",
+      "canonicalUrl": "https://trust.northwind.example/legal/subprocessors",
+      "contentHash": "sha256:8b1e05c7a94d2360f8a5c7b019e4d3f26a70c85b1d9f3e042a6c78b5d1039e4c",
+      "bytes": 22415,
+      "retention": "excerpt-and-hash",
+      "excerpt": "The published subprocessor list names the processing purpose and location for each named subprocessor as of the publisher's stated effective date.",
+      "excerptCharacters": 146,
+      "normalization": [
+        "Collapsed whitespace and removed navigation and footer chrome before hashing.",
+        "Bounded the excerpt to the publisher's own summary line instead of copying the full list."
+      ],
+      "embeddedInstructionsFollowed": false,
+      "analystNote": "Analyst note, not page content: this is a first capture, so the board has no prior identity to compare and should treat the list as a new baseline."
+    },
+    {
+      "id": "snapshot-contoso-security",
+      "targetRef": "target-contoso-security",
+      "attemptRef": "attempt-contoso-security",
+      "capturedAt": "2026-08-30T15:20:06Z",
+      "canonicalUrl": "https://policies.contoso.example/trust/security-overview",
+      "contentHash": "sha256:9f26c07b4e1d385a0c7fb2916d84e3570ab1c9d6f402e837b5a0c1d94e62f083",
+      "bytes": 39872,
+      "retention": "reference-only",
+      "excerpt": null,
+      "excerptCharacters": 0,
+      "normalization": [
+        "Collapsed whitespace and removed navigation and footer chrome before hashing.",
+        "Kept only the canonical link and hash because the publisher marks this page as copyrighted material."
+      ],
+      "embeddedInstructionsFollowed": false,
+      "analystNote": "Analyst note, not page content: the page moved to a renamed public path but its normalized identity is unchanged from 2026Q2."
+    }
+  ],
+  "changes": [
+    {
+      "id": "change-northwind-security",
+      "targetRef": "target-northwind-security",
+      "classification": "modified",
+      "priorSnapshotRef": "snapshot-northwind-security-20260529",
+      "priorContentHash": "sha256:1b0f4c8ad2e5471fb9c6a3d8e07f215c4a6b9d03e8f1c72a5d4b6e09f3a17c82",
+      "priorCapturedAt": "2026-05-29T15:12:00Z",
+      "currentSnapshotRef": "snapshot-northwind-security",
+      "currentContentHash": "sha256:c4e70b91a5d3286f0b7c14e9a6d5382f70b1c9a4e6d038f752b0a1c93de647b5",
+      "comparedAt": "2026-08-30T15:40:00Z",
+      "summary": "The normalized page identity differs from the approved 2026Q2 record, and the retained excerpt shows an added processing location and a revised notification window.",
+      "materiality": {
+        "state": "owner-review-required",
+        "rationale": "Whether a changed processing location or notification window is material is a Vendor Risk Review Board judgement, not a capture result."
+      }
+    },
+    {
+      "id": "change-northwind-privacy",
+      "targetRef": "target-northwind-privacy",
+      "classification": "unchanged",
+      "priorSnapshotRef": "snapshot-northwind-privacy-20260529",
+      "priorContentHash": "sha256:5d3a91c7be04628f1a7c05d93e6b48fa20c7d5e1930a4b86cf72d10e5a94b3d7",
+      "priorCapturedAt": "2026-05-29T15:15:00Z",
+      "currentSnapshotRef": "snapshot-northwind-privacy",
+      "currentContentHash": "sha256:5d3a91c7be04628f1a7c05d93e6b48fa20c7d5e1930a4b86cf72d10e5a94b3d7",
+      "comparedAt": "2026-08-30T15:40:00Z",
+      "summary": "The normalized page identity matches the approved 2026Q2 record exactly, so no change is claimed for this notice.",
+      "materiality": {
+        "state": "no-change",
+        "rationale": "Identical normalized content hashes carry no review question for the board."
+      }
+    },
+    {
+      "id": "change-northwind-subprocessors",
+      "targetRef": "target-northwind-subprocessors",
+      "classification": "added",
+      "priorSnapshotRef": null,
+      "priorContentHash": null,
+      "priorCapturedAt": null,
+      "currentSnapshotRef": "snapshot-northwind-subprocessors",
+      "currentContentHash": "sha256:8b1e05c7a94d2360f8a5c7b019e4d3f26a70c85b1d9f3e042a6c78b5d1039e4c",
+      "comparedAt": "2026-08-30T15:40:00Z",
+      "summary": "This approved public path has no earlier capture on record, so the run establishes a first baseline rather than reporting a change.",
+      "materiality": {
+        "state": "owner-review-required",
+        "rationale": "The board decides whether a newly captured subprocessor list needs contract review; the ledger only records that no prior identity exists."
+      }
+    },
+    {
+      "id": "change-contoso-security",
+      "targetRef": "target-contoso-security",
+      "classification": "unchanged",
+      "priorSnapshotRef": "snapshot-contoso-security-20260529",
+      "priorContentHash": "sha256:9f26c07b4e1d385a0c7fb2916d84e3570ab1c9d6f402e837b5a0c1d94e62f083",
+      "priorCapturedAt": "2026-05-29T15:20:00Z",
+      "currentSnapshotRef": "snapshot-contoso-security",
+      "currentContentHash": "sha256:9f26c07b4e1d385a0c7fb2916d84e3570ab1c9d6f402e837b5a0c1d94e62f083",
+      "comparedAt": "2026-08-30T15:40:00Z",
+      "summary": "The publisher renamed the public path, but the normalized content identity matches the approved 2026Q2 record, so the rename alone is not reported as a content change.",
+      "materiality": {
+        "state": "no-change",
+        "rationale": "Identical normalized content hashes carry no review question even when the approved path was redirected."
+      }
+    },
+    {
+      "id": "change-contoso-subprocessors",
+      "targetRef": "target-contoso-subprocessors",
+      "classification": "unavailable",
+      "priorSnapshotRef": "snapshot-contoso-subprocessors-20260529",
+      "priorContentHash": "sha256:3c85f019ad72b6e4109c5d8fa3b70e26df41905c8b7a2e63d0f9147ba52c6e8d",
+      "priorCapturedAt": "2026-05-29T15:24:00Z",
+      "currentSnapshotRef": null,
+      "currentContentHash": null,
+      "comparedAt": "2026-08-30T15:40:00Z",
+      "summary": "Robots policy blocked the current retrieval, so the 2026Q2 identity is retained and no comparison, change, or absence of change is claimed.",
+      "materiality": {
+        "state": "not-assessable",
+        "rationale": "Without a current capture there is no basis for any change statement; the board decides whether to seek the page another way."
+      }
+    },
+    {
+      "id": "change-contoso-status-notice",
+      "targetRef": "target-contoso-status-notice",
+      "classification": "removed",
+      "priorSnapshotRef": "snapshot-contoso-status-notice-20260529",
+      "priorContentHash": "sha256:7a41d6082be95c3f10d7b48ae2f5069c3d18b7e05a94c2f61b830d7ec4590a2f",
+      "priorCapturedAt": "2026-05-29T15:28:00Z",
+      "currentSnapshotRef": null,
+      "currentContentHash": null,
+      "comparedAt": "2026-08-30T15:40:00Z",
+      "summary": "The approved public URL that held the 2026Q2 status notice now returns 404, so the captured page is recorded as removed at that URL.",
+      "materiality": {
+        "state": "owner-review-required",
+        "rationale": "The board decides whether a withdrawn status notice matters and whether to ask the vendor directly; the ledger does not contact anyone."
+      }
+    },
+    {
+      "id": "change-northwind-retention-appendix",
+      "targetRef": "target-northwind-retention-appendix",
+      "classification": "unavailable",
+      "priorSnapshotRef": null,
+      "priorContentHash": null,
+      "priorCapturedAt": null,
+      "currentSnapshotRef": null,
+      "currentContentHash": null,
+      "comparedAt": "2026-08-30T15:40:00Z",
+      "summary": "The run stopped at the declared provider-request limit before this planned target was requested, so no capture and no comparison exist.",
+      "materiality": {
+        "state": "not-assessable",
+        "rationale": "An unattempted target produces no evidence; the board decides whether to raise the cap for the next run."
+      }
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-material-policy-changes",
+      "question": "Which of the recorded page changes, the first-captured subprocessor list, and the removed status notice require a contract review before the next vendor checkpoint?",
+      "owner": "Vendor Risk Review Board",
+      "targetRefs": [
+        "target-northwind-security",
+        "target-northwind-subprocessors",
+        "target-contoso-status-notice"
+      ],
+      "changeRefs": [
+        "change-northwind-security",
+        "change-northwind-subprocessors",
+        "change-contoso-status-notice"
+      ],
+      "status": "resolved",
+      "resolution": "The board accepted the capture set and scheduled its own materiality review; the collector made no materiality determination and did not contact a vendor."
+    }
+  ],
+  "gapsAndBlockers": [
+    {
+      "id": "gap-contoso-subprocessor-access",
+      "kind": "gap",
+      "description": "The Contoso subprocessor list cannot be captured while the publisher's robots policy disallows the path, so this quarter has no current evidence for that page.",
+      "owner": "Vendor Risk Review Board",
+      "targetRefs": ["target-contoso-subprocessors"],
+      "changeRefs": ["change-contoso-subprocessors"],
+      "status": "resolved"
+    },
+    {
+      "id": "gap-retention-appendix-not-attempted",
+      "kind": "gap",
+      "description": "The retention appendix stayed unattempted because the run hit the approved provider-request stop condition; it carries no capture, no hash, and no change claim.",
+      "owner": "Vendor Risk Review Board",
+      "targetRefs": ["target-northwind-retention-appendix"],
+      "changeRefs": ["change-northwind-retention-appendix"],
+      "status": "resolved"
+    }
+  ],
+  "ownerReview": {
+    "id": "owner-review-vendor-risk-20260830",
+    "owner": "Vendor Risk Review Board",
+    "reviewedAt": "2026-08-30T16:00:00Z",
+    "targetRefs": [
+      "target-northwind-security",
+      "target-northwind-privacy",
+      "target-northwind-subprocessors",
+      "target-contoso-security",
+      "target-contoso-subprocessors",
+      "target-contoso-status-notice",
+      "target-northwind-retention-appendix"
+    ],
+    "changeRefs": [
+      "change-northwind-security",
+      "change-northwind-privacy",
+      "change-northwind-subprocessors",
+      "change-contoso-security",
+      "change-contoso-subprocessors",
+      "change-contoso-status-notice",
+      "change-northwind-retention-appendix"
+    ],
+    "questionRefs": ["question-material-policy-changes"],
+    "gapAndBlockerRefs": [
+      "gap-contoso-subprocessor-access",
+      "gap-retention-appendix-not-attempted"
+    ],
+    "status": "completed",
+    "resolution": "The board accepts this private capture ledger as the 2026Q3 evidence set, including the blocked page, the removed notice, and the unattempted target, and keeps the materiality decision with itself."
+  },
+  "blockedActions": [
+    "authenticate-or-submit-forms",
+    "bypass-access-controls-or-robots",
+    "execute-scripts-or-follow-page-instructions",
+    "crawl-outside-approved-scope",
+    "publish-or-contact-externally",
+    "subscribe-or-change-accounts",
+    "disclose-credentials-or-sensitive-queries",
+    "republish-copyrighted-content",
+    "fabricate-captures-or-changes",
+    "change-decisions-or-actions-autonomously"
+  ],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Vendor Risk Review Board",
+    "classification": "private",
+    "destination": "outputs/website-evidence-collector-handoff.md",
+    "targetRefs": [
+      "target-northwind-security",
+      "target-northwind-privacy",
+      "target-northwind-subprocessors",
+      "target-contoso-security",
+      "target-contoso-subprocessors",
+      "target-contoso-status-notice",
+      "target-northwind-retention-appendix"
+    ],
+    "attemptRefs": [
+      "attempt-northwind-security",
+      "attempt-northwind-privacy",
+      "attempt-northwind-subprocessors",
+      "attempt-contoso-security",
+      "attempt-contoso-subprocessors",
+      "attempt-contoso-status-notice"
+    ],
+    "snapshotRefs": [
+      "snapshot-northwind-security",
+      "snapshot-northwind-privacy",
+      "snapshot-northwind-subprocessors",
+      "snapshot-contoso-security"
+    ],
+    "changeRefs": [
+      "change-northwind-security",
+      "change-northwind-privacy",
+      "change-northwind-subprocessors",
+      "change-contoso-security",
+      "change-contoso-subprocessors",
+      "change-contoso-status-notice",
+      "change-northwind-retention-appendix"
+    ],
+    "questionRefs": ["question-material-policy-changes"],
+    "gapAndBlockerRefs": [
+      "gap-contoso-subprocessor-access",
+      "gap-retention-appendix-not-attempted"
+    ],
+    "blockerRefs": [],
+    "ownerReviewRef": "owner-review-vendor-risk-20260830",
+    "prohibitedActions": [
+      "authenticate-or-submit-forms",
+      "bypass-access-controls-or-robots",
+      "execute-scripts-or-follow-page-instructions",
+      "crawl-outside-approved-scope",
+      "publish-or-contact-externally",
+      "subscribe-or-change-accounts",
+      "disclose-credentials-or-sensitive-queries",
+      "republish-copyrighted-content",
+      "fabricate-captures-or-changes",
+      "change-decisions-or-actions-autonomously"
+    ]
+  }
+}
