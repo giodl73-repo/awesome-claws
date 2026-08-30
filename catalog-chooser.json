@@ -3643,15 +3643,15 @@
     {
       "id": "web-evidence-researcher",
       "name": "Web evidence researcher",
-      "description": "Uses Tavily search and extraction to build bounded, source-linked evidence sets without publishing or acting on retrieved content.",
-      "audience": "Researchers and operators who need current web evidence collected against a declared question and source standard.",
+      "description": "Produces a private, bounded claim-evidence investigation ledger that maps owner-approved public web authorities, reproducible searches, canonical sources, corroboration, conflicts, uncertainty, and decision implications without making the decision.",
+      "audience": "Architecture, policy, and operations teams that need a one-shot, claim-oriented public-web investigation for a named human or team decision owner.",
       "category": "analysis",
       "maintenance": {
         "status": "active",
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-30"
       },
       "setup": {
         "level": "medium",

@@ -1,29 +1,14 @@
-# Web evidence researcher handoff
+# Web evidence researcher session handoff
 
-## Request
+Create `outputs/claim-evidence-investigation-ledger.json` first and validate it
+against `schemas/claim-evidence-investigation-ledger.schema.json`. Render
+`templates/claim-evidence-investigation-ledger.md` at
+`outputs/web-evidence-researcher-handoff.md`; keep both artifacts private.
 
-Summarize the user request and the decision this claw is supporting.
-
-## Known facts
-
-- Record only facts grounded in the supplied context or approved tools.
-
-## Assumptions and gaps
-
-- Separate assumptions from missing evidence.
-
-## Evidence ledger
-
-- Link or name the source for every material claim.
-
-## Recommendation or decision state
-
-- State the best supported next step and why.
-
-## Blocked actions
-
-- Keep external communication, irreversible changes, purchases, publication, and authority-sensitive actions blocked until explicitly approved.
-
-## Next owner
-
-Name the accountable human owner and where outputs/web-evidence-researcher-handoff.md should be reviewed.
+The session handoff is a bounded claim-oriented web investigation. It must name
+the question, decision, accountable human or team owner, scope and exclusions,
+approved public authorities and domains, reproducible search records including
+zero-result searches, canonical source identity and chronology, claims, typed
+evidence, confidence, uncertainty, conflicts, review questions, gaps, owner
+review, and every blocked authority. It must not become a recurring watch, feed
+triage, scholarly lifecycle assessment, or raw website-capture report.

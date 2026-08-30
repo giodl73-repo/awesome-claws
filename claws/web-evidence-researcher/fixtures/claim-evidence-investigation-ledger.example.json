@@ -1,0 +1,403 @@
+{
+  "schemaVersion": "awesomeClaws.claimEvidenceInvestigationLedger.v1",
+  "investigation": {
+    "id": "investigation-2027-device-authentication",
+    "question": "What bounded public evidence supports or limits using WebAuthn, CTAP, and vendor security-key guidance for the 2027 device rollout?",
+    "decision": "Prepare a private evidence map for the Architecture Review Team to decide whether the proposed authentication standards merit controlled rollout planning.",
+    "decisionOwner": "Architecture Review Team",
+    "classification": "private",
+    "destination": "outputs/web-evidence-researcher-handoff.md",
+    "scope": {
+      "included": [
+        "Public standards-body and named vendor documentation for WebAuthn, CTAP, and security-key deployment prerequisites.",
+        "Direct excerpts needed to map the bounded claims to their public sources."
+      ],
+      "excluded": [
+        "Recurring source monitoring, scholarly study assessment, raw website capture, production configuration, legal interpretation, and purchasing decisions.",
+        "Authenticated, restricted, paywalled, personal, confidential, or unapproved web content."
+      ]
+    },
+    "asOf": "2026-08-30T16:00:00Z",
+    "run": {
+      "id": "run-2027-device-authentication-20260830",
+      "startedAt": "2026-08-30T15:00:00Z",
+      "completedAt": "2026-08-30T15:40:00Z",
+      "asOf": "2026-08-30T16:00:00Z"
+    },
+    "authorities": [
+      {
+        "id": "authority-w3c",
+        "name": "World Wide Web Consortium",
+        "domains": ["w3.org"],
+        "sourceTypes": ["technical-standard"],
+        "ownerApproved": true
+      },
+      {
+        "id": "authority-fido",
+        "name": "FIDO Alliance",
+        "domains": ["fidoalliance.org"],
+        "sourceTypes": ["technical-standard", "implementation-guide"],
+        "ownerApproved": true
+      },
+      {
+        "id": "authority-microsoft",
+        "name": "Microsoft Learn",
+        "domains": ["learn.microsoft.com"],
+        "sourceTypes": ["vendor-document", "implementation-guide"],
+        "ownerApproved": true
+      }
+    ],
+    "queries": [
+      {
+        "id": "query-w3c-webauthn",
+        "authorityRef": "authority-w3c",
+        "query": "site:w3.org/TR Web Authentication Level 3 public recommendation",
+        "executedAt": "2026-08-30T15:05:00Z",
+        "resultSourceRefs": ["source-w3c-webauthn"]
+      },
+      {
+        "id": "query-fido-ctap",
+        "authorityRef": "authority-fido",
+        "query": "site:fidoalliance.org public CTAP specification and implementation guidance",
+        "executedAt": "2026-08-30T15:12:00Z",
+        "resultSourceRefs": ["source-fido-ctap"]
+      },
+      {
+        "id": "query-microsoft-security-key",
+        "authorityRef": "authority-microsoft",
+        "query": "site:learn.microsoft.com Entra security key passwordless deployment prerequisites",
+        "executedAt": "2026-08-30T15:20:00Z",
+        "resultSourceRefs": [
+          "source-microsoft-security-key",
+          "source-microsoft-passwordless-overview"
+        ]
+      },
+      {
+        "id": "query-approved-zero-result",
+        "authorityRef": "authority-fido",
+        "query": "site:fidoalliance.org approved public device-rollout exception notice",
+        "executedAt": "2026-08-30T15:30:00Z",
+        "resultSourceRefs": []
+      }
+    ],
+    "freshnessPolicy": {
+      "maxAgeHours": 168,
+      "recheckOn": ["source-age", "claim-conflict", "owner-request"]
+    },
+    "state": "ready"
+  },
+  "sources": [
+    {
+      "id": "source-w3c-webauthn",
+      "authorityRef": "authority-w3c",
+      "sourceType": "technical-standard",
+      "publisher": "World Wide Web Consortium",
+      "canonicalKey": "w3c-webauthn-level-3",
+      "canonicalUrl": "https://www.w3.org/TR/webauthn-3/",
+      "title": "Web Authentication: An API for accessing Public Key Credentials",
+      "publishedAt": "2025-01-27T00:00:00Z",
+      "updatedAt": "2025-01-27T00:00:00Z",
+      "retrievedAt": "2026-08-30T15:06:00Z",
+      "freshness": "current",
+      "recheckState": "current",
+      "queryRefs": ["query-w3c-webauthn"],
+      "independenceKey": "w3c-webauthn",
+      "derivation": "primary",
+      "derivedFromSourceRefs": [],
+      "scope": "Public standards-body record retained for the protocol claim; no deployment conclusion is inferred."
+    },
+    {
+      "id": "source-fido-ctap",
+      "authorityRef": "authority-fido",
+      "sourceType": "technical-standard",
+      "publisher": "FIDO Alliance",
+      "canonicalKey": "fido-ctap-public-specifications",
+      "canonicalUrl": "https://fidoalliance.org/specifications/",
+      "title": "FIDO Alliance Specifications",
+      "publishedAt": "2025-01-01T00:00:00Z",
+      "updatedAt": "2025-01-01T00:00:00Z",
+      "retrievedAt": "2026-08-30T15:13:00Z",
+      "freshness": "current",
+      "recheckState": "current",
+      "queryRefs": ["query-fido-ctap"],
+      "independenceKey": "fido-ctap",
+      "derivation": "primary",
+      "derivedFromSourceRefs": [],
+      "scope": "Public FIDO specification index retained as an independent protocol reference."
+    },
+    {
+      "id": "source-microsoft-security-key",
+      "authorityRef": "authority-microsoft",
+      "sourceType": "vendor-document",
+      "publisher": "Microsoft",
+      "canonicalKey": "microsoft-entra-security-key-passwordless",
+      "canonicalUrl": "https://learn.microsoft.com/en-us/entra/identity/authentication/howto-authentication-passwordless-security-key",
+      "title": "Enable passkey authentication with security keys",
+      "publishedAt": "2025-01-01T00:00:00Z",
+      "updatedAt": "2025-01-01T00:00:00Z",
+      "retrievedAt": "2026-08-30T15:21:00Z",
+      "freshness": "current",
+      "recheckState": "current",
+      "queryRefs": ["query-microsoft-security-key"],
+      "independenceKey": "microsoft-entra-security-key",
+      "derivation": "primary",
+      "derivedFromSourceRefs": [],
+      "scope": "Vendor-specific public implementation guidance; it does not establish cross-vendor readiness."
+    },
+    {
+      "id": "source-microsoft-passwordless-overview",
+      "authorityRef": "authority-microsoft",
+      "sourceType": "implementation-guide",
+      "publisher": "Microsoft",
+      "canonicalKey": "microsoft-passwordless-overview",
+      "canonicalUrl": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passwordless",
+      "title": "Passwordless authentication options",
+      "publishedAt": "2025-01-01T00:00:00Z",
+      "updatedAt": "2025-01-01T00:00:00Z",
+      "retrievedAt": "2026-08-30T15:22:00Z",
+      "freshness": "current",
+      "recheckState": "current",
+      "queryRefs": ["query-microsoft-security-key"],
+      "independenceKey": "microsoft-entra-security-key",
+      "derivation": "derived",
+      "derivedFromSourceRefs": ["source-microsoft-security-key"],
+      "scope": "Vendor context derived from the same publisher family and not independent corroboration."
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "hypothesis-protocol-basis",
+      "statement": "The proposed rollout has a public protocol basis, but standards evidence alone does not establish deployment readiness.",
+      "claimRefs": ["claim-public-protocol-basis", "claim-rollout-readiness"],
+      "status": "resolved"
+    },
+    {
+      "id": "hypothesis-vendor-prerequisites",
+      "statement": "Named vendor guidance can identify deployment prerequisites without proving that the private device environment satisfies them.",
+      "claimRefs": ["claim-vendor-prerequisites"],
+      "status": "resolved"
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-public-protocol-basis",
+      "hypothesisRef": "hypothesis-protocol-basis",
+      "type": "requirement",
+      "statement": "The approved W3C and FIDO public records provide protocol references relevant to the proposed authentication standards.",
+      "evidenceRefs": ["evidence-w3c-protocol", "evidence-fido-protocol"],
+      "assessment": "supported",
+      "corroboration": {
+        "requiredIndependentSources": 2,
+        "independentEvidenceRefs": ["evidence-w3c-protocol", "evidence-fido-protocol"]
+      },
+      "decisionImplication": "The owner can use the two public protocol records as a bounded starting point for private architecture review.",
+      "confidence": "high",
+      "uncertainty": "The records do not prove device compatibility, deployment policy, or operational success.",
+      "limitations": [
+        "This investigation evaluates a bounded public source set rather than the complete standards landscape.",
+        "The artifact does not interpret the standards as legal or security certification."
+      ],
+      "status": "resolved"
+    },
+    {
+      "id": "claim-vendor-prerequisites",
+      "hypothesisRef": "hypothesis-vendor-prerequisites",
+      "type": "compatibility",
+      "statement": "The named vendor documentation identifies public security-key implementation prerequisites that the owner must compare with the private rollout environment.",
+      "evidenceRefs": ["evidence-microsoft-prerequisites", "evidence-microsoft-context"],
+      "assessment": "supported",
+      "corroboration": {
+        "requiredIndependentSources": 1,
+        "independentEvidenceRefs": ["evidence-microsoft-prerequisites"]
+      },
+      "decisionImplication": "The owner should compare the documented prerequisites with approved private architecture information before selecting a rollout path.",
+      "confidence": "moderate",
+      "uncertainty": "A vendor document describes that vendor's implementation and is not independent evidence of other vendors' behavior.",
+      "limitations": [
+        "The related passwordless overview is derived context from the same publisher and is not counted as independent corroboration.",
+        "No authenticated tenant or private device configuration was accessed."
+      ],
+      "status": "resolved"
+    },
+    {
+      "id": "claim-rollout-readiness",
+      "hypothesisRef": "hypothesis-protocol-basis",
+      "type": "scope",
+      "statement": "The approved public evidence cannot determine whether the private 2027 device rollout is ready.",
+      "evidenceRefs": ["evidence-w3c-readiness-limit", "evidence-microsoft-readiness-limit"],
+      "assessment": "unknown",
+      "corroboration": {
+        "requiredIndependentSources": 0,
+        "independentEvidenceRefs": []
+      },
+      "decisionImplication": "Readiness remains an Architecture Review Team decision after it evaluates private device, identity, and policy constraints.",
+      "confidence": "insufficient",
+      "uncertainty": "The investigation intentionally excludes private configuration and operational validation.",
+      "limitations": [
+        "No production systems, accounts, credentials, or restricted content were accessed.",
+        "The ledger does not make a security, legal, medical, financial, or causal determination."
+      ],
+      "status": "resolved"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-w3c-protocol",
+      "claimRef": "claim-public-protocol-basis",
+      "sourceRef": "source-w3c-webauthn",
+      "type": "bounded-excerpt",
+      "stance": "supports",
+      "excerpt": "The public W3C technical record is retained as the protocol reference for the Web Authentication claim.",
+      "confidence": "high",
+      "limitation": "The bounded excerpt identifies the public record without reproducing the specification or asserting a deployment outcome."
+    },
+    {
+      "id": "evidence-fido-protocol",
+      "claimRef": "claim-public-protocol-basis",
+      "sourceRef": "source-fido-ctap",
+      "type": "bounded-excerpt",
+      "stance": "supports",
+      "excerpt": "The public FIDO specifications index is retained as an independently published protocol reference.",
+      "confidence": "moderate",
+      "limitation": "The index is not a complete implementation assessment or a substitute for the controlling specification text."
+    },
+    {
+      "id": "evidence-microsoft-prerequisites",
+      "claimRef": "claim-vendor-prerequisites",
+      "sourceRef": "source-microsoft-security-key",
+      "type": "bounded-excerpt",
+      "stance": "supports",
+      "excerpt": "The vendor implementation guide is retained to identify public security-key deployment prerequisites for owner review.",
+      "confidence": "moderate",
+      "limitation": "The documentation is vendor-specific and cannot validate the private deployment environment."
+    },
+    {
+      "id": "evidence-microsoft-context",
+      "claimRef": "claim-vendor-prerequisites",
+      "sourceRef": "source-microsoft-passwordless-overview",
+      "type": "source-context",
+      "stance": "context",
+      "excerpt": "The related vendor overview provides same-publisher passwordless context but is not independent corroboration.",
+      "confidence": "low",
+      "limitation": "This derived page shares the same publisher family and is excluded from the independent source count."
+    },
+    {
+      "id": "evidence-w3c-readiness-limit",
+      "claimRef": "claim-rollout-readiness",
+      "sourceRef": "source-w3c-webauthn",
+      "type": "source-context",
+      "stance": "unknown",
+      "excerpt": "A public protocol record cannot determine the readiness of an unobserved private device rollout.",
+      "confidence": "high",
+      "limitation": "The source scope is protocol design rather than the owner's private deployment conditions."
+    },
+    {
+      "id": "evidence-microsoft-readiness-limit",
+      "claimRef": "claim-rollout-readiness",
+      "sourceRef": "source-microsoft-security-key",
+      "type": "source-context",
+      "stance": "unknown",
+      "excerpt": "Vendor guidance does not verify the private tenant, device fleet, policy, or change-control state.",
+      "confidence": "high",
+      "limitation": "The investigation does not access any authenticated or private deployment evidence."
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-protocol-and-deployment-scope",
+      "claimRefs": ["claim-public-protocol-basis", "claim-rollout-readiness"],
+      "evidenceRefs": ["evidence-w3c-protocol", "evidence-w3c-readiness-limit"],
+      "description": "The public protocol record supports a standards basis while the same bounded evidence cannot establish private rollout readiness; both statements remain visible rather than being collapsed into a readiness conclusion.",
+      "owner": "Architecture Review Team",
+      "status": "resolved",
+      "resolution": "The handoff labels protocol basis and deployment readiness as separate claim scopes for the owner."
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-private-environment-fit",
+      "question": "Which approved private device, identity, and policy evidence should the Architecture Review Team compare with the documented public prerequisites?",
+      "owner": "Architecture Review Team",
+      "claimRefs": ["claim-vendor-prerequisites", "claim-rollout-readiness"],
+      "evidenceRefs": ["evidence-microsoft-prerequisites", "evidence-microsoft-readiness-limit"],
+      "status": "resolved",
+      "resolution": "The private environment comparison is assigned to the Architecture Review Team and remains outside this public-web investigation."
+    }
+  ],
+  "gapsAndBlockers": [
+    {
+      "id": "gap-private-deployment-evidence",
+      "kind": "gap",
+      "description": "The approved public sources do not contain the private device inventory, identity policy, or change-control evidence required to determine rollout readiness.",
+      "owner": "Architecture Review Team",
+      "claimRefs": ["claim-rollout-readiness"],
+      "evidenceRefs": ["evidence-w3c-readiness-limit", "evidence-microsoft-readiness-limit"],
+      "status": "resolved"
+    }
+  ],
+  "ownerReview": {
+    "id": "owner-review-architecture-20260830",
+    "owner": "Architecture Review Team",
+    "reviewedAt": "2026-08-30T16:00:00Z",
+    "claimRefs": [
+      "claim-public-protocol-basis",
+      "claim-vendor-prerequisites",
+      "claim-rollout-readiness"
+    ],
+    "questionRefs": ["question-private-environment-fit"],
+    "gapAndBlockerRefs": ["gap-private-deployment-evidence"],
+    "status": "completed",
+    "resolution": "The owner accepts this as a private evidence handoff for architecture review; no public conclusion, configuration change, or rollout decision is made by the researcher."
+  },
+  "blockedActions": [
+    "bypass-access-controls",
+    "reproduce-restricted-content",
+    "publish-or-contact-externally",
+    "subscribe-or-change-accounts",
+    "disclose-credentials-or-sensitive-queries",
+    "fabricate-sources-or-claims",
+    "make-consensus-causal-legal-medical-or-financial-inference",
+    "change-decisions-or-actions-autonomously"
+  ],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Architecture Review Team",
+    "classification": "private",
+    "destination": "outputs/web-evidence-researcher-handoff.md",
+    "sourceRefs": [
+      "source-w3c-webauthn",
+      "source-fido-ctap",
+      "source-microsoft-security-key",
+      "source-microsoft-passwordless-overview"
+    ],
+    "hypothesisRefs": ["hypothesis-protocol-basis", "hypothesis-vendor-prerequisites"],
+    "claimRefs": [
+      "claim-public-protocol-basis",
+      "claim-vendor-prerequisites",
+      "claim-rollout-readiness"
+    ],
+    "evidenceRefs": [
+      "evidence-w3c-protocol",
+      "evidence-fido-protocol",
+      "evidence-microsoft-prerequisites",
+      "evidence-microsoft-context",
+      "evidence-w3c-readiness-limit",
+      "evidence-microsoft-readiness-limit"
+    ],
+    "conflictRefs": ["conflict-protocol-and-deployment-scope"],
+    "questionRefs": ["question-private-environment-fit"],
+    "gapAndBlockerRefs": ["gap-private-deployment-evidence"],
+    "blockerRefs": [],
+    "ownerReviewRef": "owner-review-architecture-20260830",
+    "prohibitedActions": [
+      "bypass-access-controls",
+      "reproduce-restricted-content",
+      "publish-or-contact-externally",
+      "subscribe-or-change-accounts",
+      "disclose-credentials-or-sensitive-queries",
+      "fabricate-sources-or-claims",
+      "make-consensus-causal-legal-medical-or-financial-inference",
+      "change-decisions-or-actions-autonomously"
+    ]
+  }
+}

@@ -18125,6 +18125,789 @@ function feedIntelligenceDeltaLedgerFindings(value) {
   return findings;
 }
 
+function claimEvidenceInvestigationLedgerFindings(value) {
+  const findings = [];
+  const requiredActions = [
+    "bypass-access-controls",
+    "reproduce-restricted-content",
+    "publish-or-contact-externally",
+    "subscribe-or-change-accounts",
+    "disclose-credentials-or-sensitive-queries",
+    "fabricate-sources-or-claims",
+    "make-consensus-causal-legal-medical-or-financial-inference",
+    "change-decisions-or-actions-autonomously",
+  ];
+  const { investigation } = value;
+  const authorities = investigation.authorities;
+  const authorityIds = authorities.map((item) => item.id);
+  const queryIds = investigation.queries.map((item) => item.id);
+  const sourceIds = value.sources.map((item) => item.id);
+  const hypothesisIds = value.hypotheses.map((item) => item.id);
+  const claimIds = value.claims.map((item) => item.id);
+  const evidenceIds = value.evidence.map((item) => item.id);
+  const conflictIds = value.conflicts.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const gapIds = value.gapsAndBlockers.map((item) => item.id);
+  const authoritySet = new Set(authorityIds);
+  const querySet = new Set(queryIds);
+  const sourceSet = new Set(sourceIds);
+  const hypothesisSet = new Set(hypothesisIds);
+  const claimSet = new Set(claimIds);
+  const evidenceSet = new Set(evidenceIds);
+  const conflictSet = new Set(conflictIds);
+  const questionSet = new Set(questionIds);
+  const gapSet = new Set(gapIds);
+  const authorityById = new Map(authorities.map((item) => [item.id, item]));
+  const queryById = new Map(investigation.queries.map((item) => [item.id, item]));
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const hypothesisById = new Map(value.hypotheses.map((item) => [item.id, item]));
+  const claimById = new Map(value.claims.map((item) => [item.id, item]));
+  const evidenceById = new Map(value.evidence.map((item) => [item.id, item]));
+
+  findings.push(
+    ...uniqueFindings(authorityIds, "investigation.authorities", "Authority id"),
+    ...uniqueFindings(queryIds, "investigation.queries", "Query id"),
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(hypothesisIds, "hypotheses", "Hypothesis id"),
+    ...uniqueFindings(claimIds, "claims", "Claim id"),
+    ...uniqueFindings(evidenceIds, "evidence", "Evidence id"),
+    ...uniqueFindings(conflictIds, "conflicts", "Conflict id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+    ...uniqueFindings(gapIds, "gapsAndBlockers", "Gap or blocker id"),
+  );
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  function requireCompleteReferences(actual, expected, path, label) {
+    requireReferences(actual, new Set(expected), path, label);
+    for (const id of expected) {
+      if (!actual.includes(id)) {
+        findings.push(
+          finding(
+            "incomplete_handoff",
+            path,
+            `${label} ${JSON.stringify(id)} is missing from the private handoff.`,
+          ),
+        );
+      }
+    }
+  }
+
+  function ownerIsAgent(owner) {
+    return (
+      /^(?:the )?(?:agent|assistant|claw)$/iu.test(owner.trim()) ||
+      /\b(?:ai|bot|gpt|language model|web evidence researcher)\b/iu.test(owner)
+    );
+  }
+
+  const runStarted = Date.parse(investigation.run.startedAt);
+  const runCompleted = Date.parse(investigation.run.completedAt);
+  const runAsOf = Date.parse(investigation.run.asOf);
+  const asOf = Date.parse(investigation.asOf);
+  if (
+    runStarted > runCompleted ||
+    runCompleted > runAsOf ||
+    runAsOf !== asOf
+  ) {
+    findings.push(
+      finding(
+        "invalid_investigation_chronology",
+        "investigation.run",
+        "The bounded investigation run must be ordered and share the declared as-of time.",
+      ),
+    );
+  }
+  if (
+    !isSafePackagePath(investigation.destination) ||
+    !investigation.destination.startsWith("outputs/")
+  ) {
+    findings.push(
+      finding(
+        "unsafe_handoff_destination",
+        "investigation.destination",
+        "The private investigation destination must remain a portable path under outputs/.",
+      ),
+    );
+  }
+
+  for (const [index, query] of investigation.queries.entries()) {
+    requireReferences(
+      [query.authorityRef],
+      authoritySet,
+      `investigation.queries.${index}.authorityRef`,
+      "Query authority reference",
+    );
+    requireReferences(
+      query.resultSourceRefs,
+      sourceSet,
+      `investigation.queries.${index}.resultSourceRefs`,
+      "Query result source reference",
+    );
+    if (
+      Date.parse(query.executedAt) < runStarted ||
+      Date.parse(query.executedAt) > runCompleted
+    ) {
+      findings.push(
+        finding(
+          "query_outside_investigation_run",
+          `investigation.queries.${index}.executedAt`,
+          "Each reproducible query must execute inside the bounded investigation run.",
+        ),
+      );
+    }
+    if (
+      query.resultSourceRefs.some(
+        (sourceRef) => sourceById.get(sourceRef)?.authorityRef !== query.authorityRef,
+      )
+    ) {
+      findings.push(
+        finding(
+          "query_authority_mismatch",
+          `investigation.queries.${index}.resultSourceRefs`,
+          "A query may retain only sources from its declared owner-approved authority.",
+        ),
+      );
+    }
+    if (
+      query.resultSourceRefs.some(
+        (sourceRef) => !sourceById.get(sourceRef)?.queryRefs.includes(query.id),
+      )
+    ) {
+      findings.push(
+        finding(
+          "invalid_query_provenance",
+          `investigation.queries.${index}.resultSourceRefs`,
+          "Every query result must name the same query in its retained source provenance.",
+        ),
+      );
+    }
+  }
+
+  const sourceIdentityOwners = new Map();
+  for (const [index, source] of value.sources.entries()) {
+    requireReferences(
+      [source.authorityRef],
+      authoritySet,
+      `sources.${index}.authorityRef`,
+      "Source authority reference",
+    );
+    requireReferences(
+      source.queryRefs,
+      querySet,
+      `sources.${index}.queryRefs`,
+      "Source query reference",
+    );
+    requireReferences(
+      source.derivedFromSourceRefs,
+      sourceSet,
+      `sources.${index}.derivedFromSourceRefs`,
+      "Derived source reference",
+    );
+    const authority = authorityById.get(source.authorityRef);
+    if (
+      !authority?.ownerApproved ||
+      !authority.sourceTypes.includes(source.sourceType)
+    ) {
+      findings.push(
+        finding(
+          "source_authority_mismatch",
+          `sources.${index}`,
+          "Each source type must be approved by its named public authority.",
+        ),
+      );
+    }
+    const sourceIdentity = `${source.authorityRef}\u0000${source.canonicalKey.toLowerCase()}`;
+    const priorIdentityOwner = sourceIdentityOwners.get(sourceIdentity);
+    if (priorIdentityOwner && priorIdentityOwner !== source.id) {
+      findings.push(
+        finding(
+          "duplicate_source_identity",
+          `sources.${index}.canonicalKey`,
+          `Canonical source identity ${JSON.stringify(source.canonicalKey)} belongs to both ${priorIdentityOwner} and ${source.id}.`,
+        ),
+      );
+    }
+    sourceIdentityOwners.set(sourceIdentity, source.id);
+    const publishedAt = Date.parse(source.publishedAt);
+    const updatedAt = Date.parse(source.updatedAt);
+    const retrievedAt = Date.parse(source.retrievedAt);
+    if (
+      publishedAt > updatedAt ||
+      updatedAt > retrievedAt ||
+      retrievedAt > runAsOf
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_chronology",
+          `sources.${index}.retrievedAt`,
+          "Sources must be published no later than updated or retrieved and retrieved no later than the investigation as-of time.",
+        ),
+      );
+    }
+    try {
+      const reference = new URL(source.canonicalUrl);
+      const host = reference.hostname.toLowerCase();
+      const allowedHost = authority?.domains.some(
+        (domain) =>
+          host === domain.toLowerCase() ||
+          host.endsWith(`.${domain.toLowerCase()}`),
+      );
+      if (
+        !isCredentialFreePublicHttpsReference(reference) ||
+        !allowedHost ||
+        reference.pathname === "/"
+      ) {
+        throw new Error("unsafe source");
+      }
+    } catch {
+      findings.push(
+        finding(
+          "unsafe_source_reference",
+          `sources.${index}.canonicalUrl`,
+          "Sources require an approved, credential-free public HTTPS URL without fragments, private hosts, or sensitive query values.",
+        ),
+      );
+    }
+    const queryProvenanceValid = source.queryRefs.every((queryRef) => {
+      const query = queryById.get(queryRef);
+      return (
+        query?.authorityRef === source.authorityRef &&
+        query.resultSourceRefs.includes(source.id)
+      );
+    });
+    if (!queryProvenanceValid) {
+      findings.push(
+        finding(
+          "invalid_query_provenance",
+          `sources.${index}.queryRefs`,
+          "Every retained source must be returned by each named query from the same approved authority.",
+        ),
+      );
+    }
+    if (
+      (source.derivation === "primary" || source.derivation === "independent") &&
+      source.derivedFromSourceRefs.length > 0
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_derivation",
+          `sources.${index}.derivedFromSourceRefs`,
+          "Primary and independent sources cannot claim a derived source lineage.",
+        ),
+      );
+    }
+    if (
+      ["derived", "syndicated"].includes(source.derivation) &&
+      (source.derivedFromSourceRefs.length === 0 ||
+        source.derivedFromSourceRefs.includes(source.id))
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_derivation",
+          `sources.${index}.derivedFromSourceRefs`,
+          "Derived and syndicated sources require a distinct retained origin source.",
+        ),
+      );
+    }
+    if (
+      investigation.state === "ready" &&
+      (source.freshness !== "current" ||
+        source.recheckState !== "current" ||
+        runAsOf - retrievedAt > investigation.freshnessPolicy.maxAgeHours * 3_600_000)
+    ) {
+      findings.push(
+        finding(
+          "stale_current_source",
+          `sources.${index}`,
+          "Ready handoffs require every retained source to be current, rechecked, and within the freshness window.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, hypothesis] of value.hypotheses.entries()) {
+    requireReferences(
+      hypothesis.claimRefs,
+      claimSet,
+      `hypotheses.${index}.claimRefs`,
+      "Hypothesis claim reference",
+    );
+    if (
+      hypothesis.claimRefs.some(
+        (claimRef) => claimById.get(claimRef)?.hypothesisRef !== hypothesis.id,
+      )
+    ) {
+      findings.push(
+        finding(
+          "claim_hypothesis_mismatch",
+          `hypotheses.${index}.claimRefs`,
+          "Every hypothesis claim must name that hypothesis as its owner.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, claim] of value.claims.entries()) {
+    requireReferences(
+      [claim.hypothesisRef],
+      hypothesisSet,
+      `claims.${index}.hypothesisRef`,
+      "Claim hypothesis reference",
+    );
+    requireReferences(
+      claim.evidenceRefs,
+      evidenceSet,
+      `claims.${index}.evidenceRefs`,
+      "Claim evidence reference",
+    );
+    requireReferences(
+      claim.corroboration.independentEvidenceRefs,
+      evidenceSet,
+      `claims.${index}.corroboration.independentEvidenceRefs`,
+      "Independent evidence reference",
+    );
+    if (
+      !hypothesisById.get(claim.hypothesisRef)?.claimRefs.includes(claim.id)
+    ) {
+      findings.push(
+        finding(
+          "claim_hypothesis_mismatch",
+          `claims.${index}.hypothesisRef`,
+          "Every claim must be included in its named hypothesis decomposition.",
+        ),
+      );
+    }
+    const claimEvidence = claim.evidenceRefs
+      .map((evidenceRef) => evidenceById.get(evidenceRef))
+      .filter(Boolean);
+    if (claimEvidence.some((item) => item.claimRef !== claim.id)) {
+      findings.push(
+        finding(
+          "claim_evidence_mismatch",
+          `claims.${index}.evidenceRefs`,
+          "Claim evidence references must point to evidence records owned by the same claim.",
+        ),
+      );
+    }
+    const stances = new Set(claimEvidence.map((item) => item.stance));
+    const validAssessment =
+      (claim.assessment === "supported" && stances.has("supports")) ||
+      (claim.assessment === "refuted" && stances.has("refutes")) ||
+      (claim.assessment === "mixed" &&
+        stances.has("supports") &&
+        stances.has("refutes")) ||
+      (claim.assessment === "context-only" &&
+        [...stances].every((stance) => stance === "context")) ||
+      (claim.assessment === "unknown" && stances.has("unknown"));
+    if (!validAssessment) {
+      findings.push(
+        finding(
+          "invalid_claim_assessment",
+          `claims.${index}.assessment`,
+          "Claim assessment must remain consistent with its typed evidence stances.",
+        ),
+      );
+    }
+    const independentEvidence = claim.corroboration.independentEvidenceRefs
+      .map((evidenceRef) => evidenceById.get(evidenceRef))
+      .filter(Boolean);
+    const independentKeys = new Set();
+    const corroboratingStances =
+      claim.assessment === "supported"
+        ? new Set(["supports"])
+        : claim.assessment === "refuted"
+          ? new Set(["refutes"])
+          : claim.assessment === "mixed"
+            ? new Set(["supports", "refutes"])
+            : new Set();
+    const validIndependentEvidence = independentEvidence.every((item) => {
+      const source = sourceById.get(item.sourceRef);
+      if (
+        !claim.evidenceRefs.includes(item.id) ||
+        !["primary", "independent"].includes(source?.derivation) ||
+        !corroboratingStances.has(item.stance)
+      ) {
+        return false;
+      }
+      independentKeys.add(source.independenceKey);
+      return true;
+    });
+    const minimumIndependentSources =
+      claim.confidence === "high" ? 2 : claim.confidence === "moderate" ? 1 : 0;
+    if (
+      !validIndependentEvidence ||
+      independentKeys.size !== independentEvidence.length ||
+      independentKeys.size < claim.corroboration.requiredIndependentSources ||
+      claim.corroboration.requiredIndependentSources < minimumIndependentSources
+    ) {
+      findings.push(
+        finding(
+          "invalid_corroboration",
+          `claims.${index}.corroboration`,
+          "Independent corroboration must match the claim assessment and use distinct primary or independent origins; derived and syndicated pages never count.",
+        ),
+      );
+    }
+    if (
+      claim.status === "resolved" &&
+      claim.assessment === "unknown" &&
+      claim.confidence !== "insufficient"
+    ) {
+      findings.push(
+        finding(
+          "invalid_claim_assessment",
+          `claims.${index}`,
+          "An unknown claim must retain insufficient confidence even when its investigation status is resolved.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, evidence] of value.evidence.entries()) {
+    requireReferences(
+      [evidence.claimRef],
+      claimSet,
+      `evidence.${index}.claimRef`,
+      "Evidence claim reference",
+    );
+    requireReferences(
+      [evidence.sourceRef],
+      sourceSet,
+      `evidence.${index}.sourceRef`,
+      "Evidence source reference",
+    );
+    const claim = claimById.get(evidence.claimRef);
+    if (!claim?.evidenceRefs.includes(evidence.id)) {
+      findings.push(
+        finding(
+          "unclassified_evidence",
+          `evidence.${index}`,
+          "Every evidence record must be explicitly retained by its claim.",
+        ),
+      );
+    }
+    if (
+      (evidence.type === "source-context" && !["context", "unknown"].includes(evidence.stance)) ||
+      (evidence.type !== "source-context" && evidence.stance === "context")
+    ) {
+      findings.push(
+        finding(
+          "invalid_evidence_stance",
+          `evidence.${index}.stance`,
+          "Source-context records may only provide context or uncertainty; claim evidence cannot disguise support as context.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, conflict] of value.conflicts.entries()) {
+    requireReferences(
+      conflict.claimRefs,
+      claimSet,
+      `conflicts.${index}.claimRefs`,
+      "Conflict claim reference",
+    );
+    requireReferences(
+      conflict.evidenceRefs,
+      evidenceSet,
+      `conflicts.${index}.evidenceRefs`,
+      "Conflict evidence reference",
+    );
+    if (
+      conflict.owner !== investigation.decisionOwner ||
+      (conflict.status === "resolved" && !conflict.resolution?.trim()) ||
+      (conflict.status === "open" && conflict.resolution !== null)
+    ) {
+      findings.push(
+        finding(
+          "invalid_conflict_state",
+          `conflicts.${index}`,
+          "Conflicts must remain owner-owned and have a resolution only after owner resolution.",
+        ),
+      );
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    requireReferences(
+      question.claimRefs,
+      claimSet,
+      `reviewQuestions.${index}.claimRefs`,
+      "Review question claim reference",
+    );
+    requireReferences(
+      question.evidenceRefs,
+      evidenceSet,
+      `reviewQuestions.${index}.evidenceRefs`,
+      "Review question evidence reference",
+    );
+    if (
+      question.owner !== investigation.decisionOwner ||
+      (question.status === "resolved" && !question.resolution?.trim()) ||
+      (question.status === "open" && question.resolution !== null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_review_question",
+          `reviewQuestions.${index}`,
+          "Review questions must remain owner-owned and have a resolution only when resolved.",
+        ),
+      );
+    }
+  }
+  for (const [index, gap] of value.gapsAndBlockers.entries()) {
+    requireReferences(
+      gap.claimRefs,
+      claimSet,
+      `gapsAndBlockers.${index}.claimRefs`,
+      "Gap claim reference",
+    );
+    requireReferences(
+      gap.evidenceRefs,
+      evidenceSet,
+      `gapsAndBlockers.${index}.evidenceRefs`,
+      "Gap evidence reference",
+    );
+    if (gap.owner !== investigation.decisionOwner) {
+      findings.push(
+        finding(
+          "owner_mismatch",
+          `gapsAndBlockers.${index}.owner`,
+          "Every gap or blocker must belong to the named decision owner.",
+        ),
+      );
+    }
+  }
+
+  const handoff = value.handoff;
+  if (
+    handoff.owner !== investigation.decisionOwner ||
+    value.ownerReview.owner !== investigation.decisionOwner
+  ) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "handoff.owner",
+        "The owner review and handoff must remain assigned to the investigation decision owner.",
+      ),
+    );
+  }
+  for (const owner of [
+    investigation.decisionOwner,
+    handoff.owner,
+    value.ownerReview.owner,
+    ...value.conflicts.map((item) => item.owner),
+    ...value.reviewQuestions.map((item) => item.owner),
+    ...value.gapsAndBlockers.map((item) => item.owner),
+  ]) {
+    if (ownerIsAgent(owner)) {
+      findings.push(
+        finding(
+          "agent_owned_authority",
+          "investigation.decisionOwner",
+          "A named accountable human or team, not an agent, must own the investigation and handoff.",
+        ),
+      );
+      break;
+    }
+  }
+  if (
+    handoff.classification !== investigation.classification ||
+    handoff.destination !== investigation.destination ||
+    handoff.ownerReviewRef !== value.ownerReview.id
+  ) {
+    findings.push(
+      finding(
+        "private_handoff_mismatch",
+        "handoff",
+        "The private handoff must preserve the declared classification, destination, and owner review.",
+      ),
+    );
+  }
+  if (
+    !isSafePackagePath(handoff.destination) ||
+    !handoff.destination.startsWith("outputs/")
+  ) {
+    findings.push(
+      finding(
+        "unsafe_handoff_destination",
+        "handoff.destination",
+        "The private handoff destination must remain a portable path under outputs/.",
+      ),
+    );
+  }
+  requireCompleteReferences(handoff.sourceRefs, sourceIds, "handoff.sourceRefs", "Source");
+  requireCompleteReferences(
+    handoff.hypothesisRefs,
+    hypothesisIds,
+    "handoff.hypothesisRefs",
+    "Hypothesis",
+  );
+  requireCompleteReferences(handoff.claimRefs, claimIds, "handoff.claimRefs", "Claim");
+  requireCompleteReferences(
+    handoff.evidenceRefs,
+    evidenceIds,
+    "handoff.evidenceRefs",
+    "Evidence",
+  );
+  requireCompleteReferences(
+    handoff.conflictRefs,
+    conflictIds,
+    "handoff.conflictRefs",
+    "Conflict",
+  );
+  requireCompleteReferences(
+    handoff.questionRefs,
+    questionIds,
+    "handoff.questionRefs",
+    "Review question",
+  );
+  requireCompleteReferences(
+    handoff.gapAndBlockerRefs,
+    gapIds,
+    "handoff.gapAndBlockerRefs",
+    "Gap or blocker",
+  );
+  const openBlockers = value.gapsAndBlockers
+    .filter((item) => item.kind === "blocker" && item.status === "open")
+    .map((item) => item.id);
+  requireReferences(
+    handoff.blockerRefs,
+    gapSet,
+    "handoff.blockerRefs",
+    "Handoff blocker reference",
+  );
+  if (
+    openBlockers.some((id) => !handoff.blockerRefs.includes(id)) ||
+    handoff.blockerRefs.some((id) => !openBlockers.includes(id))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff.blockerRefs",
+        "Every and only open blockers must remain visible in the private handoff.",
+      ),
+    );
+  }
+  if (investigation.state === "ready" && handoff.state !== "ready-for-owner-review") {
+    findings.push(
+      finding(
+        "inconsistent_ready_state",
+        "handoff.state",
+        "A ready investigation must produce a ready-for-owner-review handoff.",
+      ),
+    );
+  }
+  if (investigation.state !== "ready" && handoff.state === "ready-for-owner-review") {
+    findings.push(
+      finding(
+        "inconsistent_ready_state",
+        "handoff.state",
+        "Only a ready investigation can produce a ready-for-owner-review handoff.",
+      ),
+    );
+  }
+  if (
+    handoff.state === "ready-for-owner-review" &&
+    (value.claims.some((item) => item.status !== "resolved") ||
+      value.hypotheses.some((item) => item.status !== "resolved") ||
+      value.conflicts.some((item) => item.status !== "resolved") ||
+      value.reviewQuestions.some((item) => item.status !== "resolved") ||
+      value.gapsAndBlockers.some((item) => item.status !== "resolved") ||
+      openBlockers.length > 0 ||
+      value.ownerReview.status !== "completed" ||
+      !value.ownerReview.resolution?.trim() ||
+      Date.parse(value.ownerReview.reviewedAt) > runAsOf)
+  ) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "Ready handoffs cannot hide unresolved claims, conflicts, questions, gaps, blockers, stale work, or incomplete owner review.",
+      ),
+    );
+  }
+  requireCompleteReferences(
+    value.ownerReview.claimRefs,
+    claimIds,
+    "ownerReview.claimRefs",
+    "Owner-review claim",
+  );
+  requireCompleteReferences(
+    value.ownerReview.questionRefs,
+    questionIds,
+    "ownerReview.questionRefs",
+    "Owner-review question",
+  );
+  requireCompleteReferences(
+    value.ownerReview.gapAndBlockerRefs,
+    gapIds,
+    "ownerReview.gapAndBlockerRefs",
+    "Owner-review gap or blocker",
+  );
+  if (
+    (value.ownerReview.status === "completed" && !value.ownerReview.resolution?.trim()) ||
+    (value.ownerReview.status === "pending" && value.ownerReview.resolution !== null)
+  ) {
+    findings.push(
+      finding(
+        "incoherent_owner_review",
+        "ownerReview",
+        "A completed owner review requires a recorded human resolution; a pending review cannot have one.",
+      ),
+    );
+  }
+  for (const action of requiredActions) {
+    if (
+      !value.blockedActions.includes(action) ||
+      !handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `The investigation and private handoff must preserve the ${action} authority gate.`,
+        ),
+      );
+    }
+  }
+  const narrativeTexts = [
+    investigation.question,
+    investigation.decision,
+    ...investigation.scope.included,
+    ...investigation.scope.excluded,
+    ...value.sources.flatMap((item) => [item.title, item.scope]),
+    ...value.hypotheses.map((item) => item.statement),
+    ...value.claims.flatMap((item) => [
+      item.statement,
+      item.decisionImplication,
+      item.uncertainty,
+      ...item.limitations,
+    ]),
+    ...value.evidence.flatMap((item) => [item.excerpt, item.limitation]),
+    ...value.conflicts.flatMap((item) => [item.description, item.resolution ?? ""]),
+    ...value.reviewQuestions.flatMap((item) => [item.question, item.resolution ?? ""]),
+    ...value.gapsAndBlockers.map((item) => item.description),
+    value.ownerReview.resolution ?? "",
+  ];
+  const prohibitedNarrative =
+    /\b(?:bypass|circumvent)(?:ing)? (?:publisher )?access controls?|\b(?:reproduc(?:e|ed|ing)|copy(?:ing)?|past(?:e|ed|ing)|quot(?:e|ed|ing)|extract(?:ed|ing)?) (?:restricted|paywalled) (?:content|text)|\b(?:publish(?:ed|ing)?|post(?:ed|ing)?|communicat(?:e|ed|ing)|contact(?:ed|ing)?|email(?:ed|ing)?|messag(?:e|ed|ing)) (?:an? )?(?:external|public|source|authority|audience|party)|\b(?:subscribe|subscribed|subscribing|unsubscribe|unsubscribed|unsubscribing) (?:to |from )?(?:a |the )?(?:feed|subscription)|\b(?:change|changed|changing|creat(?:e|ed|ing)|updat(?:e|ed|ing)) (?:an? )?account|\b(?:disclos(?:e|ed|ing)|leak(?:ed|ing)?|expos(?:e|ed|ing)|send(?:ing|sent)?) (?:(?:a|the) )?(?:credential|secret|token|sensitive query)|\b(?:fabricat(?:e|ed|ing)|invent(?:ed|ing)?) (?:a |the )?(?:source|quote|claim|evidence)|\b(?:infer|inferred|assert|asserted|declare|declared) (?:a )?consensus|\b(?:prove|proved|proving|establish|establishes|established|establishing|assert|asserts|asserted|asserting|infer|infers|inferred|inferring) (?:a )?(?:causal|cause-and-effect) (?:effect|relationship)|\b(?:give|provid(?:e|d|ing)|offer(?:ed|ing)) (?:a )?(?:legal|medical|financial|investment) (?:conclusion|advice|determination)|\b(?:autonomously|automatically) (?:chang(?:e|ed|ing)|updat(?:e|ed|ing)|mak(?:e|ing)|tak(?:e|ing)) (?:a |the )?(?:decision|action)|\b(?:chang(?:e|ed|ing)|updat(?:e|ed|ing)|mak(?:e|ing)|tak(?:e|ing)) (?:a |the )?(?:decision|action) (?:autonomously|without (?:the )?(?:owner|review))/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unsafe_narrative_content",
+        "investigation",
+        "Web evidence artifacts must not bypass access controls, reproduce restricted content, publish or contact externally, change subscriptions or accounts, disclose sensitive material, fabricate evidence, infer consensus, causality, legal, medical, or financial conclusions, or act autonomously.",
+      ),
+    );
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
@@ -18192,6 +18975,7 @@ const validators = {
   "travel-loyalty-points-organizer": travelLoyaltyFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
   "wardrobe-organizer": wardrobeFindings,
+  "web-evidence-researcher": claimEvidenceInvestigationLedgerFindings,
   "warranty-returns-manager": warrantyReturnsFindings,
   "work-chief-of-staff": workChiefOfStaffFindings,
 };

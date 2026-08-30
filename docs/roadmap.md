@@ -45,9 +45,9 @@ highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 56 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 88 of 100 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 68 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 57 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 89 of 100 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 69 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
@@ -76,6 +76,14 @@ typed signals, complete checkpoint dispositions, and private idempotent owner
 queues. It remains distinct from Research Monitor's broad authority-bound
 queries, Research Scout's scholarly lifecycle and quality contract, Website
 Evidence Collector's capture ledger, and narrative briefing.
+
+Web Evidence Researcher now owns the complementary one-shot claim-investigation
+lane: a private, owner-approved evidence ledger binds a bounded question and
+claim decomposition to reproducible public-authority queries, canonical source
+and reverse-query provenance, freshness and recheck state, typed evidence,
+independent-corroboration limits, conflicts, gaps, and completed human review.
+It does not create recurring watch state, ingest feeds, assess scholarly study
+lifecycle, archive website captures, or make an autonomous conclusion.
 
 Potential additions remain subject to the
 [contribution admission policy](contribution-admission.md). Civic Services

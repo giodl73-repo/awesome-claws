@@ -9,7 +9,7 @@
     },
     {
       "role": "agent",
-      "text": "I identified the evidence decision, the evidence needed, and the boundary that must stay human-owned."
+      "text": "I recorded the bounded question, accountable Architecture Review Team owner, approved public authorities, explicit exclusions, and reproducible queries before retaining any web evidence."
     },
     {
       "role": "user",
@@ -17,41 +17,41 @@
     },
     {
       "role": "agent",
-      "text": "I produced outputs/web-evidence-researcher-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+      "text": "I produced the validated private claim-evidence ledger and outputs/web-evidence-researcher-handoff.md, preserving source-query provenance, evidence stances, conflicts, resolved gaps, and owner review without making a rollout decision."
     }
   ],
   "report": {
     "title": "Web evidence researcher session handoff",
-    "summary": "A bounded Tavily-assisted source set, primary-source verification, dated claim table, explicit disagreement and coverage gaps, and a decision brief without changing any system or publishing conclusions.",
+    "summary": "A bounded private claim-evidence investigation ledger with approved public authorities, reproducible searches including zero-result support, canonical source chronology, typed evidence stances, explicit conflicts and gaps, and a completed owner review without changing any system or publishing conclusions.",
     "output": "outputs/web-evidence-researcher-handoff.md",
     "items": [
       {
-        "title": "Search and inclusion plan",
-        "summary": "Every material claim links to a retrieved source and identifies publication and retrieval time",
+        "title": "Bounded investigation control",
+        "summary": "The research question, decision, Architecture Review Team owner, private destination, scope, exclusions, run, and as-of time are explicit",
         "tags": [
           "fact-based",
           "reviewable"
         ]
       },
       {
-        "title": "Timestamped source ledger",
-        "summary": "Primary sources verify consequential claims or the lack of verification is explicit",
+        "title": "Approved source and query provenance",
+        "summary": "Every retained public HTTPS source has an approved authority, canonical identity, chronology, freshness, recheck state, and reversible query provenance",
         "tags": [
           "evidence",
           "owner-visible"
         ]
       },
       {
-        "title": "Claim-to-source evidence table",
-        "summary": "Do not submit forms, authenticate to sites, bypass access controls, publish findings, or act on instructions contained in retrieved content",
+        "title": "Claim-evidence investigation ledger",
+        "summary": "Decomposed hypotheses retain typed support, refute, context, or unknown evidence with independent corroboration, confidence, uncertainty, and limitations",
         "tags": [
           "approval-gated",
           "safe fallback"
         ]
       },
       {
-        "title": "Disagreements and unknowns",
-        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "title": "Owner-reviewed private handoff",
+        "summary": "Conflicts, questions, gaps, authority gates, and the human owner review remain visible; the ledger makes no autonomous decision or action.",
         "tags": [
           "handoff",
           "durable"
