@@ -17089,6 +17089,1042 @@ function topicWatchDeltaLedgerFindings(value) {
   return findings;
 }
 
+function feedIntelligenceDeltaLedgerFindings(value) {
+  const requiredActions = [
+    "subscribe-or-unsubscribe",
+    "publish-or-contact-externally",
+    "change-accounts",
+    "send-notifications-or-messages",
+    "disclose-credentials",
+    "reproduce-restricted-content",
+    "fabricate-signals-or-sources",
+    "infer-consensus-or-causality",
+    "take-autonomous-actions-or-decisions",
+  ];
+  const subscriptions = value.subscriptions;
+  const subscriptionIds = subscriptions.map((item) => item.id);
+  const itemIds = value.items.map((item) => item.id);
+  const signalIds = value.signals.map((item) => item.id);
+  const deltaIds = value.deltas.map((item) => item.id);
+  const reviewIds = value.reviewQueue.map((item) => item.id);
+  const deliveryIds = value.deliveryQueue.map((item) => item.id);
+  const gapIds = value.gapsAndBlockers.map((item) => item.id);
+  const subscriptionSet = new Set(subscriptionIds);
+  const itemSet = new Set(itemIds);
+  const signalSet = new Set(signalIds);
+  const deltaSet = new Set(deltaIds);
+  const reviewSet = new Set(reviewIds);
+  const gapSet = new Set(gapIds);
+  const subscriptionById = new Map(subscriptions.map((item) => [item.id, item]));
+  const itemById = new Map(value.items.map((item) => [item.id, item]));
+  const findings = [
+    ...uniqueFindings(subscriptionIds, "subscriptions", "Subscription id"),
+    ...uniqueFindings(itemIds, "items", "Item id"),
+    ...uniqueFindings(signalIds, "signals", "Signal id"),
+    ...uniqueFindings(deltaIds, "deltas", "Delta id"),
+    ...uniqueFindings(reviewIds, "reviewQueue", "Review queue id"),
+    ...uniqueFindings(deliveryIds, "deliveryQueue", "Delivery queue id"),
+    ...uniqueFindings(gapIds, "gapsAndBlockers", "Gap or blocker id"),
+    ...uniqueFindings(
+      value.deliveryQueue.map((item) => item.idempotencyKey),
+      "deliveryQueue",
+      "Delivery idempotency key",
+    ),
+  ];
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  function requireCompleteReferences(actual, expected, path, label) {
+    requireReferences(actual, new Set(expected), path, label);
+    for (const id of expected) {
+      if (!actual.includes(id)) {
+        findings.push(
+          finding(
+            "incomplete_handoff",
+            path,
+            `${label} ${JSON.stringify(id)} is missing from the private handoff.`,
+          ),
+        );
+      }
+    }
+  }
+
+  function isPublicUrlForSubscription(url, subscription) {
+    try {
+      const reference = new URL(url);
+      const host = reference.hostname.toLowerCase();
+      const allowedHost = subscription?.approvedDomains.some(
+        (domain) =>
+          host === domain.toLowerCase() || host.endsWith(`.${domain.toLowerCase()}`),
+      );
+      return (
+        isCredentialFreePublicHttpsReference(reference) &&
+        allowedHost &&
+        reference.pathname !== "/"
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  function itemLineageRefs(item) {
+    return [
+      item.supersedesItemRef,
+      item.correctsItemRef,
+      item.withdrawsItemRef,
+      item.duplicateOfItemRef,
+    ].filter(Boolean);
+  }
+
+  function itemHasDirectLineage(left, right) {
+    return (
+      itemLineageRefs(left).includes(right.id) ||
+      itemLineageRefs(right).includes(left.id)
+    );
+  }
+
+  const windowStart = Date.parse(value.monitor.window.start);
+  const windowEnd = Date.parse(value.monitor.window.end);
+  const baselineAsOf = Date.parse(value.monitor.baseline.asOf);
+  const runStarted = Date.parse(value.monitor.run.startedAt);
+  const runCompleted = Date.parse(value.monitor.run.completedAt);
+  const runAsOf = Date.parse(value.monitor.run.asOf);
+  if (
+    windowStart >= windowEnd ||
+    baselineAsOf >= windowStart ||
+    runStarted < windowStart ||
+    runStarted > runCompleted ||
+    runCompleted > runAsOf ||
+    runAsOf > windowEnd ||
+    value.monitor.baseline.runId === value.monitor.run.id
+  ) {
+    findings.push(
+      finding(
+        "invalid_monitor_chronology",
+        "monitor",
+        "The checkpoint must precede the review window and the current run must be ordered inside that window.",
+      ),
+    );
+  }
+  if (
+    !isSafePackagePath(value.monitor.destination) ||
+    !value.monitor.destination.startsWith("outputs/")
+  ) {
+    findings.push(
+      finding(
+        "unsafe_handoff_destination",
+        "monitor.destination",
+        "The private feed-intelligence handoff destination must remain a portable path under outputs/.",
+      ),
+    );
+  }
+  if (
+    (value.items.length === 0 && value.monitor.run.outcome !== "zero-items") ||
+    (value.monitor.run.outcome === "zero-items" &&
+      (value.items.length > 0 ||
+        value.signals.length > 0 ||
+        value.deltas.length > 0 ||
+        value.reviewQueue.length > 0 ||
+        value.deliveryQueue.length > 0))
+  ) {
+    findings.push(
+      finding(
+        "invalid_zero_item_run",
+        "monitor.run.outcome",
+        "Zero-item runs must explicitly say zero-items and cannot retain item, signal, delta, review, or delivery work.",
+      ),
+    );
+  }
+
+  const feedKeys = new Set();
+  for (const [index, subscription] of subscriptions.entries()) {
+    const feedKey = subscription.canonicalFeedKey.toLowerCase();
+    if (feedKeys.has(feedKey)) {
+      findings.push(
+        finding(
+          "duplicate_reference",
+          `subscriptions.${index}.canonicalFeedKey`,
+          `Canonical feed identity ${JSON.stringify(subscription.canonicalFeedKey)} is duplicated.`,
+        ),
+      );
+    }
+    feedKeys.add(feedKey);
+    if (
+      subscription.owner !== value.monitor.owner ||
+      !subscription.ownerApproved ||
+      subscription.sourceClassification !== "public"
+    ) {
+      findings.push(
+        finding(
+          "subscription_owner_gate",
+          `subscriptions.${index}`,
+          "Every subscription must be owner-approved, public, and controlled by the named monitor owner.",
+        ),
+      );
+    }
+    if (!isPublicUrlForSubscription(subscription.canonicalFeedUrl, subscription)) {
+      findings.push(
+        finding(
+          "unsafe_subscription_reference",
+          `subscriptions.${index}.canonicalFeedUrl`,
+          "Feed subscriptions require an owner-approved, credential-free public HTTPS URL on an approved domain.",
+        ),
+      );
+    }
+    const cursorAdvanced = Date.parse(subscription.cursor.advancedAt);
+    const attemptedAt = Date.parse(subscription.retrieval.lastAttemptedAt);
+    const successfulAt =
+      subscription.retrieval.lastSuccessfulAt === null
+        ? null
+        : Date.parse(subscription.retrieval.lastSuccessfulAt);
+    if (
+      subscription.cursor.checkpoint !== value.monitor.baseline.checkpointId ||
+      cursorAdvanced > runAsOf ||
+      (subscription.retrieval.state === "complete" && cursorAdvanced < runStarted) ||
+      (subscription.retrieval.state !== "complete" &&
+        successfulAt !== null &&
+        cursorAdvanced > successfulAt)
+    ) {
+      findings.push(
+        finding(
+          "invalid_cursor_chronology",
+          `subscriptions.${index}.cursor`,
+          "Completed retrieval cursors must advance during the current run; partial or failed retrievals may retain only the latest successful cursor.",
+        ),
+      );
+    }
+    const staleByPolicy =
+      successfulAt === null ||
+      runAsOf - successfulAt > value.monitor.freshnessPolicy.maxAgeHours * 3_600_000;
+    if (
+      attemptedAt < runStarted ||
+      attemptedAt > runAsOf ||
+      (successfulAt !== null && successfulAt > runAsOf) ||
+      (subscription.retrieval.state === "complete" &&
+        (successfulAt === null ||
+          successfulAt < attemptedAt ||
+          subscription.retrieval.freshness !== "current" ||
+          subscription.retrieval.recheckState === "requested")) ||
+      (subscription.retrieval.state === "partial" &&
+        (subscription.retrieval.freshness !== "recheck-needed" ||
+          subscription.retrieval.recheckState !== "requested")) ||
+      (subscription.retrieval.state === "failed" &&
+        (subscription.retrieval.freshness === "current" ||
+          subscription.retrieval.recheckState !== "requested" ||
+          (successfulAt !== null && successfulAt > attemptedAt))) ||
+      (subscription.retrieval.state === "not-run" &&
+        (successfulAt !== null ||
+          subscription.retrieval.freshness === "current" ||
+          subscription.retrieval.recheckState !== "requested"))
+    ) {
+      findings.push(
+        finding(
+          "invalid_retrieval_state",
+          `subscriptions.${index}.retrieval`,
+          "Feed retrieval state must distinguish a current complete retrieval from a partial or failed current attempt that retains an earlier successful retrieval for recheck.",
+        ),
+      );
+    }
+    if (
+      value.monitor.state === "ready" &&
+      (subscription.retrieval.state !== "complete" ||
+        subscription.retrieval.freshness !== "current" ||
+        subscription.retrieval.recheckState === "requested" ||
+        staleByPolicy)
+    ) {
+      findings.push(
+        finding(
+          "stale_subscription",
+          `subscriptions.${index}.retrieval`,
+          "Ready handoffs require each subscription to complete with current, timely retrieval state and no pending recheck.",
+        ),
+      );
+    }
+  }
+
+  requireReferences(
+    value.monitor.baseline.subscriptionRefs,
+    subscriptionSet,
+    "monitor.baseline.subscriptionRefs",
+    "Checkpoint subscription reference",
+  );
+  for (const subscriptionId of subscriptionIds) {
+    if (!value.monitor.baseline.subscriptionRefs.includes(subscriptionId)) {
+      findings.push(
+        finding(
+          "incomplete_subscription_coverage",
+          "monitor.baseline.subscriptionRefs",
+          `Subscription ${JSON.stringify(subscriptionId)} is absent from the declared checkpoint.`,
+        ),
+      );
+    }
+  }
+
+  const itemIdentityOwners = new Map();
+  const observedBySubscription = new Map();
+  for (const [index, item] of value.items.entries()) {
+    requireReferences(
+      [item.subscriptionRef],
+      subscriptionSet,
+      `items.${index}.subscriptionRef`,
+      "Item subscription reference",
+    );
+    const subscription = subscriptionById.get(item.subscriptionRef);
+    observedBySubscription.set(
+      item.subscriptionRef,
+      (observedBySubscription.get(item.subscriptionRef) ?? 0) + 1,
+    );
+    if (
+      item.sourceClassification !== "public" ||
+      !isPublicUrlForSubscription(item.canonicalUrl, subscription)
+    ) {
+      findings.push(
+        finding(
+          "unsafe_item_reference",
+          `items.${index}.canonicalUrl`,
+          "Feed items require a credential-free public HTTPS canonical URL on the subscription's approved domain.",
+        ),
+      );
+    }
+    const publishedAt = Date.parse(item.publishedAt);
+    const updatedAt = Date.parse(item.updatedAt);
+    const retrievedAt = Date.parse(item.retrievedAt);
+    const subscriptionSuccess =
+      subscription?.retrieval.lastSuccessfulAt === null
+        ? null
+        : Date.parse(subscription?.retrieval.lastSuccessfulAt);
+    if (
+      publishedAt > updatedAt ||
+      updatedAt > retrievedAt ||
+      retrievedAt > runAsOf ||
+      (subscriptionSuccess !== null && retrievedAt > subscriptionSuccess)
+    ) {
+      findings.push(
+        finding(
+          "invalid_item_chronology",
+          `items.${index}`,
+          "Feed item publication, update, retrieval, and subscription retrieval times must be chronologically coherent.",
+        ),
+      );
+    }
+    for (const [kind, identity] of [
+      ["guid", item.guid],
+      ["canonical URL", item.canonicalUrl.toLowerCase()],
+      ["content digest", item.contentDigest],
+    ]) {
+      if (identity === null) continue;
+      const key = `${kind}\u0000${identity}`;
+      const existingId = itemIdentityOwners.get(key);
+      if (existingId && existingId !== item.id) {
+        const existing = itemById.get(existingId);
+        if (!existing || !itemHasDirectLineage(item, existing)) {
+          findings.push(
+            finding(
+              "duplicate_item_identity",
+              `items.${index}`,
+              `Feed item ${kind} ${JSON.stringify(identity)} duplicates ${JSON.stringify(existingId)} without declared lineage.`,
+            ),
+          );
+        }
+      }
+      itemIdentityOwners.set(key, item.id);
+    }
+    for (const [field, targetId] of [
+      ["supersedesItemRef", item.supersedesItemRef],
+      ["correctsItemRef", item.correctsItemRef],
+      ["withdrawsItemRef", item.withdrawsItemRef],
+      ["duplicateOfItemRef", item.duplicateOfItemRef],
+    ]) {
+      if (targetId === null) continue;
+      requireReferences(
+        [targetId],
+        itemSet,
+        `items.${index}.${field}`,
+        "Item lineage reference",
+      );
+      const target = itemById.get(targetId);
+      if (
+        targetId === item.id ||
+        !target ||
+        (field !== "duplicateOfItemRef" &&
+          Date.parse(target.publishedAt) >= publishedAt) ||
+        (field !== "duplicateOfItemRef" && target.subscriptionRef !== item.subscriptionRef)
+      ) {
+        findings.push(
+          finding(
+            "invalid_item_lineage",
+            `items.${index}.${field}`,
+            "Item lineage must point to an earlier distinct item from the same feed unless a declared duplicate is cross-feed.",
+          ),
+        );
+      }
+    }
+    const hasSuccessor = value.items.some((candidate) =>
+      itemLineageRefs(candidate).includes(item.id),
+    );
+    const lifecycleFields = itemLineageRefs(item);
+    if (
+      (item.status === "current" &&
+        (item.correctsItemRef !== null ||
+          item.withdrawsItemRef !== null ||
+          item.duplicateOfItemRef !== null)) ||
+      (item.status === "corrected" &&
+        (item.correctsItemRef === null || lifecycleFields.length !== 1)) ||
+      (item.status === "withdrawn" &&
+        (item.withdrawsItemRef === null || lifecycleFields.length !== 1)) ||
+      (item.status === "duplicate" &&
+        (item.duplicateOfItemRef === null || lifecycleFields.length !== 1)) ||
+      (item.status === "superseded" &&
+        (lifecycleFields.length !== 0 || !hasSuccessor))
+    ) {
+      findings.push(
+        finding(
+          "incoherent_item_lifecycle",
+          `items.${index}`,
+          "Corrected, withdrawn, duplicate, and superseded item states must preserve their matching lineage without silent replacement.",
+        ),
+      );
+    }
+  }
+
+  requireReferences(
+    value.monitor.baseline.itemRefs,
+    itemSet,
+    "monitor.baseline.itemRefs",
+    "Checkpoint item reference",
+  );
+  const baselineItemSet = new Set(value.monitor.baseline.itemRefs);
+  const thresholdById = new Map(
+    value.monitor.triagePolicy.thresholds.map((item) => [item.id, item]),
+  );
+  findings.push(
+    ...uniqueFindings(
+      value.monitor.triagePolicy.thresholds.map((item) => item.id),
+      "monitor.triagePolicy.thresholds",
+      "Triage threshold id",
+    ),
+  );
+  if (value.monitor.triagePolicy.owner !== value.monitor.owner) {
+    findings.push(
+      finding(
+        "invalid_triage_policy",
+        "monitor.triagePolicy.owner",
+        "Triage thresholds must remain owned by the named monitor owner.",
+      ),
+    );
+  }
+
+  const signaledItemSet = new Set();
+  for (const [index, signal] of value.signals.entries()) {
+    requireReferences(
+      [signal.itemRef],
+      itemSet,
+      `signals.${index}.itemRef`,
+      "Signal item reference",
+    );
+    const item = itemById.get(signal.itemRef);
+    if (
+      !item ||
+      signal.sourceUrl !== item.canonicalUrl ||
+      !isPublicUrlForSubscription(
+        signal.sourceUrl,
+        subscriptionById.get(item.subscriptionRef),
+      )
+    ) {
+      findings.push(
+        finding(
+          "signal_provenance_mismatch",
+          `signals.${index}`,
+          "Every signal must link directly to its retained item's approved canonical public URL.",
+        ),
+      );
+    }
+    signaledItemSet.add(signal.itemRef);
+    const expectedStatus = {
+      current: "current",
+      corrected: "qualified",
+      withdrawn: "withdrawn",
+      superseded: "qualified",
+      duplicate: "duplicate",
+    }[item?.status];
+    if (signal.status !== expectedStatus) {
+      findings.push(
+        finding(
+          "incoherent_signal_state",
+          `signals.${index}.status`,
+          "Signal status must visibly preserve the retained feed item's lifecycle state.",
+        ),
+      );
+    }
+    if (
+      signal.confidence === "insufficient" &&
+      signal.relevance.state !== "unresolved"
+    ) {
+      findings.push(
+        finding(
+          "insufficient_confidence_requires_review",
+          `signals.${index}`,
+          "Insufficient-confidence signals must remain unresolved for accountable owner review.",
+        ),
+      );
+    }
+    if (
+      signal.priority.policyRef !== value.monitor.triagePolicy.id ||
+      !thresholdById.has(signal.priority.thresholdRef) ||
+      thresholdById.get(signal.priority.thresholdRef)?.level !== signal.priority.level
+    ) {
+      findings.push(
+        finding(
+          "invalid_triage_policy",
+          `signals.${index}.priority`,
+          "Signal priority must cite the declared owner policy and a matching threshold.",
+        ),
+      );
+    }
+  }
+  for (const item of value.items) {
+    if (!signaledItemSet.has(item.id)) {
+      findings.push(
+        finding(
+          "untriaged_item",
+          "items",
+          `Retained item ${JSON.stringify(item.id)} must have a typed provenance-linked signal.`,
+        ),
+      );
+    }
+  }
+
+  for (const [index, delta] of value.deltas.entries()) {
+    requireReferences(delta.itemRefs, itemSet, `deltas.${index}.itemRefs`, "Delta item reference");
+    requireReferences(
+      delta.baselineItemRefs,
+      itemSet,
+      `deltas.${index}.baselineItemRefs`,
+      "Baseline item reference",
+    );
+    requireReferences(
+      delta.contradictsDeltaRefs,
+      deltaSet,
+      `deltas.${index}.contradictsDeltaRefs`,
+      "Contradicted delta reference",
+    );
+    requireReferences(
+      delta.supersedesDeltaRefs,
+      deltaSet,
+      `deltas.${index}.supersedesDeltaRefs`,
+      "Superseded delta reference",
+    );
+    const currentItems = delta.itemRefs.map((id) => itemById.get(id)).filter(Boolean);
+    const baselineItems = delta.baselineItemRefs
+      .map((id) => itemById.get(id))
+      .filter(Boolean);
+    const requiresBaseline = [
+      "changed",
+      "corrected",
+      "withdrawn",
+      "contradictory",
+      "unchanged",
+    ].includes(delta.disposition);
+    if (
+      ((delta.disposition === "new" || delta.disposition === "duplicate") &&
+        (delta.baselineItemRefs.length > 0 ||
+          delta.itemRefs.some((id) => baselineItemSet.has(id)))) ||
+      (requiresBaseline &&
+        (delta.baselineItemRefs.length === 0 ||
+          delta.baselineItemRefs.some((id) => !baselineItemSet.has(id)))) ||
+      (delta.disposition === "contradictory" &&
+        (delta.itemRefs.length < 2 ||
+          delta.contradictsDeltaRefs.length === 0 ||
+          delta.contradictsDeltaRefs.includes(delta.id))) ||
+      delta.supersedesDeltaRefs.includes(delta.id) ||
+      (["unchanged", "duplicate"].includes(delta.disposition) &&
+        delta.relevance.state !== "no-change") ||
+      (!["unchanged", "duplicate"].includes(delta.disposition) &&
+        delta.relevance.state === "no-change")
+    ) {
+      findings.push(
+        finding(
+          "invalid_delta_disposition",
+          `deltas.${index}`,
+          "Item dispositions must preserve checkpoint, contradiction, supersession, and owner-routing state.",
+        ),
+      );
+    }
+    const lifecycleMatches =
+      (delta.disposition === "changed" &&
+        currentItems.some((item) =>
+          baselineItems.some((baseline) => item.supersedesItemRef === baseline.id),
+        )) ||
+      (delta.disposition === "corrected" &&
+        currentItems.some(
+          (item) =>
+            item.status === "corrected" &&
+            baselineItems.some((baseline) => item.correctsItemRef === baseline.id),
+        )) ||
+      (delta.disposition === "withdrawn" &&
+        currentItems.some(
+          (item) =>
+            item.status === "withdrawn" &&
+            baselineItems.some((baseline) => item.withdrawsItemRef === baseline.id),
+        )) ||
+      (delta.disposition === "duplicate" &&
+        currentItems.every((item) => item.status === "duplicate")) ||
+      !["changed", "corrected", "withdrawn", "duplicate"].includes(delta.disposition);
+    if (!lifecycleMatches) {
+      findings.push(
+        finding(
+          "delta_lifecycle_mismatch",
+          `deltas.${index}.disposition`,
+          "Changed, corrected, withdrawn, and duplicate dispositions require matching item lineage.",
+        ),
+      );
+    }
+  }
+  const classifiedItemIds = new Set(
+    value.deltas.flatMap((item) => [...item.itemRefs, ...item.baselineItemRefs]),
+  );
+  for (const item of value.items) {
+    if (!classifiedItemIds.has(item.id)) {
+      findings.push(
+        finding(
+          "unclassified_item",
+          "items",
+          `Retained item ${JSON.stringify(item.id)} lacks an explicit checkpoint disposition.`,
+        ),
+      );
+    }
+  }
+  const baselineDeltaRefs = value.deltas.flatMap((item) => item.baselineItemRefs);
+  for (const itemId of baselineItemSet) {
+    if (!baselineDeltaRefs.includes(itemId)) {
+      findings.push(
+        finding(
+          "untracked_baseline_item",
+          "monitor.baseline.itemRefs",
+          `Checkpoint item ${JSON.stringify(itemId)} must appear in a delta baseline reference.`,
+        ),
+      );
+    }
+  }
+
+  for (const [index, review] of value.reviewQueue.entries()) {
+    requireReferences(
+      review.signalRefs,
+      signalSet,
+      `reviewQueue.${index}.signalRefs`,
+      "Review signal reference",
+    );
+    requireReferences(
+      review.deltaRefs,
+      deltaSet,
+      `reviewQueue.${index}.deltaRefs`,
+      "Review delta reference",
+    );
+    if (
+      review.owner !== value.monitor.owner ||
+      (review.status === "resolved" && !review.resolution?.trim()) ||
+      (review.status === "open" && review.resolution !== null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_review_queue",
+          `reviewQueue.${index}`,
+          "Review queue items must retain the named owner and coherent resolution state.",
+        ),
+      );
+    }
+  }
+  const highSignalIds = value.signals
+    .filter((item) => item.priority.level === "high")
+    .map((item) => item.id);
+  if (
+    highSignalIds.some(
+      (id) =>
+        !value.reviewQueue.some(
+          (item) => item.priority === "high" && item.signalRefs.includes(id),
+        ),
+    )
+  ) {
+    findings.push(
+      finding(
+        "missing_priority_review",
+        "reviewQueue",
+        "Every high-priority signal must be visible in a high-priority owner review.",
+      ),
+    );
+  }
+  const requiredReviewDeltaIds = value.deltas
+    .filter(
+      (item) =>
+        item.relevance.state === "review-required" ||
+        item.relevance.state === "unresolved" ||
+        ["corrected", "withdrawn", "contradictory"].includes(item.disposition),
+    )
+    .map((item) => item.id);
+  if (
+    requiredReviewDeltaIds.some(
+      (id) => !value.reviewQueue.some((item) => item.deltaRefs.includes(id)),
+    )
+  ) {
+    findings.push(
+      finding(
+        "missing_required_review",
+        "reviewQueue",
+        "Every routed, unresolved, corrected, withdrawn, or contradictory delta must have an accountable owner review.",
+      ),
+    );
+  }
+  const requiredReviewSignalIds = value.signals
+  .filter(
+    (item) =>
+      item.relevance.state === "unresolved" || item.confidence === "insufficient",
+  )
+  .map((item) => item.id);
+  if (
+  requiredReviewSignalIds.some(
+    (id) => !value.reviewQueue.some((item) => item.signalRefs.includes(id)),
+  )
+  ) {
+  findings.push(
+    finding(
+      "missing_required_review",
+      "reviewQueue",
+      "Every unresolved or insufficient-confidence signal must have an accountable owner review.",
+    ),
+  );
+  }
+
+  const recheckRules = new Map([
+    ["corrected", { trigger: "item-correction", reviewKind: "lineage-review" }],
+    ["withdrawn", { trigger: "item-withdrawal", reviewKind: "lineage-review" }],
+    ["contradictory", { trigger: "contradiction", reviewKind: "contradiction-review" }],
+  ]);
+  for (const [index, delta] of value.deltas.entries()) {
+    const rule = recheckRules.get(delta.disposition);
+    if (!rule || !value.monitor.freshnessPolicy.recheckOn.includes(rule.trigger)) {
+      continue;
+    }
+    const relatedSignals = value.signals.filter((signal) =>
+      delta.itemRefs.includes(signal.itemRef),
+    );
+    const relatedSubscriptions = new Set(
+      delta.itemRefs
+        .map((id) => itemById.get(id)?.subscriptionRef)
+        .filter(Boolean),
+    );
+    const recordsCarryRecheckState =
+      delta.recheckState !== "not-required" &&
+      delta.itemRefs.every(
+        (id) => itemById.get(id)?.recheckState !== "not-required",
+      ) &&
+      relatedSignals.every((signal) => signal.recheckState !== "not-required") &&
+      [...relatedSubscriptions].every(
+        (id) =>
+          subscriptionById.get(id)?.retrieval.recheckState !== "not-required",
+      );
+    const hasEquivalentOwnerReview = value.reviewQueue.some(
+      (review) =>
+        review.owner === value.monitor.owner &&
+        review.kind === rule.reviewKind &&
+        review.deltaRefs.includes(delta.id) &&
+        relatedSignals.every((signal) => review.signalRefs.includes(signal.id)),
+    );
+    if (!recordsCarryRecheckState && !hasEquivalentOwnerReview) {
+      findings.push(
+        finding(
+          "missing_recheck_handling",
+          `deltas.${index}`,
+          `${delta.disposition} requires ${rule.trigger} recheck state on its subscription, item, signal, and delta or an explicit linked ${rule.reviewKind} owned by the named monitor owner.`,
+        ),
+      );
+    }
+  }
+
+  const deliveredSignals = new Set();
+  const deliveredDeltas = new Set();
+  for (const [index, delivery] of value.deliveryQueue.entries()) {
+    requireReferences(
+      delivery.signalRefs,
+      signalSet,
+      `deliveryQueue.${index}.signalRefs`,
+      "Delivery signal reference",
+    );
+    requireReferences(
+      delivery.deltaRefs,
+      deltaSet,
+      `deliveryQueue.${index}.deltaRefs`,
+      "Delivery delta reference",
+    );
+    requireReferences(
+      delivery.reviewRefs,
+      reviewSet,
+      `deliveryQueue.${index}.reviewRefs`,
+      "Delivery review reference",
+    );
+    const relevantReviews = value.reviewQueue.filter(
+      (review) =>
+        review.signalRefs.some((id) => delivery.signalRefs.includes(id)) ||
+        review.deltaRefs.some((id) => delivery.deltaRefs.includes(id)),
+    );
+    const missingRelevantReviewIds = relevantReviews
+      .map((review) => review.id)
+      .filter((id) => !delivery.reviewRefs.includes(id));
+    if (missingRelevantReviewIds.length > 0) {
+      findings.push(
+        finding(
+          "incomplete_delivery_review",
+          `deliveryQueue.${index}.reviewRefs`,
+          `Private delivery must retain every review derived from its linked signals and deltas: ${missingRelevantReviewIds.join(", ")}.`,
+        ),
+      );
+    }
+    delivery.signalRefs.forEach((id) => deliveredSignals.add(id));
+    delivery.deltaRefs.forEach((id) => deliveredDeltas.add(id));
+    if (
+      delivery.owner !== value.monitor.owner ||
+      delivery.classification !== value.monitor.classification ||
+      delivery.destination !== value.monitor.destination ||
+      !isSafePackagePath(delivery.destination) ||
+      !delivery.destination.startsWith("outputs/") ||
+      (delivery.state === "prepared" &&
+        relevantReviews.some((review) => review.status !== "resolved"))
+    ) {
+      findings.push(
+        finding(
+          "incoherent_delivery_queue",
+          `deliveryQueue.${index}`,
+          "Private delivery entries must preserve owner and destination and cannot be prepared while a review derived from linked signals or deltas remains unresolved.",
+        ),
+      );
+    }
+  }
+  if (
+    signalIds.some((id) => !deliveredSignals.has(id)) ||
+    deltaIds.some((id) => !deliveredDeltas.has(id))
+  ) {
+    findings.push(
+      finding(
+        "missing_delivery_queue",
+        "deliveryQueue",
+        "Every retained signal and delta must be retained in a private idempotent delivery queue.",
+      ),
+    );
+  }
+
+  for (const [index, item] of value.gapsAndBlockers.entries()) {
+    requireReferences(
+      item.subscriptionRefs,
+      subscriptionSet,
+      `gapsAndBlockers.${index}.subscriptionRefs`,
+      "Gap subscription reference",
+    );
+    requireReferences(
+      item.itemRefs,
+      itemSet,
+      `gapsAndBlockers.${index}.itemRefs`,
+      "Gap item reference",
+    );
+    requireReferences(
+      item.signalRefs,
+      signalSet,
+      `gapsAndBlockers.${index}.signalRefs`,
+      "Gap signal reference",
+    );
+    requireReferences(
+      item.deltaRefs,
+      deltaSet,
+      `gapsAndBlockers.${index}.deltaRefs`,
+      "Gap delta reference",
+    );
+    if (item.owner !== value.monitor.owner) {
+      findings.push(
+        finding(
+          "owner_mismatch",
+          `gapsAndBlockers.${index}.owner`,
+          "Gaps and blockers must remain assigned to the named monitor owner.",
+        ),
+      );
+    }
+  }
+
+  if (
+    value.handoff.owner !== value.monitor.owner ||
+    value.handoff.classification !== value.monitor.classification ||
+    value.handoff.destination !== value.monitor.destination ||
+    !isSafePackagePath(value.handoff.destination) ||
+    !value.handoff.destination.startsWith("outputs/")
+  ) {
+    findings.push(
+      finding(
+        "private_handoff_mismatch",
+        "handoff",
+        "The private handoff must preserve the named owner, classification, and portable outputs/ destination.",
+      ),
+    );
+  }
+  if (
+    /^(?:the )?(?:agent|assistant|claw)$/iu.test(value.monitor.owner.trim()) ||
+    /\b(?:ai|bot|gpt|language model|feed intelligence monitor)\b/iu.test(value.monitor.owner)
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "monitor.owner",
+        "Feed subscriptions, triage, queues, and decisions must remain with a named human or team.",
+      ),
+    );
+  }
+
+  requireCompleteReferences(
+    value.handoff.subscriptionRefs,
+    subscriptionIds,
+    "handoff.subscriptionRefs",
+    "Subscription",
+  );
+  requireCompleteReferences(value.handoff.itemRefs, itemIds, "handoff.itemRefs", "Item");
+  requireCompleteReferences(
+    value.handoff.signalRefs,
+    signalIds,
+    "handoff.signalRefs",
+    "Signal",
+  );
+  requireCompleteReferences(value.handoff.deltaRefs, deltaIds, "handoff.deltaRefs", "Delta");
+  requireCompleteReferences(
+    value.handoff.reviewQueueRefs,
+    reviewIds,
+    "handoff.reviewQueueRefs",
+    "Review queue item",
+  );
+  requireCompleteReferences(
+    value.handoff.deliveryQueueRefs,
+    deliveryIds,
+    "handoff.deliveryQueueRefs",
+    "Delivery queue item",
+  );
+  requireCompleteReferences(
+    value.handoff.gapAndBlockerRefs,
+    gapIds,
+    "handoff.gapAndBlockerRefs",
+    "Gap or blocker",
+  );
+  const openBlockerIds = value.gapsAndBlockers
+    .filter((item) => item.kind === "blocker" && item.status === "open")
+    .map((item) => item.id);
+  requireReferences(
+    value.handoff.blockerRefs,
+    gapSet,
+    "handoff.blockerRefs",
+    "Handoff blocker reference",
+  );
+  if (
+    value.handoff.blockerRefs.some((id) => !openBlockerIds.includes(id)) ||
+    (value.handoff.state === "blocked" &&
+      (openBlockerIds.length === 0 ||
+        openBlockerIds.some((id) => !value.handoff.blockerRefs.includes(id))))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff.blockerRefs",
+        "Blocked handoffs must name every and only open blocker.",
+      ),
+    );
+  }
+  const expectedHandoffState =
+    value.monitor.state === "ready" ? "ready-for-owner-review" : value.monitor.state;
+  if (value.handoff.state !== expectedHandoffState) {
+    findings.push(
+      finding(
+        "inconsistent_ready_state",
+        "handoff.state",
+        "The monitor and handoff state must remain consistent.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    (subscriptions.some(
+      (item) =>
+        item.retrieval.state !== "complete" ||
+        item.retrieval.freshness !== "current" ||
+        item.retrieval.recheckState === "requested",
+    ) ||
+      value.reviewQueue.some((item) => item.status !== "resolved") ||
+      value.gapsAndBlockers.some((item) => item.status !== "resolved") ||
+      value.deliveryQueue.some((item) => item.state !== "prepared") ||
+      value.signals.some(
+        (item) =>
+          item.relevance.state === "unresolved" ||
+          item.confidence === "insufficient",
+      ) ||
+      value.deltas.some((item) => item.relevance.state === "unresolved") ||
+      openBlockerIds.length > 0 ||
+      value.handoff.blockerRefs.length > 0)
+  ) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "Ready handoffs require complete current subscriptions, no unresolved or insufficient-confidence signal or delta relevance, resolved owner review and gaps, prepared private queues, and no blocker.",
+      ),
+    );
+  }
+
+  for (const action of requiredActions) {
+    if (!value.blockedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Feed intelligence ledgers must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+    if (!value.handoff.prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `Feed intelligence ledgers must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  const narrativeTexts = [
+    value.monitor.routingIntent,
+    ...value.monitor.routingQuestions,
+    ...subscriptions.flatMap((item) => [item.name, item.cursor.value]),
+    ...value.items.flatMap((item) => [item.title]),
+    ...value.signals.flatMap((item) => [
+      item.statement,
+      item.uncertainty,
+      item.relevance.rationale,
+      item.priority.rationale,
+    ]),
+    ...value.deltas.flatMap((item) => [item.summary, item.relevance.rationale]),
+    ...value.reviewQueue.flatMap((item) => [item.question, item.resolution ?? ""]),
+    ...value.gapsAndBlockers.map((item) => item.description),
+  ];
+  const prohibitedNarrative =
+    /\b(?:subscribe|subscribed|subscribing|unsubscribe|unsubscribed|unsubscribing) (?:to |from )?(?:a |the )?(?:feed|subscription)|\b(?:publish(?:ed|ing)?|post(?:ed|ing)?|announc(?:e|ed|ing)|communicat(?:e|ed|ing)|contact(?:ed|ing)?|email(?:ed|ing)?|messag(?:e|ed|ing)) (?:an? )?(?:external|public|source|authority|audience|party)|\b(?:change|changed|changing|creat(?:e|ed|ing)|updat(?:e|ed|ing)) (?:an? )?account|\b(?:send(?:ing|sent)?|deliver(?:ed|ing)?) (?:a |the )?(?:notification|message|alert)|\b(?:disclos(?:e|ed|ing)|leak(?:ed|ing)?|expos(?:e|ed|ing)|send(?:ing|sent)?) (?:(?:a|the) )?(?:credential|secret|token)|\b(?:bypass|circumvent)(?:ing)? (?:publisher )?access controls?|\b(?:reproduc(?:e|ing)|copy(?:ing)?|past(?:e|ing)|quot(?:e|ing)|extract(?:ing)?) (?:restricted|paywalled) (?:content|text)|\b(?:fabricat(?:e|ed|ing)|invent(?:ed|ing)?) (?:a |the )?(?:signal|source|claim|evidence)|\b(?:infer|inferred|assert|asserted|declare|declared) (?:a )?consensus|\b(?:prove|proved|proving|establish|establishes|established|establishing|assert|asserts|asserted|asserting|infer|infers|inferred|inferring) (?:a )?(?:causal|cause-and-effect) (?:effect|relationship)|\b(?:causes?|causing|caused by|will cause)\b|\b(?:autonomously|automatically) (?:chang(?:e|ed|ing)|updat(?:e|ed|ing)|mak(?:e|ing)|tak(?:e|ing)) (?:a |the )?(?:decision|action)|\b(?:chang(?:e|ed|ing)|updat(?:e|ed|ing)|mak(?:e|ing)|tak(?:e|ing)) (?:a |the )?(?:decision|action) (?:autonomously|without (?:the )?(?:owner|review))/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unsafe_narrative_content",
+        "signals",
+        "Feed intelligence artifacts must not subscribe, publish, contact, change accounts, send notifications, disclose credentials, reproduce restricted content, fabricate signals, infer consensus or causality, or act autonomously.",
+      ),
+    );
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
@@ -17104,6 +18140,7 @@ const validators = {
   "document-renewal-tracker": documentRenewalFindings,
   "document-intake-analyst": documentIntakeFindings,
   "financial-analyst": financialAnalysisFindings,
+  "feed-intelligence-monitor": feedIntelligenceDeltaLedgerFindings,
   "freelance-client-pipeline": freelancePipelineFindings,
   "fundraising-campaign-manager": fundraisingCampaignFindings,
   "fantasy-sports-manager": fantasySportsFindings,

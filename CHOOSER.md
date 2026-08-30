@@ -39,7 +39,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Experimentation lead](claws/experimentation-lead) | @giodl73-repo; last verified 2026-08-19 |
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | @giodl73-repo; last verified 2026-08-28 |
-| [Feed intelligence monitor](claws/feed-intelligence-monitor) | @giodl73-repo; last verified 2026-08-19 |
+| [Feed intelligence monitor](claws/feed-intelligence-monitor) | @giodl73-repo; last verified 2026-08-30 |
 | [Financial analyst](claws/financial-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | @giodl73; last verified 2026-08-28 |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | @giodl73-repo; last verified 2026-08-29 |
@@ -380,7 +380,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Executive assistant](claws/executive-assistant) | Turns executive priorities into prepared decisions, communications, and reliable follow-through. |
 | [Executive briefing](claws/executive-briefing) | Builds a concise daily operating brief from authorized calendar, mail, document, and weather context. |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | Manages fantasy-team rosters, league rules, matchup evidence, waiver windows, trade ideas, injury uncertainty, and owner-review lineup decisions without submitting changes, joining contests, betting, messaging managers, or giving gambling advice. |
-| [Feed intelligence monitor](claws/feed-intelligence-monitor) | Tracks an approved set of RSS and Atom sources and produces a private, source-linked change digest. |
+| [Feed intelligence monitor](claws/feed-intelligence-monitor) | Maintains a private feed-intelligence delta and triage ledger that reconciles owner-approved recurring feed subscriptions, cursors, item identity, lineage, signals, and queues against a prior checkpoint without subscribing, notifying, publishing, or acting. |
 | [Financial analyst](claws/financial-analyst) | Builds transparent financial analysis without hiding assumptions or uncertainty. |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | Tracks freelance prospects, scopes, proposals, client follow-ups, and commitment gaps without sending messages, quoting binding terms, or accepting work. |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | Prepares an approval-bound nonprofit fundraising campaign, stewardship plan, audience assets, and measurement handoff without soliciting or sending. |
@@ -487,7 +487,7 @@ Categories come directly from the catalog entry.
 | [Cloud cost analyst](claws/cloud-cost-analyst) | X4; Reconciles approved cloud billing exports into allocation, anomaly, commitment, and optimization evidence without changing cloud resources. |
 | [Data analyst](claws/data-analyst) | X4; Turns data questions into reproducible analyses with explicit assumptions and limitations. |
 | [Document intake analyst](claws/document-intake-analyst) | X3; Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty. |
-| [Feed intelligence monitor](claws/feed-intelligence-monitor) | X3; Tracks an approved set of RSS and Atom sources and produces a private, source-linked change digest. |
+| [Feed intelligence monitor](claws/feed-intelligence-monitor) | X3; Maintains a private feed-intelligence delta and triage ledger that reconciles owner-approved recurring feed subscriptions, cursors, item identity, lineage, signals, and queues against a prior checkpoint without subscribing, notifying, publishing, or acting. |
 | [Financial analyst](claws/financial-analyst) | X3; Builds transparent financial analysis without hiding assumptions or uncertainty. |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | X3; Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries. |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | X3; Coordinates blinded model-output evaluation, rubric calibration, and disagreement adjudication without selecting or deploying a model. |

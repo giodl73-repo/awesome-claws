@@ -1,0 +1,1076 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/feed-intelligence-delta-ledger.schema.json",
+  "title": "Feed intelligence delta ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "monitor",
+    "subscriptions",
+    "items",
+    "signals",
+    "deltas",
+    "reviewQueue",
+    "deliveryQueue",
+    "gapsAndBlockers",
+    "blockedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.feedIntelligenceDeltaLedger.v1"
+    },
+    "monitor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "routingIntent",
+        "routingQuestions",
+        "owner",
+        "classification",
+        "destination",
+        "cadence",
+        "window",
+        "baseline",
+        "run",
+        "freshnessPolicy",
+        "triagePolicy",
+        "state"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^monitor-[a-z0-9-]+$"
+        },
+        "routingIntent": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "routingQuestions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/boundedText"
+          }
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "classification": {
+          "const": "private"
+        },
+        "destination": {
+          "type": "string",
+          "pattern": "^outputs/[A-Za-z0-9._/-]+$"
+        },
+        "cadence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schedule",
+            "timezone"
+          ],
+          "properties": {
+            "schedule": {
+              "$ref": "#/$defs/text"
+            },
+            "timezone": {
+              "type": "string",
+              "pattern": "^[A-Za-z_]+/[A-Za-z_]+$|^UTC$"
+            }
+          }
+        },
+        "window": {
+          "$ref": "#/$defs/timestampWindow"
+        },
+        "baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "checkpointId",
+            "runId",
+            "asOf",
+            "subscriptionRefs",
+            "itemRefs",
+            "digest"
+          ],
+          "properties": {
+            "checkpointId": {
+              "type": "string",
+              "pattern": "^checkpoint-[a-z0-9-]+$"
+            },
+            "runId": {
+              "type": "string",
+              "pattern": "^run-[a-z0-9-]+$"
+            },
+            "asOf": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "subscriptionRefs": {
+              "$ref": "#/$defs/subscriptionRefs"
+            },
+            "itemRefs": {
+              "$ref": "#/$defs/possiblyEmptyItemRefs"
+            },
+            "digest": {
+              "$ref": "#/$defs/digest"
+            }
+          }
+        },
+        "run": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "startedAt",
+            "completedAt",
+            "asOf",
+            "outcome"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^run-[a-z0-9-]+$"
+            },
+            "startedAt": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "completedAt": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "asOf": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "outcome": {
+              "enum": [
+                "items-found",
+                "zero-items",
+                "partial"
+              ]
+            }
+          }
+        },
+        "freshnessPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "maxAgeHours",
+            "recheckOn"
+          ],
+          "properties": {
+            "maxAgeHours": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 720
+            },
+            "recheckOn": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "feed-change",
+                  "item-correction",
+                  "item-withdrawal",
+                  "contradiction",
+                  "retrieval-failure"
+                ]
+              }
+            }
+          }
+        },
+        "triagePolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "owner",
+            "thresholds"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^policy-[a-z0-9-]+$"
+            },
+            "owner": {
+              "$ref": "#/$defs/text"
+            },
+            "thresholds": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "level",
+                  "conditions",
+                  "ownerReviewRequired"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^threshold-[a-z0-9-]+$"
+                  },
+                  "level": {
+                    "enum": [
+                      "normal",
+                      "high"
+                    ]
+                  },
+                  "conditions": {
+                    "$ref": "#/$defs/textList"
+                  },
+                  "ownerReviewRequired": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "state": {
+          "enum": [
+            "draft",
+            "blocked",
+            "ready"
+          ]
+        }
+      }
+    },
+    "subscriptions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "owner",
+          "ownerApproved",
+          "provider",
+          "feedType",
+          "canonicalFeedKey",
+          "canonicalFeedUrl",
+          "approvedDomains",
+          "sourceClassification",
+          "cursor",
+          "retrieval"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^subscription-[a-z0-9-]+$"
+          },
+          "name": {
+            "$ref": "#/$defs/text"
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "ownerApproved": {
+            "const": true
+          },
+          "provider": {
+            "enum": [
+              "official-advisory",
+              "official-release",
+              "official-blog",
+              "industry-publication"
+            ]
+          },
+          "feedType": {
+            "enum": [
+              "rss",
+              "atom",
+              "json-feed"
+            ]
+          },
+          "canonicalFeedKey": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._:-]{2,160}$"
+          },
+          "canonicalFeedUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "approvedDomains": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+            }
+          },
+          "sourceClassification": {
+            "const": "public"
+          },
+          "cursor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "value",
+              "checkpoint",
+              "advancedAt"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "guid",
+                  "updated-at",
+                  "etag",
+                  "opaque"
+                ]
+              },
+              "value": {
+                "$ref": "#/$defs/boundedText"
+              },
+              "checkpoint": {
+                "type": "string",
+                "pattern": "^checkpoint-[a-z0-9-]+$"
+              },
+              "advancedAt": {
+                "$ref": "#/$defs/timestamp"
+              }
+            }
+          },
+          "retrieval": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "state",
+              "lastAttemptedAt",
+              "lastSuccessfulAt",
+              "freshness",
+              "recheckState"
+            ],
+            "properties": {
+              "state": {
+                "enum": [
+                  "complete",
+                  "partial",
+                  "failed",
+                  "not-run"
+                ]
+              },
+              "lastAttemptedAt": {
+                "$ref": "#/$defs/timestamp"
+              },
+              "lastSuccessfulAt": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "freshness": {
+                "enum": [
+                  "current",
+                  "stale",
+                  "recheck-needed"
+                ]
+              },
+              "recheckState": {
+                "enum": [
+                  "not-required",
+                  "requested",
+                  "completed"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "subscriptionRef",
+          "guid",
+          "canonicalUrl",
+          "contentDigest",
+          "title",
+          "publishedAt",
+          "updatedAt",
+          "retrievedAt",
+          "status",
+          "supersedesItemRef",
+          "correctsItemRef",
+          "withdrawsItemRef",
+          "duplicateOfItemRef",
+          "sourceClassification",
+          "recheckState"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^item-[a-z0-9-]+$"
+          },
+          "subscriptionRef": {
+            "type": "string",
+            "pattern": "^subscription-[a-z0-9-]+$"
+          },
+          "guid": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "canonicalUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "contentDigest": {
+            "$ref": "#/$defs/digest"
+          },
+          "title": {
+            "$ref": "#/$defs/text"
+          },
+          "publishedAt": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "updatedAt": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "retrievedAt": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "status": {
+            "enum": [
+              "current",
+              "corrected",
+              "withdrawn",
+              "superseded",
+              "duplicate"
+            ]
+          },
+          "supersedesItemRef": {
+            "$ref": "#/$defs/nullableItemRef"
+          },
+          "correctsItemRef": {
+            "$ref": "#/$defs/nullableItemRef"
+          },
+          "withdrawsItemRef": {
+            "$ref": "#/$defs/nullableItemRef"
+          },
+          "duplicateOfItemRef": {
+            "$ref": "#/$defs/nullableItemRef"
+          },
+          "sourceClassification": {
+            "const": "public"
+          },
+          "recheckState": {
+            "$ref": "#/$defs/recheckState"
+          }
+        }
+      }
+    },
+    "signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "itemRef",
+          "sourceUrl",
+          "type",
+          "statement",
+          "status",
+          "confidence",
+          "uncertainty",
+          "relevance",
+          "priority",
+          "recheckState"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^signal-[a-z0-9-]+$"
+          },
+          "itemRef": {
+            "type": "string",
+            "pattern": "^item-[a-z0-9-]+$"
+          },
+          "sourceUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "type": {
+            "enum": [
+              "security-advisory",
+              "release-note",
+              "compatibility-notice",
+              "operational-notice",
+              "correction-notice",
+              "withdrawal-notice",
+              "duplicate-detection"
+            ]
+          },
+          "statement": {
+            "$ref": "#/$defs/boundedText"
+          },
+          "status": {
+            "enum": [
+              "current",
+              "qualified",
+              "withdrawn",
+              "duplicate"
+            ]
+          },
+          "confidence": {
+            "enum": [
+              "high",
+              "moderate",
+              "low",
+              "insufficient"
+            ]
+          },
+          "uncertainty": {
+            "$ref": "#/$defs/text"
+          },
+          "relevance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "state",
+              "rationale"
+            ],
+            "properties": {
+              "state": {
+                "enum": [
+                  "route-to-owner",
+                  "monitor",
+                  "out-of-scope",
+                  "unresolved"
+                ]
+              },
+              "rationale": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          },
+          "priority": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "policyRef",
+              "thresholdRef",
+              "level",
+              "rationale"
+            ],
+            "properties": {
+              "policyRef": {
+                "type": "string",
+                "pattern": "^policy-[a-z0-9-]+$"
+              },
+              "thresholdRef": {
+                "type": "string",
+                "pattern": "^threshold-[a-z0-9-]+$"
+              },
+              "level": {
+                "enum": [
+                  "normal",
+                  "high"
+                ]
+              },
+              "rationale": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          },
+          "recheckState": {
+            "$ref": "#/$defs/recheckState"
+          }
+        }
+      }
+    },
+    "deltas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "disposition",
+          "itemRefs",
+          "baselineItemRefs",
+          "contradictsDeltaRefs",
+          "supersedesDeltaRefs",
+          "summary",
+          "relevance",
+          "recheckState"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^delta-[a-z0-9-]+$"
+          },
+          "disposition": {
+            "enum": [
+              "new",
+              "changed",
+              "corrected",
+              "withdrawn",
+              "duplicate",
+              "contradictory",
+              "unchanged"
+            ]
+          },
+          "itemRefs": {
+            "$ref": "#/$defs/itemRefs"
+          },
+          "baselineItemRefs": {
+            "$ref": "#/$defs/possiblyEmptyItemRefs"
+          },
+          "contradictsDeltaRefs": {
+            "$ref": "#/$defs/possiblyEmptyDeltaRefs"
+          },
+          "supersedesDeltaRefs": {
+            "$ref": "#/$defs/possiblyEmptyDeltaRefs"
+          },
+          "summary": {
+            "$ref": "#/$defs/text"
+          },
+          "relevance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "state",
+              "rationale"
+            ],
+            "properties": {
+              "state": {
+                "enum": [
+                  "review-required",
+                  "monitor",
+                  "no-change",
+                  "unresolved"
+                ]
+              },
+              "rationale": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          },
+          "recheckState": {
+            "$ref": "#/$defs/recheckState"
+          }
+        }
+      }
+    },
+    "reviewQueue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "question",
+          "owner",
+          "priority",
+          "signalRefs",
+          "deltaRefs",
+          "status",
+          "resolution"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^review-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": [
+              "priority-triage",
+              "lineage-review",
+              "contradiction-review",
+              "routing-review"
+            ]
+          },
+          "question": {
+            "$ref": "#/$defs/text"
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "priority": {
+            "enum": [
+              "normal",
+              "high"
+            ]
+          },
+          "signalRefs": {
+            "$ref": "#/$defs/signalRefs"
+          },
+          "deltaRefs": {
+            "$ref": "#/$defs/deltaRefs"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "resolved"
+            ]
+          },
+          "resolution": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "deliveryQueue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "idempotencyKey",
+          "owner",
+          "classification",
+          "destination",
+          "signalRefs",
+          "deltaRefs",
+          "reviewRefs",
+          "state"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^delivery-[a-z0-9-]+$"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "pattern": "^delivery-key-[a-z0-9-]+$"
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "classification": {
+            "const": "private"
+          },
+          "destination": {
+            "type": "string",
+            "pattern": "^outputs/[A-Za-z0-9._/-]+$"
+          },
+          "signalRefs": {
+            "$ref": "#/$defs/signalRefs"
+          },
+          "deltaRefs": {
+            "$ref": "#/$defs/deltaRefs"
+          },
+          "reviewRefs": {
+            "$ref": "#/$defs/possiblyEmptyReviewRefs"
+          },
+          "state": {
+            "enum": [
+              "queued",
+              "held",
+              "prepared"
+            ]
+          }
+        }
+      }
+    },
+    "gapsAndBlockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "description",
+          "owner",
+          "subscriptionRefs",
+          "itemRefs",
+          "signalRefs",
+          "deltaRefs",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^gap-[a-z0-9-]+$|^blocker-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": [
+              "gap",
+              "blocker"
+            ]
+          },
+          "description": {
+            "$ref": "#/$defs/text"
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "subscriptionRefs": {
+            "$ref": "#/$defs/possiblyEmptySubscriptionRefs"
+          },
+          "itemRefs": {
+            "$ref": "#/$defs/possiblyEmptyItemRefs"
+          },
+          "signalRefs": {
+            "$ref": "#/$defs/possiblyEmptySignalRefs"
+          },
+          "deltaRefs": {
+            "$ref": "#/$defs/possiblyEmptyDeltaRefs"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "resolved"
+            ]
+          }
+        }
+      }
+    },
+    "blockedActions": {
+      "$ref": "#/$defs/prohibitedActions"
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "classification",
+        "destination",
+        "subscriptionRefs",
+        "itemRefs",
+        "signalRefs",
+        "deltaRefs",
+        "reviewQueueRefs",
+        "deliveryQueueRefs",
+        "gapAndBlockerRefs",
+        "blockerRefs",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "draft",
+            "blocked",
+            "ready-for-owner-review"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "classification": {
+          "const": "private"
+        },
+        "destination": {
+          "type": "string",
+          "pattern": "^outputs/[A-Za-z0-9._/-]+$"
+        },
+        "subscriptionRefs": {
+          "$ref": "#/$defs/subscriptionRefs"
+        },
+        "itemRefs": {
+          "$ref": "#/$defs/possiblyEmptyItemRefs"
+        },
+        "signalRefs": {
+          "$ref": "#/$defs/possiblyEmptySignalRefs"
+        },
+        "deltaRefs": {
+          "$ref": "#/$defs/possiblyEmptyDeltaRefs"
+        },
+        "reviewQueueRefs": {
+          "$ref": "#/$defs/possiblyEmptyReviewRefs"
+        },
+        "deliveryQueueRefs": {
+          "$ref": "#/$defs/possiblyEmptyDeliveryRefs"
+        },
+        "gapAndBlockerRefs": {
+          "$ref": "#/$defs/possiblyEmptyGapRefs"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/possiblyEmptyBlockerRefs"
+        },
+        "prohibitedActions": {
+          "$ref": "#/$defs/prohibitedActions"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "boundedText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 600
+    },
+    "textList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timestampWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "start",
+        "end"
+      ],
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "end": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "recheckState": {
+      "enum": [
+        "not-required",
+        "requested",
+        "completed"
+      ]
+    },
+    "nullableItemRef": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^item-[a-z0-9-]+$"
+    },
+    "subscriptionRefs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^subscription-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptySubscriptionRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^subscription-[a-z0-9-]+$"
+      }
+    },
+    "itemRefs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^item-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyItemRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^item-[a-z0-9-]+$"
+      }
+    },
+    "signalRefs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^signal-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptySignalRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^signal-[a-z0-9-]+$"
+      }
+    },
+    "deltaRefs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^delta-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyDeltaRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^delta-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyReviewRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^review-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyDeliveryRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^delivery-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyGapRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^gap-[a-z0-9-]+$|^blocker-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyBlockerRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^blocker-[a-z0-9-]+$"
+      }
+    },
+    "prohibitedActions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "subscribe-or-unsubscribe",
+          "publish-or-contact-externally",
+          "change-accounts",
+          "send-notifications-or-messages",
+          "disclose-credentials",
+          "reproduce-restricted-content",
+          "fabricate-signals-or-sources",
+          "infer-consensus-or-causality",
+          "take-autonomous-actions-or-decisions"
+        ]
+      }
+    }
+  }
+}

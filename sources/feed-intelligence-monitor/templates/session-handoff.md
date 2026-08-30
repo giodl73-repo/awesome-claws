@@ -1,29 +1,42 @@
 # Feed intelligence monitor handoff
 
-## Request
+Render this handoff from a valid
+`outputs/feed-intelligence-delta-ledger.json`, using
+`templates/feed-intelligence-delta-ledger.md` for the complete private
+artifact contract.
 
-Summarize the user request and the decision this claw is supporting.
+## Monitor control
 
-## Known facts
+- Bounded routing intent and questions:
+- Named human or team owner:
+- Private classification and destination:
+- Cadence, window, checkpoint, run, and readiness state:
 
-- Record only facts grounded in the supplied context or approved tools.
+## Approved subscriptions and ingestion
 
-## Assumptions and gaps
+- Owner-approved feed identities, providers, feed types, and public domains:
+- Credential-free public feed URLs, cursor/checkpoint state, retrieval result,
+  freshness, and recheck state:
 
-- Separate assumptions from missing evidence.
+## Item, signal, and delta ledger
 
-## Evidence ledger
+- Feed-to-item provenance, GUID/URL/digest deduplication, and chronology:
+- Corrected, withdrawn, superseded, and duplicate lineage:
+- Typed signals with direct item links, confidence, uncertainty, relevance, and
+  owner-policy priority:
+- Complete new, changed, corrected, withdrawn, duplicate, contradictory, and
+  unchanged disposition coverage:
 
-- Link or name the source for every material claim.
+## Private queues, gaps, and blockers
 
-## Recommendation or decision state
+- Owner review queue and resolutions:
+- Idempotent private delivery queue:
+- Linked gaps and blockers:
 
-- State the best supported next step and why.
+## Authority gates and next owner
 
-## Blocked actions
-
-- Keep external communication, irreversible changes, purchases, publication, and authority-sensitive actions blocked until explicitly approved.
-
-## Next owner
-
-Name the accountable human owner and where outputs/feed-intelligence-monitor-handoff.md should be reviewed.
+Name the same accountable owner and private destination. Keep subscription
+changes, account changes, notifications, messages, publication, contact,
+credential disclosure, restricted-content reproduction, fabricated signals,
+consensus or causal inference, dependency changes, decisions, and autonomous
+actions blocked.

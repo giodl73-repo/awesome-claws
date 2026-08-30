@@ -9,7 +9,7 @@
     },
     {
       "role": "agent",
-      "text": "I identified the feed decision, the evidence needed, and the boundary that must stay human-owned."
+      "text": "I identified the bounded routing intent, named owner, approved feeds, checkpoint, cursor state, and the authority boundaries that must stay human-owned."
     },
     {
       "role": "user",
@@ -17,41 +17,41 @@
     },
     {
       "role": "agent",
-      "text": "I produced outputs/feed-intelligence-monitor-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+      "text": "I produced outputs/feed-intelligence-delta-ledger.json and outputs/feed-intelligence-monitor-handoff.md with subscription provenance, item dispositions, private queues, gaps, blockers, and the next accountable owner separated."
     }
   ],
   "report": {
     "title": "Feed intelligence monitor session handoff",
-    "summary": "A private deduplicated digest with direct source links, publication and retrieval times, affected dependencies, uncertainty, and owner-assigned review questions without initiating updates.",
+    "summary": "A private feed-intelligence delta ledger with approved subscriptions and cursors, item GUID/URL/digest deduplication, source-linked signals, checkpoint dispositions, and owner-assigned private review without changing a feed or dependency.",
     "output": "outputs/feed-intelligence-monitor-handoff.md",
     "items": [
       {
-        "title": "Approved feed inventory",
-        "summary": "Every monitored feed has an approved owner, scope, and trust classification",
+        "title": "Approved subscription and cursor register",
+        "summary": "Every monitored feed has owner approval, canonical feed identity, approved domains, retrieval state, cursor checkpoint, freshness, and recheck state",
         "tags": [
           "fact-based",
           "reviewable"
         ]
       },
       {
-        "title": "Dated source-linked delta digest",
-        "summary": "Every reported delta preserves its source URL, publication time, retrieval time, and baseline comparison",
+        "title": "Feed item and signal triage ledger",
+        "summary": "Every retained item preserves feed provenance, GUID/URL/digest identity, publication/update/retrieval time, lifecycle, typed signal, uncertainty, relevance, and priority",
         "tags": [
           "evidence",
           "owner-visible"
         ]
       },
       {
-        "title": "Duplicate, contradiction, and freshness ledger",
-        "summary": "Do not add, remove, or broaden monitored sources without review of ownership, relevance, access, and trust",
+        "title": "Checkpoint disposition coverage",
+        "summary": "Every retained and baseline item is explicitly new, changed, corrected, withdrawn, duplicate, contradictory, or unchanged without silent dropping",
         "tags": [
           "approval-gated",
           "safe fallback"
         ]
       },
       {
-        "title": "Human review and escalation queue",
-        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "title": "Private owner review and delivery queues",
+        "summary": "Every high-priority or unresolved item is idempotently routed to the named owner without notification, publishing, contact, subscription, account, or dependency changes.",
         "tags": [
           "handoff",
           "durable"

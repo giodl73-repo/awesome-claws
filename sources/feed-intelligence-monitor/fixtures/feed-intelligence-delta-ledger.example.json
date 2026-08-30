@@ -1,0 +1,816 @@
+{
+  "schemaVersion": "awesomeClaws.feedIntelligenceDeltaLedger.v1",
+  "monitor": {
+    "id": "monitor-critical-dependency-feeds",
+    "routingIntent": "Route only official security-advisory, release, and compatibility feed items that may require private dependency review.",
+    "routingQuestions": [
+      "Which approved feed items need the Platform Security Review Team to review patching or compatibility?",
+      "Which incoming items are corrected, withdrawn, duplicate, contradictory, or unchanged against the prior checkpoint?"
+    ],
+    "owner": "Platform Security Review Team",
+    "classification": "private",
+    "destination": "outputs/feed-intelligence-monitor-handoff.md",
+    "cadence": {
+      "schedule": "Every weekday at 13:30",
+      "timezone": "UTC"
+    },
+    "window": {
+      "start": "2026-08-01T00:00:00Z",
+      "end": "2026-08-30T23:59:59Z"
+    },
+    "baseline": {
+      "checkpointId": "checkpoint-critical-dependencies-2026-07",
+      "runId": "run-critical-dependencies-2026-07",
+      "asOf": "2026-07-31T23:59:59Z",
+      "subscriptionRefs": [
+        "subscription-openclaw-releases",
+        "subscription-github-advisories"
+      ],
+      "itemRefs": [
+        "item-openclaw-release-july",
+        "item-advisory-initial",
+        "item-advisory-retired",
+        "item-advisory-unchanged"
+      ],
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "run": {
+      "id": "run-critical-dependencies-2026-08",
+      "startedAt": "2026-08-30T13:30:00Z",
+      "completedAt": "2026-08-30T14:25:00Z",
+      "asOf": "2026-08-30T14:25:00Z",
+      "outcome": "items-found"
+    },
+    "freshnessPolicy": {
+      "maxAgeHours": 168,
+      "recheckOn": [
+        "feed-change",
+        "item-correction",
+        "item-withdrawal",
+        "contradiction",
+        "retrieval-failure"
+      ]
+    },
+    "triagePolicy": {
+      "id": "policy-critical-dependency-triage",
+      "owner": "Platform Security Review Team",
+      "thresholds": [
+        {
+          "id": "threshold-high-security-or-compatibility",
+          "level": "high",
+          "conditions": [
+            "An approved advisory, correction, withdrawal, or release signal may require patching or compatibility review."
+          ],
+          "ownerReviewRequired": true
+        },
+        {
+          "id": "threshold-normal-retained-context",
+          "level": "normal",
+          "conditions": [
+            "The retained item is duplicate, unchanged, or contextual without a current private routing need."
+          ],
+          "ownerReviewRequired": true
+        }
+      ]
+    },
+    "state": "ready"
+  },
+  "subscriptions": [
+    {
+      "id": "subscription-openclaw-releases",
+      "name": "OpenClaw release feed",
+      "owner": "Platform Security Review Team",
+      "ownerApproved": true,
+      "provider": "official-release",
+      "feedType": "atom",
+      "canonicalFeedKey": "openclaw-releases",
+      "canonicalFeedUrl": "https://github.com/openclaw/openclaw/releases.atom",
+      "approvedDomains": [
+        "github.com"
+      ],
+      "sourceClassification": "public",
+      "cursor": {
+        "kind": "guid",
+        "value": "tag:github.com,2008:Repository/openclaw/openclaw/releases",
+        "checkpoint": "checkpoint-critical-dependencies-2026-07",
+        "advancedAt": "2026-08-30T14:20:00Z"
+      },
+      "retrieval": {
+        "state": "complete",
+        "lastAttemptedAt": "2026-08-30T13:31:00Z",
+        "lastSuccessfulAt": "2026-08-30T13:32:00Z",
+        "freshness": "current",
+        "recheckState": "not-required"
+      }
+    },
+    {
+      "id": "subscription-github-advisories",
+      "name": "GitHub security advisory feed",
+      "owner": "Platform Security Review Team",
+      "ownerApproved": true,
+      "provider": "official-advisory",
+      "feedType": "atom",
+      "canonicalFeedKey": "github-security-advisories",
+      "canonicalFeedUrl": "https://github.com/advisories.atom",
+      "approvedDomains": [
+        "github.com"
+      ],
+      "sourceClassification": "public",
+      "cursor": {
+        "kind": "updated-at",
+        "value": "2026-08-30T14:00:00Z",
+        "checkpoint": "checkpoint-critical-dependencies-2026-07",
+        "advancedAt": "2026-08-30T14:22:00Z"
+      },
+      "retrieval": {
+        "state": "complete",
+        "lastAttemptedAt": "2026-08-30T13:33:00Z",
+        "lastSuccessfulAt": "2026-08-30T13:34:00Z",
+        "freshness": "current",
+        "recheckState": "completed"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "item-openclaw-release-july",
+      "subscriptionRef": "subscription-openclaw-releases",
+      "guid": "release-openclaw-2026-07",
+      "canonicalUrl": "https://github.com/openclaw/openclaw/releases/tag/v2026.7.1",
+      "contentDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "title": "Representative OpenClaw release baseline",
+      "publishedAt": "2026-07-15T12:00:00Z",
+      "updatedAt": "2026-07-15T12:00:00Z",
+      "retrievedAt": "2026-08-30T13:32:00Z",
+      "status": "superseded",
+      "supersedesItemRef": null,
+      "correctsItemRef": null,
+      "withdrawsItemRef": null,
+      "duplicateOfItemRef": null,
+      "sourceClassification": "public",
+      "recheckState": "not-required"
+    },
+    {
+      "id": "item-openclaw-release-august",
+      "subscriptionRef": "subscription-openclaw-releases",
+      "guid": "release-openclaw-2026-08",
+      "canonicalUrl": "https://github.com/openclaw/openclaw/releases/tag/v2026.8.1",
+      "contentDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "title": "Representative OpenClaw release update",
+      "publishedAt": "2026-08-22T12:00:00Z",
+      "updatedAt": "2026-08-22T12:00:00Z",
+      "retrievedAt": "2026-08-30T13:32:00Z",
+      "status": "current",
+      "supersedesItemRef": "item-openclaw-release-july",
+      "correctsItemRef": null,
+      "withdrawsItemRef": null,
+      "duplicateOfItemRef": null,
+      "sourceClassification": "public",
+      "recheckState": "completed"
+    },
+    {
+      "id": "item-advisory-initial",
+      "subscriptionRef": "subscription-github-advisories",
+      "guid": "GHSA-aaaa-bbbb-cccc",
+      "canonicalUrl": "https://github.com/advisories/GHSA-aaaa-bbbb-cccc",
+      "contentDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "title": "Representative advisory initial record",
+      "publishedAt": "2026-07-20T09:00:00Z",
+      "updatedAt": "2026-07-20T09:00:00Z",
+      "retrievedAt": "2026-08-30T13:34:00Z",
+      "status": "superseded",
+      "supersedesItemRef": null,
+      "correctsItemRef": null,
+      "withdrawsItemRef": null,
+      "duplicateOfItemRef": null,
+      "sourceClassification": "public",
+      "recheckState": "not-required"
+    },
+    {
+      "id": "item-advisory-correction",
+      "subscriptionRef": "subscription-github-advisories",
+      "guid": "GHSA-aaaa-bbbb-cccc",
+      "canonicalUrl": "https://github.com/advisories/GHSA-aaaa-bbbb-cccc",
+      "contentDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "title": "Representative advisory correction",
+      "publishedAt": "2026-08-24T09:00:00Z",
+      "updatedAt": "2026-08-24T09:00:00Z",
+      "retrievedAt": "2026-08-30T13:34:00Z",
+      "status": "corrected",
+      "supersedesItemRef": null,
+      "correctsItemRef": "item-advisory-initial",
+      "withdrawsItemRef": null,
+      "duplicateOfItemRef": null,
+      "sourceClassification": "public",
+      "recheckState": "completed"
+    },
+    {
+      "id": "item-advisory-retired",
+      "subscriptionRef": "subscription-github-advisories",
+      "guid": "GHSA-dddd-eeee-ffff",
+      "canonicalUrl": "https://github.com/advisories/GHSA-dddd-eeee-ffff",
+      "contentDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "title": "Representative advisory retained baseline",
+      "publishedAt": "2026-07-22T09:00:00Z",
+      "updatedAt": "2026-07-22T09:00:00Z",
+      "retrievedAt": "2026-08-30T13:34:00Z",
+      "status": "superseded",
+      "supersedesItemRef": null,
+      "correctsItemRef": null,
+      "withdrawsItemRef": null,
+      "duplicateOfItemRef": null,
+      "sourceClassification": "public",
+      "recheckState": "not-required"
+    },
+    {
+      "id": "item-advisory-withdrawal",
+      "subscriptionRef": "subscription-github-advisories",
+      "guid": "GHSA-dddd-eeee-ffff-withdrawal",
+      "canonicalUrl": "https://github.com/advisories/GHSA-dddd-eeee-ffff",
+      "contentDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "title": "Representative advisory withdrawal notice",
+      "publishedAt": "2026-08-25T09:00:00Z",
+      "updatedAt": "2026-08-25T09:00:00Z",
+      "retrievedAt": "2026-08-30T13:34:00Z",
+      "status": "withdrawn",
+      "supersedesItemRef": null,
+      "correctsItemRef": null,
+      "withdrawsItemRef": "item-advisory-retired",
+      "duplicateOfItemRef": null,
+      "sourceClassification": "public",
+      "recheckState": "completed"
+    },
+    {
+      "id": "item-advisory-unchanged",
+      "subscriptionRef": "subscription-github-advisories",
+      "guid": "GHSA-1111-2222-3333",
+      "canonicalUrl": "https://github.com/advisories/GHSA-1111-2222-3333",
+      "contentDigest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "title": "Representative advisory retained without a delta",
+      "publishedAt": "2026-07-27T09:00:00Z",
+      "updatedAt": "2026-07-27T09:00:00Z",
+      "retrievedAt": "2026-08-30T13:34:00Z",
+      "status": "current",
+      "supersedesItemRef": null,
+      "correctsItemRef": null,
+      "withdrawsItemRef": null,
+      "duplicateOfItemRef": null,
+      "sourceClassification": "public",
+      "recheckState": "not-required"
+    },
+    {
+      "id": "item-openclaw-release-duplicate",
+      "subscriptionRef": "subscription-github-advisories",
+      "guid": null,
+      "canonicalUrl": "https://github.com/openclaw/openclaw/releases/tag/v2026.8.1",
+      "contentDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "title": "Representative cross-feed duplicate of the release update",
+      "publishedAt": "2026-08-22T12:00:00Z",
+      "updatedAt": "2026-08-22T12:00:00Z",
+      "retrievedAt": "2026-08-30T13:34:00Z",
+      "status": "duplicate",
+      "supersedesItemRef": null,
+      "correctsItemRef": null,
+      "withdrawsItemRef": null,
+      "duplicateOfItemRef": "item-openclaw-release-august",
+      "sourceClassification": "public",
+      "recheckState": "not-required"
+    },
+    {
+      "id": "item-compatibility-note",
+      "subscriptionRef": "subscription-openclaw-releases",
+      "guid": "compatibility-note-openclaw-2026-08",
+      "canonicalUrl": "https://github.com/openclaw/openclaw/discussions/1234",
+      "contentDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "title": "Representative compatibility note",
+      "publishedAt": "2026-08-26T12:00:00Z",
+      "updatedAt": "2026-08-26T12:00:00Z",
+      "retrievedAt": "2026-08-30T13:32:00Z",
+      "status": "current",
+      "supersedesItemRef": null,
+      "correctsItemRef": null,
+      "withdrawsItemRef": null,
+      "duplicateOfItemRef": null,
+      "sourceClassification": "public",
+      "recheckState": "completed"
+    }
+  ],
+  "signals": [
+    {
+      "id": "signal-release-july-baseline",
+      "itemRef": "item-openclaw-release-july",
+      "sourceUrl": "https://github.com/openclaw/openclaw/releases/tag/v2026.7.1",
+      "type": "release-note",
+      "statement": "The retained July release remains the baseline predecessor for the current release comparison.",
+      "status": "qualified",
+      "confidence": "high",
+      "uncertainty": "The item records feed provenance and version lineage, not an instruction to update a dependency.",
+      "relevance": {
+        "state": "monitor",
+        "rationale": "It is retained only to make the successor release comparison reviewable."
+      },
+      "priority": {
+        "policyRef": "policy-critical-dependency-triage",
+        "thresholdRef": "threshold-normal-retained-context",
+        "level": "normal",
+        "rationale": "The predecessor is retained context rather than a new routing event."
+      },
+      "recheckState": "not-required"
+    },
+    {
+      "id": "signal-release-august",
+      "itemRef": "item-openclaw-release-august",
+      "sourceUrl": "https://github.com/openclaw/openclaw/releases/tag/v2026.8.1",
+      "type": "release-note",
+      "statement": "A newer official release item supersedes the retained July release and needs owner compatibility review.",
+      "status": "current",
+      "confidence": "high",
+      "uncertainty": "The feed item does not establish whether a particular deployment should change.",
+      "relevance": {
+        "state": "route-to-owner",
+        "rationale": "The owner-defined policy routes release changes that may affect critical dependencies."
+      },
+      "priority": {
+        "policyRef": "policy-critical-dependency-triage",
+        "thresholdRef": "threshold-high-security-or-compatibility",
+        "level": "high",
+        "rationale": "A current approved release may require compatibility review."
+      },
+      "recheckState": "completed"
+    },
+    {
+      "id": "signal-advisory-initial",
+      "itemRef": "item-advisory-initial",
+      "sourceUrl": "https://github.com/advisories/GHSA-aaaa-bbbb-cccc",
+      "type": "security-advisory",
+      "statement": "The initial advisory record remains retained as the predecessor of a correction.",
+      "status": "qualified",
+      "confidence": "high",
+      "uncertainty": "The corrected record controls the current triage question.",
+      "relevance": {
+        "state": "monitor",
+        "rationale": "The initial record remains provenance for correction lineage."
+      },
+      "priority": {
+        "policyRef": "policy-critical-dependency-triage",
+        "thresholdRef": "threshold-normal-retained-context",
+        "level": "normal",
+        "rationale": "Historical advisory lineage is retained for owner review."
+      },
+      "recheckState": "not-required"
+    },
+    {
+      "id": "signal-advisory-correction",
+      "itemRef": "item-advisory-correction",
+      "sourceUrl": "https://github.com/advisories/GHSA-aaaa-bbbb-cccc",
+      "type": "correction-notice",
+      "statement": "A corrected advisory record qualifies the retained initial advisory and needs private owner triage.",
+      "status": "qualified",
+      "confidence": "high",
+      "uncertainty": "The correction does not establish patch applicability without the owner review.",
+      "relevance": {
+        "state": "route-to-owner",
+        "rationale": "The policy routes corrected advisory items for a private patching review."
+      },
+      "priority": {
+        "policyRef": "policy-critical-dependency-triage",
+        "thresholdRef": "threshold-high-security-or-compatibility",
+        "level": "high",
+        "rationale": "A correction can change the meaning of an advisory retained by the team."
+      },
+      "recheckState": "completed"
+    },
+    {
+      "id": "signal-advisory-retired",
+      "itemRef": "item-advisory-retired",
+      "sourceUrl": "https://github.com/advisories/GHSA-dddd-eeee-ffff",
+      "type": "security-advisory",
+      "statement": "The retained advisory predecessor remains visible because a withdrawal notice names it.",
+      "status": "qualified",
+      "confidence": "high",
+      "uncertainty": "The withdrawal notice, rather than the historical item, defines the current review question.",
+      "relevance": {
+        "state": "monitor",
+        "rationale": "The predecessor is needed to preserve withdrawal provenance."
+      },
+      "priority": {
+        "policyRef": "policy-critical-dependency-triage",
+        "thresholdRef": "threshold-normal-retained-context",
+        "level": "normal",
+        "rationale": "Historical context remains visible without routing a separate action."
+      },
+      "recheckState": "not-required"
+    },
+    {
+      "id": "signal-advisory-withdrawal",
+      "itemRef": "item-advisory-withdrawal",
+      "sourceUrl": "https://github.com/advisories/GHSA-dddd-eeee-ffff",
+      "type": "withdrawal-notice",
+      "statement": "A withdrawal notice removes the retained advisory from current support and needs owner review.",
+      "status": "withdrawn",
+      "confidence": "high",
+      "uncertainty": "The ledger does not infer why the advisory was withdrawn or a replacement conclusion.",
+      "relevance": {
+        "state": "route-to-owner",
+        "rationale": "The policy routes a withdrawn advisory that may have informed prior private review."
+      },
+      "priority": {
+        "policyRef": "policy-critical-dependency-triage",
+        "thresholdRef": "threshold-high-security-or-compatibility",
+        "level": "high",
+        "rationale": "Withdrawal of a baseline advisory requires a named owner to reconcile it."
+      },
+      "recheckState": "completed"
+    },
+    {
+      "id": "signal-advisory-unchanged",
+      "itemRef": "item-advisory-unchanged",
+      "sourceUrl": "https://github.com/advisories/GHSA-1111-2222-3333",
+      "type": "security-advisory",
+      "statement": "The retained advisory remains unchanged in this feed checkpoint.",
+      "status": "current",
+      "confidence": "high",
+      "uncertainty": "An unchanged feed item does not prove that external conditions are unchanged.",
+      "relevance": {
+        "state": "monitor",
+        "rationale": "The item remains baseline context without a new routing need."
+      },
+      "priority": {
+        "policyRef": "policy-critical-dependency-triage",
+        "thresholdRef": "threshold-normal-retained-context",
+        "level": "normal",
+        "rationale": "No newly classified feed delta requires escalation."
+      },
+      "recheckState": "not-required"
+    },
+    {
+      "id": "signal-release-duplicate",
+      "itemRef": "item-openclaw-release-duplicate",
+      "sourceUrl": "https://github.com/openclaw/openclaw/releases/tag/v2026.8.1",
+      "type": "duplicate-detection",
+      "statement": "A second feed item resolves to the same canonical release URL and content digest as the retained release update.",
+      "status": "duplicate",
+      "confidence": "high",
+      "uncertainty": "The duplicate is retained as deduplication provenance, not a second release signal.",
+      "relevance": {
+        "state": "monitor",
+        "rationale": "Deduplication prevents duplicate routing while retaining feed-to-item provenance."
+      },
+      "priority": {
+        "policyRef": "policy-critical-dependency-triage",
+        "thresholdRef": "threshold-normal-retained-context",
+        "level": "normal",
+        "rationale": "The duplicate requires no independent action."
+      },
+      "recheckState": "not-required"
+    },
+    {
+      "id": "signal-compatibility-note",
+      "itemRef": "item-compatibility-note",
+      "sourceUrl": "https://github.com/openclaw/openclaw/discussions/1234",
+      "type": "compatibility-notice",
+      "statement": "A compatibility note needs private owner comparison with the current release item.",
+      "status": "current",
+      "confidence": "moderate",
+      "uncertainty": "The two feed items may address different environments, so the monitor preserves the contradiction as a question.",
+      "relevance": {
+        "state": "route-to-owner",
+        "rationale": "The named owner must decide whether the note affects the team's declared dependency context."
+      },
+      "priority": {
+        "policyRef": "policy-critical-dependency-triage",
+        "thresholdRef": "threshold-high-security-or-compatibility",
+        "level": "high",
+        "rationale": "A possible compatibility conflict warrants a private owner triage."
+      },
+      "recheckState": "completed"
+    }
+  ],
+  "deltas": [
+    {
+      "id": "delta-release-changed",
+      "disposition": "changed",
+      "itemRefs": [
+        "item-openclaw-release-august"
+      ],
+      "baselineItemRefs": [
+        "item-openclaw-release-july"
+      ],
+      "contradictsDeltaRefs": [],
+      "supersedesDeltaRefs": [],
+      "summary": "The current release item supersedes the retained July release and is routed for owner review.",
+      "relevance": {
+        "state": "review-required",
+        "rationale": "The owner, rather than the monitor, decides whether compatibility work is needed."
+      },
+      "recheckState": "not-required"
+    },
+    {
+      "id": "delta-advisory-corrected",
+      "disposition": "corrected",
+      "itemRefs": [
+        "item-advisory-correction"
+      ],
+      "baselineItemRefs": [
+        "item-advisory-initial"
+      ],
+      "contradictsDeltaRefs": [],
+      "supersedesDeltaRefs": [],
+      "summary": "The correction remains linked to the initial advisory and qualifies its current triage.",
+      "relevance": {
+        "state": "review-required",
+        "rationale": "The correction requires private owner review before any patching decision."
+      },
+      "recheckState": "completed"
+    },
+    {
+      "id": "delta-advisory-withdrawn",
+      "disposition": "withdrawn",
+      "itemRefs": [
+        "item-advisory-withdrawal"
+      ],
+      "baselineItemRefs": [
+        "item-advisory-retired"
+      ],
+      "contradictsDeltaRefs": [],
+      "supersedesDeltaRefs": [],
+      "summary": "The withdrawal preserves the retired advisory as history but removes it from current support.",
+      "relevance": {
+        "state": "review-required",
+        "rationale": "The owner must reconcile any private use of the withdrawn advisory."
+      },
+      "recheckState": "completed"
+    },
+    {
+      "id": "delta-release-duplicate",
+      "disposition": "duplicate",
+      "itemRefs": [
+        "item-openclaw-release-duplicate"
+      ],
+      "baselineItemRefs": [],
+      "contradictsDeltaRefs": [],
+      "supersedesDeltaRefs": [],
+      "summary": "A cross-feed duplicate remains visible for provenance without producing a second routed signal.",
+      "relevance": {
+        "state": "no-change",
+        "rationale": "The duplicate does not introduce a distinct owner decision."
+      },
+      "recheckState": "not-required"
+    },
+    {
+      "id": "delta-compatibility-new",
+      "disposition": "new",
+      "itemRefs": [
+        "item-compatibility-note"
+      ],
+      "baselineItemRefs": [],
+      "contradictsDeltaRefs": [],
+      "supersedesDeltaRefs": [],
+      "summary": "A new compatibility note is retained for a private owner comparison.",
+      "relevance": {
+        "state": "review-required",
+        "rationale": "The item may affect a declared dependency but cannot make that determination autonomously."
+      },
+      "recheckState": "not-required"
+    },
+    {
+      "id": "delta-compatibility-contradictory",
+      "disposition": "contradictory",
+      "itemRefs": [
+        "item-openclaw-release-august",
+        "item-compatibility-note"
+      ],
+      "baselineItemRefs": [
+        "item-openclaw-release-july"
+      ],
+      "contradictsDeltaRefs": [
+        "delta-release-changed"
+      ],
+      "supersedesDeltaRefs": [],
+      "summary": "The current release and compatibility note may conflict; the relationship remains an owner question.",
+      "relevance": {
+        "state": "monitor",
+        "rationale": "The monitor preserves the contradiction without inferring a technical conclusion."
+      },
+      "recheckState": "completed"
+    },
+    {
+      "id": "delta-advisory-unchanged",
+      "disposition": "unchanged",
+      "itemRefs": [
+        "item-advisory-unchanged"
+      ],
+      "baselineItemRefs": [
+        "item-advisory-unchanged"
+      ],
+      "contradictsDeltaRefs": [],
+      "supersedesDeltaRefs": [],
+      "summary": "The retained advisory remains visible without a new feed delta in this run.",
+      "relevance": {
+        "state": "no-change",
+        "rationale": "The checkpoint has no independently classified change for this item."
+      },
+      "recheckState": "not-required"
+    }
+  ],
+  "reviewQueue": [
+    {
+      "id": "review-release-compatibility",
+      "kind": "priority-triage",
+      "question": "Does the current release require a compatibility review for the declared critical dependencies?",
+      "owner": "Platform Security Review Team",
+      "priority": "high",
+      "signalRefs": [
+        "signal-release-august"
+      ],
+      "deltaRefs": [
+        "delta-release-changed"
+      ],
+      "status": "resolved",
+      "resolution": "The owner will review the official release material in the private dependency review; no update is initiated by this ledger."
+    },
+    {
+      "id": "review-advisory-correction",
+      "kind": "lineage-review",
+      "question": "Does the corrected advisory change the private patching question recorded at the prior checkpoint?",
+      "owner": "Platform Security Review Team",
+      "priority": "high",
+      "signalRefs": [
+        "signal-advisory-correction"
+      ],
+      "deltaRefs": [
+        "delta-advisory-corrected"
+      ],
+      "status": "resolved",
+      "resolution": "The correction remains qualified for the owner; the monitor has not selected or applied a patch."
+    },
+    {
+      "id": "review-advisory-withdrawal",
+      "kind": "lineage-review",
+      "question": "Which private review notes, if any, depended on the withdrawn advisory?",
+      "owner": "Platform Security Review Team",
+      "priority": "high",
+      "signalRefs": [
+        "signal-advisory-withdrawal"
+      ],
+      "deltaRefs": [
+        "delta-advisory-withdrawn"
+      ],
+      "status": "resolved",
+      "resolution": "Keep the advisory only as withdrawal lineage and let the owner identify any replacement source."
+    },
+    {
+      "id": "review-compatibility-contradiction",
+      "kind": "contradiction-review",
+      "question": "Do the current release and compatibility note apply to the same environment and dependency version?",
+      "owner": "Platform Security Review Team",
+      "priority": "high",
+      "signalRefs": [
+        "signal-release-august",
+        "signal-compatibility-note"
+      ],
+      "deltaRefs": [
+        "delta-compatibility-new",
+        "delta-compatibility-contradictory"
+      ],
+      "status": "resolved",
+      "resolution": "Preserve both items and let the named owner determine applicability; the monitor does not infer compatibility."
+    }
+  ],
+  "deliveryQueue": [
+    {
+      "id": "delivery-private-critical-dependency-triage",
+      "idempotencyKey": "delivery-key-critical-dependencies-2026-08",
+      "owner": "Platform Security Review Team",
+      "classification": "private",
+      "destination": "outputs/feed-intelligence-monitor-handoff.md",
+      "signalRefs": [
+        "signal-release-july-baseline",
+        "signal-release-august",
+        "signal-advisory-initial",
+        "signal-advisory-correction",
+        "signal-advisory-retired",
+        "signal-advisory-withdrawal",
+        "signal-advisory-unchanged",
+        "signal-release-duplicate",
+        "signal-compatibility-note"
+      ],
+      "deltaRefs": [
+        "delta-release-changed",
+        "delta-advisory-corrected",
+        "delta-advisory-withdrawn",
+        "delta-release-duplicate",
+        "delta-compatibility-new",
+        "delta-compatibility-contradictory",
+        "delta-advisory-unchanged"
+      ],
+      "reviewRefs": [
+        "review-release-compatibility",
+        "review-advisory-correction",
+        "review-advisory-withdrawal",
+        "review-compatibility-contradiction"
+      ],
+      "state": "prepared"
+    }
+  ],
+  "gapsAndBlockers": [
+    {
+      "id": "gap-compatibility-applicability",
+      "kind": "gap",
+      "description": "The feed items do not prove whether the compatibility note applies to the team's private deployment environment.",
+      "owner": "Platform Security Review Team",
+      "subscriptionRefs": [
+        "subscription-openclaw-releases"
+      ],
+      "itemRefs": [
+        "item-openclaw-release-august",
+        "item-compatibility-note"
+      ],
+      "signalRefs": [
+        "signal-release-august",
+        "signal-compatibility-note"
+      ],
+      "deltaRefs": [
+        "delta-release-changed",
+        "delta-compatibility-contradictory"
+      ],
+      "status": "resolved"
+    }
+  ],
+  "blockedActions": [
+    "subscribe-or-unsubscribe",
+    "publish-or-contact-externally",
+    "change-accounts",
+    "send-notifications-or-messages",
+    "disclose-credentials",
+    "reproduce-restricted-content",
+    "fabricate-signals-or-sources",
+    "infer-consensus-or-causality",
+    "take-autonomous-actions-or-decisions"
+  ],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Platform Security Review Team",
+    "classification": "private",
+    "destination": "outputs/feed-intelligence-monitor-handoff.md",
+    "subscriptionRefs": [
+      "subscription-openclaw-releases",
+      "subscription-github-advisories"
+    ],
+    "itemRefs": [
+      "item-openclaw-release-july",
+      "item-openclaw-release-august",
+      "item-advisory-initial",
+      "item-advisory-correction",
+      "item-advisory-retired",
+      "item-advisory-withdrawal",
+      "item-advisory-unchanged",
+      "item-openclaw-release-duplicate",
+      "item-compatibility-note"
+    ],
+    "signalRefs": [
+      "signal-release-july-baseline",
+      "signal-release-august",
+      "signal-advisory-initial",
+      "signal-advisory-correction",
+      "signal-advisory-retired",
+      "signal-advisory-withdrawal",
+      "signal-advisory-unchanged",
+      "signal-release-duplicate",
+      "signal-compatibility-note"
+    ],
+    "deltaRefs": [
+      "delta-release-changed",
+      "delta-advisory-corrected",
+      "delta-advisory-withdrawn",
+      "delta-release-duplicate",
+      "delta-compatibility-new",
+      "delta-compatibility-contradictory",
+      "delta-advisory-unchanged"
+    ],
+    "reviewQueueRefs": [
+      "review-release-compatibility",
+      "review-advisory-correction",
+      "review-advisory-withdrawal",
+      "review-compatibility-contradiction"
+    ],
+    "deliveryQueueRefs": [
+      "delivery-private-critical-dependency-triage"
+    ],
+    "gapAndBlockerRefs": [
+      "gap-compatibility-applicability"
+    ],
+    "blockerRefs": [],
+    "prohibitedActions": [
+      "subscribe-or-unsubscribe",
+      "publish-or-contact-externally",
+      "change-accounts",
+      "send-notifications-or-messages",
+      "disclose-credentials",
+      "reproduce-restricted-content",
+      "fabricate-signals-or-sources",
+      "infer-consensus-or-causality",
+      "take-autonomous-actions-or-decisions"
+    ]
+  }
+}
