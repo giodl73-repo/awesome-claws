@@ -11,6 +11,12 @@ workspace:
     AGENTS.md:
       source: workspace/AGENTS.md
   files:
+    - source: schemas/itinerary-plan.schema.json
+      path: schemas/itinerary-plan.schema.json
+    - source: fixtures/itinerary-plan.example.json
+      path: fixtures/itinerary-plan.example.json
+    - source: templates/itinerary-plan.md
+      path: templates/itinerary-plan.md
     - source: fixtures/session-demo.json
       path: fixtures/session-demo.json
     - source: templates/session-report.template.json

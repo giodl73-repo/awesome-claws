@@ -34,7 +34,6 @@ function uniqueFindings(values, path, label) {
     finding("duplicate_reference", path, `${label} ${JSON.stringify(value)} is duplicated.`),
   );
 }
-
 function referenceFindings(values, allowed, path, label) {
   return values
     .filter((value) => !allowed.has(value))
@@ -12210,6 +12209,1037 @@ function mediaEvidenceFindings(value) {
   return findings;
 }
 
+function itineraryPlanFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const constraintIds = value.constraints.map((item) => item.id);
+  const placeIds = value.places.map((item) => item.id);
+  const dayIds = value.itineraryDays.map((item) => item.id);
+  const itineraryItems = value.itineraryDays.flatMap((day) => day.items);
+  const itemIds = itineraryItems.map((item) => item.id);
+  const alternativeIds = itineraryItems.flatMap((item) =>
+    item.alternatives.map((alternative) => alternative.id),
+  );
+  const budgetIds = value.budget.items.map((item) => item.id);
+  const checkIds = value.readinessChecks.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const blockerIds = value.blockers.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const constraintSet = new Set(constraintIds);
+  const placeSet = new Set(placeIds);
+  const daySet = new Set(dayIds);
+  const itemSet = new Set(itemIds);
+  const budgetSet = new Set(budgetIds);
+  const checkSet = new Set(checkIds);
+  const questionSet = new Set(questionIds);
+  const blockerSet = new Set(blockerIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const allIds = new Set([
+    ...sourceIds,
+    ...constraintIds,
+    ...placeIds,
+    ...dayIds,
+    ...itemIds,
+    ...alternativeIds,
+    ...budgetIds,
+    ...checkIds,
+    ...questionIds,
+    ...blockerIds,
+  ]);
+  const requiredCheckKinds = [
+    "entry-visa",
+    "passport-readiness",
+    "health",
+    "safety-advisory",
+    "weather",
+    "transit",
+    "accessibility",
+    "opening-hours",
+    "booking-availability-price",
+    "packing",
+  ];
+  const timeSensitiveCheckKinds = new Set([
+    "entry-visa",
+    "health",
+    "safety-advisory",
+    "weather",
+    "transit",
+    "accessibility",
+    "opening-hours",
+    "booking-availability-price",
+  ]);
+  const requiredEvidenceKinds = new Map([
+    ["entry-visa", new Set(["government-entry"])],
+    ["passport-readiness", new Set(["government-entry"])],
+    ["health", new Set(["government-health"])],
+    ["safety-advisory", new Set(["government-advisory"])],
+    ["weather", new Set(["open-meteo"])],
+    ["transit", new Set(["official-transit", "official-operator", "gtfs"])],
+    ["accessibility", new Set(["official-transit", "official-operator", "official-venue"])],
+    ["opening-hours", new Set(["official-venue"])],
+    ["booking-availability-price", new Set(["official-operator", "official-venue"])],
+    ["packing", new Set(["traveler-note"])],
+  ]);
+  const requiredActions = [
+    "book",
+    "reserve",
+    "purchase",
+    "cancel",
+    "modify-booking",
+    "check-in",
+    "submit-form",
+    "contact-provider",
+    "mutate-calendar",
+    "send-message",
+    "submit-sensitive-traveler-data",
+    "store-sensitive-traveler-data",
+    "submit-payment-data",
+    "store-payment-data",
+    "submit-verification-data",
+    "store-verification-data",
+    "accept-terms",
+    "guarantee-visa",
+    "guarantee-medical",
+    "guarantee-legal",
+    "guarantee-safety",
+  ];
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(constraintIds, "constraints", "Constraint id"),
+    ...uniqueFindings(placeIds, "places", "Place id"),
+    ...uniqueFindings(dayIds, "itineraryDays", "Itinerary day id"),
+    ...uniqueFindings(itemIds, "itineraryDays", "Itinerary item id"),
+    ...uniqueFindings(alternativeIds, "itineraryDays", "Alternative id"),
+    ...uniqueFindings(budgetIds, "budget.items", "Budget item id"),
+    ...uniqueFindings(checkIds, "readinessChecks", "Readiness check id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+    ...uniqueFindings(blockerIds, "blockers", "Blocker id"),
+  ];
+
+  if (value.trip.startDate > value.trip.endDate) {
+    findings.push(
+      finding(
+        "invalid_trip_chronology",
+        "trip.startDate",
+        "Trip start date must not follow its end date.",
+      ),
+    );
+  }
+
+  let timezoneValid = true;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: value.trip.timezone }).format();
+  } catch {
+    timezoneValid = false;
+    findings.push(
+      finding(
+        "invalid_timezone",
+        "trip.timezone",
+        "Trip timezone must be a valid IANA timezone.",
+      ),
+    );
+  }
+  function localDate(timestamp) {
+    if (!timezoneValid) return null;
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: value.trip.timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(new Date(timestamp));
+    const part = (type) => parts.find((item) => item.type === type)?.value;
+    return `${part("year")}-${part("month")}-${part("day")}`;
+  }
+
+  const expectedSourceAuthority = {
+    "government-entry": "government",
+    "government-advisory": "government",
+    "government-health": "government",
+    "official-transit": "official-operator",
+    "official-operator": "official-operator",
+    "official-venue": "official-venue",
+    openstreetmap: "openstreetmap",
+    "open-meteo": "open-meteo",
+    gtfs: "gtfs-publisher",
+    "traveler-note": "traveler",
+  };
+  const governmentKinds = new Set([
+    "government-entry",
+    "government-advisory",
+    "government-health",
+  ]);
+  const unsafeQueryKeys = /^(?:access[_-]?token|api[_-]?key|auth|code|credential|key|password|secret|token)$/iu;
+  for (const [index, source] of value.sources.entries()) {
+    if (source.authority !== expectedSourceAuthority[source.kind]) {
+      findings.push(
+        finding(
+          "source_authority_mismatch",
+          `sources.${index}.authority`,
+          `${source.kind} evidence must use its declared authority.`,
+        ),
+      );
+    }
+    if (Date.parse(source.retrievedAt) > Date.parse(value.trip.asOf)) {
+      findings.push(
+        finding(
+          "future_source_evidence",
+          `sources.${index}.retrievedAt`,
+          "Travel evidence must not postdate the itinerary as-of time.",
+        ),
+      );
+    }
+    if (governmentKinds.has(source.kind) && source.effectiveDate === null) {
+      findings.push(
+        finding(
+          "missing_effective_date",
+          `sources.${index}.effectiveDate`,
+          "Government entry, advisory, and health sources require an effective date.",
+        ),
+      );
+    }
+    if (
+      source.effectiveDate !== null &&
+      source.validThrough !== null &&
+      source.effectiveDate > source.validThrough
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_validity",
+          `sources.${index}.validThrough`,
+          "A source validity date cannot precede its effective date.",
+        ),
+      );
+    }
+    const asOfDate = new Date(value.trip.asOf).toISOString().slice(0, 10);
+    if (source.effectiveDate !== null && source.effectiveDate > asOfDate) {
+      findings.push(
+        finding(
+          "future_effective_source",
+          `sources.${index}.effectiveDate`,
+          "A source cannot support the current plan before its effective date.",
+        ),
+      );
+    }
+    if (
+      source.freshness === "current" &&
+      source.validThrough !== null &&
+      source.validThrough < asOfDate
+    ) {
+      findings.push(
+        finding(
+          "expired_current_source",
+          `sources.${index}.validThrough`,
+          "A source whose validity has expired cannot be marked current.",
+        ),
+      );
+    }
+    try {
+      const reference = new URL(source.reference);
+      const travelerReference =
+        source.kind === "traveler-note" &&
+        reference.protocol === "traveler:";
+      const publicReference =
+        source.kind !== "traveler-note" &&
+        reference.protocol === "https:";
+      const hostname = reference.hostname.toLowerCase().replace(/^\[|\]$/gu, "");
+      const unsafeHost =
+        /^(?:localhost(?:\.localdomain)?|.+\.localhost|0(?:\.\d{1,3}){3}|10(?:\.\d{1,3}){3}|127(?:\.\d{1,3}){3}|169\.254(?:\.\d{1,3}){2}|192\.168(?:\.\d{1,3}){2}|::1|f[cd][0-9a-f:]*|fe[89ab][0-9a-f:]*)$/u.test(
+          hostname,
+        ) ||
+        (() => {
+          const match = /^172\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/u.exec(hostname);
+          return match !== null && Number(match[1]) >= 16 && Number(match[1]) <= 31;
+        })();
+      const unsafeQuery = [...reference.searchParams.keys()].some((key) =>
+        unsafeQueryKeys.test(key),
+      );
+      if (
+        (!travelerReference && !publicReference) ||
+        reference.username ||
+        reference.password ||
+        unsafeHost ||
+        unsafeQuery
+      ) {
+        throw new Error("unsafe");
+      }
+    } catch {
+      findings.push(
+        finding(
+          "unsafe_source_reference",
+          `sources.${index}.reference`,
+          "Sources require a credential-free HTTPS URL or a traveler:// reference without sensitive query values.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, constraint] of value.constraints.entries()) {
+    findings.push(
+      ...referenceFindings(
+        constraint.sourceRefs,
+        sourceSet,
+        `constraints.${index}.sourceRefs`,
+        "Constraint source reference",
+      ),
+    );
+    if (
+      !constraint.sourceRefs.some(
+        (reference) => sourceById.get(reference)?.kind === "traveler-note",
+      )
+    ) {
+      findings.push(
+        finding(
+          "constraint_without_traveler_evidence",
+          `constraints.${index}.sourceRefs`,
+          "Every traveler constraint requires traveler-supplied evidence.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, place] of value.places.entries()) {
+    findings.push(
+      ...referenceFindings(
+        place.sourceRefs,
+        sourceSet,
+        `places.${index}.sourceRefs`,
+        "Place source reference",
+      ),
+    );
+  }
+
+  const expectedDates = [];
+  for (
+    let cursor = Date.parse(`${value.trip.startDate}T00:00:00Z`);
+    cursor <= Date.parse(`${value.trip.endDate}T00:00:00Z`);
+    cursor += 86_400_000
+  ) {
+    expectedDates.push(new Date(cursor).toISOString().slice(0, 10));
+  }
+  const dayDates = value.itineraryDays.map((day) => day.date);
+  if (
+    expectedDates.some((date) => !dayDates.includes(date)) ||
+    dayDates.some((date) => !expectedDates.includes(date))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_trip_dates",
+        "itineraryDays",
+        "Itinerary days must cover every date in the trip range exactly once.",
+      ),
+    );
+  }
+  for (const [dayIndex, day] of value.itineraryDays.entries()) {
+    if (day.timezone !== value.trip.timezone) {
+      findings.push(
+        finding(
+          "timezone_mismatch",
+          `itineraryDays.${dayIndex}.timezone`,
+          "Each itinerary day must use the trip planning timezone.",
+        ),
+      );
+    }
+    if (dayIndex > 0 && day.date <= value.itineraryDays[dayIndex - 1].date) {
+      findings.push(
+        finding(
+          "itinerary_day_order",
+          `itineraryDays.${dayIndex}.date`,
+          "Itinerary days must be unique and chronological.",
+        ),
+      );
+    }
+    for (const [itemIndex, item] of day.items.entries()) {
+      findings.push(
+        ...referenceFindings(
+          item.placeRef === null ? [] : [item.placeRef],
+          placeSet,
+          `itineraryDays.${dayIndex}.items.${itemIndex}.placeRef`,
+          "Itinerary place reference",
+        ),
+        ...referenceFindings(
+          item.sourceRefs,
+          sourceSet,
+          `itineraryDays.${dayIndex}.items.${itemIndex}.sourceRefs`,
+          "Itinerary source reference",
+        ),
+        ...referenceFindings(
+          item.constraintRefs,
+          constraintSet,
+          `itineraryDays.${dayIndex}.items.${itemIndex}.constraintRefs`,
+          "Itinerary constraint reference",
+        ),
+      );
+      const start = Date.parse(item.startAt);
+      const end = Date.parse(item.endAt);
+      if (start >= end) {
+        findings.push(
+          finding(
+            "invalid_item_chronology",
+            `itineraryDays.${dayIndex}.items.${itemIndex}.startAt`,
+            "An itinerary item must start before it ends.",
+          ),
+        );
+      }
+      if (localDate(item.startAt) !== day.date || localDate(item.endAt) !== day.date) {
+        findings.push(
+          finding(
+            "itinerary_local_date_mismatch",
+            `itineraryDays.${dayIndex}.items.${itemIndex}.startAt`,
+            "Item timestamps must fall on the itinerary day in the declared timezone.",
+          ),
+        );
+      }
+      const previous = day.items[itemIndex - 1];
+      if (previous) {
+        const previousStart = Date.parse(previous.startAt);
+        const previousEnd = Date.parse(previous.endAt);
+        if (start < previousStart) {
+          findings.push(
+            finding(
+              "itinerary_order",
+              `itineraryDays.${dayIndex}.items.${itemIndex}.startAt`,
+              "Itinerary items must appear in chronological order.",
+            ),
+          );
+        }
+        if (start < previousEnd) {
+          findings.push(
+            finding(
+              "itinerary_overlap",
+              `itineraryDays.${dayIndex}.items.${itemIndex}.startAt`,
+              "Itinerary items must not overlap.",
+            ),
+          );
+        }
+        if (
+          item.placeRef !== previous.placeRef &&
+          item.transferBufferBeforeMinutes < 15
+        ) {
+          findings.push(
+            finding(
+              "insufficient_transfer_buffer",
+              `itineraryDays.${dayIndex}.items.${itemIndex}.transferBufferBeforeMinutes`,
+              "A change of place requires at least a 15-minute transfer buffer.",
+            ),
+          );
+        }
+        if (
+          start - previousEnd <
+          item.transferBufferBeforeMinutes * 60_000
+        ) {
+          findings.push(
+            finding(
+              "unrealized_transfer_buffer",
+              `itineraryDays.${dayIndex}.items.${itemIndex}.startAt`,
+              "The scheduled gap must realize the declared transfer buffer.",
+            ),
+          );
+        }
+      }
+      if (item.requiresDisruptionAlternative && item.alternatives.length === 0) {
+        findings.push(
+          finding(
+            "missing_disruption_alternative",
+            `itineraryDays.${dayIndex}.items.${itemIndex}.alternatives`,
+            "Items marked disruption-sensitive require a sourced alternative.",
+          ),
+        );
+      }
+      for (const [alternativeIndex, alternative] of item.alternatives.entries()) {
+        findings.push(
+          ...referenceFindings(
+            alternative.placeRef === null ? [] : [alternative.placeRef],
+            placeSet,
+            `itineraryDays.${dayIndex}.items.${itemIndex}.alternatives.${alternativeIndex}.placeRef`,
+            "Alternative place reference",
+          ),
+          ...referenceFindings(
+            alternative.sourceRefs,
+            sourceSet,
+            `itineraryDays.${dayIndex}.items.${itemIndex}.alternatives.${alternativeIndex}.sourceRefs`,
+            "Alternative source reference",
+          ),
+        );
+      }
+    }
+  }
+
+  let totalMinimum = 0;
+  let totalMaximum = 0;
+  for (const [index, item] of value.budget.items.entries()) {
+    findings.push(
+      ...referenceFindings(
+        item.sourceRefs,
+        sourceSet,
+        `budget.items.${index}.sourceRefs`,
+        "Budget source reference",
+      ),
+    );
+    if (item.minimum > item.maximum) {
+      findings.push(
+        finding(
+          "invalid_budget_range",
+          `budget.items.${index}.minimum`,
+          "Budget item minimum must not exceed its maximum.",
+        ),
+      );
+    }
+    if (
+      item.currency !== value.trip.budgetCurrency ||
+      item.currency !== value.budget.currency
+    ) {
+      findings.push(
+        finding(
+          "currency_mismatch",
+          `budget.items.${index}.currency`,
+          "Every budget item must use the trip budget currency.",
+        ),
+      );
+    }
+    if (item.inclusionState !== "excluded") {
+      totalMinimum += item.minimum;
+      totalMaximum += item.maximum;
+    }
+  }
+  if (value.budget.currency !== value.trip.budgetCurrency) {
+    findings.push(
+      finding(
+        "currency_mismatch",
+        "budget.currency",
+        "Budget total currency must match the trip budget currency.",
+      ),
+    );
+  }
+  if (
+    !numbersEqual(totalMinimum, value.budget.totalMinimum) ||
+    !numbersEqual(totalMaximum, value.budget.totalMaximum) ||
+    value.budget.totalMinimum > value.budget.totalMaximum
+  ) {
+    findings.push(
+      finding(
+        "budget_total_mismatch",
+        "budget",
+        "Budget totals must equal all included and contingency line-item ranges.",
+      ),
+    );
+  }
+
+  for (const kind of requiredCheckKinds) {
+    if (
+      !value.readinessChecks.some(
+        (check) => check.kind === kind && check.mandatory,
+      )
+    ) {
+      findings.push(
+        finding(
+          "missing_readiness_check",
+          "readinessChecks",
+          `A mandatory ${kind} readiness check is required.`,
+        ),
+      );
+    }
+  }
+  for (const [index, check] of value.readinessChecks.entries()) {
+    findings.push(
+      ...referenceFindings(
+        check.sourceRefs,
+        sourceSet,
+        `readinessChecks.${index}.sourceRefs`,
+        "Readiness source reference",
+      ),
+    );
+    const sources = check.sourceRefs
+      .map((reference) => sourceById.get(reference))
+      .filter(Boolean);
+    if (
+      !sources.some((source) => requiredEvidenceKinds.get(check.kind)?.has(source.kind))
+    ) {
+      findings.push(
+        finding(
+          "inappropriate_readiness_evidence",
+          `readinessChecks.${index}.sourceRefs`,
+          `${check.kind} readiness requires evidence from an appropriate authoritative source kind.`,
+        ),
+      );
+    }
+    if (
+      sources.some(
+        (source) =>
+          Date.parse(check.verifiedAt) < Date.parse(source.retrievedAt),
+      )
+    ) {
+      findings.push(
+        finding(
+          "verification_before_retrieval",
+          `readinessChecks.${index}.verifiedAt`,
+          "A readiness check cannot be verified before its evidence was retrieved.",
+        ),
+      );
+    }
+    if (Date.parse(check.verifiedAt) > Date.parse(value.trip.asOf)) {
+      findings.push(
+        finding(
+          "future_verification",
+          `readinessChecks.${index}.verifiedAt`,
+          "A readiness check cannot postdate the itinerary as-of time.",
+        ),
+      );
+    }
+    if (
+      check.status === "passed" &&
+      timeSensitiveCheckKinds.has(check.kind) &&
+      sources.some((source) => source.freshness !== "current")
+    ) {
+      findings.push(
+        finding(
+          "stale_current_evidence",
+          `readinessChecks.${index}.sourceRefs`,
+          "A passed time-sensitive readiness check requires current, non-conflicting evidence.",
+        ),
+      );
+    }
+    if (
+      check.recheckDeadline !== null &&
+      Date.parse(check.recheckDeadline) < Date.parse(check.verifiedAt)
+    ) {
+      findings.push(
+        finding(
+          "invalid_recheck_deadline",
+          `readinessChecks.${index}.recheckDeadline`,
+          "A recheck deadline cannot precede verification.",
+        ),
+      );
+    }
+    if (
+      (check.recheckState === "not-required") !==
+      (check.recheckDeadline === null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_recheck_state",
+          `readinessChecks.${index}.recheckState`,
+          "Only not-required checks omit a recheck deadline.",
+        ),
+      );
+    }
+    if (check.recheckDeadline !== null) {
+      const deadline = Date.parse(check.recheckDeadline);
+      const asOf = Date.parse(value.trip.asOf);
+      if (
+        deadline <= asOf &&
+        !["due", "overdue", "complete"].includes(check.recheckState)
+      ) {
+        findings.push(
+          finding(
+            "stale_recheck_state",
+            `readinessChecks.${index}.recheckState`,
+            "A recheck at or before the plan as-of time must be due, overdue, or complete.",
+          ),
+        );
+      }
+      if (
+        deadline > asOf &&
+        ["due", "overdue"].includes(check.recheckState)
+      ) {
+        findings.push(
+          finding(
+            "premature_recheck_state",
+            `readinessChecks.${index}.recheckState`,
+            "A future recheck deadline cannot already be due or overdue.",
+          ),
+        );
+      }
+      if (
+        check.recheckState !== "complete" &&
+        localDate(check.recheckDeadline) > value.trip.startDate
+      ) {
+        findings.push(
+          finding(
+            "late_recheck_deadline",
+            `readinessChecks.${index}.recheckDeadline`,
+            "An incomplete final-verification recheck must be due no later than trip departure.",
+          ),
+        );
+      }
+    }
+  }
+
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...referenceFindings(
+        question.refs,
+        allIds,
+        `reviewQuestions.${index}.refs`,
+        "Review question reference",
+      ),
+    );
+    if (
+      (question.status === "resolved" && question.resolution === null) ||
+      (question.status === "open" && question.resolution !== null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_question_state",
+          `reviewQuestions.${index}.resolution`,
+          "Resolved questions require a resolution and open questions must leave it null.",
+        ),
+      );
+    }
+  }
+  for (const [index, blocker] of value.blockers.entries()) {
+    findings.push(
+      ...referenceFindings(
+        blocker.refs,
+        allIds,
+        `blockers.${index}.refs`,
+        "Blocker reference",
+      ),
+    );
+  }
+
+  findings.push(
+    ...referenceFindings(value.handoff.dayRefs, daySet, "handoff.dayRefs", "Handoff day reference"),
+    ...referenceFindings(
+      value.handoff.itineraryItemRefs,
+      itemSet,
+      "handoff.itineraryItemRefs",
+      "Handoff itinerary item reference",
+    ),
+    ...referenceFindings(
+      value.handoff.budgetItemRefs,
+      budgetSet,
+      "handoff.budgetItemRefs",
+      "Handoff budget item reference",
+    ),
+    ...referenceFindings(
+      value.handoff.checkRefs,
+      checkSet,
+      "handoff.checkRefs",
+      "Handoff readiness check reference",
+    ),
+    ...referenceFindings(
+      value.handoff.reviewQuestionRefs,
+      questionSet,
+      "handoff.reviewQuestionRefs",
+      "Handoff review question reference",
+    ),
+    ...referenceFindings(
+      value.handoff.blockerRefs,
+      blockerSet,
+      "handoff.blockerRefs",
+      "Handoff blocker reference",
+    ),
+  );
+
+  if (value.handoff.owner !== value.trip.owner) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "handoff.owner",
+        "The trip and handoff must name the same accountable traveler.",
+      ),
+    );
+  }
+  if (
+    /^(?:the )?(?:agent|assistant|claw)$/iu.test(value.handoff.owner.trim()) ||
+    /\b(?:ai|bot|gpt|language model|travel planner)\b/iu.test(value.handoff.owner)
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Travel planning, verification, and transaction authority must remain with a named human traveler.",
+      ),
+    );
+  }
+  if (value.trip.state !== value.handoff.state) {
+    findings.push(
+      finding(
+        "inconsistent_ready_state",
+        "handoff.state",
+        "Trip and handoff readiness states must match.",
+      ),
+    );
+  }
+
+  const openBlockers = value.blockers.filter((item) => item.status === "open");
+  const blockingIssueIds = [
+    ...itineraryItems
+      .filter((item) => item.status === "blocked")
+      .map((item) => item.id),
+    ...value.readinessChecks
+      .filter(
+        (item) =>
+          item.mandatory &&
+          (item.status === "pending" || item.status === "failed"),
+      )
+      .map((item) => item.id),
+    ...value.reviewQuestions
+      .filter((item) => item.status === "open")
+      .map((item) => item.id),
+  ];
+  const coveredBlockingIssues = new Set(
+    openBlockers.flatMap((item) => item.refs),
+  );
+  if (
+    value.handoff.state === "blocked" &&
+    (openBlockers.length === 0 ||
+      openBlockers.some(
+        (item) => !value.handoff.blockerRefs.includes(item.id),
+      ) ||
+      blockingIssueIds.some((id) => !coveredBlockingIssues.has(id)))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff",
+        "Blocked handoffs require every open blocker and every blocking item, mandatory check, or question to be represented.",
+      ),
+    );
+  }
+
+  const incompleteHandoff =
+    dayIds.some((id) => !value.handoff.dayRefs.includes(id)) ||
+    itemIds.some((id) => !value.handoff.itineraryItemRefs.includes(id)) ||
+    budgetIds.some((id) => !value.handoff.budgetItemRefs.includes(id)) ||
+    checkIds.some((id) => !value.handoff.checkRefs.includes(id)) ||
+    questionIds.some((id) => !value.handoff.reviewQuestionRefs.includes(id)) ||
+    blockerIds.some((id) => !value.handoff.blockerRefs.includes(id));
+  if (value.handoff.state === "ready" && incompleteHandoff) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff",
+        "Ready handoffs must reference every itinerary day and item, budget item, check, question, and blocker.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready" &&
+    (itineraryItems.some((item) => item.status === "blocked") ||
+      value.readinessChecks.some(
+        (item) =>
+          item.mandatory &&
+          (item.status === "pending" || item.status === "failed"),
+      ) ||
+      value.readinessChecks.some(
+        (item) =>
+          item.recheckState === "due" || item.recheckState === "overdue",
+      ) ||
+      value.reviewQuestions.some((item) => item.status === "open") ||
+      openBlockers.length > 0 ||
+      value.budget.totalMaximum > value.trip.budgetLimit)
+  ) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "Ready handoffs require non-blocked itinerary items, complete mandatory checks, resolved questions and blockers, current rechecks, and a budget within the owner limit.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready" &&
+    value.budget.totalMaximum > value.trip.budgetLimit
+  ) {
+    findings.push(
+      finding(
+        "budget_limit_exceeded",
+        "budget.totalMaximum",
+        "A ready plan's maximum included range must remain within the owner budget.",
+      ),
+    );
+  }
+  if (value.handoff.state === "ready") {
+    for (const [dayIndex, day] of value.itineraryDays.entries()) {
+      for (const [itemIndex, item] of day.items.entries()) {
+        if (
+          item.sourceRefs.some(
+            (reference) => sourceById.get(reference)?.freshness !== "current",
+          )
+        ) {
+          findings.push(
+            finding(
+              "stale_current_evidence",
+              `itineraryDays.${dayIndex}.items.${itemIndex}.sourceRefs`,
+              "A ready itinerary item requires current source evidence.",
+            ),
+          );
+        }
+      }
+    }
+    const supportingEvidence = [
+      ...value.constraints.map((item, index) => ({
+        path: `constraints.${index}.sourceRefs`,
+        refs: item.sourceRefs,
+      })),
+      ...value.places.map((item, index) => ({
+        path: `places.${index}.sourceRefs`,
+        refs: item.sourceRefs,
+      })),
+      ...itineraryItems.flatMap((item, itemIndex) =>
+        item.alternatives.map((alternative, alternativeIndex) => ({
+          path: `itineraryItems.${itemIndex}.alternatives.${alternativeIndex}.sourceRefs`,
+          refs: alternative.sourceRefs,
+        })),
+      ),
+      ...value.budget.items
+        .filter((item) => item.inclusionState !== "excluded")
+        .map((item, index) => ({
+          path: `budget.items.${index}.sourceRefs`,
+          refs: item.sourceRefs,
+        })),
+    ];
+    for (const evidence of supportingEvidence) {
+      if (
+        evidence.refs.some(
+          (reference) => sourceById.get(reference)?.freshness !== "current",
+        )
+      ) {
+        findings.push(
+          finding(
+            "stale_current_evidence",
+            evidence.path,
+            "Ready constraints, places, alternatives, and included budget items require current source evidence.",
+          ),
+        );
+      }
+    }
+  }
+
+  const sensitiveValuePattern =
+    /\b(?:passport\s*(?:number|no\.?|#|id)|(?:payment|credit|debit)?\s*card\s*(?:number|no\.?|#)|loyalty(?:\s+account)?\s*(?:number|no\.?|#|id)?|health\s+record|government\s+(?:identifier|id)|verification\s+code)(?:\s+(?:is|was)\s+|\s*[:=]\s*)[A-Z0-9][A-Z0-9 ._-]{3,}\b|(?:\b\d[ -]*?){13,19}\b/iu;
+  function visitText(current, path = "") {
+    if (typeof current === "string") {
+      if (sensitiveValuePattern.test(current)) {
+        findings.push(
+          finding(
+            "sensitive_value",
+            path,
+            "Travel artifacts must not store passport, payment-card, loyalty-account, health-record, government-ID, or verification-code values.",
+          ),
+        );
+      }
+      return;
+    }
+    if (Array.isArray(current)) {
+      current.forEach((item, index) => visitText(item, `${path}.${index}`));
+      return;
+    }
+    if (current && typeof current === "object") {
+      for (const [key, item] of Object.entries(current)) {
+        if (key !== "blockedActions" && key !== "prohibitedActions") {
+          visitText(item, path ? `${path}.${key}` : key);
+        }
+      }
+    }
+  }
+  visitText(value);
+
+  for (const action of requiredActions) {
+    if (
+      !value.blockedActions.includes(action) ||
+      !value.handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Travel itinerary artifacts must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  const actionVerb =
+    String.raw`(?:book(?:s|ed)?(?: (?:the|a|an))?|booking (?:the|a|an)|reserv(?:e|es|ed|ing)|purchas(?:e|es|ed|ing)|buy(?:s|ing)?|bought|cancel(?:s|ed|ing|led|ling)?|modif(?:y|ies|ied|ying) (?:the )?(?:trip|reservation|booking)|check(?:s|ed|ing)? in|submit(?:s|ted|ting)? (?:the )?(?:entry|visa|traveler|passenger|payment|card|verification)? ?(?:form|data|details|information|code)?|contact(?:s|ed|ing)? (?:the )?(?:(?:transit|travel) )?(?:provider|venue|hotel|airline|operator)|(?:add|write|put|update|chang(?:e|es|ed|ing)) (?:the |this )?(?:plan|trip|itinerary|event)? ?(?:to|in|on)? ?(?:the )?(?:traveler'?s )?calendar|(?:send|email)(?:s|ed|ing)? (?:the |this )?(?:hotel|provider|venue|airline|operator|itinerary|travel|calendar)? ?(?:message|email)?|stor(?:e|es|ed|ing) (?:the )?(?:passport|traveler|payment|card|loyalty|health|government|verification)(?:\s+\S+){0,3}|accept(?:s|ed|ing)? (?:the )?(?:provider )?terms|guarantee(?:s|d|ing)? (?:the |this )?(?:traveler )?(?:visa|medical|legal|safety))`;
+  const actionOccurrencePattern = new RegExp(String.raw`\b${actionVerb}\b`, "iu");
+  const externalActionTexts = [
+    ...value.constraints.map((item, index) => ({
+      path: `constraints.${index}.description`,
+      text: item.description,
+    })),
+    ...itineraryItems.flatMap((item, index) => [
+      { path: `itineraryItems.${index}.title`, text: item.title },
+      {
+        path: `itineraryItems.${index}.accessibilityNotes`,
+        text: item.accessibilityNotes,
+      },
+      ...item.alternatives.flatMap((alternative, alternativeIndex) => [
+        {
+          path: `itineraryItems.${index}.alternatives.${alternativeIndex}.title`,
+          text: alternative.title,
+        },
+        {
+          path: `itineraryItems.${index}.alternatives.${alternativeIndex}.reason`,
+          text: alternative.reason,
+        },
+      ]),
+    ]),
+    ...value.budget.items.map((item, index) => ({
+      path: `budget.items.${index}.description`,
+      text: item.description,
+    })),
+    ...value.readinessChecks.map((item, index) => ({
+      path: `readinessChecks.${index}.notes`,
+      text: item.notes,
+    })),
+    ...value.reviewQuestions.flatMap((item, index) => [
+      { path: `reviewQuestions.${index}.question`, text: item.question },
+      { path: `reviewQuestions.${index}.reason`, text: item.reason },
+      ...(item.resolution === null
+        ? []
+        : [
+            {
+              path: `reviewQuestions.${index}.resolution`,
+              text: item.resolution,
+            },
+          ]),
+    ]),
+    ...value.blockers.map((item, index) => ({
+      path: `blockers.${index}.description`,
+      text: item.description,
+    })),
+  ];
+  for (const { path, text } of externalActionTexts) {
+    const clauses = text
+      .replaceAll("’", "'")
+      .split(/[.!?]\s*/u)
+      .flatMap((sentence) => sentence.split(/\s*[;:]\s*/u));
+    if (
+      clauses.some((clause) => {
+        const trimmed = clause.trim();
+        if (!trimmed || !actionOccurrencePattern.test(trimmed)) return false;
+        const negated =
+          /^(?:(?:the )?\S+\s+){0,5}(?:do not|does not|don't|doesn't|must not|mustn't|should not|shouldn't|can not|cannot|can't|may not|will not|won't|never|no)\b/iu.test(
+            trimmed,
+          );
+        const lower = trimmed.toLowerCase();
+        const ownerPrefix = value.handoff.owner.trim().toLowerCase();
+        const travelerOwned =
+          /^(?:the )?(?:traveler|travelers|owner)\b[^.!?]{0,50}\b(?:will|may|can|must|should|chooses? to|decides? to|owns?)\b/iu.test(
+            trimmed,
+          ) ||
+          (lower.startsWith(ownerPrefix) &&
+            /\b(?:will|may|can|must|should|chooses? to|decides? to|owns?)\b/iu.test(
+              trimmed.slice(ownerPrefix.length),
+            ));
+        const guarantee = /\bguarantee(?:s|d|ing)?\b/iu.test(trimmed);
+        return !negated && (guarantee || !travelerOwned);
+      })
+    ) {
+      findings.push(
+        finding(
+          "external_action_content",
+          path,
+          "Travel itinerary artifacts must not instruct transactions, submissions, provider contact, calendar or message mutation, sensitive-data handling, term acceptance, or visa, medical, legal, or safety guarantees.",
+        ),
+      );
+    }
+  }
+
+  return findings;
+}
+
 function travelShortlistFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const constraintIds = value.constraints.map((item) => item.id);
@@ -13198,6 +14228,7 @@ const validators = {
   "subscription-manager": subscriptionManagerFindings,
   "tax-document-organizer": taxDocumentFindings,
   "travel-concierge": travelShortlistFindings,
+  "travel-planner": itineraryPlanFindings,
   "travel-loyalty-points-organizer": travelLoyaltyFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
   "wardrobe-organizer": wardrobeFindings,

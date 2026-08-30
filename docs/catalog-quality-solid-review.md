@@ -1,19 +1,21 @@
 # Solid-band review
 
-This review covers the 17 Claws remaining in the Solid band after Document
+This review covers the 16 Claws remaining in the Solid band after Document
 Intake Analyst moved from 69 to 94, Fundraising Campaign Manager moved from 79
 to 95, Travel Concierge moved from 78 to 100, and Media Evidence Reviewer moved
-from 73 to 95, and Spreadsheet Analyst moved from 73 to 95 on 2026-08-29. All 17 pass the non-negotiable package,
+from 73 to 95, Spreadsheet Analyst moved from 73 to 95 on 2026-08-29, and Travel
+Planner completed its public-source itinerary and readiness artifact uplift on
+2026-08-30. All 16 pass the non-negotiable package,
 regression, resource, and Experience gates. Their lower scores describe
 reviewability and artifact-depth gaps, not observed live-model failures.
 
 ## Shared pattern
 
-- All 17 are grandfathered entries without retrospective contribution records.
+- All 16 are grandfathered entries without retrospective contribution records.
   That is a five-point documentation gap, not a failed admission.
-- All 17 lack registered semantic validators.
-- All 17 lack a local structured-artifact schema.
-- All 17 have complete operating contracts, screenshots, regression cases, and
+- All 16 lack registered semantic validators.
+- All 16 lack a local structured-artifact schema.
+- All 16 have complete operating contracts, screenshots, regression cases, and
   active maintenance.
 
 ## Current entries
@@ -28,7 +30,6 @@ reviewability and artifact-depth gaps, not observed live-model failures.
 | `knowledge-curator` | 78 | No local schema or semantic validator | Keep narrative knowledge structure unless a durable index contract emerges |
 | `content-operations` | 78 | No local schema or semantic validator | A claim/approval ledger could help; avoid schema for prose itself |
 | `research-scout` | 74 | No local schema or semantic validator | A recurring evidence-delta ledger is a natural structured artifact |
-| `travel-planner` | 74 | No local schema or semantic validator | Itinerary chronology, constraints, costs, and booking gates justify structure |
 | `public-company-watcher` | 74 | No local schema or semantic validator | A filing/event/change ledger is a natural structured artifact |
 | `knowledge-gardener` | 73 | No local schema or semantic validator | Notion owns page structure; add local state only for reviewable change plans |
 | `research-monitor` | 73 | No local schema or semantic validator | A watchlist and evidence-delta ledger is a natural structured artifact |
@@ -50,7 +51,7 @@ check, exception, authority, and owner-handoff manifest on 2026-08-29.
 
 ### 2. Add evidence ledgers where the job naturally owns state
 
-The strongest candidates are `travel-planner`, `public-company-watcher`, `research-scout`,
+The strongest candidates are `public-company-watcher`, `research-scout`,
 `research-monitor`, `feed-intelligence-monitor`, `web-evidence-researcher`,
 `website-evidence-collector`, and `meeting-intelligence`. Their recurring work
 already depends on source identity, freshness, lineage, chronology, confidence,
@@ -67,10 +68,7 @@ duplicated merely to raise a score.
 
 ## Recommended order
 
-1. `travel-planner`: define itinerary chronology, constraints, costs, source
-   freshness, and traveler-controlled booking gates without duplicating the
-   Expedia-specific Travel Concierge shortlist.
-2. `public-company-watcher`: define a filing and issuer-event evidence ledger
+1. `public-company-watcher`: define a filing and issuer-event evidence ledger
    with freshness, materiality, and no-trading authority boundaries.
 
 Backfill contribution records alongside substantive work. For entries already
