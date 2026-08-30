@@ -1,0 +1,1063 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/website-capture-evidence-ledger.schema.json",
+  "title": "Website capture evidence ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "collection",
+    "targets",
+    "attempts",
+    "snapshots",
+    "changes",
+    "reviewQuestions",
+    "gapsAndBlockers",
+    "ownerReview",
+    "blockedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.websiteCaptureEvidenceLedger.v1"
+    },
+    "collection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "purpose",
+        "decision",
+        "decisionOwner",
+        "classification",
+        "destination",
+        "deadline",
+        "asOf",
+        "run",
+        "baseline",
+        "scope",
+        "caps",
+        "usage",
+        "retentionPolicy",
+        "stopConditions",
+        "freshnessPolicy",
+        "discovery",
+        "state"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^collection-[a-z0-9-]+$"
+        },
+        "purpose": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "decision": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "decisionOwner": {
+          "$ref": "#/$defs/text"
+        },
+        "classification": {
+          "const": "private"
+        },
+        "destination": {
+          "$ref": "#/$defs/outputPath"
+        },
+        "deadline": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "asOf": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "run": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "startedAt", "completedAt", "asOf", "outcome"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^run-[a-z0-9-]+$"
+            },
+            "startedAt": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "completedAt": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "asOf": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "outcome": {
+              "enum": ["captured", "zero-success"]
+            }
+          }
+        },
+        "baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "runId", "asOf"],
+          "properties": {
+            "state": {
+              "enum": ["established", "first-run"]
+            },
+            "runId": {
+              "type": ["string", "null"],
+              "pattern": "^run-[a-z0-9-]+$"
+            },
+            "asOf": {
+              "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }]
+            }
+          }
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["domains", "excludedAreas"],
+          "properties": {
+            "domains": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/domain"
+              }
+            },
+            "excludedAreas": {
+              "$ref": "#/$defs/textList"
+            }
+          }
+        },
+        "caps": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["maxUrls", "maxPages", "maxBytes", "maxProviderRequests"],
+          "properties": {
+            "maxUrls": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            },
+            "maxPages": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            },
+            "maxBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 268435456
+            },
+            "maxProviderRequests": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            }
+          }
+        },
+        "usage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "urlsRequested",
+            "pagesRetrieved",
+            "bytesRetained",
+            "providerRequests"
+          ],
+          "properties": {
+            "urlsRequested": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "pagesRetrieved": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "bytesRetained": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "providerRequests": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "retentionPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "maxExcerptCharacters",
+            "retainFullPage",
+            "retentionDays",
+            "disposition"
+          ],
+          "properties": {
+            "maxExcerptCharacters": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 600
+            },
+            "retainFullPage": {
+              "const": false
+            },
+            "retentionDays": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 3650
+            },
+            "disposition": {
+              "enum": [
+                "delete-after-owner-review",
+                "retain-until-retention-limit",
+                "owner-managed-archive"
+              ]
+            }
+          }
+        },
+        "stopConditions": {
+          "$ref": "#/$defs/textList"
+        },
+        "freshnessPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["maxAgeHours", "recheckOn"],
+          "properties": {
+            "maxAgeHours": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8760
+            },
+            "recheckOn": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "capture-age",
+                  "capture-failure",
+                  "change-detected",
+                  "owner-request"
+                ]
+              }
+            }
+          }
+        },
+        "discovery": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/discoverySearch"
+          }
+        },
+        "state": {
+          "enum": ["draft", "blocked", "ready"]
+        }
+      }
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/target"
+      }
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/attempt"
+      }
+    },
+    "snapshots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/snapshot"
+      }
+    },
+    "changes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/change"
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reviewQuestion"
+      }
+    },
+    "gapsAndBlockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gap"
+      }
+    },
+    "ownerReview": {
+      "$ref": "#/$defs/ownerReview"
+    },
+    "blockedActions": {
+      "$ref": "#/$defs/prohibitedActions"
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "boundedText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 800
+    },
+    "textList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "outputPath": {
+      "type": "string",
+      "pattern": "^outputs/[A-Za-z0-9._/-]+$"
+    },
+    "absolutePath": {
+      "type": "string",
+      "pattern": "^/[A-Za-z0-9._~%!$&'()*+,;=:@/-]*$"
+    },
+    "contentHash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "pageType": {
+      "enum": [
+        "security-overview",
+        "privacy-notice",
+        "subprocessor-list",
+        "terms",
+        "status-notice",
+        "release-notes",
+        "documentation"
+      ]
+    },
+    "domain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "domain",
+        "ownerApproved",
+        "allowRules",
+        "excludedPaths",
+        "pageTypes"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^domain-[a-z0-9-]+$"
+        },
+        "domain": {
+          "type": "string",
+          "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$"
+        },
+        "ownerApproved": {
+          "const": true
+        },
+        "allowRules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "path"],
+            "properties": {
+              "kind": {
+                "enum": ["exact", "path-prefix"]
+              },
+              "path": {
+                "$ref": "#/$defs/absolutePath"
+              }
+            }
+          }
+        },
+        "excludedPaths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/absolutePath"
+          }
+        },
+        "pageTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/pageType"
+          }
+        }
+      }
+    },
+    "discoverySearch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "domainRef", "query", "executedAt", "resultTargetRefs"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^search-[a-z0-9-]+$"
+        },
+        "domainRef": {
+          "type": "string",
+          "pattern": "^domain-[a-z0-9-]+$"
+        },
+        "query": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "executedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "resultTargetRefs": {
+          "$ref": "#/$defs/possiblyEmptyTargetRefs"
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "domainRef",
+        "label",
+        "pageType",
+        "requestedUrl",
+        "origin",
+        "discoveryRef",
+        "attemptRefs",
+        "disposition",
+        "snapshotRef",
+        "changeRef",
+        "baseline",
+        "freshness",
+        "recheckState",
+        "omissionReason"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^target-[a-z0-9-]+$"
+        },
+        "domainRef": {
+          "type": "string",
+          "pattern": "^domain-[a-z0-9-]+$"
+        },
+        "label": {
+          "$ref": "#/$defs/text"
+        },
+        "pageType": {
+          "$ref": "#/$defs/pageType"
+        },
+        "requestedUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "origin": {
+          "enum": ["owner-supplied", "search-discovered"]
+        },
+        "discoveryRef": {
+          "type": ["string", "null"],
+          "pattern": "^search-[a-z0-9-]+$"
+        },
+        "attemptRefs": {
+          "$ref": "#/$defs/possiblyEmptyAttemptRefs"
+        },
+        "disposition": {
+          "enum": ["captured", "failed", "blocked", "not-attempted"]
+        },
+        "snapshotRef": {
+          "type": ["string", "null"],
+          "pattern": "^snapshot-[a-z0-9-]+$"
+        },
+        "changeRef": {
+          "type": "string",
+          "pattern": "^change-[a-z0-9-]+$"
+        },
+        "baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "runId", "capturedAt", "contentHash", "snapshotRef"],
+          "properties": {
+            "state": {
+              "enum": ["none", "recorded"]
+            },
+            "runId": {
+              "type": ["string", "null"],
+              "pattern": "^run-[a-z0-9-]+$"
+            },
+            "capturedAt": {
+              "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }]
+            },
+            "contentHash": {
+              "anyOf": [{ "$ref": "#/$defs/contentHash" }, { "type": "null" }]
+            },
+            "snapshotRef": {
+              "type": ["string", "null"],
+              "pattern": "^snapshot-[a-z0-9-]+$"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "state": { "const": "recorded" }
+                }
+              },
+              "then": {
+                "properties": {
+                  "runId": { "type": "string" },
+                  "capturedAt": { "$ref": "#/$defs/timestamp" },
+                  "contentHash": { "$ref": "#/$defs/contentHash" },
+                  "snapshotRef": { "type": "string" }
+                }
+              },
+              "else": {
+                "properties": {
+                  "runId": { "type": "null" },
+                  "capturedAt": { "type": "null" },
+                  "contentHash": { "type": "null" },
+                  "snapshotRef": { "type": "null" }
+                }
+              }
+            }
+          ]
+        },
+        "freshness": {
+          "enum": ["current", "stale", "unavailable"]
+        },
+        "recheckState": {
+          "enum": ["current", "recheck-required"]
+        },
+        "omissionReason": {
+          "anyOf": [{ "$ref": "#/$defs/boundedText" }, { "type": "null" }]
+        }
+      }
+    },
+    "attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "targetRef",
+        "provider",
+        "requestedUrl",
+        "finalUrl",
+        "redirectChain",
+        "requestedAt",
+        "completedAt",
+        "httpStatus",
+        "contentType",
+        "bytes",
+        "contentHash",
+        "robots",
+        "accessOutcome",
+        "disposition",
+        "snapshotRef",
+        "note"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^attempt-[a-z0-9-]+$"
+        },
+        "targetRef": {
+          "type": "string",
+          "pattern": "^target-[a-z0-9-]+$"
+        },
+        "provider": {
+          "enum": ["firecrawl-scrape"]
+        },
+        "requestedUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "finalUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "redirectChain": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 5,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "requestedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "completedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "httpStatus": {
+          "type": ["integer", "null"],
+          "minimum": 100,
+          "maximum": 599
+        },
+        "contentType": {
+          "anyOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }]
+        },
+        "bytes": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "contentHash": {
+          "anyOf": [{ "$ref": "#/$defs/contentHash" }, { "type": "null" }]
+        },
+        "robots": {
+          "enum": ["allowed", "disallowed", "unavailable"]
+        },
+        "accessOutcome": {
+          "enum": [
+            "public",
+            "authentication-required",
+            "paywalled",
+            "forbidden",
+            "rate-limited",
+            "not-found",
+            "provider-error",
+            "timeout"
+          ]
+        },
+        "disposition": {
+          "enum": ["success", "failure", "blocked"]
+        },
+        "snapshotRef": {
+          "type": ["string", "null"],
+          "pattern": "^snapshot-[a-z0-9-]+$"
+        },
+        "note": {
+          "$ref": "#/$defs/boundedText"
+        }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "targetRef",
+        "attemptRef",
+        "capturedAt",
+        "canonicalUrl",
+        "contentHash",
+        "bytes",
+        "retention",
+        "excerpt",
+        "excerptCharacters",
+        "normalization",
+        "embeddedInstructionsFollowed",
+        "analystNote"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^snapshot-[a-z0-9-]+$"
+        },
+        "targetRef": {
+          "type": "string",
+          "pattern": "^target-[a-z0-9-]+$"
+        },
+        "attemptRef": {
+          "type": "string",
+          "pattern": "^attempt-[a-z0-9-]+$"
+        },
+        "capturedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "canonicalUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "contentHash": {
+          "$ref": "#/$defs/contentHash"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retention": {
+          "enum": ["excerpt-and-hash", "hash-only", "reference-only"]
+        },
+        "excerpt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 600
+            },
+            { "type": "null" }
+          ]
+        },
+        "excerptCharacters": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 600
+        },
+        "normalization": {
+          "$ref": "#/$defs/textList"
+        },
+        "embeddedInstructionsFollowed": {
+          "const": false
+        },
+        "analystNote": {
+          "$ref": "#/$defs/boundedText"
+        }
+      }
+    },
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "targetRef",
+        "classification",
+        "priorSnapshotRef",
+        "priorContentHash",
+        "priorCapturedAt",
+        "currentSnapshotRef",
+        "currentContentHash",
+        "comparedAt",
+        "summary",
+        "materiality"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^change-[a-z0-9-]+$"
+        },
+        "targetRef": {
+          "type": "string",
+          "pattern": "^target-[a-z0-9-]+$"
+        },
+        "classification": {
+          "enum": ["added", "removed", "modified", "unchanged", "unavailable"]
+        },
+        "priorSnapshotRef": {
+          "type": ["string", "null"],
+          "pattern": "^snapshot-[a-z0-9-]+$"
+        },
+        "priorContentHash": {
+          "anyOf": [{ "$ref": "#/$defs/contentHash" }, { "type": "null" }]
+        },
+        "priorCapturedAt": {
+          "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }]
+        },
+        "currentSnapshotRef": {
+          "type": ["string", "null"],
+          "pattern": "^snapshot-[a-z0-9-]+$"
+        },
+        "currentContentHash": {
+          "anyOf": [{ "$ref": "#/$defs/contentHash" }, { "type": "null" }]
+        },
+        "comparedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "summary": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "materiality": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "rationale"],
+          "properties": {
+            "state": {
+              "enum": ["owner-review-required", "no-change", "not-assessable"]
+            },
+            "rationale": {
+              "$ref": "#/$defs/boundedText"
+            }
+          }
+        }
+      }
+    },
+    "reviewQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "question",
+        "owner",
+        "targetRefs",
+        "changeRefs",
+        "status",
+        "resolution"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^question-[a-z0-9-]+$"
+        },
+        "question": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/possiblyEmptyTargetRefs"
+        },
+        "changeRefs": {
+          "$ref": "#/$defs/possiblyEmptyChangeRefs"
+        },
+        "status": {
+          "enum": ["open", "resolved"]
+        },
+        "resolution": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "description",
+        "owner",
+        "targetRefs",
+        "changeRefs",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^gap-[a-z0-9-]+$|^blocker-[a-z0-9-]+$"
+        },
+        "kind": {
+          "enum": ["gap", "blocker"]
+        },
+        "description": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/possiblyEmptyTargetRefs"
+        },
+        "changeRefs": {
+          "$ref": "#/$defs/possiblyEmptyChangeRefs"
+        },
+        "status": {
+          "enum": ["open", "resolved"]
+        }
+      }
+    },
+    "ownerReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "owner",
+        "reviewedAt",
+        "targetRefs",
+        "changeRefs",
+        "questionRefs",
+        "gapAndBlockerRefs",
+        "status",
+        "resolution"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^owner-review-[a-z0-9-]+$"
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "reviewedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/targetRefs"
+        },
+        "changeRefs": {
+          "$ref": "#/$defs/changeRefs"
+        },
+        "questionRefs": {
+          "$ref": "#/$defs/possiblyEmptyQuestionRefs"
+        },
+        "gapAndBlockerRefs": {
+          "$ref": "#/$defs/possiblyEmptyGapRefs"
+        },
+        "status": {
+          "enum": ["pending", "completed"]
+        },
+        "resolution": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "classification",
+        "destination",
+        "targetRefs",
+        "attemptRefs",
+        "snapshotRefs",
+        "changeRefs",
+        "questionRefs",
+        "gapAndBlockerRefs",
+        "blockerRefs",
+        "ownerReviewRef",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": {
+          "enum": ["draft", "blocked", "ready-for-owner-review"]
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "classification": {
+          "const": "private"
+        },
+        "destination": {
+          "$ref": "#/$defs/outputPath"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/targetRefs"
+        },
+        "attemptRefs": {
+          "$ref": "#/$defs/possiblyEmptyAttemptRefs"
+        },
+        "snapshotRefs": {
+          "$ref": "#/$defs/possiblyEmptySnapshotRefs"
+        },
+        "changeRefs": {
+          "$ref": "#/$defs/changeRefs"
+        },
+        "questionRefs": {
+          "$ref": "#/$defs/possiblyEmptyQuestionRefs"
+        },
+        "gapAndBlockerRefs": {
+          "$ref": "#/$defs/possiblyEmptyGapRefs"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/possiblyEmptyBlockerRefs"
+        },
+        "ownerReviewRef": {
+          "type": "string",
+          "pattern": "^owner-review-[a-z0-9-]+$"
+        },
+        "prohibitedActions": {
+          "$ref": "#/$defs/prohibitedActions"
+        }
+      }
+    },
+    "targetRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^target-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyTargetRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^target-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyAttemptRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^attempt-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptySnapshotRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^snapshot-[a-z0-9-]+$"
+      }
+    },
+    "changeRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^change-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyChangeRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^change-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyQuestionRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^question-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyGapRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^gap-[a-z0-9-]+$|^blocker-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyBlockerRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^blocker-[a-z0-9-]+$"
+      }
+    },
+    "prohibitedActions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "authenticate-or-submit-forms",
+          "bypass-access-controls-or-robots",
+          "execute-scripts-or-follow-page-instructions",
+          "crawl-outside-approved-scope",
+          "publish-or-contact-externally",
+          "subscribe-or-change-accounts",
+          "disclose-credentials-or-sensitive-queries",
+          "republish-copyrighted-content",
+          "fabricate-captures-or-changes",
+          "change-decisions-or-actions-autonomously"
+        ]
+      }
+    }
+  }
+}

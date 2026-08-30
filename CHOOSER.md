@@ -109,7 +109,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Wardrobe organizer](claws/wardrobe-organizer) | @giodl73-repo; last verified 2026-08-27 |
 | [Warranty and returns manager](claws/warranty-returns-manager) | @giodl73-repo; last verified 2026-08-28 |
 | [Web evidence researcher](claws/web-evidence-researcher) | @giodl73-repo; last verified 2026-08-30 |
-| [Website evidence collector](claws/website-evidence-collector) | @giodl73-repo; last verified 2026-08-19 |
+| [Website evidence collector](claws/website-evidence-collector) | @giodl73-repo; last verified 2026-08-30 |
 | [Work chief of staff](claws/work-chief-of-staff) | @giodl73-repo; last verified 2026-08-21 |
 | [Workflow operator](claws/workflow-operator) | @giodl73-repo; last verified 2026-08-19 |
 
@@ -436,7 +436,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Wardrobe organizer](claws/wardrobe-organizer) | Tracks clothing inventory, sizes, fit notes, outfit needs, events, packing lists, care tasks, alterations, gaps, and owner review questions from supplied evidence without buying, selling, donating, sharing photos, inferring body or health details, or changing accounts. |
 | [Warranty and returns manager](claws/warranty-returns-manager) | Organizes owner-supplied receipts, order confirmations, product records, return windows, warranty terms, serial numbers, issue notes, packaging status, and review questions without initiating returns, filing warranty claims, contacting sellers, creating shipping labels, requesting refunds, changing accounts, or giving legal, financial, tax, safety, repair, or consumer-rights advice. |
 | [Web evidence researcher](claws/web-evidence-researcher) | Produces a private, bounded claim-evidence investigation ledger that maps owner-approved public web authorities, reproducible searches, canonical sources, corroboration, conflicts, uncertainty, and decision implications without making the decision. |
-| [Website evidence collector](claws/website-evidence-collector) | Collects and normalizes an approved set of public web pages through Firecrawl for reviewable evidence and change analysis. |
+| [Website evidence collector](claws/website-evidence-collector) | Produces a private, bounded website capture evidence ledger that binds owner-approved public pages to retrieval attempts, minimized snapshots, and baseline change comparisons without deciding materiality. |
 | [Work chief of staff](claws/work-chief-of-staff) | Coordinates a multi-leader operating portfolio across specialist-Claw artifacts, shared resources, decision forums, and explicitly authorized commitments without becoming the executive or functional decision-maker. |
 | [Workflow operator](claws/workflow-operator) | Runs bounded Lobster pipelines with typed inputs, explicit approval gates, resumable state, and reviewable results. |
 
@@ -498,7 +498,7 @@ Categories come directly from the catalog entry.
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | X3; Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability. |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | X3; Monitors a user-supplied stock portfolio or watchlist with sourced prices, holdings, allocation drift, issuer events, and review questions without investment advice or trade execution. |
 | [Web evidence researcher](claws/web-evidence-researcher) | X3; Produces a private, bounded claim-evidence investigation ledger that maps owner-approved public web authorities, reproducible searches, canonical sources, corroboration, conflicts, uncertainty, and decision implications without making the decision. |
-| [Website evidence collector](claws/website-evidence-collector) | X3; Collects and normalizes an approved set of public web pages through Firecrawl for reviewable evidence and change analysis. |
+| [Website evidence collector](claws/website-evidence-collector) | X3; Produces a private, bounded website capture evidence ledger that binds owner-approved public pages to retrieval attempts, minimized snapshots, and baseline change comparisons without deciding materiality. |
 
 ### Engineering (8)
 

@@ -345,6 +345,14 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "website-evidence-collector",
+    schema:
+      "../claws/website-evidence-collector/schemas/website-capture-evidence-ledger.schema.json",
+    fixture:
+      "../claws/website-evidence-collector/fixtures/website-capture-evidence-ledger.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "restaurant-venue-scout",
     schema: "../claws/restaurant-venue-scout/schemas/venue-shortlist.schema.json",
     fixture: "../claws/restaurant-venue-scout/fixtures/venue-shortlist.example.json",

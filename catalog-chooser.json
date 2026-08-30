@@ -3686,15 +3686,15 @@
     {
       "id": "website-evidence-collector",
       "name": "Website evidence collector",
-      "description": "Collects and normalizes an approved set of public web pages through Firecrawl for reviewable evidence and change analysis.",
-      "audience": "Analysts preparing a bounded website evidence set from explicitly approved public URLs and domains.",
+      "description": "Produces a private, bounded website capture evidence ledger that binds owner-approved public pages to retrieval attempts, minimized snapshots, and baseline change comparisons without deciding materiality.",
+      "audience": "Vendor risk, compliance, and operations teams that need a bounded, reviewable capture of approved public pages and an auditable comparison against a prior approved capture for a named human or team owner.",
       "category": "analysis",
       "maintenance": {
         "status": "active",
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-30"
       },
       "setup": {
         "level": "medium",

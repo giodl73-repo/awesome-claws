@@ -4,10 +4,13 @@
   "output": "outputs/website-evidence-collector-handoff.md",
   "sections": [
     "request",
-    "known_facts",
-    "assumptions",
-    "evidence",
-    "decisions_or_recommendations",
+    "bounded_collection_control",
+    "approved_scope_and_discovery",
+    "retrieval_and_omission_ledger",
+    "retained_snapshots",
+    "baseline_change_comparison",
+    "review_questions_and_gaps",
+    "owner_review",
     "blocked_actions",
     "next_owner"
   ],
@@ -18,5 +21,5 @@
       "string"
     ]
   },
-  "fallback": "Render the same sections as Markdown when widgets or rich clients are unavailable."
+  "fallback": "Render the validated private website capture evidence ledger with the matching Markdown template when widgets or rich clients are unavailable."
 }

@@ -45,9 +45,9 @@ highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 57 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 89 of 100 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 69 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 58 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 90 of 100 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 70 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
@@ -84,6 +84,17 @@ and reverse-query provenance, freshness and recheck state, typed evidence,
 independent-corroboration limits, conflicts, gaps, and completed human review.
 It does not create recurring watch state, ingest feeds, assess scholarly study
 lifecycle, archive website captures, or make an autonomous conclusion.
+
+Website Evidence Collector now owns the complementary capture lane: a private
+ledger binds owner-approved domains, exact and path-prefix allowlists, excluded
+paths, page types, and URL, page, byte, provider-request, and retention caps to
+bounded discovery searches, per-target retrieval attempts with redirect lineage
+and robots or access outcomes, minimized snapshots that prefer a hash or
+controlled reference over retained text, and baseline-bound added, removed,
+modified, unchanged, and unavailable comparisons. Every planned target is
+accounted for once, including failures, blocked pages, and unattempted targets,
+and materiality is routed to the named owner rather than decided. It does not
+investigate claims, run a recurring watch, ingest feeds, or archive full pages.
 
 Potential additions remain subject to the
 [contribution admission policy](contribution-admission.md). Civic Services
