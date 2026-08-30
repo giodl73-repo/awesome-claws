@@ -1,28 +1,30 @@
 # Research monitor handoff
 
-## Request
+## Watch control
 
-Summarize the user request and the decision this claw is supporting.
+State the bounded private topic, watch questions, baseline and run identity,
+approved public authorities, cadence, freshness policy, and named decision owner.
 
-## Known facts
+## Approved sources and observations
 
-- Record only facts grounded in the supplied context or approved tools.
+- Record only query-traceable approved sources with canonical identity,
+  chronology, correction, withdrawal, supersession, confidence, and uncertainty.
 
-## Assumptions and gaps
+## Delta and contradiction ledger
 
-- Separate assumptions from missing evidence.
+- Classify every retained and baseline observation as new, changed, corrected,
+  withdrawn, contradictory, or unchanged. Do not infer consensus or causality.
 
-## Evidence ledger
+## Owner review, gaps, and blockers
 
-- Link or name the source for every material claim.
+- State the owner priority threshold, review questions, gaps, blockers, and
+  what remains unresolved. A ready handoff is review-ready, not a decision.
 
-## Recommendation or decision state
+## Authority gates
 
-- State the best supported next step and why.
-
-## Blocked actions
-
-- Keep external communication, irreversible changes, purchases, publication, and authority-sensitive actions blocked until explicitly approved.
+- Keep access-control bypass, restricted-content reproduction, publication,
+  contact, subscription, account action, credential or sensitive-query
+  disclosure, fabrication, and autonomous decision or action changes blocked.
 
 ## Next owner
 

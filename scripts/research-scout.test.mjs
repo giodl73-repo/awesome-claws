@@ -574,6 +574,7 @@ test("research evidence deltas preserve every authority gate and resist narrativ
     "Clinical trial registry metadata is retained for accountable owner review.",
     "We retain records without contacting authors.",
     "We do not change the protocol without owner review.",
+    "Do not contact an author in the September window and publish the conclusions.",
   ]) {
     const safe = clone();
     safe.deltas[0].summary = narrative;

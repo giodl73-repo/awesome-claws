@@ -1,0 +1,620 @@
+{
+  "schemaVersion": "awesomeClaws.topicWatchDeltaLedger.v1",
+  "watch": {
+    "id": "watch-eu-ai-act-deployment",
+    "topic": "EU AI Act implementation material affecting the private deployment readiness checklist",
+    "questions": [
+      "Which approved public changes require the Governance Review Team to review the deployment readiness checklist?",
+      "Which published changes are corrected, withdrawn, contradictory, or still uncertain against the July baseline?"
+    ],
+    "topicClassification": "private",
+    "queryDisclosure": "approved-authorities-only",
+    "decisionOwner": "Governance Review Team",
+    "outputClassification": "private",
+    "destination": "outputs/research-monitor-handoff.md",
+    "cadence": {
+      "schedule": "Every weekday at 14:00",
+      "timezone": "UTC"
+    },
+    "window": {
+      "start": "2026-08-01T00:00:00Z",
+      "end": "2026-08-29T23:59:59Z"
+    },
+    "baseline": {
+      "id": "baseline-eu-ai-act-2026-07",
+      "runId": "run-eu-ai-act-2026-07",
+      "asOf": "2026-07-31T23:59:59Z",
+      "sourceRefs": [
+        "source-eur-lex-ai-act",
+        "source-ai-office-guidance-july",
+        "source-ai-office-faq-july"
+      ],
+      "observationRefs": [
+        "observation-ai-act-legal-text",
+        "observation-implementation-guidance",
+        "observation-implementation-faq"
+      ],
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "run": {
+      "id": "run-eu-ai-act-2026-08",
+      "startedAt": "2026-08-29T14:00:00Z",
+      "completedAt": "2026-08-29T14:30:00Z",
+      "asOf": "2026-08-29T14:30:00Z"
+    },
+    "authorities": [
+      {
+        "id": "authority-eur-lex",
+        "provider": "public-record",
+        "domains": ["eur-lex.europa.eu"],
+        "purpose": "legal-text"
+      },
+      {
+        "id": "authority-ai-office",
+        "provider": "official",
+        "domains": ["digital-strategy.ec.europa.eu"],
+        "purpose": "implementation-guidance"
+      },
+      {
+        "id": "authority-eu-commission",
+        "provider": "official",
+        "domains": ["commission.europa.eu"],
+        "purpose": "official-notice"
+      }
+    ],
+    "queries": [
+      {
+        "id": "query-eur-lex-ai-act",
+        "authorityRef": "authority-eur-lex",
+        "query": "Regulation (EU) 2024/1689 consolidated and corrigendum records",
+        "executedAt": "2026-08-29T14:02:00Z",
+        "resultSourceRefs": ["source-eur-lex-ai-act"]
+      },
+      {
+        "id": "query-ai-office-guidance",
+        "authorityRef": "authority-ai-office",
+        "query": "EU AI Act implementation guidance and correction notices",
+        "executedAt": "2026-08-29T14:08:00Z",
+        "resultSourceRefs": [
+          "source-ai-office-guidance-july",
+          "source-ai-office-guidance-august",
+          "source-ai-office-guidance-correction"
+        ]
+      },
+      {
+        "id": "query-ai-office-faq",
+        "authorityRef": "authority-ai-office",
+        "query": "EU AI Act implementation FAQ withdrawal notices",
+        "executedAt": "2026-08-29T14:14:00Z",
+        "resultSourceRefs": [
+          "source-ai-office-faq-july",
+          "source-ai-office-faq-withdrawal"
+        ]
+      },
+      {
+        "id": "query-eu-commission-notice",
+        "authorityRef": "authority-eu-commission",
+        "query": "EU AI Act deployment implementation notice",
+        "executedAt": "2026-08-29T14:20:00Z",
+        "resultSourceRefs": ["source-eu-commission-implementation-notice"]
+      }
+    ],
+    "freshnessPolicy": {
+      "maxAgeHours": 720,
+      "recheckOn": ["source-change", "contradiction", "withdrawal"]
+    },
+    "priorityPolicy": {
+      "id": "policy-eu-ai-act-deployment",
+      "owner": "Governance Review Team",
+      "thresholds": [
+        {
+          "id": "threshold-high-checklist-impact",
+          "level": "high",
+          "conditions": [
+            "A primary authority changes, corrects, withdraws, or contradicts a checklist-relevant implementation statement."
+          ],
+          "ownerReviewRequired": true
+        },
+        {
+          "id": "threshold-normal-context",
+          "level": "normal",
+          "conditions": [
+            "The source preserves baseline context without a checklist-relevant change."
+          ],
+          "ownerReviewRequired": true
+        }
+      ]
+    },
+    "state": "ready"
+  },
+  "sources": [
+    {
+      "id": "source-eur-lex-ai-act",
+      "authorityRef": "authority-eur-lex",
+      "provider": "public-record",
+      "recordType": "legal-text",
+      "canonicalKey": "eu-2024-1689-oj",
+      "canonicalUrl": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "title": "Regulation (EU) 2024/1689",
+      "publishedAt": "2024-07-12T00:00:00Z",
+      "updatedAt": "2024-07-12T00:00:00Z",
+      "retrievedAt": "2026-08-29T14:03:00Z",
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "freshness": "current",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": null,
+      "withdrawsSourceRef": null,
+      "scope": "Primary legal-text baseline retained for identity and chronological context."
+    },
+    {
+      "id": "source-ai-office-guidance-july",
+      "authorityRef": "authority-ai-office",
+      "provider": "official",
+      "recordType": "implementation-guidance",
+      "canonicalKey": "ai-office-implementation-guidance-july",
+      "canonicalUrl": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "title": "Representative AI Office implementation guidance baseline",
+      "publishedAt": "2026-07-15T00:00:00Z",
+      "updatedAt": "2026-07-15T00:00:00Z",
+      "retrievedAt": "2026-08-29T14:09:00Z",
+      "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "freshness": "current",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": null,
+      "withdrawsSourceRef": null,
+      "scope": "Fixture-only official guidance baseline; preserve source identity rather than reproduce restricted or changing page text."
+    },
+    {
+      "id": "source-ai-office-guidance-august",
+      "authorityRef": "authority-ai-office",
+      "provider": "official",
+      "recordType": "implementation-guidance",
+      "canonicalKey": "ai-office-implementation-guidance-august",
+      "canonicalUrl": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai?version=2026-08",
+      "title": "Representative AI Office implementation guidance update",
+      "publishedAt": "2026-08-13T00:00:00Z",
+      "updatedAt": "2026-08-13T00:00:00Z",
+      "retrievedAt": "2026-08-29T14:10:00Z",
+      "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "freshness": "current",
+      "supersedesSourceRef": "source-ai-office-guidance-july",
+      "correctsSourceRef": null,
+      "withdrawsSourceRef": null,
+      "scope": "Fixture-only current official guidance version that supersedes the July baseline record."
+    },
+    {
+      "id": "source-ai-office-guidance-correction",
+      "authorityRef": "authority-ai-office",
+      "provider": "official",
+      "recordType": "correction-notice",
+      "canonicalKey": "ai-office-guidance-correction-august",
+      "canonicalUrl": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai?notice=correction-2026-08",
+      "title": "Representative AI Office guidance correction notice",
+      "publishedAt": "2026-08-20T00:00:00Z",
+      "updatedAt": "2026-08-20T00:00:00Z",
+      "retrievedAt": "2026-08-29T14:11:00Z",
+      "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "freshness": "current",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": "source-ai-office-guidance-august",
+      "withdrawsSourceRef": null,
+      "scope": "Fixture-only correction lineage; the owner must review the controlling public record before changing a checklist."
+    },
+    {
+      "id": "source-ai-office-faq-july",
+      "authorityRef": "authority-ai-office",
+      "provider": "official",
+      "recordType": "faq",
+      "canonicalKey": "ai-office-faq-july",
+      "canonicalUrl": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai?faq=implementation",
+      "title": "Representative AI Office implementation FAQ baseline",
+      "publishedAt": "2026-07-18T00:00:00Z",
+      "updatedAt": "2026-07-18T00:00:00Z",
+      "retrievedAt": "2026-08-29T14:15:00Z",
+      "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "freshness": "current",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": null,
+      "withdrawsSourceRef": null,
+      "scope": "Fixture-only FAQ baseline retained so that its withdrawal remains visible in the delta ledger."
+    },
+    {
+      "id": "source-ai-office-faq-withdrawal",
+      "authorityRef": "authority-ai-office",
+      "provider": "official",
+      "recordType": "withdrawal-notice",
+      "canonicalKey": "ai-office-faq-withdrawal-august",
+      "canonicalUrl": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai?notice=faq-withdrawal-2026-08",
+      "title": "Representative AI Office FAQ withdrawal notice",
+      "publishedAt": "2026-08-22T00:00:00Z",
+      "updatedAt": "2026-08-22T00:00:00Z",
+      "retrievedAt": "2026-08-29T14:16:00Z",
+      "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "freshness": "current",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": null,
+      "withdrawsSourceRef": "source-ai-office-faq-july",
+      "scope": "Fixture-only withdrawal lineage; the prior FAQ cannot silently remain current support."
+    },
+    {
+      "id": "source-eu-commission-implementation-notice",
+      "authorityRef": "authority-eu-commission",
+      "provider": "official",
+      "recordType": "official-notice",
+      "canonicalKey": "commission-ai-act-implementation-notice-august",
+      "canonicalUrl": "https://commission.europa.eu/strategy-and-policy/priorities-2019-2024/europe-fit-digital-age/artificial-intelligence_en",
+      "title": "Representative European Commission implementation notice",
+      "publishedAt": "2026-08-25T00:00:00Z",
+      "updatedAt": "2026-08-25T00:00:00Z",
+      "retrievedAt": "2026-08-29T14:21:00Z",
+      "digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "freshness": "current",
+      "supersedesSourceRef": null,
+      "correctsSourceRef": null,
+      "withdrawsSourceRef": null,
+      "scope": "Fixture-only approved public notice requiring owner review for applicability to the private deployment checklist."
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation-ai-act-legal-text",
+      "deduplicationKey": "topic-eu-ai-act-legal-text",
+      "type": "legal-requirement",
+      "status": "current",
+      "sourceRefs": ["source-eur-lex-ai-act"],
+      "summary": "The baseline legal-text identity remains retained without a newly classified change in this run.",
+      "claims": [
+        {
+          "id": "claim-ai-act-legal-text-retained",
+          "type": "requirement",
+          "statement": "The authoritative legal-text record remains a retained baseline reference for the topic watch.",
+          "sourceRefs": ["source-eur-lex-ai-act"],
+          "status": "supported",
+          "confidence": "high",
+          "uncertainty": "The artifact records source identity and timing, not a legal interpretation."
+        }
+      ],
+      "confidence": "high",
+      "uncertainty": "The owner retains any legal interpretation or operational decision.",
+      "topicRelevance": {
+        "state": "in-scope",
+        "rationale": "The legal text defines the named implementation topic."
+      },
+      "decisionRelevance": {
+        "state": "no-change",
+        "rationale": "No independently classified change was found for this retained baseline identity."
+      },
+      "priority": {
+        "policyRef": "policy-eu-ai-act-deployment",
+        "thresholdRef": "threshold-normal-context",
+        "level": "normal",
+        "rationale": "The record provides baseline context rather than a new checklist trigger."
+      }
+    },
+    {
+      "id": "observation-implementation-guidance",
+      "deduplicationKey": "topic-ai-office-implementation-guidance",
+      "type": "implementation-guidance",
+      "status": "corrected",
+      "sourceRefs": [
+        "source-ai-office-guidance-july",
+        "source-ai-office-guidance-august",
+        "source-ai-office-guidance-correction"
+      ],
+      "summary": "The approved guidance record has a superseding update and a linked correction that require owner review before any checklist change.",
+      "claims": [
+        {
+          "id": "claim-guidance-version-change",
+          "type": "reported-change",
+          "statement": "An approved public guidance record supersedes the retained July source version.",
+          "sourceRefs": ["source-ai-office-guidance-july", "source-ai-office-guidance-august"],
+          "status": "supported",
+          "confidence": "high",
+          "uncertainty": "The delta does not determine whether the changed record applies to a particular deployment."
+        },
+        {
+          "id": "claim-guidance-correction",
+          "type": "clarification",
+          "statement": "A linked correction notice qualifies the current guidance record pending owner review.",
+          "sourceRefs": ["source-ai-office-guidance-correction"],
+          "status": "qualified",
+          "confidence": "moderate",
+          "uncertainty": "The controlling wording and operational relevance require the private owner review."
+        }
+      ],
+      "confidence": "moderate",
+      "uncertainty": "A source correction is not an autonomous instruction to alter deployment controls.",
+      "topicRelevance": {
+        "state": "in-scope",
+        "rationale": "The source is an approved implementation-guidance authority for the declared topic."
+      },
+      "decisionRelevance": {
+        "state": "decision-relevant",
+        "rationale": "A corrected implementation record may require the owner to review the checklist."
+      },
+      "priority": {
+        "policyRef": "policy-eu-ai-act-deployment",
+        "thresholdRef": "threshold-high-checklist-impact",
+        "level": "high",
+        "rationale": "The source both supersedes and corrects a baseline implementation record."
+      }
+    },
+    {
+      "id": "observation-implementation-faq",
+      "deduplicationKey": "topic-ai-office-implementation-faq",
+      "type": "implementation-guidance",
+      "status": "withdrawn",
+      "sourceRefs": [
+        "source-ai-office-faq-july",
+        "source-ai-office-faq-withdrawal"
+      ],
+      "summary": "The FAQ baseline record has a linked withdrawal notice and remains only as historical lineage.",
+      "claims": [
+        {
+          "id": "claim-faq-withdrawal",
+          "type": "reported-change",
+          "statement": "The withdrawal notice removes the retained FAQ from current support until an owner reviews a replacement source.",
+          "sourceRefs": ["source-ai-office-faq-withdrawal"],
+          "status": "withdrawn",
+          "confidence": "high",
+          "uncertainty": "The ledger does not infer why the FAQ was withdrawn or which replacement guidance controls."
+        }
+      ],
+      "confidence": "high",
+      "uncertainty": "Withdrawal lineage identifies a review need but does not supply replacement implementation guidance.",
+      "topicRelevance": {
+        "state": "in-scope",
+        "rationale": "The withdrawn FAQ was part of the approved implementation baseline."
+      },
+      "decisionRelevance": {
+        "state": "decision-relevant",
+        "rationale": "The owner must decide whether any private checklist reference depended on the withdrawn record."
+      },
+      "priority": {
+        "policyRef": "policy-eu-ai-act-deployment",
+        "thresholdRef": "threshold-high-checklist-impact",
+        "level": "high",
+        "rationale": "A baseline implementation source was withdrawn."
+      }
+    },
+    {
+      "id": "observation-commission-implementation-notice",
+      "deduplicationKey": "topic-commission-implementation-notice",
+      "type": "public-statement",
+      "status": "current",
+      "sourceRefs": ["source-eu-commission-implementation-notice"],
+      "summary": "A new approved public implementation notice is retained for private applicability and contradiction review.",
+      "claims": [
+        {
+          "id": "claim-commission-notice",
+          "type": "reported-change",
+          "statement": "The approved public notice is new to this run and must be assessed against the private deployment checklist.",
+          "sourceRefs": ["source-eu-commission-implementation-notice"],
+          "status": "supported",
+          "confidence": "moderate",
+          "uncertainty": "The notice may use a different implementation framing; the ledger does not resolve applicability."
+        }
+      ],
+      "confidence": "moderate",
+      "uncertainty": "A new public notice does not establish consensus, causality, or an implementation decision.",
+      "topicRelevance": {
+        "state": "in-scope",
+        "rationale": "The source is an approved authority for official implementation notices."
+      },
+      "decisionRelevance": {
+        "state": "decision-relevant",
+        "rationale": "The owner must decide whether the new notice changes the review agenda or checklist."
+      },
+      "priority": {
+        "policyRef": "policy-eu-ai-act-deployment",
+        "thresholdRef": "threshold-high-checklist-impact",
+        "level": "high",
+        "rationale": "The notice is a new approved source with possible checklist relevance."
+      }
+    }
+  ],
+  "deltas": [
+    {
+      "id": "delta-new-commission-notice",
+      "classification": "new",
+      "observationRefs": ["observation-commission-implementation-notice"],
+      "baselineObservationRefs": [],
+      "contradictsDeltaRefs": [],
+      "supersedesDeltaRefs": [],
+      "summary": "A new approved public implementation notice is retained for owner review, not as an autonomous checklist change.",
+      "decisionRelevance": {
+        "state": "decision-relevant",
+        "rationale": "The owner must assess applicability to the declared private decision area."
+      }
+    },
+    {
+      "id": "delta-guidance-changed",
+      "classification": "changed",
+      "observationRefs": ["observation-implementation-guidance"],
+      "baselineObservationRefs": ["observation-implementation-guidance"],
+      "contradictsDeltaRefs": [],
+      "supersedesDeltaRefs": [],
+      "summary": "The current guidance record explicitly supersedes the July baseline source version.",
+      "decisionRelevance": {
+        "state": "decision-relevant",
+        "rationale": "A superseding source must be reviewed before the owner changes the checklist."
+      }
+    },
+    {
+      "id": "delta-guidance-corrected",
+      "classification": "corrected",
+      "observationRefs": ["observation-implementation-guidance"],
+      "baselineObservationRefs": ["observation-implementation-guidance"],
+      "contradictsDeltaRefs": [],
+      "supersedesDeltaRefs": ["delta-guidance-changed"],
+      "summary": "A linked correction qualifies the superseding guidance record and takes precedence over the earlier changed classification.",
+      "decisionRelevance": {
+        "state": "decision-relevant",
+        "rationale": "The correction needs accountable review before any conclusion about checklist impact."
+      }
+    },
+    {
+      "id": "delta-faq-withdrawn",
+      "classification": "withdrawn",
+      "observationRefs": ["observation-implementation-faq"],
+      "baselineObservationRefs": ["observation-implementation-faq"],
+      "contradictsDeltaRefs": [],
+      "supersedesDeltaRefs": [],
+      "summary": "The withdrawal notice keeps the historical FAQ visible while preventing it from silently supporting a current claim.",
+      "decisionRelevance": {
+        "state": "decision-relevant",
+        "rationale": "The owner must review whether the private baseline cited the withdrawn FAQ."
+      }
+    },
+    {
+      "id": "delta-implementation-contradiction",
+      "classification": "contradictory",
+      "observationRefs": [
+        "observation-implementation-guidance",
+        "observation-commission-implementation-notice"
+      ],
+      "baselineObservationRefs": ["observation-implementation-guidance"],
+      "contradictsDeltaRefs": ["delta-guidance-corrected"],
+      "supersedesDeltaRefs": [],
+      "summary": "The two approved records may frame implementation differently; the relationship remains a question for owner review rather than a resolved conclusion.",
+      "decisionRelevance": {
+        "state": "monitor",
+        "rationale": "The owner must compare scope and applicability before treating either record as a checklist instruction."
+      }
+    },
+    {
+      "id": "delta-legal-text-unchanged",
+      "classification": "unchanged",
+      "observationRefs": ["observation-ai-act-legal-text"],
+      "baselineObservationRefs": ["observation-ai-act-legal-text"],
+      "contradictsDeltaRefs": [],
+      "supersedesDeltaRefs": [],
+      "summary": "The baseline legal-text identity remains visible without a newly classified change in this run.",
+      "decisionRelevance": {
+        "state": "no-change",
+        "rationale": "This retained identity adds no independently classified decision change."
+      }
+    }
+  ],
+  "reviewQueue": [
+    {
+      "id": "review-guidance-priority",
+      "kind": "priority-review",
+      "question": "Does the superseding and corrected guidance alter any private deployment checklist reference?",
+      "owner": "Governance Review Team",
+      "priority": "high",
+      "observationRefs": ["observation-implementation-guidance"],
+      "deltaRefs": [
+        "delta-guidance-changed",
+        "delta-guidance-corrected"
+      ],
+      "status": "resolved",
+      "resolution": "The owner will compare the controlling public record in the next private review; this ledger does not alter the checklist."
+    },
+    {
+      "id": "review-faq-withdrawal",
+      "kind": "source-reconciliation",
+      "question": "Which private notes, if any, retained the withdrawn FAQ as current support?",
+      "owner": "Governance Review Team",
+      "priority": "high",
+      "observationRefs": ["observation-implementation-faq"],
+      "deltaRefs": ["delta-faq-withdrawn"],
+      "status": "resolved",
+      "resolution": "Retain the FAQ only as withdrawal lineage and queue a replacement-source review with the owner."
+    },
+    {
+      "id": "review-notice-contradiction",
+      "kind": "contradiction-review",
+      "question": "Are the new notice and corrected guidance applicable to the same deployment scope?",
+      "owner": "Governance Review Team",
+      "priority": "high",
+      "observationRefs": [
+        "observation-implementation-guidance",
+        "observation-commission-implementation-notice"
+      ],
+      "deltaRefs": [
+        "delta-new-commission-notice",
+        "delta-implementation-contradiction"
+      ],
+      "status": "resolved",
+      "resolution": "Keep both records visible for the owner; no consensus, causal inference, or decision change is made by the monitor."
+    }
+  ],
+  "gapsAndBlockers": [
+    {
+      "id": "gap-notice-applicability",
+      "kind": "gap",
+      "description": "The ledger cannot determine whether the new public notice applies to the team's private deployment scope.",
+      "owner": "Governance Review Team",
+      "sourceRefs": ["source-eu-commission-implementation-notice"],
+      "observationRefs": ["observation-commission-implementation-notice"],
+      "deltaRefs": ["delta-new-commission-notice"],
+      "status": "resolved"
+    }
+  ],
+  "synthesis": {
+    "consensus": {
+      "state": "not-inferred",
+      "rationale": "The ledger records individually sourced public changes and questions; it does not infer consensus."
+    },
+    "causalInference": {
+      "state": "not-inferred",
+      "rationale": "Source change timing does not establish a causal effect on deployment or compliance outcomes."
+    },
+    "summary": "The private ledger preserves one new notice, a superseding and corrected guidance record, a withdrawn FAQ, a possible contradiction, and an unchanged legal-text identity for accountable review."
+  },
+  "blockedActions": [
+    "bypass-access-controls",
+    "reproduce-restricted-content",
+    "publish-or-contact-externally",
+    "subscribe-or-change-accounts",
+    "disclose-credentials-or-sensitive-queries",
+    "fabricate-sources-or-claims",
+    "change-decisions-or-actions-autonomously"
+  ],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Governance Review Team",
+    "classification": "private",
+    "destination": "outputs/research-monitor-handoff.md",
+    "sourceRefs": [
+      "source-eur-lex-ai-act",
+      "source-ai-office-guidance-july",
+      "source-ai-office-guidance-august",
+      "source-ai-office-guidance-correction",
+      "source-ai-office-faq-july",
+      "source-ai-office-faq-withdrawal",
+      "source-eu-commission-implementation-notice"
+    ],
+    "observationRefs": [
+      "observation-ai-act-legal-text",
+      "observation-implementation-guidance",
+      "observation-implementation-faq",
+      "observation-commission-implementation-notice"
+    ],
+    "deltaRefs": [
+      "delta-new-commission-notice",
+      "delta-guidance-changed",
+      "delta-guidance-corrected",
+      "delta-faq-withdrawn",
+      "delta-implementation-contradiction",
+      "delta-legal-text-unchanged"
+    ],
+    "reviewQueueRefs": [
+      "review-guidance-priority",
+      "review-faq-withdrawal",
+      "review-notice-contradiction"
+    ],
+    "gapAndBlockerRefs": ["gap-notice-applicability"],
+    "blockerRefs": [],
+    "prohibitedActions": [
+      "bypass-access-controls",
+      "reproduce-restricted-content",
+      "publish-or-contact-externally",
+      "subscribe-or-change-accounts",
+      "disclose-credentials-or-sensitive-queries",
+      "fabricate-sources-or-claims",
+      "change-decisions-or-actions-autonomously"
+    ]
+  }
+}
