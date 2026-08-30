@@ -4,23 +4,23 @@ This report scores all 100 maintained Claws as of 2026-08-30. It uses only repos
 
 ## Portfolio result
 
-- Average: **91.5/100**
+- Average: **91.8/100**
 - Median: **95/100**
 - Qualified through all non-negotiable gates: **100/100**
 
 | Band | Count |
 | --- | ---: |
-| exemplary | 63 |
+| exemplary | 64 |
 | strong | 21 |
-| solid | 16 |
+| solid | 15 |
 | needs-uplift | 0 |
 | priority-remediation | 0 |
 
 | Dimension | Maximum | Portfolio average |
 | --- | ---: | ---: |
-| Distinct job and admission case | 15 | 12.6 |
+| Distinct job and admission case | 15 | 12.7 |
 | Operating contract completeness | 20 | 20 |
-| Evidence and artifact model | 20 | 15.8 |
+| Evidence and artifact model | 20 | 15.9 |
 | Authority and safety | 20 | 18.9 |
 | Experience and usability | 10 | 10 |
 | Verification and portability | 10 | 9.3 |
@@ -40,13 +40,13 @@ The queue is ordered from lowest score upward. It is a documentation and contrac
 | `executive-briefing` | 73 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract. |
 | `executive-assistant` | 73 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract. |
 | `research-scout` | 74 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract. |
-| `public-company-watcher` | 74 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract. |
 | `software-maintainer` | 78 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract. |
 | `knowledge-curator` | 78 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract. |
 | `content-operations` | 78 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract. |
 | `workflow-operator` | 79 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract. |
 | `website-evidence-collector` | 79 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract. |
 | `web-evidence-researcher` | 79 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract. |
+| `video-concept-producer` | 79 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Define a schema, example, and semantic validator where the job owns stable structured state; otherwise document the intentional narrative or integration-owned contract. |
 
 ## All Claws
 
@@ -104,46 +104,46 @@ The queue is ordered from lowest score upward. It is a documentation and contrac
 | 50 | `delegation-coordinator` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
 | 51 | `fundraising-campaign-manager` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
 | 52 | `media-evidence-reviewer` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 53 | `research-briefing` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 54 | `spreadsheet-analyst` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 55 | `travel-planner` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 56 | `data-analyst` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 57 | `document-intake-analyst` | 94 | exemplary | 15 | 20 | 20 | 14 | 10 | 10 | 5 |
-| 58 | `product-manager` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 59 | `project-manager` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 60 | `recruiting-coordinator` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 61 | `sales-operations` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 62 | `civic-data-analyst` | 90 | exemplary | 10 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 63 | `public-safety-monitor` | 90 | exemplary | 10 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 64 | `financial-analyst` | 89 | strong | 10 | 20 | 20 | 14 | 10 | 10 | 5 |
-| 65 | `api-integration-engineer` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
-| 66 | `data-governance-steward` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
-| 67 | `incident-response` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
-| 68 | `compliance-reviewer` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
-| 69 | `customer-support` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
-| 70 | `release-coordinator` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
-| 71 | `security-analyst` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
-| 72 | `accessibility-review-coordinator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 73 | `cloud-cost-analyst` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 74 | `data-migration-planner` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 75 | `event-operations-director` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 76 | `experimentation-lead` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 77 | `facilities-operations-coordinator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 78 | `grant-portfolio-manager` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 79 | `localization-program-manager` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 80 | `manufacturing-operations-planner` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 81 | `privacy-request-coordinator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 82 | `procurement-evaluator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 83 | `quality-assurance-lead` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 84 | `ux-research-synthesizer` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
-| 85 | `video-concept-producer` | 79 | solid | 10 | 20 | 6 | 20 | 10 | 8 | 5 |
-| 86 | `web-evidence-researcher` | 79 | solid | 10 | 20 | 6 | 20 | 10 | 8 | 5 |
-| 87 | `website-evidence-collector` | 79 | solid | 10 | 20 | 6 | 20 | 10 | 8 | 5 |
-| 88 | `workflow-operator` | 79 | solid | 10 | 20 | 6 | 20 | 10 | 8 | 5 |
-| 89 | `content-operations` | 78 | solid | 10 | 20 | 6 | 19 | 10 | 8 | 5 |
-| 90 | `knowledge-curator` | 78 | solid | 10 | 20 | 6 | 19 | 10 | 8 | 5 |
-| 91 | `software-maintainer` | 78 | solid | 10 | 20 | 6 | 19 | 10 | 8 | 5 |
-| 92 | `public-company-watcher` | 74 | solid | 10 | 20 | 6 | 15 | 10 | 8 | 5 |
+| 53 | `public-company-watcher` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 54 | `research-briefing` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 55 | `spreadsheet-analyst` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 56 | `travel-planner` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 57 | `data-analyst` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 58 | `document-intake-analyst` | 94 | exemplary | 15 | 20 | 20 | 14 | 10 | 10 | 5 |
+| 59 | `product-manager` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 60 | `project-manager` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 61 | `recruiting-coordinator` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 62 | `sales-operations` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 63 | `civic-data-analyst` | 90 | exemplary | 10 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 64 | `public-safety-monitor` | 90 | exemplary | 10 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 65 | `financial-analyst` | 89 | strong | 10 | 20 | 20 | 14 | 10 | 10 | 5 |
+| 66 | `api-integration-engineer` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
+| 67 | `data-governance-steward` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
+| 68 | `incident-response` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
+| 69 | `compliance-reviewer` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
+| 70 | `customer-support` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
+| 71 | `release-coordinator` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
+| 72 | `security-analyst` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
+| 73 | `accessibility-review-coordinator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 74 | `cloud-cost-analyst` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 75 | `data-migration-planner` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 76 | `event-operations-director` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 77 | `experimentation-lead` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 78 | `facilities-operations-coordinator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 79 | `grant-portfolio-manager` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 80 | `localization-program-manager` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 81 | `manufacturing-operations-planner` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 82 | `privacy-request-coordinator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 83 | `procurement-evaluator` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 84 | `quality-assurance-lead` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 85 | `ux-research-synthesizer` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 86 | `video-concept-producer` | 79 | solid | 10 | 20 | 6 | 20 | 10 | 8 | 5 |
+| 87 | `web-evidence-researcher` | 79 | solid | 10 | 20 | 6 | 20 | 10 | 8 | 5 |
+| 88 | `website-evidence-collector` | 79 | solid | 10 | 20 | 6 | 20 | 10 | 8 | 5 |
+| 89 | `workflow-operator` | 79 | solid | 10 | 20 | 6 | 20 | 10 | 8 | 5 |
+| 90 | `content-operations` | 78 | solid | 10 | 20 | 6 | 19 | 10 | 8 | 5 |
+| 91 | `knowledge-curator` | 78 | solid | 10 | 20 | 6 | 19 | 10 | 8 | 5 |
+| 92 | `software-maintainer` | 78 | solid | 10 | 20 | 6 | 19 | 10 | 8 | 5 |
 | 93 | `research-scout` | 74 | solid | 10 | 20 | 6 | 15 | 10 | 8 | 5 |
 | 94 | `executive-assistant` | 73 | solid | 10 | 20 | 6 | 14 | 10 | 8 | 5 |
 | 95 | `executive-briefing` | 73 | solid | 10 | 20 | 6 | 14 | 10 | 8 | 5 |

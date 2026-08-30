@@ -317,6 +317,14 @@ const definitions = [
     decisionField: "planState",
   },
   {
+    id: "public-company-watcher",
+    schema:
+      "../claws/public-company-watcher/schemas/company-disclosure-ledger.schema.json",
+    fixture:
+      "../claws/public-company-watcher/fixtures/company-disclosure-ledger.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "restaurant-venue-scout",
     schema: "../claws/restaurant-venue-scout/schemas/venue-shortlist.schema.json",
     fixture: "../claws/restaurant-venue-scout/fixtures/venue-shortlist.example.json",

@@ -754,14 +754,15 @@
       "id": "public-company-watcher",
       "acceptedRequest": "Watch the SEC filings and investor-relations feed for three listed suppliers and flag changes that may affect our annual sourcing review.",
       "requiredEvidence": [
-        "Company names, tickers, regulator identifiers, jurisdictions, watch questions, and accountable reader",
-        "Relevant filing types, periods, materiality thresholds, peers, currencies, and accounting definitions",
-        "Approved official feeds, investor-relations sources, review cadence, baseline date, and private output destination"
+        "Exact issuer legal names, tickers, exchanges, regulator identifiers, jurisdictions, owner-supplied watch questions, and a named accountable human or team",
+        "Baseline and review periods, reporting currency, relevant filing and disclosure types, accounting definitions, and an owner-declared materiality policy with exact thresholds",
+        "Approved canonical regulator, exchange, and issuer investor-relations sources, optional context sources, review cadence, private classification, and workspace output destination"
       ],
       "authorityBoundaries": [
-        "Do not trade, recommend a security transaction, contact issuers, subscribe accounts, or submit regulatory filings",
-        "Do not treat press coverage, social posts, summaries, or delayed market data as substitutes for the underlying filing",
-        "Do not infer undisclosed intent, nonpublic information, or accounting conclusions beyond the cited public evidence"
+        "Do not collect holdings, connect a brokerage or trading account, place a trade or order, calculate portfolio allocation or performance, or recommend buy, sell, hold, allocation, or another security action",
+        "Do not provide tax, legal, investment, or accounting advice; contact an issuer or investor-relations team; purchase subscriptions; or submit or amend regulatory filings",
+        "Do not publish, communicate publicly, or disclose the private output; do not treat press coverage, summaries, social posts, news, or delayed market context as substitutes for canonical filed evidence",
+        "Do not infer undisclosed intent or nonpublic information, fabricate evidence, or turn a public disclosure into an unsupported accounting, legal, investment, or supplier conclusion"
       ],
       "experience": {
         "target": 3,

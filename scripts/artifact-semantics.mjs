@@ -7387,6 +7387,1100 @@ function musicOrganizerFindings(value) {
   return findings;
 }
 
+function companyDisclosureLedgerFindings(value) {
+ const issuerIds = value.issuers.map((item) => item.id);
+ const sourceIds = value.sources.map((item) => item.id);
+ const factIds = value.filedFacts.map((item) => item.id);
+ const comparisonIds = value.comparisons.map((item) => item.id);
+ const interpretationIds = value.interpretations.map((item) => item.id);
+ const questionIds = value.reviewQuestions.map((item) => item.id);
+ const gapIds = value.gapsAndBlockers.map((item) => item.id);
+ const thresholdIds = value.watch.materialityPolicy.thresholds.map((item) => item.id);
+ const issuerSet = new Set(issuerIds);
+ const sourceSet = new Set(sourceIds);
+ const factSet = new Set(factIds);
+ const comparisonSet = new Set(comparisonIds);
+ const interpretationSet = new Set(interpretationIds);
+ const questionSet = new Set(questionIds);
+ const gapSet = new Set(gapIds);
+ const thresholdSet = new Set(thresholdIds);
+ const issuerById = new Map(value.issuers.map((item) => [item.id, item]));
+ const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+ const factById = new Map(value.filedFacts.map((item) => [item.id, item]));
+ const comparisonById = new Map(value.comparisons.map((item) => [item.id, item]));
+ const thresholdById = new Map(
+   value.watch.materialityPolicy.thresholds.map((item) => [item.id, item]),
+ );
+ const authoritativeKinds = new Set([
+   "regulator-filing",
+   "amended-regulator-filing",
+   "regulator-ownership-filing",
+   "exchange-notice",
+   "issuer-ir-release",
+ ]);
+ const regulatorKinds = new Set([
+   "regulator-filing",
+   "amended-regulator-filing",
+   "regulator-ownership-filing",
+ ]);
+ const requiredActions = [
+   "connect-trading-account",
+   "place-trade-or-order",
+   "recommend-buy",
+   "recommend-sell",
+   "recommend-hold",
+   "recommend-allocation",
+   "give-tax-advice",
+   "give-legal-advice",
+   "give-investment-advice",
+   "give-accounting-advice",
+   "contact-issuer-or-ir",
+   "purchase-subscription",
+   "submit-or-amend-filing",
+   "publish-or-communicate-publicly",
+   "disclose-private-output",
+   "infer-nonpublic-information",
+   "infer-issuer-intent",
+   "fabricate-evidence",
+ ];
+ const findings = [
+   ...uniqueFindings(issuerIds, "issuers", "Issuer id"),
+   ...uniqueFindings(sourceIds, "sources", "Source id"),
+   ...uniqueFindings(
+     value.sources.map((item) =>
+       [
+         item.issuerRef,
+         item.accession ?? "",
+         item.documentId,
+         item.version,
+         item.canonicalUrl,
+         item.digest,
+       ].join("\u0000"),
+     ),
+     "sources",
+     "Source identity",
+   ),
+   ...uniqueFindings(factIds, "filedFacts", "Filed fact id"),
+   ...uniqueFindings(comparisonIds, "comparisons", "Comparison id"),
+   ...uniqueFindings(interpretationIds, "interpretations", "Interpretation id"),
+   ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+   ...uniqueFindings(gapIds, "gapsAndBlockers", "Gap or blocker id"),
+   ...uniqueFindings(thresholdIds, "watch.materialityPolicy.thresholds", "Threshold id"),
+ ];
+
+ function periodValid(period) {
+   return period === null || Date.parse(`${period.start}T00:00:00Z`) <= Date.parse(`${period.end}T00:00:00Z`);
+ }
+
+ function samePeriod(left, right) {
+   return left?.start === right?.start && left?.end === right?.end;
+ }
+
+ function comparablePeriods(left, right) {
+   const duration = (period) =>
+     Date.parse(`${period.end}T00:00:00Z`) -
+     Date.parse(`${period.start}T00:00:00Z`);
+   return Boolean(
+     left &&
+       right &&
+       left.start.slice(5) === right.start.slice(5) &&
+       left.end.slice(5) === right.end.slice(5) &&
+       Math.abs(duration(left) - duration(right)) <= 2 * 86_400_000,
+   );
+ }
+
+ function expectedReconciliation(left, right, dimension) {
+   if (dimension === "period") {
+     if (left.period === null && right.period === null) return "not-applicable";
+     return comparablePeriods(left.period, right.period) ? "matched" : "mismatch";
+   }
+   if (dimension === "amendmentLineage") {
+     const lineageState = (fact) =>
+       fact.sourceRefs.some((ref) => sourceById.get(ref)?.version === "amended")
+         ? "amended"
+         : "original";
+     return lineageState(left) === lineageState(right) ? "matched" : "mismatch";
+   }
+   if (left[dimension] === null && right[dimension] === null) return "not-applicable";
+   return left[dimension] === right[dimension] ? "matched" : "mismatch";
+ }
+
+ function requireReferences(refs, known, path, label) {
+   findings.push(
+     ...uniqueFindings(refs, path, label),
+     ...referenceFindings(refs, known, path, label),
+   );
+ }
+
+ function requireCompleteReferences(actual, expected, path, label) {
+   requireReferences(actual, new Set(expected), path, label);
+   for (const id of expected) {
+     if (!actual.includes(id)) {
+       findings.push(
+         finding(
+           "incomplete_handoff",
+           path,
+           `${label} ${JSON.stringify(id)} is missing from the private handoff.`,
+         ),
+       );
+     }
+   }
+ }
+
+ if (!periodValid(value.watch.baselinePeriod) || !periodValid(value.watch.reviewPeriod)) {
+   findings.push(
+     finding(
+       "invalid_watch_chronology",
+       "watch.baselinePeriod",
+       "Baseline and review periods must each have an ordered start and end.",
+     ),
+   );
+ }
+ if (
+   Date.parse(`${value.watch.baselinePeriod.end}T23:59:59Z`) >=
+   Date.parse(`${value.watch.reviewPeriod.start}T00:00:00Z`)
+ ) {
+   findings.push(
+     finding(
+       "invalid_watch_chronology",
+       "watch.reviewPeriod",
+       "The review period must begin after the baseline period ends.",
+     ),
+   );
+ }
+ if (
+   !isSafePackagePath(value.watch.destination) ||
+   !value.watch.destination.startsWith("outputs/")
+ ) {
+   findings.push(
+     finding(
+       "unsafe_handoff_destination",
+       "watch.destination",
+       "The private disclosure destination must remain a portable path under outputs/.",
+     ),
+   );
+ }
+
+ const expectedSourceAuthority = {
+   "regulator-filing": "regulator",
+   "amended-regulator-filing": "regulator",
+   "regulator-ownership-filing": "regulator",
+   "exchange-notice": "exchange",
+   "issuer-ir-release": "issuer",
+   news: "news-provider",
+   "market-context": "market-data-provider",
+ };
+ const unsafeQueryKeys =
+   /^(?:access[_-]?token|api[_-]?key|auth|code|credential|key|password|secret|token)$/iu;
+ for (const [index, source] of value.sources.entries()) {
+   requireReferences(
+     [source.issuerRef],
+     issuerSet,
+     `sources.${index}.issuerRef`,
+     "Issuer reference",
+   );
+   if (source.authority !== expectedSourceAuthority[source.kind]) {
+     findings.push(
+       finding(
+         "source_authority_mismatch",
+         `sources.${index}.authority`,
+         `${source.kind} evidence must use ${expectedSourceAuthority[source.kind]} authority.`,
+       ),
+     );
+   }
+   if (
+     Date.parse(source.publishedAt) > Date.parse(source.retrievedAt) ||
+     Date.parse(source.retrievedAt) > Date.parse(value.watch.asOf)
+   ) {
+     findings.push(
+       finding(
+         "invalid_source_chronology",
+         `sources.${index}.retrievedAt`,
+         "Sources must be published no later than retrieval and retrieved no later than the watch as-of time.",
+       ),
+     );
+   }
+   if (!periodValid(source.reportingPeriod)) {
+     findings.push(
+       finding(
+         "invalid_source_period",
+         `sources.${index}.reportingPeriod`,
+         "Source reporting periods must have an ordered start and end.",
+       ),
+     );
+   }
+   try {
+     const reference = new URL(source.canonicalUrl);
+     const hostname = reference.hostname.toLowerCase().replace(/^\[|\]$/gu, "");
+     const unsafeHost =
+       /^(?:localhost(?:\.localdomain)?|.+\.localhost|0(?:\.\d{1,3}){3}|10(?:\.\d{1,3}){3}|127(?:\.\d{1,3}){3}|169\.254(?:\.\d{1,3}){2}|192\.168(?:\.\d{1,3}){2}|::1|f[cd][0-9a-f:]*|fe[89ab][0-9a-f:]*)$/u.test(
+         hostname,
+       ) ||
+       (() => {
+         const match = /^172\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/u.exec(hostname);
+         return match !== null && Number(match[1]) >= 16 && Number(match[1]) <= 31;
+       })();
+     const unsafeQuery = [...reference.searchParams.keys()].some((key) =>
+       unsafeQueryKeys.test(key),
+     ) ||
+       [...reference.searchParams.values()].some((value) =>
+         /\b(?:access[_-]?token|api[_-]?key|auth|credential|password|secret|token)\s*[:=]/iu.test(
+           value,
+         ),
+       );
+     const issuer = issuerById.get(source.issuerRef);
+     const domainGroup =
+       source.authority === "regulator"
+         ? "regulator"
+         : source.authority === "exchange"
+           ? "exchange"
+           : source.authority === "issuer"
+             ? "issuer"
+             : "context";
+     const allowedDomains = issuer?.sourceDomains[domainGroup] ?? [];
+     const allowedHost = allowedDomains.some(
+       (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
+     );
+     const secIssuer = /^(?:u\.?s\.?\s+)?(?:securities and exchange commission|sec)$/iu.test(
+       issuer?.regulator.trim() ?? "",
+     );
+     const secSource = regulatorKinds.has(source.kind) && secIssuer;
+     const cik = /\bCIK\s*0*(\d+)\b/iu.exec(
+       issuer?.regulatorIdentifier ?? "",
+     )?.[1];
+     const accession = source.accession?.replaceAll("-", "");
+     const pathParts = reference.pathname.split("/").filter(Boolean);
+     const documentName = pathParts.at(-1)?.replace(/\.[^.]+$/u, "");
+     const secPathValid =
+       !secSource ||
+       (cik !== undefined &&
+         accession !== undefined &&
+         pathParts.slice(0, 3).join("/").toLowerCase() ===
+           "archives/edgar/data" &&
+         pathParts[3] === cik &&
+         pathParts[4] === accession &&
+         documentName === source.documentId);
+     if (
+       reference.protocol !== "https:" ||
+       reference.username ||
+       reference.password ||
+       reference.hash ||
+       unsafeHost ||
+       unsafeQuery ||
+       !allowedHost ||
+       (secSource &&
+         ((hostname !== "sec.gov" && !hostname.endsWith(".sec.gov")) ||
+           !secPathValid))
+     ) {
+       throw new Error("unsafe");
+     }
+   } catch {
+     findings.push(
+       finding(
+         "unsafe_source_reference",
+         `sources.${index}.canonicalUrl`,
+         "Sources require a canonical credential-free public HTTPS URL without fragments, private hosts, or sensitive query values.",
+       ),
+     );
+   }
+   if (
+     (regulatorKinds.has(source.kind) && source.accession === null) ||
+     (!regulatorKinds.has(source.kind) && source.accession !== null)
+   ) {
+     findings.push(
+       finding(
+         "incoherent_accession",
+         `sources.${index}.accession`,
+         "Regulator filings require an accession and non-regulator disclosures must leave accession null.",
+       ),
+     );
+   }
+   if (
+     (source.kind === "amended-regulator-filing" &&
+       (source.version !== "amended" || source.amendsSourceRef === null)) ||
+     (source.kind !== "amended-regulator-filing" &&
+       (source.version !== "original" || source.amendsSourceRef !== null))
+   ) {
+     findings.push(
+       finding(
+         "incoherent_amendment_state",
+         `sources.${index}.amendsSourceRef`,
+         "Only amended regulator filings may name an original source, and they must use the amended version state.",
+       ),
+     );
+   }
+   if (source.kind === "amended-regulator-filing") {
+     requireReferences(
+       [source.amendsSourceRef],
+       sourceSet,
+       `sources.${index}.amendsSourceRef`,
+       "Amended source reference",
+     );
+     const original = sourceById.get(source.amendsSourceRef);
+     if (
+       !original ||
+       original.kind !== "regulator-filing" ||
+       original.issuerRef !== source.issuerRef ||
+       !samePeriod(original.reportingPeriod, source.reportingPeriod) ||
+       Date.parse(original.publishedAt) >= Date.parse(source.publishedAt) ||
+       original.accession === source.accession ||
+       original.documentId === source.documentId
+     ) {
+       findings.push(
+         finding(
+           "invalid_amendment_lineage",
+           `sources.${index}.amendsSourceRef`,
+           "An amendment must follow a distinct original regulator filing for the same issuer and reporting period.",
+         ),
+       );
+     }
+   }
+ }
+
+ for (const [index, threshold] of value.watch.materialityPolicy.thresholds.entries()) {
+   if (
+     (threshold.measure === "qualitative" &&
+       (threshold.operator !== "owner-judgment" ||
+         threshold.value !== null ||
+         threshold.unit !== null ||
+         threshold.currency !== null)) ||
+     (threshold.measure !== "qualitative" &&
+       (threshold.operator !== "gte" ||
+         threshold.value === null ||
+         threshold.unit === null))
+   ) {
+     findings.push(
+       finding(
+         "invalid_materiality_threshold",
+         `watch.materialityPolicy.thresholds.${index}`,
+         "Qualitative thresholds require owner judgment and no numeric value; numeric thresholds require a gte value and unit.",
+       ),
+     );
+   }
+ }
+
+ const amendmentsByOriginal = new Map();
+ for (const source of value.sources.filter(
+   (item) => item.kind === "amended-regulator-filing",
+ )) {
+   const amendments = amendmentsByOriginal.get(source.amendsSourceRef) ?? [];
+   amendments.push(source);
+   amendmentsByOriginal.set(source.amendsSourceRef, amendments);
+ }
+ const controllingAmendment = new Map();
+ for (const [originalId, amendments] of amendmentsByOriginal) {
+   const latest = amendments.toSorted(
+     (left, right) =>
+       Date.parse(right.publishedAt) - Date.parse(left.publishedAt) ||
+       right.id.localeCompare(left.id),
+   )[0];
+   controllingAmendment.set(originalId, latest.id);
+   for (const amendment of amendments) {
+     controllingAmendment.set(amendment.id, latest.id);
+   }
+ }
+ for (const [index, fact] of value.filedFacts.entries()) {
+   requireReferences(
+     [fact.issuerRef],
+     issuerSet,
+     `filedFacts.${index}.issuerRef`,
+     "Issuer reference",
+   );
+   requireReferences(
+     fact.sourceRefs,
+     sourceSet,
+     `filedFacts.${index}.sourceRefs`,
+     "Filed fact source reference",
+   );
+   const factSources = fact.sourceRefs.map((ref) => sourceById.get(ref)).filter(Boolean);
+   if (
+     factSources.some(
+       (source) =>
+         !authoritativeKinds.has(source.kind) ||
+         source.issuerRef !== fact.issuerRef,
+     )
+   ) {
+     findings.push(
+       finding(
+         "invalid_filed_fact_source",
+         `filedFacts.${index}.sourceRefs`,
+         "Filed facts require canonical regulator, exchange, or issuer disclosure sources for the same issuer; news and market context are context only.",
+       ),
+     );
+   }
+   if (
+     factSources.some(
+       (source) =>
+         controllingAmendment.has(source.id) &&
+         !fact.sourceRefs.includes(controllingAmendment.get(source.id)),
+     )
+   ) {
+     findings.push(
+       finding(
+         "superseded_filing_evidence",
+         `filedFacts.${index}.sourceRefs`,
+         "A fact from an amended filing lineage must cite the controlling amendment rather than the superseded original alone.",
+       ),
+     );
+   }
+   if (
+     fact.period !== null &&
+     !factSources.some((source) => samePeriod(source.reportingPeriod, fact.period))
+   ) {
+     findings.push(
+       finding(
+         "fact_period_source_mismatch",
+         `filedFacts.${index}.period`,
+         "A dated filed fact must match the reporting period of at least one authoritative source.",
+       ),
+     );
+   }
+   const exactDate =
+     fact.valueType === "date" &&
+     typeof fact.value === "string" &&
+     /^\d{4}-\d{2}-\d{2}$/u.test(fact.value) &&
+     !Number.isNaN(Date.parse(`${fact.value}T00:00:00Z`)) &&
+     new Date(`${fact.value}T00:00:00Z`).toISOString().slice(0, 10) === fact.value;
+   const coherentValue =
+     (fact.valueType === "number" && typeof fact.value === "number") ||
+     (fact.valueType === "text" && typeof fact.value === "string") ||
+     exactDate ||
+     (fact.valueType === "boolean" && typeof fact.value === "boolean") ||
+     (fact.valueType === "not-reported" && fact.value === null);
+   if (!coherentValue) {
+     findings.push(
+       finding(
+         "incoherent_fact_value",
+         `filedFacts.${index}.value`,
+         "The filed fact value must match its declared value type.",
+       ),
+     );
+   }
+   if (
+     fact.category === "reported-figure" &&
+     (fact.valueType !== "number" ||
+       fact.unit === null ||
+       fact.currency === null ||
+       fact.period === null ||
+       fact.accountingBasis === null)
+   ) {
+     findings.push(
+       finding(
+         "incomplete_reported_figure",
+         `filedFacts.${index}`,
+         "Reported figures require a numeric value, unit, currency, period, and accounting basis.",
+       ),
+     );
+   }
+   if (
+     fact.evidenceState === "confirmed" &&
+     (fact.confidence === "low" ||
+       factSources.some((source) => source.freshness !== "current"))
+   ) {
+     findings.push(
+       finding(
+         "unsupported_confirmed_fact",
+         `filedFacts.${index}.evidenceState`,
+         "Confirmed filed facts require non-low confidence and current authoritative evidence.",
+       ),
+     );
+   }
+ }
+
+ for (const [index, comparison] of value.comparisons.entries()) {
+   requireReferences(
+     [comparison.issuerRef],
+     issuerSet,
+     `comparisons.${index}.issuerRef`,
+     "Issuer reference",
+   );
+   requireReferences(
+     [comparison.baselineFactRef, comparison.currentFactRef],
+     factSet,
+     `comparisons.${index}`,
+     "Filed fact reference",
+   );
+   const baseline = factById.get(comparison.baselineFactRef);
+   const current = factById.get(comparison.currentFactRef);
+   if (!baseline || !current) continue;
+   if (
+     baseline.id === current.id ||
+     baseline.issuerRef !== comparison.issuerRef ||
+     current.issuerRef !== comparison.issuerRef
+   ) {
+     findings.push(
+       finding(
+         "comparison_issuer_mismatch",
+         `comparisons.${index}.issuerRef`,
+         "Baseline and current facts must be distinct and belong to the comparison issuer.",
+       ),
+     );
+   }
+   if (
+     !samePeriod(baseline.period, value.watch.baselinePeriod) ||
+     !samePeriod(current.period, value.watch.reviewPeriod)
+   ) {
+     findings.push(
+       finding(
+         "comparison_period_scope_mismatch",
+         `comparisons.${index}`,
+         "Comparison facts must map exactly to the declared baseline and review periods.",
+       ),
+     );
+   }
+   const dimensions = [
+     "period",
+     "unit",
+     "currency",
+     "accountingBasis",
+     "definition",
+     "amendmentLineage",
+   ];
+   const expectedStates = dimensions.map((dimension) => [
+     dimension,
+     expectedReconciliation(baseline, current, dimension),
+   ]);
+   for (const [dimension, expected] of expectedStates) {
+     if (comparison.reconciliation[dimension] !== expected) {
+       findings.push(
+         finding(
+           "reconciliation_state_mismatch",
+           `comparisons.${index}.reconciliation.${dimension}`,
+           `The ${dimension} reconciliation must reflect the referenced facts.`,
+         ),
+       );
+     }
+   }
+   const reconciled = expectedStates.every(([, state]) =>
+     ["matched", "not-applicable"].includes(state),
+   );
+   if (
+     (comparison.comparability === "comparable" && !reconciled) ||
+     (comparison.comparability !== "comparable" && reconciled)
+   ) {
+     findings.push(
+       finding(
+         "invalid_comparability",
+         `comparisons.${index}.comparability`,
+         "Comparable facts require reconciled period, unit, currency, accounting basis, definition, and amendment lineage; unresolved or mismatched facts must remain noncomparable or blocked.",
+       ),
+     );
+   }
+   const numericFacts =
+     baseline.valueType === "number" &&
+     current.valueType === "number" &&
+     typeof baseline.value === "number" &&
+     typeof current.value === "number";
+   if (comparison.comparability !== "comparable" && comparison.numericDelta !== null) {
+     findings.push(
+       finding(
+         "invented_numeric_delta",
+         `comparisons.${index}.numericDelta`,
+         "Noncomparable or blocked facts must not carry a numeric delta.",
+       ),
+     );
+   } else if (comparison.comparability === "comparable" && numericFacts) {
+     const expectedAbsolute = current.value - baseline.value;
+     const expectedPercent =
+       baseline.value === 0 ? null : (expectedAbsolute / baseline.value) * 100;
+     if (
+       comparison.numericDelta === null ||
+       !numbersEqual(comparison.numericDelta.absolute, expectedAbsolute) ||
+       (expectedPercent === null
+         ? comparison.numericDelta.percent !== null
+         : comparison.numericDelta.percent === null ||
+           !numbersEqual(comparison.numericDelta.percent, expectedPercent))
+     ) {
+       findings.push(
+         finding(
+           "numeric_delta_mismatch",
+           `comparisons.${index}.numericDelta`,
+           "Comparable numeric deltas must equal current minus baseline and the corresponding baseline percentage.",
+         ),
+       );
+     }
+   } else if (comparison.numericDelta !== null) {
+     findings.push(
+       finding(
+         "unsupported_numeric_delta",
+         `comparisons.${index}.numericDelta`,
+         "Only comparable numeric facts may carry a numeric delta.",
+       ),
+     );
+   }
+   if (
+     comparison.materiality.policyRef !== value.watch.materialityPolicy.id ||
+     comparison.materiality.thresholdRef === null ||
+     !thresholdSet.has(comparison.materiality.thresholdRef)
+   ) {
+     findings.push(
+       finding(
+         "invalid_materiality_policy",
+         `comparisons.${index}.materiality`,
+         "Every materiality result must reference the declared owner policy and an exact threshold.",
+       ),
+     );
+   } else {
+     const threshold = thresholdById.get(comparison.materiality.thresholdRef);
+     if (threshold.category !== current.category) {
+       findings.push(
+         finding(
+           "invalid_materiality_policy",
+           `comparisons.${index}.materiality.thresholdRef`,
+           "The referenced materiality threshold must apply to the compared fact category.",
+         ),
+       );
+     }
+     if (
+       comparison.comparability === "comparable" &&
+       ((threshold.measure === "absolute-change" &&
+         (threshold.unit !== current.unit ||
+           threshold.currency !== current.currency)) ||
+         (threshold.measure === "percent-change" &&
+           (threshold.unit !== "percent" || threshold.currency !== null)))
+     ) {
+       findings.push(
+         finding(
+           "invalid_materiality_policy",
+           `comparisons.${index}.materiality.thresholdRef`,
+           "Absolute thresholds must match the fact unit and currency; percent thresholds must use the percent unit and no currency.",
+         ),
+       );
+     }
+     const numericThreshold = threshold.measure !== "qualitative";
+     const observedNumericMeasure =
+       numericFacts &&
+       comparison.numericDelta !== null &&
+       (threshold.measure !== "percent-change" ||
+         comparison.numericDelta.percent !== null);
+     if (
+       numericThreshold &&
+       comparison.comparability === "comparable" &&
+       !observedNumericMeasure
+     ) {
+       findings.push(
+         finding(
+           "unresolved_numeric_materiality",
+           `comparisons.${index}.materiality`,
+           "Numeric materiality requires comparable numeric facts and a calculable observed measure; otherwise materiality must remain unresolved.",
+         ),
+       );
+       if (comparison.materiality.state !== "unresolved") {
+         findings.push(
+           finding(
+             "unsupported_materiality_state",
+             `comparisons.${index}.materiality.state`,
+             "A numeric threshold without a calculable observed measure cannot claim material or not-material.",
+           ),
+         );
+       }
+     }
+     if (
+       numericThreshold &&
+       observedNumericMeasure &&
+       comparison.comparability === "comparable" &&
+       comparison.numericDelta !== null
+     ) {
+       const observed =
+         threshold.measure === "absolute-change"
+           ? Math.abs(comparison.numericDelta.absolute)
+           : Math.abs(comparison.numericDelta.percent ?? Number.NaN);
+       const expectedMaterial = observed >= threshold.value;
+       if (
+         (expectedMaterial && comparison.materiality.state !== "material") ||
+         (!expectedMaterial && comparison.materiality.state !== "not-material")
+       ) {
+         findings.push(
+           finding(
+             "materiality_threshold_mismatch",
+             `comparisons.${index}.materiality.state`,
+             "Numeric materiality must follow the exact owner-declared threshold.",
+           ),
+         );
+       }
+     }
+   }
+   if (
+     comparison.comparability !== "comparable" &&
+     comparison.materiality.state !== "unresolved"
+   ) {
+     findings.push(
+       finding(
+         "unsupported_materiality_state",
+         `comparisons.${index}.materiality.state`,
+         "Noncomparable or blocked changes must keep materiality unresolved.",
+       ),
+     );
+   }
+ }
+
+ for (const [index, item] of value.interpretations.entries()) {
+   requireReferences(
+     [item.issuerRef],
+     issuerSet,
+     `interpretations.${index}.issuerRef`,
+     "Issuer reference",
+   );
+   requireReferences(
+     item.factRefs,
+     factSet,
+     `interpretations.${index}.factRefs`,
+     "Filed fact reference",
+   );
+   requireReferences(
+     item.comparisonRefs,
+     comparisonSet,
+     `interpretations.${index}.comparisonRefs`,
+     "Comparison reference",
+   );
+   requireReferences(
+     item.sourceRefs,
+     sourceSet,
+     `interpretations.${index}.sourceRefs`,
+     "Context source reference",
+   );
+   if (
+     item.factRefs.some((ref) => factById.get(ref)?.issuerRef !== item.issuerRef) ||
+     item.comparisonRefs.some(
+       (ref) => comparisonById.get(ref)?.issuerRef !== item.issuerRef,
+     ) ||
+     item.sourceRefs.some((ref) => sourceById.get(ref)?.issuerRef !== item.issuerRef)
+   ) {
+     findings.push(
+       finding(
+         "interpretation_issuer_mismatch",
+         `interpretations.${index}`,
+         "Interpretation evidence must belong to the named issuer.",
+       ),
+     );
+   }
+ }
+
+ for (const [index, question] of value.reviewQuestions.entries()) {
+   requireReferences(
+     question.issuerRefs,
+     issuerSet,
+     `reviewQuestions.${index}.issuerRefs`,
+     "Issuer reference",
+   );
+   requireReferences(
+     question.factRefs,
+     factSet,
+     `reviewQuestions.${index}.factRefs`,
+     "Filed fact reference",
+   );
+   requireReferences(
+     question.comparisonRefs,
+     comparisonSet,
+     `reviewQuestions.${index}.comparisonRefs`,
+     "Comparison reference",
+   );
+   const questionIssuerSet = new Set(question.issuerRefs);
+   if (
+     question.factRefs.some(
+       (ref) => !questionIssuerSet.has(factById.get(ref)?.issuerRef),
+     ) ||
+     question.comparisonRefs.some(
+       (ref) => !questionIssuerSet.has(comparisonById.get(ref)?.issuerRef),
+     )
+   ) {
+     findings.push(
+       finding(
+         "review_question_issuer_mismatch",
+         `reviewQuestions.${index}`,
+         "Review-question facts and comparisons must belong to one of the question's named issuers.",
+       ),
+     );
+   }
+   if (question.owner !== value.watch.owner) {
+     findings.push(
+       finding(
+         "owner_mismatch",
+         `reviewQuestions.${index}.owner`,
+         "Review questions must remain assigned to the declared watch owner.",
+       ),
+     );
+   }
+   if (
+     (question.status === "resolved" && !question.resolution?.trim()) ||
+     (question.status === "open" && question.resolution !== null)
+   ) {
+     findings.push(
+       finding(
+         "incoherent_question_state",
+         `reviewQuestions.${index}.resolution`,
+         "Resolved questions require a resolution and open questions must leave it null.",
+       ),
+     );
+   }
+ }
+
+ for (const [index, item] of value.gapsAndBlockers.entries()) {
+   requireReferences(
+     item.issuerRefs,
+     issuerSet,
+     `gapsAndBlockers.${index}.issuerRefs`,
+     "Issuer reference",
+   );
+   requireReferences(
+     item.sourceRefs,
+     sourceSet,
+     `gapsAndBlockers.${index}.sourceRefs`,
+     "Source reference",
+   );
+   requireReferences(
+     item.factRefs,
+     factSet,
+     `gapsAndBlockers.${index}.factRefs`,
+     "Filed fact reference",
+   );
+   requireReferences(
+     item.comparisonRefs,
+     comparisonSet,
+     `gapsAndBlockers.${index}.comparisonRefs`,
+     "Comparison reference",
+   );
+   const itemIssuerSet = new Set(item.issuerRefs);
+   if (
+     item.sourceRefs.some(
+       (ref) => !itemIssuerSet.has(sourceById.get(ref)?.issuerRef),
+     ) ||
+     item.factRefs.some(
+       (ref) => !itemIssuerSet.has(factById.get(ref)?.issuerRef),
+     ) ||
+     item.comparisonRefs.some(
+       (ref) => !itemIssuerSet.has(comparisonById.get(ref)?.issuerRef),
+     )
+   ) {
+     findings.push(
+       finding(
+         "gap_issuer_mismatch",
+         `gapsAndBlockers.${index}`,
+         "Gap and blocker evidence must belong to one of the record's named issuers.",
+       ),
+     );
+   }
+ }
+
+ if (
+   value.watch.materialityPolicy.owner !== value.watch.owner ||
+   value.handoff.owner !== value.watch.owner
+ ) {
+   findings.push(
+     finding(
+       "owner_mismatch",
+       "handoff.owner",
+       "The watch, materiality policy, review questions, and handoff must name the same accountable human or team owner.",
+     ),
+   );
+ }
+ if (
+   /^(?:the )?(?:agent|assistant|claw)$/iu.test(value.watch.owner.trim()) ||
+   /\b(?:ai|bot|gpt|language model|public company watcher)\b/iu.test(value.watch.owner)
+ ) {
+   findings.push(
+     finding(
+       "agent_owned_authority",
+       "watch.owner",
+       "Disclosure review, materiality, and handoff authority must remain with a named human or team.",
+     ),
+   );
+ }
+ if (
+   value.handoff.classification !== value.watch.outputClassification ||
+   value.handoff.destination !== value.watch.destination ||
+   !isSafePackagePath(value.handoff.destination) ||
+   !value.handoff.destination.startsWith("outputs/")
+ ) {
+   findings.push(
+     finding(
+       "private_handoff_mismatch",
+       "handoff",
+       "The handoff must preserve the watch's private classification and portable outputs/ destination.",
+     ),
+   );
+ }
+
+ requireCompleteReferences(value.handoff.issuerRefs, issuerIds, "handoff.issuerRefs", "Issuer");
+ requireCompleteReferences(value.handoff.sourceRefs, sourceIds, "handoff.sourceRefs", "Source");
+ requireCompleteReferences(value.handoff.factRefs, factIds, "handoff.factRefs", "Filed fact");
+ requireCompleteReferences(
+   value.handoff.comparisonRefs,
+   comparisonIds,
+   "handoff.comparisonRefs",
+   "Comparison",
+ );
+ requireCompleteReferences(
+   value.handoff.interpretationRefs,
+   interpretationIds,
+   "handoff.interpretationRefs",
+   "Interpretation",
+ );
+ requireCompleteReferences(
+   value.handoff.reviewQuestionRefs,
+   questionIds,
+   "handoff.reviewQuestionRefs",
+   "Review question",
+ );
+ requireCompleteReferences(
+   value.handoff.gapAndBlockerRefs,
+   gapIds,
+   "handoff.gapAndBlockerRefs",
+   "Gap or blocker",
+ );
+
+ const openBlockerIds = value.gapsAndBlockers
+   .filter((item) => item.kind === "blocker" && item.status === "open")
+   .map((item) => item.id);
+ requireReferences(
+   value.handoff.blockerRefs,
+   gapSet,
+   "handoff.blockerRefs",
+   "Blocker reference",
+ );
+ if (
+   value.handoff.blockerRefs.some(
+     (ref) =>
+       !openBlockerIds.includes(ref),
+   )
+ ) {
+   findings.push(
+     finding(
+       "resolved_or_nonblocking_reference",
+       "handoff.blockerRefs",
+       "Only open blocker records may appear as handoff blockers.",
+     ),
+   );
+ }
+ if (
+   value.handoff.state === "blocked" &&
+   (openBlockerIds.length === 0 ||
+     openBlockerIds.some((id) => !value.handoff.blockerRefs.includes(id)))
+ ) {
+   findings.push(
+     finding(
+       "incomplete_blocked_handoff",
+       "handoff.blockerRefs",
+       "Blocked handoffs require every open blocker reference.",
+     ),
+   );
+ }
+ if (
+   value.handoff.state === "ready-for-owner-review" &&
+   (value.watch.state !== "ready" ||
+     value.reviewQuestions.some((item) => item.status !== "resolved") ||
+     value.gapsAndBlockers.some((item) => item.status !== "resolved") ||
+     value.filedFacts.some((item) => item.evidenceState !== "confirmed") ||
+     value.comparisons.some(
+       (item) =>
+         item.comparability !== "comparable" ||
+         item.materiality.state === "unresolved",
+     ) ||
+     value.handoff.blockerRefs.length > 0)
+ ) {
+   findings.push(
+     finding(
+       "premature_ready_state",
+       "handoff.state",
+       "Ready handoffs require a ready watch, confirmed facts, comparable and resolved materiality, resolved questions and gaps, complete references, and no blockers.",
+     ),
+   );
+ }
+ if (value.handoff.state === "ready-for-owner-review") {
+   for (const issuerId of issuerIds) {
+     if (
+       !value.sources.some((item) => item.issuerRef === issuerId) ||
+       !value.filedFacts.some((item) => item.issuerRef === issuerId) ||
+       !value.comparisons.some((item) => item.issuerRef === issuerId)
+     ) {
+       findings.push(
+         finding(
+           "missing_issuer_coverage",
+           "issuers",
+           `Ready disclosure ledgers require source, filed-fact, and comparison coverage for issuer ${JSON.stringify(issuerId)}.`,
+         ),
+       );
+     }
+   }
+ }
+ const expectedHandoffState =
+   value.watch.state === "ready"
+     ? "ready-for-owner-review"
+     : value.watch.state;
+ if (value.handoff.state !== expectedHandoffState) {
+   findings.push(
+     finding(
+       "inconsistent_ready_state",
+       "handoff.state",
+       "Watch and handoff states must remain consistent.",
+     ),
+   );
+ }
+
+ for (const action of requiredActions) {
+   if (
+     !value.blockedActions.includes(action) ||
+     !value.handoff.prohibitedActions.includes(action)
+   ) {
+     findings.push(
+       finding(
+         "missing_authority_gate",
+         "blockedActions",
+         `Company disclosure ledgers must keep ${action} explicitly prohibited.`,
+       ),
+     );
+   }
+ }
+
+ const narrativeTexts = [
+   ...value.issuers.flatMap((item) => item.watchQuestions),
+   ...value.filedFacts.flatMap((item) => [
+     item.label,
+     typeof item.value === "string" ? item.value : "",
+     item.definition,
+   ]),
+   ...value.comparisons.flatMap((item) => [
+     item.changeSummary,
+     item.reconciliation.notes,
+     item.materiality.rationale,
+   ]),
+   ...value.interpretations.flatMap((item) => [
+     item.summary,
+     item.uncertainty,
+   ]),
+   ...value.reviewQuestions.flatMap((item) => [
+     item.question,
+     item.resolution ?? "",
+   ]),
+   ...value.gapsAndBlockers.map((item) => item.description),
+ ];
+ const prohibitedNarrative =
+   /\b(?:buy|sell|hold|trade|place (?:a|an|the)? ?(?:trade|order)|connect (?:a|the)? ?(?:broker|brokerage|trading)? ?account|contact (?:the )?(?:issuer|investor relations|ir team)|subscribe|purchase (?:a )?subscription|submit (?:(?:a|an|the) )?(?:amended )?filing|amend (?:a|the)? ?filing|publish|communicate publicly|disclose (?:the )?private|recommend(?:s|ed|ing)? (?:buying|selling|holding|an? allocation)|(?:buy|sell|hold|allocation) recommendation|(?:tax|legal|investment|accounting) advice|nonpublic information|undisclosed intent|secretly intends?|infer(?:s|red|ring)? (?:issuer |management )?intent|fabricat(?:e|ed|ing)|invent(?:ed|ing)? evidence)\b/iu;
+ const negation =
+   /\b(?:do not|does not|did not|not|no|never|without|cannot|can't|must not|mustn't|should not|shouldn't|will not|won't)\b/iu;
+ if (
+   narrativeTexts.some((text) =>
+     text
+       .replaceAll("’", "'")
+       .split(/[.!?]\s*|\s*[;:]\s*|\s*,?\s*\b(?:but|however|yet)\b\s*/iu)
+       .some(
+         (clause) =>
+           prohibitedNarrative.test(clause) && !negation.test(clause),
+       ),
+   )
+ ) {
+   findings.push(
+     finding(
+       "unsafe_narrative_content",
+       "interpretations",
+       "Disclosure artifacts must not instruct transactions, account connection, issuer contact, subscriptions, filings, publication, private disclosure, professional advice, nonpublic or intent inference, or fabrication.",
+     ),
+   );
+ }
+
+ return findings;
+}
+
 function stockPortfolioFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const positionIds = value.positions.map((item) => item.id);
@@ -14212,6 +15306,7 @@ const validators = {
   "pet-care-coordinator": petCareFindings,
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
   "professional-networking-followup": professionalNetworkingFindings,
+  "public-company-watcher": companyDisclosureLedgerFindings,
   "resume-portfolio-curator": resumePortfolioFindings,
   "project-manager": projectFindings,
   "product-manager": productFindings,

@@ -133,6 +133,11 @@
         "difference": "Public Safety Monitor tracks official alerts and public conditions; Media Evidence Reviewer processes consented private media locally and controls identity, intent, redaction, retention, and disclosure."
       },
       {
+        "id": "public-company-watcher",
+        "overlap": "Both preserve exact source identity, chronology, evidence state, uncertainty, private handoff completeness, and strict limits on unsupported intent inference or public disclosure.",
+        "difference": "Public Company Watcher reconciles canonical regulator and issuer disclosures, amendments, filed facts, accounting comparability, and owner materiality; Media Evidence Reviewer analyzes authorized local audio or video with timestamp, consent, redaction, retention, transcript-confidence, and audiovisual-inference controls."
+      },
+      {
         "id": "content-operations",
         "overlap": "Both may review multimedia material, evidence, approvals, accessibility, and publication boundaries.",
         "difference": "Content Operations manages editorial assets and publishing workflows; Media Evidence Reviewer performs bounded evidentiary analysis and explicitly prohibits publication or distribution of reviewed media."

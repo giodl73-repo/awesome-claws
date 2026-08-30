@@ -80,7 +80,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Product manager](claws/product-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Professional networking follow-up](claws/professional-networking-followup) | @giodl73-repo; last verified 2026-08-28 |
 | [Project manager](claws/project-manager) | @giodl73-repo; last verified 2026-08-19 |
-| [Public company watcher](claws/public-company-watcher) | @giodl73-repo; last verified 2026-08-19 |
+| [Public company watcher](claws/public-company-watcher) | @giodl73-repo; last verified 2026-08-30 |
 | [Public safety monitor](claws/public-safety-monitor) | @giodl73-repo; last verified 2026-08-19 |
 | [Purchase researcher](claws/purchase-researcher) | @giodl73-repo; last verified 2026-08-26 |
 | [Quality assurance lead](claws/quality-assurance-lead) | @giodl73-repo; last verified 2026-08-19 |
@@ -413,7 +413,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | Coordinates evidence-bound ornamental pond and waterfall planning, installation readiness, recirculating-system care, aquatic-habitat monitoring, and explicitly approved specialist appointments. |
 | [Presentation producer](claws/presentation-producer) | Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review. |
 | [Professional networking follow-up](claws/professional-networking-followup) | Organizes owner-supplied professional contacts, meeting notes, event context, introduction requests, follow-up drafts, relationship tags, and reminder questions into a private networking ledger without sending messages, making introductions, scheduling meetings, changing accounts, scraping contacts, committing referrals, or giving career, legal, financial, recruiting, or sales advice. |
-| [Public company watcher](claws/public-company-watcher) | Tracks material public-company disclosures from authoritative sources and produces a private, timestamped change brief without trading or investor-relations contact. |
+| [Public company watcher](claws/public-company-watcher) | Reconciles filed public-company disclosures against a declared issuer baseline and produces a private, owner-materiality delta ledger without holdings, quotes, portfolio analysis, advice, trading, issuer contact, or publication. |
 | [Public safety monitor](claws/public-safety-monitor) | Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services. |
 | [Purchase researcher](claws/purchase-researcher) | Compares owner-approved product candidates, constraints, source quality, warranty, return, shipping, availability, and fit evidence without buying, opening credit, contacting sellers, changing carts, or claiming an unsupported best choice. |
 | [Recruiting coordinator](claws/recruiting-coordinator) | Coordinates candidate logistics with clear handoffs, consistency, and privacy. |
@@ -491,7 +491,7 @@ Categories come directly from the catalog entry.
 | [Financial analyst](claws/financial-analyst) | X3; Builds transparent financial analysis without hiding assumptions or uncertainty. |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | X3; Reviews authorized video and audio through timestamped frames and transcripts while preserving ambiguity and evidentiary boundaries. |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | X3; Coordinates blinded model-output evaluation, rubric calibration, and disagreement adjudication without selecting or deploying a model. |
-| [Public company watcher](claws/public-company-watcher) | X3; Tracks material public-company disclosures from authoritative sources and produces a private, timestamped change brief without trading or investor-relations contact. |
+| [Public company watcher](claws/public-company-watcher) | X3; Reconciles filed public-company disclosures against a declared issuer baseline and produces a private, owner-materiality delta ledger without holdings, quotes, portfolio analysis, advice, trading, issuer contact, or publication. |
 | [Research briefing](claws/research-briefing) | X4; Synthesizes supplied sources into concise, source-grounded briefs for time-sensitive decisions. |
 | [Research monitor](claws/research-monitor) | X3; Runs a bounded source watch and produces a private evidence digest for a named decision area. |
 | [Research scout](claws/research-scout) | X3; Monitors public scholarly sources for decision-relevant evidence changes, including new studies, corrections, retractions, and trial updates. |
