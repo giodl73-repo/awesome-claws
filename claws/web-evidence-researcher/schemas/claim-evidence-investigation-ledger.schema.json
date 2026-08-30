@@ -1,0 +1,809 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/claim-evidence-investigation-ledger.schema.json",
+  "title": "Web claim-evidence investigation ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "investigation",
+    "sources",
+    "hypotheses",
+    "claims",
+    "evidence",
+    "conflicts",
+    "reviewQuestions",
+    "gapsAndBlockers",
+    "ownerReview",
+    "blockedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.claimEvidenceInvestigationLedger.v1"
+    },
+    "investigation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "question",
+        "decision",
+        "decisionOwner",
+        "classification",
+        "destination",
+        "scope",
+        "asOf",
+        "run",
+        "authorities",
+        "queries",
+        "freshnessPolicy",
+        "state"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^investigation-[a-z0-9-]+$"
+        },
+        "question": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "decision": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "decisionOwner": {
+          "$ref": "#/$defs/text"
+        },
+        "classification": {
+          "const": "private"
+        },
+        "destination": {
+          "$ref": "#/$defs/outputPath"
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["included", "excluded"],
+          "properties": {
+            "included": {
+              "$ref": "#/$defs/textList"
+            },
+            "excluded": {
+              "$ref": "#/$defs/textList"
+            }
+          }
+        },
+        "asOf": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "run": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "startedAt", "completedAt", "asOf"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^run-[a-z0-9-]+$"
+            },
+            "startedAt": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "completedAt": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "asOf": {
+              "$ref": "#/$defs/timestamp"
+            }
+          }
+        },
+        "authorities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/authority"
+          }
+        },
+        "queries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/query"
+          }
+        },
+        "freshnessPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["maxAgeHours", "recheckOn"],
+          "properties": {
+            "maxAgeHours": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 720
+            },
+            "recheckOn": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": ["source-age", "claim-conflict", "owner-request"]
+              }
+            }
+          }
+        },
+        "state": {
+          "enum": ["draft", "blocked", "ready"]
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "hypotheses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/hypothesis"
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/conflict"
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reviewQuestion"
+      }
+    },
+    "gapsAndBlockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gap"
+      }
+    },
+    "ownerReview": {
+      "$ref": "#/$defs/ownerReview"
+    },
+    "blockedActions": {
+      "$ref": "#/$defs/prohibitedActions"
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "boundedText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 800
+    },
+    "textList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "outputPath": {
+      "type": "string",
+      "pattern": "^outputs/[A-Za-z0-9._/-]+$"
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "domains", "sourceTypes", "ownerApproved"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^authority-[a-z0-9-]+$"
+        },
+        "name": {
+          "$ref": "#/$defs/text"
+        },
+        "domains": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9.-]+$"
+          }
+        },
+        "sourceTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "technical-standard",
+              "implementation-guide",
+              "vendor-document",
+              "official-notice",
+              "independent-analysis"
+            ]
+          }
+        },
+        "ownerApproved": {
+          "const": true
+        }
+      }
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "authorityRef", "query", "executedAt", "resultSourceRefs"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^query-[a-z0-9-]+$"
+        },
+        "authorityRef": {
+          "type": "string",
+          "pattern": "^authority-[a-z0-9-]+$"
+        },
+        "query": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "executedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "resultSourceRefs": {
+          "$ref": "#/$defs/possiblyEmptySourceRefs"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "authorityRef",
+        "sourceType",
+        "publisher",
+        "canonicalKey",
+        "canonicalUrl",
+        "title",
+        "publishedAt",
+        "updatedAt",
+        "retrievedAt",
+        "freshness",
+        "recheckState",
+        "queryRefs",
+        "independenceKey",
+        "derivation",
+        "derivedFromSourceRefs",
+        "scope"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^source-[a-z0-9-]+$"
+        },
+        "authorityRef": {
+          "type": "string",
+          "pattern": "^authority-[a-z0-9-]+$"
+        },
+        "sourceType": {
+          "enum": [
+            "technical-standard",
+            "implementation-guide",
+            "vendor-document",
+            "official-notice",
+            "independent-analysis"
+          ]
+        },
+        "publisher": {
+          "$ref": "#/$defs/text"
+        },
+        "canonicalKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,160}$"
+        },
+        "canonicalUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "publishedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "retrievedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "freshness": {
+          "enum": ["current", "stale"]
+        },
+        "recheckState": {
+          "enum": ["current", "recheck-required"]
+        },
+        "queryRefs": {
+          "$ref": "#/$defs/queryRefs"
+        },
+        "independenceKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,160}$"
+        },
+        "derivation": {
+          "enum": ["primary", "independent", "derived", "syndicated"]
+        },
+        "derivedFromSourceRefs": {
+          "$ref": "#/$defs/possiblyEmptySourceRefs"
+        },
+        "scope": {
+          "$ref": "#/$defs/boundedText"
+        }
+      }
+    },
+    "hypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "claimRefs", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^hypothesis-[a-z0-9-]+$"
+        },
+        "statement": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "claimRefs": {
+          "$ref": "#/$defs/claimRefs"
+        },
+        "status": {
+          "enum": ["resolved", "unresolved"]
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "hypothesisRef",
+        "type",
+        "statement",
+        "evidenceRefs",
+        "assessment",
+        "corroboration",
+        "decisionImplication",
+        "confidence",
+        "uncertainty",
+        "limitations",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^claim-[a-z0-9-]+$"
+        },
+        "hypothesisRef": {
+          "type": "string",
+          "pattern": "^hypothesis-[a-z0-9-]+$"
+        },
+        "type": {
+          "enum": ["capability", "requirement", "compatibility", "scope", "absence"]
+        },
+        "statement": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/evidenceRefs"
+        },
+        "assessment": {
+          "enum": ["supported", "refuted", "mixed", "context-only", "unknown"]
+        },
+        "corroboration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["requiredIndependentSources", "independentEvidenceRefs"],
+          "properties": {
+            "requiredIndependentSources": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "independentEvidenceRefs": {
+              "$ref": "#/$defs/possiblyEmptyEvidenceRefs"
+            }
+          }
+        },
+        "decisionImplication": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "confidence": {
+          "enum": ["high", "moderate", "low", "insufficient"]
+        },
+        "uncertainty": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "limitations": {
+          "$ref": "#/$defs/textList"
+        },
+        "status": {
+          "enum": ["resolved", "unresolved"]
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "claimRef",
+        "sourceRef",
+        "type",
+        "stance",
+        "excerpt",
+        "confidence",
+        "limitation"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^evidence-[a-z0-9-]+$"
+        },
+        "claimRef": {
+          "type": "string",
+          "pattern": "^claim-[a-z0-9-]+$"
+        },
+        "sourceRef": {
+          "type": "string",
+          "pattern": "^source-[a-z0-9-]+$"
+        },
+        "type": {
+          "enum": ["direct-quote", "bounded-excerpt", "source-context"]
+        },
+        "stance": {
+          "enum": ["supports", "refutes", "context", "unknown"]
+        },
+        "excerpt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600
+        },
+        "confidence": {
+          "enum": ["high", "moderate", "low", "insufficient"]
+        },
+        "limitation": {
+          "$ref": "#/$defs/boundedText"
+        }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "claimRefs", "evidenceRefs", "description", "owner", "status", "resolution"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^conflict-[a-z0-9-]+$"
+        },
+        "claimRefs": {
+          "$ref": "#/$defs/claimRefs"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/evidenceRefs"
+        },
+        "description": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "status": {
+          "enum": ["open", "resolved"]
+        },
+        "resolution": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "reviewQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "question", "owner", "claimRefs", "evidenceRefs", "status", "resolution"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^question-[a-z0-9-]+$"
+        },
+        "question": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "claimRefs": {
+          "$ref": "#/$defs/claimRefs"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/evidenceRefs"
+        },
+        "status": {
+          "enum": ["open", "resolved"]
+        },
+        "resolution": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "description", "owner", "claimRefs", "evidenceRefs", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^gap-[a-z0-9-]+$|^blocker-[a-z0-9-]+$"
+        },
+        "kind": {
+          "enum": ["gap", "blocker"]
+        },
+        "description": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "claimRefs": {
+          "$ref": "#/$defs/possiblyEmptyClaimRefs"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/possiblyEmptyEvidenceRefs"
+        },
+        "status": {
+          "enum": ["open", "resolved"]
+        }
+      }
+    },
+    "ownerReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "reviewedAt", "claimRefs", "questionRefs", "gapAndBlockerRefs", "status", "resolution"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^owner-review-[a-z0-9-]+$"
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "reviewedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "claimRefs": {
+          "$ref": "#/$defs/claimRefs"
+        },
+        "questionRefs": {
+          "$ref": "#/$defs/possiblyEmptyQuestionRefs"
+        },
+        "gapAndBlockerRefs": {
+          "$ref": "#/$defs/possiblyEmptyGapRefs"
+        },
+        "status": {
+          "enum": ["pending", "completed"]
+        },
+        "resolution": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "classification",
+        "destination",
+        "sourceRefs",
+        "hypothesisRefs",
+        "claimRefs",
+        "evidenceRefs",
+        "conflictRefs",
+        "questionRefs",
+        "gapAndBlockerRefs",
+        "blockerRefs",
+        "ownerReviewRef",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": {
+          "enum": ["draft", "blocked", "ready-for-owner-review"]
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "classification": {
+          "const": "private"
+        },
+        "destination": {
+          "$ref": "#/$defs/outputPath"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "hypothesisRefs": {
+          "$ref": "#/$defs/hypothesisRefs"
+        },
+        "claimRefs": {
+          "$ref": "#/$defs/claimRefs"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/evidenceRefs"
+        },
+        "conflictRefs": {
+          "$ref": "#/$defs/possiblyEmptyConflictRefs"
+        },
+        "questionRefs": {
+          "$ref": "#/$defs/possiblyEmptyQuestionRefs"
+        },
+        "gapAndBlockerRefs": {
+          "$ref": "#/$defs/possiblyEmptyGapRefs"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/possiblyEmptyBlockerRefs"
+        },
+        "ownerReviewRef": {
+          "type": "string",
+          "pattern": "^owner-review-[a-z0-9-]+$"
+        },
+        "prohibitedActions": {
+          "$ref": "#/$defs/prohibitedActions"
+        }
+      }
+    },
+    "sourceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^source-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptySourceRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^source-[a-z0-9-]+$"
+      }
+    },
+    "queryRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^query-[a-z0-9-]+$"
+      }
+    },
+    "hypothesisRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^hypothesis-[a-z0-9-]+$"
+      }
+    },
+    "claimRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^claim-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyClaimRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^claim-[a-z0-9-]+$"
+      }
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^evidence-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyEvidenceRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^evidence-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyConflictRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^conflict-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyQuestionRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^question-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyGapRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^gap-[a-z0-9-]+$|^blocker-[a-z0-9-]+$"
+      }
+    },
+    "possiblyEmptyBlockerRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^blocker-[a-z0-9-]+$"
+      }
+    },
+    "prohibitedActions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "bypass-access-controls",
+          "reproduce-restricted-content",
+          "publish-or-contact-externally",
+          "subscribe-or-change-accounts",
+          "disclose-credentials-or-sensitive-queries",
+          "fabricate-sources-or-claims",
+          "make-consensus-causal-legal-medical-or-financial-inference",
+          "change-decisions-or-actions-autonomously"
+        ]
+      }
+    }
+  }
+}

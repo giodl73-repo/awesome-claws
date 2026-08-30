@@ -56,6 +56,7 @@ const schemaNames = {
   "public-company-watcher": "company-disclosure-ledger.schema.json",
   "research-monitor": "topic-watch-delta-ledger.schema.json",
   "research-scout": "research-evidence-delta.schema.json",
+  "web-evidence-researcher": "claim-evidence-investigation-ledger.schema.json",
   "resume-portfolio-curator": "resume-portfolio.schema.json",
   "project-manager": "project-state.schema.json",
   "product-manager": "product-decision.schema.json",

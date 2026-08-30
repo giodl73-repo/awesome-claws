@@ -7,6 +7,5 @@ agent:
       - write
       - edit
       - tavily_search
-      - tavily_extract
     fs:
       workspaceOnly: true
