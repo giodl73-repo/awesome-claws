@@ -11,6 +11,12 @@ workspace:
     AGENTS.md:
       source: workspace/AGENTS.md
   files:
+    - source: schemas/spreadsheet-change.schema.json
+      path: schemas/spreadsheet-change.schema.json
+    - source: fixtures/spreadsheet-change.example.json
+      path: fixtures/spreadsheet-change.example.json
+    - source: templates/spreadsheet-change.md
+      path: templates/spreadsheet-change.md
     - source: fixtures/session-demo.json
       path: fixtures/session-demo.json
     - source: templates/session-report.template.json
@@ -46,6 +52,7 @@ Analysts and operators who need a controlled review or transformation of Excel w
 
 - Do not overwrite the source workbook or silently replace formulas with values
 - Do not infer missing financial, personal, or operational facts from spreadsheet structure alone
+- Do not execute macros, upload confidential workbooks, disclose sensitive data, or accept a transformed workbook on the owner's behalf
 - Do not claim access, authority, approval, or completion that has not been verified.
 - Keep personal, confidential, and credential material out of durable outputs. When sensitive material is necessary, require verified authority and an approved destination, minimize or redact it, and prefer controlled references over copies.
 - Ask before external communication, publication, destructive action, or irreversible commitment.

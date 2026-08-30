@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "awesomeClaws.spreadsheetChange.v1",
+  "workbook": {
+    "id": "workbook-revenue-scenarios",
+    "owner": "Finance planning lead",
+    "asOf": "2026-08-29T20:30:00Z",
+    "sourcePath": "inputs/revenue-model.xlsx",
+    "sourceSha256": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+    "outputPath": "outputs/revenue-model-scenario-review.xlsx",
+    "recalculationEngine": "Microsoft Excel desktop",
+    "sensitivity": "confidential",
+    "state": "ready-for-owner-review"
+  },
+  "sheets": [
+    { "id": "sheet-assumptions", "name": "Assumptions", "role": "source", "sourcePreserved": true, "formulaCountBefore": 18, "formulaCountAfter": 18 },
+    { "id": "sheet-forecast", "name": "Forecast", "role": "calculation", "sourcePreserved": true, "formulaCountBefore": 246, "formulaCountAfter": 246 },
+    { "id": "sheet-scenarios", "name": "Scenarios", "role": "scenario", "sourcePreserved": true, "formulaCountBefore": 0, "formulaCountAfter": 42 }
+  ],
+  "transformations": [
+    {
+      "id": "transform-add-scenario-sheet",
+      "kind": "add-sheet",
+      "targetSheetRef": "sheet-scenarios",
+      "inputRefs": ["sheet-assumptions", "sheet-forecast"],
+      "outputRange": "Scenarios!A1:H32",
+      "logic": "Add low, base, and high assumption inputs with formulas linking to preserved source cells.",
+      "formulaPolicy": "add-only",
+      "state": "verified"
+    },
+    {
+      "id": "transform-add-validation",
+      "kind": "add-validation",
+      "targetSheetRef": "sheet-scenarios",
+      "inputRefs": ["transform-add-scenario-sheet"],
+      "outputRange": "Scenarios!B4:B9",
+      "logic": "Restrict scenario selectors to Low, Base, or High.",
+      "formulaPolicy": "not-applicable",
+      "state": "verified"
+    },
+    {
+      "id": "transform-format-scenarios",
+      "kind": "format-range",
+      "targetSheetRef": "sheet-scenarios",
+      "inputRefs": ["transform-add-scenario-sheet"],
+      "outputRange": "Scenarios!A1:H32",
+      "logic": "Copy the existing workbook heading, input, percentage, currency, and output styles.",
+      "formulaPolicy": "preserve",
+      "state": "verified"
+    }
+  ],
+  "checks": [
+    { "id": "check-source-hash", "kind": "source-hash", "refs": ["workbook-revenue-scenarios"], "status": "passed", "details": "The source digest matches the intake record and the source path was not written." },
+    { "id": "check-formulas", "kind": "formula-preservation", "refs": ["sheet-assumptions", "sheet-forecast", "sheet-scenarios"], "status": "passed", "details": "All 264 source formulas remain formulas; 42 new scenario formulas were added." },
+    { "id": "check-recalculation", "kind": "recalculation", "refs": ["transform-add-scenario-sheet"], "status": "passed", "details": "Excel desktop recalculation completed without formula errors in the scenario outputs." },
+    { "id": "check-formatting", "kind": "formatting", "refs": ["transform-format-scenarios"], "status": "passed", "details": "Scenario cells use the workbook's existing styles without changing source-sheet formatting." },
+    { "id": "check-links", "kind": "links", "refs": ["sheet-forecast", "exception-external-link"], "status": "passed", "details": "The existing planning-workbook link is preserved and documented as an owner-accepted portability exception." },
+    { "id": "check-charts", "kind": "charts", "refs": ["workbook-revenue-scenarios"], "status": "not-applicable", "details": "The source workbook has no charts and the authorized transformation does not add one." },
+    { "id": "check-macros", "kind": "macros", "refs": ["workbook-revenue-scenarios"], "status": "not-applicable", "details": "The source is an XLSX workbook with no macro project; no macro was executed or added." },
+    { "id": "check-validation", "kind": "validation", "refs": ["transform-add-validation"], "status": "passed", "details": "The scenario selector rejects values other than Low, Base, and High." },
+    { "id": "check-output-open", "kind": "output-open", "refs": ["workbook-revenue-scenarios"], "status": "passed", "details": "The review copy opens successfully and retains workbook structure." }
+  ],
+  "exceptions": [
+    {
+      "id": "exception-external-link",
+      "severity": "medium",
+      "refs": ["sheet-forecast"],
+      "description": "One preserved source formula references the approved planning workbook and requires that workbook to remain reachable.",
+      "state": "accepted-by-owner"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-external-link",
+      "question": "Should the owner keep the existing planning-workbook link or replace it in a separately approved change?",
+      "reason": "The scenario copy preserves the source link, but portability depends on the linked workbook.",
+      "refs": ["exception-external-link", "sheet-forecast"]
+    }
+  ],
+  "blockedActions": ["overwrite-source", "replace-formulas-with-values", "execute-macros", "upload-workbook", "disclose-sensitive-data", "infer-missing-facts", "accept-output"],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Finance planning lead",
+    "transformationRefs": ["transform-add-scenario-sheet", "transform-add-validation", "transform-format-scenarios"],
+    "checkRefs": ["check-source-hash", "check-formulas", "check-recalculation", "check-formatting", "check-links", "check-charts", "check-macros", "check-validation", "check-output-open"],
+    "exceptionRefs": ["exception-external-link"],
+    "reviewQuestionRefs": ["question-external-link"],
+    "blockingRefs": [],
+    "prohibitedActions": ["overwrite-source", "replace-formulas-with-values", "execute-macros", "upload-workbook", "disclose-sensitive-data", "infer-missing-facts", "accept-output"]
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/spreadsheet-change.schema.json",
+  "title": "Spreadsheet change manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "workbook", "sheets", "transformations", "checks", "exceptions", "reviewQuestions", "blockedActions", "handoff"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.spreadsheetChange.v1" },
+    "workbook": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "asOf", "sourcePath", "sourceSha256", "outputPath", "recalculationEngine", "sensitivity", "state"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^workbook-[a-z0-9-]+$" },
+        "owner": { "$ref": "#/$defs/text" },
+        "asOf": { "type": "string", "format": "date-time" },
+        "sourcePath": { "type": "string", "pattern": "^inputs/[A-Za-z0-9._/-]+\\.xlsx$" },
+        "sourceSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "outputPath": { "type": "string", "pattern": "^outputs/[A-Za-z0-9._/-]+\\.xlsx$" },
+        "recalculationEngine": { "$ref": "#/$defs/text" },
+        "sensitivity": { "enum": ["internal", "confidential", "restricted"] },
+        "state": { "enum": ["draft", "blocked", "ready-for-owner-review"] }
+      }
+    },
+    "sheets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "role", "sourcePreserved", "formulaCountBefore", "formulaCountAfter"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^sheet-[a-z0-9-]+$" },
+          "name": { "$ref": "#/$defs/text" },
+          "role": { "enum": ["source", "calculation", "output", "scenario", "lookup", "other"] },
+          "sourcePreserved": { "type": "boolean" },
+          "formulaCountBefore": { "type": "integer", "minimum": 0 },
+          "formulaCountAfter": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "transformations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "targetSheetRef", "inputRefs", "outputRange", "logic", "formulaPolicy", "state"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^transform-[a-z0-9-]+$" },
+          "kind": { "enum": ["add-sheet", "add-formula", "copy-range", "format-range", "add-validation", "add-chart", "document-only"] },
+          "targetSheetRef": { "type": "string", "minLength": 1 },
+          "inputRefs": { "$ref": "#/$defs/refs" },
+          "outputRange": { "$ref": "#/$defs/text" },
+          "logic": { "$ref": "#/$defs/text" },
+          "formulaPolicy": { "enum": ["preserve", "add-only", "not-applicable"] },
+          "state": { "enum": ["planned", "applied", "verified", "blocked"] }
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "refs", "status", "details"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^check-[a-z0-9-]+$" },
+          "kind": { "enum": ["source-hash", "formula-preservation", "recalculation", "formatting", "links", "charts", "macros", "validation", "output-open"] },
+          "refs": { "$ref": "#/$defs/refs" },
+          "status": { "enum": ["passed", "failed", "not-run", "not-applicable"] },
+          "details": { "$ref": "#/$defs/text" }
+        }
+      }
+    },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "severity", "refs", "description", "state"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^exception-[a-z0-9-]+$" },
+          "severity": { "enum": ["low", "medium", "high"] },
+          "refs": { "$ref": "#/$defs/refs" },
+          "description": { "$ref": "#/$defs/text" },
+          "state": { "enum": ["open", "accepted-by-owner", "resolved"] }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "refs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "$ref": "#/$defs/text" },
+          "reason": { "$ref": "#/$defs/text" },
+          "refs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "blockedActions": { "$ref": "#/$defs/actions" },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "transformationRefs", "checkRefs", "exceptionRefs", "reviewQuestionRefs", "blockingRefs", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "$ref": "#/$defs/text" },
+        "transformationRefs": { "$ref": "#/$defs/refs" },
+        "checkRefs": { "$ref": "#/$defs/refs" },
+        "exceptionRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "reviewQuestionRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "blockingRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "prohibitedActions": { "$ref": "#/$defs/actions" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "maxLength": 2000, "pattern": "\\S" },
+    "refs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "actions": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "uniqueItems": true,
+      "items": { "enum": ["overwrite-source", "replace-formulas-with-values", "execute-macros", "upload-workbook", "disclose-sensitive-data", "infer-missing-facts", "accept-output"] }
+    }
+  }
+}

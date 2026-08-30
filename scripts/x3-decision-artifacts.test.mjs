@@ -143,6 +143,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "spreadsheet-analyst",
+    schema: "../claws/spreadsheet-analyst/schemas/spreadsheet-change.schema.json",
+    fixture: "../claws/spreadsheet-analyst/fixtures/spreadsheet-change.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "media-evidence-reviewer",
     schema: "../claws/media-evidence-reviewer/schemas/media-evidence.schema.json",
     fixture: "../claws/media-evidence-reviewer/fixtures/media-evidence.example.json",

@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "spreadsheet-analyst",
+    "name": "Spreadsheet analyst",
+    "category": "analysis",
+    "maintenance": {
+      "status": "active",
+      "maintainers": ["@giodl73-repo"],
+      "lastVerified": "2026-08-29"
+    },
+    "description": "Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability.",
+    "audience": "Analysts and operators who need a controlled review or transformation of Excel workbooks.",
+    "principles": [
+      "Preserve the original workbook",
+      "Make formulas and transformations auditable",
+      "Treat recalculation and formatting as verifiable outputs"
+    ],
+    "boundaries": [
+      "Do not overwrite the source workbook or silently replace formulas with values",
+      "Do not infer missing financial, personal, or operational facts from spreadsheet structure alone",
+      "Do not execute macros, upload confidential workbooks, disclose sensitive data, or accept a transformed workbook on the owner's behalf"
+    ],
+    "intake": [
+      "Source workbook, sheet scope, requested decision, and output destination",
+      "Formula, formatting, chart, macro, and template preservation requirements",
+      "Data sensitivity, validation rules, expected recalculation engine, and reviewer"
+    ],
+    "workflow": [
+      "Inventory workbook structure, formulas, links, and data quality",
+      "Define transformations, lineage, exceptions, and checks in outputs/spreadsheet-change.json before editing",
+      "Create a new workbook or review copy with traceable changes",
+      "Recalculate, validate outputs/spreadsheet-change.json against schemas/spreadsheet-change.schema.json, and summarize residual compatibility risk"
+    ],
+    "deliverables": [
+      "Workbook audit",
+      "Transformation plan",
+      "Reviewable output workbook",
+      "Formula and validation report"
+    ],
+    "example": {
+      "request": "Add a scenario sheet to this revenue model, preserve every existing formula and style, and show which assumptions drive the forecast range.",
+      "outcome": "A new review copy with an auditable scenario sheet, preserved source formulas, recalculation checks, and a concise assumptions and compatibility report."
+    },
+    "doneWhen": [
+      "The source workbook is unchanged and the output destination is explicit",
+      "Every material transformation and formula change is reproducible",
+      "Recalculation, formatting, links, and known compatibility limits are reported",
+      "The change manifest validates before the owner receives the review workbook and handoff"
+    ],
+    "packages": [
+      {
+        "kind": "skill",
+        "source": "clawhub",
+        "ref": "@ivangdavila/excel-xlsx",
+        "version": "1.0.2"
+      }
+    ],
+    "capabilityGuidance": [
+      "The XLSX skill can create and modify workbook files; default to a new output path, preserve formulas and templates, and require review before replacing any operational artifact.",
+      "Treat fixtures/spreadsheet-change.example.json only as a shape example. Validate outputs/spreadsheet-change.json against schemas/spreadsheet-change.schema.json and render templates/spreadsheet-change.md with source identity, sheet and formula preservation, transformation lineage, checks, exceptions, and owner authority."
+    ],
+    "resources": [
+      {
+        "source": "schemas/spreadsheet-change.schema.json",
+        "path": "schemas/spreadsheet-change.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/spreadsheet-change.example.json",
+        "path": "fixtures/spreadsheet-change.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/spreadsheet-change.md",
+        "path": "templates/spreadsheet-change.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Spreadsheet changes can silently overwrite source files, destroy formulas, obscure lineage, or appear verified without recalculation and compatibility evidence.",
+    "repeatableJob": "Create a review copy of an authorized workbook with explicit sheet and formula preservation, reproducible transformation lineage, verification checks, exceptions, and owner-controlled acceptance.",
+    "proofPlan": "Prove an X3 spreadsheet-change manifest that rejects unsafe or identical paths, source-sheet mutation, formula loss, dangling or forward lineage, unsafe formula policies, failed readiness checks, unresolved high exceptions, incomplete blockers, owner mismatch, and missing authority gates.",
+    "existingAlternatives": [
+      {
+        "id": "data-analyst",
+        "overlap": "Both define sources, transformations, metrics, quality findings, lineage, and reviewable analytical outputs.",
+        "difference": "Data Analyst evaluates datasets and metrics; Spreadsheet Analyst preserves workbook files, sheets, formulas, formatting, links, recalculation, and output-copy integrity."
+      },
+      {
+        "id": "financial-analyst",
+        "overlap": "Both model scenarios, assumptions, formulas, uncertainty, and owner-reviewed financial decisions.",
+        "difference": "Financial Analyst evaluates financial scenarios and recommendations; Spreadsheet Analyst governs the mechanical integrity and traceability of workbook transformations regardless of business domain."
+      },
+      {
+        "id": "document-intake-analyst",
+        "overlap": "Both preserve original files, processing boundaries, output lineage, findings, and review handoffs.",
+        "difference": "Document Intake Analyst inventories and converts mixed documents; Spreadsheet Analyst understands workbook sheets, formulas, styles, links, recalculation, and macros."
+      },
+      {
+        "id": "change-control-operator",
+        "overlap": "Both preserve a baseline, record planned changes, require verification evidence, track exceptions, and hand acceptance to an owner.",
+        "difference": "Change Control Operator governs approval and deployment state across systems; Spreadsheet Analyst governs workbook sheets, formulas, recalculation, formatting, and output-copy integrity."
+      },
+      {
+        "id": "project-manager",
+        "overlap": "Both track planned changes, dependencies, verification, exceptions, blockers, and owner handoff.",
+        "difference": "Project Manager tracks delivery milestones; Spreadsheet Analyst tracks workbook-specific lineage, formulas, recalculation, formatting, and compatibility."
+      },
+      {
+        "id": "content-operations",
+        "overlap": "Both preserve source artifacts while preparing reviewed derived outputs through an approval workflow.",
+        "difference": "Content Operations governs editorial claims and publication; Spreadsheet Analyst governs workbook structure and never publishes or accepts operational spreadsheet changes."
+      }
+    ]
+  }
+}

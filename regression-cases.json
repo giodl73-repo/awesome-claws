@@ -417,7 +417,8 @@
       ],
       "authorityBoundaries": [
         "Do not overwrite the source workbook or silently replace formulas with values",
-        "Do not infer missing financial, personal, or operational facts from spreadsheet structure alone"
+        "Do not infer missing financial, personal, or operational facts from spreadsheet structure alone",
+        "Do not execute macros, upload confidential workbooks, disclose sensitive data, or accept a transformed workbook on the owner's behalf"
       ],
       "experience": {
         "target": 3,

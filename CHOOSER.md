@@ -96,7 +96,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Security analyst](claws/security-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Software maintainer](claws/software-maintainer) | @giodl73-repo; last verified 2026-08-19 |
 | [Sports team watcher](claws/sports-team-watcher) | @giodl73-repo; last verified 2026-08-21 |
-| [Spreadsheet analyst](claws/spreadsheet-analyst) | @giodl73-repo; last verified 2026-08-19 |
+| [Spreadsheet analyst](claws/spreadsheet-analyst) | @giodl73-repo; last verified 2026-08-29 |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | @giodl73-repo; last verified 2026-08-21 |
 | [Subscription manager](claws/subscription-manager) | @giodl73-repo; last verified 2026-08-21 |
 | [Tax document organizer](claws/tax-document-organizer) | @giodl73-repo; last verified 2026-08-26 |
