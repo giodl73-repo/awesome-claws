@@ -41,6 +41,7 @@ const schemaNames = {
   "life-timeline-keeper": "life-timeline.schema.json",
   "local-events-watcher": "event-watchlist.schema.json",
   "meal-grocery-planner": "meal-grocery.schema.json",
+  "media-evidence-reviewer": "media-evidence.schema.json",
   "medical-appointment-prep": "medical-appointment.schema.json",
   "model-evaluation-adjudicator": "model-evaluation.schema.json",
   "moving-checklist-coordinator": "moving-plan.schema.json",

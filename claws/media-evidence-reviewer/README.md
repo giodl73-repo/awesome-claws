@@ -18,6 +18,7 @@ Reviews authorized video and audio through timestamped frames and transcripts wh
 - Declared capability: skill `@steipete/openai-whisper@1.0.0`.
 - Capability boundary: The Video Frames skill invokes ffmpeg and writes local frames or clips; constrain source and output paths, review disk use, and avoid extracting more sensitive footage than the question requires.
 - Capability boundary: The Whisper skill invokes a local speech-to-text CLI; preserve the original media, keep transcripts in the approved boundary, and expose low-confidence or ambiguous speech rather than silently correcting it.
+- Capability boundary: Treat fixtures/media-evidence.example.json only as a shape example. Validate outputs/media-evidence.json against schemas/media-evidence.schema.json, then render templates/media-evidence.md while preserving authority, consent, source integrity, time bounds, transcript confidence, redaction, gaps, and the owner-controlled handoff.
 
 Review the package before applying it. Claws can create agents and may declare
 additional capabilities. Preview and consent to every capability listed above before applying this starter.

@@ -1,18 +1,19 @@
 # Solid-band review
 
-This review covers the 19 Claws remaining in the Solid band after Document
+This review covers the 18 Claws remaining in the Solid band after Document
 Intake Analyst moved from 69 to 94, Fundraising Campaign Manager moved from 79
-to 95, and Travel Concierge moved from 78 to 100 on 2026-08-29. All 19 pass the non-negotiable package,
+to 95, Travel Concierge moved from 78 to 100, and Media Evidence Reviewer moved
+from 73 to 95 on 2026-08-29. All 18 pass the non-negotiable package,
 regression, resource, and Experience gates. Their lower scores describe
 reviewability and artifact-depth gaps, not observed live-model failures.
 
 ## Shared pattern
 
-- All 19 are grandfathered entries without retrospective contribution records.
+- All 18 are grandfathered entries without retrospective contribution records.
   That is a five-point documentation gap, not a failed admission.
-- All 19 lack registered semantic validators.
-- All 19 lack a local structured-artifact schema.
-- All 19 have complete operating contracts, screenshots, regression cases, and
+- All 18 lack registered semantic validators.
+- All 18 lack a local structured-artifact schema.
+- All 18 have complete operating contracts, screenshots, regression cases, and
   active maintenance.
 
 ## Current entries
@@ -37,7 +38,6 @@ reviewability and artifact-depth gaps, not observed live-model failures.
 | `executive-briefing` | 73 | No local schema or semantic validator | A source/freshness/priority ledger may help, but the briefing remains narrative |
 | `executive-assistant` | 73 | No local schema or semantic validator | Prefer a narrow commitment/approval ledger over schematizing correspondence |
 | `spreadsheet-analyst` | 73 | No local schema or semantic validator | A transformation/lineage/exception manifest can complement user-owned workbooks |
-| `media-evidence-reviewer` | 73 | No local schema or semantic validator | Timestamped observations, transcript confidence, consent, and redaction warrant structure |
 
 ## Uplift batches
 
@@ -49,8 +49,8 @@ invariants, public validation, and a retrospective admission record.
 
 ### 2. Add evidence ledgers where the job naturally owns state
 
-The strongest candidates are `media-evidence-reviewer`, `spreadsheet-analyst`,
-`travel-planner`, `public-company-watcher`, `research-scout`,
+The strongest candidates are `spreadsheet-analyst`, `travel-planner`,
+`public-company-watcher`, `research-scout`,
 `research-monitor`, `feed-intelligence-monitor`, `web-evidence-researcher`,
 `website-evidence-collector`, and `meeting-intelligence`. Their recurring work
 already depends on source identity, freshness, lineage, chronology, confidence,
@@ -67,14 +67,13 @@ duplicated merely to raise a score.
 
 ## Recommended order
 
-1. `media-evidence-reviewer`: define a timestamped observation and transcript
-   confidence ledger because consent, redaction, ambiguity, and source location
-   are already central to the job.
-2. `spreadsheet-analyst`: add a transformation, lineage, and exception manifest
+1. `spreadsheet-analyst`: add a transformation, lineage, and exception manifest
    that complements rather than duplicates user-owned workbooks.
-3. `travel-planner`: define itinerary chronology, constraints, costs, source
+2. `travel-planner`: define itinerary chronology, constraints, costs, source
    freshness, and traveler-controlled booking gates without duplicating the
    Expedia-specific Travel Concierge shortlist.
+3. `public-company-watcher`: define a filing and issuer-event evidence ledger
+   with freshness, materiality, and no-trading authority boundaries.
 
 Backfill contribution records alongside substantive work. For entries already
 at 78-79, a retrospective record alone may move the score into Strong, but it

@@ -1,0 +1,247 @@
+{
+  "schemaVersion": "awesomeClaws.mediaEvidence.v1",
+  "review": {
+    "id": "review-checkout-navigation",
+    "owner": "Research operations lead",
+    "asOf": "2026-08-29T20:00:00Z",
+    "question": "Where did navigation failures occur between 12:00 and 28:00 in the consented usability recording?",
+    "sourceDurationSeconds": 2400,
+    "windowStartSeconds": 720,
+    "windowEndSeconds": 1680,
+    "expectedLanguage": "English",
+    "audience": "Internal product research team",
+    "destination": "outputs/media-evidence-reviewer-handoff.md",
+    "retention": "Derived frames and transcript excerpts expire with the approved research workspace after 30 days.",
+    "state": "ready-for-owner-review"
+  },
+  "authority": {
+    "processingAuthorized": true,
+    "consentState": "verified",
+    "authoritySourceRef": "src-authority",
+    "consentSourceRef": "src-consent",
+    "retentionSourceRef": "src-retention",
+    "authorizedUses": [
+      "local-frame-extraction",
+      "local-transcription",
+      "question-focused-analysis",
+      "redacted-internal-handoff"
+    ]
+  },
+  "sources": [
+    {
+      "id": "src-recording",
+      "kind": "media-file",
+      "authority": "media-owner",
+      "capturedAt": "2026-08-29T18:30:00Z",
+      "reference": "workspace://research/session-042.mp4",
+      "integrity": "verified",
+      "privacy": "restricted",
+      "sha256": "3d3f6bf9787955877a1c827960472f1ca6653037ed02786957450e2657c3fc2e"
+    },
+    {
+      "id": "src-authority",
+      "kind": "authority-record",
+      "authority": "data-controller",
+      "capturedAt": "2026-08-29T18:35:00Z",
+      "reference": "workspace://research/authority/session-042",
+      "integrity": "verified",
+      "privacy": "confidential",
+      "sha256": null
+    },
+    {
+      "id": "src-consent",
+      "kind": "consent-record",
+      "authority": "data-controller",
+      "capturedAt": "2026-08-29T18:36:00Z",
+      "reference": "workspace://research/consent/session-042",
+      "integrity": "verified",
+      "privacy": "restricted",
+      "sha256": null
+    },
+    {
+      "id": "src-retention",
+      "kind": "retention-policy",
+      "authority": "policy-owner",
+      "capturedAt": "2026-08-29T18:40:00Z",
+      "reference": "workspace://research/policy/derived-media-30-days",
+      "integrity": "verified",
+      "privacy": "internal",
+      "sha256": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-frame-menu",
+      "kind": "frame",
+      "sourceRef": "src-recording",
+      "startSeconds": 742,
+      "endSeconds": 742,
+      "path": "evidence/frames/012-22-menu-open.png",
+      "extractionState": "complete",
+      "redactionState": "redacted",
+      "redactionApprovalSourceRef": null,
+      "sensitivity": ["participant-image", "screen-content"],
+      "transcript": null
+    },
+    {
+      "id": "evidence-transcript-menu",
+      "kind": "transcript",
+      "sourceRef": "src-recording",
+      "startSeconds": 739,
+      "endSeconds": 750,
+      "path": "evidence/transcripts/012-19-012-30.json",
+      "extractionState": "complete",
+      "redactionState": "redacted",
+      "redactionApprovalSourceRef": null,
+      "sensitivity": ["participant-voice", "screen-content"],
+      "transcript": {
+        "text": "I expected account settings under this menu.",
+        "confidence": 0.96,
+        "speakerLabel": "participant",
+        "ambiguity": null
+      }
+    },
+    {
+      "id": "evidence-frame-loop",
+      "kind": "frame",
+      "sourceRef": "src-recording",
+      "startSeconds": 988,
+      "endSeconds": 988,
+      "path": "evidence/frames/016-28-navigation-loop.png",
+      "extractionState": "complete",
+      "redactionState": "redacted",
+      "redactionApprovalSourceRef": null,
+      "sensitivity": ["participant-image", "screen-content"],
+      "transcript": null
+    },
+    {
+      "id": "evidence-transcript-loop",
+      "kind": "transcript",
+      "sourceRef": "src-recording",
+      "startSeconds": 984,
+      "endSeconds": 997,
+      "path": "evidence/transcripts/016-24-016-37.json",
+      "extractionState": "complete",
+      "redactionState": "redacted",
+      "redactionApprovalSourceRef": null,
+      "sensitivity": ["participant-voice", "screen-content"],
+      "transcript": {
+        "text": "I am back where I started.",
+        "confidence": 0.93,
+        "speakerLabel": "participant",
+        "ambiguity": null
+      }
+    },
+    {
+      "id": "evidence-transcript-ambiguous",
+      "kind": "transcript",
+      "sourceRef": "src-recording",
+      "startSeconds": 1314,
+      "endSeconds": 1321,
+      "path": "evidence/transcripts/021-54-022-01.json",
+      "extractionState": "partial",
+      "redactionState": "redacted",
+      "redactionApprovalSourceRef": null,
+      "sensitivity": ["participant-voice"],
+      "transcript": {
+        "text": "[inaudible] maybe the previous page.",
+        "confidence": 0.54,
+        "speakerLabel": "participant",
+        "ambiguity": "The first phrase is inaudible and the referent of previous page is uncertain."
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation-menu-expectation",
+      "kind": "direct-observation",
+      "statement": "At 12:22, the participant opened the main menu and stated that account settings were expected there.",
+      "evidenceRefs": ["evidence-frame-menu", "evidence-transcript-menu"],
+      "confidence": "high",
+      "state": "supported",
+      "exactQuote": false,
+      "limitations": ["The observation describes visible navigation and transcribed speech without identifying the participant."]
+    },
+    {
+      "id": "observation-navigation-loop",
+      "kind": "direct-observation",
+      "statement": "Between 16:24 and 16:37, the recording shows a return to the earlier screen, followed by a statement that the participant was back where they started.",
+      "evidenceRefs": ["evidence-frame-loop", "evidence-transcript-loop"],
+      "confidence": "high",
+      "state": "supported",
+      "exactQuote": false,
+      "limitations": ["The evidence supports the repeated screen sequence but not the participant's intent."]
+    },
+    {
+      "id": "observation-ambiguous-return",
+      "kind": "interpretation",
+      "statement": "The low-confidence transcript may indicate another attempted return to a previous page.",
+      "evidenceRefs": ["evidence-transcript-ambiguous"],
+      "confidence": "low",
+      "state": "uncertain",
+      "exactQuote": false,
+      "limitations": ["The first phrase is inaudible, and no supporting frame was extracted for this interval."]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-ambiguous-audio",
+      "kind": "inaudible",
+      "description": "Audio from 21:54 to 22:01 is partially inaudible and cannot support an exact quotation.",
+      "evidenceRefs": ["evidence-transcript-ambiguous"]
+    },
+    {
+      "id": "gap-no-frame",
+      "kind": "missing-frames",
+      "description": "No question-relevant frame was retained for the ambiguous 21:54 to 22:01 interval.",
+      "evidenceRefs": ["evidence-transcript-ambiguous"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-ambiguous-return",
+      "question": "Should the owner exclude the 21:54 interpretation from the final failure sequence?",
+      "reason": "The transcript confidence is low and no supporting frame was retained.",
+      "observationRefs": ["observation-ambiguous-return"],
+      "gapRefs": ["gap-ambiguous-audio", "gap-no-frame"]
+    }
+  ],
+  "blockedActions": [
+    "identify-person",
+    "infer-identity",
+    "infer-intent",
+    "fill-missing-events",
+    "fabricate-quotation",
+    "process-out-of-scope",
+    "retain-beyond-policy",
+    "distribute-media",
+    "publish-evidence",
+    "upload-external",
+    "disable-redaction"
+  ],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Research operations lead",
+    "observationRefs": [
+      "observation-menu-expectation",
+      "observation-navigation-loop",
+      "observation-ambiguous-return"
+    ],
+    "gapRefs": ["gap-ambiguous-audio", "gap-no-frame"],
+    "reviewQuestionRefs": ["question-ambiguous-return"],
+    "blockingObservationRefs": [],
+    "prohibitedActions": [
+      "identify-person",
+      "infer-identity",
+      "infer-intent",
+      "fill-missing-events",
+      "fabricate-quotation",
+      "process-out-of-scope",
+      "retain-beyond-policy",
+      "distribute-media",
+      "publish-evidence",
+      "upload-external",
+      "disable-redaction"
+    ]
+  }
+}

@@ -1,0 +1,357 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/media-evidence.schema.json",
+  "title": "Media evidence review ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "review",
+    "authority",
+    "sources",
+    "evidence",
+    "observations",
+    "gaps",
+    "reviewQuestions",
+    "blockedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.mediaEvidence.v1" },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "owner",
+        "asOf",
+        "question",
+        "sourceDurationSeconds",
+        "windowStartSeconds",
+        "windowEndSeconds",
+        "expectedLanguage",
+        "audience",
+        "destination",
+        "retention",
+        "state"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^review-[a-z0-9-]+$" },
+        "owner": { "$ref": "#/$defs/text" },
+        "asOf": { "type": "string", "format": "date-time" },
+        "question": { "$ref": "#/$defs/text" },
+        "sourceDurationSeconds": { "type": "number", "exclusiveMinimum": 0 },
+        "windowStartSeconds": { "type": "number", "minimum": 0 },
+        "windowEndSeconds": { "type": "number", "exclusiveMinimum": 0 },
+        "expectedLanguage": { "$ref": "#/$defs/text" },
+        "audience": { "$ref": "#/$defs/text" },
+        "destination": { "type": "string", "pattern": "^outputs/[A-Za-z0-9._/-]+$" },
+        "retention": { "$ref": "#/$defs/text" },
+        "state": { "enum": ["draft", "blocked", "ready-for-owner-review"] }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "processingAuthorized",
+        "consentState",
+        "authoritySourceRef",
+        "consentSourceRef",
+        "retentionSourceRef",
+        "authorizedUses"
+      ],
+      "properties": {
+        "processingAuthorized": { "type": "boolean" },
+        "consentState": { "enum": ["verified", "limited", "missing", "revoked"] },
+        "authoritySourceRef": { "type": "string", "minLength": 1 },
+        "consentSourceRef": { "type": "string", "minLength": 1 },
+        "retentionSourceRef": { "type": "string", "minLength": 1 },
+        "authorizedUses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "local-frame-extraction",
+              "local-transcription",
+              "question-focused-analysis",
+              "redacted-internal-handoff"
+            ]
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "authority",
+          "capturedAt",
+          "reference",
+          "integrity",
+          "privacy",
+          "sha256"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "media-file",
+              "authority-record",
+              "consent-record",
+              "retention-policy",
+              "reviewer-note"
+            ]
+          },
+          "authority": {
+            "enum": ["media-owner", "data-controller", "policy-owner", "reviewer"]
+          },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "$ref": "#/$defs/text" },
+          "integrity": { "enum": ["verified", "unverified", "conflicting", "missing"] },
+          "privacy": { "enum": ["internal", "confidential", "restricted"] },
+          "sha256": {
+            "type": ["string", "null"],
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "sourceRef",
+          "startSeconds",
+          "endSeconds",
+          "path",
+          "extractionState",
+          "redactionState",
+          "redactionApprovalSourceRef",
+          "sensitivity",
+          "transcript"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^evidence-[a-z0-9-]+$" },
+          "kind": { "enum": ["frame", "clip", "transcript"] },
+          "sourceRef": { "type": "string", "minLength": 1 },
+          "startSeconds": { "type": "number", "minimum": 0 },
+          "endSeconds": { "type": "number", "minimum": 0 },
+          "path": { "type": "string", "pattern": "^evidence/[A-Za-z0-9._/-]+$" },
+          "extractionState": { "enum": ["complete", "partial", "failed"] },
+          "redactionState": {
+            "enum": ["not-required", "redacted", "approved-unredacted", "pending"]
+          },
+          "redactionApprovalSourceRef": {
+            "type": ["string", "null"],
+            "minLength": 1
+          },
+          "sensitivity": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "participant-image",
+                "participant-voice",
+                "screen-content",
+                "personal-data"
+              ]
+            }
+          },
+          "transcript": {
+            "oneOf": [
+              { "type": "null" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["text", "confidence", "speakerLabel", "ambiguity"],
+                "properties": {
+                  "text": { "$ref": "#/$defs/text" },
+                  "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "speakerLabel": { "enum": ["participant", "moderator", "unknown"] },
+                  "ambiguity": { "type": ["string", "null"], "minLength": 1 }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "statement",
+          "evidenceRefs",
+          "confidence",
+          "state",
+          "exactQuote",
+          "limitations"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^observation-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "direct-observation",
+              "interpretation",
+              "identity",
+              "intent",
+              "missing-event"
+            ]
+          },
+          "statement": { "$ref": "#/$defs/text" },
+          "evidenceRefs": { "$ref": "#/$defs/refs" },
+          "confidence": { "enum": ["high", "medium", "low"] },
+          "state": { "enum": ["supported", "uncertain", "blocked"] },
+          "exactQuote": { "type": "boolean" },
+          "limitations": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/text" }
+          }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "description", "evidenceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^gap-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "inaudible",
+              "missing-frames",
+              "out-of-scope",
+              "ambiguous-speaker",
+              "translation-needed",
+              "missing-context"
+            ]
+          },
+          "description": { "$ref": "#/$defs/text" },
+          "evidenceRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "observationRefs", "gapRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "$ref": "#/$defs/text" },
+          "reason": { "$ref": "#/$defs/text" },
+          "observationRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "gapRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "blockedActions": { "$ref": "#/$defs/actions" },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "observationRefs",
+        "gapRefs",
+        "reviewQuestionRefs",
+        "blockingObservationRefs",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": { "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "$ref": "#/$defs/text" },
+        "observationRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "gapRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "reviewQuestionRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "blockingObservationRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "prohibitedActions": { "$ref": "#/$defs/actions" }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S"
+    },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "identify-person",
+          "infer-identity",
+          "infer-intent",
+          "fill-missing-events",
+          "fabricate-quotation",
+          "process-out-of-scope",
+          "retain-beyond-policy",
+          "distribute-media",
+          "publish-evidence",
+          "upload-external",
+          "disable-redaction"
+        ]
+      }
+    }
+  }
+}
