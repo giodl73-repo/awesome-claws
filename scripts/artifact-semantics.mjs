@@ -1,6 +1,73 @@
 import { createHash } from "node:crypto";
 import { isSafePackagePath, portablePathKey } from "./portable-paths.mjs";
 
+function hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) {
+  const adjacentNegation =
+    /\b(?:do not|does not|did not|is not|are not|was not|were not|not|no|never|without|cannot|can't|must not|mustn't|should not|shouldn't|will not|won't)\s*$/iu;
+  const coordinatedNegation =
+    /^\s*(?:(?:[A-Za-z0-9_-]+\s+){0,6})(?:,?\s*(?:and|or)\s*)$/iu;
+  function hasUnnegatedMatch(clause) {
+    let previousEnd = 0;
+    let previousNegated = false;
+    for (const match of clause.matchAll(prohibitedNarrative)) {
+      const prefix = clause.slice(0, match.index);
+      const connector = clause.slice(previousEnd, match.index);
+      const negated =
+        adjacentNegation.test(prefix) ||
+        (previousNegated && coordinatedNegation.test(connector));
+      if (!negated) {
+        return true;
+      }
+      previousEnd = match.index + match[0].length;
+      previousNegated = true;
+    }
+    return false;
+  }
+
+  return narrativeTexts.some((text) =>
+    text
+      .replaceAll("’", "'")
+      .replace(/\s+/gu, " ")
+      .split(
+        /[.!?]\s*|\s*[;:]\s*|\s*,?\s*\b(?:but|however|yet|although|despite|nevertheless|nonetheless|still|even though)\b\s*/iu,
+      )
+      .some((clause) => hasUnnegatedMatch(clause)),
+  );
+}
+
+function hasUnsafePublicHost(hostname) {
+  const host = hostname.toLowerCase().replace(/^\[|\]$/gu, "");
+  if (
+    /^(?:localhost(?:\.localdomain)?|.+\.localhost|0(?:\.\d{1,3}){3}|10(?:\.\d{1,3}){3}|127(?:\.\d{1,3}){3}|169\.254(?:\.\d{1,3}){2}|192\.168(?:\.\d{1,3}){2}|::1|f[cd][0-9a-f:]*|fe[89ab][0-9a-f:]*)$/u.test(
+      host,
+    )
+  ) {
+    return true;
+  }
+  const match = /^172\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/u.exec(host);
+  return match !== null && Number(match[1]) >= 16 && Number(match[1]) <= 31;
+}
+
+function isCredentialFreePublicHttpsReference(reference) {
+  const unsafeQueryKeys =
+    /^(?:access[_-]?token|api[_-]?key|auth|code|credential|key|password|secret|token)$/iu;
+  const unsafeQuery =
+    [...reference.searchParams.keys()].some((key) => unsafeQueryKeys.test(key)) ||
+    [...reference.searchParams.values()].some((value) =>
+      /\b(?:access[_-]?token|api[_-]?key|auth|credential|password|secret|token)\s*[:=]/iu.test(
+        value,
+      ),
+    );
+  return (
+    reference.protocol === "https:" &&
+    !reference.username &&
+    !reference.password &&
+    !reference.hash &&
+    !hasUnsafePublicHost(reference.hostname) &&
+    !unsafeQuery
+  );
+}
+
 function finding(code, path, message) {
   return { code, path, message };
 }
@@ -15336,19 +15403,6 @@ function researchEvidenceDeltaFindings(value) {
     }
   }
 
-  function hasUnsafeHost(hostname) {
-    const host = hostname.toLowerCase().replace(/^\[|\]$/gu, "");
-    if (
-      /^(?:localhost(?:\.localdomain)?|.+\.localhost|0(?:\.\d{1,3}){3}|10(?:\.\d{1,3}){3}|127(?:\.\d{1,3}){3}|169\.254(?:\.\d{1,3}){2}|192\.168(?:\.\d{1,3}){2}|::1|f[cd][0-9a-f:]*|fe[89ab][0-9a-f:]*)$/u.test(
-        host,
-      )
-    ) {
-      return true;
-    }
-    const match = /^172\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/u.exec(host);
-    return match !== null && Number(match[1]) >= 16 && Number(match[1]) <= 31;
-  }
-
   function idKey(item) {
     return `${item.kind}\u0000${item.value.toLowerCase()}`;
   }
@@ -15558,27 +15612,13 @@ function researchEvidenceDeltaFindings(value) {
     try {
       const reference = new URL(source.canonicalUrl);
       const hostname = reference.hostname.toLowerCase();
-      const unsafeQueryKeys =
-        /^(?:access[_-]?token|api[_-]?key|auth|code|credential|key|password|secret|token)$/iu;
-      const unsafeQuery =
-        [...reference.searchParams.keys()].some((key) => unsafeQueryKeys.test(key)) ||
-        [...reference.searchParams.values()].some((item) =>
-          /\b(?:access[_-]?token|api[_-]?key|auth|credential|password|secret|token)\s*[:=]/iu.test(
-            item,
-          ),
-        );
       const allowedHost = authority?.domains.some(
         (domain) =>
           hostname === domain.toLowerCase() ||
           hostname.endsWith(`.${domain.toLowerCase()}`),
       );
       if (
-        reference.protocol !== "https:" ||
-        reference.username ||
-        reference.password ||
-        reference.hash ||
-        hasUnsafeHost(hostname) ||
-        unsafeQuery ||
+        !isCredentialFreePublicHttpsReference(reference) ||
         !allowedHost ||
         !sourceUrlIsBound(source, reference)
       ) {
@@ -16080,7 +16120,9 @@ function researchEvidenceDeltaFindings(value) {
   }
   if (
     /^(?:the )?(?:agent|assistant|claw)$/iu.test(value.watch.decisionOwner.trim()) ||
-    /\b(?:ai|bot|gpt|language model|research scout)\b/iu.test(value.watch.decisionOwner)
+    /\b(?:ai|bot|gpt|language model|research scout)\b/iu.test(
+      value.watch.decisionOwner,
+    )
   ) {
     findings.push(
       finding(
@@ -16210,33 +16252,9 @@ function researchEvidenceDeltaFindings(value) {
   ];
   const prohibitedNarrative =
     /\b(?:(?:bypass|circumvent)(?:ing)?|rout(?:e|ing) around) (?:publisher )?access controls?|\b(?:reproduc(?:e|ing)|copy(?:ing)?|past(?:e|ing)|quot(?:e|ing)|extract(?:ing)?) (?:restricted|paywalled) (?:full )?text|\b(?:contact(?:ing)?|email(?:ing)?|messag(?:e|ing)|call(?:ing)?) (?:an? )?authors?|\benroll(?:ing)? (?:human )?subjects?|\b(?:publish(?:ing)?|post(?:ing)?|announc(?:e|ing)|communicat(?:e|ing)) (?:the )?conclusions?|\b(?:mak(?:e|ing)|issu(?:e|ing)|provid(?:e|ing)|determin(?:e|ing)) (?:a )?(?:clinical|treatment) (?:decision|recommendation)|\b(?:fabricat(?:e|ed|ing)|invent(?:ed|ing)?) (?:evidence|(?:persistent )?identifiers?)|\b(?:disclos(?:e|ing)|leak(?:ing)?|expos(?:e|ing)|send(?:ing)?) (?:(?:a|the) )?(?:sensitive|private|confidential) (?:research )?question|\b(?:autonomously|automatically) (?:chang(?:e|ing)|updat(?:e|ing)|mak(?:e|ing)) (?:a |the )?(?:decision|protocol)|\b(?:chang(?:e|ing)|updat(?:e|ing)|mak(?:e|ing)) (?:a |the )?(?:decision|protocol) (?:autonomously|without (?:the )?(?:owner|review))\b/giu;
-  const adjacentNegation =
-    /\b(?:do not|does not|did not|is not|are not|was not|were not|not|no|never|without|cannot|can't|must not|mustn't|should not|shouldn't|will not|won't)\s*$/iu;
-  function hasUnnegatedMatch(clause, pattern) {
-    let previousEnd = 0;
-    let previousNegated = false;
-    for (const match of clause.matchAll(pattern)) {
-      const prefix = clause.slice(0, match.index);
-      const connector = clause.slice(previousEnd, match.index);
-      const negated =
-        adjacentNegation.test(prefix) ||
-        (previousNegated && /^\s*,?\s*(?:and|or)\s*$/iu.test(connector));
-      if (!negated) {
-        return true;
-      }
-      previousEnd = match.index + match[0].length;
-      previousNegated = true;
-    }
-    return false;
-  }
-  const unsafeNarrative = narrativeTexts.some((text) =>
-    text
-      .replaceAll("’", "'")
-      .replace(/\s+/gu, " ")
-      .split(
-        /[.!?]\s*|\s*[;:]\s*|\s*,?\s*\b(?:but|however|yet|although|despite|nevertheless|nonetheless|still|even though)\b\s*/iu,
-      )
-      .some((clause) => hasUnnegatedMatch(clause, prohibitedNarrative)),
+  const unsafeNarrative = hasUnnegatedNarrativeMatch(
+    narrativeTexts,
+    prohibitedNarrative,
   );
   if (unsafeNarrative) {
     findings.push(
@@ -16244,6 +16262,827 @@ function researchEvidenceDeltaFindings(value) {
         "unsafe_narrative_content",
         "evidenceItems",
         "Research artifacts must not bypass access controls, reproduce restricted text, contact authors, enroll subjects, publish conclusions, make clinical decisions, fabricate evidence or identifiers, disclose sensitive research questions, or change decisions autonomously.",
+      ),
+    );
+  }
+  return findings;
+}
+
+function topicWatchDeltaLedgerFindings(value) {
+  const findings = [];
+  const requiredActions = [
+    "bypass-access-controls",
+    "reproduce-restricted-content",
+    "publish-or-contact-externally",
+    "subscribe-or-change-accounts",
+    "disclose-credentials-or-sensitive-queries",
+    "fabricate-sources-or-claims",
+    "change-decisions-or-actions-autonomously",
+  ];
+  const authorities = value.watch.authorities;
+  const authorityIds = authorities.map((item) => item.id);
+  const sourceIds = value.sources.map((item) => item.id);
+  const observationIds = value.observations.map((item) => item.id);
+  const deltaIds = value.deltas.map((item) => item.id);
+  const reviewIds = value.reviewQueue.map((item) => item.id);
+  const gapIds = value.gapsAndBlockers.map((item) => item.id);
+  const authoritySet = new Set(authorityIds);
+  const sourceSet = new Set(sourceIds);
+  const observationSet = new Set(observationIds);
+  const deltaSet = new Set(deltaIds);
+  const reviewSet = new Set(reviewIds);
+  const gapSet = new Set(gapIds);
+  const authorityById = new Map(authorities.map((item) => [item.id, item]));
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const observationById = new Map(value.observations.map((item) => [item.id, item]));
+  const deltaById = new Map(value.deltas.map((item) => [item.id, item]));
+
+  findings.push(
+    ...uniqueFindings(authorityIds, "watch.authorities", "Authority id"),
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(observationIds, "observations", "Observation id"),
+    ...uniqueFindings(deltaIds, "deltas", "Delta id"),
+    ...uniqueFindings(reviewIds, "reviewQueue", "Review queue id"),
+    ...uniqueFindings(gapIds, "gapsAndBlockers", "Gap or blocker id"),
+  );
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(...referenceFindings(refs, known, path, label));
+  }
+
+  function requireCompleteReferences(actual, expected, path, label) {
+    requireReferences(actual, new Set(expected), path, label);
+    for (const id of expected) {
+      if (!actual.includes(id)) {
+        findings.push(
+          finding(
+            "incomplete_handoff",
+            path,
+            `${label} ${JSON.stringify(id)} is missing from the private handoff.`,
+          ),
+        );
+      }
+    }
+  }
+
+  const windowStart = Date.parse(value.watch.window.start);
+  const windowEnd = Date.parse(value.watch.window.end);
+  const baselineAsOf = Date.parse(value.watch.baseline.asOf);
+  const runStarted = Date.parse(value.watch.run.startedAt);
+  const runCompleted = Date.parse(value.watch.run.completedAt);
+  const runAsOf = Date.parse(value.watch.run.asOf);
+  if (
+    windowStart >= windowEnd ||
+    baselineAsOf >= windowStart ||
+    runStarted < windowStart ||
+    runStarted > runCompleted ||
+    runCompleted > runAsOf ||
+    runAsOf > windowEnd ||
+    value.watch.baseline.runId === value.watch.run.id
+  ) {
+    findings.push(
+      finding(
+        "invalid_watch_chronology",
+        "watch",
+        "The baseline must precede the review window and the current run must be ordered and contained by that window.",
+      ),
+    );
+  }
+  if (
+    !isSafePackagePath(value.watch.destination) ||
+    !value.watch.destination.startsWith("outputs/")
+  ) {
+    findings.push(
+      finding(
+        "unsafe_handoff_destination",
+        "watch.destination",
+        "The private topic-watch handoff destination must remain a portable path under outputs/.",
+      ),
+    );
+  }
+
+  const purposesByProvider = {
+    official: new Set(["implementation-guidance", "official-notice"]),
+    "public-record": new Set(["legal-text", "regulatory-notice"]),
+    "standards-body": new Set(["standards-update"]),
+    "primary-operator": new Set(["operational-status", "technical-release"]),
+  };
+  for (const [index, authority] of authorities.entries()) {
+    if (!purposesByProvider[authority.provider]?.has(authority.purpose)) {
+      findings.push(
+        finding(
+          "authority_purpose_mismatch",
+          `watch.authorities.${index}.purpose`,
+          "Each approved authority purpose must match its declared provider.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, query] of value.watch.queries.entries()) {
+    requireReferences(
+      [query.authorityRef],
+      authoritySet,
+      `watch.queries.${index}.authorityRef`,
+      "Query authority reference",
+    );
+    requireReferences(
+      query.resultSourceRefs,
+      sourceSet,
+      `watch.queries.${index}.resultSourceRefs`,
+      "Query result source reference",
+    );
+    const executedAt = Date.parse(query.executedAt);
+    if (executedAt < windowStart || executedAt > runAsOf) {
+      findings.push(
+        finding(
+          "query_outside_review_window",
+          `watch.queries.${index}.executedAt`,
+          "Reproducible queries must execute inside the declared review window and no later than the run as-of time.",
+        ),
+      );
+    }
+    if (
+      query.resultSourceRefs.some(
+        (ref) => sourceById.get(ref)?.authorityRef !== query.authorityRef,
+      )
+    ) {
+      findings.push(
+        finding(
+          "query_authority_mismatch",
+          `watch.queries.${index}.resultSourceRefs`,
+          "A query may return only records from its declared approved authority.",
+        ),
+      );
+    }
+  }
+  const queriedSourceSet = new Set(
+    value.watch.queries.flatMap((query) => query.resultSourceRefs),
+  );
+  for (const source of value.sources) {
+    if (!queriedSourceSet.has(source.id)) {
+      findings.push(
+        finding(
+          "unqueried_source",
+          "sources",
+          `Source ${JSON.stringify(source.id)} must be returned by a declared reproducible query.`,
+        ),
+      );
+    }
+  }
+
+  const recordTypesByProvider = {
+    official: new Set([
+      "implementation-guidance",
+      "faq",
+      "official-notice",
+      "correction-notice",
+      "withdrawal-notice",
+    ]),
+    "public-record": new Set(["legal-text", "regulatory-notice"]),
+    "standards-body": new Set(["standard", "standards-update", "correction-notice"]),
+    "primary-operator": new Set(["operator-release", "status-notice"]),
+  };
+  const sourceIdentityOwners = new Map();
+  for (const [index, source] of value.sources.entries()) {
+    requireReferences(
+      [source.authorityRef],
+      authoritySet,
+      `sources.${index}.authorityRef`,
+      "Source authority reference",
+    );
+    const authority = authorityById.get(source.authorityRef);
+    if (
+      authority?.provider !== source.provider ||
+      !recordTypesByProvider[source.provider]?.has(source.recordType)
+    ) {
+      findings.push(
+        finding(
+          "source_authority_mismatch",
+          `sources.${index}`,
+          "Each source must use a record type and provider that match a declared approved authority.",
+        ),
+      );
+    }
+    const identityKey = `${source.authorityRef}\u0000${source.canonicalKey.toLowerCase()}`;
+    const priorIdentityOwner = sourceIdentityOwners.get(identityKey);
+    if (priorIdentityOwner && priorIdentityOwner !== source.id) {
+      findings.push(
+        finding(
+          "duplicate_reference",
+          `sources.${index}.canonicalKey`,
+          `Canonical source identity ${JSON.stringify(source.canonicalKey)} belongs to both ${priorIdentityOwner} and ${source.id}.`,
+        ),
+      );
+    }
+    sourceIdentityOwners.set(identityKey, source.id);
+
+    const publishedAt = Date.parse(source.publishedAt);
+    const updatedAt = Date.parse(source.updatedAt);
+    const retrievedAt = Date.parse(source.retrievedAt);
+    if (publishedAt > updatedAt || updatedAt > retrievedAt || retrievedAt > runAsOf) {
+      findings.push(
+        finding(
+          "invalid_source_chronology",
+          `sources.${index}.retrievedAt`,
+          "Sources must be published no later than updated or retrieved and retrieved no later than the run as-of time.",
+        ),
+      );
+    }
+    try {
+      const reference = new URL(source.canonicalUrl);
+      const host = reference.hostname.toLowerCase();
+      const allowedHost = authority?.domains.some(
+        (domain) => host === domain.toLowerCase() || host.endsWith(`.${domain.toLowerCase()}`),
+      );
+      if (
+        !isCredentialFreePublicHttpsReference(reference) ||
+        !allowedHost ||
+        reference.pathname === "/"
+      ) {
+        throw new Error("unsafe source");
+      }
+    } catch {
+      findings.push(
+        finding(
+          "unsafe_source_reference",
+          `sources.${index}.canonicalUrl`,
+          "Sources require an approved, credential-free public HTTPS URL without fragments, private hosts, or sensitive query values.",
+        ),
+      );
+    }
+
+    const lineage = [
+      ["supersedesSourceRef", source.supersedesSourceRef],
+      ["correctsSourceRef", source.correctsSourceRef],
+      ["withdrawsSourceRef", source.withdrawsSourceRef],
+    ];
+    for (const [field, targetId] of lineage) {
+      if (targetId === null) continue;
+      requireReferences(
+        [targetId],
+        sourceSet,
+        `sources.${index}.${field}`,
+        "Source lineage reference",
+      );
+      const target = sourceById.get(targetId);
+      if (
+        targetId === source.id ||
+        !target ||
+        Date.parse(target.publishedAt) >= publishedAt ||
+        target.authorityRef !== source.authorityRef ||
+        target.canonicalKey === source.canonicalKey
+      ) {
+        findings.push(
+          finding(
+            "invalid_source_lineage",
+            `sources.${index}.${field}`,
+            "Source lineage must point to an earlier distinct source from the same approved authority.",
+          ),
+        );
+      }
+    }
+    const isCorrection = source.recordType === "correction-notice";
+    const isWithdrawal = source.recordType === "withdrawal-notice";
+    if (
+      (isCorrection &&
+        (source.correctsSourceRef === null ||
+          source.supersedesSourceRef !== null ||
+          source.withdrawsSourceRef !== null)) ||
+      (isWithdrawal &&
+        (source.withdrawsSourceRef === null ||
+          source.supersedesSourceRef !== null ||
+          source.correctsSourceRef !== null)) ||
+      (!isCorrection &&
+        !isWithdrawal &&
+        (source.correctsSourceRef !== null || source.withdrawsSourceRef !== null))
+    ) {
+      findings.push(
+        finding(
+          "incoherent_source_lifecycle",
+          `sources.${index}`,
+          "Only correction and withdrawal notices may name those lifecycle targets, and each notice requires its target.",
+        ),
+      );
+    }
+    if (
+      value.watch.state === "ready" &&
+      (source.freshness !== "current" ||
+        retrievedAt < windowStart ||
+        runAsOf - retrievedAt > value.watch.freshnessPolicy.maxAgeHours * 3_600_000)
+    ) {
+      findings.push(
+        finding(
+          "stale_current_source",
+          `sources.${index}`,
+          "Ready handoffs require every retained source to be current and retrieved inside the freshness policy window.",
+        ),
+      );
+    }
+  }
+
+  const baselineSourceSet = new Set(value.watch.baseline.sourceRefs);
+  const baselineObservationSet = new Set(value.watch.baseline.observationRefs);
+  requireReferences(
+    value.watch.baseline.sourceRefs,
+    sourceSet,
+    "watch.baseline.sourceRefs",
+    "Baseline source reference",
+  );
+  requireReferences(
+    value.watch.baseline.observationRefs,
+    observationSet,
+    "watch.baseline.observationRefs",
+    "Baseline observation reference",
+  );
+
+  const claimIds = [];
+  const observationIdentityOwners = new Map();
+  const observedSourceSet = new Set();
+  const thresholdById = new Map(
+    value.watch.priorityPolicy.thresholds.map((item) => [item.id, item]),
+  );
+  findings.push(
+    ...uniqueFindings(
+      value.watch.priorityPolicy.thresholds.map((item) => item.id),
+      "watch.priorityPolicy.thresholds",
+      "Priority threshold id",
+    ),
+  );
+  if (value.watch.priorityPolicy.owner !== value.watch.decisionOwner) {
+    findings.push(
+      finding(
+        "invalid_priority_policy",
+        "watch.priorityPolicy.owner",
+        "Priority thresholds must remain owned by the declared decision owner.",
+      ),
+    );
+  }
+
+  for (const [index, observation] of value.observations.entries()) {
+    requireReferences(
+      observation.sourceRefs,
+      sourceSet,
+      `observations.${index}.sourceRefs`,
+      "Observation source reference",
+    );
+    observation.sourceRefs.forEach((ref) => observedSourceSet.add(ref));
+    const priorIdentityOwner = observationIdentityOwners.get(observation.deduplicationKey);
+    if (priorIdentityOwner && priorIdentityOwner !== observation.id) {
+      findings.push(
+        finding(
+          "duplicate_observation_identity",
+          `observations.${index}.deduplicationKey`,
+          `Observation identity ${JSON.stringify(observation.deduplicationKey)} belongs to both ${priorIdentityOwner} and ${observation.id}.`,
+        ),
+      );
+    }
+    observationIdentityOwners.set(observation.deduplicationKey, observation.id);
+
+    const observationSources = observation.sourceRefs
+      .map((ref) => sourceById.get(ref))
+      .filter(Boolean);
+    const hasCorrection = observationSources.some(
+      (source) =>
+        source.recordType === "correction-notice" &&
+        source.correctsSourceRef !== null &&
+        observation.sourceRefs.includes(source.correctsSourceRef),
+    );
+    const hasWithdrawal = observationSources.some(
+      (source) =>
+        source.recordType === "withdrawal-notice" &&
+        source.withdrawsSourceRef !== null &&
+        observation.sourceRefs.includes(source.withdrawsSourceRef),
+    );
+    if (
+      (observation.status === "current" && (hasCorrection || hasWithdrawal)) ||
+      (observation.status === "corrected" && !hasCorrection) ||
+      (observation.status === "withdrawn" && !hasWithdrawal)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_observation_status",
+          `observations.${index}.status`,
+          "Observation status must visibly reflect linked correction or withdrawal lineage.",
+        ),
+      );
+    }
+    for (const [claimIndex, claim] of observation.claims.entries()) {
+      claimIds.push(claim.id);
+      requireReferences(
+        claim.sourceRefs,
+        sourceSet,
+        `observations.${index}.claims.${claimIndex}.sourceRefs`,
+        "Claim source reference",
+      );
+      if (
+        claim.sourceRefs.some((ref) => !observation.sourceRefs.includes(ref)) ||
+        (observation.status === "withdrawn" && claim.status !== "withdrawn") ||
+        (observation.status !== "withdrawn" && claim.status === "withdrawn")
+      ) {
+        findings.push(
+          finding(
+            "claim_source_mismatch",
+            `observations.${index}.claims.${claimIndex}`,
+            "Claims must cite their observation sources and visibly preserve withdrawn support status.",
+          ),
+        );
+      }
+    }
+    if (
+      observation.priority.policyRef !== value.watch.priorityPolicy.id ||
+      !thresholdById.has(observation.priority.thresholdRef) ||
+      thresholdById.get(observation.priority.thresholdRef)?.level !== observation.priority.level
+    ) {
+      findings.push(
+        finding(
+          "invalid_priority_policy",
+          `observations.${index}.priority`,
+          "Observation priority must cite the declared policy and a matching owner-review threshold.",
+        ),
+      );
+    }
+  }
+  findings.push(...uniqueFindings(claimIds, "observations.claims", "Claim id"));
+  for (const source of value.sources) {
+    if (!observedSourceSet.has(source.id)) {
+      findings.push(
+        finding(
+          "unobserved_source",
+          "sources",
+          `Source ${JSON.stringify(source.id)} must support a retained typed observation.`,
+        ),
+      );
+    }
+  }
+
+  for (const [index, delta] of value.deltas.entries()) {
+    requireReferences(
+      delta.observationRefs,
+      observationSet,
+      `deltas.${index}.observationRefs`,
+      "Delta observation reference",
+    );
+    requireReferences(
+      delta.baselineObservationRefs,
+      observationSet,
+      `deltas.${index}.baselineObservationRefs`,
+      "Baseline observation reference",
+    );
+    requireReferences(
+      delta.contradictsDeltaRefs,
+      deltaSet,
+      `deltas.${index}.contradictsDeltaRefs`,
+      "Contradicted delta reference",
+    );
+    requireReferences(
+      delta.supersedesDeltaRefs,
+      deltaSet,
+      `deltas.${index}.supersedesDeltaRefs`,
+      "Superseded delta reference",
+    );
+    const requiresBaseline = [
+      "changed",
+      "corrected",
+      "withdrawn",
+      "contradictory",
+      "unchanged",
+    ].includes(delta.classification);
+    if (
+      (delta.classification === "new" &&
+        (delta.baselineObservationRefs.length > 0 ||
+          delta.observationRefs.some((ref) => baselineObservationSet.has(ref)))) ||
+      (requiresBaseline &&
+        (delta.baselineObservationRefs.length === 0 ||
+          delta.baselineObservationRefs.some((ref) => !baselineObservationSet.has(ref)))) ||
+      (delta.classification === "contradictory" &&
+        (delta.observationRefs.length < 2 ||
+          delta.contradictsDeltaRefs.length === 0 ||
+          delta.contradictsDeltaRefs.includes(delta.id))) ||
+      delta.supersedesDeltaRefs.includes(delta.id) ||
+      (delta.classification === "unchanged" &&
+        delta.decisionRelevance.state !== "no-change") ||
+      (delta.classification !== "unchanged" &&
+        delta.decisionRelevance.state === "no-change")
+    ) {
+      findings.push(
+        finding(
+          "invalid_delta_classification",
+          `deltas.${index}`,
+          "Delta classifications must preserve baseline, contradiction, supersession, and decision-relevance state.",
+        ),
+      );
+    }
+    const observations = delta.observationRefs
+      .map((ref) => observationById.get(ref))
+      .filter(Boolean);
+    if (
+      (delta.classification === "changed" &&
+        !observations.some((item) =>
+          item.sourceRefs.some((ref) => sourceById.get(ref)?.supersedesSourceRef !== null),
+        )) ||
+      (delta.classification === "corrected" &&
+        !observations.some((item) => item.status === "corrected")) ||
+      (delta.classification === "withdrawn" &&
+        !observations.some((item) => item.status === "withdrawn"))
+    ) {
+      findings.push(
+        finding(
+          "delta_lifecycle_mismatch",
+          `deltas.${index}.classification`,
+          "Changed, corrected, and withdrawn deltas require matching source and observation lifecycle evidence.",
+        ),
+      );
+    }
+  }
+
+  const deltaObservationRefs = new Set(value.deltas.flatMap((item) => item.observationRefs));
+  const baselineDeltaRefs = value.deltas.flatMap((item) => item.baselineObservationRefs);
+  for (const observation of value.observations) {
+    if (!deltaObservationRefs.has(observation.id)) {
+      findings.push(
+        finding(
+          "unclassified_observation",
+          "observations",
+          `Observation ${JSON.stringify(observation.id)} must be classified by at least one delta.`,
+        ),
+      );
+    }
+  }
+  for (const baselineObservation of baselineObservationSet) {
+    if (!baselineDeltaRefs.includes(baselineObservation)) {
+      findings.push(
+        finding(
+          "untracked_baseline_observation",
+          "watch.baseline.observationRefs",
+          `Baseline observation ${JSON.stringify(baselineObservation)} must be named by a delta baseline reference.`,
+        ),
+      );
+    }
+  }
+  for (const baselineSource of baselineSourceSet) {
+    if (
+      !value.watch.baseline.observationRefs.some((ref) =>
+        observationById.get(ref)?.sourceRefs.includes(baselineSource),
+      )
+    ) {
+      findings.push(
+        finding(
+          "unrelated_baseline_source",
+          "watch.baseline.sourceRefs",
+          `Baseline source ${JSON.stringify(baselineSource)} must support a declared baseline observation.`,
+        ),
+      );
+    }
+  }
+
+  for (const [index, review] of value.reviewQueue.entries()) {
+    requireReferences(
+      review.observationRefs,
+      observationSet,
+      `reviewQueue.${index}.observationRefs`,
+      "Review observation reference",
+    );
+    requireReferences(
+      review.deltaRefs,
+      deltaSet,
+      `reviewQueue.${index}.deltaRefs`,
+      "Review delta reference",
+    );
+    if (
+      review.owner !== value.watch.decisionOwner ||
+      (review.status === "resolved" && !review.resolution?.trim()) ||
+      (review.status === "open" && review.resolution !== null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_review_queue",
+          `reviewQueue.${index}`,
+          "Owner review items must retain the declared owner and coherent status and resolution.",
+        ),
+      );
+    }
+  }
+  const highObservationIds = value.observations
+    .filter((item) => item.priority.level === "high")
+    .map((item) => item.id);
+  if (
+    highObservationIds.some(
+      (id) =>
+        !value.reviewQueue.some(
+          (item) => item.priority === "high" && item.observationRefs.includes(id),
+        ),
+    )
+  ) {
+    findings.push(
+      finding(
+        "missing_priority_review",
+        "reviewQueue",
+        "Every high-priority observation must be visible in an owner review queue item.",
+      ),
+    );
+  }
+  const requiredReviewDeltaIds = value.deltas
+    .filter((item) => item.decisionRelevance.state === "decision-relevant")
+    .map((item) => item.id);
+  if (
+    requiredReviewDeltaIds.some(
+      (id) => !value.reviewQueue.some((item) => item.deltaRefs.includes(id)),
+    )
+  ) {
+    findings.push(
+      finding(
+        "missing_required_review",
+        "reviewQueue",
+        "Every decision-relevant delta must be routed to an accountable owner review.",
+      ),
+    );
+  }
+
+  for (const [index, item] of value.gapsAndBlockers.entries()) {
+    requireReferences(
+      item.sourceRefs,
+      sourceSet,
+      `gapsAndBlockers.${index}.sourceRefs`,
+      "Gap source reference",
+    );
+    requireReferences(
+      item.observationRefs,
+      observationSet,
+      `gapsAndBlockers.${index}.observationRefs`,
+      "Gap observation reference",
+    );
+    requireReferences(
+      item.deltaRefs,
+      deltaSet,
+      `gapsAndBlockers.${index}.deltaRefs`,
+      "Gap delta reference",
+    );
+    if (item.owner !== value.watch.decisionOwner) {
+      findings.push(
+        finding(
+          "owner_mismatch",
+          `gapsAndBlockers.${index}.owner`,
+          "Gaps and blockers must remain assigned to the declared decision owner.",
+        ),
+      );
+    }
+  }
+
+  if (
+    value.handoff.owner !== value.watch.decisionOwner ||
+    value.handoff.classification !== value.watch.outputClassification ||
+    value.handoff.destination !== value.watch.destination ||
+    !isSafePackagePath(value.handoff.destination) ||
+    !value.handoff.destination.startsWith("outputs/")
+  ) {
+    findings.push(
+      finding(
+        "private_handoff_mismatch",
+        "handoff",
+        "The private handoff must preserve the declared owner, classification, and portable outputs/ destination.",
+      ),
+    );
+  }
+  if (
+    /^(?:the )?(?:agent|assistant|claw)$/iu.test(value.watch.decisionOwner.trim()) ||
+    /\b(?:ai|bot|gpt|language model|research monitor)\b/iu.test(
+      value.watch.decisionOwner,
+    )
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "watch.decisionOwner",
+        "Topic-watch review and decision authority must remain with a named human or team.",
+      ),
+    );
+  }
+
+  requireCompleteReferences(value.handoff.sourceRefs, sourceIds, "handoff.sourceRefs", "Source");
+  requireCompleteReferences(
+    value.handoff.observationRefs,
+    observationIds,
+    "handoff.observationRefs",
+    "Observation",
+  );
+  requireCompleteReferences(value.handoff.deltaRefs, deltaIds, "handoff.deltaRefs", "Delta");
+  requireCompleteReferences(
+    value.handoff.reviewQueueRefs,
+    reviewIds,
+    "handoff.reviewQueueRefs",
+    "Review queue item",
+  );
+  requireCompleteReferences(
+    value.handoff.gapAndBlockerRefs,
+    gapIds,
+    "handoff.gapAndBlockerRefs",
+    "Gap or blocker",
+  );
+  const openBlockerIds = value.gapsAndBlockers
+    .filter((item) => item.kind === "blocker" && item.status === "open")
+    .map((item) => item.id);
+  requireReferences(
+    value.handoff.blockerRefs,
+    gapSet,
+    "handoff.blockerRefs",
+    "Handoff blocker reference",
+  );
+  if (
+    value.handoff.blockerRefs.some((ref) => !openBlockerIds.includes(ref)) ||
+    (value.handoff.state === "blocked" &&
+      (openBlockerIds.length === 0 ||
+        openBlockerIds.some((id) => !value.handoff.blockerRefs.includes(id))))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff.blockerRefs",
+        "Blocked handoffs must name every and only open blocker.",
+      ),
+    );
+  }
+  const expectedHandoffState =
+    value.watch.state === "ready" ? "ready-for-owner-review" : value.watch.state;
+  if (value.handoff.state !== expectedHandoffState) {
+    findings.push(
+      finding(
+        "inconsistent_ready_state",
+        "handoff.state",
+        "The watch and handoff state must remain consistent.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    (value.sources.some((item) => item.freshness !== "current") ||
+      value.observations.some((item) =>
+        item.sourceRefs.some((ref) => sourceById.get(ref)?.freshness !== "current"),
+      ) ||
+      value.observations.some((item) => item.decisionRelevance.state === "unresolved") ||
+      value.deltas.some((item) => item.decisionRelevance.state === "unresolved") ||
+      value.reviewQueue.some((item) => item.status !== "resolved") ||
+      value.gapsAndBlockers.some((item) => item.status !== "resolved") ||
+      openBlockerIds.length > 0 ||
+      value.handoff.blockerRefs.length > 0)
+  ) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "Ready handoffs require current retained evidence, complete classifications, resolved owner reviews and gaps, and no blockers.",
+      ),
+    );
+  }
+
+  for (const action of requiredActions) {
+    if (!value.blockedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Topic watch delta ledgers must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+    if (!value.handoff.prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `Topic watch delta ledgers must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  const narrativeTexts = [
+    value.watch.topic,
+    ...value.watch.questions,
+    ...value.sources.flatMap((item) => [item.title, item.scope]),
+    ...value.observations.flatMap((item) => [
+      item.summary,
+      item.uncertainty,
+      item.topicRelevance.rationale,
+      item.decisionRelevance.rationale,
+      item.priority.rationale,
+      ...item.claims.flatMap((claim) => [claim.statement, claim.uncertainty]),
+    ]),
+    ...value.deltas.flatMap((item) => [item.summary, item.decisionRelevance.rationale]),
+    ...value.reviewQueue.flatMap((item) => [item.question, item.resolution ?? ""]),
+    ...value.gapsAndBlockers.map((item) => item.description),
+    value.synthesis.consensus.rationale,
+    value.synthesis.causalInference.rationale,
+    value.synthesis.summary,
+  ];
+  const prohibitedNarrative =
+    /\b(?:(?:bypass|circumvent)(?:ing)?|rout(?:e|ing) around) (?:publisher )?access controls?|\b(?:reproduc(?:e|ing)|copy(?:ing)?|past(?:e|ing)|quot(?:e|ing)|extract(?:ing)?) (?:restricted|paywalled) (?:content|text)|\b(?:publish(?:ed|ing)?|post(?:ed|ing)?|announc(?:e|ed|ing)|communicat(?:e|ed|ing)|contact(?:ed|ing)?|email(?:ed|ing)?|messag(?:e|ed|ing)) (?:an? )?(?:external|public|source|authority|audience|party)|\b(?:subscribe|subscribed|subscribing|create|created|creating|change|changed|changing|updat(?:e|ed|ing)) (?:an? )?(?:account|subscription)|\b(?:disclos(?:e|ed|ing)|leak(?:ed|ing)?|expos(?:e|ed|ing)|send(?:ing|sent)?) (?:(?:a|the) )?(?:credential|secret|token|sensitive (?:query|topic|question))|\b(?:fabricat(?:e|ed|ing)|invent(?:ed|ing)?) (?:a |the )?(?:source|claim|evidence)|\b(?:autonomously|automatically) (?:chang(?:e|ed|ing)|updat(?:e|ed|ing)|mak(?:e|ing)) (?:a |the )?(?:decision|action)|\b(?:chang(?:e|ed|ing)|updat(?:e|ed|ing)|mak(?:e|ing)) (?:a |the )?(?:decision|action) (?:autonomously|without (?:the )?(?:owner|review))|\b(?:infer|inferred|assert|asserted|declare|declared) (?:a )?consensus|\b(?:prove|proved|proving|establish|establishes|established|establishing|assert|asserts|asserted|asserting|infer|infers|inferred|inferring) (?:a )?(?:causal|cause-and-effect) (?:effect|relationship)|\b(?:causes?|causing|caused by|will cause)\b/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unsafe_narrative_content",
+        "observations",
+        "Topic-watch artifacts must not bypass controls, reproduce restricted content, contact or publish externally, change accounts, disclose credentials or sensitive queries, fabricate records, infer consensus or causality, or change decisions autonomously.",
       ),
     );
   }
@@ -16294,6 +17133,7 @@ const validators = {
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
   "professional-networking-followup": professionalNetworkingFindings,
   "public-company-watcher": companyDisclosureLedgerFindings,
+  "research-monitor": topicWatchDeltaLedgerFindings,
   "research-scout": researchEvidenceDeltaFindings,
   "resume-portfolio-curator": resumePortfolioFindings,
   "project-manager": projectFindings,

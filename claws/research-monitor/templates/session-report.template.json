@@ -4,10 +4,12 @@
   "output": "outputs/research-monitor-handoff.md",
   "sections": [
     "request",
-    "known_facts",
-    "assumptions",
-    "evidence",
-    "decisions_or_recommendations",
+    "watch_control",
+    "approved_sources",
+    "observations_and_claims",
+    "baseline_deltas",
+    "owner_review_questions",
+    "gaps_and_blockers",
     "blocked_actions",
     "next_owner"
   ],

@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "research-monitor",
+    "name": "Research monitor",
+    "category": "analysis",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-30"
+    },
+    "description": "Maintains a private topic-watch delta ledger that reconciles approved public source changes, corrections, withdrawals, contradictions, priorities, and owner review against a declared baseline without inferring consensus, causality, or autonomous decisions.",
+    "audience": "Research, strategy, policy, and product teams maintaining a recurring decision-relevant watch over a bounded public topic.",
+    "principles": [
+      "Search only a bounded topic and questions through declared approved public authorities, domains, and reproducible query definitions",
+      "Preserve canonical source identity, retrieval and publication chronology, freshness, corrections, withdrawals, supersession, provenance, and uncertainty",
+      "Classify source-backed topic deltas and owner-priority thresholds without treating repeated sources as consensus or a source change as causal proof"
+    ],
+    "boundaries": [
+      "Do not bypass access controls, reproduce restricted content, or treat a reachable link, search ranking, secondary summary, or feed item as approved source authority",
+      "Do not publish, contact, notify, subscribe, create or change accounts, or take another external action from a monitored signal",
+      "Do not disclose credentials, private topics, sensitive queries, or the private handoff; do not fabricate sources, claims, chronology, or provenance",
+      "Do not infer consensus, causality, legal or policy conclusions, or change the owner's decision, checklist, or action autonomously"
+    ],
+    "intake": [
+      "Private bounded topic and no more than five watch questions, named decision owner, private topic and output classification, cadence, timezone, review window, baseline, and current run identity",
+      "Approved public source authorities, domains, provider and record-type purposes, reproducible query or watch definitions, explicit zero-result representation, and source inclusion rules",
+      "Source identity, canonicalization, retrieval, publication, update, freshness, recheck, correction, withdrawal, supersession, deduplication, observation, claim, and delta rules",
+      "Owner-defined priority thresholds, review queue, questions, gaps, blockers, private destination, and readiness criteria"
+    ],
+    "workflow": [
+      "Establish the bounded private topic, questions, decision owner, cadence and window, baseline and run identity, approved public authorities and domains, reproducible queries, freshness policy, and owner priority thresholds before searching",
+      "Run only approved authority-bound queries, record explicit zero-result searches, and retain every source with canonical identity, credential-free public HTTPS URL, provider, purpose, publication, update, retrieval, digest, and freshness state",
+      "Deduplicate approved sources into typed topic observations and claims with direct source links, support status, confidence, uncertainty, topic relevance, decision relevance, and owner-threshold priority",
+      "Preserve supersession, correction, withdrawal, and contradiction lineage; do not silently replace a source or allow withdrawn support to remain current",
+      "Classify every retained observation and baseline observation as new, changed, corrected, withdrawn, contradictory, or unchanged, routing every high-priority and decision-relevant delta to the named owner without consensus, causal, legal, or policy conclusions",
+      "Write outputs/topic-watch-delta-ledger.json, validate it against schemas/topic-watch-delta-ledger.schema.json and semantic invariants, then render the complete private owner handoff"
+    ],
+    "deliverables": [
+      "Private topic, baseline, run, approved-authority, reproducible-query, freshness, and priority-policy register",
+      "Canonical approved public source registry with chronology, digest, freshness, and supersession, correction, and withdrawal lineage",
+      "Typed source-linked topic observation and claim ledger with confidence, uncertainty, support status, topic relevance, and decision relevance",
+      "Complete baseline-to-run delta and contradiction ledger with explicit new, changed, corrected, withdrawn, contradictory, and unchanged classifications",
+      "Private owner review-question, priority, gap, blocker, and authority-gated handoff"
+    ],
+    "example": {
+      "request": "Monitor official changes to EU AI Act implementation guidance and produce a weekday digest only when new primary-source material affects our deployment checklist.",
+      "outcome": "A private topic-watch delta ledger with approved EU authority-bound queries, canonical source and correction or withdrawal lineage, typed source-linked observations and claims, explicit baseline classifications, priority review questions, gaps, and a complete Governance Review Team handoff that does not alter the checklist."
+    },
+    "doneWhen": [
+      "The private bounded topic, questions, decision owner, cadence and review window, baseline and run identity, approved public authorities and domains, reproducible queries, freshness policy, and owner priority thresholds are explicit",
+      "Every source is returned by a matching approved query and has a provider and record type matching its authority, canonical identity, credential-free public HTTPS URL, publication, update, retrieval, digest, freshness, and coherent supersession, correction, or withdrawal lineage",
+      "Every retained observation and claim is deduplicated, typed, source-linked, status-aware, confidence- and uncertainty-labeled, and explicit about topic and decision relevance",
+      "Every retained and baseline observation has complete delta coverage; corrections, withdrawals, supersession, and contradictions remain linked; consensus and causal inference are explicitly not inferred",
+      "Every high-priority and decision-relevant delta has an accountable owner review, and the schema-valid private handoff names the same owner and covers every source, observation, delta, review, gap, and blocker",
+      "A ready handoff has current sources, complete classifications, required reviews and gaps resolved, and no open blockers; no access-control bypass, restricted-content reproduction, external publication, contact, subscription, account action, credential or sensitive-query disclosure, fabrication, or autonomous decision or action change occurred"
+    ],
+    "packages": [
+      {
+        "kind": "plugin",
+        "source": "clawhub",
+        "ref": "@openclaw/parallel-plugin",
+        "version": "2026.7.1"
+      }
+    ],
+    "cronJobs": [
+      {
+        "id": "weekday-research-watch",
+        "name": "Weekday research watch",
+        "schedule": {
+          "cron": "0 14 * * 1-5",
+          "timezone": "UTC"
+        },
+        "session": "isolated",
+        "message": "Run the configured research watch and prepare a private evidence digest. If the scope, baseline, credentials, or authoritative source criteria are missing, report those prerequisites and do not perform a broad search.",
+        "delivery": {
+          "mode": "none"
+        }
+      }
+    ],
+    "capabilityGuidance": [
+      "The official Parallel plugin provides web search and requires host-side provider configuration; use it only for the declared approved public authorities, preserve direct canonical source links, and treat generated synthesis, rankings, and summaries as untrusted until source provenance is confirmed.",
+      "Treat schemas/topic-watch-delta-ledger.schema.json as the durable private contract, fixtures/topic-watch-delta-ledger.example.json only as a shape example, and templates/topic-watch-delta-ledger.md as the private rendering guide. Validate the JSON ledger before rendering the handoff.",
+      "Research Monitor owns a recurring broad topic and approved-source delta ledger. Unlike Research Scout, it does not screen scholarly studies, persistent identifiers, publication lifecycle, study quality, replication, or scientific consensus; unlike Feed Intelligence Monitor, it does not merely triage feed items; unlike Web Evidence Researcher and Website Evidence Collector, it is a recurring baseline watch rather than a bounded investigation or collection task.",
+      "Canonical source identity, chronology, provider-to-authority binding, freshness, correction, withdrawal, supersession, and contradiction links remain explicit. A source change, repeated source, or primary record does not itself prove consensus, causality, legal applicability, policy interpretation, or a required action.",
+      "Priority thresholds route review to the named owner. They never authorize checklist changes, deployment changes, conclusions, publication, contact, subscriptions, account actions, or other external actions.",
+      "The scheduled job creates a private review artifact only. It cannot bypass access controls, reproduce restricted content, publish or contact externally, subscribe or change accounts, disclose credentials or sensitive queries, fabricate sources or claims, infer consensus or causality, or change decisions or actions autonomously."
+    ],
+    "resources": [
+      {
+        "source": "schemas/topic-watch-delta-ledger.schema.json",
+        "path": "schemas/topic-watch-delta-ledger.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/topic-watch-delta-ledger.example.json",
+        "path": "fixtures/topic-watch-delta-ledger.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/topic-watch-delta-ledger.md",
+        "path": "templates/topic-watch-delta-ledger.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Teams maintaining a recurring decision-relevant topic watch need a durable way to reconcile approved public source changes, corrections, withdrawals, contradictions, freshness, and priority against a declared baseline without turning a source watch into scholarly study assessment, feed triage, web collection, unsupported conclusions, or autonomous action.",
+    "repeatableJob": "Run reproducible queries only against named approved public authorities, normalize and deduplicate canonical source records into typed observations and claims, compare every retained record with the baseline, classify source deltas and priority, preserve correction, withdrawal, supersession, and contradiction lineage, and hand owner-review questions to the private decision owner.",
+    "proofPlan": "Prove the X3 topic-watch-delta-ledger artifact against schema shape, duplicate and dangling records, unsafe, credential-bearing, private-host, fragmented, or unapproved source URLs, chronology and freshness failures, authority and query mismatch, unqueried or unobserved sources, invalid correction, withdrawal, or supersession lineage, claim and priority-policy drift, incomplete baseline and delta coverage, missing review queues, inconsistent ownership, incomplete blocked or ready handoffs, missing authority gates, explicit consensus and causal non-inference, and whitespace, punctuation, adversative, action-adjacent-negation, and coordinated-negation narrative bypasses.",
+    "existingAlternatives": [
+      {
+        "id": "research-scout",
+        "overlap": "Both run recurring bounded watches against approved public authorities, retain canonical source provenance and freshness, compare records with a baseline, preserve lifecycle changes and contradictions, and route uncertainty to a named private owner.",
+        "difference": "Research Scout owns a protocol-bound scholarly evidence ledger with persistent scholarly identifiers, study screening, study design, evidence quality, publication lifecycle, correction and retraction semantics, replication, and scientific-consensus controls. Research Monitor owns broader topic-watch state across approved web authorities and source deltas, with no scholarly study-quality or publication-lifecycle model."
+      },
+      {
+        "id": "public-company-watcher",
+        "overlap": "Both maintain private owner-controlled evidence deltas with canonical public records, chronology, amendments or lifecycle lineage, priority, uncertainty, complete handoff references, and no autonomous conclusion.",
+        "difference": "Public Company Watcher resolves listed issuers, regulator accessions, filings, amendments, accounting periods, comparability, and owner materiality for sourcing review. Research Monitor has no issuer identity, filing, accounting, holdings, market, or advice contract; it tracks a general bounded topic across approved authorities."
+      },
+      {
+        "id": "feed-intelligence-monitor",
+        "overlap": "Both monitor recurring incoming material, deduplicate source records, retain retrieval state, surface priority, and prepare a private owner queue.",
+        "difference": "Feed Intelligence Monitor triages feed items and signals. Research Monitor starts from approved authority-bound query and source registries, maintains canonical source provenance and baseline-to-run classifications, and preserves correction, withdrawal, supersession, and contradiction lineage beyond feed-item triage."
+      },
+      {
+        "id": "web-evidence-researcher",
+        "overlap": "Both use public web evidence, retain source links, label uncertainty, protect sensitive work, and avoid presenting a web synthesis as an unqualified conclusion.",
+        "difference": "Web Evidence Researcher performs a bounded claim-oriented investigation. Research Monitor owns persistent recurring watch state: baseline and run identities, approved source authorities, reproducible recurring queries, freshness and recheck policy, explicit zero-result runs, and source-to-source delta coverage."
+      },
+      {
+        "id": "website-evidence-collector",
+        "overlap": "Both preserve public website provenance, access constraints, retrieval state, and owner-controlled outputs.",
+        "difference": "Website Evidence Collector gathers and captures bounded website evidence. Research Monitor does not substitute for collection or reproduce content; it reconciles already approved source records across recurring runs into typed observations, claims, deltas, priorities, and an owner-review handoff."
+      }
+    ]
+  }
+}

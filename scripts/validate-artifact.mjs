@@ -53,6 +53,7 @@ const schemaNames = {
   "pond-water-feature-coordinator": "pond-system.schema.json",
   "professional-networking-followup": "networking-followup.schema.json",
   "public-company-watcher": "company-disclosure-ledger.schema.json",
+  "research-monitor": "topic-watch-delta-ledger.schema.json",
   "research-scout": "research-evidence-delta.schema.json",
   "resume-portfolio-curator": "resume-portfolio.schema.json",
   "project-manager": "project-state.schema.json",

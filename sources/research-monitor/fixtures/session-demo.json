@@ -9,7 +9,7 @@
     },
     {
       "role": "agent",
-      "text": "I identified the research decision, the evidence needed, and the boundary that must stay human-owned."
+      "text": "I identified the bounded topic, approved source authorities, baseline, owner threshold, and actions that must remain human-owned."
     },
     {
       "role": "user",
@@ -17,41 +17,41 @@
     },
     {
       "role": "agent",
-      "text": "I produced outputs/research-monitor-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+      "text": "I produced outputs/research-monitor-handoff.md with canonical source deltas, uncertainty, review questions, and the accountable owner separated from any decision."
     }
   ],
   "report": {
     "title": "Research monitor session handoff",
-    "summary": "A private source-linked delta digest with retrieval dates, affected checklist items, contradictory guidance, and questions for legal review, without external publication.",
+    "summary": "A private approved-source topic-watch delta ledger with chronology, correction and withdrawal lineage, explicit classifications, and accountable owner review without external action.",
     "output": "outputs/research-monitor-handoff.md",
     "items": [
       {
-        "title": "Source watch definition",
-        "summary": "Every reported change is traceable to a retrieved authoritative source",
+        "title": "Approved topic watch",
+        "summary": "Every source traces to an approved authority-bound query, baseline, and current run",
         "tags": [
           "fact-based",
           "reviewable"
         ]
       },
       {
-        "title": "Dated evidence digest",
-        "summary": "The digest distinguishes new evidence, repeated coverage, inference, and uncertainty",
+        "title": "Typed observations and claims",
+        "summary": "The ledger preserves direct source links, status, confidence, uncertainty, and relevance",
         "tags": [
           "evidence",
           "owner-visible"
         ]
       },
       {
-        "title": "Change and contradiction ledger",
-        "summary": "Do not publish, notify external audiences, or take action from a monitored signal without human review",
+        "title": "Baseline delta ledger",
+        "summary": "New, changed, corrected, withdrawn, contradictory, and unchanged records remain explicit without consensus or causal inference",
         "tags": [
           "approval-gated",
           "safe fallback"
         ]
       },
       {
-        "title": "Human review queue",
-        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "title": "Owner review queue",
+        "summary": "Priority thresholds route review to the accountable owner without changing a decision or action.",
         "tags": [
           "handoff",
           "durable"

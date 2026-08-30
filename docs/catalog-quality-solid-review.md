@@ -1,23 +1,24 @@
 # Solid-band review
 
-This review covers the 14 Claws remaining in the Solid band after Document
+This review covers the 13 Claws remaining in the Solid band after Document
 Intake Analyst moved from 69 to 94, Fundraising Campaign Manager moved from 79
 to 95, Travel Concierge moved from 78 to 100, and Media Evidence Reviewer moved
 from 73 to 95, Spreadsheet Analyst moved from 73 to 95 on 2026-08-29, and Travel
 Planner completed its public-source itinerary and readiness artifact uplift, and
 Public Company Watcher completed its filed-disclosure delta-ledger uplift on
 2026-08-30, and Research Scout completed its scholarly evidence-delta ledger
-uplift on 2026-08-29. All 14 remaining entries pass the non-negotiable package,
-regression, resource, and Experience gates. Their lower scores describe
+uplift on 2026-08-29, and Research Monitor completed its approved-source
+topic-watch delta ledger uplift on 2026-08-30. All 13 remaining entries pass the
+non-negotiable package, regression, resource, and Experience gates. Their lower scores describe
 reviewability and artifact-depth gaps, not observed live-model failures.
 
 ## Shared pattern
 
-- All 14 remaining entries are grandfathered without retrospective contribution records.
+- All 13 remaining entries are grandfathered without retrospective contribution records.
   That is a five-point documentation gap, not a failed admission.
-- All 14 remaining entries lack registered semantic validators.
-- All 14 remaining entries lack a local structured-artifact schema.
-- All 14 have complete operating contracts, screenshots, regression cases, and
+- All 13 remaining entries lack registered semantic validators.
+- All 13 remaining entries lack a local structured-artifact schema.
+- All 13 have complete operating contracts, screenshots, regression cases, and
   active maintenance.
 
 ## Current entries
@@ -32,7 +33,6 @@ reviewability and artifact-depth gaps, not observed live-model failures.
 | `knowledge-curator` | 78 | No local schema or semantic validator | Keep narrative knowledge structure unless a durable index contract emerges |
 | `content-operations` | 78 | No local schema or semantic validator | A claim/approval ledger could help; avoid schema for prose itself |
 | `knowledge-gardener` | 73 | No local schema or semantic validator | Notion owns page structure; add local state only for reviewable change plans |
-| `research-monitor` | 73 | No local schema or semantic validator | A watchlist and evidence-delta ledger is a natural structured artifact |
 | `presentation-producer` | 73 | No local schema or semantic validator | Keep the deck as the primary artifact unless a claim/source/approval manifest is needed |
 | `feed-intelligence-monitor` | 73 | No local schema or semantic validator | A feed-item evidence and deduplication ledger is a natural structured artifact |
 | `meeting-intelligence` | 73 | No local schema or semantic validator | A consented transcript/action/decision ledger can add durable invariants |
@@ -56,10 +56,13 @@ source, amendment, filed-fact, comparability, owner-materiality, interpretation,
 and private-handoff ledger. Research Scout completed this path on 2026-08-29
 with a protocol-bound scholarly evidence ledger covering persistent identifiers,
 screening, lifecycle and correction/retraction lineage, quality, contradictions,
-replication, and private owner handoff. The remaining strongest candidates are
-`research-monitor`, `feed-intelligence-monitor`,
-`web-evidence-researcher`, `website-evidence-collector`, and
-`meeting-intelligence`. Their recurring work
+replication, and private owner handoff. Research Monitor completed this path on
+2026-08-30 with a private approved-source topic-watch ledger covering bounded
+questions, source provenance, freshness, correction, withdrawal, supersession,
+contradiction, priority, and owner review without duplicating Research Scout's
+scholarly study-quality and publication-lifecycle controls. The remaining
+strongest candidates are `feed-intelligence-monitor`, `web-evidence-researcher`,
+`website-evidence-collector`, and `meeting-intelligence`. Their recurring work
 already depends on source identity, freshness, lineage, chronology, confidence,
 or consent that JSON Schema plus semantic checks can enforce.
 
@@ -74,9 +77,9 @@ duplicated merely to raise a score.
 
 ## Recommended order
 
-1. `research-monitor`: define a recurring evidence-delta ledger only if its
-   general topic-watch contract has durable source, freshness, and owner-review
-   invariants distinct from Research Scout's scholarly lifecycle model.
+1. `feed-intelligence-monitor`: define a feed-item evidence and deduplication
+   ledger only if it retains distinct triage and queue state rather than
+   duplicating Research Monitor's authority-bound topic-watch delta contract.
 
 Backfill contribution records alongside substantive work. For entries already
 at 78-79, a retrospective record alone may move the score into Strong, but it

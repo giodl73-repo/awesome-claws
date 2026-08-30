@@ -45,9 +45,9 @@ highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 54 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 86 of 100 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 66 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 55 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 87 of 100 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 67 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
@@ -59,6 +59,14 @@ scholarly evidence-delta ledger: approved public authorities, persistent
 identifier and lifecycle controls, quality and contradiction records, a
 replication queue, and owner-only handoff make its recurring research watch
 reviewable without turning it into a general web researcher, company watcher, or
+autonomous decision maker.
+
+Research Monitor now complements that contract with a private, authority-bound
+topic-watch delta ledger: recurring queries, canonical public-source
+provenance, freshness, correction, withdrawal, supersession, contradiction,
+priority, and owner-review controls make a general decision-relevant watch
+reviewable without becoming scholarly study assessment, feed-item triage,
+bounded web investigation, website collection, issuer monitoring, or an
 autonomous decision maker.
 
 Potential additions remain subject to the

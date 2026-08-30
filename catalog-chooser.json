@@ -2823,15 +2823,15 @@
     {
       "id": "research-monitor",
       "name": "Research monitor",
-      "description": "Runs a bounded source watch and produces a private evidence digest for a named decision area.",
-      "audience": "Research, strategy, and product teams monitoring a defined topic without automating publication or decisions.",
+      "description": "Maintains a private topic-watch delta ledger that reconciles approved public source changes, corrections, withdrawals, contradictions, priorities, and owner review against a declared baseline without inferring consensus, causality, or autonomous decisions.",
+      "audience": "Research, strategy, policy, and product teams maintaining a recurring decision-relevant watch over a bounded public topic.",
       "category": "analysis",
       "maintenance": {
         "status": "active",
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-30"
       },
       "setup": {
         "level": "medium",

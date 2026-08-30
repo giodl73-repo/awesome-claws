@@ -458,13 +458,16 @@
       "id": "research-monitor",
       "acceptedRequest": "Monitor official changes to EU AI Act implementation guidance and produce a weekday digest only when new primary-source material affects our deployment checklist.",
       "requiredEvidence": [
-        "Decision area, watch questions, inclusion and exclusion terms, and jurisdictions",
-        "Required sources, recency, authority threshold, and known baseline",
-        "Review cadence, private destination, accountable owner, and escalation criteria"
+        "Private bounded topic and no more than five watch questions, named decision owner, private topic and output classification, cadence, timezone, review window, baseline, and current run identity",
+        "Approved public source authorities, domains, provider and record-type purposes, reproducible query or watch definitions, explicit zero-result representation, and source inclusion rules",
+        "Source identity, canonicalization, retrieval, publication, update, freshness, recheck, correction, withdrawal, supersession, deduplication, observation, claim, and delta rules",
+        "Owner-defined priority thresholds, review queue, questions, gaps, blockers, private destination, and readiness criteria"
       ],
       "authorityBoundaries": [
-        "Do not publish, notify external audiences, or take action from a monitored signal without human review",
-        "Do not bypass access controls, reproduce restricted material, or treat search ranking as source authority"
+        "Do not bypass access controls, reproduce restricted content, or treat a reachable link, search ranking, secondary summary, or feed item as approved source authority",
+        "Do not publish, contact, notify, subscribe, create or change accounts, or take another external action from a monitored signal",
+        "Do not disclose credentials, private topics, sensitive queries, or the private handoff; do not fabricate sources, claims, chronology, or provenance",
+        "Do not infer consensus, causality, legal or policy conclusions, or change the owner's decision, checklist, or action autonomously"
       ],
       "experience": {
         "target": 3,
