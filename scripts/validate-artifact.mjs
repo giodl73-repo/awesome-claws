@@ -65,6 +65,7 @@ const schemaNames = {
   "stock-portfolio-monitor": "stock-portfolio.schema.json",
   "subscription-manager": "subscription-ledger.schema.json",
   "tax-document-organizer": "tax-document.schema.json",
+  "travel-concierge": "travel-shortlist.schema.json",
   "travel-loyalty-points-organizer": "travel-loyalty.schema.json",
   "vehicle-service-coordinator": "vehicle-service.schema.json",
   "wardrobe-organizer": "wardrobe-plan.schema.json",

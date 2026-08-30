@@ -13,10 +13,12 @@ workspace:
   files:
     - source: schemas/travel-shortlist.schema.json
       path: schemas/travel-shortlist.schema.json
+    - source: fixtures/travel-shortlist.example.json
+      path: fixtures/travel-shortlist.example.json
     - source: assets/travel-command-center.html
       path: assets/travel-command-center.html
-    - source: templates/travel-comparison.md
-      path: templates/travel-comparison.md
+    - source: templates/travel-shortlist.md
+      path: templates/travel-shortlist.md
 packages: []
 mcpServers:
   mapbox:

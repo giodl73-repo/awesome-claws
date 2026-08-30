@@ -4,10 +4,131 @@
   "title": "Travel shortlist",
   "type": "object",
   "additionalProperties": false,
-  "required": ["retrievedAt", "currency", "options", "travelerDecisions"],
+  "required": [
+    "schemaVersion",
+    "trip",
+    "sources",
+    "constraints",
+    "options",
+    "reviewQuestions",
+    "blockedActions",
+    "handoff"
+  ],
   "properties": {
-    "retrievedAt": { "type": "string", "format": "date-time" },
-    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "schemaVersion": { "const": "awesomeClaws.travelShortlist.v1" },
+    "trip": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "owner",
+        "timezone",
+        "asOf",
+        "origin",
+        "destinations",
+        "departureDate",
+        "returnDate",
+        "adults",
+        "children",
+        "rooms",
+        "currency",
+        "budgetAmount",
+        "requestedKinds",
+        "state"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^trip-[a-z0-9-]+$" },
+        "owner": { "$ref": "#/$defs/text" },
+        "timezone": { "$ref": "#/$defs/text" },
+        "asOf": { "type": "string", "format": "date-time" },
+        "origin": { "$ref": "#/$defs/text" },
+        "destinations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/text" }
+        },
+        "departureDate": { "type": "string", "format": "date" },
+        "returnDate": { "type": "string", "format": "date" },
+        "adults": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "children": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "rooms": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "budgetAmount": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+        "requestedKinds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": { "enum": ["flight", "lodging"] }
+        },
+        "state": { "enum": ["draft", "blocked", "ready-for-traveler-review"] }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "authority",
+          "capturedAt",
+          "reference",
+          "freshness",
+          "scope"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "expedia-flight-search",
+              "expedia-lodging-search",
+              "mapbox-place",
+              "mapbox-route",
+              "traveler-note"
+            ]
+          },
+          "authority": { "enum": ["expedia", "mapbox", "user-supplied"] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "$ref": "#/$defs/text" },
+          "freshness": { "enum": ["current", "delayed", "stale", "missing", "conflicting"] },
+          "scope": { "$ref": "#/$defs/text" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "required", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^constraint-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "dates",
+              "budget",
+              "location",
+              "accessibility",
+              "cancellation",
+              "baggage",
+              "nonstop",
+              "loyalty",
+              "party",
+              "room",
+              "other"
+            ]
+          },
+          "label": { "$ref": "#/$defs/text" },
+          "required": { "type": "boolean" },
+          "sourceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
     "options": {
       "type": "array",
       "minItems": 1,
@@ -15,10 +136,29 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["kind", "name", "provider", "retrievedAt", "sourceUrl", "priceSummary", "caveats"],
+        "required": [
+          "id",
+          "kind",
+          "name",
+          "provider",
+          "retrievedAt",
+          "sourceUrl",
+          "sourceRefs",
+          "price",
+          "availabilityState",
+          "cancellationState",
+          "baggageSummary",
+          "locationSummary",
+          "constraintRefs",
+          "state",
+          "fitReason",
+          "caveats",
+          "blockedReason"
+        ],
         "properties": {
+          "id": { "type": "string", "pattern": "^option-[a-z0-9-]+$" },
           "kind": { "enum": ["flight", "lodging"] },
-          "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "name": { "$ref": "#/$defs/text" },
           "provider": { "const": "Expedia Group" },
           "retrievedAt": { "type": "string", "format": "date-time" },
           "sourceUrl": {
@@ -26,11 +166,129 @@
             "format": "uri",
             "pattern": "^https://(?:www\\.)?expedia\\.com(?:/|$)"
           },
-          "priceSummary": { "type": "string", "minLength": 1, "maxLength": 500 },
-          "caveats": { "type": "array", "items": { "type": "string", "maxLength": 500 } }
+          "sourceRefs": { "$ref": "#/$defs/refs" },
+          "price": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["amount", "currency", "basis", "includesTaxesAndFees"],
+            "properties": {
+              "amount": { "type": "number", "exclusiveMinimum": 0 },
+              "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+              "basis": { "enum": ["trip-total", "nightly", "per-traveler", "segment-total"] },
+              "includesTaxesAndFees": { "enum": ["yes", "no", "unknown"] }
+            }
+          },
+          "availabilityState": { "enum": ["visible", "limited", "unavailable", "unknown"] },
+          "cancellationState": {
+            "enum": ["refundable", "partially-refundable", "nonrefundable", "unknown"]
+          },
+          "baggageSummary": { "type": ["string", "null"], "minLength": 1, "maxLength": 500 },
+          "locationSummary": { "type": ["string", "null"], "minLength": 1, "maxLength": 500 },
+          "constraintRefs": { "$ref": "#/$defs/refs" },
+          "state": { "enum": ["recommended", "review-needed", "blocked"] },
+          "fitReason": { "$ref": "#/$defs/text" },
+          "caveats": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/text" }
+          },
+          "blockedReason": { "type": ["string", "null"], "minLength": 1, "maxLength": 500 }
         }
       }
     },
-    "travelerDecisions": { "type": "array", "items": { "type": "string", "maxLength": 500 } }
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "reason", "optionRefs", "sourceRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "$ref": "#/$defs/text" },
+          "reason": { "$ref": "#/$defs/text" },
+          "optionRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "sourceRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "blockedActions": { "$ref": "#/$defs/actions" },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "optionRefs",
+        "blockingOptionRefs",
+        "reviewQuestionRefs",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": { "enum": ["ready-for-traveler-review", "blocked"] },
+        "owner": { "$ref": "#/$defs/text" },
+        "optionRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "blockingOptionRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "reviewQuestionRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "prohibitedActions": { "$ref": "#/$defs/actions" }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "pattern": "\\S"
+    },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "book",
+          "reserve",
+          "purchase",
+          "cancel",
+          "modify-reservation",
+          "check-in",
+          "submit-traveler-data",
+          "submit-payment-data",
+          "accept-terms",
+          "contact-provider",
+          "send-verification-email",
+          "store-verification-code"
+        ]
+      }
+    }
   }
 }

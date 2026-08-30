@@ -89,7 +89,7 @@
       "target": 5,
       "primary": "dashboard",
       "asset": "assets/travel-command-center.html",
-      "fallback": "outputs/travel-comparison.md",
+      "fallback": "outputs/travel-shortlist.md",
       "widgets": [
         "travel-shortlist"
       ],
