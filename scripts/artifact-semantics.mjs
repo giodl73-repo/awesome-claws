@@ -11474,6 +11474,288 @@ function movingPlanFindings(value) {
   return findings;
 }
 
+function spreadsheetChangeFindings(value) {
+  const sheetIds = value.sheets.map((item) => item.id);
+  const transformationIds = value.transformations.map((item) => item.id);
+  const checkIds = value.checks.map((item) => item.id);
+  const exceptionIds = value.exceptions.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sheetSet = new Set(sheetIds);
+  const transformationSet = new Set(transformationIds);
+  const checkSet = new Set(checkIds);
+  const exceptionSet = new Set(exceptionIds);
+  const questionSet = new Set(questionIds);
+  const allRefs = new Set([
+    value.workbook.id,
+    ...sheetIds,
+    ...transformationIds,
+    ...checkIds,
+    ...exceptionIds,
+    ...questionIds,
+  ]);
+  const requiredActions = [
+    "overwrite-source",
+    "replace-formulas-with-values",
+    "execute-macros",
+    "upload-workbook",
+    "disclose-sensitive-data",
+    "infer-missing-facts",
+    "accept-output",
+  ];
+  const requiredCheckKinds = [
+    "source-hash",
+    "formula-preservation",
+    "recalculation",
+    "formatting",
+    "links",
+    "charts",
+    "macros",
+    "validation",
+    "output-open",
+  ];
+  const findings = [
+    ...uniqueFindings(sheetIds, "sheets", "Sheet id"),
+    ...uniqueFindings(transformationIds, "transformations", "Transformation id"),
+    ...uniqueFindings(checkIds, "checks", "Check id"),
+    ...uniqueFindings(exceptionIds, "exceptions", "Exception id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  if (
+    !isSafePackagePath(value.workbook.sourcePath) ||
+    !value.workbook.sourcePath.startsWith("inputs/") ||
+    !isSafePackagePath(value.workbook.outputPath) ||
+    !value.workbook.outputPath.startsWith("outputs/") ||
+    portablePathKey(value.workbook.sourcePath) ===
+      portablePathKey(value.workbook.outputPath)
+  ) {
+    findings.push(
+      finding(
+        "unsafe_workbook_path",
+        "workbook.outputPath",
+        "Source and output workbook paths must be distinct portable paths under inputs/ and outputs/.",
+      ),
+    );
+  }
+  for (const [index, sheet] of value.sheets.entries()) {
+    if (
+      !sheet.sourcePreserved ||
+      (["source", "calculation", "lookup"].includes(sheet.role) &&
+        sheet.formulaCountBefore !== sheet.formulaCountAfter)
+    ) {
+      findings.push(
+        finding(
+          "source_sheet_mutation",
+          `sheets.${index}`,
+          "Source, calculation, and lookup sheets must remain preserved with unchanged formula counts.",
+        ),
+      );
+    }
+  }
+  const availableInputs = new Set(sheetIds);
+  for (const [index, item] of value.transformations.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [item.targetSheetRef],
+        sheetSet,
+        `transformations.${index}.targetSheetRef`,
+        "Transformation target sheet",
+      ),
+      ...referenceFindings(
+        item.inputRefs,
+        availableInputs,
+        `transformations.${index}.inputRefs`,
+        "Transformation input",
+      ),
+    );
+    if (
+      ["add-formula", "add-sheet"].includes(item.kind) &&
+      item.formulaPolicy !== "add-only"
+    ) {
+      findings.push(
+        finding(
+          "unsafe_formula_policy",
+          `transformations.${index}.formulaPolicy`,
+          "Formula-creating transformations must use the add-only policy.",
+        ),
+      );
+    }
+    availableInputs.add(item.id);
+  }
+  for (const [index, check] of value.checks.entries()) {
+    findings.push(
+      ...referenceFindings(
+        check.refs,
+        allRefs,
+        `checks.${index}.refs`,
+        "Check reference",
+      ),
+    );
+  }
+  for (const kind of requiredCheckKinds) {
+    if (!value.checks.some((item) => item.kind === kind)) {
+      findings.push(
+        finding(
+          "missing_verification_check",
+          "checks",
+          `Spreadsheet manifests must report a ${kind} check, using not-applicable with an explanation when the check does not apply.`,
+        ),
+      );
+    }
+  }
+  for (const [index, item] of value.exceptions.entries()) {
+    findings.push(
+      ...referenceFindings(
+        item.refs,
+        allRefs,
+        `exceptions.${index}.refs`,
+        "Exception reference",
+      ),
+    );
+  }
+  for (const [index, item] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...referenceFindings(
+        item.refs,
+        allRefs,
+        `reviewQuestions.${index}.refs`,
+        "Review question reference",
+      ),
+    );
+  }
+  findings.push(
+    ...referenceFindings(
+      value.handoff.transformationRefs,
+      transformationSet,
+      "handoff.transformationRefs",
+      "Handoff transformation reference",
+    ),
+    ...referenceFindings(
+      value.handoff.checkRefs,
+      checkSet,
+      "handoff.checkRefs",
+      "Handoff check reference",
+    ),
+    ...referenceFindings(
+      value.handoff.exceptionRefs,
+      exceptionSet,
+      "handoff.exceptionRefs",
+      "Handoff exception reference",
+    ),
+    ...referenceFindings(
+      value.handoff.reviewQuestionRefs,
+      questionSet,
+      "handoff.reviewQuestionRefs",
+      "Handoff question reference",
+    ),
+    ...referenceFindings(
+      value.handoff.blockingRefs,
+      allRefs,
+      "handoff.blockingRefs",
+      "Handoff blocker reference",
+    ),
+  );
+  if (value.handoff.owner !== value.workbook.owner) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "handoff.owner",
+        "The workbook and handoff must name the same accountable owner.",
+      ),
+    );
+  }
+  if (
+    /^(?:the )?(?:agent|assistant|claw)$/iu.test(value.handoff.owner.trim()) ||
+    /\b(?:ai|bot|gpt|language model|spreadsheet analyst)\b/iu.test(
+      value.handoff.owner,
+    )
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Workbook acceptance authority must remain with a named human or team.",
+      ),
+    );
+  }
+  const failedChecks = value.checks.filter((item) =>
+    ["failed", "not-run"].includes(item.status),
+  );
+  const unresolvedHighExceptions = value.exceptions.filter(
+    (item) => item.severity === "high" && item.state !== "resolved",
+  );
+  const blockedTransforms = value.transformations.filter(
+    (item) => item.state === "blocked",
+  );
+  const requiredBlockerIds = [
+    ...failedChecks.map((item) => item.id),
+    ...unresolvedHighExceptions.map((item) => item.id),
+    ...blockedTransforms.map((item) => item.id),
+  ];
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    (value.workbook.state !== "ready-for-owner-review" ||
+      value.transformations.some((item) => item.state !== "verified") ||
+      failedChecks.length > 0 ||
+      unresolvedHighExceptions.length > 0 ||
+      value.handoff.blockingRefs.length > 0 ||
+      transformationIds.some(
+        (id) => !value.handoff.transformationRefs.includes(id),
+      ) ||
+      checkIds.some((id) => !value.handoff.checkRefs.includes(id)) ||
+      exceptionIds.some((id) => !value.handoff.exceptionRefs.includes(id)) ||
+      questionIds.some((id) => !value.handoff.reviewQuestionRefs.includes(id)))
+  ) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "Owner-ready spreadsheet handoffs require verified transformations, completed checks, no unresolved high exceptions, complete references, and no blockers.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "blocked" &&
+    (requiredBlockerIds.some((id) => !value.handoff.blockingRefs.includes(id)) ||
+      (requiredBlockerIds.length === 0 &&
+        value.workbook.state === "ready-for-owner-review"))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff",
+        "Blocked spreadsheet handoffs must include every failed check, unresolved high exception, and blocked transformation.",
+      ),
+    );
+  }
+  if (
+    value.workbook.state === "ready-for-owner-review" &&
+    value.handoff.state !== "ready-for-owner-review"
+  ) {
+    findings.push(
+      finding(
+        "inconsistent_ready_state",
+        "workbook.state",
+        "A workbook cannot claim owner-review readiness while its handoff remains blocked.",
+      ),
+    );
+  }
+  for (const action of requiredActions) {
+    if (
+      !value.blockedActions.includes(action) ||
+      !value.handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Spreadsheet artifacts must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+  return findings;
+}
+
 function mediaEvidenceFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const evidenceIds = value.evidence.map((item) => item.id);
@@ -12911,6 +13193,7 @@ const validators = {
   "sales-operations": salesOperationsFindings,
   "school-coordinator": schoolCoordinatorFindings,
   "sports-team-watcher": sportsTeamWatchFindings,
+  "spreadsheet-analyst": spreadsheetChangeFindings,
   "stock-portfolio-monitor": stockPortfolioFindings,
   "subscription-manager": subscriptionManagerFindings,
   "tax-document-organizer": taxDocumentFindings,

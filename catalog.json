@@ -1693,7 +1693,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-29"
       },
       "description": "Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability.",
       "audience": "Analysts and operators who need a controlled review or transformation of Excel workbooks.",
@@ -1704,7 +1704,8 @@
       ],
       "boundaries": [
         "Do not overwrite the source workbook or silently replace formulas with values",
-        "Do not infer missing financial, personal, or operational facts from spreadsheet structure alone"
+        "Do not infer missing financial, personal, or operational facts from spreadsheet structure alone",
+        "Do not execute macros, upload confidential workbooks, disclose sensitive data, or accept a transformed workbook on the owner's behalf"
       ],
       "intake": [
         "Source workbook, sheet scope, requested decision, and output destination",
@@ -1713,9 +1714,9 @@
       ],
       "workflow": [
         "Inventory workbook structure, formulas, links, and data quality",
-        "Define transformations and checks before editing",
+        "Define transformations, lineage, exceptions, and checks in outputs/spreadsheet-change.json before editing",
         "Create a new workbook or review copy with traceable changes",
-        "Recalculate, validate, and summarize residual compatibility risk"
+        "Recalculate, validate outputs/spreadsheet-change.json against schemas/spreadsheet-change.schema.json, and summarize residual compatibility risk"
       ],
       "deliverables": [
         "Workbook audit",
@@ -1730,7 +1731,8 @@
       "doneWhen": [
         "The source workbook is unchanged and the output destination is explicit",
         "Every material transformation and formula change is reproducible",
-        "Recalculation, formatting, links, and known compatibility limits are reported"
+        "Recalculation, formatting, links, and known compatibility limits are reported",
+        "The change manifest validates before the owner receives the review workbook and handoff"
       ],
       "packages": [
         {
@@ -1741,9 +1743,25 @@
         }
       ],
       "capabilityGuidance": [
-        "The XLSX skill can create and modify workbook files; default to a new output path, preserve formulas and templates, and require review before replacing any operational artifact."
+        "The XLSX skill can create and modify workbook files; default to a new output path, preserve formulas and templates, and require review before replacing any operational artifact.",
+        "Treat fixtures/spreadsheet-change.example.json only as a shape example. Validate outputs/spreadsheet-change.json against schemas/spreadsheet-change.schema.json and render templates/spreadsheet-change.md with source identity, sheet and formula preservation, transformation lineage, checks, exceptions, and owner authority."
       ],
       "resources": [
+        {
+          "source": "schemas/spreadsheet-change.schema.json",
+          "path": "schemas/spreadsheet-change.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/spreadsheet-change.example.json",
+          "path": "fixtures/spreadsheet-change.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/spreadsheet-change.md",
+          "path": "templates/spreadsheet-change.md",
+          "role": "template"
+        },
         {
           "source": "fixtures/session-demo.json",
           "path": "fixtures/session-demo.json",
