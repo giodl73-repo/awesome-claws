@@ -1,0 +1,783 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/meeting-record.schema.json",
+  "title": "Consented meeting decision and action record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "meeting",
+    "consent",
+    "recording",
+    "sources",
+    "participants",
+    "transcript",
+    "corrections",
+    "deliberations",
+    "decisions",
+    "actionItems",
+    "openQuestions",
+    "parkingLot",
+    "conflicts",
+    "gapsAndBlockers",
+    "documentDraft",
+    "blockedActions",
+    "handoff",
+    "ownerReview"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.meetingRecord.v1" },
+    "meeting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "runId",
+        "purpose",
+        "decisionOwner",
+        "reviewer",
+        "startedAt",
+        "endedAt",
+        "timezone",
+        "asOf",
+        "audience",
+        "audienceScope",
+        "privacy",
+        "destination",
+        "retentionPolicy",
+        "deleteAfter",
+        "retentionOwner",
+        "outcome",
+        "state"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^meeting-[a-z0-9-]+$" },
+        "runId": { "type": "string", "pattern": "^run-[a-z0-9-]+$" },
+        "purpose": { "$ref": "#/$defs/text" },
+        "decisionOwner": { "$ref": "#/$defs/text" },
+        "reviewer": { "$ref": "#/$defs/text" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "endedAt": { "type": "string", "format": "date-time" },
+        "timezone": { "type": "string", "pattern": "^(?:UTC|[A-Za-z]+(?:_[A-Za-z]+)*/[A-Za-z]+(?:[_+-][A-Za-z0-9]+)*(?:/[A-Za-z]+(?:[_+-][A-Za-z0-9]+)*)?)$" },
+        "asOf": { "type": "string", "format": "date-time" },
+        "audience": { "$ref": "#/$defs/text" },
+        "audienceScope": {
+          "enum": ["participants-only", "named-internal-team", "internal-organization"]
+        },
+        "privacy": { "enum": ["confidential", "restricted"] },
+        "destination": { "type": "string", "pattern": "^outputs/[A-Za-z0-9._/-]+$" },
+        "retentionPolicy": { "$ref": "#/$defs/text" },
+        "deleteAfter": { "type": "string", "format": "date-time" },
+        "retentionOwner": { "$ref": "#/$defs/text" },
+        "outcome": {
+          "enum": [
+            "decisions-and-actions-recorded",
+            "decisions-only",
+            "actions-only",
+            "no-decisions-or-actions"
+          ]
+        },
+        "state": { "enum": ["draft", "blocked", "ready-for-owner-review"] }
+      }
+    },
+    "consent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordingAuthorized",
+        "basis",
+        "noticeGivenAt",
+        "authoritySourceRef",
+        "consentPolicySourceRef",
+        "retentionSourceRef",
+        "authorizedUses"
+      ],
+      "properties": {
+        "recordingAuthorized": { "type": "boolean" },
+        "basis": {
+          "enum": [
+            "explicit-participant-consent",
+            "documented-legal-basis-with-notice",
+            "assumed-from-meeting-invitation",
+            "assumed-from-organizational-policy"
+          ]
+        },
+        "noticeGivenAt": { "type": "string", "format": "date-time" },
+        "authoritySourceRef": { "type": "string", "minLength": 1 },
+        "consentPolicySourceRef": { "type": "string", "minLength": 1 },
+        "retentionSourceRef": { "type": "string", "minLength": 1 },
+        "authorizedUses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "local-transcription",
+              "decision-and-action-extraction",
+              "internal-minutes-draft",
+              "owner-review-handoff"
+            ]
+          }
+        }
+      }
+    },
+    "recording": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceRef",
+        "durationSeconds",
+        "windowStartSeconds",
+        "windowEndSeconds",
+        "language",
+        "channel",
+        "audioQuality",
+        "processedLocally"
+      ],
+      "properties": {
+        "sourceRef": { "type": "string", "minLength": 1 },
+        "durationSeconds": { "type": "number", "exclusiveMinimum": 0 },
+        "windowStartSeconds": { "type": "number", "minimum": 0 },
+        "windowEndSeconds": { "type": "number", "exclusiveMinimum": 0 },
+        "language": { "$ref": "#/$defs/text" },
+        "channel": {
+          "enum": ["in-person", "video-conference", "hybrid", "telephone"]
+        },
+        "audioQuality": { "enum": ["clear", "degraded", "unusable"] },
+        "processedLocally": { "type": "boolean" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "authority",
+          "capturedAt",
+          "reference",
+          "integrity",
+          "privacy",
+          "sha256",
+          "path"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "recording-file",
+              "recording-authority",
+              "consent-record",
+              "retention-policy",
+              "participant-roster",
+              "document-template",
+              "acknowledgement-record",
+              "correction-note",
+              "owner-note"
+            ]
+          },
+          "authority": {
+            "enum": [
+              "meeting-owner",
+              "data-controller",
+              "policy-owner",
+              "participant",
+              "note-taker",
+              "reviewer"
+            ]
+          },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "reference": { "$ref": "#/$defs/text" },
+          "integrity": { "enum": ["verified", "unverified", "conflicting", "missing"] },
+          "privacy": { "enum": ["internal", "confidential", "restricted"] },
+          "sha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+          "path": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "participants": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "displayName",
+          "role",
+          "organization",
+          "attendance",
+          "speakerLabel",
+          "consentStatus",
+          "consentBasis",
+          "consentScopes",
+          "consentRecordedAt",
+          "consentSourceRef",
+          "consentWithdrawnAt"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^participant-[a-z0-9-]+$" },
+          "displayName": { "$ref": "#/$defs/text" },
+          "role": {
+            "enum": [
+              "chair",
+              "decision-maker",
+              "contributor",
+              "subject-matter-expert",
+              "note-taker",
+              "observer",
+              "guest"
+            ]
+          },
+          "organization": { "$ref": "#/$defs/text" },
+          "attendance": { "enum": ["present", "partial", "absent", "unknown"] },
+          "speakerLabel": {
+            "type": ["string", "null"],
+            "pattern": "^speaker-[a-z0-9-]+$"
+          },
+          "consentStatus": {
+            "enum": ["granted", "limited", "withheld", "withdrawn", "unknown"]
+          },
+          "consentBasis": {
+            "enum": [
+              "explicit-statement",
+              "signed-consent-record",
+              "written-acknowledgement",
+              "assumed-from-attendance",
+              "assumed-from-silence",
+              "assumed-from-role",
+              "assumed-from-majority",
+              "not-recorded"
+            ]
+          },
+          "consentScopes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "recording",
+                "transcription",
+                "attributed-quotation",
+                "internal-minutes",
+                "action-assignment"
+              ]
+            }
+          },
+          "consentRecordedAt": { "type": ["string", "null"], "format": "date-time" },
+          "consentSourceRef": { "type": ["string", "null"], "minLength": 1 },
+          "consentWithdrawnAt": { "type": ["string", "null"], "format": "date-time" }
+        }
+      }
+    },
+    "transcript": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "type": "object",
+              "properties": { "state": { "const": "withheld" } },
+              "required": ["state"]
+            },
+            "then": {
+              "type": "object",
+              "properties": { "excerpt": { "$ref": "#/$defs/withheldExcerpt" } }
+            }
+          }
+        ],
+        "required": [
+          "id",
+          "startSeconds",
+          "endSeconds",
+          "speakerRef",
+          "attributionState",
+          "attributionConfidence",
+          "excerpt",
+          "verbatim",
+          "uncertainty",
+          "state",
+          "supersedesRef",
+          "correctionRef",
+          "withheldReason"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^segment-[a-z0-9-]+$" },
+          "startSeconds": { "type": "number", "minimum": 0 },
+          "endSeconds": { "type": "number", "minimum": 0 },
+          "speakerRef": { "type": ["string", "null"], "minLength": 1 },
+          "attributionState": {
+            "enum": ["confirmed", "probable", "unattributed", "disputed"]
+          },
+          "attributionConfidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "excerpt": { "$ref": "#/$defs/excerpt" },
+          "verbatim": { "type": "boolean" },
+          "uncertainty": { "type": ["string", "null"], "minLength": 1 },
+          "state": { "enum": ["current", "corrected", "superseded", "withheld"] },
+          "supersedesRef": { "type": ["string", "null"], "minLength": 1 },
+          "correctionRef": { "type": ["string", "null"], "minLength": 1 },
+          "withheldReason": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "corrections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "segmentRef",
+          "supersededSegmentRef",
+          "reason",
+          "correctedBy",
+          "correctedAt",
+          "sourceRef"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^correction-[a-z0-9-]+$" },
+          "segmentRef": { "type": "string", "minLength": 1 },
+          "supersededSegmentRef": { "type": "string", "minLength": 1 },
+          "reason": { "$ref": "#/$defs/text" },
+          "correctedBy": { "$ref": "#/$defs/text" },
+          "correctedAt": { "type": "string", "format": "date-time" },
+          "sourceRef": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "deliberations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "summary",
+          "raisedByRef",
+          "segmentRefs",
+          "outcome",
+          "decisionRef",
+          "parkingLotRef"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^deliberation-[a-z0-9-]+$" },
+          "kind": { "enum": ["proposal", "discussion", "information"] },
+          "summary": { "$ref": "#/$defs/text" },
+          "raisedByRef": { "type": ["string", "null"], "minLength": 1 },
+          "segmentRefs": { "$ref": "#/$defs/refs" },
+          "outcome": {
+            "enum": ["carried-to-decision", "parked", "withdrawn", "unresolved", "noted"]
+          },
+          "decisionRef": { "type": ["string", "null"], "minLength": 1 },
+          "parkingLotRef": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "statement",
+          "decisionMakerRef",
+          "authorityBasis",
+          "agreementBasis",
+          "segmentRefs",
+          "deliberationRefs",
+          "status",
+          "conditions",
+          "reviewState",
+          "recordedAt",
+          "dissentRefs",
+          "conflictRef"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^decision-[a-z0-9-]+$" },
+          "statement": { "$ref": "#/$defs/text" },
+          "decisionMakerRef": { "type": "string", "minLength": 1 },
+          "authorityBasis": {
+            "enum": [
+              "explicit-decision-right",
+              "chair-ruling-accepted-on-record",
+              "documented-delegation",
+              "assumed-from-silence",
+              "assumed-from-seniority",
+              "assumed-from-majority-mood"
+            ]
+          },
+          "agreementBasis": {
+            "enum": [
+              "explicit-verbal-agreement",
+              "recorded-vote",
+              "written-confirmation",
+              "no-objection-after-explicit-call",
+              "silence",
+              "absence-of-objection-unprompted"
+            ]
+          },
+          "segmentRefs": { "$ref": "#/$defs/refs" },
+          "deliberationRefs": { "$ref": "#/$defs/refs" },
+          "status": { "enum": ["approved", "rejected", "deferred", "conditional"] },
+          "conditions": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/text" }
+          },
+          "reviewState": {
+            "enum": ["pending-owner-review", "confirmed-by-owner", "disputed"]
+          },
+          "recordedAt": { "type": "string", "format": "date-time" },
+          "dissentRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "conflictRef": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "actionItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "statement",
+          "assigneeRef",
+          "assignmentState",
+          "acknowledgementSegmentRef",
+          "acknowledgementSourceRef",
+          "segmentRefs",
+          "decisionRef",
+          "dueDate",
+          "dueTimezone",
+          "status",
+          "dependsOn",
+          "deliveryState"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^action-[a-z0-9-]+$" },
+          "statement": { "$ref": "#/$defs/text" },
+          "assigneeRef": { "type": ["string", "null"], "minLength": 1 },
+          "assignmentState": {
+            "enum": [
+              "acknowledged-by-assignee",
+              "proposed-pending-acknowledgement",
+              "unassigned"
+            ]
+          },
+          "acknowledgementSegmentRef": { "type": ["string", "null"], "minLength": 1 },
+          "acknowledgementSourceRef": { "type": ["string", "null"], "minLength": 1 },
+          "segmentRefs": { "$ref": "#/$defs/refs" },
+          "decisionRef": { "type": ["string", "null"], "minLength": 1 },
+          "dueDate": { "type": ["string", "null"], "format": "date" },
+          "dueTimezone": {
+            "type": ["string", "null"],
+            "pattern": "^(?:UTC|[A-Za-z]+(?:_[A-Za-z]+)*/[A-Za-z]+(?:[_+-][A-Za-z0-9]+)*(?:/[A-Za-z]+(?:[_+-][A-Za-z0-9]+)*)?)$"
+          },
+          "status": {
+            "enum": ["not-started", "in-progress", "blocked", "complete", "cancelled"]
+          },
+          "dependsOn": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "deliveryState": {
+            "enum": [
+              "not-communicated",
+              "owner-will-communicate",
+              "communicated-by-agent",
+              "calendar-invite-sent-by-agent",
+              "task-created-by-agent"
+            ]
+          }
+        }
+      }
+    },
+    "openQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "question",
+          "raisedByRef",
+          "segmentRefs",
+          "ownerRef",
+          "state",
+          "answerSegmentRef"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "$ref": "#/$defs/text" },
+          "raisedByRef": { "type": ["string", "null"], "minLength": 1 },
+          "segmentRefs": { "$ref": "#/$defs/refs" },
+          "ownerRef": { "type": ["string", "null"], "minLength": 1 },
+          "state": { "enum": ["open", "routed-to-owner", "answered-in-meeting"] },
+          "answerSegmentRef": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "parkingLot": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "topic",
+          "reason",
+          "deliberationRefs",
+          "proposedRevisitBy",
+          "ownerRef"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^parked-[a-z0-9-]+$" },
+          "topic": { "$ref": "#/$defs/text" },
+          "reason": { "$ref": "#/$defs/text" },
+          "deliberationRefs": { "$ref": "#/$defs/refs" },
+          "proposedRevisitBy": { "type": ["string", "null"], "format": "date" },
+          "ownerRef": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "description",
+          "segmentRefs",
+          "decisionRefs",
+          "actionRefs",
+          "participantRefs",
+          "resolutionState",
+          "resolutionSegmentRef"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^conflict-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "contested-decision",
+              "contradictory-statements",
+              "disputed-attribution",
+              "overlapping-actions",
+              "unresolved-objection"
+            ]
+          },
+          "description": { "$ref": "#/$defs/text" },
+          "segmentRefs": { "$ref": "#/$defs/refs" },
+          "decisionRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "actionRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "participantRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "resolutionState": {
+            "enum": ["unresolved", "routed-to-owner", "resolved-on-record"]
+          },
+          "resolutionSegmentRef": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "gapsAndBlockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "description", "segmentRefs", "blocking", "ownerRef"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^gap-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "inaudible-audio",
+              "unusable-recording",
+              "missing-consent",
+              "withdrawn-consent",
+              "unknown-speaker",
+              "untranscribed-window",
+              "missing-participant-roster",
+              "missing-decision-authority",
+              "missing-document-template",
+              "language-barrier"
+            ]
+          },
+          "description": { "$ref": "#/$defs/text" },
+          "segmentRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "blocking": { "type": "boolean" },
+          "ownerRef": { "type": ["string", "null"], "minLength": 1 }
+        }
+      }
+    },
+    "documentDraft": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "templateSourceRef",
+        "templatePath",
+        "outputPath",
+        "preservesOriginalTemplate",
+        "preservesSourceRecording",
+        "audienceBound",
+        "distributionState",
+        "decisionRefs",
+        "actionRefs"
+      ],
+      "properties": {
+        "state": { "enum": ["not-created", "review-draft", "final"] },
+        "templateSourceRef": { "type": ["string", "null"], "minLength": 1 },
+        "templatePath": { "type": ["string", "null"], "minLength": 1 },
+        "outputPath": {
+          "type": ["string", "null"],
+          "pattern": "^outputs/[A-Za-z0-9._/-]+\\.docx$"
+        },
+        "preservesOriginalTemplate": { "type": "boolean" },
+        "preservesSourceRecording": { "type": "boolean" },
+        "audienceBound": { "type": "boolean" },
+        "distributionState": {
+          "enum": ["not-distributed", "owner-will-distribute", "distributed-by-agent"]
+        },
+        "decisionRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "actionRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "blockedActions": { "$ref": "#/$defs/actions" },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "reviewer",
+        "deliberationRefs",
+        "decisionRefs",
+        "actionRefs",
+        "questionRefs",
+        "parkingLotRefs",
+        "conflictRefs",
+        "correctionRefs",
+        "gapRefs",
+        "blockingRefs",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": { "enum": ["ready-for-owner-review", "blocked"] },
+        "owner": { "$ref": "#/$defs/text" },
+        "reviewer": { "$ref": "#/$defs/text" },
+        "deliberationRefs": { "$ref": "#/$defs/refs" },
+        "decisionRefs": { "$ref": "#/$defs/optionalRefs" },
+        "actionRefs": { "$ref": "#/$defs/optionalRefs" },
+        "questionRefs": { "$ref": "#/$defs/optionalRefs" },
+        "parkingLotRefs": { "$ref": "#/$defs/optionalRefs" },
+        "conflictRefs": { "$ref": "#/$defs/optionalRefs" },
+        "correctionRefs": { "$ref": "#/$defs/optionalRefs" },
+        "gapRefs": { "$ref": "#/$defs/optionalRefs" },
+        "blockingRefs": { "$ref": "#/$defs/optionalRefs" },
+        "prohibitedActions": { "$ref": "#/$defs/actions" }
+      }
+    },
+    "ownerReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "reviewer", "reviewedAt", "resolution"],
+      "properties": {
+        "state": { "enum": ["pending", "completed"] },
+        "reviewer": { "$ref": "#/$defs/text" },
+        "reviewedAt": { "type": ["string", "null"], "format": "date-time" },
+        "resolution": { "type": ["string", "null"], "minLength": 1 }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S"
+    },
+    "excerpt": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400,
+      "pattern": "\\S"
+    },
+    "withheldExcerpt": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400,
+      "pattern": "^\\[Withheld: [^\"\u201c\u201d]+\\]$"
+    },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "optionalRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "record-without-consent",
+          "infer-consent",
+          "attribute-unverified-speaker",
+          "fabricate-quotation",
+          "infer-decision-from-silence",
+          "commit-on-behalf-of-participant",
+          "send-external-communication",
+          "schedule-or-modify-calendar",
+          "create-or-update-task-system",
+          "derive-biometric-or-sensitive-inference",
+          "disclose-outside-authorized-audience",
+          "retain-beyond-policy",
+          "delete-source-recording",
+          "publish-meeting-record"
+        ]
+      }
+    }
+  }
+}

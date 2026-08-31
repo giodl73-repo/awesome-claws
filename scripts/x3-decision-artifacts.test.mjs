@@ -155,6 +155,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "meeting-intelligence",
+    schema: "../claws/meeting-intelligence/schemas/meeting-record.schema.json",
+    fixture: "../claws/meeting-intelligence/fixtures/meeting-record.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "home-repair-coordinator",
     schema: "../claws/home-repair-coordinator/schemas/home-repair.schema.json",
     fixture: "../claws/home-repair-coordinator/fixtures/home-repair.example.json",

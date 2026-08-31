@@ -1609,44 +1609,49 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-30"
       },
-      "description": "Turns authorized meeting recordings into traceable transcripts, decisions, and reviewable document drafts.",
-      "audience": "Teams processing consented meeting audio into internal records and follow-up artifacts.",
+      "description": "Turns a consented meeting recording into a consent-bound transcript, decision, and action record with a reviewable document draft.",
+      "audience": "Teams turning consented meeting audio into an internal decision and action record that a named human owner reviews.",
       "principles": [
         "Confirm recording authority before processing",
         "Preserve transcript uncertainty and speaker ambiguity",
-        "Separate discussion from approved decisions"
+        "Separate discussion from approved decisions",
+        "Keep every decision and action traceable to a named human and a transcript offset"
       ],
       "boundaries": [
-        "Do not transcribe, retain, or distribute audio without verified participant consent and an approved destination",
-        "Do not invent speakers, decisions, commitments, or quotations when the recording is unclear"
+        "Do not transcribe, retain, or distribute audio without verified participant consent, an authorized audience, and an approved destination",
+        "Do not invent speakers, decisions, commitments, or quotations when the recording is unclear",
+        "Do not infer consent, agreement, or decision authority from attendance, silence, seniority, or a majority",
+        "Do not send messages, schedule meetings, create tasks, delete source recordings, or publish the meeting record without explicit human authority"
       ],
       "intake": [
-        "Recording path, participant consent, retention rule, and authorized audience",
-        "Meeting purpose, participant names or roles, expected language, and terminology",
-        "Required document template, decision owner, and follow-up format"
+        "Recording path and integrity, recording authority, per-participant consent scopes, retention rule, deletion owner, and authorized audience",
+        "Meeting purpose, date, timezone, participant names, roles, attendance, expected language, and terminology",
+        "Required document template, named decision owner and reviewer, and the private output destination"
       ],
       "workflow": [
-        "Verify authority, input integrity, language, and retention constraints",
-        "Transcribe locally and mark uncertain passages",
-        "Extract decisions, actions, owners, deadlines, and unresolved questions",
-        "Create a reviewable document draft and dispose of temporary artifacts as required"
+        "Verify recording authority, per-participant consent scopes, source integrity, language, audience, and retention constraints",
+        "Transcribe locally with exact offsets, mark uncertain or unattributed speech, and withhold speech that consent does not cover",
+        "Build and validate outputs/meeting-record.json as a consent-bound ledger that separates deliberation from decisions, binds every action to transcript provenance, and preserves corrections, conflicts, and gaps",
+        "Render the meeting-record handoff, keep the document a review draft that preserves the original template and recording, and route every unresolved question and blocker to the named owner"
       ],
       "deliverables": [
-        "Timestamped transcript",
-        "Decision and action register",
-        "Uncertainty and correction log",
-        "Reviewable DOCX meeting record"
+        "Meeting authority, consent, audience, and retention record",
+        "Timestamped transcript with attribution confidence and withheld passages",
+        "Decision, dissent, and action register bound to transcript offsets",
+        "Correction, conflict, question, and gap ledger",
+        "Reviewable DOCX meeting record awaiting owner review"
       ],
       "example": {
         "request": "Process this consented architecture-review recording into minutes using our decision-record template, and flag every uncertain speaker attribution.",
-        "outcome": "A local transcript with confidence markers, a source-linked decision/action register, and a DOCX draft awaiting participant review."
+        "outcome": "A validated private meeting record with consent scopes per participant, offset-linked transcript segments and confidence markers, decisions separated from proposals, acknowledged actions, corrections and gaps, and a DOCX review draft awaiting the named owner."
       },
       "doneWhen": [
-        "Recording authority, retention, and audience are recorded",
-        "Transcript uncertainty and speaker ambiguity remain visible",
-        "The decision and action record is traceable to timestamps and marked draft until reviewed"
+        "Recording authority, per-participant consent scope, audience, retention, deletion owner, and output destination are explicit",
+        "Transcript uncertainty, unattributed speech, withheld passages, and correction lineage remain visible",
+        "Every decision and action names a human, cites transcript offsets, and stays draft until the named reviewer confirms it",
+        "The machine-readable record validates against schemas/meeting-record.schema.json before the handoff is presented"
       ],
       "packages": [
         {
@@ -1662,11 +1667,45 @@
           "version": "1.0.2"
         }
       ],
+      "openclawProfile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "minimal",
+            "alsoAllow": [
+              "read",
+              "write",
+              "edit",
+              "exec"
+            ],
+            "fs": {
+              "workspaceOnly": true
+            }
+          }
+        }
+      },
       "capabilityGuidance": [
-        "The Whisper skill invokes a local speech-to-text CLI; verify the host dependency and keep recordings and transcripts within the approved local boundary.",
-        "The DOCX skill may create or edit files; write to a new review destination and preserve the original template or source document."
+        "The Whisper skill invokes a local speech-to-text CLI; verify the host dependency, keep recordings and transcripts within the approved local boundary, and expose low-confidence or unattributed speech rather than silently resolving it.",
+        "The DOCX skill may create or edit files; write to a new review destination, preserve the original template and the source recording, and leave distribution to the named owner.",
+        "The bounded OpenClaw profile keeps the minimal tool set plus workspace-only read, write, edit, and local command execution; it exists to run the local transcription CLI and write the review draft, not to reach the network, a calendar, or a task system.",
+        "Treat fixtures/meeting-record.example.json only as a shape example. Validate outputs/meeting-record.json against schemas/meeting-record.schema.json, then render templates/meeting-record.md while preserving consent scopes, transcript offsets and confidence, correction lineage, decision authority, action acknowledgement, conflicts, gaps, and the owner-controlled handoff."
       ],
       "resources": [
+        {
+          "source": "schemas/meeting-record.schema.json",
+          "path": "schemas/meeting-record.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/meeting-record.example.json",
+          "path": "fixtures/meeting-record.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/meeting-record.md",
+          "path": "templates/meeting-record.md",
+          "role": "template"
+        },
         {
           "source": "fixtures/session-demo.json",
           "path": "fixtures/session-demo.json",

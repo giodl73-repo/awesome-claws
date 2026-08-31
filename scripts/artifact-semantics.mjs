@@ -114,6 +114,62 @@ function numbersEqual(left, right) {
   return Math.abs(left - right) <= Number.EPSILON * scale * 8;
 }
 
+function zoneOffsetMs(formatter, instant) {
+  const parts = Object.fromEntries(
+    formatter.formatToParts(instant).map((part) => [part.type, part.value]),
+  );
+  return (
+    Date.UTC(
+      Number(parts.year),
+      Number(parts.month) - 1,
+      Number(parts.day),
+      Number(parts.hour),
+      Number(parts.minute),
+      Number(parts.second),
+    ) - instant
+  );
+}
+
+function localDayFormatter(timeZone) {
+  try {
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone,
+      hourCycle: "h23",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  } catch (error) {
+    if (error instanceof RangeError) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+function isResolvableTimeZone(timeZone) {
+  return localDayFormatter(timeZone) !== null;
+}
+
+// A date-only deadline means the end of that day where the deadline lives, so the
+// instant is resolved through the named zone's own offset instead of a UTC day
+// boundary. Returns null when the zone name is not a resolvable IANA zone.
+export function endOfLocalDayMs(date, timeZone) {
+  const formatter = localDayFormatter(timeZone);
+  if (formatter === null) {
+    return null;
+  }
+  const [year, month, day] = date.split("-").map(Number);
+  // Resolved on whole seconds so the formatter's second-precision parts stay
+  // exact, then carried to the last millisecond of the local day.
+  const localEnd = Date.UTC(year, month - 1, day, 23, 59, 59);
+  const approximate = localEnd - zoneOffsetMs(formatter, localEnd);
+  return localEnd - zoneOffsetMs(formatter, approximate) + 999;
+}
+
 function dataAnalysisFindings(value) {
   const sourceRefs = value.sources.map((source) => source.reference);
   const outputFields = value.transformations.map((transformation) => transformation.outputField);
@@ -19982,6 +20038,1854 @@ function websiteCaptureEvidenceLedgerFindings(value) {
   return findings;
 }
 
+function meetingRecordFindings(value) {
+  const findings = [];
+  const requiredUses = [
+    "local-transcription",
+    "decision-and-action-extraction",
+    "internal-minutes-draft",
+    "owner-review-handoff",
+  ];
+  const requiredActions = [
+    "record-without-consent",
+    "infer-consent",
+    "attribute-unverified-speaker",
+    "fabricate-quotation",
+    "infer-decision-from-silence",
+    "commit-on-behalf-of-participant",
+    "send-external-communication",
+    "schedule-or-modify-calendar",
+    "create-or-update-task-system",
+    "derive-biometric-or-sensitive-inference",
+    "disclose-outside-authorized-audience",
+    "retain-beyond-policy",
+    "delete-source-recording",
+    "publish-meeting-record",
+  ];
+  const explicitConsentBases = [
+    "explicit-statement",
+    "signed-consent-record",
+    "written-acknowledgement",
+  ];
+  const assumedConsentBases = [
+    "assumed-from-attendance",
+    "assumed-from-silence",
+    "assumed-from-role",
+    "assumed-from-majority",
+  ];
+  // A granted consent status covers every scope the record can use; a limited one
+  // must leave at least one of them out.
+  const fullConsentScopes = [
+    "recording",
+    "transcription",
+    "attributed-quotation",
+    "internal-minutes",
+    "action-assignment",
+  ];
+  const expectedSourceAuthority = {
+    "recording-file": "meeting-owner",
+    "recording-authority": "data-controller",
+    "consent-record": "data-controller",
+    "retention-policy": "policy-owner",
+    "participant-roster": "meeting-owner",
+    "document-template": "meeting-owner",
+    "acknowledgement-record": "participant",
+    "correction-note": "note-taker",
+    "owner-note": "reviewer",
+  };
+  const pathBearingKinds = ["recording-file", "document-template"];
+  // Evidence about what was said can only be captured once the meeting is under way.
+  const meetingBoundSourceKinds = ["acknowledgement-record", "correction-note", "owner-note"];
+  // Gaps that describe missing audio rather than a recorded passage.
+  const audioGapKinds = ["inaudible-audio", "unusable-recording", "untranscribed-window"];
+  const privacyReach = { internal: 0, confidential: 1, restricted: 2 };
+  const audienceReach = {
+    "participants-only": 0,
+    "named-internal-team": 1,
+    "internal-organization": 2,
+  };
+  // Turn transitions and short pauses are normal; a longer silent stretch is a
+  // coverage claim the record has to make explicit.
+  const untranscribedToleranceSeconds = 60;
+  const { meeting, consent, recording, documentDraft, handoff, ownerReview } = value;
+
+  const sourceIds = value.sources.map((item) => item.id);
+  const participantIds = value.participants.map((item) => item.id);
+  const segmentIds = value.transcript.map((item) => item.id);
+  const correctionIds = value.corrections.map((item) => item.id);
+  const deliberationIds = value.deliberations.map((item) => item.id);
+  const decisionIds = value.decisions.map((item) => item.id);
+  const actionIds = value.actionItems.map((item) => item.id);
+  const questionIds = value.openQuestions.map((item) => item.id);
+  const parkedIds = value.parkingLot.map((item) => item.id);
+  const conflictIds = value.conflicts.map((item) => item.id);
+  const gapIds = value.gapsAndBlockers.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const participantSet = new Set(participantIds);
+  const segmentSet = new Set(segmentIds);
+  const deliberationSet = new Set(deliberationIds);
+  const decisionSet = new Set(decisionIds);
+  const actionSet = new Set(actionIds);
+  const parkedSet = new Set(parkedIds);
+  const conflictSet = new Set(conflictIds);
+  const gapSet = new Set(gapIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const sourcePathKeys = new Set(
+    value.sources
+      .filter((item) => item.path !== null)
+      .map((item) => portablePathKey(item.path)),
+  );
+  const participantById = new Map(value.participants.map((item) => [item.id, item]));
+  const segmentById = new Map(value.transcript.map((item) => [item.id, item]));
+  const deliberationById = new Map(value.deliberations.map((item) => [item.id, item]));
+  const decisionById = new Map(value.decisions.map((item) => [item.id, item]));
+  const actionById = new Map(value.actionItems.map((item) => [item.id, item]));
+  const parkedById = new Map(value.parkingLot.map((item) => [item.id, item]));
+  const conflictById = new Map(value.conflicts.map((item) => [item.id, item]));
+  const gapById = new Map(value.gapsAndBlockers.map((item) => [item.id, item]));
+
+  findings.push(
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(participantIds, "participants", "Participant id"),
+    ...uniqueFindings(
+      value.participants
+        .map((item) => item.speakerLabel)
+        .filter((label) => label !== null),
+      "participants",
+      "Speaker label",
+    ),
+    ...uniqueFindings(segmentIds, "transcript", "Segment id"),
+    ...uniqueFindings(correctionIds, "corrections", "Correction id"),
+    ...uniqueFindings(deliberationIds, "deliberations", "Deliberation id"),
+    ...uniqueFindings(decisionIds, "decisions", "Decision id"),
+    ...uniqueFindings(actionIds, "actionItems", "Action id"),
+    ...uniqueFindings(questionIds, "openQuestions", "Open question id"),
+    ...uniqueFindings(parkedIds, "parkingLot", "Parking lot id"),
+    ...uniqueFindings(conflictIds, "conflicts", "Conflict id"),
+    ...uniqueFindings(gapIds, "gapsAndBlockers", "Gap or blocker id"),
+  );
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  function requireOptionalReference(ref, known, path, label) {
+    if (ref !== null) {
+      findings.push(...referenceFindings([ref], known, path, label));
+    }
+  }
+
+  function requireCompleteReferences(actual, expected, path, label) {
+    requireReferences(actual, new Set(expected), path, label);
+    for (const id of expected) {
+      if (!actual.includes(id)) {
+        findings.push(
+          finding(
+            "incomplete_handoff",
+            path,
+            `${label} ${JSON.stringify(id)} is missing from the private handoff.`,
+          ),
+        );
+      }
+    }
+  }
+
+  // Matches bare agent identities and the Claw's own name without rejecting
+  // ordinary human titles such as "Assistant Director", "Chief of Staff", or a
+  // governance body such as "AI Governance Board".
+  function ownerIsAgent(owner) {
+    const normalized = owner.trim();
+    return (
+      /^(?:the )?(?:ai|bot|gpt|agent|assistant|claw|copilot|(?:meeting|note|minute) bot|ai (?:agent|assistant|bot|model|system|(?:note|minute|meeting)[ -]?tak(?:er|ing bot))|(?:automated|synthetic) (?:minute|meeting|note)[ -]?taker)$/iu.test(
+        normalized,
+      ) ||
+      /\b(?:gpt-?\d|language model|meeting intelligence|copilot)\b/iu.test(normalized)
+    );
+  }
+
+  // Being credited with raising, dissenting, or taking part in a conflict is a
+  // claim that the participant spoke on the record, so the roster has to support
+  // it. Follow-up ownership is a different claim and is checked separately.
+  function requireRecordedParticipation(refs, path, label) {
+    for (const reference of refs) {
+      const participant = participantById.get(reference);
+      if (
+        participant !== undefined &&
+        (!["present", "partial"].includes(participant.attendance) ||
+          participant.speakerLabel === null ||
+          !participant.consentScopes.includes("transcription"))
+      ) {
+        findings.push(
+          finding(
+            "fabricated_speaker_attribution",
+            path,
+            `${label} may only name an attending participant with a recorded speaker label and transcription consent.`,
+          ),
+        );
+      }
+    }
+  }
+
+  // An absent participant may still own a follow-up, but only with the consent
+  // scope that assignment requires.
+  function requireFollowUpOwnership(reference, path) {
+    const participant =
+      reference === null ? undefined : participantById.get(reference);
+    if (
+      participant !== undefined &&
+      !participant.consentScopes.includes("action-assignment")
+    ) {
+      findings.push(
+        finding(
+          "unconsented_action_assignment",
+          path,
+          "A participant who did not consent to action assignment cannot be recorded as an assignee or a follow-up owner.",
+        ),
+      );
+    }
+  }
+
+  // Transcript excerpts are untrusted third-party speech, so only agent-authored
+  // narrative is scanned for prohibited self-reported behaviour.
+  function unusableSegmentRefs(refs) {
+    return refs.filter((ref) => {
+      const segment = segmentById.get(ref);
+      return segment !== undefined && !["current", "corrected"].includes(segment.state);
+    });
+  }
+
+  function requireUsableEvidence(refs, path) {
+    if (unusableSegmentRefs(refs).length > 0) {
+      findings.push(
+        finding(
+          "unsupported_evidence_state",
+          path,
+          "Withheld and superseded transcript segments cannot support a deliberation, decision, action, question, or conflict.",
+        ),
+      );
+    }
+  }
+
+  function requireMinutesConsent(refs, path) {
+    if (
+      refs.some((ref) => {
+        const speakerRef = segmentById.get(ref)?.speakerRef;
+        // Unidentified passages are retained only as disclosed disputed or gap
+        // evidence; meeting-level authority governs them until attribution exists.
+        const speaker = speakerRef === null ? undefined : participantById.get(speakerRef);
+        return speaker !== undefined && !speaker.consentScopes.includes("internal-minutes");
+      })
+    ) {
+      findings.push(
+        finding(
+          "unconsented_minutes_use",
+          path,
+          "Transcript evidence may only be carried into the internal meeting record when its identified speaker consented to internal minutes.",
+        ),
+      );
+    }
+  }
+
+  const startedAt = Date.parse(meeting.startedAt);
+  const endedAt = Date.parse(meeting.endedAt);
+  const asOf = Date.parse(meeting.asOf);
+  const deleteAfter = Date.parse(meeting.deleteAfter);
+  const noticeGivenAt = Date.parse(consent.noticeGivenAt);
+  if (
+    startedAt >= endedAt ||
+    endedAt > asOf ||
+    noticeGivenAt > startedAt ||
+    deleteAfter <= asOf
+  ) {
+    findings.push(
+      finding(
+        "invalid_meeting_chronology",
+        "meeting.endedAt",
+        "Consent notice must precede an ordered meeting that ends before the as-of time, and retention must still expire in the future.",
+      ),
+    );
+  }
+  if (
+    !isSafePackagePath(meeting.destination) ||
+    !meeting.destination.startsWith("outputs/") ||
+    sourcePathKeys.has(portablePathKey(meeting.destination)) ||
+    (documentDraft.outputPath !== null &&
+      portablePathKey(meeting.destination) === portablePathKey(documentDraft.outputPath))
+  ) {
+    findings.push(
+      finding(
+        "unsafe_handoff_destination",
+        "meeting.destination",
+        "The private meeting-record destination must remain a portable path under outputs/ that does not overwrite the generated document or any supplied source.",
+      ),
+    );
+  }
+  if (!isResolvableTimeZone(meeting.timezone)) {
+    findings.push(
+      finding(
+        "invalid_meeting_chronology",
+        "meeting.timezone",
+        "The meeting timezone must be a resolvable IANA zone so local dates keep a defined instant.",
+      ),
+    );
+  }
+  if (
+    !consent.recordingAuthorized ||
+    requiredUses.some((use) => !consent.authorizedUses.includes(use))
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_recording_use",
+        "consent.recordingAuthorized",
+        "A meeting record may only exist with recorded authority to capture the meeting and with every local use it relies on authorized.",
+      ),
+    );
+  }
+  if (!recording.processedLocally) {
+    findings.push(
+      finding(
+        "unauthorized_recording_use",
+        "recording.processedLocally",
+        "The authorized local-transcription use does not permit processing the recording outside the local boundary.",
+      ),
+    );
+  }
+  if (
+    audienceReach[meeting.audienceScope] >= audienceReach["internal-organization"] &&
+    Math.max(
+      privacyReach[meeting.privacy],
+      ...value.sources.map((item) => privacyReach[item.privacy]),
+    ) >= privacyReach.restricted
+  ) {
+    findings.push(
+      finding(
+        "incoherent_audience_privacy",
+        "meeting.audienceScope",
+        "A record built on restricted material cannot be handed to the whole organization; the audience must stay no wider than a named internal team.",
+      ),
+    );
+  }
+  if (
+    recording.windowStartSeconds >= recording.windowEndSeconds ||
+    recording.windowEndSeconds > recording.durationSeconds ||
+    (recording.windowEndSeconds - recording.windowStartSeconds) * 1000 > endedAt - startedAt
+  ) {
+    findings.push(
+      finding(
+        "invalid_recording_window",
+        "recording.windowEndSeconds",
+        "The processed window must be ordered, stay inside the recorded duration, and cannot claim more audio than the meeting lasted.",
+      ),
+    );
+  }
+
+  for (const [index, source] of value.sources.entries()) {
+    if (source.authority !== expectedSourceAuthority[source.kind]) {
+      findings.push(
+        finding(
+          "source_authority_mismatch",
+          `sources.${index}.authority`,
+          `${source.kind} evidence must use its declared authority.`,
+        ),
+      );
+    }
+    const capturedAt = Date.parse(source.capturedAt);
+    if (capturedAt > asOf) {
+      findings.push(
+        finding(
+          "future_source_evidence",
+          `sources.${index}.capturedAt`,
+          "Meeting-record sources must not postdate the artifact as-of time.",
+        ),
+      );
+    }
+    if (
+      source.kind === "recording-file"
+        ? capturedAt < startedAt || capturedAt > endedAt
+        : meetingBoundSourceKinds.includes(source.kind) && capturedAt < startedAt
+    ) {
+      findings.push(
+        finding(
+          "invalid_meeting_chronology",
+          `sources.${index}.capturedAt`,
+          "The source recording is captured inside the meeting it records, and acknowledgement, correction, and owner evidence cannot predate the meeting.",
+        ),
+      );
+    }
+    if ((source.kind === "recording-file") !== (source.sha256 !== null)) {
+      findings.push(
+        finding(
+          "incoherent_source_digest",
+          `sources.${index}.sha256`,
+          "Only the source recording carries a content digest, and it must always carry one.",
+        ),
+      );
+    }
+    if (
+      pathBearingKinds.includes(source.kind) !== (source.path !== null) ||
+      (source.path !== null && !isSafePackagePath(source.path))
+    ) {
+      findings.push(
+        finding(
+          "unsafe_source_path",
+          `sources.${index}.path`,
+          "Recording and template sources require portable workspace-relative paths, and other sources must leave the path null.",
+        ),
+      );
+    }
+  }
+
+  const authorityReferences = [
+    ["consent.authoritySourceRef", consent.authoritySourceRef, "recording-authority"],
+    ["consent.consentPolicySourceRef", consent.consentPolicySourceRef, "consent-record"],
+    ["consent.retentionSourceRef", consent.retentionSourceRef, "retention-policy"],
+    ["recording.sourceRef", recording.sourceRef, "recording-file"],
+  ];
+  for (const [path, reference, expectedKind] of authorityReferences) {
+    const source = sourceById.get(reference);
+    if (!source || source.kind !== expectedKind || source.integrity !== "verified") {
+      findings.push(
+        finding(
+          "invalid_authority_reference",
+          path,
+          `${path} must reference verified ${expectedKind} evidence.`,
+        ),
+      );
+    }
+  }
+  if (value.sources.filter((item) => item.kind === "recording-file").length !== 1) {
+    findings.push(
+      finding(
+        "invalid_authority_reference",
+        "sources",
+        "A meeting record must identify exactly one source recording.",
+      ),
+    );
+  }
+  if (
+    ["assumed-from-meeting-invitation", "assumed-from-organizational-policy"].includes(
+      consent.basis,
+    )
+  ) {
+    findings.push(
+      finding(
+        "inferred_consent_basis",
+        "consent.basis",
+        "Recording authority cannot be inferred from an invitation or a general policy.",
+      ),
+    );
+  }
+
+  for (const [index, participant] of value.participants.entries()) {
+    const path = `participants.${index}`;
+    requireOptionalReference(
+      participant.consentSourceRef,
+      sourceSet,
+      `${path}.consentSourceRef`,
+      "Participant consent source reference",
+    );
+    if (assumedConsentBases.includes(participant.consentBasis)) {
+      findings.push(
+        finding(
+          "inferred_consent_basis",
+          `${path}.consentBasis`,
+          "Participant consent cannot be inferred from attendance, silence, role, or a majority.",
+        ),
+      );
+    }
+    const consentSource =
+      participant.consentSourceRef === null
+        ? undefined
+        : sourceById.get(participant.consentSourceRef);
+    const recordedConsent =
+      participant.consentRecordedAt === null
+        ? null
+        : Date.parse(participant.consentRecordedAt);
+    const withdrawnConsent =
+      participant.consentWithdrawnAt === null
+        ? null
+        : Date.parse(participant.consentWithdrawnAt);
+    const consentEvidenceCapturedAt =
+      consentSource === undefined ? null : Date.parse(consentSource.capturedAt);
+    const evidencedConsent =
+      explicitConsentBases.includes(participant.consentBasis) &&
+      consentSource?.kind === "consent-record" &&
+      consentSource.integrity === "verified";
+    let coherentConsent;
+    if (["granted", "limited"].includes(participant.consentStatus)) {
+      coherentConsent =
+        evidencedConsent &&
+        participant.consentScopes.includes("recording") &&
+        recordedConsent !== null &&
+        recordedConsent <= asOf &&
+        consentEvidenceCapturedAt >= recordedConsent &&
+        withdrawnConsent === null &&
+        (participant.consentStatus === "granted"
+          ? fullConsentScopes.every((scope) => participant.consentScopes.includes(scope))
+          : fullConsentScopes.some((scope) => !participant.consentScopes.includes(scope)));
+    } else if (participant.consentStatus === "withdrawn") {
+      coherentConsent =
+        evidencedConsent &&
+        participant.consentScopes.length === 0 &&
+        recordedConsent !== null &&
+        withdrawnConsent !== null &&
+        withdrawnConsent >= recordedConsent &&
+        withdrawnConsent <= asOf &&
+        consentEvidenceCapturedAt >= withdrawnConsent;
+    } else {
+      coherentConsent =
+        participant.consentScopes.length === 0 &&
+        participant.consentBasis === "not-recorded" &&
+        participant.consentRecordedAt === null &&
+        participant.consentSourceRef === null &&
+        participant.consentWithdrawnAt === null;
+    }
+    if (!coherentConsent) {
+      findings.push(
+        finding(
+          "incoherent_participant_consent",
+          path,
+          "Each consent status must match its recorded scope, explicit basis, verified consent record captured after the event it proves, and withdrawal time.",
+        ),
+      );
+    }
+    if (
+      ["absent", "unknown"].includes(participant.attendance) &&
+      participant.speakerLabel !== null
+    ) {
+      findings.push(
+        finding(
+          "absent_participant_speaker",
+          `${path}.speakerLabel`,
+          "Absent or unconfirmed attendees cannot own a transcript speaker label.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, segment] of value.transcript.entries()) {
+    const path = `transcript.${index}`;
+    requireOptionalReference(
+      segment.speakerRef,
+      participantSet,
+      `${path}.speakerRef`,
+      "Segment speaker reference",
+    );
+    requireOptionalReference(
+      segment.supersedesRef,
+      segmentSet,
+      `${path}.supersedesRef`,
+      "Segment supersession reference",
+    );
+    const speaker =
+      segment.speakerRef === null ? undefined : participantById.get(segment.speakerRef);
+    if (
+      segment.startSeconds > segment.endSeconds ||
+      segment.startSeconds < recording.windowStartSeconds ||
+      segment.endSeconds > recording.windowEndSeconds
+    ) {
+      findings.push(
+        finding(
+          "invalid_segment_window",
+          `${path}.startSeconds`,
+          "Segment offsets must be ordered and stay inside the processed recording window.",
+        ),
+      );
+    }
+    const attributed = ["confirmed", "probable"].includes(segment.attributionState);
+    if (
+      attributed !== (segment.speakerRef !== null) ||
+      (segment.attributionState === "confirmed" &&
+        (segment.attributionConfidence < 0.9 || segment.uncertainty !== null)) ||
+      (segment.attributionState === "probable" &&
+        (segment.attributionConfidence < 0.6 ||
+          segment.attributionConfidence >= 0.9 ||
+          segment.uncertainty === null)) ||
+      (!attributed &&
+        (segment.attributionConfidence >= 0.6 || segment.uncertainty === null))
+    ) {
+      findings.push(
+        finding(
+          "incoherent_speaker_attribution",
+          `${path}.attributionState`,
+          "Speaker attribution state, confidence, and uncertainty markers must agree.",
+        ),
+      );
+    }
+    if (
+      speaker !== undefined &&
+      (speaker.speakerLabel === null || !["present", "partial"].includes(speaker.attendance))
+    ) {
+      findings.push(
+        finding(
+          "fabricated_speaker_attribution",
+          `${path}.speakerRef`,
+          "Transcript speech may only be attributed to an attending participant with a recorded speaker label.",
+        ),
+      );
+    }
+    if (
+      speaker !== undefined &&
+      !speaker.consentScopes.includes("transcription") &&
+      segment.state !== "withheld"
+    ) {
+      findings.push(
+        finding(
+          "unconsented_transcript_use",
+          `${path}.state`,
+          "Speech from a participant without transcription consent must be withheld rather than retained.",
+        ),
+      );
+    }
+    if (
+      segment.verbatim &&
+      (segment.attributionState !== "confirmed" ||
+        segment.uncertainty !== null ||
+        !["current", "corrected"].includes(segment.state) ||
+        speaker === undefined ||
+        !speaker.consentScopes.includes("attributed-quotation"))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_verbatim_quote",
+          `${path}.verbatim`,
+          "Verbatim quotation requires a current, confirmed, unambiguous segment from a participant who consented to attributed quotation.",
+        ),
+      );
+    }
+    if (
+      (segment.state === "withheld") !== (segment.withheldReason !== null) ||
+      (segment.state === "withheld" && segment.verbatim) ||
+      (segment.state === "corrected") !== (segment.correctionRef !== null) ||
+      (segment.state === "corrected") !== (segment.supersedesRef !== null) ||
+      segment.supersedesRef === segment.id
+    ) {
+      findings.push(
+        finding(
+          "incoherent_segment_state",
+          `${path}.state`,
+          "Withheld segments require a reason, corrected segments require both a correction and a superseded segment, and a segment cannot supersede itself.",
+        ),
+      );
+    }
+    // A withheld passage keeps its time range and its reason; the speech itself
+    // is replaced by the redaction marker instead of surviving in the excerpt.
+    if (
+      (segment.state === "withheld") !==
+      /^\[Withheld: [^"\u201c\u201d]+\]$/u.test(segment.excerpt)
+    ) {
+      findings.push(
+        finding(
+          "unredacted_withheld_segment",
+          `${path}.excerpt`,
+          "A withheld segment must carry only a quotation-free [Withheld: ...] marker, and a retained segment must not pose as one.",
+        ),
+      );
+    }
+  }
+
+  findings.push(
+    ...uniqueFindings(
+      value.corrections.map((item) => item.segmentRef),
+      "corrections",
+      "Correction segment reference",
+    ),
+    ...uniqueFindings(
+      value.corrections.map((item) => item.supersededSegmentRef),
+      "corrections",
+      "Correction superseded segment reference",
+    ),
+  );
+  const correctionBySegment = new Map(
+    value.corrections.map((item) => [item.segmentRef, item]),
+  );
+  const correctionBySuperseded = new Map(
+    value.corrections.map((item) => [item.supersededSegmentRef, item]),
+  );
+  for (const [index, correction] of value.corrections.entries()) {
+    const path = `corrections.${index}`;
+    findings.push(
+      ...referenceFindings(
+        [correction.segmentRef],
+        segmentSet,
+        `${path}.segmentRef`,
+        "Correction segment reference",
+      ),
+      ...referenceFindings(
+        [correction.supersededSegmentRef],
+        segmentSet,
+        `${path}.supersededSegmentRef`,
+        "Correction superseded segment reference",
+      ),
+      ...referenceFindings(
+        [correction.sourceRef],
+        sourceSet,
+        `${path}.sourceRef`,
+        "Correction source reference",
+      ),
+    );
+    const corrected = segmentById.get(correction.segmentRef);
+    const superseded = segmentById.get(correction.supersededSegmentRef);
+    const source = sourceById.get(correction.sourceRef);
+    const correctedAt = Date.parse(correction.correctedAt);
+    if (
+      correction.segmentRef === correction.supersededSegmentRef ||
+      corrected?.state !== "corrected" ||
+      corrected.correctionRef !== correction.id ||
+      corrected.supersedesRef !== correction.supersededSegmentRef ||
+      superseded?.state !== "superseded" ||
+      source?.kind !== "correction-note" ||
+      source.integrity !== "verified" ||
+      correctedAt < startedAt ||
+      correctedAt > asOf ||
+      ownerIsAgent(correction.correctedBy)
+    ) {
+      findings.push(
+        finding(
+          "broken_correction_lineage",
+          path,
+          "Every correction must link a corrected segment to the segment it supersedes through verified, human-attributed correction evidence recorded before the as-of time.",
+        ),
+      );
+    }
+  }
+  for (const [index, segment] of value.transcript.entries()) {
+    if (
+      (segment.state === "corrected") !== correctionBySegment.has(segment.id) ||
+      (segment.state === "superseded") !== correctionBySuperseded.has(segment.id)
+    ) {
+      findings.push(
+        finding(
+          "broken_correction_lineage",
+          `transcript.${index}.state`,
+          "Corrected and superseded segments must each appear exactly once in the correction ledger.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, deliberation] of value.deliberations.entries()) {
+    const path = `deliberations.${index}`;
+    requireReferences(
+      deliberation.segmentRefs,
+      segmentSet,
+      `${path}.segmentRefs`,
+      "Deliberation segment reference",
+    );
+    requireOptionalReference(
+      deliberation.raisedByRef,
+      participantSet,
+      `${path}.raisedByRef`,
+      "Deliberation participant reference",
+    );
+    requireRecordedParticipation(
+      deliberation.raisedByRef === null ? [] : [deliberation.raisedByRef],
+      `${path}.raisedByRef`,
+      "A deliberation raiser",
+    );
+    // Crediting someone with raising a topic requires a cited segment attributed
+    // to them; an unidentified proposal leaves the raiser unnamed.
+    if (
+      deliberation.raisedByRef !== null &&
+      !deliberation.segmentRefs.some(
+        (reference) => segmentById.get(reference)?.speakerRef === deliberation.raisedByRef,
+      )
+    ) {
+      findings.push(
+        finding(
+          "fabricated_speaker_attribution",
+          `${path}.raisedByRef`,
+          "A deliberation may only credit a raiser who speaks in one of its cited segments.",
+        ),
+      );
+    }
+    requireOptionalReference(
+      deliberation.decisionRef,
+      decisionSet,
+      `${path}.decisionRef`,
+      "Deliberation decision reference",
+    );
+    requireOptionalReference(
+      deliberation.parkingLotRef,
+      parkedSet,
+      `${path}.parkingLotRef`,
+      "Deliberation parking lot reference",
+    );
+    requireUsableEvidence(deliberation.segmentRefs, `${path}.segmentRefs`);
+    requireMinutesConsent(deliberation.segmentRefs, `${path}.segmentRefs`);
+    if (
+      (deliberation.outcome === "carried-to-decision") !==
+        (deliberation.decisionRef !== null) ||
+      (deliberation.outcome === "parked") !== (deliberation.parkingLotRef !== null) ||
+      (deliberation.kind === "information") !== (deliberation.outcome === "noted")
+    ) {
+      findings.push(
+        finding(
+          "incoherent_deliberation_outcome",
+          `${path}.outcome`,
+          "Only proposals and discussions carry to a linked decision or a parking-lot entry, and information items must remain noted.",
+        ),
+      );
+    }
+    const decision =
+      deliberation.decisionRef === null
+        ? undefined
+        : decisionById.get(deliberation.decisionRef);
+    const parked =
+      deliberation.parkingLotRef === null
+        ? undefined
+        : parkedById.get(deliberation.parkingLotRef);
+    if (
+      (decision !== undefined && !decision.deliberationRefs.includes(deliberation.id)) ||
+      (parked !== undefined && !parked.deliberationRefs.includes(deliberation.id))
+    ) {
+      findings.push(
+        finding(
+          "broken_deliberation_link",
+          path,
+          "Deliberation, decision, and parking-lot references must resolve in both directions.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, decision] of value.decisions.entries()) {
+    const path = `decisions.${index}`;
+    requireReferences(
+      decision.segmentRefs,
+      segmentSet,
+      `${path}.segmentRefs`,
+      "Decision segment reference",
+    );
+    requireReferences(
+      decision.deliberationRefs,
+      deliberationSet,
+      `${path}.deliberationRefs`,
+      "Decision deliberation reference",
+    );
+    requireReferences(
+      decision.dissentRefs,
+      participantSet,
+      `${path}.dissentRefs`,
+      "Decision dissent reference",
+    );
+    requireRecordedParticipation(
+      decision.dissentRefs,
+      `${path}.dissentRefs`,
+      "Recorded dissent",
+    );
+    findings.push(
+      ...referenceFindings(
+        [decision.decisionMakerRef],
+        participantSet,
+        `${path}.decisionMakerRef`,
+        "Decision maker reference",
+      ),
+    );
+    requireOptionalReference(
+      decision.conflictRef,
+      conflictSet,
+      `${path}.conflictRef`,
+      "Decision conflict reference",
+    );
+    requireUsableEvidence(decision.segmentRefs, `${path}.segmentRefs`);
+    requireMinutesConsent(decision.segmentRefs, `${path}.segmentRefs`);
+    const maker = participantById.get(decision.decisionMakerRef);
+    if (
+      maker !== undefined &&
+      (!["chair", "decision-maker"].includes(maker.role) ||
+        !["present", "partial"].includes(maker.attendance) ||
+        !["granted", "limited"].includes(maker.consentStatus))
+    ) {
+      findings.push(
+        finding(
+          "unauthorized_decision_maker",
+          `${path}.decisionMakerRef`,
+          "A decision must name an attending chair or decision maker whose participation consent is recorded.",
+        ),
+      );
+    }
+    if (
+      ["assumed-from-silence", "assumed-from-seniority", "assumed-from-majority-mood"].includes(
+        decision.authorityBasis,
+      )
+    ) {
+      findings.push(
+        finding(
+          "inferred_decision_authority",
+          `${path}.authorityBasis`,
+          "Decision authority cannot be inferred from silence, seniority, or the mood of a majority.",
+        ),
+      );
+    }
+    if (["silence", "absence-of-objection-unprompted"].includes(decision.agreementBasis)) {
+      findings.push(
+        finding(
+          "decision_inferred_from_silence",
+          `${path}.agreementBasis`,
+          "Agreement cannot be inferred from silence or from an unprompted absence of objection.",
+        ),
+      );
+    }
+    if ((decision.status === "conditional") !== (decision.conditions.length > 0)) {
+      findings.push(
+        finding(
+          "incoherent_decision_conditions",
+          `${path}.conditions`,
+          "Conditional decisions must state their conditions, and other decisions must not carry any.",
+        ),
+      );
+    }
+    if (
+      decision.dissentRefs.includes(decision.decisionMakerRef) ||
+      (decision.dissentRefs.length > 0 && decision.conflictRef === null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_dissent",
+          `${path}.dissentRefs`,
+          "Recorded dissent must exclude the decision maker and remain linked to a conflict record.",
+        ),
+      );
+    }
+    const recordedAt = Date.parse(decision.recordedAt);
+    if (recordedAt < startedAt || recordedAt > endedAt) {
+      findings.push(
+        finding(
+          "invalid_decision_chronology",
+          `${path}.recordedAt`,
+          "Decisions must be recorded inside the meeting they came from.",
+        ),
+      );
+    }
+    if (decision.reviewState === "confirmed-by-owner" && ownerReview.state !== "completed") {
+      findings.push(
+        finding(
+          "premature_decision_confirmation",
+          `${path}.reviewState`,
+          "A decision can only be confirmed after the named human reviewer completes the review.",
+        ),
+      );
+    }
+    const conflict =
+      decision.conflictRef === null ? undefined : conflictById.get(decision.conflictRef);
+    if (conflict !== undefined && !conflict.decisionRefs.includes(decision.id)) {
+      findings.push(
+        finding(
+          "broken_conflict_link",
+          `${path}.conflictRef`,
+          "Decision and conflict references must resolve in both directions.",
+        ),
+      );
+    }
+    for (const reference of decision.deliberationRefs) {
+      const deliberation = deliberationById.get(reference);
+      if (deliberation !== undefined && deliberation.decisionRef !== decision.id) {
+        findings.push(
+          finding(
+            "broken_deliberation_link",
+            `${path}.deliberationRefs`,
+            "Every deliberation cited by a decision must carry that decision forward.",
+          ),
+        );
+      }
+    }
+  }
+
+  function dependencyCycle(startId) {
+    const stack = [startId];
+    const seen = new Set();
+    while (stack.length > 0) {
+      const current = actionById.get(stack.pop());
+      for (const reference of current?.dependsOn ?? []) {
+        if (reference === startId) {
+          return true;
+        }
+        if (!seen.has(reference) && actionById.has(reference)) {
+          seen.add(reference);
+          stack.push(reference);
+        }
+      }
+    }
+    return false;
+  }
+
+  for (const [index, action] of value.actionItems.entries()) {
+    const path = `actionItems.${index}`;
+    requireReferences(
+      action.segmentRefs,
+      segmentSet,
+      `${path}.segmentRefs`,
+      "Action segment reference",
+    );
+    requireReferences(
+      action.dependsOn,
+      actionSet,
+      `${path}.dependsOn`,
+      "Action dependency reference",
+    );
+    requireOptionalReference(
+      action.assigneeRef,
+      participantSet,
+      `${path}.assigneeRef`,
+      "Action assignee reference",
+    );
+    requireOptionalReference(
+      action.decisionRef,
+      decisionSet,
+      `${path}.decisionRef`,
+      "Action decision reference",
+    );
+    requireOptionalReference(
+      action.acknowledgementSegmentRef,
+      segmentSet,
+      `${path}.acknowledgementSegmentRef`,
+      "Action acknowledgement segment reference",
+    );
+    requireOptionalReference(
+      action.acknowledgementSourceRef,
+      sourceSet,
+      `${path}.acknowledgementSourceRef`,
+      "Action acknowledgement source reference",
+    );
+    requireUsableEvidence(
+      [
+        ...action.segmentRefs,
+        ...(action.acknowledgementSegmentRef === null
+          ? []
+          : [action.acknowledgementSegmentRef]),
+      ],
+      `${path}.segmentRefs`,
+    );
+    requireMinutesConsent(
+      [
+        ...action.segmentRefs,
+        ...(action.acknowledgementSegmentRef === null
+          ? []
+          : [action.acknowledgementSegmentRef]),
+      ],
+      `${path}.segmentRefs`,
+    );
+    const assignee =
+      action.assigneeRef === null ? undefined : participantById.get(action.assigneeRef);
+    const acknowledgementSegment =
+      action.acknowledgementSegmentRef === null
+        ? undefined
+        : segmentById.get(action.acknowledgementSegmentRef);
+    const acknowledgementSource =
+      action.acknowledgementSourceRef === null
+        ? undefined
+        : sourceById.get(action.acknowledgementSourceRef);
+    const acknowledged = action.assignmentState === "acknowledged-by-assignee";
+    if (
+      acknowledged
+        ? action.assigneeRef === null ||
+          acknowledgementSegment === undefined ||
+          acknowledgementSegment.speakerRef !== action.assigneeRef ||
+          acknowledgementSegment.attributionState !== "confirmed" ||
+          acknowledgementSource?.kind !== "acknowledgement-record" ||
+          acknowledgementSource.integrity !== "verified"
+        : action.acknowledgementSegmentRef !== null ||
+          action.acknowledgementSourceRef !== null ||
+          (action.assignmentState === "proposed-pending-acknowledgement") ===
+            (action.assigneeRef === null)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_action_acknowledgement",
+          `${path}.assignmentState`,
+          "Acknowledged assignments require a confirmed acknowledgement segment from the assignee and verified acknowledgement evidence; proposed and unassigned items must not claim either.",
+        ),
+      );
+    }
+    if (assignee !== undefined && !assignee.consentScopes.includes("action-assignment")) {
+      findings.push(
+        finding(
+          "unconsented_action_assignment",
+          `${path}.assigneeRef`,
+          "A participant who did not consent to action assignment cannot be recorded as an assignee or a follow-up owner.",
+        ),
+      );
+    }
+    if (
+      acknowledgementSource !== undefined &&
+      acknowledgementSegment !== undefined &&
+      Date.parse(acknowledgementSource.capturedAt) <
+        startedAt +
+          (acknowledgementSegment.endSeconds - recording.windowStartSeconds) * 1000
+    ) {
+      findings.push(
+        finding(
+          "invalid_meeting_chronology",
+          `${path}.acknowledgementSourceRef`,
+          "Acknowledgement evidence cannot predate the moment the assignee accepted the action on the record.",
+        ),
+      );
+    }
+    // A date-only due date means the end of that day where the action is due, so
+    // it is resolved in its own zone rather than against a UTC day boundary.
+    const dueEnd =
+      action.dueDate === null || action.dueTimezone === null
+        ? null
+        : endOfLocalDayMs(action.dueDate, action.dueTimezone);
+    if (
+      (action.dueDate !== null) !== (action.dueTimezone !== null) ||
+      (action.dueDate !== null && (dueEnd === null || dueEnd < endedAt)) ||
+      (acknowledged && action.status !== "cancelled" && action.dueDate === null)
+    ) {
+      findings.push(
+        finding(
+          "invalid_action_due_date",
+          `${path}.dueDate`,
+          "Due dates require a resolvable explicit timezone, must not end before the meeting in that zone, and every live acknowledged action needs one.",
+        ),
+      );
+    }
+    if (
+      (["in-progress", "complete"].includes(action.status) && !acknowledged) ||
+      (action.assignmentState === "unassigned" && action.status !== "not-started")
+    ) {
+      findings.push(
+        finding(
+          "incoherent_action_status",
+          `${path}.status`,
+          "Only acknowledged actions can be in progress or complete, and unassigned actions cannot have started.",
+        ),
+      );
+    }
+    if (dependencyCycle(action.id)) {
+      findings.push(
+        finding(
+          "cyclic_action_dependency",
+          `${path}.dependsOn`,
+          "Action dependencies must stay acyclic.",
+        ),
+      );
+    }
+    const decision =
+      action.decisionRef === null ? undefined : decisionById.get(action.decisionRef);
+    if (decision !== undefined && !["approved", "conditional"].includes(decision.status)) {
+      findings.push(
+        finding(
+          "unsupported_action_decision",
+          `${path}.decisionRef`,
+          "Actions may only derive from an approved or conditional decision.",
+        ),
+      );
+    }
+    if (
+      [
+        "communicated-by-agent",
+        "calendar-invite-sent-by-agent",
+        "task-created-by-agent",
+      ].includes(action.deliveryState)
+    ) {
+      findings.push(
+        finding(
+          "autonomous_commitment",
+          `${path}.deliveryState`,
+          "Follow-up messages, calendar changes, and task-system writes remain with the named human owner.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, question] of value.openQuestions.entries()) {
+    const path = `openQuestions.${index}`;
+    requireReferences(
+      question.segmentRefs,
+      segmentSet,
+      `${path}.segmentRefs`,
+      "Question segment reference",
+    );
+    requireOptionalReference(
+      question.raisedByRef,
+      participantSet,
+      `${path}.raisedByRef`,
+      "Question participant reference",
+    );
+    requireRecordedParticipation(
+      question.raisedByRef === null ? [] : [question.raisedByRef],
+      `${path}.raisedByRef`,
+      "A question raiser",
+    );
+    if (
+      question.raisedByRef !== null &&
+      !question.segmentRefs.some(
+        (reference) => segmentById.get(reference)?.speakerRef === question.raisedByRef,
+      )
+    ) {
+      findings.push(
+        finding(
+          "fabricated_speaker_attribution",
+          `${path}.raisedByRef`,
+          "An open question may only credit a raiser who speaks in one of its cited segments.",
+        ),
+      );
+    }
+    requireOptionalReference(
+      question.ownerRef,
+      participantSet,
+      `${path}.ownerRef`,
+      "Question owner reference",
+    );
+    requireFollowUpOwnership(question.ownerRef, `${path}.ownerRef`);
+    requireOptionalReference(
+      question.answerSegmentRef,
+      segmentSet,
+      `${path}.answerSegmentRef`,
+      "Question answer segment reference",
+    );
+    requireUsableEvidence(
+      [
+        ...question.segmentRefs,
+        ...(question.answerSegmentRef === null ? [] : [question.answerSegmentRef]),
+      ],
+      `${path}.segmentRefs`,
+    );
+    requireMinutesConsent(
+      [
+        ...question.segmentRefs,
+        ...(question.answerSegmentRef === null ? [] : [question.answerSegmentRef]),
+      ],
+      `${path}.segmentRefs`,
+    );
+    if (
+      (question.state === "answered-in-meeting") !== (question.answerSegmentRef !== null) ||
+      (question.state === "routed-to-owner") !== (question.ownerRef !== null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_question_state",
+          `${path}.state`,
+          "Answered questions must cite the answering segment, and only routed questions may name an owner.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, parked] of value.parkingLot.entries()) {
+    const path = `parkingLot.${index}`;
+    requireReferences(
+      parked.deliberationRefs,
+      deliberationSet,
+      `${path}.deliberationRefs`,
+      "Parking lot deliberation reference",
+    );
+    requireOptionalReference(
+      parked.ownerRef,
+      participantSet,
+      `${path}.ownerRef`,
+      "Parking lot owner reference",
+    );
+    requireFollowUpOwnership(parked.ownerRef, `${path}.ownerRef`);
+    for (const reference of parked.deliberationRefs) {
+      const deliberation = deliberationById.get(reference);
+      if (deliberation !== undefined && deliberation.parkingLotRef !== parked.id) {
+        findings.push(
+          finding(
+            "broken_deliberation_link",
+            `${path}.deliberationRefs`,
+            "Every parked deliberation must point back to the parking-lot entry that holds it.",
+          ),
+        );
+      }
+    }
+    // A date-only revisit date means the end of that day in the meeting's zone.
+    const revisitEnd =
+      parked.proposedRevisitBy === null
+        ? null
+        : endOfLocalDayMs(parked.proposedRevisitBy, meeting.timezone);
+    if (
+      parked.proposedRevisitBy !== null &&
+      revisitEnd !== null &&
+      revisitEnd < endedAt
+    ) {
+      findings.push(
+        finding(
+          "invalid_meeting_chronology",
+          `${path}.proposedRevisitBy`,
+          "A proposed revisit date cannot fall before the meeting that parked the topic.",
+        ),
+      );
+    }
+  }
+
+  const disputedAttributionSegments = new Set(
+    value.conflicts
+      .filter((item) => item.kind === "disputed-attribution")
+      .flatMap((item) => item.segmentRefs),
+  );
+  for (const [index, conflict] of value.conflicts.entries()) {
+    const path = `conflicts.${index}`;
+    requireReferences(
+      conflict.segmentRefs,
+      segmentSet,
+      `${path}.segmentRefs`,
+      "Conflict segment reference",
+    );
+    requireReferences(
+      conflict.decisionRefs,
+      decisionSet,
+      `${path}.decisionRefs`,
+      "Conflict decision reference",
+    );
+    requireReferences(
+      conflict.actionRefs,
+      actionSet,
+      `${path}.actionRefs`,
+      "Conflict action reference",
+    );
+    requireReferences(
+      conflict.participantRefs,
+      participantSet,
+      `${path}.participantRefs`,
+      "Conflict participant reference",
+    );
+    requireRecordedParticipation(
+      conflict.participantRefs,
+      `${path}.participantRefs`,
+      "A conflict participant",
+    );
+    requireOptionalReference(
+      conflict.resolutionSegmentRef,
+      segmentSet,
+      `${path}.resolutionSegmentRef`,
+      "Conflict resolution segment reference",
+    );
+    requireUsableEvidence(
+      conflict.resolutionSegmentRef === null ? [] : [conflict.resolutionSegmentRef],
+      `${path}.resolutionSegmentRef`,
+    );
+    requireMinutesConsent(
+      conflict.resolutionSegmentRef === null ? [] : [conflict.resolutionSegmentRef],
+      `${path}.resolutionSegmentRef`,
+    );
+    // Attribution disputes must retain the disputed passage even when its content
+    // is withheld or superseded; every substantive conflict needs usable evidence.
+    if (conflict.kind !== "disputed-attribution") {
+      requireUsableEvidence(conflict.segmentRefs, `${path}.segmentRefs`);
+    }
+    requireMinutesConsent(conflict.segmentRefs, `${path}.segmentRefs`);
+    if (
+      (conflict.resolutionState === "resolved-on-record") !==
+      (conflict.resolutionSegmentRef !== null)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_conflict_resolution",
+          `${path}.resolutionState`,
+          "Only conflicts resolved on the record may cite a resolving segment, and they must cite one.",
+        ),
+      );
+    }
+    for (const reference of conflict.decisionRefs) {
+      const decision = decisionById.get(reference);
+      if (decision !== undefined && decision.conflictRef !== conflict.id) {
+        findings.push(
+          finding(
+            "broken_conflict_link",
+            `${path}.decisionRefs`,
+            "Every decision named by a conflict must point back to that conflict.",
+          ),
+        );
+      }
+    }
+  }
+  for (const [index, segment] of value.transcript.entries()) {
+    if (
+      segment.attributionState === "disputed" &&
+      !disputedAttributionSegments.has(segment.id)
+    ) {
+      findings.push(
+        finding(
+          "broken_conflict_link",
+          `transcript.${index}.attributionState`,
+          "Disputed speaker attribution must be carried by a disputed-attribution conflict record.",
+        ),
+      );
+    }
+  }
+
+  const gapKinds = new Set(value.gapsAndBlockers.map((item) => item.kind));
+  const unknownSpeakerSegments = new Set(
+    value.gapsAndBlockers
+      .filter((item) => item.kind === "unknown-speaker")
+      .flatMap((item) => item.segmentRefs),
+  );
+  // Overlapping and corrected segments are intentional, so coverage is the union
+  // of every retained passage rather than a sum of segment lengths.
+  const coveredIntervals = value.transcript
+    .filter((item) => item.startSeconds <= item.endSeconds)
+    .map((item) => [item.startSeconds, item.endSeconds])
+    .sort((left, right) => left[0] - right[0]);
+  const untranscribedRuns = [];
+  let coveredThrough = recording.windowStartSeconds;
+  for (const [start, end] of coveredIntervals) {
+    if (start > coveredThrough) {
+      untranscribedRuns.push(start - coveredThrough);
+    }
+    coveredThrough = Math.max(coveredThrough, end);
+  }
+  if (recording.windowEndSeconds > coveredThrough) {
+    untranscribedRuns.push(recording.windowEndSeconds - coveredThrough);
+  }
+  const hasUntranscribedWindow = untranscribedRuns.some(
+    (run) => run > untranscribedToleranceSeconds,
+  );
+  for (const [index, gap] of value.gapsAndBlockers.entries()) {
+    const path = `gapsAndBlockers.${index}`;
+    requireReferences(
+      gap.segmentRefs,
+      segmentSet,
+      `${path}.segmentRefs`,
+      "Gap segment reference",
+    );
+    requireOptionalReference(
+      gap.ownerRef,
+      participantSet,
+      `${path}.ownerRef`,
+      "Gap owner reference",
+    );
+    requireFollowUpOwnership(gap.ownerRef, `${path}.ownerRef`);
+    if (gap.blocking && !handoff.blockingRefs.includes(gap.id)) {
+      findings.push(
+        finding(
+          "incoherent_gap_state",
+          `${path}.blocking`,
+          "Every blocking gap must stay visible in the handoff blocker list.",
+        ),
+      );
+    }
+    if (
+      gap.kind === "unknown-speaker" &&
+      (gap.segmentRefs.length === 0 ||
+        gap.segmentRefs.some(
+          (reference) =>
+            segmentById.has(reference) &&
+            !["unattributed", "disputed"].includes(
+              segmentById.get(reference).attributionState,
+            ),
+        ))
+    ) {
+      findings.push(
+        finding(
+          "incoherent_gap_state",
+          `${path}.segmentRefs`,
+          "An unknown-speaker gap must name the passages whose speaker is unattributed or disputed.",
+        ),
+      );
+    }
+    if (audioGapKinds.includes(gap.kind) && gap.segmentRefs.length > 0) {
+      findings.push(
+        finding(
+          "incoherent_gap_state",
+          `${path}.segmentRefs`,
+          "Inaudible, unusable, and untranscribed audio has no transcript segment to cite.",
+        ),
+      );
+    }
+    if (
+      (gap.kind === "inaudible-audio" && recording.audioQuality === "clear") ||
+      (gap.kind === "unusable-recording" && recording.audioQuality !== "unusable") ||
+      (gap.kind === "untranscribed-window" && !hasUntranscribedWindow)
+    ) {
+      findings.push(
+        finding(
+          "incoherent_gap_state",
+          `${path}.kind`,
+          "An audio gap must match the recorded audio quality and the transcript coverage it claims.",
+        ),
+      );
+    }
+  }
+  for (const [index, segment] of value.transcript.entries()) {
+    if (segment.attributionState === "unattributed" && !unknownSpeakerSegments.has(segment.id)) {
+      findings.push(
+        finding(
+          "incoherent_gap_state",
+          `transcript.${index}.attributionState`,
+          "Speech that no participant can be credited with must be carried as an unknown-speaker gap.",
+        ),
+      );
+    }
+  }
+  if (recording.audioQuality === "unusable" && !gapKinds.has("unusable-recording")) {
+    findings.push(
+      finding(
+        "incoherent_gap_state",
+        "recording.audioQuality",
+        "Unusable audio must be recorded as an explicit gap instead of being reconstructed.",
+      ),
+    );
+  }
+  if (recording.audioQuality === "degraded" && !gapKinds.has("inaudible-audio")) {
+    findings.push(
+      finding(
+        "incoherent_gap_state",
+        "recording.audioQuality",
+        "Degraded audio must name the passages it cost the record as an inaudible-audio gap.",
+      ),
+    );
+  }
+  if (
+    hasUntranscribedWindow &&
+    !gapKinds.has("untranscribed-window") &&
+    !gapKinds.has("unusable-recording")
+  ) {
+    findings.push(
+      finding(
+        "incoherent_gap_state",
+        "transcript",
+        "Stretches of the processed window that the transcript does not cover must be declared instead of left implied.",
+      ),
+    );
+  }
+  if (
+    value.participants.some((item) => item.consentStatus === "withdrawn") &&
+    !gapKinds.has("withdrawn-consent")
+  ) {
+    findings.push(
+      finding(
+        "incoherent_gap_state",
+        "participants",
+        "Withdrawn consent must be recorded as an explicit gap.",
+      ),
+    );
+  }
+  if (
+    value.participants.some((item) =>
+      ["withheld", "unknown"].includes(item.consentStatus),
+    ) &&
+    !gapKinds.has("missing-consent")
+  ) {
+    findings.push(
+      finding(
+        "incoherent_gap_state",
+        "participants",
+        "Missing or unconfirmed consent must be recorded as an explicit gap.",
+      ),
+    );
+  }
+
+  requireOptionalReference(
+    documentDraft.templateSourceRef,
+    sourceSet,
+    "documentDraft.templateSourceRef",
+    "Document template source reference",
+  );
+  requireReferences(
+    documentDraft.decisionRefs,
+    decisionSet,
+    "documentDraft.decisionRefs",
+    "Document decision reference",
+  );
+  requireReferences(
+    documentDraft.actionRefs,
+    actionSet,
+    "documentDraft.actionRefs",
+    "Document action reference",
+  );
+  const templateSource =
+    documentDraft.templateSourceRef === null
+      ? undefined
+      : sourceById.get(documentDraft.templateSourceRef);
+  const draftCreated = documentDraft.state !== "not-created";
+  if (documentDraft.state === "final") {
+    findings.push(
+      finding(
+        "premature_document_final",
+        "documentDraft.state",
+        "The generated meeting document stays a review draft until the named human reviewer accepts it.",
+      ),
+    );
+  }
+  if (!documentDraft.preservesOriginalTemplate || !documentDraft.preservesSourceRecording) {
+    findings.push(
+      finding(
+        "unpreserved_source_material",
+        "documentDraft.preservesOriginalTemplate",
+        "The supplied template and the source recording must both survive document generation.",
+      ),
+    );
+  }
+  if (
+    documentDraft.distributionState === "distributed-by-agent" ||
+    (draftCreated && !documentDraft.audienceBound)
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_distribution",
+        "documentDraft.distributionState",
+        "The meeting document must stay bound to the authorized audience and can only be distributed by its owner.",
+      ),
+    );
+  }
+  if (
+    draftCreated !== (documentDraft.templateSourceRef !== null) ||
+    draftCreated !== (documentDraft.templatePath !== null) ||
+    draftCreated !== (documentDraft.outputPath !== null) ||
+    (draftCreated &&
+      (templateSource?.kind !== "document-template" ||
+        templateSource.integrity !== "verified" ||
+        templateSource.path !== documentDraft.templatePath)) ||
+    (documentDraft.templatePath !== null && !isSafePackagePath(documentDraft.templatePath)) ||
+    (documentDraft.outputPath !== null &&
+      (!isSafePackagePath(documentDraft.outputPath) ||
+        !documentDraft.outputPath.startsWith("outputs/") ||
+        sourcePathKeys.has(portablePathKey(documentDraft.outputPath)) ||
+        portablePathKey(documentDraft.outputPath) ===
+          portablePathKey(documentDraft.templatePath ?? "")))
+  ) {
+    findings.push(
+      finding(
+        "unsafe_source_path",
+        "documentDraft.templatePath",
+        "A created document draft requires a verified template source, a matching portable template path, and a separate portable destination under outputs/ that does not overwrite any supplied source.",
+      ),
+    );
+  }
+  if (
+    draftCreated
+      ? decisionIds.some((id) => !documentDraft.decisionRefs.includes(id)) ||
+        actionIds.some((id) => !documentDraft.actionRefs.includes(id))
+      : documentDraft.decisionRefs.length > 0 || documentDraft.actionRefs.length > 0
+  ) {
+    findings.push(
+      finding(
+        "incomplete_document_coverage",
+        "documentDraft.decisionRefs",
+        "A created document draft must carry every recorded decision and action, and an uncreated draft must carry none.",
+      ),
+    );
+  }
+
+  requireCompleteReferences(
+    handoff.deliberationRefs,
+    deliberationIds,
+    "handoff.deliberationRefs",
+    "Deliberation",
+  );
+  requireCompleteReferences(
+    handoff.decisionRefs,
+    decisionIds,
+    "handoff.decisionRefs",
+    "Decision",
+  );
+  requireCompleteReferences(handoff.actionRefs, actionIds, "handoff.actionRefs", "Action");
+  requireCompleteReferences(
+    handoff.questionRefs,
+    questionIds,
+    "handoff.questionRefs",
+    "Open question",
+  );
+  requireCompleteReferences(
+    handoff.parkingLotRefs,
+    parkedIds,
+    "handoff.parkingLotRefs",
+    "Parking lot entry",
+  );
+  requireCompleteReferences(
+    handoff.conflictRefs,
+    conflictIds,
+    "handoff.conflictRefs",
+    "Conflict",
+  );
+  requireCompleteReferences(
+    handoff.correctionRefs,
+    correctionIds,
+    "handoff.correctionRefs",
+    "Correction",
+  );
+  requireCompleteReferences(handoff.gapRefs, gapIds, "handoff.gapRefs", "Gap or blocker");
+  requireReferences(
+    handoff.blockingRefs,
+    gapSet,
+    "handoff.blockingRefs",
+    "Blocking gap reference",
+  );
+  if (
+    handoff.owner !== meeting.decisionOwner ||
+    handoff.reviewer !== meeting.reviewer ||
+    ownerReview.reviewer !== meeting.reviewer
+  ) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "handoff.owner",
+        "The meeting, handoff, and owner review must name the same accountable decision owner and reviewer.",
+      ),
+    );
+  }
+  if (
+    [
+      meeting.decisionOwner,
+      meeting.reviewer,
+      meeting.retentionOwner,
+      handoff.owner,
+      handoff.reviewer,
+      ownerReview.reviewer,
+    ].some((owner) => ownerIsAgent(owner))
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "meeting.decisionOwner",
+        "Meeting decision, review, and retention authority must remain with a named human or team.",
+      ),
+    );
+  }
+  if (handoff.blockingRefs.some((reference) => gapById.get(reference)?.blocking !== true)) {
+    findings.push(
+      finding(
+        "resolved_blocking_reference",
+        "handoff.blockingRefs",
+        "Only blocking gaps may remain handoff blockers.",
+      ),
+    );
+  }
+  const blockingGapIds = value.gapsAndBlockers
+    .filter((item) => item.blocking)
+    .map((item) => item.id);
+  // Work that a named human still has to settle before the record can be called
+  // owner-ready. A blocked handoff must be able to point at one of these, and a
+  // ready handoff at none of them, but a genuine blocker need not be a gap.
+  const unresolvedWork = [
+    recording.audioQuality === "unusable",
+    value.sources.some((item) => item.integrity !== "verified"),
+    value.participants.some((item) => item.consentStatus === "unknown"),
+    value.transcript.some((item) => item.attributionState === "disputed"),
+    value.conflicts.some((item) => item.resolutionState === "unresolved"),
+    value.openQuestions.some((item) => item.state === "open"),
+    value.decisions.some((item) => item.reviewState === "disputed"),
+    value.actionItems.some((item) => item.assigneeRef === null),
+    blockingGapIds.length > 0,
+    handoff.blockingRefs.length > 0,
+    documentDraft.state !== "review-draft",
+    documentDraft.distributionState === "distributed-by-agent",
+  ];
+  if (
+    handoff.state === "blocked" &&
+    (!unresolvedWork.some(Boolean) ||
+      blockingGapIds.some((id) => !handoff.blockingRefs.includes(id)))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff",
+        "Blocked handoffs must retain every blocking gap and name real unresolved work rather than an invented blocker.",
+      ),
+    );
+  }
+  if (
+    handoff.state === "ready-for-owner-review" &&
+    (meeting.state !== "ready-for-owner-review" || unresolvedWork.some(Boolean))
+  ) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "Owner-ready meeting records require verified sources and consent, usable audio, resolved attribution, conflicts, and questions, an assignee on every action, no blockers, and a review-draft document.",
+      ),
+    );
+  }
+  if (
+    meeting.state === "ready-for-owner-review" &&
+    handoff.state !== "ready-for-owner-review"
+  ) {
+    findings.push(
+      finding(
+        "inconsistent_ready_state",
+        "meeting.state",
+        "A meeting record cannot claim owner-review readiness while its handoff remains blocked.",
+      ),
+    );
+  }
+  const reviewedAt =
+    ownerReview.reviewedAt === null ? null : Date.parse(ownerReview.reviewedAt);
+  if (
+    (ownerReview.state === "completed") !== (ownerReview.reviewedAt !== null) ||
+    (ownerReview.state === "completed") !== (ownerReview.resolution !== null) ||
+    (ownerReview.state === "completed" &&
+      (handoff.state !== "ready-for-owner-review" ||
+        reviewedAt < endedAt ||
+        reviewedAt > asOf))
+  ) {
+    findings.push(
+      finding(
+        "invalid_owner_review",
+        "ownerReview.state",
+        "A completed owner review requires an owner-ready handoff plus a resolution recorded between the end of the meeting and the as-of time.",
+      ),
+    );
+  }
+
+  const expectedOutcome =
+    value.decisions.length > 0 && value.actionItems.length > 0
+      ? "decisions-and-actions-recorded"
+      : value.decisions.length > 0
+        ? "decisions-only"
+        : value.actionItems.length > 0
+          ? "actions-only"
+          : "no-decisions-or-actions";
+  if (meeting.outcome !== expectedOutcome) {
+    findings.push(
+      finding(
+        "invalid_zero_outcome_meeting",
+        "meeting.outcome",
+        "The declared outcome must match the recorded decisions and actions, and a meeting without either must say so explicitly.",
+      ),
+    );
+  }
+
+  const narrativeTexts = [
+    meeting.purpose,
+    meeting.audience,
+    meeting.retentionPolicy,
+    ...value.deliberations.map((item) => item.summary),
+    ...value.decisions.map((item) => item.statement),
+    ...value.decisions.flatMap((item) => item.conditions),
+    ...value.actionItems.map((item) => item.statement),
+    ...value.openQuestions.map((item) => item.question),
+    ...value.parkingLot.flatMap((item) => [item.topic, item.reason]),
+    ...value.conflicts.map((item) => item.description),
+    ...value.gapsAndBlockers.map((item) => item.description),
+    ...value.corrections.map((item) => item.reason),
+    ...value.transcript.flatMap((item) => [item.uncertainty ?? "", item.withheldReason ?? ""]),
+    ownerReview.resolution ?? "",
+  ];
+  const prohibitedNarrative =
+    /\b(?:record(?:ed|ing)?|transcrib(?:e|ed|ing)) (?:the |this )?(?:meeting|call|session|conversation) without (?:consent|permission|notice)|\b(?:infer(?:red|ring)?|assum(?:e|ed|ing)|impl(?:y|ied)) (?:that )?(?:consent|agreement|approval|the decision)|\b(?:infer(?:red|ring)?|conclud(?:e|ed|ing)|decid(?:e|ed|ing)|treat(?:ed|ing)?) (?:a |the )?(?:decision|approval) (?:from|as) (?:silence|the absence of objection)|\b(?:send(?:ing|sent)?|email(?:ed|ing)?|messag(?:e|ed|ing)|forward(?:ed|ing)?|distribut(?:e|ed|ing)|shar(?:e|ed|ing)|publish(?:ed|ing)?|post(?:ed|ing)?|circulat(?:e|ed|ing)) (?:the |these |those )?(?:minutes|transcript|recording|meeting record|notes|summary) (?:to|with|outside)|\b(?:schedul(?:e|ed|ing)|book(?:ed|ing)?|creat(?:e|ed|ing)|cancel(?:led|ing)?|mov(?:e|ed|ing)) (?:a |the )?(?:follow-?up )?(?:meeting|calendar invite|invitation|appointment)|\b(?:creat(?:e|ed|ing)|fil(?:e|ed|ing)|open(?:ed|ing)?|updat(?:e|ed|ing)) (?:a |the )?(?:ticket|task|issue|work item|backlog item)|\b(?:commit(?:ted|ting)?|agree(?:d|ing)?|sign(?:ed|ing)? up) on behalf of|\b(?:identif(?:y|ied|ying)|recogni[sz](?:e|ed|ing)|match(?:ed|ing)?) (?:the |a |an )?(?:speaker|participant|voice) (?:by|using|from) (?:their )?(?:voice|voiceprint|biometric|accent)|\b(?:infer(?:red|ring)?|assess(?:ed|ing)?|analy[sz](?:e|ed|ing)|evaluat(?:e|ed|ing)|detect(?:ed|ing)?|scor(?:e|ed|ing)) (?:the )?(?:speaker|participant|attendee)?\s*(?:mood|emotion|sentiment|personality|stress|health|honesty|deception|engagement level)|\boverwrit(?:e|ing|ten) (?:the )?(?:source |original )?(?:recording|template|document)|\b(?:delet(?:e|ed|ing)|eras(?:e|ed|ing)|purg(?:e|ed|ing)|destroy(?:ed|ing)?) (?:the )?(?:source|original) (?:recording|template|document)|\b(?:fabricat(?:e|ed|ing)|invent(?:ed|ing)?|synthesi[sz](?:e|ed|ing)|reconstruct(?:ed|ing)?) (?:a |the )?(?:quote|quotation|decision|action item|speaker|attribution|transcript)|\b(?:autonomously|automatically|on our own) (?:mak(?:e|ing)|tak(?:e|ing)|chang(?:e|ed|ing)|commit(?:ting)?) (?:a |the )?(?:decision|commitment|action)/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unsafe_narrative_content",
+        "meeting",
+        "Meeting records must not record without consent, infer consent or decisions, distribute minutes, schedule meetings, create tasks, commit for participants, identify speakers biometrically, infer emotion or health, delete source material, fabricate transcript content, or act autonomously.",
+      ),
+    );
+  }
+
+  for (const action of requiredActions) {
+    if (
+      !value.blockedActions.includes(action) ||
+      !handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Meeting-record artifacts must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
@@ -20017,6 +21921,7 @@ const validators = {
   "meal-grocery-planner": mealGroceryFindings,
   "media-evidence-reviewer": mediaEvidenceFindings,
   "medical-appointment-prep": medicalAppointmentFindings,
+  "meeting-intelligence": meetingRecordFindings,
   "model-evaluation-adjudicator": modelEvaluationFindings,
   "moving-checklist-coordinator": movingPlanFindings,
   "movie-streaming-organizer": movieStreamingFindings,

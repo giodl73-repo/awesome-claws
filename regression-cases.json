@@ -388,13 +388,15 @@
       "id": "meeting-intelligence",
       "acceptedRequest": "Process this consented architecture-review recording into minutes using our decision-record template, and flag every uncertain speaker attribution.",
       "requiredEvidence": [
-        "Recording path, participant consent, retention rule, and authorized audience",
-        "Meeting purpose, participant names or roles, expected language, and terminology",
-        "Required document template, decision owner, and follow-up format"
+        "Recording path and integrity, recording authority, per-participant consent scopes, retention rule, deletion owner, and authorized audience",
+        "Meeting purpose, date, timezone, participant names, roles, attendance, expected language, and terminology",
+        "Required document template, named decision owner and reviewer, and the private output destination"
       ],
       "authorityBoundaries": [
-        "Do not transcribe, retain, or distribute audio without verified participant consent and an approved destination",
-        "Do not invent speakers, decisions, commitments, or quotations when the recording is unclear"
+        "Do not transcribe, retain, or distribute audio without verified participant consent, an authorized audience, and an approved destination",
+        "Do not invent speakers, decisions, commitments, or quotations when the recording is unclear",
+        "Do not infer consent, agreement, or decision authority from attendance, silence, seniority, or a majority",
+        "Do not send messages, schedule meetings, create tasks, delete source recordings, or publish the meeting record without explicit human authority"
       ],
       "experience": {
         "target": 3,
@@ -405,7 +407,7 @@
       "capabilityClasses": [
         "clawhub-skill"
       ],
-      "capabilityDigest": "sha256:53f302005e9348713662db224b9b98dcafc80976e1ed4ae31b8c4d0fd174714c"
+      "capabilityDigest": "sha256:20389e10ee8f354ed04c7ab568036d595919a21f49624e27f209326eacad5951"
     },
     {
       "id": "spreadsheet-analyst",

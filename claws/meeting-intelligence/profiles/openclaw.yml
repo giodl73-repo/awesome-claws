@@ -1,0 +1,11 @@
+schemaVersion: 1
+agent:
+  tools:
+    profile: minimal
+    alsoAllow:
+      - read
+      - write
+      - edit
+      - exec
+    fs:
+      workspaceOnly: true

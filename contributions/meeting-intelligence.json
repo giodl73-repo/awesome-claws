@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "meeting-intelligence",
+    "name": "Meeting intelligence",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-30"
+    },
+    "description": "Turns a consented meeting recording into a consent-bound transcript, decision, and action record with a reviewable document draft.",
+    "audience": "Teams turning consented meeting audio into an internal decision and action record that a named human owner reviews.",
+    "principles": [
+      "Confirm recording authority before processing",
+      "Preserve transcript uncertainty and speaker ambiguity",
+      "Separate discussion from approved decisions",
+      "Keep every decision and action traceable to a named human and a transcript offset"
+    ],
+    "boundaries": [
+      "Do not transcribe, retain, or distribute audio without verified participant consent, an authorized audience, and an approved destination",
+      "Do not invent speakers, decisions, commitments, or quotations when the recording is unclear",
+      "Do not infer consent, agreement, or decision authority from attendance, silence, seniority, or a majority",
+      "Do not send messages, schedule meetings, create tasks, delete source recordings, or publish the meeting record without explicit human authority"
+    ],
+    "intake": [
+      "Recording path and integrity, recording authority, per-participant consent scopes, retention rule, deletion owner, and authorized audience",
+      "Meeting purpose, date, timezone, participant names, roles, attendance, expected language, and terminology",
+      "Required document template, named decision owner and reviewer, and the private output destination"
+    ],
+    "workflow": [
+      "Verify recording authority, per-participant consent scopes, source integrity, language, audience, and retention constraints",
+      "Transcribe locally with exact offsets, mark uncertain or unattributed speech, and withhold speech that consent does not cover",
+      "Build and validate outputs/meeting-record.json as a consent-bound ledger that separates deliberation from decisions, binds every action to transcript provenance, and preserves corrections, conflicts, and gaps",
+      "Render the meeting-record handoff, keep the document a review draft that preserves the original template and recording, and route every unresolved question and blocker to the named owner"
+    ],
+    "deliverables": [
+      "Meeting authority, consent, audience, and retention record",
+      "Timestamped transcript with attribution confidence and withheld passages",
+      "Decision, dissent, and action register bound to transcript offsets",
+      "Correction, conflict, question, and gap ledger",
+      "Reviewable DOCX meeting record awaiting owner review"
+    ],
+    "example": {
+      "request": "Process this consented architecture-review recording into minutes using our decision-record template, and flag every uncertain speaker attribution.",
+      "outcome": "A validated private meeting record with consent scopes per participant, offset-linked transcript segments and confidence markers, decisions separated from proposals, acknowledged actions, corrections and gaps, and a DOCX review draft awaiting the named owner."
+    },
+    "doneWhen": [
+      "Recording authority, per-participant consent scope, audience, retention, deletion owner, and output destination are explicit",
+      "Transcript uncertainty, unattributed speech, withheld passages, and correction lineage remain visible",
+      "Every decision and action names a human, cites transcript offsets, and stays draft until the named reviewer confirms it",
+      "The machine-readable record validates against schemas/meeting-record.schema.json before the handoff is presented"
+    ],
+    "packages": [
+      {
+        "kind": "skill",
+        "source": "clawhub",
+        "ref": "@steipete/openai-whisper",
+        "version": "1.0.0"
+      },
+      {
+        "kind": "skill",
+        "source": "clawhub",
+        "ref": "@ivangdavila/word-docx",
+        "version": "1.0.2"
+      }
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "exec"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "capabilityGuidance": [
+      "The Whisper skill invokes a local speech-to-text CLI; verify the host dependency, keep recordings and transcripts within the approved local boundary, and expose low-confidence or unattributed speech rather than silently resolving it.",
+      "The DOCX skill may create or edit files; write to a new review destination, preserve the original template and the source recording, and leave distribution to the named owner.",
+      "The bounded OpenClaw profile keeps the minimal tool set plus workspace-only read, write, edit, and local command execution; it exists to run the local transcription CLI and write the review draft, not to reach the network, a calendar, or a task system.",
+      "Treat fixtures/meeting-record.example.json only as a shape example. Validate outputs/meeting-record.json against schemas/meeting-record.schema.json, then render templates/meeting-record.md while preserving consent scopes, transcript offsets and confidence, correction lineage, decision authority, action acknowledgement, conflicts, gaps, and the owner-controlled handoff."
+    ],
+    "resources": [
+      {
+        "source": "schemas/meeting-record.schema.json",
+        "path": "schemas/meeting-record.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/meeting-record.example.json",
+        "path": "fixtures/meeting-record.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/meeting-record.md",
+        "path": "templates/meeting-record.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Meeting recordings are routinely turned into confident minutes that hide who consented to what, which passages were actually audible, which statements were only proposals, and which follow-ups any named human ever accepted.",
+    "repeatableJob": "Turn one consented meeting recording into a private, audience-bound record that binds every transcript segment to an exact source offset and attribution state, separates deliberation from decisions, ties every action to a named human and transcript provenance, and leaves the document a review draft for the accountable owner.",
+    "proofPlan": "Prove an X3 meeting-record artifact that rejects unauthorized or non-local recording use in every state, inferred consent, unconsented transcript use, withheld speech that survives redaction, fabricated or unattributed speakers, participation credited to someone who did not attend or was not cited, unsupported verbatim quotation, broken correction lineage, decisions inferred from silence or seniority, unauthorized decision makers, unacknowledged or autonomously delivered actions, due dates judged outside their own timezone, cyclic dependencies, gaps that misstate unknown speakers, audio quality, or transcript coverage, restricted material handed to the whole organization, unresolved attribution or conflicts at readiness, finalized or distributed documents, incomplete handoff coverage, and agent-owned decision, review, or retention authority.",
+    "existingAlternatives": [
+      {
+        "id": "media-evidence-reviewer",
+        "overlap": "Both process consented recordings locally, keep timestamped evidence, preserve transcription confidence and ambiguity, and gate redaction, retention, and disclosure behind verified authority.",
+        "difference": "Media Evidence Reviewer answers one evidentiary question about arbitrary audio or video without assuming participants or meeting semantics; Meeting Intelligence models named participants, per-participant consent scopes, deliberation versus decision, decision authority and agreement basis, action acknowledgement, and the reviewable minutes document."
+      },
+      {
+        "id": "executive-assistant",
+        "overlap": "Both handle meeting context, follow-up commitments, owners, and due dates, and both refuse to communicate or schedule without explicit approval.",
+        "difference": "Executive Assistant coordinates a principal's ongoing correspondence, calendar, and commitments across many threads; Meeting Intelligence produces one bounded evidence record for a single recording, where every claim must resolve to a transcript offset and a consent scope rather than to inbox context."
+      },
+      {
+        "id": "project-manager",
+        "overlap": "Both track decisions, owners, dependencies, due dates, risks, and blocked work, and both keep terminal states with a named human.",
+        "difference": "Project Manager maintains durable delivery state across a project's lifetime and reconciles status from many sources; Meeting Intelligence never carries state forward between meetings and can only assert what a specific consented recording supports, including explicitly recording a meeting that produced no decisions or actions."
+      },
+      {
+        "id": "work-chief-of-staff",
+        "overlap": "Both name accountable principals, separate decision rights from discussion, and route unresolved items to a human owner instead of resolving them.",
+        "difference": "Work Chief of Staff synthesizes a leadership portfolio from other Claws' completed artifacts and their declared decision rights; Meeting Intelligence is one of those upstream producers and owns raw recording consent, speaker attribution, transcript correction lineage, and the minutes document that the portfolio later consumes."
+      },
+      {
+        "id": "delegation-coordinator",
+        "overlap": "Both bind work to a named human owner, preserve provenance for every assignment, and prohibit autonomous commitment on someone else's behalf.",
+        "difference": "Delegation Coordinator governs delegated worker sessions and their returned evidence; Meeting Intelligence governs human speech, distinguishing an assignment a participant actually acknowledged on the record from one that was merely proposed to them."
+      },
+      {
+        "id": "document-intake-analyst",
+        "overlap": "Both preserve source integrity, processing authority, conversion fidelity, exceptions, and an owner-controlled handoff over sensitive material.",
+        "difference": "Document Intake Analyst inventories and converts supplied files; Meeting Intelligence derives contested, time-ordered human statements from one recording and must model consent per speaker, attribution confidence, supersession of corrected passages, and dissent."
+      },
+      {
+        "id": "knowledge-curator",
+        "overlap": "Both turn unstructured material into durable, reviewable internal records with visible sourcing.",
+        "difference": "Knowledge Curator organizes durable reference knowledge for reuse; Meeting Intelligence produces a single point-in-time evidence record whose retention, deletion date, and authorized audience are bounded by the consent given for one recording."
+      },
+      {
+        "id": "presentation-producer",
+        "overlap": "Both generate a document deliverable from a supplied template and keep the result a draft until a human accepts it.",
+        "difference": "Presentation Producer builds a narrative deck as the primary deliverable; for Meeting Intelligence the document is a secondary review draft over a validated evidence ledger, and it must preserve the original template and the source recording rather than optimizing the artifact."
+      }
+    ]
+  }
+}

@@ -1,0 +1,872 @@
+{
+  "schemaVersion": "awesomeClaws.meetingRecord.v1",
+  "meeting": {
+    "id": "meeting-analytics-architecture-review",
+    "runId": "run-meeting-intelligence-2026-08-28",
+    "purpose": "Turn the consented analytics platform architecture review into a traceable decision and action record for the accountable owner, keeping every uncertain speaker attribution visible.",
+    "decisionOwner": "Priya Raman, Director of Platform Engineering",
+    "reviewer": "Dana Whitfield, Engineering Program Manager",
+    "startedAt": "2026-08-27T14:00:00-07:00",
+    "endedAt": "2026-08-27T15:02:00-07:00",
+    "timezone": "America/Los_Angeles",
+    "asOf": "2026-08-28T09:30:00-07:00",
+    "audience": "Named platform engineering leads, the data platform decision maker, and the review owner",
+    "audienceScope": "named-internal-team",
+    "privacy": "confidential",
+    "destination": "outputs/meeting-intelligence-handoff.md",
+    "retentionPolicy": "The recording, transcript, and derived drafts are removed thirty days after the meeting under the engineering recording-retention policy.",
+    "deleteAfter": "2026-09-26T23:59:00-07:00",
+    "retentionOwner": "Priya Raman, Director of Platform Engineering",
+    "outcome": "decisions-and-actions-recorded",
+    "state": "ready-for-owner-review"
+  },
+  "consent": {
+    "recordingAuthorized": true,
+    "basis": "explicit-participant-consent",
+    "noticeGivenAt": "2026-08-27T13:45:00-07:00",
+    "authoritySourceRef": "src-recording-authority",
+    "consentPolicySourceRef": "src-consent-register",
+    "retentionSourceRef": "src-retention-policy",
+    "authorizedUses": [
+      "local-transcription",
+      "decision-and-action-extraction",
+      "internal-minutes-draft",
+      "owner-review-handoff"
+    ]
+  },
+  "recording": {
+    "sourceRef": "src-recording",
+    "durationSeconds": 3720,
+    "windowStartSeconds": 0,
+    "windowEndSeconds": 3720,
+    "language": "English (United States)",
+    "channel": "video-conference",
+    "audioQuality": "degraded",
+    "processedLocally": true
+  },
+  "sources": [
+    {
+      "id": "src-recording",
+      "kind": "recording-file",
+      "authority": "meeting-owner",
+      "capturedAt": "2026-08-27T15:02:00-07:00",
+      "reference": "Owner-exported conference recording for the analytics architecture review",
+      "integrity": "verified",
+      "privacy": "restricted",
+      "sha256": "5f2c9d1b7a4e63c08d51f7ba3e9c2470a8b6d5e1f30c47a9b2d8e6f10c3a5b74",
+      "path": "evidence/analytics-architecture-review-2026-08-27.m4a"
+    },
+    {
+      "id": "src-recording-authority",
+      "kind": "recording-authority",
+      "authority": "data-controller",
+      "capturedAt": "2026-08-26T09:00:00-07:00",
+      "reference": "Signed recording authorization for the analytics architecture review series",
+      "integrity": "verified",
+      "privacy": "confidential",
+      "sha256": null,
+      "path": null
+    },
+    {
+      "id": "src-consent-register",
+      "kind": "consent-record",
+      "authority": "data-controller",
+      "capturedAt": "2026-08-27T16:41:00-07:00",
+      "reference": "Per-participant consent register with scopes and withdrawal entries",
+      "integrity": "verified",
+      "privacy": "confidential",
+      "sha256": null,
+      "path": null
+    },
+    {
+      "id": "src-retention-policy",
+      "kind": "retention-policy",
+      "authority": "policy-owner",
+      "capturedAt": "2026-06-01T09:00:00-07:00",
+      "reference": "Engineering recording-retention policy, thirty-day limit for internal reviews",
+      "integrity": "verified",
+      "privacy": "internal",
+      "sha256": null,
+      "path": null
+    },
+    {
+      "id": "src-participant-roster",
+      "kind": "participant-roster",
+      "authority": "meeting-owner",
+      "capturedAt": "2026-08-27T13:50:00-07:00",
+      "reference": "Owner-confirmed attendee roster with roles and speaker labels",
+      "integrity": "verified",
+      "privacy": "confidential",
+      "sha256": null,
+      "path": null
+    },
+    {
+      "id": "src-decision-record-template",
+      "kind": "document-template",
+      "authority": "meeting-owner",
+      "capturedAt": "2026-07-15T10:00:00-07:00",
+      "reference": "Platform engineering decision-record template supplied by the owner",
+      "integrity": "verified",
+      "privacy": "internal",
+      "sha256": null,
+      "path": "templates/decision-record.docx"
+    },
+    {
+      "id": "src-acknowledgement-lin",
+      "kind": "acknowledgement-record",
+      "authority": "participant",
+      "capturedAt": "2026-08-27T15:20:00-07:00",
+      "reference": "Written acknowledgement from Marcus Lin accepting the benchmark action",
+      "integrity": "verified",
+      "privacy": "confidential",
+      "sha256": null,
+      "path": null
+    },
+    {
+      "id": "src-acknowledgement-okafor",
+      "kind": "acknowledgement-record",
+      "authority": "participant",
+      "capturedAt": "2026-08-27T15:25:00-07:00",
+      "reference": "Written acknowledgement from Ada Okafor accepting the cutover runbook action",
+      "integrity": "verified",
+      "privacy": "confidential",
+      "sha256": null,
+      "path": null
+    },
+    {
+      "id": "src-correction-note",
+      "kind": "correction-note",
+      "authority": "note-taker",
+      "capturedAt": "2026-08-28T08:40:00-07:00",
+      "reference": "Note-taker correction log for the rollback-window passage",
+      "integrity": "verified",
+      "privacy": "confidential",
+      "sha256": null,
+      "path": null
+    },
+    {
+      "id": "src-owner-note",
+      "kind": "owner-note",
+      "authority": "reviewer",
+      "capturedAt": "2026-08-28T09:10:00-07:00",
+      "reference": "Reviewer intake note describing the required minute format and audience",
+      "integrity": "verified",
+      "privacy": "confidential",
+      "sha256": null,
+      "path": null
+    }
+  ],
+  "participants": [
+    {
+      "id": "participant-raman",
+      "displayName": "Priya Raman",
+      "role": "chair",
+      "organization": "Platform Engineering",
+      "attendance": "present",
+      "speakerLabel": "speaker-raman",
+      "consentStatus": "granted",
+      "consentBasis": "explicit-statement",
+      "consentScopes": [
+        "recording",
+        "transcription",
+        "attributed-quotation",
+        "internal-minutes",
+        "action-assignment"
+      ],
+      "consentRecordedAt": "2026-08-27T14:01:00-07:00",
+      "consentSourceRef": "src-consent-register",
+      "consentWithdrawnAt": null
+    },
+    {
+      "id": "participant-lin",
+      "displayName": "Marcus Lin",
+      "role": "contributor",
+      "organization": "Platform Engineering",
+      "attendance": "present",
+      "speakerLabel": "speaker-lin",
+      "consentStatus": "granted",
+      "consentBasis": "explicit-statement",
+      "consentScopes": [
+        "recording",
+        "transcription",
+        "attributed-quotation",
+        "internal-minutes",
+        "action-assignment"
+      ],
+      "consentRecordedAt": "2026-08-27T14:01:00-07:00",
+      "consentSourceRef": "src-consent-register",
+      "consentWithdrawnAt": null
+    },
+    {
+      "id": "participant-okafor",
+      "displayName": "Ada Okafor",
+      "role": "decision-maker",
+      "organization": "Data Platform",
+      "attendance": "present",
+      "speakerLabel": "speaker-okafor",
+      "consentStatus": "limited",
+      "consentBasis": "signed-consent-record",
+      "consentScopes": [
+        "recording",
+        "transcription",
+        "internal-minutes",
+        "action-assignment"
+      ],
+      "consentRecordedAt": "2026-08-26T17:10:00-07:00",
+      "consentSourceRef": "src-consent-register",
+      "consentWithdrawnAt": null
+    },
+    {
+      "id": "participant-diaz",
+      "displayName": "Elena Diaz",
+      "role": "note-taker",
+      "organization": "Platform Engineering",
+      "attendance": "present",
+      "speakerLabel": "speaker-diaz",
+      "consentStatus": "granted",
+      "consentBasis": "written-acknowledgement",
+      "consentScopes": [
+        "recording",
+        "transcription",
+        "attributed-quotation",
+        "internal-minutes",
+        "action-assignment"
+      ],
+      "consentRecordedAt": "2026-08-27T14:01:00-07:00",
+      "consentSourceRef": "src-consent-register",
+      "consentWithdrawnAt": null
+    },
+    {
+      "id": "participant-shah",
+      "displayName": "Ravi Shah",
+      "role": "subject-matter-expert",
+      "organization": "Security Engineering",
+      "attendance": "partial",
+      "speakerLabel": "speaker-shah",
+      "consentStatus": "withdrawn",
+      "consentBasis": "explicit-statement",
+      "consentScopes": [],
+      "consentRecordedAt": "2026-08-27T14:02:00-07:00",
+      "consentSourceRef": "src-consent-register",
+      "consentWithdrawnAt": "2026-08-27T16:40:00-07:00"
+    },
+    {
+      "id": "participant-nakamura",
+      "displayName": "Yuki Nakamura",
+      "role": "observer",
+      "organization": "Product Management",
+      "attendance": "absent",
+      "speakerLabel": null,
+      "consentStatus": "withheld",
+      "consentBasis": "not-recorded",
+      "consentScopes": [],
+      "consentRecordedAt": null,
+      "consentSourceRef": null,
+      "consentWithdrawnAt": null
+    }
+  ],
+  "transcript": [
+    {
+      "id": "segment-open-scope",
+      "startSeconds": 30,
+      "endSeconds": 75,
+      "speakerRef": "participant-raman",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.97,
+      "excerpt": "The chair opens the review, states the agenda, and limits the session to the analytics storage design.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-consent-confirmation",
+      "startSeconds": 80,
+      "endSeconds": 118,
+      "speakerRef": "participant-raman",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.96,
+      "excerpt": "The chair confirms on the record that each attendee stated their recording scope and may withdraw it afterwards.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-tier-proposal",
+      "startSeconds": 420,
+      "endSeconds": 505,
+      "speakerRef": "participant-lin",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.94,
+      "excerpt": "We should keep ninety days in the hot tier and move everything older into the cold tier on a nightly job.",
+      "verbatim": true,
+      "uncertainty": null,
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-cost-discussion",
+      "startSeconds": 520,
+      "endSeconds": 610,
+      "speakerRef": "participant-okafor",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.92,
+      "excerpt": "Summarizes the storage cost comparison and questions whether the nightly job can finish inside the maintenance window.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-security-caveat",
+      "startSeconds": 900,
+      "endSeconds": 962,
+      "speakerRef": "participant-shah",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.95,
+      "excerpt": "[Withheld: the speaker withdrew recording consent after the meeting, so only the time range is retained.]",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "withheld",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": "Ravi Shah withdrew consent after the meeting, so the passage stays out of the transcript and the minutes."
+    },
+    {
+      "id": "segment-overlapping-voices",
+      "startSeconds": 1180,
+      "endSeconds": 1225,
+      "speakerRef": null,
+      "attributionState": "unattributed",
+      "attributionConfidence": 0.35,
+      "excerpt": "Two voices overlap while agreeing that the nightly job needs a retry budget.",
+      "verbatim": false,
+      "uncertainty": "Two attendees speak at once and the speaker could not be separated from the conference audio.",
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-probable-lin",
+      "startSeconds": 1300,
+      "endSeconds": 1358,
+      "speakerRef": "participant-lin",
+      "attributionState": "probable",
+      "attributionConfidence": 0.74,
+      "excerpt": "Asks which latency target the benchmark should use for the smallest dataset.",
+      "verbatim": false,
+      "uncertainty": "Conference-line noise lowers the speaker match; the owner should confirm the attribution.",
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-migration-proposal",
+      "startSeconds": 1800,
+      "endSeconds": 1890,
+      "speakerRef": "participant-okafor",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.93,
+      "excerpt": "Proposes moving the read path before the write path and staging the cutover one dataset at a time.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-decision-storage",
+      "startSeconds": 2100,
+      "endSeconds": 2185,
+      "speakerRef": "participant-raman",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.96,
+      "excerpt": "The chair explicitly calls for objections to the tiered design, hears none, and states the decision on the record.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-action-lin",
+      "startSeconds": 2400,
+      "endSeconds": 2448,
+      "speakerRef": "participant-lin",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.95,
+      "excerpt": "Accepts the read-latency benchmark and names the following Friday as a realistic reporting date.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-action-okafor",
+      "startSeconds": 2500,
+      "endSeconds": 2549,
+      "speakerRef": "participant-okafor",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.94,
+      "excerpt": "Accepts ownership of the staged cutover runbook once the benchmark result is available.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-rollback-window-draft",
+      "startSeconds": 2900,
+      "endSeconds": 2958,
+      "speakerRef": "participant-raman",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.91,
+      "excerpt": "First pass heard the rollback window as twelve hours for each staged cutover.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "superseded",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-rollback-window-corrected",
+      "startSeconds": 2900,
+      "endSeconds": 2958,
+      "speakerRef": "participant-raman",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.95,
+      "excerpt": "The chair sets a twenty-four hour rollback window for each staged cutover.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "corrected",
+      "supersedesRef": "segment-rollback-window-draft",
+      "correctionRef": "correction-rollback-window",
+      "withheldReason": null
+    },
+    {
+      "id": "segment-compliance-question",
+      "startSeconds": 3200,
+      "endSeconds": 3256,
+      "speakerRef": "participant-diaz",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.95,
+      "excerpt": "Raises whether the ninety-day hot tier still satisfies the regional retention commitment in the customer contract.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-parked-observability",
+      "startSeconds": 3350,
+      "endSeconds": 3405,
+      "speakerRef": "participant-lin",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.93,
+      "excerpt": "Raises the observability budget for the new tier; the group runs out of time before reaching a view.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
+      "id": "segment-answer-latency",
+      "startSeconds": 3450,
+      "endSeconds": 3498,
+      "speakerRef": "participant-okafor",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.94,
+      "excerpt": "Answers that the benchmark should use the ninetieth-percentile read latency on the smallest dataset.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    }
+  ],
+  "corrections": [
+    {
+      "id": "correction-rollback-window",
+      "segmentRef": "segment-rollback-window-corrected",
+      "supersededSegmentRef": "segment-rollback-window-draft",
+      "reason": "The note-taker re-listened to the passage and corrected the rollback window from twelve hours to twenty-four hours.",
+      "correctedBy": "Elena Diaz, Platform Engineering note-taker",
+      "correctedAt": "2026-08-28T08:40:00-07:00",
+      "sourceRef": "src-correction-note"
+    }
+  ],
+  "deliberations": [
+    {
+      "id": "deliberation-scope-and-consent",
+      "kind": "information",
+      "summary": "The chair restated the review scope, the recording boundary, and the consent already on the record before any proposal was heard.",
+      "raisedByRef": "participant-raman",
+      "segmentRefs": ["segment-open-scope", "segment-consent-confirmation"],
+      "outcome": "noted",
+      "decisionRef": null,
+      "parkingLotRef": null
+    },
+    {
+      "id": "deliberation-storage-tier",
+      "kind": "proposal",
+      "summary": "Proposal to keep ninety days in the hot tier and move older partitions to the cold tier on a nightly job.",
+      "raisedByRef": "participant-lin",
+      "segmentRefs": ["segment-tier-proposal", "segment-cost-discussion"],
+      "outcome": "carried-to-decision",
+      "decisionRef": "decision-storage-tier",
+      "parkingLotRef": null
+    },
+    {
+      "id": "deliberation-migration-sequence",
+      "kind": "proposal",
+      "summary": "Proposal to move the read path before the write path and stage the cutover one dataset at a time.",
+      "raisedByRef": "participant-okafor",
+      "segmentRefs": ["segment-migration-proposal"],
+      "outcome": "carried-to-decision",
+      "decisionRef": "decision-migration-sequence",
+      "parkingLotRef": null
+    },
+    {
+      "id": "deliberation-rollback-window",
+      "kind": "discussion",
+      "summary": "Discussion of how long each staged cutover should stay reversible.",
+      "raisedByRef": "participant-raman",
+      "segmentRefs": ["segment-rollback-window-corrected"],
+      "outcome": "carried-to-decision",
+      "decisionRef": "decision-rollback-window",
+      "parkingLotRef": null
+    },
+    {
+      "id": "deliberation-observability-budget",
+      "kind": "discussion",
+      "summary": "Discussion of the observability budget for the new storage tier, cut short by time.",
+      "raisedByRef": "participant-lin",
+      "segmentRefs": ["segment-parked-observability"],
+      "outcome": "parked",
+      "decisionRef": null,
+      "parkingLotRef": "parked-observability-budget"
+    },
+    {
+      "id": "deliberation-retry-budget",
+      "kind": "proposal",
+      "summary": "Proposal for a retry budget on the nightly tiering job, withdrawn once the speaker could not be identified and no owner claimed it.",
+      "raisedByRef": null,
+      "segmentRefs": ["segment-overlapping-voices"],
+      "outcome": "withdrawn",
+      "decisionRef": null,
+      "parkingLotRef": null
+    },
+    {
+      "id": "deliberation-retention-commitment",
+      "kind": "discussion",
+      "summary": "Discussion of the regional retention commitment against the ninety-day hot tier, left unresolved in the meeting.",
+      "raisedByRef": "participant-diaz",
+      "segmentRefs": ["segment-compliance-question"],
+      "outcome": "unresolved",
+      "decisionRef": null,
+      "parkingLotRef": null
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-storage-tier",
+      "statement": "Adopt the tiered analytics storage design with a ninety-day hot tier and a nightly move to the cold tier.",
+      "decisionMakerRef": "participant-raman",
+      "authorityBasis": "explicit-decision-right",
+      "agreementBasis": "no-objection-after-explicit-call",
+      "segmentRefs": [
+        "segment-tier-proposal",
+        "segment-cost-discussion",
+        "segment-decision-storage"
+      ],
+      "deliberationRefs": ["deliberation-storage-tier"],
+      "status": "approved",
+      "conditions": [],
+      "reviewState": "pending-owner-review",
+      "recordedAt": "2026-08-27T14:36:00-07:00",
+      "dissentRefs": [],
+      "conflictRef": null
+    },
+    {
+      "id": "decision-migration-sequence",
+      "statement": "Sequence the migration so the read path moves before the write path, with a staged cutover per dataset.",
+      "decisionMakerRef": "participant-okafor",
+      "authorityBasis": "documented-delegation",
+      "agreementBasis": "recorded-vote",
+      "segmentRefs": ["segment-migration-proposal"],
+      "deliberationRefs": ["deliberation-migration-sequence"],
+      "status": "conditional",
+      "conditions": [
+        "The staged cutover proceeds only if the benchmark shows ninetieth-percentile read latency under 120 ms on the smallest dataset."
+      ],
+      "reviewState": "pending-owner-review",
+      "recordedAt": "2026-08-27T14:44:00-07:00",
+      "dissentRefs": ["participant-lin"],
+      "conflictRef": "conflict-migration-sequence"
+    },
+    {
+      "id": "decision-rollback-window",
+      "statement": "Keep a twenty-four hour rollback window open for each staged cutover.",
+      "decisionMakerRef": "participant-raman",
+      "authorityBasis": "chair-ruling-accepted-on-record",
+      "agreementBasis": "explicit-verbal-agreement",
+      "segmentRefs": ["segment-rollback-window-corrected"],
+      "deliberationRefs": ["deliberation-rollback-window"],
+      "status": "approved",
+      "conditions": [],
+      "reviewState": "pending-owner-review",
+      "recordedAt": "2026-08-27T14:53:00-07:00",
+      "dissentRefs": [],
+      "conflictRef": null
+    }
+  ],
+  "actionItems": [
+    {
+      "id": "action-latency-benchmark",
+      "statement": "Run the ninetieth-percentile read-latency benchmark on the smallest dataset and report the result to the review owner.",
+      "assigneeRef": "participant-lin",
+      "assignmentState": "acknowledged-by-assignee",
+      "acknowledgementSegmentRef": "segment-action-lin",
+      "acknowledgementSourceRef": "src-acknowledgement-lin",
+      "segmentRefs": ["segment-cost-discussion", "segment-action-lin"],
+      "decisionRef": "decision-migration-sequence",
+      "dueDate": "2026-09-04",
+      "dueTimezone": "America/Los_Angeles",
+      "status": "not-started",
+      "dependsOn": [],
+      "deliveryState": "owner-will-communicate"
+    },
+    {
+      "id": "action-cutover-runbook",
+      "statement": "Draft the staged cutover runbook per dataset and attach it to the decision record for owner review.",
+      "assigneeRef": "participant-okafor",
+      "assignmentState": "acknowledged-by-assignee",
+      "acknowledgementSegmentRef": "segment-action-okafor",
+      "acknowledgementSourceRef": "src-acknowledgement-okafor",
+      "segmentRefs": ["segment-migration-proposal", "segment-action-okafor"],
+      "decisionRef": "decision-migration-sequence",
+      "dueDate": "2026-09-11",
+      "dueTimezone": "America/Los_Angeles",
+      "status": "not-started",
+      "dependsOn": ["action-latency-benchmark"],
+      "deliveryState": "owner-will-communicate"
+    },
+    {
+      "id": "action-rollback-drill",
+      "statement": "Propose a rollback drill window for the first staged cutover and confirm it with the platform owner.",
+      "assigneeRef": "participant-diaz",
+      "assignmentState": "proposed-pending-acknowledgement",
+      "acknowledgementSegmentRef": null,
+      "acknowledgementSourceRef": null,
+      "segmentRefs": ["segment-rollback-window-corrected"],
+      "decisionRef": "decision-rollback-window",
+      "dueDate": "2026-09-18",
+      "dueTimezone": "America/Los_Angeles",
+      "status": "not-started",
+      "dependsOn": ["action-cutover-runbook"],
+      "deliveryState": "not-communicated"
+    }
+  ],
+  "openQuestions": [
+    {
+      "id": "question-retention-commitment",
+      "question": "Does the ninety-day hot tier still satisfy the regional retention commitment in the customer contract?",
+      "raisedByRef": "participant-diaz",
+      "segmentRefs": ["segment-compliance-question"],
+      "ownerRef": "participant-raman",
+      "state": "routed-to-owner",
+      "answerSegmentRef": null
+    },
+    {
+      "id": "question-latency-target",
+      "question": "Which read-latency target should the benchmark use for the smallest dataset?",
+      "raisedByRef": "participant-lin",
+      "segmentRefs": ["segment-probable-lin"],
+      "ownerRef": null,
+      "state": "answered-in-meeting",
+      "answerSegmentRef": "segment-answer-latency"
+    }
+  ],
+  "parkingLot": [
+    {
+      "id": "parked-observability-budget",
+      "topic": "Observability budget for the new analytics storage tier",
+      "reason": "The group ran out of time and the budget owner did not attend this review.",
+      "deliberationRefs": ["deliberation-observability-budget"],
+      "proposedRevisitBy": "2026-09-10",
+      "ownerRef": "participant-raman"
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-migration-sequence",
+      "kind": "contested-decision",
+      "description": "Marcus Lin objected to moving the read path first and the objection stands on the record; it is routed to the review owner rather than settled in the meeting.",
+      "segmentRefs": ["segment-cost-discussion", "segment-migration-proposal"],
+      "decisionRefs": ["decision-migration-sequence"],
+      "actionRefs": ["action-latency-benchmark"],
+      "participantRefs": ["participant-lin", "participant-okafor"],
+      "resolutionState": "routed-to-owner",
+      "resolutionSegmentRef": null
+    }
+  ],
+  "gapsAndBlockers": [
+    {
+      "id": "gap-withdrawn-consent-shah",
+      "kind": "withdrawn-consent",
+      "description": "Ravi Shah withdrew recording consent after the meeting, so his passage is withheld and no security caveat is carried into the minutes.",
+      "segmentRefs": ["segment-security-caveat"],
+      "blocking": false,
+      "ownerRef": "participant-raman"
+    },
+    {
+      "id": "gap-missing-consent-nakamura",
+      "kind": "missing-consent",
+      "description": "Yuki Nakamura did not attend and holds no consent record, so nothing in this record is attributed to that participant.",
+      "segmentRefs": [],
+      "blocking": false,
+      "ownerRef": "participant-raman"
+    },
+    {
+      "id": "gap-unknown-speaker",
+      "kind": "unknown-speaker",
+      "description": "One passage carries two overlapping voices and no speaker could be separated from the conference audio.",
+      "segmentRefs": ["segment-overlapping-voices"],
+      "blocking": false,
+      "ownerRef": "participant-raman"
+    },
+    {
+      "id": "gap-degraded-audio",
+      "kind": "inaudible-audio",
+      "description": "Conference-line noise between 22:38 and 30:00 was too degraded to transcribe, so that interval is left empty rather than reconstructed.",
+      "segmentRefs": [],
+      "blocking": false,
+      "ownerRef": "participant-diaz"
+    },
+    {
+      "id": "gap-untranscribed-window",
+      "kind": "untranscribed-window",
+      "description": "The transcript keeps the decision-relevant passages of the sixty-two minute session; the remaining stretches carry no transcript and the record makes no claim about what was said in them.",
+      "segmentRefs": [],
+      "blocking": false,
+      "ownerRef": "participant-raman"
+    }
+  ],
+  "documentDraft": {
+    "state": "review-draft",
+    "templateSourceRef": "src-decision-record-template",
+    "templatePath": "templates/decision-record.docx",
+    "outputPath": "outputs/analytics-architecture-review-2026-08-27-minutes.docx",
+    "preservesOriginalTemplate": true,
+    "preservesSourceRecording": true,
+    "audienceBound": true,
+    "distributionState": "owner-will-distribute",
+    "decisionRefs": [
+      "decision-storage-tier",
+      "decision-migration-sequence",
+      "decision-rollback-window"
+    ],
+    "actionRefs": [
+      "action-latency-benchmark",
+      "action-cutover-runbook",
+      "action-rollback-drill"
+    ]
+  },
+  "blockedActions": [
+    "record-without-consent",
+    "infer-consent",
+    "attribute-unverified-speaker",
+    "fabricate-quotation",
+    "infer-decision-from-silence",
+    "commit-on-behalf-of-participant",
+    "send-external-communication",
+    "schedule-or-modify-calendar",
+    "create-or-update-task-system",
+    "derive-biometric-or-sensitive-inference",
+    "disclose-outside-authorized-audience",
+    "retain-beyond-policy",
+    "delete-source-recording",
+    "publish-meeting-record"
+  ],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Priya Raman, Director of Platform Engineering",
+    "reviewer": "Dana Whitfield, Engineering Program Manager",
+    "deliberationRefs": [
+      "deliberation-scope-and-consent",
+      "deliberation-storage-tier",
+      "deliberation-migration-sequence",
+      "deliberation-rollback-window",
+      "deliberation-observability-budget",
+      "deliberation-retry-budget",
+      "deliberation-retention-commitment"
+    ],
+    "decisionRefs": [
+      "decision-storage-tier",
+      "decision-migration-sequence",
+      "decision-rollback-window"
+    ],
+    "actionRefs": [
+      "action-latency-benchmark",
+      "action-cutover-runbook",
+      "action-rollback-drill"
+    ],
+    "questionRefs": ["question-retention-commitment", "question-latency-target"],
+    "parkingLotRefs": ["parked-observability-budget"],
+    "conflictRefs": ["conflict-migration-sequence"],
+    "correctionRefs": ["correction-rollback-window"],
+    "gapRefs": [
+      "gap-withdrawn-consent-shah",
+      "gap-missing-consent-nakamura",
+      "gap-unknown-speaker",
+      "gap-degraded-audio",
+      "gap-untranscribed-window"
+    ],
+    "blockingRefs": [],
+    "prohibitedActions": [
+      "record-without-consent",
+      "infer-consent",
+      "attribute-unverified-speaker",
+      "fabricate-quotation",
+      "infer-decision-from-silence",
+      "commit-on-behalf-of-participant",
+      "send-external-communication",
+      "schedule-or-modify-calendar",
+      "create-or-update-task-system",
+      "derive-biometric-or-sensitive-inference",
+      "disclose-outside-authorized-audience",
+      "retain-beyond-policy",
+      "delete-source-recording",
+      "publish-meeting-record"
+    ]
+  },
+  "ownerReview": {
+    "state": "pending",
+    "reviewer": "Dana Whitfield, Engineering Program Manager",
+    "reviewedAt": null,
+    "resolution": null
+  }
+}

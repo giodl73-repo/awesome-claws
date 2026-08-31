@@ -45,9 +45,9 @@ highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 58 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 90 of 100 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 70 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 59 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 91 of 100 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 71 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
@@ -95,6 +95,19 @@ modified, unchanged, and unavailable comparisons. Every planned target is
 accounted for once, including failures, blocked pages, and unattempted targets,
 and materiality is routed to the named owner rather than decided. It does not
 investigate claims, run a recurring watch, ingest feeds, or archive full pages.
+
+Meeting Intelligence now owns the consented-speech lane: a private,
+audience-bound meeting record binds recording authority, per-participant consent
+scopes, withdrawal, and explicit consent basis to exact transcript offsets with
+attribution state, confidence, uncertainty markers, and correction or
+supersession lineage. Deliberation stays separate from decisions, each decision
+names an attending human plus an explicit authority and agreement basis, each
+action distinguishes acknowledgement from proposed assignment and keeps
+messages, calendar changes, and task-system writes with the owner, and the DOCX
+record stays a review draft that preserves the original template and recording.
+A meeting that produced no decisions and no actions is recorded as exactly that.
+It does not carry project state forward, coordinate a principal's calendar or
+correspondence, or synthesize a leadership portfolio.
 
 Potential additions remain subject to the
 [contribution admission policy](contribution-admission.md). Civic Services

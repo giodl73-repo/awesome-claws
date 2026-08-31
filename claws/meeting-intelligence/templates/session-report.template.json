@@ -4,10 +4,14 @@
   "output": "outputs/meeting-intelligence-handoff.md",
   "sections": [
     "request",
-    "known_facts",
-    "assumptions",
-    "evidence",
-    "decisions_or_recommendations",
+    "meeting_authority_and_retention",
+    "participants_and_consent",
+    "transcript_and_corrections",
+    "deliberations_and_decisions",
+    "action_items",
+    "questions_parking_lot_and_conflicts",
+    "gaps_and_blockers",
+    "document_draft_and_owner_review",
     "blocked_actions",
     "next_owner"
   ],
@@ -18,5 +22,5 @@
       "string"
     ]
   },
-  "fallback": "Render the same sections as Markdown when widgets or rich clients are unavailable."
+  "fallback": "Render the validated private meeting record with the matching Markdown template when widgets or rich clients are unavailable."
 }
