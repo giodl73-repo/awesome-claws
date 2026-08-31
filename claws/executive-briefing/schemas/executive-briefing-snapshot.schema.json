@@ -1,0 +1,1287 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/executive-briefing-snapshot.schema.json",
+  "title": "Executive briefing snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "run",
+    "sources",
+    "agendaItems",
+    "meetings",
+    "decisionAsks",
+    "preparationNeeds",
+    "conflicts",
+    "weatherForecasts",
+    "weatherImplications",
+    "blockers",
+    "reviewQuestions",
+    "prohibitedActions",
+    "delivery",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.executiveBriefingSnapshot.v1"
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "request",
+        "asOf",
+        "completedAt",
+        "windowStart",
+        "windowEnd",
+        "timeZone",
+        "briefingOwner",
+        "briefingOwnerType",
+        "authorizedWorkspaceAccountId",
+        "authorizedWeatherLocations",
+        "status",
+        "trigger"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^run-[a-z0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/text"
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "windowStart": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "windowEnd": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "timeZone": {
+          "$ref": "#/$defs/shortText"
+        },
+        "briefingOwner": {
+          "$ref": "#/$defs/principal"
+        },
+        "briefingOwnerType": {
+          "$ref": "#/$defs/principalType"
+        },
+        "authorizedWorkspaceAccountId": {
+          "$ref": "#/$defs/accountId"
+        },
+        "authorizedWeatherLocations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/weatherLocation"
+          }
+        },
+        "status": {
+          "$ref": "#/$defs/runStatus"
+        },
+        "trigger": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "cronJobId",
+            "scheduledFor",
+            "cronExpression",
+            "session",
+            "deliveryMode"
+          ],
+          "properties": {
+            "kind": {
+              "const": "scheduled"
+            },
+            "cronJobId": {
+              "const": "daily-executive-brief"
+            },
+            "scheduledFor": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "cronExpression": {
+              "const": "30 7 * * 1-5"
+            },
+            "session": {
+              "const": "isolated"
+            },
+            "deliveryMode": {
+              "enum": [
+                "none",
+                "announce"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "type",
+          "label",
+          "reference",
+          "sourceVersion",
+          "authorization",
+          "accessState",
+          "observedAt",
+          "retrievedAt",
+          "freshnessCutoff",
+          "freshness",
+          "classification",
+          "audienceScope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^source-[a-z0-9-]+$"
+          },
+          "type": {
+            "enum": [
+              "calendar",
+              "mail",
+              "document",
+              "weather"
+            ]
+          },
+          "label": {
+            "$ref": "#/$defs/shortText"
+          },
+          "reference": {
+            "$ref": "#/$defs/shortText"
+          },
+          "sourceVersion": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/shortText"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "authorization": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "status",
+              "authorizedBy",
+              "authorizedByType",
+              "authorizedAt",
+              "validThrough",
+              "scopes"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "current",
+                  "expired",
+                  "missing"
+                ]
+              },
+              "authorizedBy": {
+                "$ref": "#/$defs/principal"
+              },
+              "authorizedByType": {
+                "$ref": "#/$defs/principalType"
+              },
+              "authorizedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "validThrough": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "scopes": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "calendar.read",
+                    "mail.read.flagged",
+                    "documents.read",
+                    "weather.read.public"
+                  ]
+                }
+              },
+              "workspaceAccountId": {
+                "$ref": "#/$defs/accountId"
+              },
+              "weatherLocationId": {
+                "$ref": "#/$defs/weatherLocationId"
+              }
+            }
+          },
+          "accessState": {
+            "enum": [
+              "available",
+              "unavailable"
+            ]
+          },
+          "observedAt": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "retrievedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "freshnessCutoff": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "freshness": {
+            "enum": [
+              "current",
+              "stale",
+              "missing"
+            ]
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "enum": [
+                    "calendar",
+                    "mail",
+                    "document"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "authorization": {
+                  "type": "object",
+                  "required": [
+                    "workspaceAccountId"
+                  ],
+                  "properties": {
+                    "workspaceAccountId": {
+                      "$ref": "#/$defs/accountId"
+                    },
+                    "weatherLocationId": false
+                  }
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "authorization": {
+                  "type": "object",
+                  "required": [
+                    "weatherLocationId"
+                  ],
+                  "properties": {
+                    "workspaceAccountId": false,
+                    "weatherLocationId": {
+                      "$ref": "#/$defs/weatherLocationId"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "const": "document"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "sourceVersion": {
+                  "$ref": "#/$defs/shortText"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "sourceVersion": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "agendaItems": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "statementType",
+          "summary",
+          "sourceRefs",
+          "meetingRefs",
+          "decisionAskRefs",
+          "preparationNeedRefs",
+          "conflictRefs",
+          "weatherImplicationRefs",
+          "classification",
+          "audienceScope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^agenda-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": [
+              "meeting",
+              "mail",
+              "document",
+              "cross-source"
+            ]
+          },
+          "statementType": {
+            "$ref": "#/$defs/statementType"
+          },
+          "summary": {
+            "$ref": "#/$defs/text"
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/sourceRefs"
+          },
+          "meetingRefs": {
+            "$ref": "#/$defs/meetingRefs"
+          },
+          "decisionAskRefs": {
+            "$ref": "#/$defs/decisionAskRefs"
+          },
+          "preparationNeedRefs": {
+            "$ref": "#/$defs/preparationNeedRefs"
+          },
+          "conflictRefs": {
+            "$ref": "#/$defs/conflictRefs"
+          },
+          "weatherImplicationRefs": {
+            "$ref": "#/$defs/weatherImplicationRefs"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          }
+        }
+      }
+    },
+    "meetings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "startsAt",
+          "endsAt",
+          "location",
+          "statementType",
+          "calendarState",
+          "attendanceState",
+          "invitationResponseState",
+          "sourceRefs",
+          "conflictRefs",
+          "classification",
+          "audienceScope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^meeting-[a-z0-9-]+$"
+          },
+          "title": {
+            "$ref": "#/$defs/shortText"
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "location": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/shortText"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "statementType": {
+            "$ref": "#/$defs/statementType"
+          },
+          "calendarState": {
+            "enum": [
+              "observed-read-only",
+              "proposed"
+            ]
+          },
+          "attendanceState": {
+            "enum": [
+              "not-observed",
+              "inferred"
+            ]
+          },
+          "invitationResponseState": {
+            "enum": [
+              "not-inferred",
+              "accepted",
+              "declined"
+            ]
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/sourceRefs"
+          },
+          "conflictRefs": {
+            "$ref": "#/$defs/conflictRefs"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          }
+        }
+      }
+    },
+    "decisionAsks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "question",
+          "rationale",
+          "statementType",
+          "owner",
+          "ownerType",
+          "deadline",
+          "state",
+          "decision",
+          "sourceRefs",
+          "agendaItemRefs",
+          "classification",
+          "audienceScope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^decision-[a-z0-9-]+$"
+          },
+          "question": {
+            "$ref": "#/$defs/text"
+          },
+          "rationale": {
+            "$ref": "#/$defs/text"
+          },
+          "statementType": {
+            "$ref": "#/$defs/statementType"
+          },
+          "owner": {
+            "$ref": "#/$defs/principal"
+          },
+          "ownerType": {
+            "$ref": "#/$defs/principalType"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "state": {
+            "enum": [
+              "open",
+              "decided"
+            ]
+          },
+          "decision": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/text"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/sourceRefs"
+          },
+          "agendaItemRefs": {
+            "$ref": "#/$defs/agendaItemRefs"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          }
+        }
+      }
+    },
+    "preparationNeeds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "task",
+          "statementType",
+          "owner",
+          "ownerType",
+          "dueAt",
+          "state",
+          "assignmentState",
+          "completionState",
+          "sourceRefs",
+          "agendaItemRefs",
+          "meetingRefs",
+          "conflictRefs",
+          "blockerRefs",
+          "classification",
+          "audienceScope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^prep-[a-z0-9-]+$"
+          },
+          "task": {
+            "$ref": "#/$defs/text"
+          },
+          "statementType": {
+            "$ref": "#/$defs/statementType"
+          },
+          "owner": {
+            "$ref": "#/$defs/principal"
+          },
+          "ownerType": {
+            "$ref": "#/$defs/principalType"
+          },
+          "dueAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "state": {
+            "enum": [
+              "proposed",
+              "open",
+              "blocked",
+              "complete"
+            ]
+          },
+          "assignmentState": {
+            "enum": [
+              "not-assigned",
+              "assigned"
+            ]
+          },
+          "completionState": {
+            "enum": [
+              "not-completed",
+              "completed"
+            ]
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/sourceRefs"
+          },
+          "agendaItemRefs": {
+            "$ref": "#/$defs/agendaItemRefs"
+          },
+          "meetingRefs": {
+            "$ref": "#/$defs/meetingRefs"
+          },
+          "conflictRefs": {
+            "$ref": "#/$defs/conflictRefs"
+          },
+          "blockerRefs": {
+            "$ref": "#/$defs/blockerRefs"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          }
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "statementType",
+          "summary",
+          "severity",
+          "state",
+          "sourceRefs",
+          "agendaItemRefs",
+          "meetingRefs",
+          "preparationNeedRefs",
+          "weatherImplicationRefs",
+          "classification",
+          "audienceScope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^conflict-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": [
+              "schedule-overlap",
+              "missing-prerequisite",
+              "source-staleness",
+              "weather-risk"
+            ]
+          },
+          "statementType": {
+            "$ref": "#/$defs/statementType"
+          },
+          "summary": {
+            "$ref": "#/$defs/text"
+          },
+          "severity": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "state": {
+            "enum": [
+              "open",
+              "resolved"
+            ]
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/sourceRefs"
+          },
+          "agendaItemRefs": {
+            "$ref": "#/$defs/agendaItemRefs"
+          },
+          "meetingRefs": {
+            "$ref": "#/$defs/meetingRefs"
+          },
+          "preparationNeedRefs": {
+            "$ref": "#/$defs/preparationNeedRefs"
+          },
+          "weatherImplicationRefs": {
+            "$ref": "#/$defs/weatherImplicationRefs"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          }
+        }
+      }
+    },
+    "weatherForecasts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "location",
+          "validFrom",
+          "validThrough",
+          "issuedAt",
+          "observedAt",
+          "sourceRef",
+          "summary",
+          "classification",
+          "audienceScope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^forecast-[a-z0-9-]+$"
+          },
+          "location": {
+            "$ref": "#/$defs/weatherLocation"
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "validThrough": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "issuedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "observedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sourceRef": {
+            "type": "string",
+            "pattern": "^source-[a-z0-9-]+$"
+          },
+          "summary": {
+            "$ref": "#/$defs/text"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          }
+        }
+      }
+    },
+    "weatherImplications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "statementType",
+          "summary",
+          "forecastRef",
+          "affectedFrom",
+          "affectedThrough",
+          "sourceRefs",
+          "agendaItemRefs",
+          "meetingRefs",
+          "conflictRefs",
+          "safetyState",
+          "classification",
+          "audienceScope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^weather-[a-z0-9-]+$"
+          },
+          "statementType": {
+            "$ref": "#/$defs/statementType"
+          },
+          "summary": {
+            "$ref": "#/$defs/text"
+          },
+          "forecastRef": {
+            "type": "string",
+            "pattern": "^forecast-[a-z0-9-]+$"
+          },
+          "affectedFrom": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "affectedThrough": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/sourceRefs"
+          },
+          "agendaItemRefs": {
+            "$ref": "#/$defs/agendaItemRefs"
+          },
+          "meetingRefs": {
+            "$ref": "#/$defs/meetingRefs"
+          },
+          "conflictRefs": {
+            "$ref": "#/$defs/conflictRefs"
+          },
+          "safetyState": {
+            "enum": [
+              "planning-input-not-safety-guarantee",
+              "safety-guaranteed"
+            ]
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          }
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "summary",
+          "owner",
+          "ownerType",
+          "state",
+          "sourceRefs",
+          "objectRefs",
+          "classification",
+          "audienceScope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^blocker-[a-z0-9-]+$"
+          },
+          "summary": {
+            "$ref": "#/$defs/text"
+          },
+          "owner": {
+            "$ref": "#/$defs/principal"
+          },
+          "ownerType": {
+            "$ref": "#/$defs/principalType"
+          },
+          "state": {
+            "enum": [
+              "open",
+              "resolved"
+            ]
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/sourceRefs"
+          },
+          "objectRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "question",
+          "owner",
+          "ownerType",
+          "sourceRefs",
+          "refs",
+          "classification",
+          "audienceScope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^question-[a-z0-9-]+$"
+          },
+          "question": {
+            "$ref": "#/$defs/text"
+          },
+          "owner": {
+            "$ref": "#/$defs/principal"
+          },
+          "ownerType": {
+            "$ref": "#/$defs/principalType"
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/sourceRefs"
+          },
+          "refs": {
+            "$ref": "#/$defs/refs"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          }
+        }
+      }
+    },
+    "prohibitedActions": {
+      "$ref": "#/$defs/prohibitedActions"
+    },
+    "delivery": {
+      "$ref": "#/$defs/delivery"
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "ownerType",
+        "classification",
+        "audienceScope",
+        "sourceRefs",
+        "agendaItemRefs",
+        "meetingRefs",
+        "decisionAskRefs",
+        "preparationNeedRefs",
+        "conflictRefs",
+        "weatherForecastRefs",
+        "weatherImplicationRefs",
+        "blockerRefs",
+        "reviewQuestionRefs",
+        "prohibitedActions",
+        "delivery"
+      ],
+      "properties": {
+        "state": {
+          "$ref": "#/$defs/runStatus"
+        },
+        "owner": {
+          "$ref": "#/$defs/principal"
+        },
+        "ownerType": {
+          "$ref": "#/$defs/principalType"
+        },
+        "classification": {
+          "$ref": "#/$defs/classification"
+        },
+        "audienceScope": {
+          "$ref": "#/$defs/audienceScope"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "agendaItemRefs": {
+          "$ref": "#/$defs/agendaItemRefs"
+        },
+        "meetingRefs": {
+          "$ref": "#/$defs/meetingRefs"
+        },
+        "decisionAskRefs": {
+          "$ref": "#/$defs/decisionAskRefs"
+        },
+        "preparationNeedRefs": {
+          "$ref": "#/$defs/preparationNeedRefs"
+        },
+        "conflictRefs": {
+          "$ref": "#/$defs/conflictRefs"
+        },
+        "weatherForecastRefs": {
+          "$ref": "#/$defs/weatherForecastRefs"
+        },
+        "weatherImplicationRefs": {
+          "$ref": "#/$defs/weatherImplicationRefs"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/blockerRefs"
+        },
+        "reviewQuestionRefs": {
+          "$ref": "#/$defs/reviewQuestionRefs"
+        },
+        "prohibitedActions": {
+          "$ref": "#/$defs/prohibitedActions"
+        },
+        "delivery": {
+          "$ref": "#/$defs/delivery"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S"
+    },
+    "shortText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300,
+      "pattern": "\\S"
+    },
+    "principal": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "\\S"
+    },
+    "principalType": {
+      "enum": [
+        "human",
+        "team"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 320,
+      "pattern": "^\\S+$"
+    },
+    "weatherLocationId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "weatherLocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "latitude",
+        "longitude"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/weatherLocationId"
+        },
+        "label": {
+          "$ref": "#/$defs/shortText"
+        },
+        "latitude": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "longitude": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        }
+      }
+    },
+    "statementType": {
+      "enum": [
+        "observed",
+        "inferred",
+        "recommended"
+      ]
+    },
+    "classification": {
+      "enum": [
+        "public",
+        "internal",
+        "confidential",
+        "restricted"
+      ]
+    },
+    "audienceScope": {
+      "enum": [
+        "executive-only",
+        "executive-and-support",
+        "named-stakeholders",
+        "organization",
+        "public"
+      ]
+    },
+    "runStatus": {
+      "enum": [
+        "blocked",
+        "ready-for-review"
+      ]
+    },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/shortText"
+      }
+    },
+    "sourceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^source-[a-z0-9-]+$"
+      }
+    },
+    "agendaItemRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^agenda-[a-z0-9-]+$"
+      }
+    },
+    "meetingRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^meeting-[a-z0-9-]+$"
+      }
+    },
+    "decisionAskRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^decision-[a-z0-9-]+$"
+      }
+    },
+    "preparationNeedRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^prep-[a-z0-9-]+$"
+      }
+    },
+    "conflictRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^conflict-[a-z0-9-]+$"
+      }
+    },
+    "weatherForecastRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^forecast-[a-z0-9-]+$"
+      }
+    },
+    "weatherImplicationRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^weather-[a-z0-9-]+$"
+      }
+    },
+    "blockerRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^blocker-[a-z0-9-]+$"
+      }
+    },
+    "reviewQuestionRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^question-[a-z0-9-]+$"
+      }
+    },
+    "prohibitedActions": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "send-messages",
+          "reply-to-mail",
+          "accept-or-decline-invitations",
+          "create-or-modify-calendar-events",
+          "mutate-documents",
+          "make-commitments",
+          "make-decisions",
+          "disclose-protected-context",
+          "claim-access-or-completion"
+        ]
+      }
+    },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "visibility",
+        "mode",
+        "status",
+        "destination"
+      ],
+      "properties": {
+        "visibility": {
+          "enum": [
+            "private",
+            "shared"
+          ]
+        },
+        "mode": {
+          "enum": [
+            "none",
+            "announce"
+          ]
+        },
+        "status": {
+          "enum": [
+            "not-delivered",
+            "delivered"
+          ]
+        },
+        "destination": {
+          "$ref": "#/$defs/shortText"
+        }
+      }
+    }
+  }
+}

@@ -874,15 +874,15 @@
     {
       "id": "executive-briefing",
       "name": "Executive briefing",
-      "description": "Builds a concise daily operating brief from authorized calendar, mail, document, and weather context.",
-      "audience": "Executives and support partners who want a repeatable morning brief without delegating communication or calendar authority.",
+      "description": "Reconciles one bounded scheduled run into a private source-timestamped executive briefing snapshot of agenda observations, decision asks, preparation needs, conflicts, weather implications, questions, and blockers.",
+      "audience": "Executives and support partners who need a recurring read-only morning snapshot from explicitly authorized Google Workspace and weather sources without delegating communication, calendar, document, commitment, or decision authority.",
       "category": "productivity",
       "maintenance": {
         "status": "active",
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-31"
       },
       "setup": {
         "level": "high",

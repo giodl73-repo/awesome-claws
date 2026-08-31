@@ -65,6 +65,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "executive-briefing",
+    schema: "../claws/executive-briefing/schemas/executive-briefing-snapshot.schema.json",
+    fixture: "../claws/executive-briefing/fixtures/executive-briefing-snapshot.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "case-continuity-coordinator",
     schema: "../claws/case-continuity-coordinator/schemas/case-checkpoint.schema.json",
     fixture: "../claws/case-continuity-coordinator/fixtures/case-checkpoint.example.json",

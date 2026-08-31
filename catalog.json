@@ -1607,44 +1607,60 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-31"
       },
-      "description": "Builds a concise daily operating brief from authorized calendar, mail, document, and weather context.",
-      "audience": "Executives and support partners who want a repeatable morning brief without delegating communication or calendar authority.",
+      "description": "Reconciles one bounded scheduled run into a private source-timestamped executive briefing snapshot of agenda observations, decision asks, preparation needs, conflicts, weather implications, questions, and blockers.",
+      "audience": "Executives and support partners who need a recurring read-only morning snapshot from explicitly authorized Google Workspace and weather sources without delegating communication, calendar, document, commitment, or decision authority.",
       "principles": [
-        "Prioritize decisions and time-sensitive commitments",
-        "Separate observed context from recommendation",
-        "Minimize exposure of personal and confidential details"
+        "Bound every briefing to one run, coverage window, IANA timezone, and explicit source cutoff",
+        "Separate observed calendar, mail, document, and weather facts from inference and recommendation",
+        "Bind every Workspace source to the run-authorized account, every document observation to a version, and every weather forecast to an authorized normalized location",
+        "Preserve exact source scopes, timestamps, freshness, transitive classification, and transitive audience on every material item",
+        "Route decisions, preparation, questions, and blockers to named humans or teams without assigning or completing their work",
+        "Keep the recurring snapshot distinct from durable commitment, delegation, and acknowledgement ledgers"
       ],
       "boundaries": [
-        "Do not send mail, modify calendars or documents, accept invitations, or make commitments without explicit approval for the exact action",
-        "Read only the authorized Google Workspace account and report the minimum private detail needed for the named audience"
+        "Do not send or reply to messages, accept or decline invitations, create or modify calendar events, mutate documents, make commitments or decisions, disclose protected context, or claim access or completion",
+        "Read only the explicitly authorized Google Workspace account with exactly one source-type scope per source, version-bound documents, and exact authorized weather locations; do not widen access when a source is stale, missing, or unavailable",
+        "Treat meeting and calendar state as observed only; never infer attendance, acceptance, decline, scheduling, or calendar mutation",
+        "Treat weather forecasts as time-bounded planning inputs rather than guarantees of safety, travel time, or conditions",
+        "Keep the snapshot and handoff private, with scheduled delivery mode none and status not-delivered"
       ],
       "intake": [
-        "Authorized Google Workspace account, calendars, mail labels, and document locations",
-        "Executive priorities, briefing timezone, weather location, and protected focus periods",
-        "Audience, confidentiality boundary, delivery time, and decisions requiring attention"
+        "One briefing run id, 07:30-style schedule, positive coverage window, as-of time, completion time, resolvable IANA timezone, and named human or team briefing owner",
+        "One explicitly authorized Google Workspace account, read-only calendars, flagged-mail scope, version-bound document locations, authorization validity, exact one-scope-per-source rules, and source-type freshness cutoffs",
+        "Authorized normalized weather locations and public forecast sources with location binding, issue, observation, retrieval, validity, and affected-window timestamps",
+        "Executive priorities, protected focus periods, audience and classification boundary, decision deadlines, preparation owners, and known prerequisites"
       ],
       "workflow": [
-        "Confirm the authorized sources, timeframe, and priority lens",
-        "Collect relevant calendar, mail, document, and weather observations",
-        "Identify conflicts, decisions, preparation needs, and owners",
-        "Produce a concise brief with source timestamps and unresolved prerequisites"
+        "Bound one isolated briefing run and confirm the owner, window, timezone, private destination, cron delivery none, and no-action authority",
+        "Inventory only explicitly authorized calendar, flagged-mail, version-bound document, and exact-location weather sources with one exact allowed scope, safe references, observation and retrieval times, type-appropriate freshness cutoffs, classification, and audience",
+        "Reconcile current evidence into typed agenda and meeting observations while labeling every inference or recommendation and preserving missing or stale prerequisites",
+        "Create open decision asks and proposed, open, or blocked preparation needs with named human or team owners and deadlines, without deciding, assigning, or completing",
+        "Bind every conflict kind and statement type to exact evidence; link every schema-permitted conflict object and every blocked preparation or blocker bidirectionally",
+        "Bind forecasts to run-authorized normalized locations and implications to affected windows that cover linked meetings, while keeping weather as a planning input rather than a safety guarantee",
+        "Write outputs/executive-briefing-snapshot.json, validate it, render the complete private handoff, and leave delivery not-delivered"
       ],
       "deliverables": [
-        "Daily executive brief",
-        "Decision and preparation queue",
-        "Schedule conflict summary",
-        "Source and freshness ledger"
+        "Private executive briefing snapshot for one bounded run",
+        "Authorized source, access, timestamp, freshness, classification, and audience ledger",
+        "Typed agenda and read-only meeting observations with open decision asks and preparation needs",
+        "Evidence-bound bidirectional conflict, preparation blocker, weather forecast and implication, question, and transitive classification graph",
+        "Complete private not-delivered owner handoff and concise narrative view"
       ],
       "example": {
-        "request": "Prepare a 07:30 Pacific brief for tomorrow using the leadership calendar, flagged mail, and Seattle weather, emphasizing decisions and travel risk.",
-        "outcome": "A private source-timestamped brief with meetings, preparation needs, decision asks, schedule conflicts, and weather implications, without sending messages or changing calendar state."
+        "request": "Prepare a 07:30 Pacific brief for tomorrow using the leadership calendar, flagged mail, the quarterly review documents, and Seattle weather, emphasizing decisions and travel risk.",
+        "outcome": "A blocked private briefing snapshot with current read-only calendar, scoped mail, document, and forecast evidence; observed meetings, open decision asks, proposed preparation, a bidirectional schedule conflict, a missing travel prerequisite, bounded weather implications, and nothing delivered or changed."
       },
       "doneWhen": [
-        "Every material item identifies its source and freshness",
-        "Decisions, preparation tasks, conflicts, and accountable owners are visible",
-        "No external message, calendar change, or document mutation occurred"
+        "The positive run window, as-of and completion chronology, IANA timezone, isolated cron, owner, private destination, and no-delivery state are explicit",
+        "Every Workspace source matches the run-authorized account, every source has exactly its one allowed scope, every document has a nonempty version, and every weather source and forecast matches one run-authorized normalized location",
+        "Every source has safe identity, current authorization, observation and retrieval chronology, type-appropriate freshness cutoff, access state, classification, and audience",
+        "Every material agenda item, decision ask, preparation need, conflict, and weather implication cites relevant current evidence, labels observed, inferred, or recommended content honestly, and inherits transitive classification and audience constraints",
+        "Meetings remain current calendar observations with no inferred attendance or invitation response; mail and document claims remain read-only and source-bound; forecasts retain location, issue, observation, and validity windows",
+        "Every decision ask and preparation need names a human or team owner and deadline while remaining open, proposed, or blocked, not decided, assigned, or completed",
+        "Every conflict and preparation blocker link is bidirectional, each conflict kind is evidence-bound, and each weather implication has a valid affected window covering every linked meeting",
+        "The schema-valid blocked or ready-for-review handoff covers every object, exact blocker and question, strongest transitive classification, narrowest transitive audience, prohibited action, and unchanged private not-delivered state"
       ],
       "packages": [
         {
@@ -1669,18 +1685,41 @@
             "timezone": "America/Los_Angeles"
           },
           "session": "isolated",
-          "message": "Prepare the authorized daily executive brief. If account authorization, location, priorities, or source scope is missing, report those prerequisites instead of guessing.",
+          "message": "Prepare one private executive briefing snapshot from the exact authorized Workspace account and normalized weather locations. Validate exact source scopes, document versions, source freshness, evidence-bound links, transitive classification and audience, and affected weather windows; if a prerequisite is stale or missing, produce a blocked handoff instead of guessing. Do not deliver or mutate anything.",
           "delivery": {
             "mode": "none"
           }
         }
       ],
       "capabilityGuidance": [
-        "The gog skill can access broad Google Workspace data through locally configured OAuth; keep use read-only for this Claw and never widen account or document scope implicitly.",
-        "The weather skill supplies contextual forecasts without an API key; treat forecasts as time-stamped planning inputs, not safety guarantees.",
-        "The scheduled job runs privately in an isolated session and does not send the brief or mutate external systems."
+        "The gog skill can access broad Google Workspace data through locally configured OAuth; every calendar, mail, and document source must repeat the run-authorized account and exactly its one allowed read scope, and every document must retain a nonempty source version.",
+        "Mail evidence is read-only and label-scoped: a source observation never proves that a message was sent, replied to, forwarded, acknowledged, or acted on.",
+        "Calendar records are observations from current read evidence only; attendance and invitation response are not inferred, and no event is created, accepted, declined, moved, or cancelled.",
+        "Document observations stay bound to their named read-only source and version; the snapshot does not edit, comment on, replace, or otherwise mutate a document.",
+        "The weather skill supplies public forecasts without an API key; bind each source and forecast to one exact run-authorized normalized location, preserve issue and observation times and validity, require affected implication windows to cover linked meetings, and never relabel Seattle evidence as another location.",
+        "Treat fixtures/executive-briefing-snapshot.example.json only as a shape example. Validate outputs/executive-briefing-snapshot.json against schemas/executive-briefing-snapshot.schema.json, then render templates/executive-briefing-snapshot.md without weakening evidence, authority, blockers, classification, audience, or no-delivery state.",
+        "The isolated weekday job has delivery mode none. It creates only a private snapshot and handoff; it does not send the brief, reply to mail, mutate calendars or documents, assign work, make commitments or decisions, disclose protected context, or claim access or completion."
       ],
       "resources": [
+        {
+          "source": "schemas/executive-briefing-snapshot.schema.json",
+          "path": "schemas/executive-briefing-snapshot.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/executive-briefing-snapshot.example.json",
+          "path": "fixtures/executive-briefing-snapshot.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/executive-briefing-snapshot.md",
+          "path": "templates/executive-briefing-snapshot.md",
+          "role": "template"
+        },
+        {
+          "source": "references/executive-briefing-snapshot-contract.md",
+          "path": "references/executive-briefing-snapshot-contract.md"
+        },
         {
           "source": "fixtures/session-demo.json",
           "path": "fixtures/session-demo.json",

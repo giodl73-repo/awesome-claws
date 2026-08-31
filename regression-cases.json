@@ -370,15 +370,19 @@
     },
     {
       "id": "executive-briefing",
-      "acceptedRequest": "Prepare a 07:30 Pacific brief for tomorrow using the leadership calendar, flagged mail, and Seattle weather, emphasizing decisions and travel risk.",
+      "acceptedRequest": "Prepare a 07:30 Pacific brief for tomorrow using the leadership calendar, flagged mail, the quarterly review documents, and Seattle weather, emphasizing decisions and travel risk.",
       "requiredEvidence": [
-        "Authorized Google Workspace account, calendars, mail labels, and document locations",
-        "Executive priorities, briefing timezone, weather location, and protected focus periods",
-        "Audience, confidentiality boundary, delivery time, and decisions requiring attention"
+        "One briefing run id, 07:30-style schedule, positive coverage window, as-of time, completion time, resolvable IANA timezone, and named human or team briefing owner",
+        "One explicitly authorized Google Workspace account, read-only calendars, flagged-mail scope, version-bound document locations, authorization validity, exact one-scope-per-source rules, and source-type freshness cutoffs",
+        "Authorized normalized weather locations and public forecast sources with location binding, issue, observation, retrieval, validity, and affected-window timestamps",
+        "Executive priorities, protected focus periods, audience and classification boundary, decision deadlines, preparation owners, and known prerequisites"
       ],
       "authorityBoundaries": [
-        "Do not send mail, modify calendars or documents, accept invitations, or make commitments without explicit approval for the exact action",
-        "Read only the authorized Google Workspace account and report the minimum private detail needed for the named audience"
+        "Do not send or reply to messages, accept or decline invitations, create or modify calendar events, mutate documents, make commitments or decisions, disclose protected context, or claim access or completion",
+        "Read only the explicitly authorized Google Workspace account with exactly one source-type scope per source, version-bound documents, and exact authorized weather locations; do not widen access when a source is stale, missing, or unavailable",
+        "Treat meeting and calendar state as observed only; never infer attendance, acceptance, decline, scheduling, or calendar mutation",
+        "Treat weather forecasts as time-bounded planning inputs rather than guarantees of safety, travel time, or conditions",
+        "Keep the snapshot and handoff private, with scheduled delivery mode none and status not-delivered"
       ],
       "experience": {
         "target": 3,
@@ -390,7 +394,7 @@
         "clawhub-skill",
         "cron"
       ],
-      "capabilityDigest": "sha256:3a47ce92489ba3647ebb7668b69e067cc907b590b1349166553f00fbbe045582"
+      "capabilityDigest": "sha256:9ef48c7b06312cc00278d47c6580f13c42706220e439c64e6b21cd4be8566e68"
     },
     {
       "id": "meeting-intelligence",

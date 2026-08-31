@@ -1,0 +1,636 @@
+{
+  "schemaVersion": "awesomeClaws.executiveBriefingSnapshot.v1",
+  "run": {
+    "id": "run-2026-08-31-0730-pacific",
+    "request": "Prepare a 07:30 Pacific brief for tomorrow using the leadership calendar, flagged mail, the quarterly review documents, and Seattle weather, emphasizing decisions and travel risk.",
+    "asOf": "2026-08-31T07:30:00-07:00",
+    "completedAt": "2026-08-31T07:38:00-07:00",
+    "windowStart": "2026-09-01T00:00:00-07:00",
+    "windowEnd": "2026-09-01T23:59:59-07:00",
+    "timeZone": "America/Los_Angeles",
+    "briefingOwner": "Dana Whitfield",
+    "briefingOwnerType": "human",
+    "authorizedWorkspaceAccountId": "dana.whitfield@example.com",
+    "authorizedWeatherLocations": [
+      {
+        "id": "seattle-wa-us",
+        "label": "Seattle, Washington, United States",
+        "latitude": 47.6062,
+        "longitude": -122.3321
+      }
+    ],
+    "status": "blocked",
+    "trigger": {
+      "kind": "scheduled",
+      "cronJobId": "daily-executive-brief",
+      "scheduledFor": "2026-08-31T07:30:00-07:00",
+      "cronExpression": "30 7 * * 1-5",
+      "session": "isolated",
+      "deliveryMode": "none"
+    }
+  },
+  "sources": [
+    {
+      "id": "source-leadership-calendar",
+      "type": "calendar",
+      "label": "Read-only leadership calendar snapshot for September 1",
+      "reference": "references/leadership-calendar-2026-09-01.json",
+      "sourceVersion": null,
+      "authorization": {
+        "status": "current",
+        "authorizedBy": "Dana Whitfield",
+        "authorizedByType": "human",
+        "authorizedAt": "2026-08-20T09:00:00-07:00",
+        "validThrough": "2026-09-30T18:00:00-07:00",
+        "workspaceAccountId": "dana.whitfield@example.com",
+        "scopes": [
+          "calendar.read"
+        ]
+      },
+      "accessState": "available",
+      "observedAt": "2026-08-31T07:18:00-07:00",
+      "retrievedAt": "2026-08-31T07:20:00-07:00",
+      "freshnessCutoff": "2026-08-31T05:30:00-07:00",
+      "freshness": "current",
+      "classification": "confidential",
+      "audienceScope": "executive-and-support"
+    },
+    {
+      "id": "source-flagged-mail",
+      "type": "mail",
+      "label": "Flagged executive mailbox snapshot limited to travel and quarterly review threads",
+      "reference": "references/flagged-mail-2026-08-31.json",
+      "sourceVersion": null,
+      "authorization": {
+        "status": "current",
+        "authorizedBy": "Dana Whitfield",
+        "authorizedByType": "human",
+        "authorizedAt": "2026-08-20T09:05:00-07:00",
+        "validThrough": "2026-09-30T18:00:00-07:00",
+        "workspaceAccountId": "dana.whitfield@example.com",
+        "scopes": [
+          "mail.read.flagged"
+        ]
+      },
+      "accessState": "available",
+      "observedAt": "2026-08-31T07:15:00-07:00",
+      "retrievedAt": "2026-08-31T07:19:00-07:00",
+      "freshnessCutoff": "2026-08-30T19:30:00-07:00",
+      "freshness": "current",
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    },
+    {
+      "id": "source-quarterly-review-deck",
+      "type": "document",
+      "label": "Quarterly business review draft deck supplied read-only",
+      "reference": "references/qbr-draft-v7.pptx",
+      "sourceVersion": "qbr-draft-v7",
+      "authorization": {
+        "status": "current",
+        "authorizedBy": "Executive Office",
+        "authorizedByType": "team",
+        "authorizedAt": "2026-08-28T16:00:00-07:00",
+        "validThrough": "2026-09-02T18:00:00-07:00",
+        "workspaceAccountId": "dana.whitfield@example.com",
+        "scopes": [
+          "documents.read"
+        ]
+      },
+      "accessState": "available",
+      "observedAt": "2026-08-30T18:00:00-07:00",
+      "retrievedAt": "2026-08-31T07:22:00-07:00",
+      "freshnessCutoff": "2026-08-24T07:30:00-07:00",
+      "freshness": "current",
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    },
+    {
+      "id": "source-travel-risk-appendix",
+      "type": "document",
+      "label": "Requested travel-risk appendix for the quarterly review",
+      "reference": "references/travel-risk-appendix.md",
+      "sourceVersion": "qbr-travel-risk-appendix-v1",
+      "authorization": {
+        "status": "current",
+        "authorizedBy": "Executive Office",
+        "authorizedByType": "team",
+        "authorizedAt": "2026-08-28T16:00:00-07:00",
+        "validThrough": "2026-09-02T18:00:00-07:00",
+        "workspaceAccountId": "dana.whitfield@example.com",
+        "scopes": [
+          "documents.read"
+        ]
+      },
+      "accessState": "unavailable",
+      "observedAt": null,
+      "retrievedAt": "2026-08-31T07:23:00-07:00",
+      "freshnessCutoff": "2026-08-24T07:30:00-07:00",
+      "freshness": "missing",
+      "classification": "confidential",
+      "audienceScope": "executive-and-support"
+    },
+    {
+      "id": "source-seattle-forecast",
+      "type": "weather",
+      "label": "National Weather Service Seattle forecast",
+      "reference": "https://api.weather.gov/gridpoints/SEW/124,67/forecast",
+      "sourceVersion": null,
+      "authorization": {
+        "status": "current",
+        "authorizedBy": "Dana Whitfield",
+        "authorizedByType": "human",
+        "authorizedAt": "2026-08-20T09:10:00-07:00",
+        "validThrough": "2026-09-30T18:00:00-07:00",
+        "weatherLocationId": "seattle-wa-us",
+        "scopes": [
+          "weather.read.public"
+        ]
+      },
+      "accessState": "available",
+      "observedAt": "2026-08-31T05:20:00-07:00",
+      "retrievedAt": "2026-08-31T07:24:00-07:00",
+      "freshnessCutoff": "2026-08-31T01:30:00-07:00",
+      "freshness": "current",
+      "classification": "public",
+      "audienceScope": "public"
+    }
+  ],
+  "agendaItems": [
+    {
+      "id": "agenda-leadership-staff",
+      "kind": "meeting",
+      "statementType": "observed",
+      "summary": "The leadership staff meeting is present on the read-only calendar at 08:30 Pacific, and the current quarterly review deck is the preparation source.",
+      "sourceRefs": [
+        "source-leadership-calendar",
+        "source-quarterly-review-deck"
+      ],
+      "meetingRefs": [
+        "meeting-leadership-staff"
+      ],
+      "decisionAskRefs": [
+        "decision-quarterly-review-position"
+      ],
+      "preparationNeedRefs": [
+        "prep-leadership-talking-points"
+      ],
+      "conflictRefs": [],
+      "weatherImplicationRefs": [],
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    },
+    {
+      "id": "agenda-travel-decision",
+      "kind": "cross-source",
+      "statementType": "inferred",
+      "summary": "The flagged travel thread and current Seattle forecast together make the morning ground-transfer buffer a decision for Dana Whitfield before 09:30 Pacific.",
+      "sourceRefs": [
+        "source-flagged-mail",
+        "source-seattle-forecast"
+      ],
+      "meetingRefs": [],
+      "decisionAskRefs": [
+        "decision-travel-buffer"
+      ],
+      "preparationNeedRefs": [
+        "prep-travel-packet"
+      ],
+      "conflictRefs": [],
+      "weatherImplicationRefs": [
+        "weather-airport-transfer"
+      ],
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    },
+    {
+      "id": "agenda-afternoon-overlap",
+      "kind": "meeting",
+      "statementType": "observed",
+      "summary": "The read-only calendar places the partner review from 13:00 to 14:00 and the hiring review from 13:30 to 14:30, creating a thirty-minute overlap.",
+      "sourceRefs": [
+        "source-leadership-calendar"
+      ],
+      "meetingRefs": [
+        "meeting-partner-review",
+        "meeting-hiring-review"
+      ],
+      "decisionAskRefs": [],
+      "preparationNeedRefs": [],
+      "conflictRefs": [
+        "conflict-afternoon-overlap"
+      ],
+      "weatherImplicationRefs": [],
+      "classification": "confidential",
+      "audienceScope": "executive-and-support"
+    },
+    {
+      "id": "agenda-travel-prerequisite",
+      "kind": "document",
+      "statementType": "observed",
+      "summary": "The quarterly review deck is available, but the authorized travel-risk appendix requested for the travel discussion is missing from the supplied document location.",
+      "sourceRefs": [
+        "source-quarterly-review-deck",
+        "source-travel-risk-appendix"
+      ],
+      "meetingRefs": [
+        "meeting-leadership-staff"
+      ],
+      "decisionAskRefs": [
+        "decision-travel-buffer"
+      ],
+      "preparationNeedRefs": [
+        "prep-travel-packet"
+      ],
+      "conflictRefs": [
+        "conflict-missing-travel-appendix"
+      ],
+      "weatherImplicationRefs": [],
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    }
+  ],
+  "meetings": [
+    {
+      "id": "meeting-leadership-staff",
+      "title": "Leadership staff meeting",
+      "startsAt": "2026-09-01T08:30:00-07:00",
+      "endsAt": "2026-09-01T09:30:00-07:00",
+      "location": "Seattle executive conference room",
+      "statementType": "observed",
+      "calendarState": "observed-read-only",
+      "attendanceState": "not-observed",
+      "invitationResponseState": "not-inferred",
+      "sourceRefs": [
+        "source-leadership-calendar"
+      ],
+      "conflictRefs": [],
+      "classification": "confidential",
+      "audienceScope": "executive-and-support"
+    },
+    {
+      "id": "meeting-partner-review",
+      "title": "Strategic partner review",
+      "startsAt": "2026-09-01T13:00:00-07:00",
+      "endsAt": "2026-09-01T14:00:00-07:00",
+      "location": "Video conference",
+      "statementType": "observed",
+      "calendarState": "observed-read-only",
+      "attendanceState": "not-observed",
+      "invitationResponseState": "not-inferred",
+      "sourceRefs": [
+        "source-leadership-calendar"
+      ],
+      "conflictRefs": [
+        "conflict-afternoon-overlap"
+      ],
+      "classification": "confidential",
+      "audienceScope": "executive-and-support"
+    },
+    {
+      "id": "meeting-hiring-review",
+      "title": "Leadership hiring review",
+      "startsAt": "2026-09-01T13:30:00-07:00",
+      "endsAt": "2026-09-01T14:30:00-07:00",
+      "location": "Seattle executive conference room",
+      "statementType": "observed",
+      "calendarState": "observed-read-only",
+      "attendanceState": "not-observed",
+      "invitationResponseState": "not-inferred",
+      "sourceRefs": [
+        "source-leadership-calendar"
+      ],
+      "conflictRefs": [
+        "conflict-afternoon-overlap"
+      ],
+      "classification": "confidential",
+      "audienceScope": "executive-and-support"
+    }
+  ],
+  "decisionAsks": [
+    {
+      "id": "decision-travel-buffer",
+      "question": "Should Dana Whitfield keep the planned airport transfer or direct the Corporate Travel Team to prepare a larger ground-transfer buffer?",
+      "rationale": "The flagged travel thread identifies a tight transfer, while the current forecast indicates rain and southerly winds during the relevant morning window.",
+      "statementType": "inferred",
+      "owner": "Dana Whitfield",
+      "ownerType": "human",
+      "deadline": "2026-09-01T09:30:00-07:00",
+      "state": "open",
+      "decision": null,
+      "sourceRefs": [
+        "source-flagged-mail",
+        "source-seattle-forecast"
+      ],
+      "agendaItemRefs": [
+        "agenda-travel-decision",
+        "agenda-travel-prerequisite"
+      ],
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    },
+    {
+      "id": "decision-quarterly-review-position",
+      "question": "Which variance explanation should Dana Whitfield emphasize in the quarterly review opening?",
+      "rationale": "The current quarterly review deck contains two materially different explanations and does not identify a selected executive position.",
+      "statementType": "observed",
+      "owner": "Dana Whitfield",
+      "ownerType": "human",
+      "deadline": "2026-09-01T08:20:00-07:00",
+      "state": "open",
+      "decision": null,
+      "sourceRefs": [
+        "source-quarterly-review-deck"
+      ],
+      "agendaItemRefs": [
+        "agenda-leadership-staff"
+      ],
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    }
+  ],
+  "preparationNeeds": [
+    {
+      "id": "prep-leadership-talking-points",
+      "task": "Executive Office should prepare a review-only comparison of the two variance explanations before the leadership staff meeting.",
+      "statementType": "recommended",
+      "owner": "Executive Office",
+      "ownerType": "team",
+      "dueAt": "2026-09-01T08:10:00-07:00",
+      "state": "open",
+      "assignmentState": "not-assigned",
+      "completionState": "not-completed",
+      "sourceRefs": [
+        "source-leadership-calendar",
+        "source-quarterly-review-deck"
+      ],
+      "agendaItemRefs": [
+        "agenda-leadership-staff"
+      ],
+      "meetingRefs": [
+        "meeting-leadership-staff"
+      ],
+      "conflictRefs": [],
+      "blockerRefs": [],
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    },
+    {
+      "id": "prep-travel-packet",
+      "task": "Corporate Travel Team should provide the missing travel-risk appendix and a review-only transfer option before Dana Whitfield answers the travel-buffer question.",
+      "statementType": "recommended",
+      "owner": "Corporate Travel Team",
+      "ownerType": "team",
+      "dueAt": "2026-09-01T09:00:00-07:00",
+      "state": "blocked",
+      "assignmentState": "not-assigned",
+      "completionState": "not-completed",
+      "sourceRefs": [
+        "source-flagged-mail",
+        "source-travel-risk-appendix",
+        "source-seattle-forecast"
+      ],
+      "agendaItemRefs": [
+        "agenda-travel-decision",
+        "agenda-travel-prerequisite"
+      ],
+      "meetingRefs": [],
+      "conflictRefs": [
+        "conflict-missing-travel-appendix"
+      ],
+      "blockerRefs": [
+        "blocker-missing-travel-appendix"
+      ],
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-afternoon-overlap",
+      "kind": "schedule-overlap",
+      "statementType": "observed",
+      "summary": "The two observed calendar windows overlap by thirty minutes; neither event was moved, accepted, or declined.",
+      "severity": "high",
+      "state": "open",
+      "sourceRefs": [
+        "source-leadership-calendar"
+      ],
+      "agendaItemRefs": [
+        "agenda-afternoon-overlap"
+      ],
+      "meetingRefs": [
+        "meeting-partner-review",
+        "meeting-hiring-review"
+      ],
+      "preparationNeedRefs": [],
+      "weatherImplicationRefs": [],
+      "classification": "confidential",
+      "audienceScope": "executive-and-support"
+    },
+    {
+      "id": "conflict-missing-travel-appendix",
+      "kind": "missing-prerequisite",
+      "statementType": "observed",
+      "summary": "The authorized document location did not contain the travel-risk appendix, so the travel packet remains blocked despite current mail and weather evidence.",
+      "severity": "medium",
+      "state": "open",
+      "sourceRefs": [
+        "source-flagged-mail",
+        "source-travel-risk-appendix"
+      ],
+      "agendaItemRefs": [
+        "agenda-travel-prerequisite"
+      ],
+      "meetingRefs": [],
+      "preparationNeedRefs": [
+        "prep-travel-packet"
+      ],
+      "weatherImplicationRefs": [],
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    }
+  ],
+  "weatherForecasts": [
+    {
+      "id": "forecast-seattle-morning",
+      "location": {
+        "id": "seattle-wa-us",
+        "label": "Seattle, Washington, United States",
+        "latitude": 47.6062,
+        "longitude": -122.3321
+      },
+      "validFrom": "2026-09-01T06:00:00-07:00",
+      "validThrough": "2026-09-01T12:00:00-07:00",
+      "issuedAt": "2026-08-31T05:20:00-07:00",
+      "observedAt": "2026-08-31T05:20:00-07:00",
+      "sourceRef": "source-seattle-forecast",
+      "summary": "The issued forecast calls for rain and southerly winds during the September 1 morning travel window.",
+      "classification": "public",
+      "audienceScope": "public"
+    }
+  ],
+  "weatherImplications": [
+    {
+      "id": "weather-airport-transfer",
+      "statementType": "recommended",
+      "summary": "Dana Whitfield should treat the forecast as a planning input, allow additional transfer margin, and confirm current conditions with the carrier or travel team before departure.",
+      "forecastRef": "forecast-seattle-morning",
+      "affectedFrom": "2026-09-01T07:00:00-07:00",
+      "affectedThrough": "2026-09-01T09:00:00-07:00",
+      "sourceRefs": [
+        "source-seattle-forecast",
+        "source-flagged-mail"
+      ],
+      "agendaItemRefs": [
+        "agenda-travel-decision"
+      ],
+      "meetingRefs": [],
+      "conflictRefs": [],
+      "safetyState": "planning-input-not-safety-guarantee",
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "blocker-missing-travel-appendix",
+      "summary": "The travel-risk appendix is missing, so Corporate Travel Team must supply it before the travel packet can be reviewed as complete.",
+      "owner": "Corporate Travel Team",
+      "ownerType": "team",
+      "state": "open",
+      "sourceRefs": [
+        "source-flagged-mail",
+        "source-travel-risk-appendix"
+      ],
+      "objectRefs": [
+        "source-travel-risk-appendix",
+        "agenda-travel-prerequisite",
+        "decision-travel-buffer",
+        "prep-travel-packet",
+        "conflict-missing-travel-appendix"
+      ],
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-afternoon-overlap",
+      "question": "Should Dana Whitfield attend the partner review through 13:30 and then join the hiring review, or should a named human owner propose a different calendar option?",
+      "owner": "Dana Whitfield",
+      "ownerType": "human",
+      "sourceRefs": [
+        "source-leadership-calendar"
+      ],
+      "refs": [
+        "conflict-afternoon-overlap",
+        "meeting-partner-review",
+        "meeting-hiring-review"
+      ],
+      "classification": "confidential",
+      "audienceScope": "executive-and-support"
+    },
+    {
+      "id": "question-travel-appendix",
+      "question": "Can Corporate Travel Team provide the authorized travel-risk appendix by 09:00 Pacific, or should Dana Whitfield review the travel question with that prerequisite still missing?",
+      "owner": "Corporate Travel Team",
+      "ownerType": "team",
+      "sourceRefs": [
+        "source-flagged-mail",
+        "source-travel-risk-appendix"
+      ],
+      "refs": [
+        "blocker-missing-travel-appendix",
+        "decision-travel-buffer",
+        "prep-travel-packet"
+      ],
+      "classification": "restricted",
+      "audienceScope": "executive-only"
+    }
+  ],
+  "prohibitedActions": [
+    "send-messages",
+    "reply-to-mail",
+    "accept-or-decline-invitations",
+    "create-or-modify-calendar-events",
+    "mutate-documents",
+    "make-commitments",
+    "make-decisions",
+    "disclose-protected-context",
+    "claim-access-or-completion"
+  ],
+  "delivery": {
+    "visibility": "private",
+    "mode": "none",
+    "status": "not-delivered",
+    "destination": "outputs/executive-briefing-handoff.md"
+  },
+  "handoff": {
+    "state": "blocked",
+    "owner": "Dana Whitfield",
+    "ownerType": "human",
+    "classification": "restricted",
+    "audienceScope": "executive-only",
+    "sourceRefs": [
+      "source-leadership-calendar",
+      "source-flagged-mail",
+      "source-quarterly-review-deck",
+      "source-travel-risk-appendix",
+      "source-seattle-forecast"
+    ],
+    "agendaItemRefs": [
+      "agenda-leadership-staff",
+      "agenda-travel-decision",
+      "agenda-afternoon-overlap",
+      "agenda-travel-prerequisite"
+    ],
+    "meetingRefs": [
+      "meeting-leadership-staff",
+      "meeting-partner-review",
+      "meeting-hiring-review"
+    ],
+    "decisionAskRefs": [
+      "decision-travel-buffer",
+      "decision-quarterly-review-position"
+    ],
+    "preparationNeedRefs": [
+      "prep-leadership-talking-points",
+      "prep-travel-packet"
+    ],
+    "conflictRefs": [
+      "conflict-afternoon-overlap",
+      "conflict-missing-travel-appendix"
+    ],
+    "weatherForecastRefs": [
+      "forecast-seattle-morning"
+    ],
+    "weatherImplicationRefs": [
+      "weather-airport-transfer"
+    ],
+    "blockerRefs": [
+      "blocker-missing-travel-appendix"
+    ],
+    "reviewQuestionRefs": [
+      "question-afternoon-overlap",
+      "question-travel-appendix"
+    ],
+    "prohibitedActions": [
+      "send-messages",
+      "reply-to-mail",
+      "accept-or-decline-invitations",
+      "create-or-modify-calendar-events",
+      "mutate-documents",
+      "make-commitments",
+      "make-decisions",
+      "disclose-protected-context",
+      "claim-access-or-completion"
+    ],
+    "delivery": {
+      "visibility": "private",
+      "mode": "none",
+      "status": "not-delivered",
+      "destination": "outputs/executive-briefing-handoff.md"
+    }
+  }
+}
