@@ -15452,6 +15452,899 @@ function publicationReadinessRecordFindings(value) {
   return findings;
 }
 
+function executiveCommitmentLedgerFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const priorityIds = value.priorities.map((item) => item.id);
+  const meetingIds = value.meetings.map((item) => item.id);
+  const decisionIds = value.decisions.map((item) => item.id);
+  const commitmentIds = value.commitments.map((item) => item.id);
+  const draftIds = value.drafts.map((item) => item.id);
+  const conflictIds = value.conflicts.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const prioritySet = new Set(priorityIds);
+  const decisionSet = new Set(decisionIds);
+  const commitmentSet = new Set(commitmentIds);
+  const conflictSet = new Set(conflictIds);
+  const allIds = new Set([
+    ...sourceIds,
+    ...priorityIds,
+    ...meetingIds,
+    ...decisionIds,
+    ...commitmentIds,
+    ...draftIds,
+    ...conflictIds,
+    ...questionIds,
+  ]);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const decisionById = new Map(value.decisions.map((item) => [item.id, item]));
+  const commitmentById = new Map(value.commitments.map((item) => [item.id, item]));
+  const classificationRank = { public: 0, internal: 1, confidential: 2, restricted: 3 };
+  const audienceRank = {
+    "executive-only": 0,
+    "executive-and-support": 1,
+    "named-stakeholders": 2,
+    organization: 3,
+    public: 4,
+  };
+  const decisionEvidenceKinds = new Set([
+    "decision-log",
+    "executive-direction",
+    "correspondence-summary",
+    "meeting-note",
+  ]);
+  const commitmentOriginKinds = new Set([
+    "decision-log",
+    "commitment-log",
+    "executive-direction",
+    "meeting-note",
+  ]);
+  const requiredActions = [
+    "send-messages",
+    "accept-or-decline-meetings",
+    "mutate-calendar",
+    "commit-resources",
+    "assign-commitments",
+    "disclose-protected-context",
+    "speak-for-executive",
+    "claim-decisions-or-acknowledgement",
+  ];
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(priorityIds, "priorities", "Priority id"),
+    ...uniqueFindings(meetingIds, "meetings", "Meeting id"),
+    ...uniqueFindings(decisionIds, "decisions", "Decision id"),
+    ...uniqueFindings(commitmentIds, "commitments", "Commitment id"),
+    ...uniqueFindings(draftIds, "drafts", "Draft id"),
+    ...uniqueFindings(conflictIds, "conflicts", "Conflict id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Question id"),
+  ];
+  const asOf = Date.parse(value.horizon.asOf);
+  const periodStart = Date.parse(value.horizon.periodStart);
+  const periodEnd = Date.parse(value.horizon.periodEnd);
+  if (periodEnd <= periodStart || asOf > periodEnd) {
+    findings.push(
+      finding(
+        "invalid_horizon_chronology",
+        "horizon",
+        "The planning horizon must end after it starts, and the as-of time must not follow the horizon.",
+      ),
+    );
+  }
+  if (!isResolvableTimeZone(value.horizon.timeZone)) {
+    findings.push(
+      finding(
+        "invalid_time_zone",
+        "horizon.timeZone",
+        "The horizon timezone must be a resolvable IANA timezone.",
+      ),
+    );
+  }
+  for (const [index, source] of value.sources.entries()) {
+    if (Date.parse(source.observedAt) > asOf) {
+      findings.push(
+        finding(
+          "future_source_evidence",
+          `sources.${index}.observedAt`,
+          "Source evidence must not postdate the ledger as-of time.",
+        ),
+      );
+    }
+    const safePublicReference =
+      URL.canParse(source.reference) &&
+      isCredentialFreePublicHttpsReference(new URL(source.reference));
+    if (!isSafePackagePath(source.reference) && !safePublicReference) {
+      findings.push(
+        finding(
+          "unsafe_source_reference",
+          `sources.${index}.reference`,
+          "Source references must be portable package paths or public HTTPS URLs without credentials.",
+        ),
+      );
+    }
+  }
+  const ranks = value.priorities.map((item) => item.rank);
+  for (const rank of duplicates(ranks)) {
+    findings.push(
+      finding(
+        "duplicate_priority_rank",
+        "priorities",
+        `Priority rank ${rank} is used more than once, so the executive order is ambiguous.`,
+      ),
+    );
+  }
+  for (const [index, priority] of value.priorities.entries()) {
+    findings.push(
+      ...referenceFindings(
+        priority.sourceRefs,
+        sourceSet,
+        `priorities.${index}.sourceRefs`,
+        "Priority source reference",
+      ),
+    );
+    const start = Date.parse(priority.timebox.start);
+    const end = Date.parse(priority.timebox.end);
+    if (end < start || start < periodStart || end > periodEnd) {
+      findings.push(
+        finding(
+          "invalid_priority_timebox",
+          `priorities.${index}.timebox`,
+          "A priority timebox must be ordered and stay inside the planning horizon.",
+        ),
+      );
+    }
+    const sources = priority.sourceRefs
+      .map((ref) => sourceById.get(ref))
+      .filter(Boolean);
+    const allCurrent = sources.every((source) => source.freshness === "current");
+    const directed = sources.some((source) =>
+      ["executive-direction", "priority-note"].includes(source.kind),
+    );
+    if (!directed || (priority.state === "blocked" ? allCurrent : !allCurrent)) {
+      findings.push(
+        finding(
+          "unsupported_priority_state",
+          `priorities.${index}.state`,
+          "Every priority needs executive direction; an unblocked priority also needs all-current evidence, while a blocked priority needs a source that is not current.",
+        ),
+      );
+    }
+  }
+  for (const [index, meeting] of value.meetings.entries()) {
+    findings.push(
+      ...referenceFindings(
+        meeting.sourceRefs,
+        sourceSet,
+        `meetings.${index}.sourceRefs`,
+        "Meeting source reference",
+      ),
+      ...referenceFindings(
+        meeting.priorityRefs,
+        prioritySet,
+        `meetings.${index}.priorityRefs`,
+        "Meeting priority reference",
+      ),
+      ...referenceFindings(
+        meeting.decisionRefs,
+        decisionSet,
+        `meetings.${index}.decisionRefs`,
+        "Meeting decision reference",
+      ),
+      ...referenceFindings(
+        meeting.conflictRefs,
+        conflictSet,
+        `meetings.${index}.conflictRefs`,
+        "Meeting conflict reference",
+      ),
+    );
+    const start = Date.parse(meeting.suppliedStart);
+    const end = Date.parse(meeting.suppliedEnd);
+    if (end <= start || start < periodStart || end > periodEnd) {
+      findings.push(
+        finding(
+          "invalid_meeting_window",
+          `meetings.${index}.suppliedStart`,
+          "A meeting window must be ordered and stay inside the supplied planning horizon.",
+        ),
+      );
+    }
+    const sources = meeting.sourceRefs
+      .map((ref) => sourceById.get(ref))
+      .filter(Boolean);
+    const observedCalendar = sources.some(
+      (source) => source.kind === "calendar-export" && source.freshness === "current",
+    );
+    if ((meeting.calendarState === "observed-from-supplied-input") !== observedCalendar) {
+      findings.push(
+        finding(
+          "unsupported_calendar_state",
+          `meetings.${index}.calendarState`,
+          "Observed calendar state requires a current calendar export; otherwise the slot is proposed only.",
+        ),
+      );
+    }
+    if (meeting.agendaPath !== null && !isSafePackagePath(meeting.agendaPath)) {
+      findings.push(
+        finding(
+          "unsafe_agenda_path",
+          `meetings.${index}.agendaPath`,
+          "Agenda paths must be portable package paths inside the workspace.",
+        ),
+      );
+    }
+    const prepared = meeting.agendaPath !== null;
+    const allCurrent = sources.every((source) => source.freshness === "current");
+    if (
+      (meeting.preparationState === "ready-for-executive-review" &&
+        (!prepared || !allCurrent)) ||
+      (meeting.preparationState === "drafted" && !prepared) ||
+      (meeting.preparationState === "not-started" && prepared) ||
+      (meeting.preparationState === "blocked" && prepared && allCurrent)
+    ) {
+      findings.push(
+        finding(
+          "premature_meeting_preparation",
+          `meetings.${index}.preparationState`,
+          "Meeting preparation state must match the agenda that exists and the freshness of its supplied inputs.",
+        ),
+      );
+    }
+  }
+  const horizonLength = periodEnd - periodStart;
+  for (const [index, decision] of value.decisions.entries()) {
+    findings.push(
+      ...referenceFindings(
+        decision.priorityRefs,
+        prioritySet,
+        `decisions.${index}.priorityRefs`,
+        "Decision priority reference",
+      ),
+      ...referenceFindings(
+        decision.evidenceSourceRefs,
+        sourceSet,
+        `decisions.${index}.evidenceSourceRefs`,
+        "Decision evidence reference",
+      ),
+    );
+    const deadline = Date.parse(decision.deadline);
+    if (deadline < periodStart || deadline > periodEnd) {
+      findings.push(
+        finding(
+          "deadline_outside_horizon",
+          `decisions.${index}.deadline`,
+          "A decision deadline must fall inside the planning horizon it belongs to.",
+        ),
+      );
+    }
+    const delegated = decision.authorityState === "delegated";
+    const ownedByExecutive = decision.decisionOwner === value.horizon.executive;
+    if (
+      delegated
+        ? decision.delegation === null || ownedByExecutive
+        : decision.delegation !== null || !ownedByExecutive
+    ) {
+      findings.push(
+        finding(
+          "invalid_delegation_structure",
+          `decisions.${index}.authorityState`,
+          "Executive-only decisions stay with the named executive and carry no delegation; delegated decisions name another owner and cite a grant.",
+        ),
+      );
+    }
+    if (decision.delegation !== null) {
+      findings.push(
+        ...referenceFindings(
+          [decision.delegation.evidenceSourceRef],
+          sourceSet,
+          `decisions.${index}.delegation.evidenceSourceRef`,
+          "Delegation evidence reference",
+        ),
+      );
+      const grant = sourceById.get(decision.delegation.evidenceSourceRef);
+      if (
+        !grant ||
+        grant.kind !== "delegation-authority" ||
+        grant.freshness !== "current" ||
+        decision.delegation.delegate !== decision.decisionOwner ||
+        decision.delegation.delegateType !== decision.decisionOwnerType ||
+        Date.parse(decision.delegation.validThrough) < deadline ||
+        !decision.delegation.scopeKinds.includes(decision.kind)
+      ) {
+        findings.push(
+          finding(
+            "unsupported_delegated_authority",
+            `decisions.${index}.delegation`,
+            "Delegated authority requires a current grant that names the decision owner, is valid at the deadline, and covers this decision kind.",
+          ),
+        );
+      }
+    }
+    const recorded =
+      decision.decision !== null &&
+      decision.decidedAt !== null &&
+      decision.decisionEvidenceSourceRef !== null;
+    const empty =
+      decision.decision === null &&
+      decision.decidedAt === null &&
+      decision.decisionEvidenceSourceRef === null;
+    if (decision.state === "decided" ? !recorded : !empty) {
+      findings.push(
+        finding(
+          "invalid_decision_resolution",
+          `decisions.${index}.state`,
+          "A decided decision needs the supplied wording, decision time, and evidence; an open or deferred decision must carry none of them.",
+        ),
+      );
+    }
+    if (decision.decidedAt !== null && Date.parse(decision.decidedAt) > asOf) {
+      findings.push(
+        finding(
+          "future_decision_record",
+          `decisions.${index}.decidedAt`,
+          "A recorded decision must not postdate the ledger as-of time.",
+        ),
+      );
+    }
+    if (decision.decisionEvidenceSourceRef !== null) {
+      const evidence = sourceById.get(decision.decisionEvidenceSourceRef);
+      if (
+        !evidence ||
+        evidence.freshness !== "current" ||
+        !decisionEvidenceKinds.has(evidence.kind) ||
+        !decision.evidenceSourceRefs.includes(decision.decisionEvidenceSourceRef)
+      ) {
+        findings.push(
+          finding(
+            "unsupported_decision_evidence",
+            `decisions.${index}.decisionEvidenceSourceRef`,
+            "A recorded decision must cite current decision evidence already declared in that decision's evidence set.",
+          ),
+        );
+      }
+    }
+  }
+  for (const [index, commitment] of value.commitments.entries()) {
+    const origin = commitment.originRef.startsWith("decision-")
+      ? decisionById.get(commitment.originRef)
+      : sourceById.get(commitment.originRef);
+    if (
+      !origin ||
+      (commitment.originRef.startsWith("decision-")
+        ? origin.state !== "decided"
+        : origin.freshness !== "current" || !commitmentOriginKinds.has(origin.kind))
+    ) {
+      findings.push(
+        finding(
+          "invalid_commitment_origin",
+          `commitments.${index}.originRef`,
+          "Every commitment must originate in a decided decision or a current supplied commitment record, never in draft language.",
+        ),
+      );
+    }
+    if (!isResolvableTimeZone(commitment.timeZone)) {
+      findings.push(
+        finding(
+          "invalid_time_zone",
+          `commitments.${index}.timeZone`,
+          "A commitment timezone must be a resolvable IANA timezone.",
+        ),
+      );
+    }
+    const deadline = Date.parse(commitment.deadline);
+    if (deadline < periodStart || deadline > periodEnd + horizonLength) {
+      findings.push(
+        finding(
+          "deadline_outside_horizon",
+          `commitments.${index}.deadline`,
+          "A commitment deadline must start inside the horizon and stay plausibly related to it.",
+        ),
+      );
+    }
+    const acknowledgement =
+      commitment.acknowledgementSourceRef === null
+        ? null
+        : sourceById.get(commitment.acknowledgementSourceRef);
+    const acknowledgementComplete =
+      commitment.acknowledgementSourceRef !== null &&
+      commitment.acknowledgedBy !== null &&
+      commitment.acknowledgedByType !== null &&
+      commitment.acknowledgedAt !== null;
+    const acknowledgementEmpty =
+      commitment.acknowledgementSourceRef === null &&
+      commitment.acknowledgedBy === null &&
+      commitment.acknowledgedByType === null &&
+      commitment.acknowledgedAt === null;
+    const originTime =
+      commitment.originRef.startsWith("decision-") && origin?.decidedAt
+        ? Date.parse(origin.decidedAt)
+        : origin?.observedAt
+          ? Date.parse(origin.observedAt)
+          : Number.NaN;
+    if (
+      commitment.acknowledgementState === "acknowledged"
+        ? !acknowledgementComplete ||
+          !acknowledgement ||
+          acknowledgement.freshness !== "current" ||
+          !["commitment-log", "meeting-note", "correspondence-summary"].includes(
+            acknowledgement.kind,
+          ) ||
+          commitment.acknowledgedBy !== commitment.owner ||
+          commitment.acknowledgedByType !== commitment.ownerType ||
+          Date.parse(commitment.acknowledgedAt) < originTime ||
+          Date.parse(commitment.acknowledgedAt) > asOf ||
+          Date.parse(acknowledgement.observedAt) <
+            Date.parse(commitment.acknowledgedAt)
+        : !acknowledgementEmpty
+    ) {
+      findings.push(
+        finding(
+          "unsupported_acknowledgement",
+          `commitments.${index}.acknowledgementState`,
+          "Acknowledgement must name the commitment owner, follow its origin, and cite current acknowledgement evidence captured no earlier than the acknowledgement; unacknowledged work carries no acknowledgement fields.",
+        ),
+      );
+    }
+    if (
+      ["active", "complete"].includes(commitment.state) &&
+      commitment.acknowledgementState !== "acknowledged"
+    ) {
+      findings.push(
+        finding(
+          "unsupported_commitment_state",
+          `commitments.${index}.state`,
+          "A commitment only becomes active or complete once its human owner has acknowledged it.",
+        ),
+      );
+    }
+  }
+  const settledDraftIds = new Set();
+  for (const [index, draft] of value.drafts.entries()) {
+    findings.push(
+      ...referenceFindings(
+        draft.sourceRefs,
+        sourceSet,
+        `drafts.${index}.sourceRefs`,
+        "Draft source reference",
+      ),
+      ...referenceFindings(
+        draft.decisionRefs,
+        decisionSet,
+        `drafts.${index}.decisionRefs`,
+        "Draft decision reference",
+      ),
+      ...referenceFindings(
+        draft.commitmentRefs,
+        commitmentSet,
+        `drafts.${index}.commitmentRefs`,
+        "Draft commitment reference",
+      ),
+    );
+    if (!isSafePackagePath(draft.path)) {
+      findings.push(
+        finding(
+          "unsafe_draft_path",
+          `drafts.${index}.path`,
+          "Communication drafts must be written to portable package paths inside the workspace.",
+        ),
+      );
+    }
+    if (draft.decisionRefs.length === 0 && draft.commitmentRefs.length === 0) {
+      findings.push(
+        finding(
+          "missing_draft_binding",
+          `drafts.${index}`,
+          "Every communication draft must name the exact decision or commitment it carries.",
+        ),
+      );
+    }
+    const inheritedSourceRefs = new Set(draft.sourceRefs);
+    for (const decisionRef of draft.decisionRefs) {
+      const decision = decisionById.get(decisionRef);
+      if (!decision) continue;
+      for (const ref of decision.evidenceSourceRefs) inheritedSourceRefs.add(ref);
+      if (decision.decisionEvidenceSourceRef !== null) {
+        inheritedSourceRefs.add(decision.decisionEvidenceSourceRef);
+      }
+      if (decision.delegation !== null) {
+        inheritedSourceRefs.add(decision.delegation.evidenceSourceRef);
+      }
+    }
+    if (draft.executiveApproval !== null) {
+      inheritedSourceRefs.add(draft.executiveApproval.evidenceSourceRef);
+    }
+    for (const commitmentRef of draft.commitmentRefs) {
+      const commitment = commitmentById.get(commitmentRef);
+      if (!commitment) continue;
+      if (commitment.acknowledgementSourceRef !== null) {
+        inheritedSourceRefs.add(commitment.acknowledgementSourceRef);
+      }
+      if (commitment.originRef.startsWith("source-")) {
+        inheritedSourceRefs.add(commitment.originRef);
+      } else {
+        const originDecision = decisionById.get(commitment.originRef);
+        if (originDecision) {
+          for (const ref of originDecision.evidenceSourceRefs) {
+            inheritedSourceRefs.add(ref);
+          }
+          if (originDecision.decisionEvidenceSourceRef !== null) {
+            inheritedSourceRefs.add(originDecision.decisionEvidenceSourceRef);
+          }
+          if (originDecision.delegation !== null) {
+            inheritedSourceRefs.add(originDecision.delegation.evidenceSourceRef);
+          }
+        }
+      }
+    }
+    const sources = [...inheritedSourceRefs]
+      .map((ref) => sourceById.get(ref))
+      .filter(Boolean);
+    const highestClassification = Math.max(
+      0,
+      ...sources.map((source) => classificationRank[source.confidentiality]),
+    );
+    const narrowestAudience = Math.min(
+      audienceRank.public,
+      ...sources.map((source) => audienceRank[source.audienceScope]),
+    );
+    if (
+      classificationRank[draft.classification] < highestClassification ||
+      audienceRank[draft.audienceReach] > narrowestAudience
+    ) {
+      findings.push(
+        finding(
+          "confidentiality_audience_mismatch",
+          `drafts.${index}.audienceReach`,
+          "A draft must not weaken the classification or widen the audience of the sources it rests on.",
+        ),
+      );
+    }
+    const settled =
+      draft.decisionRefs
+        .map((ref) => decisionById.get(ref))
+        .filter(Boolean)
+        .every((decision) => decision.state === "decided") &&
+      draft.commitmentRefs
+        .map((ref) => commitmentById.get(ref))
+        .filter(Boolean)
+        .every((commitment) => commitment.acknowledgementState === "acknowledged");
+    if (settled) {
+      settledDraftIds.add(draft.id);
+    }
+    if (draft.executiveApproval !== null) {
+      findings.push(
+        ...referenceFindings(
+          [draft.executiveApproval.evidenceSourceRef],
+          sourceSet,
+          `drafts.${index}.executiveApproval.evidenceSourceRef`,
+          "Draft approval evidence reference",
+        ),
+      );
+    }
+    const approvalEvidence =
+      draft.executiveApproval === null
+        ? null
+        : sourceById.get(draft.executiveApproval.evidenceSourceRef);
+    const validExecutiveApproval =
+      draft.executiveApproval !== null &&
+      draft.executiveApproval.approvedBy === value.horizon.executive &&
+      draft.executiveApproval.draftVersion === draft.version &&
+      Date.parse(draft.executiveApproval.approvedAt) <= asOf &&
+      approvalEvidence?.kind === "draft-approval" &&
+      approvalEvidence.freshness === "current" &&
+      Date.parse(approvalEvidence.observedAt) >=
+        Date.parse(draft.executiveApproval.approvedAt);
+    if (
+      (draft.reviewState === "approved-by-executive") !== validExecutiveApproval
+    ) {
+      findings.push(
+        finding(
+          "unsupported_draft_approval",
+          `drafts.${index}.executiveApproval`,
+          "Executive approval must name the executive, exact draft version, decision time, and current approval evidence; other draft states carry no approval.",
+        ),
+      );
+    }
+    if (
+      (draft.reviewState !== "draft" && !settled) ||
+      (draft.reviewState === "approved-by-executive" && !validExecutiveApproval)
+    ) {
+      findings.push(
+        finding(
+          "premature_draft_state",
+          `drafts.${index}.reviewState`,
+          "A draft advances only once the decisions and commitments it carries are settled, and executive approval needs current supplied direction.",
+        ),
+      );
+    }
+  }
+  for (const [index, conflict] of value.conflicts.entries()) {
+    findings.push(
+      ...referenceFindings(
+        conflict.refs,
+        allIds,
+        `conflicts.${index}.refs`,
+        "Conflict reference",
+      ),
+    );
+    for (const ref of conflict.refs.filter((ref) => ref.startsWith("meeting-"))) {
+      const meeting = value.meetings.find((item) => item.id === ref);
+      if (meeting && !meeting.conflictRefs.includes(conflict.id)) {
+        findings.push(
+          finding(
+            "missing_meeting_conflict_coverage",
+            `conflicts.${index}.refs`,
+            "Meeting and conflict references must be bidirectional.",
+          ),
+        );
+      }
+    }
+  }
+  for (const [index, meeting] of value.meetings.entries()) {
+    if (
+      meeting.conflictRefs.some(
+        (ref) =>
+          !value.conflicts
+            .find((conflict) => conflict.id === ref)
+            ?.refs.includes(meeting.id),
+      )
+    ) {
+      findings.push(
+        finding(
+          "missing_meeting_conflict_coverage",
+          `meetings.${index}.conflictRefs`,
+          "Meeting and conflict references must be bidirectional.",
+        ),
+      );
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...referenceFindings(
+        question.refs,
+        allIds,
+        `reviewQuestions.${index}.refs`,
+        "Question reference",
+      ),
+    );
+  }
+  const coveredPriorities = new Set([
+    ...value.meetings.flatMap((item) => item.priorityRefs),
+    ...value.decisions.flatMap((item) => item.priorityRefs),
+  ]);
+  for (const [index, priority] of value.priorities.entries()) {
+    if (!coveredPriorities.has(priority.id)) {
+      findings.push(
+        finding(
+          "uncovered_priority",
+          `priorities.${index}`,
+          "Every priority must be carried by at least one meeting or decision in the horizon.",
+        ),
+      );
+    }
+  }
+  const coveredDecisions = new Set([
+    ...value.meetings.flatMap((item) => item.decisionRefs),
+    ...value.reviewQuestions.flatMap((item) => item.refs),
+  ]);
+  for (const [index, decision] of value.decisions.entries()) {
+    if (decision.state === "open" && !coveredDecisions.has(decision.id)) {
+      findings.push(
+        finding(
+          "uncovered_decision",
+          `decisions.${index}`,
+          "Every open decision must reach the executive through a prepared meeting or a review question.",
+        ),
+      );
+    }
+  }
+  const handoffCoverage = [
+    ["sourceRefs", sourceIds],
+    ["priorityRefs", priorityIds],
+    ["meetingRefs", meetingIds],
+    ["decisionRefs", decisionIds],
+    ["commitmentRefs", commitmentIds],
+    ["draftRefs", draftIds],
+    ["conflictRefs", conflictIds],
+    ["reviewQuestionRefs", questionIds],
+  ];
+  for (const [field, expected] of handoffCoverage) {
+    findings.push(
+      ...referenceFindings(
+        value.handoff[field],
+        allIds,
+        `handoff.${field}`,
+        "Handoff reference",
+      ),
+    );
+    if (
+      expected.some((id) => !value.handoff[field].includes(id)) ||
+      value.handoff[field].some((id) => !expected.includes(id))
+    ) {
+      findings.push(
+        finding(
+          "incomplete_handoff",
+          `handoff.${field}`,
+          "The private handoff must include every current ledger object exactly once.",
+        ),
+      );
+    }
+  }
+  const unresolvedIds = [
+    ...value.sources.filter((item) => item.freshness !== "current").map((item) => item.id),
+    ...value.priorities.filter((item) => item.state === "blocked").map((item) => item.id),
+    ...value.meetings
+      .filter((item) => ["not-started", "blocked"].includes(item.preparationState))
+      .map((item) => item.id),
+    ...value.commitments.filter((item) => item.state === "blocked").map((item) => item.id),
+    ...value.conflicts
+      .filter(
+        (item) =>
+          item.state === "open" &&
+          ["missing-evidence", "authority-gap"].includes(item.kind),
+      )
+      .map((item) => item.id),
+  ];
+  const unresolvedSet = new Set(unresolvedIds);
+  findings.push(
+    ...referenceFindings(
+      value.handoff.blockingRefs,
+      allIds,
+      "handoff.blockingRefs",
+      "Blocking reference",
+    ),
+  );
+  if (
+    value.handoff.state === "blocked" &&
+    (unresolvedIds.some((id) => !value.handoff.blockingRefs.includes(id)) ||
+      value.handoff.blockingRefs.some((id) => !unresolvedSet.has(id)) ||
+      unresolvedIds.length === 0)
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff.blockingRefs",
+        "A blocked ledger must enumerate every unresolved item and only unresolved items.",
+      ),
+    );
+  }
+  const reviewReady =
+    unresolvedIds.length === 0 &&
+    value.handoff.blockingRefs.length === 0 &&
+    value.meetings.every(
+      (item) => item.preparationState === "ready-for-executive-review",
+    ) &&
+    value.drafts.every(
+      (item) => item.reviewState !== "draft" || !settledDraftIds.has(item.id),
+    );
+  if (value.handoff.state === "ready-for-executive-review" && !reviewReady) {
+    findings.push(
+      finding(
+        "premature_executive_review_state",
+        "handoff.state",
+        "Executive review requires current sources, prepared meetings, advanced drafts, and no blockers.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-execution-handoff" &&
+    (!reviewReady ||
+      value.decisions.some((item) => item.state === "open") ||
+      value.conflicts.some((item) => item.state !== "resolved") ||
+      value.reviewQuestions.length > 0 ||
+      value.drafts.some((item) => item.reviewState !== "approved-by-executive") ||
+      value.commitments.some(
+        (item) =>
+          item.acknowledgementState !== "acknowledged" ||
+          !["active", "complete"].includes(item.state),
+      ))
+  ) {
+    findings.push(
+      finding(
+        "premature_execution_handoff_state",
+        "handoff.state",
+        "Execution handoff requires resolved decisions and conflicts, approved drafts, acknowledged commitments, and no open questions.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state !== value.horizon.state ||
+    value.handoff.executive !== value.horizon.executive ||
+    value.handoff.supportOwner !== value.horizon.supportOwner ||
+    value.handoff.supportOwnerType !== value.horizon.supportOwnerType
+  ) {
+    findings.push(
+      finding(
+        "inconsistent_horizon_handoff",
+        "handoff",
+        "Horizon and handoff state, executive, and support owner must agree.",
+      ),
+    );
+  }
+  const principals = [
+    [value.horizon.executive, "horizon.executive"],
+    [value.horizon.supportOwner, "horizon.supportOwner"],
+    ...value.meetings.flatMap((item, index) =>
+      item.attendees.map((attendee, position) => [
+        attendee.name,
+        `meetings.${index}.attendees.${position}.name`,
+      ]),
+    ),
+    ...value.decisions.map((item, index) => [
+      item.decisionOwner,
+      `decisions.${index}.decisionOwner`,
+    ]),
+    ...value.commitments.map((item, index) => [item.owner, `commitments.${index}.owner`]),
+    ...value.commitments
+      .filter((item) => item.acknowledgedBy !== null)
+      .map((item, index) => [
+        item.acknowledgedBy,
+        `commitments.${index}.acknowledgedBy`,
+      ]),
+    ...value.drafts
+      .filter((item) => item.executiveApproval !== null)
+      .map((item, index) => [
+        item.executiveApproval.approvedBy,
+        `drafts.${index}.executiveApproval.approvedBy`,
+      ]),
+    ...value.reviewQuestions.map((item, index) => [
+      item.owner,
+      `reviewQuestions.${index}.owner`,
+    ]),
+  ];
+  for (const [principal, path] of principals) {
+    if (
+      /^(?:the )?(?:agent|assistant|claw)$/iu.test(principal.trim()) ||
+      /\b(?:ai|bot|gpt|language model|executive assistant claw)\b/iu.test(principal)
+    ) {
+      findings.push(
+        finding(
+          "agent_owned_authority",
+          path,
+          "Decision, commitment, and attendance authority must remain with named humans or teams.",
+        ),
+      );
+    }
+  }
+  for (const action of requiredActions) {
+    if (
+      !value.prohibitedActions.includes(action) ||
+      !value.handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "prohibitedActions",
+          `Executive commitment ledgers must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+  const narrativeTexts = [
+    value.horizon.request,
+    ...value.priorities.flatMap((item) => [item.outcome, ...item.protectedConstraints]),
+    ...value.meetings.map((item) => item.title),
+    ...value.decisions.flatMap((item) =>
+      item.decision === null ? [item.question] : [item.question, item.decision],
+    ),
+    ...value.commitments.map((item) => item.statement),
+    ...value.drafts.map((item) => item.purpose),
+    ...value.conflicts.map((item) => item.description),
+    ...value.reviewQuestions.map((item) => item.question),
+  ];
+  const prohibitedNarrative =
+    /\b(?:(?:i|we(?:['’]ve)?|the (?:agent|assistant|claw)|executive assistant)\s+(?:already\s+|have\s+|has\s+|had\s+|will\s+|can\s+|may\s+)?(?:send|sent|email|emailed|message|messaged|reply|replied|forward|forwarded|accept|accepted|decline|declined|schedule|scheduled|reschedule|rescheduled|book|booked|cancel|cancelled|canceled|commit|committed|approve|approved|decide|decided|assign|assigned|delegate|delegated|disclose|disclosed|confirm|confirmed)|(?:speak|speaking|spoke|replied|responded|committed|agreed)\s+(?:for|on behalf of)\s+(?:the\s+)?executive|(?:invitation|invite|meeting|calendar)\s+(?:was|has been|is)\s+(?:accepted|declined|booked|scheduled|rescheduled|moved|confirmed)|(?:message|email|note|announcement)\s+(?:was|has been)\s+(?:sent|delivered|distributed)|(?:budget|headcount|funding|spend)\s+(?:was|were|has been|have been)\s+committed|(?:autonomously|automatically|without approval)\s+(?:send|sends|sending|accept|accepts|accepting|schedule|schedules|scheduling|decide|decides|deciding|commit|commits|committing|assign|assigns|assigning|disclose|discloses|disclosing))\b/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "horizon",
+        "The ledger must not claim that the Claw sent, accepted, scheduled, decided, committed, assigned, disclosed, or spoke for the executive.",
+      ),
+    );
+  }
+  return findings;
+}
+
 function fundraisingCampaignFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const claimIds = value.claims.map((item) => item.id);
@@ -23531,6 +24424,7 @@ const validators = {
   "delegation-coordinator": delegationFindings,
   "document-renewal-tracker": documentRenewalFindings,
   "document-intake-analyst": documentIntakeFindings,
+  "executive-assistant": executiveCommitmentLedgerFindings,
   "financial-analyst": financialAnalysisFindings,
   "feed-intelligence-monitor": feedIntelligenceDeltaLedgerFindings,
   "freelance-client-pipeline": freelancePipelineFindings,

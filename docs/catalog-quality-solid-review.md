@@ -39,7 +39,6 @@ reviewability and artifact-depth gaps, not observed live-model failures.
 | `knowledge-gardener` | 73 | No local schema or semantic validator | Notion owns page structure; add local state only for reviewable change plans |
 | `presentation-producer` | 73 | No local schema or semantic validator | Keep the deck as the primary artifact unless a claim/source/approval manifest is needed |
 | `executive-briefing` | 73 | No local schema or semantic validator | A source/freshness/priority ledger may help, but the briefing remains narrative |
-| `executive-assistant` | 73 | No local schema or semantic validator | Prefer a narrow commitment/approval ledger over schematizing correspondence |
 
 ## Uplift batches
 
@@ -89,10 +88,10 @@ deliberation separated from decisions with an explicit authority and agreement
 basis, actions distinguished by acknowledgement rather than assignment, and a
 DOCX review draft that preserves the original template and recording. That
 closes the batch of entries whose state was already evidence-shaped. The
-remaining eight entries are not ruled out: the table above still names candidate
-ledgers for `content-operations`, `executive-briefing`, `executive-assistant`,
-and others. Each one needs a stable state object the Claw itself owns before a
-schema is worth adding, which batch 3 reviews rather than assumes.
+remaining entries are not ruled out: the table above still names candidate
+ledgers for `content-operations`, `executive-briefing`, and others. Each one
+needs a stable state object the Claw itself owns before a schema is worth
+adding, which batch 3 reviews rather than assumes.
 
 ### 3. Review narrative and integration-owned contracts before adding schemas
 
@@ -108,7 +107,21 @@ dispositions, residual risk, and a delivery authority that stops at what the
 named owner granted. Diffs and test output stay where they belong and are
 referenced, not duplicated.
 
-For `content-operations`, `executive-assistant`,
+`executive-assistant` answered the same question next. The calendar, the mailbox,
+and the correspondence belong to other systems, but nobody owns the reviewable
+state between an executive's supplied inputs and a human-controlled action. That
+became the artifact: one bounded planning horizon binding the verbatim request,
+the named executive and accountable support owner, a source inventory with
+freshness, confidentiality, and audience scope, ranked priorities with protected
+constraints, meetings whose calendar state is observed or proposed but never
+mutated, decisions separated into executive-only and scoped, still-valid
+delegated authority, commitments bound to an originating decision and to
+acknowledgement evidence rather than assignment, unsent communication drafts
+bound to the exact decision or commitment they carry, and an honest blocked,
+executive-review, or execution-handoff state. Execution handoff means a human
+can act; the Claw still does not.
+
+For `content-operations`,
 `executive-briefing`, `knowledge-curator`, `knowledge-gardener`,
 `presentation-producer`, `video-concept-producer`, and `workflow-operator`,
 first identify a stable state object that the Claw itself owns. External plugin

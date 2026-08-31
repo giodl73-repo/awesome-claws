@@ -1,29 +1,46 @@
 # Executive assistant handoff
 
-## Request
+## Horizon and authority
 
-Summarize the user request and the decision this claw is supporting.
+Preserve the request verbatim, the named executive, the accountable support
+owner, the as-of time, the horizon start and end, and the IANA timezone.
 
-## Known facts
+## Sources and freshness
 
-- Record only facts grounded in the supplied context or approved tools.
+- Name every supplied source with its kind, freshness, confidentiality, and
+  audience scope.
+- Separate missing, stale, and conflicting evidence from current evidence.
 
-## Assumptions and gaps
+## Priorities and meetings
 
-- Separate assumptions from missing evidence.
+- Show ranked priorities with their protected constraints and state.
+- Show each meeting's supplied window, agenda, preparation state, and whether
+  its calendar state is observed or proposed only.
 
-## Evidence ledger
+## Decisions and delegation
 
-- Link or name the source for every material claim.
+- Separate executive-only decisions from delegated ones, and cite the current,
+  scoped delegation behind every delegated decision.
+- Record a decision only when supplied evidence shows a named human made it.
 
-## Recommendation or decision state
+## Commitments and drafts
 
-- State the best supported next step and why.
+- Bind each commitment to its origin, human owner, deadline, and acknowledgement
+  evidence.
+- Keep communication drafts unsent and bound to the exact decision or commitment
+  they carry.
 
 ## Blocked actions
 
-- Keep external communication, irreversible changes, purchases, publication, and authority-sensitive actions blocked until explicitly approved.
+- Keep sending messages, accepting or declining meetings, calendar mutation,
+  resource commitments, commitment assignment, protected-context disclosure, and
+  speaking for the executive blocked until explicitly approved.
 
-## Next owner
+## Honest state and next owner
 
-Name the accountable human owner and where outputs/executive-assistant-handoff.md should be reviewed.
+State `blocked`, `ready-for-executive-review`, or `ready-for-execution-handoff`
+with every blocker and open question listed. Validate
+`outputs/executive-commitment-ledger.json` against
+`schemas/executive-commitment-ledger.schema.json`, render
+`templates/executive-commitment-ledger.md`, and name the accountable human owner
+and where outputs/executive-assistant-handoff.md should be reviewed.

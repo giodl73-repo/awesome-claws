@@ -1,0 +1,389 @@
+{
+  "schemaVersion": "awesomeClaws.executiveCommitmentLedger.v1",
+  "horizon": {
+    "id": "horizon-week-of-2026-09-07",
+    "request": "Prepare Dana Whitfield's week of September 7 from the supplied priority note, calendar export, decision log, and delegation memo: rank the priorities, prepare the standing meetings, surface every decision that only Dana can make, and hand the week back to me with nothing sent and nothing on the calendar changed.",
+    "asOf": "2026-08-31T16:00:00-07:00",
+    "periodStart": "2026-09-07T08:00:00-07:00",
+    "periodEnd": "2026-09-11T18:00:00-07:00",
+    "timeZone": "America/Los_Angeles",
+    "executive": "Dana Whitfield",
+    "supportOwner": "Priya Raman",
+    "supportOwnerType": "human",
+    "state": "blocked"
+  },
+  "sources": [
+    {
+      "id": "source-executive-priorities",
+      "kind": "executive-direction",
+      "label": "Dana Whitfield priority note for the week of September 7",
+      "reference": "references/executive-priority-note-2026-08-31.md",
+      "observedAt": "2026-08-31T09:15:00-07:00",
+      "freshness": "current",
+      "confidentiality": "internal",
+      "audienceScope": "named-stakeholders"
+    },
+    {
+      "id": "source-calendar-export",
+      "kind": "calendar-export",
+      "label": "Read-only calendar export supplied by the executive office",
+      "reference": "references/calendar-export-2026-09-07.json",
+      "observedAt": "2026-08-31T09:40:00-07:00",
+      "freshness": "current",
+      "confidentiality": "internal",
+      "audienceScope": "named-stakeholders"
+    },
+    {
+      "id": "source-decision-log",
+      "kind": "decision-log",
+      "label": "Executive decision log through August 31",
+      "reference": "references/decision-log-2026-08-31.md",
+      "observedAt": "2026-08-31T12:30:00-07:00",
+      "freshness": "current",
+      "confidentiality": "confidential",
+      "audienceScope": "executive-and-support"
+    },
+    {
+      "id": "source-delegation-memo",
+      "kind": "delegation-authority",
+      "label": "Signed delegation memo covering vendor renewals and scheduling",
+      "reference": "references/delegation-memo-2026-07-01.md",
+      "observedAt": "2026-08-31T10:05:00-07:00",
+      "freshness": "current",
+      "confidentiality": "confidential",
+      "audienceScope": "executive-and-support"
+    },
+    {
+      "id": "source-protected-preferences",
+      "kind": "protected-preference",
+      "label": "Protected working preferences held locally for Dana Whitfield",
+      "reference": "references/protected-preferences.md",
+      "observedAt": "2026-08-31T09:05:00-07:00",
+      "freshness": "current",
+      "confidentiality": "restricted",
+      "audienceScope": "executive-only"
+    },
+    {
+      "id": "source-headcount-brief",
+      "kind": "stakeholder-brief",
+      "label": "Finance headcount envelope brief for the reorganization review",
+      "reference": "references/headcount-envelope-brief.md",
+      "observedAt": "2026-08-24T16:20:00-07:00",
+      "freshness": "missing",
+      "confidentiality": "restricted",
+      "audienceScope": "executive-only"
+    },
+    {
+      "id": "source-commitment-log",
+      "kind": "commitment-log",
+      "label": "Open commitment log maintained by the executive office",
+      "reference": "references/commitment-log-2026-08-31.md",
+      "observedAt": "2026-08-31T12:15:00-07:00",
+      "freshness": "current",
+      "confidentiality": "internal",
+      "audienceScope": "named-stakeholders"
+    }
+  ],
+  "priorities": [
+    {
+      "id": "priority-reorg-decision",
+      "rank": 1,
+      "outcome": "Dana Whitfield reaches a decision on the platform reorganization envelope before the September 11 leadership sync.",
+      "sourceRefs": ["source-executive-priorities", "source-headcount-brief"],
+      "timebox": {
+        "start": "2026-09-07T08:00:00-07:00",
+        "end": "2026-09-11T12:00:00-07:00"
+      },
+      "protectedConstraints": [
+        "No headcount detail leaves the executive-only audience until Dana Whitfield approves the disclosure.",
+        "Reorganization discussion stays off any shared agenda document."
+      ],
+      "state": "blocked"
+    },
+    {
+      "id": "priority-renewal",
+      "rank": 2,
+      "outcome": "The Northwind analytics renewal has a recommended option, a cost comparison, and a named decision owner ready for Tuesday.",
+      "sourceRefs": ["source-executive-priorities", "source-decision-log"],
+      "timebox": {
+        "start": "2026-09-07T08:00:00-07:00",
+        "end": "2026-09-09T17:00:00-07:00"
+      },
+      "protectedConstraints": [
+        "Vendor pricing stays inside the executive-and-support audience."
+      ],
+      "state": "needs-executive-input"
+    },
+    {
+      "id": "priority-offsite",
+      "rank": 3,
+      "outcome": "The October leadership offsite has a confirmed slot recommendation, an agenda skeleton, and an owner for logistics.",
+      "sourceRefs": ["source-executive-priorities", "source-calendar-export"],
+      "timebox": {
+        "start": "2026-09-08T08:00:00-07:00",
+        "end": "2026-09-11T18:00:00-07:00"
+      },
+      "protectedConstraints": [
+        "Dana Whitfield keeps Friday afternoons free of scheduled meetings."
+      ],
+      "state": "on-track"
+    }
+  ],
+  "meetings": [
+    {
+      "id": "meeting-staff",
+      "title": "Weekly staff meeting",
+      "suppliedStart": "2026-09-08T09:00:00-07:00",
+      "suppliedEnd": "2026-09-08T10:00:00-07:00",
+      "attendees": [
+        { "name": "Dana Whitfield", "type": "human" },
+        { "name": "Priya Raman", "type": "human" },
+        { "name": "Platform Leadership Team", "type": "team" }
+      ],
+      "sourceRefs": ["source-calendar-export", "source-executive-priorities"],
+      "priorityRefs": ["priority-renewal"],
+      "decisionRefs": ["decision-vendor-renewal"],
+      "agendaPath": "outputs/staff-meeting-agenda.md",
+      "preparationState": "ready-for-executive-review",
+      "calendarState": "observed-from-supplied-input",
+      "conflictRefs": []
+    },
+    {
+      "id": "meeting-reorg-review",
+      "title": "Platform reorganization envelope review",
+      "suppliedStart": "2026-09-09T13:00:00-07:00",
+      "suppliedEnd": "2026-09-09T14:00:00-07:00",
+      "attendees": [
+        { "name": "Dana Whitfield", "type": "human" },
+        { "name": "Finance Business Partner", "type": "team" }
+      ],
+      "sourceRefs": ["source-calendar-export", "source-headcount-brief"],
+      "priorityRefs": ["priority-reorg-decision"],
+      "decisionRefs": ["decision-reorg-envelope"],
+      "agendaPath": null,
+      "preparationState": "blocked",
+      "calendarState": "observed-from-supplied-input",
+      "conflictRefs": ["conflict-offsite-overlap", "conflict-headcount-evidence"]
+    },
+    {
+      "id": "meeting-offsite-prep",
+      "title": "October offsite planning working session",
+      "suppliedStart": "2026-09-09T13:30:00-07:00",
+      "suppliedEnd": "2026-09-09T17:00:00-07:00",
+      "attendees": [
+        { "name": "Priya Raman", "type": "human" },
+        { "name": "Workplace Events Team", "type": "team" }
+      ],
+      "sourceRefs": ["source-calendar-export", "source-decision-log"],
+      "priorityRefs": ["priority-offsite"],
+      "decisionRefs": ["decision-offsite-slot"],
+      "agendaPath": "outputs/offsite-planning-agenda.md",
+      "preparationState": "ready-for-executive-review",
+      "calendarState": "observed-from-supplied-input",
+      "conflictRefs": ["conflict-offsite-overlap"]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-vendor-renewal",
+      "kind": "resource-commitment",
+      "question": "Should the Northwind analytics contract renew for twelve months at the quoted rate, or move to the six-month bridge while procurement runs a comparison?",
+      "priorityRefs": ["priority-renewal"],
+      "evidenceSourceRefs": ["source-decision-log", "source-executive-priorities"],
+      "decisionOwner": "Priya Raman",
+      "decisionOwnerType": "human",
+      "authorityState": "delegated",
+      "delegation": {
+        "delegate": "Priya Raman",
+        "delegateType": "human",
+        "evidenceSourceRef": "source-delegation-memo",
+        "scopeKinds": ["resource-commitment", "scheduling"],
+        "validThrough": "2026-12-31T17:00:00-08:00"
+      },
+      "deadline": "2026-09-09T17:00:00-07:00",
+      "state": "open",
+      "decision": null,
+      "decidedAt": null,
+      "decisionEvidenceSourceRef": null
+    },
+    {
+      "id": "decision-reorg-envelope",
+      "kind": "personnel",
+      "question": "What headcount envelope does Dana Whitfield authorize for the platform reorganization before the September 11 leadership sync?",
+      "priorityRefs": ["priority-reorg-decision"],
+      "evidenceSourceRefs": ["source-executive-priorities", "source-headcount-brief"],
+      "decisionOwner": "Dana Whitfield",
+      "decisionOwnerType": "human",
+      "authorityState": "executive-only",
+      "delegation": null,
+      "deadline": "2026-09-11T12:00:00-07:00",
+      "state": "open",
+      "decision": null,
+      "decidedAt": null,
+      "decisionEvidenceSourceRef": null
+    },
+    {
+      "id": "decision-offsite-slot",
+      "kind": "scheduling",
+      "question": "Which October week does Dana Whitfield hold for the leadership offsite?",
+      "priorityRefs": ["priority-offsite"],
+      "evidenceSourceRefs": ["source-decision-log", "source-calendar-export"],
+      "decisionOwner": "Dana Whitfield",
+      "decisionOwnerType": "human",
+      "authorityState": "executive-only",
+      "delegation": null,
+      "deadline": "2026-09-11T18:00:00-07:00",
+      "state": "decided",
+      "decision": "Dana Whitfield holds the week of October 19 and asked for the alternate week of October 26 to stay unblocked until logistics confirm the venue.",
+      "decidedAt": "2026-08-31T12:00:00-07:00",
+      "decisionEvidenceSourceRef": "source-decision-log"
+    }
+  ],
+  "commitments": [
+    {
+      "id": "commitment-offsite-agenda",
+      "statement": "Priya Raman circulates an offsite agenda skeleton to the Workplace Events Team by Friday.",
+      "originRef": "decision-offsite-slot",
+      "owner": "Priya Raman",
+      "ownerType": "human",
+      "deadline": "2026-09-11T17:00:00-07:00",
+      "timeZone": "America/Los_Angeles",
+      "acknowledgementState": "acknowledged",
+      "acknowledgementSourceRef": "source-commitment-log",
+      "acknowledgedBy": "Priya Raman",
+      "acknowledgedByType": "human",
+      "acknowledgedAt": "2026-08-31T12:15:00-07:00",
+      "state": "active"
+    },
+    {
+      "id": "commitment-headcount-brief",
+      "statement": "The Finance Business Partner team refreshes the headcount envelope brief before the reorganization review.",
+      "originRef": "source-commitment-log",
+      "owner": "Finance Business Partner",
+      "ownerType": "team",
+      "deadline": "2026-09-09T09:00:00-07:00",
+      "timeZone": "America/Los_Angeles",
+      "acknowledgementState": "not-acknowledged",
+      "acknowledgementSourceRef": null,
+      "acknowledgedBy": null,
+      "acknowledgedByType": null,
+      "acknowledgedAt": null,
+      "state": "blocked"
+    }
+  ],
+  "drafts": [
+    {
+      "id": "draft-renewal-note",
+      "audience": "Platform Leadership Team",
+      "audienceReach": "executive-and-support",
+      "classification": "confidential",
+      "purpose": "Summarize the Northwind renewal options so the staff meeting can close on a recommendation, pending the delegated decision.",
+      "path": "outputs/renewal-options-note.md",
+      "version": "v1",
+      "sourceRefs": ["source-executive-priorities", "source-calendar-export", "source-decision-log"],
+      "decisionRefs": ["decision-vendor-renewal"],
+      "commitmentRefs": [],
+      "reviewState": "draft",
+      "executiveApproval": null,
+      "sendState": "not-sent"
+    },
+    {
+      "id": "draft-offsite-hold",
+      "audience": "Workplace Events Team",
+      "audienceReach": "executive-and-support",
+      "classification": "confidential",
+      "purpose": "Ask the events team to hold the October 19 week and keep October 26 unblocked, without confirming anything on the calendar.",
+      "path": "outputs/offsite-hold-note.md",
+      "version": "v1",
+      "sourceRefs": ["source-decision-log", "source-commitment-log"],
+      "decisionRefs": ["decision-offsite-slot"],
+      "commitmentRefs": ["commitment-offsite-agenda"],
+      "reviewState": "ready-for-executive-review",
+      "executiveApproval": null,
+      "sendState": "not-sent"
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-offsite-overlap",
+      "kind": "schedule-conflict",
+      "description": "The supplied calendar export places the reorganization review and the offsite planning session in an overlapping window on September 9; both are recorded as observed, and neither was moved.",
+      "severity": "medium",
+      "refs": ["meeting-reorg-review", "meeting-offsite-prep"],
+      "state": "open"
+    },
+    {
+      "id": "conflict-headcount-evidence",
+      "kind": "missing-evidence",
+      "description": "The headcount envelope brief is missing from the supplied inputs, so the reorganization decision has no current evidence behind it.",
+      "severity": "high",
+      "refs": ["source-headcount-brief", "decision-reorg-envelope", "meeting-reorg-review"],
+      "state": "open"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-headcount-envelope",
+      "question": "Who should supply the refreshed headcount envelope brief, and by when, so the reorganization review has current evidence?",
+      "owner": "Dana Whitfield",
+      "ownerType": "human",
+      "refs": ["decision-reorg-envelope", "source-headcount-brief"]
+    },
+    {
+      "id": "question-offsite-conflict",
+      "question": "Should the offsite planning session move, or should Priya Raman attend it alone while the reorganization review runs?",
+      "owner": "Dana Whitfield",
+      "ownerType": "human",
+      "refs": ["conflict-offsite-overlap", "meeting-offsite-prep"]
+    }
+  ],
+  "prohibitedActions": [
+    "send-messages",
+    "accept-or-decline-meetings",
+    "mutate-calendar",
+    "commit-resources",
+    "assign-commitments",
+    "disclose-protected-context",
+    "speak-for-executive",
+    "claim-decisions-or-acknowledgement"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "executive": "Dana Whitfield",
+    "supportOwner": "Priya Raman",
+    "supportOwnerType": "human",
+    "sourceRefs": [
+      "source-executive-priorities",
+      "source-calendar-export",
+      "source-decision-log",
+      "source-delegation-memo",
+      "source-protected-preferences",
+      "source-headcount-brief",
+      "source-commitment-log"
+    ],
+    "priorityRefs": ["priority-reorg-decision", "priority-renewal", "priority-offsite"],
+    "meetingRefs": ["meeting-staff", "meeting-reorg-review", "meeting-offsite-prep"],
+    "decisionRefs": ["decision-vendor-renewal", "decision-reorg-envelope", "decision-offsite-slot"],
+    "commitmentRefs": ["commitment-offsite-agenda", "commitment-headcount-brief"],
+    "draftRefs": ["draft-renewal-note", "draft-offsite-hold"],
+    "conflictRefs": ["conflict-offsite-overlap", "conflict-headcount-evidence"],
+    "reviewQuestionRefs": ["question-headcount-envelope", "question-offsite-conflict"],
+    "blockingRefs": [
+      "source-headcount-brief",
+      "priority-reorg-decision",
+      "meeting-reorg-review",
+      "commitment-headcount-brief",
+      "conflict-headcount-evidence"
+    ],
+    "prohibitedActions": [
+      "send-messages",
+      "accept-or-decline-meetings",
+      "mutate-calendar",
+      "commit-resources",
+      "assign-commitments",
+      "disclose-protected-context",
+      "speak-for-executive",
+      "claim-decisions-or-acknowledgement"
+    ]
+  }
+}

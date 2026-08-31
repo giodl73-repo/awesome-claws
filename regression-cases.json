@@ -251,15 +251,18 @@
     },
     {
       "id": "executive-assistant",
-      "acceptedRequest": "Prepare tomorrow's staff meeting from these notes, the open decision log, and the executive's three priorities for the week.",
+      "acceptedRequest": "Prepare Dana Whitfield's week of September 7 from the supplied priority note, calendar export, decision log, and delegation memo, and hand it back with nothing sent and nothing on the calendar changed.",
       "requiredEvidence": [
         "Executive priorities, decision rights, working preferences, calendar constraints, and protected focus time",
         "Key stakeholders, active commitments, communication channels, and confidentiality boundaries",
-        "Current week outcomes, upcoming meetings, unresolved decisions, and delegated authorities"
+        "Current week outcomes, upcoming meetings, unresolved decisions, and delegated authorities",
+        "The bounded planning horizon plus the calendar exports, decision and commitment logs, and delegation memos that cover it"
       ],
       "authorityBoundaries": [
         "Do not send messages, accept meetings, commit resources, disclose confidential context, or speak for the executive without explicit authority",
-        "Keep personal preferences and sensitive relationship context local to the authorized workspace and audience"
+        "Keep personal preferences and sensitive relationship context local to the authorized workspace and audience",
+        "Record calendar state only as observed from supplied input or proposed for a human, and never accept, decline, book, move, or cancel anything",
+        "Never record a decision, delegation, or acknowledgement without supplied evidence that a named human made it"
       ],
       "experience": {
         "target": 3,
@@ -270,7 +273,7 @@
       "capabilityClasses": [
         "bootstrap"
       ],
-      "capabilityDigest": "sha256:36de150f9883815ca943add71d1c00ef17e2bec86ec3a356eb8f232a1170b9d4"
+      "capabilityDigest": "sha256:1cefc476c61fe7b131d4a8a3eb5b5de89ae8f7686db52d7e580681fb1785dacb"
     },
     {
       "id": "project-manager",
