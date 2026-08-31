@@ -42,6 +42,7 @@ const schemaNames = {
   "insurance-policy-organizer": "insurance-policy.schema.json",
   "invoice-payment-followup": "invoice-receivables.schema.json",
   "job-application-tracker": "job-application.schema.json",
+  "knowledge-curator": "knowledge-collection-index.schema.json",
   "life-timeline-keeper": "life-timeline.schema.json",
   "local-events-watcher": "event-watchlist.schema.json",
   "meal-grocery-planner": "meal-grocery.schema.json",

@@ -1,0 +1,1905 @@
+{
+  "schemaVersion": "awesomeClaws.knowledgeCollectionIndex.v1",
+  "collection": {
+    "id": "collection-atlas-launch-handoff",
+    "request": "Turn Project Atlas launch research, architecture decisions, runbooks, validation results, and meeting notes into a handoff collection for the incoming launch lead.",
+    "audience": "Incoming Atlas launch lead and the named product-launch core team.",
+    "audienceScope": [
+      "product-launch-core"
+    ],
+    "scope": {
+      "included": [
+        "Atlas launch scope and readiness",
+        "Launch architecture decisions",
+        "Operational rollback guidance",
+        "Validation evidence and unresolved launch disputes"
+      ],
+      "excluded": [
+        "Source document editing or deletion",
+        "External wiki, search, messaging, publication, or access-control state",
+        "Personal archives and unrelated product programs"
+      ]
+    },
+    "retrievalJobs": [
+      {
+        "id": "job-find-current-launch-decision",
+        "question": "Which human-owned architecture decision governs the Atlas launch write path, and what evidence disputes it?",
+        "expectedObjectKinds": [
+          "decision",
+          "claim",
+          "source"
+        ]
+      },
+      {
+        "id": "job-find-rollback-runbook",
+        "question": "Which exact runbook version governs rollback, and which duplicate pointer is canonical?",
+        "expectedObjectKinds": [
+          "source",
+          "claim"
+        ]
+      },
+      {
+        "id": "job-find-launch-blockers",
+        "question": "Which missing, stale, restricted, retention, or disputed items block a complete launch handoff?",
+        "expectedObjectKinds": [
+          "gap",
+          "review-question",
+          "claim"
+        ]
+      }
+    ],
+    "navigationModel": "hybrid",
+    "asOf": "2026-08-31T20:30:00Z",
+    "reviewHorizon": {
+      "startsAt": "2026-08-31T20:30:00Z",
+      "endsAt": "2026-09-30T20:30:00Z"
+    },
+    "maintenanceOwner": {
+      "id": "principal-launch-knowledge-team",
+      "name": "Atlas Launch Knowledge Team",
+      "type": "team"
+    },
+    "status": "blocked"
+  },
+  "sources": [
+    {
+      "id": "source-launch-brief-v4",
+      "kind": "brief",
+      "title": "Atlas launch brief v4",
+      "immutableRef": "references/atlas-launch-brief-v4.md",
+      "binding": {
+        "kind": "version",
+        "value": "atlas-launch-brief-v4"
+      },
+      "sourceOwner": {
+        "id": "principal-launch-steering-group",
+        "name": "Atlas Launch Steering Group",
+        "type": "team"
+      },
+      "authorization": {
+        "status": "current",
+        "authorizedBy": {
+          "id": "principal-launch-steering-group",
+          "name": "Atlas Launch Steering Group",
+          "type": "team"
+        },
+        "authorizedAt": "2026-08-30T16:00:00Z",
+        "expiresAt": null,
+        "scope": [
+          "Read launch scope, audience, go-live gates, and recorded owner decisions for the private Atlas handoff."
+        ]
+      },
+      "observedAt": "2026-08-31T19:00:00Z",
+      "retrievalAttemptedAt": "2026-08-31T19:02:00Z",
+      "retrievedAt": "2026-08-31T19:02:00Z",
+      "freshnessCutoff": "2026-08-28T20:30:00Z",
+      "freshnessState": "current",
+      "accessState": "available",
+      "authorityStatus": "authoritative",
+      "authorityTopicRefs": [
+        "topic-launch-overview"
+      ],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core",
+        "release-leads"
+      ],
+      "retention": {
+        "policyId": "policy-atlas-launch-records",
+        "state": "known",
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "representationPolicy": {
+        "mode": "permitted-excerpt",
+        "maxExcerptCharacters": 280,
+        "permission": {
+          "status": "current",
+          "grantedBy": {
+            "id": "principal-launch-steering-group",
+            "name": "Atlas Launch Steering Group",
+            "type": "team"
+          },
+          "grantedAt": "2026-08-30T16:00:00Z",
+          "expiresAt": null,
+          "audienceScope": [
+            "product-launch-core",
+            "release-leads"
+          ],
+          "purpose": "Private launch handoff excerpts."
+        }
+      }
+    },
+    {
+      "id": "source-architecture-decision-017",
+      "kind": "architecture-decision",
+      "title": "ADR-017 Atlas write-path cutover",
+      "immutableRef": "references/adr-017-atlas-write-path.md",
+      "binding": {
+        "kind": "integrity",
+        "value": "sha256:8a245a3e4cf24db1f247f71753ab57d0a80af58e941f04dc442867efa945df31"
+      },
+      "sourceOwner": {
+        "id": "principal-architecture-council",
+        "name": "Architecture Council",
+        "type": "team"
+      },
+      "authorization": {
+        "status": "current",
+        "authorizedBy": {
+          "id": "principal-architecture-council",
+          "name": "Architecture Council",
+          "type": "team"
+        },
+        "authorizedAt": "2026-08-29T17:00:00Z",
+        "expiresAt": null,
+        "scope": [
+          "Represent only the permitted decision excerpt and immutable integrity binding in the private launch handoff."
+        ]
+      },
+      "observedAt": "2026-08-31T19:05:00Z",
+      "retrievalAttemptedAt": "2026-08-31T19:06:00Z",
+      "retrievedAt": "2026-08-31T19:06:00Z",
+      "freshnessCutoff": "2026-08-24T20:30:00Z",
+      "freshnessState": "current",
+      "accessState": "restricted",
+      "authorityStatus": "authoritative",
+      "authorityTopicRefs": [
+        "topic-release-architecture"
+      ],
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyId": "policy-atlas-architecture-records",
+        "state": "known",
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "representationPolicy": {
+        "mode": "permitted-excerpt",
+        "maxExcerptCharacters": 220,
+        "permission": {
+          "status": "current",
+          "grantedBy": {
+            "id": "principal-architecture-council",
+            "name": "Architecture Council",
+            "type": "team"
+          },
+          "grantedAt": "2026-08-29T17:00:00Z",
+          "expiresAt": null,
+          "audienceScope": [
+            "product-launch-core"
+          ],
+          "purpose": "Private architecture-decision handoff."
+        }
+      }
+    },
+    {
+      "id": "source-launch-notes-2026-08-28",
+      "kind": "meeting-notes",
+      "title": "Atlas launch sync notes from August 28",
+      "immutableRef": "references/atlas-launch-sync-2026-08-28.md",
+      "binding": {
+        "kind": "version",
+        "value": "atlas-launch-sync-2026-08-28-r2"
+      },
+      "sourceOwner": {
+        "id": "principal-release-management",
+        "name": "Release Management",
+        "type": "team"
+      },
+      "authorization": {
+        "status": "current",
+        "authorizedBy": {
+          "id": "principal-release-management",
+          "name": "Release Management",
+          "type": "team"
+        },
+        "authorizedAt": "2026-08-28T23:00:00Z",
+        "expiresAt": null,
+        "scope": [
+          "Represent the permitted meeting-note excerpt and its supporting, non-decision authority."
+        ]
+      },
+      "observedAt": "2026-08-31T19:08:00Z",
+      "retrievalAttemptedAt": "2026-08-31T19:09:00Z",
+      "retrievedAt": "2026-08-31T19:09:00Z",
+      "freshnessCutoff": "2026-08-28T00:00:00Z",
+      "freshnessState": "current",
+      "accessState": "available",
+      "authorityStatus": "supporting",
+      "authorityTopicRefs": [
+        "topic-release-architecture"
+      ],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core",
+        "release-leads"
+      ],
+      "retention": {
+        "policyId": "policy-atlas-meeting-notes",
+        "state": "known",
+        "retainUntil": "2026-09-15T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "representationPolicy": {
+        "mode": "permitted-excerpt",
+        "maxExcerptCharacters": 220,
+        "permission": {
+          "status": "current",
+          "grantedBy": {
+            "id": "principal-release-management",
+            "name": "Release Management",
+            "type": "team"
+          },
+          "grantedAt": "2026-08-28T23:00:00Z",
+          "expiresAt": null,
+          "audienceScope": [
+            "product-launch-core"
+          ],
+          "purpose": "Private launch handoff excerpt."
+        }
+      }
+    },
+    {
+      "id": "source-rollback-runbook-v3",
+      "kind": "runbook",
+      "title": "Atlas rollback runbook v3",
+      "immutableRef": "references/atlas-rollback-runbook-v3.md",
+      "binding": {
+        "kind": "integrity",
+        "value": "sha256:48f1de6a74c2a1f3777529f82e324e985ef55180166c7c83b28ff9967dfda1ce"
+      },
+      "sourceOwner": {
+        "id": "principal-service-operations",
+        "name": "Service Operations",
+        "type": "team"
+      },
+      "authorization": {
+        "status": "current",
+        "authorizedBy": {
+          "id": "principal-service-operations",
+          "name": "Service Operations",
+          "type": "team"
+        },
+        "authorizedAt": "2026-08-30T18:00:00Z",
+        "expiresAt": null,
+        "scope": [
+          "Represent a bounded rollback excerpt and source pointer for the private launch handoff."
+        ]
+      },
+      "observedAt": "2026-08-31T19:11:00Z",
+      "retrievalAttemptedAt": "2026-08-31T19:12:00Z",
+      "retrievedAt": "2026-08-31T19:12:00Z",
+      "freshnessCutoff": "2026-08-29T20:30:00Z",
+      "freshnessState": "current",
+      "accessState": "available",
+      "authorityStatus": "authoritative",
+      "authorityTopicRefs": [
+        "topic-operations"
+      ],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core",
+        "service-operations"
+      ],
+      "retention": {
+        "policyId": "policy-atlas-operations-records",
+        "state": "known",
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "representationPolicy": {
+        "mode": "permitted-excerpt",
+        "maxExcerptCharacters": 280,
+        "permission": {
+          "status": "current",
+          "grantedBy": {
+            "id": "principal-service-operations",
+            "name": "Service Operations",
+            "type": "team"
+          },
+          "grantedAt": "2026-08-30T18:00:00Z",
+          "expiresAt": null,
+          "audienceScope": [
+            "product-launch-core",
+            "service-operations"
+          ],
+          "purpose": "Private rollback handoff."
+        }
+      }
+    },
+    {
+      "id": "source-rollback-runbook-v3-export",
+      "kind": "runbook",
+      "title": "Atlas rollback runbook v3 exported copy",
+      "immutableRef": "references/exports/atlas-rollback-runbook-v3.md",
+      "binding": {
+        "kind": "integrity",
+        "value": "sha256:48f1de6a74c2a1f3777529f82e324e985ef55180166c7c83b28ff9967dfda1ce"
+      },
+      "sourceOwner": {
+        "id": "principal-service-operations",
+        "name": "Service Operations",
+        "type": "team"
+      },
+      "authorization": {
+        "status": "current",
+        "authorizedBy": {
+          "id": "principal-service-operations",
+          "name": "Service Operations",
+          "type": "team"
+        },
+        "authorizedAt": "2026-08-30T18:00:00Z",
+        "expiresAt": null,
+        "scope": [
+          "Preserve the exported copy identity and compare its exact integrity without deleting or replacing either source."
+        ]
+      },
+      "observedAt": "2026-08-31T19:13:00Z",
+      "retrievalAttemptedAt": "2026-08-31T19:14:00Z",
+      "retrievedAt": "2026-08-31T19:14:00Z",
+      "freshnessCutoff": "2026-08-29T20:30:00Z",
+      "freshnessState": "current",
+      "accessState": "available",
+      "authorityStatus": "authoritative",
+      "authorityTopicRefs": [
+        "topic-operations"
+      ],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core",
+        "service-operations"
+      ],
+      "retention": {
+        "policyId": "policy-atlas-operations-records",
+        "state": "known",
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "representationPolicy": {
+        "mode": "metadata-only",
+        "maxExcerptCharacters": null,
+        "permission": null
+      }
+    },
+    {
+      "id": "source-duplicate-review-record",
+      "kind": "review-record",
+      "title": "Human duplicate review for rollback runbook v3",
+      "immutableRef": "references/rollback-runbook-v3-duplicate-review.json",
+      "binding": {
+        "kind": "integrity",
+        "value": "sha256:9f41929b87f38d259ad0281f1acc6ab56bfcf1da42eaa86f9a65f9c6617d89f3"
+      },
+      "sourceOwner": {
+        "id": "principal-launch-knowledge-team",
+        "name": "Atlas Launch Knowledge Team",
+        "type": "team"
+      },
+      "authorization": {
+        "status": "current",
+        "authorizedBy": {
+          "id": "principal-mira-chen",
+          "name": "Mira Chen",
+          "type": "human"
+        },
+        "authorizedAt": "2026-08-31T18:30:00Z",
+        "expiresAt": null,
+        "scope": [
+          "Record the exact duplicate determination and canonical pointer without deleting or replacing either source identity."
+        ]
+      },
+      "observedAt": "2026-08-31T19:15:00Z",
+      "retrievalAttemptedAt": "2026-08-31T19:16:00Z",
+      "retrievedAt": "2026-08-31T19:16:00Z",
+      "freshnessCutoff": "2026-08-30T20:30:00Z",
+      "freshnessState": "current",
+      "accessState": "available",
+      "authorityStatus": "authoritative",
+      "authorityTopicRefs": [
+        "topic-operations"
+      ],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyId": "policy-atlas-operations-records",
+        "state": "known",
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "representationPolicy": {
+        "mode": "permitted-excerpt",
+        "maxExcerptCharacters": 220,
+        "permission": {
+          "status": "current",
+          "grantedBy": {
+            "id": "principal-mira-chen",
+            "name": "Mira Chen",
+            "type": "human"
+          },
+          "grantedAt": "2026-08-31T18:30:00Z",
+          "expiresAt": null,
+          "audienceScope": [
+            "product-launch-core"
+          ],
+          "purpose": "Private duplicate-review evidence."
+        }
+      }
+    },
+    {
+      "id": "source-validation-build-8841",
+      "kind": "validation-report",
+      "title": "Atlas launch validation build 8841",
+      "immutableRef": "references/validation/build-8841.json",
+      "binding": {
+        "kind": "integrity",
+        "value": "sha256:225dd33c8c3c13bfa87975e8c6c501a21e6b5ae6757d30f63f31fb4e4bdf8f02"
+      },
+      "sourceOwner": {
+        "id": "principal-release-validation",
+        "name": "Release Validation",
+        "type": "team"
+      },
+      "authorization": {
+        "status": "current",
+        "authorizedBy": {
+          "id": "principal-release-validation",
+          "name": "Release Validation",
+          "type": "team"
+        },
+        "authorizedAt": "2026-08-31T18:00:00Z",
+        "expiresAt": null,
+        "scope": [
+          "Represent the launch-gate result and exact build integrity in the private handoff."
+        ]
+      },
+      "observedAt": "2026-08-31T19:18:00Z",
+      "retrievalAttemptedAt": "2026-08-31T19:19:00Z",
+      "retrievedAt": "2026-08-31T19:19:00Z",
+      "freshnessCutoff": "2026-08-30T20:30:00Z",
+      "freshnessState": "current",
+      "accessState": "available",
+      "authorityStatus": "authoritative",
+      "authorityTopicRefs": [
+        "topic-validation"
+      ],
+      "classification": "internal",
+      "audienceScope": [
+        "product-launch-core",
+        "release-leads",
+        "release-validation"
+      ],
+      "retention": {
+        "policyId": "policy-atlas-validation-records",
+        "state": "known",
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "representationPolicy": {
+        "mode": "permitted-excerpt",
+        "maxExcerptCharacters": 180,
+        "permission": {
+          "status": "current",
+          "grantedBy": {
+            "id": "principal-release-validation",
+            "name": "Release Validation",
+            "type": "team"
+          },
+          "grantedAt": "2026-08-31T18:00:00Z",
+          "expiresAt": null,
+          "audienceScope": [
+            "product-launch-core",
+            "release-leads",
+            "release-validation"
+          ],
+          "purpose": "Private launch validation handoff."
+        }
+      }
+    },
+    {
+      "id": "source-validation-build-8702",
+      "kind": "validation-report",
+      "title": "Atlas launch validation build 8702",
+      "immutableRef": "references/validation/build-8702.json",
+      "binding": {
+        "kind": "integrity",
+        "value": "sha256:c0ad64f544845ace2d04784b02a1ee9453bb0a1830ad1aa450aa460cb667da78"
+      },
+      "sourceOwner": {
+        "id": "principal-release-validation",
+        "name": "Release Validation",
+        "type": "team"
+      },
+      "authorization": {
+        "status": "current",
+        "authorizedBy": {
+          "id": "principal-release-validation",
+          "name": "Release Validation",
+          "type": "team"
+        },
+        "authorizedAt": "2026-08-20T18:00:00Z",
+        "expiresAt": null,
+        "scope": [
+          "Retain the old validation result only as explicitly stale historical context."
+        ]
+      },
+      "observedAt": "2026-08-20T19:18:00Z",
+      "retrievalAttemptedAt": "2026-08-31T19:20:00Z",
+      "retrievedAt": "2026-08-31T19:20:00Z",
+      "freshnessCutoff": "2026-08-30T20:30:00Z",
+      "freshnessState": "stale",
+      "accessState": "available",
+      "authorityStatus": "superseded",
+      "authorityTopicRefs": [
+        "topic-validation"
+      ],
+      "classification": "internal",
+      "audienceScope": [
+        "product-launch-core",
+        "release-validation"
+      ],
+      "retention": {
+        "policyId": "policy-atlas-validation-records",
+        "state": "known",
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "representationPolicy": {
+        "mode": "metadata-only",
+        "maxExcerptCharacters": null,
+        "permission": null
+      }
+    },
+    {
+      "id": "source-security-readiness-appendix",
+      "kind": "restricted-appendix",
+      "title": "Atlas security readiness appendix",
+      "immutableRef": "references/security/atlas-readiness-appendix-v2.pdf",
+      "binding": {
+        "kind": "version",
+        "value": "atlas-security-readiness-v2"
+      },
+      "sourceOwner": {
+        "id": "principal-product-security",
+        "name": "Product Security",
+        "type": "team"
+      },
+      "authorization": {
+        "status": "current",
+        "authorizedBy": {
+          "id": "principal-product-security",
+          "name": "Product Security",
+          "type": "team"
+        },
+        "authorizedAt": "2026-08-30T15:00:00Z",
+        "expiresAt": null,
+        "scope": [
+          "Retain only metadata and the access limitation; no appendix content is authorized for the collection."
+        ]
+      },
+      "observedAt": "2026-08-31T19:21:00Z",
+      "retrievalAttemptedAt": "2026-08-31T19:22:00Z",
+      "retrievedAt": null,
+      "freshnessCutoff": "2026-08-30T20:30:00Z",
+      "freshnessState": "unknown",
+      "accessState": "restricted",
+      "authorityStatus": "authoritative",
+      "authorityTopicRefs": [
+        "topic-security-readiness"
+      ],
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core",
+        "product-security"
+      ],
+      "retention": {
+        "policyId": "policy-atlas-security-records",
+        "state": "unknown",
+        "retainUntil": null,
+        "dispositionAuthority": "human-only"
+      },
+      "representationPolicy": {
+        "mode": "metadata-only",
+        "maxExcerptCharacters": null,
+        "permission": null
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-launch-scope",
+      "sourceRef": "source-launch-brief-v4",
+      "sourceBinding": "atlas-launch-brief-v4",
+      "topicRefs": [
+        "topic-launch-overview"
+      ],
+      "relevance": "Defines the bounded Atlas launch audience, go-live gate, and handoff scope.",
+      "representedAs": "permitted-excerpt",
+      "excerpt": "Atlas launch readiness is reviewed by the Launch Steering Group for the product-launch core audience.",
+      "capturedAt": "2026-08-31T19:25:00Z",
+      "ownerAttribution": {
+        "role": "decision-owner",
+        "owner": {
+          "id": "principal-launch-steering-group",
+          "name": "Atlas Launch Steering Group",
+          "type": "team"
+        },
+        "effectiveAt": "2026-08-30T16:00:00Z"
+      },
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "evidence-single-write-path",
+      "sourceRef": "source-architecture-decision-017",
+      "sourceBinding": "sha256:8a245a3e4cf24db1f247f71753ab57d0a80af58e941f04dc442867efa945df31",
+      "topicRefs": [
+        "topic-release-architecture"
+      ],
+      "relevance": "Records the Architecture Council decision governing the launch write path.",
+      "representedAs": "permitted-excerpt",
+      "excerpt": "ADR-017 records the single-writer cutover as the approved Atlas launch architecture.",
+      "capturedAt": "2026-08-31T19:26:00Z",
+      "ownerAttribution": {
+        "role": "decision-owner",
+        "owner": {
+          "id": "principal-architecture-council",
+          "name": "Architecture Council",
+          "type": "team"
+        },
+        "effectiveAt": "2026-08-29T16:00:00Z"
+      },
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-meeting-notes",
+          "policy-atlas-architecture-records"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "evidence-dual-write-note",
+      "sourceRef": "source-launch-notes-2026-08-28",
+      "sourceBinding": "atlas-launch-sync-2026-08-28-r2",
+      "topicRefs": [
+        "topic-release-architecture"
+      ],
+      "relevance": "Preserves a later meeting-note statement that conflicts with ADR-017 but does not itself carry decision authority.",
+      "representedAs": "permitted-excerpt",
+      "excerpt": "The launch sync notes state that a dual-write interval may remain enabled through the first production hour.",
+      "capturedAt": "2026-08-31T19:27:00Z",
+      "ownerAttribution": null,
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "evidence-rollback-sequence",
+      "sourceRef": "source-rollback-runbook-v3",
+      "sourceBinding": "sha256:48f1de6a74c2a1f3777529f82e324e985ef55180166c7c83b28ff9967dfda1ce",
+      "topicRefs": [
+        "topic-operations"
+      ],
+      "relevance": "Identifies the exact rollback runbook and bounded sequence for operator retrieval.",
+      "representedAs": "permitted-excerpt",
+      "excerpt": "Rollback uses runbook v3 and requires the named service operator to review the preflight checks before execution.",
+      "capturedAt": "2026-08-31T19:28:00Z",
+      "ownerAttribution": null,
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-operations-records"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "evidence-duplicate-authorization",
+      "sourceRef": "source-duplicate-review-record",
+      "sourceBinding": "sha256:9f41929b87f38d259ad0281f1acc6ab56bfcf1da42eaa86f9a65f9c6617d89f3",
+      "topicRefs": [
+        "topic-operations"
+      ],
+      "relevance": "Records human confirmation that both runbook identities have identical integrity and authorizes only a canonical pointer.",
+      "representedAs": "permitted-excerpt",
+      "excerpt": "Mira Chen confirmed the identical integrity values and designated the owned runbook location as the canonical pointer; both identities remain indexed.",
+      "capturedAt": "2026-08-31T19:29:00Z",
+      "ownerAttribution": {
+        "role": "duplicate-confirmation-owner",
+        "owner": {
+          "id": "principal-mira-chen",
+          "name": "Mira Chen",
+          "type": "human"
+        },
+        "effectiveAt": "2026-08-31T18:30:00Z"
+      },
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-operations-records"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "evidence-validation-build-8841",
+      "sourceRef": "source-validation-build-8841",
+      "sourceBinding": "sha256:225dd33c8c3c13bfa87975e8c6c501a21e6b5ae6757d30f63f31fb4e4bdf8f02",
+      "topicRefs": [
+        "topic-validation"
+      ],
+      "relevance": "Records the current launch-gate result for exact build 8841.",
+      "representedAs": "permitted-excerpt",
+      "excerpt": "Build 8841 passed the recorded launch-gate suite with no open severity-one validation findings.",
+      "capturedAt": "2026-08-31T19:30:00Z",
+      "ownerAttribution": null,
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-validation-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "evidence-old-validation-metadata",
+      "sourceRef": "source-validation-build-8702",
+      "sourceBinding": "sha256:c0ad64f544845ace2d04784b02a1ee9453bb0a1830ad1aa450aa460cb667da78",
+      "topicRefs": [
+        "topic-validation"
+      ],
+      "relevance": "Preserves the old build identity only as stale superseded context.",
+      "representedAs": "metadata-only",
+      "excerpt": null,
+      "capturedAt": "2026-08-31T19:31:00Z",
+      "ownerAttribution": null,
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-validation-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "evidence-security-appendix-metadata",
+      "sourceRef": "source-security-readiness-appendix",
+      "sourceBinding": "atlas-security-readiness-v2",
+      "topicRefs": [
+        "topic-security-readiness"
+      ],
+      "relevance": "Records only the restricted appendix identity, owner, and unavailable content state.",
+      "representedAs": "metadata-only",
+      "excerpt": null,
+      "capturedAt": "2026-08-31T19:32:00Z",
+      "ownerAttribution": null,
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-security-records"
+        ],
+        "unknownPolicyRefs": [
+          "policy-atlas-security-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    }
+  ],
+  "topics": [
+    {
+      "id": "topic-launch-overview",
+      "label": "Launch overview",
+      "summary": "Bounded Atlas scope, audience, go-live gates, and owner responsibilities.",
+      "parentTopicRefs": [],
+      "sourceRefs": [
+        "source-launch-brief-v4"
+      ],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "topic-release-architecture",
+      "label": "Release architecture",
+      "summary": "Recorded architecture decision and the later conflicting launch-note statement.",
+      "parentTopicRefs": [
+        "topic-launch-overview"
+      ],
+      "sourceRefs": [
+        "source-architecture-decision-017",
+        "source-launch-notes-2026-08-28"
+      ],
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "topic-operations",
+      "label": "Launch operations",
+      "summary": "Rollback guidance, duplicate source identities, and the authorized canonical pointer.",
+      "parentTopicRefs": [
+        "topic-launch-overview"
+      ],
+      "sourceRefs": [
+        "source-rollback-runbook-v3",
+        "source-rollback-runbook-v3-export",
+        "source-duplicate-review-record"
+      ],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-operations-records"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "topic-validation",
+      "label": "Launch validation",
+      "summary": "Current build evidence with stale historical validation preserved as non-current context.",
+      "parentTopicRefs": [
+        "topic-launch-overview"
+      ],
+      "sourceRefs": [
+        "source-validation-build-8841",
+        "source-validation-build-8702"
+      ],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-validation-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "topic-security-readiness",
+      "label": "Security readiness",
+      "summary": "Restricted appendix metadata and the unresolved authorized-access gap.",
+      "parentTopicRefs": [
+        "topic-launch-overview"
+      ],
+      "sourceRefs": [
+        "source-security-readiness-appendix"
+      ],
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-security-records"
+        ],
+        "unknownPolicyRefs": [
+          "policy-atlas-security-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    }
+  ],
+  "navigationNodes": [
+    {
+      "id": "nav-atlas-launch",
+      "kind": "root",
+      "label": "Atlas launch handoff",
+      "parentNodeRef": null,
+      "childNodeRefs": [
+        "nav-decisions",
+        "nav-operations",
+        "nav-readiness"
+      ],
+      "topicRefs": [
+        "topic-launch-overview"
+      ],
+      "objectRefs": [
+        "decision-atlas-go-live-gate"
+      ],
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes",
+          "policy-atlas-operations-records",
+          "policy-atlas-security-records",
+          "policy-atlas-validation-records"
+        ],
+        "unknownPolicyRefs": [
+          "policy-atlas-security-records"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "nav-decisions",
+      "kind": "section",
+      "label": "Decisions and disputes",
+      "parentNodeRef": "nav-atlas-launch",
+      "childNodeRefs": [],
+      "topicRefs": [
+        "topic-release-architecture"
+      ],
+      "objectRefs": [
+        "claim-single-write-path",
+        "claim-dual-write-interval",
+        "decision-single-write-path",
+        "dispute-write-path"
+      ],
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes",
+          "policy-atlas-operations-records",
+          "policy-atlas-security-records",
+          "policy-atlas-validation-records"
+        ],
+        "unknownPolicyRefs": [
+          "policy-atlas-security-records"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "nav-operations",
+      "kind": "section",
+      "label": "Operations and rollback",
+      "parentNodeRef": "nav-atlas-launch",
+      "childNodeRefs": [],
+      "topicRefs": [
+        "topic-operations"
+      ],
+      "objectRefs": [
+        "claim-rollback-runbook",
+        "duplicate-rollback-runbook-v3"
+      ],
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes",
+          "policy-atlas-operations-records",
+          "policy-atlas-security-records",
+          "policy-atlas-validation-records"
+        ],
+        "unknownPolicyRefs": [
+          "policy-atlas-security-records"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "nav-readiness",
+      "kind": "section",
+      "label": "Validation and readiness",
+      "parentNodeRef": "nav-atlas-launch",
+      "childNodeRefs": [],
+      "topicRefs": [
+        "topic-validation",
+        "topic-security-readiness"
+      ],
+      "objectRefs": [
+        "claim-validation-build-8841",
+        "claim-old-validation-build",
+        "claim-security-readiness",
+        "gap-security-appendix",
+        "freshness-security-appendix",
+        "freshness-old-validation"
+      ],
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes",
+          "policy-atlas-operations-records",
+          "policy-atlas-security-records",
+          "policy-atlas-validation-records"
+        ],
+        "unknownPolicyRefs": [
+          "policy-atlas-security-records"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-launch-scope",
+      "statement": "The Atlas handoff scope covers launch decisions, rollback operations, validation, and security readiness for the product-launch core audience.",
+      "epistemicType": "source-assertion",
+      "recordedAt": "2026-08-31T19:40:00Z",
+      "effectiveAt": "2026-08-30T16:00:00Z",
+      "expiresAt": "2026-09-30T20:30:00Z",
+      "owner": {
+        "id": "principal-launch-steering-group",
+        "name": "Atlas Launch Steering Group",
+        "type": "team"
+      },
+      "authorityStatus": "authoritative",
+      "status": "current",
+      "topicRefs": [
+        "topic-launch-overview"
+      ],
+      "evidenceRefs": [
+        "evidence-launch-scope"
+      ],
+      "contextEvidenceRefs": [],
+      "disputeRefs": [],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "claim-single-write-path",
+      "statement": "ADR-017 records a single-writer cutover for the Atlas production launch.",
+      "epistemicType": "source-assertion",
+      "recordedAt": "2026-08-31T19:41:00Z",
+      "effectiveAt": "2026-08-29T16:00:00Z",
+      "expiresAt": null,
+      "owner": {
+        "id": "principal-architecture-council",
+        "name": "Architecture Council",
+        "type": "team"
+      },
+      "authorityStatus": "authoritative",
+      "status": "disputed",
+      "topicRefs": [
+        "topic-release-architecture"
+      ],
+      "evidenceRefs": [
+        "evidence-single-write-path"
+      ],
+      "contextEvidenceRefs": [],
+      "disputeRefs": [
+        "dispute-write-path"
+      ],
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "claim-dual-write-interval",
+      "statement": "The August 28 launch notes state that a dual-write interval may remain enabled through the first production hour.",
+      "epistemicType": "source-assertion",
+      "recordedAt": "2026-08-31T19:42:00Z",
+      "effectiveAt": "2026-08-28T23:00:00Z",
+      "expiresAt": "2026-09-02T00:00:00Z",
+      "owner": {
+        "id": "principal-release-management",
+        "name": "Release Management",
+        "type": "team"
+      },
+      "authorityStatus": "supporting",
+      "status": "disputed",
+      "topicRefs": [
+        "topic-release-architecture"
+      ],
+      "evidenceRefs": [
+        "evidence-dual-write-note"
+      ],
+      "contextEvidenceRefs": [],
+      "disputeRefs": [
+        "dispute-write-path"
+      ],
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "claim-rollback-runbook",
+      "statement": "Atlas rollback guidance is bound to the exact integrity of runbook v3.",
+      "epistemicType": "source-assertion",
+      "recordedAt": "2026-08-31T19:43:00Z",
+      "effectiveAt": "2026-08-30T18:00:00Z",
+      "expiresAt": null,
+      "owner": {
+        "id": "principal-service-operations",
+        "name": "Service Operations",
+        "type": "team"
+      },
+      "authorityStatus": "authoritative",
+      "status": "current",
+      "topicRefs": [
+        "topic-operations"
+      ],
+      "evidenceRefs": [
+        "evidence-rollback-sequence"
+      ],
+      "contextEvidenceRefs": [],
+      "disputeRefs": [],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-operations-records"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "claim-validation-build-8841",
+      "statement": "Build 8841 is the current launch-gate validation record and reports no open severity-one validation findings.",
+      "epistemicType": "source-assertion",
+      "recordedAt": "2026-08-31T19:44:00Z",
+      "effectiveAt": "2026-08-31T18:00:00Z",
+      "expiresAt": "2026-09-01T20:30:00Z",
+      "owner": {
+        "id": "principal-release-validation",
+        "name": "Release Validation",
+        "type": "team"
+      },
+      "authorityStatus": "authoritative",
+      "status": "current",
+      "topicRefs": [
+        "topic-validation"
+      ],
+      "evidenceRefs": [
+        "evidence-validation-build-8841"
+      ],
+      "contextEvidenceRefs": [],
+      "disputeRefs": [],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-validation-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "claim-old-validation-build",
+      "statement": "Build 8702 remains indexed only as a stale, superseded validation record.",
+      "epistemicType": "observed-fact",
+      "recordedAt": "2026-08-31T19:45:00Z",
+      "effectiveAt": "2026-08-20T19:18:00Z",
+      "expiresAt": null,
+      "owner": {
+        "id": "principal-release-validation",
+        "name": "Release Validation",
+        "type": "team"
+      },
+      "authorityStatus": "superseded",
+      "status": "stale",
+      "topicRefs": [
+        "topic-validation"
+      ],
+      "evidenceRefs": [
+        "evidence-old-validation-metadata"
+      ],
+      "contextEvidenceRefs": [],
+      "disputeRefs": [],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-validation-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "claim-security-readiness",
+      "statement": "Security readiness cannot be represented beyond appendix metadata because authorized content access is unavailable.",
+      "epistemicType": "observed-fact",
+      "recordedAt": "2026-08-31T19:46:00Z",
+      "effectiveAt": "2026-08-31T19:22:00Z",
+      "expiresAt": null,
+      "owner": {
+        "id": "principal-product-security",
+        "name": "Product Security",
+        "type": "team"
+      },
+      "authorityStatus": "non-authoritative",
+      "status": "blocked",
+      "topicRefs": [
+        "topic-security-readiness"
+      ],
+      "evidenceRefs": [
+        "evidence-security-appendix-metadata"
+      ],
+      "contextEvidenceRefs": [],
+      "disputeRefs": [],
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-security-records"
+        ],
+        "unknownPolicyRefs": [
+          "policy-atlas-security-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-single-write-path",
+      "statement": "The Architecture Council recorded the single-writer cutover in ADR-017; the later launch-note conflict remains unresolved for human review.",
+      "decidedAt": "2026-08-29T16:00:00Z",
+      "effectiveAt": "2026-08-29T16:00:00Z",
+      "expiresAt": null,
+      "decisionOwner": {
+        "id": "principal-architecture-council",
+        "name": "Architecture Council",
+        "type": "team"
+      },
+      "authorityStatus": "authoritative",
+      "status": "disputed",
+      "topicRefs": [
+        "topic-release-architecture"
+      ],
+      "claimRefs": [
+        "claim-single-write-path"
+      ],
+      "evidenceRefs": [
+        "evidence-single-write-path"
+      ],
+      "contextEvidenceRefs": [],
+      "disputeRefs": [
+        "dispute-write-path"
+      ],
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "decision-atlas-go-live-gate",
+      "statement": "The Atlas Launch Steering Group owns the go-live decision after validation, architecture, operations, and security blockers are reviewed.",
+      "decidedAt": "2026-08-30T16:00:00Z",
+      "effectiveAt": "2026-08-31T20:30:00Z",
+      "expiresAt": "2026-09-30T20:30:00Z",
+      "decisionOwner": {
+        "id": "principal-launch-steering-group",
+        "name": "Atlas Launch Steering Group",
+        "type": "team"
+      },
+      "authorityStatus": "authoritative",
+      "status": "blocked",
+      "topicRefs": [
+        "topic-launch-overview"
+      ],
+      "claimRefs": [
+        "claim-launch-scope"
+      ],
+      "evidenceRefs": [
+        "evidence-launch-scope"
+      ],
+      "contextEvidenceRefs": [],
+      "disputeRefs": [],
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    }
+  ],
+  "duplicateGroups": [
+    {
+      "id": "duplicate-rollback-runbook-v3",
+      "sourceRefs": [
+        "source-rollback-runbook-v3",
+        "source-rollback-runbook-v3-export"
+      ],
+      "relationship": "exact",
+      "canonicalSourceRef": "source-rollback-runbook-v3",
+      "confirmation": {
+        "status": "human-authorized",
+        "owner": {
+          "id": "principal-mira-chen",
+          "name": "Mira Chen",
+          "type": "human"
+        },
+        "confirmedAt": "2026-08-31T19:29:00Z",
+        "evidenceRefs": [
+          "evidence-duplicate-authorization"
+        ]
+      },
+      "reason": "The two source records retain distinct locations but have the same immutable integrity; human review authorizes only the owned runbook as the canonical pointer.",
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-operations-records"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    }
+  ],
+  "disputes": [
+    {
+      "id": "dispute-write-path",
+      "topicRefs": [
+        "topic-release-architecture"
+      ],
+      "claimRefs": [
+        "claim-single-write-path",
+        "claim-dual-write-interval"
+      ],
+      "materiality": "material",
+      "status": "unresolved",
+      "resolution": null,
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-security-appendix",
+      "kind": "restricted-source",
+      "description": "The security appendix identity is authorized for metadata, but its content is unavailable to the collection and no excerpt permission exists.",
+      "sourceRefs": [
+        "source-security-readiness-appendix"
+      ],
+      "objectRefs": [
+        "claim-security-readiness",
+        "topic-security-readiness"
+      ],
+      "materiality": "material",
+      "status": "open",
+      "owner": {
+        "id": "principal-product-security",
+        "name": "Product Security",
+        "type": "team"
+      },
+      "resolution": null,
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-security-records"
+        ],
+        "unknownPolicyRefs": [
+          "policy-atlas-security-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    }
+  ],
+  "freshnessFindings": [
+    {
+      "id": "freshness-security-appendix",
+      "sourceRef": "source-security-readiness-appendix",
+      "state": "unknown",
+      "asOf": "2026-08-31T20:30:00Z",
+      "affectedObjectRefs": [
+        "claim-security-readiness",
+        "gap-security-appendix"
+      ],
+      "materiality": "material",
+      "reviewRequired": true,
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-security-records"
+        ],
+        "unknownPolicyRefs": [
+          "policy-atlas-security-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "freshness-old-validation",
+      "sourceRef": "source-validation-build-8702",
+      "state": "stale",
+      "asOf": "2026-08-31T20:30:00Z",
+      "affectedObjectRefs": [
+        "claim-old-validation-build"
+      ],
+      "materiality": "non-material",
+      "reviewRequired": true,
+      "classification": "confidential",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-validation-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    }
+  ],
+  "retentionFindings": [
+    {
+      "id": "retention-launch-notes",
+      "targetRefs": [
+        "source-launch-notes-2026-08-28",
+        "claim-dual-write-interval"
+      ],
+      "state": "expiring",
+      "retainUntil": "2026-09-15T23:59:59Z",
+      "action": "human-review",
+      "materiality": "non-material",
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "retention-security-unknown",
+      "targetRefs": [
+        "source-security-readiness-appendix"
+      ],
+      "state": "unknown",
+      "retainUntil": null,
+      "action": "human-review",
+      "materiality": "material",
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-security-records"
+        ],
+        "unknownPolicyRefs": [
+          "policy-atlas-security-records"
+        ],
+        "retainUntil": null,
+        "dispositionAuthority": "human-only"
+      }
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-write-path-conflict",
+      "question": "Should the Architecture Council reaffirm ADR-017 or record a superseding decision for the launch-note dual-write interval?",
+      "owner": {
+        "id": "principal-architecture-council",
+        "name": "Architecture Council",
+        "type": "team"
+      },
+      "targetRefs": [
+        "dispute-write-path",
+        "decision-single-write-path"
+      ],
+      "sourceRefs": [
+        "source-architecture-decision-017",
+        "source-launch-notes-2026-08-28"
+      ],
+      "status": "open",
+      "blocksReadiness": true,
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "question-security-access",
+      "question": "Can Product Security provide an authorized current excerpt or a human-owned readiness statement for the restricted appendix?",
+      "owner": {
+        "id": "principal-product-security",
+        "name": "Product Security",
+        "type": "team"
+      },
+      "targetRefs": [
+        "gap-security-appendix",
+        "freshness-security-appendix",
+        "retention-security-unknown"
+      ],
+      "sourceRefs": [
+        "source-security-readiness-appendix"
+      ],
+      "status": "open",
+      "blocksReadiness": true,
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-security-records"
+        ],
+        "unknownPolicyRefs": [
+          "policy-atlas-security-records"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "question-launch-notes-retention",
+      "question": "Should Release Management extend the meeting-note retention period while the material architecture dispute remains open?",
+      "owner": {
+        "id": "principal-release-management",
+        "name": "Release Management",
+        "type": "team"
+      },
+      "targetRefs": [
+        "retention-launch-notes",
+        "dispute-write-path"
+      ],
+      "sourceRefs": [
+        "source-launch-notes-2026-08-28"
+      ],
+      "status": "open",
+      "blocksReadiness": false,
+      "classification": "restricted",
+      "audienceScope": [
+        "product-launch-core"
+      ],
+      "retention": {
+        "policyRefs": [
+          "policy-atlas-launch-records",
+          "policy-atlas-architecture-records",
+          "policy-atlas-meeting-notes"
+        ],
+        "retainUntil": "2032-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    }
+  ],
+  "prohibitedActions": [
+    "broaden-access",
+    "copy-unpermitted-content",
+    "delete-source",
+    "publish",
+    "external-communication",
+    "mutate-source",
+    "change-access-control",
+    "retain-or-destroy-autonomously",
+    "claim-completion",
+    "claim-access",
+    "approve-decisions",
+    "integrate-external-system"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": {
+      "id": "principal-launch-knowledge-team",
+      "name": "Atlas Launch Knowledge Team",
+      "type": "team"
+    },
+    "sourceRefs": [
+      "source-launch-brief-v4",
+      "source-architecture-decision-017",
+      "source-launch-notes-2026-08-28",
+      "source-rollback-runbook-v3",
+      "source-rollback-runbook-v3-export",
+      "source-duplicate-review-record",
+      "source-validation-build-8841",
+      "source-validation-build-8702",
+      "source-security-readiness-appendix"
+    ],
+    "evidenceRefs": [
+      "evidence-launch-scope",
+      "evidence-single-write-path",
+      "evidence-dual-write-note",
+      "evidence-rollback-sequence",
+      "evidence-duplicate-authorization",
+      "evidence-validation-build-8841",
+      "evidence-old-validation-metadata",
+      "evidence-security-appendix-metadata"
+    ],
+    "topicRefs": [
+      "topic-launch-overview",
+      "topic-release-architecture",
+      "topic-operations",
+      "topic-validation",
+      "topic-security-readiness"
+    ],
+    "navigationNodeRefs": [
+      "nav-atlas-launch",
+      "nav-decisions",
+      "nav-operations",
+      "nav-readiness"
+    ],
+    "claimRefs": [
+      "claim-launch-scope",
+      "claim-single-write-path",
+      "claim-dual-write-interval",
+      "claim-rollback-runbook",
+      "claim-validation-build-8841",
+      "claim-old-validation-build",
+      "claim-security-readiness"
+    ],
+    "decisionRefs": [
+      "decision-single-write-path",
+      "decision-atlas-go-live-gate"
+    ],
+    "duplicateGroupRefs": [
+      "duplicate-rollback-runbook-v3"
+    ],
+    "disputeRefs": [
+      "dispute-write-path"
+    ],
+    "gapRefs": [
+      "gap-security-appendix"
+    ],
+    "freshnessFindingRefs": [
+      "freshness-security-appendix",
+      "freshness-old-validation"
+    ],
+    "retentionFindingRefs": [
+      "retention-launch-notes",
+      "retention-security-unknown"
+    ],
+    "reviewQuestionRefs": [
+      "question-write-path-conflict",
+      "question-security-access",
+      "question-launch-notes-retention"
+    ],
+    "blockerRefs": [
+      "dispute-write-path",
+      "gap-security-appendix",
+      "freshness-security-appendix",
+      "retention-security-unknown",
+      "question-write-path-conflict",
+      "question-security-access",
+      "claim-security-readiness",
+      "decision-atlas-go-live-gate"
+    ],
+    "summary": "The private local Atlas collection index is blocked for owner review by the unresolved write-path dispute and unavailable restricted security evidence; all source identities, stale context, and retention questions remain visible.",
+    "classification": "restricted",
+    "audienceScope": [
+      "product-launch-core"
+    ],
+    "retention": {
+      "policyRefs": [
+        "policy-atlas-launch-records",
+        "policy-atlas-architecture-records",
+        "policy-atlas-meeting-notes",
+        "policy-atlas-operations-records",
+        "policy-atlas-security-records",
+        "policy-atlas-validation-records"
+      ],
+      "unknownPolicyRefs": [
+        "policy-atlas-security-records"
+      ],
+      "retainUntil": "2032-12-31T23:59:59Z",
+      "dispositionAuthority": "human-only"
+    },
+    "output": {
+      "path": "outputs/knowledge-collection-index.json",
+      "visibility": "private",
+      "storage": "local-artifact",
+      "externalIntegrationConsent": "not-granted"
+    },
+    "prohibitedActions": [
+      "broaden-access",
+      "copy-unpermitted-content",
+      "delete-source",
+      "publish",
+      "external-communication",
+      "mutate-source",
+      "change-access-control",
+      "retain-or-destroy-autonomously",
+      "claim-completion",
+      "claim-access",
+      "approve-decisions",
+      "integrate-external-system"
+    ]
+  }
+}

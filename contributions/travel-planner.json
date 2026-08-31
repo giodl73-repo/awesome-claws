@@ -145,6 +145,11 @@
         "id": "research-scout",
         "overlap": "Both collect public evidence, preserve provenance and freshness, surface uncertainty, and hand review questions to a human owner.",
         "difference": "Research Scout gathers broad reusable research leads and evidence deltas; Travel Planner applies travel-specific chronology, geographic transfer, accessibility, budget, readiness, and non-transaction invariants to one named trip."
+      },
+      {
+        "id": "knowledge-curator",
+        "overlap": "Both preserve exact source identity, chronology, freshness, access limits, gaps, blockers, and a private human-owned handoff.",
+        "difference": "Knowledge Curator maintains a durable cross-source collection of topics, claims, decisions, duplicates, disputes, and retention state; Travel Planner instead builds one traveler-specific multi-day itinerary with transfer feasibility, disruption alternatives, budget reconciliation, and departure readiness."
       }
     ]
   }

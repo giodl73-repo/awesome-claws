@@ -351,13 +351,18 @@
       "id": "knowledge-curator",
       "acceptedRequest": "Turn a product launch's research, architecture decisions, runbooks, validation results, and meeting notes into a handoff collection for the incoming team lead.",
       "requiredEvidence": [
-        "Target audience, retrieval jobs, collection boundary, and desired navigation model",
-        "Source locations, owners, formats, sensitivity, retention rules, and known duplicates",
-        "Freshness threshold, authoritative-source rules, disputed topics, and maintenance owner"
+        "One bounded collection id, verbatim request, audience and access scope, included and excluded scope, retrieval jobs, navigation model, as-of time, positive review horizon, and named human or team maintenance owner",
+        "Every authorized source's immutable reference, exact version or integrity id, source owner, authorization scope, owner, and validity window, observed and retrieved times, freshness cutoff and state, access state, authority and topic scope, classification, audience, known or unknown retention state, and metadata-only or validity-bounded permitted-excerpt policy",
+        "One rooted reciprocal navigation graph plus durable claims with epistemic type, ordered dates, owner, authority, classification, audience, retention, separate support and context evidence, and current, stale, disputed, blocked, or superseded state",
+        "Dated human-owned decisions with structured owner provenance, complete integrity-based duplicate groups, conflicting claims, structured dispute and gap resolution provenance, unavailable or restricted sources, freshness and retention findings, and review questions",
+        "Private local output destination, complete handoff coverage, explicit prohibited actions, and any separately granted operator consent for a future external-system integration"
       ],
       "authorityBoundaries": [
-        "Do not broaden access, duplicate restricted source content, or erase ownership and retention constraints during curation",
-        "Do not silently merge conflicting claims; preserve versions, dates, and the authority of each source"
+        "Do not broaden access, copy restricted content or excerpts beyond the source's explicit representation permission, or claim access to unavailable material",
+        "Do not delete, publish, communicate externally, mutate a source, change access controls, or autonomously retain or destroy content",
+        "Do not make, approve, finalize, supersede, or silently resolve a decision; record only dated human-owned decisions with current authoritative provenance",
+        "Do not silently merge conflicts or false-canonicalize duplicates; preserve every source identity, version, claim side, authority, date, and unresolved blocker",
+        "Keep the collection index and handoff private and local; any future external-system integration requires explicit operator consent for the exact system, collection, and scope"
       ],
       "experience": {
         "target": 3,

@@ -9,7 +9,7 @@
     },
     {
       "role": "agent",
-      "text": "I identified the knowledge decision, the evidence needed, and the boundary that must stay human-owned."
+      "text": "I will build a private local collection index from only the authorized sources, preserving exact versions, access and freshness state, human decision ownership, duplicates, disputes, retention, and blockers."
     },
     {
       "role": "user",
@@ -17,41 +17,41 @@
     },
     {
       "role": "agent",
-      "text": "I produced outputs/knowledge-curator-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+      "text": "I wrote outputs/knowledge-collection-index.json and rendered outputs/knowledge-curator-handoff.md. The handoff remains blocked by the unresolved write-path dispute and unavailable restricted security evidence."
     }
   ],
   "report": {
     "title": "Knowledge curator session handoff",
-    "summary": "A navigable map with authoritative sources, dated decisions, concise summaries, disputed or stale items, access limits, open gaps, and a named freshness owner.",
+    "summary": "A blocked private collection index with exact source bindings, normalized launch topics, source-linked claims, dated human-owned decisions, an authorized canonical pointer that preserves both runbook identities, an unresolved architecture dispute, stale validation history, a restricted security gap, retention review, and complete owner-routed handoff coverage.",
     "output": "outputs/knowledge-curator-handoff.md",
     "items": [
       {
-        "title": "Knowledge map",
-        "summary": "The collection supports the named retrieval jobs without requiring exhaustive source rereading",
+        "title": "Knowledge collection index",
+        "summary": "The bounded collection records retrieval jobs, a hybrid navigation model, exact source bindings, and a named maintenance team.",
         "tags": [
           "fact-based",
           "reviewable"
         ]
       },
       {
-        "title": "Curated summary",
-        "summary": "Every durable claim retains source, date, owner, sensitivity, and authority status",
+        "title": "Claims and human-owned decisions",
+        "summary": "Every durable claim and recorded decision retains exact evidence, dates, owner, authority, classification, audience, retention, and honest status.",
         "tags": [
           "evidence",
           "owner-visible"
         ]
       },
       {
-        "title": "Source index",
-        "summary": "Do not broaden access, duplicate restricted source content, or erase ownership and retention constraints during curation",
+        "title": "Duplicates and disputes",
+        "summary": "The exact runbook duplicate keeps both source identities and a human-authorized canonical pointer; the material write-path conflict remains unresolved.",
         "tags": [
           "approval-gated",
           "safe fallback"
         ]
       },
       {
-        "title": "Freshness and gap report",
-        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "title": "Blocked private handoff",
+        "summary": "The unavailable security appendix, stale validation history, expiring meeting notes, exact blockers, review questions, and next human owners remain visible without external action.",
         "tags": [
           "handoff",
           "durable"

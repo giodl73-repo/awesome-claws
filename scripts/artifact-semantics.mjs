@@ -17436,6 +17436,1684 @@ function executiveBriefingSnapshotFindings(value) {
   return findings;
 }
 
+function knowledgeCollectionIndexFindings(value) {
+  const retrievalJobIds = value.collection.retrievalJobs.map((item) => item.id);
+  const collections = [
+    ["sources", value.sources],
+    ["evidence", value.evidence],
+    ["topics", value.topics],
+    ["navigationNodes", value.navigationNodes],
+    ["claims", value.claims],
+    ["decisions", value.decisions],
+    ["duplicateGroups", value.duplicateGroups],
+    ["disputes", value.disputes],
+    ["gaps", value.gaps],
+    ["freshnessFindings", value.freshnessFindings],
+    ["retentionFindings", value.retentionFindings],
+    ["reviewQuestions", value.reviewQuestions],
+  ];
+  const idsByCollection = new Map(
+    collections.map(([name, items]) => [name, new Set(items.map((item) => item.id))]),
+  );
+  const allObjects = collections.flatMap(([, items]) => items);
+  const allIds = allObjects.map((item) => item.id);
+  const allContractIds = [...retrievalJobIds, ...allIds];
+  const allIdSet = new Set(allIds);
+  const objectById = new Map(allObjects.map((item) => [item.id, item]));
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const evidenceById = new Map(value.evidence.map((item) => [item.id, item]));
+  const navigationById = new Map(
+    value.navigationNodes.map((item) => [item.id, item]),
+  );
+  const claimById = new Map(value.claims.map((item) => [item.id, item]));
+  const decisionById = new Map(value.decisions.map((item) => [item.id, item]));
+  const disputeById = new Map(value.disputes.map((item) => [item.id, item]));
+  const classificationRank = {
+    public: 0,
+    internal: 1,
+    confidential: 2,
+    restricted: 3,
+  };
+  const authorityRank = {
+    superseded: -1,
+    "non-authoritative": 0,
+    supporting: 1,
+    delegated: 2,
+    authoritative: 3,
+  };
+  const authorityByRank = new Map(
+    Object.entries(authorityRank).map(([authority, rank]) => [rank, authority]),
+  );
+  const requiredActions = [
+    "broaden-access",
+    "copy-unpermitted-content",
+    "delete-source",
+    "publish",
+    "external-communication",
+    "mutate-source",
+    "change-access-control",
+    "retain-or-destroy-autonomously",
+    "claim-completion",
+    "claim-access",
+    "approve-decisions",
+    "integrate-external-system",
+  ];
+  const findings = [
+    ...uniqueFindings(
+      retrievalJobIds,
+      "collection.retrievalJobs",
+      "Retrieval job id",
+    ),
+    ...collections.flatMap(([name, items]) =>
+      uniqueFindings(
+        items.map((item) => item.id),
+        name,
+        `${name} id`,
+      ),
+    ),
+  ];
+  for (const id of duplicates(allContractIds)) {
+    findings.push(
+      finding(
+        "duplicate_object_id",
+        "collection",
+        `Collection object id ${JSON.stringify(id)} is reused across object types.`,
+      ),
+    );
+  }
+
+  const checkRefs = (refs, allowed, path, label) => {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, allowed, path, label),
+    );
+  };
+  for (const [index, source] of value.sources.entries()) {
+    checkRefs(
+      source.authorityTopicRefs,
+      idsByCollection.get("topics"),
+      `sources.${index}.authorityTopicRefs`,
+      "Authority topic reference",
+    );
+  }
+  for (const [index, item] of value.evidence.entries()) {
+    checkRefs(
+      [item.sourceRef],
+      idsByCollection.get("sources"),
+      `evidence.${index}.sourceRef`,
+      "Evidence source reference",
+    );
+    checkRefs(
+      item.topicRefs,
+      idsByCollection.get("topics"),
+      `evidence.${index}.topicRefs`,
+      "Evidence topic reference",
+    );
+  }
+  for (const [index, item] of value.topics.entries()) {
+    checkRefs(
+      item.parentTopicRefs,
+      idsByCollection.get("topics"),
+      `topics.${index}.parentTopicRefs`,
+      "Parent topic reference",
+    );
+    checkRefs(
+      item.sourceRefs,
+      idsByCollection.get("sources"),
+      `topics.${index}.sourceRefs`,
+      "Topic source reference",
+    );
+  }
+  for (const [index, item] of value.navigationNodes.entries()) {
+    checkRefs(
+      item.parentNodeRef === null ? [] : [item.parentNodeRef],
+      idsByCollection.get("navigationNodes"),
+      `navigationNodes.${index}.parentNodeRef`,
+      "Parent navigation reference",
+    );
+    checkRefs(
+      item.childNodeRefs,
+      idsByCollection.get("navigationNodes"),
+      `navigationNodes.${index}.childNodeRefs`,
+      "Child navigation reference",
+    );
+    checkRefs(
+      item.topicRefs,
+      idsByCollection.get("topics"),
+      `navigationNodes.${index}.topicRefs`,
+      "Navigation topic reference",
+    );
+    checkRefs(
+      item.objectRefs,
+      allIdSet,
+      `navigationNodes.${index}.objectRefs`,
+      "Navigation object reference",
+    );
+  }
+  for (const [index, item] of value.claims.entries()) {
+    checkRefs(
+      item.topicRefs,
+      idsByCollection.get("topics"),
+      `claims.${index}.topicRefs`,
+      "Claim topic reference",
+    );
+    checkRefs(
+      item.evidenceRefs,
+      idsByCollection.get("evidence"),
+      `claims.${index}.evidenceRefs`,
+      "Claim evidence reference",
+    );
+    checkRefs(
+      item.contextEvidenceRefs,
+      idsByCollection.get("evidence"),
+      `claims.${index}.contextEvidenceRefs`,
+      "Claim context evidence reference",
+    );
+    checkRefs(
+      item.disputeRefs,
+      idsByCollection.get("disputes"),
+      `claims.${index}.disputeRefs`,
+      "Claim dispute reference",
+    );
+  }
+  for (const [index, item] of value.decisions.entries()) {
+    checkRefs(
+      item.topicRefs,
+      idsByCollection.get("topics"),
+      `decisions.${index}.topicRefs`,
+      "Decision topic reference",
+    );
+    checkRefs(
+      item.claimRefs,
+      idsByCollection.get("claims"),
+      `decisions.${index}.claimRefs`,
+      "Decision claim reference",
+    );
+    checkRefs(
+      item.evidenceRefs,
+      idsByCollection.get("evidence"),
+      `decisions.${index}.evidenceRefs`,
+      "Decision evidence reference",
+    );
+    checkRefs(
+      item.contextEvidenceRefs,
+      idsByCollection.get("evidence"),
+      `decisions.${index}.contextEvidenceRefs`,
+      "Decision context evidence reference",
+    );
+    checkRefs(
+      item.disputeRefs,
+      idsByCollection.get("disputes"),
+      `decisions.${index}.disputeRefs`,
+      "Decision dispute reference",
+    );
+  }
+  for (const [index, item] of value.duplicateGroups.entries()) {
+    checkRefs(
+      item.sourceRefs,
+      idsByCollection.get("sources"),
+      `duplicateGroups.${index}.sourceRefs`,
+      "Duplicate source reference",
+    );
+    checkRefs(
+      item.canonicalSourceRef === null ? [] : [item.canonicalSourceRef],
+      idsByCollection.get("sources"),
+      `duplicateGroups.${index}.canonicalSourceRef`,
+      "Canonical source reference",
+    );
+    checkRefs(
+      item.confirmation.evidenceRefs,
+      idsByCollection.get("evidence"),
+      `duplicateGroups.${index}.confirmation.evidenceRefs`,
+      "Duplicate confirmation evidence reference",
+    );
+  }
+  for (const [index, item] of value.disputes.entries()) {
+    checkRefs(
+      item.topicRefs,
+      idsByCollection.get("topics"),
+      `disputes.${index}.topicRefs`,
+      "Dispute topic reference",
+    );
+    checkRefs(
+      item.claimRefs,
+      idsByCollection.get("claims"),
+      `disputes.${index}.claimRefs`,
+      "Dispute claim reference",
+    );
+    if (item.resolution !== null) {
+      checkRefs(
+        [item.resolution.decisionRef],
+        idsByCollection.get("decisions"),
+        `disputes.${index}.resolution.decisionRef`,
+        "Resolution decision reference",
+      );
+      checkRefs(
+        item.resolution.selectedClaimRef === null
+          ? []
+          : [item.resolution.selectedClaimRef],
+        idsByCollection.get("claims"),
+        `disputes.${index}.resolution.selectedClaimRef`,
+        "Resolution claim reference",
+      );
+    }
+  }
+  for (const [index, item] of value.gaps.entries()) {
+    checkRefs(
+      item.sourceRefs,
+      idsByCollection.get("sources"),
+      `gaps.${index}.sourceRefs`,
+      "Gap source reference",
+    );
+    checkRefs(
+      item.objectRefs,
+      allIdSet,
+      `gaps.${index}.objectRefs`,
+      "Gap object reference",
+    );
+    if (item.resolution !== null) {
+      checkRefs(
+        [item.resolution.decisionRef],
+        idsByCollection.get("decisions"),
+        `gaps.${index}.resolution.decisionRef`,
+        "Gap resolution decision reference",
+      );
+      checkRefs(
+        item.resolution.evidenceRefs,
+        idsByCollection.get("evidence"),
+        `gaps.${index}.resolution.evidenceRefs`,
+        "Gap resolution evidence reference",
+      );
+    }
+  }
+  for (const [index, item] of value.freshnessFindings.entries()) {
+    checkRefs(
+      [item.sourceRef],
+      idsByCollection.get("sources"),
+      `freshnessFindings.${index}.sourceRef`,
+      "Freshness source reference",
+    );
+    checkRefs(
+      item.affectedObjectRefs,
+      allIdSet,
+      `freshnessFindings.${index}.affectedObjectRefs`,
+      "Freshness object reference",
+    );
+  }
+  for (const [index, item] of value.retentionFindings.entries()) {
+    checkRefs(
+      item.targetRefs,
+      allIdSet,
+      `retentionFindings.${index}.targetRefs`,
+      "Retention target reference",
+    );
+  }
+  for (const [index, item] of value.reviewQuestions.entries()) {
+    checkRefs(
+      item.targetRefs,
+      allIdSet,
+      `reviewQuestions.${index}.targetRefs`,
+      "Question target reference",
+    );
+    checkRefs(
+      item.sourceRefs,
+      idsByCollection.get("sources"),
+      `reviewQuestions.${index}.sourceRefs`,
+      "Question source reference",
+    );
+  }
+
+  const asOf = Date.parse(value.collection.asOf);
+  const horizonStart = Date.parse(value.collection.reviewHorizon.startsAt);
+  const horizonEnd = Date.parse(value.collection.reviewHorizon.endsAt);
+  const samePrincipal = (left, right) =>
+    left !== null &&
+    left !== undefined &&
+    right !== null &&
+    right !== undefined &&
+    canonicalJson(left) === canonicalJson(right);
+  const authorizationValidAt = (source, time) => {
+    const expiresAt =
+      source.authorization.expiresAt === null
+        ? null
+        : Date.parse(source.authorization.expiresAt);
+    return (
+      source.authorization.status === "current" &&
+      Date.parse(source.authorization.authorizedAt) <= time &&
+      (expiresAt === null || time < expiresAt)
+    );
+  };
+  const permissionValidAt = (source, time) => {
+    const permission = source.representationPolicy.permission;
+    if (permission === null) return false;
+    const expiresAt =
+      permission.expiresAt === null ? null : Date.parse(permission.expiresAt);
+    return (
+      permission.status === "current" &&
+      Date.parse(permission.grantedAt) <= time &&
+      (expiresAt === null || time < expiresAt)
+    );
+  };
+  if (horizonStart < asOf || horizonEnd <= horizonStart) {
+    findings.push(
+      finding(
+        "invalid_collection_chronology",
+        "collection.reviewHorizon",
+        "The collection review horizon must start no earlier than as-of and have a positive duration.",
+      ),
+    );
+  }
+
+  const roots = value.navigationNodes.filter(
+    (item) => item.kind === "root" && item.parentNodeRef === null,
+  );
+  let navigationValid = roots.length === 1;
+  for (const node of value.navigationNodes) {
+    const parent =
+      node.parentNodeRef === null
+        ? undefined
+        : navigationById.get(node.parentNodeRef);
+    if (
+      (node.kind === "root") !== (node.parentNodeRef === null) ||
+      (parent !== undefined && !parent.childNodeRefs.includes(node.id)) ||
+      node.childNodeRefs.some(
+        (childRef) => navigationById.get(childRef)?.parentNodeRef !== node.id,
+      )
+    ) {
+      navigationValid = false;
+    }
+  }
+  if (roots.length === 1) {
+    const visited = new Set();
+    const active = new Set();
+    let hasCycle = false;
+    const visit = (nodeId) => {
+      if (active.has(nodeId)) {
+        hasCycle = true;
+        return;
+      }
+      if (visited.has(nodeId)) return;
+      visited.add(nodeId);
+      active.add(nodeId);
+      for (const childRef of navigationById.get(nodeId)?.childNodeRefs ?? []) {
+        visit(childRef);
+      }
+      active.delete(nodeId);
+    };
+    visit(roots[0].id);
+    if (hasCycle || visited.size !== value.navigationNodes.length) {
+      navigationValid = false;
+    }
+  }
+  if (!navigationValid) {
+    findings.push(
+      finding(
+        "invalid_navigation_graph",
+        "navigationNodes",
+        "Navigation requires exactly one root, reciprocal parent and child links, no cycles, and reachability from that root.",
+      ),
+    );
+  }
+
+  const sourcesByImmutableRef = new Map();
+  for (const source of value.sources) {
+    const matches = sourcesByImmutableRef.get(source.immutableRef) ?? [];
+    matches.push(source);
+    sourcesByImmutableRef.set(source.immutableRef, matches);
+  }
+  for (const [immutableRef, sources] of sourcesByImmutableRef) {
+    if (
+      sources.length > 1 &&
+      new Set(
+        sources.map(
+          (source) => `${source.binding.kind}:${source.binding.value}`,
+        ),
+      ).size !== 1
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_binding",
+          "sources",
+          `Immutable reference ${JSON.stringify(immutableRef)} maps to conflicting exact bindings.`,
+        ),
+      );
+    }
+  }
+
+  for (const [index, source] of value.sources.entries()) {
+    const observedAt =
+      source.observedAt === null ? null : Date.parse(source.observedAt);
+    const attemptedAt = Date.parse(source.retrievalAttemptedAt);
+    const retrievedAt =
+      source.retrievedAt === null ? null : Date.parse(source.retrievedAt);
+    const cutoff = Date.parse(source.freshnessCutoff);
+    const authorizedAt = Date.parse(source.authorization.authorizedAt);
+    const authorizationExpiresAt =
+      source.authorization.expiresAt === null
+        ? null
+        : Date.parse(source.authorization.expiresAt);
+    if (
+      attemptedAt > asOf ||
+      authorizedAt > attemptedAt ||
+      cutoff > asOf ||
+      (observedAt !== null && authorizedAt > observedAt) ||
+      (observedAt !== null && observedAt > attemptedAt) ||
+      (retrievedAt !== null &&
+        (retrievedAt > attemptedAt ||
+          authorizedAt > retrievedAt ||
+          observedAt === null ||
+          observedAt > retrievedAt)) ||
+      (authorizationExpiresAt !== null &&
+        authorizationExpiresAt <= authorizedAt)
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_chronology",
+          `sources.${index}`,
+          "Source authorization, observation, retrieval attempt, retrieval, and collection as-of timestamps must be ordered truthfully.",
+        ),
+      );
+    }
+    if (
+      !authorizationValidAt(source, asOf) ||
+      (observedAt !== null && !authorizationValidAt(source, observedAt)) ||
+      !authorizationValidAt(source, attemptedAt) ||
+      (retrievedAt !== null && !authorizationValidAt(source, retrievedAt))
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_authorization",
+          `sources.${index}.authorization`,
+          "Every indexed source requires explicit current authorization from a named human or team before the collection as-of time.",
+        ),
+      );
+    }
+    if (
+      source.binding.value.trim() === "" ||
+      (source.binding.kind === "integrity" &&
+        !/^sha256:[a-f0-9]{64}$/u.test(source.binding.value)) ||
+      !isSafePackagePath(source.immutableRef)
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_binding",
+          `sources.${index}`,
+          "Each source requires a portable immutable reference and a nonempty exact version or sha256 integrity binding.",
+        ),
+      );
+    }
+    const hasRetrievedContent = retrievedAt !== null;
+    const currentByTime =
+      observedAt !== null && observedAt >= cutoff && hasRetrievedContent;
+    const staleByTime =
+      observedAt !== null && observedAt < cutoff && hasRetrievedContent;
+    const coherentState =
+      (source.freshnessState === "current" &&
+        currentByTime &&
+        ["available", "restricted"].includes(source.accessState)) ||
+      (source.freshnessState === "stale" &&
+        staleByTime &&
+        ["available", "restricted"].includes(source.accessState)) ||
+      (source.freshnessState === "unknown" &&
+        source.accessState === "restricted" &&
+        !hasRetrievedContent) ||
+      (source.freshnessState === "unavailable" &&
+        source.accessState === "unavailable" &&
+        !hasRetrievedContent);
+    if (!coherentState) {
+      findings.push(
+        finding(
+          "overstated_source_state",
+          `sources.${index}.freshnessState`,
+          "Source freshness and access must agree with the exact observation, cutoff, and retrieval state; missing or restricted content cannot be labeled current.",
+        ),
+      );
+    }
+    const representation = source.representationPolicy;
+    const permission = representation.permission;
+    const representationCoherent =
+      (representation.mode === "metadata-only" &&
+        representation.maxExcerptCharacters === null &&
+        permission === null) ||
+      (representation.mode === "permitted-excerpt" &&
+        Number.isInteger(representation.maxExcerptCharacters) &&
+        permission !== null &&
+        permissionValidAt(source, asOf) &&
+        (permission.expiresAt === null ||
+          Date.parse(permission.expiresAt) >
+            Date.parse(permission.grantedAt)) &&
+        permission.audienceScope.every((audience) =>
+          source.audienceScope.includes(audience),
+        ));
+    if (!representationCoherent) {
+      findings.push(
+        finding(
+          "unsafe_source_representation",
+          `sources.${index}.representationPolicy`,
+          "Source representation must be metadata-only or carry a prior human-approved excerpt limit and audience within the source scope.",
+        ),
+      );
+    }
+    const retentionCoherent =
+      (source.retention.state === "known" &&
+        Number.isFinite(Date.parse(source.retention.retainUntil))) ||
+      (source.retention.state === "unknown" &&
+        source.retention.retainUntil === null);
+    if (!retentionCoherent) {
+      findings.push(
+        finding(
+          "incomplete_findings",
+          `sources.${index}.retention`,
+          "Known retention requires an exact date; unknown retention must remain date-free and receive a human-review finding.",
+        ),
+      );
+    }
+  }
+
+  const audienceWithin = (candidate, allowed) =>
+    candidate.length > 0 && candidate.every((audience) => allowed.includes(audience));
+  const usableContentEvidence = (evidence) => {
+    const source = sourceById.get(evidence?.sourceRef);
+    const capturedAt = Date.parse(evidence?.capturedAt);
+    return (
+      source?.freshnessState === "current" &&
+      source.authorityStatus !== "superseded" &&
+      source.retrievedAt !== null &&
+      Date.parse(source.retrievedAt) <= capturedAt &&
+      capturedAt <= asOf &&
+      authorizationValidAt(source, capturedAt) &&
+      authorizationValidAt(source, asOf) &&
+      evidence?.representedAs === "permitted-excerpt" &&
+      typeof evidence.excerpt === "string" &&
+      evidence.excerpt.length > 0 &&
+      permissionValidAt(source, capturedAt) &&
+      permissionValidAt(source, asOf)
+    );
+  };
+  for (const [index, item] of value.evidence.entries()) {
+    const source = sourceById.get(item.sourceRef);
+    const capturedAt = Date.parse(item.capturedAt);
+    const earliestCaptureAt =
+      source?.retrievedAt === null || source?.retrievedAt === undefined
+        ? Date.parse(source?.retrievalAttemptedAt)
+        : Date.parse(source.retrievedAt);
+    if (!source || item.sourceBinding !== source.binding.value) {
+      findings.push(
+        finding(
+          "invalid_evidence_binding",
+          `evidence.${index}.sourceBinding`,
+          "Evidence must repeat the exact version or integrity binding of its source.",
+        ),
+      );
+    }
+    if (
+      !source ||
+      item.topicRefs.some(
+        (topicRef) => !source.authorityTopicRefs.includes(topicRef),
+      ) ||
+      capturedAt < earliestCaptureAt ||
+      capturedAt > asOf ||
+      !authorizationValidAt(source, capturedAt)
+    ) {
+      findings.push(
+        finding(
+          "irrelevant_evidence",
+          `evidence.${index}`,
+          "Evidence must fall within the source's declared topic authority and be captured under valid authorization after retrieval, or after the failed attempt for metadata-only evidence, but no later than collection as-of.",
+        ),
+      );
+    }
+    if (
+      item.ownerAttribution !== null &&
+      (!samePrincipal(
+        item.ownerAttribution.owner,
+        source?.authorization.authorizedBy,
+      ) ||
+        Date.parse(item.ownerAttribution.effectiveAt) > capturedAt ||
+        Date.parse(item.ownerAttribution.effectiveAt) > asOf)
+    ) {
+      findings.push(
+        finding(
+          "invalid_owner_attribution",
+          `evidence.${index}.ownerAttribution`,
+          "Structured owner attribution must name the source-authorized human or team and be effective no later than capture and collection as-of.",
+        ),
+      );
+    }
+    const representation = source?.representationPolicy;
+    const excerptAllowed =
+      item.representedAs === "permitted-excerpt" &&
+      typeof item.excerpt === "string" &&
+      representation?.mode === "permitted-excerpt" &&
+      representation.permission !== null &&
+      permissionValidAt(source, capturedAt) &&
+      item.excerpt.length <= representation.maxExcerptCharacters &&
+      audienceWithin(item.audienceScope, representation.permission.audienceScope);
+    const metadataAllowed =
+      item.representedAs === "metadata-only" && item.excerpt === null;
+    if (!metadataAllowed && !excerptAllowed) {
+      findings.push(
+        finding(
+          "restricted_content_copy",
+          `evidence.${index}`,
+          "Evidence may contain only metadata or an excerpt within the source's explicit permission, length, and audience.",
+        ),
+      );
+    }
+  }
+
+  const authorityForEvidenceRefs = (evidenceRefs, allowSuperseded) => {
+    const ranks = evidenceRefs.flatMap((ref) => {
+      const evidence = evidenceById.get(ref);
+      const source = sourceById.get(evidence?.sourceRef);
+      if (!source) return [];
+      if (source.authorityStatus === "superseded" && allowSuperseded) {
+        return [authorityRank.superseded];
+      }
+      return usableContentEvidence(evidence)
+        ? [authorityRank[source.authorityStatus]]
+        : [];
+    });
+    return ranks.length === 0
+      ? "non-authoritative"
+      : authorityByRank.get(Math.max(...ranks));
+  };
+  for (const [index, claim] of value.claims.entries()) {
+    const evidence = claim.evidenceRefs
+      .map((ref) => evidenceById.get(ref))
+      .filter(Boolean);
+    const topicRelevant = evidence.every((item) =>
+      item.topicRefs.some((topicRef) => claim.topicRefs.includes(topicRef)),
+    );
+    const allCurrentContent =
+      evidence.length === claim.evidenceRefs.length &&
+      evidence.every(usableContentEvidence);
+    const effectiveAt = Date.parse(claim.effectiveAt);
+    const expiresAt =
+      claim.expiresAt === null ? null : Date.parse(claim.expiresAt);
+    if (!topicRelevant) {
+      findings.push(
+        finding(
+          "irrelevant_evidence",
+          `claims.${index}.evidenceRefs`,
+          "Every claim evidence item must share at least one of the claim's topics.",
+        ),
+      );
+    }
+    if (
+      ["current", "disputed"].includes(claim.status) &&
+      (!allCurrentContent ||
+        effectiveAt > asOf ||
+        (expiresAt !== null && expiresAt <= asOf))
+    ) {
+      findings.push(
+        finding(
+          "overstated_claim_status",
+          `claims.${index}.status`,
+          "Every support reference on a current or disputed claim must be relevant, current, content-bearing evidence, and the claim must already be effective and unexpired.",
+        ),
+      );
+    }
+    let expectedAuthority = authorityForEvidenceRefs(
+      claim.evidenceRefs,
+      claim.status === "stale" || claim.status === "superseded",
+    );
+    if (
+      ["inference", "recommendation"].includes(claim.epistemicType) &&
+      authorityRank[expectedAuthority] > authorityRank.supporting
+    ) {
+      expectedAuthority = "supporting";
+    }
+    if (claim.authorityStatus !== expectedAuthority) {
+      findings.push(
+        finding(
+          "invalid_claim_authority",
+          `claims.${index}.authorityStatus`,
+          "Claim authority must reflect the strongest usable source authority; inferences and recommendations cannot become authoritative.",
+        ),
+      );
+    }
+    if (
+      Date.parse(claim.recordedAt) > asOf ||
+      effectiveAt > horizonEnd ||
+      (expiresAt !== null && expiresAt <= effectiveAt)
+    ) {
+      findings.push(
+        finding(
+          "invalid_claim_chronology",
+          `claims.${index}`,
+          "Claim recording must not postdate collection as-of, and every effective and expiry range must be ordered within the review horizon.",
+        ),
+      );
+    }
+  }
+  for (const [index, decision] of value.decisions.entries()) {
+    const evidence = decision.evidenceRefs
+      .map((ref) => evidenceById.get(ref))
+      .filter(Boolean);
+    const allCurrentContent =
+      evidence.length === decision.evidenceRefs.length &&
+      evidence.every(usableContentEvidence);
+    const ownerEvidence = evidence.some((item) => {
+      const source = sourceById.get(item.sourceRef);
+      return (
+        source?.authorityStatus === "authoritative" &&
+        usableContentEvidence(item) &&
+        item.ownerAttribution?.role === "decision-owner" &&
+        samePrincipal(item.ownerAttribution.owner, decision.decisionOwner) &&
+        Date.parse(item.ownerAttribution.effectiveAt) <=
+          Date.parse(decision.decidedAt)
+      );
+    });
+    const topicRelevant = evidence.every((item) =>
+      item.topicRefs.some((topicRef) => decision.topicRefs.includes(topicRef)),
+    );
+    const ownedClaimsMatch = decision.claimRefs.every((ref) => {
+      const claim = claimById.get(ref);
+      return (
+        claim &&
+        claim.topicRefs.some((topicRef) => decision.topicRefs.includes(topicRef))
+      );
+    });
+    if (
+      !allCurrentContent ||
+      !ownerEvidence ||
+      !topicRelevant ||
+      !ownedClaimsMatch ||
+      decision.authorityStatus !== "authoritative"
+    ) {
+      findings.push(
+        finding(
+          "invalid_decision_provenance",
+          `decisions.${index}`,
+          "A decision record requires aligned claims and exclusively current content support, including authoritative evidence with structured attribution to the exact human or team decision owner.",
+        ),
+      );
+    }
+    const decidedAt = Date.parse(decision.decidedAt);
+    const effectiveAt = Date.parse(decision.effectiveAt);
+    const expiresAt =
+      decision.expiresAt === null ? null : Date.parse(decision.expiresAt);
+    if (
+      decidedAt > asOf ||
+      effectiveAt < decidedAt ||
+      effectiveAt > horizonEnd ||
+      (expiresAt !== null && expiresAt <= effectiveAt) ||
+      (["current", "disputed"].includes(decision.status) &&
+        (effectiveAt > asOf || (expiresAt !== null && expiresAt <= asOf)))
+    ) {
+      findings.push(
+        finding(
+          "invalid_decision_chronology",
+          `decisions.${index}`,
+          "Decision dates must be ordered, effective no later than the review-horizon end, and current or disputed decisions must already be effective and unexpired as of the collection.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, group] of value.duplicateGroups.entries()) {
+    const sources = group.sourceRefs
+      .map((ref) => sourceById.get(ref))
+      .filter(Boolean);
+    const bindings = new Set(
+      sources.map((source) => `${source.binding.kind}:${source.binding.value}`),
+    );
+    const exactIntegrityValid =
+      sources.length === group.sourceRefs.length &&
+      sources.length >= 2 &&
+      sources.every((source) => source.binding.kind === "integrity") &&
+      bindings.size === 1;
+    const confirmationEvidence = group.confirmation.evidenceRefs
+      .map((ref) => evidenceById.get(ref))
+      .filter(Boolean);
+    const sharedAuthorityTopics = sources.length
+      ? sources
+          .map((source) => new Set(source.authorityTopicRefs))
+          .reduce(
+            (shared, topics) =>
+              new Set([...shared].filter((topic) => topics.has(topic))),
+          )
+      : new Set();
+    const confirmationProofValid =
+      confirmationEvidence.length === group.confirmation.evidenceRefs.length &&
+      confirmationEvidence.length > 0 &&
+      confirmationEvidence.every((evidence) => {
+        const source = sourceById.get(evidence.sourceRef);
+        return (
+          source?.kind === "review-record" &&
+          source.authorityStatus === "authoritative" &&
+          usableContentEvidence(evidence) &&
+          evidence.ownerAttribution?.role ===
+            "duplicate-confirmation-owner" &&
+          samePrincipal(
+            evidence.ownerAttribution.owner,
+            group.confirmation.owner,
+          ) &&
+          samePrincipal(
+            source.authorization.authorizedBy,
+            group.confirmation.owner,
+          ) &&
+          authorizationValidAt(
+            source,
+            Date.parse(group.confirmation.confirmedAt),
+          ) &&
+          Date.parse(group.confirmation.confirmedAt) >=
+            Date.parse(source.observedAt) &&
+          Date.parse(group.confirmation.confirmedAt) >=
+            Date.parse(evidence.capturedAt) &&
+          Date.parse(group.confirmation.confirmedAt) >=
+            Date.parse(evidence.ownerAttribution.effectiveAt) &&
+          evidence.topicRefs.some((topicRef) =>
+            sharedAuthorityTopics.has(topicRef),
+          )
+        );
+      });
+    const canonicalValid =
+      group.relationship === "exact" &&
+      group.canonicalSourceRef !== null &&
+      group.sourceRefs.includes(group.canonicalSourceRef) &&
+      exactIntegrityValid &&
+      group.confirmation.status === "human-authorized" &&
+      group.confirmation.owner !== null &&
+      group.confirmation.confirmedAt !== null &&
+      Date.parse(group.confirmation.confirmedAt) <= asOf &&
+      confirmationProofValid;
+    const noCanonicalValid =
+      group.canonicalSourceRef === null &&
+      group.confirmation.status === "unconfirmed" &&
+      group.confirmation.owner === null &&
+      group.confirmation.confirmedAt === null &&
+      group.confirmation.evidenceRefs.length === 0 &&
+      (group.relationship !== "exact" || exactIntegrityValid);
+    if (
+      (group.relationship === "exact" && !exactIntegrityValid) ||
+      (!canonicalValid && !noCanonicalValid)
+    ) {
+      findings.push(
+        finding(
+          "invalid_duplicate_group",
+          `duplicateGroups.${index}`,
+          "Exact groups require equal sha256 integrity bindings. Canonical pointers additionally require source-authorized human or team confirmation bound to current authoritative review evidence at or before collection as-of.",
+        ),
+      );
+    }
+  }
+  const sameMembers = (left, right) =>
+    left.length === right.length &&
+    left.every((member) => right.includes(member));
+  const exactCollisionSets = new Map();
+  for (const source of value.sources.filter(
+    (item) => item.binding.kind === "integrity",
+  )) {
+    const refs = exactCollisionSets.get(source.binding.value) ?? [];
+    refs.push(source.id);
+    exactCollisionSets.set(source.binding.value, refs);
+  }
+  for (const refs of exactCollisionSets.values()) {
+    if (refs.length < 2) continue;
+    const matching = value.duplicateGroups.filter(
+      (group) =>
+        group.relationship === "exact" && sameMembers(group.sourceRefs, refs),
+    );
+    if (matching.length !== 1) {
+      findings.push(
+        finding(
+          "invalid_duplicate_group",
+          "duplicateGroups",
+          "Every set of source records sharing one sha256 integrity value must appear together in exactly one exact duplicate group.",
+        ),
+      );
+    }
+  }
+  for (const sources of sourcesByImmutableRef.values()) {
+    if (sources.length < 2) continue;
+    const refs = sources.map((source) => source.id);
+    const reusable =
+      sources.every((source) => source.binding.kind === "integrity") &&
+      value.duplicateGroups.some(
+        (group) =>
+          group.relationship === "exact" &&
+          sameMembers(group.sourceRefs, refs),
+      );
+    if (!reusable) {
+      findings.push(
+        finding(
+          "invalid_source_binding",
+          "sources",
+          "An immutable reference may be reused only by records with one identical sha256 binding represented together in an exact duplicate group.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, dispute] of value.disputes.entries()) {
+    const claims = dispute.claimRefs
+      .map((ref) => claimById.get(ref))
+      .filter(Boolean);
+    const brokenLink =
+      claims.some(
+        (claim) =>
+          !claim.disputeRefs.includes(dispute.id) ||
+          !claim.topicRefs.some((topicRef) => dispute.topicRefs.includes(topicRef)),
+      ) ||
+      value.claims.some(
+        (claim) =>
+          claim.disputeRefs.includes(dispute.id) &&
+          !dispute.claimRefs.includes(claim.id),
+      );
+    if (brokenLink) {
+      findings.push(
+        finding(
+          "broken_dispute_link",
+          `disputes.${index}`,
+          "Every dispute side must retain a bidirectional claim link and a shared topic.",
+        ),
+      );
+    }
+    const resolution = dispute.resolution;
+    const resolutionDecision =
+      resolution === null ? undefined : decisionById.get(resolution.decisionRef);
+    const resolutionEvidence =
+      resolutionDecision === undefined
+        ? []
+        : resolutionDecision.evidenceRefs
+            .map((ref) => evidenceById.get(ref))
+            .filter(Boolean);
+    const honestUnresolved =
+      dispute.status === "unresolved" &&
+      resolution === null &&
+      claims.every(
+        (claim) =>
+          claim.status === "disputed" && claim.disputeRefs.includes(dispute.id),
+      );
+    const honestResolved =
+      dispute.status === "human-resolved" &&
+      resolution !== null &&
+      resolutionDecision?.status === "current" &&
+      resolutionDecision.disputeRefs.includes(dispute.id) &&
+      samePrincipal(resolutionDecision.decisionOwner, resolution.resolvedBy) &&
+      dispute.claimRefs.includes(resolution.selectedClaimRef) &&
+      dispute.claimRefs.every((claimRef) =>
+        resolutionDecision.claimRefs.includes(claimRef),
+      ) &&
+      resolutionDecision.claimRefs.includes(resolution.selectedClaimRef) &&
+      Date.parse(resolutionDecision.effectiveAt) <=
+        Date.parse(resolution.resolvedAt) &&
+      resolutionEvidence.every(
+        (evidence) =>
+          Date.parse(evidence.capturedAt) <=
+            Date.parse(resolution.resolvedAt) &&
+          (evidence.ownerAttribution === null ||
+            Date.parse(evidence.ownerAttribution.effectiveAt) <=
+              Date.parse(resolution.resolvedAt)),
+      ) &&
+      Date.parse(resolution.resolvedAt) <= asOf &&
+      claims.every((claim) => claim.disputeRefs.includes(dispute.id));
+    if (!honestUnresolved && !honestResolved) {
+      findings.push(
+        finding(
+          "dishonest_dispute_resolution",
+          `disputes.${index}`,
+          "A dispute remains unresolved with every side marked disputed, or is resolved only by a linked dated human-owned current decision that cites the selected claim and every dispute claim after its evidence and effective time.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, gap] of value.gaps.entries()) {
+    const resolution = gap.resolution;
+    const decision =
+      resolution === null ? undefined : decisionById.get(resolution.decisionRef);
+    const evidence =
+      resolution === null
+        ? []
+        : resolution.evidenceRefs
+            .map((ref) => evidenceById.get(ref))
+            .filter(Boolean);
+    const honestOpen = gap.status === "open" && resolution === null;
+    const honestResolved =
+      gap.status === "human-resolved" &&
+      resolution !== null &&
+      decision?.status === "current" &&
+      samePrincipal(decision.decisionOwner, resolution.resolvedBy) &&
+      evidence.length === resolution.evidenceRefs.length &&
+      evidence.length > 0 &&
+      resolution.evidenceRefs.every((ref) =>
+        decision.evidenceRefs.includes(ref),
+      ) &&
+      evidence.every((item) => {
+        const source = sourceById.get(item.sourceRef);
+        return (
+          source?.authorityStatus === "authoritative" &&
+          usableContentEvidence(item) &&
+          item.ownerAttribution?.role === "gap-resolution-owner" &&
+          samePrincipal(item.ownerAttribution.owner, resolution.resolvedBy) &&
+          Date.parse(item.capturedAt) <= Date.parse(resolution.resolvedAt) &&
+          Date.parse(item.ownerAttribution.effectiveAt) <=
+            Date.parse(resolution.resolvedAt)
+        );
+      }) &&
+      Date.parse(decision.effectiveAt) <= Date.parse(resolution.resolvedAt) &&
+      Date.parse(resolution.resolvedAt) <= asOf;
+    if (!honestOpen && !honestResolved) {
+      findings.push(
+        finding(
+          "invalid_gap_resolution",
+          `gaps.${index}`,
+          "A closed gap requires a current human-owned decision and current authoritative evidence structurally attributed to the same resolver before the recorded resolution time.",
+        ),
+      );
+    }
+  }
+
+  let findingsComplete = true;
+  for (const source of value.sources.filter(
+    (item) => item.freshnessState !== "current",
+  )) {
+    const matching = value.freshnessFindings.filter(
+      (item) =>
+        item.sourceRef === source.id &&
+        item.state === source.freshnessState &&
+        Date.parse(item.asOf) === asOf,
+    );
+    if (matching.length !== 1) findingsComplete = false;
+  }
+  for (const item of value.freshnessFindings) {
+    if (
+      sourceById.get(item.sourceRef)?.freshnessState !== item.state ||
+      Date.parse(item.asOf) !== asOf
+    ) {
+      findingsComplete = false;
+    }
+  }
+  for (const source of value.sources.filter(
+    (item) =>
+      ["restricted", "unavailable"].includes(item.accessState) &&
+      (item.representationPolicy.mode === "metadata-only" ||
+        item.freshnessState !== "current"),
+  )) {
+    if (
+      !value.gaps.some(
+        (gap) => gap.status === "open" && gap.sourceRefs.includes(source.id),
+      )
+    ) {
+      findingsComplete = false;
+    }
+  }
+  for (const gap of value.gaps) {
+    const sources = gap.sourceRefs
+      .map((ref) => sourceById.get(ref))
+      .filter(Boolean);
+    if (
+      (gap.kind === "restricted-source" &&
+        !sources.some((source) => source.accessState === "restricted")) ||
+      (gap.kind === "missing-source" &&
+        !sources.some((source) => source.accessState === "unavailable"))
+    ) {
+      findingsComplete = false;
+    }
+  }
+  for (const source of value.sources) {
+    const expectedState =
+      source.retention.state === "unknown"
+        ? "unknown"
+        : Date.parse(source.retention.retainUntil) <= asOf
+          ? "expired"
+          : Date.parse(source.retention.retainUntil) <= horizonEnd
+            ? "expiring"
+            : null;
+    const matching = value.retentionFindings.filter(
+      (item) =>
+        item.targetRefs.includes(source.id) && item.state === expectedState,
+    );
+    if (expectedState !== null && matching.length !== 1) {
+      findingsComplete = false;
+    }
+  }
+  const materialReviewTargets = [
+    ...value.disputes
+      .filter(
+        (item) =>
+          item.materiality === "material" && item.status === "unresolved",
+      )
+      .map((item) => item.id),
+    ...value.gaps
+      .filter(
+        (item) => item.materiality === "material" && item.status === "open",
+      )
+      .map((item) => item.id),
+    ...value.freshnessFindings
+      .filter((item) => item.materiality === "material")
+      .map((item) => item.id),
+    ...value.retentionFindings
+      .filter((item) => item.materiality === "material")
+      .map((item) => item.id),
+  ];
+  if (
+    materialReviewTargets.some(
+      (targetRef) =>
+        !value.reviewQuestions.some(
+          (question) =>
+            question.status === "open" &&
+            question.blocksReadiness &&
+            question.targetRefs.includes(targetRef),
+        ),
+    )
+  ) {
+    findingsComplete = false;
+  }
+  for (const item of value.retentionFindings) {
+    const targetRetentions = item.targetRefs
+      .map((ref) => objectById.get(ref)?.retention)
+      .filter(Boolean);
+    const hasUnknownRetention = targetRetentions.some(
+      (retention) =>
+        retention.state === "unknown" ||
+        (retention.unknownPolicyRefs?.length ?? 0) > 0,
+    );
+    const knownRetentionTimes = targetRetentions
+      .map((retention) => Date.parse(retention.retainUntil))
+      .filter(Number.isFinite);
+    const earliestRetention = Math.min(
+      ...knownRetentionTimes,
+    );
+    const expectedState =
+      hasUnknownRetention
+        ? "unknown"
+        : earliestRetention <= asOf
+        ? "expired"
+        : earliestRetention <= horizonEnd
+          ? "expiring"
+          : null;
+    const expectedRetainUntil =
+      expectedState === "unknown" ? null : earliestRetention;
+    if (
+      targetRetentions.length === 0 ||
+      item.state !== expectedState ||
+      (expectedRetainUntil === null
+        ? item.retainUntil !== null
+        : Date.parse(item.retainUntil) !== expectedRetainUntil) ||
+      item.action !== "human-review"
+    ) {
+      findingsComplete = false;
+    }
+  }
+  if (!findingsComplete) {
+    findings.push(
+      finding(
+        "incomplete_findings",
+        "freshnessFindings",
+        "Every non-current, inaccessible, horizon-expiring, expired, or unknown-retention source must have one truthful freshness, gap, or retention finding with affected objects.",
+      ),
+    );
+  }
+
+  const referencesFor = (item) => {
+    if (sourceById.has(item.id)) return [];
+    if (item.id === "handoff") {
+      return [
+        ...item.sourceRefs,
+        ...item.evidenceRefs,
+        ...item.topicRefs,
+        ...item.navigationNodeRefs,
+        ...item.claimRefs,
+        ...item.decisionRefs,
+        ...item.duplicateGroupRefs,
+        ...item.disputeRefs,
+        ...item.gapRefs,
+        ...item.freshnessFindingRefs,
+        ...item.retentionFindingRefs,
+        ...item.reviewQuestionRefs,
+        ...item.blockerRefs,
+      ];
+    }
+    if (idsByCollection.get("evidence").has(item.id)) {
+      return [item.sourceRef, ...item.topicRefs];
+    }
+    if (idsByCollection.get("topics").has(item.id)) {
+      return [...item.parentTopicRefs, ...item.sourceRefs];
+    }
+    if (idsByCollection.get("navigationNodes").has(item.id)) {
+      return [
+        ...(item.parentNodeRef === null ? [] : [item.parentNodeRef]),
+        ...item.childNodeRefs,
+        ...item.topicRefs,
+        ...item.objectRefs,
+      ];
+    }
+    if (idsByCollection.get("claims").has(item.id)) {
+      return [
+        ...item.topicRefs,
+        ...item.evidenceRefs,
+        ...item.contextEvidenceRefs,
+        ...item.disputeRefs,
+      ];
+    }
+    if (idsByCollection.get("decisions").has(item.id)) {
+      return [
+        ...item.topicRefs,
+        ...item.claimRefs,
+        ...item.evidenceRefs,
+        ...item.contextEvidenceRefs,
+        ...item.disputeRefs,
+      ];
+    }
+    if (idsByCollection.get("duplicateGroups").has(item.id)) {
+      return [
+        ...item.sourceRefs,
+        ...(item.canonicalSourceRef === null ? [] : [item.canonicalSourceRef]),
+        ...item.confirmation.evidenceRefs,
+      ];
+    }
+    if (idsByCollection.get("disputes").has(item.id)) {
+      return [
+        ...item.topicRefs,
+        ...item.claimRefs,
+        ...(item.resolution === null
+          ? []
+          : [
+              item.resolution.decisionRef,
+              item.resolution.selectedClaimRef,
+            ]),
+      ];
+    }
+    if (idsByCollection.get("gaps").has(item.id)) {
+      return [
+        ...item.sourceRefs,
+        ...item.objectRefs,
+        ...(item.resolution === null
+          ? []
+          : [
+              item.resolution.decisionRef,
+              ...item.resolution.evidenceRefs,
+            ]),
+      ];
+    }
+    if (idsByCollection.get("freshnessFindings").has(item.id)) {
+      return [item.sourceRef, ...item.affectedObjectRefs];
+    }
+    if (idsByCollection.get("retentionFindings").has(item.id)) {
+      return [...item.targetRefs];
+    }
+    if (idsByCollection.get("reviewQuestions").has(item.id)) {
+      return [...item.targetRefs, ...item.sourceRefs];
+    }
+    return [];
+  };
+  const constraintsFor = (item) => {
+    const constraints = [];
+    const visited = new Set(item.id ? [item.id] : []);
+    const visit = (ref) => {
+      if (visited.has(ref)) return;
+      visited.add(ref);
+      const referenced = objectById.get(ref);
+      if (!referenced) return;
+      constraints.push(referenced);
+      for (const nestedRef of referencesFor(referenced)) visit(nestedRef);
+    };
+    for (const ref of referencesFor(item)) visit(ref);
+    return constraints;
+  };
+  const guardedObjects = [
+    ...value.evidence,
+    ...value.topics,
+    ...value.navigationNodes,
+    ...value.claims,
+    ...value.decisions,
+    ...value.duplicateGroups,
+    ...value.disputes,
+    ...value.gaps,
+    ...value.freshnessFindings,
+    ...value.retentionFindings,
+    ...value.reviewQuestions,
+    { id: "handoff", ...value.handoff },
+  ];
+  for (const item of guardedObjects) {
+    const constraints = constraintsFor(item);
+    const strongestClassification = Math.max(
+      0,
+      ...constraints.map(
+        (constraint) => classificationRank[constraint.classification],
+      ),
+    );
+    let permittedAudience = null;
+    for (const constraint of constraints) {
+      permittedAudience =
+        permittedAudience === null
+          ? new Set(constraint.audienceScope)
+          : new Set(
+              [...permittedAudience].filter((audience) =>
+                constraint.audienceScope.includes(audience),
+              ),
+            );
+    }
+    const inheritedPolicies = new Set(
+      constraints.flatMap((constraint) =>
+        sourceById.has(constraint.id)
+          ? [constraint.retention.policyId]
+          : constraint.retention.policyRefs,
+      ),
+    );
+    const inheritedUnknownPolicies = new Set(
+      constraints.flatMap((constraint) =>
+        sourceById.has(constraint.id)
+          ? constraint.retention.state === "unknown"
+            ? [constraint.retention.policyId]
+            : []
+          : (constraint.retention.unknownPolicyRefs ?? []),
+      ),
+    );
+    const inheritedRetentionTimes = constraints
+      .map((constraint) => Date.parse(constraint.retention.retainUntil))
+      .filter(Number.isFinite);
+    const inheritedRetainUntil =
+      inheritedRetentionTimes.length === 0
+        ? null
+        : Math.max(...inheritedRetentionTimes);
+    const validClassification =
+      classificationRank[item.classification] >= strongestClassification;
+    const validAudience =
+      permittedAudience === null ||
+      (item.audienceScope.length > 0 &&
+        item.audienceScope.every((audience) => permittedAudience.has(audience)));
+    const validRetention =
+      [...inheritedPolicies].every((policy) =>
+        item.retention.policyRefs.includes(policy),
+      ) &&
+      [...inheritedUnknownPolicies].every((policy) =>
+        (item.retention.unknownPolicyRefs ?? []).includes(policy),
+      ) &&
+      (item.retention.unknownPolicyRefs ?? []).every((policy) =>
+        inheritedUnknownPolicies.has(policy),
+      ) &&
+      (inheritedRetainUntil === null
+        ? item.retention.retainUntil === null
+        : Number.isFinite(Date.parse(item.retention.retainUntil)) &&
+          Date.parse(item.retention.retainUntil) >= inheritedRetainUntil) &&
+      item.retention.dispositionAuthority === "human-only";
+    if (!validClassification || !validAudience) {
+      findings.push(
+        finding(
+          "classification_audience_mismatch",
+          item.id === "handoff" ? "handoff" : item.id,
+          "Every object must inherit the strongest classification and no broader than the audience intersection of every referenced object and transitive source.",
+        ),
+      );
+    }
+    if (!validRetention) {
+      findings.push(
+        finding(
+          "retention_inheritance_mismatch",
+          item.id === "handoff" ? "handoff.retention" : item.id,
+          "Every object must inherit every transitive source retention policy, preserve unknown policies without a fabricated date, and retain known policies through at least the longest referenced date.",
+        ),
+      );
+    }
+  }
+
+  const coverage = [
+    ["sourceRefs", "sources"],
+    ["evidenceRefs", "evidence"],
+    ["topicRefs", "topics"],
+    ["navigationNodeRefs", "navigationNodes"],
+    ["claimRefs", "claims"],
+    ["decisionRefs", "decisions"],
+    ["duplicateGroupRefs", "duplicateGroups"],
+    ["disputeRefs", "disputes"],
+    ["gapRefs", "gaps"],
+    ["freshnessFindingRefs", "freshnessFindings"],
+    ["retentionFindingRefs", "retentionFindings"],
+    ["reviewQuestionRefs", "reviewQuestions"],
+  ];
+  for (const [field, collectionName] of coverage) {
+    const expected = [...idsByCollection.get(collectionName)];
+    checkRefs(
+      value.handoff[field],
+      idsByCollection.get(collectionName),
+      `handoff.${field}`,
+      "Handoff reference",
+    );
+    if (
+      expected.some((id) => !value.handoff[field].includes(id)) ||
+      value.handoff[field].some((id) => !expected.includes(id))
+    ) {
+      findings.push(
+        finding(
+          "incomplete_handoff",
+          `handoff.${field}`,
+          "The private handoff must cover every collection object of each type exactly once.",
+        ),
+      );
+    }
+  }
+  checkRefs(
+    value.handoff.blockerRefs,
+    allIdSet,
+    "handoff.blockerRefs",
+    "Handoff blocker reference",
+  );
+  const requiredBlockers = [
+    ...value.disputes
+      .filter(
+        (item) =>
+          item.materiality === "material" && item.status === "unresolved",
+      )
+      .map((item) => item.id),
+    ...value.gaps
+      .filter(
+        (item) => item.materiality === "material" && item.status === "open",
+      )
+      .map((item) => item.id),
+    ...value.freshnessFindings
+      .filter((item) => item.materiality === "material")
+      .map((item) => item.id),
+    ...value.retentionFindings
+      .filter((item) => item.materiality === "material")
+      .map((item) => item.id),
+    ...value.reviewQuestions
+      .filter((item) => item.status === "open" && item.blocksReadiness)
+      .map((item) => item.id),
+    ...value.claims
+      .filter((item) => item.status === "blocked")
+      .map((item) => item.id),
+    ...value.decisions
+      .filter((item) => item.status === "blocked")
+      .map((item) => item.id),
+  ];
+  const uniqueRequiredBlockers = [...new Set(requiredBlockers)];
+  if (
+    uniqueRequiredBlockers.some(
+      (id) => !value.handoff.blockerRefs.includes(id),
+    ) ||
+    value.handoff.blockerRefs.some(
+      (id) => !uniqueRequiredBlockers.includes(id),
+    )
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff.blockerRefs",
+        "The handoff must enumerate every and only material unresolved dispute, gap, freshness or retention finding, blocking question, blocked claim, and blocked decision; a ready handoff has none.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-review" &&
+    uniqueRequiredBlockers.length > 0
+  ) {
+    findings.push(
+      finding(
+        "premature_review_state",
+        "handoff.state",
+        "Ready-for-review requires no material unresolved dispute, gap, freshness or retention finding, blocking question, blocked claim, or blocked decision.",
+      ),
+    );
+  }
+  if (
+    value.collection.status !== value.handoff.state ||
+    canonicalJson(value.collection.maintenanceOwner) !==
+      canonicalJson(value.handoff.owner)
+  ) {
+    findings.push(
+      finding(
+        "inconsistent_handoff",
+        "handoff",
+        "Collection and handoff status and named maintenance owner must agree.",
+      ),
+    );
+  }
+  if (
+    value.handoff.output.path !== "outputs/knowledge-collection-index.json" ||
+    !isSafePackagePath(value.handoff.output.path) ||
+    value.handoff.output.visibility !== "private" ||
+    value.handoff.output.storage !== "local-artifact"
+  ) {
+    findings.push(
+      finding(
+        "unsafe_output_state",
+        "handoff.output",
+        "The collection index must remain a private local artifact at outputs/knowledge-collection-index.json.",
+      ),
+    );
+  }
+  if (value.handoff.output.externalIntegrationConsent !== "not-granted") {
+    findings.push(
+      finding(
+        "unsupported_external_integration",
+        "handoff.output.externalIntegrationConsent",
+        "This artifact grants no external-system integration; a future integration requires a separate exact operator-consent contract.",
+      ),
+    );
+  }
+
+  const principals = [
+    [value.collection.maintenanceOwner, "collection.maintenanceOwner"],
+    ...value.sources.flatMap((item, index) => [
+      [item.sourceOwner, `sources.${index}.sourceOwner`],
+      [item.authorization.authorizedBy, `sources.${index}.authorization.authorizedBy`],
+      ...(item.representationPolicy.permission === null
+        ? []
+        : [
+            [
+              item.representationPolicy.permission.grantedBy,
+              `sources.${index}.representationPolicy.permission.grantedBy`,
+            ],
+          ]),
+    ]),
+    ...value.evidence.flatMap((item, index) =>
+      item.ownerAttribution === null
+          ? []
+          : [
+              [
+                item.ownerAttribution.owner,
+                `evidence.${index}.ownerAttribution.owner`,
+              ],
+            ],
+    ),
+    ...value.claims.map((item, index) => [
+      item.owner,
+      `claims.${index}.owner`,
+    ]),
+    ...value.decisions.map((item, index) => [
+      item.decisionOwner,
+      `decisions.${index}.decisionOwner`,
+    ]),
+    ...value.duplicateGroups.flatMap((item, index) =>
+      item.confirmation.owner === null
+        ? []
+        : [
+            [
+              item.confirmation.owner,
+              `duplicateGroups.${index}.confirmation.owner`,
+            ],
+          ],
+    ),
+    ...value.disputes.flatMap((item, index) =>
+      item.resolution === null
+        ? []
+        : [
+            [
+              item.resolution.resolvedBy,
+              `disputes.${index}.resolution.resolvedBy`,
+            ],
+          ],
+    ),
+    ...value.gaps.map((item, index) => [
+      item.owner,
+      `gaps.${index}.owner`,
+    ]),
+    ...value.gaps.flatMap((item, index) =>
+      item.resolution === null
+        ? []
+        : [
+            [
+              item.resolution.resolvedBy,
+              `gaps.${index}.resolution.resolvedBy`,
+            ],
+          ],
+    ),
+    ...value.reviewQuestions.map((item, index) => [
+      item.owner,
+      `reviewQuestions.${index}.owner`,
+    ]),
+    [value.handoff.owner, "handoff.owner"],
+  ];
+  for (const [principal, path] of principals) {
+    if (
+      /^(?:principal-)?(?:agent|assistant|claw|ai|bot|knowledge-curator)$/iu.test(
+        principal.id,
+      ) ||
+      /^(?:the )?(?:agent|assistant|claw|ai|bot|knowledge curator)$/iu.test(
+        principal.name,
+      )
+    ) {
+      findings.push(
+        finding(
+          "agent_owned_authority",
+          path,
+          "Collection maintenance, source authorization, decisions, duplicate confirmation, dispute resolution, gaps, and questions must remain with a named human or team.",
+        ),
+      );
+    }
+  }
+  for (const action of requiredActions) {
+    if (
+      !value.prohibitedActions.includes(action) ||
+      !value.handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "prohibitedActions",
+          `Knowledge collection indexes must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+  const narrativeTexts = [
+    ...value.topics.map((item) => item.summary),
+    ...value.claims.map((item) => item.statement),
+    ...value.decisions.map((item) => item.statement),
+    ...value.duplicateGroups.map((item) => item.reason),
+    ...value.gaps.map((item) => item.description),
+    ...value.reviewQuestions.map((item) => item.question),
+    value.handoff.summary,
+  ];
+  const prohibitedNarrative =
+    /\b(?:(?:i|we(?:['’]ve)?|the (?:agent|assistant|claw)|knowledge curator)\s+(?:already\s+|(?:have|has|had)\s+(?:already\s+)?|will\s+|can\s+|may\s+|(?:am|are|is)\s+)?(?:access|accessed|accessing|approve|approved|approving|complete|completed|completing|delete|deleted|deleting|destroy|destroyed|destroying|email|emailed|emailing|integrate|integrated|integrating|message|messaged|messaging|move|moved|moving|mutate|mutated|mutating|publish|published|publishing|retain|retained|retaining|send|sent|sending|share|shared|sharing|update|updated|updating)|(?:access|authorization)\s+(?:is|was|has been|had been|will be)\s+(?:verified|granted)|(?:decision|position)\s+(?:is|was|has been|had been|will be)\s+(?:made|approved|finalized)|(?:collection|source(?: system)?|document|file|page|wiki|repository|index|handoff|access(?: control)?|retention(?: policy)?)\s+(?:is|was|has been|had been|will be)\s+(?:changed|deleted|destroyed|moved|mutated|published|purged|removed|retained|shared|updated|uploaded)|(?:message|mail|email|handoff)\s+(?:is|was|has been|had been|will be)\s+(?:sent|delivered|published))\b/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "handoff.summary",
+        "Narrative fields must not claim autonomous access, decisions, completion, communication, publication, mutation, retention, destruction, or external integration.",
+      ),
+    );
+  }
+  return findings;
+}
+
 function fundraisingCampaignFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const claimIds = value.claims.map((item) => item.id);
@@ -25533,6 +27211,7 @@ const validators = {
   "insurance-policy-organizer": insurancePolicyFindings,
   "invoice-payment-followup": invoiceReceivablesFindings,
   "job-application-tracker": jobApplicationFindings,
+  "knowledge-curator": knowledgeCollectionIndexFindings,
   "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
   "meal-grocery-planner": mealGroceryFindings,
