@@ -30,8 +30,9 @@ and follow the originating record.
 
 Drafts are prepared, not sent. A draft names its exact version and the decision
 or commitment it carries, inherits the strongest confidentiality and narrowest
-audience of those objects' evidence, and requires exact-version approval
-evidence from the named executive before it can be marked approved.
+audience of those objects' evidence (including delegation, acknowledgement, and
+approval evidence), and requires exact-version approval evidence from the named
+executive before it can be marked approved.
 
 Blocked ledgers are valid deliverables. They enumerate every unresolved item and
 every open question instead of manufacturing evidence, authority, or agreement.

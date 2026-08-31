@@ -56,7 +56,8 @@ authority, or honest state.
 - Show audience, audience reach, classification, purpose, path, version, and
   the exact decisions or commitments each draft carries.
 - Send state stays `not-sent`. A draft never widens the audience or lowers the
-  classification of its direct or inherited decision and commitment sources.
+  classification of its direct sources or inherited decision, delegation,
+  commitment, acknowledgement, and approval evidence.
 - `approved-by-executive` requires the named executive's approval time,
   exact draft version, and current supplied approval evidence.
 

@@ -419,6 +419,48 @@ test("drafts stay bound, classified, unsent, and honestly staged", () => {
     true,
   );
 
+  const delegatedCommitmentDisclosure = clone();
+  for (const source of delegatedCommitmentDisclosure.sources) {
+    source.confidentiality = "internal";
+    source.audienceScope = "named-stakeholders";
+  }
+  find(
+    delegatedCommitmentDisclosure.sources,
+    "source-delegation-memo",
+  ).confidentiality = "restricted";
+  find(
+    delegatedCommitmentDisclosure.sources,
+    "source-delegation-memo",
+  ).audienceScope = "executive-only";
+  delegatedCommitmentDisclosure.commitments[0].originRef =
+    "decision-vendor-renewal";
+  delegatedCommitmentDisclosure.drafts[1].decisionRefs = [];
+  delegatedCommitmentDisclosure.drafts[1].classification = "internal";
+  delegatedCommitmentDisclosure.drafts[1].audienceReach = "named-stakeholders";
+  assert.equal(
+    hasFinding(
+      delegatedCommitmentDisclosure,
+      "confidentiality_audience_mismatch",
+    ),
+    true,
+  );
+
+  const approvalDisclosure = readyForExecutionHandoff();
+  for (const source of approvalDisclosure.sources) {
+    source.confidentiality = "internal";
+    source.audienceScope = "named-stakeholders";
+  }
+  find(approvalDisclosure.sources, "source-draft-approvals").confidentiality =
+    "restricted";
+  find(approvalDisclosure.sources, "source-draft-approvals").audienceScope =
+    "executive-only";
+  approvalDisclosure.drafts[0].classification = "internal";
+  approvalDisclosure.drafts[0].audienceReach = "named-stakeholders";
+  assert.equal(
+    hasFinding(approvalDisclosure, "confidentiality_audience_mismatch"),
+    true,
+  );
+
   const earlyDraft = clone();
   earlyDraft.drafts[0].reviewState = "ready-for-executive-review";
   assert.equal(hasFinding(earlyDraft, "premature_draft_state"), true);

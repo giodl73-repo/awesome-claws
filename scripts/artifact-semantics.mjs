@@ -15949,6 +15949,9 @@ function executiveCommitmentLedgerFindings(value) {
         inheritedSourceRefs.add(decision.delegation.evidenceSourceRef);
       }
     }
+    if (draft.executiveApproval !== null) {
+      inheritedSourceRefs.add(draft.executiveApproval.evidenceSourceRef);
+    }
     for (const commitmentRef of draft.commitmentRefs) {
       const commitment = commitmentById.get(commitmentRef);
       if (!commitment) continue;
@@ -15965,6 +15968,9 @@ function executiveCommitmentLedgerFindings(value) {
           }
           if (originDecision.decisionEvidenceSourceRef !== null) {
             inheritedSourceRefs.add(originDecision.decisionEvidenceSourceRef);
+          }
+          if (originDecision.delegation !== null) {
+            inheritedSourceRefs.add(originDecision.delegation.evidenceSourceRef);
           }
         }
       }
