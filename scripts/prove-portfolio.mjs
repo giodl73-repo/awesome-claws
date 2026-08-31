@@ -63,7 +63,13 @@ const upgradeFixtures = new Map([
       previousVersion: "0.0.1",
       targetVersion: "0.1.0",
       changedPath: "AGENTS.md",
-      addedPath: "templates/session-handoff.md",
+      addedPaths: [
+        "schemas/executive-commitment-ledger.schema.json",
+        "fixtures/executive-commitment-ledger.example.json",
+        "templates/executive-commitment-ledger.md",
+        "references/executive-commitment-contract.md",
+        "templates/session-handoff.md",
+      ],
       removedPath: "templates/legacy-follow-up.md",
     },
   ],
@@ -154,7 +160,7 @@ function assertUpdatePlan(plan, fixture, direction, label) {
     plan.schemaVersion !== "openclaw.clawUpdatePlan.v1" ||
     plan.mutationAllowed !== false ||
     typeof plan.planIntegrity !== "string" ||
-    plan.summary?.added !== 1 ||
+    plan.summary?.added !== fixture.addedPaths.length ||
     plan.summary?.changed !== 1 ||
     plan.summary?.removed !== 1 ||
     plan.summary?.blocked !== 0 ||
@@ -166,12 +172,12 @@ function assertUpdatePlan(plan, fixture, direction, label) {
     direction === "forward"
       ? [
           ["change", fixture.changedPath],
-          ["add", fixture.addedPath],
+          ...fixture.addedPaths.map((path) => ["add", path]),
           ["remove", fixture.removedPath],
         ]
       : [
           ["change", fixture.changedPath],
-          ["remove", fixture.addedPath],
+          ...fixture.addedPaths.map((path) => ["remove", path]),
           ["add", fixture.removedPath],
         ];
   for (const [action, id] of expected) {
@@ -931,10 +937,11 @@ for (const entry of entries) {
         "templates",
         "legacy-follow-up.md",
       );
-      const targetHandoff = join(source, "templates", "session-handoff.md");
       await assertFileMatches(join(workspace, upgradeFixture.changedPath), priorAgents, entry.id);
       await assertFileMatches(join(workspace, upgradeFixture.removedPath), priorLegacy, entry.id);
-      await assertFileMissing(join(workspace, upgradeFixture.addedPath), entry.id);
+      for (const path of upgradeFixture.addedPaths) {
+        await assertFileMissing(join(workspace, path), entry.id);
+      }
 
       const updatePlan = assertUpdatePlan(
         recordPhase(phases, "upgrade-preview", () =>
@@ -972,7 +979,9 @@ for (const entry of entries) {
       }
       await assertFileMatches(join(workspace, upgradeFixture.changedPath), priorAgents, entry.id);
       await assertFileMatches(join(workspace, upgradeFixture.removedPath), priorLegacy, entry.id);
-      await assertFileMissing(join(workspace, upgradeFixture.addedPath), entry.id);
+      for (const path of upgradeFixture.addedPaths) {
+        await assertFileMissing(join(workspace, path), entry.id);
+      }
       const rejectedStatus = assertSchema(
         recordPhase(phases, "upgrade-rejected-status", () =>
           runOpenClaw(
@@ -1012,11 +1021,17 @@ for (const entry of entries) {
         "openclaw.clawUpdateResult.v1",
         `${entry.id} upgrade`,
       );
-      if (updated.status !== "complete" || (updated.appliedActions?.length ?? 0) !== 3) {
-        throw new Error(`${entry.id} upgrade did not apply the three managed deltas.`);
+      const expectedActionCount = upgradeFixture.addedPaths.length + 2;
+      if (
+        updated.status !== "complete" ||
+        (updated.appliedActions?.length ?? 0) !== expectedActionCount
+      ) {
+        throw new Error(`${entry.id} upgrade did not apply the expected managed deltas.`);
       }
       await assertFileMatches(join(workspace, upgradeFixture.changedPath), targetAgents, entry.id);
-      await assertFileMatches(join(workspace, upgradeFixture.addedPath), targetHandoff, entry.id);
+      for (const path of upgradeFixture.addedPaths) {
+        await assertFileMatches(join(workspace, path), join(source, path), entry.id);
+      }
       await assertFileMissing(join(workspace, upgradeFixture.removedPath), entry.id);
       await assertUserOwnedState(userOwnedState, `${entry.id} upgrade`);
       const upgradedStatus = assertSchema(
@@ -1078,12 +1093,17 @@ for (const entry of entries) {
         "openclaw.clawUpdateResult.v1",
         `${entry.id} rollback`,
       );
-      if (rolledBack.status !== "complete" || (rolledBack.appliedActions?.length ?? 0) !== 3) {
-        throw new Error(`${entry.id} rollback did not restore the three managed deltas.`);
+      if (
+        rolledBack.status !== "complete" ||
+        (rolledBack.appliedActions?.length ?? 0) !== expectedActionCount
+      ) {
+        throw new Error(`${entry.id} rollback did not restore the expected managed deltas.`);
       }
       await assertFileMatches(join(workspace, upgradeFixture.changedPath), priorAgents, entry.id);
       await assertFileMatches(join(workspace, upgradeFixture.removedPath), priorLegacy, entry.id);
-      await assertFileMissing(join(workspace, upgradeFixture.addedPath), entry.id);
+      for (const path of upgradeFixture.addedPaths) {
+        await assertFileMissing(join(workspace, path), entry.id);
+      }
       await assertUserOwnedState(userOwnedState, `${entry.id} rollback`);
       const rolledBackStatus = assertSchema(
         recordPhase(phases, "rollback-status", () =>
@@ -1137,11 +1157,16 @@ for (const entry of entries) {
         "openclaw.clawUpdateResult.v1",
         `${entry.id} repeat upgrade`,
       );
-      if (repeated.status !== "complete" || (repeated.appliedActions?.length ?? 0) !== 3) {
+      if (
+        repeated.status !== "complete" ||
+        (repeated.appliedActions?.length ?? 0) !== expectedActionCount
+      ) {
         throw new Error(`${entry.id} repeat upgrade did not apply the managed deltas.`);
       }
       await assertFileMatches(join(workspace, upgradeFixture.changedPath), targetAgents, entry.id);
-      await assertFileMatches(join(workspace, upgradeFixture.addedPath), targetHandoff, entry.id);
+      for (const path of upgradeFixture.addedPaths) {
+        await assertFileMatches(join(workspace, path), join(source, path), entry.id);
+      }
       await assertFileMissing(join(workspace, upgradeFixture.removedPath), entry.id);
       await assertUserOwnedState(userOwnedState, `${entry.id} repeat upgrade`);
       const repeatedStatus = assertSchema(
@@ -1165,7 +1190,11 @@ for (const entry of entries) {
         status: "passed",
         previousVersion: upgradeFixture.previousVersion,
         targetVersion: upgradeFixture.targetVersion,
-        managedDelta: { added: 1, changed: 1, removed: 1 },
+        managedDelta: {
+          added: upgradeFixture.addedPaths.length,
+          changed: 1,
+          removed: 1,
+        },
         staleConsent: "rejected-before-mutation",
         rollback: "public-update-path-passed",
         repeatUpgrade: "passed",
