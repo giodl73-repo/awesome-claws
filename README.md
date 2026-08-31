@@ -125,7 +125,7 @@ chooser or explorer for the complete 100-Claw catalog.
 | [Data governance steward](claws/data-governance-steward) | Governance | Governance schema, bounded profile, inline visual | Evidence-backed data-product stewardship |
 | [Knowledge curator](claws/knowledge-curator) | Productivity | Base | Durable knowledge organization |
 | [Executive briefing](claws/executive-briefing) | Productivity | Gog + Weather skills, weekday cron | Private daily operating brief |
-| [Meeting intelligence](claws/meeting-intelligence) | Productivity | Whisper + DOCX skills | Consented meeting records |
+| [Meeting intelligence](claws/meeting-intelligence) | Productivity | Whisper + DOCX skills, minimal tool profile, meeting-record schema | Consent-bound meeting decision and action records |
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | Analysis | XLSX skill | Auditable workbook transformation |
 | [Knowledge gardener](claws/knowledge-gardener) | Productivity | Notion skill | Scoped knowledge-space maintenance |
 | [Research monitor](claws/research-monitor) | Analysis | Parallel plugin, weekday cron | Source-linked evidence watch |

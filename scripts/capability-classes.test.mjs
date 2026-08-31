@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   buildCapabilityMatrix,
+  capabilityClassesForEntry,
   capabilityRepresentatives,
   readCapabilityMatrix,
 } from "./capability-classes.mjs";
@@ -35,6 +36,19 @@ test("every declared capability class has a valid installed-proof representative
     matrix.representatives.find((item) => item.id === "software-maintainer")?.classes,
     ["profile-extension", "oauth-mcp"],
   );
+});
+
+test("workspace execution covers bounded patch or command authority", () => {
+  for (const grant of ["apply_patch", "exec"]) {
+    assert.deepEqual(
+      capabilityClassesForEntry({
+        openclawProfile: {
+          agent: { tools: { profile: "minimal", alsoAllow: [grant] } },
+        },
+      }),
+      ["workspace-execution"],
+    );
+  }
 });
 
 test("capability coverage rejects a missing or ineligible representative", async () => {

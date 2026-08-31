@@ -9,7 +9,7 @@
     },
     {
       "role": "agent",
-      "text": "I identified the meeting decision, the evidence needed, and the boundary that must stay human-owned."
+      "text": "I recorded the recording authority, each participant's consent scope, the processed window, and the named decision owner and reviewer before transcribing anything."
     },
     {
       "role": "user",
@@ -17,41 +17,41 @@
     },
     {
       "role": "agent",
-      "text": "I produced outputs/meeting-intelligence-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+      "text": "I produced the validated private meeting record and outputs/meeting-intelligence-handoff.md, with every uncertain attribution flagged, one withheld passage, a corrected rollback-window segment, and the DOCX draft left for the owner."
     }
   ],
   "report": {
     "title": "Meeting intelligence session handoff",
-    "summary": "A local transcript with confidence markers, a source-linked decision/action register, and a DOCX draft awaiting participant review.",
+    "summary": "A private consent-bound meeting record with per-participant consent scopes, offset-linked transcript segments and confidence markers, decisions separated from proposals, acknowledged actions, corrections, conflicts, gaps, and a DOCX review draft awaiting the named owner.",
     "output": "outputs/meeting-intelligence-handoff.md",
     "items": [
       {
-        "title": "Timestamped transcript",
-        "summary": "Recording authority, retention, and audience are recorded",
+        "title": "Consent-bound meeting control",
+        "summary": "The purpose, decision owner, reviewer, timezone, audience, retention rule, deletion owner, recording identity and digest, and each participant's consent scope are explicit",
         "tags": [
           "fact-based",
           "reviewable"
         ]
       },
       {
-        "title": "Decision and action register",
-        "summary": "Transcript uncertainty and speaker ambiguity remain visible",
+        "title": "Transcript with visible uncertainty",
+        "summary": "Every segment carries exact offsets, attribution state and confidence, uncertainty markers, correction lineage, and a withheld passage where consent was withdrawn",
         "tags": [
           "evidence",
           "owner-visible"
         ]
       },
       {
-        "title": "Uncertainty and correction log",
-        "summary": "Do not transcribe, retain, or distribute audio without verified participant consent and an approved destination",
+        "title": "Decisions separated from discussion",
+        "summary": "Decisions name an attending human, an explicit authority and agreement basis, and their supporting offsets; actions record acknowledgement, due dates, and dependencies",
         "tags": [
           "approval-gated",
           "safe fallback"
         ]
       },
       {
-        "title": "Reviewable DOCX meeting record",
-        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "title": "Owner-reviewed private handoff",
+        "summary": "Open questions, parked topics, conflicts, corrections, gaps, and authority gates stay visible, and the DOCX record remains a review draft for the named owner.",
         "tags": [
           "handoff",
           "durable"
