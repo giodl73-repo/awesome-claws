@@ -230,13 +230,15 @@
       "id": "content-operations",
       "acceptedRequest": "Prepare the launch package for a beta analytics dashboard aimed at operations managers and current design partners.",
       "requiredEvidence": [
-        "Audience, channel, intended action, deadline, and success measure",
-        "Source material, factual claims, voice guidance, required assets, and restricted topics",
-        "Author, channel owner, factual reviewers, approval path, and publication authority"
+        "The request in the requester's own words, audience, channels, intended action, deadline, timezone, and success measure",
+        "Source material, material claims, voice guidance, required versioned assets, acceptance criteria, and restricted topics",
+        "Accountable owner, channel owner, factual, brand, legal, and executive review requirements, and publication authority",
+        "Measurement definitions and accountable measurement owners without observed-result claims"
       ],
       "authorityBoundaries": [
         "Never publish, schedule, or distribute content without the named channel owner and required factual, brand, legal, or executive approvals",
-        "Do not invent customer quotes, performance claims, source attribution, or approval state"
+        "Do not invent customer quotes, performance claims, source attribution, approval state, or measured outcomes",
+        "Do not mutate a CMS, contact an audience, or represent approval on behalf of an owner"
       ],
       "experience": {
         "target": 3,

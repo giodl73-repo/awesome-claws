@@ -1,29 +1,43 @@
 # Content operations handoff
 
-## Request
+## Publication package
 
-Summarize the user request and the decision this claw is supporting.
+Preserve the request, audience, channels, intended action, deadline, timezone,
+success measure, voice, restricted topics, accountable owner, and channel owner.
 
-## Known facts
+## Evidence and claims
 
-- Record only facts grounded in the supplied context or approved tools.
+- Link every material claim to current supplied evidence.
+- State channel limits, restrictions, and unsupported or conflicting evidence.
 
-## Assumptions and gaps
+## Versioned assets and criteria
 
-- Separate assumptions from missing evidence.
+- Name exact output paths and versions.
+- Show bidirectional claim and acceptance-criterion coverage.
 
-## Evidence ledger
+## Reviews and approvals
 
-- Link or name the source for every material claim.
+- Record factual, brand, legal, executive, and channel-owner decisions against
+  the exact version reviewed.
+- Never infer approval from silence or apply an old approval to a new version.
 
-## Recommendation or decision state
+## Measurement
 
-- State the best supported next step and why.
+Define metrics and their accountable owners without claiming observed results.
 
-## Blocked actions
+## Blockers and questions
 
-- Keep external communication, irreversible changes, purchases, publication, and authority-sensitive actions blocked until explicitly approved.
+Keep every unresolved source, claim, criterion, asset, approval, metric, and
+question visible in the handoff.
 
-## Next owner
+## Authority
 
-Name the accountable human owner and where outputs/content-operations-handoff.md should be reviewed.
+Publication, scheduling, distribution, CMS mutation, audience messaging,
+approval, and measured-result claims remain blocked for the Claw.
+
+## Durable record
+
+Validate `outputs/publication-readiness-record.json` against
+`schemas/publication-readiness-record.schema.json`, render
+`templates/publication-readiness-record.md`, and route it privately to the
+named owner.

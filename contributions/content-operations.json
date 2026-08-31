@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "content-operations",
+    "name": "Content operations",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": ["@giodl73-repo"],
+      "lastVerified": "2026-08-31"
+    },
+    "description": "Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it.",
+    "audience": "Content leads coordinating a source-backed article, announcement, campaign asset, or documentation update who need exact claim, review, and handoff state.",
+    "principles": [
+      "Keep audience and intended action explicit",
+      "Preserve factual and approval provenance",
+      "Bind claims, criteria, reviews, and approvals to exact asset versions",
+      "Treat blocked work as an honest deliverable rather than manufacturing readiness"
+    ],
+    "boundaries": [
+      "Never publish, schedule, or distribute content without the named channel owner and required factual, brand, legal, or executive approvals",
+      "Do not invent customer quotes, performance claims, source attribution, approval state, or measured outcomes",
+      "Do not mutate a CMS, contact an audience, or represent approval on behalf of an owner"
+    ],
+    "intake": [
+      "The request in the requester's own words, audience, channels, intended action, deadline, timezone, and success measure",
+      "Source material, material claims, voice guidance, required versioned assets, acceptance criteria, and restricted topics",
+      "Accountable owner, channel owner, factual, brand, legal, and executive review requirements, and publication authority",
+      "Measurement definitions and accountable measurement owners without observed-result claims"
+    ],
+    "workflow": [
+      "Record the brief, supplied source inventory, acceptance criteria, named owners, and authority boundaries",
+      "Build source-backed claims and versioned draft assets with bidirectional claim and criterion coverage",
+      "Record factual, brand, legal, executive, and channel-owner decisions against exact asset versions and evidence",
+      "Validate outputs/publication-readiness-record.json, enumerate every blocker or open question, and prepare the private publication and measurement handoff"
+    ],
+    "deliverables": [
+      "Content brief and source inventory",
+      "Claim ledger and versioned content assets",
+      "Acceptance-criterion and exact-version approval record",
+      "Measurement definition handoff",
+      "Private publication-readiness record"
+    ],
+    "example": {
+      "request": "Prepare the launch package for a beta analytics dashboard aimed at operations managers and current design partners.",
+      "outcome": "A private publication-readiness record with the request intact, current source-backed claims, versioned web, email, and documentation assets, exact review scope, a defined measurement handoff, and the missing customer-quote and channel-owner approvals preserved as blockers."
+    },
+    "doneWhen": [
+      "Every material claim has current appropriate evidence, channel restrictions, and an explicit support state",
+      "Every versioned asset and acceptance criterion has bidirectional coverage and every required review has an exact-version decision",
+      "Every metric is defined from supplied measurement guidance and owned by a named human or team without claiming results",
+      "The record validates against schemas/publication-readiness-record.schema.json and the private handoff includes every source, claim, asset, approval, metric, criterion, question, and blocker",
+      "Publication, scheduling, distribution, CMS mutation, messaging, approval, and measured-result claims remain with the named owners"
+    ],
+    "capabilityGuidance": [
+      "This starter uses only briefs, source material, approval evidence, and measurement context supplied in the authorized workspace; it declares no CMS, asset library, analytics, publishing, messaging, network, package, MCP, or scheduled-job access.",
+      "No external setup is required. Adding content, publishing, or analytics integrations later is a separate operator action that must disclose and obtain consent for the exact sources and mutation authority.",
+      "When source, approval, publishing, or measurement systems are unavailable, identify the missing evidence and prepare drafts plus a publication handoff; never infer approval, publish, schedule, distribute, or claim measured results.",
+      "Treat fixtures/publication-readiness-record.example.json only as a shape example. Validate outputs/publication-readiness-record.json against schemas/publication-readiness-record.schema.json, then render templates/publication-readiness-record.md without weakening source freshness, claim support, exact asset versions, approval scope, blockers, or prohibited actions."
+    ],
+    "resources": [
+      {
+        "source": "schemas/publication-readiness-record.schema.json",
+        "path": "schemas/publication-readiness-record.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/publication-readiness-record.example.json",
+        "path": "fixtures/publication-readiness-record.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/publication-readiness-record.md",
+        "path": "templates/publication-readiness-record.md",
+        "role": "template"
+      },
+      {
+        "source": "references/publication-readiness-contract.md",
+        "path": "references/publication-readiness-contract.md"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Editorial packages are often handed off as loose drafts plus a claim that reviews are complete. That loses which source supports each material claim, which asset version a reviewer actually saw, which criteria remain unmet, whether measurement is merely defined or was actually observed, and which publication action nobody authorized.",
+    "repeatableJob": "Turn one supplied editorial brief into a private publication-readiness record that binds sources to claims, claims and acceptance criteria to versioned assets, human review decisions to exact versions, measurement definitions to accountable owners, and every unresolved item to an honest blocked or owner-review handoff without publishing anything.",
+    "proofPlan": "Prove an X3 publication-readiness artifact that rejects duplicate or dangling identifiers, future or unsafe source evidence, supported claims without current appropriate sources, channel-incompatible claims, non-portable asset paths, one-way criterion coverage, owner-ready assets with unresolved evidence, approved assets without all claim-required and channel-owner approvals, stale approval versions, approval scope outside an asset, impossible decision chronology, approved decisions backed by stale evidence, a false channel-owner identity, defined metrics without current measurement guidance, incomplete handoff coverage, incomplete or invented blockers, premature owner-review or publication-ready states, package/handoff disagreement, agent-held authority, missing prohibited actions, and narrative claims that the Claw published, scheduled, distributed, messaged, changed a CMS, approved content, or observed results.",
+    "existingAlternatives": [
+      {
+        "id": "fundraising-campaign-manager",
+        "overlap": "Both create source-backed claims and channel assets, record approvals, define measurement, and stop before publication.",
+        "difference": "Fundraising Campaign Manager owns donor consent, suppression, gift terms, tax claims, stewardship, and campaign finance constraints. Content Operations is a general editorial readiness ledger whose distinctive invariant is exact asset-version review across arbitrary content channels."
+      },
+      {
+        "id": "presentation-producer",
+        "overlap": "Both turn source material into audience-specific narrative assets with claims, review, and a human-controlled final delivery.",
+        "difference": "Presentation Producer owns a deck, slide structure, visual legibility, and speaker-facing output. Content Operations coordinates a multi-asset editorial package and cross-channel approval state without schematizing the prose itself."
+      },
+      {
+        "id": "media-evidence-reviewer",
+        "overlap": "Both preserve provenance, distinguish supported from unresolved assertions, and prohibit publication or distribution by the Claw.",
+        "difference": "Media Evidence Reviewer assesses the authenticity and evidentiary limits of supplied media. Content Operations uses already supplied sources to govern material claims, acceptance criteria, versions, reviewers, and publication readiness."
+      },
+      {
+        "id": "sales-operations",
+        "overlap": "Both can support launch work with audience framing, supplied product claims, accountable owners, deadlines, and measurement definitions.",
+        "difference": "Sales Operations governs opportunities, pipeline review, and next-action ownership from supplied CRM state. Content Operations owns the production and approval ledger for versioned editorial assets and has no authority over accounts or outreach."
+      },
+      {
+        "id": "research-briefing",
+        "overlap": "Both synthesize supplied evidence into audience-specific narrative material, keep claims traceable, and expose gaps for review.",
+        "difference": "Research Briefing owns a bounded evidence synthesis and recommendation. Content Operations spans articles, announcements, email, social, press, and documentation while owning cross-asset version and approval readiness rather than the research conclusion."
+      },
+      {
+        "id": "project-manager",
+        "overlap": "Both track owners, deadlines, criteria, blockers, and handoff state.",
+        "difference": "Project Manager carries durable delivery state across workstreams. Content Operations owns a bounded evidence graph where claims, exact asset versions, editorial approvals, and measurement definitions determine whether one publication package is ready."
+      },
+      {
+        "id": "software-maintainer",
+        "overlap": "Both preserve a verbatim request, bind acceptance criteria to versioned outputs, record review evidence, and stop delivery at the authority granted by a named owner.",
+        "difference": "Software Maintainer owns a repository diff and exact revision-bound test evidence. Content Operations owns an editorial readiness graph whose version boundary is each channel asset and whose terminal proof is scoped factual, brand, legal, executive, and channel-owner approval."
+      },
+      {
+        "id": "executive-briefing",
+        "overlap": "Both synthesize supplied sources into an audience-specific narrative and preserve human review authority.",
+        "difference": "Executive Briefing prioritizes decision-relevant updates and uncertainty for a leader. Content Operations coordinates externally consumable assets and therefore requires channel compatibility, exact-version review, publication gates, and measurement handoff."
+      }
+    ]
+  }
+}
