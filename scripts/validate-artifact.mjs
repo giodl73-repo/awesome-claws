@@ -68,6 +68,7 @@ const schemaNames = {
   "research-briefing": "research-brief.schema.json",
   "sales-operations": "pipeline-review.schema.json",
   "school-coordinator": "school-logistics.schema.json",
+  "software-maintainer": "change-delivery-record.schema.json",
   "sports-team-watcher": "sports-team-watch.schema.json",
   "spreadsheet-analyst": "spreadsheet-change.schema.json",
   "stock-portfolio-monitor": "stock-portfolio.schema.json",

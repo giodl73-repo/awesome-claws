@@ -94,7 +94,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Sales operations](claws/sales-operations) | @giodl73-repo; last verified 2026-08-19 |
 | [School coordinator](claws/school-coordinator) | @giodl73-repo; last verified 2026-08-23 |
 | [Security analyst](claws/security-analyst) | @giodl73-repo; last verified 2026-08-19 |
-| [Software maintainer](claws/software-maintainer) | @giodl73-repo; last verified 2026-08-19 |
+| [Software maintainer](claws/software-maintainer) | @giodl73-repo; last verified 2026-08-30 |
 | [Sports team watcher](claws/sports-team-watcher) | @giodl73-repo; last verified 2026-08-21 |
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | @giodl73-repo; last verified 2026-08-29 |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | @giodl73-repo; last verified 2026-08-21 |
@@ -423,7 +423,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Resume portfolio curator](claws/resume-portfolio-curator) | Maintains a candidate-owned resume, portfolio, and proof ledger for role-specific review without submitting applications or inventing credentials. |
 | [Sales operations](claws/sales-operations) | Improves pipeline decisions through clean definitions, evidence, and accountable follow-up. |
 | [School coordinator](claws/school-coordinator) | Tracks assignments, forms, teacher notes, school calendars, supply lists, events, accommodations, and parent review questions from approved sources without submitting forms, messaging teachers, changing enrollment, or making education, medical, legal, or payment decisions. |
-| [Software maintainer](claws/software-maintainer) | Delivers scoped repository changes with source-grounded review and verification. |
+| [Software maintainer](claws/software-maintainer) | Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 | [Sports team watcher](claws/sports-team-watcher) | Tracks favorite teams across leagues and prepares sourced schedule, result, standings, roster, and watch-item digests without betting, ticketing, or claiming live completeness. |
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability. |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | Monitors a user-supplied stock portfolio or watchlist with sourced prices, holdings, allocation drift, issuer events, and review questions without investment advice or trade execution. |
@@ -511,7 +511,7 @@ Categories come directly from the catalog entry.
 | [Quality assurance lead](claws/quality-assurance-lead) | X4; Turns requirements and risk into a traceable test strategy, execution ledger, defect assessment, and release recommendation. |
 | [Release coordinator](claws/release-coordinator) | X4; Coordinates a repository release from verified GitHub state to an approval-bound communication handoff. |
 | [Security analyst](claws/security-analyst) | X4; Assesses security questions with explicit trust boundaries and reproducible evidence. |
-| [Software maintainer](claws/software-maintainer) | X3; Delivers scoped repository changes with source-grounded review and verification. |
+| [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 
 ### Governance (4)
 

@@ -149,6 +149,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "software-maintainer",
+    schema: "../claws/software-maintainer/schemas/change-delivery-record.schema.json",
+    fixture: "../claws/software-maintainer/fixtures/change-delivery-record.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "media-evidence-reviewer",
     schema: "../claws/media-evidence-reviewer/schemas/media-evidence.schema.json",
     fixture: "../claws/media-evidence-reviewer/fixtures/media-evidence.example.json",

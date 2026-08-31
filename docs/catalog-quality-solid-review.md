@@ -1,6 +1,6 @@
 # Solid-band review
 
-This review covers the 9 Claws remaining in the Solid band after Document
+This review covers the 8 Claws remaining in the Solid band after Document
 Intake Analyst moved from 69 to 94, Fundraising Campaign Manager moved from 79
 to 95, Travel Concierge moved from 78 to 100, and Media Evidence Reviewer moved
 from 73 to 95, Spreadsheet Analyst moved from 73 to 95 on 2026-08-29, and Travel
@@ -12,18 +12,20 @@ topic-watch delta ledger uplift on 2026-08-30, and Feed Intelligence Monitor
 completed its feed-item delta and triage ledger uplift on 2026-08-30, and
 Website Evidence Collector completed its capture and change-evidence ledger
 uplift on 2026-08-30, and Meeting Intelligence moved from 73 to 100 with its
-consent-bound meeting decision and action record on 2026-08-30. All 9
+consent-bound meeting decision and action record on 2026-08-30, and Software
+Maintainer moved from 78 to 100 with its bounded change-delivery record on
+2026-08-30. All 8
 remaining entries pass the
 non-negotiable package, regression, resource, and Experience gates. Their lower scores describe
 reviewability and artifact-depth gaps, not observed live-model failures.
 
 ## Shared pattern
 
-- All 9 remaining entries are grandfathered without retrospective contribution records.
+- All 8 remaining entries are grandfathered without retrospective contribution records.
   That is a five-point documentation gap, not a failed admission.
-- All 9 remaining entries lack registered semantic validators.
-- All 9 remaining entries lack a local structured-artifact schema.
-- All 9 have complete operating contracts, screenshots, regression cases, and
+- All 8 remaining entries lack registered semantic validators.
+- All 8 remaining entries lack a local structured-artifact schema.
+- All 8 have complete operating contracts, screenshots, regression cases, and
   active maintenance.
 
 ## Current entries
@@ -32,7 +34,6 @@ reviewability and artifact-depth gaps, not observed live-model failures.
 | --- | ---: | --- | --- |
 | `workflow-operator` | 79 | No local schema or semantic validator | Lobster owns typed workflow state; avoid duplicating its contract without a concrete handoff need |
 | `video-concept-producer` | 79 | No local schema or semantic validator | A concept/shot/evidence manifest may help, but only if it governs the generated asset |
-| `software-maintainer` | 78 | No local schema or semantic validator | Prefer code/test/diff evidence unless a stable change-plan artifact proves useful |
 | `knowledge-curator` | 78 | No local schema or semantic validator | Keep narrative knowledge structure unless a durable index contract emerges |
 | `content-operations` | 78 | No local schema or semantic validator | A claim/approval ledger could help; avoid schema for prose itself |
 | `knowledge-gardener` | 73 | No local schema or semantic validator | Notion owns page structure; add local state only for reviewable change plans |
@@ -88,14 +89,26 @@ deliberation separated from decisions with an explicit authority and agreement
 basis, actions distinguished by acknowledgement rather than assignment, and a
 DOCX review draft that preserves the original template and recording. That
 closes the batch of entries whose state was already evidence-shaped. The
-remaining nine entries are not ruled out: the table above still names candidate
+remaining eight entries are not ruled out: the table above still names candidate
 ledgers for `content-operations`, `executive-briefing`, `executive-assistant`,
 and others. Each one needs a stable state object the Claw itself owns before a
 schema is worth adding, which batch 3 reviews rather than assumes.
 
 ### 3. Review narrative and integration-owned contracts before adding schemas
 
-For `software-maintainer`, `content-operations`, `executive-assistant`,
+This batch asked whether the Claw owns durable state or merely passes through
+someone else's. `software-maintainer` was the first entry reviewed under that
+question and the first to answer yes: the repository owns the code, but nobody
+owns the delivery record, so the record became the artifact rather than a schema
+for source code or prose. It binds the verbatim request and acceptance criteria,
+repository identity with base and head revisions and the starting dirty state,
+authorized versus protected paths, evidence provenance, changed files tied to
+criteria, verification and review results bound to the exact head, finding
+dispositions, residual risk, and a delivery authority that stops at what the
+named owner granted. Diffs and test output stay where they belong and are
+referenced, not duplicated.
+
+For `content-operations`, `executive-assistant`,
 `executive-briefing`, `knowledge-curator`, `knowledge-gardener`,
 `presentation-producer`, `video-concept-producer`, and `workflow-operator`,
 first identify a stable state object that the Claw itself owns. External plugin

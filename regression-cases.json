@@ -38,13 +38,16 @@
       "id": "software-maintainer",
       "acceptedRequest": "Fix Windows CLI discovery when the installed npm shim path contains percent signs, without changing Unix launch behavior.",
       "requiredEvidence": [
-        "Requested behavior, observable failure, or acceptance criteria",
-        "Repository path, target branch, ownership constraints, and known dirty state",
-        "Required compatibility, test environments, and delivery boundary such as local commit or draft PR"
+        "Requested behavior in the requester's own words, the observable failure, and the acceptance criteria that decide when it is done",
+        "Repository identity, worktree path, target branch, base revision, authorized paths, protected paths, and known dirty state",
+        "Required compatibility, test environments, and the repository's required validation commands",
+        "Delivery authority such as local-only, draft pull request, pull request, or merge, plus the named accountable owner and reviewer"
       ],
       "authorityBoundaries": [
         "Do not rewrite, revert, or reformat unrelated user changes",
-        "Do not publish, merge, force-push, or change public behavior beyond the requested scope without explicit authorization"
+        "Do not publish, merge, force-push, or change public behavior beyond the requested scope without explicit authorization",
+        "Do not report a check, review, or acceptance criterion as satisfied without a recorded command, result, and revision",
+        "Do not weaken, skip, or delete a failing test, and do not accept residual risk on the owner's behalf"
       ],
       "experience": {
         "target": 3,

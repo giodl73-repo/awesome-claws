@@ -1,0 +1,568 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/change-delivery-record.schema.json",
+  "title": "Bounded repository change delivery record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "request",
+    "repository",
+    "scope",
+    "sources",
+    "acceptanceCriteria",
+    "changes",
+    "verifications",
+    "reviews",
+    "findings",
+    "risks",
+    "delivery",
+    "blockedActions",
+    "handoff",
+    "ownerDecision"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.changeDeliveryRecord.v1" },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "runId",
+        "statement",
+        "statementVerbatim",
+        "requestedBy",
+        "receivedAt",
+        "asOf",
+        "owner",
+        "reviewer",
+        "outcome",
+        "state"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^request-[a-z0-9-]+$" },
+        "runId": { "type": "string", "pattern": "^run-[a-z0-9-]+$" },
+        "statement": { "$ref": "#/$defs/text" },
+        "statementVerbatim": { "type": "boolean" },
+        "requestedBy": { "$ref": "#/$defs/text" },
+        "receivedAt": { "type": "string", "format": "date-time" },
+        "asOf": { "type": "string", "format": "date-time" },
+        "owner": { "$ref": "#/$defs/text" },
+        "reviewer": { "$ref": "#/$defs/text" },
+        "outcome": {
+          "enum": ["changes-delivered", "no-change-required", "blocked-before-change"]
+        },
+        "state": {
+          "enum": ["draft", "blocked", "ready-for-owner-review", "delivered"]
+        }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity",
+        "worktreePath",
+        "targetBranch",
+        "baseRevision",
+        "headRevision",
+        "baseIsAncestorOfHead",
+        "dirtyStateAtStart"
+      ],
+      "properties": {
+        "identity": { "$ref": "#/$defs/shortText" },
+        "worktreePath": { "$ref": "#/$defs/portablePath" },
+        "targetBranch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*$"
+        },
+        "baseRevision": { "$ref": "#/$defs/revision" },
+        "headRevision": { "$ref": "#/$defs/revision" },
+        "baseIsAncestorOfHead": { "type": "boolean" },
+        "dirtyStateAtStart": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "entries"],
+          "properties": {
+            "state": { "enum": ["clean", "dirty"] },
+            "entries": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["path", "status", "disposition"],
+                "properties": {
+                  "path": { "$ref": "#/$defs/portablePath" },
+                  "status": {
+                    "enum": ["modified", "added", "deleted", "renamed", "untracked", "staged"]
+                  },
+                  "disposition": {
+                    "enum": ["preserved-uncommitted", "authorized-and-included"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorizedPaths",
+        "protectedPaths",
+        "authorizationSourceRef",
+        "publicBehaviorChangeAuthorized",
+        "dependencyChangeAuthorized"
+      ],
+      "properties": {
+        "authorizedPaths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/portablePath" }
+        },
+        "protectedPaths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/portablePath" }
+        },
+        "authorizationSourceRef": { "type": "string", "minLength": 1 },
+        "publicBehaviorChangeAuthorized": { "type": "boolean" },
+        "dependencyChangeAuthorized": { "type": "boolean" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "label",
+          "path",
+          "reference",
+          "revision",
+          "capturedAt",
+          "provenance",
+          "integrity"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "user-request",
+              "owner-instruction",
+              "repository-file",
+              "repository-history",
+              "test-output",
+              "tool-output",
+              "issue-thread",
+              "documentation"
+            ]
+          },
+          "label": { "$ref": "#/$defs/text" },
+          "path": { "oneOf": [{ "$ref": "#/$defs/portablePath" }, { "type": "null" }] },
+          "reference": {
+            "oneOf": [{ "type": "string", "format": "uri" }, { "type": "null" }]
+          },
+          "revision": { "oneOf": [{ "$ref": "#/$defs/revision" }, { "type": "null" }] },
+          "capturedAt": { "type": "string", "format": "date-time" },
+          "provenance": {
+            "enum": ["user-supplied", "workspace-read", "command-output", "public-reference"]
+          },
+          "integrity": { "enum": ["verified", "unverified", "conflicting"] }
+        }
+      }
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "statement",
+          "kind",
+          "origin",
+          "state",
+          "changeRefs",
+          "verificationRefs",
+          "notMetReason"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^criterion-[a-z0-9-]+$" },
+          "statement": { "$ref": "#/$defs/text" },
+          "kind": {
+            "enum": [
+              "bug-fix",
+              "feature-behavior",
+              "non-regression",
+              "compatibility",
+              "documentation"
+            ]
+          },
+          "origin": {
+            "enum": [
+              "stated-by-requester",
+              "derived-and-confirmed",
+              "repository-required-check"
+            ]
+          },
+          "state": { "enum": ["met", "not-met", "not-applicable", "unverifiable"] },
+          "changeRefs": { "$ref": "#/$defs/optionalRefs" },
+          "verificationRefs": { "$ref": "#/$defs/optionalRefs" },
+          "notMetReason": { "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }] }
+        }
+      }
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "path",
+          "previousPath",
+          "changeKind",
+          "rationale",
+          "criterionRefs",
+          "sourceRefs",
+          "linesAdded",
+          "linesRemoved",
+          "publicBehaviorChange"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^change-[a-z0-9-]+$" },
+          "path": { "$ref": "#/$defs/portablePath" },
+          "previousPath": {
+            "oneOf": [{ "$ref": "#/$defs/portablePath" }, { "type": "null" }]
+          },
+          "changeKind": { "enum": ["modified", "added", "deleted", "renamed"] },
+          "rationale": { "$ref": "#/$defs/text" },
+          "criterionRefs": { "$ref": "#/$defs/refs" },
+          "sourceRefs": { "$ref": "#/$defs/refs" },
+          "linesAdded": { "type": "integer", "minimum": 0 },
+          "linesRemoved": { "type": "integer", "minimum": 0 },
+          "publicBehaviorChange": { "type": "boolean" }
+        }
+      }
+    },
+    "verifications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "command",
+          "kind",
+          "scope",
+          "baselineResult",
+          "revision",
+          "startedAt",
+          "finishedAt",
+          "result",
+          "criterionRefs",
+          "evidenceSourceRef",
+          "failureSummary"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^verification-[a-z0-9-]+$" },
+          "command": { "$ref": "#/$defs/shortText" },
+          "kind": {
+            "enum": [
+              "focused-test",
+              "full-test-suite",
+              "build",
+              "lint",
+              "type-check",
+              "manual-check"
+            ]
+          },
+          "scope": { "enum": ["changed-behavior", "regression", "repository-required"] },
+          "baselineResult": {
+            "enum": [
+              "failed-before-change",
+              "passed-before-change",
+              "not-applicable",
+              "not-run"
+            ]
+          },
+          "revision": { "oneOf": [{ "$ref": "#/$defs/revision" }, { "type": "null" }] },
+          "startedAt": {
+            "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }]
+          },
+          "finishedAt": {
+            "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }]
+          },
+          "result": { "enum": ["passed", "failed", "blocked", "not-run"] },
+          "criterionRefs": { "$ref": "#/$defs/optionalRefs" },
+          "evidenceSourceRef": {
+            "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }]
+          },
+          "failureSummary": { "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }] }
+        }
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "reviewer", "revision", "ranAt", "state", "findingRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^review-[a-z0-9-]+$" },
+          "kind": { "enum": ["self-diff-review", "automated-review", "human-review"] },
+          "reviewer": { "$ref": "#/$defs/text" },
+          "revision": { "oneOf": [{ "$ref": "#/$defs/revision" }, { "type": "null" }] },
+          "ranAt": {
+            "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }]
+          },
+          "state": { "enum": ["completed", "incomplete", "not-run"] },
+          "findingRefs": { "$ref": "#/$defs/optionalRefs" }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "reviewRef",
+          "severity",
+          "summary",
+          "disposition",
+          "changeRefs",
+          "riskRefs",
+          "resolvedAtRevision"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^finding-[a-z0-9-]+$" },
+          "reviewRef": { "type": "string", "minLength": 1 },
+          "severity": { "enum": ["blocking", "major", "minor", "nit"] },
+          "summary": { "$ref": "#/$defs/text" },
+          "disposition": {
+            "enum": ["fixed", "accepted-risk", "deferred-to-owner", "not-applicable", "open"]
+          },
+          "changeRefs": { "$ref": "#/$defs/optionalRefs" },
+          "riskRefs": { "$ref": "#/$defs/optionalRefs" },
+          "resolvedAtRevision": {
+            "oneOf": [{ "$ref": "#/$defs/revision" }, { "type": "null" }]
+          }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description",
+          "category",
+          "severity",
+          "state",
+          "blocking",
+          "ownerDecisionRequired",
+          "mitigationChangeRefs"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^risk-[a-z0-9-]+$" },
+          "description": { "$ref": "#/$defs/text" },
+          "category": {
+            "enum": [
+              "compatibility",
+              "performance",
+              "security",
+              "behavior-change",
+              "coverage-gap",
+              "environment",
+              "dependency"
+            ]
+          },
+          "severity": { "enum": ["high", "medium", "low"] },
+          "state": { "enum": ["open", "mitigated", "accepted-by-owner"] },
+          "blocking": { "type": "boolean" },
+          "ownerDecisionRequired": { "type": "boolean" },
+          "mitigationChangeRefs": { "$ref": "#/$defs/optionalRefs" }
+        }
+      }
+    },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "authorizedBy",
+        "authoritySourceRef",
+        "performed",
+        "publishedAt",
+        "forcePushed",
+        "historyRewritten"
+      ],
+      "properties": {
+        "authority": {
+          "enum": ["local-only", "draft-pull-request", "pull-request", "merge"]
+        },
+        "authorizedBy": { "$ref": "#/$defs/text" },
+        "authoritySourceRef": { "type": "string", "minLength": 1 },
+        "performed": {
+          "enum": [
+            "none",
+            "local-commit",
+            "draft-pull-request-opened",
+            "pull-request-opened",
+            "merged"
+          ]
+        },
+        "publishedAt": {
+          "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }]
+        },
+        "forcePushed": { "type": "boolean" },
+        "historyRewritten": { "type": "boolean" }
+      }
+    },
+    "blockedActions": { "$ref": "#/$defs/actions" },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "reviewer",
+        "destination",
+        "residualRiskSummary",
+        "criterionRefs",
+        "changeRefs",
+        "verificationRefs",
+        "reviewRefs",
+        "findingRefs",
+        "riskRefs",
+        "blockingRefs",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": {
+          "enum": ["draft", "blocked", "ready-for-owner-review", "delivered"]
+        },
+        "owner": { "$ref": "#/$defs/text" },
+        "reviewer": { "$ref": "#/$defs/text" },
+        "destination": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300,
+          "pattern": "^outputs/[A-Za-z0-9._/-]+$"
+        },
+        "residualRiskSummary": { "$ref": "#/$defs/text" },
+        "criterionRefs": { "$ref": "#/$defs/optionalRefs" },
+        "changeRefs": { "$ref": "#/$defs/optionalRefs" },
+        "verificationRefs": { "$ref": "#/$defs/optionalRefs" },
+        "reviewRefs": { "$ref": "#/$defs/optionalRefs" },
+        "findingRefs": { "$ref": "#/$defs/optionalRefs" },
+        "riskRefs": { "$ref": "#/$defs/optionalRefs" },
+        "blockingRefs": { "$ref": "#/$defs/optionalRefs" },
+        "prohibitedActions": { "$ref": "#/$defs/actions" }
+      }
+    },
+    "ownerDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "decidedBy",
+        "decidedAt",
+        "resolution",
+        "approvedDelivery"
+      ],
+      "properties": {
+        "state": { "enum": ["pending", "completed"] },
+        "decidedBy": { "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }] },
+        "decidedAt": {
+          "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }]
+        },
+        "resolution": { "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }] },
+        "approvedDelivery": {
+          "oneOf": [
+            {
+              "enum": [
+                "none",
+                "local-commit",
+                "draft-pull-request-opened",
+                "pull-request-opened",
+                "merged"
+              ]
+            },
+            { "type": "null" }
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S"
+    },
+    "shortText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400,
+      "pattern": "\\S"
+    },
+    "portablePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*$"
+    },
+    "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "optionalRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "push-or-publish-without-authorization",
+          "open-or-merge-a-pull-request-without-authorization",
+          "force-push-or-rewrite-history",
+          "revert-or-reformat-unrelated-changes",
+          "modify-protected-paths",
+          "change-public-behavior-beyond-scope",
+          "weaken-skip-or-delete-failing-tests",
+          "fabricate-verification-results",
+          "claim-untested-behavior-as-verified",
+          "close-review-findings-without-a-change",
+          "accept-residual-risk-on-behalf-of-the-owner",
+          "install-or-upgrade-dependencies-without-authorization",
+          "copy-secrets-or-credentials-into-durable-output",
+          "comment-on-or-close-issues-and-pull-requests"
+        ]
+      }
+    }
+  }
+}

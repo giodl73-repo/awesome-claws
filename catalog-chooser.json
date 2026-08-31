@@ -3089,15 +3089,15 @@
     {
       "id": "software-maintainer",
       "name": "Software maintainer",
-      "description": "Delivers scoped repository changes with source-grounded review and verification.",
-      "audience": "Maintainers making a bounded bug fix or feature change in an unfamiliar or actively developed repository.",
+      "description": "Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority.",
+      "audience": "Maintainers making a bounded bug fix or feature change in an unfamiliar or actively developed repository who need the delivered diff to be reviewable rather than merely plausible.",
       "category": "engineering",
       "maintenance": {
         "status": "active",
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-30"
       },
       "setup": {
         "level": "high",
