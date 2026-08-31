@@ -1,0 +1,322 @@
+{
+  "schemaVersion": "awesomeClaws.publicationReadinessRecord.v1",
+  "package": {
+    "id": "package-beta-analytics-launch",
+    "request": "Prepare the launch package for a beta analytics dashboard aimed at operations managers and current design partners.",
+    "owner": "Maya Chen",
+    "ownerType": "human",
+    "channelOwner": "Product Marketing team",
+    "channelOwnerType": "team",
+    "asOf": "2026-08-31T16:00:00-07:00",
+    "deadline": "2026-09-04T17:00:00-07:00",
+    "timeZone": "America/Los_Angeles",
+    "state": "blocked"
+  },
+  "brief": {
+    "audience": "Operations managers and current design partners evaluating the private beta",
+    "channels": ["web", "email", "documentation"],
+    "intendedAction": "Ask eligible design partners to review the beta overview and request enrollment through the owner-managed program.",
+    "successMeasure": "Qualified beta-interest submissions using the approved measurement definition.",
+    "voice": "Direct, evidence-led, and explicit about beta limitations.",
+    "restrictedTopics": [
+      "Do not imply general availability",
+      "Do not promise quantified time savings",
+      "Do not identify design partners without documented quote consent"
+    ],
+    "acceptanceCriteria": [
+      {
+        "id": "criterion-audience-and-beta-scope",
+        "statement": "Every asset names the intended audience and identifies the dashboard as a limited beta.",
+        "state": "met",
+        "assetRefs": ["asset-launch-page", "asset-partner-email", "asset-beta-guide"]
+      },
+      {
+        "id": "criterion-supported-capabilities",
+        "statement": "Every product capability claim is tied to the current approved product brief.",
+        "state": "met",
+        "assetRefs": ["asset-launch-page", "asset-partner-email", "asset-beta-guide"]
+      },
+      {
+        "id": "criterion-approved-customer-quote",
+        "statement": "The launch page uses the design-partner quote only after documented quote and attribution approval.",
+        "state": "not-met",
+        "assetRefs": ["asset-launch-page"]
+      },
+      {
+        "id": "criterion-measurement-handoff",
+        "statement": "The measurement owner receives a defined qualified-interest metric without fabricated results.",
+        "state": "met",
+        "assetRefs": ["asset-launch-page", "asset-partner-email"]
+      }
+    ]
+  },
+  "sources": [
+    {
+      "id": "source-product-brief",
+      "kind": "product-brief",
+      "label": "Approved beta capability brief",
+      "reference": "references/beta-capability-brief.md",
+      "observedAt": "2026-08-31T09:00:00-07:00",
+      "freshness": "current",
+      "classification": "internal"
+    },
+    {
+      "id": "source-brand-guide",
+      "kind": "brand-guidance",
+      "label": "Product launch voice and accessibility guidance",
+      "reference": "references/brand-guide.md",
+      "observedAt": "2026-08-30T12:00:00-07:00",
+      "freshness": "current",
+      "classification": "internal"
+    },
+    {
+      "id": "source-legal-guidance",
+      "kind": "legal-guidance",
+      "label": "Beta disclosure language approved by counsel",
+      "reference": "references/beta-legal-guidance.md",
+      "observedAt": "2026-08-31T10:00:00-07:00",
+      "freshness": "current",
+      "classification": "confidential"
+    },
+    {
+      "id": "source-quote-consent",
+      "kind": "customer-quote-consent",
+      "label": "Design-partner quote approval request",
+      "reference": "references/quote-approval-request.md",
+      "observedAt": "2026-08-31T11:00:00-07:00",
+      "freshness": "missing",
+      "classification": "confidential"
+    },
+    {
+      "id": "source-channel-guide",
+      "kind": "channel-guidance",
+      "label": "Web, email, and documentation launch checklist",
+      "reference": "references/channel-checklist.md",
+      "observedAt": "2026-08-31T08:30:00-07:00",
+      "freshness": "current",
+      "classification": "internal"
+    },
+    {
+      "id": "source-measurement-plan",
+      "kind": "measurement-plan",
+      "label": "Approved beta-interest measurement definition",
+      "reference": "references/measurement-plan.md",
+      "observedAt": "2026-08-31T13:00:00-07:00",
+      "freshness": "current",
+      "classification": "internal"
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-dashboard-capability",
+      "kind": "product-capability",
+      "statement": "The beta dashboard combines queue health, throughput, and exception trends for operations review.",
+      "sourceRefs": ["source-product-brief"],
+      "allowedChannels": ["web", "email", "documentation"],
+      "requiredApprovalKinds": ["factual", "brand", "legal", "channel-owner"],
+      "restrictions": ["Retain the beta qualifier", "Do not claim automated remediation"],
+      "state": "supported"
+    },
+    {
+      "id": "claim-design-partner-quote",
+      "kind": "customer-quote",
+      "statement": "The dashboard gives our operations leads one place to start the daily review.",
+      "sourceRefs": ["source-quote-consent"],
+      "allowedChannels": ["web"],
+      "requiredApprovalKinds": ["factual", "brand", "legal", "channel-owner"],
+      "restrictions": ["Do not use until quote wording and attribution are approved"],
+      "state": "blocked"
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-launch-page",
+      "kind": "article",
+      "title": "Beta analytics dashboard launch page",
+      "path": "outputs/beta-dashboard-launch-page.md",
+      "channel": "web",
+      "version": "v3",
+      "claimRefs": ["claim-dashboard-capability", "claim-design-partner-quote"],
+      "criterionRefs": [
+        "criterion-audience-and-beta-scope",
+        "criterion-supported-capabilities",
+        "criterion-approved-customer-quote",
+        "criterion-measurement-handoff"
+      ],
+      "state": "review-needed",
+      "publicationState": "not-published"
+    },
+    {
+      "id": "asset-partner-email",
+      "kind": "email",
+      "title": "Design-partner beta invitation",
+      "path": "outputs/beta-dashboard-partner-email.md",
+      "channel": "email",
+      "version": "v2",
+      "claimRefs": ["claim-dashboard-capability"],
+      "criterionRefs": [
+        "criterion-audience-and-beta-scope",
+        "criterion-supported-capabilities",
+        "criterion-measurement-handoff"
+      ],
+      "state": "ready-for-owner-review",
+      "publicationState": "not-published"
+    },
+    {
+      "id": "asset-beta-guide",
+      "kind": "documentation",
+      "title": "Private beta overview",
+      "path": "outputs/beta-dashboard-guide.md",
+      "channel": "documentation",
+      "version": "v2",
+      "claimRefs": ["claim-dashboard-capability"],
+      "criterionRefs": [
+        "criterion-audience-and-beta-scope",
+        "criterion-supported-capabilities"
+      ],
+      "state": "ready-for-owner-review",
+      "publicationState": "not-published"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "approval-email-factual",
+      "kind": "factual",
+      "reviewer": "Analytics Product lead",
+      "reviewerType": "team",
+      "assetRef": "asset-partner-email",
+      "assetVersion": "v2",
+      "claimRefs": ["claim-dashboard-capability"],
+      "evidenceSourceRefs": ["source-product-brief"],
+      "decision": "approved",
+      "decidedAt": "2026-08-31T14:00:00-07:00"
+    },
+    {
+      "id": "approval-email-brand",
+      "kind": "brand",
+      "reviewer": "Brand team",
+      "reviewerType": "team",
+      "assetRef": "asset-partner-email",
+      "assetVersion": "v2",
+      "claimRefs": ["claim-dashboard-capability"],
+      "evidenceSourceRefs": ["source-brand-guide"],
+      "decision": "approved",
+      "decidedAt": "2026-08-31T14:15:00-07:00"
+    },
+    {
+      "id": "approval-email-legal",
+      "kind": "legal",
+      "reviewer": "Product Counsel",
+      "reviewerType": "human",
+      "assetRef": "asset-partner-email",
+      "assetVersion": "v2",
+      "claimRefs": ["claim-dashboard-capability"],
+      "evidenceSourceRefs": ["source-legal-guidance"],
+      "decision": "approved",
+      "decidedAt": "2026-08-31T14:30:00-07:00"
+    },
+    {
+      "id": "approval-email-channel",
+      "kind": "channel-owner",
+      "reviewer": "Product Marketing team",
+      "reviewerType": "team",
+      "assetRef": "asset-partner-email",
+      "assetVersion": "v2",
+      "claimRefs": ["claim-dashboard-capability"],
+      "evidenceSourceRefs": ["source-channel-guide"],
+      "decision": "pending",
+      "decidedAt": null
+    },
+    {
+      "id": "approval-page-quote",
+      "kind": "factual",
+      "reviewer": "Design Partner Program lead",
+      "reviewerType": "team",
+      "assetRef": "asset-launch-page",
+      "assetVersion": "v3",
+      "claimRefs": ["claim-design-partner-quote"],
+      "evidenceSourceRefs": ["source-quote-consent"],
+      "decision": "pending",
+      "decidedAt": null
+    }
+  ],
+  "metrics": [
+    {
+      "id": "metric-qualified-interest",
+      "label": "Qualified beta-interest submissions",
+      "definition": "Unique eligible organizations submitting the owner-managed beta-interest form, excluding test and duplicate submissions.",
+      "owner": "Growth Analytics team",
+      "ownerType": "team",
+      "sourceRefs": ["source-measurement-plan"],
+      "state": "defined"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-quote-consent",
+      "question": "Has the design partner approved the exact quote wording and named attribution for web publication?",
+      "owner": "Design Partner Program lead",
+      "ownerType": "team",
+      "refs": ["source-quote-consent", "claim-design-partner-quote", "asset-launch-page", "criterion-approved-customer-quote"]
+    }
+  ],
+  "prohibitedActions": [
+    "publish-content",
+    "schedule-content",
+    "distribute-content",
+    "mutate-cms",
+    "message-audience",
+    "represent-approval",
+    "claim-measured-results"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Maya Chen",
+    "ownerType": "human",
+    "channelOwner": "Product Marketing team",
+    "channelOwnerType": "team",
+    "sourceRefs": [
+      "source-product-brief",
+      "source-brand-guide",
+      "source-legal-guidance",
+      "source-quote-consent",
+      "source-channel-guide",
+      "source-measurement-plan"
+    ],
+    "claimRefs": ["claim-dashboard-capability", "claim-design-partner-quote"],
+    "assetRefs": ["asset-launch-page", "asset-partner-email", "asset-beta-guide"],
+    "approvalRefs": [
+      "approval-email-factual",
+      "approval-email-brand",
+      "approval-email-legal",
+      "approval-email-channel",
+      "approval-page-quote"
+    ],
+    "metricRefs": ["metric-qualified-interest"],
+    "criterionRefs": [
+      "criterion-audience-and-beta-scope",
+      "criterion-supported-capabilities",
+      "criterion-approved-customer-quote",
+      "criterion-measurement-handoff"
+    ],
+    "reviewQuestionRefs": ["question-quote-consent"],
+    "blockingRefs": [
+      "source-quote-consent",
+      "claim-design-partner-quote",
+      "asset-launch-page",
+      "approval-email-channel",
+      "approval-page-quote",
+      "criterion-approved-customer-quote",
+      "question-quote-consent"
+    ],
+    "prohibitedActions": [
+      "publish-content",
+      "schedule-content",
+      "distribute-content",
+      "mutate-cms",
+      "message-audience",
+      "represent-approval",
+      "claim-measured-results"
+    ]
+  }
+}

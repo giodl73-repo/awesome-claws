@@ -25,7 +25,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Cloud cost analyst](claws/cloud-cost-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Compliance reviewer](claws/compliance-reviewer) | @giodl73-repo; last verified 2026-08-19 |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | @giodl73; last verified 2026-08-29 |
-| [Content operations](claws/content-operations) | @giodl73-repo; last verified 2026-08-19 |
+| [Content operations](claws/content-operations) | @giodl73-repo; last verified 2026-08-31 |
 | [Customer support](claws/customer-support) | @giodl73-repo; last verified 2026-08-19 |
 | [Data analyst](claws/data-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Data governance steward](claws/data-governance-steward) | @giodl73-repo; last verified 2026-08-19 |
@@ -373,7 +373,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Child activity manager](claws/child-activity-manager) | Coordinates child sports, lessons, clubs, camps, equipment, fees, schedules, locations, carpools, and guardian-review questions from approved family sources without registering, paying, messaging, sharing locations, making pickup commitments, or changing calendars without exact guardian approval. |
 | [Civic data analyst](claws/civic-data-analyst) | Combines public demographic, budget, service, land-use, and mobility data into reproducible civic decision evidence. |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | Tracks conferences, calls for proposals, speaking or attendance fit, deadlines, and submission drafts without applying, publishing, booking, or contacting organizers. |
-| [Content operations](claws/content-operations) | Runs editorial work from brief through review, publication readiness, and measurement. |
+| [Content operations](claws/content-operations) | Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it. |
 | [Delegation coordinator](claws/delegation-coordinator) | Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
 | [Document intake analyst](claws/document-intake-analyst) | Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty. |
 | [Document renewal tracker](claws/document-renewal-tracker) | Tracks passports, IDs, licenses, permits, registrations, certifications, memberships, expiration windows, source freshness, required owner documents, and review questions without filing forms, paying fees, changing accounts, submitting documents, or giving legal, immigration, tax, medical, or eligibility advice. |
@@ -528,7 +528,7 @@ Categories come directly from the catalog entry.
 | --- | --- |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | X3; Maintains a longitudinal appliance inventory, model-bound care calendar, warranty and recall state, lifecycle cost evidence, and explicitly approved manufacturer or authorized-servicer appointments. |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | X3; Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions. |
-| [Content operations](claws/content-operations) | X3; Runs editorial work from brief through review, publication readiness, and measurement. |
+| [Content operations](claws/content-operations) | X3; Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it. |
 | [Customer support](claws/customer-support) | X4; Resolves customer cases accurately while preserving context, ownership, and privacy. |
 | [Event operations director](claws/event-operations-director) | X5; Turns an approved event plan into a controlled run of show, readiness view, decision queue, and accountable handoff. |
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | X4; Turns approved site observations into a prioritized maintenance queue, owner handoff, and private operating view without dispatching work. |

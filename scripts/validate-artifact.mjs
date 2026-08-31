@@ -19,6 +19,7 @@ const schemaNames = {
   "change-control-operator": "change-plan.schema.json",
   "child-activity-manager": "activity-logistics.schema.json",
   "civic-data-analyst": "civic-evidence.schema.json",
+  "content-operations": "publication-readiness-record.schema.json",
   "data-analyst": "analysis-state.schema.json",
   "delegation-coordinator": "delegation-ledger.schema.json",
   "document-intake-analyst": "document-intake.schema.json",

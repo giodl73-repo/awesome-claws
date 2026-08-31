@@ -53,6 +53,12 @@ const definitions = [
     decisionField: "decision.state",
   },
   {
+    id: "content-operations",
+    schema: "../claws/content-operations/schemas/publication-readiness-record.schema.json",
+    fixture: "../claws/content-operations/fixtures/publication-readiness-record.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "case-continuity-coordinator",
     schema: "../claws/case-continuity-coordinator/schemas/case-checkpoint.schema.json",
     fixture: "../claws/case-continuity-coordinator/fixtures/case-checkpoint.example.json",

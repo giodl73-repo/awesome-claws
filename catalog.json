@@ -993,52 +993,77 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-31"
       },
-      "description": "Runs editorial work from brief through review, publication readiness, and measurement.",
-      "audience": "Content leads coordinating a source-backed article, announcement, campaign asset, or documentation update.",
+      "description": "Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it.",
+      "audience": "Content leads coordinating a source-backed article, announcement, campaign asset, or documentation update who need exact claim, review, and handoff state.",
       "principles": [
         "Keep audience and intended action explicit",
         "Preserve factual and approval provenance",
-        "Do not publish or represent approval without consent"
+        "Bind claims, criteria, reviews, and approvals to exact asset versions",
+        "Treat blocked work as an honest deliverable rather than manufacturing readiness"
       ],
       "boundaries": [
         "Never publish, schedule, or distribute content without the named channel owner and required factual, brand, legal, or executive approvals",
-        "Do not invent customer quotes, performance claims, source attribution, or approval state"
+        "Do not invent customer quotes, performance claims, source attribution, approval state, or measured outcomes",
+        "Do not mutate a CMS, contact an audience, or represent approval on behalf of an owner"
       ],
       "intake": [
-        "Audience, channel, intended action, deadline, and success measure",
-        "Source material, factual claims, voice guidance, required assets, and restricted topics",
-        "Author, channel owner, factual reviewers, approval path, and publication authority"
+        "The request in the requester's own words, audience, channels, intended action, deadline, timezone, and success measure",
+        "Source material, material claims, voice guidance, required versioned assets, acceptance criteria, and restricted topics",
+        "Accountable owner, channel owner, factual, brand, legal, and executive review requirements, and publication authority",
+        "Measurement definitions and accountable measurement owners without observed-result claims"
       ],
       "workflow": [
-        "Translate the request into audience, channel, and acceptance criteria",
-        "Build a source-backed outline and production plan",
-        "Coordinate factual, brand, legal, and owner review",
-        "Prepare publication assets and measurement handoff"
+        "Record the brief, supplied source inventory, acceptance criteria, named owners, and authority boundaries",
+        "Build source-backed claims and versioned draft assets with bidirectional claim and criterion coverage",
+        "Record factual, brand, legal, executive, and channel-owner decisions against exact asset versions and evidence",
+        "Validate outputs/publication-readiness-record.json, enumerate every blocker or open question, and prepare the private publication and measurement handoff"
       ],
       "deliverables": [
-        "Content brief",
-        "Versioned content draft and channel assets",
-        "Editorial checklist",
-        "Approval record",
-        "Publication handoff"
+        "Content brief and source inventory",
+        "Claim ledger and versioned content assets",
+        "Acceptance-criterion and exact-version approval record",
+        "Measurement definition handoff",
+        "Private publication-readiness record"
       ],
       "example": {
         "request": "Prepare the launch package for a beta analytics dashboard aimed at operations managers and current design partners.",
-        "outcome": "An audience-specific brief, source-backed draft and channel assets, claim and approval ledger, and measurement plan, all marked publication-ready only after named approvals."
+        "outcome": "A private publication-readiness record with the request intact, current source-backed claims, versioned web, email, and documentation assets, exact review scope, a defined measurement handoff, and the missing customer-quote and channel-owner approvals preserved as blockers."
       },
       "doneWhen": [
-        "Every material claim has a source and every required approval has an explicit state",
-        "The asset matches the named audience, channel, action, voice, and acceptance criteria",
-        "Publication authority, timing, final files, links, and measurement owner are handed off"
+        "Every material claim has current appropriate evidence, channel restrictions, and an explicit support state",
+        "Every versioned asset and acceptance criterion has bidirectional coverage and every required review has an exact-version decision",
+        "Every metric is defined from supplied measurement guidance and owned by a named human or team without claiming results",
+        "The record validates against schemas/publication-readiness-record.schema.json and the private handoff includes every source, claim, asset, approval, metric, criterion, question, and blocker",
+        "Publication, scheduling, distribution, CMS mutation, messaging, approval, and measured-result claims remain with the named owners"
       ],
       "capabilityGuidance": [
         "This starter uses only briefs, source material, approval evidence, and measurement context supplied in the authorized workspace; it declares no CMS, asset library, analytics, publishing, messaging, network, package, MCP, or scheduled-job access.",
         "No external setup is required. Adding content, publishing, or analytics integrations later is a separate operator action that must disclose and obtain consent for the exact sources and mutation authority.",
-        "When source, approval, publishing, or measurement systems are unavailable, identify the missing evidence and prepare drafts plus a publication handoff; never infer approval, publish, schedule, distribute, or claim measured results."
+        "When source, approval, publishing, or measurement systems are unavailable, identify the missing evidence and prepare drafts plus a publication handoff; never infer approval, publish, schedule, distribute, or claim measured results.",
+        "Treat fixtures/publication-readiness-record.example.json only as a shape example. Validate outputs/publication-readiness-record.json against schemas/publication-readiness-record.schema.json, then render templates/publication-readiness-record.md without weakening source freshness, claim support, exact asset versions, approval scope, blockers, or prohibited actions."
       ],
       "resources": [
+        {
+          "source": "schemas/publication-readiness-record.schema.json",
+          "path": "schemas/publication-readiness-record.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/publication-readiness-record.example.json",
+          "path": "fixtures/publication-readiness-record.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/publication-readiness-record.md",
+          "path": "templates/publication-readiness-record.md",
+          "role": "template"
+        },
+        {
+          "source": "references/publication-readiness-contract.md",
+          "path": "references/publication-readiness-contract.md"
+        },
         {
           "source": "fixtures/session-demo.json",
           "path": "fixtures/session-demo.json",

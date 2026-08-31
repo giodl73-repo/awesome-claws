@@ -493,15 +493,15 @@
     {
       "id": "content-operations",
       "name": "Content operations",
-      "description": "Runs editorial work from brief through review, publication readiness, and measurement.",
-      "audience": "Content leads coordinating a source-backed article, announcement, campaign asset, or documentation update.",
+      "description": "Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it.",
+      "audience": "Content leads coordinating a source-backed article, announcement, campaign asset, or documentation update who need exact claim, review, and handoff state.",
       "category": "operations",
       "maintenance": {
         "status": "active",
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-31"
       },
       "setup": {
         "level": "low",

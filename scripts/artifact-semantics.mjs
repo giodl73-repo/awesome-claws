@@ -14863,6 +14863,595 @@ function travelShortlistFindings(value) {
   return findings;
 }
 
+function publicationReadinessRecordFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const claimIds = value.claims.map((item) => item.id);
+  const assetIds = value.assets.map((item) => item.id);
+  const approvalIds = value.approvals.map((item) => item.id);
+  const metricIds = value.metrics.map((item) => item.id);
+  const criterionIds = value.brief.acceptanceCriteria.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const claimSet = new Set(claimIds);
+  const assetSet = new Set(assetIds);
+  const approvalSet = new Set(approvalIds);
+  const metricSet = new Set(metricIds);
+  const criterionSet = new Set(criterionIds);
+  const questionSet = new Set(questionIds);
+  const allIds = new Set([
+    ...sourceIds,
+    ...claimIds,
+    ...assetIds,
+    ...approvalIds,
+    ...metricIds,
+    ...criterionIds,
+    ...questionIds,
+  ]);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const claimById = new Map(value.claims.map((item) => [item.id, item]));
+  const assetById = new Map(value.assets.map((item) => [item.id, item]));
+  const criterionById = new Map(
+    value.brief.acceptanceCriteria.map((item) => [item.id, item]),
+  );
+  const requiredActions = [
+    "publish-content",
+    "schedule-content",
+    "distribute-content",
+    "mutate-cms",
+    "message-audience",
+    "represent-approval",
+    "claim-measured-results",
+  ];
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(claimIds, "claims", "Claim id"),
+    ...uniqueFindings(assetIds, "assets", "Asset id"),
+    ...uniqueFindings(approvalIds, "approvals", "Approval id"),
+    ...uniqueFindings(metricIds, "metrics", "Metric id"),
+    ...uniqueFindings(criterionIds, "brief.acceptanceCriteria", "Criterion id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Question id"),
+  ];
+  const asOf = Date.parse(value.package.asOf);
+  if (Date.parse(value.package.deadline) < asOf) {
+    findings.push(
+      finding(
+        "invalid_package_chronology",
+        "package.deadline",
+        "The publication deadline must not precede the record as-of time.",
+      ),
+    );
+  }
+  if (!isResolvableTimeZone(value.package.timeZone)) {
+    findings.push(
+      finding(
+        "invalid_time_zone",
+        "package.timeZone",
+        "The package timezone must be a resolvable IANA timezone.",
+      ),
+    );
+  }
+  for (const [index, source] of value.sources.entries()) {
+    if (Date.parse(source.observedAt) > asOf) {
+      findings.push(
+        finding(
+          "future_source_evidence",
+          `sources.${index}.observedAt`,
+          "Source evidence must not postdate the publication-readiness record.",
+        ),
+      );
+    }
+    const safePublicReference =
+      URL.canParse(source.reference) &&
+      isCredentialFreePublicHttpsReference(new URL(source.reference));
+    if (!isSafePackagePath(source.reference) && !safePublicReference) {
+      findings.push(
+        finding(
+          "unsafe_source_reference",
+          `sources.${index}.reference`,
+          "Source references must be portable package paths or public HTTPS URLs without query data.",
+        ),
+      );
+    }
+  }
+  const supportingKinds = {
+    "product-capability": new Set(["product-brief", "approved-fact"]),
+    performance: new Set(["approved-fact"]),
+    "customer-quote": new Set(["customer-quote-consent"]),
+    "legal-or-regulatory": new Set(["legal-guidance", "approved-fact"]),
+    "executive-position": new Set(["executive-direction"]),
+    "general-fact": new Set(["approved-fact", "product-brief"]),
+  };
+  for (const [index, claim] of value.claims.entries()) {
+    findings.push(
+      ...referenceFindings(
+        claim.sourceRefs,
+        sourceSet,
+        `claims.${index}.sourceRefs`,
+        "Claim source reference",
+      ),
+    );
+    const sources = claim.sourceRefs
+      .map((ref) => sourceById.get(ref))
+      .filter(Boolean);
+    if (
+      claim.state === "supported" &&
+      (sources.some((source) => source.freshness !== "current") ||
+        !sources.some((source) => supportingKinds[claim.kind].has(source.kind)))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_claim_state",
+          `claims.${index}.state`,
+          "A supported claim requires current evidence of a source kind appropriate to that claim.",
+        ),
+      );
+    }
+  }
+  for (const [index, criterion] of value.brief.acceptanceCriteria.entries()) {
+    findings.push(
+      ...referenceFindings(
+        criterion.assetRefs,
+        assetSet,
+        `brief.acceptanceCriteria.${index}.assetRefs`,
+        "Criterion asset reference",
+      ),
+    );
+  }
+  function approvedKindsFor(asset, claim) {
+    return new Set(
+      value.approvals
+        .filter(
+          (approval) =>
+            approval.assetRef === asset.id &&
+            approval.assetVersion === asset.version &&
+            approval.claimRefs.includes(claim.id) &&
+            approval.decision === "approved",
+        )
+        .map((approval) => approval.kind),
+    );
+  }
+  for (const [index, asset] of value.assets.entries()) {
+    findings.push(
+      ...referenceFindings(
+        asset.claimRefs,
+        claimSet,
+        `assets.${index}.claimRefs`,
+        "Asset claim reference",
+      ),
+      ...referenceFindings(
+        asset.criterionRefs,
+        criterionSet,
+        `assets.${index}.criterionRefs`,
+        "Asset criterion reference",
+      ),
+    );
+    if (!isSafePackagePath(asset.path) || !asset.path.startsWith("outputs/")) {
+      findings.push(
+        finding(
+          "unsafe_asset_path",
+          `assets.${index}.path`,
+          "Editorial assets must use a portable path under outputs/.",
+        ),
+      );
+    }
+    const claims = asset.claimRefs
+      .map((ref) => claimById.get(ref))
+      .filter(Boolean);
+    const criteria = asset.criterionRefs
+      .map((ref) => criterionById.get(ref))
+      .filter(Boolean);
+    const contentReady =
+      claims.every(
+        (claim) =>
+          claim.state === "supported" &&
+          claim.allowedChannels.includes(asset.channel),
+      ) && criteria.every((criterion) => criterion.state === "met");
+    if (
+      ["ready-for-owner-review", "approved"].includes(asset.state) &&
+      !contentReady
+    ) {
+      findings.push(
+        finding(
+          "unsupported_asset_state",
+          `assets.${index}.state`,
+          "Owner-ready assets require supported channel-compatible claims and met criteria.",
+        ),
+      );
+    }
+    if (
+      asset.state === "approved" &&
+      claims.some((claim) => {
+        const approvedKinds = approvedKindsFor(asset, claim);
+        return (
+          claim.requiredApprovalKinds.some((kind) => !approvedKinds.has(kind)) ||
+          !approvedKinds.has("channel-owner")
+        );
+      })
+    ) {
+      findings.push(
+        finding(
+          "incomplete_asset_approval",
+          `assets.${index}.state`,
+          "Approved assets require exact-version approval for every claim-required review kind and the channel owner.",
+        ),
+      );
+    }
+    if (
+      asset.criterionRefs.some(
+        (ref) => !criterionById.get(ref)?.assetRefs.includes(asset.id),
+      )
+    ) {
+      findings.push(
+        finding(
+          "missing_asset_criterion_coverage",
+          `assets.${index}.criterionRefs`,
+          `Asset ${asset.id} must have bidirectional acceptance-criterion coverage.`,
+        ),
+      );
+    }
+    for (const claim of claims) {
+      if (!claim.allowedChannels.includes(asset.channel)) {
+        findings.push(
+          finding(
+            "claim_channel_mismatch",
+            `assets.${index}.channel`,
+            `Claim ${claim.id} is not approved for the ${asset.channel} channel.`,
+          ),
+        );
+      }
+    }
+  }
+  for (const [index, criterion] of value.brief.acceptanceCriteria.entries()) {
+    if (
+      criterion.assetRefs.some(
+        (ref) => !assetById.get(ref)?.criterionRefs.includes(criterion.id),
+      )
+    ) {
+      findings.push(
+        finding(
+          "missing_criterion_asset_coverage",
+          `brief.acceptanceCriteria.${index}.assetRefs`,
+          "Criterion-to-asset coverage must be bidirectional.",
+        ),
+      );
+    }
+  }
+  for (const [index, approval] of value.approvals.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [approval.assetRef],
+        assetSet,
+        `approvals.${index}.assetRef`,
+        "Approval asset reference",
+      ),
+      ...referenceFindings(
+        approval.claimRefs,
+        claimSet,
+        `approvals.${index}.claimRefs`,
+        "Approval claim reference",
+      ),
+      ...referenceFindings(
+        approval.evidenceSourceRefs,
+        sourceSet,
+        `approvals.${index}.evidenceSourceRefs`,
+        "Approval evidence reference",
+      ),
+    );
+    const asset = assetById.get(approval.assetRef);
+    if (
+      asset &&
+      (approval.assetVersion !== asset.version ||
+        approval.claimRefs.some((ref) => !asset.claimRefs.includes(ref)))
+    ) {
+      findings.push(
+        finding(
+          "invalid_approval_scope",
+          `approvals.${index}`,
+          "Approval scope must match the current asset version and claims carried by that asset.",
+        ),
+      );
+    }
+    if (
+      (approval.decision === "pending" && approval.decidedAt !== null) ||
+      (approval.decision !== "pending" && approval.decidedAt === null)
+    ) {
+      findings.push(
+        finding(
+          "invalid_approval_chronology",
+          `approvals.${index}.decidedAt`,
+          "Pending approvals have no decision time; completed decisions require one.",
+        ),
+      );
+    }
+    if (
+      approval.decidedAt !== null &&
+      Date.parse(approval.decidedAt) > asOf
+    ) {
+      findings.push(
+        finding(
+          "future_approval_decision",
+          `approvals.${index}.decidedAt`,
+          "Approval decisions must not postdate the record.",
+        ),
+      );
+    }
+    const approvalEvidenceKinds = {
+      factual: new Set([
+        "approved-fact",
+        "product-brief",
+        "customer-quote-consent",
+      ]),
+      brand: new Set(["brand-guidance"]),
+      legal: new Set(["legal-guidance"]),
+      executive: new Set(["executive-direction"]),
+      "channel-owner": new Set(["channel-guidance"]),
+    };
+    const approvalClaims = approval.claimRefs
+      .map((ref) => claimById.get(ref))
+      .filter(Boolean);
+    const factualEvidenceCoversClaims =
+      approval.kind !== "factual" ||
+      approvalClaims.every((claim) =>
+        approval.evidenceSourceRefs.some((ref) => claim.sourceRefs.includes(ref)),
+      );
+    if (
+      approval.decision === "approved" &&
+      (approval.evidenceSourceRefs.some(
+        (ref) => sourceById.get(ref)?.freshness !== "current",
+      ) ||
+        !approval.evidenceSourceRefs.some((ref) =>
+          approvalEvidenceKinds[approval.kind].has(sourceById.get(ref)?.kind),
+        ) ||
+        !factualEvidenceCoversClaims)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_approval_decision",
+          `approvals.${index}.decision`,
+          "Approved decisions require current kind-appropriate evidence, and factual approvals must cover every scoped claim.",
+        ),
+      );
+    }
+    if (
+      approval.kind === "channel-owner" &&
+      (approval.reviewer !== value.package.channelOwner ||
+        approval.reviewerType !== value.package.channelOwnerType)
+    ) {
+      findings.push(
+        finding(
+          "channel_owner_approval_mismatch",
+          `approvals.${index}.reviewer`,
+          "Channel-owner approval must come from the named channel owner.",
+        ),
+      );
+    }
+  }
+  for (const [index, metric] of value.metrics.entries()) {
+    findings.push(
+      ...referenceFindings(
+        metric.sourceRefs,
+        sourceSet,
+        `metrics.${index}.sourceRefs`,
+        "Metric source reference",
+      ),
+    );
+    if (
+      metric.state === "defined" &&
+      !metric.sourceRefs.some(
+        (ref) =>
+          sourceById.get(ref)?.kind === "measurement-plan" &&
+          sourceById.get(ref)?.freshness === "current",
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_metric_state",
+          `metrics.${index}.state`,
+          "Defined metrics require a current measurement-plan source.",
+        ),
+      );
+    }
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...referenceFindings(
+        question.refs,
+        allIds,
+        `reviewQuestions.${index}.refs`,
+        "Review-question reference",
+      ),
+    );
+  }
+  const handoffRefs = [
+    ["sourceRefs", sourceIds, sourceSet],
+    ["claimRefs", claimIds, claimSet],
+    ["assetRefs", assetIds, assetSet],
+    ["approvalRefs", approvalIds, approvalSet],
+    ["metricRefs", metricIds, metricSet],
+    ["criterionRefs", criterionIds, criterionSet],
+    ["reviewQuestionRefs", questionIds, questionSet],
+  ];
+  for (const [field, expected, allowed] of handoffRefs) {
+    findings.push(
+      ...referenceFindings(
+        value.handoff[field],
+        allowed,
+        `handoff.${field}`,
+        "Handoff reference",
+      ),
+    );
+    if (
+      expected.some((id) => !value.handoff[field].includes(id)) ||
+      value.handoff[field].some((id) => !expected.includes(id))
+    ) {
+      findings.push(
+        finding(
+          "incomplete_handoff",
+          `handoff.${field}`,
+          "The private handoff must include every current record object exactly once.",
+        ),
+      );
+    }
+  }
+  const unresolvedIds = [
+    ...value.sources.filter((item) => item.freshness !== "current").map((item) => item.id),
+    ...value.claims.filter((item) => item.state !== "supported").map((item) => item.id),
+    ...value.assets
+      .filter((item) => ["draft", "review-needed"].includes(item.state))
+      .map((item) => item.id),
+    ...value.approvals.filter((item) => item.decision !== "approved").map((item) => item.id),
+    ...value.metrics.filter((item) => item.state !== "defined").map((item) => item.id),
+    ...value.brief.acceptanceCriteria
+      .filter((item) => item.state !== "met")
+      .map((item) => item.id),
+    ...questionIds,
+  ];
+  const unresolvedSet = new Set(unresolvedIds);
+  findings.push(
+    ...referenceFindings(
+      value.handoff.blockingRefs,
+      allIds,
+      "handoff.blockingRefs",
+      "Blocking reference",
+    ),
+  );
+  if (
+    value.handoff.state === "blocked" &&
+    (unresolvedIds.some((id) => !value.handoff.blockingRefs.includes(id)) ||
+      value.handoff.blockingRefs.some((id) => !unresolvedSet.has(id)) ||
+      unresolvedIds.length === 0)
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff.blockingRefs",
+        "A blocked handoff must enumerate every unresolved item and only unresolved items.",
+      ),
+    );
+  }
+  const contentReady =
+    value.claims.every((item) => item.state === "supported") &&
+    value.assets.every((item) =>
+      ["ready-for-owner-review", "approved"].includes(item.state),
+    ) &&
+    value.metrics.every((item) => item.state === "defined") &&
+    value.brief.acceptanceCriteria.every((item) => item.state === "met") &&
+    value.reviewQuestions.length === 0;
+  if (
+    value.handoff.state === "ready-for-owner-review" &&
+    (!contentReady || value.handoff.blockingRefs.length > 0)
+  ) {
+    findings.push(
+      finding(
+        "premature_owner_review_state",
+        "handoff.state",
+        "Owner-review readiness requires supported claims, met criteria, reviewable assets, defined metrics, and no questions or blockers.",
+      ),
+    );
+  }
+  if (
+    value.handoff.state === "ready-for-publication" &&
+    (!contentReady ||
+      value.assets.some((item) => item.state !== "approved") ||
+      value.approvals.some((item) => item.decision !== "approved") ||
+      value.handoff.blockingRefs.length > 0)
+  ) {
+    findings.push(
+      finding(
+        "premature_publication_ready_state",
+        "handoff.state",
+        "Publication readiness requires fully approved exact asset versions and no unresolved work.",
+      ),
+    );
+  }
+  const expectedPackageState =
+    value.handoff.state === "ready-for-publication"
+      ? "ready-for-publication"
+      : value.handoff.state === "ready-for-owner-review"
+        ? "ready-for-owner-review"
+        : "blocked";
+  if (
+    value.package.state !== expectedPackageState ||
+    value.handoff.owner !== value.package.owner ||
+    value.handoff.ownerType !== value.package.ownerType ||
+    value.handoff.channelOwner !== value.package.channelOwner ||
+    value.handoff.channelOwnerType !== value.package.channelOwnerType
+  ) {
+    findings.push(
+      finding(
+        "inconsistent_package_handoff",
+        "handoff",
+        "Package and handoff state, owner, and channel owner must agree.",
+      ),
+    );
+  }
+  const principals = [
+    [value.package.owner, "package.owner"],
+    [value.package.channelOwner, "package.channelOwner"],
+    ...value.approvals.map((item, index) => [
+      item.reviewer,
+      `approvals.${index}.reviewer`,
+    ]),
+    ...value.metrics.map((item, index) => [item.owner, `metrics.${index}.owner`]),
+    ...value.reviewQuestions.map((item, index) => [
+      item.owner,
+      `reviewQuestions.${index}.owner`,
+    ]),
+  ];
+  for (const [principal, path] of principals) {
+    if (
+      /^(?:the )?(?:agent|assistant|claw)$/iu.test(principal.trim()) ||
+      /\b(?:ai|bot|gpt|language model|content operations claw)\b/iu.test(principal)
+    ) {
+      findings.push(
+        finding(
+          "agent_owned_authority",
+          path,
+          "Editorial ownership, review, approval, and measurement authority must remain with named humans or teams.",
+        ),
+      );
+    }
+  }
+  for (const action of requiredActions) {
+    if (
+      !value.prohibitedActions.includes(action) ||
+      !value.handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "prohibitedActions",
+          `Publication readiness records must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+  const narrativeTexts = [
+    value.package.request,
+    value.brief.audience,
+    value.brief.intendedAction,
+    value.brief.successMeasure,
+    value.brief.voice,
+    ...value.brief.restrictedTopics,
+    ...value.brief.acceptanceCriteria.flatMap((item) => [item.statement]),
+    ...value.claims.flatMap((item) => [item.statement, ...item.restrictions]),
+    ...value.metrics.flatMap((item) => [item.label, item.definition]),
+    ...value.reviewQuestions.map((item) => item.question),
+  ];
+  const prohibitedNarrative =
+    /\b(?:(?:i|we|the (?:agent|assistant|claw)|content operations)\s+(?:have\s+)?(?:published|scheduled|distributed|sent|messaged|updated the cms|mutated the cms|approved)|(?:results|analytics|conversion|engagement|open rate|click rate)\s+(?:show|showed|prove|proved|increased|decreased|improved))\b/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "package",
+        "The record must not claim that the Claw published, scheduled, distributed, messaged, mutated a CMS, approved content, or observed measurement results.",
+      ),
+    );
+  }
+  return findings;
+}
+
 function fundraisingCampaignFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const claimIds = value.claims.map((item) => item.id);
@@ -22937,6 +23526,7 @@ const validators = {
   "change-control-operator": changeControlFindings,
   "child-activity-manager": childActivityFindings,
   "civic-data-analyst": civicDataFindings,
+  "content-operations": publicationReadinessRecordFindings,
   "data-analyst": dataAnalysisFindings,
   "delegation-coordinator": delegationFindings,
   "document-renewal-tracker": documentRenewalFindings,
