@@ -42,11 +42,11 @@ const definitions = [
   },
   {
     id: "workspace-execution",
-    description: "Installs bounded workspace patch and command-execution authority.",
+    description: "Installs bounded workspace patch or command-execution authority.",
     matches: (entry) => {
       const tools = entry.openclawProfile?.agent?.tools;
       const grants = [...(tools?.allow ?? []), ...(tools?.alsoAllow ?? [])];
-      return grants.includes("apply_patch") && grants.includes("exec");
+      return grants.includes("apply_patch") || grants.includes("exec");
     },
   },
   {

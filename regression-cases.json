@@ -405,7 +405,8 @@
         "fallback": "text"
       },
       "capabilityClasses": [
-        "clawhub-skill"
+        "clawhub-skill",
+        "workspace-execution"
       ],
       "capabilityDigest": "sha256:20389e10ee8f354ed04c7ab568036d595919a21f49624e27f209326eacad5951"
     },

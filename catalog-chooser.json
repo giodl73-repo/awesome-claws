@@ -2022,7 +2022,8 @@
         "dependency-live"
       ],
       "capabilityClasses": [
-        "clawhub-skill"
+        "clawhub-skill",
+        "workspace-execution"
       ],
       "boundaryAttention": {
         "level": "guarded",
