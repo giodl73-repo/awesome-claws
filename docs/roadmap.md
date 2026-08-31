@@ -45,9 +45,9 @@ highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 59 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 91 of 100 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 71 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 60 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 92 of 100 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 72 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
@@ -108,6 +108,22 @@ record stays a review draft that preserves the original template and recording.
 A meeting that produced no decisions and no actions is recorded as exactly that.
 It does not carry project state forward, coordinate a principal's calendar or
 correspondence, or synthesize a leadership portfolio.
+
+Software Maintainer now owns the bounded change-delivery lane. The repository
+already owns the code and the diff, so the artifact is the delivery record
+rather than a schema for source: it keeps the request verbatim, binds every
+acceptance criterion to the changes and checks that carry it in both directions,
+names the repository, target branch, base and head revisions, and the dirty
+state found at the start, separates authorized from protected paths so
+pre-existing work is preserved rather than absorbed, requires each verification
+and review result to be bound to the exact head with its captured output, keeps
+a bug fix honest by requiring a check that failed on the base revision, carries
+every finding to a disposition and every residual risk to the owner, and caps
+delivery at the authority the named owner granted so publication, merge, force
+push, history rewriting, and risk acceptance are never autonomous. A request
+that required no change, and work that ended blocked, are recorded as exactly
+that. It does not gate a release, assess coverage across a product, evaluate an
+external API contract, or carry project state between requests.
 
 Potential additions remain subject to the
 [contribution admission policy](contribution-admission.md). Civic Services

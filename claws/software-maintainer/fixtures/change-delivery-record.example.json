@@ -1,0 +1,388 @@
+{
+  "schemaVersion": "awesomeClaws.changeDeliveryRecord.v1",
+  "request": {
+    "id": "request-windows-shim-discovery",
+    "runId": "run-2026-08-30-shim-discovery",
+    "statement": "Fix Windows CLI discovery when the installed npm shim path contains percent signs, without changing Unix launch behavior.",
+    "statementVerbatim": true,
+    "requestedBy": "Priya Raman",
+    "receivedAt": "2026-08-30T09:12:00-07:00",
+    "asOf": "2026-08-30T11:30:00-07:00",
+    "owner": "Priya Raman",
+    "reviewer": "Dana Whitfield",
+    "outcome": "changes-delivered",
+    "state": "ready-for-owner-review"
+  },
+  "repository": {
+    "identity": "giodl73-repo/openclaw-cli",
+    "worktreePath": "repo/openclaw-cli",
+    "targetBranch": "giodl/windows-shim-discovery",
+    "baseRevision": "3f1c9a2b7d4e6058c1af2b93d7e04c5681ba90f2",
+    "headRevision": "b7e254c93a1f08d6e5c40b7a29fd318cc6041e5d",
+    "baseIsAncestorOfHead": true,
+    "dirtyStateAtStart": {
+      "state": "dirty",
+      "entries": [
+        {
+          "path": "docs/design-notes.md",
+          "status": "modified",
+          "disposition": "preserved-uncommitted"
+        }
+      ]
+    }
+  },
+  "scope": {
+    "authorizedPaths": ["src/cli", "test/cli"],
+    "protectedPaths": ["docs/design-notes.md", "src/server"],
+    "authorizationSourceRef": "source-owner-delivery-authority",
+    "publicBehaviorChangeAuthorized": false,
+    "dependencyChangeAuthorized": false
+  },
+  "sources": [
+    {
+      "id": "source-user-request",
+      "kind": "user-request",
+      "label": "Maintainer request recorded verbatim at intake",
+      "path": null,
+      "reference": null,
+      "revision": null,
+      "capturedAt": "2026-08-30T09:12:00-07:00",
+      "provenance": "user-supplied",
+      "integrity": "verified"
+    },
+    {
+      "id": "source-owner-delivery-authority",
+      "kind": "owner-instruction",
+      "label": "Owner instruction bounding the change to src/cli and test/cli and authorizing a draft pull request only",
+      "path": null,
+      "reference": null,
+      "revision": null,
+      "capturedAt": "2026-08-30T09:14:00-07:00",
+      "provenance": "user-supplied",
+      "integrity": "verified"
+    },
+    {
+      "id": "source-entrypoint-module",
+      "kind": "repository-file",
+      "label": "Installed-entrypoint resolver read at the base revision",
+      "path": "src/cli/resolve-entrypoint.js",
+      "reference": null,
+      "revision": "3f1c9a2b7d4e6058c1af2b93d7e04c5681ba90f2",
+      "capturedAt": "2026-08-30T09:20:00-07:00",
+      "provenance": "workspace-read",
+      "integrity": "verified"
+    },
+    {
+      "id": "source-launcher-history",
+      "kind": "repository-history",
+      "label": "Commit history for the launcher path handling introduced for POSIX shims",
+      "path": null,
+      "reference": null,
+      "revision": "3f1c9a2b7d4e6058c1af2b93d7e04c5681ba90f2",
+      "capturedAt": "2026-08-30T09:24:00-07:00",
+      "provenance": "workspace-read",
+      "integrity": "verified"
+    },
+    {
+      "id": "source-node-url-docs",
+      "kind": "documentation",
+      "label": "Node.js documentation for fileURLToPath and percent-decoding rules",
+      "path": null,
+      "reference": "https://nodejs.org/api/url.html",
+      "revision": null,
+      "capturedAt": "2026-08-30T09:31:00-07:00",
+      "provenance": "public-reference",
+      "integrity": "verified"
+    },
+    {
+      "id": "source-focused-test-output",
+      "kind": "test-output",
+      "label": "Focused resolver test output captured at the head revision",
+      "path": null,
+      "reference": null,
+      "revision": null,
+      "capturedAt": "2026-08-30T10:12:00-07:00",
+      "provenance": "command-output",
+      "integrity": "verified"
+    },
+    {
+      "id": "source-full-suite-output",
+      "kind": "test-output",
+      "label": "Full suite output captured at the head revision",
+      "path": null,
+      "reference": null,
+      "revision": null,
+      "capturedAt": "2026-08-30T10:40:00-07:00",
+      "provenance": "command-output",
+      "integrity": "verified"
+    },
+    {
+      "id": "source-required-check-output",
+      "kind": "tool-output",
+      "label": "Repository required validation output captured at the head revision",
+      "path": null,
+      "reference": null,
+      "revision": null,
+      "capturedAt": "2026-08-30T10:52:00-07:00",
+      "provenance": "command-output",
+      "integrity": "verified"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "criterion-windows-shim-discovery",
+      "statement": "Launching the CLI through an installed npm shim whose path contains percent signs resolves the installed entrypoint on Windows instead of failing discovery.",
+      "kind": "bug-fix",
+      "origin": "stated-by-requester",
+      "state": "met",
+      "changeRefs": ["change-shim-path-decoding", "change-entrypoint-regression-test"],
+      "verificationRefs": ["verification-focused-windows-shim"],
+      "notMetReason": null
+    },
+    {
+      "id": "criterion-posix-launch-unchanged",
+      "statement": "POSIX launch behavior, including shim paths without percent signs, is unchanged by the fix.",
+      "kind": "non-regression",
+      "origin": "stated-by-requester",
+      "state": "met",
+      "changeRefs": ["change-entrypoint-regression-test"],
+      "verificationRefs": ["verification-full-suite"],
+      "notMetReason": null
+    },
+    {
+      "id": "criterion-required-validation",
+      "statement": "The repository's required validation command passes on the final diff.",
+      "kind": "compatibility",
+      "origin": "repository-required-check",
+      "state": "met",
+      "changeRefs": [],
+      "verificationRefs": ["verification-required-build"],
+      "notMetReason": null
+    }
+  ],
+  "changes": [
+    {
+      "id": "change-shim-path-decoding",
+      "path": "src/cli/resolve-entrypoint.js",
+      "previousPath": null,
+      "changeKind": "modified",
+      "rationale": "Resolve the installed entrypoint from the shim file URL through fileURLToPath so a percent sign in the Windows install path is decoded once instead of being treated as an escape sequence; this is the narrowest change that satisfies the reported Windows discovery failure.",
+      "criterionRefs": ["criterion-windows-shim-discovery"],
+      "sourceRefs": ["source-entrypoint-module", "source-node-url-docs"],
+      "linesAdded": 18,
+      "linesRemoved": 6,
+      "publicBehaviorChange": false
+    },
+    {
+      "id": "change-entrypoint-regression-test",
+      "path": "test/cli/resolve-entrypoint.test.js",
+      "previousPath": null,
+      "changeKind": "added",
+      "rationale": "Add a regression test that fails on the base revision for a Windows shim path containing percent signs and pins the unchanged POSIX resolution result, so both the reported defect and the requested non-regression boundary have direct evidence.",
+      "criterionRefs": [
+        "criterion-windows-shim-discovery",
+        "criterion-posix-launch-unchanged"
+      ],
+      "sourceRefs": ["source-entrypoint-module", "source-launcher-history"],
+      "linesAdded": 64,
+      "linesRemoved": 0,
+      "publicBehaviorChange": false
+    }
+  ],
+  "verifications": [
+    {
+      "id": "verification-focused-windows-shim",
+      "command": "npm test -- test/cli/resolve-entrypoint.test.js",
+      "kind": "focused-test",
+      "scope": "changed-behavior",
+      "baselineResult": "failed-before-change",
+      "revision": "b7e254c93a1f08d6e5c40b7a29fd318cc6041e5d",
+      "startedAt": "2026-08-30T10:05:00-07:00",
+      "finishedAt": "2026-08-30T10:11:00-07:00",
+      "result": "passed",
+      "criterionRefs": ["criterion-windows-shim-discovery"],
+      "evidenceSourceRef": "source-focused-test-output",
+      "failureSummary": null
+    },
+    {
+      "id": "verification-full-suite",
+      "command": "npm test",
+      "kind": "full-test-suite",
+      "scope": "regression",
+      "baselineResult": "passed-before-change",
+      "revision": "b7e254c93a1f08d6e5c40b7a29fd318cc6041e5d",
+      "startedAt": "2026-08-30T10:20:00-07:00",
+      "finishedAt": "2026-08-30T10:39:00-07:00",
+      "result": "passed",
+      "criterionRefs": ["criterion-posix-launch-unchanged"],
+      "evidenceSourceRef": "source-full-suite-output",
+      "failureSummary": null
+    },
+    {
+      "id": "verification-required-build",
+      "command": "npm run check",
+      "kind": "build",
+      "scope": "repository-required",
+      "baselineResult": "passed-before-change",
+      "revision": "b7e254c93a1f08d6e5c40b7a29fd318cc6041e5d",
+      "startedAt": "2026-08-30T10:45:00-07:00",
+      "finishedAt": "2026-08-30T10:51:00-07:00",
+      "result": "passed",
+      "criterionRefs": ["criterion-required-validation"],
+      "evidenceSourceRef": "source-required-check-output",
+      "failureSummary": null
+    }
+  ],
+  "reviews": [
+    {
+      "id": "review-final-diff",
+      "kind": "self-diff-review",
+      "reviewer": "Software maintainer Claw",
+      "revision": "b7e254c93a1f08d6e5c40b7a29fd318cc6041e5d",
+      "ranAt": "2026-08-30T11:05:00-07:00",
+      "state": "completed",
+      "findingRefs": [
+        "finding-shim-normalization",
+        "finding-unc-path-coverage",
+        "finding-test-name-nit"
+      ]
+    },
+    {
+      "id": "review-owner-code-review",
+      "kind": "human-review",
+      "reviewer": "Dana Whitfield",
+      "revision": null,
+      "ranAt": null,
+      "state": "not-run",
+      "findingRefs": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "finding-shim-normalization",
+      "reviewRef": "review-final-diff",
+      "severity": "minor",
+      "summary": "The first draft decoded the shim path twice, which would have corrupted a literal percent-two-five sequence; the head revision decodes exactly once.",
+      "disposition": "fixed",
+      "changeRefs": ["change-shim-path-decoding"],
+      "riskRefs": [],
+      "resolvedAtRevision": "b7e254c93a1f08d6e5c40b7a29fd318cc6041e5d"
+    },
+    {
+      "id": "finding-unc-path-coverage",
+      "reviewRef": "review-final-diff",
+      "severity": "major",
+      "summary": "UNC install paths were not exercised because no Windows host with a UNC share was available in this session, so that discovery path stays unverified.",
+      "disposition": "deferred-to-owner",
+      "changeRefs": [],
+      "riskRefs": ["risk-unc-path-coverage"],
+      "resolvedAtRevision": null
+    },
+    {
+      "id": "finding-test-name-nit",
+      "reviewRef": "review-final-diff",
+      "severity": "nit",
+      "summary": "The added test file follows the existing suite naming convention, so the suggested rename was dropped rather than applied.",
+      "disposition": "not-applicable",
+      "changeRefs": [],
+      "riskRefs": [],
+      "resolvedAtRevision": null
+    }
+  ],
+  "risks": [
+    {
+      "id": "risk-unc-path-coverage",
+      "description": "Windows UNC install paths remain unverified; the fix is expected to apply unchanged, but no evidence in this record supports that expectation.",
+      "category": "coverage-gap",
+      "severity": "low",
+      "state": "open",
+      "blocking": false,
+      "ownerDecisionRequired": false,
+      "mitigationChangeRefs": []
+    },
+    {
+      "id": "risk-posix-launch-parity",
+      "description": "The resolver is shared between Windows and POSIX launches, so a decoding change could have altered POSIX behavior.",
+      "category": "compatibility",
+      "severity": "low",
+      "state": "mitigated",
+      "blocking": false,
+      "ownerDecisionRequired": false,
+      "mitigationChangeRefs": ["change-entrypoint-regression-test"]
+    }
+  ],
+  "delivery": {
+    "authority": "draft-pull-request",
+    "authorizedBy": "Priya Raman",
+    "authoritySourceRef": "source-owner-delivery-authority",
+    "performed": "local-commit",
+    "publishedAt": null,
+    "forcePushed": false,
+    "historyRewritten": false
+  },
+  "blockedActions": [
+    "push-or-publish-without-authorization",
+    "open-or-merge-a-pull-request-without-authorization",
+    "force-push-or-rewrite-history",
+    "revert-or-reformat-unrelated-changes",
+    "modify-protected-paths",
+    "change-public-behavior-beyond-scope",
+    "weaken-skip-or-delete-failing-tests",
+    "fabricate-verification-results",
+    "claim-untested-behavior-as-verified",
+    "close-review-findings-without-a-change",
+    "accept-residual-risk-on-behalf-of-the-owner",
+    "install-or-upgrade-dependencies-without-authorization",
+    "copy-secrets-or-credentials-into-durable-output",
+    "comment-on-or-close-issues-and-pull-requests"
+  ],
+  "handoff": {
+    "state": "ready-for-owner-review",
+    "owner": "Priya Raman",
+    "reviewer": "Dana Whitfield",
+    "destination": "outputs/software-maintainer-handoff.md",
+    "residualRiskSummary": "The fix is scoped to installed-entrypoint resolution and is covered by a regression test that fails on the base revision. UNC install paths stay unverified. The local commit was not pushed, and the authorized draft pull request remains an owner decision this record does not make.",
+    "criterionRefs": [
+      "criterion-windows-shim-discovery",
+      "criterion-posix-launch-unchanged",
+      "criterion-required-validation"
+    ],
+    "changeRefs": ["change-shim-path-decoding", "change-entrypoint-regression-test"],
+    "verificationRefs": [
+      "verification-focused-windows-shim",
+      "verification-full-suite",
+      "verification-required-build"
+    ],
+    "reviewRefs": ["review-final-diff", "review-owner-code-review"],
+    "findingRefs": [
+      "finding-shim-normalization",
+      "finding-unc-path-coverage",
+      "finding-test-name-nit"
+    ],
+    "riskRefs": ["risk-unc-path-coverage", "risk-posix-launch-parity"],
+    "blockingRefs": [],
+    "prohibitedActions": [
+      "push-or-publish-without-authorization",
+      "open-or-merge-a-pull-request-without-authorization",
+      "force-push-or-rewrite-history",
+      "revert-or-reformat-unrelated-changes",
+      "modify-protected-paths",
+      "change-public-behavior-beyond-scope",
+      "weaken-skip-or-delete-failing-tests",
+      "fabricate-verification-results",
+      "claim-untested-behavior-as-verified",
+      "close-review-findings-without-a-change",
+      "accept-residual-risk-on-behalf-of-the-owner",
+      "install-or-upgrade-dependencies-without-authorization",
+      "copy-secrets-or-credentials-into-durable-output",
+      "comment-on-or-close-issues-and-pull-requests"
+    ]
+  },
+  "ownerDecision": {
+    "state": "pending",
+    "decidedBy": null,
+    "decidedAt": null,
+    "resolution": null,
+    "approvedDelivery": null
+  }
+}

@@ -134,44 +134,52 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-08-30"
       },
-      "description": "Delivers scoped repository changes with source-grounded review and verification.",
-      "audience": "Maintainers making a bounded bug fix or feature change in an unfamiliar or actively developed repository.",
+      "description": "Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority.",
+      "audience": "Maintainers making a bounded bug fix or feature change in an unfamiliar or actively developed repository who need the delivered diff to be reviewable rather than merely plausible.",
       "principles": [
         "Read the repository before choosing a design",
         "Keep changes within the requested ownership boundary",
-        "Treat tests and review findings as evidence"
+        "Treat tests and review findings as evidence",
+        "Bind every claim to an exact revision, command, and observed result"
       ],
       "boundaries": [
         "Do not rewrite, revert, or reformat unrelated user changes",
-        "Do not publish, merge, force-push, or change public behavior beyond the requested scope without explicit authorization"
+        "Do not publish, merge, force-push, or change public behavior beyond the requested scope without explicit authorization",
+        "Do not report a check, review, or acceptance criterion as satisfied without a recorded command, result, and revision",
+        "Do not weaken, skip, or delete a failing test, and do not accept residual risk on the owner's behalf"
       ],
       "intake": [
-        "Requested behavior, observable failure, or acceptance criteria",
-        "Repository path, target branch, ownership constraints, and known dirty state",
-        "Required compatibility, test environments, and delivery boundary such as local commit or draft PR"
+        "Requested behavior in the requester's own words, the observable failure, and the acceptance criteria that decide when it is done",
+        "Repository identity, worktree path, target branch, base revision, authorized paths, protected paths, and known dirty state",
+        "Required compatibility, test environments, and the repository's required validation commands",
+        "Delivery authority such as local-only, draft pull request, pull request, or merge, plus the named accountable owner and reviewer"
       ],
       "workflow": [
-        "Map the relevant code, tests, and local conventions",
-        "Define the smallest complete behavior change",
-        "Implement with focused tests and compatibility checks",
-        "Review the final diff and report residual risk"
+        "Map the relevant code, tests, and local conventions, and record the request, acceptance criteria, repository revisions, authorized and protected paths, and the starting dirty state",
+        "Define the smallest complete behavior change that satisfies the acceptance criteria without touching protected or unrelated paths",
+        "Implement with focused tests and compatibility checks, then run each verification command against the current head and keep its captured output",
+        "Build and validate outputs/change-delivery-record.json as a bounded delivery ledger that ties every change to a criterion, every result to a revision, and every review finding to a disposition",
+        "Render the change-delivery handoff, state residual risk and blockers, and leave publication, merge, and risk acceptance to the named owner"
       ],
       "deliverables": [
-        "Implementation patch",
-        "Verification evidence",
-        "Risk and compatibility summary",
-        "Reviewer handoff"
+        "Implementation patch bounded to the authorized scope",
+        "Acceptance criteria bound to the changes and checks that carry them",
+        "Verification ledger binding each command, result, and captured output to the head revision",
+        "Review findings, dispositions, and residual risk and compatibility summary",
+        "Delivery authority record and reviewer handoff"
       ],
       "example": {
         "request": "Fix Windows CLI discovery when the installed npm shim path contains percent signs, without changing Unix launch behavior.",
-        "outcome": "A scoped launcher fix, exact Windows regression, focused and full test evidence, and a concise explanation of remaining platform risk."
+        "outcome": "A validated private delivery record with the request and acceptance criteria intact, the base and head revisions and preserved dirty state named, a scoped launcher fix inside the authorized paths, a regression test that failed before the change, focused and full test evidence bound to the head, review findings and their dispositions, stated residual platform risk, and a local commit that the named owner still has to publish."
       },
       "doneWhen": [
         "The changed behavior is covered by a test that fails before a bug fix or directly verifies the requested feature acceptance criteria",
-        "Focused checks and the repository's required validation pass on the final diff",
-        "Unrelated changes remain intact and residual compatibility risk is stated"
+        "Focused checks and the repository's required validation pass on the final diff at the recorded head revision",
+        "Unrelated changes remain intact and residual compatibility risk is stated",
+        "Delivery never exceeds the authority the owner granted, and publication, merge, and risk acceptance wait for the named owner",
+        "The machine-readable record validates against schemas/change-delivery-record.schema.json before the handoff is presented"
       ],
       "packages": [],
       "mcpServers": {
@@ -221,6 +229,21 @@
       },
       "resources": [
         {
+          "source": "schemas/change-delivery-record.schema.json",
+          "path": "schemas/change-delivery-record.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/change-delivery-record.example.json",
+          "path": "fixtures/change-delivery-record.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/change-delivery-record.md",
+          "path": "templates/change-delivery-record.md",
+          "role": "template"
+        },
+        {
           "source": "references/change-contract.md",
           "path": "references/change-contract.md"
         },
@@ -247,7 +270,8 @@
       "capabilityGuidance": [
         "The OpenClaw profile freezes a bounded repository-work allowlist for workspace file editing, command execution, Diffs, and two exact GitHub MCP read/search tools; the full profile name does not grant tools outside that allowlist, and host policy remains the upper bound.",
         "Use the GitHub MCP connection only for `get_file_contents` and `search_code`; GitHub OAuth, repository permissions, and host policy remain the final authority.",
-        "Use the Diffs plugin to render reviewable before/after text or patches; do not treat a rendered artifact as proof that a change was tested or approved."
+        "Use the Diffs plugin to render reviewable before/after text or patches; do not treat a rendered artifact as proof that a change was tested or approved.",
+        "Treat fixtures/change-delivery-record.example.json only as a shape example. Validate outputs/change-delivery-record.json against schemas/change-delivery-record.schema.json, then render templates/change-delivery-record.md while preserving the verbatim request, acceptance-criteria coverage, base and head revisions, the starting dirty state, authorized and protected paths, evidence provenance, verification and review results bound to the current head, finding dispositions, residual risk, and the owner-controlled delivery authority."
       ]
     },
     {

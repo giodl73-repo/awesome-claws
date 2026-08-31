@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { isSafePackagePath, portablePathKey } from "./portable-paths.mjs";
+import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 
 function hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) {
   const adjacentNegation =
@@ -20038,6 +20038,987 @@ function websiteCaptureEvidenceLedgerFindings(value) {
   return findings;
 }
 
+function changeDeliveryRecordFindings(value) {
+  const findings = [];
+  const requiredActions = [
+    "push-or-publish-without-authorization",
+    "open-or-merge-a-pull-request-without-authorization",
+    "force-push-or-rewrite-history",
+    "revert-or-reformat-unrelated-changes",
+    "modify-protected-paths",
+    "change-public-behavior-beyond-scope",
+    "weaken-skip-or-delete-failing-tests",
+    "fabricate-verification-results",
+    "claim-untested-behavior-as-verified",
+    "close-review-findings-without-a-change",
+    "accept-residual-risk-on-behalf-of-the-owner",
+    "install-or-upgrade-dependencies-without-authorization",
+    "copy-secrets-or-credentials-into-durable-output",
+    "comment-on-or-close-issues-and-pull-requests",
+  ];
+  const expectedProvenance = {
+    "user-request": "user-supplied",
+    "owner-instruction": "user-supplied",
+    "repository-file": "workspace-read",
+    "repository-history": "workspace-read",
+    "test-output": "command-output",
+    "tool-output": "command-output",
+    "issue-thread": "public-reference",
+    documentation: "public-reference",
+  };
+  // Only a file read out of the worktree carries a workspace path; history,
+  // command output, and public material are located by revision or reference.
+  const pathBearingKinds = ["repository-file"];
+  const revisionBearingKinds = ["repository-file", "repository-history"];
+  const commandEvidenceKinds = ["test-output", "tool-output"];
+  const authorityKinds = ["user-request", "owner-instruction"];
+  // Editing one of these is a dependency change no matter which directory it
+  // sits in, so it needs its own authorization rather than path scope alone.
+  const dependencyManifests = new Set([
+    "package.json",
+    "package-lock.json",
+    "npm-shrinkwrap.json",
+    "yarn.lock",
+    "pnpm-lock.yaml",
+    "requirements.txt",
+    "pyproject.toml",
+    "poetry.lock",
+    "go.mod",
+    "go.sum",
+    "cargo.toml",
+    "cargo.lock",
+    "gemfile",
+    "gemfile.lock",
+    "composer.json",
+    "composer.lock",
+  ]);
+  const authorityRank = {
+    "local-only": 1,
+    "draft-pull-request": 2,
+    "pull-request": 3,
+    merge: 4,
+  };
+  const performedRank = {
+    none: 0,
+    "local-commit": 1,
+    "draft-pull-request-opened": 2,
+    "pull-request-opened": 3,
+    merged: 4,
+  };
+  // A criterion about behaviour the user asked for cannot be satisfied by
+  // verification alone once the record claims changes were delivered.
+  const changeBearingCriterionKinds = ["bug-fix", "feature-behavior"];
+  const { request, repository, scope, delivery, handoff, ownerDecision } = value;
+  const dirtyEntries = repository.dirtyStateAtStart.entries;
+
+  const sourceIds = value.sources.map((item) => item.id);
+  const criterionIds = value.acceptanceCriteria.map((item) => item.id);
+  const changeIds = value.changes.map((item) => item.id);
+  const verificationIds = value.verifications.map((item) => item.id);
+  const reviewIds = value.reviews.map((item) => item.id);
+  const findingIds = value.findings.map((item) => item.id);
+  const riskIds = value.risks.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const criterionSet = new Set(criterionIds);
+  const changeSet = new Set(changeIds);
+  const verificationSet = new Set(verificationIds);
+  const reviewSet = new Set(reviewIds);
+  const findingSet = new Set(findingIds);
+  const riskSet = new Set(riskIds);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const changeById = new Map(value.changes.map((item) => [item.id, item]));
+  const verificationById = new Map(value.verifications.map((item) => [item.id, item]));
+  const riskById = new Map(value.risks.map((item) => [item.id, item]));
+  const changePathKeys = value.changes.map((item) => portablePathKey(item.path));
+  const changePathKeySet = new Set(changePathKeys);
+  const sourcePathKeys = new Set(
+    value.sources
+      .filter((item) => item.path !== null)
+      .map((item) => portablePathKey(item.path)),
+  );
+
+  findings.push(
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(criterionIds, "acceptanceCriteria", "Acceptance criterion id"),
+    ...uniqueFindings(changeIds, "changes", "Change id"),
+    ...uniqueFindings(changePathKeys, "changes", "Changed path"),
+    ...uniqueFindings(verificationIds, "verifications", "Verification id"),
+    ...uniqueFindings(reviewIds, "reviews", "Review id"),
+    ...uniqueFindings(findingIds, "findings", "Review finding id"),
+    ...uniqueFindings(riskIds, "risks", "Risk id"),
+    ...uniqueFindings(
+      dirtyEntries.map((item) => portablePathKey(item.path)),
+      "repository.dirtyStateAtStart.entries",
+      "Dirty worktree path",
+    ),
+  );
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  function requireOptionalReference(reference, known, path, label) {
+    if (reference !== null) {
+      findings.push(...referenceFindings([reference], known, path, label));
+    }
+  }
+
+  function requireCompleteReferences(actual, expected, path, label) {
+    requireReferences(actual, new Set(expected), path, label);
+    for (const id of expected) {
+      if (!actual.includes(id)) {
+        findings.push(
+          finding(
+            "incomplete_handoff",
+            path,
+            `${label} ${JSON.stringify(id)} is missing from the private handoff.`,
+          ),
+        );
+      }
+    }
+  }
+
+  // Matches bare agent identities and this Claw's own name without rejecting
+  // ordinary human titles such as "Release Manager" or a team such as
+  // "Platform Maintainers".
+  function ownerIsAgent(owner) {
+    const normalized = owner.trim();
+    return (
+      /^(?:the )?(?:ai|bot|gpt|agent|assistant|claw|copilot|coding agent|review bot|ai (?:agent|assistant|bot|model|system|reviewer|maintainer|engineer)|(?:automated|autonomous|synthetic) (?:agent|bot|maintainer|reviewer|engineer))$/iu.test(
+        normalized,
+      ) ||
+      /\b(?:gpt-?\d|language model|software maintainer|copilot|codex)\b/iu.test(normalized)
+    );
+  }
+
+  function isUnderPrefix(path, prefix) {
+    const left = portablePathKey(path);
+    const right = portablePathKey(prefix);
+    return left === right || left.startsWith(`${right}/`);
+  }
+
+  const receivedAt = Date.parse(request.receivedAt);
+  const asOf = Date.parse(request.asOf);
+  if (receivedAt >= asOf) {
+    findings.push(
+      finding(
+        "invalid_delivery_chronology",
+        "request.asOf",
+        "A change delivery record must be reported after the request it answers.",
+      ),
+    );
+  }
+  if (!request.statementVerbatim) {
+    findings.push(
+      finding(
+        "unverbatim_request_record",
+        "request.statementVerbatim",
+        "The requester's own words must be carried into the record without being rewritten.",
+      ),
+    );
+  }
+  if (!value.acceptanceCriteria.some((item) => item.origin === "stated-by-requester")) {
+    findings.push(
+      finding(
+        "unverbatim_request_record",
+        "acceptanceCriteria",
+        "At least one acceptance criterion must come from the requester; work with no requester-stated criterion is unrequested work.",
+      ),
+    );
+  }
+
+  if (
+    !isSafePackagePath(handoff.destination) ||
+    !handoff.destination.startsWith("outputs/") ||
+    sourcePathKeys.has(portablePathKey(handoff.destination)) ||
+    changePathKeySet.has(portablePathKey(handoff.destination))
+  ) {
+    findings.push(
+      finding(
+        "unsafe_handoff_destination",
+        "handoff.destination",
+        "The private handoff destination must remain a portable path under outputs/ that does not overwrite a supplied source or a changed repository file.",
+      ),
+    );
+  }
+
+  if (
+    !isSafePackagePath(repository.worktreePath) ||
+    (repository.baseRevision === repository.headRevision) !== (value.changes.length === 0) ||
+    !repository.baseIsAncestorOfHead
+  ) {
+    findings.push(
+      finding(
+        "invalid_revision_identity",
+        "repository.headRevision",
+        "The worktree path must be portable, the base must still be an ancestor of the head, and the head differs from the base exactly when the record carries changes.",
+      ),
+    );
+  }
+  if (
+    (repository.dirtyStateAtStart.state === "clean") !==
+    (dirtyEntries.length === 0)
+  ) {
+    findings.push(
+      finding(
+        "unrecorded_dirty_state",
+        "repository.dirtyStateAtStart.state",
+        "A clean starting worktree lists no dirty paths, and a dirty one must enumerate every path it found.",
+      ),
+    );
+  }
+  for (const [index, entry] of dirtyEntries.entries()) {
+    const included = changePathKeySet.has(portablePathKey(entry.path));
+    const protectedPath = scope.protectedPaths.some((prefix) =>
+      isUnderPrefix(entry.path, prefix),
+    );
+    const authorized = scope.authorizedPaths.some((prefix) =>
+      isUnderPrefix(entry.path, prefix),
+    );
+    if (
+      !isSafePackagePath(entry.path) ||
+      (entry.disposition === "authorized-and-included"
+        ? !included || !authorized || protectedPath
+        : included || !protectedPath)
+    ) {
+      findings.push(
+        finding(
+          "unrecorded_dirty_state",
+          `repository.dirtyStateAtStart.entries.${index}.disposition`,
+          "Pre-existing work is either preserved uncommitted, declared protected, and absent from the change list, or authorized, in scope, and present in it.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, prefix] of scope.authorizedPaths.entries()) {
+    if (!isSafePackagePath(prefix)) {
+      findings.push(
+        finding(
+          "incoherent_authorized_scope",
+          `scope.authorizedPaths.${index}`,
+          "Authorized scope prefixes must be portable workspace paths.",
+        ),
+      );
+    }
+  }
+  for (const [index, prefix] of scope.protectedPaths.entries()) {
+    if (
+      !isSafePackagePath(prefix) ||
+      scope.authorizedPaths.some((authorized) =>
+        pathsConflict(portablePathKey(prefix), portablePathKey(authorized)),
+      )
+    ) {
+      findings.push(
+        finding(
+          "incoherent_authorized_scope",
+          `scope.protectedPaths.${index}`,
+          "Protected prefixes must be portable workspace paths that never overlap the authorized scope.",
+        ),
+      );
+    }
+  }
+  requireOptionalReference(
+    scope.authorizationSourceRef,
+    sourceSet,
+    "scope.authorizationSourceRef",
+    "Scope authorization source reference",
+  );
+  if (!authorityKinds.includes(sourceById.get(scope.authorizationSourceRef)?.kind)) {
+    findings.push(
+      finding(
+        "incoherent_authorized_scope",
+        "scope.authorizationSourceRef",
+        "Authorized scope must rest on the recorded request or an owner instruction, not on inferred evidence.",
+      ),
+    );
+  }
+
+  for (const [index, source] of value.sources.entries()) {
+    if (source.provenance !== expectedProvenance[source.kind]) {
+      findings.push(
+        finding(
+          "source_provenance_mismatch",
+          `sources.${index}.provenance`,
+          `${source.kind} evidence must carry its declared provenance.`,
+        ),
+      );
+    }
+    if ((source.reference !== null) !== (source.provenance === "public-reference")) {
+      findings.push(
+        finding(
+          "source_provenance_mismatch",
+          `sources.${index}.reference`,
+          "Only public-reference evidence carries a reference, and public-reference evidence must name one.",
+        ),
+      );
+    }
+    let referenceIsSafe = true;
+    if (source.reference !== null) {
+      try {
+        referenceIsSafe = isCredentialFreePublicHttpsReference(new URL(source.reference));
+      } catch {
+        referenceIsSafe = false;
+      }
+    }
+    if (
+      (source.path !== null) !== pathBearingKinds.includes(source.kind) ||
+      (source.path !== null && !isSafePackagePath(source.path)) ||
+      !referenceIsSafe
+    ) {
+      findings.push(
+        finding(
+          "unsafe_source_path",
+          `sources.${index}.path`,
+          "A repository file is located by a portable workspace path, other evidence carries none, and a public reference must be a credential-free public HTTPS location.",
+        ),
+      );
+    }
+    if (
+      (source.revision !== null) !== revisionBearingKinds.includes(source.kind) ||
+      (source.revision !== null &&
+        ![repository.baseRevision, repository.headRevision].includes(source.revision))
+    ) {
+      findings.push(
+        finding(
+          "invalid_revision_identity",
+          `sources.${index}.revision`,
+          "Repository evidence must name the base or head revision it was read at, and other evidence must not claim one.",
+        ),
+      );
+    }
+    const capturedAt = Date.parse(source.capturedAt);
+    if (capturedAt > asOf) {
+      findings.push(
+        finding(
+          "future_source_evidence",
+          `sources.${index}.capturedAt`,
+          "Change delivery evidence must not postdate the artifact as-of time.",
+        ),
+      );
+    }
+    if (source.provenance === "command-output" && capturedAt < receivedAt) {
+      findings.push(
+        finding(
+          "invalid_delivery_chronology",
+          `sources.${index}.capturedAt`,
+          "Command and test output must be captured after the request arrived.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, change] of value.changes.entries()) {
+    requireReferences(
+      change.criterionRefs,
+      criterionSet,
+      `changes.${index}.criterionRefs`,
+      "Change acceptance criterion reference",
+    );
+    requireReferences(
+      change.sourceRefs,
+      sourceSet,
+      `changes.${index}.sourceRefs`,
+      "Change source reference",
+    );
+    const paths = [change.path, ...(change.previousPath === null ? [] : [change.previousPath])];
+    if (paths.some((path) => !isSafePackagePath(path))) {
+      findings.push(
+        finding(
+          "unsafe_source_path",
+          `changes.${index}.path`,
+          "Changed and previous paths must remain portable workspace paths.",
+        ),
+      );
+    }
+    if (
+      paths.some(
+        (path) =>
+          !scope.authorizedPaths.some((prefix) => isUnderPrefix(path, prefix)) ||
+          scope.protectedPaths.some((prefix) => isUnderPrefix(path, prefix)),
+      )
+    ) {
+      findings.push(
+        finding(
+          "unauthorized_path_change",
+          `changes.${index}.path`,
+          "Every changed path must sit inside the authorized scope and outside every protected prefix.",
+        ),
+      );
+    }
+    if (
+      !scope.dependencyChangeAuthorized &&
+      paths.some((path) => dependencyManifests.has(portablePathKey(path).split("/").at(-1)))
+    ) {
+      findings.push(
+        finding(
+          "unauthorized_dependency_change",
+          `changes.${index}.path`,
+          "Editing a dependency manifest or lockfile requires explicit dependency-change authorization.",
+        ),
+      );
+    }
+    if (change.publicBehaviorChange && !scope.publicBehaviorChangeAuthorized) {
+      findings.push(
+        finding(
+          "unauthorized_behavior_change",
+          `changes.${index}.publicBehaviorChange`,
+          "A change to public behavior requires explicit authorization beyond the requested scope.",
+        ),
+      );
+    }
+    if (
+      (change.previousPath !== null) !== (change.changeKind === "renamed") ||
+      (change.changeKind === "added" && change.linesRemoved > 0) ||
+      (change.changeKind === "deleted" && change.linesAdded > 0) ||
+      (change.changeKind !== "renamed" && change.linesAdded + change.linesRemoved === 0)
+    ) {
+      findings.push(
+        finding(
+          "invalid_change_record",
+          `changes.${index}.changeKind`,
+          "A rename names its previous path, an addition removes no lines, a deletion adds none, and every other change must move at least one line.",
+        ),
+      );
+    }
+  }
+
+  const latestEvidenceEnd = Math.max(
+    receivedAt,
+    ...value.verifications
+      .filter((item) => item.finishedAt !== null)
+      .map((item) => Date.parse(item.finishedAt)),
+    ...value.reviews
+      .filter((item) => item.ranAt !== null)
+      .map((item) => Date.parse(item.ranAt)),
+  );
+  for (const [index, verification] of value.verifications.entries()) {
+    requireReferences(
+      verification.criterionRefs,
+      criterionSet,
+      `verifications.${index}.criterionRefs`,
+      "Verification acceptance criterion reference",
+    );
+    requireOptionalReference(
+      verification.evidenceSourceRef,
+      sourceSet,
+      `verifications.${index}.evidenceSourceRef`,
+      "Verification evidence source reference",
+    );
+    const executed = ["passed", "failed"].includes(verification.result);
+    const evidence =
+      verification.evidenceSourceRef === null
+        ? undefined
+        : sourceById.get(verification.evidenceSourceRef);
+    if (
+      executed !== (verification.startedAt !== null) ||
+      executed !== (verification.finishedAt !== null) ||
+      executed !== (verification.revision !== null) ||
+      executed !== (verification.evidenceSourceRef !== null) ||
+      (verification.result === "failed") !== (verification.failureSummary !== null) ||
+      (executed && !commandEvidenceKinds.includes(evidence?.kind)) ||
+      (["failed-before-change", "passed-before-change"].includes(verification.baselineResult) &&
+        (!executed || value.changes.length === 0))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_verification_result",
+          `verifications.${index}.result`,
+          "An executed check records its revision, its start and finish, and its captured command output; a failure states why; and a baseline comparison requires both an executed check and a change to compare against.",
+        ),
+      );
+    }
+    if (verification.revision !== null && verification.revision !== repository.headRevision) {
+      findings.push(
+        finding(
+          "stale_verification_evidence",
+          `verifications.${index}.revision`,
+          "Verification results only support the record when they ran against the current head revision.",
+        ),
+      );
+    }
+    if (executed) {
+      const startedAt = Date.parse(verification.startedAt);
+      const finishedAt = Date.parse(verification.finishedAt);
+      const capturedAt =
+        evidence === undefined ? null : Date.parse(evidence.capturedAt);
+      if (
+        startedAt < receivedAt ||
+        startedAt >= finishedAt ||
+        finishedAt > asOf ||
+        (capturedAt !== null && (capturedAt < startedAt || capturedAt > asOf))
+      ) {
+        findings.push(
+          finding(
+            "invalid_delivery_chronology",
+            `verifications.${index}.finishedAt`,
+            "A check runs in order after the request and before the as-of time, and its captured output cannot predate the run.",
+          ),
+        );
+      }
+    }
+  }
+
+  for (const [index, review] of value.reviews.entries()) {
+    requireReferences(
+      review.findingRefs,
+      findingSet,
+      `reviews.${index}.findingRefs`,
+      "Review finding reference",
+    );
+    const completed = review.state === "completed";
+    const ownFindings = value.findings
+      .filter((item) => item.reviewRef === review.id)
+      .map((item) => item.id);
+    if (
+      completed !== (review.revision !== null) ||
+      completed !== (review.ranAt !== null) ||
+      (review.state === "not-run" && review.findingRefs.length > 0) ||
+      ownFindings.some((id) => !review.findingRefs.includes(id)) ||
+      review.findingRefs.some((id) => !ownFindings.includes(id))
+    ) {
+      findings.push(
+        finding(
+          "invalid_review_state",
+          `reviews.${index}.state`,
+          "A completed review names the revision and time it ran, a review that never ran raises no findings, and each review lists exactly the findings that name it.",
+        ),
+      );
+    }
+    if (review.revision !== null && review.revision !== repository.headRevision) {
+      findings.push(
+        finding(
+          "stale_review_evidence",
+          `reviews.${index}.revision`,
+          "Review findings only bind to the record when the review covered the current head revision.",
+        ),
+      );
+    }
+    if (review.ranAt !== null) {
+      const ranAt = Date.parse(review.ranAt);
+      if (ranAt < receivedAt || ranAt > asOf) {
+        findings.push(
+          finding(
+            "invalid_delivery_chronology",
+            `reviews.${index}.ranAt`,
+            "A review must run after the request arrived and before the as-of time.",
+          ),
+        );
+      }
+    }
+    if (review.kind === "human-review" && ownerIsAgent(review.reviewer)) {
+      findings.push(
+        finding(
+          "agent_owned_authority",
+          `reviews.${index}.reviewer`,
+          "A human review must name a human; agent passes are recorded as self or automated reviews.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, item] of value.findings.entries()) {
+    requireOptionalReference(
+      item.reviewRef,
+      reviewSet,
+      `findings.${index}.reviewRef`,
+      "Finding review reference",
+    );
+    requireReferences(
+      item.changeRefs,
+      changeSet,
+      `findings.${index}.changeRefs`,
+      "Finding change reference",
+    );
+    requireReferences(
+      item.riskRefs,
+      riskSet,
+      `findings.${index}.riskRefs`,
+      "Finding risk reference",
+    );
+    const fixed = item.disposition === "fixed";
+    const carried = ["accepted-risk", "deferred-to-owner"].includes(item.disposition);
+    if (
+      fixed !== (item.changeRefs.length > 0) ||
+      fixed !== (item.resolvedAtRevision !== null) ||
+      (item.resolvedAtRevision !== null &&
+        item.resolvedAtRevision !== repository.headRevision) ||
+      carried !== (item.riskRefs.length > 0) ||
+      (item.disposition === "accepted-risk" &&
+        item.riskRefs.some((ref) => riskById.get(ref)?.state !== "accepted-by-owner"))
+    ) {
+      findings.push(
+        finding(
+          "unresolved_finding_disposition",
+          `findings.${index}.disposition`,
+          "A fixed finding names the change that fixed it and the head it is resolved at, a carried finding names the residual risk it leaves, and an accepted risk requires the owner to have accepted it.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, risk] of value.risks.entries()) {
+    requireReferences(
+      risk.mitigationChangeRefs,
+      changeSet,
+      `risks.${index}.mitigationChangeRefs`,
+      "Risk mitigation change reference",
+    );
+    if (
+      (risk.state === "mitigated") !== (risk.mitigationChangeRefs.length > 0) ||
+      (risk.state === "accepted-by-owner" &&
+        (ownerDecision.state !== "completed" || risk.blocking)) ||
+      (risk.blocking && !risk.ownerDecisionRequired)
+    ) {
+      findings.push(
+        finding(
+          "unowned_risk_acceptance",
+          `risks.${index}.state`,
+          "A mitigated risk names the change that mitigates it, a blocking risk requires an owner decision, and only a completed owner decision can accept a residual risk.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, criterion] of value.acceptanceCriteria.entries()) {
+    requireReferences(
+      criterion.changeRefs,
+      changeSet,
+      `acceptanceCriteria.${index}.changeRefs`,
+      "Criterion change reference",
+    );
+    requireReferences(
+      criterion.verificationRefs,
+      verificationSet,
+      `acceptanceCriteria.${index}.verificationRefs`,
+      "Criterion verification reference",
+    );
+    const boundChanges = value.changes
+      .filter((item) => item.criterionRefs.includes(criterion.id))
+      .map((item) => item.id);
+    const boundVerifications = value.verifications
+      .filter((item) => item.criterionRefs.includes(criterion.id))
+      .map((item) => item.id);
+    if (
+      boundChanges.some((id) => !criterion.changeRefs.includes(id)) ||
+      criterion.changeRefs.some((id) => !boundChanges.includes(id)) ||
+      boundVerifications.some((id) => !criterion.verificationRefs.includes(id)) ||
+      criterion.verificationRefs.some((id) => !boundVerifications.includes(id))
+    ) {
+      findings.push(
+        finding(
+          "coverage_mismatch",
+          `acceptanceCriteria.${index}.changeRefs`,
+          "Each criterion must list exactly the changes and checks that name it, so coverage cannot be claimed in one direction only.",
+        ),
+      );
+    }
+    const met = criterion.state === "met";
+    const cited = criterion.verificationRefs
+      .map((ref) => verificationById.get(ref))
+      .filter((item) => item !== undefined);
+    if (
+      met !==
+        (cited.length > 0 && cited.every((item) => item.result === "passed")) ||
+      (met &&
+        criterion.kind === "bug-fix" &&
+        !cited.some(
+          (item) =>
+            item.result === "passed" && item.baselineResult === "failed-before-change",
+        )) ||
+      (met &&
+        request.outcome === "changes-delivered" &&
+        changeBearingCriterionKinds.includes(criterion.kind) &&
+        criterion.changeRefs.length === 0) ||
+      (["not-met", "unverifiable"].includes(criterion.state)) !==
+        (criterion.notMetReason !== null)
+    ) {
+      findings.push(
+        finding(
+          "incomplete_criterion_coverage",
+          `acceptanceCriteria.${index}.state`,
+          "A met criterion cites only passing checks, a met bug fix cites a check that failed before the change, delivered behavior criteria name the changes that carry them, and an unmet or unverifiable criterion says why.",
+        ),
+      );
+    }
+  }
+
+  requireOptionalReference(
+    delivery.authoritySourceRef,
+    sourceSet,
+    "delivery.authoritySourceRef",
+    "Delivery authority source reference",
+  );
+  const performed = performedRank[delivery.performed];
+  const authorized = authorityRank[delivery.authority];
+  if (
+    performed > authorized ||
+    (performed > 0) !== (value.changes.length > 0) ||
+    !authorityKinds.includes(sourceById.get(delivery.authoritySourceRef)?.kind)
+  ) {
+    findings.push(
+      finding(
+        "overstated_delivery_authority",
+        "delivery.performed",
+        "Delivery may never exceed the authority the owner granted, a local commit exists exactly when the record carries changes, and the authority must rest on the request or an owner instruction.",
+      ),
+    );
+  }
+  if (
+    delivery.forcePushed ||
+    delivery.historyRewritten ||
+    (delivery.publishedAt !== null) !== (performed >= 2) ||
+    (performed >= 2 &&
+      (ownerDecision.state !== "completed" ||
+        ownerDecision.approvedDelivery !== delivery.performed ||
+        handoff.state !== "delivered"))
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_delivery_action",
+        "delivery.performed",
+        "History is never rewritten or force-pushed, and nothing beyond a local commit is published without a completed owner decision naming that exact delivery step.",
+      ),
+    );
+  }
+  if (delivery.publishedAt !== null) {
+    const publishedAt = Date.parse(delivery.publishedAt);
+    const decidedAt =
+      ownerDecision.decidedAt === null ? null : Date.parse(ownerDecision.decidedAt);
+    if (publishedAt > asOf || (decidedAt !== null && publishedAt < decidedAt)) {
+      findings.push(
+        finding(
+          "invalid_delivery_chronology",
+          "delivery.publishedAt",
+          "Publication must follow the owner decision that authorized it and precede the as-of time.",
+        ),
+      );
+    }
+  }
+  if (
+    [
+      request.requestedBy,
+      request.owner,
+      request.reviewer,
+      handoff.owner,
+      handoff.reviewer,
+      delivery.authorizedBy,
+      ...(ownerDecision.decidedBy === null ? [] : [ownerDecision.decidedBy]),
+    ].some((owner) => ownerIsAgent(owner))
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "request.owner",
+        "Request, ownership, review, delivery authorization, and the final decision must stay with a named human or team.",
+      ),
+    );
+  }
+  if (handoff.owner !== request.owner || handoff.reviewer !== request.reviewer) {
+    findings.push(
+      finding(
+        "owner_mismatch",
+        "handoff.owner",
+        "The request and the handoff must name the same accountable owner and reviewer.",
+      ),
+    );
+  }
+
+  const decisionCompleted = ownerDecision.state === "completed";
+  if (
+    decisionCompleted !== (ownerDecision.decidedBy !== null) ||
+    decisionCompleted !== (ownerDecision.decidedAt !== null) ||
+    decisionCompleted !== (ownerDecision.resolution !== null) ||
+    decisionCompleted !== (ownerDecision.approvedDelivery !== null) ||
+    (decisionCompleted &&
+      (!["ready-for-owner-review", "delivered"].includes(handoff.state) ||
+        ownerDecision.decidedBy !== request.owner ||
+        performedRank[ownerDecision.approvedDelivery] > authorized ||
+        Date.parse(ownerDecision.decidedAt) < latestEvidenceEnd ||
+        Date.parse(ownerDecision.decidedAt) > asOf))
+  ) {
+    findings.push(
+      finding(
+        "invalid_owner_decision",
+        "ownerDecision.state",
+        "A completed decision belongs to the named owner, names a delivery step inside the granted authority, follows every recorded check and review, and can only be taken over a record that is ready or delivered.",
+      ),
+    );
+  }
+
+  const expectedOutcome =
+    value.changes.length > 0
+      ? "changes-delivered"
+      : handoff.state === "blocked"
+        ? "blocked-before-change"
+        : "no-change-required";
+  if (
+    request.outcome !== expectedOutcome ||
+    (request.outcome === "no-change-required" &&
+      (delivery.performed !== "none" ||
+        value.acceptanceCriteria.some(
+          (item) => !["met", "not-applicable"].includes(item.state),
+        )))
+  ) {
+    findings.push(
+      finding(
+        "invalid_change_outcome",
+        "request.outcome",
+        "The declared outcome must match the record: delivered changes, a blocked record that never changed code, or an explicit finding that no change was required with every criterion already met or not applicable.",
+      ),
+    );
+  }
+
+  requireCompleteReferences(
+    handoff.criterionRefs,
+    criterionIds,
+    "handoff.criterionRefs",
+    "Acceptance criterion",
+  );
+  requireCompleteReferences(handoff.changeRefs, changeIds, "handoff.changeRefs", "Change");
+  requireCompleteReferences(
+    handoff.verificationRefs,
+    verificationIds,
+    "handoff.verificationRefs",
+    "Verification",
+  );
+  requireCompleteReferences(handoff.reviewRefs, reviewIds, "handoff.reviewRefs", "Review");
+  requireCompleteReferences(
+    handoff.findingRefs,
+    findingIds,
+    "handoff.findingRefs",
+    "Review finding",
+  );
+  requireCompleteReferences(handoff.riskRefs, riskIds, "handoff.riskRefs", "Risk");
+  requireReferences(
+    handoff.blockingRefs,
+    new Set([...findingSet, ...riskSet]),
+    "handoff.blockingRefs",
+    "Blocking reference",
+  );
+
+  const blockingIds = [
+    ...value.findings
+      .filter(
+        (item) =>
+          item.severity === "blocking" &&
+          !["fixed", "not-applicable"].includes(item.disposition),
+      )
+      .map((item) => item.id),
+    ...value.risks
+      .filter((item) => item.blocking && item.state !== "accepted-by-owner")
+      .map((item) => item.id),
+  ];
+  if (handoff.blockingRefs.some((reference) => !blockingIds.includes(reference))) {
+    findings.push(
+      finding(
+        "resolved_blocking_reference",
+        "handoff.blockingRefs",
+        "Only unresolved blocking findings and unaccepted blocking risks may remain handoff blockers.",
+      ),
+    );
+  }
+  // Work a named human still has to settle before the record can be called
+  // owner-ready. A blocked handoff must point at one of these, and a ready or
+  // delivered handoff at none of them.
+  const unresolvedWork = [
+    value.sources.some((item) => item.integrity !== "verified"),
+    value.acceptanceCriteria.some((item) =>
+      ["not-met", "unverifiable"].includes(item.state),
+    ),
+    value.verifications.some((item) => item.result !== "passed"),
+    value.reviews.some((item) => item.state === "incomplete"),
+    value.changes.length > 0 &&
+      !value.reviews.some(
+        (item) =>
+          item.state === "completed" && item.revision === repository.headRevision,
+      ),
+    value.findings.some((item) => item.disposition === "open"),
+    value.risks.some((item) => item.state === "open" && item.ownerDecisionRequired),
+    blockingIds.length > 0,
+    handoff.blockingRefs.length > 0,
+    delivery.forcePushed || delivery.historyRewritten,
+    !repository.baseIsAncestorOfHead,
+    request.outcome === "blocked-before-change",
+  ];
+  if (
+    handoff.state === "blocked" &&
+    (!unresolvedWork.some(Boolean) ||
+      blockingIds.some((id) => !handoff.blockingRefs.includes(id)))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "handoff",
+        "A blocked handoff must retain every blocking finding and risk and name real unresolved work rather than an invented blocker.",
+      ),
+    );
+  }
+  if (
+    ["ready-for-owner-review", "delivered"].includes(handoff.state) &&
+    (unresolvedWork.some(Boolean) ||
+      (handoff.state === "delivered" &&
+        (!decisionCompleted || ownerDecision.approvedDelivery !== delivery.performed)))
+  ) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "An owner-ready record needs verified evidence, met or explicitly inapplicable criteria, passing checks, a completed review at the current head, no open or blocking findings or risks, and an untouched history; a delivered record additionally needs the owner decision it performed.",
+      ),
+    );
+  }
+  if (request.state !== handoff.state) {
+    findings.push(
+      finding(
+        "inconsistent_ready_state",
+        "request.state",
+        "The record cannot claim a delivery state its own handoff does not hold.",
+      ),
+    );
+  }
+
+  const narrativeTexts = [
+    ...value.sources.map((item) => item.label),
+    ...value.changes.map((item) => item.rationale),
+    ...value.verifications.map((item) => item.failureSummary ?? ""),
+    ...value.acceptanceCriteria.map((item) => item.notMetReason ?? ""),
+    ...value.findings.map((item) => item.summary),
+    ...value.risks.map((item) => item.description),
+    handoff.residualRiskSummary,
+  ];
+  const prohibitedNarrative =
+    /\b(?:force[- ]?push(?:ed|es|ing)?|rewr(?:ote|ite|ites|iting) (?:the )?(?:git |commit )?history|amend(?:ed|ing)? (?:the |a )?(?:existing |previous )?commit|squash(?:ed|ing)? (?:and )?(?:force|rewr))|\b(?:push(?:ed|es|ing)?|publish(?:ed|es|ing)?) (?:\w+ ){0,3}?(?:to|onto) (?:the )?(?:remote|origin|main|master|trunk|default branch|upstream|shared branch)|\b(?:open(?:ed|s|ing)?|merg(?:e|ed|es|ing)|land(?:ed|s|ing)?) (?:the |a |this )?(?:\w+ ){0,3}?(?:pull request|merge request)\b|\b(?:revert(?:ed|s|ing)?|discard(?:ed|s|ing)?|reformat(?:ted|s|ting)?|stash(?:ed|es|ing)?|overwr(?:ote|ite|ites|iting)) (?:the |their )?(?:user|user's|unrelated|pre-existing|preexisting|uncommitted|someone else's|other people's) \w+|\b(?:skip(?:ped|s|ping)?|disabl(?:e|ed|es|ing)|delet(?:e|ed|es|ing)|remov(?:e|ed|es|ing)|weaken(?:ed|s|ing)?|loosen(?:ed|s|ing)?|comment(?:ed|s|ing)? out) (?:the |a |this )?(?:failing |broken |red )?(?:test|assertion|check|spec|suite)|\b(?:assum(?:e|ed|es|ing)|presum(?:e|ed|es|ing)|report(?:ed|s|ing)?) (?:that )?(?:the )?(?:test|check|build|suite)s? (?:pass|passed|would pass|as passing)|\b(?:fabricat(?:e|ed|es|ing)|invent(?:ed|s|ing)?|synthesi[sz](?:e|ed|es|ing)|made up|mad(?:e|ing) up) (?:a |the |an )?(?:test result|verification|check result|command output|evidence|log|revision)|\b(?:install(?:ed|s|ing)?|upgrad(?:e|ed|es|ing)|bump(?:ed|s|ing)?) (?:a |the |an )?(?:new |additional )?(?:dependenc(?:y|ies)|package|library|lockfile)|\b(?:accept(?:ed|s|ing)?|approv(?:e|ed|es|ing)|sign(?:ed|s|ing)? off|decid(?:e|ed|es|ing)) (?:the |this |that )?(?:residual )?(?:risk|change|finding|delivery)? ?on behalf of|\b(?:clos(?:e|ed|es|ing)|comment(?:ed|s|ing)? on|repl(?:y|ied|ies|ying) to) (?:the |a |this )?(?:issue|ticket|pull request|review thread)\b|\b(?:copi(?:ed|es)|past(?:e|ed|es|ing)|embed(?:ded|s|ding)?|includ(?:e|ed|es|ing)) (?:the |a |an )?(?:secret|token|api key|credential|password|private key)|\b(?:chang(?:e|ed|es|ing)|modif(?:y|ied|ies|ying)|edit(?:ed|s|ing)?|touch(?:ed|es|ing)?) (?:the |a |any )?protected (?:path|file|director|area)|\b(?:autonomously|automatically|on our own|without asking|without approval) (?:merg(?:e|ed|es|ing)|push(?:ed|es|ing)?|publish(?:ed|es|ing)?|deliver(?:ed|s|ing)?|releas(?:e|ed|es|ing))/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unsafe_narrative_content",
+        "changes",
+        "Change delivery narrative must not report rewriting history, publishing or merging without authority, reverting or reformatting unrelated work, weakening or skipping tests, assuming or fabricating results, changing dependencies or protected paths without authorization, accepting risk for the owner, commenting on or closing issues, copying secrets, or acting autonomously.",
+      ),
+    );
+  }
+
+  for (const action of requiredActions) {
+    if (
+      !value.blockedActions.includes(action) ||
+      !handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "blockedActions",
+          `Change delivery records must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+  return findings;
+}
+
 function meetingRecordFindings(value) {
   const findings = [];
   const requiredUses = [
@@ -21987,6 +22968,7 @@ const validators = {
   "research-briefing": researchFindings,
   "sales-operations": salesOperationsFindings,
   "school-coordinator": schoolCoordinatorFindings,
+  "software-maintainer": changeDeliveryRecordFindings,
   "sports-team-watcher": sportsTeamWatchFindings,
   "spreadsheet-analyst": spreadsheetChangeFindings,
   "stock-portfolio-monitor": stockPortfolioFindings,
