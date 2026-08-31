@@ -883,10 +883,27 @@ test("substantive conflicts require usable transcript evidence", () => {
     false,
   );
 
+  const mislabeledAttributionDispute = clone();
+  mislabeledAttributionDispute.conflicts.push({
+    id: "conflict-confirmed-speaker",
+    kind: "disputed-attribution",
+    description:
+      "The record incorrectly labels a confirmed speaker passage as an attribution dispute.",
+    segmentRefs: ["segment-open-scope"],
+    decisionRefs: [],
+    actionRefs: [],
+    participantRefs: [],
+    resolutionState: "unresolved",
+    resolutionSegmentRef: null,
+  });
+  mislabeledAttributionDispute.handoff.conflictRefs.push("conflict-confirmed-speaker");
+  assertSchemaValid(mislabeledAttributionDispute);
+  assert.equal(hasFinding(mislabeledAttributionDispute, "broken_conflict_link"), true);
+
   const unconsentedDispute = clone();
   unconsentedDispute.conflicts.push({
     id: "conflict-withheld-speaker",
-    kind: "disputed-attribution",
+    kind: "contradictory-statements",
     description:
       "The retained attribution remains disputed, but the speaker withheld minutes consent.",
     segmentRefs: ["segment-security-caveat"],
@@ -1140,6 +1157,14 @@ test("recording and acknowledgement evidence keep meeting chronology", () => {
     hasFinding(correctionEvidencePredatesCorrection, "broken_correction_lineage"),
     true,
   );
+
+  const correctionPredatesPassage = clone();
+  correctionPredatesPassage.corrections[0].correctedAt =
+    correctionPredatesPassage.meeting.startedAt;
+  correctionPredatesPassage.sources.find(
+    (item) => item.id === "src-correction-note",
+  ).capturedAt = correctionPredatesPassage.meeting.startedAt;
+  assert.equal(hasFinding(correctionPredatesPassage, "broken_correction_lineage"), true);
 
   const overlongWindow = clone();
   overlongWindow.recording.durationSeconds = 7200;

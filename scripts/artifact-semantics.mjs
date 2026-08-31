@@ -20737,6 +20737,11 @@ function meetingRecordFindings(value) {
       corrected.correctionRef !== correction.id ||
       corrected.supersedesRef !== correction.supersededSegmentRef ||
       superseded?.state !== "superseded" ||
+      correctedAt <
+        startedAt +
+          (Math.max(corrected.endSeconds, superseded.endSeconds) -
+            recording.windowStartSeconds) *
+            1000 ||
       source?.kind !== "correction-note" ||
       source.integrity !== "verified" ||
       correctedAt < startedAt ||
@@ -20748,7 +20753,7 @@ function meetingRecordFindings(value) {
         finding(
           "broken_correction_lineage",
           path,
-          "Every correction must link a corrected segment to the segment it supersedes through verified, human-attributed evidence captured at or after the correction and before the as-of time.",
+          "Every correction must follow the corrected passage and link it to the segment it supersedes through verified, human-attributed evidence captured at or after the correction and before the as-of time.",
         ),
       );
     }
@@ -21391,6 +21396,21 @@ function meetingRecordFindings(value) {
     // is withheld or superseded; every substantive conflict needs usable evidence.
     if (conflict.kind !== "disputed-attribution") {
       requireUsableEvidence(conflict.segmentRefs, `${path}.segmentRefs`);
+    } else if (
+      conflict.segmentRefs.some(
+        (reference) =>
+          !["unattributed", "disputed"].includes(
+            segmentById.get(reference)?.attributionState,
+          ),
+      )
+    ) {
+      findings.push(
+        finding(
+          "broken_conflict_link",
+          `${path}.segmentRefs`,
+          "A disputed-attribution conflict may only cite passages whose speaker attribution is unresolved.",
+        ),
+      );
     }
     requireMinutesConsent(conflict.segmentRefs, `${path}.segmentRefs`);
     if (
