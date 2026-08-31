@@ -1,0 +1,561 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/executive-commitment-ledger.schema.json",
+  "title": "Executive commitment ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "horizon",
+    "sources",
+    "priorities",
+    "meetings",
+    "decisions",
+    "commitments",
+    "drafts",
+    "conflicts",
+    "reviewQuestions",
+    "prohibitedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.executiveCommitmentLedger.v1" },
+    "horizon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "request",
+        "asOf",
+        "periodStart",
+        "periodEnd",
+        "timeZone",
+        "executive",
+        "supportOwner",
+        "supportOwnerType",
+        "state"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^horizon-[a-z0-9-]+$" },
+        "request": { "$ref": "#/$defs/text" },
+        "asOf": { "type": "string", "format": "date-time" },
+        "periodStart": { "type": "string", "format": "date-time" },
+        "periodEnd": { "type": "string", "format": "date-time" },
+        "timeZone": { "$ref": "#/$defs/shortText" },
+        "executive": { "$ref": "#/$defs/principal" },
+        "supportOwner": { "$ref": "#/$defs/principal" },
+        "supportOwnerType": { "$ref": "#/$defs/principalType" },
+        "state": { "$ref": "#/$defs/ledgerState" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "label",
+          "reference",
+          "observedAt",
+          "freshness",
+          "confidentiality",
+          "audienceScope"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "executive-direction",
+              "priority-note",
+              "meeting-note",
+              "calendar-export",
+              "correspondence-summary",
+              "decision-log",
+              "commitment-log",
+              "delegation-authority",
+              "draft-approval",
+              "stakeholder-brief",
+              "protected-preference"
+            ]
+          },
+          "label": { "$ref": "#/$defs/shortText" },
+          "reference": { "$ref": "#/$defs/shortText" },
+          "observedAt": { "type": "string", "format": "date-time" },
+          "freshness": { "enum": ["current", "stale", "missing", "conflicting"] },
+          "confidentiality": { "$ref": "#/$defs/classification" },
+          "audienceScope": { "$ref": "#/$defs/audienceScope" }
+        }
+      }
+    },
+    "priorities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "rank",
+          "outcome",
+          "sourceRefs",
+          "timebox",
+          "protectedConstraints",
+          "state"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^priority-[a-z0-9-]+$" },
+          "rank": { "type": "integer", "minimum": 1 },
+          "outcome": { "$ref": "#/$defs/text" },
+          "sourceRefs": { "$ref": "#/$defs/sourceRefs" },
+          "timebox": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["start", "end"],
+            "properties": {
+              "start": { "type": "string", "format": "date-time" },
+              "end": { "type": "string", "format": "date-time" }
+            }
+          },
+          "protectedConstraints": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/shortText" }
+          },
+          "state": {
+            "enum": ["on-track", "at-risk", "needs-executive-input", "blocked"]
+          }
+        }
+      }
+    },
+    "meetings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "suppliedStart",
+          "suppliedEnd",
+          "attendees",
+          "sourceRefs",
+          "priorityRefs",
+          "decisionRefs",
+          "agendaPath",
+          "preparationState",
+          "calendarState",
+          "conflictRefs"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^meeting-[a-z0-9-]+$" },
+          "title": { "$ref": "#/$defs/shortText" },
+          "suppliedStart": { "type": "string", "format": "date-time" },
+          "suppliedEnd": { "type": "string", "format": "date-time" },
+          "attendees": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "type"],
+              "properties": {
+                "name": { "$ref": "#/$defs/principal" },
+                "type": { "$ref": "#/$defs/principalType" }
+              }
+            }
+          },
+          "sourceRefs": { "$ref": "#/$defs/sourceRefs" },
+          "priorityRefs": { "$ref": "#/$defs/priorityRefs" },
+          "decisionRefs": { "$ref": "#/$defs/optionalDecisionRefs" },
+          "agendaPath": {
+            "oneOf": [{ "$ref": "#/$defs/shortText" }, { "type": "null" }]
+          },
+          "preparationState": {
+            "enum": ["not-started", "drafted", "ready-for-executive-review", "blocked"]
+          },
+          "calendarState": {
+            "enum": ["observed-from-supplied-input", "proposed-only"]
+          },
+          "conflictRefs": { "$ref": "#/$defs/optionalConflictRefs" }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "question",
+          "priorityRefs",
+          "evidenceSourceRefs",
+          "decisionOwner",
+          "decisionOwnerType",
+          "authorityState",
+          "delegation",
+          "deadline",
+          "state",
+          "decision",
+          "decidedAt",
+          "decisionEvidenceSourceRef"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^decision-[a-z0-9-]+$" },
+          "kind": { "$ref": "#/$defs/decisionKind" },
+          "question": { "$ref": "#/$defs/text" },
+          "priorityRefs": { "$ref": "#/$defs/priorityRefs" },
+          "evidenceSourceRefs": { "$ref": "#/$defs/sourceRefs" },
+          "decisionOwner": { "$ref": "#/$defs/principal" },
+          "decisionOwnerType": { "$ref": "#/$defs/principalType" },
+          "authorityState": { "enum": ["executive-only", "delegated"] },
+          "delegation": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "delegate",
+                  "delegateType",
+                  "evidenceSourceRef",
+                  "scopeKinds",
+                  "validThrough"
+                ],
+                "properties": {
+                  "delegate": { "$ref": "#/$defs/principal" },
+                  "delegateType": { "$ref": "#/$defs/principalType" },
+                  "evidenceSourceRef": {
+                    "type": "string",
+                    "pattern": "^source-[a-z0-9-]+$"
+                  },
+                  "scopeKinds": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": { "$ref": "#/$defs/decisionKind" }
+                  },
+                  "validThrough": { "type": "string", "format": "date-time" }
+                }
+              },
+              { "type": "null" }
+            ]
+          },
+          "deadline": { "type": "string", "format": "date-time" },
+          "state": { "enum": ["open", "decided", "deferred"] },
+          "decision": { "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }] },
+          "decidedAt": {
+            "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }]
+          },
+          "decisionEvidenceSourceRef": {
+            "oneOf": [
+              { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+              { "type": "null" }
+            ]
+          }
+        }
+      }
+    },
+    "commitments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "statement",
+          "originRef",
+          "owner",
+          "ownerType",
+          "deadline",
+          "timeZone",
+          "acknowledgementState",
+          "acknowledgementSourceRef",
+          "acknowledgedBy",
+          "acknowledgedByType",
+          "acknowledgedAt",
+          "state"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^commitment-[a-z0-9-]+$" },
+          "statement": { "$ref": "#/$defs/text" },
+          "originRef": {
+            "type": "string",
+            "pattern": "^(?:decision|source)-[a-z0-9-]+$"
+          },
+          "owner": { "$ref": "#/$defs/principal" },
+          "ownerType": { "$ref": "#/$defs/principalType" },
+          "deadline": { "type": "string", "format": "date-time" },
+          "timeZone": { "$ref": "#/$defs/shortText" },
+          "acknowledgementState": { "enum": ["acknowledged", "not-acknowledged"] },
+          "acknowledgementSourceRef": {
+            "oneOf": [
+              { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+              { "type": "null" }
+            ]
+          },
+          "acknowledgedBy": {
+            "oneOf": [{ "$ref": "#/$defs/principal" }, { "type": "null" }]
+          },
+          "acknowledgedByType": {
+            "oneOf": [{ "$ref": "#/$defs/principalType" }, { "type": "null" }]
+          },
+          "acknowledgedAt": {
+            "oneOf": [
+              { "type": "string", "format": "date-time" },
+              { "type": "null" }
+            ]
+          },
+          "state": { "enum": ["proposed", "active", "complete", "blocked"] }
+        }
+      }
+    },
+    "drafts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "audience",
+          "audienceReach",
+          "classification",
+          "purpose",
+          "path",
+          "version",
+          "sourceRefs",
+          "decisionRefs",
+          "commitmentRefs",
+          "reviewState",
+          "executiveApproval",
+          "sendState"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^draft-[a-z0-9-]+$" },
+          "audience": { "$ref": "#/$defs/shortText" },
+          "audienceReach": { "$ref": "#/$defs/audienceScope" },
+          "classification": { "$ref": "#/$defs/classification" },
+          "purpose": { "$ref": "#/$defs/text" },
+          "path": { "$ref": "#/$defs/shortText" },
+          "version": { "type": "string", "pattern": "^v[1-9][0-9]*$" },
+          "sourceRefs": { "$ref": "#/$defs/sourceRefs" },
+          "decisionRefs": { "$ref": "#/$defs/optionalDecisionRefs" },
+          "commitmentRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "pattern": "^commitment-[a-z0-9-]+$" }
+          },
+          "reviewState": {
+            "enum": ["draft", "ready-for-executive-review", "approved-by-executive"]
+          },
+          "executiveApproval": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "approvedBy",
+                  "approvedAt",
+                  "draftVersion",
+                  "evidenceSourceRef"
+                ],
+                "properties": {
+                  "approvedBy": { "$ref": "#/$defs/principal" },
+                  "approvedAt": { "type": "string", "format": "date-time" },
+                  "draftVersion": { "type": "string", "pattern": "^v[1-9][0-9]*$" },
+                  "evidenceSourceRef": {
+                    "type": "string",
+                    "pattern": "^source-[a-z0-9-]+$"
+                  }
+                }
+              },
+              { "type": "null" }
+            ]
+          },
+          "sendState": { "const": "not-sent" }
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "description", "severity", "refs", "state"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^conflict-[a-z0-9-]+$" },
+          "kind": {
+            "enum": [
+              "schedule-conflict",
+              "priority-conflict",
+              "capacity-risk",
+              "authority-gap",
+              "missing-evidence",
+              "confidentiality-risk"
+            ]
+          },
+          "description": { "$ref": "#/$defs/text" },
+          "severity": { "enum": ["high", "medium", "low"] },
+          "refs": { "$ref": "#/$defs/refs" },
+          "state": { "enum": ["open", "resolved"] }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "owner", "ownerType", "refs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^question-[a-z0-9-]+$" },
+          "question": { "$ref": "#/$defs/text" },
+          "owner": { "$ref": "#/$defs/principal" },
+          "ownerType": { "$ref": "#/$defs/principalType" },
+          "refs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "prohibitedActions": { "$ref": "#/$defs/prohibitedActions" },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "executive",
+        "supportOwner",
+        "supportOwnerType",
+        "sourceRefs",
+        "priorityRefs",
+        "meetingRefs",
+        "decisionRefs",
+        "commitmentRefs",
+        "draftRefs",
+        "conflictRefs",
+        "reviewQuestionRefs",
+        "blockingRefs",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": { "$ref": "#/$defs/ledgerState" },
+        "executive": { "$ref": "#/$defs/principal" },
+        "supportOwner": { "$ref": "#/$defs/principal" },
+        "supportOwnerType": { "$ref": "#/$defs/principalType" },
+        "sourceRefs": { "$ref": "#/$defs/sourceRefs" },
+        "priorityRefs": { "$ref": "#/$defs/priorityRefs" },
+        "meetingRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^meeting-[a-z0-9-]+$" }
+        },
+        "decisionRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^decision-[a-z0-9-]+$" }
+        },
+        "commitmentRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^commitment-[a-z0-9-]+$" }
+        },
+        "draftRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^draft-[a-z0-9-]+$" }
+        },
+        "conflictRefs": { "$ref": "#/$defs/optionalConflictRefs" },
+        "reviewQuestionRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^question-[a-z0-9-]+$" }
+        },
+        "blockingRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/shortText" }
+        },
+        "prohibitedActions": { "$ref": "#/$defs/prohibitedActions" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "maxLength": 2000, "pattern": "\\S" },
+    "shortText": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" },
+    "principal": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" },
+    "principalType": { "enum": ["human", "team"] },
+    "classification": { "enum": ["public", "internal", "confidential", "restricted"] },
+    "audienceScope": {
+      "enum": [
+        "executive-only",
+        "executive-and-support",
+        "named-stakeholders",
+        "organization",
+        "public"
+      ]
+    },
+    "decisionKind": {
+      "enum": [
+        "resource-commitment",
+        "personnel",
+        "external-communication",
+        "strategy",
+        "operational",
+        "scheduling"
+      ]
+    },
+    "ledgerState": {
+      "enum": ["blocked", "ready-for-executive-review", "ready-for-execution-handoff"]
+    },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/shortText" }
+    },
+    "sourceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" }
+    },
+    "priorityRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^priority-[a-z0-9-]+$" }
+    },
+    "optionalDecisionRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^decision-[a-z0-9-]+$" }
+    },
+    "optionalConflictRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^conflict-[a-z0-9-]+$" }
+    },
+    "prohibitedActions": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "send-messages",
+          "accept-or-decline-meetings",
+          "mutate-calendar",
+          "commit-resources",
+          "assign-commitments",
+          "disclose-protected-context",
+          "speak-for-executive",
+          "claim-decisions-or-acknowledgement"
+        ]
+      }
+    }
+  }
+}

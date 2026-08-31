@@ -34,7 +34,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Document intake analyst](claws/document-intake-analyst) | @giodl73-repo; last verified 2026-08-29 |
 | [Document renewal tracker](claws/document-renewal-tracker) | @giodl73-repo; last verified 2026-08-27 |
 | [Event operations director](claws/event-operations-director) | @giodl73-repo; last verified 2026-08-19 |
-| [Executive assistant](claws/executive-assistant) | @giodl73-repo; last verified 2026-08-19 |
+| [Executive assistant](claws/executive-assistant) | @giodl73-repo; last verified 2026-08-31 |
 | [Executive briefing](claws/executive-briefing) | @giodl73-repo; last verified 2026-08-19 |
 | [Experimentation lead](claws/experimentation-lead) | @giodl73-repo; last verified 2026-08-19 |
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | @giodl73-repo; last verified 2026-08-19 |
@@ -377,7 +377,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Delegation coordinator](claws/delegation-coordinator) | Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
 | [Document intake analyst](claws/document-intake-analyst) | Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty. |
 | [Document renewal tracker](claws/document-renewal-tracker) | Tracks passports, IDs, licenses, permits, registrations, certifications, memberships, expiration windows, source freshness, required owner documents, and review questions without filing forms, paying fees, changing accounts, submitting documents, or giving legal, immigration, tax, medical, or eligibility advice. |
-| [Executive assistant](claws/executive-assistant) | Turns executive priorities into prepared decisions, communications, and reliable follow-through. |
+| [Executive assistant](claws/executive-assistant) | Turns executive priorities into a prepared commitment ledger of ranked outcomes, meetings, decisions, and follow-through that named humans still have to act on. |
 | [Executive briefing](claws/executive-briefing) | Builds a concise daily operating brief from authorized calendar, mail, document, and weather context. |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | Manages fantasy-team rosters, league rules, matchup evidence, waiver windows, trade ideas, injury uncertainty, and owner-review lineup decisions without submitting changes, joining contests, betting, messaging managers, or giving gambling advice. |
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | Maintains a private feed-intelligence delta and triage ledger that reconciles owner-approved recurring feed subscriptions, cursors, item identity, lineage, signals, and queues against a prior checkpoint without subscribing, notifying, publishing, or acting. |
@@ -568,7 +568,7 @@ Categories come directly from the catalog entry.
 | [Conference opportunity scout](claws/conference-opportunity-scout) | X3; Tracks conferences, calls for proposals, speaking or attendance fit, deadlines, and submission drafts without applying, publishing, booking, or contacting organizers. |
 | [Delegation coordinator](claws/delegation-coordinator) | X3; Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
 | [Document renewal tracker](claws/document-renewal-tracker) | X3; Tracks passports, IDs, licenses, permits, registrations, certifications, memberships, expiration windows, source freshness, required owner documents, and review questions without filing forms, paying fees, changing accounts, submitting documents, or giving legal, immigration, tax, medical, or eligibility advice. |
-| [Executive assistant](claws/executive-assistant) | X3; Turns executive priorities into prepared decisions, communications, and reliable follow-through. |
+| [Executive assistant](claws/executive-assistant) | X3; Turns executive priorities into a prepared commitment ledger of ranked outcomes, meetings, decisions, and follow-through that named humans still have to act on. |
 | [Executive briefing](claws/executive-briefing) | X3; Builds a concise daily operating brief from authorized calendar, mail, document, and weather context. |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | X3; Manages fantasy-team rosters, league rules, matchup evidence, waiver windows, trade ideas, injury uncertainty, and owner-review lineup decisions without submitting changes, joining contests, betting, messaging managers, or giving gambling advice. |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | X3; Tracks freelance prospects, scopes, proposals, client follow-ups, and commitment gaps without sending messages, quoting binding terms, or accepting work. |
@@ -683,7 +683,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Delegation coordinator](claws/delegation-coordinator) | explicit tool policy |
 | [Document intake analyst](claws/document-intake-analyst) | pinned skill |
 | [Event operations director](claws/event-operations-director) | guided local setup; explicit tool policy; persistent dashboard |
-| [Executive assistant](claws/executive-assistant) | guided local setup |
+| [Executive assistant](claws/executive-assistant) | guided local setup; explicit tool policy |
 | [Experimentation lead](claws/experimentation-lead) | explicit tool policy |
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | guided local setup; explicit tool policy |
 | [Financial analyst](claws/financial-analyst) | pinned skill; guided local setup |

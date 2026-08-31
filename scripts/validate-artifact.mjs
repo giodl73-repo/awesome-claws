@@ -24,6 +24,7 @@ const schemaNames = {
   "delegation-coordinator": "delegation-ledger.schema.json",
   "document-intake-analyst": "document-intake.schema.json",
   "document-renewal-tracker": "document-renewal.schema.json",
+  "executive-assistant": "executive-commitment-ledger.schema.json",
   "fantasy-sports-manager": "fantasy-roster.schema.json",
   "financial-analyst": "financial-scenario.schema.json",
   "feed-intelligence-monitor": "feed-intelligence-delta-ledger.schema.json",
