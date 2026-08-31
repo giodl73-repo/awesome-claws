@@ -449,6 +449,39 @@ test("narrative safety survives negation and normalized punctuation", () => {
   curly.handoff.residualRiskSummary = negated.handoff.residualRiskSummary;
   assert.equal(hasFinding(curly, "unsafe_narrative_content"), false);
 
+  const authorizedDependency = clone();
+  authorizedDependency.scope.dependencyChangeAuthorized = true;
+  authorizedDependency.changes[0].path = "src/cli/package.json";
+  authorizedDependency.changes[0].rationale =
+    "Installed a new dependency to handle shim URL parsing within the owner-authorized dependency change.";
+  assert.equal(hasFinding(authorizedDependency, "unsafe_narrative_content"), false);
+
+  const authorizedPublication = deliveredRecord();
+  authorizedPublication.handoff.residualRiskSummary =
+    "The maintainer opened the pull request exactly as the owner approved after review.";
+  assert.equal(hasFinding(authorizedPublication, "unsafe_narrative_content"), false);
+
+  const unauthorizedMergeNarrative = deliveredRecord();
+  unauthorizedMergeNarrative.handoff.residualRiskSummary =
+    "The maintainer merged the pull request once the suite went green.";
+  assert.equal(hasFinding(unauthorizedMergeNarrative, "unsafe_narrative_content"), true);
+
+  const unauthorizedSharedBranchNarrative = deliveredRecord();
+  unauthorizedSharedBranchNarrative.handoff.residualRiskSummary =
+    "The maintainer pushed the fix to main after the build finished.";
+  assert.equal(
+    hasFinding(unauthorizedSharedBranchNarrative, "unsafe_narrative_content"),
+    true,
+  );
+
+  const authorizedMergeNarrative = deliveredRecord();
+  authorizedMergeNarrative.delivery.authority = "merge";
+  authorizedMergeNarrative.delivery.performed = "merged";
+  authorizedMergeNarrative.ownerDecision.approvedDelivery = "merged";
+  authorizedMergeNarrative.handoff.residualRiskSummary =
+    "The maintainer merged the pull request exactly as the owner approved after review.";
+  assert.equal(hasFinding(authorizedMergeNarrative, "unsafe_narrative_content"), false);
+
   for (const narrative of [
     "Force-pushed the rebased branch so the older commits would disappear.",
     "Merged the pull request once the suite went green.",
