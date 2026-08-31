@@ -15522,7 +15522,7 @@ function executiveCommitmentLedgerFindings(value) {
   const asOf = Date.parse(value.horizon.asOf);
   const periodStart = Date.parse(value.horizon.periodStart);
   const periodEnd = Date.parse(value.horizon.periodEnd);
-  if (periodEnd < periodStart || asOf > periodEnd) {
+  if (periodEnd <= periodStart || asOf > periodEnd) {
     findings.push(
       finding(
         "invalid_horizon_chronology",
@@ -15600,12 +15600,12 @@ function executiveCommitmentLedgerFindings(value) {
     const directed = sources.some((source) =>
       ["executive-direction", "priority-note"].includes(source.kind),
     );
-    if (priority.state === "blocked" ? allCurrent : !allCurrent || !directed) {
+    if (!directed || (priority.state === "blocked" ? allCurrent : !allCurrent)) {
       findings.push(
         finding(
           "unsupported_priority_state",
           `priorities.${index}.state`,
-          "An unblocked priority needs current executive direction, and a blocked priority needs a source that is not current.",
+          "Every priority needs executive direction; an unblocked priority also needs all-current evidence, while a blocked priority needs a source that is not current.",
         ),
       );
     }

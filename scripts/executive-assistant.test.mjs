@@ -187,6 +187,10 @@ test("chronology, timezones, and source references are enforced", () => {
   badHorizon.horizon.asOf = "2026-09-30T16:00:00-07:00";
   assert.equal(hasFinding(badHorizon, "invalid_horizon_chronology"), true);
 
+  const zeroLengthHorizon = clone();
+  zeroLengthHorizon.horizon.periodEnd = zeroLengthHorizon.horizon.periodStart;
+  assert.equal(hasFinding(zeroLengthHorizon, "invalid_horizon_chronology"), true);
+
   const badZone = clone();
   badZone.horizon.timeZone = "Mars/Olympus";
   assert.equal(hasFinding(badZone, "invalid_time_zone"), true);
@@ -225,6 +229,10 @@ test("priorities keep unique ranks, bounded timeboxes, and honest state", () => 
   const overstatedBlock = clone();
   overstatedBlock.priorities[2].state = "blocked";
   assert.equal(hasFinding(overstatedBlock, "unsupported_priority_state"), true);
+
+  const blockedWithoutDirection = clone();
+  blockedWithoutDirection.priorities[0].sourceRefs = ["source-headcount-brief"];
+  assert.equal(hasFinding(blockedWithoutDirection, "unsupported_priority_state"), true);
 
   const uncovered = clone();
   uncovered.meetings[2].priorityRefs = ["priority-renewal"];

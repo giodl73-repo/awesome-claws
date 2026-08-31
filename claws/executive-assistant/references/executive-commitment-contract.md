@@ -10,6 +10,8 @@ inventory, ranked priorities with protected constraints, meetings, decisions,
 commitments, communication drafts, conflicts, questions, and the private handoff
 in one graph. Everything derives from supplied evidence, and every source
 carries its own freshness, confidentiality, and audience scope.
+Every priority retains executive-direction provenance; missing or stale
+supporting evidence may block that direction but cannot replace it.
 
 Calendar state is observed or proposed, never mutated. A meeting records the
 window that the supplied export contained; a proposed slot stays proposed until

@@ -20,6 +20,8 @@ authority, or honest state.
 ## Priorities and protected constraints
 
 - List priorities in rank order with their outcome, sources, timebox, and state.
+- Keep every priority tied to executive direction, even when missing or stale
+  supporting evidence leaves it blocked.
 - Repeat protected constraints verbatim; they bound what may be scheduled,
   drafted, or shared.
 
