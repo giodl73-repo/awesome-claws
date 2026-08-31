@@ -62,7 +62,17 @@ const upgradeFixtures = new Map([
       ),
       previousVersion: "0.0.1",
       targetVersion: "0.1.0",
-      changedPath: "AGENTS.md",
+      changedPaths: [
+        "AGENTS.md",
+        "SOUL.md",
+        "fixtures/session-demo.json",
+        "templates/executive-brief.md",
+      ],
+      directlySourcedChangedPaths: [
+        ["AGENTS.md", "workspace/AGENTS.md"],
+        ["fixtures/session-demo.json", "fixtures/session-demo.json"],
+        ["templates/executive-brief.md", "templates/executive-brief.md"],
+      ],
       addedPaths: [
         "schemas/executive-commitment-ledger.schema.json",
         "fixtures/executive-commitment-ledger.example.json",
@@ -71,6 +81,8 @@ const upgradeFixtures = new Map([
         "templates/session-handoff.md",
       ],
       removedPath: "templates/legacy-follow-up.md",
+      agentChanges: 1,
+      capabilityChanges: 3,
     },
   ],
 ]);
@@ -156,14 +168,30 @@ function assertSchema(payload, schemaVersion, label) {
 }
 
 function assertUpdatePlan(plan, fixture, direction, label) {
+  const expectedChanged = fixture.changedPaths.length + fixture.agentChanges;
+  const expectedAdded = direction === "forward" ? fixture.addedPaths.length : 1;
+  const expectedRemoved = direction === "forward" ? 1 : fixture.addedPaths.length;
+  const expectedCapabilityEscalations =
+    direction === "forward" ? 0 : fixture.capabilityChanges;
   if (
     plan.schemaVersion !== "openclaw.clawUpdatePlan.v1" ||
     plan.mutationAllowed !== false ||
     typeof plan.planIntegrity !== "string" ||
-    plan.summary?.added !== fixture.addedPaths.length ||
-    plan.summary?.changed !== 1 ||
-    plan.summary?.removed !== 1 ||
+    plan.summary?.totalActions !==
+      expectedAdded + expectedChanged + expectedRemoved + 1 ||
+    plan.summary?.added !== expectedAdded ||
+    plan.summary?.changed !== expectedChanged ||
+    plan.summary?.removed !== expectedRemoved ||
+    plan.summary?.unchanged !== 1 ||
     plan.summary?.blocked !== 0 ||
+    plan.summary?.capabilityChanges !== fixture.capabilityChanges ||
+    plan.summary?.capabilityEscalations !== expectedCapabilityEscalations ||
+    plan.capabilityChanges?.length !== fixture.capabilityChanges ||
+    !plan.capabilityChanges.every(
+      (change) =>
+        change.classification ===
+        (direction === "forward" ? "reduction" : "escalation"),
+    ) ||
     (plan.blockers?.length ?? 0) !== 0
   ) {
     throw new Error(`${label} did not return the expected consent-bound managed delta.`);
@@ -171,12 +199,12 @@ function assertUpdatePlan(plan, fixture, direction, label) {
   const expected =
     direction === "forward"
       ? [
-          ["change", fixture.changedPath],
+          ...fixture.changedPaths.map((path) => ["change", path]),
           ...fixture.addedPaths.map((path) => ["add", path]),
           ["remove", fixture.removedPath],
         ]
       : [
-          ["change", fixture.changedPath],
+          ...fixture.changedPaths.map((path) => ["change", path]),
           ...fixture.addedPaths.map((path) => ["remove", path]),
           ["add", fixture.removedPath],
         ];
@@ -191,6 +219,16 @@ function assertUpdatePlan(plan, fixture, direction, label) {
     if (!matched) {
       throw new Error(`${label} omitted workspace ${action} action for ${id}.`);
     }
+  }
+  const agentChange = plan.actions?.some(
+    (candidate) =>
+      candidate.kind === "agent" &&
+      candidate.action === "change" &&
+      candidate.id === "executive-assistant" &&
+      candidate.blocked === false,
+  );
+  if (!agentChange) {
+    throw new Error(`${label} omitted the owned executive-assistant agent change.`);
   }
   const expectedVersion =
     direction === "forward" ? fixture.targetVersion : fixture.previousVersion;
@@ -930,14 +968,18 @@ for (const entry of entries) {
       if (typeof workspace !== "string" || workspace.length === 0) {
         throw new Error(`${entry.id} upgrade proof requires an installed workspace.`);
       }
-      const priorAgents = join(upgradeFixture.previousSource, "workspace", "AGENTS.md");
-      const targetAgents = join(source, "workspace", "AGENTS.md");
       const priorLegacy = join(
         upgradeFixture.previousSource,
         "templates",
         "legacy-follow-up.md",
       );
-      await assertFileMatches(join(workspace, upgradeFixture.changedPath), priorAgents, entry.id);
+      for (const [path, sourcePath] of upgradeFixture.directlySourcedChangedPaths) {
+        await assertFileMatches(
+          join(workspace, path),
+          join(upgradeFixture.previousSource, sourcePath),
+          entry.id,
+        );
+      }
       await assertFileMatches(join(workspace, upgradeFixture.removedPath), priorLegacy, entry.id);
       for (const path of upgradeFixture.addedPaths) {
         await assertFileMissing(join(workspace, path), entry.id);
@@ -977,7 +1019,13 @@ for (const entry of entries) {
       if (rejected.status !== "failed" || rejected.error?.code !== "plan_integrity_mismatch") {
         throw new Error(`${entry.id} update did not reject stale plan integrity.`);
       }
-      await assertFileMatches(join(workspace, upgradeFixture.changedPath), priorAgents, entry.id);
+      for (const [path, sourcePath] of upgradeFixture.directlySourcedChangedPaths) {
+        await assertFileMatches(
+          join(workspace, path),
+          join(upgradeFixture.previousSource, sourcePath),
+          entry.id,
+        );
+      }
       await assertFileMatches(join(workspace, upgradeFixture.removedPath), priorLegacy, entry.id);
       for (const path of upgradeFixture.addedPaths) {
         await assertFileMissing(join(workspace, path), entry.id);
@@ -1021,14 +1069,20 @@ for (const entry of entries) {
         "openclaw.clawUpdateResult.v1",
         `${entry.id} upgrade`,
       );
-      const expectedActionCount = upgradeFixture.addedPaths.length + 2;
+      const expectedActionCount =
+        upgradeFixture.addedPaths.length +
+        upgradeFixture.changedPaths.length +
+        upgradeFixture.agentChanges +
+        1;
       if (
         updated.status !== "complete" ||
         (updated.appliedActions?.length ?? 0) !== expectedActionCount
       ) {
         throw new Error(`${entry.id} upgrade did not apply the expected managed deltas.`);
       }
-      await assertFileMatches(join(workspace, upgradeFixture.changedPath), targetAgents, entry.id);
+      for (const [path, sourcePath] of upgradeFixture.directlySourcedChangedPaths) {
+        await assertFileMatches(join(workspace, path), join(source, sourcePath), entry.id);
+      }
       for (const path of upgradeFixture.addedPaths) {
         await assertFileMatches(join(workspace, path), join(source, path), entry.id);
       }
@@ -1099,7 +1153,13 @@ for (const entry of entries) {
       ) {
         throw new Error(`${entry.id} rollback did not restore the expected managed deltas.`);
       }
-      await assertFileMatches(join(workspace, upgradeFixture.changedPath), priorAgents, entry.id);
+      for (const [path, sourcePath] of upgradeFixture.directlySourcedChangedPaths) {
+        await assertFileMatches(
+          join(workspace, path),
+          join(upgradeFixture.previousSource, sourcePath),
+          entry.id,
+        );
+      }
       await assertFileMatches(join(workspace, upgradeFixture.removedPath), priorLegacy, entry.id);
       for (const path of upgradeFixture.addedPaths) {
         await assertFileMissing(join(workspace, path), entry.id);
@@ -1163,7 +1223,9 @@ for (const entry of entries) {
       ) {
         throw new Error(`${entry.id} repeat upgrade did not apply the managed deltas.`);
       }
-      await assertFileMatches(join(workspace, upgradeFixture.changedPath), targetAgents, entry.id);
+      for (const [path, sourcePath] of upgradeFixture.directlySourcedChangedPaths) {
+        await assertFileMatches(join(workspace, path), join(source, sourcePath), entry.id);
+      }
       for (const path of upgradeFixture.addedPaths) {
         await assertFileMatches(join(workspace, path), join(source, path), entry.id);
       }
@@ -1192,7 +1254,7 @@ for (const entry of entries) {
         targetVersion: upgradeFixture.targetVersion,
         managedDelta: {
           added: upgradeFixture.addedPaths.length,
-          changed: 1,
+          changed: upgradeFixture.changedPaths.length + upgradeFixture.agentChanges,
           removed: 1,
         },
         staleConsent: "rejected-before-mutation",
