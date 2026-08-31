@@ -20741,13 +20741,14 @@ function meetingRecordFindings(value) {
       source.integrity !== "verified" ||
       correctedAt < startedAt ||
       correctedAt > asOf ||
+      Date.parse(source.capturedAt) < correctedAt ||
       ownerIsAgent(correction.correctedBy)
     ) {
       findings.push(
         finding(
           "broken_correction_lineage",
           path,
-          "Every correction must link a corrected segment to the segment it supersedes through verified, human-attributed correction evidence recorded before the as-of time.",
+          "Every correction must link a corrected segment to the segment it supersedes through verified, human-attributed evidence captured at or after the correction and before the as-of time.",
         ),
       );
     }
@@ -20891,6 +20892,28 @@ function meetingRecordFindings(value) {
       `${path}.conflictRef`,
       "Decision conflict reference",
     );
+    const dissentEvidenceRefs = [
+      ...decision.segmentRefs,
+      ...(decision.conflictRef === null
+        ? []
+        : (conflictById.get(decision.conflictRef)?.segmentRefs ?? [])),
+    ];
+    if (
+      decision.dissentRefs.some(
+        (reference) =>
+          !dissentEvidenceRefs.some(
+            (segmentRef) => segmentById.get(segmentRef)?.speakerRef === reference,
+          ),
+      )
+    ) {
+      findings.push(
+        finding(
+          "fabricated_speaker_attribution",
+          `${path}.dissentRefs`,
+          "Recorded dissent must cite speech from every named dissenter in the decision or its linked conflict.",
+        ),
+      );
+    }
     requireUsableEvidence(decision.segmentRefs, `${path}.segmentRefs`);
     requireMinutesConsent(decision.segmentRefs, `${path}.segmentRefs`);
     const maker = participantById.get(decision.decisionMakerRef);

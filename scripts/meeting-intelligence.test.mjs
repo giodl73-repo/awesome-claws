@@ -820,6 +820,12 @@ test("participation credit stays bound to attendance, consent, and cited speech"
   ];
   assert.equal(hasFinding(absentDissenter, "fabricated_speaker_attribution"), true);
 
+  const uncitedDissenter = clone();
+  decision(uncitedDissenter, "decision-migration-sequence").dissentRefs = [
+    "participant-diaz",
+  ];
+  assert.equal(hasFinding(uncitedDissenter, "fabricated_speaker_attribution"), true);
+
   const unconsentedOwner = clone();
   unconsentedOwner.gapsAndBlockers[0].ownerRef = "participant-shah";
   assert.equal(hasFinding(unconsentedOwner, "unconsented_action_assignment"), true);
@@ -1125,6 +1131,15 @@ test("recording and acknowledgement evidence keep meeting chronology", () => {
     (item) => item.id === "src-correction-note",
   ).capturedAt = "2026-08-27T13:30:00-07:00";
   assert.equal(hasFinding(prematureCorrection, "invalid_meeting_chronology"), true);
+
+  const correctionEvidencePredatesCorrection = clone();
+  correctionEvidencePredatesCorrection.sources.find(
+    (item) => item.id === "src-correction-note",
+  ).capturedAt = "2026-08-28T08:39:00-07:00";
+  assert.equal(
+    hasFinding(correctionEvidencePredatesCorrection, "broken_correction_lineage"),
+    true,
+  );
 
   const overlongWindow = clone();
   overlongWindow.recording.durationSeconds = 7200;

@@ -387,6 +387,21 @@
       "withheldReason": null
     },
     {
+      "id": "segment-migration-objection",
+      "startSeconds": 1835,
+      "endSeconds": 1875,
+      "speakerRef": "participant-lin",
+      "attributionState": "confirmed",
+      "attributionConfidence": 0.94,
+      "excerpt": "Objects to moving the read path first until the latency benchmark establishes the smallest dataset can meet the target.",
+      "verbatim": false,
+      "uncertainty": null,
+      "state": "current",
+      "supersedesRef": null,
+      "correctionRef": null,
+      "withheldReason": null
+    },
+    {
       "id": "segment-decision-storage",
       "startSeconds": 2100,
       "endSeconds": 2185,
@@ -725,7 +740,11 @@
       "id": "conflict-migration-sequence",
       "kind": "contested-decision",
       "description": "Marcus Lin objected to moving the read path first and the objection stands on the record; it is routed to the review owner rather than settled in the meeting.",
-      "segmentRefs": ["segment-cost-discussion", "segment-migration-proposal"],
+      "segmentRefs": [
+        "segment-cost-discussion",
+        "segment-migration-proposal",
+        "segment-migration-objection"
+      ],
       "decisionRefs": ["decision-migration-sequence"],
       "actionRefs": ["action-latency-benchmark"],
       "participantRefs": ["participant-lin", "participant-okafor"],
