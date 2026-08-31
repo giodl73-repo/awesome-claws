@@ -16345,6 +16345,1097 @@ function executiveCommitmentLedgerFindings(value) {
   return findings;
 }
 
+function executiveBriefingSnapshotFindings(value) {
+  const sourceIds = value.sources.map((item) => item.id);
+  const agendaIds = value.agendaItems.map((item) => item.id);
+  const meetingIds = value.meetings.map((item) => item.id);
+  const decisionIds = value.decisionAsks.map((item) => item.id);
+  const preparationIds = value.preparationNeeds.map((item) => item.id);
+  const conflictIds = value.conflicts.map((item) => item.id);
+  const forecastIds = value.weatherForecasts.map((item) => item.id);
+  const implicationIds = value.weatherImplications.map((item) => item.id);
+  const blockerIds = value.blockers.map((item) => item.id);
+  const questionIds = value.reviewQuestions.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const agendaSet = new Set(agendaIds);
+  const meetingSet = new Set(meetingIds);
+  const decisionSet = new Set(decisionIds);
+  const preparationSet = new Set(preparationIds);
+  const conflictSet = new Set(conflictIds);
+  const forecastSet = new Set(forecastIds);
+  const implicationSet = new Set(implicationIds);
+  const blockerSet = new Set(blockerIds);
+  const allIds = new Set([
+    ...sourceIds,
+    ...agendaIds,
+    ...meetingIds,
+    ...decisionIds,
+    ...preparationIds,
+    ...conflictIds,
+    ...forecastIds,
+    ...implicationIds,
+    ...blockerIds,
+    ...questionIds,
+  ]);
+  const sourceById = new Map(value.sources.map((item) => [item.id, item]));
+  const agendaById = new Map(value.agendaItems.map((item) => [item.id, item]));
+  const meetingById = new Map(value.meetings.map((item) => [item.id, item]));
+  const preparationById = new Map(
+    value.preparationNeeds.map((item) => [item.id, item]),
+  );
+  const conflictById = new Map(value.conflicts.map((item) => [item.id, item]));
+  const forecastById = new Map(value.weatherForecasts.map((item) => [item.id, item]));
+  const implicationById = new Map(
+    value.weatherImplications.map((item) => [item.id, item]),
+  );
+  const blockerById = new Map(value.blockers.map((item) => [item.id, item]));
+  const graphObjectById = new Map(
+    [
+      ...value.agendaItems,
+      ...value.meetings,
+      ...value.decisionAsks,
+      ...value.preparationNeeds,
+      ...value.conflicts,
+      ...value.weatherForecasts,
+      ...value.weatherImplications,
+      ...value.blockers,
+      ...value.reviewQuestions,
+    ].map((item) => [item.id, item]),
+  );
+  const authorizedWeatherLocationById = new Map(
+    value.run.authorizedWeatherLocations.map((item) => [item.id, item]),
+  );
+  const classificationRank = { public: 0, internal: 1, confidential: 2, restricted: 3 };
+  const audienceRank = {
+    "executive-only": 0,
+    "executive-and-support": 1,
+    "named-stakeholders": 2,
+    organization: 3,
+    public: 4,
+  };
+  const requiredScopes = {
+    calendar: "calendar.read",
+    mail: "mail.read.flagged",
+    document: "documents.read",
+    weather: "weather.read.public",
+  };
+  const maximumCutoffAgeMs = {
+    calendar: 6 * 60 * 60 * 1000,
+    mail: 12 * 60 * 60 * 1000,
+    document: 7 * 24 * 60 * 60 * 1000,
+    weather: 6 * 60 * 60 * 1000,
+  };
+  const requiredActions = [
+    "send-messages",
+    "reply-to-mail",
+    "accept-or-decline-invitations",
+    "create-or-modify-calendar-events",
+    "mutate-documents",
+    "make-commitments",
+    "make-decisions",
+    "disclose-protected-context",
+    "claim-access-or-completion",
+  ];
+  const findings = [
+    ...uniqueFindings(sourceIds, "sources", "Source id"),
+    ...uniqueFindings(agendaIds, "agendaItems", "Agenda item id"),
+    ...uniqueFindings(meetingIds, "meetings", "Meeting id"),
+    ...uniqueFindings(decisionIds, "decisionAsks", "Decision ask id"),
+    ...uniqueFindings(preparationIds, "preparationNeeds", "Preparation need id"),
+    ...uniqueFindings(conflictIds, "conflicts", "Conflict id"),
+    ...uniqueFindings(forecastIds, "weatherForecasts", "Weather forecast id"),
+    ...uniqueFindings(implicationIds, "weatherImplications", "Weather implication id"),
+    ...uniqueFindings(blockerIds, "blockers", "Blocker id"),
+    ...uniqueFindings(questionIds, "reviewQuestions", "Review question id"),
+  ];
+  if (
+    value.run.authorizedWeatherLocations.length !==
+    authorizedWeatherLocationById.size
+  ) {
+    findings.push(
+      finding(
+        "invalid_weather_location_binding",
+        "run.authorizedWeatherLocations",
+        "Authorized weather locations require unique normalized identifiers.",
+      ),
+    );
+  }
+  const asOf = Date.parse(value.run.asOf);
+  const completedAt = Date.parse(value.run.completedAt);
+  const windowStart = Date.parse(value.run.windowStart);
+  const windowEnd = Date.parse(value.run.windowEnd);
+  const scheduledFor = Date.parse(value.run.trigger.scheduledFor);
+  if (
+    windowEnd <= windowStart ||
+    completedAt < asOf ||
+    scheduledFor > asOf ||
+    asOf > windowEnd
+  ) {
+    findings.push(
+      finding(
+        "invalid_run_chronology",
+        "run",
+        "The briefing window must be positive, the scheduled and as-of times must not follow completion, and the as-of time must not follow the covered window.",
+      ),
+    );
+  }
+  if (!isResolvableTimeZone(value.run.timeZone)) {
+    findings.push(
+      finding(
+        "invalid_time_zone",
+        "run.timeZone",
+        "The briefing timezone must be a resolvable IANA timezone.",
+      ),
+    );
+  }
+  for (const [index, source] of value.sources.entries()) {
+    const observedAt =
+      source.observedAt === null ? null : Date.parse(source.observedAt);
+    const retrievedAt = Date.parse(source.retrievedAt);
+    const freshnessCutoff = Date.parse(source.freshnessCutoff);
+    const authorizedAt = Date.parse(source.authorization.authorizedAt);
+    const validThrough =
+      source.authorization.validThrough === null
+        ? null
+        : Date.parse(source.authorization.validThrough);
+    if (
+      retrievedAt > asOf ||
+      (observedAt !== null && observedAt > asOf)
+    ) {
+      findings.push(
+        finding(
+          "future_source_evidence",
+          `sources.${index}`,
+          "Observed and retrieved source timestamps must not postdate the briefing as-of time.",
+        ),
+      );
+    }
+    if (
+      (observedAt !== null && observedAt > retrievedAt) ||
+      authorizedAt > retrievedAt
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_chronology",
+          `sources.${index}`,
+          "A source observation must not follow retrieval, and authorization must exist before retrieval.",
+        ),
+      );
+    }
+    if (
+      source.authorization.status !== "current" ||
+      authorizedAt > asOf ||
+      (validThrough !== null && validThrough < asOf)
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_authorization",
+          `sources.${index}.authorization`,
+          "Every briefing source requires explicit current authorization that covers the run as-of time.",
+        ),
+      );
+    }
+    if (
+      source.authorization.scopes.length !== 1 ||
+      source.authorization.scopes[0] !== requiredScopes[source.type]
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_scope",
+          `sources.${index}.authorization.scopes`,
+          `A ${source.type} source requires exactly its one matching least-privilege read scope.`,
+        ),
+      );
+    }
+    const workspaceSource = ["calendar", "mail", "document"].includes(
+      source.type,
+    );
+    if (
+      (workspaceSource &&
+        source.authorization.workspaceAccountId !==
+          value.run.authorizedWorkspaceAccountId) ||
+      (!workspaceSource &&
+        source.authorization.workspaceAccountId !== undefined)
+    ) {
+      findings.push(
+        finding(
+          "invalid_workspace_account",
+          `sources.${index}.authorization.workspaceAccountId`,
+          "Calendar, mail, and document sources must use the run's exact authorized Google Workspace account; weather sources must not claim one.",
+        ),
+      );
+    }
+    if (
+      (source.type === "document" &&
+        (typeof source.sourceVersion !== "string" ||
+          source.sourceVersion.trim() === "")) ||
+      (source.type !== "document" && source.sourceVersion !== null)
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_version",
+          `sources.${index}.sourceVersion`,
+          "Document sources require a nonempty binding version, while non-document source versions must be null.",
+        ),
+      );
+    }
+    const authorizedWeatherLocation = authorizedWeatherLocationById.get(
+      source.authorization.weatherLocationId,
+    );
+    if (
+      (source.type === "weather" && !authorizedWeatherLocation) ||
+      (source.type !== "weather" &&
+        source.authorization.weatherLocationId !== undefined)
+    ) {
+      findings.push(
+        finding(
+          "invalid_weather_location_binding",
+          `sources.${index}.authorization.weatherLocationId`,
+          "Weather sources must name one run-authorized normalized location, and Workspace sources must not claim a weather location.",
+        ),
+      );
+    }
+    if (
+      freshnessCutoff > asOf ||
+      asOf - freshnessCutoff > maximumCutoffAgeMs[source.type]
+    ) {
+      findings.push(
+        finding(
+          "invalid_freshness_cutoff",
+          `sources.${index}.freshnessCutoff`,
+          "Freshness cutoffs must not be future-dated or exceed the source-type maximum age.",
+        ),
+      );
+    }
+    const coherentFreshness =
+      source.freshness === "missing"
+        ? source.accessState === "unavailable" && source.observedAt === null
+        : source.accessState === "available" &&
+          observedAt !== null &&
+          (source.freshness === "current"
+            ? observedAt >= freshnessCutoff
+            : observedAt < freshnessCutoff);
+    if (!coherentFreshness) {
+      findings.push(
+        finding(
+          "overstated_source_freshness",
+          `sources.${index}.freshness`,
+          "Current, stale, and missing source states must agree with access, observation time, and the declared freshness cutoff.",
+        ),
+      );
+    }
+    const safePublicReference =
+      URL.canParse(source.reference) &&
+      isCredentialFreePublicHttpsReference(new URL(source.reference));
+    if (!isSafePackagePath(source.reference) && !safePublicReference) {
+      findings.push(
+        finding(
+          "unsafe_source_reference",
+          `sources.${index}.reference`,
+          "Sources require a portable workspace path or a credential-free public HTTPS reference.",
+        ),
+      );
+    }
+  }
+  const currentSources = (refs) =>
+    refs
+      .map((ref) => sourceById.get(ref))
+      .filter((source) => source?.freshness === "current");
+  const sourceTypes = (refs) =>
+    new Set(currentSources(refs).map((source) => source.type));
+  const materialCollections = [
+    ["agendaItems", value.agendaItems],
+    ["decisionAsks", value.decisionAsks],
+    ["preparationNeeds", value.preparationNeeds],
+    ["conflicts", value.conflicts],
+    ["weatherImplications", value.weatherImplications],
+  ];
+  for (const [collectionName, collection] of materialCollections) {
+    for (const [index, item] of collection.entries()) {
+      findings.push(
+        ...referenceFindings(
+          item.sourceRefs,
+          sourceSet,
+          `${collectionName}.${index}.sourceRefs`,
+          "Source reference",
+        ),
+      );
+      if (currentSources(item.sourceRefs).length === 0) {
+        findings.push(
+          finding(
+            "missing_current_evidence",
+            `${collectionName}.${index}.sourceRefs`,
+            "Every material briefing item requires relevant current source evidence, even when it also reports a missing or stale prerequisite.",
+          ),
+        );
+      }
+    }
+  }
+  for (const [index, item] of value.agendaItems.entries()) {
+    findings.push(
+      ...referenceFindings(
+        item.meetingRefs,
+        meetingSet,
+        `agendaItems.${index}.meetingRefs`,
+        "Agenda meeting reference",
+      ),
+      ...referenceFindings(
+        item.decisionAskRefs,
+        decisionSet,
+        `agendaItems.${index}.decisionAskRefs`,
+        "Agenda decision reference",
+      ),
+      ...referenceFindings(
+        item.preparationNeedRefs,
+        preparationSet,
+        `agendaItems.${index}.preparationNeedRefs`,
+        "Agenda preparation reference",
+      ),
+      ...referenceFindings(
+        item.conflictRefs,
+        conflictSet,
+        `agendaItems.${index}.conflictRefs`,
+        "Agenda conflict reference",
+      ),
+      ...referenceFindings(
+        item.weatherImplicationRefs,
+        implicationSet,
+        `agendaItems.${index}.weatherImplicationRefs`,
+        "Agenda weather implication reference",
+      ),
+    );
+    const types = sourceTypes(item.sourceRefs);
+    const relevant =
+      (item.kind === "meeting" && types.has("calendar")) ||
+      (item.kind === "mail" && types.has("mail")) ||
+      (item.kind === "document" && types.has("document")) ||
+      (item.kind === "cross-source" && types.size >= 2);
+    if (!relevant) {
+      findings.push(
+        finding(
+          "irrelevant_source_evidence",
+          `agendaItems.${index}.sourceRefs`,
+          "Agenda evidence must include current source types relevant to the item's declared kind.",
+        ),
+      );
+    }
+    if (
+      (item.kind === "cross-source" && item.statementType === "observed") ||
+      (item.kind !== "cross-source" && item.statementType !== "observed")
+    ) {
+      findings.push(
+        finding(
+          "unsupported_statement_type",
+          `agendaItems.${index}.statementType`,
+          "Direct calendar, mail, and document observations stay observed; cross-source synthesis must be labeled inferred or recommended.",
+        ),
+      );
+    }
+  }
+  for (const [index, meeting] of value.meetings.entries()) {
+    findings.push(
+      ...referenceFindings(
+        meeting.sourceRefs,
+        sourceSet,
+        `meetings.${index}.sourceRefs`,
+        "Meeting source reference",
+      ),
+      ...referenceFindings(
+        meeting.conflictRefs,
+        conflictSet,
+        `meetings.${index}.conflictRefs`,
+        "Meeting conflict reference",
+      ),
+    );
+    const start = Date.parse(meeting.startsAt);
+    const end = Date.parse(meeting.endsAt);
+    const hasCurrentCalendar = currentSources(meeting.sourceRefs).some(
+      (source) => source.type === "calendar",
+    );
+    if (
+      end <= start ||
+      start < windowStart ||
+      end > windowEnd ||
+      !hasCurrentCalendar ||
+      meeting.statementType !== "observed" ||
+      meeting.calendarState !== "observed-read-only" ||
+      meeting.attendanceState !== "not-observed" ||
+      meeting.invitationResponseState !== "not-inferred"
+    ) {
+      findings.push(
+        finding(
+          "unsupported_meeting_observation",
+          `meetings.${index}`,
+          "Meetings require an ordered in-window read-only observation backed by current calendar evidence, without inferred attendance or invitation response.",
+        ),
+      );
+    }
+  }
+  for (const [index, decision] of value.decisionAsks.entries()) {
+    findings.push(
+      ...referenceFindings(
+        decision.agendaItemRefs,
+        agendaSet,
+        `decisionAsks.${index}.agendaItemRefs`,
+        "Decision agenda reference",
+      ),
+    );
+    const deadline = Date.parse(decision.deadline);
+    const types = sourceTypes(decision.sourceRefs);
+    if (
+      deadline < windowStart ||
+      deadline > windowEnd ||
+      decision.state !== "open" ||
+      decision.decision !== null ||
+      !["observed", "inferred", "recommended"].includes(decision.statementType) ||
+      !["calendar", "mail", "document"].some((type) => types.has(type))
+    ) {
+      findings.push(
+        finding(
+          "invalid_decision_ask",
+          `decisionAsks.${index}`,
+          "A decision ask must remain open and undecided, name an in-window deadline, and cite current calendar, mail, or document evidence.",
+        ),
+      );
+    }
+  }
+  for (const [index, preparation] of value.preparationNeeds.entries()) {
+    findings.push(
+      ...referenceFindings(
+        preparation.agendaItemRefs,
+        agendaSet,
+        `preparationNeeds.${index}.agendaItemRefs`,
+        "Preparation agenda reference",
+      ),
+      ...referenceFindings(
+        preparation.meetingRefs,
+        meetingSet,
+        `preparationNeeds.${index}.meetingRefs`,
+        "Preparation meeting reference",
+      ),
+      ...referenceFindings(
+        preparation.conflictRefs,
+        conflictSet,
+        `preparationNeeds.${index}.conflictRefs`,
+        "Preparation conflict reference",
+      ),
+      ...referenceFindings(
+        preparation.blockerRefs,
+        blockerSet,
+        `preparationNeeds.${index}.blockerRefs`,
+        "Preparation blocker reference",
+      ),
+    );
+    const dueAt = Date.parse(preparation.dueAt);
+    if (
+      dueAt < windowStart ||
+      dueAt > windowEnd ||
+      !["proposed", "open", "blocked"].includes(preparation.state) ||
+      preparation.assignmentState !== "not-assigned" ||
+      preparation.completionState !== "not-completed" ||
+      !["inferred", "recommended"].includes(preparation.statementType)
+    ) {
+      findings.push(
+        finding(
+          "invalid_preparation_need",
+          `preparationNeeds.${index}`,
+          "Preparation remains a proposed, open, or blocked owner-routed need; it is never assigned or completed by the briefing.",
+        ),
+      );
+    }
+    const referencedBlockers = preparation.blockerRefs
+      .map((ref) => blockerById.get(ref))
+      .filter(Boolean);
+    const blockersNamingPreparation = value.blockers.filter((blocker) =>
+      blocker.objectRefs.includes(preparation.id),
+    );
+    const brokenBlockerLink =
+      referencedBlockers.some(
+        (blocker) => !blocker.objectRefs.includes(preparation.id),
+      ) ||
+      blockersNamingPreparation.some(
+        (blocker) => !preparation.blockerRefs.includes(blocker.id),
+      );
+    const openLinkedBlockers = new Set(
+      [...referencedBlockers, ...blockersNamingPreparation]
+        .filter((blocker) => blocker.state === "open")
+        .map((blocker) => blocker.id),
+    );
+    if (
+      brokenBlockerLink ||
+      (preparation.state === "blocked" && openLinkedBlockers.size === 0) ||
+      (preparation.state !== "blocked" && openLinkedBlockers.size > 0)
+    ) {
+      findings.push(
+        finding(
+          "invalid_preparation_blocker_link",
+          `preparationNeeds.${index}.blockerRefs`,
+          "Preparation and blocker links must be bidirectional; blocked preparation requires an open blocker, and nonblocked preparation cannot retain an open blocker.",
+        ),
+      );
+    }
+  }
+  for (const [index, conflict] of value.conflicts.entries()) {
+    findings.push(
+      ...referenceFindings(
+        conflict.agendaItemRefs,
+        agendaSet,
+        `conflicts.${index}.agendaItemRefs`,
+        "Conflict agenda reference",
+      ),
+      ...referenceFindings(
+        conflict.meetingRefs,
+        meetingSet,
+        `conflicts.${index}.meetingRefs`,
+        "Conflict meeting reference",
+      ),
+      ...referenceFindings(
+        conflict.preparationNeedRefs,
+        preparationSet,
+        `conflicts.${index}.preparationNeedRefs`,
+        "Conflict preparation reference",
+      ),
+      ...referenceFindings(
+        conflict.weatherImplicationRefs,
+        implicationSet,
+        `conflicts.${index}.weatherImplicationRefs`,
+        "Conflict weather implication reference",
+      ),
+    );
+    const sources = conflict.sourceRefs
+      .map((ref) => sourceById.get(ref))
+      .filter(Boolean);
+    const hasBoundCalendarEvidence = (meeting) =>
+      meeting?.statementType === "observed" &&
+      meeting.calendarState === "observed-read-only" &&
+      meeting.sourceRefs.some(
+        (ref) =>
+          conflict.sourceRefs.includes(ref) &&
+          sourceById.get(ref)?.type === "calendar" &&
+          sourceById.get(ref)?.freshness === "current",
+      );
+    const hasObservedOverlap = conflict.meetingRefs.some(
+      (leftRef, leftIndex) =>
+        conflict.meetingRefs.slice(leftIndex + 1).some((rightRef) => {
+          const left = meetingById.get(leftRef);
+          const right = meetingById.get(rightRef);
+          return (
+            hasBoundCalendarEvidence(left) &&
+            hasBoundCalendarEvidence(right) &&
+            Date.parse(left.startsAt) < Date.parse(right.endsAt) &&
+            Date.parse(right.startsAt) < Date.parse(left.endsAt)
+          );
+        }),
+    );
+    const conflictEvidenceValid =
+      (conflict.kind === "schedule-overlap" &&
+        conflict.statementType === "observed" &&
+        conflict.meetingRefs.length >= 2 &&
+        hasObservedOverlap) ||
+      (conflict.kind === "missing-prerequisite" &&
+        conflict.statementType === "observed" &&
+        conflict.state === "open" &&
+        sources.some(
+          (source) =>
+            source.accessState === "unavailable" &&
+            source.freshness === "missing",
+        )) ||
+      (conflict.kind === "source-staleness" &&
+        conflict.statementType === "observed" &&
+        conflict.state === "open" &&
+        sources.some(
+          (source) =>
+            source.accessState === "available" &&
+            source.freshness === "stale",
+        )) ||
+      (conflict.kind === "weather-risk" &&
+        ["inferred", "recommended"].includes(conflict.statementType) &&
+        sources.some(
+          (source) =>
+            source.type === "weather" && source.freshness === "current",
+        ) &&
+        conflict.weatherImplicationRefs.length > 0 &&
+        conflict.weatherImplicationRefs.every((ref) => {
+          const implication = implicationById.get(ref);
+          const forecast = implication
+            ? forecastById.get(implication.forecastRef)
+            : undefined;
+          return (
+            implication &&
+            ["inferred", "recommended"].includes(implication.statementType) &&
+            forecast &&
+            conflict.sourceRefs.includes(forecast.sourceRef) &&
+            sourceById.get(forecast.sourceRef)?.type === "weather" &&
+            sourceById.get(forecast.sourceRef)?.freshness === "current"
+          );
+        }));
+    if (!conflictEvidenceValid) {
+      findings.push(
+        finding(
+          "unsupported_conflict_evidence",
+          `conflicts.${index}`,
+          "Conflict kind and statement type must match exact evidence: observed overlapping calendar windows, observed missing or stale sources, or inferred/recommended weather implications backed by current weather evidence.",
+        ),
+      );
+    }
+    for (const [field, objectById, label] of [
+      ["agendaItemRefs", agendaById, "Agenda"],
+      ["meetingRefs", meetingById, "Meeting"],
+      ["preparationNeedRefs", preparationById, "Preparation"],
+      ["weatherImplicationRefs", implicationById, "Weather implication"],
+    ]) {
+      for (const objectRef of conflict[field]) {
+        if (!objectById.get(objectRef)?.conflictRefs.includes(conflict.id)) {
+          findings.push(
+            finding(
+              "broken_conflict_link",
+              `conflicts.${index}.${field}`,
+              `${label} and conflict references must be bidirectional.`,
+            ),
+          );
+        }
+      }
+    }
+  }
+  for (const [collectionName, collection, conflictField] of [
+    ["agendaItems", value.agendaItems, "agendaItemRefs"],
+    ["meetings", value.meetings, "meetingRefs"],
+    ["preparationNeeds", value.preparationNeeds, "preparationNeedRefs"],
+    [
+      "weatherImplications",
+      value.weatherImplications,
+      "weatherImplicationRefs",
+    ],
+  ]) {
+    for (const [index, item] of collection.entries()) {
+      if (
+        item.conflictRefs.some(
+          (ref) => !conflictById.get(ref)?.[conflictField].includes(item.id),
+        )
+      ) {
+        findings.push(
+          finding(
+            "broken_conflict_link",
+            `${collectionName}.${index}.conflictRefs`,
+            "Object and conflict references must be bidirectional.",
+          ),
+        );
+      }
+    }
+  }
+  for (const [index, item] of value.weatherForecasts.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [item.sourceRef],
+        sourceSet,
+        `weatherForecasts.${index}.sourceRef`,
+        "Forecast source reference",
+      ),
+    );
+    const source = sourceById.get(item.sourceRef);
+    const authorizedLocation = authorizedWeatherLocationById.get(
+      source?.authorization.weatherLocationId,
+    );
+    const validFrom = Date.parse(item.validFrom);
+    const validThrough = Date.parse(item.validThrough);
+    const issuedAt = Date.parse(item.issuedAt);
+    const observedAt = Date.parse(item.observedAt);
+    if (
+      source?.type !== "weather" ||
+      source.freshness !== "current" ||
+      source.accessState !== "available" ||
+      source.authorization.weatherLocationId !== item.location.id ||
+      !authorizedLocation ||
+      canonicalJson(item.location) !== canonicalJson(authorizedLocation) ||
+      issuedAt > observedAt ||
+      observedAt > asOf ||
+      observedAt !== Date.parse(source.observedAt) ||
+      observedAt > Date.parse(source.retrievedAt) ||
+      validThrough <= validFrom ||
+      validThrough < windowStart ||
+      validFrom > windowEnd
+    ) {
+      findings.push(
+        finding(
+          "unsupported_weather_forecast",
+          `weatherForecasts.${index}`,
+          "A forecast requires current weather evidence, the source's exact run-authorized location, ordered issue and observation times, and a validity window intersecting the briefing window.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of value.weatherImplications.entries()) {
+    findings.push(
+      ...referenceFindings(
+        [item.forecastRef],
+        forecastSet,
+        `weatherImplications.${index}.forecastRef`,
+        "Weather forecast reference",
+      ),
+      ...referenceFindings(
+        item.agendaItemRefs,
+        agendaSet,
+        `weatherImplications.${index}.agendaItemRefs`,
+        "Weather agenda reference",
+      ),
+      ...referenceFindings(
+        item.meetingRefs,
+        meetingSet,
+        `weatherImplications.${index}.meetingRefs`,
+        "Weather meeting reference",
+      ),
+      ...referenceFindings(
+        item.conflictRefs,
+        conflictSet,
+        `weatherImplications.${index}.conflictRefs`,
+        "Weather conflict reference",
+      ),
+    );
+    const forecast = forecastById.get(item.forecastRef);
+    const affectedFrom = Date.parse(item.affectedFrom);
+    const affectedThrough = Date.parse(item.affectedThrough);
+    const coversLinkedMeetingWindows = item.meetingRefs.every((ref) => {
+      const meeting = meetingById.get(ref);
+      return (
+        meeting &&
+        affectedFrom < Date.parse(meeting.endsAt) &&
+        Date.parse(meeting.startsAt) < affectedThrough
+      );
+    });
+    if (
+      !forecast ||
+      !item.sourceRefs.includes(forecast.sourceRef) ||
+      affectedThrough <= affectedFrom ||
+      affectedFrom < Date.parse(forecast?.validFrom) ||
+      affectedThrough > Date.parse(forecast?.validThrough) ||
+      affectedThrough < windowStart ||
+      affectedFrom > windowEnd ||
+      !coversLinkedMeetingWindows ||
+      !["inferred", "recommended"].includes(item.statementType) ||
+      item.safetyState !== "planning-input-not-safety-guarantee" ||
+      /\b(?:guarantee[sd]?|certain(?:ly)? safe|no (?:travel |safety )?risk|will be safe)\b/iu.test(
+        item.summary,
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_weather_implication",
+          `weatherImplications.${index}`,
+          "Weather implications must cite their current forecast, use an affected window within forecast validity that overlaps every linked meeting, remain inferred or recommended, and never become a safety guarantee.",
+        ),
+      );
+    }
+  }
+  for (const [index, blocker] of value.blockers.entries()) {
+    findings.push(
+      ...referenceFindings(
+        blocker.sourceRefs,
+        sourceSet,
+        `blockers.${index}.sourceRefs`,
+        "Blocker source reference",
+      ),
+      ...referenceFindings(
+        blocker.objectRefs,
+        allIds,
+        `blockers.${index}.objectRefs`,
+        "Blocked object reference",
+      ),
+    );
+  }
+  for (const [index, question] of value.reviewQuestions.entries()) {
+    findings.push(
+      ...referenceFindings(
+        question.sourceRefs,
+        sourceSet,
+        `reviewQuestions.${index}.sourceRefs`,
+        "Question source reference",
+      ),
+      ...referenceFindings(
+        question.refs,
+        allIds,
+        `reviewQuestions.${index}.refs`,
+        "Question object reference",
+      ),
+    );
+  }
+  const objectReferences = (item) =>
+    Object.entries(item).flatMap(([field, fieldValue]) => {
+      if (field === "id") return [];
+      if (field.endsWith("Ref") && typeof fieldValue === "string") {
+        return [fieldValue];
+      }
+      if ((field === "refs" || field.endsWith("Refs")) && Array.isArray(fieldValue)) {
+        return fieldValue.filter((ref) => typeof ref === "string");
+      }
+      return [];
+    });
+  const evidenceConstraints = (item) => {
+    const constraints = [];
+    const visited = new Set(item.id ? [item.id] : []);
+    const visit = (ref) => {
+      if (visited.has(ref)) return;
+      visited.add(ref);
+      const source = sourceById.get(ref);
+      if (source) {
+        constraints.push(source);
+        return;
+      }
+      const object = graphObjectById.get(ref);
+      if (!object) return;
+      constraints.push(object);
+      for (const nestedRef of objectReferences(object)) visit(nestedRef);
+    };
+    for (const ref of objectReferences(item)) visit(ref);
+    return constraints;
+  };
+  const sourcedObjects = [
+    ...value.agendaItems.map((item, index) => [item, `agendaItems.${index}`]),
+    ...value.meetings.map((item, index) => [item, `meetings.${index}`]),
+    ...value.decisionAsks.map((item, index) => [item, `decisionAsks.${index}`]),
+    ...value.preparationNeeds.map((item, index) => [
+      item,
+      `preparationNeeds.${index}`,
+    ]),
+    ...value.conflicts.map((item, index) => [item, `conflicts.${index}`]),
+    ...value.weatherForecasts.map((item, index) => [
+      item,
+      `weatherForecasts.${index}`,
+    ]),
+    ...value.weatherImplications.map((item, index) => [
+      item,
+      `weatherImplications.${index}`,
+    ]),
+    ...value.blockers.map((item, index) => [item, `blockers.${index}`]),
+    ...value.reviewQuestions.map((item, index) => [
+      item,
+      `reviewQuestions.${index}`,
+    ]),
+    [value.handoff, "handoff"],
+  ];
+  for (const [item, path] of sourcedObjects) {
+    const constraints = evidenceConstraints(item);
+    const strongestClassification = Math.max(
+      0,
+      ...constraints.map(
+        (constraint) => classificationRank[constraint.classification],
+      ),
+    );
+    const narrowestAudience = Math.min(
+      audienceRank.public,
+      ...constraints.map(
+        (constraint) => audienceRank[constraint.audienceScope],
+      ),
+    );
+    if (
+      classificationRank[item.classification] !== strongestClassification ||
+      audienceRank[item.audienceScope] !== narrowestAudience
+    ) {
+      findings.push(
+        finding(
+          "classification_audience_mismatch",
+          path,
+          "Each snapshot object must inherit the strongest classification and narrowest audience of every referenced object and all transitive source evidence.",
+        ),
+      );
+    }
+  }
+  const handoffCoverage = [
+    ["sourceRefs", sourceIds],
+    ["agendaItemRefs", agendaIds],
+    ["meetingRefs", meetingIds],
+    ["decisionAskRefs", decisionIds],
+    ["preparationNeedRefs", preparationIds],
+    ["conflictRefs", conflictIds],
+    ["weatherForecastRefs", forecastIds],
+    ["weatherImplicationRefs", implicationIds],
+    ["blockerRefs", blockerIds],
+    ["reviewQuestionRefs", questionIds],
+  ];
+  for (const [field, expected] of handoffCoverage) {
+    findings.push(
+      ...referenceFindings(
+        value.handoff[field],
+        allIds,
+        `handoff.${field}`,
+        "Handoff reference",
+      ),
+    );
+    if (
+      expected.some((id) => !value.handoff[field].includes(id)) ||
+      value.handoff[field].some((id) => !expected.includes(id))
+    ) {
+      findings.push(
+        finding(
+          "incomplete_handoff",
+          `handoff.${field}`,
+          "The private handoff must include every current snapshot object exactly once.",
+        ),
+      );
+    }
+  }
+  const unresolvedIds = [
+    ...value.sources
+      .filter((item) => item.freshness !== "current")
+      .map((item) => item.id),
+    ...value.preparationNeeds
+      .filter((item) => item.state === "blocked")
+      .map((item) => item.id),
+    ...value.conflicts
+      .filter(
+        (item) =>
+          item.state === "open" &&
+          ["missing-prerequisite", "source-staleness"].includes(item.kind),
+      )
+      .map((item) => item.id),
+  ];
+  const openBlockers = value.blockers.filter((item) => item.state === "open");
+  if (
+    value.run.status === "blocked" &&
+    (openBlockers.length === 0 ||
+      unresolvedIds.some(
+        (id) => !openBlockers.some((blocker) => blocker.objectRefs.includes(id)),
+      ))
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocked_handoff",
+        "blockers",
+        "A blocked snapshot must route every missing or stale source and blocked preparation or prerequisite through an exact open blocker.",
+      ),
+    );
+  }
+  if (
+    value.run.status === "ready-for-review" &&
+    (unresolvedIds.length > 0 || openBlockers.length > 0)
+  ) {
+    findings.push(
+      finding(
+        "premature_review_state",
+        "run.status",
+        "A ready-for-review snapshot requires current sources and no blocked preparation, missing prerequisite, stale-source conflict, or open blocker.",
+      ),
+    );
+  }
+  if (
+    value.run.status !== value.handoff.state ||
+    value.run.briefingOwner !== value.handoff.owner ||
+    value.run.briefingOwnerType !== value.handoff.ownerType ||
+    canonicalJson(value.delivery) !== canonicalJson(value.handoff.delivery)
+  ) {
+    findings.push(
+      finding(
+        "inconsistent_run_handoff",
+        "handoff",
+        "Run and handoff state, owner, owner type, and delivery record must agree.",
+      ),
+    );
+  }
+  if (
+    value.run.trigger.deliveryMode !== "none" ||
+    value.delivery.visibility !== "private" ||
+    value.delivery.mode !== "none" ||
+    value.delivery.status !== "not-delivered" ||
+    !isSafePackagePath(value.delivery.destination) ||
+    !portablePathKey(value.delivery.destination).startsWith("outputs/")
+  ) {
+    findings.push(
+      finding(
+        "unsafe_delivery_state",
+        "delivery",
+        "The isolated cron and private handoff must keep delivery mode none, status not-delivered, and a portable outputs/ destination.",
+      ),
+    );
+  }
+  const principals = [
+    [value.run.briefingOwner, "run.briefingOwner"],
+    ...value.sources.map((item, index) => [
+      item.authorization.authorizedBy,
+      `sources.${index}.authorization.authorizedBy`,
+    ]),
+    ...value.decisionAsks.map((item, index) => [
+      item.owner,
+      `decisionAsks.${index}.owner`,
+    ]),
+    ...value.preparationNeeds.map((item, index) => [
+      item.owner,
+      `preparationNeeds.${index}.owner`,
+    ]),
+    ...value.blockers.map((item, index) => [
+      item.owner,
+      `blockers.${index}.owner`,
+    ]),
+    ...value.reviewQuestions.map((item, index) => [
+      item.owner,
+      `reviewQuestions.${index}.owner`,
+    ]),
+    [value.handoff.owner, "handoff.owner"],
+  ];
+  for (const [principal, path] of principals) {
+    if (
+      /^(?:the )?(?:agent|assistant|claw|ai|bot|gpt)$/iu.test(principal.trim()) ||
+      /\b(?:language model|automated assistant|executive briefing claw)\b/iu.test(
+        principal,
+      )
+    ) {
+      findings.push(
+        finding(
+          "agent_owned_authority",
+          path,
+          "Briefing, decision, preparation, blocker, question, and source-authorization ownership must remain with an ordinary human or team.",
+        ),
+      );
+    }
+  }
+  for (const action of requiredActions) {
+    if (
+      !value.prohibitedActions.includes(action) ||
+      !value.handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "prohibitedActions",
+          `Executive briefing snapshots must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+  const narrativeTexts = [
+    value.run.request,
+    ...value.sources.map((item) => item.label),
+    ...value.agendaItems.map((item) => item.summary),
+    ...value.meetings.flatMap((item) => [item.title, item.location ?? ""]),
+    ...value.decisionAsks.flatMap((item) =>
+      item.decision === null
+        ? [item.question, item.rationale]
+        : [item.question, item.rationale, item.decision],
+    ),
+    ...value.preparationNeeds.map((item) => item.task),
+    ...value.conflicts.map((item) => item.summary),
+    ...value.weatherForecasts.map((item) => item.summary),
+    ...value.weatherImplications.map((item) => item.summary),
+    ...value.blockers.map((item) => item.summary),
+    ...value.reviewQuestions.map((item) => item.question),
+  ];
+  const prohibitedNarrative =
+    /\b(?:(?:i|we(?:['’]ve)?|the (?:agent|assistant|claw)|executive briefing)\s+(?:already\s+|(?:have|has|had)\s+(?:already\s+)?|will\s+|can\s+|may\s+|(?:am|are|is)\s+)?(?:send|sent|sending|email|emailed|emailing|message|messaged|messaging|reply|replied|replying|respond|responded|responding|forward|forwarded|forwarding|accept|accepted|accepting|decline|declined|declining|invite|invited|inviting|schedule|scheduled|scheduling|reschedule|rescheduled|rescheduling|create|created|creating|move|moved|moving|cancel|cancelled|canceled|cancelling|canceling|edit|edited|editing|update|updated|updating|revise|revised|revising|mutate|mutated|mutating|comment|commented|commenting|replace|replaced|replacing|commit|committed|committing|promise|promised|promising|agree|agreed|agreeing|decide|decided|deciding|select|selected|selecting|approve|approved|approving|assign|assigned|assigning|complete|completed|completing|deliver|delivered|delivering|publish|published|publishing|disclose|disclosed|disclosing|share|shared|sharing|access|accessed|accessing|verify|verified|verifying)|(?:message|mail|email|reply|brief|thread)\s+(?:is|was|has been|had been|will be)\s+(?:sent|replied|responded|forwarded|acknowledged|delivered|published)|(?:invitation|invite|calendar invitation|meeting request)\s+(?:is|was|has been|had been|will be)\s+(?:accepted|declined|scheduled|rescheduled|cancelled|canceled)|(?:calendar|calendar event|meeting)\s+(?:is|was|has been|had been|will be)\s+(?:created|updated|moved|rescheduled|cancelled|canceled|accepted|declined)|(?:document|deck|file|appendix)\s+(?:is|was|has been|had been|will be)\s+(?:edited|updated|revised|mutated|commented|replaced)|(?:commitment|decision|position)\s+(?:is|was|has been|had been|will be)\s+(?:made|approved|committed|promised|selected|finalized)|(?:task|preparation|work)\s+(?:is|was|has been|had been|will be)\s+(?:assigned|completed)|(?:access|authorization)\s+(?:is|was|has been|had been|will be)\s+(?:verified|granted)|(?:protected context|confidential context|restricted context)\s+(?:is|was|has been|had been|will be)\s+(?:disclosed|shared))\b/giu;
+  const namedSubjectNarrative =
+    /\b(?:\p{Lu}[\p{L}\p{M}'’-]*(?:\s+\p{Lu}[\p{L}\p{M}'’-]*){0,4})\s+(?:(?:(?:has|had)\s+(?:already\s+)?)(?:sent|emailed|messaged|replied|responded|forwarded|accepted|declined|invited|scheduled|rescheduled|created|moved|cancelled|canceled|edited|updated|revised|mutated|commented|replaced|committed|promised|agreed|decided|selected|approved|assigned|completed|delivered|published|disclosed|shared|accessed|verified)|will\s+(?:send|email|message|reply|respond|forward|accept|decline|invite|schedule|reschedule|create|move|cancel|edit|update|revise|mutate|comment|replace|commit|promise|agree|decide|select|approve|assign|complete|deliver|publish|disclose|share|access|verify)|(?:sends|emails|messages|replies|responds|forwards|accepts|declines|invites|schedules|reschedules|creates|moves|cancels|edits|updates|revises|mutates|comments|replaces|commits|promises|agrees|decides|selects|approves|assigns|completes|delivers|publishes|discloses|shares|accesses|verifies)|(?:sent|emailed|messaged|replied|responded|forwarded|accepted|declined|invited|scheduled|rescheduled|created|moved|cancelled|canceled|edited|updated|revised|mutated|commented|replaced|committed|promised|agreed|decided|selected|approved|assigned|completed|delivered|published|disclosed|shared|accessed|verified))\b/gu;
+  if (
+    hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) ||
+    hasUnnegatedNarrativeMatch(narrativeTexts, namedSubjectNarrative)
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "run",
+        "The snapshot must not claim that the Claw sent, replied, changed invitations, mutated calendars or documents, committed, decided, disclosed, assigned, completed, delivered, or verified access.",
+      ),
+    );
+  }
+  return findings;
+}
+
 function fundraisingCampaignFindings(value) {
   const sourceIds = value.sources.map((item) => item.id);
   const claimIds = value.claims.map((item) => item.id);
@@ -24425,6 +25516,7 @@ const validators = {
   "document-renewal-tracker": documentRenewalFindings,
   "document-intake-analyst": documentIntakeFindings,
   "executive-assistant": executiveCommitmentLedgerFindings,
+  "executive-briefing": executiveBriefingSnapshotFindings,
   "financial-analyst": financialAnalysisFindings,
   "feed-intelligence-monitor": feedIntelligenceDeltaLedgerFindings,
   "freelance-client-pipeline": freelancePipelineFindings,

@@ -1,15 +1,15 @@
 {
   "schemaVersion": "awesomeClaws.sessionDemo.v1",
   "claw": "executive-briefing",
-  "scenario": "Prepare a 07:30 Pacific brief for tomorrow using the leadership calendar, flagged mail, and Seattle weather, emphasizing decisions and travel risk.",
+  "scenario": "Prepare a 07:30 Pacific brief for tomorrow using the leadership calendar, flagged mail, the quarterly review documents, and Seattle weather, emphasizing decisions and travel risk.",
   "messages": [
     {
       "role": "user",
-      "text": "Prepare a 07:30 Pacific brief for tomorrow using the leadership calendar, flagged mail, and Seattle weather, emphasizing decisions and travel risk."
+      "text": "Prepare a 07:30 Pacific brief for tomorrow using the leadership calendar, flagged mail, the quarterly review documents, and Seattle weather, emphasizing decisions and travel risk."
     },
     {
       "role": "agent",
-      "text": "I identified the executive decision, the evidence needed, and the boundary that must stay human-owned."
+      "text": "I bounded one read-only briefing run to the exact authorized Workspace account and Seattle location, retained exact scopes, document versions, and timestamps, and separated observed agenda facts from implications and recommendations."
     },
     {
       "role": "user",
@@ -17,17 +17,17 @@
     },
     {
       "role": "agent",
-      "text": "I produced outputs/executive-briefing-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+      "text": "I validated outputs/executive-briefing-snapshot.json and rendered the complete private handoff at outputs/executive-briefing-handoff.md without sending or changing anything."
     }
   ],
   "report": {
     "title": "Executive briefing session handoff",
-    "summary": "A private source-timestamped brief with meetings, preparation needs, decision asks, schedule conflicts, and weather implications, without sending messages or changing calendar state.",
+    "summary": "A blocked private briefing snapshot with exact account, scope, document-version, and Seattle forecast bindings; observed meetings, open decision asks, bidirectional preparation blockers and conflicts, and one missing prerequisite, with nothing delivered or changed.",
     "output": "outputs/executive-briefing-handoff.md",
     "items": [
       {
-        "title": "Daily executive brief",
-        "summary": "Every material item identifies its source and freshness",
+        "title": "Executive briefing snapshot",
+        "summary": "Every material item closes classification and audience through referenced objects and all transitive source evidence",
         "tags": [
           "fact-based",
           "reviewable"
@@ -35,7 +35,7 @@
       },
       {
         "title": "Decision and preparation queue",
-        "summary": "Decisions, preparation tasks, conflicts, and accountable owners are visible",
+        "summary": "Decision asks remain open and preparation needs remain proposed, open, or blocked under named human or team owners",
         "tags": [
           "evidence",
           "owner-visible"
@@ -43,7 +43,7 @@
       },
       {
         "title": "Schedule conflict summary",
-        "summary": "Do not send mail, modify calendars or documents, accept invitations, or make commitments without explicit approval for the exact action",
+        "summary": "Observed meetings and all schema-permitted conflict links preserve read-only calendar state without inferred attendance or invitation response",
         "tags": [
           "approval-gated",
           "safe fallback"
@@ -51,7 +51,7 @@
       },
       {
         "title": "Source and freshness ledger",
-        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "summary": "The complete private handoff preserves exact bidirectional preparation blockers, questions, delivery mode none, and status not-delivered.",
         "tags": [
           "handoff",
           "durable"
