@@ -195,7 +195,6 @@
                 },
                 "excludedObjectIds": {
                   "type": "array",
-                  "minItems": 1,
                   "uniqueItems": true,
                   "items": {
                     "$ref": "#/$defs/notionObjectId"
@@ -225,7 +224,6 @@
             },
             "sharedDatabases": {
               "type": "array",
-              "minItems": 1,
               "uniqueItems": true,
               "items": {
                 "$ref": "#/$defs/scopeObject"
@@ -233,7 +231,6 @@
             },
             "sharedPages": {
               "type": "array",
-              "minItems": 1,
               "uniqueItems": true,
               "items": {
                 "$ref": "#/$defs/scopeObject"
@@ -241,7 +238,6 @@
             },
             "excludedObjects": {
               "type": "array",
-              "minItems": 1,
               "uniqueItems": true,
               "items": {
                 "$ref": "#/$defs/scopeObject"

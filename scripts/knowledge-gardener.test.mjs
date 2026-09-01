@@ -524,6 +524,35 @@ test("knowledge gardener rejects scope and exact-version approval bypasses", () 
   assert.equal(hasFinding(unseenTarget, "stale_approval"), true);
 });
 
+test("knowledge gardener represents database-only, page-only, and unexcluded scopes", () => {
+  const databaseOnly = clone();
+  databaseOnly.plan.scope.sharedPages = [];
+  assert.equal(
+    validateSchema(databaseOnly),
+    true,
+    JSON.stringify(validateSchema.errors),
+  );
+
+  const pageOnly = clone();
+  pageOnly.plan.scope.sharedDatabases = [];
+  assert.equal(
+    validateSchema(pageOnly),
+    true,
+    JSON.stringify(validateSchema.errors),
+  );
+
+  const unexcluded = clone();
+  unexcluded.plan.scope.excludedObjects = [];
+  unexcluded.plan.observationInput.authorizationReceipt.excludedObjectIds = [];
+  refreshDigest(unexcluded);
+  assert.equal(
+    validateSchema(unexcluded),
+    true,
+    JSON.stringify(validateSchema.errors),
+  );
+  assert.deepEqual(findings(unexcluded), []);
+});
+
 test("knowledge gardener rejects false issues and one-way conflict evidence", () => {
   const falseStale = clone();
   const decision = falseStale.snapshots.find(
