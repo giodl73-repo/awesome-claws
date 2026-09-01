@@ -25,9 +25,10 @@ const validatorSource = await readFile(
   new URL("./artifact-semantics.mjs", import.meta.url),
   "utf8",
 );
+const validatorStart = validatorSource.indexOf("function meetingRecordFindings(");
 const validatorBody = validatorSource.slice(
-  validatorSource.indexOf("function meetingRecordFindings("),
-  validatorSource.indexOf("\nconst validators = {"),
+  validatorStart,
+  validatorSource.indexOf("\nfunction ", validatorStart + 1),
 );
 const emittedFindingCodes = new Set(
   [...validatorBody.matchAll(/finding\(\s*"([a-z_]+)"/gu)].map((match) => match[1]),
