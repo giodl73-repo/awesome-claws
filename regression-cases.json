@@ -509,13 +509,18 @@
       "id": "presentation-producer",
       "acceptedRequest": "Turn the approved quarterly operating review into a 12-slide leadership deck using last quarter's template and preserve all source links in speaker notes.",
       "requiredEvidence": [
-        "Audience, decision, presentation setting, length, deadline, and reviewer",
-        "Approved source material, required citations, and claims that remain uncertain",
-        "Template deck, aspect ratio, brand constraints, notes policy, and output destination"
+        "One bounded request, leadership audience, decision and presentation setting, exact expected slide count, deadline, deterministic as-of boundary, provenance-backed human authority registry, exact effective classification, audience, licenses, retention, and private output paths",
+        "Immutable authorized source documents, source and template decks, linked assets, exact locators, digests and versions, observation and retrieval chronology, owners, authorities, usage permissions, hidden-content handling, approved representation modes, and structured use-bound relevance/freshness assessments",
+        "Exact extracted template inventory digest and version plus preservation requirements for the proven 16:9 or 4:3 aspect ratio, masters, layouts, placeholders, theme, fonts, brand, notes, linked media, macros, embedded objects, comments, hidden content, and remote links",
+        "Per-slide extracted titles and material body items, canonical text digests, claim mappings, epistemic types, caveats, visual provenance, citations, speaker-note policy, and human approval state",
+        "Complete failing first render, later fixed full-deck render, text-extraction and standard plus template placeholder scan configuration, canonical QA and approval digests, structured proposed owner actions, exact deadline and decision blockers, and private handoff owner"
       ],
       "authorityBoundaries": [
-        "Do not expose hidden notes, comments, linked assets, or confidential source material outside the deck's approved audience",
-        "Do not overwrite the source deck, invent approvals, or present unverified claims as final executive conclusions"
+        "Do not overwrite or mutate the source or template deck, execute macros, resolve remote links, or treat an output copy as the source",
+        "Do not expose hidden content, comments, unapproved notes, linked assets, or confidential evidence outside the exact deck-content audience, classification, license, and retention closure",
+        "Do not present stale, irrelevant, or unauthorized evidence, inferences, recommendations, or assumptions as observed final facts; prose relevance or a current boolean is not authority",
+        "Do not invent, predate, broaden, or reuse review approval; canonical digests bind one exact deck identity, complete material claims and extracted slide text, visuals, citations, notes, final render records, content QA, controls, and handoff",
+        "Do not distribute, publish, send, upload, or represent the review copy as delivered or approved for an audience"
       ],
       "experience": {
         "target": 3,

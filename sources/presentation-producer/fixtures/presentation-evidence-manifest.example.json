@@ -1,0 +1,3795 @@
+{
+  "schemaVersion": "awesomeClaws.presentationEvidenceManifest.v1",
+  "manifest": {
+    "id": "manifest-q2-operating-review",
+    "verbatimRequest": "Turn the approved quarterly operating review into a 12-slide leadership deck using last quarter's template and preserve all source links in speaker notes.",
+    "audience": "Quarterly operating review leadership team",
+    "audienceScope": [
+      "leadership-review-team"
+    ],
+    "classification": "confidential",
+    "decisionQuestion": "Which Q3 operating priorities should leadership confirm after reviewing Q2 performance and risk?",
+    "presentationSetting": "Private 45-minute quarterly operating review with leadership",
+    "expectedSlideCount": 12,
+    "asOf": "2026-09-01T20:00:00Z",
+    "deadline": "2026-09-03T16:00:00Z",
+    "reviewer": {
+      "id": "team-leadership-communications",
+      "name": "Leadership communications team",
+      "type": "team"
+    },
+    "decisionOwner": {
+      "id": "person-dana-whitfield",
+      "name": "Dana Whitfield",
+      "type": "human"
+    },
+    "state": "blocked",
+    "outputPaths": {
+      "deck": "outputs/q2-operating-review-leadership-review-v2.pptx",
+      "manifest": "outputs/presentation-evidence-manifest.json",
+      "handoff": "outputs/presentation-producer-handoff.md"
+    },
+    "licenseTerms": [
+      "company-internal-use",
+      "template-use-only",
+      "licensed-internal-use"
+    ],
+    "retention": {
+      "policyRefs": [
+        "qbr-records-policy",
+        "brand-template-policy",
+        "licensed-asset-policy"
+      ],
+      "retainUntil": "2031-12-31T23:59:59Z",
+      "dispositionAuthority": "human-only"
+    },
+    "contentDigest": "sha256:e7b7e33186f6390d150af6ff1806e16bf029e73abbc57d7db17ee9b41adb420f"
+  },
+  "sources": [
+    {
+      "id": "source-operating-review",
+      "kind": "source-document",
+      "path": "inputs/quarterly-operating-review.pdf",
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "version": "2026-q2-approved",
+      "observedAt": "2026-08-28T16:00:00Z",
+      "retrievedAt": "2026-08-28T16:10:00Z",
+      "owner": {
+        "id": "team-operating-review",
+        "name": "Operating review team",
+        "type": "team"
+      },
+      "authority": "system-of-record-owner",
+      "classification": "confidential",
+      "audienceScope": [
+        "leadership-review-team",
+        "finance-leadership"
+      ],
+      "licenseTerms": [
+        "company-internal-use"
+      ],
+      "retention": {
+        "policyRefs": [
+          "qbr-records-policy"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "usagePermissions": [
+        "analyze",
+        "summarize",
+        "paraphrase",
+        "cite-in-speaker-notes",
+        "include-approved-visual"
+      ],
+      "notesHandling": "not-present",
+      "commentsHandling": "not-present",
+      "hiddenContentHandling": "reviewed-exclude",
+      "representationMode": "summarize",
+      "immutable": true
+    },
+    {
+      "id": "source-quarterly-review-deck",
+      "kind": "source-deck",
+      "path": "inputs/quarterly-operating-review-source.pptx",
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "version": "2026-q2-source-final",
+      "observedAt": "2026-08-28T16:15:00Z",
+      "retrievedAt": "2026-08-28T16:20:00Z",
+      "owner": {
+        "id": "team-operating-review",
+        "name": "Operating review team",
+        "type": "team"
+      },
+      "authority": "content-owner",
+      "classification": "confidential",
+      "audienceScope": [
+        "leadership-review-team",
+        "finance-leadership"
+      ],
+      "licenseTerms": [
+        "company-internal-use"
+      ],
+      "retention": {
+        "policyRefs": [
+          "qbr-records-policy"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "usagePermissions": [
+        "analyze",
+        "summarize",
+        "paraphrase",
+        "cite-in-speaker-notes",
+        "include-approved-visual"
+      ],
+      "notesHandling": "reviewed-exclude",
+      "commentsHandling": "reviewed-exclude",
+      "hiddenContentHandling": "reviewed-exclude",
+      "representationMode": "paraphrase",
+      "immutable": true
+    },
+    {
+      "id": "source-leadership-template",
+      "kind": "template-deck",
+      "path": "inputs/leadership-template-q1.pptx",
+      "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "version": "2026-q1-template-approved",
+      "observedAt": "2026-08-28T15:00:00Z",
+      "retrievedAt": "2026-08-28T15:05:00Z",
+      "owner": {
+        "id": "team-brand-governance",
+        "name": "Brand governance team",
+        "type": "team"
+      },
+      "authority": "template-owner",
+      "classification": "internal",
+      "audienceScope": [
+        "leadership-review-team",
+        "presentation-production"
+      ],
+      "licenseTerms": [
+        "template-use-only"
+      ],
+      "retention": {
+        "policyRefs": [
+          "brand-template-policy"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "usagePermissions": [
+        "analyze",
+        "reuse-template-structure"
+      ],
+      "notesHandling": "reviewed-exclude",
+      "commentsHandling": "reviewed-exclude",
+      "hiddenContentHandling": "reviewed-exclude",
+      "representationMode": "template-structure-only",
+      "immutable": true
+    },
+    {
+      "id": "source-revenue-chart",
+      "kind": "linked-asset",
+      "path": "inputs/assets/q2-revenue-by-segment.png",
+      "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "version": "2026-q2-approved",
+      "observedAt": "2026-08-28T16:05:00Z",
+      "retrievedAt": "2026-08-28T16:12:00Z",
+      "owner": {
+        "id": "team-finance-analytics",
+        "name": "Finance analytics team",
+        "type": "team"
+      },
+      "authority": "asset-rights-owner",
+      "classification": "confidential",
+      "audienceScope": [
+        "leadership-review-team",
+        "finance-leadership"
+      ],
+      "licenseTerms": [
+        "licensed-internal-use"
+      ],
+      "retention": {
+        "policyRefs": [
+          "qbr-records-policy",
+          "licensed-asset-policy"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "usagePermissions": [
+        "analyze",
+        "include-approved-visual"
+      ],
+      "notesHandling": "not-present",
+      "commentsHandling": "not-present",
+      "hiddenContentHandling": "not-present",
+      "representationMode": "visual-excerpt",
+      "immutable": true
+    },
+    {
+      "id": "source-decision-record",
+      "kind": "source-document",
+      "path": "inputs/q2-operating-decisions.md",
+      "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "version": "2026-08-28-approved",
+      "observedAt": "2026-08-28T17:00:00Z",
+      "retrievedAt": "2026-08-28T17:05:00Z",
+      "owner": {
+        "id": "person-dana-whitfield",
+        "name": "Dana Whitfield",
+        "type": "human"
+      },
+      "authority": "decision-owner",
+      "classification": "confidential",
+      "audienceScope": [
+        "leadership-review-team",
+        "finance-leadership"
+      ],
+      "licenseTerms": [
+        "company-internal-use"
+      ],
+      "retention": {
+        "policyRefs": [
+          "qbr-records-policy"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "usagePermissions": [
+        "analyze",
+        "summarize",
+        "paraphrase",
+        "cite-in-speaker-notes",
+        "include-approved-visual"
+      ],
+      "notesHandling": "not-present",
+      "commentsHandling": "not-present",
+      "hiddenContentHandling": "not-present",
+      "representationMode": "cite",
+      "immutable": true
+    }
+  ],
+  "deck": {
+    "sourceDeck": {
+      "sourceRef": "source-quarterly-review-deck",
+      "path": "inputs/quarterly-operating-review-source.pptx",
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "version": "2026-q2-source-final",
+      "preservedUnchanged": true,
+      "assessmentRef": "assessment-source-deck"
+    },
+    "templateDeck": {
+      "sourceRef": "source-leadership-template",
+      "path": "inputs/leadership-template-q1.pptx",
+      "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "version": "2026-q1-template-approved",
+      "preservedUnchanged": true,
+      "assessmentRef": "assessment-template-deck"
+    },
+    "reviewCopy": {
+      "id": "deck-q2-leadership-review-v2",
+      "path": "outputs/q2-operating-review-leadership-review-v2.pptx",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version": "v2",
+      "createdAt": "2026-09-01T18:35:00Z",
+      "primaryDeliverable": true,
+      "distinctOutput": true,
+      "classification": "confidential",
+      "audienceScope": [
+        "leadership-review-team"
+      ],
+      "licenseTerms": [
+        "company-internal-use",
+        "template-use-only",
+        "licensed-internal-use"
+      ],
+      "retention": {
+        "policyRefs": [
+          "qbr-records-policy",
+          "brand-template-policy",
+          "licensed-asset-policy"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      },
+      "aspectRatio": "16:9"
+    },
+    "preservation": {
+      "aspectRatio": "16:9",
+      "masterIds": [
+        "master-leadership"
+      ],
+      "layoutIds": [
+        "layout-title",
+        "layout-section",
+        "layout-chart",
+        "layout-two-column",
+        "layout-decision",
+        "layout-summary"
+      ],
+      "placeholdersPreserved": true,
+      "themePreserved": true,
+      "brandConstraints": [
+        "Use the approved leadership color tokens and logo clear-space rules.",
+        "Keep citations inside the approved footer zone."
+      ],
+      "fontConstraints": [
+        "Use Aptos Display for titles and Aptos for body text.",
+        "Use at least 14 pt body text and 10 pt citations."
+      ],
+      "notesPolicy": "approved-citations-and-speaker-guidance-only",
+      "linkedMediaPolicy": "approved-assets-only-no-live-fetch",
+      "macroHandling": "do-not-execute-or-copy",
+      "embeddedObjectHandling": "preserve-only-if-approved",
+      "remoteLinkHandling": "no-external-resolution",
+      "commentsHandling": "exclude",
+      "hiddenContentHandling": "exclude",
+      "templateInventoryVersion": "inventory-v1",
+      "templateInventoryDigest": "sha256:d6867737a2ebbe91b305c9781de9eeef0748b5de3132b4101fa3f8da8c6bad7c"
+    },
+    "templateInventory": {
+      "id": "template-inventory-leadership-q1",
+      "sourceRef": "source-leadership-template",
+      "sourceVersion": "2026-q1-template-approved",
+      "sourceDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "version": "inventory-v1",
+      "extractedAt": "2026-09-01T17:30:00Z",
+      "tool": {
+        "name": "PowerPoint template inventory extractor",
+        "version": "1.0.0"
+      },
+      "inventoryDigest": "sha256:d6867737a2ebbe91b305c9781de9eeef0748b5de3132b4101fa3f8da8c6bad7c",
+      "aspectRatio": "16:9",
+      "masters": [
+        {
+          "id": "master-leadership",
+          "name": "Leadership master"
+        }
+      ],
+      "layouts": [
+        {
+          "id": "layout-title",
+          "name": "Title",
+          "masterId": "master-leadership"
+        },
+        {
+          "id": "layout-section",
+          "name": "Section",
+          "masterId": "master-leadership"
+        },
+        {
+          "id": "layout-chart",
+          "name": "Chart",
+          "masterId": "master-leadership"
+        },
+        {
+          "id": "layout-two-column",
+          "name": "Two column",
+          "masterId": "master-leadership"
+        },
+        {
+          "id": "layout-decision",
+          "name": "Decision",
+          "masterId": "master-leadership"
+        },
+        {
+          "id": "layout-summary",
+          "name": "Summary",
+          "masterId": "master-leadership"
+        }
+      ],
+      "placeholderPatterns": [
+        "Click to add title",
+        "Click to add text",
+        "Quarter label"
+      ]
+    }
+  },
+  "visualAssets": [
+    {
+      "id": "asset-title-motif",
+      "kind": "template-decoration",
+      "sourceRef": "source-leadership-template",
+      "sourceVersion": "2026-q1-template-approved",
+      "sourceDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "slideRefs": [
+        "slide-01"
+      ],
+      "usagePermission": "approved-for-review-copy",
+      "altText": "Leadership template title motif with quarter label.",
+      "locator": "Master master-leadership, title motif shape group",
+      "assessmentRef": "assessment-asset-title-motif",
+      "provenance": {
+        "mode": "template-structure",
+        "sourceObservedAt": "2026-08-28T15:00:00Z",
+        "reviewedAt": "2026-09-01T17:50:00Z",
+        "reviewerRef": "team-leadership-communications",
+        "approvedAudienceScope": [
+          "leadership-review-team"
+        ],
+        "visibleContentOnly": true,
+        "sourceNotesIncluded": false,
+        "hiddenContentIncluded": false,
+        "commentContentIncluded": false
+      }
+    },
+    {
+      "id": "asset-revenue-chart",
+      "kind": "source-chart",
+      "sourceRef": "source-revenue-chart",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "slideRefs": [
+        "slide-02"
+      ],
+      "usagePermission": "approved-for-review-copy",
+      "altText": "Q2 revenue by segment chart.",
+      "locator": "Approved image file, complete canvas",
+      "assessmentRef": "assessment-asset-revenue-chart",
+      "provenance": {
+        "mode": "direct-visible-excerpt",
+        "sourceObservedAt": "2026-08-28T16:05:00Z",
+        "reviewedAt": "2026-09-01T17:50:00Z",
+        "reviewerRef": "team-leadership-communications",
+        "approvedAudienceScope": [
+          "leadership-review-team"
+        ],
+        "visibleContentOnly": true,
+        "sourceNotesIncluded": false,
+        "hiddenContentIncluded": false,
+        "commentContentIncluded": false
+      }
+    },
+    {
+      "id": "asset-margin-bridge",
+      "kind": "source-chart",
+      "sourceRef": "source-quarterly-review-deck",
+      "sourceVersion": "2026-q2-source-final",
+      "sourceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "slideRefs": [
+        "slide-03"
+      ],
+      "usagePermission": "approved-for-review-copy",
+      "altText": "Gross margin bridge from Q1 to Q2.",
+      "locator": "Source deck slide 4, margin bridge chart",
+      "assessmentRef": "assessment-asset-margin-bridge",
+      "provenance": {
+        "mode": "direct-visible-excerpt",
+        "sourceObservedAt": "2026-08-28T16:15:00Z",
+        "reviewedAt": "2026-09-01T17:50:00Z",
+        "reviewerRef": "team-leadership-communications",
+        "approvedAudienceScope": [
+          "leadership-review-team"
+        ],
+        "visibleContentOnly": true,
+        "sourceNotesIncluded": false,
+        "hiddenContentIncluded": false,
+        "commentContentIncluded": false
+      }
+    },
+    {
+      "id": "asset-enterprise-mix",
+      "kind": "source-chart",
+      "sourceRef": "source-quarterly-review-deck",
+      "sourceVersion": "2026-q2-source-final",
+      "sourceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "slideRefs": [
+        "slide-04"
+      ],
+      "usagePermission": "approved-for-review-copy",
+      "altText": "Enterprise revenue concentration chart.",
+      "locator": "Source deck slide 5, enterprise mix chart",
+      "assessmentRef": "assessment-asset-enterprise-mix",
+      "provenance": {
+        "mode": "direct-visible-excerpt",
+        "sourceObservedAt": "2026-08-28T16:15:00Z",
+        "reviewedAt": "2026-09-01T17:50:00Z",
+        "reviewerRef": "team-leadership-communications",
+        "approvedAudienceScope": [
+          "leadership-review-team"
+        ],
+        "visibleContentOnly": true,
+        "sourceNotesIncluded": false,
+        "hiddenContentIncluded": false,
+        "commentContentIncluded": false
+      }
+    },
+    {
+      "id": "asset-support-backlog",
+      "kind": "generated-diagram",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "slideRefs": [
+        "slide-05"
+      ],
+      "usagePermission": "approved-for-review-copy",
+      "altText": "Support backlog trend based on the approved operating review table.",
+      "locator": "Operating review page 7, support table",
+      "assessmentRef": "assessment-asset-support-backlog",
+      "provenance": {
+        "mode": "generated-from-visible-source",
+        "sourceObservedAt": "2026-08-28T16:00:00Z",
+        "reviewedAt": "2026-09-01T17:50:00Z",
+        "reviewerRef": "team-leadership-communications",
+        "approvedAudienceScope": [
+          "leadership-review-team"
+        ],
+        "visibleContentOnly": true,
+        "sourceNotesIncluded": false,
+        "hiddenContentIncluded": false,
+        "commentContentIncluded": false
+      }
+    },
+    {
+      "id": "asset-workforce-decision",
+      "kind": "generated-diagram",
+      "sourceRef": "source-decision-record",
+      "sourceVersion": "2026-08-28-approved",
+      "sourceDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "slideRefs": [
+        "slide-06"
+      ],
+      "usagePermission": "approved-for-review-copy",
+      "altText": "Human-owned workforce decision timeline.",
+      "locator": "Decision DR-2026-Q2-04",
+      "assessmentRef": "assessment-asset-workforce-decision",
+      "provenance": {
+        "mode": "generated-from-visible-source",
+        "sourceObservedAt": "2026-08-28T17:00:00Z",
+        "reviewedAt": "2026-09-01T17:50:00Z",
+        "reviewerRef": "team-leadership-communications",
+        "approvedAudienceScope": [
+          "leadership-review-team"
+        ],
+        "visibleContentOnly": true,
+        "sourceNotesIncluded": false,
+        "hiddenContentIncluded": false,
+        "commentContentIncluded": false
+      }
+    },
+    {
+      "id": "asset-priority-roadmap",
+      "kind": "generated-diagram",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "slideRefs": [
+        "slide-07"
+      ],
+      "usagePermission": "approved-for-review-copy",
+      "altText": "Proposed Q3 onboarding automation priority path.",
+      "locator": "Operating review pages 7 and 11",
+      "assessmentRef": "assessment-asset-priority-roadmap",
+      "provenance": {
+        "mode": "generated-from-visible-source",
+        "sourceObservedAt": "2026-08-28T16:00:00Z",
+        "reviewedAt": "2026-09-01T17:50:00Z",
+        "reviewerRef": "team-leadership-communications",
+        "approvedAudienceScope": [
+          "leadership-review-team"
+        ],
+        "visibleContentOnly": true,
+        "sourceNotesIncluded": false,
+        "hiddenContentIncluded": false,
+        "commentContentIncluded": false
+      }
+    },
+    {
+      "id": "asset-retention-risk",
+      "kind": "generated-diagram",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "slideRefs": [
+        "slide-08"
+      ],
+      "usagePermission": "approved-for-review-copy",
+      "altText": "Labeled retention-risk assumption with two-account evidence.",
+      "locator": "Operating review page 9, account risk summary",
+      "assessmentRef": "assessment-asset-retention-risk",
+      "provenance": {
+        "mode": "generated-from-visible-source",
+        "sourceObservedAt": "2026-08-28T16:00:00Z",
+        "reviewedAt": "2026-09-01T17:50:00Z",
+        "reviewerRef": "team-leadership-communications",
+        "approvedAudienceScope": [
+          "leadership-review-team"
+        ],
+        "visibleContentOnly": true,
+        "sourceNotesIncluded": false,
+        "hiddenContentIncluded": false,
+        "commentContentIncluded": false
+      }
+    },
+    {
+      "id": "asset-cost-waterfall",
+      "kind": "source-chart",
+      "sourceRef": "source-quarterly-review-deck",
+      "sourceVersion": "2026-q2-source-final",
+      "sourceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "slideRefs": [
+        "slide-09"
+      ],
+      "usagePermission": "approved-for-review-copy",
+      "altText": "Q2 operating expense waterfall against plan.",
+      "locator": "Source deck slide 9, expense waterfall",
+      "assessmentRef": "assessment-asset-cost-waterfall",
+      "provenance": {
+        "mode": "direct-visible-excerpt",
+        "sourceObservedAt": "2026-08-28T16:15:00Z",
+        "reviewedAt": "2026-09-01T17:50:00Z",
+        "reviewerRef": "team-leadership-communications",
+        "approvedAudienceScope": [
+          "leadership-review-team"
+        ],
+        "visibleContentOnly": true,
+        "sourceNotesIncluded": false,
+        "hiddenContentIncluded": false,
+        "commentContentIncluded": false
+      }
+    },
+    {
+      "id": "asset-reliability-trend",
+      "kind": "source-chart",
+      "sourceRef": "source-quarterly-review-deck",
+      "sourceVersion": "2026-q2-source-final",
+      "sourceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "slideRefs": [
+        "slide-10"
+      ],
+      "usagePermission": "approved-for-review-copy",
+      "altText": "Service reliability trend for Q2.",
+      "locator": "Source deck slide 10, reliability chart",
+      "assessmentRef": "assessment-asset-reliability-trend",
+      "provenance": {
+        "mode": "direct-visible-excerpt",
+        "sourceObservedAt": "2026-08-28T16:15:00Z",
+        "reviewedAt": "2026-09-01T17:50:00Z",
+        "reviewerRef": "team-leadership-communications",
+        "approvedAudienceScope": [
+          "leadership-review-team"
+        ],
+        "visibleContentOnly": true,
+        "sourceNotesIncluded": false,
+        "hiddenContentIncluded": false,
+        "commentContentIncluded": false
+      }
+    },
+    {
+      "id": "asset-decision-matrix",
+      "kind": "generated-diagram",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "slideRefs": [
+        "slide-11"
+      ],
+      "usagePermission": "approved-for-review-copy",
+      "altText": "Decision matrix separating recommendation and assumption.",
+      "locator": "Operating review pages 7, 9, and 11",
+      "assessmentRef": "assessment-asset-decision-matrix",
+      "provenance": {
+        "mode": "generated-from-visible-source",
+        "sourceObservedAt": "2026-08-28T16:00:00Z",
+        "reviewedAt": "2026-09-01T17:50:00Z",
+        "reviewerRef": "team-leadership-communications",
+        "approvedAudienceScope": [
+          "leadership-review-team"
+        ],
+        "visibleContentOnly": true,
+        "sourceNotesIncluded": false,
+        "hiddenContentIncluded": false,
+        "commentContentIncluded": false
+      }
+    },
+    {
+      "id": "asset-next-step-path",
+      "kind": "generated-diagram",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "slideRefs": [
+        "slide-12"
+      ],
+      "usagePermission": "approved-for-review-copy",
+      "altText": "Proposed owner decision path and next review checkpoints.",
+      "locator": "Operating review page 11, priority decision prompt",
+      "assessmentRef": "assessment-asset-next-step-path",
+      "provenance": {
+        "mode": "generated-from-visible-source",
+        "sourceObservedAt": "2026-08-28T16:00:00Z",
+        "reviewedAt": "2026-09-01T17:50:00Z",
+        "reviewerRef": "team-leadership-communications",
+        "approvedAudienceScope": [
+          "leadership-review-team"
+        ],
+        "visibleContentOnly": true,
+        "sourceNotesIncluded": false,
+        "hiddenContentIncluded": false,
+        "commentContentIncluded": false
+      }
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-review-scope",
+      "statement": "The presentation covers the approved Q2 operating review for a private leadership review.",
+      "kind": "factual",
+      "epistemicType": "observed",
+      "status": "final",
+      "material": true,
+      "visiblyLabeled": false,
+      "owner": {
+        "id": "team-operating-review",
+        "name": "Operating review team",
+        "type": "team"
+      },
+      "evidence": [
+        {
+          "sourceRef": "source-operating-review",
+          "sourceVersion": "2026-q2-approved",
+          "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "observedAt": "2026-08-28T16:00:00Z",
+          "sourceOwner": {
+            "id": "team-operating-review",
+            "name": "Operating review team",
+            "type": "team"
+          },
+          "sourceAuthority": "system-of-record-owner",
+          "locator": "Page 1, approved review title and scope",
+          "assessmentRef": "assessment-claim-review-scope"
+        }
+      ],
+      "caveat": null,
+      "caveatRefs": [],
+      "slideRefs": [
+        "slide-01"
+      ],
+      "approvalState": "evidence-verified",
+      "approvedBy": null,
+      "approvedAt": null
+    },
+    {
+      "id": "claim-q2-revenue",
+      "statement": "Q2 revenue was 18.4 million dollars.",
+      "kind": "factual",
+      "epistemicType": "observed",
+      "status": "final",
+      "material": true,
+      "visiblyLabeled": false,
+      "owner": {
+        "id": "team-operating-review",
+        "name": "Operating review team",
+        "type": "team"
+      },
+      "evidence": [
+        {
+          "sourceRef": "source-operating-review",
+          "sourceVersion": "2026-q2-approved",
+          "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "observedAt": "2026-08-28T16:00:00Z",
+          "sourceOwner": {
+            "id": "team-operating-review",
+            "name": "Operating review team",
+            "type": "team"
+          },
+          "sourceAuthority": "system-of-record-owner",
+          "locator": "Page 3, Q2 scorecard, revenue row",
+          "assessmentRef": "assessment-claim-q2-revenue"
+        }
+      ],
+      "caveat": null,
+      "caveatRefs": [],
+      "slideRefs": [
+        "slide-02"
+      ],
+      "approvalState": "evidence-verified",
+      "approvedBy": null,
+      "approvedAt": null
+    },
+    {
+      "id": "claim-gross-margin",
+      "statement": "Gross margin improved by 3.1 percentage points from Q1 to Q2.",
+      "kind": "factual",
+      "epistemicType": "observed",
+      "status": "final",
+      "material": true,
+      "visiblyLabeled": false,
+      "owner": {
+        "id": "team-operating-review",
+        "name": "Operating review team",
+        "type": "team"
+      },
+      "evidence": [
+        {
+          "sourceRef": "source-operating-review",
+          "sourceVersion": "2026-q2-approved",
+          "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "observedAt": "2026-08-28T16:00:00Z",
+          "sourceOwner": {
+            "id": "team-operating-review",
+            "name": "Operating review team",
+            "type": "team"
+          },
+          "sourceAuthority": "system-of-record-owner",
+          "locator": "Page 4, margin bridge",
+          "assessmentRef": "assessment-claim-gross-margin"
+        }
+      ],
+      "caveat": null,
+      "caveatRefs": [],
+      "slideRefs": [
+        "slide-03"
+      ],
+      "approvalState": "evidence-verified",
+      "approvedBy": null,
+      "approvedAt": null
+    },
+    {
+      "id": "claim-enterprise-concentration",
+      "statement": "The Q2 growth mix suggests increased concentration in enterprise accounts.",
+      "kind": "factual",
+      "epistemicType": "inferred",
+      "status": "final",
+      "material": true,
+      "visiblyLabeled": true,
+      "owner": {
+        "id": "team-operating-review",
+        "name": "Operating review team",
+        "type": "team"
+      },
+      "evidence": [
+        {
+          "sourceRef": "source-operating-review",
+          "sourceVersion": "2026-q2-approved",
+          "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "observedAt": "2026-08-28T16:00:00Z",
+          "sourceOwner": {
+            "id": "team-operating-review",
+            "name": "Operating review team",
+            "type": "team"
+          },
+          "sourceAuthority": "system-of-record-owner",
+          "locator": "Page 5, segment growth table",
+          "assessmentRef": "assessment-claim-enterprise-concentration"
+        }
+      ],
+      "caveat": "This is a mix inference from one quarter and does not establish customer concentration risk.",
+      "caveatRefs": [
+        "caveat-enterprise-concentration"
+      ],
+      "slideRefs": [
+        "slide-04"
+      ],
+      "approvalState": "evidence-verified",
+      "approvedBy": null,
+      "approvedAt": null
+    },
+    {
+      "id": "claim-support-backlog",
+      "statement": "The support backlog increased by 22 percent during Q2.",
+      "kind": "factual",
+      "epistemicType": "observed",
+      "status": "final",
+      "material": true,
+      "visiblyLabeled": false,
+      "owner": {
+        "id": "team-operating-review",
+        "name": "Operating review team",
+        "type": "team"
+      },
+      "evidence": [
+        {
+          "sourceRef": "source-operating-review",
+          "sourceVersion": "2026-q2-approved",
+          "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "observedAt": "2026-08-28T16:00:00Z",
+          "sourceOwner": {
+            "id": "team-operating-review",
+            "name": "Operating review team",
+            "type": "team"
+          },
+          "sourceAuthority": "system-of-record-owner",
+          "locator": "Page 7, support operations table",
+          "assessmentRef": "assessment-claim-support-backlog"
+        }
+      ],
+      "caveat": null,
+      "caveatRefs": [],
+      "slideRefs": [
+        "slide-05"
+      ],
+      "approvalState": "evidence-verified",
+      "approvedBy": null,
+      "approvedAt": null
+    },
+    {
+      "id": "claim-hiring-pause",
+      "statement": "Dana Whitfield confirmed the product and operations hiring pause through Q3.",
+      "kind": "decision",
+      "epistemicType": "observed",
+      "status": "final",
+      "material": true,
+      "visiblyLabeled": false,
+      "owner": {
+        "id": "person-dana-whitfield",
+        "name": "Dana Whitfield",
+        "type": "human"
+      },
+      "evidence": [
+        {
+          "sourceRef": "source-decision-record",
+          "sourceVersion": "2026-08-28-approved",
+          "sourceDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+          "observedAt": "2026-08-28T17:00:00Z",
+          "sourceOwner": {
+            "id": "person-dana-whitfield",
+            "name": "Dana Whitfield",
+            "type": "human"
+          },
+          "sourceAuthority": "decision-owner",
+          "locator": "Decision DR-2026-Q2-04",
+          "assessmentRef": "assessment-claim-hiring-pause"
+        }
+      ],
+      "caveat": null,
+      "caveatRefs": [],
+      "slideRefs": [
+        "slide-06"
+      ],
+      "approvalState": "human-approved",
+      "approvedBy": {
+        "id": "person-dana-whitfield",
+        "name": "Dana Whitfield",
+        "type": "human"
+      },
+      "approvedAt": "2026-08-28T17:00:00Z"
+    },
+    {
+      "id": "claim-onboarding-automation",
+      "statement": "Recommendation for the decision owner: prioritize onboarding automation in Q3.",
+      "kind": "recommendation",
+      "epistemicType": "recommended",
+      "status": "draft",
+      "material": true,
+      "visiblyLabeled": true,
+      "owner": {
+        "id": "person-dana-whitfield",
+        "name": "Dana Whitfield",
+        "type": "human"
+      },
+      "evidence": [
+        {
+          "sourceRef": "source-operating-review",
+          "sourceVersion": "2026-q2-approved",
+          "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "observedAt": "2026-08-28T16:00:00Z",
+          "sourceOwner": {
+            "id": "team-operating-review",
+            "name": "Operating review team",
+            "type": "team"
+          },
+          "sourceAuthority": "system-of-record-owner",
+          "locator": "Pages 7 and 11, support backlog and onboarding friction",
+          "assessmentRef": "assessment-claim-onboarding-automation"
+        }
+      ],
+      "caveat": "The recommendation is pending the named decision owner's selection and does not authorize execution.",
+      "caveatRefs": [
+        "caveat-recommendation-pending"
+      ],
+      "slideRefs": [
+        "slide-07",
+        "slide-11",
+        "slide-12"
+      ],
+      "approvalState": "pending-human-decision",
+      "approvedBy": null,
+      "approvedAt": null
+    },
+    {
+      "id": "claim-retention-risk",
+      "statement": "Assumption: two at-risk enterprise accounts may signal broader retention pressure.",
+      "kind": "assumption",
+      "epistemicType": "assumption",
+      "status": "draft",
+      "material": true,
+      "visiblyLabeled": true,
+      "owner": {
+        "id": "person-dana-whitfield",
+        "name": "Dana Whitfield",
+        "type": "human"
+      },
+      "evidence": [
+        {
+          "sourceRef": "source-operating-review",
+          "sourceVersion": "2026-q2-approved",
+          "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "observedAt": "2026-08-28T16:00:00Z",
+          "sourceOwner": {
+            "id": "team-operating-review",
+            "name": "Operating review team",
+            "type": "team"
+          },
+          "sourceAuthority": "system-of-record-owner",
+          "locator": "Page 9, account risk summary",
+          "assessmentRef": "assessment-claim-retention-risk"
+        }
+      ],
+      "caveat": "The sample is too small to support an observed portfolio-wide retention claim.",
+      "caveatRefs": [
+        "caveat-retention-sample"
+      ],
+      "slideRefs": [
+        "slide-08",
+        "slide-11"
+      ],
+      "approvalState": "labeled-assumption",
+      "approvedBy": null,
+      "approvedAt": null
+    },
+    {
+      "id": "claim-opex-plan",
+      "statement": "Q2 operating expense finished 1.8 percent below the approved plan.",
+      "kind": "factual",
+      "epistemicType": "observed",
+      "status": "final",
+      "material": true,
+      "visiblyLabeled": false,
+      "owner": {
+        "id": "team-operating-review",
+        "name": "Operating review team",
+        "type": "team"
+      },
+      "evidence": [
+        {
+          "sourceRef": "source-operating-review",
+          "sourceVersion": "2026-q2-approved",
+          "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "observedAt": "2026-08-28T16:00:00Z",
+          "sourceOwner": {
+            "id": "team-operating-review",
+            "name": "Operating review team",
+            "type": "team"
+          },
+          "sourceAuthority": "system-of-record-owner",
+          "locator": "Page 12, operating expense table",
+          "assessmentRef": "assessment-claim-opex-plan"
+        }
+      ],
+      "caveat": null,
+      "caveatRefs": [],
+      "slideRefs": [
+        "slide-09"
+      ],
+      "approvalState": "evidence-verified",
+      "approvedBy": null,
+      "approvedAt": null
+    },
+    {
+      "id": "claim-reliability-target",
+      "statement": "The service met the approved Q2 reliability target.",
+      "kind": "factual",
+      "epistemicType": "observed",
+      "status": "final",
+      "material": true,
+      "visiblyLabeled": false,
+      "owner": {
+        "id": "team-operating-review",
+        "name": "Operating review team",
+        "type": "team"
+      },
+      "evidence": [
+        {
+          "sourceRef": "source-operating-review",
+          "sourceVersion": "2026-q2-approved",
+          "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "observedAt": "2026-08-28T16:00:00Z",
+          "sourceOwner": {
+            "id": "team-operating-review",
+            "name": "Operating review team",
+            "type": "team"
+          },
+          "sourceAuthority": "system-of-record-owner",
+          "locator": "Page 14, reliability objective and actual",
+          "assessmentRef": "assessment-claim-reliability-target"
+        }
+      ],
+      "caveat": null,
+      "caveatRefs": [],
+      "slideRefs": [
+        "slide-10"
+      ],
+      "approvalState": "evidence-verified",
+      "approvedBy": null,
+      "approvedAt": null
+    }
+  ],
+  "citations": [
+    {
+      "id": "citation-review-scope",
+      "claimRef": "claim-review-scope",
+      "slideRef": "slide-01",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "locator": "Page 1, approved review title and scope",
+      "noteRef": "note-slide-01",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    },
+    {
+      "id": "citation-q2-revenue",
+      "claimRef": "claim-q2-revenue",
+      "slideRef": "slide-02",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "locator": "Page 3, Q2 scorecard, revenue row",
+      "noteRef": "note-slide-02",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    },
+    {
+      "id": "citation-gross-margin",
+      "claimRef": "claim-gross-margin",
+      "slideRef": "slide-03",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "locator": "Page 4, margin bridge",
+      "noteRef": "note-slide-03",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    },
+    {
+      "id": "citation-enterprise-concentration",
+      "claimRef": "claim-enterprise-concentration",
+      "slideRef": "slide-04",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "locator": "Page 5, segment growth table",
+      "noteRef": "note-slide-04",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    },
+    {
+      "id": "citation-support-backlog",
+      "claimRef": "claim-support-backlog",
+      "slideRef": "slide-05",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "locator": "Page 7, support operations table",
+      "noteRef": "note-slide-05",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    },
+    {
+      "id": "citation-hiring-pause",
+      "claimRef": "claim-hiring-pause",
+      "slideRef": "slide-06",
+      "sourceRef": "source-decision-record",
+      "sourceVersion": "2026-08-28-approved",
+      "sourceDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "locator": "Decision DR-2026-Q2-04",
+      "noteRef": "note-slide-06",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    },
+    {
+      "id": "citation-onboarding-slide-07",
+      "claimRef": "claim-onboarding-automation",
+      "slideRef": "slide-07",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "locator": "Pages 7 and 11, support backlog and onboarding friction",
+      "noteRef": "note-slide-07",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    },
+    {
+      "id": "citation-retention-slide-08",
+      "claimRef": "claim-retention-risk",
+      "slideRef": "slide-08",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "locator": "Page 9, account risk summary",
+      "noteRef": "note-slide-08",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    },
+    {
+      "id": "citation-opex-plan",
+      "claimRef": "claim-opex-plan",
+      "slideRef": "slide-09",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "locator": "Page 12, operating expense table",
+      "noteRef": "note-slide-09",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    },
+    {
+      "id": "citation-reliability-target",
+      "claimRef": "claim-reliability-target",
+      "slideRef": "slide-10",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "locator": "Page 14, reliability objective and actual",
+      "noteRef": "note-slide-10",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    },
+    {
+      "id": "citation-onboarding-slide-11",
+      "claimRef": "claim-onboarding-automation",
+      "slideRef": "slide-11",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "locator": "Pages 7 and 11, support backlog and onboarding friction",
+      "noteRef": "note-slide-11",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    },
+    {
+      "id": "citation-retention-slide-11",
+      "claimRef": "claim-retention-risk",
+      "slideRef": "slide-11",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "locator": "Page 9, account risk summary",
+      "noteRef": "note-slide-11",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    },
+    {
+      "id": "citation-onboarding-slide-12",
+      "claimRef": "claim-onboarding-automation",
+      "slideRef": "slide-12",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "locator": "Pages 7 and 11, support backlog and onboarding friction",
+      "noteRef": "note-slide-12",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "includesHiddenContent": false,
+      "includesCommentContent": false,
+      "includesUnapprovedSourceNotes": false
+    }
+  ],
+  "speakerNotes": [
+    {
+      "id": "note-slide-01",
+      "slideRef": "slide-01",
+      "citationRefs": [
+        "citation-review-scope"
+      ],
+      "contentSummary": "Approved review title, private scope, leadership setting, and decision question.",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "sourceNotesCopied": false,
+      "hiddenSourceContentIncluded": false,
+      "commentContentIncluded": false,
+      "state": "approved-guidance-and-citations"
+    },
+    {
+      "id": "note-slide-02",
+      "slideRef": "slide-02",
+      "citationRefs": [
+        "citation-q2-revenue"
+      ],
+      "contentSummary": "Approved revenue citation and presenter context.",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "sourceNotesCopied": false,
+      "hiddenSourceContentIncluded": false,
+      "commentContentIncluded": false,
+      "state": "approved-guidance-and-citations"
+    },
+    {
+      "id": "note-slide-03",
+      "slideRef": "slide-03",
+      "citationRefs": [
+        "citation-gross-margin"
+      ],
+      "contentSummary": "Approved margin citation and presenter context.",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "sourceNotesCopied": false,
+      "hiddenSourceContentIncluded": false,
+      "commentContentIncluded": false,
+      "state": "approved-guidance-and-citations"
+    },
+    {
+      "id": "note-slide-04",
+      "slideRef": "slide-04",
+      "citationRefs": [
+        "citation-enterprise-concentration"
+      ],
+      "contentSummary": "Source locator plus the visible one-quarter inference caveat.",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "sourceNotesCopied": false,
+      "hiddenSourceContentIncluded": false,
+      "commentContentIncluded": false,
+      "state": "approved-guidance-and-citations"
+    },
+    {
+      "id": "note-slide-05",
+      "slideRef": "slide-05",
+      "citationRefs": [
+        "citation-support-backlog"
+      ],
+      "contentSummary": "Approved backlog citation and presenter context.",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "sourceNotesCopied": false,
+      "hiddenSourceContentIncluded": false,
+      "commentContentIncluded": false,
+      "state": "approved-guidance-and-citations"
+    },
+    {
+      "id": "note-slide-06",
+      "slideRef": "slide-06",
+      "citationRefs": [
+        "citation-hiring-pause"
+      ],
+      "contentSummary": "Exact human decision record citation and scope.",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "sourceNotesCopied": false,
+      "hiddenSourceContentIncluded": false,
+      "commentContentIncluded": false,
+      "state": "approved-guidance-and-citations"
+    },
+    {
+      "id": "note-slide-07",
+      "slideRef": "slide-07",
+      "citationRefs": [
+        "citation-onboarding-slide-07"
+      ],
+      "contentSummary": "Evidence locator and explicit pending recommendation status.",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "sourceNotesCopied": false,
+      "hiddenSourceContentIncluded": false,
+      "commentContentIncluded": false,
+      "state": "approved-guidance-and-citations"
+    },
+    {
+      "id": "note-slide-08",
+      "slideRef": "slide-08",
+      "citationRefs": [
+        "citation-retention-slide-08"
+      ],
+      "contentSummary": "Evidence locator and explicit small-sample assumption caveat.",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "sourceNotesCopied": false,
+      "hiddenSourceContentIncluded": false,
+      "commentContentIncluded": false,
+      "state": "approved-guidance-and-citations"
+    },
+    {
+      "id": "note-slide-09",
+      "slideRef": "slide-09",
+      "citationRefs": [
+        "citation-opex-plan"
+      ],
+      "contentSummary": "Approved expense variance citation and presenter context.",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "sourceNotesCopied": false,
+      "hiddenSourceContentIncluded": false,
+      "commentContentIncluded": false,
+      "state": "approved-guidance-and-citations"
+    },
+    {
+      "id": "note-slide-10",
+      "slideRef": "slide-10",
+      "citationRefs": [
+        "citation-reliability-target"
+      ],
+      "contentSummary": "Approved reliability target and actual citation.",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "sourceNotesCopied": false,
+      "hiddenSourceContentIncluded": false,
+      "commentContentIncluded": false,
+      "state": "approved-guidance-and-citations"
+    },
+    {
+      "id": "note-slide-11",
+      "slideRef": "slide-11",
+      "citationRefs": [
+        "citation-onboarding-slide-11",
+        "citation-retention-slide-11"
+      ],
+      "contentSummary": "Recommendation and assumption remain separate, labeled, and human-owned.",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "sourceNotesCopied": false,
+      "hiddenSourceContentIncluded": false,
+      "commentContentIncluded": false,
+      "state": "approved-guidance-and-citations"
+    },
+    {
+      "id": "note-slide-12",
+      "slideRef": "slide-12",
+      "citationRefs": [
+        "citation-onboarding-slide-12"
+      ],
+      "contentSummary": "Decision requested: determine whether onboarding automation becomes a Q3 priority.",
+      "approvedAudienceScope": [
+        "leadership-review-team"
+      ],
+      "sourceNotesCopied": false,
+      "hiddenSourceContentIncluded": false,
+      "commentContentIncluded": false,
+      "state": "approved-guidance-and-citations"
+    }
+  ],
+  "slides": [
+    {
+      "id": "slide-01",
+      "order": 1,
+      "masterId": "master-leadership",
+      "layoutId": "layout-title",
+      "title": "Q2 operating review",
+      "purpose": "Frame the private leadership review and decision question.",
+      "claimRefs": [
+        "claim-review-scope"
+      ],
+      "visualAssetRefs": [
+        "asset-title-motif"
+      ],
+      "citationRefs": [
+        "citation-review-scope"
+      ],
+      "noteRef": "note-slide-01",
+      "hiddenElementsState": "reviewed-excluded",
+      "commentsState": "removed",
+      "speakerNotesState": "approved-guidance-and-citations",
+      "renderRef": "render-slide-01-v2",
+      "contentItemRefs": [
+        "content-slide-01-title"
+      ]
+    },
+    {
+      "id": "slide-02",
+      "order": 2,
+      "masterId": "master-leadership",
+      "layoutId": "layout-chart",
+      "title": "Revenue finished at 18.4 million dollars",
+      "purpose": "Establish the approved Q2 topline.",
+      "claimRefs": [
+        "claim-q2-revenue"
+      ],
+      "visualAssetRefs": [
+        "asset-revenue-chart"
+      ],
+      "citationRefs": [
+        "citation-q2-revenue"
+      ],
+      "noteRef": "note-slide-02",
+      "hiddenElementsState": "reviewed-excluded",
+      "commentsState": "removed",
+      "speakerNotesState": "approved-guidance-and-citations",
+      "renderRef": "render-slide-02-v2",
+      "contentItemRefs": [
+        "content-slide-02-title"
+      ]
+    },
+    {
+      "id": "slide-03",
+      "order": 3,
+      "masterId": "master-leadership",
+      "layoutId": "layout-chart",
+      "title": "Margin improved 3.1 points",
+      "purpose": "Show the approved margin movement and its main components.",
+      "claimRefs": [
+        "claim-gross-margin"
+      ],
+      "visualAssetRefs": [
+        "asset-margin-bridge"
+      ],
+      "citationRefs": [
+        "citation-gross-margin"
+      ],
+      "noteRef": "note-slide-03",
+      "hiddenElementsState": "reviewed-excluded",
+      "commentsState": "removed",
+      "speakerNotesState": "approved-guidance-and-citations",
+      "renderRef": "render-slide-03-v2",
+      "contentItemRefs": [
+        "content-slide-03-title"
+      ]
+    },
+    {
+      "id": "slide-04",
+      "order": 4,
+      "masterId": "master-leadership",
+      "layoutId": "layout-two-column",
+      "title": "Growth mix shifted toward enterprise",
+      "purpose": "Present the labeled concentration inference with its caveat.",
+      "claimRefs": [
+        "claim-enterprise-concentration"
+      ],
+      "visualAssetRefs": [
+        "asset-enterprise-mix"
+      ],
+      "citationRefs": [
+        "citation-enterprise-concentration"
+      ],
+      "noteRef": "note-slide-04",
+      "hiddenElementsState": "reviewed-excluded",
+      "commentsState": "removed",
+      "speakerNotesState": "approved-guidance-and-citations",
+      "renderRef": "render-slide-04-v2",
+      "contentItemRefs": [
+        "content-slide-04-title"
+      ]
+    },
+    {
+      "id": "slide-05",
+      "order": 5,
+      "masterId": "master-leadership",
+      "layoutId": "layout-chart",
+      "title": "Support backlog increased 22 percent",
+      "purpose": "Make the service-pressure evidence visible.",
+      "claimRefs": [
+        "claim-support-backlog"
+      ],
+      "visualAssetRefs": [
+        "asset-support-backlog"
+      ],
+      "citationRefs": [
+        "citation-support-backlog"
+      ],
+      "noteRef": "note-slide-05",
+      "hiddenElementsState": "reviewed-excluded",
+      "commentsState": "removed",
+      "speakerNotesState": "approved-guidance-and-citations",
+      "renderRef": "render-slide-05-v2",
+      "contentItemRefs": [
+        "content-slide-05-title"
+      ]
+    },
+    {
+      "id": "slide-06",
+      "order": 6,
+      "masterId": "master-leadership",
+      "layoutId": "layout-decision",
+      "title": "Q3 hiring pause is confirmed",
+      "purpose": "Record the exact named human decision without extending it.",
+      "claimRefs": [
+        "claim-hiring-pause"
+      ],
+      "visualAssetRefs": [
+        "asset-workforce-decision"
+      ],
+      "citationRefs": [
+        "citation-hiring-pause"
+      ],
+      "noteRef": "note-slide-06",
+      "hiddenElementsState": "reviewed-excluded",
+      "commentsState": "removed",
+      "speakerNotesState": "approved-guidance-and-citations",
+      "renderRef": "render-slide-06-v2",
+      "contentItemRefs": [
+        "content-slide-06-title"
+      ]
+    },
+    {
+      "id": "slide-07",
+      "order": 7,
+      "masterId": "master-leadership",
+      "layoutId": "layout-decision",
+      "title": "Recommendation: prioritize onboarding automation",
+      "purpose": "Present a labeled recommendation for the decision owner.",
+      "claimRefs": [
+        "claim-onboarding-automation"
+      ],
+      "visualAssetRefs": [
+        "asset-priority-roadmap"
+      ],
+      "citationRefs": [
+        "citation-onboarding-slide-07"
+      ],
+      "noteRef": "note-slide-07",
+      "hiddenElementsState": "reviewed-excluded",
+      "commentsState": "removed",
+      "speakerNotesState": "approved-guidance-and-citations",
+      "renderRef": "render-slide-07-v2",
+      "contentItemRefs": [
+        "content-slide-07-title"
+      ]
+    },
+    {
+      "id": "slide-08",
+      "order": 8,
+      "masterId": "master-leadership",
+      "layoutId": "layout-two-column",
+      "title": "Assumption: retention pressure may be broader",
+      "purpose": "Keep the small-sample retention assumption explicit.",
+      "claimRefs": [
+        "claim-retention-risk"
+      ],
+      "visualAssetRefs": [
+        "asset-retention-risk"
+      ],
+      "citationRefs": [
+        "citation-retention-slide-08"
+      ],
+      "noteRef": "note-slide-08",
+      "hiddenElementsState": "reviewed-excluded",
+      "commentsState": "removed",
+      "speakerNotesState": "approved-guidance-and-citations",
+      "renderRef": "render-slide-08-v2",
+      "contentItemRefs": [
+        "content-slide-08-title"
+      ]
+    },
+    {
+      "id": "slide-09",
+      "order": 9,
+      "masterId": "master-leadership",
+      "layoutId": "layout-chart",
+      "title": "Operating expense was 1.8 percent below plan",
+      "purpose": "Show the approved expense variance.",
+      "claimRefs": [
+        "claim-opex-plan"
+      ],
+      "visualAssetRefs": [
+        "asset-cost-waterfall"
+      ],
+      "citationRefs": [
+        "citation-opex-plan"
+      ],
+      "noteRef": "note-slide-09",
+      "hiddenElementsState": "reviewed-excluded",
+      "commentsState": "removed",
+      "speakerNotesState": "approved-guidance-and-citations",
+      "renderRef": "render-slide-09-v2",
+      "contentItemRefs": [
+        "content-slide-09-title"
+      ]
+    },
+    {
+      "id": "slide-10",
+      "order": 10,
+      "masterId": "master-leadership",
+      "layoutId": "layout-chart",
+      "title": "Reliability met the Q2 target",
+      "purpose": "Show the approved target and observed result.",
+      "claimRefs": [
+        "claim-reliability-target"
+      ],
+      "visualAssetRefs": [
+        "asset-reliability-trend"
+      ],
+      "citationRefs": [
+        "citation-reliability-target"
+      ],
+      "noteRef": "note-slide-10",
+      "hiddenElementsState": "reviewed-excluded",
+      "commentsState": "removed",
+      "speakerNotesState": "approved-guidance-and-citations",
+      "renderRef": "render-slide-10-v2",
+      "contentItemRefs": [
+        "content-slide-10-title"
+      ]
+    },
+    {
+      "id": "slide-11",
+      "order": 11,
+      "masterId": "master-leadership",
+      "layoutId": "layout-decision",
+      "title": "Separate the recommendation from the assumption",
+      "purpose": "Give leadership a bounded choice without manufacturing certainty.",
+      "claimRefs": [
+        "claim-onboarding-automation",
+        "claim-retention-risk"
+      ],
+      "visualAssetRefs": [
+        "asset-decision-matrix"
+      ],
+      "citationRefs": [
+        "citation-onboarding-slide-11",
+        "citation-retention-slide-11"
+      ],
+      "noteRef": "note-slide-11",
+      "hiddenElementsState": "reviewed-excluded",
+      "commentsState": "removed",
+      "speakerNotesState": "approved-guidance-and-citations",
+      "renderRef": "render-slide-11-v2",
+      "contentItemRefs": [
+        "content-slide-11-title"
+      ]
+    },
+    {
+      "id": "slide-12",
+      "order": 12,
+      "masterId": "master-leadership",
+      "layoutId": "layout-summary",
+      "title": "Decision owner next step",
+      "purpose": "Route the pending Q3 priority decision and retain the private boundary.",
+      "claimRefs": [
+        "claim-onboarding-automation"
+      ],
+      "visualAssetRefs": [
+        "asset-next-step-path"
+      ],
+      "citationRefs": [
+        "citation-onboarding-slide-12"
+      ],
+      "noteRef": "note-slide-12",
+      "hiddenElementsState": "reviewed-excluded",
+      "commentsState": "removed",
+      "speakerNotesState": "approved-guidance-and-citations",
+      "renderRef": "render-slide-12-v2",
+      "contentItemRefs": [
+        "content-slide-12-title"
+      ]
+    }
+  ],
+  "renderSets": [
+    {
+      "id": "render-set-v1",
+      "sequence": 1,
+      "deckDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "deckVersion": "v1",
+      "renderedAt": "2026-09-01T18:00:00Z",
+      "tool": {
+        "name": "LibreOffice Impress headless PDF render",
+        "version": "25.2.5"
+      },
+      "reviewer": {
+        "id": "team-leadership-communications",
+        "name": "Leadership communications team",
+        "type": "team"
+      },
+      "reviewedAt": "2026-09-01T18:15:00Z",
+      "status": "failed",
+      "renderedSlides": [
+        {
+          "id": "render-slide-01-v1",
+          "slideRef": "slide-01",
+          "order": 1,
+          "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+          "renderedAt": "2026-09-01T18:00:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-02-v1",
+          "slideRef": "slide-02",
+          "order": 2,
+          "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+          "renderedAt": "2026-09-01T18:00:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-03-v1",
+          "slideRef": "slide-03",
+          "order": 3,
+          "digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+          "renderedAt": "2026-09-01T18:00:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-04-v1",
+          "slideRef": "slide-04",
+          "order": 4,
+          "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "renderedAt": "2026-09-01T18:00:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-05-v1",
+          "slideRef": "slide-05",
+          "order": 5,
+          "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "renderedAt": "2026-09-01T18:00:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-06-v1",
+          "slideRef": "slide-06",
+          "order": 6,
+          "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "renderedAt": "2026-09-01T18:00:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-07-v1",
+          "slideRef": "slide-07",
+          "order": 7,
+          "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "renderedAt": "2026-09-01T18:00:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "failed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": [
+            "finding-citation-collision-slide-07"
+          ]
+        },
+        {
+          "id": "render-slide-08-v1",
+          "slideRef": "slide-08",
+          "order": 8,
+          "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "renderedAt": "2026-09-01T18:00:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-09-v1",
+          "slideRef": "slide-09",
+          "order": 9,
+          "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "renderedAt": "2026-09-01T18:00:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-10-v1",
+          "slideRef": "slide-10",
+          "order": 10,
+          "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "renderedAt": "2026-09-01T18:00:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-11-v1",
+          "slideRef": "slide-11",
+          "order": 11,
+          "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "renderedAt": "2026-09-01T18:00:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-12-v1",
+          "slideRef": "slide-12",
+          "order": 12,
+          "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+          "renderedAt": "2026-09-01T18:00:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        }
+      ]
+    },
+    {
+      "id": "render-set-v2",
+      "sequence": 2,
+      "deckDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "deckVersion": "v2",
+      "renderedAt": "2026-09-01T18:40:00Z",
+      "tool": {
+        "name": "LibreOffice Impress headless PDF render",
+        "version": "25.2.5"
+      },
+      "reviewer": {
+        "id": "team-leadership-communications",
+        "name": "Leadership communications team",
+        "type": "team"
+      },
+      "reviewedAt": "2026-09-01T18:55:00Z",
+      "status": "passed",
+      "renderedSlides": [
+        {
+          "id": "render-slide-01-v2",
+          "slideRef": "slide-01",
+          "order": 1,
+          "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+          "renderedAt": "2026-09-01T18:40:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-02-v2",
+          "slideRef": "slide-02",
+          "order": 2,
+          "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+          "renderedAt": "2026-09-01T18:40:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-03-v2",
+          "slideRef": "slide-03",
+          "order": 3,
+          "digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+          "renderedAt": "2026-09-01T18:40:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-04-v2",
+          "slideRef": "slide-04",
+          "order": 4,
+          "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "renderedAt": "2026-09-01T18:40:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-05-v2",
+          "slideRef": "slide-05",
+          "order": 5,
+          "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "renderedAt": "2026-09-01T18:40:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-06-v2",
+          "slideRef": "slide-06",
+          "order": 6,
+          "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "renderedAt": "2026-09-01T18:40:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-07-v2",
+          "slideRef": "slide-07",
+          "order": 7,
+          "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "renderedAt": "2026-09-01T18:40:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-08-v2",
+          "slideRef": "slide-08",
+          "order": 8,
+          "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "renderedAt": "2026-09-01T18:40:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-09-v2",
+          "slideRef": "slide-09",
+          "order": 9,
+          "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "renderedAt": "2026-09-01T18:40:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-10-v2",
+          "slideRef": "slide-10",
+          "order": 10,
+          "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "renderedAt": "2026-09-01T18:40:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-11-v2",
+          "slideRef": "slide-11",
+          "order": 11,
+          "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "renderedAt": "2026-09-01T18:40:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        },
+        {
+          "id": "render-slide-12-v2",
+          "slideRef": "slide-12",
+          "order": 12,
+          "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+          "renderedAt": "2026-09-01T18:40:00Z",
+          "tool": {
+            "name": "LibreOffice Impress headless PDF render",
+            "version": "25.2.5"
+          },
+          "checks": {
+            "overflow": "passed",
+            "clipping": "passed",
+            "contrast": "passed",
+            "placeholders": "passed",
+            "citationCollision": "passed",
+            "overlap": "passed",
+            "edgeMargin": "passed",
+            "notesLeakage": "passed"
+          },
+          "reviewerFindingRefs": []
+        }
+      ]
+    }
+  ],
+  "visualQaFindings": [
+    {
+      "id": "finding-citation-collision-slide-07",
+      "renderRef": "render-slide-07-v1",
+      "slideRef": "slide-07",
+      "kind": "citation-collision",
+      "severity": "high",
+      "status": "fixed",
+      "foundAt": "2026-09-01T18:15:00Z",
+      "reviewer": {
+        "id": "team-leadership-communications",
+        "name": "Leadership communications team",
+        "type": "team"
+      },
+      "description": "The v1 citation footer collided with the priority-roadmap caption.",
+      "fixedInRenderRef": "render-slide-07-v2",
+      "fixedAt": "2026-09-01T18:30:00Z"
+    }
+  ],
+  "contentQa": {
+    "id": "content-qa-v2",
+    "deckDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "deckVersion": "v2",
+    "extractedAt": "2026-09-01T19:00:00Z",
+    "tool": {
+      "name": "MarkItDown PowerPoint text extraction",
+      "version": "0.1.3"
+    },
+    "textDigest": "sha256:5c81e8826c87e3a055ac980710da2bab615795db647ae7e7151d091c98cd250f",
+    "extractedSlideCount": 12,
+    "slideRefs": [
+      "slide-01",
+      "slide-02",
+      "slide-03",
+      "slide-04",
+      "slide-05",
+      "slide-06",
+      "slide-07",
+      "slide-08",
+      "slide-09",
+      "slide-10",
+      "slide-11",
+      "slide-12"
+    ],
+    "checks": {
+      "slideCount": "passed",
+      "slideOrder": "passed",
+      "textCoverage": "passed",
+      "leftoverPlaceholders": "passed",
+      "citationCoverage": "passed",
+      "notesLeakage": "passed"
+    },
+    "leftoverPlaceholders": [],
+    "reviewer": {
+      "id": "team-leadership-communications",
+      "name": "Leadership communications team",
+      "type": "team"
+    },
+    "reviewedAt": "2026-09-01T19:10:00Z",
+    "findingRefs": [],
+    "extractedSlides": [
+      {
+        "slideRef": "slide-01",
+        "textDigest": "sha256:b6e276157852e03eb5989507af43cc1f63c869e1099f19aa56decff4cbfb877c",
+        "contentItems": [
+          {
+            "id": "content-slide-01-title",
+            "role": "title",
+            "text": "Q2 operating review",
+            "material": true,
+            "claimRefs": [
+              "claim-review-scope"
+            ]
+          }
+        ]
+      },
+      {
+        "slideRef": "slide-02",
+        "textDigest": "sha256:3bc65da77c2a4ad2b4af86bc40999c181852de39a9dd973fa84fba0e33577477",
+        "contentItems": [
+          {
+            "id": "content-slide-02-title",
+            "role": "title",
+            "text": "Revenue finished at 18.4 million dollars",
+            "material": true,
+            "claimRefs": [
+              "claim-q2-revenue"
+            ]
+          }
+        ]
+      },
+      {
+        "slideRef": "slide-03",
+        "textDigest": "sha256:86f3079319e7c56a2ac67e1e22fd2e88cdef2af1b08b0852d103630ccc5b84cd",
+        "contentItems": [
+          {
+            "id": "content-slide-03-title",
+            "role": "title",
+            "text": "Margin improved 3.1 points",
+            "material": true,
+            "claimRefs": [
+              "claim-gross-margin"
+            ]
+          }
+        ]
+      },
+      {
+        "slideRef": "slide-04",
+        "textDigest": "sha256:5586d89aad50b866a791199a86f5edceec795d98e3374c7fd1787ddebdd66296",
+        "contentItems": [
+          {
+            "id": "content-slide-04-title",
+            "role": "title",
+            "text": "Growth mix shifted toward enterprise",
+            "material": true,
+            "claimRefs": [
+              "claim-enterprise-concentration"
+            ]
+          }
+        ]
+      },
+      {
+        "slideRef": "slide-05",
+        "textDigest": "sha256:08d6522b81320f97170e89a1f0655111b72d71a74958a50b2fddd5f7589f09a9",
+        "contentItems": [
+          {
+            "id": "content-slide-05-title",
+            "role": "title",
+            "text": "Support backlog increased 22 percent",
+            "material": true,
+            "claimRefs": [
+              "claim-support-backlog"
+            ]
+          }
+        ]
+      },
+      {
+        "slideRef": "slide-06",
+        "textDigest": "sha256:8a3d98309adc8bbce0031760916fd7edfef5bdf6a32198a8651ed8dcccede63a",
+        "contentItems": [
+          {
+            "id": "content-slide-06-title",
+            "role": "title",
+            "text": "Q3 hiring pause is confirmed",
+            "material": true,
+            "claimRefs": [
+              "claim-hiring-pause"
+            ]
+          }
+        ]
+      },
+      {
+        "slideRef": "slide-07",
+        "textDigest": "sha256:6b447eb66c869dfcb1be270c4bbda9a7fce443f57909df7b2e48d49e436492f1",
+        "contentItems": [
+          {
+            "id": "content-slide-07-title",
+            "role": "title",
+            "text": "Recommendation: prioritize onboarding automation",
+            "material": true,
+            "claimRefs": [
+              "claim-onboarding-automation"
+            ]
+          }
+        ]
+      },
+      {
+        "slideRef": "slide-08",
+        "textDigest": "sha256:648c2c6db9ce61f95bd3eb57aaf0fb07b71f500163552d8c5404b750e64d95be",
+        "contentItems": [
+          {
+            "id": "content-slide-08-title",
+            "role": "title",
+            "text": "Assumption: retention pressure may be broader",
+            "material": true,
+            "claimRefs": [
+              "claim-retention-risk"
+            ]
+          }
+        ]
+      },
+      {
+        "slideRef": "slide-09",
+        "textDigest": "sha256:7fe93c9f8aae3735fd7306f05987544ab258bd116925f20f5b7b403743f22e64",
+        "contentItems": [
+          {
+            "id": "content-slide-09-title",
+            "role": "title",
+            "text": "Operating expense was 1.8 percent below plan",
+            "material": true,
+            "claimRefs": [
+              "claim-opex-plan"
+            ]
+          }
+        ]
+      },
+      {
+        "slideRef": "slide-10",
+        "textDigest": "sha256:9d463eab82ea0744bcd0f05c6f3a7fa8c150d261a3bc0e5b9a378c5842be5f1c",
+        "contentItems": [
+          {
+            "id": "content-slide-10-title",
+            "role": "title",
+            "text": "Reliability met the Q2 target",
+            "material": true,
+            "claimRefs": [
+              "claim-reliability-target"
+            ]
+          }
+        ]
+      },
+      {
+        "slideRef": "slide-11",
+        "textDigest": "sha256:c020bfc3e8c18d676b48466fdf3fa2f87a96fd9f822bb2facff7384558061c38",
+        "contentItems": [
+          {
+            "id": "content-slide-11-title",
+            "role": "title",
+            "text": "Separate the recommendation from the assumption",
+            "material": true,
+            "claimRefs": [
+              "claim-onboarding-automation",
+              "claim-retention-risk"
+            ]
+          }
+        ]
+      },
+      {
+        "slideRef": "slide-12",
+        "textDigest": "sha256:11217d0dbaebef21f98feb94e9180e6945ce66e04d34a0d80afb670bda0c0dff",
+        "contentItems": [
+          {
+            "id": "content-slide-12-title",
+            "role": "title",
+            "text": "Decision owner next step",
+            "material": true,
+            "claimRefs": [
+              "claim-onboarding-automation"
+            ]
+          }
+        ]
+      }
+    ],
+    "placeholderScan": {
+      "baselinePatterns": [
+        "xxxx",
+        "lorem",
+        "ipsum",
+        "this page layout",
+        "this slide layout"
+      ],
+      "templatePatterns": [
+        "Click to add title",
+        "Click to add text",
+        "Quarter label"
+      ],
+      "effectivePatterns": [
+        "xxxx",
+        "lorem",
+        "ipsum",
+        "this page layout",
+        "this slide layout",
+        "Click to add title",
+        "Click to add text",
+        "Quarter label"
+      ],
+      "caseSensitive": false,
+      "matchMode": "normalized-substring"
+    },
+    "contentDigest": "sha256:c6aadf7efe438fb334c3564cb36894c372bca44d6db90cd2b2716d143af84ae2"
+  },
+  "approvals": [
+    {
+      "id": "approval-review-copy-v2",
+      "scope": "exact-review-copy",
+      "reviewer": {
+        "id": "team-leadership-communications",
+        "name": "Leadership communications team",
+        "type": "team"
+      },
+      "deckRef": "deck-q2-leadership-review-v2",
+      "deckPath": "outputs/q2-operating-review-leadership-review-v2.pptx",
+      "deckDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "deckVersion": "v2",
+      "sourceRefs": [
+        "source-operating-review",
+        "source-quarterly-review-deck",
+        "source-leadership-template",
+        "source-revenue-chart",
+        "source-decision-record"
+      ],
+      "claimRefs": [
+        "claim-review-scope",
+        "claim-q2-revenue",
+        "claim-gross-margin",
+        "claim-enterprise-concentration",
+        "claim-support-backlog",
+        "claim-hiring-pause",
+        "claim-onboarding-automation",
+        "claim-retention-risk",
+        "claim-opex-plan",
+        "claim-reliability-target"
+      ],
+      "slideRefs": [
+        "slide-01",
+        "slide-02",
+        "slide-03",
+        "slide-04",
+        "slide-05",
+        "slide-06",
+        "slide-07",
+        "slide-08",
+        "slide-09",
+        "slide-10",
+        "slide-11",
+        "slide-12"
+      ],
+      "renderSetRef": "render-set-v2",
+      "renderRefs": [
+        "render-slide-01-v2",
+        "render-slide-02-v2",
+        "render-slide-03-v2",
+        "render-slide-04-v2",
+        "render-slide-05-v2",
+        "render-slide-06-v2",
+        "render-slide-07-v2",
+        "render-slide-08-v2",
+        "render-slide-09-v2",
+        "render-slide-10-v2",
+        "render-slide-11-v2",
+        "render-slide-12-v2"
+      ],
+      "contentQaRef": "content-qa-v2",
+      "decision": "approved-for-human-review",
+      "approvedAt": "2026-09-01T19:20:00Z",
+      "decisionAuthorityGranted": false,
+      "contentQaDigest": "sha256:c6aadf7efe438fb334c3564cb36894c372bca44d6db90cd2b2716d143af84ae2",
+      "contentDigest": "sha256:e7b7e33186f6390d150af6ff1806e16bf029e73abbc57d7db17ee9b41adb420f"
+    }
+  ],
+  "caveats": [
+    {
+      "id": "caveat-enterprise-concentration",
+      "statement": "The segment-mix inference uses one quarter and is not a causal or portfolio-risk conclusion.",
+      "claimRefs": [
+        "claim-enterprise-concentration"
+      ],
+      "slideRefs": [
+        "slide-04"
+      ],
+      "owner": {
+        "id": "team-operating-review",
+        "name": "Operating review team",
+        "type": "team"
+      }
+    },
+    {
+      "id": "caveat-recommendation-pending",
+      "statement": "The Q3 onboarding recommendation remains pending the named decision owner.",
+      "claimRefs": [
+        "claim-onboarding-automation"
+      ],
+      "slideRefs": [
+        "slide-07",
+        "slide-11",
+        "slide-12"
+      ],
+      "owner": {
+        "id": "person-dana-whitfield",
+        "name": "Dana Whitfield",
+        "type": "human"
+      }
+    },
+    {
+      "id": "caveat-retention-sample",
+      "statement": "Two account observations do not establish a portfolio-wide retention trend.",
+      "claimRefs": [
+        "claim-retention-risk"
+      ],
+      "slideRefs": [
+        "slide-08",
+        "slide-11"
+      ],
+      "owner": {
+        "id": "person-dana-whitfield",
+        "name": "Dana Whitfield",
+        "type": "human"
+      }
+    }
+  ],
+  "questions": [
+    {
+      "id": "question-q3-priority",
+      "question": "Should the decision owner select onboarding automation as a Q3 priority?",
+      "targetRefs": [
+        "claim-onboarding-automation",
+        "slide-07",
+        "slide-11",
+        "slide-12"
+      ],
+      "owner": {
+        "id": "person-dana-whitfield",
+        "name": "Dana Whitfield",
+        "type": "human"
+      },
+      "status": "open",
+      "blocksReadiness": true
+    }
+  ],
+  "blockers": [
+    {
+      "id": "blocker-q3-priority-decision",
+      "description": "The Q3 onboarding priority remains a recommendation until the decision owner responds.",
+      "targetRefs": [
+        "claim-onboarding-automation",
+        "slide-07",
+        "slide-11",
+        "slide-12"
+      ],
+      "questionRefs": [
+        "question-q3-priority"
+      ],
+      "owner": {
+        "id": "person-dana-whitfield",
+        "name": "Dana Whitfield",
+        "type": "human"
+      },
+      "status": "open",
+      "kind": "decision",
+      "deadline": null
+    }
+  ],
+  "controlPolicies": [
+    {
+      "id": "control-source-confidential",
+      "classification": "confidential",
+      "audienceScope": [
+        "leadership-review-team",
+        "finance-leadership"
+      ],
+      "licenseTerms": [
+        "company-internal-use"
+      ],
+      "retention": {
+        "policyRefs": [
+          "qbr-records-policy"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "control-template-internal",
+      "classification": "internal",
+      "audienceScope": [
+        "leadership-review-team",
+        "presentation-production"
+      ],
+      "licenseTerms": [
+        "template-use-only"
+      ],
+      "retention": {
+        "policyRefs": [
+          "brand-template-policy"
+        ],
+        "retainUntil": "2030-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "control-licensed-asset",
+      "classification": "confidential",
+      "audienceScope": [
+        "leadership-review-team",
+        "finance-leadership"
+      ],
+      "licenseTerms": [
+        "licensed-internal-use"
+      ],
+      "retention": {
+        "policyRefs": [
+          "qbr-records-policy",
+          "licensed-asset-policy"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    {
+      "id": "control-derived-review",
+      "classification": "confidential",
+      "audienceScope": [
+        "leadership-review-team"
+      ],
+      "licenseTerms": [
+        "company-internal-use",
+        "template-use-only",
+        "licensed-internal-use"
+      ],
+      "retention": {
+        "policyRefs": [
+          "qbr-records-policy",
+          "brand-template-policy",
+          "licensed-asset-policy"
+        ],
+        "retainUntil": "2031-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    }
+  ],
+  "controlBindings": [
+    {
+      "policyRef": "control-source-confidential",
+      "objectRefs": [
+        "source-operating-review",
+        "source-quarterly-review-deck",
+        "source-decision-record"
+      ]
+    },
+    {
+      "policyRef": "control-template-internal",
+      "objectRefs": [
+        "source-leadership-template"
+      ]
+    },
+    {
+      "policyRef": "control-licensed-asset",
+      "objectRefs": [
+        "source-revenue-chart"
+      ]
+    },
+    {
+      "policyRef": "control-derived-review",
+      "objectRefs": [
+        "manifest-q2-operating-review",
+        "deck-q2-leadership-review-v2",
+        "asset-title-motif",
+        "asset-revenue-chart",
+        "asset-margin-bridge",
+        "asset-enterprise-mix",
+        "asset-support-backlog",
+        "asset-workforce-decision",
+        "asset-priority-roadmap",
+        "asset-retention-risk",
+        "asset-cost-waterfall",
+        "asset-reliability-trend",
+        "asset-decision-matrix",
+        "asset-next-step-path",
+        "claim-q2-revenue",
+        "claim-gross-margin",
+        "claim-enterprise-concentration",
+        "claim-support-backlog",
+        "claim-hiring-pause",
+        "claim-onboarding-automation",
+        "claim-retention-risk",
+        "claim-opex-plan",
+        "claim-reliability-target",
+        "citation-q2-revenue",
+        "citation-gross-margin",
+        "citation-enterprise-concentration",
+        "citation-support-backlog",
+        "citation-hiring-pause",
+        "citation-onboarding-slide-07",
+        "citation-retention-slide-08",
+        "citation-opex-plan",
+        "citation-reliability-target",
+        "citation-onboarding-slide-11",
+        "citation-retention-slide-11",
+        "citation-onboarding-slide-12",
+        "note-slide-01",
+        "note-slide-02",
+        "note-slide-03",
+        "note-slide-04",
+        "note-slide-05",
+        "note-slide-06",
+        "note-slide-07",
+        "note-slide-08",
+        "note-slide-09",
+        "note-slide-10",
+        "note-slide-11",
+        "note-slide-12",
+        "slide-01",
+        "slide-02",
+        "slide-03",
+        "slide-04",
+        "slide-05",
+        "slide-06",
+        "slide-07",
+        "slide-08",
+        "slide-09",
+        "slide-10",
+        "slide-11",
+        "slide-12",
+        "render-set-v1",
+        "render-set-v2",
+        "render-slide-01-v1",
+        "render-slide-02-v1",
+        "render-slide-03-v1",
+        "render-slide-04-v1",
+        "render-slide-05-v1",
+        "render-slide-06-v1",
+        "render-slide-07-v1",
+        "render-slide-08-v1",
+        "render-slide-09-v1",
+        "render-slide-10-v1",
+        "render-slide-11-v1",
+        "render-slide-12-v1",
+        "render-slide-01-v2",
+        "render-slide-02-v2",
+        "render-slide-03-v2",
+        "render-slide-04-v2",
+        "render-slide-05-v2",
+        "render-slide-06-v2",
+        "render-slide-07-v2",
+        "render-slide-08-v2",
+        "render-slide-09-v2",
+        "render-slide-10-v2",
+        "render-slide-11-v2",
+        "render-slide-12-v2",
+        "finding-citation-collision-slide-07",
+        "content-qa-v2",
+        "approval-review-copy-v2",
+        "caveat-enterprise-concentration",
+        "caveat-recommendation-pending",
+        "caveat-retention-sample",
+        "question-q3-priority",
+        "blocker-q3-priority-decision",
+        "handoff",
+        "template-inventory-leadership-q1",
+        "assessment-source-deck",
+        "assessment-template-deck",
+        "assessment-claim-review-scope",
+        "assessment-claim-q2-revenue",
+        "assessment-claim-gross-margin",
+        "assessment-claim-enterprise-concentration",
+        "assessment-claim-support-backlog",
+        "assessment-claim-hiring-pause",
+        "assessment-claim-onboarding-automation",
+        "assessment-claim-retention-risk",
+        "assessment-claim-opex-plan",
+        "assessment-claim-reliability-target",
+        "assessment-asset-title-motif",
+        "assessment-asset-revenue-chart",
+        "assessment-asset-margin-bridge",
+        "assessment-asset-enterprise-mix",
+        "assessment-asset-support-backlog",
+        "assessment-asset-workforce-decision",
+        "assessment-asset-priority-roadmap",
+        "assessment-asset-retention-risk",
+        "assessment-asset-cost-waterfall",
+        "assessment-asset-reliability-trend",
+        "assessment-asset-decision-matrix",
+        "assessment-asset-next-step-path",
+        "claim-review-scope",
+        "citation-review-scope",
+        "proposed-action-q3-priority"
+      ]
+    }
+  ],
+  "prohibitedActions": [
+    "distribute-deck",
+    "publish-deck",
+    "send-deck",
+    "upload-external",
+    "overwrite-source-deck",
+    "modify-template-deck",
+    "expose-hidden-content",
+    "expose-comments",
+    "execute-macros",
+    "resolve-remote-links",
+    "approve-decision",
+    "approve-recommendation",
+    "approve-deck-on-behalf",
+    "claim-completed-review-without-evidence"
+  ],
+  "handoff": {
+    "id": "handoff",
+    "state": "blocked",
+    "owner": {
+      "id": "person-dana-whitfield",
+      "name": "Dana Whitfield",
+      "type": "human"
+    },
+    "reviewer": {
+      "id": "team-leadership-communications",
+      "name": "Leadership communications team",
+      "type": "team"
+    },
+    "manifestRef": "manifest-q2-operating-review",
+    "deckRef": "deck-q2-leadership-review-v2",
+    "deckPath": "outputs/q2-operating-review-leadership-review-v2.pptx",
+    "deckDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "deckVersion": "v2",
+    "sourceRefs": [
+      "source-operating-review",
+      "source-quarterly-review-deck",
+      "source-leadership-template",
+      "source-revenue-chart",
+      "source-decision-record"
+    ],
+    "visualAssetRefs": [
+      "asset-title-motif",
+      "asset-revenue-chart",
+      "asset-margin-bridge",
+      "asset-enterprise-mix",
+      "asset-support-backlog",
+      "asset-workforce-decision",
+      "asset-priority-roadmap",
+      "asset-retention-risk",
+      "asset-cost-waterfall",
+      "asset-reliability-trend",
+      "asset-decision-matrix",
+      "asset-next-step-path"
+    ],
+    "claimRefs": [
+      "claim-review-scope",
+      "claim-q2-revenue",
+      "claim-gross-margin",
+      "claim-enterprise-concentration",
+      "claim-support-backlog",
+      "claim-hiring-pause",
+      "claim-onboarding-automation",
+      "claim-retention-risk",
+      "claim-opex-plan",
+      "claim-reliability-target"
+    ],
+    "citationRefs": [
+      "citation-review-scope",
+      "citation-q2-revenue",
+      "citation-gross-margin",
+      "citation-enterprise-concentration",
+      "citation-support-backlog",
+      "citation-hiring-pause",
+      "citation-onboarding-slide-07",
+      "citation-retention-slide-08",
+      "citation-opex-plan",
+      "citation-reliability-target",
+      "citation-onboarding-slide-11",
+      "citation-retention-slide-11",
+      "citation-onboarding-slide-12"
+    ],
+    "noteRefs": [
+      "note-slide-01",
+      "note-slide-02",
+      "note-slide-03",
+      "note-slide-04",
+      "note-slide-05",
+      "note-slide-06",
+      "note-slide-07",
+      "note-slide-08",
+      "note-slide-09",
+      "note-slide-10",
+      "note-slide-11",
+      "note-slide-12"
+    ],
+    "slideRefs": [
+      "slide-01",
+      "slide-02",
+      "slide-03",
+      "slide-04",
+      "slide-05",
+      "slide-06",
+      "slide-07",
+      "slide-08",
+      "slide-09",
+      "slide-10",
+      "slide-11",
+      "slide-12"
+    ],
+    "renderSetRefs": [
+      "render-set-v1",
+      "render-set-v2"
+    ],
+    "renderRefs": [
+      "render-slide-01-v1",
+      "render-slide-02-v1",
+      "render-slide-03-v1",
+      "render-slide-04-v1",
+      "render-slide-05-v1",
+      "render-slide-06-v1",
+      "render-slide-07-v1",
+      "render-slide-08-v1",
+      "render-slide-09-v1",
+      "render-slide-10-v1",
+      "render-slide-11-v1",
+      "render-slide-12-v1",
+      "render-slide-01-v2",
+      "render-slide-02-v2",
+      "render-slide-03-v2",
+      "render-slide-04-v2",
+      "render-slide-05-v2",
+      "render-slide-06-v2",
+      "render-slide-07-v2",
+      "render-slide-08-v2",
+      "render-slide-09-v2",
+      "render-slide-10-v2",
+      "render-slide-11-v2",
+      "render-slide-12-v2"
+    ],
+    "visualQaFindingRefs": [
+      "finding-citation-collision-slide-07"
+    ],
+    "contentQaRefs": [
+      "content-qa-v2"
+    ],
+    "approvalRefs": [
+      "approval-review-copy-v2"
+    ],
+    "caveatRefs": [
+      "caveat-enterprise-concentration",
+      "caveat-recommendation-pending",
+      "caveat-retention-sample"
+    ],
+    "questionRefs": [
+      "question-q3-priority"
+    ],
+    "blockerRefs": [
+      "blocker-q3-priority-decision"
+    ],
+    "unresolvedClaimRefs": [
+      "claim-onboarding-automation"
+    ],
+    "summary": "The exact v2 review copy has current final render and text-extraction evidence. One recommendation remains labeled and routed to the decision owner; distribution remains prohibited.",
+    "output": {
+      "manifestPath": "outputs/presentation-evidence-manifest.json",
+      "handoffPath": "outputs/presentation-producer-handoff.md",
+      "visibility": "private",
+      "storage": "local-artifact",
+      "deliveryState": "not-delivered"
+    },
+    "prohibitedActions": [
+      "distribute-deck",
+      "publish-deck",
+      "send-deck",
+      "upload-external",
+      "overwrite-source-deck",
+      "modify-template-deck",
+      "expose-hidden-content",
+      "expose-comments",
+      "execute-macros",
+      "resolve-remote-links",
+      "approve-decision",
+      "approve-recommendation",
+      "approve-deck-on-behalf",
+      "claim-completed-review-without-evidence"
+    ],
+    "sourceUseAssessmentRefs": [
+      "assessment-source-deck",
+      "assessment-template-deck",
+      "assessment-claim-review-scope",
+      "assessment-claim-q2-revenue",
+      "assessment-claim-gross-margin",
+      "assessment-claim-enterprise-concentration",
+      "assessment-claim-support-backlog",
+      "assessment-claim-hiring-pause",
+      "assessment-claim-onboarding-automation",
+      "assessment-claim-retention-risk",
+      "assessment-claim-opex-plan",
+      "assessment-claim-reliability-target",
+      "assessment-asset-title-motif",
+      "assessment-asset-revenue-chart",
+      "assessment-asset-margin-bridge",
+      "assessment-asset-enterprise-mix",
+      "assessment-asset-support-backlog",
+      "assessment-asset-workforce-decision",
+      "assessment-asset-priority-roadmap",
+      "assessment-asset-retention-risk",
+      "assessment-asset-cost-waterfall",
+      "assessment-asset-reliability-trend",
+      "assessment-asset-decision-matrix",
+      "assessment-asset-next-step-path"
+    ],
+    "proposedOwnerActionRefs": [
+      "proposed-action-q3-priority"
+    ]
+  },
+  "authorityRegistry": {
+    "principals": [
+      {
+        "id": "team-leadership-communications",
+        "name": "Leadership communications team",
+        "type": "team",
+        "authorityScopes": [
+          "review-source-use",
+          "review-visual-qa",
+          "review-content-qa",
+          "approve-review-copy"
+        ],
+        "provenance": {
+          "recordType": "team-charter",
+          "recordId": "charter-leadership-communications",
+          "version": "2026-08-01",
+          "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+          "verifiedAt": "2026-08-27T16:00:00Z"
+        }
+      },
+      {
+        "id": "person-dana-whitfield",
+        "name": "Dana Whitfield",
+        "type": "human",
+        "authorityScopes": [
+          "own-decision",
+          "own-caveat",
+          "own-question",
+          "own-blocker",
+          "receive-handoff"
+        ],
+        "provenance": {
+          "recordType": "human-directory-record",
+          "recordId": "directory-dana-whitfield",
+          "version": "2026-08-27",
+          "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+          "verifiedAt": "2026-08-27T16:00:00Z"
+        }
+      },
+      {
+        "id": "team-operating-review",
+        "name": "Operating review team",
+        "type": "team",
+        "authorityScopes": [
+          "own-content",
+          "own-system-of-record",
+          "own-caveat"
+        ],
+        "provenance": {
+          "recordType": "team-charter",
+          "recordId": "charter-operating-review",
+          "version": "2026-q2",
+          "digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+          "verifiedAt": "2026-08-27T16:00:00Z"
+        }
+      },
+      {
+        "id": "team-brand-governance",
+        "name": "Brand governance team",
+        "type": "team",
+        "authorityScopes": [
+          "own-template",
+          "own-brand"
+        ],
+        "provenance": {
+          "recordType": "team-charter",
+          "recordId": "charter-brand-governance",
+          "version": "2026-06",
+          "digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+          "verifiedAt": "2026-08-27T16:00:00Z"
+        }
+      },
+      {
+        "id": "team-finance-analytics",
+        "name": "Finance analytics team",
+        "type": "team",
+        "authorityScopes": [
+          "own-asset-rights"
+        ],
+        "provenance": {
+          "recordType": "team-charter",
+          "recordId": "charter-finance-analytics",
+          "version": "2026-q2",
+          "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "verifiedAt": "2026-08-27T16:00:00Z"
+        }
+      }
+    ]
+  },
+  "sourceUseAssessments": [
+    {
+      "id": "assessment-source-deck",
+      "sourceRef": "source-quarterly-review-deck",
+      "sourceVersion": "2026-q2-source-final",
+      "sourceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "useRef": "deck-q2-leadership-review-v2",
+      "useKind": "source-deck",
+      "sourceObservedAt": "2026-08-28T16:15:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:15:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The approved source deck is current and relevant to the review-copy content."
+    },
+    {
+      "id": "assessment-template-deck",
+      "sourceRef": "source-leadership-template",
+      "sourceVersion": "2026-q1-template-approved",
+      "sourceDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "useRef": "deck-q2-leadership-review-v2",
+      "useKind": "template-deck",
+      "sourceObservedAt": "2026-08-28T15:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T15:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The approved leadership template is current and relevant to this presentation setting."
+    },
+    {
+      "id": "assessment-claim-review-scope",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "claim-review-scope",
+      "useKind": "claim-evidence",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact source location is current and relevant to claim-review-scope."
+    },
+    {
+      "id": "assessment-claim-q2-revenue",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "claim-q2-revenue",
+      "useKind": "claim-evidence",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact source location is current and relevant to claim-q2-revenue."
+    },
+    {
+      "id": "assessment-claim-gross-margin",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "claim-gross-margin",
+      "useKind": "claim-evidence",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact source location is current and relevant to claim-gross-margin."
+    },
+    {
+      "id": "assessment-claim-enterprise-concentration",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "claim-enterprise-concentration",
+      "useKind": "claim-evidence",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact source location is current and relevant to claim-enterprise-concentration."
+    },
+    {
+      "id": "assessment-claim-support-backlog",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "claim-support-backlog",
+      "useKind": "claim-evidence",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact source location is current and relevant to claim-support-backlog."
+    },
+    {
+      "id": "assessment-claim-hiring-pause",
+      "sourceRef": "source-decision-record",
+      "sourceVersion": "2026-08-28-approved",
+      "sourceDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "useRef": "claim-hiring-pause",
+      "useKind": "claim-evidence",
+      "sourceObservedAt": "2026-08-28T17:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T17:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact source location is current and relevant to claim-hiring-pause."
+    },
+    {
+      "id": "assessment-claim-onboarding-automation",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "claim-onboarding-automation",
+      "useKind": "claim-evidence",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact source location is current and relevant to claim-onboarding-automation."
+    },
+    {
+      "id": "assessment-claim-retention-risk",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "claim-retention-risk",
+      "useKind": "claim-evidence",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact source location is current and relevant to claim-retention-risk."
+    },
+    {
+      "id": "assessment-claim-opex-plan",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "claim-opex-plan",
+      "useKind": "claim-evidence",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact source location is current and relevant to claim-opex-plan."
+    },
+    {
+      "id": "assessment-claim-reliability-target",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "claim-reliability-target",
+      "useKind": "claim-evidence",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact source location is current and relevant to claim-reliability-target."
+    },
+    {
+      "id": "assessment-asset-title-motif",
+      "sourceRef": "source-leadership-template",
+      "sourceVersion": "2026-q1-template-approved",
+      "sourceDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "useRef": "asset-title-motif",
+      "useKind": "visual-asset",
+      "sourceObservedAt": "2026-08-28T15:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T15:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact visible source location is current and relevant to asset-title-motif."
+    },
+    {
+      "id": "assessment-asset-revenue-chart",
+      "sourceRef": "source-revenue-chart",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "useRef": "asset-revenue-chart",
+      "useKind": "visual-asset",
+      "sourceObservedAt": "2026-08-28T16:05:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:05:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact visible source location is current and relevant to asset-revenue-chart."
+    },
+    {
+      "id": "assessment-asset-margin-bridge",
+      "sourceRef": "source-quarterly-review-deck",
+      "sourceVersion": "2026-q2-source-final",
+      "sourceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "useRef": "asset-margin-bridge",
+      "useKind": "visual-asset",
+      "sourceObservedAt": "2026-08-28T16:15:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:15:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact visible source location is current and relevant to asset-margin-bridge."
+    },
+    {
+      "id": "assessment-asset-enterprise-mix",
+      "sourceRef": "source-quarterly-review-deck",
+      "sourceVersion": "2026-q2-source-final",
+      "sourceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "useRef": "asset-enterprise-mix",
+      "useKind": "visual-asset",
+      "sourceObservedAt": "2026-08-28T16:15:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:15:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact visible source location is current and relevant to asset-enterprise-mix."
+    },
+    {
+      "id": "assessment-asset-support-backlog",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "asset-support-backlog",
+      "useKind": "visual-asset",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact visible source location is current and relevant to asset-support-backlog."
+    },
+    {
+      "id": "assessment-asset-workforce-decision",
+      "sourceRef": "source-decision-record",
+      "sourceVersion": "2026-08-28-approved",
+      "sourceDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "useRef": "asset-workforce-decision",
+      "useKind": "visual-asset",
+      "sourceObservedAt": "2026-08-28T17:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T17:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact visible source location is current and relevant to asset-workforce-decision."
+    },
+    {
+      "id": "assessment-asset-priority-roadmap",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "asset-priority-roadmap",
+      "useKind": "visual-asset",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact visible source location is current and relevant to asset-priority-roadmap."
+    },
+    {
+      "id": "assessment-asset-retention-risk",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "asset-retention-risk",
+      "useKind": "visual-asset",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact visible source location is current and relevant to asset-retention-risk."
+    },
+    {
+      "id": "assessment-asset-cost-waterfall",
+      "sourceRef": "source-quarterly-review-deck",
+      "sourceVersion": "2026-q2-source-final",
+      "sourceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "useRef": "asset-cost-waterfall",
+      "useKind": "visual-asset",
+      "sourceObservedAt": "2026-08-28T16:15:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:15:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact visible source location is current and relevant to asset-cost-waterfall."
+    },
+    {
+      "id": "assessment-asset-reliability-trend",
+      "sourceRef": "source-quarterly-review-deck",
+      "sourceVersion": "2026-q2-source-final",
+      "sourceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "useRef": "asset-reliability-trend",
+      "useKind": "visual-asset",
+      "sourceObservedAt": "2026-08-28T16:15:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:15:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact visible source location is current and relevant to asset-reliability-trend."
+    },
+    {
+      "id": "assessment-asset-decision-matrix",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "asset-decision-matrix",
+      "useKind": "visual-asset",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact visible source location is current and relevant to asset-decision-matrix."
+    },
+    {
+      "id": "assessment-asset-next-step-path",
+      "sourceRef": "source-operating-review",
+      "sourceVersion": "2026-q2-approved",
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "useRef": "asset-next-step-path",
+      "useKind": "visual-asset",
+      "sourceObservedAt": "2026-08-28T16:00:00Z",
+      "assessedAt": "2026-09-01T17:45:00Z",
+      "asOf": "2026-09-01T20:00:00Z",
+      "freshnessPolicyRef": "presentation-source-currentness-30d",
+      "maxAgeDays": 30,
+      "currentThrough": "2026-09-27T16:00:00.000Z",
+      "freshnessStatus": "current",
+      "relevanceStatus": "relevant",
+      "reviewerRef": "team-leadership-communications",
+      "rationale": "The exact visible source location is current and relevant to asset-next-step-path."
+    }
+  ],
+  "proposedOwnerActions": [
+    {
+      "id": "proposed-action-q3-priority",
+      "ownerRef": "person-dana-whitfield",
+      "action": "decide-recommendation",
+      "targetRefs": [
+        "claim-onboarding-automation",
+        "slide-07",
+        "slide-11",
+        "slide-12"
+      ],
+      "state": "proposed",
+      "proposedAt": "2026-09-01T19:15:00Z"
+    }
+  ]
+}

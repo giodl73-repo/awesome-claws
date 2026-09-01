@@ -329,6 +329,14 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "presentation-producer",
+    schema:
+      "../claws/presentation-producer/schemas/presentation-evidence-manifest.schema.json",
+    fixture:
+      "../claws/presentation-producer/fixtures/presentation-evidence-manifest.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "professional-networking-followup",
     schema: "../claws/professional-networking-followup/schemas/networking-followup.schema.json",
     fixture: "../claws/professional-networking-followup/fixtures/networking-followup.example.json",

@@ -2300,15 +2300,15 @@
     {
       "id": "presentation-producer",
       "name": "Presentation producer",
-      "description": "Creates and revises presentation decks with template fidelity, source traceability, and explicit visual quality review.",
-      "audience": "Teams turning approved analysis or decisions into a reviewable PowerPoint presentation.",
+      "description": "Produces a template-faithful review-copy PPTX plus an exact-version evidence manifest whose canonical digests bind authority, source-use review, every material slide text item and claim, visual provenance, render, QA record, control, and human review without distributing the deck.",
+      "audience": "Teams turning approved analysis and human-owned decisions into a private leadership review deck that needs source, template, visual-QA, and exact-version approval proof.",
       "category": "productivity",
       "maintenance": {
         "status": "active",
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-09-01"
       },
       "setup": {
         "level": "medium",

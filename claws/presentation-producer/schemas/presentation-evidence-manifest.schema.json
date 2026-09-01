@@ -1,0 +1,2284 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/presentation-evidence-manifest.schema.json",
+  "title": "Presentation evidence manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "manifest",
+    "authorityRegistry",
+    "sources",
+    "sourceUseAssessments",
+    "deck",
+    "visualAssets",
+    "claims",
+    "citations",
+    "speakerNotes",
+    "slides",
+    "renderSets",
+    "visualQaFindings",
+    "contentQa",
+    "approvals",
+    "proposedOwnerActions",
+    "caveats",
+    "questions",
+    "blockers",
+    "controlPolicies",
+    "controlBindings",
+    "prohibitedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.presentationEvidenceManifest.v1"
+    },
+    "manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "verbatimRequest",
+        "audience",
+        "audienceScope",
+        "classification",
+        "licenseTerms",
+        "retention",
+        "contentDigest",
+        "decisionQuestion",
+        "presentationSetting",
+        "expectedSlideCount",
+        "asOf",
+        "deadline",
+        "reviewer",
+        "decisionOwner",
+        "state",
+        "outputPaths"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^manifest-[a-z0-9-]+$"
+        },
+        "verbatimRequest": {
+          "$ref": "#/$defs/text"
+        },
+        "audience": {
+          "$ref": "#/$defs/text"
+        },
+        "audienceScope": {
+          "$ref": "#/$defs/audiences"
+        },
+        "classification": {
+          "$ref": "#/$defs/classification"
+        },
+        "licenseTerms": {
+          "$ref": "#/$defs/licenses"
+        },
+        "retention": {
+          "$ref": "#/$defs/retention"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "decisionQuestion": {
+          "$ref": "#/$defs/text"
+        },
+        "presentationSetting": {
+          "$ref": "#/$defs/text"
+        },
+        "expectedSlideCount": {
+          "const": 12
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reviewer": {
+          "$ref": "#/$defs/principal"
+        },
+        "decisionOwner": {
+          "$ref": "#/$defs/principal"
+        },
+        "state": {
+          "enum": [
+            "blocked",
+            "ready-for-human-review"
+          ]
+        },
+        "outputPaths": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "deck",
+            "manifest",
+            "handoff"
+          ],
+          "properties": {
+            "deck": {
+              "type": "string",
+              "pattern": "^outputs/[A-Za-z0-9._/-]+\\.pptx$"
+            },
+            "manifest": {
+              "const": "outputs/presentation-evidence-manifest.json"
+            },
+            "handoff": {
+              "const": "outputs/presentation-producer-handoff.md"
+            }
+          }
+        }
+      }
+    },
+    "authorityRegistry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "principals"
+      ],
+      "properties": {
+        "principals": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/authorityPrincipal"
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "path",
+          "digest",
+          "version",
+          "observedAt",
+          "retrievedAt",
+          "owner",
+          "authority",
+          "classification",
+          "audienceScope",
+          "licenseTerms",
+          "retention",
+          "usagePermissions",
+          "notesHandling",
+          "commentsHandling",
+          "hiddenContentHandling",
+          "representationMode",
+          "immutable"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^source-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": [
+              "source-document",
+              "source-deck",
+              "template-deck",
+              "linked-asset"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^inputs/[A-Za-z0-9._/-]+$"
+          },
+          "digest": {
+            "$ref": "#/$defs/digest"
+          },
+          "version": {
+            "$ref": "#/$defs/text"
+          },
+          "observedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "retrievedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "owner": {
+            "$ref": "#/$defs/principal"
+          },
+          "authority": {
+            "enum": [
+              "content-owner",
+              "system-of-record-owner",
+              "template-owner",
+              "brand-owner",
+              "asset-rights-owner",
+              "decision-owner"
+            ]
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audiences"
+          },
+          "licenseTerms": {
+            "$ref": "#/$defs/licenses"
+          },
+          "retention": {
+            "$ref": "#/$defs/retention"
+          },
+          "usagePermissions": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "analyze",
+                "summarize",
+                "paraphrase",
+                "cite-in-speaker-notes",
+                "reuse-template-structure",
+                "include-approved-visual",
+                "preserve-link-only"
+              ]
+            }
+          },
+          "notesHandling": {
+            "enum": [
+              "not-present",
+              "reviewed-exclude",
+              "reviewed-approved-citations-only"
+            ]
+          },
+          "commentsHandling": {
+            "enum": [
+              "not-present",
+              "reviewed-exclude"
+            ]
+          },
+          "hiddenContentHandling": {
+            "enum": [
+              "not-present",
+              "reviewed-exclude"
+            ]
+          },
+          "representationMode": {
+            "enum": [
+              "cite",
+              "paraphrase",
+              "summarize",
+              "visual-excerpt",
+              "template-structure-only"
+            ]
+          },
+          "immutable": {
+            "const": true
+          }
+        }
+      }
+    },
+    "sourceUseAssessments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRef",
+          "sourceVersion",
+          "sourceDigest",
+          "useRef",
+          "useKind",
+          "sourceObservedAt",
+          "assessedAt",
+          "asOf",
+          "freshnessPolicyRef",
+          "maxAgeDays",
+          "currentThrough",
+          "freshnessStatus",
+          "relevanceStatus",
+          "reviewerRef",
+          "rationale"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^assessment-[a-z0-9-]+$"
+          },
+          "sourceRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceVersion": {
+            "$ref": "#/$defs/text"
+          },
+          "sourceDigest": {
+            "$ref": "#/$defs/digest"
+          },
+          "useRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "useKind": {
+            "enum": [
+              "source-deck",
+              "template-deck",
+              "claim-evidence",
+              "visual-asset"
+            ]
+          },
+          "sourceObservedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "assessedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "asOf": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "freshnessPolicyRef": {
+            "$ref": "#/$defs/text"
+          },
+          "maxAgeDays": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "currentThrough": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "freshnessStatus": {
+            "enum": [
+              "current",
+              "stale"
+            ]
+          },
+          "relevanceStatus": {
+            "enum": [
+              "relevant",
+              "not-relevant"
+            ]
+          },
+          "reviewerRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rationale": {
+            "$ref": "#/$defs/text"
+          }
+        }
+      }
+    },
+    "deck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceDeck",
+        "templateDeck",
+        "templateInventory",
+        "reviewCopy",
+        "preservation"
+      ],
+      "properties": {
+        "sourceDeck": {
+          "$ref": "#/$defs/preservedDeck"
+        },
+        "templateDeck": {
+          "$ref": "#/$defs/preservedDeck"
+        },
+        "templateInventory": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "sourceRef",
+            "sourceVersion",
+            "sourceDigest",
+            "version",
+            "extractedAt",
+            "tool",
+            "inventoryDigest",
+            "aspectRatio",
+            "masters",
+            "layouts",
+            "placeholderPatterns"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^template-inventory-[a-z0-9-]+$"
+            },
+            "sourceRef": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sourceVersion": {
+              "$ref": "#/$defs/text"
+            },
+            "sourceDigest": {
+              "$ref": "#/$defs/digest"
+            },
+            "version": {
+              "$ref": "#/$defs/text"
+            },
+            "extractedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "tool": {
+              "$ref": "#/$defs/tool"
+            },
+            "inventoryDigest": {
+              "$ref": "#/$defs/digest"
+            },
+            "aspectRatio": {
+              "$ref": "#/$defs/aspectRatio"
+            },
+            "masters": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "name"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "name": {
+                    "$ref": "#/$defs/text"
+                  }
+                }
+              }
+            },
+            "layouts": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "name",
+                  "masterId"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "name": {
+                    "$ref": "#/$defs/text"
+                  },
+                  "masterId": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "placeholderPatterns": {
+              "$ref": "#/$defs/texts"
+            }
+          }
+        },
+        "reviewCopy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "path",
+            "digest",
+            "version",
+            "createdAt",
+            "aspectRatio",
+            "classification",
+            "audienceScope",
+            "licenseTerms",
+            "retention",
+            "primaryDeliverable",
+            "distinctOutput"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^deck-[a-z0-9-]+$"
+            },
+            "path": {
+              "type": "string",
+              "pattern": "^outputs/[A-Za-z0-9._/-]+\\.pptx$"
+            },
+            "digest": {
+              "$ref": "#/$defs/digest"
+            },
+            "version": {
+              "$ref": "#/$defs/text"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "aspectRatio": {
+              "$ref": "#/$defs/aspectRatio"
+            },
+            "classification": {
+              "$ref": "#/$defs/classification"
+            },
+            "audienceScope": {
+              "$ref": "#/$defs/audiences"
+            },
+            "licenseTerms": {
+              "$ref": "#/$defs/licenses"
+            },
+            "retention": {
+              "$ref": "#/$defs/retention"
+            },
+            "primaryDeliverable": {
+              "const": true
+            },
+            "distinctOutput": {
+              "const": true
+            }
+          }
+        },
+        "preservation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "aspectRatio",
+            "templateInventoryVersion",
+            "templateInventoryDigest",
+            "masterIds",
+            "layoutIds",
+            "placeholdersPreserved",
+            "themePreserved",
+            "brandConstraints",
+            "fontConstraints",
+            "notesPolicy",
+            "linkedMediaPolicy",
+            "macroHandling",
+            "embeddedObjectHandling",
+            "remoteLinkHandling",
+            "commentsHandling",
+            "hiddenContentHandling"
+          ],
+          "properties": {
+            "aspectRatio": {
+              "$ref": "#/$defs/aspectRatio"
+            },
+            "templateInventoryVersion": {
+              "$ref": "#/$defs/text"
+            },
+            "templateInventoryDigest": {
+              "$ref": "#/$defs/digest"
+            },
+            "masterIds": {
+              "$ref": "#/$defs/refs"
+            },
+            "layoutIds": {
+              "$ref": "#/$defs/refs"
+            },
+            "placeholdersPreserved": {
+              "const": true
+            },
+            "themePreserved": {
+              "const": true
+            },
+            "brandConstraints": {
+              "$ref": "#/$defs/texts"
+            },
+            "fontConstraints": {
+              "$ref": "#/$defs/texts"
+            },
+            "notesPolicy": {
+              "const": "approved-citations-and-speaker-guidance-only"
+            },
+            "linkedMediaPolicy": {
+              "const": "approved-assets-only-no-live-fetch"
+            },
+            "macroHandling": {
+              "const": "do-not-execute-or-copy"
+            },
+            "embeddedObjectHandling": {
+              "const": "preserve-only-if-approved"
+            },
+            "remoteLinkHandling": {
+              "const": "no-external-resolution"
+            },
+            "commentsHandling": {
+              "const": "exclude"
+            },
+            "hiddenContentHandling": {
+              "const": "exclude"
+            }
+          }
+        }
+      }
+    },
+    "visualAssets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "sourceRef",
+          "sourceVersion",
+          "sourceDigest",
+          "locator",
+          "assessmentRef",
+          "slideRefs",
+          "usagePermission",
+          "altText",
+          "provenance"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^asset-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": [
+              "source-chart",
+              "source-image",
+              "generated-diagram",
+              "template-decoration"
+            ]
+          },
+          "sourceRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceVersion": {
+            "$ref": "#/$defs/text"
+          },
+          "sourceDigest": {
+            "$ref": "#/$defs/digest"
+          },
+          "locator": {
+            "$ref": "#/$defs/text"
+          },
+          "assessmentRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "slideRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "usagePermission": {
+            "const": "approved-for-review-copy"
+          },
+          "altText": {
+            "$ref": "#/$defs/text"
+          },
+          "provenance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode",
+              "sourceObservedAt",
+              "reviewedAt",
+              "reviewerRef",
+              "approvedAudienceScope",
+              "visibleContentOnly",
+              "sourceNotesIncluded",
+              "hiddenContentIncluded",
+              "commentContentIncluded"
+            ],
+            "properties": {
+              "mode": {
+                "enum": [
+                  "direct-visible-excerpt",
+                  "generated-from-visible-source",
+                  "template-structure"
+                ]
+              },
+              "sourceObservedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "reviewedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "reviewerRef": {
+                "type": "string",
+                "minLength": 1
+              },
+              "approvedAudienceScope": {
+                "$ref": "#/$defs/audiences"
+              },
+              "visibleContentOnly": {
+                "const": true
+              },
+              "sourceNotesIncluded": {
+                "const": false
+              },
+              "hiddenContentIncluded": {
+                "const": false
+              },
+              "commentContentIncluded": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "statement",
+          "kind",
+          "epistemicType",
+          "status",
+          "material",
+          "visiblyLabeled",
+          "owner",
+          "evidence",
+          "caveat",
+          "caveatRefs",
+          "slideRefs",
+          "approvalState",
+          "approvedBy",
+          "approvedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^claim-[a-z0-9-]+$"
+          },
+          "statement": {
+            "$ref": "#/$defs/text"
+          },
+          "kind": {
+            "enum": [
+              "factual",
+              "decision",
+              "recommendation",
+              "assumption"
+            ]
+          },
+          "epistemicType": {
+            "enum": [
+              "observed",
+              "inferred",
+              "recommended",
+              "assumption"
+            ]
+          },
+          "status": {
+            "enum": [
+              "draft",
+              "final"
+            ]
+          },
+          "material": {
+            "const": true
+          },
+          "visiblyLabeled": {
+            "type": "boolean"
+          },
+          "owner": {
+            "$ref": "#/$defs/principal"
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "sourceRef",
+                "sourceVersion",
+                "sourceDigest",
+                "observedAt",
+                "sourceOwner",
+                "sourceAuthority",
+                "locator",
+                "assessmentRef"
+              ],
+              "properties": {
+                "sourceRef": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sourceVersion": {
+                  "$ref": "#/$defs/text"
+                },
+                "sourceDigest": {
+                  "$ref": "#/$defs/digest"
+                },
+                "observedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "sourceOwner": {
+                  "$ref": "#/$defs/principal"
+                },
+                "sourceAuthority": {
+                  "enum": [
+                    "content-owner",
+                    "system-of-record-owner",
+                    "template-owner",
+                    "brand-owner",
+                    "asset-rights-owner",
+                    "decision-owner"
+                  ]
+                },
+                "locator": {
+                  "$ref": "#/$defs/text"
+                },
+                "assessmentRef": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "caveat": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "caveatRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "slideRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "approvalState": {
+            "enum": [
+              "evidence-verified",
+              "human-approved",
+              "pending-human-decision",
+              "labeled-assumption"
+            ]
+          },
+          "approvedBy": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/$defs/principal"
+              }
+            ]
+          },
+          "approvedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "citations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "claimRef",
+          "slideRef",
+          "sourceRef",
+          "sourceVersion",
+          "sourceDigest",
+          "locator",
+          "noteRef",
+          "approvedAudienceScope",
+          "includesHiddenContent",
+          "includesCommentContent",
+          "includesUnapprovedSourceNotes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^citation-[a-z0-9-]+$"
+          },
+          "claimRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "slideRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceVersion": {
+            "$ref": "#/$defs/text"
+          },
+          "sourceDigest": {
+            "$ref": "#/$defs/digest"
+          },
+          "locator": {
+            "$ref": "#/$defs/text"
+          },
+          "noteRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approvedAudienceScope": {
+            "$ref": "#/$defs/audiences"
+          },
+          "includesHiddenContent": {
+            "const": false
+          },
+          "includesCommentContent": {
+            "const": false
+          },
+          "includesUnapprovedSourceNotes": {
+            "const": false
+          }
+        }
+      }
+    },
+    "speakerNotes": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "slideRef",
+          "citationRefs",
+          "contentSummary",
+          "approvedAudienceScope",
+          "sourceNotesCopied",
+          "hiddenSourceContentIncluded",
+          "commentContentIncluded",
+          "state"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^note-[a-z0-9-]+$"
+          },
+          "slideRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "citationRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "contentSummary": {
+            "$ref": "#/$defs/text"
+          },
+          "approvedAudienceScope": {
+            "$ref": "#/$defs/audiences"
+          },
+          "sourceNotesCopied": {
+            "const": false
+          },
+          "hiddenSourceContentIncluded": {
+            "const": false
+          },
+          "commentContentIncluded": {
+            "const": false
+          },
+          "state": {
+            "const": "approved-guidance-and-citations"
+          }
+        }
+      }
+    },
+    "slides": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "order",
+          "masterId",
+          "layoutId",
+          "title",
+          "purpose",
+          "contentItemRefs",
+          "claimRefs",
+          "visualAssetRefs",
+          "citationRefs",
+          "noteRef",
+          "hiddenElementsState",
+          "commentsState",
+          "speakerNotesState",
+          "renderRef"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^slide-[0-9]{2}$"
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "masterId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "layoutId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "$ref": "#/$defs/text"
+          },
+          "purpose": {
+            "$ref": "#/$defs/text"
+          },
+          "contentItemRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "claimRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "visualAssetRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "citationRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "noteRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "hiddenElementsState": {
+            "enum": [
+              "no-hidden-elements",
+              "reviewed-excluded"
+            ]
+          },
+          "commentsState": {
+            "enum": [
+              "not-present",
+              "removed"
+            ]
+          },
+          "speakerNotesState": {
+            "const": "approved-guidance-and-citations"
+          },
+          "renderRef": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "renderSets": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sequence",
+          "deckDigest",
+          "deckVersion",
+          "renderedAt",
+          "tool",
+          "reviewer",
+          "reviewedAt",
+          "status",
+          "renderedSlides"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^render-set-[a-z0-9-]+$"
+          },
+          "sequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "deckDigest": {
+            "$ref": "#/$defs/digest"
+          },
+          "deckVersion": {
+            "$ref": "#/$defs/text"
+          },
+          "renderedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tool": {
+            "$ref": "#/$defs/tool"
+          },
+          "reviewer": {
+            "$ref": "#/$defs/principal"
+          },
+          "reviewedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "enum": [
+              "failed",
+              "passed"
+            ]
+          },
+          "renderedSlides": {
+            "type": "array",
+            "minItems": 12,
+            "maxItems": 12,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "slideRef",
+                "order",
+                "digest",
+                "renderedAt",
+                "tool",
+                "checks",
+                "reviewerFindingRefs"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^render-[a-z0-9-]+$"
+                },
+                "slideRef": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "order": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 12
+                },
+                "digest": {
+                  "$ref": "#/$defs/digest"
+                },
+                "renderedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "tool": {
+                  "$ref": "#/$defs/tool"
+                },
+                "checks": {
+                  "$ref": "#/$defs/visualChecks"
+                },
+                "reviewerFindingRefs": {
+                  "$ref": "#/$defs/optionalRefs"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "visualQaFindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "renderRef",
+          "slideRef",
+          "kind",
+          "severity",
+          "status",
+          "foundAt",
+          "reviewer",
+          "description",
+          "fixedInRenderRef",
+          "fixedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^finding-[a-z0-9-]+$"
+          },
+          "renderRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "slideRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "overflow",
+              "clipping",
+              "contrast",
+              "placeholder",
+              "citation-collision",
+              "overlap",
+              "edge-margin",
+              "notes-leakage"
+            ]
+          },
+          "severity": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "status": {
+            "enum": [
+              "open",
+              "fixed"
+            ]
+          },
+          "foundAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reviewer": {
+            "$ref": "#/$defs/principal"
+          },
+          "description": {
+            "$ref": "#/$defs/text"
+          },
+          "fixedInRenderRef": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "fixedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "contentQa": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "deckDigest",
+        "deckVersion",
+        "extractedAt",
+        "tool",
+        "textDigest",
+        "contentDigest",
+        "extractedSlideCount",
+        "slideRefs",
+        "extractedSlides",
+        "checks",
+        "placeholderScan",
+        "leftoverPlaceholders",
+        "reviewer",
+        "reviewedAt",
+        "findingRefs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^content-qa-[a-z0-9-]+$"
+        },
+        "deckDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "deckVersion": {
+          "$ref": "#/$defs/text"
+        },
+        "extractedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tool": {
+          "$ref": "#/$defs/tool"
+        },
+        "textDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "extractedSlideCount": {
+          "const": 12
+        },
+        "slideRefs": {
+          "type": "array",
+          "minItems": 12,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "extractedSlides": {
+          "type": "array",
+          "minItems": 12,
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "slideRef",
+              "textDigest",
+              "contentItems"
+            ],
+            "properties": {
+              "slideRef": {
+                "type": "string",
+                "minLength": 1
+              },
+              "textDigest": {
+                "$ref": "#/$defs/digest"
+              },
+              "contentItems": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "role",
+                    "text",
+                    "material",
+                    "claimRefs"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^content-slide-[0-9]{2}-[a-z0-9-]+$"
+                    },
+                    "role": {
+                      "enum": [
+                        "title",
+                        "body",
+                        "caption",
+                        "label"
+                      ]
+                    },
+                    "text": {
+                      "$ref": "#/$defs/text"
+                    },
+                    "material": {
+                      "type": "boolean"
+                    },
+                    "claimRefs": {
+                      "$ref": "#/$defs/optionalRefs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "checks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "slideCount",
+            "slideOrder",
+            "textCoverage",
+            "leftoverPlaceholders",
+            "citationCoverage",
+            "notesLeakage"
+          ],
+          "properties": {
+            "slideCount": {
+              "$ref": "#/$defs/qaStatus"
+            },
+            "slideOrder": {
+              "$ref": "#/$defs/qaStatus"
+            },
+            "textCoverage": {
+              "$ref": "#/$defs/qaStatus"
+            },
+            "leftoverPlaceholders": {
+              "$ref": "#/$defs/qaStatus"
+            },
+            "citationCoverage": {
+              "$ref": "#/$defs/qaStatus"
+            },
+            "notesLeakage": {
+              "$ref": "#/$defs/qaStatus"
+            }
+          }
+        },
+        "placeholderScan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "baselinePatterns",
+            "templatePatterns",
+            "effectivePatterns",
+            "caseSensitive",
+            "matchMode"
+          ],
+          "properties": {
+            "baselinePatterns": {
+              "$ref": "#/$defs/texts"
+            },
+            "templatePatterns": {
+              "$ref": "#/$defs/texts"
+            },
+            "effectivePatterns": {
+              "$ref": "#/$defs/texts"
+            },
+            "caseSensitive": {
+              "const": false
+            },
+            "matchMode": {
+              "const": "normalized-substring"
+            }
+          }
+        },
+        "leftoverPlaceholders": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "reviewer": {
+          "$ref": "#/$defs/principal"
+        },
+        "reviewedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "findingRefs": {
+          "$ref": "#/$defs/optionalRefs"
+        }
+      }
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "scope",
+          "reviewer",
+          "deckRef",
+          "deckPath",
+          "deckDigest",
+          "deckVersion",
+          "sourceRefs",
+          "claimRefs",
+          "slideRefs",
+          "renderSetRef",
+          "renderRefs",
+          "contentQaRef",
+          "contentQaDigest",
+          "contentDigest",
+          "decision",
+          "approvedAt",
+          "decisionAuthorityGranted"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^approval-[a-z0-9-]+$"
+          },
+          "scope": {
+            "const": "exact-review-copy"
+          },
+          "reviewer": {
+            "$ref": "#/$defs/principal"
+          },
+          "deckRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "deckPath": {
+            "type": "string",
+            "pattern": "^outputs/[A-Za-z0-9._/-]+\\.pptx$"
+          },
+          "deckDigest": {
+            "$ref": "#/$defs/digest"
+          },
+          "deckVersion": {
+            "$ref": "#/$defs/text"
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "claimRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "slideRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "renderSetRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "renderRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "contentQaRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "contentQaDigest": {
+            "$ref": "#/$defs/digest"
+          },
+          "contentDigest": {
+            "$ref": "#/$defs/digest"
+          },
+          "decision": {
+            "enum": [
+              "approved-for-human-review",
+              "changes-required"
+            ]
+          },
+          "approvedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decisionAuthorityGranted": {
+            "const": false
+          }
+        }
+      }
+    },
+    "proposedOwnerActions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "ownerRef",
+          "action",
+          "targetRefs",
+          "state",
+          "proposedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^proposed-action-[a-z0-9-]+$"
+          },
+          "ownerRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "action": {
+            "enum": [
+              "review-deck",
+              "decide-recommendation",
+              "approve-review-copy",
+              "distribute-after-approval"
+            ]
+          },
+          "targetRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "state": {
+            "const": "proposed"
+          },
+          "proposedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "caveats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "statement",
+          "claimRefs",
+          "slideRefs",
+          "owner"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^caveat-[a-z0-9-]+$"
+          },
+          "statement": {
+            "$ref": "#/$defs/text"
+          },
+          "claimRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "slideRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "owner": {
+            "$ref": "#/$defs/principal"
+          }
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "question",
+          "targetRefs",
+          "owner",
+          "status",
+          "blocksReadiness"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^question-[a-z0-9-]+$"
+          },
+          "question": {
+            "$ref": "#/$defs/text"
+          },
+          "targetRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "owner": {
+            "$ref": "#/$defs/principal"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "resolved"
+            ]
+          },
+          "blocksReadiness": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "description",
+          "targetRefs",
+          "questionRefs",
+          "owner",
+          "status",
+          "deadline"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^blocker-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": [
+              "decision",
+              "deadline",
+              "review"
+            ]
+          },
+          "description": {
+            "$ref": "#/$defs/text"
+          },
+          "targetRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "questionRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "owner": {
+            "$ref": "#/$defs/principal"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "resolved"
+            ]
+          },
+          "deadline": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "controlPolicies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "classification",
+          "audienceScope",
+          "licenseTerms",
+          "retention"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^control-[a-z0-9-]+$"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audiences"
+          },
+          "licenseTerms": {
+            "$ref": "#/$defs/licenses"
+          },
+          "retention": {
+            "$ref": "#/$defs/retention"
+          }
+        }
+      }
+    },
+    "controlBindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "policyRef",
+          "objectRefs"
+        ],
+        "properties": {
+          "policyRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "objectRefs": {
+            "$ref": "#/$defs/refs"
+          }
+        }
+      }
+    },
+    "prohibitedActions": {
+      "$ref": "#/$defs/actions"
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "state",
+        "owner",
+        "reviewer",
+        "manifestRef",
+        "deckRef",
+        "deckPath",
+        "deckDigest",
+        "deckVersion",
+        "sourceRefs",
+        "sourceUseAssessmentRefs",
+        "visualAssetRefs",
+        "claimRefs",
+        "citationRefs",
+        "noteRefs",
+        "slideRefs",
+        "renderSetRefs",
+        "renderRefs",
+        "visualQaFindingRefs",
+        "contentQaRefs",
+        "approvalRefs",
+        "proposedOwnerActionRefs",
+        "caveatRefs",
+        "questionRefs",
+        "blockerRefs",
+        "unresolvedClaimRefs",
+        "summary",
+        "output",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "id": {
+          "const": "handoff"
+        },
+        "state": {
+          "enum": [
+            "blocked",
+            "ready-for-human-review"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/principal"
+        },
+        "reviewer": {
+          "$ref": "#/$defs/principal"
+        },
+        "manifestRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deckRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deckPath": {
+          "type": "string",
+          "pattern": "^outputs/[A-Za-z0-9._/-]+\\.pptx$"
+        },
+        "deckDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "deckVersion": {
+          "$ref": "#/$defs/text"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "sourceUseAssessmentRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "visualAssetRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "claimRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "citationRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "noteRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "slideRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "renderSetRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "renderRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "visualQaFindingRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "contentQaRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "approvalRefs": {
+          "$ref": "#/$defs/optionalRefs"
+        },
+        "proposedOwnerActionRefs": {
+          "$ref": "#/$defs/optionalRefs"
+        },
+        "caveatRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "questionRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "unresolvedClaimRefs": {
+          "$ref": "#/$defs/optionalRefs"
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "output": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "manifestPath",
+            "handoffPath",
+            "visibility",
+            "storage",
+            "deliveryState"
+          ],
+          "properties": {
+            "manifestPath": {
+              "const": "outputs/presentation-evidence-manifest.json"
+            },
+            "handoffPath": {
+              "const": "outputs/presentation-producer-handoff.md"
+            },
+            "visibility": {
+              "const": "private"
+            },
+            "storage": {
+              "const": "local-artifact"
+            },
+            "deliveryState": {
+              "const": "not-delivered"
+            }
+          }
+        },
+        "prohibitedActions": {
+          "$ref": "#/$defs/actions"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000,
+      "pattern": "\\S"
+    },
+    "texts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "optionalRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "aspectRatio": {
+      "enum": [
+        "16:9",
+        "4:3"
+      ]
+    },
+    "classification": {
+      "enum": [
+        "public",
+        "internal",
+        "confidential",
+        "restricted"
+      ]
+    },
+    "audiences": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]*$"
+      }
+    },
+    "licenses": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "company-internal-use",
+          "licensed-internal-use",
+          "citation-only",
+          "template-use-only"
+        ]
+      }
+    },
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policyRefs",
+        "retainUntil",
+        "dispositionAuthority"
+      ],
+      "properties": {
+        "policyRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "retainUntil": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dispositionAuthority": {
+          "const": "human-only"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(?:person|team)-[a-z0-9-]+$"
+        },
+        "name": {
+          "$ref": "#/$defs/text"
+        },
+        "type": {
+          "enum": [
+            "human",
+            "team"
+          ]
+        }
+      }
+    },
+    "authorityPrincipal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "type",
+        "authorityScopes",
+        "provenance"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(?:person|team)-[a-z0-9-]+$"
+        },
+        "name": {
+          "$ref": "#/$defs/text"
+        },
+        "type": {
+          "enum": [
+            "human",
+            "team"
+          ]
+        },
+        "authorityScopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "own-content",
+              "own-system-of-record",
+              "own-template",
+              "own-brand",
+              "own-asset-rights",
+              "own-decision",
+              "review-source-use",
+              "review-visual-qa",
+              "review-content-qa",
+              "approve-review-copy",
+              "own-caveat",
+              "own-question",
+              "own-blocker",
+              "receive-handoff"
+            ]
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "recordType",
+            "recordId",
+            "version",
+            "digest",
+            "verifiedAt"
+          ],
+          "properties": {
+            "recordType": {
+              "enum": [
+                "human-directory-record",
+                "team-charter"
+              ]
+            },
+            "recordId": {
+              "$ref": "#/$defs/text"
+            },
+            "version": {
+              "$ref": "#/$defs/text"
+            },
+            "digest": {
+              "$ref": "#/$defs/digest"
+            },
+            "verifiedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    },
+    "preservedDeck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceRef",
+        "path",
+        "digest",
+        "version",
+        "assessmentRef",
+        "preservedUnchanged"
+      ],
+      "properties": {
+        "sourceRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^inputs/[A-Za-z0-9._/-]+\\.pptx$"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "version": {
+          "$ref": "#/$defs/text"
+        },
+        "assessmentRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "preservedUnchanged": {
+          "const": true
+        }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/text"
+        },
+        "version": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "qaStatus": {
+      "enum": [
+        "passed",
+        "failed"
+      ]
+    },
+    "visualChecks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "overflow",
+        "clipping",
+        "contrast",
+        "placeholders",
+        "citationCollision",
+        "overlap",
+        "edgeMargin",
+        "notesLeakage"
+      ],
+      "properties": {
+        "overflow": {
+          "$ref": "#/$defs/qaStatus"
+        },
+        "clipping": {
+          "$ref": "#/$defs/qaStatus"
+        },
+        "contrast": {
+          "$ref": "#/$defs/qaStatus"
+        },
+        "placeholders": {
+          "$ref": "#/$defs/qaStatus"
+        },
+        "citationCollision": {
+          "$ref": "#/$defs/qaStatus"
+        },
+        "overlap": {
+          "$ref": "#/$defs/qaStatus"
+        },
+        "edgeMargin": {
+          "$ref": "#/$defs/qaStatus"
+        },
+        "notesLeakage": {
+          "$ref": "#/$defs/qaStatus"
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "distribute-deck",
+          "publish-deck",
+          "send-deck",
+          "upload-external",
+          "overwrite-source-deck",
+          "modify-template-deck",
+          "expose-hidden-content",
+          "expose-comments",
+          "execute-macros",
+          "resolve-remote-links",
+          "approve-decision",
+          "approve-recommendation",
+          "approve-deck-on-behalf",
+          "claim-completed-review-without-evidence"
+        ]
+      }
+    }
+  }
+}

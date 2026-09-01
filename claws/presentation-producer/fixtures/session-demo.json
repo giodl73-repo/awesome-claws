@@ -9,7 +9,7 @@
     },
     {
       "role": "agent",
-      "text": "I identified the presentation decision, the evidence needed, and the boundary that must stay human-owned."
+      "text": "I froze the provenance-backed authority registry, exact source identities and use assessments, extracted template inventory, 12-slide content-claim contract, and complete audience-control closure."
     },
     {
       "role": "user",
@@ -17,41 +17,41 @@
     },
     {
       "role": "agent",
-      "text": "I produced outputs/presentation-producer-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+      "text": "I prepared the private review-copy PPTX, outputs/presentation-evidence-manifest.json, and outputs/presentation-producer-handoff.md with canonical claim, extracted-content, citation, render, QA, approval, structured-owner-action, and blocker coverage."
     }
   ],
   "report": {
     "title": "Presentation producer session handoff",
-    "summary": "A new template-faithful PPTX with a decision-oriented narrative, source-linked notes, rendered slide QA, and a visible list of claims still awaiting owner approval.",
+    "summary": "A private 12-slide review-copy PPTX plus an exact-version evidence manifest with immutable inputs, structured source-use review, template inventory fidelity, per-slide extracted-content claim coverage, a first-render failure and later rerender, canonical content QA and approval digests, exact control closure, and the unresolved Q3 priority decision preserved as a blocker.",
     "output": "outputs/presentation-producer-handoff.md",
     "items": [
       {
-        "title": "Slide narrative and source map",
-        "summary": "Every material claim maps to an approved source or is labeled as an assumption",
+        "title": "Primary 12-slide review-copy PPTX",
+        "summary": "The source and template identities remain unchanged and the review copy has a distinct exact path, digest, and version.",
         "tags": [
           "fact-based",
           "reviewable"
         ]
       },
       {
-        "title": "Reviewable PPTX deck",
-        "summary": "The source deck remains unchanged and template, notes, charts, and aspect ratio are preserved as required",
+        "title": "Exact-version evidence manifest",
+        "summary": "Every material claim, extracted content item, visual provenance record, citation, speaker note, slide, render, QA record, and review approval is canonically linked to the exact deck version.",
         "tags": [
           "evidence",
           "owner-visible"
         ]
       },
       {
-        "title": "Rendered visual QA contact sheet",
-        "summary": "Do not expose hidden notes, comments, linked assets, or confidential source material outside the deck's approved audience",
+        "title": "Fix, rerender, and content QA",
+        "summary": "The complete first render records an observed citation collision, the fix precedes the later full rerender, and extracted text plus standard and template placeholder scans bind to final digests.",
         "tags": [
           "approval-gated",
           "safe fallback"
         ]
       },
       {
-        "title": "Claim, caveat, and unresolved-review ledger",
-        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "title": "Private blocked owner handoff",
+        "summary": "The pending Q3 recommendation is a structured owner action; caveats, question, blocker, exact deck-content controls, and prohibited distribution actions remain complete and human-owned.",
         "tags": [
           "handoff",
           "durable"
