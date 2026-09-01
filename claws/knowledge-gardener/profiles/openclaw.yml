@@ -1,0 +1,10 @@
+schemaVersion: 1
+agent:
+  tools:
+    profile: coding
+    allow:
+      - read
+      - write
+      - edit
+    fs:
+      workspaceOnly: true

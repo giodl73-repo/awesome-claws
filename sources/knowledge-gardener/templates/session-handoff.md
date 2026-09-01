@@ -1,29 +1,52 @@
 # Knowledge gardener handoff
 
-## Request
+## Plan and scope boundary
 
-Summarize the user request and the decision this claw is supporting.
+Record the plan id, verbatim request, as-of time, review horizon, status,
+maintenance owner, stale threshold, observation goals, conventions, and the
+operator-supplied local export's noncredential id, integration-registration id,
+version, digest, secret-free state, supply chronology, matching
+authorization/scope receipt, exact shared roots, databases, pages, and excluded
+object ids.
 
-## Known facts
+## Exact observed snapshots
 
-- Record only facts grounded in the supplied context or approved tools.
+Render globally unique stable and canonical Notion object identity and type,
+credential-free reference, exact last-edited version, parent and root ancestry,
+observation and export chronology, owner, authority, access, exact scope and
+exclusion proof, classification, audience, and retention.
 
-## Assumptions and gaps
+## Grounded issues
 
-- Separate assumptions from missing evidence.
+List observed or inferred duplicate topics, threshold-true stale decisions,
+conflicts, broken or missing links and properties, and orphan candidates with
+exact snapshot evidence. Preserve every conflict side and reciprocal issue link.
 
-## Evidence ledger
+## Reversible operation plan
 
-- Link or name the source for every material claim.
+Render only link, property update, rename, draft page, move, and archive
+proposals with exact target versions, observed before and proposed after values,
+affected objects, evidence, impact, dependencies, controls, rollback, blockers,
+and external-human application mode.
 
-## Recommendation or decision state
+## Exact-version approvals
 
-- State the best supported next step and why.
+Show operation-only human or team approvals bound to the current plan digest
+and all affected current observed versions after the evidence chronology.
+Version or plan drift invalidates approval.
 
-## Blocked actions
+## Dependencies, blockers, and questions
 
-- Keep external communication, irreversible changes, purchases, publication, and authority-sensitive actions blocked until explicitly approved.
+Keep dependencies acyclic and blockers and questions reciprocal. A
+ready-for-human-review plan has no open blocker or blocking question.
 
-## Next owner
+## Complete private handoff
 
-Name the accountable human owner and where outputs/knowledge-gardener-handoff.md should be reviewed.
+Cover every snapshot, issue, operation, approval, blocker, and question exactly
+once. Preserve classification, audience, access, and retention through
+cycle-safe transitive references. Keep `outputs/knowledge-space-change-plan.json`
+and `outputs/knowledge-gardener-handoff.md` private, local, and not delivered.
+Do not claim access, mutation, application, completion, publication, sharing,
+conflict resolution, decision, or retention action. The Claw uses only
+workspace read, write, and edit; it has no network, exec, Notion API, Notion
+skill, or source-mutation access.

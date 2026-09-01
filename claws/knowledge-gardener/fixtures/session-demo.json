@@ -1,15 +1,15 @@
 {
   "schemaVersion": "awesomeClaws.sessionDemo.v1",
   "claw": "knowledge-gardener",
-  "scenario": "Review the project-decisions database shared with this integration, connect duplicate topics, and identify decisions older than six months that need owner review.",
+  "scenario": "Review the operator-supplied versioned read-only Notion observation export for the project-decisions database using its authorization and scope receipt, propose links between duplicate topics, and identify decisions older than six months that need owner review.",
   "messages": [
     {
       "role": "user",
-      "text": "Review the project-decisions database shared with this integration, connect duplicate topics, and identify decisions older than six months that need owner review."
+      "text": "Review the operator-supplied versioned read-only Notion observation export for the project-decisions database using its authorization and scope receipt, propose links between duplicate topics, and identify decisions older than six months that need owner review."
     },
     {
       "role": "agent",
-      "text": "I identified the knowledge decision, the evidence needed, and the boundary that must stay human-owned."
+      "text": "I will read only inputs/notion-observation-export.json, verify its version, digest, secret-free state, and authorization/scope receipt, preserve each exact last-edited version and conflict side, and prepare a private reversible plan without network or Notion access."
     },
     {
       "role": "user",
@@ -17,41 +17,41 @@
     },
     {
       "role": "agent",
-      "text": "I produced outputs/knowledge-gardener-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+      "text": "I wrote outputs/knowledge-space-change-plan.json and rendered outputs/knowledge-gardener-handoff.md. The plan remains blocked for external human review and does not claim that any proposal was applied."
     }
   ],
   "report": {
     "title": "Knowledge gardener session handoff",
-    "summary": "A scoped review with proposed page and property updates, preserved conflicting decisions, and a dated review queue with source and owner context.",
+    "summary": "A blocked private change plan bound to one operator-supplied secret-free local export and receipt, with exact shared-scope ancestry and last-edited snapshots, grounded duplicate, stale, conflict, link, property, and orphan findings, reversible page-maintenance proposals, one operation-specific current-version human approval, preserved conflict sides, transitive controls, and no network or Notion access.",
     "output": "outputs/knowledge-gardener-handoff.md",
     "items": [
       {
-        "title": "Knowledge-space map",
-        "summary": "All reads and proposed changes remain inside content shared with the dedicated integration",
+        "title": "Exact shared-scope snapshots",
+        "summary": "Every exported page and database retains globally unique stable and canonical identity, exact version, ancestry, observation/export chronology, receipt scope, owner, authority, access, and handling controls.",
         "tags": [
           "fact-based",
           "reviewable"
         ]
       },
       {
-        "title": "Source-linked page drafts",
-        "summary": "New or changed durable claims retain source, date, and authority",
+        "title": "Grounded maintenance issues",
+        "summary": "Duplicate, stale, conflict, link, property, and orphan findings cite exact snapshots and preserve every conflict side.",
         "tags": [
           "evidence",
           "owner-visible"
         ]
       },
       {
-        "title": "Link and property repair list",
-        "summary": "Do not access, create, update, archive, or move content outside pages explicitly shared with the dedicated Notion integration",
+        "title": "Reversible external-human proposals",
+        "summary": "Each proposal has an exact target version, before and after values, impact, dependencies, controls, rollback, and current approval or blocker state.",
         "tags": [
           "approval-gated",
           "safe fallback"
         ]
       },
       {
-        "title": "Freshness and conflict report",
-        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "title": "Private blocked handoff",
+        "summary": "Open blockers and questions remain visible; the artifact is local, not delivered, and records no Notion application receipt.",
         "tags": [
           "handoff",
           "durable"

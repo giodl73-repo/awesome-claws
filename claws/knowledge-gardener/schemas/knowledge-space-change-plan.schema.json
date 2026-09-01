@@ -1,0 +1,1455 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/knowledge-space-change-plan.schema.json",
+  "title": "Knowledge-space change plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "plan",
+    "snapshots",
+    "issues",
+    "operations",
+    "approvals",
+    "blockers",
+    "questions",
+    "handoff",
+    "prohibitedActions",
+    "integrity"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.knowledgeSpaceChangePlan.v1"
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "request",
+        "asOf",
+        "reviewHorizon",
+        "status",
+        "maintenanceOwner",
+        "observationInput",
+        "scope",
+        "observationGoals",
+        "conventions",
+        "staleDecisionPolicy"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reviewHorizon": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "startsAt",
+            "endsAt"
+          ],
+          "properties": {
+            "startsAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "endsAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "status": {
+          "enum": [
+            "blocked",
+            "ready-for-human-review"
+          ]
+        },
+        "maintenanceOwner": {
+          "$ref": "#/$defs/principal"
+        },
+        "observationInput": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "provider",
+            "observationExportId",
+            "integrationRegistrationId",
+            "exportVersion",
+            "workspacePath",
+            "contentDigest",
+            "exportedAt",
+            "suppliedAt",
+            "containsSecrets",
+            "authorizationReceipt"
+          ],
+          "properties": {
+            "provider": {
+              "const": "notion-observation-export"
+            },
+            "observationExportId": {
+              "type": "string",
+              "pattern": "^notion-observation-export-[a-z0-9][a-z0-9-]{2,63}$"
+            },
+            "integrationRegistrationId": {
+              "type": "string",
+              "pattern": "^notion-integration-registration-[a-z0-9][a-z0-9-]{2,63}$"
+            },
+            "exportVersion": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "workspacePath": {
+              "const": "inputs/notion-observation-export.json"
+            },
+            "contentDigest": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{64}$"
+            },
+            "exportedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "suppliedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "containsSecrets": {
+              "const": false
+            },
+            "authorizationReceipt": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "receiptId",
+                "observationExportId",
+                "integrationRegistrationId",
+                "exportVersion",
+                "exportDigest",
+                "accessMode",
+                "authorizedBy",
+                "grantedAt",
+                "recordedAt",
+                "expiresAt",
+                "authorizedObjectIds",
+                "excludedObjectIds"
+              ],
+              "properties": {
+                "receiptId": {
+                  "type": "string",
+                  "pattern": "^notion-authorization-receipt-[a-z0-9][a-z0-9-]{2,63}$"
+                },
+                "observationExportId": {
+                  "type": "string",
+                  "pattern": "^notion-observation-export-[a-z0-9][a-z0-9-]{2,63}$"
+                },
+                "integrationRegistrationId": {
+                  "type": "string",
+                  "pattern": "^notion-integration-registration-[a-z0-9][a-z0-9-]{2,63}$"
+                },
+                "exportVersion": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "exportDigest": {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$"
+                },
+                "accessMode": {
+                  "const": "read-only-observation-export"
+                },
+                "authorizedBy": {
+                  "$ref": "#/$defs/principal"
+                },
+                "grantedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "expiresAt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time"
+                },
+                "recordedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "authorizedObjectIds": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "#/$defs/notionObjectId"
+                  }
+                },
+                "excludedObjectIds": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "#/$defs/notionObjectId"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sharedRoots",
+            "sharedDatabases",
+            "sharedPages",
+            "excludedObjects"
+          ],
+          "properties": {
+            "sharedRoots": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/scopeObject"
+              }
+            },
+            "sharedDatabases": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/scopeObject"
+              }
+            },
+            "sharedPages": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/scopeObject"
+              }
+            },
+            "excludedObjects": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/scopeObject"
+              }
+            }
+          }
+        },
+        "observationGoals": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "conventions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "naming",
+            "linking",
+            "properties",
+            "archive",
+            "retention"
+          ],
+          "properties": {
+            "naming": {
+              "type": "string",
+              "minLength": 1
+            },
+            "linking": {
+              "type": "string",
+              "minLength": 1
+            },
+            "properties": {
+              "type": "string",
+              "minLength": 1
+            },
+            "archive": {
+              "type": "string",
+              "minLength": 1
+            },
+            "retention": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "staleDecisionPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "thresholdDays",
+            "definedBy",
+            "definedAt"
+          ],
+          "properties": {
+            "thresholdDays": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "definedBy": {
+              "$ref": "#/$defs/principal"
+            },
+            "definedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    },
+    "snapshots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/snapshot"
+      }
+    },
+    "issues": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/issue"
+      }
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/operation"
+      }
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/approval"
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blocker"
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/question"
+      }
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    },
+    "prohibitedActions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/prohibitedAction"
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "scope",
+        "digest"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "scope": {
+          "const": "canonical-plan-content-excluding-approval-state"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "notionObjectId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "human",
+            "team"
+          ]
+        }
+      }
+    },
+    "scopeObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "objectId",
+        "objectType"
+      ],
+      "properties": {
+        "objectId": {
+          "$ref": "#/$defs/notionObjectId"
+        },
+        "objectType": {
+          "enum": [
+            "page",
+            "database"
+          ]
+        }
+      }
+    },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "value"
+      ],
+      "properties": {
+        "kind": {
+          "const": "last-edited-time"
+        },
+        "value": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "policyRefs",
+        "unknownPolicyRefs",
+        "retainUntil",
+        "dispositionAuthority"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "known",
+            "unknown"
+          ]
+        },
+        "policyRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "unknownPolicyRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "retainUntil": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "dispositionAuthority": {
+          "const": "human-only"
+        }
+      }
+    },
+    "handling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "audienceScope",
+        "retention"
+      ],
+      "properties": {
+        "classification": {
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        },
+        "audienceScope": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "retention": {
+          "$ref": "#/$defs/retention"
+        }
+      }
+    },
+    "observedValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "value"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "notionObjectId",
+        "objectType",
+        "knowledgeKind",
+        "title",
+        "url",
+        "lastEditedAt",
+        "observedVersion",
+        "parentRef",
+        "rootRef",
+        "ancestryRefs",
+        "referenceRefs",
+        "topicFingerprint",
+        "decisionKey",
+        "contentDigest",
+        "observedValues",
+        "missingReferences",
+        "missingProperties",
+        "inboundReferenceCount",
+        "observation",
+        "sourceOwner",
+        "authorityStatus",
+        "accessState",
+        "scopeProof",
+        "handling"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notionObjectId": {
+          "$ref": "#/$defs/notionObjectId"
+        },
+        "objectType": {
+          "enum": [
+            "page",
+            "database"
+          ]
+        },
+        "knowledgeKind": {
+          "enum": [
+            "root",
+            "database",
+            "decision",
+            "topic",
+            "reference"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "lastEditedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "observedVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "parentRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rootRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ancestryRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "referenceRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "topicFingerprint": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "decisionKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "contentDigest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "observedValues": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/observedValue"
+          }
+        },
+        "missingReferences": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "missingProperties": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "inboundReferenceCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "observationExportId",
+            "exportVersion",
+            "observedAt",
+            "includedAt"
+          ],
+          "properties": {
+            "observationExportId": {
+              "type": "string",
+              "pattern": "^notion-observation-export-[a-z0-9][a-z0-9-]{2,63}$"
+            },
+            "exportVersion": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "includedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "sourceOwner": {
+          "$ref": "#/$defs/principal"
+        },
+        "authorityStatus": {
+          "enum": [
+            "authoritative",
+            "delegated",
+            "supporting",
+            "non-authoritative",
+            "superseded"
+          ]
+        },
+        "accessState": {
+          "enum": [
+            "available",
+            "restricted",
+            "unavailable"
+          ]
+        },
+        "scopeProof": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sharedViaObjectId",
+            "ancestryObjectIds",
+            "insideSharedScope",
+            "outsideExclusions"
+          ],
+          "properties": {
+            "sharedViaObjectId": {
+              "$ref": "#/$defs/notionObjectId"
+            },
+            "ancestryObjectIds": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/notionObjectId"
+              }
+            },
+            "insideSharedScope": {
+              "type": "boolean"
+            },
+            "outsideExclusions": {
+              "type": "boolean"
+            }
+          }
+        },
+        "handling": {
+          "$ref": "#/$defs/handling"
+        }
+      }
+    },
+    "conflictSide": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "objectRef",
+        "observedVersion",
+        "positionDigest"
+      ],
+      "properties": {
+        "objectRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observedVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "positionDigest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      }
+    },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "evidenceStatus",
+        "observedAt",
+        "objectRefs",
+        "evidenceSnapshotRefs",
+        "relatedIssueRefs",
+        "conflictSides",
+        "resolution",
+        "staleThresholdDays",
+        "description",
+        "handling"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "duplicate-topic",
+            "stale-decision",
+            "conflict",
+            "broken-link",
+            "missing-link",
+            "missing-property",
+            "orphan-candidate"
+          ]
+        },
+        "evidenceStatus": {
+          "enum": [
+            "observed",
+            "inferred"
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "objectRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "evidenceSnapshotRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "relatedIssueRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "conflictSides": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/conflictSide"
+          }
+        },
+        "resolution": {
+          "const": null
+        },
+        "staleThresholdDays": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handling": {
+          "$ref": "#/$defs/handling"
+        }
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "state",
+        "proposedAt",
+        "target",
+        "targetPath",
+        "beforeValue",
+        "afterValue",
+        "patchIntent",
+        "affectedObjectRefs",
+        "sourceSnapshotRefs",
+        "issueRefs",
+        "dependsOn",
+        "blockerRefs",
+        "impact",
+        "reversible",
+        "rollback",
+        "expectedAccessState",
+        "handling",
+        "approvalRef",
+        "applicationMode"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "link",
+            "property-update",
+            "rename",
+            "draft-page",
+            "move",
+            "archive"
+          ]
+        },
+        "state": {
+          "enum": [
+            "proposed",
+            "blocked",
+            "approved-for-human-application"
+          ]
+        },
+        "proposedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "objectRef",
+            "observedVersion"
+          ],
+          "properties": {
+            "objectRef": {
+              "type": "string",
+              "minLength": 1
+            },
+            "observedVersion": {
+              "$ref": "#/$defs/version"
+            }
+          }
+        },
+        "targetPath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "beforeValue": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "afterValue": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "patchIntent": {
+          "type": "string",
+          "minLength": 1
+        },
+        "affectedObjectRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "sourceSnapshotRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "issueRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "dependsOn": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "blockerRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "impact": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "reversible": {
+          "type": "boolean"
+        },
+        "rollback": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "value",
+            "instruction"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "instruction": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "expectedAccessState": {
+          "enum": [
+            "available",
+            "restricted",
+            "unavailable"
+          ]
+        },
+        "handling": {
+          "$ref": "#/$defs/handling"
+        },
+        "approvalRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "applicationMode": {
+          "const": "external-human"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "approved-for-human-application"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "approvalRef": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "approvalRef": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "blocked"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "blockerRefs": {
+                "type": "array",
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "approvedTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "objectRef",
+        "observedVersion"
+      ],
+      "properties": {
+        "objectRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observedVersion": {
+          "$ref": "#/$defs/version"
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "scope",
+        "operationRef",
+        "targetVersions",
+        "planDigest",
+        "approvedBy",
+        "approvedAt",
+        "handling"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "const": "human-exact-version"
+        },
+        "scope": {
+          "const": "operation-only"
+        },
+        "operationRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "targetVersions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/approvedTarget"
+          }
+        },
+        "planDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "approvedBy": {
+          "$ref": "#/$defs/principal"
+        },
+        "approvedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "handling": {
+          "$ref": "#/$defs/handling"
+        }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "status",
+        "blocksReadiness",
+        "operationRefs",
+        "issueRefs",
+        "objectRefs",
+        "description",
+        "owner",
+        "handling"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "human-decision",
+            "access",
+            "version-drift",
+            "conflict",
+            "policy",
+            "dependency"
+          ]
+        },
+        "status": {
+          "const": "open"
+        },
+        "blocksReadiness": {
+          "const": true
+        },
+        "operationRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "issueRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "objectRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "$ref": "#/$defs/principal"
+        },
+        "handling": {
+          "$ref": "#/$defs/handling"
+        }
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "status",
+        "blocksReadiness",
+        "targetRefs",
+        "operationRefs",
+        "blockerRefs",
+        "question",
+        "owner",
+        "handling"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "open",
+            "answered-by-human"
+          ]
+        },
+        "blocksReadiness": {
+          "type": "boolean"
+        },
+        "targetRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "operationRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "blockerRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "$ref": "#/$defs/principal"
+        },
+        "handling": {
+          "$ref": "#/$defs/handling"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "snapshotRefs",
+        "issueRefs",
+        "operationRefs",
+        "approvalRefs",
+        "blockerRefs",
+        "questionRefs",
+        "blockingQuestionRefs",
+        "summary",
+        "output",
+        "handling",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "blocked",
+            "ready-for-human-review"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/principal"
+        },
+        "snapshotRefs": {
+          "$ref": "#/$defs/referenceList"
+        },
+        "issueRefs": {
+          "$ref": "#/$defs/referenceList"
+        },
+        "operationRefs": {
+          "$ref": "#/$defs/referenceList"
+        },
+        "approvalRefs": {
+          "$ref": "#/$defs/referenceList"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/referenceList"
+        },
+        "questionRefs": {
+          "$ref": "#/$defs/referenceList"
+        },
+        "blockingQuestionRefs": {
+          "$ref": "#/$defs/referenceList"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "output": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "visibility",
+            "storage",
+            "deliveryState"
+          ],
+          "properties": {
+            "path": {
+              "const": "outputs/knowledge-space-change-plan.json"
+            },
+            "visibility": {
+              "const": "private"
+            },
+            "storage": {
+              "const": "local-artifact"
+            },
+            "deliveryState": {
+              "const": "not-delivered"
+            }
+          }
+        },
+        "handling": {
+          "$ref": "#/$defs/handling"
+        },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/prohibitedAction"
+          }
+        }
+      }
+    },
+    "referenceList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "prohibitedAction": {
+      "enum": [
+        "read-outside-shared-scope",
+        "create-notion-content",
+        "update-notion-content",
+        "archive-notion-content",
+        "move-notion-content",
+        "delete-notion-content",
+        "publish-notion-content",
+        "share-notion-content",
+        "change-access-control",
+        "copy-restricted-to-weaker-scope",
+        "resolve-conflict-autonomously",
+        "make-decisions-autonomously",
+        "act-on-retention-autonomously",
+        "claim-mutation",
+        "claim-completion",
+        "claim-access"
+      ]
+    }
+  }
+}

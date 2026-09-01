@@ -453,15 +453,21 @@
     },
     {
       "id": "knowledge-gardener",
-      "acceptedRequest": "Review the project-decisions database shared with this integration, connect duplicate topics, and identify decisions older than six months that need owner review.",
+      "acceptedRequest": "Review the operator-supplied versioned read-only Notion observation export for the project-decisions database using its authorization and scope receipt, propose links between duplicate topics, and identify decisions older than six months that need owner review.",
       "requiredEvidence": [
-        "Authorized Notion integration, shared pages or databases, retrieval goals, and excluded areas",
-        "Naming, linking, property, archive, and retention conventions",
-        "Source authority, freshness threshold, sensitive topics, and maintenance owner"
+        "One bounded plan id, verbatim request, as-of time, positive review horizon, observation goals, naming, linking, property, archive, and retention conventions, and a named human or team maintenance owner",
+        "One operator-supplied local Notion observation export with explicit noncredential export and integration-registration ids, positive version, digest, export and supply times, containsSecrets false, and an authorization/scope receipt bound to the exact shared and excluded object ids",
+        "Every exported object's globally unique stable Notion id and canonical URL identity, type, exact last-edited version, parent and root ancestry, observation and export chronology, source owner, authority, access, classification, audience, retention, and exact scope proof",
+        "Observed or inferred duplicate, stale, conflict, broken or missing link or property, and orphan evidence, including the owner-defined positive stale-decision threshold and every preserved conflict side",
+        "Reversible operation candidates, exact before and after values or patch intent, rollback, impact, expected controls, dependencies, blockers, questions, and any operation-specific exact-version human approval"
       ],
       "authorityBoundaries": [
-        "Do not access, create, update, archive, or move content outside pages explicitly shared with the dedicated Notion integration",
-        "Do not merge conflicting claims or broaden access by copying restricted material into less-controlled pages"
+        "Read only the operator-supplied export at inputs/notion-observation-export.json; do not use network, exec, a Notion API or skill, credentials, or any other source access",
+        "Do not create, update, archive, move, delete, publish, share, or change access control for any Notion content; application is always a separate external human workflow",
+        "Do not merge or resolve conflicting claims, make or approve a decision autonomously, or act on retention; preserve every exact-version side and route the question to a named owner",
+        "Do not accept an export containing secrets, copy restricted material into a weaker scope, broaden audience or access, drop inherited classification or retention, or claim source access",
+        "Do not treat plan-wide, blanket, early, stale-version, stale-digest, or agent-owned approval as authority; approved-for-human-application binds one operation and all affected exact observed versions",
+        "Keep the plan and handoff private, local, and not delivered, and make no active or passive claim that mutation, application, completion, publication, sharing, or access occurred"
       ],
       "experience": {
         "target": 3,
@@ -469,10 +475,8 @@
         "output": "outputs/knowledge-gardener-handoff.md",
         "fallback": "text"
       },
-      "capabilityClasses": [
-        "clawhub-skill"
-      ],
-      "capabilityDigest": "sha256:9e101b4f373cfdef408df80d41d30a5ef9d4779744bbc6ac1e4a96d5f9e34500"
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:6c3f1ca32c31d1e7cf5a769756c9dbc1d4a3218c969e9591d7afc610dd96053b"
     },
     {
       "id": "research-monitor",
