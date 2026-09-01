@@ -17,18 +17,19 @@ Maintainer moved from 78 to 100 with its bounded change-delivery record on
 2026-08-30, Content Operations completed its publication-readiness uplift on
 2026-08-31, Executive Assistant completed its commitment-ledger uplift on
 2026-08-31, and Executive Briefing completed its per-run snapshot uplift on
-2026-08-31. All 5
+2026-08-31, and Knowledge Curator completed its bounded durable collection-index
+uplift on 2026-08-31. All 4
 remaining entries pass the
 non-negotiable package, regression, resource, and Experience gates. Their lower scores describe
 reviewability and artifact-depth gaps, not observed live-model failures.
 
 ## Shared pattern
 
-- All 5 remaining entries are grandfathered without retrospective contribution records.
+- All 4 remaining entries are grandfathered without retrospective contribution records.
   That is a five-point documentation gap, not a failed admission.
-- All 5 remaining entries lack registered semantic validators.
-- All 5 remaining entries lack a local structured-artifact schema.
-- All 5 have complete operating contracts, screenshots, regression cases, and
+- All 4 remaining entries lack registered semantic validators.
+- All 4 remaining entries lack a local structured-artifact schema.
+- All 4 have complete operating contracts, screenshots, regression cases, and
   active maintenance.
 
 ## Current entries
@@ -37,7 +38,6 @@ reviewability and artifact-depth gaps, not observed live-model failures.
 | --- | ---: | --- | --- |
 | `workflow-operator` | 79 | No local schema or semantic validator | Lobster owns typed workflow state; avoid duplicating its contract without a concrete handoff need |
 | `video-concept-producer` | 79 | No local schema or semantic validator | A concept/shot/evidence manifest may help, but only if it governs the generated asset |
-| `knowledge-curator` | 78 | No local schema or semantic validator | Keep narrative knowledge structure unless a durable index contract emerges |
 | `knowledge-gardener` | 73 | No local schema or semantic validator | Notion owns page structure; add local state only for reviewable change plans |
 | `presentation-producer` | 73 | No local schema or semantic validator | Keep the deck as the primary artifact unless a claim/source/approval manifest is needed |
 
@@ -137,7 +137,18 @@ inheritance, and a complete private handoff whose cron delivery remains `none`.
 It deliberately omits Executive Assistant's durable horizon, delegation, and
 commitment-acknowledgement lifecycle.
 
-For `knowledge-curator`, `knowledge-gardener`, `presentation-producer`,
+`knowledge-curator` now owns one bounded durable normalized collection index
+rather than source documents, external wiki or search state, or the prose
+handoff. The index preserves immutable source bindings, explicit metadata or
+excerpt permissions, topic and navigation structure, source-linked claims,
+dated human-owned decisions, exact duplicate identities and authorized
+canonical pointers, unresolved dispute sides, gaps, freshness and retention
+findings, transitive classification/audience/retention, and complete private
+handoff coverage. Material disputes and unavailable restricted sources block
+readiness. The Claw retains no source mutation, publication, communication,
+access-control, retention/destruction, decision, or integration authority.
+
+For `knowledge-gardener`, `presentation-producer`,
 `video-concept-producer`, and `workflow-operator`,
 first identify a stable state object that the Claw itself owns. External plugin
 types, source documents, code diffs, and prose deliverables should not be

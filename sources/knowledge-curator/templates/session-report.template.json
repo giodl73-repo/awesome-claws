@@ -3,13 +3,13 @@
   "title": "Knowledge curator session report",
   "output": "outputs/knowledge-curator-handoff.md",
   "sections": [
-    "request",
-    "known_facts",
-    "assumptions",
-    "evidence",
-    "decisions_or_recommendations",
-    "blocked_actions",
-    "next_owner"
+    "collection_boundary",
+    "authorized_sources",
+    "topics_and_navigation",
+    "claims_and_human_owned_decisions",
+    "duplicates_and_disputes",
+    "gaps_freshness_retention_and_questions",
+    "complete_private_handoff"
   ],
   "itemShape": {
     "title": "string",
@@ -18,5 +18,5 @@
       "string"
     ]
   },
-  "fallback": "Render the same sections as Markdown when widgets or rich clients are unavailable."
+  "fallback": "Render outputs/knowledge-collection-index.json through templates/knowledge-collection-index.md without weakening provenance, constraints, blockers, or human authority."
 }

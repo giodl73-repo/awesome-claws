@@ -221,6 +221,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "knowledge-curator",
+    schema: "../claws/knowledge-curator/schemas/knowledge-collection-index.schema.json",
+    fixture: "../claws/knowledge-curator/fixtures/knowledge-collection-index.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "life-timeline-keeper",
     schema: "../claws/life-timeline-keeper/schemas/life-timeline.schema.json",
     fixture: "../claws/life-timeline-keeper/fixtures/life-timeline.example.json",
@@ -2600,6 +2606,897 @@ test("personal archive curator preserves privacy, retention, and owner authority
   assert.equal(isValid("personal-archive-curator", danglingCue), false);
 });
 
+test("knowledge curator emits every collection-index finding code", async () => {
+  const fixture = cases.get("knowledge-curator").fixture;
+  const expectFinding = (code, mutate) => {
+    const candidate = structuredClone(fixture);
+    mutate(candidate);
+    const findings = validateArtifactSemantics("knowledge-curator", candidate);
+    assert.ok(
+      findings.some((item) => item.code === code),
+      `${code}: ${JSON.stringify(findings)}`,
+    );
+  };
+  const mutations = new Map([
+    [
+      "duplicate_reference",
+      (value) => value.handoff.sourceRefs.push(value.handoff.sourceRefs[0]),
+    ],
+    [
+      "dangling_reference",
+      (value) => {
+        value.reviewQuestions[0].targetRefs[0] = "missing-object";
+      },
+    ],
+    [
+      "duplicate_object_id",
+      (value) => {
+        value.evidence[0].id = value.sources[0].id;
+      },
+    ],
+    [
+      "invalid_collection_chronology",
+      (value) => {
+        value.collection.reviewHorizon.endsAt =
+          value.collection.reviewHorizon.startsAt;
+      },
+    ],
+    [
+      "invalid_navigation_graph",
+      (value) => {
+        value.navigationNodes[0].childNodeRefs = [];
+      },
+    ],
+    [
+      "invalid_source_chronology",
+      (value) => {
+        value.sources[0].retrievedAt = "2026-08-31T21:00:00Z";
+      },
+    ],
+    [
+      "invalid_source_authorization",
+      (value) => {
+        value.sources[0].authorization.status = "expired";
+      },
+    ],
+    [
+      "invalid_source_binding",
+      (value) => {
+        value.sources[1].binding.value = "not-an-integrity";
+      },
+    ],
+    [
+      "overstated_source_state",
+      (value) => {
+        value.sources.find(
+          (item) => item.id === "source-validation-build-8702",
+        ).freshnessState = "current";
+      },
+    ],
+    [
+      "unsafe_source_representation",
+      (value) => {
+        value.sources[0].representationPolicy.permission.grantedAt =
+          "2026-09-01T00:00:00Z";
+      },
+    ],
+    [
+      "invalid_evidence_binding",
+      (value) => {
+        value.evidence[0].sourceBinding = "atlas-launch-brief-v3";
+      },
+    ],
+    [
+      "invalid_owner_attribution",
+      (value) => {
+        value.evidence[0].ownerAttribution.owner = {
+          id: "principal-unrelated-review-team",
+          name: "Unrelated Review Team",
+          type: "team",
+        };
+      },
+    ],
+    [
+      "irrelevant_evidence",
+      (value) => {
+        value.evidence[0].topicRefs = ["topic-operations"];
+      },
+    ],
+    [
+      "restricted_content_copy",
+      (value) => {
+        const evidence = value.evidence.find(
+          (item) => item.id === "evidence-security-appendix-metadata",
+        );
+        evidence.representedAs = "permitted-excerpt";
+        evidence.excerpt = "Restricted appendix content copied without permission.";
+      },
+    ],
+    [
+      "overstated_claim_status",
+      (value) => {
+        value.claims.find(
+          (item) => item.id === "claim-security-readiness",
+        ).status = "current";
+      },
+    ],
+    [
+      "invalid_claim_authority",
+      (value) => {
+        value.claims.find(
+          (item) => item.id === "claim-dual-write-interval",
+        ).authorityStatus = "authoritative";
+      },
+    ],
+    [
+      "invalid_claim_chronology",
+      (value) => {
+        value.claims[0].recordedAt = "2026-09-01T00:00:00Z";
+      },
+    ],
+    [
+      "invalid_decision_provenance",
+      (value) => {
+        value.decisions[0].evidenceRefs = ["evidence-dual-write-note"];
+      },
+    ],
+    [
+      "invalid_decision_chronology",
+      (value) => {
+        value.decisions[0].effectiveAt = "2026-10-01T20:30:00Z";
+      },
+    ],
+    [
+      "invalid_duplicate_group",
+      (value) => {
+        value.sources.find(
+          (item) => item.id === "source-rollback-runbook-v3-export",
+        ).binding.value = `sha256:${"0".repeat(64)}`;
+      },
+    ],
+    [
+      "broken_dispute_link",
+      (value) => {
+        value.claims.find(
+          (item) => item.id === "claim-dual-write-interval",
+        ).disputeRefs = [];
+      },
+    ],
+    [
+      "dishonest_dispute_resolution",
+      (value) => {
+        value.disputes[0].status = "human-resolved";
+        value.disputes[0].resolution = {
+          decisionRef: "decision-atlas-go-live-gate",
+          resolvedBy: {
+            id: "principal-launch-steering-group",
+            name: "Atlas Launch Steering Group",
+            type: "team",
+          },
+          resolvedAt: "2026-08-31T20:00:00Z",
+          selectedClaimRef: "claim-single-write-path",
+          rationale: "The unrelated go-live gate cannot resolve this conflict.",
+        };
+      },
+    ],
+    [
+      "invalid_gap_resolution",
+      (value) => {
+        value.gaps[0].status = "human-resolved";
+      },
+    ],
+    [
+      "incomplete_findings",
+      (value) => {
+        value.freshnessFindings = value.freshnessFindings.filter(
+          (item) => item.id !== "freshness-old-validation",
+        );
+      },
+    ],
+    [
+      "classification_audience_mismatch",
+      (value) => {
+        value.navigationNodes.find(
+          (item) => item.id === "nav-atlas-launch",
+        ).classification = "internal";
+      },
+    ],
+    [
+      "retention_inheritance_mismatch",
+      (value) => {
+        value.handoff.retention.policyRefs =
+          value.handoff.retention.policyRefs.filter(
+            (item) => item !== "policy-atlas-security-records",
+          );
+      },
+    ],
+    [
+      "incomplete_handoff",
+      (value) => {
+        value.handoff.claimRefs.pop();
+      },
+    ],
+    [
+      "incomplete_blocked_handoff",
+      (value) => {
+        value.handoff.blockerRefs =
+          value.handoff.blockerRefs.filter(
+            (item) => item !== "claim-security-readiness",
+          );
+      },
+    ],
+    [
+      "premature_review_state",
+      (value) => {
+        value.collection.status = "ready-for-review";
+        value.handoff.state = "ready-for-review";
+      },
+    ],
+    [
+      "inconsistent_handoff",
+      (value) => {
+        value.handoff.owner.name = "Different maintenance team";
+      },
+    ],
+    [
+      "unsafe_output_state",
+      (value) => {
+        value.handoff.output.path = "../published-index.json";
+      },
+    ],
+    [
+      "unsupported_external_integration",
+      (value) => {
+        value.handoff.output.externalIntegrationConsent = "operator-granted";
+      },
+    ],
+    [
+      "agent_owned_authority",
+      (value) => {
+        value.decisions[0].decisionOwner = {
+          id: "principal-knowledge-curator",
+          name: "Knowledge Curator",
+          type: "team",
+        };
+      },
+    ],
+    [
+      "missing_authority_gate",
+      (value) => {
+        value.prohibitedActions = value.prohibitedActions.filter(
+          (item) => item !== "publish",
+        );
+      },
+    ],
+    [
+      "unauthorized_narrative_action",
+      (value) => {
+        value.handoff.summary =
+          "The Knowledge Curator published the collection and updated the source wiki.";
+      },
+    ],
+  ]);
+  for (const [code, mutate] of mutations) expectFinding(code, mutate);
+
+  const semanticsSource = await readFile(
+    new URL("./artifact-semantics.mjs", import.meta.url),
+    "utf8",
+  );
+  const validatorSource = semanticsSource.slice(
+    semanticsSource.indexOf("function knowledgeCollectionIndexFindings"),
+    semanticsSource.indexOf("function fundraisingCampaignFindings"),
+  );
+  const directFindingCodes = [
+    ...validatorSource.matchAll(/finding\(\s*"([^"]+)"/gu),
+  ].map((match) => match[1]);
+  for (const code of new Set(directFindingCodes)) {
+    assert.ok(mutations.has(code), `missing direct finding-code regression: ${code}`);
+  }
+});
+
+test("knowledge curator blocks provenance, conflict, and confidentiality bypasses", () => {
+  const fixture = cases.get("knowledge-curator").fixture;
+  const findingCodes = (candidate) =>
+    new Set(
+      validateArtifactSemantics("knowledge-curator", candidate).map(
+        (item) => item.code,
+      ),
+    );
+
+  const laundered = structuredClone(fixture);
+  laundered.navigationNodes.find(
+    (item) => item.id === "nav-atlas-launch",
+  ).classification = "internal";
+  assert.ok(
+    findingCodes(laundered).has("classification_audience_mismatch"),
+  );
+
+  const silentlyResolved = structuredClone(fixture);
+  silentlyResolved.disputes[0].status = "human-resolved";
+  silentlyResolved.disputes[0].resolution = {
+    decisionRef: "decision-atlas-go-live-gate",
+    resolvedBy: {
+      id: "principal-launch-steering-group",
+      name: "Atlas Launch Steering Group",
+      type: "team",
+    },
+    resolvedAt: "2026-08-31T20:00:00Z",
+    selectedClaimRef: "claim-single-write-path",
+    rationale: "An unrelated decision cannot erase the conflicting source.",
+  };
+  assert.ok(
+    findingCodes(silentlyResolved).has("dishonest_dispute_resolution"),
+  );
+
+  const falseCanonical = structuredClone(fixture);
+  falseCanonical.sources.find(
+    (item) => item.id === "source-rollback-runbook-v3-export",
+  ).binding.value = `sha256:${"f".repeat(64)}`;
+  assert.ok(findingCodes(falseCanonical).has("invalid_duplicate_group"));
+
+  const staleAsCurrent = structuredClone(fixture);
+  staleAsCurrent.sources.find(
+    (item) => item.id === "source-validation-build-8702",
+  ).freshnessState = "current";
+  staleAsCurrent.claims.find(
+    (item) => item.id === "claim-old-validation-build",
+  ).status = "current";
+  assert.ok(findingCodes(staleAsCurrent).has("overstated_source_state"));
+  assert.ok(findingCodes(staleAsCurrent).has("overstated_claim_status"));
+
+  const restrictedCopy = structuredClone(fixture);
+  const restrictedEvidence = restrictedCopy.evidence.find(
+    (item) => item.id === "evidence-security-appendix-metadata",
+  );
+  restrictedEvidence.representedAs = "permitted-excerpt";
+  restrictedEvidence.excerpt = "Unapproved restricted content.";
+  assert.ok(findingCodes(restrictedCopy).has("restricted_content_copy"));
+});
+
+test("knowledge curator keeps decisions, handoff, and narrative action human-owned", () => {
+  const fixture = cases.get("knowledge-curator").fixture;
+  const findingCodes = (candidate) =>
+    new Set(
+      validateArtifactSemantics("knowledge-curator", candidate).map(
+        (item) => item.code,
+      ),
+    );
+
+  const agentDecision = structuredClone(fixture);
+  agentDecision.decisions[0].decisionOwner = {
+    id: "principal-knowledge-curator",
+    name: "Knowledge Curator",
+    type: "team",
+  };
+  assert.ok(findingCodes(agentDecision).has("agent_owned_authority"));
+
+  const incomplete = structuredClone(fixture);
+  incomplete.handoff.disputeRefs = [];
+  assert.ok(findingCodes(incomplete).has("incomplete_handoff"));
+
+  const autonomousNarrative = structuredClone(fixture);
+  autonomousNarrative.handoff.summary =
+    "I published the handoff, approved the decision, and updated the source.";
+  assert.ok(
+    findingCodes(autonomousNarrative).has("unauthorized_narrative_action"),
+  );
+});
+
+function knowledgeFindingCodes(candidate) {
+  return new Set(
+   validateArtifactSemantics("knowledge-curator", candidate).map(
+     (item) => item.code,
+   ),
+  );
+}
+
+function resolvedKnowledgeDispute(fixture) {
+  const value = structuredClone(fixture);
+  const dispute = value.disputes[0];
+  const decision = value.decisions.find(
+   (item) => item.id === "decision-single-write-path",
+  );
+  decision.status = "current";
+  decision.claimRefs = [...dispute.claimRefs];
+  dispute.status = "human-resolved";
+  dispute.resolution = {
+   decisionRef: decision.id,
+   resolvedBy: structuredClone(decision.decisionOwner),
+   resolvedAt: "2026-08-31T20:00:00Z",
+   selectedClaimRef: "claim-single-write-path",
+   rationale: "The linked decision selects the authoritative ADR claim after reviewing both recorded sides.",
+  };
+  value.handoff.blockerRefs = value.handoff.blockerRefs.filter(
+   (ref) => ref !== dispute.id,
+  );
+  return value;
+}
+
+function resolvedKnowledgeGap(fixture) {
+  const value = structuredClone(fixture);
+  const source = value.sources.find(
+   (item) => item.id === "source-security-readiness-appendix",
+  );
+  source.retrievedAt = source.retrievalAttemptedAt;
+  source.freshnessState = "current";
+  source.representationPolicy = {
+   mode: "permitted-excerpt",
+   maxExcerptCharacters: 220,
+   permission: {
+     status: "current",
+     grantedBy: structuredClone(source.authorization.authorizedBy),
+     grantedAt: "2026-08-31T19:20:00Z",
+     expiresAt: null,
+     audienceScope: ["product-launch-core"],
+     purpose: "Private security gap-resolution evidence.",
+   },
+  };
+  const evidenceTemplate = value.evidence.find(
+   (item) => item.id === "evidence-security-appendix-metadata",
+  );
+  const decisionEvidence = {
+   ...structuredClone(evidenceTemplate),
+   id: "evidence-security-resolution-decision",
+   representedAs: "permitted-excerpt",
+   excerpt: "Product Security recorded that the authorized readiness evidence closes the indexed access gap.",
+   ownerAttribution: {
+     role: "decision-owner",
+     owner: structuredClone(source.authorization.authorizedBy),
+     effectiveAt: "2026-08-31T19:30:00Z",
+   },
+  };
+  const resolutionEvidence = {
+   ...structuredClone(decisionEvidence),
+   id: "evidence-security-gap-resolution",
+   ownerAttribution: {
+     role: "gap-resolution-owner",
+     owner: structuredClone(source.authorization.authorizedBy),
+     effectiveAt: "2026-08-31T19:30:00Z",
+   },
+  };
+  value.evidence.push(decisionEvidence, resolutionEvidence);
+  value.handoff.evidenceRefs.push(decisionEvidence.id, resolutionEvidence.id);
+  const decision = {
+   id: "decision-security-gap-resolution",
+   statement: "Product Security recorded that the authorized readiness evidence resolves the collection gap.",
+   decidedAt: "2026-08-31T19:30:00Z",
+   effectiveAt: "2026-08-31T19:30:00Z",
+   expiresAt: null,
+   decisionOwner: structuredClone(source.authorization.authorizedBy),
+   authorityStatus: "authoritative",
+   status: "current",
+   topicRefs: ["topic-security-readiness"],
+   claimRefs: ["claim-security-readiness"],
+   evidenceRefs: [decisionEvidence.id, resolutionEvidence.id],
+   contextEvidenceRefs: [],
+   disputeRefs: [],
+   classification: "restricted",
+   audienceScope: ["product-launch-core"],
+   retention: structuredClone(evidenceTemplate.retention),
+  };
+  value.decisions.push(decision);
+  value.handoff.decisionRefs.push(decision.id);
+  const gap = value.gaps[0];
+  gap.status = "human-resolved";
+  gap.resolution = {
+   decisionRef: decision.id,
+   evidenceRefs: [resolutionEvidence.id],
+   resolvedBy: structuredClone(decision.decisionOwner),
+   resolvedAt: "2026-08-31T19:32:00Z",
+   rationale: "Product Security supplied current authorized evidence and recorded the resolution.",
+  };
+  value.handoff.blockerRefs = value.handoff.blockerRefs.filter(
+   (ref) => ref !== gap.id,
+  );
+  return value;
+}
+
+test("knowledge curator enforces source and excerpt authorization chronology", () => {
+  const fixture = cases.get("knowledge-curator").fixture;
+
+  const lateAuthorization = structuredClone(fixture);
+  lateAuthorization.sources[0].authorization.authorizedAt =
+   "2026-08-31T19:01:00Z";
+  assert.ok(
+   knowledgeFindingCodes(lateAuthorization).has("invalid_source_chronology"),
+  );
+
+  const expiredAtObservation = structuredClone(fixture);
+  expiredAtObservation.sources[0].authorization.expiresAt =
+   "2026-08-31T18:59:00Z";
+  assert.ok(
+   knowledgeFindingCodes(expiredAtObservation).has(
+     "invalid_source_authorization",
+   ),
+  );
+
+  const permissionAfterCapture = structuredClone(fixture);
+  permissionAfterCapture.sources[0].representationPolicy.permission.grantedAt =
+   "2026-08-31T19:26:00Z";
+  assert.ok(
+   knowledgeFindingCodes(permissionAfterCapture).has(
+     "restricted_content_copy",
+   ),
+  );
+
+  const permissionExpiredAtCapture = structuredClone(fixture);
+  permissionExpiredAtCapture.sources[0].representationPolicy.permission.expiresAt =
+   "2026-08-31T19:24:00Z";
+  const expiredCodes = knowledgeFindingCodes(permissionExpiredAtCapture);
+  assert.ok(expiredCodes.has("unsafe_source_representation"));
+  assert.ok(expiredCodes.has("restricted_content_copy"));
+});
+
+test("knowledge curator enforces immutable identity and complete exact-duplicate groups", () => {
+  const fixture = cases.get("knowledge-curator").fixture;
+  const canonicalId = "source-rollback-runbook-v3";
+  const exportId = "source-rollback-runbook-v3-export";
+
+  const validReuse = structuredClone(fixture);
+  validReuse.sources.find((item) => item.id === exportId).immutableRef =
+   validReuse.sources.find((item) => item.id === canonicalId).immutableRef;
+  assert.deepEqual(
+   validateArtifactSemantics("knowledge-curator", validReuse),
+   [],
+  );
+
+  const collision = structuredClone(validReuse);
+  collision.sources.find((item) => item.id === exportId).binding.value =
+   `sha256:${"a".repeat(64)}`;
+  assert.ok(knowledgeFindingCodes(collision).has("invalid_source_binding"));
+
+  const omittedExactGroup = structuredClone(fixture);
+  omittedExactGroup.duplicateGroups = [];
+  omittedExactGroup.handoff.duplicateGroupRefs = [];
+  assert.ok(
+   knowledgeFindingCodes(omittedExactGroup).has("invalid_duplicate_group"),
+  );
+
+  const versionOnly = structuredClone(fixture);
+  for (const id of [canonicalId, exportId]) {
+   const source = versionOnly.sources.find((item) => item.id === id);
+   source.binding = { kind: "version", value: "atlas-runbook-v3" };
+  }
+  versionOnly.evidence.find(
+   (item) => item.id === "evidence-rollback-sequence",
+  ).sourceBinding = "atlas-runbook-v3";
+  assert.ok(knowledgeFindingCodes(versionOnly).has("invalid_duplicate_group"));
+});
+
+test("knowledge curator binds canonical confirmation to authorized review evidence", () => {
+  const fixture = cases.get("knowledge-curator").fixture;
+
+  const unrelatedOwner = structuredClone(fixture);
+  unrelatedOwner.duplicateGroups[0].confirmation.owner = {
+   id: "principal-unrelated-review-team",
+   name: "Unrelated Review Team",
+   type: "team",
+  };
+  assert.ok(
+   knowledgeFindingCodes(unrelatedOwner).has("invalid_duplicate_group"),
+  );
+
+  const confirmationBeforeEvidence = structuredClone(fixture);
+  confirmationBeforeEvidence.duplicateGroups[0].confirmation.confirmedAt =
+   "2026-08-31T19:28:59Z";
+  assert.ok(
+   knowledgeFindingCodes(confirmationBeforeEvidence).has(
+     "invalid_duplicate_group",
+   ),
+  );
+
+  const unauthorizedReviewRecord = structuredClone(fixture);
+  unauthorizedReviewRecord.sources.find(
+   (item) => item.id === "source-duplicate-review-record",
+  ).authorization.authorizedBy = {
+   id: "principal-unrelated-review-team",
+   name: "Unrelated Review Team",
+   type: "team",
+  };
+  const reviewCodes = knowledgeFindingCodes(unauthorizedReviewRecord);
+  assert.ok(reviewCodes.has("invalid_owner_attribution"));
+  assert.ok(reviewCodes.has("invalid_duplicate_group"));
+});
+
+test("knowledge curator requires every current support ref and coherent effective periods", () => {
+  const fixture = cases.get("knowledge-curator").fixture;
+
+  const staleBesideCurrentClaim = structuredClone(fixture);
+  staleBesideCurrentClaim.claims.find(
+   (item) => item.id === "claim-validation-build-8841",
+  ).evidenceRefs.push("evidence-old-validation-metadata");
+  assert.ok(
+   knowledgeFindingCodes(staleBesideCurrentClaim).has(
+     "overstated_claim_status",
+   ),
+  );
+
+  const supersededCurrentClaim = structuredClone(fixture);
+  const currentClaim = supersededCurrentClaim.claims.find(
+   (item) => item.id === "claim-validation-build-8841",
+  );
+  const currentEvidence = supersededCurrentClaim.evidence.find(
+   (item) => item.id === currentClaim.evidenceRefs[0],
+  );
+  supersededCurrentClaim.sources.find(
+   (item) => item.id === currentEvidence.sourceRef,
+  ).authorityStatus = "superseded";
+  assert.ok(
+   knowledgeFindingCodes(supersededCurrentClaim).has(
+     "overstated_claim_status",
+   ),
+  );
+
+  const metadataBesideDecision = structuredClone(fixture);
+  metadataBesideDecision.decisions[0].evidenceRefs.push(
+   "evidence-security-appendix-metadata",
+  );
+  assert.ok(
+   knowledgeFindingCodes(metadataBesideDecision).has(
+     "invalid_decision_provenance",
+   ),
+  );
+
+  const contextualHistory = structuredClone(fixture);
+  contextualHistory.claims.find(
+   (item) => item.id === "claim-validation-build-8841",
+  ).contextEvidenceRefs.push("evidence-old-validation-metadata");
+  assert.deepEqual(
+   validateArtifactSemantics("knowledge-curator", contextualHistory),
+   [],
+  );
+
+  const futureCurrentClaim = structuredClone(fixture);
+  futureCurrentClaim.claims[0].effectiveAt = "2026-09-01T00:00:00Z";
+  assert.ok(
+   knowledgeFindingCodes(futureCurrentClaim).has("overstated_claim_status"),
+  );
+
+  const expiredCurrentClaim = structuredClone(fixture);
+  expiredCurrentClaim.claims[0].expiresAt = "2026-08-31T20:00:00Z";
+  assert.ok(
+   knowledgeFindingCodes(expiredCurrentClaim).has("overstated_claim_status"),
+  );
+
+  const reversedClaimRange = structuredClone(fixture);
+  reversedClaimRange.claims[0].expiresAt = "2026-08-29T00:00:00Z";
+  assert.ok(
+   knowledgeFindingCodes(reversedClaimRange).has("invalid_claim_chronology"),
+  );
+
+  const futureCurrentDecision = structuredClone(fixture);
+  futureCurrentDecision.decisions[0].status = "current";
+  futureCurrentDecision.decisions[0].effectiveAt = "2026-09-01T00:00:00Z";
+  assert.ok(
+   knowledgeFindingCodes(futureCurrentDecision).has(
+     "invalid_decision_chronology",
+   ),
+  );
+
+  const expiredCurrentDecision = structuredClone(fixture);
+  expiredCurrentDecision.decisions[0].status = "current";
+  expiredCurrentDecision.decisions[0].expiresAt = "2026-08-30T00:00:00Z";
+  assert.ok(
+   knowledgeFindingCodes(expiredCurrentDecision).has(
+     "invalid_decision_chronology",
+   ),
+  );
+});
+
+test("knowledge curator uses structured decision-owner provenance, not prose inference", () => {
+  const fixture = cases.get("knowledge-curator").fixture;
+
+  const unrelatedOwner = structuredClone(fixture);
+  unrelatedOwner.decisions[0].decisionOwner = {
+   id: "principal-unrelated-review-team",
+   name: "Unrelated Review Team",
+   type: "team",
+  };
+  assert.ok(
+   knowledgeFindingCodes(unrelatedOwner).has("invalid_decision_provenance"),
+  );
+
+  const proseOnly = structuredClone(fixture);
+  proseOnly.decisions[0].statement =
+   "An unrelated team is named in this prose, while the structured authoritative owner remains unchanged.";
+  assert.deepEqual(
+   validateArtifactSemantics("knowledge-curator", proseOnly),
+   [],
+  );
+});
+
+test("knowledge curator requires complete dated dispute and gap resolution provenance", () => {
+  const fixture = cases.get("knowledge-curator").fixture;
+  const resolvedDispute = resolvedKnowledgeDispute(fixture);
+  assert.equal(
+   knowledgeFindingCodes(resolvedDispute).has(
+     "dishonest_dispute_resolution",
+   ),
+   false,
+  );
+
+  const unselectedSide = structuredClone(resolvedDispute);
+  unselectedSide.disputes[0].resolution.selectedClaimRef =
+   "claim-launch-scope";
+  assert.ok(
+   knowledgeFindingCodes(unselectedSide).has(
+     "dishonest_dispute_resolution",
+   ),
+  );
+
+  const missingDisputeClaim = structuredClone(resolvedDispute);
+  missingDisputeClaim.decisions[0].claimRefs = ["claim-single-write-path"];
+  assert.ok(
+   knowledgeFindingCodes(missingDisputeClaim).has(
+     "dishonest_dispute_resolution",
+   ),
+  );
+
+  const prematureResolution = structuredClone(resolvedDispute);
+  prematureResolution.disputes[0].resolution.resolvedAt =
+   "2026-08-31T19:00:00Z";
+  assert.ok(
+   knowledgeFindingCodes(prematureResolution).has(
+     "dishonest_dispute_resolution",
+   ),
+  );
+
+  const resolvedGap = resolvedKnowledgeGap(fixture);
+  assert.equal(
+   knowledgeFindingCodes(resolvedGap).has("invalid_gap_resolution"),
+   false,
+  );
+
+  const unresolvedWithoutProof = structuredClone(fixture);
+  unresolvedWithoutProof.gaps[0].status = "human-resolved";
+  assert.ok(
+   knowledgeFindingCodes(unresolvedWithoutProof).has(
+     "invalid_gap_resolution",
+   ),
+  );
+
+  const unrelatedResolver = structuredClone(resolvedGap);
+  unrelatedResolver.gaps[0].resolution.resolvedBy = {
+   id: "principal-unrelated-review-team",
+   name: "Unrelated Review Team",
+   type: "team",
+  };
+  assert.ok(
+   knowledgeFindingCodes(unrelatedResolver).has("invalid_gap_resolution"),
+  );
+
+  const earlyGapResolution = structuredClone(resolvedGap);
+  earlyGapResolution.gaps[0].resolution.resolvedAt =
+   "2026-08-31T19:29:00Z";
+  assert.ok(
+   knowledgeFindingCodes(earlyGapResolution).has("invalid_gap_resolution"),
+  );
+});
+
+test("knowledge curator enforces navigation reciprocity and blocker equality in every state", () => {
+  const fixture = cases.get("knowledge-curator").fixture;
+
+  const oneWayParent = structuredClone(fixture);
+  oneWayParent.navigationNodes[0].childNodeRefs = [];
+  assert.ok(
+   knowledgeFindingCodes(oneWayParent).has("invalid_navigation_graph"),
+  );
+
+  const secondRoot = structuredClone(fixture);
+  secondRoot.navigationNodes[1].kind = "root";
+  secondRoot.navigationNodes[1].parentNodeRef = null;
+  secondRoot.navigationNodes[0].childNodeRefs =
+   secondRoot.navigationNodes[0].childNodeRefs.filter(
+     (ref) => ref !== secondRoot.navigationNodes[1].id,
+   );
+  assert.ok(knowledgeFindingCodes(secondRoot).has("invalid_navigation_graph"));
+
+  const readyMissingBlockers = structuredClone(fixture);
+  readyMissingBlockers.collection.status = "ready-for-review";
+  readyMissingBlockers.handoff.state = "ready-for-review";
+  readyMissingBlockers.handoff.blockerRefs = [];
+  const missingCodes = knowledgeFindingCodes(readyMissingBlockers);
+  assert.ok(missingCodes.has("incomplete_blocked_handoff"));
+  assert.ok(missingCodes.has("premature_review_state"));
+
+  const readyExtraBlocker = structuredClone(fixture);
+  readyExtraBlocker.collection.status = "ready-for-review";
+  readyExtraBlocker.handoff.state = "ready-for-review";
+  readyExtraBlocker.handoff.blockerRefs.push("claim-launch-scope");
+  assert.ok(
+   knowledgeFindingCodes(readyExtraBlocker).has(
+     "incomplete_blocked_handoff",
+   ),
+  );
+});
+
+test("knowledge curator requires globally unique retrieval job ids", () => {
+  const fixture = cases.get("knowledge-curator").fixture;
+  const duplicateJob = structuredClone(fixture);
+  duplicateJob.collection.retrievalJobs.push({
+    ...structuredClone(duplicateJob.collection.retrievalJobs[1]),
+    id: duplicateJob.collection.retrievalJobs[0].id,
+  });
+  assert.equal(isValid("knowledge-curator", duplicateJob), false);
+
+  const collidingJob = structuredClone(fixture);
+  collidingJob.collection.retrievalJobs[0].id = collidingJob.sources[0].id;
+  assert.equal(isValid("knowledge-curator", collidingJob), false);
+});
+
+test("knowledge curator represents unknown retention without fabricated dates", () => {
+  const item = cases.get("knowledge-curator");
+  const fixture = item.fixture;
+  const unknownSource = fixture.sources.find(
+   (source) => source.id === "source-security-readiness-appendix",
+  );
+  assert.equal(item.validate(fixture), true, JSON.stringify(item.validate.errors));
+  assert.equal(unknownSource.retention.state, "unknown");
+  assert.equal(unknownSource.retention.retainUntil, null);
+  assert.ok(
+   fixture.retentionFindings.some(
+     (finding) =>
+       finding.state === "unknown" &&
+       finding.targetRefs.includes(unknownSource.id),
+   ),
+  );
+  assert.ok(fixture.handoff.blockerRefs.includes("retention-security-unknown"));
+
+  const fabricatedDate = structuredClone(fixture);
+  fabricatedDate.sources.find(
+   (source) => source.id === unknownSource.id,
+  ).retention.retainUntil = "2032-12-31T23:59:59Z";
+  assert.equal(item.validate(fabricatedDate), false);
+
+  const omittedFinding = structuredClone(fixture);
+  omittedFinding.retentionFindings = omittedFinding.retentionFindings.filter(
+   (finding) => finding.id !== "retention-security-unknown",
+  );
+  omittedFinding.handoff.retentionFindingRefs =
+   omittedFinding.handoff.retentionFindingRefs.filter(
+     (ref) => ref !== "retention-security-unknown",
+   );
+  assert.ok(knowledgeFindingCodes(omittedFinding).has("incomplete_findings"));
+});
+
+test("knowledge curator rejects passive source mutations but permits owner proposals", () => {
+  const fixture = cases.get("knowledge-curator").fixture;
+  const prohibited = [
+   "The collection was published and the source system was updated.",
+   "The wiki was deleted and the repository was mutated.",
+   "Access was changed and the retention policy was removed.",
+  ];
+  for (const summary of prohibited) {
+   const candidate = structuredClone(fixture);
+   candidate.handoff.summary = summary;
+   assert.ok(
+     knowledgeFindingCodes(candidate).has("unauthorized_narrative_action"),
+     summary,
+   );
+  }
+
+  const proposed = structuredClone(fixture);
+  proposed.handoff.summary =
+   "Product Security proposes a future source update after explicit owner approval.";
+  assert.equal(
+   knowledgeFindingCodes(proposed).has("unauthorized_narrative_action"),
+   false,
+  );
+
+  const verbatimRequest = structuredClone(fixture);
+  verbatimRequest.collection.request =
+   "Our wiki was updated last week; curate the supplied export into the handoff index.";
+  assert.equal(
+   knowledgeFindingCodes(verbatimRequest).has("unauthorized_narrative_action"),
+   false,
+  );
+
+  assert.equal(
+   knowledgeFindingCodes(fixture).has("unauthorized_narrative_action"),
+   false,
+  );
+});
+
 test("health records binder preserves source freshness, privacy, and owner authority", () => {
   const readyWithStaleSource = structuredClone(cases.get("health-records-binder").fixture);
   readyWithStaleSource.handoff.state = "ready-for-owner-review";
@@ -3092,6 +3989,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["insurance-policy-organizer", (value) => value.coverageItems[0].sourceRefs.push(value.coverageItems[0].sourceRefs[0])],
     ["invoice-payment-followup", (value) => value.invoices[0].sourceRefs.push(value.invoices[0].sourceRefs[0])],
     ["job-application-tracker", (value) => value.applications[0].sourceRefs.push(value.applications[0].sourceRefs[0])],
+    ["knowledge-curator", (value) => value.handoff.sourceRefs.push(value.handoff.sourceRefs[0])],
     ["life-timeline-keeper", (value) => value.events[0].sourceRefs.push(value.events[0].sourceRefs[0])],
     ["medical-appointment-prep", (value) => value.appointments[0].sourceRefs.push(value.appointments[0].sourceRefs[0])],
     ["local-events-watcher", (value) => value.watchlist[0].constraintRefs.push(value.watchlist[0].constraintRefs[0])],

@@ -1,0 +1,1630 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/knowledge-collection-index.schema.json",
+  "title": "Knowledge collection index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "collection",
+    "sources",
+    "evidence",
+    "topics",
+    "navigationNodes",
+    "claims",
+    "decisions",
+    "duplicateGroups",
+    "disputes",
+    "gaps",
+    "freshnessFindings",
+    "retentionFindings",
+    "reviewQuestions",
+    "prohibitedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.knowledgeCollectionIndex.v1"
+    },
+    "collection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "request",
+        "audience",
+        "audienceScope",
+        "scope",
+        "retrievalJobs",
+        "navigationModel",
+        "asOf",
+        "reviewHorizon",
+        "maintenanceOwner",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^collection-[a-z0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/text"
+        },
+        "audience": {
+          "$ref": "#/$defs/shortText"
+        },
+        "audienceScope": {
+          "$ref": "#/$defs/audienceScope"
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "included",
+            "excluded"
+          ],
+          "properties": {
+            "included": {
+              "$ref": "#/$defs/textList"
+            },
+            "excluded": {
+              "$ref": "#/$defs/textList"
+            }
+          }
+        },
+        "retrievalJobs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "question",
+              "expectedObjectKinds"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^job-[a-z0-9-]+$"
+              },
+              "question": {
+                "$ref": "#/$defs/shortText"
+              },
+              "expectedObjectKinds": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "topic",
+                    "claim",
+                    "decision",
+                    "source",
+                    "gap",
+                    "review-question"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "navigationModel": {
+          "enum": [
+            "topic-map",
+            "hierarchy",
+            "hybrid"
+          ]
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reviewHorizon": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "startsAt",
+            "endsAt"
+          ],
+          "properties": {
+            "startsAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "endsAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "maintenanceOwner": {
+          "$ref": "#/$defs/principal"
+        },
+        "status": {
+          "$ref": "#/$defs/handoffState"
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "immutableRef",
+          "binding",
+          "sourceOwner",
+          "authorization",
+          "observedAt",
+          "retrievalAttemptedAt",
+          "retrievedAt",
+          "freshnessCutoff",
+          "freshnessState",
+          "accessState",
+          "authorityStatus",
+          "authorityTopicRefs",
+          "classification",
+          "audienceScope",
+          "retention",
+          "representationPolicy"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^source-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": [
+              "brief",
+              "architecture-decision",
+              "runbook",
+              "validation-report",
+              "meeting-notes",
+              "review-record",
+              "restricted-appendix",
+              "other"
+            ]
+          },
+          "title": {
+            "$ref": "#/$defs/shortText"
+          },
+          "immutableRef": {
+            "$ref": "#/$defs/shortText"
+          },
+          "binding": {
+            "$ref": "#/$defs/sourceBinding"
+          },
+          "sourceOwner": {
+            "$ref": "#/$defs/principal"
+          },
+          "authorization": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "status",
+              "authorizedBy",
+              "authorizedAt",
+              "expiresAt",
+              "scope"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "current",
+                  "expired",
+                  "missing"
+                ]
+              },
+              "authorizedBy": {
+                "$ref": "#/$defs/principal"
+              },
+              "authorizedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "expiresAt": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "scope": {
+                "$ref": "#/$defs/textList"
+              }
+            }
+          },
+          "observedAt": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "retrievalAttemptedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "retrievedAt": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "freshnessCutoff": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "freshnessState": {
+            "enum": [
+              "current",
+              "stale",
+              "unknown",
+              "unavailable"
+            ]
+          },
+          "accessState": {
+            "enum": [
+              "available",
+              "restricted",
+              "unavailable"
+            ]
+          },
+          "authorityStatus": {
+            "$ref": "#/$defs/authorityStatus"
+          },
+          "authorityTopicRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          },
+          "retention": {
+            "$ref": "#/$defs/sourceRetention"
+          },
+          "representationPolicy": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode",
+              "maxExcerptCharacters",
+              "permission"
+            ],
+            "properties": {
+              "mode": {
+                "enum": [
+                  "metadata-only",
+                  "permitted-excerpt"
+                ]
+              },
+              "maxExcerptCharacters": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "permission": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status",
+                      "grantedBy",
+                      "grantedAt",
+                      "expiresAt",
+                      "audienceScope",
+                      "purpose"
+                    ],
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "current",
+                          "expired",
+                          "revoked"
+                        ]
+                      },
+                      "grantedBy": {
+                        "$ref": "#/$defs/principal"
+                      },
+                      "grantedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "expiresAt": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "audienceScope": {
+                        "$ref": "#/$defs/audienceScope"
+                      },
+                      "purpose": {
+                        "$ref": "#/$defs/shortText"
+                      }
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRef",
+          "sourceBinding",
+          "topicRefs",
+          "relevance",
+          "representedAs",
+          "excerpt",
+          "capturedAt",
+          "ownerAttribution",
+          "classification",
+          "audienceScope",
+          "retention"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^evidence-[a-z0-9-]+$"
+          },
+          "sourceRef": {
+            "$ref": "#/$defs/id"
+          },
+          "sourceBinding": {
+            "$ref": "#/$defs/shortText"
+          },
+          "topicRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "relevance": {
+            "$ref": "#/$defs/shortText"
+          },
+          "representedAs": {
+            "enum": [
+              "metadata-only",
+              "permitted-excerpt"
+            ]
+          },
+          "excerpt": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/text"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "capturedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ownerAttribution": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/ownerAttribution"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          },
+          "retention": {
+            "$ref": "#/$defs/derivedRetention"
+          }
+        }
+      }
+    },
+    "topics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "summary",
+          "parentTopicRefs",
+          "sourceRefs",
+          "classification",
+          "audienceScope",
+          "retention"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^topic-[a-z0-9-]+$"
+          },
+          "label": {
+            "$ref": "#/$defs/shortText"
+          },
+          "summary": {
+            "$ref": "#/$defs/text"
+          },
+          "parentTopicRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          },
+          "retention": {
+            "$ref": "#/$defs/derivedRetention"
+          }
+        }
+      }
+    },
+    "navigationNodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "label",
+          "parentNodeRef",
+          "childNodeRefs",
+          "topicRefs",
+          "objectRefs",
+          "classification",
+          "audienceScope",
+          "retention"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^nav-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": [
+              "root",
+              "section",
+              "topic"
+            ]
+          },
+          "label": {
+            "$ref": "#/$defs/shortText"
+          },
+          "parentNodeRef": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "childNodeRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "topicRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "objectRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          },
+          "retention": {
+            "$ref": "#/$defs/derivedRetention"
+          }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "statement",
+          "epistemicType",
+          "recordedAt",
+          "effectiveAt",
+          "expiresAt",
+          "owner",
+          "authorityStatus",
+          "status",
+          "topicRefs",
+          "evidenceRefs",
+          "contextEvidenceRefs",
+          "disputeRefs",
+          "classification",
+          "audienceScope",
+          "retention"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^claim-[a-z0-9-]+$"
+          },
+          "statement": {
+            "$ref": "#/$defs/text"
+          },
+          "epistemicType": {
+            "enum": [
+              "observed-fact",
+              "source-assertion",
+              "inference",
+              "recommendation"
+            ]
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "effectiveAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "owner": {
+            "$ref": "#/$defs/principal"
+          },
+          "authorityStatus": {
+            "$ref": "#/$defs/authorityStatus"
+          },
+          "status": {
+            "enum": [
+              "current",
+              "stale",
+              "disputed",
+              "blocked",
+              "superseded"
+            ]
+          },
+          "topicRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "evidenceRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "contextEvidenceRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "disputeRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          },
+          "retention": {
+            "$ref": "#/$defs/derivedRetention"
+          }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "statement",
+          "decidedAt",
+          "effectiveAt",
+          "expiresAt",
+          "decisionOwner",
+          "authorityStatus",
+          "status",
+          "topicRefs",
+          "claimRefs",
+          "evidenceRefs",
+          "contextEvidenceRefs",
+          "disputeRefs",
+          "classification",
+          "audienceScope",
+          "retention"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^decision-[a-z0-9-]+$"
+          },
+          "statement": {
+            "$ref": "#/$defs/text"
+          },
+          "decidedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "effectiveAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "decisionOwner": {
+            "$ref": "#/$defs/principal"
+          },
+          "authorityStatus": {
+            "$ref": "#/$defs/authorityStatus"
+          },
+          "status": {
+            "enum": [
+              "current",
+              "disputed",
+              "superseded",
+              "blocked"
+            ]
+          },
+          "topicRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "claimRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "evidenceRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "contextEvidenceRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "disputeRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          },
+          "retention": {
+            "$ref": "#/$defs/derivedRetention"
+          }
+        }
+      }
+    },
+    "duplicateGroups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRefs",
+          "relationship",
+          "canonicalSourceRef",
+          "confirmation",
+          "reason",
+          "classification",
+          "audienceScope",
+          "retention"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^duplicate-[a-z0-9-]+$"
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/twoOrMoreRefs"
+          },
+          "relationship": {
+            "enum": [
+              "exact",
+              "possible",
+              "version-family",
+              "related"
+            ]
+          },
+          "canonicalSourceRef": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confirmation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "status",
+              "owner",
+              "confirmedAt",
+              "evidenceRefs"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "unconfirmed",
+                  "human-authorized"
+                ]
+              },
+              "owner": {
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/principal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "confirmedAt": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "evidenceRefs": {
+                "$ref": "#/$defs/optionalRefs"
+              }
+            }
+          },
+          "reason": {
+            "$ref": "#/$defs/text"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          },
+          "retention": {
+            "$ref": "#/$defs/derivedRetention"
+          }
+        }
+      }
+    },
+    "disputes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "topicRefs",
+          "claimRefs",
+          "materiality",
+          "status",
+          "resolution",
+          "classification",
+          "audienceScope",
+          "retention"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^dispute-[a-z0-9-]+$"
+          },
+          "topicRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "claimRefs": {
+            "$ref": "#/$defs/twoOrMoreRefs"
+          },
+          "materiality": {
+            "enum": [
+              "material",
+              "non-material"
+            ]
+          },
+          "status": {
+            "enum": [
+              "unresolved",
+              "human-resolved"
+            ]
+          },
+          "resolution": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "decisionRef",
+                  "resolvedBy",
+                  "resolvedAt",
+                  "selectedClaimRef",
+                  "rationale"
+                ],
+                "properties": {
+                  "decisionRef": {
+                    "$ref": "#/$defs/id"
+                  },
+                  "resolvedBy": {
+                    "$ref": "#/$defs/principal"
+                  },
+                  "resolvedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "selectedClaimRef": {
+                    "$ref": "#/$defs/id"
+                  },
+                  "rationale": {
+                    "$ref": "#/$defs/text"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          },
+          "retention": {
+            "$ref": "#/$defs/derivedRetention"
+          }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "description",
+          "sourceRefs",
+          "objectRefs",
+          "materiality",
+          "status",
+          "owner",
+          "resolution",
+          "classification",
+          "audienceScope",
+          "retention"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^gap-[a-z0-9-]+$"
+          },
+          "kind": {
+            "enum": [
+              "missing-source",
+              "restricted-source",
+              "coverage",
+              "unknown-authority"
+            ]
+          },
+          "description": {
+            "$ref": "#/$defs/text"
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "objectRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "materiality": {
+            "enum": [
+              "material",
+              "non-material"
+            ]
+          },
+          "status": {
+            "enum": [
+              "open",
+              "human-resolved"
+            ]
+          },
+          "owner": {
+            "$ref": "#/$defs/principal"
+          },
+          "resolution": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "decisionRef",
+                  "evidenceRefs",
+                  "resolvedBy",
+                  "resolvedAt",
+                  "rationale"
+                ],
+                "properties": {
+                  "decisionRef": {
+                    "$ref": "#/$defs/id"
+                  },
+                  "evidenceRefs": {
+                    "$ref": "#/$defs/refs"
+                  },
+                  "resolvedBy": {
+                    "$ref": "#/$defs/principal"
+                  },
+                  "resolvedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "rationale": {
+                    "$ref": "#/$defs/text"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          },
+          "retention": {
+            "$ref": "#/$defs/derivedRetention"
+          }
+        }
+      }
+    },
+    "freshnessFindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRef",
+          "state",
+          "asOf",
+          "affectedObjectRefs",
+          "materiality",
+          "reviewRequired",
+          "classification",
+          "audienceScope",
+          "retention"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^freshness-[a-z0-9-]+$"
+          },
+          "sourceRef": {
+            "$ref": "#/$defs/id"
+          },
+          "state": {
+            "enum": [
+              "stale",
+              "unknown",
+              "unavailable"
+            ]
+          },
+          "asOf": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "affectedObjectRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "materiality": {
+            "enum": [
+              "material",
+              "non-material"
+            ]
+          },
+          "reviewRequired": {
+            "const": true
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          },
+          "retention": {
+            "$ref": "#/$defs/derivedRetention"
+          }
+        }
+      }
+    },
+    "retentionFindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "targetRefs",
+          "state",
+          "retainUntil",
+          "action",
+          "materiality",
+          "classification",
+          "audienceScope",
+          "retention"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^retention-[a-z0-9-]+$"
+          },
+          "targetRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "state": {
+            "enum": [
+              "expiring",
+              "expired",
+              "unknown"
+            ]
+          },
+          "retainUntil": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "action": {
+            "const": "human-review"
+          },
+          "materiality": {
+            "enum": [
+              "material",
+              "non-material"
+            ]
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          },
+          "retention": {
+            "$ref": "#/$defs/derivedRetention"
+          }
+        }
+      }
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "question",
+          "owner",
+          "targetRefs",
+          "sourceRefs",
+          "status",
+          "blocksReadiness",
+          "classification",
+          "audienceScope",
+          "retention"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^question-[a-z0-9-]+$"
+          },
+          "question": {
+            "$ref": "#/$defs/text"
+          },
+          "owner": {
+            "$ref": "#/$defs/principal"
+          },
+          "targetRefs": {
+            "$ref": "#/$defs/refs"
+          },
+          "sourceRefs": {
+            "$ref": "#/$defs/optionalRefs"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "answered"
+            ]
+          },
+          "blocksReadiness": {
+            "type": "boolean"
+          },
+          "classification": {
+            "$ref": "#/$defs/classification"
+          },
+          "audienceScope": {
+            "$ref": "#/$defs/audienceScope"
+          },
+          "retention": {
+            "$ref": "#/$defs/derivedRetention"
+          }
+        }
+      }
+    },
+    "prohibitedActions": {
+      "$ref": "#/$defs/prohibitedActions"
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "sourceRefs",
+        "evidenceRefs",
+        "topicRefs",
+        "navigationNodeRefs",
+        "claimRefs",
+        "decisionRefs",
+        "duplicateGroupRefs",
+        "disputeRefs",
+        "gapRefs",
+        "freshnessFindingRefs",
+        "retentionFindingRefs",
+        "reviewQuestionRefs",
+        "blockerRefs",
+        "summary",
+        "classification",
+        "audienceScope",
+        "retention",
+        "output",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": {
+          "$ref": "#/$defs/handoffState"
+        },
+        "owner": {
+          "$ref": "#/$defs/principal"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "topicRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "navigationNodeRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "claimRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "decisionRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "duplicateGroupRefs": {
+          "$ref": "#/$defs/optionalRefs"
+        },
+        "disputeRefs": {
+          "$ref": "#/$defs/optionalRefs"
+        },
+        "gapRefs": {
+          "$ref": "#/$defs/optionalRefs"
+        },
+        "freshnessFindingRefs": {
+          "$ref": "#/$defs/optionalRefs"
+        },
+        "retentionFindingRefs": {
+          "$ref": "#/$defs/optionalRefs"
+        },
+        "reviewQuestionRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/optionalRefs"
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "classification": {
+          "$ref": "#/$defs/classification"
+        },
+        "audienceScope": {
+          "$ref": "#/$defs/audienceScope"
+        },
+        "retention": {
+          "$ref": "#/$defs/derivedRetention"
+        },
+        "output": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "visibility",
+            "storage",
+            "externalIntegrationConsent"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/shortText"
+            },
+            "visibility": {
+              "const": "private"
+            },
+            "storage": {
+              "const": "local-artifact"
+            },
+            "externalIntegrationConsent": {
+              "enum": [
+                "not-granted",
+                "operator-granted"
+              ]
+            }
+          }
+        },
+        "prohibitedActions": {
+          "$ref": "#/$defs/prohibitedActions"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]+$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "shortText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "twoOrMoreRefs": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "optionalRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "textList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/shortText"
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^principal-[a-z0-9-]+$"
+        },
+        "name": {
+          "$ref": "#/$defs/shortText"
+        },
+        "type": {
+          "enum": [
+            "human",
+            "team"
+          ]
+        }
+      }
+    },
+    "ownerAttribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "owner",
+        "effectiveAt"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "decision-owner",
+            "duplicate-confirmation-owner",
+            "gap-resolution-owner"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/principal"
+        },
+        "effectiveAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "sourceBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "value"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "version",
+            "integrity"
+          ]
+        },
+        "value": {
+          "$ref": "#/$defs/shortText"
+        }
+      }
+    },
+    "classification": {
+      "enum": [
+        "public",
+        "internal",
+        "confidential",
+        "restricted"
+      ]
+    },
+    "audienceScope": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]+$"
+      }
+    },
+    "authorityStatus": {
+      "enum": [
+        "authoritative",
+        "delegated",
+        "supporting",
+        "non-authoritative",
+        "superseded"
+      ]
+    },
+    "sourceRetention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policyId",
+        "state",
+        "retainUntil",
+        "dispositionAuthority"
+      ],
+      "properties": {
+        "policyId": {
+          "type": "string",
+          "pattern": "^policy-[a-z0-9-]+$"
+        },
+        "state": {
+          "enum": [
+            "known",
+            "unknown"
+          ]
+        },
+        "retainUntil": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dispositionAuthority": {
+          "const": "human-only"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "known"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retainUntil": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "retainUntil": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "derivedRetention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policyRefs",
+        "retainUntil",
+        "dispositionAuthority"
+      ],
+      "properties": {
+        "policyRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^policy-[a-z0-9-]+$"
+          }
+        },
+        "unknownPolicyRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^policy-[a-z0-9-]+$"
+          }
+        },
+        "retainUntil": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dispositionAuthority": {
+          "const": "human-only"
+        }
+      }
+    },
+    "handoffState": {
+      "enum": [
+        "blocked",
+        "ready-for-review"
+      ]
+    },
+    "prohibitedActions": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "broaden-access",
+          "copy-unpermitted-content",
+          "delete-source",
+          "publish",
+          "external-communication",
+          "mutate-source",
+          "change-access-control",
+          "retain-or-destroy-autonomously",
+          "claim-completion",
+          "claim-access",
+          "approve-decisions",
+          "integrate-external-system"
+        ]
+      }
+    }
+  }
+}

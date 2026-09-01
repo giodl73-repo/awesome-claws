@@ -1,29 +1,43 @@
 # Knowledge curator handoff
 
-## Request
+## Collection boundary
 
-Summarize the user request and the decision this claw is supporting.
+Record the collection id, request, audience, included and excluded scope,
+retrieval jobs, navigation model, as-of time, positive review horizon, status,
+and named human or team maintenance owner.
 
-## Known facts
+## Authorized sources
 
-- Record only facts grounded in the supplied context or approved tools.
+Render every immutable source identity, exact version or integrity binding,
+owner, authorization, chronology, freshness and access state, authority,
+classification, audience, retention, and metadata or excerpt permission.
 
-## Assumptions and gaps
+## Topics, claims, and decisions
 
-- Separate assumptions from missing evidence.
+Render normalized topics and navigation. Keep every durable claim source-linked
+with epistemic type and honest status. Record only dated human-owned decisions
+with current authoritative provenance.
 
-## Evidence ledger
+## Duplicates and disputes
 
-- Link or name the source for every material claim.
+Preserve every duplicate identity and version. Show a canonical pointer only
+when exact and human-authorized. Preserve every conflict side, source, authority,
+date, and version; material unresolved disputes block readiness.
 
-## Recommendation or decision state
+## Gaps, freshness, retention, and questions
 
-- State the best supported next step and why.
+List every missing, unavailable, restricted, stale, expiring, expired, or
+unknown condition, its affected objects, materiality, blocker state, and exact
+question for a named human or team.
 
-## Blocked actions
+## Complete private handoff
 
-- Keep external communication, irreversible changes, purchases, publication, and authority-sensitive actions blocked until explicitly approved.
+Render every index object exactly once and preserve transitive classification,
+audience, and retention. Keep access broadening, unpermitted content copies,
+deletion, publication, communication, source mutation, access-control changes,
+autonomous retention or destruction, decision approval, claims of access or
+completion, and external integration prohibited.
 
-## Next owner
-
-Name the accountable human owner and where outputs/knowledge-curator-handoff.md should be reviewed.
+Name the maintenance owner and review location for
+`outputs/knowledge-curator-handoff.md`. The structured state remains
+`outputs/knowledge-collection-index.json`, private and local.
