@@ -33588,10 +33588,15 @@ function videoConceptGenerationManifestFindings(value, options = {}) {
         output.delivery === "materialized-private-file" &&
         materializationById.has(output.materializationReceiptRef),
     );
+  const allVariantInputsInspected =
+    variants.length === 2 &&
+    variants.every((variant) => {
+      const asset = assetById.get(variant.sourceAssetRef);
+      return asset && inspectionById.has(asset.inspectionReceiptRef);
+    });
   const readyEvidence =
     isProduction &&
-    assets.length === 2 &&
-    inspections.length === 2 &&
+    allVariantInputsInspected &&
     allInitialApprovals &&
     allVariantsSucceeded &&
     outputs.length === 2 &&

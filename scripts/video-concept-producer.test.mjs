@@ -698,6 +698,44 @@ test("accepts a complete production-shaped test vector from exposed evidence", (
   );
 });
 
+test("allows both variants to reuse one inspected rights-cleared input", () => {
+  const shared = clone(production);
+  const asset = shared.inputAssets[0];
+  asset.approvedSubjectTerms = ["circle", "line", "arc", "triangle"];
+  asset.permittedBrandVocabulary = ["teal", "gold", "blue", "green"];
+  shared.inputAssets = [asset];
+  shared.assetInspectionReceipts = [
+    shared.assetInspectionReceipts.find(
+      (receipt) => receipt.id === asset.inspectionReceiptRef,
+    ),
+  ];
+  for (const [index, variant] of shared.variants.entries()) {
+    variant.sourceAssetRef = asset.id;
+    variant.prompt =
+      "Abstract circle line arc triangle teal gold blue green motion.";
+    variant.subjectDeclaration.elements = [...asset.approvedSubjectTerms];
+    variant.subjectDeclaration.brandVocabulary = [
+      ...asset.permittedBrandVocabulary,
+    ];
+    const attempt = shared.generationAttempts[index];
+    attempt.request.prompt = variant.prompt;
+    attempt.request.image = asset.path;
+    attempt.requestDigest = computeVideoGenerationRequestDigest(attempt.request);
+    const approval = shared.preGenerationApprovals[index];
+    refreshApproval(shared, approval);
+    shared.approvalReceipts[index].approvalContentDigest =
+      approval.approvalContentDigest;
+    const output = shared.outputs[index];
+    output.sourceAssetRef = asset.id;
+    output.identityDigest = computeVideoOutputIdentityDigest(output);
+    shared.reviewBoards[index].outputIdentityDigest = output.identityDigest;
+  }
+  refreshCoverage(shared);
+  refreshManifest(shared);
+  assertSchemaValid(shared);
+  assert.deepEqual(semanticFindings(shared), []);
+});
+
 test("documents the pinned provider and separate receipt boundaries", () => {
   const contractText = `${template}\n${reference}`.replace(/\s+/gu, " ");
   for (const phrase of [
