@@ -745,14 +745,17 @@
       "id": "video-concept-producer",
       "acceptedRequest": "Create two six-second abstract motion concepts for an internal renewable-energy presentation using only our approved geometric brand assets.",
       "requiredEvidence": [
-        "Creative objective, audience, format, duration, aspect ratio, visual treatment, and required variants",
-        "Rights-cleared prompt and workspace assets, prohibited subjects, factual constraints, and disclosure requirements",
-        "Approved PixVerse credential, endpoint region, generation budget, reviewer, and publication boundary"
+        "Bounded objective, private audience and use, exactly two desired six-second MP4 variants, synthetic disclosure, prohibited subjects, named authority roles, as-of time, deadline, and nonpublication boundary",
+        "Pinned @openclaw/pixverse-provider@2026.7.1 and OpenClaw v2026.7.1 configuration, observed video_generate availability for production, region, endpoint, pixverse/v6, terms and retention versions, nonsecret credential reference, currency, cap, and expected maximum per attempt",
+        "For production, rights-cleared local raster assets plus inspection receipts proving existence, bytes, digest, MIME, dimensions, 16:9 geometry, owner, rights provenance, use, audience, territory, expiry, classification, and conservative safety flags",
+        "Exact positive and negative prompts, allowlisted abstract and brand vocabulary, image-to-video aspect-ratio handling, seeds and settings, immutable approvals and reservations, retry rules, output review disciplines, controls, owners, questions, blockers, and handoff"
       ],
       "authorityBoundaries": [
-        "Do not depict a real person, private individual, trademarked character, or sensitive event deceptively or without documented authority and rights",
-        "Do not upload confidential, biometric, personal, customer, or unlicensed source media to PixVerse",
-        "Do not publish, advertise, distribute, purchase additional credits, or claim final legal, brand, accessibility, or factual approval"
+        "Do not upload any source until an inspection receipt proves existence, bytes, digest, MIME, dimensions, geometry, rights, classification, and conservative safety flags",
+        "Do not invoke or retry unless exact prompt, asset, settings, expected maximum, reservation, provider region/model, terms, retention, credential reference, actors, and failed-parent lineage are bound by an immutable approval receipt",
+        "Do not invent provider account, request, output, billing, usage, response-digest, start-time, or local-file evidence that @openclaw/pixverse-provider@2026.7.1 and OpenClaw v2026.7.1 do not expose",
+        "Do not allow undeclared proper names, entities, brands, people, or sensitive events in positive prompts; negative prompts may name exclusions, and exact prompt rights and safety review remains mandatory",
+        "Do not publish, distribute, advertise, send, post, upload outside the approved provider input, purchase credits, claim final approval, or mark incomplete generation or review ready"
       ],
       "experience": {
         "target": 3,

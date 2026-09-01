@@ -1,0 +1,2648 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/video-concept-generation-manifest.schema.json",
+  "title": "Video concept generation manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "manifest",
+    "authorityRegistry",
+    "providerConfiguration",
+    "plannedInputAssets",
+    "assetInspectionReceipts",
+    "inputAssets",
+    "variants",
+    "approvalReceipts",
+    "preGenerationApprovals",
+    "generationAttempts",
+    "providerReceipts",
+    "billingReceipts",
+    "materializationReceipts",
+    "outputs",
+    "conceptPlans",
+    "concepts",
+    "shots",
+    "reviewBoards",
+    "proposedOwnerActions",
+    "questions",
+    "blockers",
+    "controlPolicies",
+    "controlBindings",
+    "externalActions",
+    "publication",
+    "prohibitedActions",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.videoConceptGenerationManifest.v1"
+    },
+    "manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "artifactMode",
+        "verbatimRequest",
+        "objective",
+        "internalAudience",
+        "presentationUse",
+        "expectedVariantCount",
+        "desiredFormat",
+        "prohibitedSubjects",
+        "syntheticDisclosure",
+        "publicationBoundary",
+        "creativeOwnerRef",
+        "costOwnerRef",
+        "rightsSafetyOwnerRef",
+        "reviewOwnerRef",
+        "providerConfigurationRef",
+        "controlPolicyRef",
+        "asOf",
+        "deadline",
+        "contentDigest",
+        "readiness"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^manifest-[a-z0-9-]+$"
+        },
+        "artifactMode": {
+          "enum": ["production", "illustrative-fixture"]
+        },
+        "verbatimRequest": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "objective": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "internalAudience": {
+          "$ref": "#/$defs/audienceList"
+        },
+        "presentationUse": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "expectedVariantCount": {
+          "const": 2
+        },
+        "desiredFormat": {
+          "$ref": "#/$defs/desiredFormat"
+        },
+        "prohibitedSubjects": {
+          "type": "array",
+          "minItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "real-person",
+              "private-person",
+              "trademarked-character",
+              "sensitive-event",
+              "deceptive-impersonation",
+              "customer-content",
+              "biometric-content"
+            ]
+          }
+        },
+        "syntheticDisclosure": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "publicationBoundary": {
+          "const": "private-concept-review-only"
+        },
+        "creativeOwnerRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "costOwnerRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "rightsSafetyOwnerRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "reviewOwnerRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "providerConfigurationRef": {
+          "type": "string",
+          "pattern": "^provider-config-[a-z0-9-]+$"
+        },
+        "controlPolicyRef": {
+          "$ref": "#/$defs/policyId"
+        },
+        "asOf": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "deadline": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "readiness": {
+          "enum": ["blocked", "ready-for-human-review"]
+        }
+      }
+    },
+    "authorityRegistry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["principals", "attestations"],
+      "properties": {
+        "principals": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/principal"
+          }
+        },
+        "attestations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/authorityAttestation"
+          }
+        }
+      }
+    },
+    "providerConfiguration": {
+      "$ref": "#/$defs/providerConfiguration"
+    },
+    "plannedInputAssets": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/$defs/plannedInputAsset"
+      }
+    },
+    "assetInspectionReceipts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assetInspectionReceipt"
+      }
+    },
+    "inputAssets": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/$defs/inputAsset"
+      }
+    },
+    "variants": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/$defs/variant"
+      }
+    },
+    "approvalReceipts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/approvalReceipt"
+      }
+    },
+    "preGenerationApprovals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/preGenerationApproval"
+      }
+    },
+    "generationAttempts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/generationAttempt"
+      }
+    },
+    "providerReceipts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/providerReceipt"
+      }
+    },
+    "billingReceipts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/billingReceipt"
+      }
+    },
+    "materializationReceipts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/materializationReceipt"
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/$defs/output"
+      }
+    },
+    "conceptPlans": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/$defs/conceptPlan"
+      }
+    },
+    "concepts": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/$defs/concept"
+      }
+    },
+    "shots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/shot"
+      }
+    },
+    "reviewBoards": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/$defs/reviewBoard"
+      }
+    },
+    "proposedOwnerActions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/proposedOwnerAction"
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/question"
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blocker"
+      }
+    },
+    "controlPolicies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/controlPolicy"
+      }
+    },
+    "controlBindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/controlBinding"
+      }
+    },
+    "externalActions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/externalAction"
+      }
+    },
+    "publication": {
+      "$ref": "#/$defs/publication"
+    },
+    "prohibitedActions": {
+      "type": "array",
+      "minItems": 10,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "publish-media",
+          "distribute-media",
+          "advertise-media",
+          "upload-media-outside-approved-generation",
+          "purchase-provider-credits",
+          "claim-final-approval",
+          "depict-prohibited-subject",
+          "invoke-unapproved-generation",
+          "retry-without-new-approval",
+          "exceed-budget-cap"
+        ]
+      }
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "boundedText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1200
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,127}$"
+    },
+    "principalId": {
+      "type": "string",
+      "pattern": "^(?:person|planned-role)-[a-z0-9-]+$"
+    },
+    "policyId": {
+      "type": "string",
+      "pattern": "^control-[a-z0-9-]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "workspacePath": {
+      "type": "string",
+      "pattern": "^(?:inputs|outputs)/[A-Za-z0-9._/-]+$"
+    },
+    "audienceList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": ["internal-creative-team", "internal-leadership"]
+      }
+    },
+    "money": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        }
+      }
+    },
+    "provenanceReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issuer",
+        "system",
+        "recordId",
+        "recordDigest",
+        "issuedAt",
+        "signature",
+        "externalRecordRef"
+      ],
+      "properties": {
+        "issuer": {
+          "$ref": "#/$defs/text"
+        },
+        "system": {
+          "$ref": "#/$defs/id"
+        },
+        "recordId": {
+          "$ref": "#/$defs/id"
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "signature": {
+          "type": ["string", "null"],
+          "pattern": "^sig:[A-Za-z0-9._-]{24,512}$"
+        },
+        "externalRecordRef": {
+          "type": ["string", "null"],
+          "pattern": "^https://[A-Za-z0-9.-]+/[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+$"
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "signature": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "properties": {
+            "externalRecordRef": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "desiredFormat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceStatus",
+        "mime",
+        "durationSeconds",
+        "aspectRatio",
+        "resolution",
+        "width",
+        "height",
+        "frameRate",
+        "frameCount",
+        "audio"
+      ],
+      "properties": {
+        "evidenceStatus": {
+          "const": "desired-not-observed"
+        },
+        "mime": {
+          "const": "video/mp4"
+        },
+        "durationSeconds": {
+          "const": 6
+        },
+        "aspectRatio": {
+          "const": "16:9"
+        },
+        "resolution": {
+          "const": "1920x1080"
+        },
+        "width": {
+          "const": 1920
+        },
+        "height": {
+          "const": 1080
+        },
+        "frameRate": {
+          "const": 24
+        },
+        "frameCount": {
+          "const": 144
+        },
+        "audio": {
+          "const": false
+        }
+      }
+    },
+    "authorityScope": {
+      "enum": [
+        "approve-generation",
+        "approve-generation-cost",
+        "approve-asset-rights",
+        "approve-prompt-rights",
+        "approve-prompt-safety",
+        "review-editorial",
+        "review-rights",
+        "review-factual",
+        "review-brand",
+        "review-accessibility",
+        "review-safety",
+        "own-private-handoff"
+      ]
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "recordKind",
+        "name",
+        "type",
+        "role",
+        "authorityScopes",
+        "attestationRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/principalId"
+        },
+        "recordKind": {
+          "enum": ["planned-role", "attested-human"]
+        },
+        "name": {
+          "$ref": "#/$defs/text"
+        },
+        "type": {
+          "enum": ["planned-human-role", "human"]
+        },
+        "role": {
+          "enum": [
+            "creative-owner",
+            "cost-owner",
+            "rights-safety-owner",
+            "review-owner",
+            "discipline-reviewer"
+          ]
+        },
+        "authorityScopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/authorityScope"
+          }
+        },
+        "attestationRef": {
+          "type": ["string", "null"],
+          "pattern": "^authority-attestation-[a-z0-9-]+$"
+        }
+      }
+    },
+    "authorityAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "principalRef", "principalType", "role", "scopes", "receipt"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^authority-attestation-[a-z0-9-]+$"
+        },
+        "principalRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "principalType": {
+          "const": "human"
+        },
+        "role": {
+          "enum": [
+            "creative-owner",
+            "cost-owner",
+            "rights-safety-owner",
+            "review-owner",
+            "discipline-reviewer"
+          ]
+        },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/authorityScope"
+          }
+        },
+        "receipt": {
+          "$ref": "#/$defs/provenanceReceipt"
+        }
+      }
+    },
+    "toolAvailabilityEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceSystem",
+        "sourceRecordRef",
+        "evidenceDigest",
+        "observedAt",
+        "toolName",
+        "provider",
+        "model"
+      ],
+      "properties": {
+        "sourceSystem": {
+          "const": "openclaw"
+        },
+        "sourceRecordRef": {
+          "$ref": "#/$defs/text"
+        },
+        "evidenceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "toolName": {
+          "const": "video_generate"
+        },
+        "provider": {
+          "const": "pixverse"
+        },
+        "model": {
+          "const": "v6"
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "currency",
+        "cap",
+        "reservedTotal",
+        "actualBilledTotal",
+        "committedTotal",
+        "remainingCapacity",
+        "reconciliationState",
+        "additionalCreditPurchaseAllowed"
+      ],
+      "properties": {
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "cap": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "reservedTotal": {
+          "type": "number",
+          "minimum": 0
+        },
+        "actualBilledTotal": {
+          "type": ["number", "null"],
+          "minimum": 0
+        },
+        "committedTotal": {
+          "type": "number",
+          "minimum": 0
+        },
+        "remainingCapacity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "reconciliationState": {
+          "enum": ["unobserved", "partial", "reconciled"]
+        },
+        "additionalCreditPurchaseAllowed": {
+          "const": false
+        }
+      }
+    },
+    "providerConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "evidenceStatus",
+        "provider",
+        "credentialRef",
+        "secretLocation",
+        "secretIncluded",
+        "region",
+        "baseUrl",
+        "model",
+        "plugin",
+        "openclawTag",
+        "termsVersion",
+        "retentionVersion",
+        "toolAvailability",
+        "budget"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^provider-config-[a-z0-9-]+$"
+        },
+        "evidenceStatus": {
+          "enum": ["illustrative-plan", "observed"]
+        },
+        "provider": {
+          "const": "pixverse"
+        },
+        "credentialRef": {
+          "type": "string",
+          "pattern": "^credential-[a-z0-9-]{3,64}$"
+        },
+        "secretLocation": {
+          "const": "approved-host-secret-store"
+        },
+        "secretIncluded": {
+          "const": false
+        },
+        "region": {
+          "enum": ["international", "cn"]
+        },
+        "baseUrl": {
+          "enum": [
+            "https://app-api.pixverse.ai/openapi/v2",
+            "https://app-api.pixverseai.cn/openapi/v2"
+          ]
+        },
+        "model": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["requestRef", "providerModel"],
+          "properties": {
+            "requestRef": {
+              "const": "pixverse/v6"
+            },
+            "providerModel": {
+              "const": "v6"
+            }
+          }
+        },
+        "plugin": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["package", "version"],
+          "properties": {
+            "package": {
+              "const": "@openclaw/pixverse-provider"
+            },
+            "version": {
+              "const": "2026.7.1"
+            }
+          }
+        },
+        "openclawTag": {
+          "const": "v2026.7.1"
+        },
+        "termsVersion": {
+          "$ref": "#/$defs/text"
+        },
+        "retentionVersion": {
+          "$ref": "#/$defs/text"
+        },
+        "toolAvailability": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/toolAvailabilityEvidence"
+            }
+          ]
+        },
+        "budget": {
+          "$ref": "#/$defs/budget"
+        }
+      }
+    },
+    "subjectTerm": {
+      "enum": ["circle", "line", "arc", "triangle"]
+    },
+    "brandTerm": {
+      "enum": ["teal", "gold", "blue", "green"]
+    },
+    "plannedInputAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "evidenceStatus",
+        "intendedPath",
+        "expectedMime",
+        "expectedWidth",
+        "expectedHeight",
+        "expectedAspectRatio",
+        "approvedSubjectTerms",
+        "permittedBrandVocabulary",
+        "controlPolicyRef"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^planned-asset-[a-z0-9-]+$"
+        },
+        "evidenceStatus": {
+          "const": "illustrative-plan"
+        },
+        "intendedPath": {
+          "$ref": "#/$defs/workspacePath"
+        },
+        "expectedMime": {
+          "enum": ["image/png", "image/jpeg", "image/webp"]
+        },
+        "expectedWidth": {
+          "const": 1920
+        },
+        "expectedHeight": {
+          "const": 1080
+        },
+        "expectedAspectRatio": {
+          "const": "16:9"
+        },
+        "approvedSubjectTerms": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/subjectTerm"
+          }
+        },
+        "permittedBrandVocabulary": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/brandTerm"
+          }
+        },
+        "controlPolicyRef": {
+          "$ref": "#/$defs/policyId"
+        }
+      }
+    },
+    "assetInspectionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "assetRef",
+        "evidenceStatus",
+        "sourceSystem",
+        "sourceRecordRef",
+        "evidenceDigest",
+        "observedAt",
+        "exists",
+        "byteDigest",
+        "byteLength",
+        "mime",
+        "width",
+        "height",
+        "aspectRatio",
+        "geometryKind"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^asset-inspection-[a-z0-9-]+$"
+        },
+        "assetRef": {
+          "type": "string",
+          "pattern": "^asset-[a-z0-9-]+$"
+        },
+        "evidenceStatus": {
+          "const": "observed"
+        },
+        "sourceSystem": {
+          "const": "workspace-asset-inspector"
+        },
+        "sourceRecordRef": {
+          "$ref": "#/$defs/text"
+        },
+        "evidenceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "exists": {
+          "const": true
+        },
+        "byteDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "byteLength": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "mime": {
+          "enum": ["image/png", "image/jpeg", "image/webp"]
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "aspectRatio": {
+          "const": "16:9"
+        },
+        "geometryKind": {
+          "const": "raster-image"
+        }
+      }
+    },
+    "assetRights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "licenseId",
+        "licenseVersion",
+        "rightsScope",
+        "permittedTransformations",
+        "permittedUses",
+        "permittedAudience",
+        "territory",
+        "expiresAt",
+        "reviewerRef",
+        "reviewedAt",
+        "receipt"
+      ],
+      "properties": {
+        "status": {
+          "const": "rights-cleared"
+        },
+        "licenseId": {
+          "$ref": "#/$defs/id"
+        },
+        "licenseVersion": {
+          "$ref": "#/$defs/text"
+        },
+        "rightsScope": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["derivative-generation", "internal-presentation-review"]
+          }
+        },
+        "permittedTransformations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["animation", "color-preserving-motion", "scale", "crop"]
+          }
+        },
+        "permittedUses": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["private-concept-generation", "internal-presentation-review"]
+          }
+        },
+        "permittedAudience": {
+          "$ref": "#/$defs/audienceList"
+        },
+        "territory": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "const": "worldwide"
+          }
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "reviewerRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "reviewedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "receipt": {
+          "$ref": "#/$defs/provenanceReceipt"
+        }
+      }
+    },
+    "safetyFlags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "containsIdentity",
+        "containsRealPerson",
+        "containsPrivatePerson",
+        "containsBiometricData",
+        "containsCustomerData",
+        "containsSensitiveEvent",
+        "containsTrademarkedCharacter",
+        "containsConfidentialContent"
+      ],
+      "properties": {
+        "containsIdentity": {
+          "const": false
+        },
+        "containsRealPerson": {
+          "const": false
+        },
+        "containsPrivatePerson": {
+          "const": false
+        },
+        "containsBiometricData": {
+          "const": false
+        },
+        "containsCustomerData": {
+          "const": false
+        },
+        "containsSensitiveEvent": {
+          "const": false
+        },
+        "containsTrademarkedCharacter": {
+          "const": false
+        },
+        "containsConfidentialContent": {
+          "const": false
+        }
+      }
+    },
+    "inputAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path",
+        "version",
+        "ownerRef",
+        "classification",
+        "inspectionReceiptRef",
+        "approvedSubjectTerms",
+        "permittedBrandVocabulary",
+        "rights",
+        "safetyFlags",
+        "controlPolicyRef"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^asset-[a-z0-9-]+$"
+        },
+        "path": {
+          "$ref": "#/$defs/workspacePath"
+        },
+        "version": {
+          "$ref": "#/$defs/text"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "classification": {
+          "const": "internal"
+        },
+        "inspectionReceiptRef": {
+          "type": "string",
+          "pattern": "^asset-inspection-[a-z0-9-]+$"
+        },
+        "approvedSubjectTerms": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/subjectTerm"
+          }
+        },
+        "permittedBrandVocabulary": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/brandTerm"
+          }
+        },
+        "rights": {
+          "$ref": "#/$defs/assetRights"
+        },
+        "safetyFlags": {
+          "$ref": "#/$defs/safetyFlags"
+        },
+        "controlPolicyRef": {
+          "$ref": "#/$defs/policyId"
+        }
+      }
+    },
+    "subjectDeclaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "elements",
+        "brandVocabulary",
+        "abstractOnly",
+        "containsNamedEntity",
+        "containsRealPerson",
+        "containsPrivatePerson",
+        "containsTrademarkedCharacter",
+        "containsSensitiveEvent",
+        "deceptiveImpersonation",
+        "unapprovedSourceContentEmbedded"
+      ],
+      "properties": {
+        "kind": {
+          "const": "approved-abstract-brand-elements"
+        },
+        "elements": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/subjectTerm"
+          }
+        },
+        "brandVocabulary": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/brandTerm"
+          }
+        },
+        "abstractOnly": {
+          "const": true
+        },
+        "containsNamedEntity": {
+          "const": false
+        },
+        "containsRealPerson": {
+          "const": false
+        },
+        "containsPrivatePerson": {
+          "const": false
+        },
+        "containsTrademarkedCharacter": {
+          "const": false
+        },
+        "containsSensitiveEvent": {
+          "const": false
+        },
+        "deceptiveImpersonation": {
+          "const": false
+        },
+        "unapprovedSourceContentEmbedded": {
+          "const": false
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "modelVersion",
+        "mode",
+        "durationSeconds",
+        "resolution",
+        "requestedAspectRatio",
+        "aspectRatioHandling",
+        "sourceAspectRatio",
+        "outputAspectRatioBasis",
+        "audio",
+        "seed",
+        "quality",
+        "motionMode",
+        "cameraMovement",
+        "timeoutMs"
+      ],
+      "properties": {
+        "model": {
+          "const": "pixverse/v6"
+        },
+        "modelVersion": {
+          "const": "v6"
+        },
+        "mode": {
+          "const": "image-to-video"
+        },
+        "durationSeconds": {
+          "const": 6
+        },
+        "resolution": {
+          "const": "1080P"
+        },
+        "requestedAspectRatio": {
+          "const": "16:9"
+        },
+        "aspectRatioHandling": {
+          "const": "ignored-for-pixverse-image-to-video"
+        },
+        "sourceAspectRatio": {
+          "const": "16:9"
+        },
+        "outputAspectRatioBasis": {
+          "const": "verify-from-output-dimensions-or-materialization"
+        },
+        "audio": {
+          "const": false
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "quality": {
+          "const": "1080p"
+        },
+        "motionMode": {
+          "const": "normal"
+        },
+        "cameraMovement": {
+          "const": "none"
+        },
+        "timeoutMs": {
+          "const": 300000
+        }
+      }
+    },
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ordinal",
+        "title",
+        "sourceAssetRef",
+        "sourceEvidenceKind",
+        "prompt",
+        "negativePrompt",
+        "subjectDeclaration",
+        "settings",
+        "plannedMaxCharge",
+        "controlPolicyRef"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^variant-[a-z0-9-]+$"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "sourceAssetRef": {
+          "type": "string",
+          "pattern": "^(?:asset|planned-asset)-[a-z0-9-]+$"
+        },
+        "sourceEvidenceKind": {
+          "enum": ["planned-input", "inspected-input"]
+        },
+        "prompt": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "negativePrompt": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "subjectDeclaration": {
+          "$ref": "#/$defs/subjectDeclaration"
+        },
+        "settings": {
+          "$ref": "#/$defs/settings"
+        },
+        "plannedMaxCharge": {
+          "$ref": "#/$defs/money"
+        },
+        "controlPolicyRef": {
+          "$ref": "#/$defs/policyId"
+        }
+      }
+    },
+    "approvalReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "approvalRef", "approvalContentDigest", "receipt"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^approval-receipt-[a-z0-9-]+$"
+        },
+        "approvalRef": {
+          "type": "string",
+          "pattern": "^approval-[a-z0-9-]+$"
+        },
+        "approvalContentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "receipt": {
+          "$ref": "#/$defs/provenanceReceipt"
+        }
+      }
+    },
+    "budgetReservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "amount", "currency", "reservedAt"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^reservation-[a-z0-9-]+$"
+        },
+        "amount": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "reservedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "preGenerationApproval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "variantRef",
+        "attemptRef",
+        "retryOfAttemptRef",
+        "generationApproverRef",
+        "costApproverRef",
+        "safetyRightsReviewerRef",
+        "providerConfigurationRef",
+        "provider",
+        "region",
+        "model",
+        "modelVersion",
+        "termsVersion",
+        "retentionVersion",
+        "credentialRef",
+        "evidenceReviewedAt",
+        "approvedAt",
+        "promptDigest",
+        "assetDigest",
+        "settingsDigest",
+        "expectedMaxCharge",
+        "budgetReservation",
+        "approvalContentDigest",
+        "receiptRef",
+        "decision"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^approval-[a-z0-9-]+$"
+        },
+        "kind": {
+          "enum": ["initial", "retry"]
+        },
+        "variantRef": {
+          "type": "string",
+          "pattern": "^variant-[a-z0-9-]+$"
+        },
+        "attemptRef": {
+          "type": "string",
+          "pattern": "^attempt-[a-z0-9-]+$"
+        },
+        "retryOfAttemptRef": {
+          "type": ["string", "null"],
+          "pattern": "^attempt-[a-z0-9-]+$"
+        },
+        "generationApproverRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "costApproverRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "safetyRightsReviewerRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "providerConfigurationRef": {
+          "type": "string",
+          "pattern": "^provider-config-[a-z0-9-]+$"
+        },
+        "provider": {
+          "const": "pixverse"
+        },
+        "region": {
+          "enum": ["international", "cn"]
+        },
+        "model": {
+          "const": "pixverse/v6"
+        },
+        "modelVersion": {
+          "const": "v6"
+        },
+        "termsVersion": {
+          "$ref": "#/$defs/text"
+        },
+        "retentionVersion": {
+          "$ref": "#/$defs/text"
+        },
+        "credentialRef": {
+          "type": "string",
+          "pattern": "^credential-[a-z0-9-]{3,64}$"
+        },
+        "evidenceReviewedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "promptDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "assetDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "settingsDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "expectedMaxCharge": {
+          "$ref": "#/$defs/money"
+        },
+        "budgetReservation": {
+          "$ref": "#/$defs/budgetReservation"
+        },
+        "approvalContentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "receiptRef": {
+          "type": "string",
+          "pattern": "^approval-receipt-[a-z0-9-]+$"
+        },
+        "decision": {
+          "const": "approved-for-one-exact-generation"
+        }
+      }
+    },
+    "toolRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "prompt",
+        "image",
+        "model",
+        "durationSeconds",
+        "aspectRatio",
+        "resolution",
+        "filename",
+        "timeoutMs",
+        "audio",
+        "providerOptions"
+      ],
+      "properties": {
+        "action": {
+          "const": "generate"
+        },
+        "prompt": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "image": {
+          "$ref": "#/$defs/workspacePath"
+        },
+        "model": {
+          "const": "pixverse/v6"
+        },
+        "durationSeconds": {
+          "const": 6
+        },
+        "aspectRatio": {
+          "const": "16:9"
+        },
+        "resolution": {
+          "const": "1080P"
+        },
+        "filename": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+\\.mp4$"
+        },
+        "timeoutMs": {
+          "const": 300000
+        },
+        "audio": {
+          "const": false
+        },
+        "providerOptions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "seed",
+            "negativePrompt",
+            "quality",
+            "motionMode",
+            "cameraMovement"
+          ],
+          "properties": {
+            "seed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "negativePrompt": {
+              "$ref": "#/$defs/boundedText"
+            },
+            "quality": {
+              "const": "1080p"
+            },
+            "motionMode": {
+              "const": "normal"
+            },
+            "cameraMovement": {
+              "const": "none"
+            }
+          }
+        }
+      }
+    },
+    "generationAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "variantRef",
+        "approvalRef",
+        "retryOfAttemptRef",
+        "request",
+        "requestDigest",
+        "invokedAt",
+        "completedAt",
+        "status",
+        "receiptRef",
+        "error"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^attempt-[a-z0-9-]+$"
+        },
+        "kind": {
+          "enum": ["initial", "retry"]
+        },
+        "variantRef": {
+          "type": "string",
+          "pattern": "^variant-[a-z0-9-]+$"
+        },
+        "approvalRef": {
+          "type": "string",
+          "pattern": "^approval-[a-z0-9-]+$"
+        },
+        "retryOfAttemptRef": {
+          "type": ["string", "null"],
+          "pattern": "^attempt-[a-z0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/toolRequest"
+        },
+        "requestDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "invokedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "completedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "status": {
+          "enum": ["running", "succeeded", "failed"]
+        },
+        "receiptRef": {
+          "type": ["string", "null"],
+          "pattern": "^provider-receipt-[a-z0-9-]+$"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["message", "retryable"],
+              "properties": {
+                "message": {
+                  "$ref": "#/$defs/boundedText"
+                },
+                "retryable": {
+                  "type": "boolean"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ignoredOverride": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "value"],
+      "properties": {
+        "key": {
+          "const": "aspectRatio"
+        },
+        "value": {
+          "const": "16:9"
+        }
+      }
+    },
+    "taskEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "observedAt"],
+      "properties": {
+        "status": {
+          "enum": ["queued", "running", "succeeded", "failed"]
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "taskEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["taskId", "runId", "status", "chronology"],
+      "properties": {
+        "taskId": {
+          "$ref": "#/$defs/text"
+        },
+        "runId": {
+          "$ref": "#/$defs/text"
+        },
+        "status": {
+          "const": "succeeded"
+        },
+        "chronology": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/taskEvent"
+          }
+        }
+      }
+    },
+    "providerReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "attemptRef",
+        "evidenceStatus",
+        "sourceSystem",
+        "sourceRecordRef",
+        "evidenceDigest",
+        "observedAt",
+        "toolName",
+        "toolCallId",
+        "task",
+        "provider",
+        "model",
+        "endpoint",
+        "videoId",
+        "terminalStatus",
+        "hostedUrl",
+        "mime",
+        "outputWidth",
+        "outputHeight",
+        "normalizedDurationSeconds",
+        "ignoredOverrides"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^provider-receipt-[a-z0-9-]+$"
+        },
+        "attemptRef": {
+          "type": "string",
+          "pattern": "^attempt-[a-z0-9-]+$"
+        },
+        "evidenceStatus": {
+          "const": "observed"
+        },
+        "sourceSystem": {
+          "const": "openclaw"
+        },
+        "sourceRecordRef": {
+          "$ref": "#/$defs/text"
+        },
+        "evidenceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "toolName": {
+          "const": "video_generate"
+        },
+        "toolCallId": {
+          "$ref": "#/$defs/text"
+        },
+        "task": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/taskEvidence"
+            }
+          ]
+        },
+        "provider": {
+          "const": "pixverse"
+        },
+        "model": {
+          "const": "v6"
+        },
+        "endpoint": {
+          "const": "/video/img/generate"
+        },
+        "videoId": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "terminalStatus": {
+          "const": 1
+        },
+        "hostedUrl": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "mime": {
+          "const": "video/mp4"
+        },
+        "outputWidth": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "outputHeight": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "normalizedDurationSeconds": {
+          "const": 6
+        },
+        "ignoredOverrides": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/$defs/ignoredOverride"
+          }
+        }
+      }
+    },
+    "billingReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "attemptRef",
+        "evidenceStatus",
+        "sourceSystem",
+        "sourceRecordRef",
+        "evidenceDigest",
+        "observedAt",
+        "chargeStatus",
+        "amount",
+        "currency",
+        "usage"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^billing-receipt-[a-z0-9-]+$"
+        },
+        "attemptRef": {
+          "type": "string",
+          "pattern": "^attempt-[a-z0-9-]+$"
+        },
+        "evidenceStatus": {
+          "const": "observed"
+        },
+        "sourceSystem": {
+          "const": "pixverse-account-billing"
+        },
+        "sourceRecordRef": {
+          "$ref": "#/$defs/text"
+        },
+        "evidenceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "chargeStatus": {
+          "enum": ["billed", "pending", "not-billed"]
+        },
+        "amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["quantity", "unit"],
+              "properties": {
+                "quantity": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "unit": {
+                  "$ref": "#/$defs/text"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "materializationReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "outputRef",
+        "providerReceiptRef",
+        "evidenceStatus",
+        "sourceSystem",
+        "sourceRecordRef",
+        "evidenceDigest",
+        "materializedAt",
+        "path",
+        "contentDigest",
+        "byteLength",
+        "mime",
+        "width",
+        "height",
+        "aspectRatio",
+        "durationSeconds",
+        "frameRate",
+        "frameCount",
+        "probe"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^materialization-receipt-[a-z0-9-]+$"
+        },
+        "outputRef": {
+          "type": "string",
+          "pattern": "^output-[a-z0-9-]+$"
+        },
+        "providerReceiptRef": {
+          "type": "string",
+          "pattern": "^provider-receipt-[a-z0-9-]+$"
+        },
+        "evidenceStatus": {
+          "const": "observed"
+        },
+        "sourceSystem": {
+          "const": "approved-media-materializer"
+        },
+        "sourceRecordRef": {
+          "$ref": "#/$defs/text"
+        },
+        "evidenceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "materializedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "path": {
+          "$ref": "#/$defs/workspacePath"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "byteLength": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "mime": {
+          "const": "video/mp4"
+        },
+        "width": {
+          "const": 1920
+        },
+        "height": {
+          "const": 1080
+        },
+        "aspectRatio": {
+          "const": "16:9"
+        },
+        "durationSeconds": {
+          "const": 6
+        },
+        "frameRate": {
+          "const": 24
+        },
+        "frameCount": {
+          "const": 144
+        },
+        "probe": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tool", "version", "probedAt"],
+          "properties": {
+            "tool": {
+              "$ref": "#/$defs/text"
+            },
+            "version": {
+              "$ref": "#/$defs/text"
+            },
+            "probedAt": {
+              "$ref": "#/$defs/timestamp"
+            }
+          }
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "variantRef",
+        "providerReceiptRef",
+        "materializationReceiptRef",
+        "evidenceStatus",
+        "delivery",
+        "hostedUrl",
+        "providerVideoId",
+        "mime",
+        "width",
+        "height",
+        "aspectRatio",
+        "sourceAssetRef",
+        "synthetic",
+        "identityDigest",
+        "controlPolicyRef"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^output-[a-z0-9-]+$"
+        },
+        "variantRef": {
+          "type": "string",
+          "pattern": "^variant-[a-z0-9-]+$"
+        },
+        "providerReceiptRef": {
+          "type": "string",
+          "pattern": "^provider-receipt-[a-z0-9-]+$"
+        },
+        "materializationReceiptRef": {
+          "type": ["string", "null"],
+          "pattern": "^materialization-receipt-[a-z0-9-]+$"
+        },
+        "evidenceStatus": {
+          "const": "observed"
+        },
+        "delivery": {
+          "enum": ["provider-hosted", "materialized-private-file"]
+        },
+        "hostedUrl": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "providerVideoId": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mime": {
+          "const": "video/mp4"
+        },
+        "width": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "height": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "aspectRatio": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "16:9"
+            }
+          ]
+        },
+        "sourceAssetRef": {
+          "type": "string",
+          "pattern": "^asset-[a-z0-9-]+$"
+        },
+        "synthetic": {
+          "const": true
+        },
+        "identityDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "controlPolicyRef": {
+          "$ref": "#/$defs/policyId"
+        }
+      }
+    },
+    "conceptPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "variantRef",
+        "evidenceStatus",
+        "title",
+        "treatment",
+        "plannedBeats",
+        "controlPolicyRef"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^concept-plan-[a-z0-9-]+$"
+        },
+        "variantRef": {
+          "type": "string",
+          "pattern": "^variant-[a-z0-9-]+$"
+        },
+        "evidenceStatus": {
+          "const": "illustrative-plan"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "treatment": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "plannedBeats": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/boundedText"
+          }
+        },
+        "controlPolicyRef": {
+          "$ref": "#/$defs/policyId"
+        }
+      }
+    },
+    "concept": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "variantRef",
+        "outputRef",
+        "title",
+        "treatment",
+        "shotRefs",
+        "disclosures",
+        "controlPolicyRef"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^concept-[a-z0-9-]+$"
+        },
+        "variantRef": {
+          "type": "string",
+          "pattern": "^variant-[a-z0-9-]+$"
+        },
+        "outputRef": {
+          "type": "string",
+          "pattern": "^output-[a-z0-9-]+$"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "treatment": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "shotRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^shot-[a-z0-9-]+$"
+          }
+        },
+        "disclosures": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["synthetic", "factual", "caveats"],
+          "properties": {
+            "synthetic": {
+              "$ref": "#/$defs/boundedText"
+            },
+            "factual": {
+              "$ref": "#/$defs/boundedText"
+            },
+            "caveats": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/boundedText"
+              }
+            }
+          }
+        },
+        "controlPolicyRef": {
+          "$ref": "#/$defs/policyId"
+        }
+      }
+    },
+    "shot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "conceptRef",
+        "variantRef",
+        "outputRef",
+        "ordinal",
+        "startSeconds",
+        "endSeconds",
+        "startFrame",
+        "endFrame",
+        "motion",
+        "visualElements",
+        "controlPolicyRef"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^shot-[a-z0-9-]+$"
+        },
+        "conceptRef": {
+          "type": "string",
+          "pattern": "^concept-[a-z0-9-]+$"
+        },
+        "variantRef": {
+          "type": "string",
+          "pattern": "^variant-[a-z0-9-]+$"
+        },
+        "outputRef": {
+          "type": "string",
+          "pattern": "^output-[a-z0-9-]+$"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "startSeconds": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 6
+        },
+        "endSeconds": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 6
+        },
+        "startFrame": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 143
+        },
+        "endFrame": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 143
+        },
+        "motion": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "visualElements": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/subjectTerm"
+              },
+              {
+                "$ref": "#/$defs/brandTerm"
+              }
+            ]
+          }
+        },
+        "controlPolicyRef": {
+          "$ref": "#/$defs/policyId"
+        }
+      }
+    },
+    "reviewFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "discipline",
+        "reviewerRef",
+        "reviewedAt",
+        "status",
+        "summary",
+        "finalApprovalClaimed",
+        "receipt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^finding-[a-z0-9-]+$"
+        },
+        "discipline": {
+          "enum": ["editorial", "rights", "factual", "brand", "accessibility", "safety"]
+        },
+        "reviewerRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "reviewedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "status": {
+          "enum": ["passed-nonfinal", "changes-required", "rejected"]
+        },
+        "summary": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "finalApprovalClaimed": {
+          "const": false
+        },
+        "receipt": {
+          "$ref": "#/$defs/provenanceReceipt"
+        }
+      }
+    },
+    "reviewBoard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "outputRef",
+        "outputIdentityDigest",
+        "materializedContentDigest",
+        "findings",
+        "missingDisciplines",
+        "state",
+        "finalApprovalClaimed"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^review-board-[a-z0-9-]+$"
+        },
+        "outputRef": {
+          "type": "string",
+          "pattern": "^output-[a-z0-9-]+$"
+        },
+        "outputIdentityDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "materializedContentDigest": {
+          "type": ["string", "null"],
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "findings": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "$ref": "#/$defs/reviewFinding"
+          }
+        },
+        "missingDisciplines": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["editorial", "rights", "factual", "brand", "accessibility", "safety"]
+          }
+        },
+        "state": {
+          "enum": [
+            "not-started",
+            "incomplete",
+            "passed-nonfinal",
+            "changes-required",
+            "rejected"
+          ]
+        },
+        "finalApprovalClaimed": {
+          "const": false
+        }
+      }
+    },
+    "proposedOwnerAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ownerRef", "actionKind", "statement", "targetRefs", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^proposal-[a-z0-9-]+$"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "actionKind": {
+          "enum": [
+            "request-approval",
+            "inspect-asset",
+            "invoke-approved-generation",
+            "retry-failed-generation",
+            "materialize-hosted-output",
+            "complete-output-review",
+            "revise-concept"
+          ]
+        },
+        "statement": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/referenceList"
+        },
+        "status": {
+          "const": "proposed-not-executed"
+        }
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text", "ownerRef", "targetRefs", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^question-[a-z0-9-]+$"
+        },
+        "text": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/referenceList"
+        },
+        "status": {
+          "enum": ["open", "answered"]
+        }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "description",
+        "ownerRef",
+        "targetRefs",
+        "findingRefs",
+        "questionRefs",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^blocker-[a-z0-9-]+$"
+        },
+        "kind": {
+          "enum": [
+            "illustrative-evidence",
+            "authority",
+            "asset-inspection",
+            "approval",
+            "generation-evidence",
+            "billing",
+            "materialization",
+            "review",
+            "deadline"
+          ]
+        },
+        "description": {
+          "$ref": "#/$defs/boundedText"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/referenceList"
+        },
+        "findingRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^finding-[a-z0-9-]+$"
+          }
+        },
+        "questionRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^question-[a-z0-9-]+$"
+          }
+        },
+        "status": {
+          "enum": ["open", "resolved"]
+        }
+      }
+    },
+    "controlPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "evidenceStatus",
+        "classification",
+        "audienceScope",
+        "rightsScope",
+        "permittedUses",
+        "territory",
+        "retentionUntil",
+        "providerRetentionVersion"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/policyId"
+        },
+        "evidenceStatus": {
+          "enum": ["illustrative-plan", "observed"]
+        },
+        "classification": {
+          "const": "private"
+        },
+        "audienceScope": {
+          "$ref": "#/$defs/audienceList"
+        },
+        "rightsScope": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["derivative-generation", "internal-presentation-review"]
+          }
+        },
+        "permittedUses": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["private-concept-generation", "internal-presentation-review"]
+          }
+        },
+        "territory": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "const": "worldwide"
+          }
+        },
+        "retentionUntil": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "providerRetentionVersion": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "controlBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["objectRef", "policyRef"],
+      "properties": {
+        "objectRef": {
+          "$ref": "#/$defs/id"
+        },
+        "policyRef": {
+          "$ref": "#/$defs/policyId"
+        }
+      }
+    },
+    "externalAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "attemptRef", "approvalRef", "toolCallId", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^external-action-[a-z0-9-]+$"
+        },
+        "kind": {
+          "const": "approved-video-generate-call"
+        },
+        "attemptRef": {
+          "type": "string",
+          "pattern": "^attempt-[a-z0-9-]+$"
+        },
+        "approvalRef": {
+          "type": "string",
+          "pattern": "^approval-[a-z0-9-]+$"
+        },
+        "toolCallId": {
+          "$ref": "#/$defs/text"
+        },
+        "status": {
+          "const": "observed"
+        }
+      }
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "publicationState",
+        "distributionState",
+        "advertisingState",
+        "externalUploadState",
+        "creditPurchaseState",
+        "publicationAuthority"
+      ],
+      "properties": {
+        "publicationState": {
+          "const": "not-published"
+        },
+        "distributionState": {
+          "const": "not-distributed"
+        },
+        "advertisingState": {
+          "const": "not-advertised"
+        },
+        "externalUploadState": {
+          "enum": ["no-observed-upload", "approved-provider-inputs-only"]
+        },
+        "creditPurchaseState": {
+          "const": "not-purchased"
+        },
+        "publicationAuthority": {
+          "const": "not-granted"
+        }
+      }
+    },
+    "referenceList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "state",
+        "coverageComplete",
+        "ownerRef",
+        "manifestPath",
+        "manifestDigest",
+        "principalRefs",
+        "policyRefs",
+        "coveredObjectRefs",
+        "effectiveControlRef",
+        "publicationState",
+        "distributionState",
+        "publicationHandoff",
+        "summary"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^handoff-[a-z0-9-]+$"
+        },
+        "state": {
+          "enum": ["blocked", "ready-for-human-review"]
+        },
+        "coverageComplete": {
+          "const": true
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/principalId"
+        },
+        "manifestPath": {
+          "const": "outputs/video-concept-generation-manifest.json"
+        },
+        "manifestDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "principalRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/principalId"
+          }
+        },
+        "policyRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/policyId"
+          }
+        },
+        "coveredObjectRefs": {
+          "$ref": "#/$defs/referenceList"
+        },
+        "effectiveControlRef": {
+          "$ref": "#/$defs/policyId"
+        },
+        "publicationState": {
+          "const": "not-published"
+        },
+        "distributionState": {
+          "const": "not-distributed"
+        },
+        "publicationHandoff": {
+          "const": "not-authorized"
+        },
+        "summary": {
+          "$ref": "#/$defs/boundedText"
+        }
+      }
+    }
+  }
+}

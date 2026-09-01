@@ -3310,47 +3310,59 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-09-01"
       },
-      "description": "Generates reviewable PixVerse video concepts from approved prompts or workspace assets without publishing or impersonating people.",
-      "audience": "Creative teams prototyping short video treatments and variants before human editorial, rights, and publication review.",
+      "description": "Plans exactly two private six-second PixVerse concepts and, only when evidence exists, records inspected inputs, exact signed approvals, exposed OpenClaw/PixVerse results, optional billing and materialization receipts, output-bound review, inherited controls, and nonpublication state.",
+      "audience": "Internal creative teams that need a truthful two-concept plan and a strict private generation-evidence handoff without treating illustrative plans or unexposed provider fields as completed work.",
       "principles": [
-        "Start from an approved brief and rights-cleared inputs",
-        "Separate concept generation from publication",
-        "Make synthetic provenance and cost visible"
+        "Own the manifest and private handoff while PixVerse retains hosted media, billing, and retention authority and OpenClaw retains tool and task authority",
+        "Require provenance-backed asset inspection and immutable human authority, prompt-rights, prompt-safety, generation, and cost approval before an exact invocation",
+        "Limit provider receipts to fields exposed by the pinned implementation: tool or task identity, PixVerse videoId, hosted URL, MIME, optional dimensions, normalization, and observed chronology",
+        "Keep expected maximum and budget reservation separate from optional account billing, and keep hosted output separate from optional local materialization and probe evidence",
+        "Allow honest blocked partial failure while requiring exact output, concept, shot, review, policy, principal, blocker, and handoff coverage for readiness"
       ],
       "boundaries": [
-        "Do not depict a real person, private individual, trademarked character, or sensitive event deceptively or without documented authority and rights",
-        "Do not upload confidential, biometric, personal, customer, or unlicensed source media to PixVerse",
-        "Do not publish, advertise, distribute, purchase additional credits, or claim final legal, brand, accessibility, or factual approval"
+        "Do not upload any source until an inspection receipt proves existence, bytes, digest, MIME, dimensions, geometry, rights, classification, and conservative safety flags",
+        "Do not invoke or retry unless exact prompt, asset, settings, expected maximum, reservation, provider region/model, terms, retention, credential reference, actors, and failed-parent lineage are bound by an immutable approval receipt",
+        "Do not invent provider account, request, output, billing, usage, response-digest, start-time, or local-file evidence that @openclaw/pixverse-provider@2026.7.1 and OpenClaw v2026.7.1 do not expose",
+        "Do not allow undeclared proper names, entities, brands, people, or sensitive events in positive prompts; negative prompts may name exclusions, and exact prompt rights and safety review remains mandatory",
+        "Do not publish, distribute, advertise, send, post, upload outside the approved provider input, purchase credits, claim final approval, or mark incomplete generation or review ready"
       ],
       "intake": [
-        "Creative objective, audience, format, duration, aspect ratio, visual treatment, and required variants",
-        "Rights-cleared prompt and workspace assets, prohibited subjects, factual constraints, and disclosure requirements",
-        "Approved PixVerse credential, endpoint region, generation budget, reviewer, and publication boundary"
+        "Bounded objective, private audience and use, exactly two desired six-second MP4 variants, synthetic disclosure, prohibited subjects, named authority roles, as-of time, deadline, and nonpublication boundary",
+        "Pinned @openclaw/pixverse-provider@2026.7.1 and OpenClaw v2026.7.1 configuration, observed video_generate availability for production, region, endpoint, pixverse/v6, terms and retention versions, nonsecret credential reference, currency, cap, and expected maximum per attempt",
+        "For production, rights-cleared local raster assets plus inspection receipts proving existence, bytes, digest, MIME, dimensions, 16:9 geometry, owner, rights provenance, use, audience, territory, expiry, classification, and conservative safety flags",
+        "Exact positive and negative prompts, allowlisted abstract and brand vocabulary, image-to-video aspect-ratio handling, seeds and settings, immutable approvals and reservations, retry rules, output review disciplines, controls, owners, questions, blockers, and handoff"
       ],
       "workflow": [
-        "Turn the approved brief into a generation plan with rights, safety, cost, and disclosure checks",
-        "Confirm the exact prompt, source assets, model settings, and expected charge before each PixVerse generation",
-        "Generate only the approved variants and retain prompt, settings, provider response, and output identity",
-        "Prepare a private review board covering visual quality, factual risk, rights, accessibility, synthetic disclosure, and revision decisions"
+        "Freeze the desired brief, structural authority roles, private control policy, deterministic as-of boundary, deadline, and two concept plans without presenting plans as completed generation",
+        "For production, verify attested human identities and exact scopes, OpenClaw tool availability, provider pin and region, terms and retention versions, nonsecret credential reference, budget cap, and external secret boundary",
+        "Inspect each local input through a provenance-backed system and verify bytes, MIME, geometry, rights, safety, and exact permitted abstract and brand vocabulary",
+        "Construct two image-to-video requests, mark the aspect-ratio override ignored, bind source geometry, and obtain immutable exact approvals from generation, cost, prompt-rights, and prompt-safety authorities with one reservation per attempt",
+        "Invoke only approved calls; allow repeated request digests only on exact retry descendants of failed attempts under renewed approval and reservation",
+        "Record only the exposed OpenClaw/PixVerse provider result, then add billing or local materialization facts solely through separate provenance-backed systems",
+        "Cover each successful output once with a same-variant concept and review board, validate every shot and review receipt, preserve partial failures and missing disciplines as blockers, and hand off every object, principal, and policy without publication"
       ],
       "deliverables": [
-        "Approved generation brief",
-        "Prompt and settings ledger",
-        "Private video concept variants",
-        "Rights, safety, and factual review checklist",
-        "Revision or publication handoff"
+        "Durable awesomeClaws.videoConceptGenerationManifest.v1 generation-and-review manifest",
+        "Two clearly labeled desired variant and concept plans, plus production asset-inspection, authority-attestation, exact-approval, request, reservation, and retry records only when observed",
+        "Minimal provider receipts containing exposed tool/task identity, PixVerse videoId, hosted URL, MIME, optional dimensions, normalization, and ignored image-to-video aspect override",
+        "Separate optional account billing receipts and separate optional materialization and media-probe receipts without inferred charges or local files",
+        "One concept and nonfinal human review board per successful output, with exact present-shot timing, explicit missing disciplines, questions, and blockers",
+        "Complete private policy-, principal-, receipt-, and handoff coverage with not-published, not-distributed, not-advertised, not-purchased, and not-authorized state"
       ],
       "example": {
         "request": "Create two six-second abstract motion concepts for an internal renewable-energy presentation using only our approved geometric brand assets.",
-        "outcome": "Two private PixVerse-generated concepts with exact prompts, settings, cost acknowledgement, synthetic provenance, rights-cleared inputs, and an editorial review board; nothing is published."
+        "outcome": "An illustrative-only blocked plan for two desired abstract treatments, with no claim that assets were inspected, humans approved or reviewed, PixVerse was called, billing occurred, media was generated or downloaded, or publication was authorized."
       },
       "doneWhen": [
-        "Every generation was individually approved and records prompt, settings, provider, time, output identity, and expected usage cost",
-        "Inputs are documented as rights-cleared and contain no prohibited sensitive or deceptive subject",
-        "Outputs remain private and visibly synthetic pending human rights, factual, brand, and accessibility review",
-        "No publication, distribution, impersonation, or unapproved credit purchase occurred"
+        "The schema and public semantic validator accept the artifact; illustrative mode remains blocked with zero actual evidence collections, while production asOf and all event chronology are trustworthy",
+        "Every production source has inspection and rights provenance, every principal has matching human attestation, and every prompt stays inside exact approved abstract and brand vocabulary",
+        "Every invocation has exact immutable generation, cost, prompt-rights, and prompt-safety approval plus a reservation; retries descend only from failed parents under renewed approval",
+        "Provider receipts use only fields exposed by the pinned provider and shared tool; billing and materialization claims appear only in their separate provenance-backed receipts",
+        "Budget totals reserve every unreconciled attempt once, reconcile billed or not-billed evidence without double counting, and never infer actual charge when billing evidence is absent",
+        "Every successful output has exactly one same-variant concept and review board; every present shot resolves and is frame-correct, and ready state requires complete probed output and six-discipline review coverage",
+        "Every owner and target resolves, proposal and editorial text avoids completed effects and final approval, and the sole policy plus every principal and object is covered once in the private handoff"
       ],
       "packages": [
         {
@@ -3378,11 +3390,32 @@
         }
       },
       "capabilityGuidance": [
-        "The official PixVerse provider plugin is clean and source-linked and sends prompts and selected input media to PixVerse; configure `PIXVERSE_API_KEY` through approved host secrets outside the package and confirm region, terms, retention, model, and credit pricing.",
-        "The minimal profile exposes only session status plus `video_generate`, with filesystem access constrained to the Claw workspace; each paid generation still requires approval of the exact prompt, inputs, settings, and expected charge.",
-        "Generated media can contain factual, identity, rights, bias, or safety defects; retain synthetic provenance and keep outputs private until accountable human review authorizes any use."
+        "At OpenClaw v2026.7.1, @openclaw/pixverse-provider@2026.7.1 uploads one image, obtains a numeric video_id, polls to terminal status, and returns model, endpoint, videoId, hosted URL, video/mp4 MIME, and optional dimensions; the shared video_generate tool can also expose tool/task identity, task chronology, normalization, and ignored overrides.",
+        "PixVerse image-to-video omits aspect_ratio. Keep the source image inspection at 16:9, record the requested aspectRatio as ignored, and derive output ratio only from returned dimensions or a separate materialization probe.",
+        "Provider receipts must not invent account, provider request/output ids, response digests, billing, usage, provider start time, or local files. Account billing and local download/probe evidence are optional separate provenance-backed receipts.",
+        "Use explicit pixverse/v6 with no fallback. Every initial or retry call needs immutable exact approvals from generation, cost, prompt-rights, and prompt-safety authorities and a conservative reservation; repeated request digests are valid only on failed-parent retry lineage.",
+        "Validate outputs/video-concept-generation-manifest.json against the strict schema and semantic validator before rendering. The packaged fixture is illustrative only, deterministically blocked, and contains no actual asset inspection, human attestation, approval, provider call, charge, output, materialization, or review."
       ],
       "resources": [
+        {
+          "source": "schemas/video-concept-generation-manifest.schema.json",
+          "path": "schemas/video-concept-generation-manifest.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/video-concept-generation-manifest.example.json",
+          "path": "fixtures/video-concept-generation-manifest.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/video-concept-generation-manifest.md",
+          "path": "templates/video-concept-generation-manifest.md",
+          "role": "template"
+        },
+        {
+          "source": "references/video-concept-generation-manifest-contract.md",
+          "path": "references/video-concept-generation-manifest-contract.md"
+        },
         {
           "source": "fixtures/session-demo.json",
           "path": "fixtures/session-demo.json",

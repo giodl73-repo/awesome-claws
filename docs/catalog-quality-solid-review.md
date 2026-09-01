@@ -172,10 +172,25 @@ content extraction, exact-version human review, transitive controls, and a
 private not-delivered handoff without duplicating slide bodies or PowerPoint
 runtime state.
 
-For `video-concept-producer` and `workflow-operator`, first identify a stable
-state object that the Claw itself owns. External plugin types, source documents,
-code diffs, and prose deliverables should not be duplicated merely to raise a
-score.
+`video-concept-producer` now owns
+`awesomeClaws.videoConceptGenerationManifest.v1`, a durable contract that keeps
+two desired concept plans separate from observed execution. The contract is
+pinned to `@openclaw/pixverse-provider@2026.7.1` and OpenClaw `v2026.7.1`;
+provider receipts contain only fields that implementation and the shared tool
+expose: tool or task identity, `videoId`, terminal status, hosted URL, MIME,
+optional dimensions, normalization, ignored overrides, and available
+chronology. Account billing and local materialization are separate optional
+provenance-backed receipts. Production readiness additionally requires
+inspected source geometry, immutable human generation/cost/rights/safety
+approval, exact failed-parent retry lineage, one concept and review board per
+successful output, complete shot and six-discipline review coverage, and exact
+principal/policy/handoff coverage. The shipped fixture is intentionally
+illustrative, execution-free, and blocked; no live PixVerse or human-review
+proof is claimed.
+
+For `workflow-operator`, first identify a stable state object that the Claw
+itself owns. External plugin types, source documents, code diffs, and prose
+deliverables should not be duplicated merely to raise a score.
 
 ## Recommended order
 

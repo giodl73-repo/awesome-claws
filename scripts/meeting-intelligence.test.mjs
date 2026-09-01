@@ -25,9 +25,16 @@ const validatorSource = await readFile(
   new URL("./artifact-semantics.mjs", import.meta.url),
   "utf8",
 );
+const validatorStart = validatorSource.indexOf("function meetingRecordFindings(");
+const validatorEnd = validatorSource.indexOf(
+  "\nfunction legacyVideoConceptGenerationManifestFindings(",
+  validatorStart + 1,
+);
+assert.notEqual(validatorStart, -1);
+assert.notEqual(validatorEnd, -1);
 const validatorBody = validatorSource.slice(
-  validatorSource.indexOf("function meetingRecordFindings("),
-  validatorSource.indexOf("\nconst validators = {"),
+  validatorStart,
+  validatorEnd,
 );
 const emittedFindingCodes = new Set(
   [...validatorBody.matchAll(/finding\(\s*"([a-z_]+)"/gu)].map((match) => match[1]),

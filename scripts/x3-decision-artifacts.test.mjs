@@ -403,6 +403,14 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "video-concept-producer",
+    schema:
+      "../claws/video-concept-producer/schemas/video-concept-generation-manifest.schema.json",
+    fixture:
+      "../claws/video-concept-producer/fixtures/video-concept-generation-manifest.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "restaurant-venue-scout",
     schema: "../claws/restaurant-venue-scout/schemas/venue-shortlist.schema.json",
     fixture: "../claws/restaurant-venue-scout/fixtures/venue-shortlist.example.json",

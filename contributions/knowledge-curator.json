@@ -142,6 +142,11 @@
         "id": "document-intake-analyst",
         "overlap": "Both preserve immutable source identity, access and classification constraints, extracted evidence, gaps, and owner review without mutating originals.",
         "difference": "Document Intake Analyst owns one bounded format-normalization pass with conversion lineage and fidelity exceptions. Knowledge Curator owns a durable semantic collection index spanning sources, topics, claims, decisions, duplicates, conflicts, freshness, retention, and future maintenance."
+      },
+      {
+        "id": "video-concept-producer",
+        "overlap": "Both own a private durable manifest or index over exact immutable source identities, human authority, provenance, transitive controls, unresolved findings, blockers, and a complete owner handoff while leaving source-system state authoritative.",
+        "difference": "Video Concept Producer governs exactly two paid PixVerse generations, prompt and settings approvals, provider receipts, synthetic MP4 identities, frame-exact shot plans, and media review. Knowledge Curator never invokes a provider or creates media; it normalizes a bounded multi-source knowledge collection into topics, claims, decisions, duplicates, disputes, and maintenance state."
       }
     ]
   }

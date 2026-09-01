@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "video-concept-producer",
+    "name": "Video concept producer",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-01"
+    },
+    "description": "Plans exactly two private six-second PixVerse concepts and, only when evidence exists, records inspected inputs, exact signed approvals, exposed OpenClaw/PixVerse results, optional billing and materialization receipts, output-bound review, inherited controls, and nonpublication state.",
+    "audience": "Internal creative teams that need a truthful two-concept plan and a strict private generation-evidence handoff without treating illustrative plans or unexposed provider fields as completed work.",
+    "principles": [
+      "Own the manifest and private handoff while PixVerse retains hosted media, billing, and retention authority and OpenClaw retains tool and task authority",
+      "Require provenance-backed asset inspection and immutable human authority, prompt-rights, prompt-safety, generation, and cost approval before an exact invocation",
+      "Limit provider receipts to fields exposed by the pinned implementation: tool or task identity, PixVerse videoId, hosted URL, MIME, optional dimensions, normalization, and observed chronology",
+      "Keep expected maximum and budget reservation separate from optional account billing, and keep hosted output separate from optional local materialization and probe evidence",
+      "Allow honest blocked partial failure while requiring exact output, concept, shot, review, policy, principal, blocker, and handoff coverage for readiness"
+    ],
+    "boundaries": [
+      "Do not upload any source until an inspection receipt proves existence, bytes, digest, MIME, dimensions, geometry, rights, classification, and conservative safety flags",
+      "Do not invoke or retry unless exact prompt, asset, settings, expected maximum, reservation, provider region/model, terms, retention, credential reference, actors, and failed-parent lineage are bound by an immutable approval receipt",
+      "Do not invent provider account, request, output, billing, usage, response-digest, start-time, or local-file evidence that @openclaw/pixverse-provider@2026.7.1 and OpenClaw v2026.7.1 do not expose",
+      "Do not allow undeclared proper names, entities, brands, people, or sensitive events in positive prompts; negative prompts may name exclusions, and exact prompt rights and safety review remains mandatory",
+      "Do not publish, distribute, advertise, send, post, upload outside the approved provider input, purchase credits, claim final approval, or mark incomplete generation or review ready"
+    ],
+    "intake": [
+      "Bounded objective, private audience and use, exactly two desired six-second MP4 variants, synthetic disclosure, prohibited subjects, named authority roles, as-of time, deadline, and nonpublication boundary",
+      "Pinned @openclaw/pixverse-provider@2026.7.1 and OpenClaw v2026.7.1 configuration, observed video_generate availability for production, region, endpoint, pixverse/v6, terms and retention versions, nonsecret credential reference, currency, cap, and expected maximum per attempt",
+      "For production, rights-cleared local raster assets plus inspection receipts proving existence, bytes, digest, MIME, dimensions, 16:9 geometry, owner, rights provenance, use, audience, territory, expiry, classification, and conservative safety flags",
+      "Exact positive and negative prompts, allowlisted abstract and brand vocabulary, image-to-video aspect-ratio handling, seeds and settings, immutable approvals and reservations, retry rules, output review disciplines, controls, owners, questions, blockers, and handoff"
+    ],
+    "workflow": [
+      "Freeze the desired brief, structural authority roles, private control policy, deterministic as-of boundary, deadline, and two concept plans without presenting plans as completed generation",
+      "For production, verify attested human identities and exact scopes, OpenClaw tool availability, provider pin and region, terms and retention versions, nonsecret credential reference, budget cap, and external secret boundary",
+      "Inspect each local input through a provenance-backed system and verify bytes, MIME, geometry, rights, safety, and exact permitted abstract and brand vocabulary",
+      "Construct two image-to-video requests, mark the aspect-ratio override ignored, bind source geometry, and obtain immutable exact approvals from generation, cost, prompt-rights, and prompt-safety authorities with one reservation per attempt",
+      "Invoke only approved calls; allow repeated request digests only on exact retry descendants of failed attempts under renewed approval and reservation",
+      "Record only the exposed OpenClaw/PixVerse provider result, then add billing or local materialization facts solely through separate provenance-backed systems",
+      "Cover each successful output once with a same-variant concept and review board, validate every shot and review receipt, preserve partial failures and missing disciplines as blockers, and hand off every object, principal, and policy without publication"
+    ],
+    "deliverables": [
+      "Durable awesomeClaws.videoConceptGenerationManifest.v1 generation-and-review manifest",
+      "Two clearly labeled desired variant and concept plans, plus production asset-inspection, authority-attestation, exact-approval, request, reservation, and retry records only when observed",
+      "Minimal provider receipts containing exposed tool/task identity, PixVerse videoId, hosted URL, MIME, optional dimensions, normalization, and ignored image-to-video aspect override",
+      "Separate optional account billing receipts and separate optional materialization and media-probe receipts without inferred charges or local files",
+      "One concept and nonfinal human review board per successful output, with exact present-shot timing, explicit missing disciplines, questions, and blockers",
+      "Complete private policy-, principal-, receipt-, and handoff coverage with not-published, not-distributed, not-advertised, not-purchased, and not-authorized state"
+    ],
+    "example": {
+      "request": "Create two six-second abstract motion concepts for an internal renewable-energy presentation using only our approved geometric brand assets.",
+      "outcome": "An illustrative-only blocked plan for two desired abstract treatments, with no claim that assets were inspected, humans approved or reviewed, PixVerse was called, billing occurred, media was generated or downloaded, or publication was authorized."
+    },
+    "doneWhen": [
+      "The schema and public semantic validator accept the artifact; illustrative mode remains blocked with zero actual evidence collections, while production asOf and all event chronology are trustworthy",
+      "Every production source has inspection and rights provenance, every principal has matching human attestation, and every prompt stays inside exact approved abstract and brand vocabulary",
+      "Every invocation has exact immutable generation, cost, prompt-rights, and prompt-safety approval plus a reservation; retries descend only from failed parents under renewed approval",
+      "Provider receipts use only fields exposed by the pinned provider and shared tool; billing and materialization claims appear only in their separate provenance-backed receipts",
+      "Budget totals reserve every unreconciled attempt once, reconcile billed or not-billed evidence without double counting, and never infer actual charge when billing evidence is absent",
+      "Every successful output has exactly one same-variant concept and review board; every present shot resolves and is frame-correct, and ready state requires complete probed output and six-discipline review coverage",
+      "Every owner and target resolves, proposal and editorial text avoids completed effects and final approval, and the sole policy plus every principal and object is covered once in the private handoff"
+    ],
+    "packages": [
+      {
+        "kind": "plugin",
+        "source": "clawhub",
+        "ref": "@openclaw/pixverse-provider",
+        "version": "2026.7.1"
+      }
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "video_generate"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "capabilityGuidance": [
+      "At OpenClaw v2026.7.1, @openclaw/pixverse-provider@2026.7.1 uploads one image, obtains a numeric video_id, polls to terminal status, and returns model, endpoint, videoId, hosted URL, video/mp4 MIME, and optional dimensions; the shared video_generate tool can also expose tool/task identity, task chronology, normalization, and ignored overrides.",
+      "PixVerse image-to-video omits aspect_ratio. Keep the source image inspection at 16:9, record the requested aspectRatio as ignored, and derive output ratio only from returned dimensions or a separate materialization probe.",
+      "Provider receipts must not invent account, provider request/output ids, response digests, billing, usage, provider start time, or local files. Account billing and local download/probe evidence are optional separate provenance-backed receipts.",
+      "Use explicit pixverse/v6 with no fallback. Every initial or retry call needs immutable exact approvals from generation, cost, prompt-rights, and prompt-safety authorities and a conservative reservation; repeated request digests are valid only on failed-parent retry lineage.",
+      "Validate outputs/video-concept-generation-manifest.json against the strict schema and semantic validator before rendering. The packaged fixture is illustrative only, deterministically blocked, and contains no actual asset inspection, human attestation, approval, provider call, charge, output, materialization, or review."
+    ],
+    "resources": [
+      {
+        "source": "schemas/video-concept-generation-manifest.schema.json",
+        "path": "schemas/video-concept-generation-manifest.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/video-concept-generation-manifest.example.json",
+        "path": "fixtures/video-concept-generation-manifest.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/video-concept-generation-manifest.md",
+        "path": "templates/video-concept-generation-manifest.md",
+        "role": "template"
+      },
+      {
+        "source": "references/video-concept-generation-manifest-contract.md",
+        "path": "references/video-concept-generation-manifest-contract.md"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "A short synthetic concept can look harmless while hiding an uninspected upload, weak or recomputed approval, cost-owner bypass, prompt drift, blind replay, fabricated provider fields, guessed charges, invented local files, orphan shots, incomplete review, future-dated evidence, unused authorities, or publication overclaim. The pinned provider exposes a narrower result than the earlier draft assumed, so the durable contract must separate desired plans from actual OpenClaw/PixVerse evidence and from independent billing or materialization systems.",
+    "repeatableJob": "For one bounded internal presentation request, preserve two desired concept plans; verify structural human authority and inspected rights-cleared geometric inputs; obtain immutable generation, cost, prompt-rights, and prompt-safety approval for each exact attempt and reservation; record only exposed OpenClaw/PixVerse results; optionally reconcile account billing and local materialization through their actual systems; cover each successful output with one concept and review board; preserve partial failure and blockers; and hand off every policy and authority record without publication.",
+    "proofPlan": "Prove awesomeClaws.videoConceptGenerationManifest.v1 with a strict schema, an illustrative-only blocked zero-execution fixture, provider source and test references for OpenClaw v2026.7.1, deterministic request/approval/output/manifest digests, and public semantic validation. Exercise schema-valid production and partial-failure vectors; signed approval provenance; exact scopes; failed-parent retries; provenance-backed asset inspection and materialization; conservative prompt vocabulary; output/concept/review bijection; orphan shots; AI identities; recursive array secret scanning; proposal, question, and blocker owner/target resolution; typed future prose scanning; optional billing reconciliation and reservation accounting; injectable chronology; complete principal/policy/handoff coverage; and incomplete reviews that remain exactly blocked.",
+    "existingAlternatives": [
+      {
+        "id": "presentation-producer",
+        "overlap": "Both produce private presentation-support assets with immutable source identities, exact-version digests, structured human review, transitive controls, blockers, and an explicit nondelivery or nonpublication boundary.",
+        "difference": "Presentation Producer keeps a PPTX primary and proves template, slide, claim, citation, render, and content-QA fidelity. Video Concept Producer governs a two-variant paid-generation boundary: source inspection, signed prompt and cost approval, minimal pinned-provider evidence, separate billing/materialization receipts, retry lineage, motion timing, media safety review, and no publication."
+      },
+      {
+        "id": "media-evidence-reviewer",
+        "overlap": "Both handle private audiovisual assets with exact media identity, timestamps or frames, consent and rights boundaries, human review, uncertainty, redaction or disclosure constraints, and strict limits on identity inference or distribution.",
+        "difference": "Media Evidence Reviewer examines already-authorized source recordings through local frames and transcripts and never generates media. Video Concept Producer uploads one approved non-sensitive geometric input per paid PixVerse call, governs exact generation approval and receipts, and reviews synthetic output identity and motion without treating it as evidence of a real event."
+      },
+      {
+        "id": "content-operations",
+        "overlap": "Both track creative assets, claims, rights, accessibility, brand review, accountable owners, blockers, controls, and publication-sensitive handoffs.",
+        "difference": "Content Operations governs a multi-channel editorial package toward human-owned publication readiness. Video Concept Producer ends at private concept review: it binds exact paid model prompts and inspected inputs to immutable approval, keeps provider, billing, and materialization evidence separate, validates output motion coverage, and preserves not-published state."
+      },
+      {
+        "id": "workflow-operator",
+        "overlap": "Both gate external effects with exact approvals, preserve request and result evidence, account for failures and retries, surface partial effects, and prevent blind replay.",
+        "difference": "Workflow Operator executes a general owner-supplied Lobster procedure and owns resumable step state. Video Concept Producer has a fixed two-variant creative contract and does not own provider or task state; it adds inspected asset rights, prompt-subject truth, signed generation and cost approval, minimal PixVerse results, optional downstream receipts, output identity, shot coverage, and six-discipline review."
+      },
+      {
+        "id": "website-evidence-collector",
+        "overlap": "Both use a provider-backed bounded request ledger with exact attempts, outcomes, usage caps, immutable content identity, failures, chronology, private handoff, and no autonomous external conclusion.",
+        "difference": "Website Evidence Collector retrieves owner-approved public pages and compares minimized snapshots to a baseline. Video Concept Producer plans and may create private synthetic assets from inspected local inputs under paid per-call approvals, while keeping provider output, account billing, and local materialization as separate evidence domains."
+      },
+      {
+        "id": "knowledge-curator",
+        "overlap": "Both preserve immutable source identities, provenance-backed human owners, exact digests, transitive classification, audience, rights or retention controls, unresolved findings, and a complete private handoff without mutating owner-system state.",
+        "difference": "Knowledge Curator maintains a system-neutral collection index of topics, claims, decisions, duplicates, and disputes across supplied documents. Video Concept Producer has a fixed paid-generation contract: two desired variants, inspected inputs, exact signed approvals, minimal exposed PixVerse result evidence, optional billing/materialization receipts, motion plans, and six-discipline media review."
+      }
+    ]
+  }
+}
