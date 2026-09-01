@@ -114,6 +114,49 @@ export function computeKnowledgeSpaceChangePlanDigest(value) {
     .digest("hex");
 }
 
+function sha256Digest(value) {
+  return `sha256:${createHash("sha256").update(canonicalJson(value)).digest("hex")}`;
+}
+
+export function computePresentationTemplateInventoryDigest(inventory) {
+  const { inventoryDigest: _inventoryDigest, ...digestInput } = inventory;
+  return sha256Digest(digestInput);
+}
+
+export function computePresentationContentQaDigest(contentQa) {
+  const { contentDigest: _contentDigest, ...digestInput } = contentQa;
+  return sha256Digest(digestInput);
+}
+
+export function computePresentationApprovalContentDigest(value) {
+  const { contentDigest: _manifestContentDigest, ...manifest } = value.manifest;
+  const { approvalRefs: _approvalRefs, ...handoff } = value.handoff;
+  return sha256Digest({
+    schemaVersion: value.schemaVersion,
+    manifest,
+    authorityRegistry: value.authorityRegistry,
+    sources: value.sources,
+    sourceUseAssessments: value.sourceUseAssessments,
+    deck: value.deck,
+    visualAssets: value.visualAssets,
+    claims: value.claims,
+    citations: value.citations,
+    speakerNotes: value.speakerNotes,
+    slides: value.slides,
+    renderSets: value.renderSets,
+    visualQaFindings: value.visualQaFindings,
+    contentQa: value.contentQa,
+    proposedOwnerActions: value.proposedOwnerActions,
+    caveats: value.caveats,
+    questions: value.questions,
+    blockers: value.blockers,
+    controlPolicies: value.controlPolicies,
+    controlBindings: value.controlBindings,
+    prohibitedActions: value.prohibitedActions,
+    handoff,
+  });
+}
+
 function duplicates(values) {
   const seen = new Set();
   return [...new Set(values.filter((value) => seen.size === seen.add(value).size))];
@@ -12707,6 +12750,2106 @@ function movingPlanFindings(value) {
         "external_action_content",
         "reviewQuestions",
         "Moving artifacts must not instruct the agent to execute external actions.",
+      ),
+    );
+  }
+  return findings;
+}
+
+function presentationEvidenceManifestFindings(value) {
+  const sources = value.sources;
+  const assessments = value.sourceUseAssessments;
+  const assets = value.visualAssets;
+  const claims = value.claims;
+  const citations = value.citations;
+  const notes = value.speakerNotes;
+  const slides = value.slides;
+  const renderSets = value.renderSets;
+  const renders = renderSets.flatMap((item) => item.renderedSlides);
+  const qaFindings = value.visualQaFindings;
+  const approvals = value.approvals;
+  const proposedOwnerActions = value.proposedOwnerActions;
+  const caveats = value.caveats;
+  const questions = value.questions;
+  const blockers = value.blockers;
+  const collections = [
+    ["sources", sources],
+    ["sourceUseAssessments", assessments],
+    ["visualAssets", assets],
+    ["claims", claims],
+    ["citations", citations],
+    ["speakerNotes", notes],
+    ["slides", slides],
+    ["renderSets", renderSets],
+    ["renders", renders],
+    ["visualQaFindings", qaFindings],
+    ["approvals", approvals],
+    ["proposedOwnerActions", proposedOwnerActions],
+    ["caveats", caveats],
+    ["questions", questions],
+    ["blockers", blockers],
+  ];
+  const singletonObjects = [
+    value.manifest,
+    value.deck.templateInventory,
+    value.deck.reviewCopy,
+    value.contentQa,
+    value.handoff,
+  ];
+  const allObjects = [
+    ...collections.flatMap(([, items]) => items),
+    ...singletonObjects,
+  ];
+  const allIds = allObjects.map((item) => item.id);
+  const allIdSet = new Set(allIds);
+  const objectById = new Map(allObjects.map((item) => [item.id, item]));
+  const sourceIds = sources.map((item) => item.id);
+  const assessmentIds = assessments.map((item) => item.id);
+  const assetIds = assets.map((item) => item.id);
+  const claimIds = claims.map((item) => item.id);
+  const citationIds = citations.map((item) => item.id);
+  const noteIds = notes.map((item) => item.id);
+  const slideIds = slides.map((item) => item.id);
+  const renderSetIds = renderSets.map((item) => item.id);
+  const renderIds = renders.map((item) => item.id);
+  const qaFindingIds = qaFindings.map((item) => item.id);
+  const approvalIds = approvals.map((item) => item.id);
+  const proposedOwnerActionIds = proposedOwnerActions.map((item) => item.id);
+  const caveatIds = caveats.map((item) => item.id);
+  const questionIds = questions.map((item) => item.id);
+  const blockerIds = blockers.map((item) => item.id);
+  const sourceSet = new Set(sourceIds);
+  const assessmentSet = new Set(assessmentIds);
+  const assetSet = new Set(assetIds);
+  const claimSet = new Set(claimIds);
+  const citationSet = new Set(citationIds);
+  const noteSet = new Set(noteIds);
+  const slideSet = new Set(slideIds);
+  const renderSetSet = new Set(renderSetIds);
+  const renderSetById = new Map(renderSets.map((item) => [item.id, item]));
+  const renderSetForRender = new Map(
+    renderSets.flatMap((set) =>
+      set.renderedSlides.map((render) => [render.id, set]),
+    ),
+  );
+  const renderSet = new Set(renderIds);
+  const qaFindingSet = new Set(qaFindingIds);
+  const approvalSet = new Set(approvalIds);
+  const proposedOwnerActionSet = new Set(proposedOwnerActionIds);
+  const caveatSet = new Set(caveatIds);
+  const questionSet = new Set(questionIds);
+  const blockerSet = new Set(blockerIds);
+  const sourceById = new Map(sources.map((item) => [item.id, item]));
+  const assessmentById = new Map(assessments.map((item) => [item.id, item]));
+  const assetById = new Map(assets.map((item) => [item.id, item]));
+  const claimById = new Map(claims.map((item) => [item.id, item]));
+  const citationById = new Map(citations.map((item) => [item.id, item]));
+  const noteById = new Map(notes.map((item) => [item.id, item]));
+  const slideById = new Map(slides.map((item) => [item.id, item]));
+  const renderById = new Map(renders.map((item) => [item.id, item]));
+  const qaFindingById = new Map(qaFindings.map((item) => [item.id, item]));
+  const questionById = new Map(questions.map((item) => [item.id, item]));
+  const authorityPrincipals = value.authorityRegistry.principals;
+  const authorityPrincipalById = new Map(
+    authorityPrincipals.map((item) => [item.id, item]),
+  );
+  const asOf = Date.parse(value.manifest.asOf);
+  const requiredActions = [
+    "distribute-deck",
+    "publish-deck",
+    "send-deck",
+    "upload-external",
+    "overwrite-source-deck",
+    "modify-template-deck",
+    "expose-hidden-content",
+    "expose-comments",
+    "execute-macros",
+    "resolve-remote-links",
+    "approve-decision",
+    "approve-recommendation",
+    "approve-deck-on-behalf",
+    "claim-completed-review-without-evidence",
+  ];
+  const findings = [
+    ...collections.flatMap(([name, items]) =>
+      uniqueFindings(
+        items.map((item) => item.id),
+        name,
+        `${name} id`,
+      ),
+    ),
+    ...uniqueFindings(
+      value.controlPolicies.map((item) => item.id),
+      "controlPolicies",
+      "Control policy id",
+    ),
+  ];
+  for (const id of duplicates(allIds)) {
+    findings.push(
+      finding(
+        "duplicate_object_id",
+        "manifest",
+        `Presentation object id ${JSON.stringify(id)} is reused across object types.`,
+      ),
+    );
+  }
+  const sameMembers = (left, right) =>
+    left.length === right.length && left.every((item) => right.includes(item));
+  const samePrincipal = (left, right) =>
+    canonicalJson(left) === canonicalJson(right);
+  const checkRefs = (refs, allowed, path, label) => {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, allowed, path, label),
+    );
+  };
+  const principalIsAgent = (principal) =>
+    /(?:^|[^\p{L}\p{N}])(?:agent|assistant|claw|ai|bot|copilot|gpt|llm|model|automation|presentation producer)(?:$|[^\p{L}\p{N}])/iu.test(
+      `${principal.id} ${principal.name}`,
+    );
+  const registeredPrincipal = (principal) => {
+    const registered = authorityPrincipalById.get(principal?.id);
+    return (
+      registered !== undefined &&
+      registered.name === principal.name &&
+      registered.type === principal.type
+    );
+  };
+  const hasAuthority = (principal, scope) =>
+    registeredPrincipal(principal) &&
+    authorityPrincipalById.get(principal.id).authorityScopes.includes(scope);
+  for (const [name, path] of Object.entries(value.manifest.outputPaths)) {
+    if (
+      !isSafePackagePath(path) ||
+      !path.startsWith("outputs/") ||
+      (name === "deck" && !path.endsWith(".pptx"))
+    ) {
+      findings.push(
+        finding(
+          "unsafe_output_path",
+          `manifest.outputPaths.${name}`,
+          "Deck, manifest, and handoff outputs must use portable private paths under outputs/.",
+        ),
+      );
+    }
+  }
+  findings.push(
+    ...uniqueFindings(
+      authorityPrincipals.map((item) => item.id),
+      "authorityRegistry.principals",
+      "Authority principal id",
+    ),
+  );
+  for (const [index, principal] of authorityPrincipals.entries()) {
+    const verifiedAt = Date.parse(principal.provenance.verifiedAt);
+    const provenanceTypeMatches =
+      (principal.type === "human" &&
+        principal.provenance.recordType === "human-directory-record") ||
+      (principal.type === "team" &&
+        principal.provenance.recordType === "team-charter");
+    if (
+      principalIsAgent(principal) ||
+      !provenanceTypeMatches ||
+      !Number.isFinite(verifiedAt) ||
+      verifiedAt > asOf
+    ) {
+      findings.push(
+        finding(
+          "invalid_authority_registry",
+          `authorityRegistry.principals.${index}`,
+          "Every authority principal must be a provenance-backed human or human team verified no later than manifest as-of; agent-like principals are prohibited.",
+        ),
+      );
+    }
+  }
+  const approvalContentDigest =
+    computePresentationApprovalContentDigest(value);
+  if (value.manifest.contentDigest !== approvalContentDigest) {
+    findings.push(
+      finding(
+        "invalid_content_digest",
+        "manifest.contentDigest",
+        "The manifest content digest must canonically bind every approval-material field except approvals and handoff approval references.",
+      ),
+    );
+  }
+
+  const expectedAuthorities = {
+    "source-deck": new Set(["content-owner"]),
+    "template-deck": new Set(["template-owner", "brand-owner"]),
+    "linked-asset": new Set(["asset-rights-owner"]),
+    "source-document": new Set([
+      "content-owner",
+      "system-of-record-owner",
+      "decision-owner",
+    ]),
+  };
+  const representationPermission = {
+    cite: "cite-in-speaker-notes",
+    paraphrase: "paraphrase",
+    summarize: "summarize",
+    "visual-excerpt": "include-approved-visual",
+    "template-structure-only": "reuse-template-structure",
+  };
+  findings.push(
+    ...uniqueFindings(
+      sources.map((item) => portablePathKey(item.path)),
+      "sources",
+      "Source path",
+    ),
+    ...uniqueFindings(
+      sources.map((item) => item.digest),
+      "sources",
+      "Source digest",
+    ),
+  );
+  for (const [index, source] of sources.entries()) {
+    const observedAt = Date.parse(source.observedAt);
+    const retrievedAt = Date.parse(source.retrievedAt);
+    if (
+      observedAt > retrievedAt ||
+      retrievedAt > asOf ||
+      !Number.isFinite(observedAt) ||
+      !Number.isFinite(retrievedAt)
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_chronology",
+          `sources.${index}`,
+          "Source observation and retrieval must be ordered and no later than manifest as-of.",
+        ),
+      );
+    }
+    if (
+      !isSafePackagePath(source.path) ||
+      !source.path.startsWith("inputs/") ||
+      !source.immutable ||
+      !expectedAuthorities[source.kind].has(source.authority) ||
+      !source.usagePermissions.includes(
+        representationPermission[source.representationMode],
+      )
+    ) {
+      findings.push(
+        finding(
+          "stale_or_unauthorized_source",
+          `sources.${index}`,
+          "Every input must be an immutable current authorized input with a safe path and permission for its approved representation mode.",
+        ),
+      );
+    }
+  }
+
+  const sourceDeck = sourceById.get(value.deck.sourceDeck.sourceRef);
+  const templateDeck = sourceById.get(value.deck.templateDeck.sourceRef);
+  const preservedDeckMatches = (contract, source, kind) =>
+    source?.kind === kind &&
+    contract.path === source.path &&
+    contract.digest === source.digest &&
+    contract.version === source.version &&
+    contract.preservedUnchanged &&
+    source.immutable;
+  const reviewCopy = value.deck.reviewCopy;
+  const assessmentUses = [
+    {
+      assessmentRef: value.deck.sourceDeck.assessmentRef,
+      sourceRef: value.deck.sourceDeck.sourceRef,
+      useRef: reviewCopy.id,
+      useKind: "source-deck",
+    },
+    {
+      assessmentRef: value.deck.templateDeck.assessmentRef,
+      sourceRef: value.deck.templateDeck.sourceRef,
+      useRef: reviewCopy.id,
+      useKind: "template-deck",
+    },
+    ...claims.flatMap((claim) =>
+      claim.evidence.map((evidence) => ({
+        assessmentRef: evidence.assessmentRef,
+        sourceRef: evidence.sourceRef,
+        useRef: claim.id,
+        useKind: "claim-evidence",
+      })),
+    ),
+    ...assets.map((asset) => ({
+      assessmentRef: asset.assessmentRef,
+      sourceRef: asset.sourceRef,
+      useRef: asset.id,
+      useKind: "visual-asset",
+    })),
+  ];
+  checkRefs(
+    assessmentUses.map((item) => item.assessmentRef),
+    assessmentSet,
+    "sourceUseAssessments",
+    "Source-use assessment reference",
+  );
+  if (
+    !sameMembers(
+      assessmentUses.map((item) => item.assessmentRef),
+      assessmentIds,
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid_source_use_assessment",
+        "sourceUseAssessments",
+        "Every source, claim-evidence, and visual-asset use must have exactly one assessment, and every assessment must govern an actual use.",
+      ),
+    );
+  }
+  for (const [index, assessment] of assessments.entries()) {
+    checkRefs(
+      [assessment.sourceRef],
+      sourceSet,
+      `sourceUseAssessments.${index}.sourceRef`,
+      "Assessment source reference",
+    );
+    checkRefs(
+      [assessment.reviewerRef],
+      new Set(authorityPrincipalById.keys()),
+      `sourceUseAssessments.${index}.reviewerRef`,
+      "Assessment reviewer reference",
+    );
+    const source = sourceById.get(assessment.sourceRef);
+    const use = assessmentUses.find(
+      (item) => item.assessmentRef === assessment.id,
+    );
+    const observedAt = Date.parse(assessment.sourceObservedAt);
+    const assessedAt = Date.parse(assessment.assessedAt);
+    const currentThrough = Date.parse(assessment.currentThrough);
+    const expectedCurrentThrough =
+      observedAt + assessment.maxAgeDays * 24 * 60 * 60 * 1000;
+    const reviewer = authorityPrincipalById.get(assessment.reviewerRef);
+    if (
+      !source ||
+      !use ||
+      assessment.sourceRef !== use.sourceRef ||
+      assessment.useRef !== use.useRef ||
+      assessment.useKind !== use.useKind ||
+      assessment.sourceVersion !== source.version ||
+      assessment.sourceDigest !== source.digest ||
+      assessment.sourceObservedAt !== source.observedAt ||
+      assessment.asOf !== value.manifest.asOf ||
+      assessedAt < Date.parse(source.retrievedAt) ||
+      assessedAt > asOf ||
+      currentThrough !== expectedCurrentThrough ||
+      assessment.freshnessStatus !==
+        (asOf <= currentThrough ? "current" : "stale") ||
+      assessment.freshnessStatus !== "current" ||
+      assessment.relevanceStatus !== "relevant" ||
+      !reviewer?.authorityScopes.includes("review-source-use") ||
+      principalIsAgent(reviewer)
+    ) {
+      findings.push(
+        finding(
+          "invalid_source_use_assessment",
+          `sourceUseAssessments.${index}`,
+          "Each actual source use requires an exact-version, use-bound, human-reviewed relevance and dated freshness assessment at the manifest as-of boundary.",
+        ),
+      );
+    }
+  }
+  if (
+    !preservedDeckMatches(value.deck.sourceDeck, sourceDeck, "source-deck") ||
+    !preservedDeckMatches(
+      value.deck.templateDeck,
+      templateDeck,
+      "template-deck",
+    ) ||
+    value.deck.sourceDeck.sourceRef === value.deck.templateDeck.sourceRef ||
+    portablePathKey(value.deck.sourceDeck.path) ===
+      portablePathKey(value.deck.templateDeck.path) ||
+    !isSafePackagePath(reviewCopy.path) ||
+    !reviewCopy.path.startsWith("outputs/") ||
+    sources.some(
+      (source) =>
+        portablePathKey(source.path) === portablePathKey(reviewCopy.path) ||
+        source.digest === reviewCopy.digest,
+    ) ||
+    reviewCopy.path !== value.manifest.outputPaths.deck ||
+    Date.parse(reviewCopy.createdAt) <=
+      Math.max(...sources.map((item) => Date.parse(item.retrievedAt))) ||
+    Date.parse(reviewCopy.createdAt) > asOf
+  ) {
+    findings.push(
+      finding(
+        "source_preservation_failure",
+        "deck",
+        "Source and template decks must match immutable authorized identities, remain distinct and unchanged, and produce a later distinct review-copy path and digest.",
+      ),
+    );
+  }
+  const templateInventory = value.deck.templateInventory;
+  const templateMasterIds = templateInventory.masters.map((item) => item.id);
+  const templateLayoutIds = templateInventory.layouts.map((item) => item.id);
+  findings.push(
+    ...uniqueFindings(
+      templateMasterIds,
+      "deck.templateInventory.masters",
+      "Template master id",
+    ),
+    ...uniqueFindings(
+      templateLayoutIds,
+      "deck.templateInventory.layouts",
+      "Template layout id",
+    ),
+  );
+  if (
+    templateInventory.sourceRef !== value.deck.templateDeck.sourceRef ||
+    templateInventory.sourceVersion !== value.deck.templateDeck.version ||
+    templateInventory.sourceDigest !== value.deck.templateDeck.digest ||
+    templateInventory.inventoryDigest !==
+      computePresentationTemplateInventoryDigest(templateInventory) ||
+    Date.parse(templateInventory.extractedAt) <
+      Date.parse(templateDeck?.retrievedAt) ||
+    Date.parse(templateInventory.extractedAt) >
+      Date.parse(reviewCopy.createdAt) ||
+    Date.parse(templateInventory.extractedAt) > asOf ||
+    templateInventory.layouts.some(
+      (layout) => !templateMasterIds.includes(layout.masterId),
+    ) ||
+    value.deck.preservation.templateInventoryVersion !==
+      templateInventory.version ||
+    value.deck.preservation.templateInventoryDigest !==
+      templateInventory.inventoryDigest ||
+    value.deck.preservation.aspectRatio !== templateInventory.aspectRatio ||
+    reviewCopy.aspectRatio !== templateInventory.aspectRatio ||
+    !sameMembers(value.deck.preservation.masterIds, templateMasterIds) ||
+    !sameMembers(value.deck.preservation.layoutIds, templateLayoutIds) ||
+    !value.deck.preservation.placeholdersPreserved ||
+    !value.deck.preservation.themePreserved ||
+    value.deck.preservation.masterIds.length === 0 ||
+    value.deck.preservation.layoutIds.length === 0 ||
+    slides.some(
+      (slide) => {
+        const layout = templateInventory.layouts.find(
+          (item) => item.id === slide.layoutId,
+        );
+        return (
+        !value.deck.preservation.masterIds.includes(slide.masterId) ||
+          !value.deck.preservation.layoutIds.includes(slide.layoutId) ||
+          layout?.masterId !== slide.masterId
+        );
+      },
+    )
+  ) {
+    findings.push(
+      finding(
+        "template_fidelity_failure",
+        "deck.preservation",
+        "Every slide must use an approved preserved master and layout under the exact template, brand, font, theme, placeholder, media, notes, and hidden-content contract.",
+      ),
+    );
+  }
+
+  for (const [index, asset] of assets.entries()) {
+    checkRefs(
+      [asset.sourceRef],
+      sourceSet,
+      `visualAssets.${index}.sourceRef`,
+      "Visual asset source reference",
+    );
+    checkRefs(
+      asset.slideRefs,
+      slideSet,
+      `visualAssets.${index}.slideRefs`,
+      "Visual asset slide reference",
+    );
+    checkRefs(
+      [asset.assessmentRef],
+      assessmentSet,
+      `visualAssets.${index}.assessmentRef`,
+      "Visual asset assessment reference",
+    );
+    const source = sourceById.get(asset.sourceRef);
+    const assessment = assessmentById.get(asset.assessmentRef);
+    const provenanceMode =
+      asset.kind === "template-decoration"
+        ? "template-structure"
+        : asset.kind === "generated-diagram"
+          ? "generated-from-visible-source"
+          : "direct-visible-excerpt";
+    const provenanceReviewer = authorityPrincipalById.get(
+      asset.provenance.reviewerRef,
+    );
+    if (
+      !source ||
+      asset.sourceVersion !== source.version ||
+      asset.sourceDigest !== source.digest ||
+      assessment?.sourceRef !== source.id ||
+      assessment?.useRef !== asset.id ||
+      assessment?.useKind !== "visual-asset" ||
+      !source.usagePermissions.includes(
+        asset.kind === "template-decoration"
+          ? "reuse-template-structure"
+          : "include-approved-visual",
+      ) ||
+      asset.provenance.mode !== provenanceMode ||
+      asset.provenance.sourceObservedAt !== source.observedAt ||
+      Date.parse(asset.provenance.reviewedAt) <
+        Date.parse(source.retrievedAt) ||
+      Date.parse(asset.provenance.reviewedAt) > asOf ||
+      !provenanceReviewer?.authorityScopes.includes("review-source-use") ||
+      principalIsAgent(provenanceReviewer) ||
+      !asset.provenance.approvedAudienceScope.every(
+        (audience) =>
+          source.audienceScope.includes(audience) &&
+          value.manifest.audienceScope.includes(audience),
+      ) ||
+      !asset.provenance.visibleContentOnly ||
+      asset.provenance.sourceNotesIncluded ||
+      asset.provenance.hiddenContentIncluded ||
+      asset.provenance.commentContentIncluded ||
+      asset.slideRefs.some(
+        (ref) => !slideById.get(ref)?.visualAssetRefs.includes(asset.id),
+      )
+    ) {
+      findings.push(
+        finding(
+          "invalid_visual_asset",
+          `visualAssets.${index}`,
+          "Every visual asset must bind an exact source version, locator, dated use assessment, visible-only provenance, audience-safe review, and bidirectional slide usage.",
+        ),
+      );
+    }
+    if (
+      asset.provenance.sourceNotesIncluded ||
+      asset.provenance.hiddenContentIncluded ||
+      asset.provenance.commentContentIncluded ||
+      !asset.provenance.approvedAudienceScope.every(
+        (audience) =>
+          source?.audienceScope.includes(audience) &&
+          value.manifest.audienceScope.includes(audience),
+      )
+    ) {
+      findings.push(
+        finding(
+          "hidden_content_exposure",
+          `visualAssets.${index}.provenance`,
+          "Visual assets may use only expressly reviewed visible source content and may not expose notes, comments, hidden content, or a weaker audience.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, claim] of claims.entries()) {
+    checkRefs(
+      claim.slideRefs,
+      slideSet,
+      `claims.${index}.slideRefs`,
+      "Claim slide reference",
+    );
+    checkRefs(
+      claim.caveatRefs,
+      caveatSet,
+      `claims.${index}.caveatRefs`,
+      "Claim caveat reference",
+    );
+    let supported = claim.evidence.length > 0;
+    for (const [evidenceIndex, evidence] of claim.evidence.entries()) {
+      checkRefs(
+        [evidence.sourceRef],
+        sourceSet,
+        `claims.${index}.evidence.${evidenceIndex}.sourceRef`,
+        "Claim evidence source reference",
+      );
+      const source = sourceById.get(evidence.sourceRef);
+      const assessment = assessmentById.get(evidence.assessmentRef);
+      checkRefs(
+        [evidence.assessmentRef],
+        assessmentSet,
+        `claims.${index}.evidence.${evidenceIndex}.assessmentRef`,
+        "Claim evidence assessment reference",
+      );
+      supported =
+        supported &&
+        evidence.sourceVersion === source?.version &&
+        evidence.sourceDigest === source?.digest &&
+        evidence.observedAt === source?.observedAt &&
+        evidence.sourceAuthority === source?.authority &&
+        samePrincipal(evidence.sourceOwner, source?.owner) &&
+        source?.representationMode !== "template-structure-only" &&
+        Date.parse(evidence.observedAt) <= asOf &&
+        assessment?.sourceRef === evidence.sourceRef &&
+        assessment?.useRef === claim.id &&
+        assessment?.useKind === "claim-evidence" &&
+        assessment?.freshnessStatus === "current" &&
+        assessment?.relevanceStatus === "relevant";
+    }
+    if (
+      !supported ||
+      (claim.kind === "factual" &&
+        claim.status === "final" &&
+        claim.evidence.some(
+          (evidence) =>
+            ![
+              "content-owner",
+              "system-of-record-owner",
+              "decision-owner",
+            ].includes(evidence.sourceAuthority),
+        ))
+    ) {
+      findings.push(
+        finding(
+          "unsupported_claim",
+          `claims.${index}`,
+          "Material claims require relevant current authorized evidence with exact source version, digest, chronology, owner, and authority.",
+        ),
+      );
+    }
+    const approvedAt = claim.approvedAt && Date.parse(claim.approvedAt);
+    const evidenceTimes = claim.evidence.map((item) =>
+      Date.parse(item.observedAt),
+    );
+    const coherent =
+      (claim.kind === "factual" &&
+        ["observed", "inferred"].includes(claim.epistemicType) &&
+        claim.status === "final" &&
+        claim.approvalState === "evidence-verified" &&
+        claim.approvedBy === null &&
+        claim.approvedAt === null &&
+        (claim.epistemicType !== "inferred" || claim.visiblyLabeled)) ||
+      (claim.kind === "decision" &&
+        claim.epistemicType === "observed" &&
+        claim.status === "final" &&
+        claim.approvalState === "human-approved" &&
+        samePrincipal(claim.owner, value.manifest.decisionOwner) &&
+        samePrincipal(claim.approvedBy, value.manifest.decisionOwner) &&
+        claim.evidence.some(
+          (item) => item.sourceAuthority === "decision-owner",
+        ) &&
+        Number.isFinite(approvedAt) &&
+        evidenceTimes.every((time) => time <= approvedAt) &&
+        approvedAt <= asOf) ||
+      (claim.kind === "recommendation" &&
+        claim.epistemicType === "recommended" &&
+        claim.visiblyLabeled &&
+        samePrincipal(claim.owner, value.manifest.decisionOwner) &&
+        ((claim.approvalState === "pending-human-decision" &&
+          claim.status === "draft" &&
+          claim.approvedBy === null &&
+          claim.approvedAt === null) ||
+          (claim.approvalState === "human-approved" &&
+            claim.status === "final" &&
+            samePrincipal(claim.approvedBy, value.manifest.decisionOwner) &&
+            Number.isFinite(approvedAt) &&
+            evidenceTimes.every((time) => time <= approvedAt) &&
+            approvedAt <= asOf))) ||
+      (claim.kind === "assumption" &&
+        claim.epistemicType === "assumption" &&
+        claim.status === "draft" &&
+        claim.visiblyLabeled &&
+        claim.approvalState === "labeled-assumption" &&
+        claim.approvedBy === null &&
+        claim.approvedAt === null);
+    if (!coherent) {
+      findings.push(
+        finding(
+          "invalid_claim_epistemic_state",
+          `claims.${index}`,
+          "Observed, inferred, recommended, assumption, final, labeling, ownership, and human-approval state must remain coherent.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, citation] of citations.entries()) {
+    checkRefs(
+      [citation.claimRef],
+      claimSet,
+      `citations.${index}.claimRef`,
+      "Citation claim reference",
+    );
+    checkRefs(
+      [citation.slideRef],
+      slideSet,
+      `citations.${index}.slideRef`,
+      "Citation slide reference",
+    );
+    checkRefs(
+      [citation.sourceRef],
+      sourceSet,
+      `citations.${index}.sourceRef`,
+      "Citation source reference",
+    );
+    checkRefs(
+      [citation.noteRef],
+      noteSet,
+      `citations.${index}.noteRef`,
+      "Citation note reference",
+    );
+    const claim = claimById.get(citation.claimRef);
+    const source = sourceById.get(citation.sourceRef);
+    const note = noteById.get(citation.noteRef);
+    const evidence = claim?.evidence.find(
+      (item) =>
+        item.sourceRef === citation.sourceRef &&
+        item.sourceVersion === citation.sourceVersion &&
+        item.sourceDigest === citation.sourceDigest &&
+        item.locator === citation.locator,
+    );
+    if (
+      !claim?.slideRefs.includes(citation.slideRef) ||
+      !evidence ||
+      citation.sourceVersion !== source?.version ||
+      citation.sourceDigest !== source?.digest ||
+      note?.slideRef !== citation.slideRef ||
+      !note?.citationRefs.includes(citation.id) ||
+      !citation.approvedAudienceScope.every(
+        (audience) =>
+          source?.audienceScope.includes(audience) &&
+          value.manifest.audienceScope.includes(audience),
+      )
+    ) {
+      findings.push(
+        finding(
+          "invalid_citation_binding",
+          `citations.${index}`,
+          "Every material slide claim citation must bind the exact claim evidence, slide, source version and digest, locator, note, and approved audience.",
+        ),
+      );
+    }
+    if (
+      citation.includesHiddenContent ||
+      citation.includesCommentContent ||
+      citation.includesUnapprovedSourceNotes
+    ) {
+      findings.push(
+        finding(
+          "hidden_content_exposure",
+          `citations.${index}`,
+          "Citations must not copy hidden content, comments, or unapproved source notes.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, note] of notes.entries()) {
+    checkRefs(
+      [note.slideRef],
+      slideSet,
+      `speakerNotes.${index}.slideRef`,
+      "Speaker note slide reference",
+    );
+    checkRefs(
+      note.citationRefs,
+      citationSet,
+      `speakerNotes.${index}.citationRefs`,
+      "Speaker note citation reference",
+    );
+    const slide = slideById.get(note.slideRef);
+    if (
+      slide?.noteRef !== note.id ||
+      !sameMembers(note.citationRefs, slide?.citationRefs ?? []) ||
+      note.citationRefs.some(
+        (ref) => citationById.get(ref)?.noteRef !== note.id,
+      ) ||
+      !note.approvedAudienceScope.every((audience) =>
+        value.manifest.audienceScope.includes(audience),
+      ) ||
+      note.sourceNotesCopied ||
+      note.hiddenSourceContentIncluded ||
+      note.commentContentIncluded
+    ) {
+      findings.push(
+        finding(
+          "hidden_content_exposure",
+          `speakerNotes.${index}`,
+          "Speaker notes must contain only approved guidance and exact citations for their slide and audience, with no copied source notes, hidden content, or comments.",
+        ),
+      );
+    }
+  }
+
+  const expectedSlideIds = Array.from(
+    { length: value.manifest.expectedSlideCount },
+    (_, index) => `slide-${String(index + 1).padStart(2, "0")}`,
+  );
+  const extractedSlides = value.contentQa.extractedSlides;
+  const contentItems = extractedSlides.flatMap((item) => item.contentItems);
+  const contentItemIds = contentItems.map((item) => item.id);
+  const contentItemSet = new Set(contentItemIds);
+  findings.push(
+    ...uniqueFindings(
+      contentItemIds,
+      "contentQa.extractedSlides",
+      "Extracted content item id",
+    ),
+  );
+  if (
+    slides.length !== value.manifest.expectedSlideCount ||
+    !sameMembers(slideIds, expectedSlideIds) ||
+    slides.some(
+      (slide, index) =>
+        slide.id !== expectedSlideIds[index] || slide.order !== index + 1,
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid_slide_inventory",
+        "slides",
+        "The review copy must contain exactly 12 stable slide ids in exact order.",
+      ),
+    );
+  }
+  for (const [index, slide] of slides.entries()) {
+    checkRefs(
+      slide.contentItemRefs,
+      contentItemSet,
+      `slides.${index}.contentItemRefs`,
+      "Slide extracted-content reference",
+    );
+    checkRefs(
+      slide.claimRefs,
+      claimSet,
+      `slides.${index}.claimRefs`,
+      "Slide claim reference",
+    );
+    checkRefs(
+      slide.visualAssetRefs,
+      assetSet,
+      `slides.${index}.visualAssetRefs`,
+      "Slide visual asset reference",
+    );
+    checkRefs(
+      slide.citationRefs,
+      citationSet,
+      `slides.${index}.citationRefs`,
+      "Slide citation reference",
+    );
+    checkRefs(
+      [slide.noteRef],
+      noteSet,
+      `slides.${index}.noteRef`,
+      "Slide note reference",
+    );
+    checkRefs(
+      [slide.renderRef],
+      renderSet,
+      `slides.${index}.renderRef`,
+      "Slide render reference",
+    );
+    const extractedSlide = extractedSlides.find(
+      (item) => item.slideRef === slide.id,
+    );
+    const titleItems =
+      extractedSlide?.contentItems.filter((item) => item.role === "title") ?? [];
+    const materialContentClaimRefs = [
+      ...new Set(
+        (extractedSlide?.contentItems ?? [])
+          .filter((item) => item.material)
+          .flatMap((item) => item.claimRefs),
+      ),
+    ];
+    const claimsCovered = slide.claimRefs.every((claimRef) => {
+      const claim = claimById.get(claimRef);
+      return (
+        claim?.slideRefs.includes(slide.id) &&
+        citations.some(
+          (citation) =>
+            citation.claimRef === claimRef &&
+            citation.slideRef === slide.id &&
+            slide.citationRefs.includes(citation.id),
+        )
+      );
+    });
+    const referencesAligned =
+      claimsCovered &&
+      extractedSlide !== undefined &&
+      extractedSlide.textDigest ===
+        sha256Digest(extractedSlide.contentItems) &&
+      sameMembers(
+        slide.contentItemRefs,
+        extractedSlide.contentItems.map((item) => item.id),
+      ) &&
+      titleItems.length === 1 &&
+      titleItems[0].text === slide.title &&
+      titleItems[0].material &&
+      titleItems[0].claimRefs.length > 0 &&
+      extractedSlide.contentItems.every(
+        (item) =>
+          (!item.material && item.role !== "title" && item.role !== "body") ||
+          (item.material &&
+            item.claimRefs.length > 0 &&
+            item.claimRefs.every((ref) => slide.claimRefs.includes(ref))),
+      ) &&
+      sameMembers(materialContentClaimRefs, slide.claimRefs) &&
+      slide.visualAssetRefs.every((ref) =>
+        assetById.get(ref)?.slideRefs.includes(slide.id),
+      ) &&
+      slide.citationRefs.every(
+        (ref) => citationById.get(ref)?.slideRef === slide.id,
+      ) &&
+      noteById.get(slide.noteRef)?.slideRef === slide.id &&
+      renderById.get(slide.renderRef)?.slideRef === slide.id;
+    if (!referencesAligned) {
+      findings.push(
+        finding(
+          "invalid_slide_inventory",
+          `slides.${index}`,
+          "Slide title/body content, material claims, citations, notes, visual assets, and final render identity must be bidirectionally complete.",
+        ),
+      );
+    }
+  }
+  if (
+    extractedSlides.length !== slides.length ||
+    extractedSlides.some(
+      (item, index) => item.slideRef !== slides[index]?.id,
+    ) ||
+    !sameMembers(
+      extractedSlides.map((item) => item.slideRef),
+      slideIds,
+    ) ||
+    value.contentQa.textDigest !== sha256Digest(extractedSlides)
+  ) {
+    findings.push(
+      finding(
+        "incomplete_content_qa",
+        "contentQa.extractedSlides",
+        "Per-slide extracted text must preserve exact deck order, canonical text digests, and structured material-content claim coverage.",
+      ),
+    );
+  }
+  for (const claim of claims) {
+    if (
+      claim.slideRefs.some(
+        (ref) => !slideById.get(ref)?.claimRefs.includes(claim.id),
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_claim",
+          claim.id,
+          "Every material claim must have bidirectional slide coverage.",
+        ),
+      );
+    }
+  }
+
+  const checkKindForField = {
+    overflow: "overflow",
+    clipping: "clipping",
+    contrast: "contrast",
+    placeholders: "placeholder",
+    citationCollision: "citation-collision",
+    overlap: "overlap",
+    edgeMargin: "edge-margin",
+    notesLeakage: "notes-leakage",
+  };
+  let previousRenderedAt = -Infinity;
+  let previousReviewedAt = -Infinity;
+  for (const [setIndex, set] of renderSets.entries()) {
+    if (
+      set.sequence !== setIndex + 1 ||
+      Date.parse(set.renderedAt) <= previousRenderedAt ||
+      Date.parse(set.renderedAt) < previousReviewedAt ||
+      Date.parse(set.renderedAt) > Date.parse(set.reviewedAt) ||
+      Date.parse(set.reviewedAt) > asOf ||
+      !samePrincipal(set.reviewer, value.manifest.reviewer)
+    ) {
+      findings.push(
+        finding(
+          "invalid_render_chronology",
+          `renderSets.${setIndex}`,
+          "Full-deck render cycles, review times, sequence, reviewer, and manifest as-of must be strictly ordered.",
+        ),
+      );
+    }
+    previousRenderedAt = Date.parse(set.renderedAt);
+    previousReviewedAt = Date.parse(set.reviewedAt);
+    const setSlideRefs = set.renderedSlides.map((item) => item.slideRef);
+    if (
+      set.renderedSlides.length !== slides.length ||
+      !sameMembers(setSlideRefs, slideIds) ||
+      set.renderedSlides.some(
+        (render, index) =>
+          render.slideRef !== slides[index]?.id ||
+          render.order !== slides[index]?.order,
+      )
+    ) {
+      findings.push(
+        finding(
+          "incomplete_visual_qa",
+          `renderSets.${setIndex}.renderedSlides`,
+          "Every render cycle must cover every slide exactly once in deck order.",
+        ),
+      );
+    }
+    let failedChecks = 0;
+    for (const [renderIndex, render] of set.renderedSlides.entries()) {
+      checkRefs(
+        [render.slideRef],
+        slideSet,
+        `renderSets.${setIndex}.renderedSlides.${renderIndex}.slideRef`,
+        "Rendered slide reference",
+      );
+      checkRefs(
+        render.reviewerFindingRefs,
+        qaFindingSet,
+        `renderSets.${setIndex}.renderedSlides.${renderIndex}.reviewerFindingRefs`,
+        "Rendered slide finding reference",
+      );
+      const failedKinds = Object.entries(render.checks)
+        .filter(([, status]) => status === "failed")
+        .map(([field]) => checkKindForField[field]);
+      failedChecks += failedKinds.length;
+      const linkedFindings = render.reviewerFindingRefs
+        .map((ref) => qaFindingById.get(ref))
+        .filter(Boolean);
+      if (
+        render.renderedAt !== set.renderedAt ||
+        canonicalJson(render.tool) !== canonicalJson(set.tool) ||
+        linkedFindings.some(
+          (item) =>
+            item.renderRef !== render.id ||
+            item.slideRef !== render.slideRef ||
+            !failedKinds.includes(item.kind),
+        ) ||
+        failedKinds.some(
+          (kind) => !linkedFindings.some((item) => item.kind === kind),
+        )
+      ) {
+        findings.push(
+          finding(
+            "failed_visual_qa",
+            `renderSets.${setIndex}.renderedSlides.${renderIndex}`,
+            "Every failed visual check requires a matching reviewer finding on the exact rendered slide, time, tool, and version.",
+          ),
+        );
+      }
+    }
+    if (
+      (set.status === "passed" && failedChecks > 0) ||
+      (set.status === "failed" && failedChecks === 0)
+    ) {
+      findings.push(
+        finding(
+          "failed_visual_qa",
+          `renderSets.${setIndex}.status`,
+          "A render set passes only when every overflow, clipping, contrast, placeholder, collision, overlap, margin, and notes-leakage check passes.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, item] of qaFindings.entries()) {
+    checkRefs(
+      [item.renderRef],
+      renderSet,
+      `visualQaFindings.${index}.renderRef`,
+      "Visual finding render reference",
+    );
+    checkRefs(
+      [item.slideRef],
+      slideSet,
+      `visualQaFindings.${index}.slideRef`,
+      "Visual finding slide reference",
+    );
+    checkRefs(
+      item.fixedInRenderRef === null ? [] : [item.fixedInRenderRef],
+      renderSet,
+      `visualQaFindings.${index}.fixedInRenderRef`,
+      "Fixed render reference",
+    );
+    const originalRender = renderById.get(item.renderRef);
+    const originalSet = renderSetForRender.get(item.renderRef);
+    const fixedRender =
+      item.fixedInRenderRef === null
+        ? null
+        : renderById.get(item.fixedInRenderRef);
+    const fixedSet =
+      item.fixedInRenderRef === null
+        ? null
+        : renderSetForRender.get(item.fixedInRenderRef);
+    const fixCoherent =
+      item.status === "fixed"
+        ? fixedRender?.slideRef === item.slideRef &&
+          fixedSet?.sequence > originalSet?.sequence &&
+          fixedRender.digest !== originalRender?.digest &&
+          item.fixedAt !== null &&
+          Date.parse(item.fixedAt) >= Date.parse(item.foundAt) &&
+          Date.parse(item.fixedAt) >= Date.parse(originalRender?.renderedAt) &&
+          Date.parse(item.fixedAt) <= Date.parse(fixedRender?.renderedAt) &&
+          Date.parse(fixedRender?.renderedAt) <=
+            Date.parse(fixedSet?.reviewedAt) &&
+          Date.parse(fixedSet?.reviewedAt) <= asOf &&
+          Object.entries(fixedRender?.checks ?? {}).some(
+            ([field, status]) =>
+              checkKindForField[field] === item.kind && status === "passed",
+          )
+        : item.fixedInRenderRef === null && item.fixedAt === null;
+    if (
+      originalRender?.slideRef !== item.slideRef ||
+      !originalRender?.reviewerFindingRefs.includes(item.id) ||
+      !samePrincipal(item.reviewer, originalSet?.reviewer) ||
+      Date.parse(item.foundAt) < Date.parse(originalRender?.renderedAt) ||
+      Date.parse(item.foundAt) > Date.parse(originalSet?.reviewedAt) ||
+      !fixCoherent
+    ) {
+      findings.push(
+        finding(
+          "invalid_visual_qa_finding",
+          `visualQaFindings.${index}`,
+          "A visual finding must bind the exact failed render and reviewer, then record an honest later same-slide fix and rerender when fixed.",
+        ),
+      );
+    }
+  }
+  const finalRenderSet = renderSets.at(-1);
+  const fixedCycleExists =
+    renderSets.length >= 2 &&
+    renderSets[0]?.status === "failed" &&
+    qaFindings.some(
+      (item) =>
+        item.status === "fixed" &&
+        renderSetForRender.get(item.renderRef)?.id === renderSets[0]?.id &&
+        renderSetForRender.get(item.fixedInRenderRef)?.sequence > 1,
+    ) &&
+    finalRenderSet?.status === "passed";
+  if (!fixedCycleExists) {
+    findings.push(
+      finding(
+        "missing_fix_rerender_cycle",
+        "renderSets",
+        "The first full-deck render must itself fail with an observed finding that is fixed before a later complete passing rerender; a clean pre-cycle is not valid QA evidence.",
+      ),
+    );
+  }
+  if (
+    finalRenderSet?.deckDigest !== reviewCopy.digest ||
+    finalRenderSet?.deckVersion !== reviewCopy.version ||
+    finalRenderSet?.status !== "passed" ||
+    qaFindings.some((item) => item.status === "open") ||
+    slides.some(
+      (slide) =>
+        !finalRenderSet?.renderedSlides.some(
+          (render) => render.id === slide.renderRef,
+        ),
+    )
+  ) {
+    findings.push(
+      finding(
+        "incomplete_visual_qa",
+        "renderSets",
+        "The final passed full-deck render must match the exact review-copy digest and version, cover every slide render identity, and have no open finding.",
+      ),
+    );
+  }
+
+  checkRefs(
+    value.contentQa.slideRefs,
+    slideSet,
+    "contentQa.slideRefs",
+    "Content QA slide reference",
+  );
+  checkRefs(
+    value.contentQa.findingRefs,
+    qaFindingSet,
+    "contentQa.findingRefs",
+    "Content QA finding reference",
+  );
+  const contentChecksPassed = Object.values(value.contentQa.checks).every(
+    (status) => status === "passed",
+  );
+  const requiredBaselinePlaceholders = [
+    "xxxx",
+    "lorem",
+    "ipsum",
+    "this page layout",
+    "this slide layout",
+  ];
+  const normalizePatterns = (patterns) =>
+    patterns.map((item) => item.trim().toLowerCase());
+  const baselinePatterns = normalizePatterns(
+    value.contentQa.placeholderScan.baselinePatterns,
+  );
+  const templatePatterns = normalizePatterns(
+    value.contentQa.placeholderScan.templatePatterns,
+  );
+  const effectivePatterns = normalizePatterns(
+    value.contentQa.placeholderScan.effectivePatterns,
+  );
+  const expectedTemplatePatterns = normalizePatterns(
+    templateInventory.placeholderPatterns,
+  );
+  const expectedEffectivePatterns = [
+    ...new Set([...requiredBaselinePlaceholders, ...expectedTemplatePatterns]),
+  ];
+  if (
+    value.contentQa.deckDigest !== reviewCopy.digest ||
+    value.contentQa.deckVersion !== reviewCopy.version ||
+    value.contentQa.extractedSlideCount !== slides.length ||
+    !sameMembers(value.contentQa.slideRefs, slideIds) ||
+    value.contentQa.contentDigest !==
+      computePresentationContentQaDigest(value.contentQa) ||
+    !requiredBaselinePlaceholders.every((pattern) =>
+      baselinePatterns.includes(pattern),
+    ) ||
+    !sameMembers(templatePatterns, expectedTemplatePatterns) ||
+    !sameMembers(effectivePatterns, expectedEffectivePatterns) ||
+    value.contentQa.placeholderScan.caseSensitive ||
+    value.contentQa.placeholderScan.matchMode !== "normalized-substring" ||
+    !contentChecksPassed ||
+    value.contentQa.leftoverPlaceholders.length > 0 ||
+    value.contentQa.findingRefs.length > 0 ||
+    Date.parse(value.contentQa.extractedAt) <
+      Date.parse(finalRenderSet?.reviewedAt) ||
+    Date.parse(value.contentQa.extractedAt) >
+      Date.parse(value.contentQa.reviewedAt) ||
+    Date.parse(value.contentQa.reviewedAt) > asOf ||
+    !samePrincipal(value.contentQa.reviewer, value.manifest.reviewer)
+  ) {
+    findings.push(
+      finding(
+        "incomplete_content_qa",
+        "contentQa",
+        "Final text extraction must cover the exact deck and structured content, bind its canonical digest, scan the standard and template-derived placeholder baselines, pass all checks, and follow final visual review.",
+      ),
+    );
+  }
+
+  for (const [index, approval] of approvals.entries()) {
+    checkRefs(
+      [approval.deckRef],
+      new Set([reviewCopy.id]),
+      `approvals.${index}.deckRef`,
+      "Approval deck reference",
+    );
+    checkRefs(
+      approval.sourceRefs,
+      sourceSet,
+      `approvals.${index}.sourceRefs`,
+      "Approval source reference",
+    );
+    checkRefs(
+      approval.claimRefs,
+      claimSet,
+      `approvals.${index}.claimRefs`,
+      "Approval claim reference",
+    );
+    checkRefs(
+      approval.slideRefs,
+      slideSet,
+      `approvals.${index}.slideRefs`,
+      "Approval slide reference",
+    );
+    checkRefs(
+      [approval.renderSetRef],
+      renderSetSet,
+      `approvals.${index}.renderSetRef`,
+      "Approval render-set reference",
+    );
+    checkRefs(
+      approval.renderRefs,
+      renderSet,
+      `approvals.${index}.renderRefs`,
+      "Approval render reference",
+    );
+    checkRefs(
+      [approval.contentQaRef],
+      new Set([value.contentQa.id]),
+      `approvals.${index}.contentQaRef`,
+      "Approval content-QA reference",
+    );
+    if (
+      approval.scope !== "exact-review-copy" ||
+      approval.decisionAuthorityGranted ||
+      !samePrincipal(approval.reviewer, value.manifest.reviewer)
+    ) {
+      findings.push(
+        finding(
+          "invalid_approval_scope",
+          `approvals.${index}`,
+          "Review approval must be human or team owned, exact-review-copy only, and grant no decision or distribution authority.",
+        ),
+      );
+    }
+    const finalRenderIds =
+      finalRenderSet?.renderedSlides.map((item) => item.id) ?? [];
+    if (
+      approval.deckPath !== reviewCopy.path ||
+      approval.deckDigest !== reviewCopy.digest ||
+      approval.deckVersion !== reviewCopy.version ||
+      !sameMembers(approval.sourceRefs, sourceIds) ||
+      !sameMembers(approval.claimRefs, claimIds) ||
+      !sameMembers(approval.slideRefs, slideIds) ||
+      approval.renderSetRef !== finalRenderSet?.id ||
+      !sameMembers(approval.renderRefs, finalRenderIds) ||
+      approval.contentQaRef !== value.contentQa.id ||
+      approval.contentQaDigest !== value.contentQa.contentDigest ||
+      approval.contentDigest !== approvalContentDigest
+    ) {
+      findings.push(
+        finding(
+          "stale_approval",
+          `approvals.${index}`,
+          "Review approval must bind the current exact deck identity, canonical approval content digest, complete source and claim sets, all slides, final render records, and content-QA record and digest.",
+        ),
+      );
+    }
+    const approvedAt = Date.parse(approval.approvedAt);
+    const latestEvidence = Math.max(
+      Date.parse(reviewCopy.createdAt),
+      Date.parse(finalRenderSet?.reviewedAt),
+      Date.parse(value.contentQa.reviewedAt),
+      Date.parse(templateInventory.extractedAt),
+      ...sources.map((item) => Date.parse(item.retrievedAt)),
+      ...assessments.map((item) => Date.parse(item.assessedAt)),
+      ...assets.map((item) => Date.parse(item.provenance.reviewedAt)),
+      ...qaFindings.flatMap((item) =>
+        [item.foundAt, item.fixedAt]
+          .filter((time) => time !== null)
+          .map((time) => Date.parse(time)),
+      ),
+      ...proposedOwnerActions.map((item) => Date.parse(item.proposedAt)),
+      ...claims
+        .map((item) => Date.parse(item.approvedAt))
+        .filter(Number.isFinite),
+    );
+    if (
+      approvedAt <= latestEvidence ||
+      approvedAt > asOf ||
+      approval.decision === "approved-for-human-review" &&
+        (finalRenderSet?.status !== "passed" || !contentChecksPassed)
+    ) {
+      findings.push(
+        finding(
+          "invalid_approval_chronology",
+          `approvals.${index}.approvedAt`,
+          "Review approval must follow all bound source, claim, deck, final-render, and content-QA evidence and must not postdate manifest as-of.",
+        ),
+      );
+    }
+  }
+
+  const proposedActionScope = {
+    "review-deck": "approve-review-copy",
+    "decide-recommendation": "own-decision",
+    "approve-review-copy": "approve-review-copy",
+    "distribute-after-approval": "own-decision",
+  };
+  for (const [index, action] of proposedOwnerActions.entries()) {
+    checkRefs(
+      [action.ownerRef],
+      new Set(authorityPrincipalById.keys()),
+      `proposedOwnerActions.${index}.ownerRef`,
+      "Proposed action owner reference",
+    );
+    checkRefs(
+      action.targetRefs,
+      allIdSet,
+      `proposedOwnerActions.${index}.targetRefs`,
+      "Proposed action target reference",
+    );
+    const owner = authorityPrincipalById.get(action.ownerRef);
+    if (
+      action.state !== "proposed" ||
+      Date.parse(action.proposedAt) > asOf ||
+      !owner?.authorityScopes.includes(proposedActionScope[action.action]) ||
+      principalIsAgent(owner)
+    ) {
+      findings.push(
+        finding(
+          "invalid_proposed_owner_action",
+          `proposedOwnerActions.${index}`,
+          "Owner actions must be represented only as dated structured proposals assigned to a registered human authority for exact targets.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, caveat] of caveats.entries()) {
+    checkRefs(
+      caveat.claimRefs,
+      claimSet,
+      `caveats.${index}.claimRefs`,
+      "Caveat claim reference",
+    );
+    checkRefs(
+      caveat.slideRefs,
+      slideSet,
+      `caveats.${index}.slideRefs`,
+      "Caveat slide reference",
+    );
+    if (
+      caveat.claimRefs.some(
+        (ref) =>
+          !claimById.get(ref)?.caveatRefs.includes(caveat.id) ||
+          !claimById.get(ref)?.slideRefs.some((slideRef) =>
+            caveat.slideRefs.includes(slideRef),
+          ),
+      )
+    ) {
+      findings.push(
+        finding(
+          "incomplete_caveat_coverage",
+          `caveats.${index}`,
+          "Caveats must be bidirectionally linked to their material claims and affected slides.",
+        ),
+      );
+    }
+  }
+  for (const claim of claims) {
+    if (
+      (claim.caveat === null) !== (claim.caveatRefs.length === 0) ||
+      claim.caveatRefs.some(
+        (ref) => !caveats.find((item) => item.id === ref)?.claimRefs.includes(claim.id),
+      )
+    ) {
+      findings.push(
+        finding(
+          "incomplete_caveat_coverage",
+          claim.id,
+          "Claim caveat text and caveat references must agree bidirectionally.",
+        ),
+      );
+    }
+  }
+  for (const [index, question] of questions.entries()) {
+    checkRefs(
+      question.targetRefs,
+      allIdSet,
+      `questions.${index}.targetRefs`,
+      "Question target reference",
+    );
+  }
+  for (const [index, blocker] of blockers.entries()) {
+    checkRefs(
+      blocker.targetRefs,
+      allIdSet,
+      `blockers.${index}.targetRefs`,
+      "Blocker target reference",
+    );
+    checkRefs(
+      blocker.questionRefs,
+      questionSet,
+      `blockers.${index}.questionRefs`,
+      "Blocker question reference",
+    );
+    if (
+      (blocker.kind === "deadline" &&
+        (blocker.deadline !== value.manifest.deadline ||
+          blocker.questionRefs.length !== 0 ||
+          !blocker.targetRefs.includes(value.manifest.id))) ||
+      (blocker.kind !== "deadline" && blocker.deadline !== null)
+    ) {
+      findings.push(
+        finding(
+          "incomplete_blocker_coverage",
+          `blockers.${index}`,
+          "Deadline blockers must bind the exact manifest deadline and manifest target without inventing a question; other blocker kinds must not carry a deadline.",
+        ),
+      );
+    }
+  }
+  const unresolvedClaims = claims
+    .filter((item) => item.approvalState === "pending-human-decision")
+    .map((item) => item.id);
+  const openQuestions = questions
+    .filter((item) => item.status === "open" && item.blocksReadiness)
+    .map((item) => item.id);
+  const openBlockers = blockers
+    .filter((item) => item.status === "open")
+    .map((item) => item.id);
+  const deadlineMissed = Date.parse(value.manifest.deadline) <= asOf;
+  const openDeadlineBlockers = blockers.filter(
+    (item) => item.kind === "deadline" && item.status === "open",
+  );
+  const changesRequiredApprovalIds = approvals
+    .filter((item) => item.decision === "changes-required")
+    .map((item) => item.id);
+  const blockerCoverageValid =
+    blockers.every(
+      (blocker) => {
+        if (blocker.kind === "deadline") {
+          return (
+            blocker.deadline === value.manifest.deadline &&
+            blocker.questionRefs.length === 0 &&
+            blocker.targetRefs.includes(value.manifest.id) &&
+            blocker.status === (deadlineMissed ? "open" : "resolved")
+          );
+        }
+        const questionsAlign = blocker.questionRefs.every(
+          (ref) =>
+            questionById.get(ref)?.status === blocker.status &&
+            questionById
+              .get(ref)
+              ?.targetRefs.some((target) => blocker.targetRefs.includes(target)),
+        );
+        if (blocker.kind === "decision") {
+          return (
+            questionsAlign &&
+            blocker.targetRefs.some((ref) => unresolvedClaims.includes(ref))
+          );
+        }
+        return (
+          questionsAlign &&
+          blocker.targetRefs.some((ref) =>
+            changesRequiredApprovalIds.includes(ref),
+          )
+        );
+      },
+    ) &&
+    (deadlineMissed
+      ? openDeadlineBlockers.length === 1
+      : openDeadlineBlockers.length === 0) &&
+    openQuestions.every((questionId) =>
+      blockers.some(
+        (blocker) =>
+          blocker.kind !== "deadline" &&
+          blocker.status === "open" &&
+          blocker.questionRefs.includes(questionId),
+      ),
+    ) &&
+    unresolvedClaims.every((claimId) =>
+      blockers.some(
+        (blocker) =>
+          blocker.kind === "decision" &&
+          blocker.status === "open" &&
+          blocker.targetRefs.includes(claimId),
+      ),
+    ) &&
+    changesRequiredApprovalIds.every((approvalId) =>
+      blockers.some(
+        (blocker) =>
+          blocker.kind === "review" &&
+          blocker.status === "open" &&
+          blocker.targetRefs.includes(approvalId),
+      ),
+    );
+  if (!blockerCoverageValid) {
+    findings.push(
+      finding(
+        "incomplete_blocker_coverage",
+        "blockers",
+        "Every unresolved decision, blocking question, changes-required review, and missed deadline must have the exact reciprocal human-owned blocker, with no extraneous open blocker.",
+      ),
+    );
+  }
+
+  const handoffCoverage = [
+    ["sourceRefs", sourceIds, sourceSet],
+    ["sourceUseAssessmentRefs", assessmentIds, assessmentSet],
+    ["visualAssetRefs", assetIds, assetSet],
+    ["claimRefs", claimIds, claimSet],
+    ["citationRefs", citationIds, citationSet],
+    ["noteRefs", noteIds, noteSet],
+    ["slideRefs", slideIds, slideSet],
+    ["renderSetRefs", renderSetIds, renderSetSet],
+    ["renderRefs", renderIds, renderSet],
+    ["visualQaFindingRefs", qaFindingIds, qaFindingSet],
+    ["contentQaRefs", [value.contentQa.id], new Set([value.contentQa.id])],
+    ["approvalRefs", approvalIds, approvalSet],
+    [
+      "proposedOwnerActionRefs",
+      proposedOwnerActionIds,
+      proposedOwnerActionSet,
+    ],
+    ["caveatRefs", caveatIds, caveatSet],
+    ["questionRefs", questionIds, questionSet],
+    ["blockerRefs", blockerIds, blockerSet],
+  ];
+  for (const [field, expected, allowed] of handoffCoverage) {
+    checkRefs(
+      value.handoff[field],
+      allowed,
+      `handoff.${field}`,
+      "Handoff reference",
+    );
+    if (!sameMembers(value.handoff[field], expected)) {
+      findings.push(
+        finding(
+          "incomplete_handoff",
+          `handoff.${field}`,
+          "The private handoff must cover every current manifest object exactly once.",
+        ),
+      );
+    }
+  }
+  if (
+    value.handoff.manifestRef !== value.manifest.id ||
+    value.handoff.deckRef !== reviewCopy.id ||
+    value.handoff.deckPath !== reviewCopy.path ||
+    value.handoff.deckDigest !== reviewCopy.digest ||
+    value.handoff.deckVersion !== reviewCopy.version ||
+    !samePrincipal(value.handoff.owner, value.manifest.decisionOwner) ||
+    !samePrincipal(value.handoff.reviewer, value.manifest.reviewer) ||
+    !sameMembers(value.handoff.unresolvedClaimRefs, unresolvedClaims)
+  ) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff",
+        "The handoff must bind the exact manifest, deck identity, decision owner, reviewer, and every unresolved claim.",
+      ),
+    );
+  }
+  const hasApprovedReviewCopy = approvals.some(
+    (item) => item.decision === "approved-for-human-review",
+  );
+  const shouldBeBlocked =
+    unresolvedClaims.length > 0 ||
+    openQuestions.length > 0 ||
+    openBlockers.length > 0 ||
+    !hasApprovedReviewCopy ||
+    deadlineMissed;
+  if (
+    value.manifest.state !== value.handoff.state ||
+    (shouldBeBlocked && value.handoff.state !== "blocked") ||
+    (!shouldBeBlocked && value.handoff.state !== "ready-for-human-review")
+  ) {
+    findings.push(
+      finding(
+        "premature_readiness",
+        "handoff.state",
+        "Manifest and handoff state must agree; pre-review artifacts, unresolved claims, blocking questions, missed deadlines, changes-required reviews, or open blockers require a blocked handoff.",
+      ),
+    );
+  }
+  if (
+    value.handoff.output.manifestPath !==
+      value.manifest.outputPaths.manifest ||
+    value.handoff.output.handoffPath !== value.manifest.outputPaths.handoff ||
+    !isSafePackagePath(value.handoff.output.manifestPath) ||
+    !isSafePackagePath(value.handoff.output.handoffPath) ||
+    value.handoff.output.visibility !== "private" ||
+    value.handoff.output.storage !== "local-artifact" ||
+    value.handoff.output.deliveryState !== "not-delivered"
+  ) {
+    findings.push(
+      finding(
+        "unsafe_output_state",
+        "handoff.output",
+        "The evidence manifest and handoff must remain private local artifacts at the declared paths and must not be delivered.",
+      ),
+    );
+  }
+
+  const policyIds = value.controlPolicies.map((item) => item.id);
+  const policySet = new Set(policyIds);
+  const policyById = new Map(
+    value.controlPolicies.map((item) => [item.id, item]),
+  );
+  const policyForObject = new Map();
+  for (const [index, binding] of value.controlBindings.entries()) {
+    checkRefs(
+      [binding.policyRef],
+      policySet,
+      `controlBindings.${index}.policyRef`,
+      "Control policy reference",
+    );
+    checkRefs(
+      binding.objectRefs,
+      allIdSet,
+      `controlBindings.${index}.objectRefs`,
+      "Controlled object reference",
+    );
+    for (const ref of binding.objectRefs) {
+      if (policyForObject.has(ref)) {
+        findings.push(
+          finding(
+            "control_inheritance_mismatch",
+            `controlBindings.${index}.objectRefs`,
+            `Controlled object ${JSON.stringify(ref)} has more than one control policy.`,
+          ),
+        );
+      } else {
+        policyForObject.set(ref, policyById.get(binding.policyRef));
+      }
+    }
+  }
+  if (
+    allIds.some((id) => !policyForObject.has(id)) ||
+    [...policyForObject].some(([id]) => !allIdSet.has(id))
+  ) {
+    findings.push(
+      finding(
+        "control_inheritance_mismatch",
+        "controlBindings",
+        "Every manifest object must have exactly one control binding.",
+      ),
+    );
+  }
+  const sourcePolicyMatches = (source, policy) =>
+    policy?.classification === source.classification &&
+    sameMembers(policy.audienceScope, source.audienceScope) &&
+    sameMembers(policy.licenseTerms, source.licenseTerms) &&
+    sameMembers(policy.retention.policyRefs, source.retention.policyRefs) &&
+    policy.retention.retainUntil === source.retention.retainUntil &&
+    policy.retention.dispositionAuthority ===
+      source.retention.dispositionAuthority;
+  for (const source of sources) {
+    if (!sourcePolicyMatches(source, policyForObject.get(source.id))) {
+      findings.push(
+        finding(
+          "control_inheritance_mismatch",
+          source.id,
+          "Source control bindings must exactly preserve classification, audience, license, and retention.",
+        ),
+      );
+    }
+  }
+  const refsFor = (item) => {
+    if (item.id === value.manifest.id) {
+      return [reviewCopy.id];
+    }
+    if (item.id === reviewCopy.id) {
+      return [
+        value.deck.sourceDeck.sourceRef,
+        value.deck.templateDeck.sourceRef,
+        ...slideIds,
+      ];
+    }
+    if (item.id === templateInventory.id) {
+      return [item.sourceRef];
+    }
+    if (item.id === value.contentQa.id) {
+      return [...item.slideRefs, ...item.findingRefs];
+    }
+    if (item.id === value.handoff.id) {
+      return [
+        item.manifestRef,
+        item.deckRef,
+        ...handoffCoverage.flatMap(([field]) => item[field]),
+        ...item.unresolvedClaimRefs,
+      ];
+    }
+    if (Object.hasOwn(item, "sourceVersion") && Object.hasOwn(item, "slideRefs")) {
+      return [item.sourceRef, item.assessmentRef, ...item.slideRefs];
+    }
+    if (Object.hasOwn(item, "freshnessPolicyRef")) {
+      return [item.sourceRef, item.useRef];
+    }
+    if (Object.hasOwn(item, "epistemicType")) {
+      return [
+        ...item.evidence.map((evidence) => evidence.sourceRef),
+        ...item.evidence.map((evidence) => evidence.assessmentRef),
+        ...item.caveatRefs,
+        ...item.slideRefs,
+      ];
+    }
+    if (Object.hasOwn(item, "claimRef")) {
+      return [
+        item.claimRef,
+        item.slideRef,
+        item.sourceRef,
+        item.noteRef,
+      ];
+    }
+    if (Object.hasOwn(item, "contentSummary")) {
+      return [item.slideRef, ...item.citationRefs];
+    }
+    if (Object.hasOwn(item, "masterId")) {
+      return [
+        ...item.claimRefs,
+        ...item.visualAssetRefs,
+        ...item.citationRefs,
+        item.noteRef,
+        item.renderRef,
+      ];
+    }
+    if (Object.hasOwn(item, "renderedSlides")) {
+      return item.renderedSlides.map((render) => render.id);
+    }
+    if (Object.hasOwn(item, "checks") && Object.hasOwn(item, "slideRef")) {
+      return [item.slideRef, ...item.reviewerFindingRefs];
+    }
+    if (Object.hasOwn(item, "fixedInRenderRef")) {
+      return [
+        item.renderRef,
+        item.slideRef,
+        ...(item.fixedInRenderRef === null ? [] : [item.fixedInRenderRef]),
+      ];
+    }
+    if (Object.hasOwn(item, "scope")) {
+      return [
+        item.deckRef,
+        ...item.sourceRefs,
+        ...item.claimRefs,
+        ...item.slideRefs,
+        item.renderSetRef,
+        ...item.renderRefs,
+        item.contentQaRef,
+      ];
+    }
+    if (Object.hasOwn(item, "statement") && Object.hasOwn(item, "claimRefs")) {
+      return [...item.claimRefs, ...item.slideRefs];
+    }
+    if (Object.hasOwn(item, "blocksReadiness")) {
+      return item.targetRefs;
+    }
+    if (Object.hasOwn(item, "questionRefs")) {
+      return [...item.targetRefs, ...item.questionRefs];
+    }
+    if (Object.hasOwn(item, "ownerRef") && Object.hasOwn(item, "targetRefs")) {
+      return item.targetRefs;
+    }
+    return [];
+  };
+  const sourceClosureFor = (item) => {
+    const sourceClosure = new Set();
+    const visited = new Set([item.id]);
+    const visit = (ref) => {
+      if (visited.has(ref)) return;
+      visited.add(ref);
+      if (sourceSet.has(ref)) {
+        sourceClosure.add(ref);
+        return;
+      }
+      const referenced = objectById.get(ref);
+      if (!referenced) return;
+      for (const nestedRef of refsFor(referenced)) visit(nestedRef);
+    };
+    for (const ref of refsFor(item)) visit(ref);
+    return [...sourceClosure].map((ref) => sourceById.get(ref));
+  };
+  const classificationRank = {
+    public: 0,
+    internal: 1,
+    confidential: 2,
+    restricted: 3,
+  };
+  for (const item of allObjects.filter((object) => !sourceSet.has(object.id))) {
+    const sourceClosure = sourceClosureFor(item);
+    const policy = policyForObject.get(item.id);
+    if (sourceClosure.length === 0 || !policy) {
+      findings.push(
+        finding(
+          "control_inheritance_mismatch",
+          item.id,
+          "Every derived object must have a transitive source closure and one control policy.",
+        ),
+      );
+      continue;
+    }
+    const strongestClassification = Math.max(
+      ...sourceClosure.map(
+        (source) => classificationRank[source.classification],
+      ),
+    );
+    let audienceIntersection = new Set(sourceClosure[0].audienceScope);
+    for (const source of sourceClosure.slice(1)) {
+      audienceIntersection = new Set(
+        [...audienceIntersection].filter((audience) =>
+          source.audienceScope.includes(audience),
+        ),
+      );
+    }
+    const licenses = new Set(
+      sourceClosure.flatMap((source) => source.licenseTerms),
+    );
+    const retentionPolicies = new Set(
+      sourceClosure.flatMap((source) => source.retention.policyRefs),
+    );
+    const retainUntil = Math.max(
+      ...sourceClosure.map((source) =>
+        Date.parse(source.retention.retainUntil),
+      ),
+    );
+    const inherited =
+      classificationRank[policy.classification] >= strongestClassification &&
+      policy.audienceScope.length > 0 &&
+      policy.audienceScope.every((audience) =>
+        audienceIntersection.has(audience),
+      ) &&
+      [...licenses].every((license) =>
+        policy.licenseTerms.includes(license),
+      ) &&
+      [...retentionPolicies].every((retention) =>
+        policy.retention.policyRefs.includes(retention),
+      ) &&
+      Date.parse(policy.retention.retainUntil) >= retainUntil &&
+      policy.retention.dispositionAuthority === "human-only";
+    const effectiveClassification = Object.entries(classificationRank).find(
+      ([, rank]) => rank === strongestClassification,
+    )?.[0];
+    const effectiveAudience = [...audienceIntersection];
+    const effectiveLicenses = [...licenses];
+    const effectiveRetentionPolicies = [...retentionPolicies];
+    const topLevelExact =
+      ![value.manifest.id, reviewCopy.id].includes(item.id) ||
+      (sameMembers(
+        sourceClosure.map((source) => source.id),
+        sourceIds,
+      ) &&
+        policy.classification === effectiveClassification &&
+        sameMembers(policy.audienceScope, effectiveAudience) &&
+        sameMembers(policy.licenseTerms, effectiveLicenses) &&
+        sameMembers(
+          policy.retention.policyRefs,
+          effectiveRetentionPolicies,
+        ) &&
+        Date.parse(policy.retention.retainUntil) === retainUntil &&
+        item.classification === effectiveClassification &&
+        sameMembers(item.audienceScope, effectiveAudience) &&
+        sameMembers(item.licenseTerms, effectiveLicenses) &&
+        sameMembers(
+          item.retention.policyRefs,
+          effectiveRetentionPolicies,
+        ) &&
+        Date.parse(item.retention.retainUntil) === retainUntil &&
+        item.retention.dispositionAuthority === "human-only");
+    if (!inherited || !topLevelExact) {
+      findings.push(
+        finding(
+          "control_inheritance_mismatch",
+          item.id,
+          "Every derived object must inherit its cycle-safe source closure; the review copy and manifest must exactly equal the complete deck-content classification, audience intersection, license set, and retention closure.",
+        ),
+      );
+    }
+  }
+
+  const principals = [
+    ...authorityPrincipals,
+    value.manifest.reviewer,
+    value.manifest.decisionOwner,
+    ...sources.map((item) => item.owner),
+    ...claims.flatMap((item) => [
+      item.owner,
+      ...(item.approvedBy === null ? [] : [item.approvedBy]),
+      ...item.evidence.map((evidence) => evidence.sourceOwner),
+    ]),
+    ...renderSets.map((item) => item.reviewer),
+    ...qaFindings.map((item) => item.reviewer),
+    value.contentQa.reviewer,
+    ...approvals.map((item) => item.reviewer),
+    ...caveats.map((item) => item.owner),
+    ...questions.map((item) => item.owner),
+    ...blockers.map((item) => item.owner),
+    value.handoff.owner,
+    value.handoff.reviewer,
+  ];
+  if (principals.some(principalIsAgent)) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "manifest",
+        "Source ownership, review, decision, approval, caveat, question, blocker, and handoff authority must remain with named humans or teams.",
+      ),
+    );
+  }
+  const sourceAuthorityScope = {
+    "content-owner": "own-content",
+    "system-of-record-owner": "own-system-of-record",
+    "template-owner": "own-template",
+    "brand-owner": "own-brand",
+    "asset-rights-owner": "own-asset-rights",
+    "decision-owner": "own-decision",
+  };
+  const authorityRequirements = [
+    [value.manifest.reviewer, "review-visual-qa", "manifest.reviewer"],
+    [value.manifest.reviewer, "review-content-qa", "manifest.reviewer"],
+    [value.manifest.reviewer, "approve-review-copy", "manifest.reviewer"],
+    [value.manifest.decisionOwner, "own-decision", "manifest.decisionOwner"],
+    ...sources.map((item, index) => [
+      item.owner,
+      sourceAuthorityScope[item.authority],
+      `sources.${index}.owner`,
+    ]),
+    ...claims.map((item, index) => [
+      item.owner,
+      item.kind === "factual" ? "own-content" : "own-decision",
+      `claims.${index}.owner`,
+    ]),
+    ...claims.flatMap((item, index) =>
+      item.approvedBy === null
+        ? []
+        : [[item.approvedBy, "own-decision", `claims.${index}.approvedBy`]],
+    ),
+    ...renderSets.map((item, index) => [
+      item.reviewer,
+      "review-visual-qa",
+      `renderSets.${index}.reviewer`,
+    ]),
+    ...qaFindings.map((item, index) => [
+      item.reviewer,
+      "review-visual-qa",
+      `visualQaFindings.${index}.reviewer`,
+    ]),
+    [value.contentQa.reviewer, "review-content-qa", "contentQa.reviewer"],
+    ...approvals.map((item, index) => [
+      item.reviewer,
+      "approve-review-copy",
+      `approvals.${index}.reviewer`,
+    ]),
+    ...caveats.map((item, index) => [
+      item.owner,
+      "own-caveat",
+      `caveats.${index}.owner`,
+    ]),
+    ...questions.map((item, index) => [
+      item.owner,
+      "own-question",
+      `questions.${index}.owner`,
+    ]),
+    ...blockers.map((item, index) => [
+      item.owner,
+      "own-blocker",
+      `blockers.${index}.owner`,
+    ]),
+    [value.handoff.owner, "receive-handoff", "handoff.owner"],
+    [value.handoff.reviewer, "approve-review-copy", "handoff.reviewer"],
+  ];
+  for (const [principal, scope, path] of authorityRequirements) {
+    if (!hasAuthority(principal, scope)) {
+      findings.push(
+        finding(
+          "invalid_authority_registry",
+          path,
+          `Principal ${JSON.stringify(principal?.id)} must exactly resolve to a provenance-backed registry entry with ${scope} authority.`,
+        ),
+      );
+    }
+  }
+  for (const action of requiredActions) {
+    if (
+      !value.prohibitedActions.includes(action) ||
+      !value.handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "prohibitedActions",
+          `Presentation evidence manifests must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  const scanTexts = [];
+  const collectStrings = (item, path = "") => {
+    if (typeof item === "string") {
+      if (path !== "manifest.verbatimRequest") scanTexts.push(item);
+      return;
+    }
+    if (Array.isArray(item)) {
+      item.forEach((child, index) =>
+        collectStrings(child, `${path}.${index}`.replace(/^\./u, "")),
+      );
+      return;
+    }
+    if (item && typeof item === "object") {
+      for (const [key, child] of Object.entries(item)) {
+        collectStrings(child, `${path}.${key}`.replace(/^\./u, ""));
+      }
+    }
+  };
+  collectStrings(value);
+  const prohibitedNarrative =
+    /\b(?:(?:i|we(?:['’]ve)?|the (?:agent|assistant|claw)|presentation producer)\s+(?:(?:have|has|had)\s+|already\s+)?(?:approved|distributed|published|sent|uploaded|overwrote|exposed|completed the review|finished the review)|(?:deck|presentation|review copy|source (?:deck|presentation)|slides?|manifest|review|approval|hidden content|comments?|speaker notes?)\s+(?:is|are|was|were|has been|have been|had been|will be)\s+(?:now\s+|already\s+)?(?:approved|completed|distributed|published|sent|uploaded|overwritten|exposed|shared))\b/giu;
+  const namedActorNarrative =
+    /\b\p{Lu}[\p{L}\p{M}'’-]*(?:\s+\p{Lu}[\p{L}\p{M}'’-]*){1,3}\s+(?:(?:has|had)\s+|already\s+)?(?:approved|distributed|published|sent|uploaded|overwrote|exposed|completed the review|finished the review)\b/gu;
+  if (
+    hasUnnegatedNarrativeMatch(scanTexts, prohibitedNarrative) ||
+    hasUnnegatedNarrativeMatch(scanTexts, namedActorNarrative)
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "handoff.summary",
+        "Authored strings must not claim active or passive distribution, publication, sending, upload, approval, source overwrite, hidden-content exposure, or completed review; owner actions belong only in structured proposedOwnerActions.",
       ),
     );
   }
@@ -28690,6 +30833,7 @@ const validators = {
   "resume-portfolio-curator": resumePortfolioFindings,
   "project-manager": projectFindings,
   "product-manager": productFindings,
+  "presentation-producer": presentationEvidenceManifestFindings,
   "purchase-researcher": purchaseResearchFindings,
   "public-safety-monitor": publicSafetyFindings,
   "recruiting-coordinator": recruitingFindings,

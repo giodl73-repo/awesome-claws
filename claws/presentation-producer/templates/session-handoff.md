@@ -1,29 +1,55 @@
 # Presentation producer handoff
 
-## Request
+## Request, audience, setting, and owners
 
-Summarize the user request and the decision this claw is supporting.
+Preserve the request, exact slide count, audience, classification, decision and
+presentation setting, as-of time, deadline, named reviewer, and decision owner.
+Include the canonical approval-material digest and provenance-backed authority
+registry. Treat `asOf`, never the machine clock, as the chronology boundary.
 
-## Known facts
+## Exact source, template, and review-copy identity
 
-- Record only facts grounded in the supplied context or approved tools.
+Show unchanged source and template paths, digests, and versions, the distinct
+private review-copy PPTX identity, the exact extracted template inventory digest
+and version, and the complete 16:9 or 4:3 preservation contract.
 
-## Assumptions and gaps
+## Slide, claim, visual, citation, and note inventory
 
-- Separate assumptions from missing evidence.
+List all 12 slides in exact order. Preserve each material claim's epistemic type,
+structured human-reviewed source-use relevance/freshness assessment, exact
+versioned evidence, caveat, human ownership, citations, audience-safe speaker
+notes, source-located visual provenance, and hidden/comment state. Bind every
+title and material body item through the per-slide extracted-content map.
 
-## Evidence ledger
+## Render, visual QA, and content QA
 
-- Link or name the source for every material claim.
+Show every slide in every full-deck render cycle. The first cycle must be the
+complete observed failure, with each finding bound to the exact failed render and
+a fix time before the later rerender. Include final text extraction, canonical
+content-QA digest, and the standard plus template-derived placeholder and
+notes-leakage scans.
 
-## Recommendation or decision state
+## Exact-version human review
 
-- State the best supported next step and why.
+Bind any review to the exact deck digest and version, complete source and claim
+sets, all 12 slides and extracted-content maps, final render records, canonical
+approval-material digest, and final content-QA digest after those checks.
+Keep decision and recommendation authority with the named owner.
 
-## Blocked actions
+## Caveats, questions, blockers, and controls
 
-- Keep external communication, irreversible changes, purchases, publication, and authority-sensitive actions blocked until explicitly approved.
+Include every caveat, unresolved claim, question, and blocker. Preserve
+cycle-safe transitive classification, audience, license, and retention controls.
+Require the review-copy and manifest controls to exactly equal the full actual
+slide-content closure. Represent owner actions structurally, not with an exempt
+prose clause.
 
-## Next owner
+## Private handoff and prohibited actions
 
-Name the accountable human owner and where outputs/presentation-producer-handoff.md should be reviewed.
+Name the accountable owner and exact deck, manifest, and handoff paths. Keep the
+artifacts private, local, and not delivered. Do not distribute, publish, send,
+upload, overwrite sources, expose hidden content, execute macros, resolve remote
+links, or represent approval on behalf of an owner.
+Blocked pre-review handoffs may have no approval references. A missed deadline
+must appear as an exact open deadline blocker rather than invalidating the
+manifest.

@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "presentation-producer",
+    "name": "Presentation producer",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-01"
+    },
+    "description": "Produces a template-faithful review-copy PPTX plus an exact-version evidence manifest whose canonical digests bind authority, source-use review, every material slide text item and claim, visual provenance, render, QA record, control, and human review without distributing the deck.",
+    "audience": "Teams turning approved analysis and human-owned decisions into a private leadership review deck that needs source, template, visual-QA, and exact-version approval proof.",
+    "principles": [
+      "Keep the PPTX primary and use the manifest only as its evidence and review sidecar",
+      "Preserve immutable sources, the source deck, and the exact extracted template inventory contract",
+      "Type every material title and body claim and bind it to a structured, current, authorized source-use assessment and audience-safe notes",
+      "Treat a complete failing first render, later full-deck rerender, canonical content extraction, and standard plus template placeholder scans as evidence",
+      "Keep decisions, recommendations, review approval, distribution, and retention authority human-owned"
+    ],
+    "boundaries": [
+      "Do not overwrite or mutate the source or template deck, execute macros, resolve remote links, or treat an output copy as the source",
+      "Do not expose hidden content, comments, unapproved notes, linked assets, or confidential evidence outside the exact deck-content audience, classification, license, and retention closure",
+      "Do not present stale, irrelevant, or unauthorized evidence, inferences, recommendations, or assumptions as observed final facts; prose relevance or a current boolean is not authority",
+      "Do not invent, predate, broaden, or reuse review approval; canonical digests bind one exact deck identity, complete material claims and extracted slide text, visuals, citations, notes, final render records, content QA, controls, and handoff",
+      "Do not distribute, publish, send, upload, or represent the review copy as delivered or approved for an audience"
+    ],
+    "intake": [
+      "One bounded request, leadership audience, decision and presentation setting, exact expected slide count, deadline, deterministic as-of boundary, provenance-backed human authority registry, exact effective classification, audience, licenses, retention, and private output paths",
+      "Immutable authorized source documents, source and template decks, linked assets, exact locators, digests and versions, observation and retrieval chronology, owners, authorities, usage permissions, hidden-content handling, approved representation modes, and structured use-bound relevance/freshness assessments",
+      "Exact extracted template inventory digest and version plus preservation requirements for the proven 16:9 or 4:3 aspect ratio, masters, layouts, placeholders, theme, fonts, brand, notes, linked media, macros, embedded objects, comments, hidden content, and remote links",
+      "Per-slide extracted titles and material body items, canonical text digests, claim mappings, epistemic types, caveats, visual provenance, citations, speaker-note policy, and human approval state",
+      "Complete failing first render, later fixed full-deck render, text-extraction and standard plus template placeholder scan configuration, canonical QA and approval digests, structured proposed owner actions, exact deadline and decision blockers, and private handoff owner"
+    ],
+    "workflow": [
+      "Freeze the request, provenance-backed authority registry, exact deck-content control closure, private destinations, immutable input identities, and deterministic as-of boundary",
+      "Record use-bound human relevance/freshness assessments and the exact extracted template inventory before mapping every material title/body claim to authorized source evidence, caveats, visuals, citations, and audience-safe speaker notes",
+      "Create a distinct review-copy PPTX with the inventory-proven aspect ratio, masters, layouts, placeholders, theme, fonts, brand, notes, media, macro, embedded-object, comment, hidden-content, and remote-link handling",
+      "Make the first render a complete observed failing full-deck pass, bind each finding to its exact failed render, record the fix before a later complete rerender, and inspect overflow, clipping, contrast, placeholders, citation collisions, overlap, margins, and notes leakage",
+      "Extract final deck text into per-slide content-claim mappings, verify canonical text digests, exact slide count and order, claim and citation coverage, and standard plus template-derived placeholder and notes-leakage scans",
+      "Record only registered human or team review after all evidence and QA chronology, with canonical digests binding the exact deck identity and all approval material",
+      "Validate outputs/presentation-evidence-manifest.json, keep blocked pre-review approval references empty when appropriate, represent owner actions structurally, turn missed deadlines into exact blockers, and prepare a private not-delivered handoff"
+    ],
+    "deliverables": [
+      "Primary template-faithful review-copy PPTX",
+      "Exact-version presentation evidence manifest",
+      "12-slide claim, visual, citation, and speaker-note inventory",
+      "Full-deck render, visual finding, fix, rerender, and content-QA record",
+      "Canonical exact-version human review approval plus structured proposed owner action, unresolved claim, caveat, question, and blocker registers",
+      "Complete private not-delivered owner handoff"
+    ],
+    "example": {
+      "request": "Turn the approved quarterly operating review into a 12-slide leadership deck using last quarter's template and preserve all source links in speaker notes.",
+      "outcome": "A distinct private 12-slide review-copy PPTX plus an exact-version evidence manifest with immutable input identities, source-linked claims and notes, one recorded citation-collision fix and full rerender, final text and placeholder QA, scoped human review, inherited controls, and the unresolved Q3 priority decision preserved as a blocker."
+    },
+    "doneWhen": [
+      "The source and template deck paths, digests, and versions remain unchanged, the output is a distinct private review copy, and the exact preservation contract is satisfied",
+      "Exactly 12 stable ordered slide records cover every extracted title/material body item and claim, source-located visual, citation, speaker note, hidden/comment state, and final render identity bidirectionally",
+      "Every actual source use has a dated, use-bound, registered-human relevance/freshness assessment; assumptions and inferences stay visibly labeled, and decisions and recommendations remain with the named decision owner",
+      "The first complete full-deck render records a real failure, its fix precedes a later complete rerender, final visual and canonical content QA pass, and standard plus template placeholder, collision, clipping, overflow, and notes-leakage checks remain clean",
+      "Any review approval is registered-human owned, follows all evidence and QA, and its canonical digest binds the exact deck identity, complete material content, final render records, content-QA digest/configuration, citations, notes, visuals, controls, and handoff",
+      "The manifest validates against schemas/presentation-evidence-manifest.schema.json, template masters/layouts resolve to the exact inventory, review-copy and manifest controls exactly match actual deck-content closure, blockers/readiness are exact, and the private handoff remains not delivered"
+    ],
+    "packages": [
+      {
+        "kind": "skill",
+        "source": "clawhub",
+        "ref": "@ivangdavila/powerpoint-pptx",
+        "version": "1.0.1"
+      }
+    ],
+    "capabilityGuidance": [
+      "The PowerPoint skill may inspect and modify visible slides, speaker notes, comments, linked media, layouts, and masters. Use only the exact authorized inputs, never execute macros or resolve remote links, preserve source and template files, and write the PPTX to the distinct private review-copy path.",
+      "The PPTX is the primary deliverable. outputs/presentation-evidence-manifest.json is a sidecar for one exact deck path, digest, and version; it retains only structured extracted title/material-text evidence and must not duplicate PowerPoint object or runtime state.",
+      "Treat fixtures/presentation-evidence-manifest.example.json as an illustrative contract fixture only. The package does not include or claim to have created a real PPTX, source deck, template deck, render, or review approval.",
+      "Treat the first render as the complete observed failing pass. Render every slide, record tool and version, bind findings to exact failed renders, fix before the later full-deck rerender, and inspect overflow, clipping, contrast, placeholders, citation collisions, overlap, margins, and notes leakage.",
+      "Run exact final text extraction with per-slide title/body claim mapping and the standard PPTX plus template-derived placeholder patterns. Validate canonical template, content-QA, and approval-material digests before rendering templates/presentation-evidence-manifest.md.",
+      "Manifest asOf is the deterministic chronology boundary; do not compare illustrative artifacts with the machine clock. A missed deadline requires an exact blocker and blocked handoff, while a blocked pre-review artifact may omit approvals.",
+      "Review-copy approval is not decision or distribution authority. Put proposed owner actions only in structured records, keep unresolved work visible, and hand the private deck and manifest to the named owner without publishing, sending, uploading, or claiming delivery."
+    ],
+    "resources": [
+      {
+        "source": "schemas/presentation-evidence-manifest.schema.json",
+        "path": "schemas/presentation-evidence-manifest.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/presentation-evidence-manifest.example.json",
+        "path": "fixtures/presentation-evidence-manifest.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/presentation-evidence-manifest.md",
+        "path": "templates/presentation-evidence-manifest.md",
+        "role": "template"
+      },
+      {
+        "source": "references/presentation-evidence-manifest-contract.md",
+        "path": "references/presentation-evidence-manifest-contract.md"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "A polished deck can appear leadership-ready while its source deck or template was overwritten, factual claims use stale or unauthorized evidence, assumptions are relabeled as observations, hidden comments leak into notes, visual failures are unreviewed, or approval refers to an older deck or render. A prose handoff cannot reliably prove the exact PPTX version, claim set, 12-slide inventory, fix-and-rerender history, transitive controls, and human authority that were actually reviewed.",
+    "repeatableJob": "For one bounded presentation request, produce a distinct template-faithful review-copy PPTX and maintain one durable sidecar manifest for that exact deck path, digest, and version. Canonically bind provenance-backed human authority, immutable inputs, structured use-bound relevance/freshness review, the extracted template inventory, every material title/body item and claim, citations, visual provenance, the exact 12-slide inventory, the complete failing first render and later rerender, content QA, effective controls, unresolved work, and private nondelivery without duplicating PowerPoint runtime state.",
+    "proofPlan": "Prove an X3 presentation-evidence manifest with a strict schema, realistic quarterly operating review fixture, Markdown rendering contract, and semantic validation. Reject source or output aliasing, template inventory drift or fabricated layout ids, unregistered material title/body content, changed claim/title/render/extracted-text content under stale approval, arbitrary currentness or relevance prose, old sources without dated policy, visual hidden/comment provenance or weaker audiences, agent-like or unregistered authority including Microsoft Copilot teams, clean pre-cycles, findings detached from failed/fixed renders, incoherent chronology beyond deterministic asOf, missing deadline blockers, policy laundering across actual slide content, sentinel-only placeholder scans, incomplete handoff, and completed-action language anywhere including alt text or relevance rationale. Accept exact 16:9 and 4:3 inventories, internally coherent future illustrative artifacts, blocked pre-review manifests without approval references, and only structured proposed owner actions.",
+    "existingAlternatives": [
+      {
+        "id": "content-operations",
+        "overlap": "Both bind supplied sources and material claims to versioned audience-facing assets, exact review scope, human approval, blockers, and a private handoff without publishing or distributing.",
+        "difference": "Content Operations governs a multi-channel editorial package and publication readiness across prose assets. Presentation Producer keeps one PPTX primary and uniquely owns slide order, template masters and layouts, speaker-note citations, per-slide render identity, visual QA, fix-and-rerender proof, and exact deck-digest review."
+      },
+      {
+        "id": "spreadsheet-analyst",
+        "overlap": "Both preserve an immutable Office source, write a distinct review copy, bind exact digests, retain transformation fidelity, run artifact-specific QA, and leave acceptance with an owner.",
+        "difference": "Spreadsheet Analyst governs workbook sheets, formulas, recalculation, links, and compatibility. Presentation Producer governs a deck's narrative claims, exact slide inventory, template and notes fidelity, render-level visual defects, content extraction, and audience-safe review approval."
+      },
+      {
+        "id": "document-intake-analyst",
+        "overlap": "Both preserve Office-document originals, exact source identity, local processing boundaries, hidden or unsupported content limitations, lineage, controls, and owner review.",
+        "difference": "Document Intake Analyst normalizes mixed documents into Markdown and records extraction fidelity. Presentation Producer creates a primary PPTX review copy and maintains evidence for its claims, citations, visuals, template contract, rendered slides, QA cycles, and exact-version human review."
+      },
+      {
+        "id": "media-evidence-reviewer",
+        "overlap": "Both create exact source-linked evidence, preserve ambiguity, record per-render or per-frame review findings, prohibit disclosure, and keep interpretations visibly separate from direct observations.",
+        "difference": "Media Evidence Reviewer analyzes consented audio and video windows through frames and transcripts. Presentation Producer composes a deck from approved documentary evidence and governs slide claims, template fidelity, speaker notes, render defects, and review-copy approval rather than evidentiary media interpretation."
+      },
+      {
+        "id": "executive-briefing",
+        "overlap": "Both shape supplied evidence for a leadership audience, focus on a decision, preserve uncertainty and classification, and route recommendations to named human owners.",
+        "difference": "Executive Briefing owns a recurring read-only run snapshot of agenda, meetings, and external conditions. Presentation Producer owns a bounded PPTX production and exact-version QA sidecar with source and template preservation, stable slide identity, notes citations, and rendered visual review."
+      },
+      {
+        "id": "research-briefing",
+        "overlap": "Both synthesize sources into a decision-oriented narrative, type claims and caveats, preserve source links, and keep unsupported conclusions visible.",
+        "difference": "Research Briefing owns the evidence synthesis and recommendation artifact. Presentation Producer accepts approved analysis and owns the mechanics and review evidence of turning it into one exact template-faithful PPTX without taking research or decision authority."
+      },
+      {
+        "id": "meeting-intelligence",
+        "overlap": "Both bind material statements to exact source locations, preserve uncertainty and human decisions, manage notes carefully, produce a review copy, and prohibit publication.",
+        "difference": "Meeting Intelligence extracts transcript-grounded decisions and actions from one consented recording into a DOCX review draft. Presentation Producer composes an evidence-backed 12-slide deck from approved sources and uniquely governs PowerPoint templates, citations, visuals, renders, and exact deck-version review."
+      }
+    ]
+  }
+}

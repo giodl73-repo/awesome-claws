@@ -58,6 +58,7 @@ const schemaNames = {
   "personal-archive-curator": "archive-index.schema.json",
   "pet-care-coordinator": "pet-care.schema.json",
   "pond-water-feature-coordinator": "pond-system.schema.json",
+  "presentation-producer": "presentation-evidence-manifest.schema.json",
   "professional-networking-followup": "networking-followup.schema.json",
   "public-company-watcher": "company-disclosure-ledger.schema.json",
   "research-monitor": "topic-watch-delta-ledger.schema.json",
