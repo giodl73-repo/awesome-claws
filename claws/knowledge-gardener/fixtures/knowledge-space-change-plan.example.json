@@ -1,0 +1,1701 @@
+{
+  "schemaVersion": "awesomeClaws.knowledgeSpaceChangePlan.v1",
+  "plan": {
+    "id": "project-decisions-review-2026-08-31",
+    "request": "Review the operator-supplied versioned read-only Notion observation export for the project-decisions database using its authorization and scope receipt, propose links between duplicate topics, and identify decisions older than six months that need owner review.",
+    "asOf": "2026-08-31T20:00:00Z",
+    "reviewHorizon": {
+      "startsAt": "2026-08-31T20:00:00Z",
+      "endsAt": "2026-09-30T20:00:00Z"
+    },
+    "status": "blocked",
+    "maintenanceOwner": {
+      "id": "team-architecture-operations",
+      "name": "Architecture operations",
+      "type": "team"
+    },
+    "observationInput": {
+      "provider": "notion-observation-export",
+      "observationExportId": "notion-observation-export-project-decisions",
+      "integrationRegistrationId": "notion-integration-registration-project-decisions",
+      "exportVersion": 7,
+      "workspacePath": "inputs/notion-observation-export.json",
+      "contentDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "exportedAt": "2026-08-31T17:25:00Z",
+      "suppliedAt": "2026-08-31T17:26:00Z",
+      "containsSecrets": false,
+      "authorizationReceipt": {
+        "receiptId": "notion-authorization-receipt-project-decisions",
+        "observationExportId": "notion-observation-export-project-decisions",
+        "integrationRegistrationId": "notion-integration-registration-project-decisions",
+        "exportVersion": 7,
+        "exportDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+        "accessMode": "read-only-observation-export",
+        "authorizedBy": {
+          "id": "human-morgan-lee",
+          "name": "Morgan Lee",
+          "type": "human"
+        },
+        "grantedAt": "2026-08-01T16:00:00Z",
+        "recordedAt": "2026-08-31T17:25:00Z",
+        "expiresAt": null,
+        "authorizedObjectIds": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "excludedObjectIds": [
+          "99999999999999999999999999999999"
+        ]
+      }
+    },
+    "scope": {
+      "sharedRoots": [
+        {
+          "objectId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "objectType": "page"
+        },
+        {
+          "objectId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "objectType": "database"
+        }
+      ],
+      "sharedDatabases": [
+        {
+          "objectId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "objectType": "database"
+        }
+      ],
+      "sharedPages": [
+        {
+          "objectId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "objectType": "page"
+        }
+      ],
+      "excludedObjects": [
+        {
+          "objectId": "99999999999999999999999999999999",
+          "objectType": "page"
+        }
+      ]
+    },
+    "observationGoals": [
+      "Find repeated topic records without merging them",
+      "Identify decisions older than the owner-defined threshold",
+      "Find conflicts, broken or missing links and properties, and orphan candidates",
+      "Prepare reversible exact-version proposals for human review"
+    ],
+    "conventions": {
+      "naming": "Use a decision subject followed by an ISO decision date; preserve existing titles until a rename is approved externally.",
+      "linking": "Use reciprocal Topic and Related decision relations within the project-decisions database.",
+      "properties": "Decision owner and Review state are required on decision pages.",
+      "archive": "Archive only after a named owner confirms the page is superseded and a rollback target is recorded.",
+      "retention": "Project decision records retain through 2032-12-31 unless the records owner supplies a stricter policy."
+    },
+    "staleDecisionPolicy": {
+      "thresholdDays": 180,
+      "definedBy": {
+        "id": "team-architecture-operations",
+        "name": "Architecture operations",
+        "type": "team"
+      },
+      "definedAt": "2026-08-15T16:00:00Z"
+    }
+  },
+  "snapshots": [
+    {
+      "id": "snapshot-project-root",
+      "notionObjectId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "objectType": "page",
+      "knowledgeKind": "root",
+      "title": "Project Atlas",
+      "url": "https://www.notion.so/Project-Atlas-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "lastEditedAt": "2026-08-29T12:00:00Z",
+      "observedVersion": {
+        "kind": "last-edited-time",
+        "value": "2026-08-29T12:00:00Z"
+      },
+      "parentRef": null,
+      "rootRef": "snapshot-project-root",
+      "ancestryRefs": [
+        "snapshot-project-root"
+      ],
+      "referenceRefs": [],
+      "topicFingerprint": null,
+      "decisionKey": null,
+      "contentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "observedValues": [
+        {
+          "path": "title",
+          "value": "Project Atlas"
+        },
+        {
+          "path": "archived",
+          "value": "false"
+        }
+      ],
+      "missingReferences": [],
+      "missingProperties": [],
+      "inboundReferenceCount": 4,
+      "observation": {
+        "observationExportId": "notion-observation-export-project-decisions",
+        "exportVersion": 7,
+        "observedAt": "2026-08-31T17:02:00Z",
+        "includedAt": "2026-08-31T17:25:00Z"
+      },
+      "sourceOwner": {
+        "id": "team-architecture-operations",
+        "name": "Architecture operations",
+        "type": "team"
+      },
+      "authorityStatus": "authoritative",
+      "accessState": "available",
+      "scopeProof": {
+        "sharedViaObjectId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "ancestryObjectIds": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "insideSharedScope": true,
+        "outsideExclusions": true
+      },
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "snapshot-project-decisions",
+      "notionObjectId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "objectType": "database",
+      "knowledgeKind": "database",
+      "title": "Project decisions",
+      "url": "https://www.notion.so/Project-decisions-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "lastEditedAt": "2026-08-30T11:00:00Z",
+      "observedVersion": {
+        "kind": "last-edited-time",
+        "value": "2026-08-30T11:00:00Z"
+      },
+      "parentRef": "snapshot-project-root",
+      "rootRef": "snapshot-project-root",
+      "ancestryRefs": [
+        "snapshot-project-root",
+        "snapshot-project-decisions"
+      ],
+      "referenceRefs": [],
+      "topicFingerprint": null,
+      "decisionKey": null,
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "observedValues": [
+        {
+          "path": "title",
+          "value": "Project decisions"
+        },
+        {
+          "path": "children",
+          "value": null
+        },
+        {
+          "path": "archived",
+          "value": "false"
+        }
+      ],
+      "missingReferences": [
+        "missing:api-summary-page"
+      ],
+      "missingProperties": [],
+      "inboundReferenceCount": 2,
+      "observation": {
+        "observationExportId": "notion-observation-export-project-decisions",
+        "exportVersion": 7,
+        "observedAt": "2026-08-31T17:05:00Z",
+        "includedAt": "2026-08-31T17:25:00Z"
+      },
+      "sourceOwner": {
+        "id": "team-architecture-operations",
+        "name": "Architecture operations",
+        "type": "team"
+      },
+      "authorityStatus": "authoritative",
+      "accessState": "available",
+      "scopeProof": {
+        "sharedViaObjectId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "ancestryObjectIds": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "insideSharedScope": true,
+        "outsideExclusions": true
+      },
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "snapshot-api-versioning-old",
+      "notionObjectId": "cccccccccccccccccccccccccccccccc",
+      "objectType": "page",
+      "knowledgeKind": "decision",
+      "title": "API versioning",
+      "url": "https://www.notion.so/API-versioning-cccccccccccccccccccccccccccccccc",
+      "lastEditedAt": "2026-01-01T10:00:00Z",
+      "observedVersion": {
+        "kind": "last-edited-time",
+        "value": "2026-01-01T10:00:00Z"
+      },
+      "parentRef": "snapshot-project-decisions",
+      "rootRef": "snapshot-project-root",
+      "ancestryRefs": [
+        "snapshot-project-root",
+        "snapshot-project-decisions",
+        "snapshot-api-versioning-old"
+      ],
+      "referenceRefs": [],
+      "topicFingerprint": "api-versioning",
+      "decisionKey": "decision-api-versioning",
+      "contentDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "observedValues": [
+        {
+          "path": "title",
+          "value": "API versioning"
+        },
+        {
+          "path": "links.Topic",
+          "value": null
+        },
+        {
+          "path": "properties.Review state",
+          "value": "Current"
+        },
+        {
+          "path": "parentObjectId",
+          "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        {
+          "path": "archived",
+          "value": "false"
+        }
+      ],
+      "missingReferences": [],
+      "missingProperties": [],
+      "inboundReferenceCount": 3,
+      "observation": {
+        "observationExportId": "notion-observation-export-project-decisions",
+        "exportVersion": 7,
+        "observedAt": "2026-08-31T17:08:00Z",
+        "includedAt": "2026-08-31T17:25:00Z"
+      },
+      "sourceOwner": {
+        "id": "human-sam-rivera",
+        "name": "Sam Rivera",
+        "type": "human"
+      },
+      "authorityStatus": "authoritative",
+      "accessState": "available",
+      "scopeProof": {
+        "sharedViaObjectId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "ancestryObjectIds": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "cccccccccccccccccccccccccccccccc"
+        ],
+        "insideSharedScope": true,
+        "outsideExclusions": true
+      },
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "snapshot-api-versioning-copy",
+      "notionObjectId": "dddddddddddddddddddddddddddddddd",
+      "objectType": "page",
+      "knowledgeKind": "topic",
+      "title": "API Versioning",
+      "url": "https://www.notion.so/API-Versioning-dddddddddddddddddddddddddddddddd",
+      "lastEditedAt": "2026-08-20T10:00:00Z",
+      "observedVersion": {
+        "kind": "last-edited-time",
+        "value": "2026-08-20T10:00:00Z"
+      },
+      "parentRef": "snapshot-project-decisions",
+      "rootRef": "snapshot-project-root",
+      "ancestryRefs": [
+        "snapshot-project-root",
+        "snapshot-project-decisions",
+        "snapshot-api-versioning-copy"
+      ],
+      "referenceRefs": [],
+      "topicFingerprint": "api-versioning",
+      "decisionKey": null,
+      "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "observedValues": [
+        {
+          "path": "title",
+          "value": "API Versioning"
+        },
+        {
+          "path": "properties.Decision owner",
+          "value": null
+        },
+        {
+          "path": "archived",
+          "value": "false"
+        }
+      ],
+      "missingReferences": [
+        "missing:decision-owner-link"
+      ],
+      "missingProperties": [
+        "Decision owner"
+      ],
+      "inboundReferenceCount": 1,
+      "observation": {
+        "observationExportId": "notion-observation-export-project-decisions",
+        "exportVersion": 7,
+        "observedAt": "2026-08-31T17:11:00Z",
+        "includedAt": "2026-08-31T17:25:00Z"
+      },
+      "sourceOwner": {
+        "id": "human-sam-rivera",
+        "name": "Sam Rivera",
+        "type": "human"
+      },
+      "authorityStatus": "supporting",
+      "accessState": "available",
+      "scopeProof": {
+        "sharedViaObjectId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "ancestryObjectIds": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "dddddddddddddddddddddddddddddddd"
+        ],
+        "insideSharedScope": true,
+        "outsideExclusions": true
+      },
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "snapshot-hosting-decision-a",
+      "notionObjectId": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "objectType": "page",
+      "knowledgeKind": "decision",
+      "title": "Hosting boundary - platform owned",
+      "url": "https://www.notion.so/Hosting-boundary-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "lastEditedAt": "2026-08-22T10:00:00Z",
+      "observedVersion": {
+        "kind": "last-edited-time",
+        "value": "2026-08-22T10:00:00Z"
+      },
+      "parentRef": "snapshot-project-decisions",
+      "rootRef": "snapshot-project-root",
+      "ancestryRefs": [
+        "snapshot-project-root",
+        "snapshot-project-decisions",
+        "snapshot-hosting-decision-a"
+      ],
+      "referenceRefs": [
+        "snapshot-security-boundary"
+      ],
+      "topicFingerprint": "hosting-boundary",
+      "decisionKey": "decision-hosting-boundary",
+      "contentDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "observedValues": [
+        {
+          "path": "title",
+          "value": "Hosting boundary - platform owned"
+        },
+        {
+          "path": "archived",
+          "value": "false"
+        }
+      ],
+      "missingReferences": [],
+      "missingProperties": [],
+      "inboundReferenceCount": 2,
+      "observation": {
+        "observationExportId": "notion-observation-export-project-decisions",
+        "exportVersion": 7,
+        "observedAt": "2026-08-31T17:14:00Z",
+        "includedAt": "2026-08-31T17:25:00Z"
+      },
+      "sourceOwner": {
+        "id": "human-taylor-kim",
+        "name": "Taylor Kim",
+        "type": "human"
+      },
+      "authorityStatus": "authoritative",
+      "accessState": "available",
+      "scopeProof": {
+        "sharedViaObjectId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "ancestryObjectIds": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        ],
+        "insideSharedScope": true,
+        "outsideExclusions": true
+      },
+      "handling": {
+        "classification": "restricted",
+        "audienceScope": [
+          "decision-owners"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records",
+            "security-architecture-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2034-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "snapshot-hosting-decision-b",
+      "notionObjectId": "ffffffffffffffffffffffffffffffff",
+      "objectType": "page",
+      "knowledgeKind": "decision",
+      "title": "Hosting boundary - application owned",
+      "url": "https://www.notion.so/Hosting-boundary-ffffffffffffffffffffffffffffffff",
+      "lastEditedAt": "2026-08-23T10:00:00Z",
+      "observedVersion": {
+        "kind": "last-edited-time",
+        "value": "2026-08-23T10:00:00Z"
+      },
+      "parentRef": "snapshot-project-decisions",
+      "rootRef": "snapshot-project-root",
+      "ancestryRefs": [
+        "snapshot-project-root",
+        "snapshot-project-decisions",
+        "snapshot-hosting-decision-b"
+      ],
+      "referenceRefs": [],
+      "topicFingerprint": "hosting-boundary",
+      "decisionKey": "decision-hosting-boundary",
+      "contentDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "observedValues": [
+        {
+          "path": "title",
+          "value": "Hosting boundary - application owned"
+        },
+        {
+          "path": "archived",
+          "value": "false"
+        }
+      ],
+      "missingReferences": [],
+      "missingProperties": [],
+      "inboundReferenceCount": 2,
+      "observation": {
+        "observationExportId": "notion-observation-export-project-decisions",
+        "exportVersion": 7,
+        "observedAt": "2026-08-31T17:17:00Z",
+        "includedAt": "2026-08-31T17:25:00Z"
+      },
+      "sourceOwner": {
+        "id": "human-jordan-patel",
+        "name": "Jordan Patel",
+        "type": "human"
+      },
+      "authorityStatus": "authoritative",
+      "accessState": "available",
+      "scopeProof": {
+        "sharedViaObjectId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "ancestryObjectIds": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "ffffffffffffffffffffffffffffffff"
+        ],
+        "insideSharedScope": true,
+        "outsideExclusions": true
+      },
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "snapshot-security-boundary",
+      "notionObjectId": "11111111111111111111111111111111",
+      "objectType": "page",
+      "knowledgeKind": "reference",
+      "title": "Security hosting constraints",
+      "url": "https://www.notion.so/Security-hosting-11111111111111111111111111111111",
+      "lastEditedAt": "2026-08-24T10:00:00Z",
+      "observedVersion": {
+        "kind": "last-edited-time",
+        "value": "2026-08-24T10:00:00Z"
+      },
+      "parentRef": "snapshot-project-decisions",
+      "rootRef": "snapshot-project-root",
+      "ancestryRefs": [
+        "snapshot-project-root",
+        "snapshot-project-decisions",
+        "snapshot-security-boundary"
+      ],
+      "referenceRefs": [
+        "snapshot-hosting-decision-a"
+      ],
+      "topicFingerprint": "hosting-boundary-security",
+      "decisionKey": null,
+      "contentDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "observedValues": [
+        {
+          "path": "title",
+          "value": "Security hosting constraints"
+        },
+        {
+          "path": "archived",
+          "value": "false"
+        }
+      ],
+      "missingReferences": [],
+      "missingProperties": [],
+      "inboundReferenceCount": 1,
+      "observation": {
+        "observationExportId": "notion-observation-export-project-decisions",
+        "exportVersion": 7,
+        "observedAt": "2026-08-31T17:20:00Z",
+        "includedAt": "2026-08-31T17:25:00Z"
+      },
+      "sourceOwner": {
+        "id": "team-security-architecture",
+        "name": "Security architecture",
+        "type": "team"
+      },
+      "authorityStatus": "authoritative",
+      "accessState": "restricted",
+      "scopeProof": {
+        "sharedViaObjectId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "ancestryObjectIds": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "11111111111111111111111111111111"
+        ],
+        "insideSharedScope": true,
+        "outsideExclusions": true
+      },
+      "handling": {
+        "classification": "restricted",
+        "audienceScope": [
+          "decision-owners"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records",
+            "security-architecture-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2034-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "snapshot-api-notes-orphan",
+      "notionObjectId": "22222222222222222222222222222222",
+      "objectType": "page",
+      "knowledgeKind": "topic",
+      "title": "API decision notes",
+      "url": "https://www.notion.so/API-decision-notes-22222222222222222222222222222222",
+      "lastEditedAt": "2026-08-25T10:00:00Z",
+      "observedVersion": {
+        "kind": "last-edited-time",
+        "value": "2026-08-25T10:00:00Z"
+      },
+      "parentRef": "snapshot-project-decisions",
+      "rootRef": "snapshot-project-root",
+      "ancestryRefs": [
+        "snapshot-project-root",
+        "snapshot-project-decisions",
+        "snapshot-api-notes-orphan"
+      ],
+      "referenceRefs": [],
+      "topicFingerprint": "api-decision-notes",
+      "decisionKey": null,
+      "contentDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "observedValues": [
+        {
+          "path": "title",
+          "value": "API decision notes"
+        },
+        {
+          "path": "parentObjectId",
+          "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        {
+          "path": "archived",
+          "value": "false"
+        }
+      ],
+      "missingReferences": [
+        "broken:notion-page-legacy"
+      ],
+      "missingProperties": [],
+      "inboundReferenceCount": 0,
+      "observation": {
+        "observationExportId": "notion-observation-export-project-decisions",
+        "exportVersion": 7,
+        "observedAt": "2026-08-31T17:23:00Z",
+        "includedAt": "2026-08-31T17:25:00Z"
+      },
+      "sourceOwner": {
+        "id": "human-sam-rivera",
+        "name": "Sam Rivera",
+        "type": "human"
+      },
+      "authorityStatus": "supporting",
+      "accessState": "available",
+      "scopeProof": {
+        "sharedViaObjectId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "ancestryObjectIds": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "22222222222222222222222222222222"
+        ],
+        "insideSharedScope": true,
+        "outsideExclusions": true
+      },
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    }
+  ],
+  "issues": [
+    {
+      "id": "issue-duplicate-api-topic",
+      "kind": "duplicate-topic",
+      "evidenceStatus": "observed",
+      "observedAt": "2026-08-31T17:30:00Z",
+      "objectRefs": [
+        "snapshot-api-versioning-old",
+        "snapshot-api-versioning-copy"
+      ],
+      "evidenceSnapshotRefs": [
+        "snapshot-api-versioning-old",
+        "snapshot-api-versioning-copy"
+      ],
+      "relatedIssueRefs": [
+        "issue-missing-owner-property"
+      ],
+      "conflictSides": [],
+      "resolution": null,
+      "staleThresholdDays": null,
+      "description": "Two distinct records share the observed api-versioning topic fingerprint; both identities remain present.",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "issue-stale-api-decision",
+      "kind": "stale-decision",
+      "evidenceStatus": "observed",
+      "observedAt": "2026-08-31T17:31:00Z",
+      "objectRefs": [
+        "snapshot-api-versioning-old"
+      ],
+      "evidenceSnapshotRefs": [
+        "snapshot-api-versioning-old"
+      ],
+      "relatedIssueRefs": [],
+      "conflictSides": [],
+      "resolution": null,
+      "staleThresholdDays": 180,
+      "description": "The decision's exact last-edited time is older than the owner's 180-day review threshold.",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "issue-hosting-conflict",
+      "kind": "conflict",
+      "evidenceStatus": "observed",
+      "observedAt": "2026-08-31T17:32:00Z",
+      "objectRefs": [
+        "snapshot-hosting-decision-a",
+        "snapshot-hosting-decision-b"
+      ],
+      "evidenceSnapshotRefs": [
+        "snapshot-hosting-decision-a",
+        "snapshot-hosting-decision-b"
+      ],
+      "relatedIssueRefs": [],
+      "conflictSides": [
+        {
+          "objectRef": "snapshot-hosting-decision-a",
+          "observedVersion": {
+            "kind": "last-edited-time",
+            "value": "2026-08-22T10:00:00Z"
+          },
+          "positionDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        },
+        {
+          "objectRef": "snapshot-hosting-decision-b",
+          "observedVersion": {
+            "kind": "last-edited-time",
+            "value": "2026-08-23T10:00:00Z"
+          },
+          "positionDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "resolution": null,
+      "staleThresholdDays": null,
+      "description": "Two authoritative exact-version decision records preserve opposing hosting-boundary positions; neither is selected.",
+      "handling": {
+        "classification": "restricted",
+        "audienceScope": [
+          "decision-owners"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records",
+            "security-architecture-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2034-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "issue-broken-legacy-link",
+      "kind": "broken-link",
+      "evidenceStatus": "observed",
+      "observedAt": "2026-08-31T17:33:00Z",
+      "objectRefs": [
+        "snapshot-api-notes-orphan"
+      ],
+      "evidenceSnapshotRefs": [
+        "snapshot-api-notes-orphan"
+      ],
+      "relatedIssueRefs": [
+        "issue-missing-owner-link"
+      ],
+      "conflictSides": [],
+      "resolution": null,
+      "staleThresholdDays": null,
+      "description": "The notes page exposes a broken reference to a legacy Notion page.",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "issue-missing-api-summary",
+      "kind": "missing-link",
+      "evidenceStatus": "observed",
+      "observedAt": "2026-08-31T17:33:30Z",
+      "objectRefs": [
+        "snapshot-project-decisions"
+      ],
+      "evidenceSnapshotRefs": [
+        "snapshot-project-decisions"
+      ],
+      "relatedIssueRefs": [],
+      "conflictSides": [],
+      "resolution": null,
+      "staleThresholdDays": null,
+      "description": "The project-decisions database has no observed API summary page relation.",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "issue-missing-owner-link",
+      "kind": "missing-link",
+      "evidenceStatus": "observed",
+      "observedAt": "2026-08-31T17:34:00Z",
+      "objectRefs": [
+        "snapshot-api-versioning-copy"
+      ],
+      "evidenceSnapshotRefs": [
+        "snapshot-api-versioning-copy"
+      ],
+      "relatedIssueRefs": [
+        "issue-broken-legacy-link"
+      ],
+      "conflictSides": [],
+      "resolution": null,
+      "staleThresholdDays": null,
+      "description": "The duplicate topic record has no decision-owner relation.",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "issue-missing-owner-property",
+      "kind": "missing-property",
+      "evidenceStatus": "observed",
+      "observedAt": "2026-08-31T17:35:00Z",
+      "objectRefs": [
+        "snapshot-api-versioning-copy"
+      ],
+      "evidenceSnapshotRefs": [
+        "snapshot-api-versioning-copy"
+      ],
+      "relatedIssueRefs": [
+        "issue-duplicate-api-topic"
+      ],
+      "conflictSides": [],
+      "resolution": null,
+      "staleThresholdDays": null,
+      "description": "The topic record lacks the required Decision owner property.",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "issue-orphan-api-notes",
+      "kind": "orphan-candidate",
+      "evidenceStatus": "inferred",
+      "observedAt": "2026-08-31T17:36:00Z",
+      "objectRefs": [
+        "snapshot-api-notes-orphan"
+      ],
+      "evidenceSnapshotRefs": [
+        "snapshot-api-notes-orphan"
+      ],
+      "relatedIssueRefs": [],
+      "conflictSides": [],
+      "resolution": null,
+      "staleThresholdDays": null,
+      "description": "The page has zero observed inbound references and remains only an orphan candidate for owner review.",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    }
+  ],
+  "operations": [
+    {
+      "id": "operation-link-api-topics",
+      "kind": "link",
+      "state": "approved-for-human-application",
+      "proposedAt": "2026-08-31T18:00:00Z",
+      "target": {
+        "objectRef": "snapshot-api-versioning-old",
+        "observedVersion": {
+          "kind": "last-edited-time",
+          "value": "2026-01-01T10:00:00Z"
+        }
+      },
+      "targetPath": "links.Topic",
+      "beforeValue": null,
+      "afterValue": "dddddddddddddddddddddddddddddddd",
+      "patchIntent": "Propose a reciprocal topic relation between the two observed api-versioning records while preserving both pages.",
+      "affectedObjectRefs": [
+        "snapshot-api-versioning-old",
+        "snapshot-api-versioning-copy"
+      ],
+      "sourceSnapshotRefs": [
+        "snapshot-api-versioning-old",
+        "snapshot-api-versioning-copy"
+      ],
+      "issueRefs": [
+        "issue-duplicate-api-topic"
+      ],
+      "dependsOn": [],
+      "blockerRefs": [],
+      "impact": "low",
+      "reversible": true,
+      "rollback": {
+        "path": "links.Topic",
+        "value": null,
+        "instruction": "A human can remove the proposed reciprocal topic relation and restore the exact observed null value."
+      },
+      "expectedAccessState": "available",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      },
+      "approvalRef": "approval-link-api-topics",
+      "applicationMode": "external-human"
+    },
+    {
+      "id": "operation-mark-api-review",
+      "kind": "property-update",
+      "state": "blocked",
+      "proposedAt": "2026-08-31T18:01:00Z",
+      "target": {
+        "objectRef": "snapshot-api-versioning-old",
+        "observedVersion": {
+          "kind": "last-edited-time",
+          "value": "2026-01-01T10:00:00Z"
+        }
+      },
+      "targetPath": "properties.Review state",
+      "beforeValue": "Current",
+      "afterValue": "Needs owner review",
+      "patchIntent": "Propose marking the stale decision for owner review without changing the decision itself.",
+      "affectedObjectRefs": [
+        "snapshot-api-versioning-old"
+      ],
+      "sourceSnapshotRefs": [
+        "snapshot-api-versioning-old"
+      ],
+      "issueRefs": [
+        "issue-stale-api-decision"
+      ],
+      "dependsOn": [],
+      "blockerRefs": [
+        "blocker-stale-owner-review"
+      ],
+      "impact": "low",
+      "reversible": true,
+      "rollback": {
+        "path": "properties.Review state",
+        "value": "Current",
+        "instruction": "A human can restore the exact observed Review state value."
+      },
+      "expectedAccessState": "available",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      },
+      "approvalRef": null,
+      "applicationMode": "external-human"
+    },
+    {
+      "id": "operation-rename-api-notes",
+      "kind": "rename",
+      "state": "proposed",
+      "proposedAt": "2026-08-31T18:02:00Z",
+      "target": {
+        "objectRef": "snapshot-api-notes-orphan",
+        "observedVersion": {
+          "kind": "last-edited-time",
+          "value": "2026-08-25T10:00:00Z"
+        }
+      },
+      "targetPath": "title",
+      "beforeValue": "API decision notes",
+      "afterValue": "API versioning decision notes",
+      "patchIntent": "Propose a convention-aligned title while retaining the original observed title in the rollback patch.",
+      "affectedObjectRefs": [
+        "snapshot-api-notes-orphan"
+      ],
+      "sourceSnapshotRefs": [
+        "snapshot-api-notes-orphan"
+      ],
+      "issueRefs": [
+        "issue-orphan-api-notes"
+      ],
+      "dependsOn": [],
+      "blockerRefs": [],
+      "impact": "low",
+      "reversible": true,
+      "rollback": {
+        "path": "title",
+        "value": "API decision notes",
+        "instruction": "A human can restore the exact observed title."
+      },
+      "expectedAccessState": "available",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      },
+      "approvalRef": null,
+      "applicationMode": "external-human"
+    },
+    {
+      "id": "operation-draft-api-summary",
+      "kind": "draft-page",
+      "state": "proposed",
+      "proposedAt": "2026-08-31T18:03:00Z",
+      "target": {
+        "objectRef": "snapshot-project-decisions",
+        "observedVersion": {
+          "kind": "last-edited-time",
+          "value": "2026-08-30T11:00:00Z"
+        }
+      },
+      "targetPath": "children",
+      "beforeValue": null,
+      "afterValue": "Draft: API versioning decision summary",
+      "patchIntent": "Propose a source-linked draft page title; page creation remains an external human action.",
+      "affectedObjectRefs": [
+        "snapshot-project-decisions",
+        "snapshot-api-versioning-old",
+        "snapshot-api-versioning-copy"
+      ],
+      "sourceSnapshotRefs": [
+        "snapshot-project-decisions",
+        "snapshot-api-versioning-old",
+        "snapshot-api-versioning-copy"
+      ],
+      "issueRefs": [
+        "issue-duplicate-api-topic",
+        "issue-missing-api-summary"
+      ],
+      "dependsOn": [
+        "operation-link-api-topics"
+      ],
+      "blockerRefs": [],
+      "impact": "medium",
+      "reversible": true,
+      "rollback": {
+        "path": "children",
+        "value": null,
+        "instruction": "A human can discard the uncreated proposal or remove an externally created draft under a separate receipt-bound workflow."
+      },
+      "expectedAccessState": "available",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      },
+      "approvalRef": null,
+      "applicationMode": "external-human"
+    },
+    {
+      "id": "operation-move-api-notes",
+      "kind": "move",
+      "state": "proposed",
+      "proposedAt": "2026-08-31T18:04:00Z",
+      "target": {
+        "objectRef": "snapshot-api-notes-orphan",
+        "observedVersion": {
+          "kind": "last-edited-time",
+          "value": "2026-08-25T10:00:00Z"
+        }
+      },
+      "targetPath": "parentObjectId",
+      "beforeValue": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "afterValue": "cccccccccccccccccccccccccccccccc",
+      "patchIntent": "Propose moving the orphan candidate under the observed API versioning decision after owner review.",
+      "affectedObjectRefs": [
+        "snapshot-api-notes-orphan",
+        "snapshot-api-versioning-old"
+      ],
+      "sourceSnapshotRefs": [
+        "snapshot-api-notes-orphan",
+        "snapshot-api-versioning-old"
+      ],
+      "issueRefs": [
+        "issue-stale-api-decision",
+        "issue-orphan-api-notes"
+      ],
+      "dependsOn": [
+        "operation-rename-api-notes"
+      ],
+      "blockerRefs": [],
+      "impact": "medium",
+      "reversible": true,
+      "rollback": {
+        "path": "parentObjectId",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "instruction": "A human can restore the exact observed project-decisions database parent."
+      },
+      "expectedAccessState": "available",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      },
+      "approvalRef": null,
+      "applicationMode": "external-human"
+    },
+    {
+      "id": "operation-archive-hosting-b",
+      "kind": "archive",
+      "state": "blocked",
+      "proposedAt": "2026-08-31T18:05:00Z",
+      "target": {
+        "objectRef": "snapshot-hosting-decision-b",
+        "observedVersion": {
+          "kind": "last-edited-time",
+          "value": "2026-08-23T10:00:00Z"
+        }
+      },
+      "targetPath": "archived",
+      "beforeValue": "false",
+      "afterValue": "true",
+      "patchIntent": "Preserve this archive proposal as blocked until a human resolves the conflict without removing either observed side.",
+      "affectedObjectRefs": [
+        "snapshot-hosting-decision-a",
+        "snapshot-hosting-decision-b"
+      ],
+      "sourceSnapshotRefs": [
+        "snapshot-hosting-decision-a",
+        "snapshot-hosting-decision-b"
+      ],
+      "issueRefs": [
+        "issue-hosting-conflict"
+      ],
+      "dependsOn": [],
+      "blockerRefs": [
+        "blocker-hosting-conflict"
+      ],
+      "impact": "high",
+      "reversible": true,
+      "rollback": {
+        "path": "archived",
+        "value": "false",
+        "instruction": "A human can restore the exact observed unarchived state while retaining both conflict records."
+      },
+      "expectedAccessState": "restricted",
+      "handling": {
+        "classification": "restricted",
+        "audienceScope": [
+          "decision-owners"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records",
+            "security-architecture-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2034-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      },
+      "approvalRef": null,
+      "applicationMode": "external-human"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "approval-link-api-topics",
+      "kind": "human-exact-version",
+      "scope": "operation-only",
+      "operationRef": "operation-link-api-topics",
+      "targetVersions": [
+        {
+          "objectRef": "snapshot-api-versioning-old",
+          "observedVersion": {
+            "kind": "last-edited-time",
+            "value": "2026-01-01T10:00:00Z"
+          }
+        },
+        {
+          "objectRef": "snapshot-api-versioning-copy",
+          "observedVersion": {
+            "kind": "last-edited-time",
+            "value": "2026-08-20T10:00:00Z"
+          }
+        }
+      ],
+      "planDigest": "9ae8af5544d0ad86c5b0dd4f2b6fdc73b7c1cfa71ee5a21e41c1d34858f2d07c",
+      "approvedBy": {
+        "id": "human-morgan-lee",
+        "name": "Morgan Lee",
+        "type": "human"
+      },
+      "approvedAt": "2026-08-31T18:30:00Z",
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    }
+  ],
+  "blockers": [
+    {
+      "id": "blocker-stale-owner-review",
+      "kind": "human-decision",
+      "status": "open",
+      "blocksReadiness": true,
+      "operationRefs": [
+        "operation-mark-api-review"
+      ],
+      "issueRefs": [
+        "issue-stale-api-decision"
+      ],
+      "objectRefs": [
+        "snapshot-api-versioning-old"
+      ],
+      "description": "The decision owner must choose whether the stale record needs review before a property proposal can be approved.",
+      "owner": {
+        "id": "human-sam-rivera",
+        "name": "Sam Rivera",
+        "type": "human"
+      },
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "blocker-hosting-conflict",
+      "kind": "conflict",
+      "status": "open",
+      "blocksReadiness": true,
+      "operationRefs": [
+        "operation-archive-hosting-b"
+      ],
+      "issueRefs": [
+        "issue-hosting-conflict"
+      ],
+      "objectRefs": [
+        "snapshot-hosting-decision-a",
+        "snapshot-hosting-decision-b"
+      ],
+      "description": "A named decision owner must review every hosting-conflict side; the plan cannot resolve or archive either position.",
+      "owner": {
+        "id": "team-architecture-operations",
+        "name": "Architecture operations",
+        "type": "team"
+      },
+      "handling": {
+        "classification": "restricted",
+        "audienceScope": [
+          "decision-owners"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records",
+            "security-architecture-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2034-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    }
+  ],
+  "questions": [
+    {
+      "id": "question-stale-api-review",
+      "status": "open",
+      "blocksReadiness": true,
+      "targetRefs": [
+        "issue-stale-api-decision",
+        "snapshot-api-versioning-old"
+      ],
+      "operationRefs": [
+        "operation-mark-api-review"
+      ],
+      "blockerRefs": [
+        "blocker-stale-owner-review"
+      ],
+      "question": "Should Sam Rivera review the API versioning decision before a human changes its Review state?",
+      "owner": {
+        "id": "human-sam-rivera",
+        "name": "Sam Rivera",
+        "type": "human"
+      },
+      "handling": {
+        "classification": "confidential",
+        "audienceScope": [
+          "decision-owners",
+          "architecture-team"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2032-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    },
+    {
+      "id": "question-hosting-conflict",
+      "status": "open",
+      "blocksReadiness": true,
+      "targetRefs": [
+        "issue-hosting-conflict",
+        "snapshot-hosting-decision-a",
+        "snapshot-hosting-decision-b"
+      ],
+      "operationRefs": [
+        "operation-archive-hosting-b"
+      ],
+      "blockerRefs": [
+        "blocker-hosting-conflict"
+      ],
+      "question": "Which named human or team will own a separate decision process that preserves and reviews both hosting positions?",
+      "owner": {
+        "id": "team-architecture-operations",
+        "name": "Architecture operations",
+        "type": "team"
+      },
+      "handling": {
+        "classification": "restricted",
+        "audienceScope": [
+          "decision-owners"
+        ],
+        "retention": {
+          "state": "known",
+          "policyRefs": [
+            "project-decisions-records",
+            "security-architecture-records"
+          ],
+          "unknownPolicyRefs": [],
+          "retainUntil": "2034-12-31T23:59:59Z",
+          "dispositionAuthority": "human-only"
+        }
+      }
+    }
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": {
+      "id": "team-architecture-operations",
+      "name": "Architecture operations",
+      "type": "team"
+    },
+    "snapshotRefs": [
+      "snapshot-project-root",
+      "snapshot-project-decisions",
+      "snapshot-api-versioning-old",
+      "snapshot-api-versioning-copy",
+      "snapshot-hosting-decision-a",
+      "snapshot-hosting-decision-b",
+      "snapshot-security-boundary",
+      "snapshot-api-notes-orphan"
+    ],
+    "issueRefs": [
+      "issue-duplicate-api-topic",
+      "issue-stale-api-decision",
+      "issue-hosting-conflict",
+      "issue-broken-legacy-link",
+      "issue-missing-api-summary",
+      "issue-missing-owner-link",
+      "issue-missing-owner-property",
+      "issue-orphan-api-notes"
+    ],
+    "operationRefs": [
+      "operation-link-api-topics",
+      "operation-mark-api-review",
+      "operation-rename-api-notes",
+      "operation-draft-api-summary",
+      "operation-move-api-notes",
+      "operation-archive-hosting-b"
+    ],
+    "approvalRefs": [
+      "approval-link-api-topics"
+    ],
+    "blockerRefs": [
+      "blocker-stale-owner-review",
+      "blocker-hosting-conflict"
+    ],
+    "questionRefs": [
+      "question-stale-api-review",
+      "question-hosting-conflict"
+    ],
+    "blockingQuestionRefs": [
+      "question-stale-api-review",
+      "question-hosting-conflict"
+    ],
+    "summary": "A private exact-version plan preserves duplicate topics and every hosting-conflict side, with one operation-specific human approval and all other changes proposed or blocked for external application.",
+    "output": {
+      "path": "outputs/knowledge-space-change-plan.json",
+      "visibility": "private",
+      "storage": "local-artifact",
+      "deliveryState": "not-delivered"
+    },
+    "handling": {
+      "classification": "restricted",
+      "audienceScope": [
+        "decision-owners"
+      ],
+      "retention": {
+        "state": "known",
+        "policyRefs": [
+          "project-decisions-records",
+          "security-architecture-records"
+        ],
+        "unknownPolicyRefs": [],
+        "retainUntil": "2034-12-31T23:59:59Z",
+        "dispositionAuthority": "human-only"
+      }
+    },
+    "prohibitedActions": [
+      "read-outside-shared-scope",
+      "create-notion-content",
+      "update-notion-content",
+      "archive-notion-content",
+      "move-notion-content",
+      "delete-notion-content",
+      "publish-notion-content",
+      "share-notion-content",
+      "change-access-control",
+      "copy-restricted-to-weaker-scope",
+      "resolve-conflict-autonomously",
+      "make-decisions-autonomously",
+      "act-on-retention-autonomously",
+      "claim-mutation",
+      "claim-completion",
+      "claim-access"
+    ]
+  },
+  "prohibitedActions": [
+    "read-outside-shared-scope",
+    "create-notion-content",
+    "update-notion-content",
+    "archive-notion-content",
+    "move-notion-content",
+    "delete-notion-content",
+    "publish-notion-content",
+    "share-notion-content",
+    "change-access-control",
+    "copy-restricted-to-weaker-scope",
+    "resolve-conflict-autonomously",
+    "make-decisions-autonomously",
+    "act-on-retention-autonomously",
+    "claim-mutation",
+    "claim-completion",
+    "claim-access"
+  ],
+  "integrity": {
+    "algorithm": "sha256",
+    "scope": "canonical-plan-content-excluding-approval-state",
+    "digest": "9ae8af5544d0ad86c5b0dd4f2b6fdc73b7c1cfa71ee5a21e41c1d34858f2d07c"
+  }
+}

@@ -91,6 +91,29 @@ export function computeChangePlanDigest(plan) {
   return createHash("sha256").update(canonicalJson(digestInput)).digest("hex");
 }
 
+export function computeKnowledgeSpaceChangePlanDigest(value) {
+  const operations = value.operations.map((item) => ({
+    ...item,
+    state:
+      item.state === "approved-for-human-application" ? "proposed" : item.state,
+    approvalRef: null,
+  }));
+  return createHash("sha256")
+    .update(
+      canonicalJson({
+        schemaVersion: value.schemaVersion,
+        plan: value.plan,
+        snapshots: value.snapshots,
+        issues: value.issues,
+        operations,
+        blockers: value.blockers,
+        questions: value.questions,
+        prohibitedActions: value.prohibitedActions,
+      }),
+    )
+    .digest("hex");
+}
+
 function duplicates(values) {
   const seen = new Set();
   return [...new Set(values.filter((value) => seen.size === seen.add(value).size))];
@@ -17436,6 +17459,1439 @@ function executiveBriefingSnapshotFindings(value) {
   return findings;
 }
 
+function knowledgeSpaceChangePlanFindings(value) {
+  const collections = [
+    ["snapshots", value.snapshots],
+    ["issues", value.issues],
+    ["operations", value.operations],
+    ["approvals", value.approvals],
+    ["blockers", value.blockers],
+    ["questions", value.questions],
+  ];
+  const idsByCollection = new Map(
+    collections.map(([name, items]) => [
+      name,
+      new Set(items.map((item) => item.id)),
+    ]),
+  );
+  const allObjects = collections.flatMap(([, items]) => items);
+  const allIds = allObjects.map((item) => item.id);
+  const allIdSet = new Set(allIds);
+  const objectById = new Map(allObjects.map((item) => [item.id, item]));
+  const snapshotById = new Map(
+    value.snapshots.map((item) => [item.id, item]),
+  );
+  const snapshotByObjectId = new Map();
+  const snapshotByCanonicalIdentity = new Map();
+  const canonicalNotionIdentity = (reference) => {
+    try {
+      const parsed = new URL(reference);
+      const compactPath = parsed.pathname.replaceAll("-", "").toLowerCase();
+      const objectIds = compactPath.match(/[a-f0-9]{32}/gu);
+      return objectIds?.at(-1) ?? null;
+    } catch {
+      return null;
+    }
+  };
+  for (const snapshot of value.snapshots) {
+    if (!snapshotByObjectId.has(snapshot.notionObjectId)) {
+      snapshotByObjectId.set(snapshot.notionObjectId, snapshot);
+    }
+    const canonicalIdentity = canonicalNotionIdentity(snapshot.url);
+    if (
+      canonicalIdentity !== null &&
+      !snapshotByCanonicalIdentity.has(canonicalIdentity)
+    ) {
+      snapshotByCanonicalIdentity.set(canonicalIdentity, snapshot);
+    }
+  }
+  const issueById = new Map(value.issues.map((item) => [item.id, item]));
+  const operationById = new Map(
+    value.operations.map((item) => [item.id, item]),
+  );
+  const blockerById = new Map(
+    value.blockers.map((item) => [item.id, item]),
+  );
+  const classificationRank = {
+    public: 0,
+    internal: 1,
+    confidential: 2,
+    restricted: 3,
+  };
+  const accessRank = {
+    available: 0,
+    restricted: 1,
+    unavailable: 2,
+  };
+  const requiredActions = [
+    "read-outside-shared-scope",
+    "create-notion-content",
+    "update-notion-content",
+    "archive-notion-content",
+    "move-notion-content",
+    "delete-notion-content",
+    "publish-notion-content",
+    "share-notion-content",
+    "change-access-control",
+    "copy-restricted-to-weaker-scope",
+    "resolve-conflict-autonomously",
+    "make-decisions-autonomously",
+    "act-on-retention-autonomously",
+    "claim-mutation",
+    "claim-completion",
+    "claim-access",
+  ];
+  const findings = collections.flatMap(([name, items]) =>
+    uniqueFindings(
+      items.map((item) => item.id),
+      name,
+      `${name} id`,
+    ),
+  );
+  for (const id of duplicates(allIds)) {
+    findings.push(
+      finding(
+        "duplicate_object_id",
+        "plan",
+        `Knowledge-space object id ${JSON.stringify(id)} is reused across object types.`,
+      ),
+    );
+  }
+  for (const objectId of duplicates(
+    value.snapshots.map((snapshot) => snapshot.notionObjectId),
+  )) {
+    findings.push(
+      finding(
+        "duplicate_notion_identity",
+        "snapshots",
+        `Notion object identity ${JSON.stringify(objectId)} is represented by more than one snapshot.`,
+      ),
+    );
+  }
+  for (const identity of duplicates(
+    value.snapshots
+      .map((snapshot) => canonicalNotionIdentity(snapshot.url))
+      .filter(Boolean),
+  )) {
+    findings.push(
+      finding(
+        "duplicate_notion_identity",
+        "snapshots",
+        `Canonical Notion URL identity ${JSON.stringify(identity)} is represented by more than one snapshot.`,
+      ),
+    );
+  }
+  const checkRefs = (refs, allowed, path, label) => {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, allowed, path, label),
+    );
+  };
+  const sameMembers = (left, right) => {
+    if (left.length !== right.length) return false;
+    const counts = new Map();
+    for (const item of left) {
+      const key = canonicalJson(item);
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    for (const item of right) {
+      const key = canonicalJson(item);
+      const remaining = counts.get(key) ?? 0;
+      if (remaining === 0) return false;
+      if (remaining === 1) counts.delete(key);
+      else counts.set(key, remaining - 1);
+    }
+    return counts.size === 0;
+  };
+  const principalIsAgent = (principal) =>
+    /(?:^|[^\p{L}\p{N}])(?:agent|assistant|claw|ai|bot|gpt)(?:$|[^\p{L}\p{N}])/iu.test(
+      principal.id,
+    ) ||
+    /(?:^|[^\p{L}\p{N}])(?:agent|assistant|claw|ai|bot|gpt)(?:$|[^\p{L}\p{N}])/iu.test(
+      principal.name,
+    );
+  const credentialShapedId =
+    /^(?:ntn_|secret_|token_v\d+_)/iu;
+  const validObservationExportId =
+    /^notion-observation-export-[a-z0-9][a-z0-9-]{2,63}$/u;
+  const validIntegrationRegistrationId =
+    /^notion-integration-registration-[a-z0-9][a-z0-9-]{2,63}$/u;
+  const validAuthorizationReceiptId =
+    /^notion-authorization-receipt-[a-z0-9][a-z0-9-]{2,63}$/u;
+  const credentialMaterial =
+    /(?:\b(?:ntn_|secret_|token_v\d+_)[a-z0-9+/=_-]{8,}\b|\bbearer\s+[a-z0-9._~+/-]{16,}\b|\b(?:api[-_ ]?key|password|credential)\s*[:=]\s*\S{8,})/iu;
+  const legacyCredentialMaterial = /^[a-z0-9+/=_-]{40,}$/iu;
+  const asOf = Date.parse(value.plan.asOf);
+  const horizonStart = Date.parse(value.plan.reviewHorizon.startsAt);
+  const horizonEnd = Date.parse(value.plan.reviewHorizon.endsAt);
+  if (horizonStart < asOf || horizonEnd <= horizonStart) {
+    findings.push(
+      finding(
+        "invalid_plan_chronology",
+        "plan.reviewHorizon",
+        "The review horizon must start no earlier than plan as-of and have a positive duration.",
+      ),
+    );
+  }
+  if (
+    Date.parse(value.plan.staleDecisionPolicy.definedAt) > asOf ||
+    !sameMembers(
+      [value.plan.staleDecisionPolicy.definedBy.id],
+      [value.plan.maintenanceOwner.id],
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid_plan_chronology",
+        "plan.staleDecisionPolicy",
+        "The maintenance owner must define the positive stale-decision threshold no later than plan as-of.",
+      ),
+    );
+  }
+
+  const sharedRoots = new Map();
+  for (const item of value.plan.scope.sharedRoots) {
+    if (!sharedRoots.has(item.objectId)) {
+      sharedRoots.set(item.objectId, item.objectType);
+    }
+  }
+  const sharedDatabases = new Map();
+  for (const item of value.plan.scope.sharedDatabases) {
+    if (!sharedDatabases.has(item.objectId)) {
+      sharedDatabases.set(item.objectId, item.objectType);
+    }
+  }
+  const sharedPages = new Map();
+  for (const item of value.plan.scope.sharedPages) {
+    if (!sharedPages.has(item.objectId)) {
+      sharedPages.set(item.objectId, item.objectType);
+    }
+  }
+  const excludedObjects = new Set(
+    value.plan.scope.excludedObjects.map((item) => item.objectId),
+  );
+  const typedSharedObjects = [
+    ...value.plan.scope.sharedDatabases,
+    ...value.plan.scope.sharedPages,
+  ];
+  const sharedRootIds = value.plan.scope.sharedRoots.map(
+    (item) => item.objectId,
+  );
+  const typedSharedIds = typedSharedObjects.map((item) => item.objectId);
+  const excludedObjectIds = value.plan.scope.excludedObjects.map(
+    (item) => item.objectId,
+  );
+  const exactTypedScope =
+    new Set(sharedRootIds).size === sharedRootIds.length &&
+    new Set(typedSharedIds).size === typedSharedIds.length &&
+    new Set(excludedObjectIds).size === excludedObjectIds.length &&
+    typedSharedObjects.length === value.plan.scope.sharedRoots.length &&
+    typedSharedObjects.every(
+      (item) => sharedRoots.get(item.objectId) === item.objectType,
+    ) &&
+    value.plan.scope.sharedDatabases.every(
+      (item) => item.objectType === "database",
+    ) &&
+    value.plan.scope.sharedPages.every((item) => item.objectType === "page");
+  const observationInput = value.plan.observationInput;
+  const authorization = observationInput.authorizationReceipt;
+  const authorizationMatchesScope =
+    sameMembers(authorization.authorizedObjectIds, sharedRootIds) &&
+    sameMembers(authorization.excludedObjectIds, excludedObjectIds);
+  if (
+    !exactTypedScope ||
+    !authorizationMatchesScope ||
+    [...new Set([...sharedRootIds, ...typedSharedIds])].some((objectId) =>
+      excludedObjects.has(objectId),
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid_scope",
+        "plan.scope",
+        "Shared roots must equal the exact typed shared page and database grants, match the export authorization receipt, and remain disjoint from every excluded object.",
+      ),
+    );
+  }
+  const authorizationExpiresAt =
+    authorization.expiresAt === null
+      ? null
+      : Date.parse(authorization.expiresAt);
+  const exportedAt = Date.parse(observationInput.exportedAt);
+  const suppliedAt = Date.parse(observationInput.suppliedAt);
+  const receiptMatchesExport =
+    authorization.observationExportId ===
+      observationInput.observationExportId &&
+    authorization.integrationRegistrationId ===
+      observationInput.integrationRegistrationId &&
+    authorization.exportVersion === observationInput.exportVersion &&
+    authorization.exportDigest === observationInput.contentDigest;
+  const exportedTextValues = value.snapshots.flatMap((snapshot) => [
+    snapshot.title,
+    snapshot.url,
+    ...snapshot.observedValues.map((item) => item.value).filter(Boolean),
+    ...snapshot.missingReferences,
+    ...snapshot.missingProperties,
+  ]);
+  const safeInputIdentifiers =
+    validObservationExportId.test(observationInput.observationExportId) &&
+    validIntegrationRegistrationId.test(
+      observationInput.integrationRegistrationId,
+    ) &&
+    validAuthorizationReceiptId.test(authorization.receiptId) &&
+    ![
+      observationInput.observationExportId,
+      observationInput.integrationRegistrationId,
+      authorization.receiptId,
+      authorization.observationExportId,
+      authorization.integrationRegistrationId,
+    ].some((id) => credentialShapedId.test(id));
+  if (
+    !receiptMatchesExport ||
+    !safeInputIdentifiers ||
+    observationInput.provider !== "notion-observation-export" ||
+    observationInput.workspacePath !==
+      "inputs/notion-observation-export.json" ||
+    !isSafePackagePath(observationInput.workspacePath) ||
+    observationInput.exportVersion < 1 ||
+    observationInput.containsSecrets ||
+    exportedTextValues.some(
+      (text) =>
+        credentialMaterial.test(text) || legacyCredentialMaterial.test(text),
+    ) ||
+    exportedAt > suppliedAt ||
+    suppliedAt > asOf
+  ) {
+    findings.push(
+      finding(
+        "invalid_observation_export",
+        "plan.observationInput",
+        "The input must be one secret-free, versioned, digest-bound Notion observation export supplied from the local workspace with noncredential identifiers and a matching receipt.",
+      ),
+    );
+  }
+  if (
+    authorization.accessMode !== "read-only-observation-export" ||
+    Date.parse(authorization.grantedAt) > exportedAt ||
+    Date.parse(authorization.recordedAt) < exportedAt ||
+    Date.parse(authorization.recordedAt) > suppliedAt ||
+    (authorizationExpiresAt !== null &&
+      (authorizationExpiresAt <= Date.parse(authorization.grantedAt) ||
+        authorizationExpiresAt <= exportedAt))
+  ) {
+    findings.push(
+      finding(
+        "invalid_integration_authorization",
+        "plan.observationInput.authorizationReceipt",
+        "The operator-supplied receipt must prove read-only export authorization before observation, bind the exact export and scope, and remain valid through export.",
+      ),
+    );
+  }
+
+  for (const [index, snapshot] of value.snapshots.entries()) {
+    checkRefs(
+      snapshot.parentRef === null ? [] : [snapshot.parentRef],
+      idsByCollection.get("snapshots"),
+      `snapshots.${index}.parentRef`,
+      "Snapshot parent reference",
+    );
+    checkRefs(
+      [snapshot.rootRef],
+      idsByCollection.get("snapshots"),
+      `snapshots.${index}.rootRef`,
+      "Snapshot root reference",
+    );
+    checkRefs(
+      snapshot.ancestryRefs,
+      idsByCollection.get("snapshots"),
+      `snapshots.${index}.ancestryRefs`,
+      "Snapshot ancestry reference",
+    );
+    checkRefs(
+      snapshot.referenceRefs,
+      idsByCollection.get("snapshots"),
+      `snapshots.${index}.referenceRefs`,
+      "Snapshot object reference",
+    );
+    findings.push(
+      ...uniqueFindings(
+        snapshot.observedValues.map((item) => item.path),
+        `snapshots.${index}.observedValues`,
+        "Observed value path",
+      ),
+    );
+    const observedAt = Date.parse(snapshot.observation.observedAt);
+    const includedAt = Date.parse(snapshot.observation.includedAt);
+    if (
+      snapshot.observation.observationExportId !==
+        observationInput.observationExportId ||
+      snapshot.observation.exportVersion !== observationInput.exportVersion ||
+      Date.parse(snapshot.lastEditedAt) > observedAt ||
+      observedAt < Date.parse(authorization.grantedAt) ||
+      observedAt > includedAt ||
+      includedAt !== exportedAt ||
+      includedAt > suppliedAt ||
+      (authorizationExpiresAt !== null &&
+        (observedAt >= authorizationExpiresAt ||
+          includedAt >= authorizationExpiresAt))
+    ) {
+      findings.push(
+        finding(
+          "invalid_snapshot_chronology",
+          `snapshots.${index}.observation`,
+          "Every snapshot must belong to the exact supplied export version, and last edit, authorized observation, export inclusion, local supply, and plan as-of times must be ordered.",
+        ),
+      );
+    }
+    if (
+      snapshot.observedVersion.kind !== "last-edited-time" ||
+      Date.parse(snapshot.observedVersion.value) !==
+        Date.parse(snapshot.lastEditedAt)
+    ) {
+      findings.push(
+        finding(
+          "invalid_observed_version",
+          `snapshots.${index}.observedVersion`,
+          "Every snapshot version must equal the exact observed Notion last-edited time.",
+        ),
+      );
+    }
+    let parsedReference;
+    try {
+      parsedReference = new URL(snapshot.url);
+    } catch {
+      parsedReference = null;
+    }
+    if (
+      parsedReference === null ||
+      !isCredentialFreePublicHttpsReference(parsedReference) ||
+      !["notion.so", "www.notion.so"].includes(parsedReference.hostname) ||
+      !parsedReference.pathname
+        .replaceAll("-", "")
+        .toLowerCase()
+        .includes(snapshot.notionObjectId)
+    ) {
+      findings.push(
+        finding(
+          "unsafe_snapshot_reference",
+          `snapshots.${index}.url`,
+          "Snapshot references must be credential-free public HTTPS Notion URLs bound to the stable object id.",
+        ),
+      );
+    }
+    const ancestryObjects = snapshot.scopeProof.ancestryObjectIds;
+    const ancestrySnapshots = snapshot.ancestryRefs
+      .map((ref) => snapshotById.get(ref))
+      .filter(Boolean);
+    const ancestryAligned =
+      ancestrySnapshots.length === snapshot.ancestryRefs.length &&
+      ancestrySnapshots.length === ancestryObjects.length &&
+      ancestrySnapshots.every(
+        (item, ancestryIndex) =>
+          item.notionObjectId === ancestryObjects[ancestryIndex],
+      );
+    const rootSnapshot = snapshotById.get(snapshot.rootRef);
+    const parentSnapshot =
+      snapshot.parentRef === null
+        ? null
+        : snapshotById.get(snapshot.parentRef);
+    const rootedInSharedScope =
+      ancestryAligned &&
+      ancestrySnapshots.at(-1)?.id === snapshot.id &&
+      rootSnapshot?.id === ancestrySnapshots[0]?.id &&
+      sharedRoots.has(snapshot.scopeProof.sharedViaObjectId) &&
+      ancestryObjects.includes(snapshot.scopeProof.sharedViaObjectId) &&
+      (snapshot.parentRef === null
+        ? snapshot.rootRef === snapshot.id && ancestrySnapshots.length === 1
+        : parentSnapshot?.id === ancestrySnapshots.at(-2)?.id) &&
+      sharedRoots.get(snapshot.scopeProof.sharedViaObjectId) ===
+        snapshotByObjectId.get(snapshot.scopeProof.sharedViaObjectId)?.objectType;
+    if (
+      !rootedInSharedScope ||
+      !snapshot.scopeProof.insideSharedScope
+    ) {
+      findings.push(
+        finding(
+          "out_of_scope_snapshot",
+          `snapshots.${index}.scopeProof`,
+          "Every observed object requires a complete parent/root ancestry ending at itself and containing an exact explicitly shared object.",
+        ),
+      );
+    }
+    if (
+      ancestryObjects.some((objectId) => excludedObjects.has(objectId)) ||
+      !snapshot.scopeProof.outsideExclusions
+    ) {
+      findings.push(
+        finding(
+          "excluded_scope_snapshot",
+          `snapshots.${index}.scopeProof`,
+          "Exclusion wins: no observed object's exact ancestry may intersect an explicitly excluded object.",
+        ),
+      );
+    }
+  }
+
+  const staleThresholdDays = value.plan.staleDecisionPolicy.thresholdDays;
+  const staleDecisionIds = value.snapshots
+    .filter(
+      (snapshot) =>
+        snapshot.knowledgeKind === "decision" &&
+        asOf - Date.parse(snapshot.lastEditedAt) >=
+          staleThresholdDays * 24 * 60 * 60 * 1000,
+    )
+    .map((snapshot) => snapshot.id);
+  for (const [index, issue] of value.issues.entries()) {
+    checkRefs(
+      issue.objectRefs,
+      idsByCollection.get("snapshots"),
+      `issues.${index}.objectRefs`,
+      "Issue object reference",
+    );
+    checkRefs(
+      issue.evidenceSnapshotRefs,
+      idsByCollection.get("snapshots"),
+      `issues.${index}.evidenceSnapshotRefs`,
+      "Issue evidence reference",
+    );
+    checkRefs(
+      issue.relatedIssueRefs,
+      idsByCollection.get("issues"),
+      `issues.${index}.relatedIssueRefs`,
+      "Related issue reference",
+    );
+    checkRefs(
+      issue.conflictSides.map((item) => item.objectRef),
+      idsByCollection.get("snapshots"),
+      `issues.${index}.conflictSides`,
+      "Conflict-side object reference",
+    );
+    const evidenceComplete =
+      sameMembers(issue.evidenceSnapshotRefs, issue.objectRefs) &&
+      Date.parse(issue.observedAt) <= asOf &&
+      issue.evidenceSnapshotRefs.every(
+        (ref) =>
+          Date.parse(snapshotById.get(ref)?.observation.observedAt) <=
+          Date.parse(issue.observedAt),
+      );
+    if (!evidenceComplete) {
+      findings.push(
+        finding(
+          "invalid_issue_evidence",
+          `issues.${index}`,
+          "Issue evidence must exactly cover every affected snapshot side, with each snapshot observed no later than the issue and plan as-of.",
+        ),
+      );
+    }
+    if (
+      issue.relatedIssueRefs.some(
+        (ref) => !issueById.get(ref)?.relatedIssueRefs.includes(issue.id),
+      )
+    ) {
+      findings.push(
+        finding(
+          "asymmetric_issue_link",
+          `issues.${index}.relatedIssueRefs`,
+          "Every related issue link must be reciprocal.",
+        ),
+      );
+    }
+    if (issue.resolution !== null) {
+      findings.push(
+        finding(
+          "autonomous_conflict_resolution",
+          `issues.${index}.resolution`,
+          "The plan preserves issue and conflict evidence; it cannot record a resolution selected by the Claw.",
+        ),
+      );
+    }
+    const snapshots = issue.objectRefs
+      .map((ref) => snapshotById.get(ref))
+      .filter(Boolean);
+    if (issue.kind === "duplicate-topic") {
+      const fingerprints = new Set(
+        snapshots.map((snapshot) => snapshot.topicFingerprint),
+      );
+      if (
+        snapshots.length < 2 ||
+        snapshots.length !== issue.objectRefs.length ||
+        fingerprints.size !== 1 ||
+        fingerprints.has(null)
+      ) {
+        findings.push(
+          finding(
+            "false_duplicate",
+            `issues.${index}`,
+            "Duplicate topics require at least two distinct snapshots with one identical nonempty observed topic fingerprint.",
+          ),
+        );
+      }
+    }
+    if (issue.kind === "stale-decision") {
+      const honestlyStale =
+        issue.staleThresholdDays === staleThresholdDays &&
+        snapshots.length === issue.objectRefs.length &&
+        snapshots.length > 0 &&
+        snapshots.every(
+          (snapshot) =>
+            snapshot.knowledgeKind === "decision" &&
+            staleDecisionIds.includes(snapshot.id),
+        );
+      if (!honestlyStale) {
+        findings.push(
+          finding(
+            "false_staleness",
+            `issues.${index}`,
+            "Stale-decision findings must use the owner-defined threshold against exact decision last-edited times at plan as-of.",
+          ),
+        );
+      }
+    } else if (issue.staleThresholdDays !== null) {
+      findings.push(
+        finding(
+          "invalid_issue_evidence",
+          `issues.${index}.staleThresholdDays`,
+          "Only stale-decision issues may carry the exact owner-defined threshold.",
+        ),
+      );
+    }
+    if (issue.kind === "conflict") {
+      const sideRefs = issue.conflictSides.map((item) => item.objectRef);
+      const decisionKeys = new Set(
+        snapshots.map((snapshot) => snapshot.decisionKey),
+      );
+      const positionDigests = new Set(
+        snapshots.map((snapshot) => snapshot.contentDigest),
+      );
+      if (
+        snapshots.length < 2 ||
+        decisionKeys.size !== 1 ||
+        decisionKeys.has(null) ||
+        positionDigests.size < 2
+      ) {
+        findings.push(
+          finding(
+            "false_conflict",
+            `issues.${index}`,
+            "A conflict requires at least two exact snapshots for one decision key with distinct preserved position digests.",
+          ),
+        );
+      }
+      if (
+        !sameMembers(sideRefs, issue.objectRefs) ||
+        issue.conflictSides.some((side) => {
+          const snapshot = snapshotById.get(side.objectRef);
+          return (
+            canonicalJson(side.observedVersion) !==
+              canonicalJson(snapshot?.observedVersion) ||
+            side.positionDigest !== snapshot?.contentDigest
+          );
+        })
+      ) {
+        findings.push(
+          finding(
+            "invalid_issue_evidence",
+            `issues.${index}.conflictSides`,
+            "Conflict sides must cover every affected snapshot and preserve each exact observed version and position digest.",
+          ),
+        );
+      }
+    } else if (issue.conflictSides.length > 0) {
+      findings.push(
+        finding(
+          "invalid_issue_evidence",
+          `issues.${index}.conflictSides`,
+          "Only conflict issues may carry preserved conflict sides.",
+        ),
+      );
+    }
+    const kindGrounded =
+      (issue.kind === "broken-link" &&
+        snapshots.some((snapshot) =>
+          snapshot.missingReferences.some((ref) => ref.startsWith("broken:")),
+        )) ||
+      (issue.kind === "missing-link" &&
+        snapshots.some((snapshot) =>
+          snapshot.missingReferences.some((ref) => ref.startsWith("missing:")),
+        )) ||
+      (issue.kind === "missing-property" &&
+        snapshots.some((snapshot) => snapshot.missingProperties.length > 0)) ||
+      (issue.kind === "orphan-candidate" &&
+        issue.evidenceStatus === "inferred" &&
+        snapshots.some((snapshot) => snapshot.inboundReferenceCount === 0)) ||
+      ["duplicate-topic", "stale-decision", "conflict"].includes(issue.kind);
+    if (!kindGrounded) {
+      findings.push(
+        finding(
+          "invalid_issue_evidence",
+          `issues.${index}.kind`,
+          "Broken, missing, property, and orphan issue kinds must be grounded in their cited snapshot fields and typed observation status.",
+        ),
+      );
+    }
+  }
+  const staleIssueTargets = value.issues
+    .filter((issue) => issue.kind === "stale-decision")
+    .flatMap((issue) => issue.objectRefs);
+  if (!sameMembers(staleIssueTargets, staleDecisionIds)) {
+    findings.push(
+      finding(
+        "invalid_issue_evidence",
+        "issues",
+        "Every and only decision snapshot older than the owner-defined threshold must have one stale-decision finding.",
+      ),
+    );
+  }
+
+  const operationKindPaths = {
+    link: /^links\./u,
+    "property-update": /^properties\./u,
+    rename: /^title$/u,
+    "draft-page": /^children$/u,
+    move: /^parentObjectId$/u,
+    archive: /^archived$/u,
+  };
+  const unresolvedConflictObjectRefs = new Set(
+    value.issues
+      .filter((issue) => issue.kind === "conflict")
+      .flatMap((issue) => issue.objectRefs),
+  );
+  for (const [index, operation] of value.operations.entries()) {
+    checkRefs(
+      [operation.target.objectRef],
+      idsByCollection.get("snapshots"),
+      `operations.${index}.target.objectRef`,
+      "Operation target reference",
+    );
+    checkRefs(
+      operation.affectedObjectRefs,
+      idsByCollection.get("snapshots"),
+      `operations.${index}.affectedObjectRefs`,
+      "Affected object reference",
+    );
+    checkRefs(
+      operation.sourceSnapshotRefs,
+      idsByCollection.get("snapshots"),
+      `operations.${index}.sourceSnapshotRefs`,
+      "Operation source reference",
+    );
+    checkRefs(
+      operation.issueRefs,
+      idsByCollection.get("issues"),
+      `operations.${index}.issueRefs`,
+      "Operation issue reference",
+    );
+    checkRefs(
+      operation.dependsOn,
+      idsByCollection.get("operations"),
+      `operations.${index}.dependsOn`,
+      "Operation dependency reference",
+    );
+    checkRefs(
+      operation.blockerRefs,
+      idsByCollection.get("blockers"),
+      `operations.${index}.blockerRefs`,
+      "Operation blocker reference",
+    );
+    const groundedIssueObjects = [
+      ...new Set(
+        operation.issueRefs.flatMap(
+          (ref) => issueById.get(ref)?.objectRefs ?? [],
+        ),
+      ),
+    ];
+    if (
+      !sameMembers(operation.sourceSnapshotRefs, operation.affectedObjectRefs) ||
+      !sameMembers(groundedIssueObjects, operation.affectedObjectRefs)
+    ) {
+      findings.push(
+        finding(
+          "invalid_operation_evidence",
+          `operations.${index}`,
+          "Operation sources must exactly close over every affected snapshot, and cited issues must materially ground that same target and affected-object set.",
+        ),
+      );
+    }
+    const proposedAt = Date.parse(operation.proposedAt);
+    const proposalEvidenceTimes = [
+      ...operation.sourceSnapshotRefs.map((ref) =>
+        Date.parse(snapshotById.get(ref)?.observation.observedAt),
+      ),
+      ...operation.issueRefs.map((ref) =>
+        Date.parse(issueById.get(ref)?.observedAt),
+      ),
+    ];
+    if (
+      proposedAt > asOf ||
+      proposalEvidenceTimes.some(
+        (time) => !Number.isFinite(time) || time >= proposedAt,
+      )
+    ) {
+      findings.push(
+        finding(
+          "invalid_operation_chronology",
+          `operations.${index}.proposedAt`,
+          "An operation must be proposed strictly after every source observation and cited issue, and no later than plan as-of.",
+        ),
+      );
+    }
+    const target = snapshotById.get(operation.target.objectRef);
+    if (
+      !target ||
+      !operation.affectedObjectRefs.includes(operation.target.objectRef) ||
+      !operation.sourceSnapshotRefs.includes(operation.target.objectRef) ||
+      canonicalJson(operation.target.observedVersion) !==
+        canonicalJson(target.observedVersion)
+    ) {
+      findings.push(
+        finding(
+          "invalid_operation_target",
+          `operations.${index}.target`,
+          "Every operation must target its affected source snapshot at the exact current observed version.",
+        ),
+      );
+    }
+    const observedValues =
+      target?.observedValues.filter(
+        (item) => item.path === operation.targetPath,
+      ) ?? [];
+    const kindSpecificPatchValid =
+      operationKindPaths[operation.kind].test(operation.targetPath) &&
+      (operation.kind !== "link" ||
+        value.snapshots.some(
+          (snapshot) =>
+            operation.affectedObjectRefs.includes(snapshot.id) &&
+            snapshot.notionObjectId === operation.afterValue,
+        )) &&
+      (operation.kind !== "move" ||
+        value.snapshots.some(
+          (snapshot) =>
+            operation.affectedObjectRefs.includes(snapshot.id) &&
+            snapshot.notionObjectId === operation.afterValue,
+        )) &&
+      (operation.kind !== "archive" ||
+        (operation.beforeValue === "false" && operation.afterValue === "true"));
+    if (
+      observedValues.length !== 1 ||
+      observedValues[0].value !== operation.beforeValue ||
+      operation.beforeValue === operation.afterValue ||
+      !kindSpecificPatchValid ||
+      operation.rollback.path !== operation.targetPath ||
+      operation.rollback.value !== operation.beforeValue
+    ) {
+      findings.push(
+        finding(
+          "invalid_operation_patch",
+          `operations.${index}`,
+          "Operation kind, exact observed before value, distinct after value, and rollback patch must agree.",
+        ),
+      );
+    }
+    if (
+      !operation.reversible ||
+      operation.rollback.instruction.trim() === "" ||
+      (["archive", "move"].includes(operation.kind) &&
+        (operation.rollback.path !== operation.targetPath ||
+          operation.rollback.value !== operation.beforeValue))
+    ) {
+      findings.push(
+        finding(
+          "irreversible_operation",
+          `operations.${index}.rollback`,
+          "Every proposal, especially archive and move, requires an exact reversible rollback to the observed before state.",
+        ),
+      );
+    }
+    const stateValid =
+      (operation.state === "blocked" &&
+        operation.blockerRefs.length > 0 &&
+        operation.approvalRef === null) ||
+      (operation.state === "proposed" &&
+        operation.blockerRefs.length === 0 &&
+        operation.approvalRef === null) ||
+      (operation.state === "approved-for-human-application" &&
+        operation.blockerRefs.length === 0 &&
+        operation.approvalRef !== null &&
+        operation.dependsOn.every(
+          (ref) =>
+            operationById.get(ref)?.state ===
+            "approved-for-human-application",
+        ));
+    if (!stateValid || operation.applicationMode !== "external-human") {
+      findings.push(
+        finding(
+          "invalid_operation_readiness",
+          `operations.${index}.state`,
+          "Blocked operations require blockers, proposed operations have no approval, and approved operations require approved dependencies and external human application.",
+        ),
+      );
+    }
+    if (
+      operation.state === "approved-for-human-application" &&
+      operation.affectedObjectRefs.some((ref) =>
+        unresolvedConflictObjectRefs.has(ref),
+      )
+    ) {
+      findings.push(
+        finding(
+          "conflict_operation_approval",
+          `operations.${index}.state`,
+          "Operations touching an unresolved conflict side must remain proposed or blocked; no conflict side may be structurally hidden by an approved operation.",
+        ),
+      );
+    }
+  }
+
+  const dependencyVisited = new Set();
+  const dependencyActive = new Set();
+  let dependencyCycle = false;
+  const visitDependency = (operationId) => {
+    if (dependencyActive.has(operationId)) {
+      dependencyCycle = true;
+      return;
+    }
+    if (dependencyVisited.has(operationId)) return;
+    dependencyVisited.add(operationId);
+    dependencyActive.add(operationId);
+    for (const ref of operationById.get(operationId)?.dependsOn ?? []) {
+      visitDependency(ref);
+    }
+    dependencyActive.delete(operationId);
+  };
+  for (const operation of value.operations) visitDependency(operation.id);
+  if (dependencyCycle) {
+    findings.push(
+      finding(
+        "dependency_cycle",
+        "operations",
+        "Operation dependencies must be acyclic.",
+      ),
+    );
+  }
+
+  for (const [index, approval] of value.approvals.entries()) {
+    checkRefs(
+      [approval.operationRef],
+      idsByCollection.get("operations"),
+      `approvals.${index}.operationRef`,
+      "Approval operation reference",
+    );
+    checkRefs(
+      approval.targetVersions.map((item) => item.objectRef),
+      idsByCollection.get("snapshots"),
+      `approvals.${index}.targetVersions`,
+      "Approval target reference",
+    );
+    const operation = operationById.get(approval.operationRef);
+    if (
+      !operation ||
+      operation.approvalRef !== approval.id ||
+      operation.state !== "approved-for-human-application" ||
+      value.approvals.filter(
+        (item) => item.operationRef === approval.operationRef,
+      ).length !== 1
+    ) {
+      findings.push(
+        finding(
+          "invalid_approval_reference",
+          `approvals.${index}`,
+          "An approved operation and exactly one approval must reference each other.",
+        ),
+      );
+    }
+    if (
+      approval.kind !== "human-exact-version" ||
+      approval.scope !== "operation-only"
+    ) {
+      findings.push(
+        finding(
+          "blanket_approval",
+          `approvals.${index}.scope`,
+          "Approval must be human-owned and limited to exactly one operation; plan-wide or blanket approval is invalid.",
+        ),
+      );
+    }
+    const targetRefs = approval.targetVersions.map(
+      (item) => item.objectRef,
+    );
+    const exactTargets =
+      operation &&
+      sameMembers(targetRefs, operation.affectedObjectRefs) &&
+      approval.targetVersions.every((item) => {
+        const snapshot = snapshotById.get(item.objectRef);
+        return (
+          snapshot &&
+          operation.sourceSnapshotRefs.includes(item.objectRef) &&
+          canonicalJson(item.observedVersion) ===
+            canonicalJson(snapshot.observedVersion)
+        );
+      });
+    if (
+      !exactTargets ||
+      approval.planDigest !== value.integrity.digest ||
+      approval.planDigest !== computeKnowledgeSpaceChangePlanDigest(value)
+    ) {
+      findings.push(
+        finding(
+          "stale_approval",
+          `approvals.${index}`,
+          "Approval must bind the current deterministic plan digest and all and only affected current observed versions.",
+        ),
+      );
+    }
+    const approvedAt = Date.parse(approval.approvedAt);
+    const targetObservationTimes = approval.targetVersions.map((item) =>
+      Date.parse(snapshotById.get(item.objectRef)?.observation.observedAt),
+    );
+    const sourceObservationTimes = (operation?.sourceSnapshotRefs ?? []).map(
+      (ref) => Date.parse(snapshotById.get(ref)?.observation.observedAt),
+    );
+    const issueEvidenceTimes = (operation?.issueRefs ?? []).map((ref) =>
+      Date.parse(issueById.get(ref)?.observedAt),
+    );
+    const proposalTime = Date.parse(operation?.proposedAt);
+    const observedNoLaterThanApproval = [
+      ...targetObservationTimes,
+      ...sourceObservationTimes,
+    ];
+    if (
+      approvedAt > asOf ||
+      targetObservationTimes.some((time) => !Number.isFinite(time)) ||
+      observedNoLaterThanApproval.some(
+        (time) => !Number.isFinite(time) || time > approvedAt,
+      ) ||
+      issueEvidenceTimes.some(
+        (time) => !Number.isFinite(time) || time >= approvedAt,
+      ) ||
+      !Number.isFinite(proposalTime) ||
+      proposalTime >= approvedAt
+    ) {
+      findings.push(
+        finding(
+          "invalid_approval_chronology",
+          `approvals.${index}.approvedAt`,
+          "Approval must occur at or after every affected target observation, strictly after every bound issue and proposal, and no later than plan as-of.",
+        ),
+      );
+    }
+  }
+  for (const [index, operation] of value.operations.entries()) {
+    const approvals = value.approvals.filter(
+      (item) => item.operationRef === operation.id,
+    );
+    if (
+      (operation.state === "approved-for-human-application" &&
+        approvals.length !== 1) ||
+      (operation.state !== "approved-for-human-application" &&
+        approvals.length !== 0)
+    ) {
+      findings.push(
+        finding(
+          "invalid_approval_reference",
+          `operations.${index}.approvalRef`,
+          "Only an approved-for-human-application operation may have exactly one exact-version approval.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, blocker] of value.blockers.entries()) {
+    checkRefs(
+      blocker.operationRefs,
+      idsByCollection.get("operations"),
+      `blockers.${index}.operationRefs`,
+      "Blocker operation reference",
+    );
+    checkRefs(
+      blocker.issueRefs,
+      idsByCollection.get("issues"),
+      `blockers.${index}.issueRefs`,
+      "Blocker issue reference",
+    );
+    checkRefs(
+      blocker.objectRefs,
+      idsByCollection.get("snapshots"),
+      `blockers.${index}.objectRefs`,
+      "Blocker object reference",
+    );
+  }
+  for (const [index, question] of value.questions.entries()) {
+    checkRefs(
+      question.targetRefs,
+      allIdSet,
+      `questions.${index}.targetRefs`,
+      "Question target reference",
+    );
+    checkRefs(
+      question.operationRefs,
+      idsByCollection.get("operations"),
+      `questions.${index}.operationRefs`,
+      "Question operation reference",
+    );
+    checkRefs(
+      question.blockerRefs,
+      idsByCollection.get("blockers"),
+      `questions.${index}.blockerRefs`,
+      "Question blocker reference",
+    );
+  }
+  const blockerCoverageValid =
+    value.operations.every((operation) =>
+      operation.blockerRefs.every((ref) =>
+        blockerById.get(ref)?.operationRefs.includes(operation.id),
+      ),
+    ) &&
+    value.blockers.every((blocker) =>
+      blocker.operationRefs.every((ref) =>
+        operationById.get(ref)?.blockerRefs.includes(blocker.id),
+      ),
+    ) &&
+    value.questions.every((question) =>
+      question.blockerRefs.every(
+        (ref) =>
+          blockerById.get(ref) &&
+          blockerById
+            .get(ref)
+            .operationRefs.some((operationRef) =>
+              question.operationRefs.includes(operationRef),
+            ),
+      ),
+    );
+  if (!blockerCoverageValid) {
+    findings.push(
+      finding(
+        "incomplete_blocker_coverage",
+        "blockers",
+        "Blockers and operations must link reciprocally, and blocking questions must route to the same operations.",
+      ),
+    );
+  }
+
+  const openBlockers = value.blockers
+    .filter((item) => item.status === "open" && item.blocksReadiness)
+    .map((item) => item.id);
+  const blockingQuestions = value.questions
+    .filter((item) => item.status === "open" && item.blocksReadiness)
+    .map((item) => item.id);
+  if (
+    value.plan.status !== value.handoff.state ||
+    canonicalJson(value.plan.maintenanceOwner) !==
+      canonicalJson(value.handoff.owner) ||
+    (value.plan.status === "ready-for-human-review" &&
+      (openBlockers.length > 0 || blockingQuestions.length > 0))
+  ) {
+    findings.push(
+      finding(
+        "premature_plan_readiness",
+        "plan.status",
+        "Plan and handoff state and owner must agree, and ready-for-human-review requires no open blocker or blocking question.",
+      ),
+    );
+  }
+
+  const handoffCoverage = [
+    ["snapshotRefs", "snapshots"],
+    ["issueRefs", "issues"],
+    ["operationRefs", "operations"],
+    ["approvalRefs", "approvals"],
+    ["blockerRefs", "blockers"],
+    ["questionRefs", "questions"],
+  ];
+  for (const [field, collectionName] of handoffCoverage) {
+    checkRefs(
+      value.handoff[field],
+      idsByCollection.get(collectionName),
+      `handoff.${field}`,
+      "Handoff reference",
+    );
+    if (
+      !sameMembers(
+        value.handoff[field],
+        [...idsByCollection.get(collectionName)],
+      )
+    ) {
+      findings.push(
+        finding(
+          "incomplete_handoff",
+          `handoff.${field}`,
+          "The private handoff must cover every object of each type exactly once.",
+        ),
+      );
+    }
+  }
+  checkRefs(
+    value.handoff.blockingQuestionRefs,
+    idsByCollection.get("questions"),
+    "handoff.blockingQuestionRefs",
+    "Blocking question reference",
+  );
+  if (
+    !sameMembers(value.handoff.blockerRefs, openBlockers) ||
+    !sameMembers(value.handoff.blockingQuestionRefs, blockingQuestions)
+  ) {
+    findings.push(
+      finding(
+        "incomplete_blocker_coverage",
+        "handoff.blockerRefs",
+        "The handoff must enumerate every and only open blocker and blocking question.",
+      ),
+    );
+  }
+
+  const referencesFor = (item) => {
+    if (Object.hasOwn(item, "notionObjectId")) {
+      return [
+        ...(item.parentRef === null ? [] : [item.parentRef]),
+        ...(item.rootRef === item.id ? [] : [item.rootRef]),
+        ...item.referenceRefs,
+      ];
+    }
+    if (Object.hasOwn(item, "evidenceSnapshotRefs")) {
+      return [
+        ...item.objectRefs,
+        ...item.evidenceSnapshotRefs,
+        ...item.relatedIssueRefs,
+      ];
+    }
+    if (Object.hasOwn(item, "applicationMode")) {
+      return [
+        item.target.objectRef,
+        ...item.affectedObjectRefs,
+        ...item.sourceSnapshotRefs,
+        ...item.issueRefs,
+        ...item.dependsOn,
+        ...item.blockerRefs,
+      ];
+    }
+    if (Object.hasOwn(item, "targetVersions")) {
+      return [
+        item.operationRef,
+        ...item.targetVersions.map((target) => target.objectRef),
+      ];
+    }
+    if (Object.hasOwn(item, "kind") && Object.hasOwn(item, "objectRefs")) {
+      return [...item.operationRefs, ...item.issueRefs, ...item.objectRefs];
+    }
+    if (Object.hasOwn(item, "question")) {
+      return [
+        ...item.targetRefs,
+        ...item.operationRefs,
+        ...item.blockerRefs,
+      ];
+    }
+    if (item.id === "handoff") {
+      return [
+        ...item.snapshotRefs,
+        ...item.issueRefs,
+        ...item.operationRefs,
+        ...item.approvalRefs,
+        ...item.blockerRefs,
+        ...item.questionRefs,
+        ...item.blockingQuestionRefs,
+      ];
+    }
+    return [];
+  };
+  const constraintsFor = (item) => {
+    const constraints = [];
+    const visited = new Set(item.id ? [item.id] : []);
+    const visit = (ref) => {
+      if (visited.has(ref)) return;
+      visited.add(ref);
+      const referenced = objectById.get(ref);
+      if (!referenced) return;
+      constraints.push(referenced);
+      for (const nestedRef of referencesFor(referenced)) visit(nestedRef);
+    };
+    for (const ref of referencesFor(item)) visit(ref);
+    return constraints;
+  };
+  const controlledObjects = [
+    ...allObjects,
+    { id: "handoff", ...value.handoff },
+  ];
+  for (const item of controlledObjects) {
+    const constraints = constraintsFor(item);
+    if (constraints.length === 0) continue;
+    const strongestClassification = Math.max(
+      ...constraints.map(
+        (constraint) =>
+          classificationRank[constraint.handling.classification],
+      ),
+    );
+    let permittedAudience = null;
+    for (const constraint of constraints) {
+      permittedAudience =
+        permittedAudience === null
+          ? new Set(constraint.handling.audienceScope)
+          : new Set(
+              [...permittedAudience].filter((audience) =>
+                constraint.handling.audienceScope.includes(audience),
+              ),
+            );
+    }
+    const policyRefs = new Set(
+      constraints.flatMap(
+        (constraint) => constraint.handling.retention.policyRefs,
+      ),
+    );
+    const unknownPolicyRefs = new Set(
+      constraints.flatMap(
+        (constraint) =>
+          constraint.handling.retention.unknownPolicyRefs,
+      ),
+    );
+    const retainUntilTimes = constraints
+      .map((constraint) =>
+        Date.parse(constraint.handling.retention.retainUntil),
+      )
+      .filter(Number.isFinite);
+    const requiredRetainUntil =
+      retainUntilTimes.length === 0 ? null : Math.max(...retainUntilTimes);
+    const handling = item.handling;
+    const validHandling =
+      classificationRank[handling.classification] >=
+        strongestClassification &&
+      handling.audienceScope.length > 0 &&
+      handling.audienceScope.every((audience) =>
+        permittedAudience.has(audience),
+      ) &&
+      [...policyRefs].every((ref) =>
+        handling.retention.policyRefs.includes(ref),
+      ) &&
+      [...unknownPolicyRefs].every((ref) =>
+        handling.retention.unknownPolicyRefs.includes(ref),
+      ) &&
+      handling.retention.unknownPolicyRefs.every((ref) =>
+        unknownPolicyRefs.has(ref),
+      ) &&
+      (requiredRetainUntil === null
+        ? handling.retention.retainUntil === null
+        : Date.parse(handling.retention.retainUntil) >=
+          requiredRetainUntil) &&
+      handling.retention.dispositionAuthority === "human-only";
+    if (!validHandling) {
+      findings.push(
+        finding(
+          "control_inheritance_mismatch",
+          item.id === "handoff" ? "handoff.handling" : item.id,
+          "Every derived object must inherit classification, audience intersection, retention policies, unknown obligations, and longest known retention through its cycle-safe reference closure.",
+        ),
+      );
+    }
+    if (Object.hasOwn(item, "applicationMode")) {
+      const strongestAccess = Math.max(
+        0,
+        ...constraints
+          .filter((constraint) =>
+            idsByCollection.get("snapshots").has(constraint.id),
+          )
+          .map((snapshot) => accessRank[snapshot.accessState]),
+      );
+      if (
+        !validHandling ||
+        accessRank[item.expectedAccessState] < strongestAccess
+      ) {
+        findings.push(
+          finding(
+            "control_broadening",
+            item.id,
+            "A proposal must not broaden access, classification, audience, or retention relative to any direct or transitive referenced snapshot.",
+          ),
+        );
+      }
+    }
+  }
+
+  const digest = computeKnowledgeSpaceChangePlanDigest(value);
+  if (value.integrity.digest !== digest) {
+    findings.push(
+      finding(
+        "invalid_plan_digest",
+        "integrity.digest",
+        "Plan integrity must equal the SHA-256 of canonical plan content with approval state normalized out.",
+      ),
+    );
+  }
+  if (
+    value.handoff.output.path !==
+      "outputs/knowledge-space-change-plan.json" ||
+    !isSafePackagePath(value.handoff.output.path) ||
+    value.handoff.output.visibility !== "private" ||
+    value.handoff.output.storage !== "local-artifact" ||
+    value.handoff.output.deliveryState !== "not-delivered"
+  ) {
+    findings.push(
+      finding(
+        "unsafe_output_state",
+        "handoff.output",
+        "The plan must remain a private local artifact at the declared path and must not be delivered.",
+      ),
+    );
+  }
+
+  const principals = [
+    value.plan.maintenanceOwner,
+    value.plan.observationInput.authorizationReceipt.authorizedBy,
+    value.plan.staleDecisionPolicy.definedBy,
+    ...value.snapshots.map((item) => item.sourceOwner),
+    ...value.approvals.map((item) => item.approvedBy),
+    ...value.blockers.map((item) => item.owner),
+    ...value.questions.map((item) => item.owner),
+    value.handoff.owner,
+  ];
+  if (principals.some(principalIsAgent)) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "plan",
+        "Maintenance, authorization, source ownership, approval, blockers, questions, and handoff must remain with named humans or teams.",
+      ),
+    );
+  }
+  for (const action of requiredActions) {
+    if (
+      !value.prohibitedActions.includes(action) ||
+      !value.handoff.prohibitedActions.includes(action)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "prohibitedActions",
+          `Knowledge-space change plans must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+  const narrativeTexts = [
+    ...value.issues.map((item) => item.description),
+    ...value.operations.flatMap((item) => [
+      item.patchIntent,
+      item.rollback.instruction,
+    ]),
+    ...value.blockers.map((item) => item.description),
+    ...value.questions.map((item) => item.question),
+    value.handoff.summary,
+  ];
+  const prohibitedNarrative =
+    /\b(?:(?:i|we(?:['’]ve)?|the (?:agent|assistant|claw)|knowledge gardener)\s+(?:already\s+|(?:have|has|had)\s+(?:already\s+|now\s+)?|will\s+|can\s+|may\s+|(?:am|are|is)\s+(?:now\s+)?)?(?:access|accessed|accessing|apply|applied|applying|archive|archived|archiving|complete|completed|completing|create|created|creating|delete|deleted|deleting|deliver|delivered|delivering|edit|edited|editing|link|linked|linking|modify|modified|modifying|move|moved|moving|publish|published|publishing|rename|renamed|renaming|resolve|resolved|resolving|retain|retained|retaining|share|shared|sharing|update|updated|updating|write|writes|wrote|writing)|(?:access|authorization)\s+(?:is|was|has been|had been|will be)\s+(?:verified|granted)|(?:conflict|decision|retention)\s+(?:is|was|has been|had been|will be)\s+(?:resolved|decided|selected|changed)|(?:page|database|properties?|links?|workspace|content|record|access(?: control)?)\s+(?:is|was|has been|had been|will be)\s+(?:now\s+)?(?:applied|archived|created|deleted|edited|linked|modified|moved|published|renamed|shared|updated|written)|(?:plan|handoff|work|request)\s+(?:is|was|has been|had been|will be)\s+(?:completed|delivered|published))\b/giu;
+  const completedMutationNarrative =
+    /\b(?:i|we|the (?:agent|assistant|claw)|knowledge gardener|\p{Lu}[\p{L}\p{M}'’-]*(?:\s+\p{Lu}[\p{L}\p{M}'’-]*){1,3})\s+(?:(?:has|had)\s+(?:already\s+|now\s+)?|already\s+)?(?:applied|archived|created|deleted|edited|linked|modified|moved|published|renamed|shared|updated|wrote)\b/gu;
+  if (
+    hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) ||
+    hasUnnegatedNarrativeMatch(narrativeTexts, completedMutationNarrative)
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "handoff.summary",
+        "Agent narrative must not claim access, rename, edit, property modification, linking, writing, mutation, application, completion, delivery, publication, conflict resolution, decision, or retention action.",
+      ),
+    );
+  }
+  return findings;
+}
+
 function knowledgeCollectionIndexFindings(value) {
   const retrievalJobIds = value.collection.retrievalJobs.map((item) => item.id);
   const collections = [
@@ -27212,6 +28668,7 @@ const validators = {
   "invoice-payment-followup": invoiceReceivablesFindings,
   "job-application-tracker": jobApplicationFindings,
   "knowledge-curator": knowledgeCollectionIndexFindings,
+  "knowledge-gardener": knowledgeSpaceChangePlanFindings,
   "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
   "meal-grocery-planner": mealGroceryFindings,

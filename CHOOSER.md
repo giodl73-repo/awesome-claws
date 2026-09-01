@@ -57,7 +57,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | @giodl73; last verified 2026-08-29 |
 | [Job application tracker](claws/job-application-tracker) | @giodl73-repo; last verified 2026-08-28 |
 | [Knowledge curator](claws/knowledge-curator) | @giodl73-repo; last verified 2026-08-31 |
-| [Knowledge gardener](claws/knowledge-gardener) | @giodl73-repo; last verified 2026-08-19 |
+| [Knowledge gardener](claws/knowledge-gardener) | @giodl73-repo; last verified 2026-08-31 |
 | [Life timeline keeper](claws/life-timeline-keeper) | @giodl73-repo; last verified 2026-08-27 |
 | [Local events watcher](claws/local-events-watcher) | @giodl73-repo; last verified 2026-08-23 |
 | [Localization program manager](claws/localization-program-manager) | @giodl73-repo; last verified 2026-08-19 |
@@ -127,7 +127,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (69)
+### Low setup (70)
 
 | Claw | Detail |
 | --- | --- |
@@ -164,6 +164,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | no bootstrap, external dependency, or schedule |
 | [Job application tracker](claws/job-application-tracker) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
+| [Knowledge gardener](claws/knowledge-gardener) | no bootstrap, external dependency, or schedule |
 | [Life timeline keeper](claws/life-timeline-keeper) | no bootstrap, external dependency, or schedule |
 | [Local events watcher](claws/local-events-watcher) | no bootstrap, external dependency, or schedule |
 | [Localization program manager](claws/localization-program-manager) | no bootstrap, external dependency, or schedule |
@@ -201,7 +202,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Warranty and returns manager](claws/warranty-returns-manager) | no bootstrap, external dependency, or schedule |
 | [Work chief of staff](claws/work-chief-of-staff) | no bootstrap, external dependency, or schedule |
 
-### Medium setup (27)
+### Medium setup (26)
 
 | Claw | Detail |
 | --- | --- |
@@ -216,7 +217,6 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | guided bootstrap |
 | [Grant portfolio manager](claws/grant-portfolio-manager) | guided bootstrap |
 | [Incident response](claws/incident-response) | 1 scheduled job |
-| [Knowledge gardener](claws/knowledge-gardener) | 1 pinned package |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | guided bootstrap |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | 2 pinned packages |
 | [Meeting intelligence](claws/meeting-intelligence) | 2 pinned packages |
@@ -246,7 +246,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (77)
+### No external dependencies (78)
 
 | Claw | Detail |
 | --- | --- |
@@ -289,6 +289,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | None |
 | [Job application tracker](claws/job-application-tracker) | None |
 | [Knowledge curator](claws/knowledge-curator) | None |
+| [Knowledge gardener](claws/knowledge-gardener) | None |
 | [Life timeline keeper](claws/life-timeline-keeper) | None |
 | [Local events watcher](claws/local-events-watcher) | None |
 | [Localization program manager](claws/localization-program-manager) | None |
@@ -328,7 +329,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Warranty and returns manager](claws/warranty-returns-manager) | None |
 | [Work chief of staff](claws/work-chief-of-staff) | None |
 
-### External dependencies declared (23)
+### External dependencies declared (22)
 
 | Claw | Detail |
 | --- | --- |
@@ -338,7 +339,6 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Executive briefing](claws/executive-briefing) | skill: @steipete/gog@1.0.0; skill: @steipete/weather@1.0.0 |
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | skill: @steipete/blogwatcher@1.0.0 |
 | [Financial analyst](claws/financial-analyst) | skill: @ajanraj/yahoo-finance@1.0.0 |
-| [Knowledge gardener](claws/knowledge-gardener) | skill: @steipete/notion@1.0.0 |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | skill: @steipete/openai-whisper@1.0.0; skill: @steipete/video-frames@1.0.0 |
 | [Meeting intelligence](claws/meeting-intelligence) | skill: @ivangdavila/word-docx@1.0.2; skill: @steipete/openai-whisper@1.0.0 |
 | [Presentation producer](claws/presentation-producer) | skill: @ivangdavila/powerpoint-pptx@1.0.1 |
@@ -396,7 +396,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money. |
 | [Job application tracker](claws/job-application-tracker) | Organizes owner-supplied job postings, application materials, recruiter notes, interview schedules, follow-up drafts, status evidence, and offer questions into a private job-search pipeline without applying to jobs, fabricating credentials, contacting employers, changing accounts, accepting offers, negotiating commitments, or giving legal, immigration, tax, financial, or career advice. |
 | [Knowledge curator](claws/knowledge-curator) | Maintains one bounded, durable, normalized, source-linked collection index of topics, claims, human-owned decisions, duplicates, disputes, gaps, freshness, retention, and review state without owning or mutating source systems. |
-| [Knowledge gardener](claws/knowledge-gardener) | Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work. |
+| [Knowledge gardener](claws/knowledge-gardener) | Maintains a private, digest-bound, exact-version change plan from one operator-supplied, versioned, secret-free read-only Notion observation export and authorization/scope receipt, without Notion, network, or source-mutation access. |
 | [Life timeline keeper](claws/life-timeline-keeper) | Maintains an owner-reviewed timeline of important trips, moves, milestones, family events, achievements, and document or media pointers without posting publicly, identifying faces, making legal claims, or disclosing sensitive memories. |
 | [Local events watcher](claws/local-events-watcher) | Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
 | [Meal and grocery planner](claws/meal-grocery-planner) | Plans meals, pantry use, grocery lists, dietary constraints, budget fit, and store-availability evidence from approved sources without ordering food, checking out carts, changing subscriptions, editing calendars, or giving medical nutrition advice. |
@@ -581,7 +581,7 @@ Categories come directly from the catalog entry.
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | X3; Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money. |
 | [Job application tracker](claws/job-application-tracker) | X3; Organizes owner-supplied job postings, application materials, recruiter notes, interview schedules, follow-up drafts, status evidence, and offer questions into a private job-search pipeline without applying to jobs, fabricating credentials, contacting employers, changing accounts, accepting offers, negotiating commitments, or giving legal, immigration, tax, financial, or career advice. |
 | [Knowledge curator](claws/knowledge-curator) | X3; Maintains one bounded, durable, normalized, source-linked collection index of topics, claims, human-owned decisions, duplicates, disputes, gaps, freshness, retention, and review state without owning or mutating source systems. |
-| [Knowledge gardener](claws/knowledge-gardener) | X3; Maintains an authorized Notion knowledge space through source-linked pages, careful organization, and visible freshness work. |
+| [Knowledge gardener](claws/knowledge-gardener) | X3; Maintains a private, digest-bound, exact-version change plan from one operator-supplied, versioned, secret-free read-only Notion observation export and authorization/scope receipt, without Notion, network, or source-mutation access. |
 | [Life timeline keeper](claws/life-timeline-keeper) | X3; Maintains an owner-reviewed timeline of important trips, moves, milestones, family events, achievements, and document or media pointers without posting publicly, identifying faces, making legal claims, or disclosing sensitive memories. |
 | [Local events watcher](claws/local-events-watcher) | X3; Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
 | [Localization program manager](claws/localization-program-manager) | X4; Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations. |
@@ -690,7 +690,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | guided local setup |
 | [Grant portfolio manager](claws/grant-portfolio-manager) | guided local setup; explicit tool policy; persistent dashboard |
 | [Household steward](claws/household-steward) | explicit tool policy |
-| [Knowledge gardener](claws/knowledge-gardener) | pinned skill |
+| [Knowledge gardener](claws/knowledge-gardener) | explicit tool policy |
 | [Localization program manager](claws/localization-program-manager) | explicit tool policy |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | guided local setup; explicit tool policy; persistent dashboard |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | pinned skill |

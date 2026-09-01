@@ -1,6 +1,6 @@
 # Solid-band review
 
-This review covers the 5 Claws remaining in the Solid band after Document
+This review covers the 3 Claws remaining in the Solid band after Document
 Intake Analyst moved from 69 to 94, Fundraising Campaign Manager moved from 79
 to 95, Travel Concierge moved from 78 to 100, and Media Evidence Reviewer moved
 from 73 to 95, Spreadsheet Analyst moved from 73 to 95 on 2026-08-29, and Travel
@@ -17,19 +17,20 @@ Maintainer moved from 78 to 100 with its bounded change-delivery record on
 2026-08-30, Content Operations completed its publication-readiness uplift on
 2026-08-31, Executive Assistant completed its commitment-ledger uplift on
 2026-08-31, and Executive Briefing completed its per-run snapshot uplift on
-2026-08-31, and Knowledge Curator completed its bounded durable collection-index
-uplift on 2026-08-31. All 4
+2026-08-31, Knowledge Curator completed its bounded durable collection-index
+uplift on 2026-08-31, and Knowledge Gardener moved from 73 to 100 with its
+exact-version Notion change-plan uplift on 2026-08-31. All 3
 remaining entries pass the
 non-negotiable package, regression, resource, and Experience gates. Their lower scores describe
 reviewability and artifact-depth gaps, not observed live-model failures.
 
 ## Shared pattern
 
-- All 4 remaining entries are grandfathered without retrospective contribution records.
+- All 3 remaining entries are grandfathered without retrospective contribution records.
   That is a five-point documentation gap, not a failed admission.
-- All 4 remaining entries lack registered semantic validators.
-- All 4 remaining entries lack a local structured-artifact schema.
-- All 4 have complete operating contracts, screenshots, regression cases, and
+- All 3 remaining entries lack registered semantic validators.
+- All 3 remaining entries lack a local structured-artifact schema.
+- All 3 have complete operating contracts, screenshots, regression cases, and
   active maintenance.
 
 ## Current entries
@@ -38,7 +39,6 @@ reviewability and artifact-depth gaps, not observed live-model failures.
 | --- | ---: | --- | --- |
 | `workflow-operator` | 79 | No local schema or semantic validator | Lobster owns typed workflow state; avoid duplicating its contract without a concrete handoff need |
 | `video-concept-producer` | 79 | No local schema or semantic validator | A concept/shot/evidence manifest may help, but only if it governs the generated asset |
-| `knowledge-gardener` | 73 | No local schema or semantic validator | Notion owns page structure; add local state only for reviewable change plans |
 | `presentation-producer` | 73 | No local schema or semantic validator | Keep the deck as the primary artifact unless a claim/source/approval manifest is needed |
 
 ## Uplift batches
@@ -148,8 +148,22 @@ handoff coverage. Material disputes and unavailable restricted sources block
 readiness. The Claw retains no source mutation, publication, communication,
 access-control, retention/destruction, decision, or integration authority.
 
-For `knowledge-gardener`, `presentation-producer`,
-`video-concept-producer`, and `workflow-operator`,
+`knowledge-gardener` now owns one private deterministic change plan from one
+operator-supplied, versioned, digest-bound, secret-free local Notion observation
+export and authorization/scope receipt rather than page, database,
+access-control, integration, or normalized collection-index state. The plan
+preserves globally unique stable and canonical object identity, exact
+last-edited versions and ancestry, exact exclusions, typed duplicate, stale,
+conflict, link, property, and orphan evidence, issue and operation evidence
+closure, proposal and approval chronology, reversible before/after/rollback
+proposals, acyclic dependencies, conflict-side preservation, exact-version
+operation-only human approvals, transitive controls, exact blockers and
+questions, and complete private nondelivery. Application remains external; the
+Claw has only workspace read, write, and edit, with no package, network, exec,
+Notion API, Notion skill, source mutation, executed/applied state, or autonomous
+conflict resolution.
+
+For `presentation-producer`, `video-concept-producer`, and `workflow-operator`,
 first identify a stable state object that the Claw itself owns. External plugin
 types, source documents, code diffs, and prose deliverables should not be
 duplicated merely to raise a score.

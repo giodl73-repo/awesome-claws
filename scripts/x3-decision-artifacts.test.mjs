@@ -227,6 +227,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "knowledge-gardener",
+    schema: "../claws/knowledge-gardener/schemas/knowledge-space-change-plan.schema.json",
+    fixture: "../claws/knowledge-gardener/fixtures/knowledge-space-change-plan.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "life-timeline-keeper",
     schema: "../claws/life-timeline-keeper/schemas/life-timeline.schema.json",
     fixture: "../claws/life-timeline-keeper/fixtures/life-timeline.example.json",
