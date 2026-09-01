@@ -9,7 +9,7 @@
     },
     {
       "role": "agent",
-      "text": "I identified the video decision, the evidence needed, and the boundary that must stay human-owned."
+      "text": "I will first record two desired plans, then require inspected local assets, attested human authority, the pinned PixVerse configuration, and immutable generation, cost, prompt-rights, and prompt-safety approval before any call. Plans are not execution evidence."
     },
     {
       "role": "user",
@@ -17,41 +17,41 @@
     },
     {
       "role": "agent",
-      "text": "I produced outputs/video-concept-producer-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+      "text": "I will validate outputs/video-concept-generation-manifest.json and render outputs/video-concept-producer-handoff.md. Provider results will contain only exposed tool or task identity, videoId, hosted URL, MIME, optional dimensions, normalization, and chronology; billing and local materialization require separate receipts. The packaged example remains illustrative, blocked, and execution-free."
     }
   ],
   "report": {
     "title": "Video concept producer session handoff",
-    "summary": "Two private PixVerse-generated concepts with exact prompts, settings, cost acknowledgement, synthetic provenance, rights-cleared inputs, and an editorial review board; nothing is published.",
+    "summary": "Illustrative-only blocked handoff for two desired abstract treatments. It demonstrates the evidence contract but does not claim asset inspection, human approval or review, PixVerse calls, billing, generated media, local materialization, or publication authority.",
     "output": "outputs/video-concept-producer-handoff.md",
     "items": [
       {
-        "title": "Approved generation brief",
-        "summary": "Every generation was individually approved and records prompt, settings, provider, time, output identity, and expected usage cost",
+        "title": "Desired brief and evidence boundary",
+        "summary": "The manifest freezes two desired six-second 1080P plans, planned authority roles, the pinned provider configuration, and private controls without claiming the planned inputs exist.",
         "tags": [
           "fact-based",
           "reviewable"
         ]
       },
       {
-        "title": "Prompt and settings ledger",
-        "summary": "Inputs are documented as rights-cleared and contain no prohibited sensitive or deceptive subject",
+        "title": "Production approval requirements",
+        "summary": "A real call would require inspected asset geometry, allowlisted prompt content, exact settings, expected maximum and reservation, provider versions, exact human scopes, and an immutable signed or external approval record.",
         "tags": [
           "evidence",
           "owner-visible"
         ]
       },
       {
-        "title": "Private video concept variants",
-        "summary": "Do not depict a real person, private individual, trademarked character, or sensitive event deceptively or without documented authority and rights",
+        "title": "Minimal provider and separate downstream receipts",
+        "summary": "A provider receipt is limited to actual OpenClaw and PixVerse fields. Account billing and local download or probing are separate optional evidence, and every successful output must map once to its concept and review board.",
         "tags": [
           "approval-gated",
           "safe fallback"
         ]
       },
       {
-        "title": "Rights, safety, and factual review checklist",
-        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "title": "Blocked illustrative handoff",
+        "summary": "No human review is represented. The illustrative fixture remains blocked while complete policy, principal, blocker, and handoff coverage preserves not-published, not-distributed, and no-credit-purchase state.",
         "tags": [
           "handoff",
           "durable"

@@ -3,13 +3,15 @@
   "title": "Video concept producer session report",
   "output": "outputs/video-concept-producer-handoff.md",
   "sections": [
-    "request",
-    "known_facts",
-    "assumptions",
-    "evidence",
-    "decisions_or_recommendations",
-    "blocked_actions",
-    "next_owner"
+    "brief_and_human_authority",
+    "pinned_provider_configuration_and_budget",
+    "planned_inputs_and_inspection_receipts",
+    "exact_variants_signed_approvals_and_reservations",
+    "generation_attempts_and_exposed_provider_results",
+    "separate_billing_and_materialization_receipts",
+    "output_concept_shot_and_review_bijection",
+    "policy_principal_questions_and_blockers",
+    "nonpublication_state_and_handoff_owner"
   ],
   "itemShape": {
     "title": "string",
@@ -18,5 +20,5 @@
       "string"
     ]
   },
-  "fallback": "Render the same sections as Markdown when widgets or rich clients are unavailable."
+  "fallback": "Render the validated video-concept generation manifest with templates/video-concept-generation-manifest.md. Distinguish desired plans from observed provider, billing, materialization, and human-review evidence; preserve exact ids, chronology, controls, blockers, and nonpublication state."
 }

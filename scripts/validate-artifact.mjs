@@ -84,6 +84,7 @@ const schemaNames = {
   "travel-planner": "itinerary-plan.schema.json",
   "travel-loyalty-points-organizer": "travel-loyalty.schema.json",
   "vehicle-service-coordinator": "vehicle-service.schema.json",
+  "video-concept-producer": "video-concept-generation-manifest.schema.json",
   "wardrobe-organizer": "wardrobe-plan.schema.json",
   "warranty-returns-manager": "warranty-returns.schema.json",
   "website-evidence-collector": "website-capture-evidence-ledger.schema.json",

@@ -1,0 +1,538 @@
+{
+  "schemaVersion": "awesomeClaws.videoConceptGenerationManifest.v1",
+  "manifest": {
+    "id": "manifest-renewable-concepts-illustrative",
+    "artifactMode": "illustrative-fixture",
+    "verbatimRequest": "Create two six-second abstract motion concepts for an internal renewable-energy presentation using only our approved geometric brand assets.",
+    "objective": "Illustrate a desired two-concept private review plan without representing that source assets, human authority, approvals, provider calls, charges, outputs, materialization, or reviews exist.",
+    "internalAudience": [
+      "internal-creative-team",
+      "internal-leadership"
+    ],
+    "presentationUse": "Illustrative private concept-planning example only.",
+    "expectedVariantCount": 2,
+    "desiredFormat": {
+      "evidenceStatus": "desired-not-observed",
+      "mime": "video/mp4",
+      "durationSeconds": 6,
+      "aspectRatio": "16:9",
+      "resolution": "1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "frameRate": 24,
+      "frameCount": 144,
+      "audio": false
+    },
+    "prohibitedSubjects": [
+      "real-person",
+      "private-person",
+      "trademarked-character",
+      "sensitive-event",
+      "deceptive-impersonation",
+      "customer-content",
+      "biometric-content"
+    ],
+    "syntheticDisclosure": "Desired synthetic abstract motion only; this fixture contains no generated media.",
+    "publicationBoundary": "private-concept-review-only",
+    "creativeOwnerRef": "planned-role-creative-owner",
+    "costOwnerRef": "planned-role-cost-owner",
+    "rightsSafetyOwnerRef": "planned-role-rights-safety-owner",
+    "reviewOwnerRef": "planned-role-review-owner",
+    "providerConfigurationRef": "provider-config-pixverse-illustrative",
+    "controlPolicyRef": "control-private-renewable-concepts",
+    "asOf": "2026-09-01T17:00:00Z",
+    "deadline": "2026-09-02T00:00:00Z",
+    "contentDigest": "sha256:f7d70bcfdfbbc2bdbf920d030c6669513d260e85cb70a819f3ca9e90e646260a",
+    "readiness": "blocked"
+  },
+  "authorityRegistry": {
+    "principals": [
+      {
+        "id": "planned-role-creative-owner",
+        "recordKind": "planned-role",
+        "name": "Unassigned creative owner",
+        "type": "planned-human-role",
+        "role": "creative-owner",
+        "authorityScopes": [
+          "approve-generation",
+          "own-private-handoff"
+        ],
+        "attestationRef": null
+      },
+      {
+        "id": "planned-role-cost-owner",
+        "recordKind": "planned-role",
+        "name": "Unassigned cost owner",
+        "type": "planned-human-role",
+        "role": "cost-owner",
+        "authorityScopes": [
+          "approve-generation-cost"
+        ],
+        "attestationRef": null
+      },
+      {
+        "id": "planned-role-rights-safety-owner",
+        "recordKind": "planned-role",
+        "name": "Unassigned rights and safety owner",
+        "type": "planned-human-role",
+        "role": "rights-safety-owner",
+        "authorityScopes": [
+          "approve-asset-rights",
+          "approve-prompt-rights",
+          "approve-prompt-safety",
+          "review-rights",
+          "review-safety"
+        ],
+        "attestationRef": null
+      },
+      {
+        "id": "planned-role-review-owner",
+        "recordKind": "planned-role",
+        "name": "Unassigned review owner",
+        "type": "planned-human-role",
+        "role": "review-owner",
+        "authorityScopes": [
+          "review-editorial",
+          "review-factual",
+          "review-brand",
+          "review-accessibility",
+          "own-private-handoff"
+        ],
+        "attestationRef": null
+      }
+    ],
+    "attestations": []
+  },
+  "providerConfiguration": {
+    "id": "provider-config-pixverse-illustrative",
+    "evidenceStatus": "illustrative-plan",
+    "provider": "pixverse",
+    "credentialRef": "credential-pixverse-planned",
+    "secretLocation": "approved-host-secret-store",
+    "secretIncluded": false,
+    "region": "international",
+    "baseUrl": "https://app-api.pixverse.ai/openapi/v2",
+    "model": {
+      "requestRef": "pixverse/v6",
+      "providerModel": "v6"
+    },
+    "plugin": {
+      "package": "@openclaw/pixverse-provider",
+      "version": "2026.7.1"
+    },
+    "openclawTag": "v2026.7.1",
+    "termsVersion": "version-required-before-approval",
+    "retentionVersion": "version-required-before-approval",
+    "toolAvailability": null,
+    "budget": {
+      "currency": "USD",
+      "cap": 12,
+      "reservedTotal": 0,
+      "actualBilledTotal": null,
+      "committedTotal": 0,
+      "remainingCapacity": 12,
+      "reconciliationState": "unobserved",
+      "additionalCreditPurchaseAllowed": false
+    }
+  },
+  "plannedInputAssets": [
+    {
+      "id": "planned-asset-radial-grid",
+      "evidenceStatus": "illustrative-plan",
+      "intendedPath": "inputs/brand/renewable/radial-grid.png",
+      "expectedMime": "image/png",
+      "expectedWidth": 1920,
+      "expectedHeight": 1080,
+      "expectedAspectRatio": "16:9",
+      "approvedSubjectTerms": [
+        "circle",
+        "line"
+      ],
+      "permittedBrandVocabulary": [
+        "teal",
+        "gold"
+      ],
+      "controlPolicyRef": "control-private-renewable-concepts"
+    },
+    {
+      "id": "planned-asset-flow-arcs",
+      "evidenceStatus": "illustrative-plan",
+      "intendedPath": "inputs/brand/renewable/flow-arcs.png",
+      "expectedMime": "image/png",
+      "expectedWidth": 1920,
+      "expectedHeight": 1080,
+      "expectedAspectRatio": "16:9",
+      "approvedSubjectTerms": [
+        "arc",
+        "triangle"
+      ],
+      "permittedBrandVocabulary": [
+        "blue",
+        "green"
+      ],
+      "controlPolicyRef": "control-private-renewable-concepts"
+    }
+  ],
+  "assetInspectionReceipts": [],
+  "inputAssets": [],
+  "variants": [
+    {
+      "id": "variant-radial-pulse",
+      "ordinal": 1,
+      "title": "Radial pulse",
+      "sourceAssetRef": "planned-asset-radial-grid",
+      "sourceEvidenceKind": "planned-input",
+      "prompt": "circle line teal gold abstract motion calm radial pulse sparse circle extend line outward settle balanced abstract loop flat geometric clean negative space original palette no text",
+      "negativePrompt": "Joe Biden, Nike, earthquake, people, faces, bodies, private individuals, public figures, trademarked characters, customer content, sensitive events, photorealism, documentary footage, text, captions, audio",
+      "subjectDeclaration": {
+        "kind": "approved-abstract-brand-elements",
+        "elements": [
+          "circle",
+          "line"
+        ],
+        "brandVocabulary": [
+          "teal",
+          "gold"
+        ],
+        "abstractOnly": true,
+        "containsNamedEntity": false,
+        "containsRealPerson": false,
+        "containsPrivatePerson": false,
+        "containsTrademarkedCharacter": false,
+        "containsSensitiveEvent": false,
+        "deceptiveImpersonation": false,
+        "unapprovedSourceContentEmbedded": false
+      },
+      "settings": {
+        "model": "pixverse/v6",
+        "modelVersion": "v6",
+        "mode": "image-to-video",
+        "durationSeconds": 6,
+        "resolution": "1080P",
+        "requestedAspectRatio": "16:9",
+        "aspectRatioHandling": "ignored-for-pixverse-image-to-video",
+        "sourceAspectRatio": "16:9",
+        "outputAspectRatioBasis": "verify-from-output-dimensions-or-materialization",
+        "audio": false,
+        "seed": 104729,
+        "quality": "1080p",
+        "motionMode": "normal",
+        "cameraMovement": "none",
+        "timeoutMs": 300000
+      },
+      "plannedMaxCharge": {
+        "amount": 4,
+        "currency": "USD"
+      },
+      "controlPolicyRef": "control-private-renewable-concepts"
+    },
+    {
+      "id": "variant-flow-transition",
+      "ordinal": 2,
+      "title": "Flow transition",
+      "sourceAssetRef": "planned-asset-flow-arcs",
+      "sourceEvidenceKind": "planned-input",
+      "prompt": "arc triangle blue green abstract motion measured left to right flow arc guide triangle gentle transition finish open abstract composition flat geometric clean negative space original palette no text",
+      "negativePrompt": "Joe Biden, Nike, earthquake, people, faces, bodies, private individuals, public figures, trademarked characters, customer content, sensitive events, photorealism, documentary footage, text, captions, audio",
+      "subjectDeclaration": {
+        "kind": "approved-abstract-brand-elements",
+        "elements": [
+          "arc",
+          "triangle"
+        ],
+        "brandVocabulary": [
+          "blue",
+          "green"
+        ],
+        "abstractOnly": true,
+        "containsNamedEntity": false,
+        "containsRealPerson": false,
+        "containsPrivatePerson": false,
+        "containsTrademarkedCharacter": false,
+        "containsSensitiveEvent": false,
+        "deceptiveImpersonation": false,
+        "unapprovedSourceContentEmbedded": false
+      },
+      "settings": {
+        "model": "pixverse/v6",
+        "modelVersion": "v6",
+        "mode": "image-to-video",
+        "durationSeconds": 6,
+        "resolution": "1080P",
+        "requestedAspectRatio": "16:9",
+        "aspectRatioHandling": "ignored-for-pixverse-image-to-video",
+        "sourceAspectRatio": "16:9",
+        "outputAspectRatioBasis": "verify-from-output-dimensions-or-materialization",
+        "audio": false,
+        "seed": 130363,
+        "quality": "1080p",
+        "motionMode": "normal",
+        "cameraMovement": "none",
+        "timeoutMs": 300000
+      },
+      "plannedMaxCharge": {
+        "amount": 4,
+        "currency": "USD"
+      },
+      "controlPolicyRef": "control-private-renewable-concepts"
+    }
+  ],
+  "approvalReceipts": [],
+  "preGenerationApprovals": [],
+  "generationAttempts": [],
+  "providerReceipts": [],
+  "billingReceipts": [],
+  "materializationReceipts": [],
+  "outputs": [],
+  "conceptPlans": [
+    {
+      "id": "concept-plan-radial-pulse",
+      "variantRef": "variant-radial-pulse",
+      "evidenceStatus": "illustrative-plan",
+      "title": "Desired radial pulse",
+      "treatment": "Desired abstract pulse using only the planned circle, line, teal, and gold vocabulary.",
+      "plannedBeats": [
+        "Sparse circles begin a restrained pulse.",
+        "Lines extend into a balanced abstract field.",
+        "The composition settles into negative space."
+      ],
+      "controlPolicyRef": "control-private-renewable-concepts"
+    },
+    {
+      "id": "concept-plan-flow-transition",
+      "variantRef": "variant-flow-transition",
+      "evidenceStatus": "illustrative-plan",
+      "title": "Desired flow transition",
+      "treatment": "Desired abstract transition using only the planned arc, triangle, blue, and green vocabulary.",
+      "plannedBeats": [
+        "Arcs establish a measured left-to-right flow.",
+        "Triangles follow the abstract path.",
+        "The composition finishes in open negative space."
+      ],
+      "controlPolicyRef": "control-private-renewable-concepts"
+    }
+  ],
+  "concepts": [],
+  "shots": [],
+  "reviewBoards": [],
+  "proposedOwnerActions": [],
+  "questions": [],
+  "blockers": [
+    {
+      "id": "blocker-illustrative-authority",
+      "kind": "illustrative-evidence",
+      "description": "Named attested human owners, exact authority scopes, signed approvals, and cost authorization are absent from this illustrative plan.",
+      "ownerRef": "planned-role-creative-owner",
+      "targetRefs": [
+        "manifest-renewable-concepts-illustrative",
+        "planned-role-creative-owner",
+        "planned-role-cost-owner",
+        "planned-role-rights-safety-owner"
+      ],
+      "findingRefs": [],
+      "questionRefs": [],
+      "status": "open"
+    },
+    {
+      "id": "blocker-illustrative-inputs",
+      "kind": "illustrative-evidence",
+      "description": "Workspace existence, bytes, MIME, dimensions, geometry, rights, and safety inspection evidence are absent from this illustrative plan.",
+      "ownerRef": "planned-role-rights-safety-owner",
+      "targetRefs": [
+        "planned-asset-radial-grid",
+        "planned-asset-flow-arcs"
+      ],
+      "findingRefs": [],
+      "questionRefs": [],
+      "status": "open"
+    },
+    {
+      "id": "blocker-illustrative-provider",
+      "kind": "illustrative-evidence",
+      "description": "OpenClaw tool availability, provider calls, task records, PixVerse video identifiers, hosted URLs, billing records, and materialized files are absent from this illustrative plan.",
+      "ownerRef": "planned-role-cost-owner",
+      "targetRefs": [
+        "provider-config-pixverse-illustrative",
+        "variant-radial-pulse",
+        "variant-flow-transition"
+      ],
+      "findingRefs": [],
+      "questionRefs": [],
+      "status": "open"
+    },
+    {
+      "id": "blocker-illustrative-review",
+      "kind": "illustrative-evidence",
+      "description": "Generated outputs, output-bound concepts, frame timing, and provenance-backed human reviews are absent from this illustrative plan.",
+      "ownerRef": "planned-role-review-owner",
+      "targetRefs": [
+        "concept-plan-radial-pulse",
+        "concept-plan-flow-transition"
+      ],
+      "findingRefs": [],
+      "questionRefs": [],
+      "status": "open"
+    }
+  ],
+  "controlPolicies": [
+    {
+      "id": "control-private-renewable-concepts",
+      "evidenceStatus": "illustrative-plan",
+      "classification": "private",
+      "audienceScope": [
+        "internal-creative-team",
+        "internal-leadership"
+      ],
+      "rightsScope": [
+        "derivative-generation",
+        "internal-presentation-review"
+      ],
+      "permittedUses": [
+        "private-concept-generation",
+        "internal-presentation-review"
+      ],
+      "territory": [
+        "worldwide"
+      ],
+      "retentionUntil": "2026-12-31T23:59:59Z",
+      "providerRetentionVersion": "version-required-before-approval"
+    }
+  ],
+  "controlBindings": [
+    {
+      "objectRef": "manifest-renewable-concepts-illustrative",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "planned-role-creative-owner",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "planned-role-cost-owner",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "planned-role-rights-safety-owner",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "planned-role-review-owner",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "provider-config-pixverse-illustrative",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "planned-asset-radial-grid",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "planned-asset-flow-arcs",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "variant-radial-pulse",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "variant-flow-transition",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "concept-plan-radial-pulse",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "concept-plan-flow-transition",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "blocker-illustrative-authority",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "blocker-illustrative-inputs",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "blocker-illustrative-provider",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "blocker-illustrative-review",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "control-private-renewable-concepts",
+      "policyRef": "control-private-renewable-concepts"
+    },
+    {
+      "objectRef": "handoff-renewable-concepts-illustrative",
+      "policyRef": "control-private-renewable-concepts"
+    }
+  ],
+  "externalActions": [],
+  "publication": {
+    "publicationState": "not-published",
+    "distributionState": "not-distributed",
+    "advertisingState": "not-advertised",
+    "externalUploadState": "no-observed-upload",
+    "creditPurchaseState": "not-purchased",
+    "publicationAuthority": "not-granted"
+  },
+  "prohibitedActions": [
+    "publish-media",
+    "distribute-media",
+    "advertise-media",
+    "upload-media-outside-approved-generation",
+    "purchase-provider-credits",
+    "claim-final-approval",
+    "depict-prohibited-subject",
+    "invoke-unapproved-generation",
+    "retry-without-new-approval",
+    "exceed-budget-cap"
+  ],
+  "handoff": {
+    "id": "handoff-renewable-concepts-illustrative",
+    "state": "blocked",
+    "coverageComplete": true,
+    "ownerRef": "planned-role-review-owner",
+    "manifestPath": "outputs/video-concept-generation-manifest.json",
+    "manifestDigest": "sha256:f7d70bcfdfbbc2bdbf920d030c6669513d260e85cb70a819f3ca9e90e646260a",
+    "principalRefs": [
+      "planned-role-creative-owner",
+      "planned-role-cost-owner",
+      "planned-role-rights-safety-owner",
+      "planned-role-review-owner"
+    ],
+    "policyRefs": [
+      "control-private-renewable-concepts"
+    ],
+    "coveredObjectRefs": [
+      "manifest-renewable-concepts-illustrative",
+      "planned-role-creative-owner",
+      "planned-role-cost-owner",
+      "planned-role-rights-safety-owner",
+      "planned-role-review-owner",
+      "provider-config-pixverse-illustrative",
+      "planned-asset-radial-grid",
+      "planned-asset-flow-arcs",
+      "variant-radial-pulse",
+      "variant-flow-transition",
+      "concept-plan-radial-pulse",
+      "concept-plan-flow-transition",
+      "blocker-illustrative-authority",
+      "blocker-illustrative-inputs",
+      "blocker-illustrative-provider",
+      "blocker-illustrative-review",
+      "control-private-renewable-concepts",
+      "handoff-renewable-concepts-illustrative"
+    ],
+    "effectiveControlRef": "control-private-renewable-concepts",
+    "publicationState": "not-published",
+    "distributionState": "not-distributed",
+    "publicationHandoff": "not-authorized",
+    "summary": "Illustrative-only desired plan. No source inspection, human attestation, approval, PixVerse call, OpenClaw task, charge, output, materialized file, or review is represented; all production and publication readiness remains blocked."
+  }
+}

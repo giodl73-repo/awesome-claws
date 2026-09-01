@@ -118,6 +118,72 @@ function sha256Digest(value) {
   return `sha256:${createHash("sha256").update(canonicalJson(value)).digest("hex")}`;
 }
 
+export function computeVideoGenerationRequestDigest(request) {
+  return sha256Digest(request);
+}
+
+export function computeVideoGenerationApprovalEvidence(value, approval) {
+  const variant = value.variants.find((item) => item.id === approval.variantRef);
+  const attempt = value.generationAttempts.find(
+    (item) => item.id === approval.attemptRef,
+  );
+  const asset = value.inputAssets.find((item) => item.id === variant?.sourceAssetRef);
+  const inspection = value.assetInspectionReceipts.find(
+    (item) => item.id === asset?.inspectionReceiptRef,
+  );
+  const promptDigest = sha256Digest({
+    prompt: variant?.prompt,
+    negativePrompt: variant?.negativePrompt,
+    subjectDeclaration: variant?.subjectDeclaration,
+  });
+  const assetDigest = sha256Digest({
+    asset,
+    inspection,
+  });
+  const settingsDigest = sha256Digest(variant?.settings);
+  const approvalContentDigest = sha256Digest({
+    schemaVersion: value.schemaVersion,
+    approvalId: approval.id,
+    kind: approval.kind,
+    variantRef: approval.variantRef,
+    attemptRef: approval.attemptRef,
+    retryOfAttemptRef: approval.retryOfAttemptRef,
+    generationApproverRef: approval.generationApproverRef,
+    costApproverRef: approval.costApproverRef,
+    safetyRightsReviewerRef: approval.safetyRightsReviewerRef,
+    providerConfigurationRef: approval.providerConfigurationRef,
+    provider: approval.provider,
+    region: approval.region,
+    model: approval.model,
+    modelVersion: approval.modelVersion,
+    termsVersion: approval.termsVersion,
+    retentionVersion: approval.retentionVersion,
+    credentialRef: approval.credentialRef,
+    evidenceReviewedAt: approval.evidenceReviewedAt,
+    approvedAt: approval.approvedAt,
+    promptDigest,
+    assetDigest,
+    settingsDigest,
+    requestDigest: attempt?.requestDigest,
+    outputFilename: attempt?.request?.filename,
+    expectedMaxCharge: variant?.plannedMaxCharge,
+    budgetReservation: approval.budgetReservation,
+    controlPolicyRef: variant?.controlPolicyRef,
+  });
+  return { promptDigest, assetDigest, settingsDigest, approvalContentDigest };
+}
+
+export function computeVideoConceptManifestDigest(value) {
+  const { contentDigest: _contentDigest, ...manifest } = value.manifest;
+  const { manifestDigest: _manifestDigest, ...handoff } = value.handoff;
+  return sha256Digest({ ...value, manifest, handoff });
+}
+
+export function computeVideoOutputIdentityDigest(output) {
+  const { identityDigest: _identityDigest, ...identity } = output;
+  return sha256Digest(identity);
+}
+
 export function computePresentationTemplateInventoryDigest(inventory) {
   const { inventoryDigest: _inventoryDigest, ...digestInput } = inventory;
   return sha256Digest(digestInput);
@@ -30777,6 +30843,2841 @@ function meetingRecordFindings(value) {
   return findings;
 }
 
+function legacyVideoConceptGenerationManifestFindings(value) {
+  const findings = [];
+  const assets = value.inputAssets ?? [];
+  const variants = value.variants ?? [];
+  const approvals = value.preGenerationApprovals ?? [];
+  const attempts = value.generationAttempts ?? [];
+  const receipts = value.providerReceipts ?? [];
+  const outputs = value.outputs ?? [];
+  const concepts = value.concepts ?? [];
+  const shots = value.shots ?? [];
+  const boards = value.reviewBoards ?? [];
+  const reviewFindings = boards.flatMap((board) => board.findings ?? []);
+  const proposals = value.proposedOwnerActions ?? [];
+  const questions = value.questions ?? [];
+  const blockers = value.blockers ?? [];
+  const policies = value.controlPolicies ?? [];
+  const actions = value.externalActions ?? [];
+  const principals = value.authorityRegistry?.principals ?? [];
+  const account = value.providerAccount ?? {};
+  const manifest = value.manifest ?? {};
+  const handoff = value.handoff ?? {};
+  const asOf = Date.parse(manifest.asOf);
+  const policy = policies.find((item) => item.id === manifest.controlPolicyRef);
+  const sameSet = (left, right) =>
+    left.length === right.length &&
+    new Set(left).size === left.length &&
+    left.every((item) => new Set(right).has(item));
+  const isDigest = (value) => /^sha256:[a-f0-9]{64}$/u.test(value ?? "");
+  const objectCollections = [
+    assets,
+    variants,
+    approvals,
+    attempts,
+    receipts,
+    outputs,
+    concepts,
+    shots,
+    boards,
+    reviewFindings,
+    proposals,
+    questions,
+    blockers,
+    policies,
+    actions,
+    principals,
+  ];
+  const allObjects = [
+    manifest,
+    account,
+    handoff,
+    ...objectCollections.flat(),
+  ].filter((item) => item && typeof item.id === "string");
+  const allIds = allObjects.map((item) => item.id);
+  const allIdSet = new Set(allIds);
+  const principalById = new Map(principals.map((item) => [item.id, item]));
+  const assetById = new Map(assets.map((item) => [item.id, item]));
+  const variantById = new Map(variants.map((item) => [item.id, item]));
+  const approvalById = new Map(approvals.map((item) => [item.id, item]));
+  const attemptById = new Map(attempts.map((item) => [item.id, item]));
+  const receiptById = new Map(receipts.map((item) => [item.id, item]));
+  const outputById = new Map(outputs.map((item) => [item.id, item]));
+  const conceptById = new Map(concepts.map((item) => [item.id, item]));
+  const reviewFindingById = new Map(reviewFindings.map((item) => [item.id, item]));
+  const questionById = new Map(questions.map((item) => [item.id, item]));
+  const requiredDisciplines = [
+    "editorial",
+    "rights",
+    "factual",
+    "brand",
+    "accessibility",
+    "safety",
+  ];
+  const requiredGates = [
+    "publish-media",
+    "distribute-media",
+    "advertise-media",
+    "upload-media-outside-approved-generation",
+    "purchase-provider-credits",
+    "claim-final-approval",
+    "depict-prohibited-subject",
+    "invoke-unapproved-generation",
+    "retry-without-new-approval",
+    "exceed-budget-cap",
+  ];
+
+  if (new Set(allIds).size !== allIds.length) {
+    findings.push(
+      finding(
+        "duplicate_object_id",
+        "$",
+        "Every manifest, authority, provider, asset, generation, output, review, and handoff id must be globally unique.",
+      ),
+    );
+  }
+  if (!Number.isFinite(asOf) || Date.parse(manifest.deadline) <= Date.parse(manifest.asOf)) {
+    const deadlineBlockers = blockers.filter(
+      (item) => item.kind === "deadline" && item.status === "open",
+    );
+    if (deadlineBlockers.length !== 1) {
+      findings.push(
+        finding(
+          "invalid_chronology",
+          "manifest.deadline",
+          "A deadline at or before asOf requires exactly one open deadline blocker.",
+        ),
+      );
+    }
+  }
+
+  function findSecret(value, path = "$") {
+    if (Array.isArray(value)) {
+      return value.flatMap((item, index) => findSecret(item, `${path}[${index}]`));
+    }
+    if (!value || typeof value !== "object") return [];
+    return Object.entries(value).flatMap(([key, item]) => {
+      const itemPath = `${path}.${key}`;
+      if (
+        /^(?:apiKey|accessToken|authToken|bearerToken|password|secret|secretValue)$/iu.test(
+          key,
+        ) &&
+        typeof item === "string" &&
+        item.length > 0
+      ) {
+        return [itemPath];
+      }
+      if (
+        typeof item === "string" &&
+        (/\bBearer\s+[A-Za-z0-9._~+/-]{16,}=*\b/iu.test(item) ||
+          /\b(?:sk|pk|pv|token|api)[-_](?:live[-_])?[A-Za-z0-9_-]{20,}\b/iu.test(
+            item,
+          ))
+      ) {
+        return [itemPath];
+      }
+      return findSecret(item, itemPath);
+    });
+  }
+  const leakedSecrets = findSecret(value);
+  if (
+    leakedSecrets.length > 0 ||
+    !/^credential-[a-z0-9-]{3,64}$/u.test(account.credentialRef ?? "") ||
+    account.secretIncluded !== false ||
+    account.secretLocation !== "approved-host-secret-store"
+  ) {
+    findings.push(
+      finding(
+        "credential_leakage",
+        leakedSecrets[0] ?? "providerAccount.credentialRef",
+        "The artifact may contain only a stable nonsecret credential reference; provider secrets stay outside the artifact.",
+      ),
+    );
+  }
+
+  const expectedBaseUrl =
+    account.region === "cn"
+      ? "https://app-api.pixverseai.cn/openapi/v2"
+      : "https://app-api.pixverse.ai/openapi/v2";
+  if (
+    manifest.providerAccountRef !== account.id ||
+    account.provider !== "pixverse" ||
+    account.baseUrl !== expectedBaseUrl ||
+    account.model?.id !== "pixverse/v6" ||
+    account.model?.version !== "v6" ||
+    [
+      account.terms?.reviewedAt,
+      account.retention?.reviewedAt,
+      account.model?.capabilityObservedAt,
+    ].some((time) => Date.parse(time) > asOf)
+  ) {
+    findings.push(
+      finding(
+        "provider_binding_mismatch",
+        "providerAccount",
+        "The exact PixVerse account, secret reference, endpoint region, base URL, terms, retention, and model/version must be current and bound consistently.",
+      ),
+    );
+  }
+
+  for (const principal of principals) {
+    if (
+      principal.type !== "human" ||
+      /\b(?:agent|assistant|bot|copilot|claw|producer)\b/iu.test(principal.name ?? "") ||
+      !isDigest(principal.provenance?.digest) ||
+      Date.parse(principal.provenance?.verifiedAt) > asOf
+    ) {
+      findings.push(
+        finding(
+          "nonhuman_authority",
+          `authorityRegistry.principals.${principal.id}`,
+          "Owners, approvers, and reviewers must be provenance-backed named humans rather than an agent or Claw identity.",
+        ),
+      );
+    }
+  }
+  const requiredOwnerRefs = [
+    manifest.creativeOwnerRef,
+    manifest.costOwnerRef,
+    manifest.rightsOwnerRef,
+    manifest.reviewOwnerRef,
+    handoff.ownerRef,
+  ];
+  if (requiredOwnerRefs.some((ref) => !principalById.has(ref))) {
+    findings.push(
+      finding(
+        "nonhuman_authority",
+        "manifest",
+        "Every creative, cost, rights, review, and handoff owner must resolve to the human authority registry.",
+      ),
+    );
+  }
+
+  if (
+    variants.length !== 2 ||
+    manifest.expectedVariantCount !== 2 ||
+    !sameSet(
+      variants.map((item) => item.ordinal),
+      [1, 2],
+    ) ||
+    outputs.length !== 2 ||
+    concepts.length !== 2 ||
+    boards.length !== 2
+  ) {
+    findings.push(
+      finding(
+        "invalid_variant_count",
+        "variants",
+        "The request requires exactly two ordered variants with exactly two outputs, concepts, and review boards.",
+      ),
+    );
+  }
+  const expectedFormat = {
+    mime: "video/mp4",
+    extension: "mp4",
+    durationSeconds: 6,
+    aspectRatio: "16:9",
+    resolution: "1920x1080",
+    width: 1920,
+    height: 1080,
+    frameRate: 24,
+    frameCount: 144,
+    audio: false,
+  };
+  if (canonicalJson(manifest.format) !== canonicalJson(expectedFormat)) {
+    findings.push(
+      finding(
+        "output_metadata_mismatch",
+        "manifest.format",
+        "The brief must remain six-second MP4, 16:9, 1920x1080, 24 fps, 144 frames, and silent.",
+      ),
+    );
+  }
+
+  for (const asset of assets) {
+    const chronology = asset.sourceChronology ?? {};
+    const chronologyValues = [
+      chronology.createdAt,
+      chronology.receivedAt,
+      chronology.verifiedAt,
+      chronology.rightsReviewedAt,
+    ].map(Date.parse);
+    if (
+      !isSafePackagePath(asset.path ?? "") ||
+      !asset.path.startsWith("inputs/") ||
+      !isDigest(asset.digest) ||
+      chronologyValues.some((time) => !Number.isFinite(time)) ||
+      chronologyValues.some(
+        (time, index) => index > 0 && time < chronologyValues[index - 1],
+      ) ||
+      chronologyValues.at(-1) > asOf ||
+      Date.parse(asset.rights?.reviewedAt) !== chronologyValues.at(-1)
+    ) {
+      findings.push(
+        finding(
+          "invalid_asset_chronology",
+          `inputAssets.${asset.id}`,
+          "Each asset needs an exact safe workspace identity and ordered creation, receipt, verification, and rights-review chronology.",
+        ),
+      );
+    }
+    if (
+      asset.rights?.status !== "rights-cleared" ||
+      !asset.rights?.licenseId ||
+      Date.parse(asset.rights?.expiresAt) <= asOf ||
+      !principalById.has(asset.ownerRef) ||
+      !principalById.has(asset.rights?.reviewerRef) ||
+      !principalById
+        .get(asset.rights?.reviewerRef)
+        ?.authorityScopes.includes("approve-asset-rights")
+    ) {
+      findings.push(
+        finding(
+          "invalid_asset_rights",
+          `inputAssets.${asset.id}.rights`,
+          "Every input must have current exact rights, license, owner, use, transformation, audience, territory, expiry, and human review evidence.",
+        ),
+      );
+    }
+    if (
+      asset.classification !== "internal" ||
+      Object.values(asset.safetyFlags ?? {}).some((flag) => flag !== false)
+    ) {
+      findings.push(
+        finding(
+          "unsafe_input_asset",
+          `inputAssets.${asset.id}`,
+          "Confidential, identity-bearing, person, biometric, customer, sensitive-event, trademarked-character, or otherwise unsafe inputs cannot be uploaded.",
+        ),
+      );
+    }
+  }
+
+  const prohibitedPromptSubject =
+    /\b(?:Barack Obama|Taylor Swift|Elon Musk|Mickey Mouse|Batman|real person|private (?:person|individual)|public figure|celebrity|trademarked character|terrorist attack|school shooting|wildfire|flood(?:ing)?|war|protest|disaster|customer|employee|face|biometric|impersonat(?:e|ion))\b/iu;
+  for (const variant of variants) {
+    const sourceAssets = (variant.sourceAssetRefs ?? []).map((ref) => assetById.get(ref));
+    const approvedElements = new Set(
+      sourceAssets.filter(Boolean).flatMap((asset) => asset.approvedElements ?? []),
+    );
+    const declaredElements = variant.subjectDeclaration?.elements ?? [];
+    if (
+      variant.providerAccountRef !== account.id ||
+      sourceAssets.length !== 1 ||
+      sourceAssets.some((asset) => !asset) ||
+      variant.sourceContentHandling !== "approved-elements-by-reference-only" ||
+      declaredElements.some((element) => !approvedElements.has(element)) ||
+      declaredElements.some(
+        (element) =>
+          !new RegExp(`\\b${element.replaceAll("-", "[- ]")}\\b`, "iu").test(
+            variant.prompt ?? "",
+          ),
+      )
+    ) {
+      findings.push(
+        finding(
+          sourceAssets.some((asset) => !asset)
+            ? "dangling_reference"
+            : "invalid_prompt_binding",
+          `variants.${variant.id}`,
+          "A prompt must bind one exact approved asset and name only its structured approved geometric elements.",
+        ),
+      );
+    }
+    if (
+      prohibitedPromptSubject.test(variant.prompt ?? "") ||
+      variant.subjectDeclaration?.kind !== "abstract-geometric-shapes" ||
+      variant.subjectDeclaration?.abstractShapesOnly !== true ||
+      Object.entries(variant.subjectDeclaration ?? {}).some(
+        ([key, flag]) =>
+          key !== "elements" &&
+          key !== "kind" &&
+          key !== "abstractShapesOnly" &&
+          flag !== false,
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsafe_prompt_subject",
+          `variants.${variant.id}.prompt`,
+          "Positive prompts and subject declarations may contain only approved abstract geometric shapes and no person, identity, trademark, sensitive event, or impersonation.",
+        ),
+      );
+    }
+    const settings = variant.settings ?? {};
+    if (
+      settings.model !== account.model?.id ||
+      settings.modelVersion !== account.model?.version ||
+      settings.durationSeconds !== 6 ||
+      settings.aspectRatio !== "16:9" ||
+      settings.resolution !== "1080P" ||
+      settings.expectedWidth !== 1920 ||
+      settings.expectedHeight !== 1080 ||
+      settings.expectedFrameRate !== 24 ||
+      settings.audio !== false
+    ) {
+      findings.push(
+        finding(
+          "invalid_variant_settings",
+          `variants.${variant.id}.settings`,
+          "Every variant must request the exact approved PixVerse model and six-second 1080P 16:9 silent output settings.",
+        ),
+      );
+    }
+  }
+
+  const initialApprovalsByVariant = new Map(
+    variants.map((variant) => [
+      variant.id,
+      approvals.filter(
+        (approval) =>
+          approval.variantRef === variant.id && approval.kind === "initial",
+      ),
+    ]),
+  );
+  if (
+    [...initialApprovalsByVariant.values()].some((items) => items.length !== 1) ||
+    approvals.filter((item) => item.kind === "initial").length !== variants.length
+  ) {
+    findings.push(
+      finding(
+        "missing_pre_generation_approval",
+        "preGenerationApprovals",
+        "Every variant needs exactly one initial human pre-generation approval; retries use separate retry approvals.",
+      ),
+    );
+  }
+  for (const approval of approvals) {
+    const variant = variantById.get(approval.variantRef);
+    const attempt = attemptById.get(approval.attemptRef);
+    const approver = principalById.get(approval.approverRef);
+    const evidence = variant
+      ? computeVideoGenerationApprovalEvidence(value, approval)
+      : undefined;
+    if (
+      !variant ||
+      !attempt ||
+      attempt.approvalRef !== approval.id ||
+      attempt.variantRef !== approval.variantRef
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `preGenerationApprovals.${approval.id}`,
+          "Every approval must resolve bidirectionally to its exact variant and intended attempt.",
+        ),
+      );
+      continue;
+    }
+    if (
+      !approver ||
+      approver.type !== "human" ||
+      !approver.authorityScopes.includes("approve-generation")
+    ) {
+      findings.push(
+        finding(
+          "nonhuman_authority",
+          `preGenerationApprovals.${approval.id}.approverRef`,
+          "Pre-generation approval requires a registered human with exact generation authority.",
+        ),
+      );
+    }
+    const latestEvidenceTime = Math.max(
+      Date.parse(account.terms?.reviewedAt),
+      Date.parse(account.retention?.reviewedAt),
+      Date.parse(account.model?.capabilityObservedAt),
+      ...(variant.sourceAssetRefs ?? []).map((ref) =>
+        Date.parse(assetById.get(ref)?.rights?.reviewedAt),
+      ),
+    );
+    if (
+      Date.parse(approval.evidenceReviewedAt) < latestEvidenceTime ||
+      Date.parse(approval.approvedAt) < Date.parse(approval.evidenceReviewedAt) ||
+      Date.parse(approval.approvedAt) >= Date.parse(attempt.startedAt) ||
+      Date.parse(approval.approvedAt) > asOf
+    ) {
+      findings.push(
+        finding(
+          "invalid_approval_chronology",
+          `preGenerationApprovals.${approval.id}`,
+          "Evidence review and approval must follow all exact evidence and precede the intended invocation.",
+        ),
+      );
+    }
+    if (
+      approval.providerAccountRef !== account.id ||
+      approval.region !== account.region ||
+      approval.model !== account.model?.id ||
+      approval.modelVersion !== account.model?.version ||
+      canonicalJson(approval.expectedCharge) !==
+        canonicalJson(variant.expectedCharge) ||
+      approval.promptDigest !== evidence?.promptDigest ||
+      approval.inputDigest !== evidence?.inputDigest ||
+      approval.settingsDigest !== evidence?.settingsDigest ||
+      approval.canonicalDigest !== evidence?.canonicalDigest
+    ) {
+      findings.push(
+        finding(
+          "stale_pre_generation_approval",
+          `preGenerationApprovals.${approval.id}`,
+          "Approval must bind the canonical prompt, input, settings, cost, account, region, model/version, attempt, and retry lineage exactly.",
+        ),
+      );
+    }
+    if (
+      (approval.kind === "initial" &&
+        (approval.retryOfAttemptRef !== null ||
+          attempt.retryOfAttemptRef !== null)) ||
+      (approval.kind === "retry" &&
+        approval.retryOfAttemptRef !== attempt.retryOfAttemptRef)
+    ) {
+      findings.push(
+        finding(
+          "invalid_retry_lineage",
+          `preGenerationApprovals.${approval.id}`,
+          "Initial approvals cannot authorize retries, and each retry approval must bind the exact failed parent attempt.",
+        ),
+      );
+    }
+  }
+
+  const duplicateProviderIdentity = [
+    attempts.map((item) => item.idempotencyId),
+    receipts.map((item) => item.providerRequestId),
+    receipts.map((item) => item.providerJobId),
+    receipts.map((item) => item.providerOutputId).filter(Boolean),
+    outputs.map((item) => item.providerOutputId),
+    outputs.map((item) => item.path),
+  ].some((values) => new Set(values).size !== values.length);
+  if (duplicateProviderIdentity) {
+    findings.push(
+      finding(
+        "duplicate_provider_identity",
+        "generationAttempts",
+        "Manifest idempotency ids and provider request, job, output, and private path identities must be unique to prevent replay or duplicate billing claims.",
+      ),
+    );
+  }
+  for (const attempt of attempts) {
+    const variant = variantById.get(attempt.variantRef);
+    const approval = approvalById.get(attempt.approvalRef);
+    const receipt = receiptById.get(attempt.receiptRef);
+    const asset = variant
+      ? assetById.get(variant.sourceAssetRefs?.[0])
+      : undefined;
+    const expectedRequest = variant
+      ? {
+          action: "generate",
+          prompt: variant.prompt,
+          image: asset?.path,
+          model: variant.settings.model,
+          durationSeconds: variant.settings.durationSeconds,
+          aspectRatio: variant.settings.aspectRatio,
+          resolution: variant.settings.resolution,
+          filename: attempt.request?.filename,
+          timeoutMs: variant.settings.timeoutMs,
+          audio: variant.settings.audio,
+          providerOptions: {
+            seed: variant.settings.seed,
+            negativePrompt: variant.negativePrompt,
+            quality: variant.settings.quality,
+            motionMode: variant.settings.motionMode,
+            cameraMovement: variant.settings.cameraMovement,
+          },
+        }
+      : undefined;
+    if (
+      !variant ||
+      !approval ||
+      !receipt ||
+      approval.attemptRef !== attempt.id ||
+      receipt.attemptRef !== attempt.id
+    ) {
+      findings.push(
+        finding(
+          "invalid_generation_evidence",
+          `generationAttempts.${attempt.id}`,
+          "Every invocation must resolve exactly to its variant, approval, and provider receipt, including failures.",
+        ),
+      );
+      continue;
+    }
+    if (
+      attempt.providerAccountRef !== account.id ||
+      canonicalJson(attempt.request) !== canonicalJson(expectedRequest) ||
+      attempt.requestDigest !==
+        computeVideoGenerationRequestDigest(attempt.request) ||
+      !isDigest(attempt.requestDigest)
+    ) {
+      findings.push(
+        finding(
+          "invalid_request_integrity",
+          `generationAttempts.${attempt.id}.request`,
+          "The exact tool request and deterministic request digest must match the approved variant, local asset path, model, and settings.",
+        ),
+      );
+    }
+    if (
+      Date.parse(attempt.startedAt) <= Date.parse(approval.approvedAt) ||
+      Date.parse(attempt.completedAt) < Date.parse(attempt.startedAt) ||
+      Date.parse(attempt.completedAt) > asOf
+    ) {
+      findings.push(
+        finding(
+          "invalid_generation_chronology",
+          `generationAttempts.${attempt.id}`,
+          "An attempt must start after exact approval and complete no earlier than it starts and no later than asOf.",
+        ),
+      );
+    }
+    if (attempt.retryOfAttemptRef !== null) {
+      const parent = attemptById.get(attempt.retryOfAttemptRef);
+      if (
+        !parent ||
+        parent.status !== "failed" ||
+        parent.variantRef !== attempt.variantRef ||
+        Date.parse(parent.completedAt) >= Date.parse(approval.evidenceReviewedAt) ||
+        approval.kind !== "retry"
+      ) {
+        findings.push(
+          finding(
+            "invalid_retry_lineage",
+            `generationAttempts.${attempt.id}.retryOfAttemptRef`,
+            "A retry needs a completed failed same-variant parent, new evidence review, a new exact approval, and remaining budget.",
+          ),
+        );
+      }
+    }
+  }
+
+  const expectedEvidenceStatus =
+    manifest.artifactMode === "illustrative-fixture"
+      ? "illustrative-only"
+      : "observed";
+  for (const receipt of receipts) {
+    const attempt = attemptById.get(receipt.attemptRef);
+    const output = receipt.outputRef
+      ? outputById.get(receipt.outputRef)
+      : undefined;
+    if (
+      !attempt ||
+      attempt.receiptRef !== receipt.id ||
+      receipt.provider !== "pixverse" ||
+      receipt.accountStableId !== account.accountStableId ||
+      receipt.region !== account.region ||
+      receipt.model !== account.model?.id ||
+      receipt.modelVersion !== account.model?.version ||
+      receipt.evidenceStatus !== expectedEvidenceStatus ||
+      !isDigest(receipt.responseDigest) ||
+      receipt.status !== attempt.status
+    ) {
+      findings.push(
+        finding(
+          receipt.region !== account.region
+            ? "provider_binding_mismatch"
+            : "invalid_generation_evidence",
+          `providerReceipts.${receipt.id}`,
+          "Every receipt must bind the exact attempt, evidence mode, account, region, model/version, response digest, and status.",
+        ),
+      );
+    }
+    if (
+      !attempt ||
+      Date.parse(receipt.submittedAt) < Date.parse(attempt.startedAt) ||
+      Date.parse(receipt.startedAt) < Date.parse(receipt.submittedAt) ||
+      Date.parse(receipt.completedAt) < Date.parse(receipt.startedAt) ||
+      Date.parse(receipt.completedAt) > Date.parse(attempt.completedAt)
+    ) {
+      findings.push(
+        finding(
+          "invalid_generation_chronology",
+          `providerReceipts.${receipt.id}`,
+          "Receipt submission, provider start, provider completion, and manifest attempt completion must be ordered exactly.",
+        ),
+      );
+    }
+    if (
+      receipt.status === "succeeded" &&
+      (!output ||
+        output.receiptRef !== receipt.id ||
+        receipt.providerOutputId === null ||
+        receipt.error !== null ||
+        receipt.normalization?.appliedDurationSeconds !== 6)
+    ) {
+      findings.push(
+        finding(
+          "invalid_generation_evidence",
+          `providerReceipts.${receipt.id}`,
+          "A successful receipt requires an exact provider output id, six-second applied duration, output record, response digest, and no error.",
+        ),
+      );
+    }
+    if (
+      receipt.status === "failed" &&
+      (receipt.outputRef !== null ||
+        receipt.providerOutputId !== null ||
+        receipt.error === null)
+    ) {
+      findings.push(
+        finding(
+          "invalid_generation_evidence",
+          `providerReceipts.${receipt.id}`,
+          "A failed receipt must preserve its error and charge but cannot claim a provider output or private output asset.",
+        ),
+      );
+    }
+  }
+
+  const expectedTotal = approvals.reduce(
+    (sum, item) => sum + (item.expectedCharge?.amount ?? 0),
+    0,
+  );
+  const actualTotal = receipts.reduce(
+    (sum, item) =>
+      sum +
+      (item.chargeStatus === "not-billed"
+        ? 0
+        : (item.actualCharge?.amount ?? 0)),
+    0,
+  );
+  const currency = account.budget?.currency;
+  if (
+    approvals.some((item) => item.expectedCharge?.currency !== currency) ||
+    receipts.some((item) => item.actualCharge?.currency !== currency) ||
+    !numbersEqual(account.budget?.expectedTotal, expectedTotal) ||
+    !numbersEqual(account.budget?.actualTotal, actualTotal) ||
+    !numbersEqual(
+      account.budget?.remaining,
+      account.budget?.exactCap - actualTotal,
+    ) ||
+    expectedTotal > account.budget?.exactCap ||
+    actualTotal > account.budget?.exactCap ||
+    account.budget?.additionalCreditPurchaseAllowed !== false
+  ) {
+    findings.push(
+      finding(
+        "budget_exceeded",
+        "providerAccount.budget",
+        "Expected and every billed or pending actual failed, successful, and retry charge must reconcile in one currency without exceeding the exact cap or purchasing credits.",
+      ),
+    );
+  }
+
+  for (const output of outputs) {
+    const variant = variantById.get(output.variantRef);
+    const receipt = receiptById.get(output.receiptRef);
+    if (
+      !variant ||
+      !receipt ||
+      receipt.outputRef !== output.id ||
+      receipt.providerOutputId !== output.providerOutputId ||
+      receipt.status !== "succeeded" ||
+      output.evidenceStatus !== expectedEvidenceStatus ||
+      !isSafePackagePath(output.path ?? "") ||
+      !output.path.startsWith("outputs/") ||
+      !isDigest(output.digest) ||
+      output.mime !== manifest.format?.mime ||
+      output.durationSeconds !== 6 ||
+      output.width !== 1920 ||
+      output.height !== 1080 ||
+      output.frameRate !== 24 ||
+      output.frameCount !== 144 ||
+      output.synthetic !== true ||
+      !sameSet(output.sourceAssetRefs ?? [], variant?.sourceAssetRefs ?? [])
+    ) {
+      findings.push(
+        finding(
+          "output_metadata_mismatch",
+          `outputs.${output.id}`,
+          "Each successful variant requires one exact private six-second MP4 identity matching its receipt, source, digest, version, dimensions, frame rate, frame count, and synthetic state.",
+        ),
+      );
+    }
+  }
+  const succeededVariants = attempts
+    .filter((item) => item.status === "succeeded")
+    .map((item) => item.variantRef);
+  if (
+    !sameSet(
+      outputs.map((item) => item.variantRef),
+      [...new Set(succeededVariants)],
+    ) ||
+    outputs.some(
+      (output) =>
+        outputs.filter((item) => item.variantRef === output.variantRef).length !==
+        1,
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid_generation_evidence",
+        "outputs",
+        "Every successfully generated variant must have exactly one output and no failed attempt may create one.",
+      ),
+    );
+  }
+
+  for (const concept of concepts) {
+    const variant = variantById.get(concept.variantRef);
+    const output = outputById.get(concept.outputRef);
+    const conceptShots = shots
+      .filter((item) => item.conceptRef === concept.id)
+      .toSorted((left, right) => left.ordinal - right.ordinal);
+    if (
+      !variant ||
+      !output ||
+      output.variantRef !== concept.variantRef ||
+      !sameSet(
+        concept.shotRefs ?? [],
+        conceptShots.map((item) => item.id),
+      ) ||
+      conceptShots.length === 0 ||
+      conceptShots[0].startSeconds !== 0 ||
+      conceptShots[0].startFrame !== 0 ||
+      conceptShots.at(-1).endSeconds !== 6 ||
+      conceptShots.at(-1).endFrame !== 143
+    ) {
+      findings.push(
+        finding(
+          "invalid_shot_coverage",
+          `concepts.${concept.id}`,
+          "Each concept must bind its exact same-variant output and a complete ordered six-second, 144-frame shot plan.",
+        ),
+      );
+      continue;
+    }
+    for (const [index, shot] of conceptShots.entries()) {
+      const previous = conceptShots[index - 1];
+      if (
+        shot.ordinal !== index + 1 ||
+        shot.variantRef !== concept.variantRef ||
+        shot.outputRef !== concept.outputRef ||
+        shot.endSeconds <= shot.startSeconds ||
+        shot.startFrame !== shot.startSeconds * 24 ||
+        shot.endFrame !== shot.endSeconds * 24 - 1 ||
+        (previous &&
+          (shot.startSeconds !== previous.endSeconds ||
+            shot.startFrame !== previous.endFrame + 1)) ||
+        (shot.visualElements ?? []).some(
+          (element) => !variant.subjectDeclaration.elements.includes(element),
+        )
+      ) {
+        findings.push(
+          finding(
+            "invalid_shot_coverage",
+            `shots.${shot.id}`,
+            "Shots must be same-output, consecutive, non-overlapping, frame-exact at 24 fps, and limited to declared geometric elements.",
+          ),
+        );
+      }
+    }
+    if (
+      Object.values(concept.safetyDeclaration ?? {}).some(
+        (flag) => flag !== false,
+      ) ||
+      !concept.disclosures?.synthetic ||
+      !concept.disclosures?.factual ||
+      !(concept.disclosures?.caveats?.length > 0)
+    ) {
+      findings.push(
+        finding(
+          "unsafe_concept_declaration",
+          `concepts.${concept.id}`,
+          "Each concept needs factual, synthetic, and caveat disclosures plus entirely negative prohibited-subject and sensitive-data declarations.",
+        ),
+      );
+    }
+  }
+
+  for (const board of boards) {
+    const output = outputById.get(board.outputRef);
+    const disciplines = (board.findings ?? []).map((item) => item.discipline);
+    if (
+      !output ||
+      board.outputDigest !== output.digest ||
+      board.outputVersion !== output.version
+    ) {
+      findings.push(
+        finding(
+          "stale_review",
+          `reviewBoards.${board.id}`,
+          "Every review board must bind the exact current private output digest and version.",
+        ),
+      );
+    }
+    if (!sameSet(disciplines, requiredDisciplines)) {
+      findings.push(
+        finding(
+          "incomplete_review_coverage",
+          `reviewBoards.${board.id}.findings`,
+          "Each output needs exactly one editorial, rights, factual, brand, accessibility, and safety finding.",
+        ),
+      );
+    }
+    let derivedState = "passed-nonfinal";
+    if ((board.findings ?? []).some((item) => item.status === "rejected")) {
+      derivedState = "rejected";
+    } else if (
+      (board.findings ?? []).some((item) => item.status === "changes-required")
+    ) {
+      derivedState = "changes-required";
+    }
+    if (board.state !== derivedState) {
+      findings.push(
+        finding(
+          "incomplete_review_coverage",
+          `reviewBoards.${board.id}.state`,
+          "Board state must derive from its exact six findings.",
+        ),
+      );
+    }
+    if (board.finalApprovalClaimed !== false) {
+      findings.push(
+        finding(
+          "false_final_approval",
+          `reviewBoards.${board.id}.finalApprovalClaimed`,
+          "The Claw and review board cannot claim final approval.",
+        ),
+      );
+    }
+    for (const item of board.findings ?? []) {
+      const reviewer = principalById.get(item.reviewerRef);
+      const requiredScope = `review-${item.discipline}`;
+      if (
+        !reviewer ||
+        reviewer.type !== "human" ||
+        !reviewer.authorityScopes.includes(requiredScope)
+      ) {
+        findings.push(
+          finding(
+            "nonhuman_authority",
+            `reviewBoards.${board.id}.findings.${item.id}.reviewerRef`,
+            "Each review finding needs a registered human with the exact review discipline scope.",
+          ),
+        );
+      }
+      if (
+        Date.parse(item.reviewedAt) <
+          Date.parse(receiptById.get(output?.receiptRef)?.completedAt) ||
+        Date.parse(item.reviewedAt) > asOf
+      ) {
+        findings.push(
+          finding(
+            "invalid_review_chronology",
+            `reviewBoards.${board.id}.findings.${item.id}.reviewedAt`,
+            "Review must follow the exact output receipt and occur no later than asOf.",
+          ),
+        );
+      }
+      if (
+        item.finalApprovalClaimed !== false ||
+        (["rights", "factual"].includes(item.discipline) &&
+          /\b(?:final(?:ly)? approved|final approval|legally cleared)\b/iu.test(
+            item.summary ?? "",
+          ))
+      ) {
+        findings.push(
+          finding(
+            "false_final_approval",
+            `reviewBoards.${board.id}.findings.${item.id}`,
+            "Rights and factual findings are nonfinal review evidence and cannot claim final, legal, publication, or distribution approval.",
+          ),
+        );
+      }
+    }
+  }
+
+  const unresolvedFindings = reviewFindings.filter((item) =>
+    ["changes-required", "rejected"].includes(item.status),
+  );
+  const openBlockers = blockers.filter((item) => item.status === "open");
+  for (const item of unresolvedFindings) {
+    if (
+      !openBlockers.some((blocker) =>
+        (blocker.findingRefs ?? []).includes(item.id),
+      )
+    ) {
+      findings.push(
+        finding(
+          "incomplete_blocker_coverage",
+          `reviewBoards.findings.${item.id}`,
+          "Every changes-required or rejected review finding needs an exact open blocker.",
+        ),
+      );
+    }
+  }
+  for (const blocker of blockers) {
+    if (
+      (blocker.findingRefs ?? []).some((ref) => !reviewFindingById.has(ref)) ||
+      (blocker.questionRefs ?? []).some((ref) => !questionById.has(ref)) ||
+      (blocker.targetRefs ?? []).some((ref) => !allIdSet.has(ref))
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `blockers.${blocker.id}`,
+          "Blocker targets, findings, and questions must resolve exactly.",
+        ),
+      );
+    }
+  }
+  for (const question of questions) {
+    if (
+      !principalById.has(question.ownerRef) ||
+      (question.targetRefs ?? []).some((ref) => !allIdSet.has(ref))
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `questions.${question.id}`,
+          "Question owners and targets must resolve exactly.",
+        ),
+      );
+    }
+  }
+  const mustBlock =
+    manifest.artifactMode === "illustrative-fixture" ||
+    unresolvedFindings.length > 0 ||
+    openBlockers.length > 0;
+  if (
+    (mustBlock &&
+      (manifest.readiness !== "blocked" || handoff.state !== "blocked")) ||
+    (!mustBlock &&
+      (manifest.readiness !== "ready-for-human-review" ||
+        handoff.state !== "ready-for-human-review"))
+  ) {
+    findings.push(
+      finding(
+        "premature_readiness",
+        "manifest.readiness",
+        "Illustrative evidence, unresolved review, rejected review, or an open blocker must block readiness and publication handoff.",
+      ),
+    );
+  }
+
+  if (
+    value.publication?.publicationState !== "not-published" ||
+    value.publication?.distributionState !== "not-distributed" ||
+    value.publication?.advertisingState !== "not-advertised" ||
+    value.publication?.externalUploadState !==
+      "approved-provider-inputs-only" ||
+    value.publication?.creditPurchaseState !== "not-purchased" ||
+    value.publication?.publicationAuthority !== "not-granted" ||
+    handoff.publicationState !== "not-published" ||
+    handoff.distributionState !== "not-distributed" ||
+    handoff.publicationHandoff !== "not-authorized"
+  ) {
+    findings.push(
+      finding(
+        "unsafe_publication_state",
+        "publication",
+        "Publication, distribution, advertising, external uploads, credit purchases, and publication authority must remain explicitly absent.",
+      ),
+    );
+  }
+  if (!sameSet(value.prohibitedActions ?? [], requiredGates)) {
+    findings.push(
+      finding(
+        "missing_authority_gate",
+        "prohibitedActions",
+        "All generation, retry, budget, identity, final-approval, upload, advertising, distribution, publication, and credit-purchase gates are required.",
+      ),
+    );
+  }
+
+  if (
+    actions.length !== attempts.length ||
+    actions.some((action) => {
+      const attempt = attemptById.get(action.attemptRef);
+      return (
+        !attempt ||
+        action.kind !== "approved-video-generate-call" ||
+        action.approvalRef !== attempt.approvalRef ||
+        action.status !== expectedEvidenceStatus
+      );
+    }) ||
+    attempts.some(
+      (attempt) =>
+        actions.filter((action) => action.attemptRef === attempt.id).length !== 1,
+    )
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_external_action",
+        "externalActions",
+        "The only external actions are the exact approved video_generate calls, one per invocation.",
+      ),
+    );
+  }
+
+  const explicitPolicyRefs = [
+    ...assets,
+    ...variants,
+    ...outputs,
+    ...concepts,
+    ...shots,
+  ].map((item) => item.controlPolicyRef);
+  const governedObjects = [
+    manifest,
+    account,
+    ...assets,
+    ...variants,
+    ...approvals,
+    ...attempts,
+    ...receipts,
+    ...outputs,
+    ...concepts,
+    ...shots,
+    ...boards,
+    ...reviewFindings,
+    ...proposals,
+    ...questions,
+    ...blockers,
+    ...actions,
+    handoff,
+  ];
+  const governedIds = governedObjects.map((item) => item.id);
+  const bindingIds = (value.controlBindings ?? []).map(
+    (binding) => binding.objectRef,
+  );
+  const policyAudience = policy?.audienceScope ?? [];
+  const policyRights = policy?.rightsScope ?? [];
+  const policyUses = policy?.permittedUses ?? [];
+  const policyTerritory = policy?.territory ?? [];
+  const earliestExpiry = Math.min(
+    ...assets.map((asset) => Date.parse(asset.rights?.expiresAt)),
+  );
+  if (
+    !policy ||
+    policy.classification !== "private" ||
+    !sameSet(policyAudience, manifest.internalAudience ?? []) ||
+    assets.some(
+      (asset) =>
+        !sameSet(policyAudience, asset.rights?.permittedAudience ?? []) ||
+        !sameSet(policyRights, asset.rights?.rightsScope ?? []) ||
+        !sameSet(policyUses, asset.rights?.permittedUses ?? []) ||
+        !sameSet(policyTerritory, asset.rights?.territory ?? []),
+    ) ||
+    outputs.some(
+      (output) =>
+        output.classification !== policy.classification ||
+        !sameSet(output.audienceScope ?? [], policyAudience),
+    ) ||
+    explicitPolicyRefs.some((ref) => ref !== policy.id) ||
+    policy.providerRetentionDays !== account.retention?.providerRetentionDays ||
+    Date.parse(policy.retentionUntil) > earliestExpiry ||
+    !sameSet(bindingIds, governedIds) ||
+    (value.controlBindings ?? []).some(
+      (binding) => binding.policyRef !== policy.id,
+    ) ||
+    handoff.effectiveControlRef !== policy.id
+  ) {
+    findings.push(
+      finding(
+        "control_inheritance_mismatch",
+        "controlPolicies",
+        "Exact classification, audience, rights, use, territory, asset expiry, provider retention, and retention-until controls must flow through every governed reference without laundering.",
+      ),
+    );
+  }
+
+  const expectedHandoffLists = [
+    ["inputAssetRefs", assets],
+    ["variantRefs", variants],
+    ["approvalRefs", approvals],
+    ["attemptRefs", attempts],
+    ["receiptRefs", receipts],
+    ["outputRefs", outputs],
+    ["conceptRefs", concepts],
+    ["shotRefs", shots],
+    ["reviewBoardRefs", boards],
+    ["questionRefs", questions],
+    ["blockerRefs", blockers],
+    ["coveredObjectRefs", governedObjects],
+  ];
+  if (
+    handoff.coverageComplete !== true ||
+    handoff.manifestPath !==
+      "outputs/video-concept-generation-manifest.json" ||
+    expectedHandoffLists.some(
+      ([field, items]) =>
+        !sameSet(
+          handoff[field] ?? [],
+          items.map((item) => item.id),
+        ),
+    )
+  ) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff",
+        "The private handoff must cover every exact input, generation, output, review, question, blocker, control-bound object, and owner once.",
+      ),
+    );
+  }
+  const manifestDigest = computeVideoConceptManifestDigest(value);
+  if (
+    manifest.contentDigest !== manifestDigest ||
+    handoff.manifestDigest !== manifestDigest
+  ) {
+    findings.push(
+      finding(
+        "invalid_manifest_digest",
+        "manifest.contentDigest",
+        "The deterministic content digest must bind the complete manifest and handoff without self-reference.",
+      ),
+    );
+  }
+
+  function collectNarrativeStrings(item, path = "$") {
+    if (
+      path === "$.manifest.verbatimRequest" ||
+      path.startsWith("$.proposedOwnerActions")
+    ) {
+      return [];
+    }
+    if (typeof item === "string") return [item];
+    if (Array.isArray(item)) {
+      return item.flatMap((child, index) =>
+        collectNarrativeStrings(child, `${path}[${index}]`),
+      );
+    }
+    if (!item || typeof item !== "object") return [];
+    return Object.entries(item).flatMap(([key, child]) =>
+      collectNarrativeStrings(child, `${path}.${key}`),
+    );
+  }
+  const narrativeTexts = collectNarrativeStrings(value);
+  const prohibitedNarrative =
+    /\b(?:publish(?:ed|ing)?|distribut(?:e|ed|ing)|advertis(?:e|ed|ing)|upload(?:ed|ing)|post(?:ed|ing)|share(?:d|ing)|send|sent)\s+(?:the |these |those )?(?:concepts?|videos?|outputs?|media|mp4 files?)\b|\b(?:concepts?|videos?|outputs?|media|mp4 files?)\s+(?:was|were|is|are|has been|have been|had been)\s+(?:published|distributed|advertised|uploaded|posted|shared|sent)\b|\b(?:purchas(?:e|ed|ing)|bought|buy)\s+(?:extra |additional |more )?(?:provider )?credits?\b|\bcredits?\s+(?:was|were|has been|have been|had been)\s+(?:purchased|bought)\b|\b(?:rights|legal|factual|brand|accessibility|safety|review)\s+(?:was|were|is|are|has been|have been|had been)\s+(?:finally |fully )?(?:approved|cleared|completed|finalized)\b|\b(?:depict(?:ed|ing)?|feature(?:d|ing)?|represent(?:ed|ing)?)\s+(?:a |an |the )?(?:real person|private (?:person|individual)|public figure|celebrity|trademarked character|sensitive event)\b|\b(?:fabricat(?:e|ed|ing)|invent(?:ed|ing)?)\s+(?:a |the )?(?:generation|receipt|provider response|output|review|approval)\b|\b(?:generation|review|approval|provider response|receipt|output)\s+(?:was|were|is|are|has been|have been|had been)\s+(?:fabricated|invented|completed|successful|approved|finalized)\b/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim publication, distribution, advertising, upload, credit purchase, final approval, prohibited depiction, or fabricated generation/review; only the verbatim request and structured proposals are exempt.",
+      ),
+    );
+  }
+  return findings;
+}
+
+function videoConceptGenerationManifestFindings(value, options = {}) {
+  const findings = [];
+  const manifest = value.manifest ?? {};
+  const provider = value.providerConfiguration ?? {};
+  const registry = value.authorityRegistry ?? {};
+  const principals = registry.principals ?? [];
+  const attestations = registry.attestations ?? [];
+  const plannedAssets = value.plannedInputAssets ?? [];
+  const inspections = value.assetInspectionReceipts ?? [];
+  const assets = value.inputAssets ?? [];
+  const variants = value.variants ?? [];
+  const approvalReceipts = value.approvalReceipts ?? [];
+  const approvals = value.preGenerationApprovals ?? [];
+  const attempts = value.generationAttempts ?? [];
+  const providerReceipts = value.providerReceipts ?? [];
+  const billingReceipts = value.billingReceipts ?? [];
+  const materializations = value.materializationReceipts ?? [];
+  const outputs = value.outputs ?? [];
+  const conceptPlans = value.conceptPlans ?? [];
+  const concepts = value.concepts ?? [];
+  const shots = value.shots ?? [];
+  const boards = value.reviewBoards ?? [];
+  const reviewFindings = boards.flatMap((board) => board.findings ?? []);
+  const proposals = value.proposedOwnerActions ?? [];
+  const questions = value.questions ?? [];
+  const blockers = value.blockers ?? [];
+  const policies = value.controlPolicies ?? [];
+  const bindings = value.controlBindings ?? [];
+  const actions = value.externalActions ?? [];
+  const handoff = value.handoff ?? {};
+  const isProduction = manifest.artifactMode === "production";
+  const asOf = Date.parse(manifest.asOf);
+  const validationBoundary = (() => {
+    const candidate = options.validationTime ?? Date.now();
+    return typeof candidate === "number" ? candidate : Date.parse(candidate);
+  })();
+  const allowedFutureSkewMs = options.allowedFutureSkewMs ?? 5 * 60 * 1000;
+  const sameSet = (left, right) =>
+    left.length === right.length &&
+    new Set(left).size === left.length &&
+    left.every((item) => new Set(right).has(item));
+  const isDigest = (candidate) => /^sha256:[a-f0-9]{64}$/u.test(candidate ?? "");
+  const byId = (items) => new Map(items.map((item) => [item.id, item]));
+  const principalById = byId(principals);
+  const attestationById = byId(attestations);
+  const plannedAssetById = byId(plannedAssets);
+  const inspectionById = byId(inspections);
+  const assetById = byId(assets);
+  const variantById = byId(variants);
+  const approvalReceiptById = byId(approvalReceipts);
+  const approvalById = byId(approvals);
+  const attemptById = byId(attempts);
+  const providerReceiptById = byId(providerReceipts);
+  const materializationById = byId(materializations);
+  const outputById = byId(outputs);
+  const conceptById = byId(concepts);
+  const boardById = byId(boards);
+  const findingById = byId(reviewFindings);
+  const questionById = byId(questions);
+  const policyById = byId(policies);
+  const requiredDisciplines = [
+    "editorial",
+    "rights",
+    "factual",
+    "brand",
+    "accessibility",
+    "safety",
+  ];
+  const requiredGates = [
+    "publish-media",
+    "distribute-media",
+    "advertise-media",
+    "upload-media-outside-approved-generation",
+    "purchase-provider-credits",
+    "claim-final-approval",
+    "depict-prohibited-subject",
+    "invoke-unapproved-generation",
+    "retry-without-new-approval",
+    "exceed-budget-cap",
+  ];
+  const objectCollections = [
+    principals,
+    attestations,
+    plannedAssets,
+    inspections,
+    assets,
+    variants,
+    approvalReceipts,
+    approvals,
+    attempts,
+    providerReceipts,
+    billingReceipts,
+    materializations,
+    outputs,
+    conceptPlans,
+    concepts,
+    shots,
+    boards,
+    reviewFindings,
+    proposals,
+    questions,
+    blockers,
+    policies,
+    actions,
+  ];
+  const allObjects = [manifest, provider, ...objectCollections.flat(), handoff].filter(
+    (item) => item && typeof item.id === "string",
+  );
+  const allIds = allObjects.map((item) => item.id);
+  const allIdSet = new Set(allIds);
+  const policy = policyById.get(manifest.controlPolicyRef);
+
+  if (new Set(allIds).size !== allIds.length) {
+    findings.push(
+      finding(
+        "duplicate_object_id",
+        "$",
+        "Every authority, plan, receipt, generation, output, review, policy, and handoff id must be globally unique.",
+      ),
+    );
+  }
+
+  function findSecrets(item, path = "$") {
+    if (typeof item === "string") {
+      return /\bBearer\s+[A-Za-z0-9._~+/-]{16,}=*\b/iu.test(item) ||
+        /\b(?:sk|pk|pv|token|api)[-_](?:live[-_])?[A-Za-z0-9_-]{20,}\b/iu.test(item)
+        ? [path]
+        : [];
+    }
+    if (Array.isArray(item)) {
+      return item.flatMap((child, index) => findSecrets(child, `${path}[${index}]`));
+    }
+    if (!item || typeof item !== "object") return [];
+    return Object.entries(item).flatMap(([key, child]) => {
+      const childPath = `${path}.${key}`;
+      if (
+        /^(?:apiKey|accessToken|authToken|bearerToken|password|secret|secretValue)$/iu.test(
+          key,
+        ) &&
+        typeof child === "string" &&
+        child.length > 0
+      ) {
+        return [childPath];
+      }
+      return findSecrets(child, childPath);
+    });
+  }
+  const leakedSecrets = findSecrets(value);
+  if (
+    leakedSecrets.length > 0 ||
+    !/^credential-[a-z0-9-]{3,64}$/u.test(provider.credentialRef ?? "") ||
+    provider.secretIncluded !== false ||
+    provider.secretLocation !== "approved-host-secret-store"
+  ) {
+    findings.push(
+      finding(
+        "credential_leakage",
+        leakedSecrets[0] ?? "providerConfiguration.credentialRef",
+        "Only a stable nonsecret credential reference may appear; recursive arrays and objects must remain secret-free.",
+      ),
+    );
+  }
+
+  if (
+    !Number.isFinite(asOf) ||
+    (isProduction &&
+      (!Number.isFinite(validationBoundary) ||
+        asOf > validationBoundary + allowedFutureSkewMs))
+  ) {
+    findings.push(
+      finding(
+        "invalid_chronology",
+        "manifest.asOf",
+        "A production asOf cannot be materially later than the validator boundary; illustrative fixtures are deterministically exempt from wall-clock comparison.",
+      ),
+    );
+  }
+  function collectEventTimes(item, path = "$") {
+    if (Array.isArray(item)) {
+      return item.flatMap((child, index) => collectEventTimes(child, `${path}[${index}]`));
+    }
+    if (!item || typeof item !== "object") return [];
+    return Object.entries(item).flatMap(([key, child]) => {
+      const childPath = `${path}.${key}`;
+      const excludedFutureField = ["deadline", "expiresAt", "retentionUntil"].includes(key);
+      const own =
+        !excludedFutureField && /(?:At|asOf)$/u.test(key) && typeof child === "string"
+          ? [{ path: childPath, time: Date.parse(child) }]
+          : [];
+      return [...own, ...collectEventTimes(child, childPath)];
+    });
+  }
+  const invalidEvent = collectEventTimes(value).find(
+    (event) => !Number.isFinite(event.time) || event.time > asOf,
+  );
+  if (invalidEvent) {
+    findings.push(
+      finding(
+        "invalid_chronology",
+        invalidEvent.path,
+        "Every observed, issued, approved, invoked, completed, reviewed, probed, and materialized event must occur no later than asOf.",
+      ),
+    );
+  }
+  if (Number.isFinite(asOf) && Date.parse(manifest.deadline) <= asOf) {
+    const deadlineBlockers = blockers.filter(
+      (item) => item.kind === "deadline" && item.status === "open",
+    );
+    if (deadlineBlockers.length !== 1) {
+      findings.push(
+        finding(
+          "invalid_chronology",
+          "manifest.deadline",
+          "A deadline at or before asOf requires exactly one open deadline blocker.",
+        ),
+      );
+    }
+  }
+
+  const expectedBaseUrl =
+    provider.region === "cn"
+      ? "https://app-api.pixverseai.cn/openapi/v2"
+      : "https://app-api.pixverse.ai/openapi/v2";
+  if (
+    manifest.providerConfigurationRef !== provider.id ||
+    provider.provider !== "pixverse" ||
+    provider.baseUrl !== expectedBaseUrl ||
+    provider.model?.requestRef !== "pixverse/v6" ||
+    provider.model?.providerModel !== "v6" ||
+    provider.plugin?.package !== "@openclaw/pixverse-provider" ||
+    provider.plugin?.version !== "2026.7.1" ||
+    provider.openclawTag !== "v2026.7.1"
+  ) {
+    findings.push(
+      finding(
+        "provider_binding_mismatch",
+        "providerConfiguration",
+        "The configuration must bind the pinned PixVerse v6 plugin, OpenClaw tag, region, endpoint, model, and nonsecret credential reference.",
+      ),
+    );
+  }
+  if (
+    isProduction &&
+    (provider.evidenceStatus !== "observed" ||
+      provider.toolAvailability?.sourceSystem !== "openclaw" ||
+      provider.toolAvailability?.toolName !== "video_generate" ||
+      provider.toolAvailability?.provider !== "pixverse" ||
+      provider.toolAvailability?.model !== "v6" ||
+      !isDigest(provider.toolAvailability?.evidenceDigest))
+  ) {
+    findings.push(
+      finding(
+        "missing_provider_evidence",
+        "providerConfiguration.toolAvailability",
+        "Production requires an observed OpenClaw video_generate availability receipt for PixVerse v6.",
+      ),
+    );
+  }
+
+  const illustrativeOnlyCollections = [
+    attestations,
+    inspections,
+    assets,
+    approvalReceipts,
+    approvals,
+    attempts,
+    providerReceipts,
+    billingReceipts,
+    materializations,
+    outputs,
+    concepts,
+    shots,
+    boards,
+    actions,
+  ];
+  if (
+    !isProduction &&
+    (illustrativeOnlyCollections.some((items) => items.length > 0) ||
+      provider.evidenceStatus !== "illustrative-plan" ||
+      provider.toolAvailability !== null ||
+      provider.budget?.reservedTotal !== 0 ||
+      provider.budget?.actualBilledTotal !== null ||
+      provider.budget?.committedTotal !== 0 ||
+      provider.budget?.reconciliationState !== "unobserved" ||
+      !blockers.some(
+        (item) => item.kind === "illustrative-evidence" && item.status === "open",
+      ))
+  ) {
+    findings.push(
+      finding(
+        "illustrative_evidence_claim",
+        "$",
+        "An illustrative fixture must stay blocked and contain no attestation, inspection, approval, call, charge, output, materialization, human review, or external-action evidence.",
+      ),
+    );
+  }
+
+  const forbiddenIdentity =
+    /\b(?:gpt(?:-\d+(?:\.\d+)?)?|model|agent|assistant|bot|ai|copilot|claw)\b/iu;
+  for (const principal of principals) {
+    const attestation = principal.attestationRef
+      ? attestationById.get(principal.attestationRef)
+      : undefined;
+    if (
+      isProduction &&
+      (principal.recordKind !== "attested-human" ||
+        principal.type !== "human" ||
+        forbiddenIdentity.test(
+          `${principal.id ?? ""} ${principal.name ?? ""} ${principal.role ?? ""}`,
+        ) ||
+        !attestation ||
+        attestation.principalRef !== principal.id ||
+        attestation.principalType !== "human" ||
+        attestation.role !== principal.role ||
+        !sameSet(attestation.scopes ?? [], principal.authorityScopes ?? []) ||
+        !isDigest(attestation.receipt?.recordDigest))
+    ) {
+      findings.push(
+        finding(
+          "nonhuman_authority",
+          `authorityRegistry.principals.${principal.id}`,
+          "Production authority requires a structurally attested human whose type, role, and exact scopes match an immutable authority receipt; AI or bot identities are forbidden.",
+        ),
+      );
+    }
+  }
+  for (const attestation of attestations) {
+    const principal = principalById.get(attestation.principalRef);
+    if (!principal || principal.attestationRef !== attestation.id) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `authorityRegistry.attestations.${attestation.id}`,
+          "Every authority attestation must resolve bidirectionally to exactly one principal.",
+        ),
+      );
+    }
+  }
+  const ownerRequirements = [
+    [manifest.creativeOwnerRef, "creative-owner", ["approve-generation"]],
+    [manifest.costOwnerRef, "cost-owner", ["approve-generation-cost"]],
+    [
+      manifest.rightsSafetyOwnerRef,
+      "rights-safety-owner",
+      ["approve-asset-rights", "approve-prompt-rights", "approve-prompt-safety"],
+    ],
+    [manifest.reviewOwnerRef, "review-owner", []],
+  ];
+  for (const [ref, role, scopes] of ownerRequirements) {
+    const principal = principalById.get(ref);
+    if (
+      !principal ||
+      principal.role !== role ||
+      scopes.some((scope) => !principal.authorityScopes?.includes(scope))
+    ) {
+      findings.push(
+        finding(
+          "nonhuman_authority",
+          "manifest",
+          "Creative, cost, rights/safety, and review owners must resolve to exact structural roles and scopes.",
+        ),
+      );
+      break;
+    }
+  }
+  if (
+    !principalById.has(handoff.ownerRef) ||
+    !principalById.get(handoff.ownerRef)?.authorityScopes?.includes("own-private-handoff")
+  ) {
+    findings.push(
+      finding(
+        "nonhuman_authority",
+        "handoff.ownerRef",
+        "The handoff owner must resolve to an authority record with own-private-handoff scope.",
+      ),
+    );
+  }
+
+  if (
+    variants.length !== 2 ||
+    manifest.expectedVariantCount !== 2 ||
+    !sameSet(
+      variants.map((item) => item.ordinal),
+      [1, 2],
+    ) ||
+    conceptPlans.length !== 2 ||
+    !sameSet(
+      conceptPlans.map((item) => item.variantRef),
+      variants.map((item) => item.id),
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid_variant_count",
+        "variants",
+        "Exactly two ordered variants and one clearly illustrative concept plan per variant are required.",
+      ),
+    );
+  }
+
+  for (const inspection of inspections) {
+    const asset = assetById.get(inspection.assetRef);
+    if (
+      !asset ||
+      asset.inspectionReceiptRef !== inspection.id ||
+      inspection.evidenceStatus !== "observed" ||
+      inspection.sourceSystem !== "workspace-asset-inspector" ||
+      inspection.exists !== true ||
+      !isDigest(inspection.byteDigest) ||
+      !isDigest(inspection.evidenceDigest) ||
+      inspection.width * 9 !== inspection.height * 16 ||
+      inspection.aspectRatio !== "16:9"
+    ) {
+      findings.push(
+        finding(
+          "invalid_asset_inspection",
+          `assetInspectionReceipts.${inspection.id}`,
+          "Asset inspection must prove workspace existence, bytes, digest, MIME, dimensions, and exact 16:9 raster geometry.",
+        ),
+      );
+    }
+  }
+  for (const asset of assets) {
+    const inspection = inspectionById.get(asset.inspectionReceiptRef);
+    const rightsReviewer = principalById.get(asset.rights?.reviewerRef);
+    if (
+      !inspection ||
+      inspection.assetRef !== asset.id ||
+      !isSafePackagePath(asset.path ?? "") ||
+      !asset.path.startsWith("inputs/") ||
+      asset.classification !== "internal"
+    ) {
+      findings.push(
+        finding(
+          "invalid_asset_inspection",
+          `inputAssets.${asset.id}`,
+          "Production inputs require a safe workspace path and a bidirectional provenance-backed inspection receipt.",
+        ),
+      );
+    }
+    if (
+      asset.rights?.status !== "rights-cleared" ||
+      Date.parse(asset.rights?.expiresAt) <= asOf ||
+      !principalById.has(asset.ownerRef) ||
+      !rightsReviewer?.authorityScopes?.includes("approve-asset-rights") ||
+      !isDigest(asset.rights?.receipt?.recordDigest)
+    ) {
+      findings.push(
+        finding(
+          "invalid_asset_rights",
+          `inputAssets.${asset.id}.rights`,
+          "Each inspected input needs current provenance-backed rights and an authorized human rights reviewer.",
+        ),
+      );
+    }
+    if (Object.values(asset.safetyFlags ?? {}).some((flag) => flag !== false)) {
+      findings.push(
+        finding(
+          "unsafe_input_asset",
+          `inputAssets.${asset.id}`,
+          "Identity, person, biometric, customer, sensitive-event, trademarked-character, or confidential input is ineligible.",
+        ),
+      );
+    }
+  }
+
+  const promptVocabulary = new Set([
+    "circle",
+    "line",
+    "arc",
+    "triangle",
+    "teal",
+    "gold",
+    "blue",
+    "green",
+    "abstract",
+    "motion",
+    "calm",
+    "radial",
+    "pulse",
+    "sparse",
+    "extend",
+    "outward",
+    "settle",
+    "balanced",
+    "loop",
+    "flat",
+    "geometric",
+    "clean",
+    "negative",
+    "space",
+    "original",
+    "palette",
+    "no",
+    "text",
+    "measured",
+    "left",
+    "to",
+    "right",
+    "flow",
+    "guide",
+    "gentle",
+    "transition",
+    "finish",
+    "open",
+    "composition",
+  ]);
+  for (const variant of variants) {
+    const source =
+      variant.sourceEvidenceKind === "inspected-input"
+        ? assetById.get(variant.sourceAssetRef)
+        : plannedAssetById.get(variant.sourceAssetRef);
+    const sourceTerms = source?.approvedSubjectTerms ?? [];
+    const sourceBrand = source?.permittedBrandVocabulary ?? [];
+    const declaredTerms = variant.subjectDeclaration?.elements ?? [];
+    const declaredBrand = variant.subjectDeclaration?.brandVocabulary ?? [];
+    const promptTokens = (variant.prompt?.match(/[A-Za-z]+/gu) ?? []).map((token) =>
+      token.toLowerCase(),
+    );
+    const unsafeFlags = Object.entries(variant.subjectDeclaration ?? {}).some(
+      ([key, candidate]) =>
+        key.startsWith("contains") && key !== "containsNamedEntity" && candidate !== false,
+    );
+    if (
+      !source ||
+      (isProduction && variant.sourceEvidenceKind !== "inspected-input") ||
+      (!isProduction && variant.sourceEvidenceKind !== "planned-input") ||
+      !sameSet(declaredTerms, sourceTerms) ||
+      !sameSet(declaredBrand, sourceBrand) ||
+      [...declaredTerms, ...declaredBrand].some(
+        (token) => !promptTokens.includes(token.toLowerCase()),
+      )
+    ) {
+      findings.push(
+        finding(
+          source ? "invalid_prompt_binding" : "dangling_reference",
+          `variants.${variant.id}`,
+          "Each prompt must resolve to one planned or inspected source and exactly its declared abstract elements and permitted brand vocabulary.",
+        ),
+      );
+    }
+    if (
+      promptTokens.some((token) => !promptVocabulary.has(token)) ||
+      variant.subjectDeclaration?.kind !== "approved-abstract-brand-elements" ||
+      variant.subjectDeclaration?.abstractOnly !== true ||
+      variant.subjectDeclaration?.containsNamedEntity !== false ||
+      unsafeFlags ||
+      variant.subjectDeclaration?.deceptiveImpersonation !== false ||
+      variant.subjectDeclaration?.unapprovedSourceContentEmbedded !== false
+    ) {
+      findings.push(
+        finding(
+          "unsafe_prompt_subject",
+          `variants.${variant.id}.prompt`,
+          "Positive prompts use an exact conservative abstract-element and brand-vocabulary allowlist; undeclared names, entities, brands, people, and sensitive events are forbidden. Negative prompts may name exclusions.",
+        ),
+      );
+    }
+    const settings = variant.settings ?? {};
+    const sourceAspectRatio =
+      variant.sourceEvidenceKind === "inspected-input"
+        ? inspectionById.get(source?.inspectionReceiptRef)?.aspectRatio
+        : source?.expectedAspectRatio;
+    if (
+      settings.model !== "pixverse/v6" ||
+      settings.modelVersion !== "v6" ||
+      settings.mode !== "image-to-video" ||
+      settings.durationSeconds !== 6 ||
+      settings.resolution !== "1080P" ||
+      settings.requestedAspectRatio !== "16:9" ||
+      settings.aspectRatioHandling !== "ignored-for-pixverse-image-to-video" ||
+      settings.sourceAspectRatio !== sourceAspectRatio ||
+      settings.outputAspectRatioBasis !==
+        "verify-from-output-dimensions-or-materialization" ||
+      settings.audio !== false
+    ) {
+      findings.push(
+        finding(
+          "invalid_variant_settings",
+          `variants.${variant.id}.settings`,
+          "PixVerse image-to-video must bind source geometry, mark the requested aspect ratio as ignored, and defer output ratio truth to observed dimensions or materialization.",
+        ),
+      );
+    }
+  }
+
+  for (const receipt of approvalReceipts) {
+    const approval = approvalById.get(receipt.approvalRef);
+    if (
+      !approval ||
+      approval.receiptRef !== receipt.id ||
+      receipt.approvalContentDigest !== approval.approvalContentDigest ||
+      !isDigest(receipt.receipt?.recordDigest) ||
+      (receipt.receipt?.signature === null &&
+        receipt.receipt?.externalRecordRef === null)
+    ) {
+      findings.push(
+        finding(
+          "invalid_approval_receipt",
+          `approvalReceipts.${receipt.id}`,
+          "Approval needs a bidirectional immutable external record or signed receipt over the exact approval content digest.",
+        ),
+      );
+    }
+  }
+  for (const approval of approvals) {
+    const variant = variantById.get(approval.variantRef);
+    const attempt = attemptById.get(approval.attemptRef);
+    const receipt = approvalReceiptById.get(approval.receiptRef);
+    const generationApprover = principalById.get(approval.generationApproverRef);
+    const costApprover = principalById.get(approval.costApproverRef);
+    const safetyRightsReviewer = principalById.get(approval.safetyRightsReviewerRef);
+    if (
+      !variant ||
+      !attempt ||
+      attempt.approvalRef !== approval.id ||
+      attempt.variantRef !== approval.variantRef ||
+      !receipt ||
+      receipt.approvalRef !== approval.id
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `preGenerationApprovals.${approval.id}`,
+          "Every approval must resolve bidirectionally to its exact variant, intended attempt, and immutable receipt.",
+        ),
+      );
+      continue;
+    }
+    if (
+      !generationApprover?.authorityScopes?.includes("approve-generation") ||
+      approval.costApproverRef !== manifest.costOwnerRef ||
+      !costApprover?.authorityScopes?.includes("approve-generation-cost") ||
+      !safetyRightsReviewer?.authorityScopes?.includes("approve-prompt-rights") ||
+      !safetyRightsReviewer?.authorityScopes?.includes("approve-prompt-safety")
+    ) {
+      findings.push(
+        finding(
+          "nonhuman_authority",
+          `preGenerationApprovals.${approval.id}`,
+          "Exact generation, cost-owner, prompt-rights, and prompt-safety scopes are all required.",
+        ),
+      );
+    }
+    const expectedEvidence = computeVideoGenerationApprovalEvidence(value, approval);
+    if (
+      approval.providerConfigurationRef !== provider.id ||
+      approval.provider !== provider.provider ||
+      approval.region !== provider.region ||
+      approval.model !== provider.model?.requestRef ||
+      approval.modelVersion !== provider.model?.providerModel ||
+      approval.termsVersion !== provider.termsVersion ||
+      approval.retentionVersion !== provider.retentionVersion ||
+      approval.credentialRef !== provider.credentialRef ||
+      approval.promptDigest !== expectedEvidence.promptDigest ||
+      approval.assetDigest !== expectedEvidence.assetDigest ||
+      approval.settingsDigest !== expectedEvidence.settingsDigest ||
+      approval.approvalContentDigest !== expectedEvidence.approvalContentDigest ||
+      canonicalJson(approval.expectedMaxCharge) !== canonicalJson(variant.plannedMaxCharge) ||
+      approval.budgetReservation?.amount !== approval.expectedMaxCharge?.amount ||
+      approval.budgetReservation?.currency !== approval.expectedMaxCharge?.currency ||
+      receipt.approvalContentDigest !== approval.approvalContentDigest
+    ) {
+      findings.push(
+        finding(
+          "stale_pre_generation_approval",
+          `preGenerationApprovals.${approval.id}`,
+          "Approval must bind the exact prompt, asset inspection, settings, expected maximum charge, reservation, provider region/model, terms/retention versions, credential reference, actors, attempt, and retry lineage.",
+        ),
+      );
+    }
+    const asset = assetById.get(variant.sourceAssetRef);
+    const inspection = inspectionById.get(asset?.inspectionReceiptRef);
+    const latestEvidenceAt = Math.max(
+      Date.parse(provider.toolAvailability?.observedAt),
+      Date.parse(inspection?.observedAt),
+      Date.parse(asset?.rights?.reviewedAt),
+    );
+    if (
+      Date.parse(approval.evidenceReviewedAt) < latestEvidenceAt ||
+      Date.parse(approval.approvedAt) < Date.parse(approval.evidenceReviewedAt) ||
+      Date.parse(approval.budgetReservation?.reservedAt) >
+        Date.parse(approval.approvedAt) ||
+      Date.parse(approval.approvedAt) >= Date.parse(attempt.invokedAt)
+    ) {
+      findings.push(
+        finding(
+          "invalid_approval_chronology",
+          `preGenerationApprovals.${approval.id}`,
+          "Evidence review and reservation must precede exact signed approval, which must precede invocation.",
+        ),
+      );
+    }
+    if (
+      (approval.kind === "initial" &&
+        (approval.retryOfAttemptRef !== null ||
+          attempt.kind !== "initial" ||
+          attempt.retryOfAttemptRef !== null)) ||
+      (approval.kind === "retry" &&
+        (attempt.kind !== "retry" ||
+          approval.retryOfAttemptRef !== attempt.retryOfAttemptRef))
+    ) {
+      findings.push(
+        finding(
+          "invalid_retry_lineage",
+          `preGenerationApprovals.${approval.id}`,
+          "Retry approval and attempt kinds must share the exact failed parent; initial approvals cannot authorize replay.",
+        ),
+      );
+    }
+  }
+
+  for (const attempt of attempts) {
+    const variant = variantById.get(attempt.variantRef);
+    const approval = approvalById.get(attempt.approvalRef);
+    const asset = assetById.get(variant?.sourceAssetRef);
+    const expectedRequest =
+      variant && asset
+        ? {
+            action: "generate",
+            prompt: variant.prompt,
+            image: asset.path,
+            model: variant.settings.model,
+            durationSeconds: variant.settings.durationSeconds,
+            aspectRatio: variant.settings.requestedAspectRatio,
+            resolution: variant.settings.resolution,
+            filename: attempt.request?.filename,
+            timeoutMs: variant.settings.timeoutMs,
+            audio: variant.settings.audio,
+            providerOptions: {
+              seed: variant.settings.seed,
+              negativePrompt: variant.negativePrompt,
+              quality: variant.settings.quality,
+              motionMode: variant.settings.motionMode,
+              cameraMovement: variant.settings.cameraMovement,
+            },
+          }
+        : undefined;
+    if (
+      !variant ||
+      !approval ||
+      approval.attemptRef !== attempt.id ||
+      canonicalJson(attempt.request) !== canonicalJson(expectedRequest) ||
+      attempt.requestDigest !== computeVideoGenerationRequestDigest(attempt.request)
+    ) {
+      findings.push(
+        finding(
+          !variant || !approval ? "dangling_reference" : "invalid_request_integrity",
+          `generationAttempts.${attempt.id}`,
+          "Every attempt must resolve to its exact approval and canonical video_generate request.",
+        ),
+      );
+    }
+    if (
+      !approval ||
+      Date.parse(attempt.invokedAt) <= Date.parse(approval.approvedAt) ||
+      (attempt.completedAt !== null &&
+        Date.parse(attempt.completedAt) < Date.parse(attempt.invokedAt)) ||
+      (attempt.status === "running" &&
+        (attempt.completedAt !== null || attempt.receiptRef !== null || attempt.error !== null)) ||
+      (attempt.status === "succeeded" &&
+        (attempt.completedAt === null || attempt.receiptRef === null || attempt.error !== null)) ||
+      (attempt.status === "failed" &&
+        (attempt.completedAt === null || attempt.receiptRef !== null || attempt.error === null))
+    ) {
+      findings.push(
+        finding(
+          "invalid_generation_chronology",
+          `generationAttempts.${attempt.id}`,
+          "Attempt status, completion, receipt, and error evidence must be internally consistent and ordered after approval.",
+        ),
+      );
+    }
+    if (attempt.kind === "retry") {
+      const parent = attemptById.get(attempt.retryOfAttemptRef);
+      if (
+        !parent ||
+        parent.status !== "failed" ||
+        parent.variantRef !== attempt.variantRef ||
+        Date.parse(parent.completedAt) >= Date.parse(approval.evidenceReviewedAt) ||
+        approval.kind !== "retry" ||
+        approval.retryOfAttemptRef !== parent.id
+      ) {
+        findings.push(
+          finding(
+            "invalid_retry_lineage",
+            `generationAttempts.${attempt.id}`,
+            "A retry needs an exact completed failed same-variant parent and a later, new retry approval and reservation.",
+          ),
+        );
+      }
+    }
+    const earlierSameDigest = attempts.filter(
+      (candidate) =>
+        candidate.id !== attempt.id &&
+        candidate.requestDigest === attempt.requestDigest &&
+        Date.parse(candidate.invokedAt) < Date.parse(attempt.invokedAt),
+    );
+    if (
+      earlierSameDigest.length > 0 &&
+      (attempt.kind !== "retry" ||
+        !earlierSameDigest.some((candidate) => {
+          let parentRef = attempt.retryOfAttemptRef;
+          const visited = new Set();
+          while (parentRef && !visited.has(parentRef)) {
+            if (parentRef === candidate.id) return true;
+            visited.add(parentRef);
+            parentRef = attemptById.get(parentRef)?.retryOfAttemptRef;
+          }
+          return false;
+        }))
+    ) {
+      findings.push(
+        finding(
+          "blind_replay",
+          `generationAttempts.${attempt.id}.requestDigest`,
+          "A repeated request digest is valid only on an exact retry descendant of a failed attempt under renewed approval and budget reservation.",
+        ),
+      );
+    }
+  }
+
+  const duplicateObservedIdentity = [
+    providerReceipts.map((item) => item.toolCallId),
+    providerReceipts.map((item) => item.videoId),
+    providerReceipts.map((item) => item.hostedUrl),
+    providerReceipts.map((item) => item.task?.taskId).filter(Boolean),
+  ].some((values) => new Set(values).size !== values.length);
+  if (duplicateObservedIdentity) {
+    findings.push(
+      finding(
+        "duplicate_provider_identity",
+        "providerReceipts",
+        "Observed tool calls, tasks, PixVerse video ids, and hosted URLs must be unique.",
+      ),
+    );
+  }
+  for (const receipt of providerReceipts) {
+    const attempt = attemptById.get(receipt.attemptRef);
+    const taskChronology = receipt.task?.chronology ?? [];
+    if (
+      !attempt ||
+      attempt.status !== "succeeded" ||
+      attempt.receiptRef !== receipt.id ||
+      receipt.evidenceStatus !== "observed" ||
+      receipt.sourceSystem !== "openclaw" ||
+      receipt.toolName !== "video_generate" ||
+      receipt.provider !== "pixverse" ||
+      receipt.model !== "v6" ||
+      receipt.endpoint !== "/video/img/generate" ||
+      receipt.terminalStatus !== 1 ||
+      !URL.canParse(receipt.hostedUrl ?? "") ||
+      !isCredentialFreePublicHttpsReference(new URL(receipt.hostedUrl)) ||
+      receipt.mime !== "video/mp4" ||
+      !isDigest(receipt.evidenceDigest) ||
+      !sameSet(
+        (receipt.ignoredOverrides ?? []).map((item) => `${item.key}:${item.value}`),
+        ["aspectRatio:16:9"],
+      ) ||
+      (receipt.outputWidth === null) !== (receipt.outputHeight === null) ||
+      (receipt.outputWidth !== null &&
+        receipt.outputWidth * 9 !== receipt.outputHeight * 16)
+    ) {
+      findings.push(
+        finding(
+          "invalid_generation_evidence",
+          `providerReceipts.${receipt.id}`,
+          "Provider evidence is limited to observed OpenClaw/PixVerse fields: tool/task identity when present, videoId, terminal status, hosted URL, MIME, optional dimensions, normalization, and ignored overrides.",
+        ),
+      );
+    }
+    if (
+      taskChronology.some(
+        (event, index) =>
+          index > 0 &&
+          Date.parse(event.observedAt) <
+            Date.parse(taskChronology[index - 1]?.observedAt),
+      ) ||
+      (receipt.task &&
+        (receipt.task.status !== "succeeded" ||
+          taskChronology.at(-1)?.status !== "succeeded"))
+    ) {
+      findings.push(
+        finding(
+          "invalid_generation_chronology",
+          `providerReceipts.${receipt.id}.task`,
+          "When OpenClaw task chronology is exposed it must be ordered and end in the receipt's successful terminal state.",
+        ),
+      );
+    }
+  }
+  for (const attempt of attempts.filter((item) => item.status === "succeeded")) {
+    if (
+      providerReceipts.filter(
+        (receipt) => receipt.id === attempt.receiptRef && receipt.attemptRef === attempt.id,
+      ).length !== 1
+    ) {
+      findings.push(
+        finding(
+          "invalid_generation_evidence",
+          `generationAttempts.${attempt.id}.receiptRef`,
+          "Each successful attempt requires exactly one observed provider receipt.",
+        ),
+      );
+    }
+  }
+
+  for (const receipt of billingReceipts) {
+    if (
+      !attemptById.has(receipt.attemptRef) ||
+      receipt.evidenceStatus !== "observed" ||
+      receipt.sourceSystem !== "pixverse-account-billing" ||
+      !isDigest(receipt.evidenceDigest) ||
+      receipt.currency !== provider.budget?.currency ||
+      (receipt.chargeStatus === "not-billed" &&
+        (receipt.amount !== 0 || receipt.usage !== null)) ||
+      (receipt.chargeStatus === "billed" && receipt.usage === null)
+    ) {
+      findings.push(
+        finding(
+          "invalid_billing_receipt",
+          `billingReceipts.${receipt.id}`,
+          "Optional billing evidence must come from the account billing system, reconcile currency and usage, and report zero with no usage when not billed.",
+        ),
+      );
+    }
+  }
+  if (
+    billingReceipts.some(
+      (receipt) =>
+        billingReceipts.filter((candidate) => candidate.attemptRef === receipt.attemptRef)
+          .length !== 1,
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid_billing_receipt",
+        "billingReceipts",
+        "At most one current billing receipt may reconcile each attempt.",
+      ),
+    );
+  }
+  const billingByAttempt = new Map(
+    billingReceipts.map((receipt) => [receipt.attemptRef, receipt]),
+  );
+  const reservedTotal = approvals.reduce((sum, approval) => {
+    const bill = billingByAttempt.get(approval.attemptRef);
+    return bill && ["billed", "not-billed"].includes(bill.chargeStatus)
+      ? sum
+      : sum + (approval.budgetReservation?.amount ?? 0);
+  }, 0);
+  const billedTotal = billingReceipts
+    .filter((receipt) => receipt.chargeStatus === "billed")
+    .reduce((sum, receipt) => sum + receipt.amount, 0);
+  const expectedActualTotal =
+    billingReceipts.length === 0 ? null : billedTotal;
+  const committedTotal = reservedTotal + billedTotal;
+  const expectedReconciliationState =
+    billingReceipts.length === 0
+      ? "unobserved"
+      : attempts.length > 0 &&
+          attempts.every((attempt) => {
+            const receipt = billingByAttempt.get(attempt.id);
+            return receipt && ["billed", "not-billed"].includes(receipt.chargeStatus);
+          })
+        ? "reconciled"
+        : "partial";
+  if (
+    approvals.some(
+      (approval) =>
+        approval.expectedMaxCharge?.currency !== provider.budget?.currency ||
+        approval.budgetReservation?.currency !== provider.budget?.currency,
+    ) ||
+    !numbersEqual(provider.budget?.reservedTotal, reservedTotal) ||
+    provider.budget?.actualBilledTotal !== expectedActualTotal ||
+    !numbersEqual(provider.budget?.committedTotal, committedTotal) ||
+    !numbersEqual(
+      provider.budget?.remainingCapacity,
+      provider.budget?.cap - committedTotal,
+    ) ||
+    provider.budget?.reconciliationState !== expectedReconciliationState ||
+    committedTotal > provider.budget?.cap ||
+    provider.budget?.additionalCreditPurchaseAllowed !== false
+  ) {
+    findings.push(
+      finding(
+        "budget_exceeded",
+        "providerConfiguration.budget",
+        "Budget accounting must reserve every unreconciled initial or retry attempt, count only provenance-backed billed amounts as actual, release not-billed reservations, and avoid double counting.",
+      ),
+    );
+  }
+
+  for (const output of outputs) {
+    const variant = variantById.get(output.variantRef);
+    const receipt = providerReceiptById.get(output.providerReceiptRef);
+    const materialization = output.materializationReceiptRef
+      ? materializationById.get(output.materializationReceiptRef)
+      : undefined;
+    const expectedIdentityDigest = computeVideoOutputIdentityDigest(output);
+    if (
+      !variant ||
+      !receipt ||
+      receipt.attemptRef !==
+        attempts.find((attempt) => attempt.variantRef === variant.id && attempt.receiptRef === receipt.id)
+          ?.id ||
+      receipt.hostedUrl !== output.hostedUrl ||
+      receipt.videoId !== output.providerVideoId ||
+      receipt.mime !== output.mime ||
+      receipt.outputWidth !== output.width ||
+      receipt.outputHeight !== output.height ||
+      output.sourceAssetRef !== variant.sourceAssetRef ||
+      output.synthetic !== true ||
+      output.identityDigest !== expectedIdentityDigest ||
+      (output.width === null ? output.aspectRatio !== null : output.aspectRatio !== "16:9") ||
+      (output.delivery === "materialized-private-file" && !materialization) ||
+      (output.delivery === "provider-hosted" && output.materializationReceiptRef !== null)
+    ) {
+      findings.push(
+        finding(
+          "output_metadata_mismatch",
+          `outputs.${output.id}`,
+          "Hosted output identity must copy only the observed provider URL, videoId, MIME, optional dimensions, and derived ratio; local materialization is a separate receipt-backed claim.",
+        ),
+      );
+    }
+  }
+  for (const receipt of materializations) {
+    const output = outputById.get(receipt.outputRef);
+    const providerReceipt = providerReceiptById.get(receipt.providerReceiptRef);
+    if (
+      !output ||
+      output.materializationReceiptRef !== receipt.id ||
+      output.delivery !== "materialized-private-file" ||
+      output.providerReceiptRef !== receipt.providerReceiptRef ||
+      !providerReceipt ||
+      receipt.evidenceStatus !== "observed" ||
+      receipt.sourceSystem !== "approved-media-materializer" ||
+      !isSafePackagePath(receipt.path ?? "") ||
+      !receipt.path.startsWith("outputs/") ||
+      !isDigest(receipt.contentDigest) ||
+      !isDigest(receipt.evidenceDigest) ||
+      receipt.mime !== "video/mp4" ||
+      receipt.width !== 1920 ||
+      receipt.height !== 1080 ||
+      receipt.aspectRatio !== "16:9" ||
+      receipt.durationSeconds !== 6 ||
+      receipt.frameRate !== 24 ||
+      receipt.frameCount !== 144
+    ) {
+      findings.push(
+        finding(
+          "invalid_materialization_receipt",
+          `materializationReceipts.${receipt.id}`,
+          "Any local-file claim requires provenance-backed download/materialization evidence with content digest, bytes, MIME, dimensions, aspect ratio, duration, frame rate, frame count, and probe identity.",
+        ),
+      );
+    }
+  }
+  const successfulVariantIds = new Set(
+    attempts.filter((attempt) => attempt.status === "succeeded").map((attempt) => attempt.variantRef),
+  );
+  if (
+    !sameSet(
+      outputs.map((output) => output.variantRef),
+      [...successfulVariantIds],
+    ) ||
+    outputs.some(
+      (output) =>
+        outputs.filter((candidate) => candidate.variantRef === output.variantRef).length !== 1,
+    ) ||
+    providerReceipts.some(
+      (receipt) =>
+        outputs.filter((output) => output.providerReceiptRef === receipt.id).length !== 1,
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid_generation_evidence",
+        "outputs",
+        "Each actual successful variant and provider receipt must have exactly one hosted output identity; failed attempts create none.",
+      ),
+    );
+  }
+
+  if (
+    concepts.length !== outputs.length ||
+    boards.length !== outputs.length ||
+    outputs.some(
+      (output) =>
+        concepts.filter((concept) => concept.outputRef === output.id).length !== 1 ||
+        boards.filter((board) => board.outputRef === output.id).length !== 1,
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid_output_bijection",
+        "outputs",
+        "Every successful output requires exactly one same-variant concept and one review board, with no orphan concepts or boards.",
+      ),
+    );
+  }
+  let completeShotCoverage = true;
+  for (const concept of concepts) {
+    const output = outputById.get(concept.outputRef);
+    const conceptShots = shots
+      .filter((shot) => shot.conceptRef === concept.id)
+      .toSorted((left, right) => left.ordinal - right.ordinal);
+    if (
+      !output ||
+      output.variantRef !== concept.variantRef ||
+      !sameSet(
+        concept.shotRefs ?? [],
+        conceptShots.map((shot) => shot.id),
+      )
+    ) {
+      findings.push(
+        finding(
+          "invalid_shot_coverage",
+          `concepts.${concept.id}`,
+          "Concept, variant, output, and shot references must be bidirectional and same-variant.",
+        ),
+      );
+    }
+    if (
+      conceptShots.length === 0 ||
+      conceptShots[0]?.startSeconds !== 0 ||
+      conceptShots[0]?.startFrame !== 0 ||
+      conceptShots.at(-1)?.endSeconds !== 6 ||
+      conceptShots.at(-1)?.endFrame !== 143
+    ) {
+      completeShotCoverage = false;
+    }
+    for (const [index, shot] of conceptShots.entries()) {
+      const previous = conceptShots[index - 1];
+      const variant = variantById.get(concept.variantRef);
+      const allowedVisuals = new Set([
+        ...(variant?.subjectDeclaration?.elements ?? []),
+        ...(variant?.subjectDeclaration?.brandVocabulary ?? []),
+      ]);
+      if (
+        shot.conceptRef !== concept.id ||
+        shot.variantRef !== concept.variantRef ||
+        shot.outputRef !== concept.outputRef ||
+        shot.ordinal !== index + 1 ||
+        shot.endSeconds <= shot.startSeconds ||
+        shot.startFrame !== shot.startSeconds * 24 ||
+        shot.endFrame !== shot.endSeconds * 24 - 1 ||
+        (previous &&
+          (shot.startSeconds !== previous.endSeconds ||
+            shot.startFrame !== previous.endFrame + 1)) ||
+        (shot.visualElements ?? []).some((element) => !allowedVisuals.has(element))
+      ) {
+        findings.push(
+          finding(
+            "invalid_shot_coverage",
+            `shots.${shot.id}`,
+            "Every shot must resolve to its concept/variant/output, use allowed elements, and preserve exact non-overlapping 24-fps timing.",
+          ),
+        );
+      }
+    }
+  }
+  for (const shot of shots) {
+    if (
+      !conceptById.has(shot.conceptRef) ||
+      !(conceptById.get(shot.conceptRef)?.shotRefs ?? []).includes(shot.id)
+    ) {
+      findings.push(
+        finding(
+          "orphan_shot",
+          `shots.${shot.id}`,
+          "Every shot must be referenced exactly once by its resolved concept.",
+        ),
+      );
+    }
+  }
+
+  let completeReviewCoverage = true;
+  for (const board of boards) {
+    const output = outputById.get(board.outputRef);
+    const materialization = output?.materializationReceiptRef
+      ? materializationById.get(output.materializationReceiptRef)
+      : undefined;
+    const disciplines = (board.findings ?? []).map((item) => item.discipline);
+    const missingDisciplines = requiredDisciplines.filter(
+      (discipline) => !disciplines.includes(discipline),
+    );
+    if (
+      !output ||
+      board.outputIdentityDigest !== output.identityDigest ||
+      board.materializedContentDigest !== (materialization?.contentDigest ?? null)
+    ) {
+      findings.push(
+        finding(
+          "stale_review",
+          `reviewBoards.${board.id}`,
+          "Review must bind the exact hosted output identity and, when materialized, the exact content digest.",
+        ),
+      );
+    }
+    if (
+      new Set(disciplines).size !== disciplines.length ||
+      !sameSet(board.missingDisciplines ?? [], missingDisciplines)
+    ) {
+      findings.push(
+        finding(
+          "incomplete_review_coverage",
+          `reviewBoards.${board.id}`,
+          "Review disciplines and the explicit missing-discipline list must be an exact partition.",
+        ),
+      );
+    }
+    let expectedState = "passed-nonfinal";
+    if (disciplines.length === 0) {
+      expectedState = "not-started";
+    } else if (missingDisciplines.length > 0) {
+      expectedState = "incomplete";
+    } else if (board.findings.some((item) => item.status === "rejected")) {
+      expectedState = "rejected";
+    } else if (board.findings.some((item) => item.status === "changes-required")) {
+      expectedState = "changes-required";
+    }
+    if (board.state !== expectedState || board.finalApprovalClaimed !== false) {
+      findings.push(
+        finding(
+          board.finalApprovalClaimed === false
+            ? "incomplete_review_coverage"
+            : "false_final_approval",
+          `reviewBoards.${board.id}.state`,
+          "Board state derives exactly from present and missing findings and can never claim final approval.",
+        ),
+      );
+    }
+    if (
+      missingDisciplines.length > 0 &&
+      !blockers.some(
+        (blocker) =>
+          blocker.status === "open" &&
+          blocker.kind === "review" &&
+          (blocker.targetRefs ?? []).some((ref) => [board.id, board.outputRef].includes(ref)),
+      )
+    ) {
+      findings.push(
+        finding(
+          "incomplete_blocker_coverage",
+          `reviewBoards.${board.id}.missingDisciplines`,
+          "A schema-valid partial review is allowed only while blocked by an exact open review blocker.",
+        ),
+      );
+    }
+    if (missingDisciplines.length > 0 || expectedState !== "passed-nonfinal") {
+      completeReviewCoverage = false;
+    }
+    for (const item of board.findings ?? []) {
+      const reviewer = principalById.get(item.reviewerRef);
+      if (
+        !reviewer ||
+        reviewer.recordKind !== "attested-human" ||
+        reviewer.type !== "human" ||
+        !reviewer.authorityScopes?.includes(`review-${item.discipline}`) ||
+        !isDigest(item.receipt?.recordDigest) ||
+        Date.parse(item.reviewedAt) !== Date.parse(item.receipt?.issuedAt) ||
+        Date.parse(item.reviewedAt) < Date.parse(materialization?.materializedAt)
+      ) {
+        findings.push(
+          finding(
+            "nonhuman_authority",
+            `reviewBoards.${board.id}.findings.${item.id}`,
+            "Each output review needs an attested human with the exact discipline scope and an immutable receipt after materialization.",
+          ),
+        );
+      }
+      if (
+        item.finalApprovalClaimed !== false ||
+        /\b(?:final(?:ly)? approved|final approval|fully approved|legally cleared|publication approved)\b/iu.test(
+          item.summary ?? "",
+        )
+      ) {
+        findings.push(
+          finding(
+            "false_final_approval",
+            `reviewBoards.${board.id}.findings.${item.id}`,
+            "Review evidence remains nonfinal and cannot claim legal, rights, factual, safety, accessibility, brand, or publication approval.",
+          ),
+        );
+      }
+    }
+  }
+  const unresolvedFindings = reviewFindings.filter((item) =>
+    ["changes-required", "rejected"].includes(item.status),
+  );
+  for (const item of unresolvedFindings) {
+    if (
+      !blockers.some(
+        (blocker) =>
+          blocker.status === "open" && (blocker.findingRefs ?? []).includes(item.id),
+      )
+    ) {
+      findings.push(
+        finding(
+          "incomplete_blocker_coverage",
+          `reviewBoards.findings.${item.id}`,
+          "Every changes-required or rejected finding needs an exact open blocker.",
+        ),
+      );
+    }
+  }
+
+  const ownerTargetRecords = [...proposals, ...questions, ...blockers];
+  for (const record of ownerTargetRecords) {
+    if (
+      !principalById.has(record.ownerRef) ||
+      (record.targetRefs ?? []).some((ref) => !allIdSet.has(ref))
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `${record.id}.ownerRef`,
+          "Every proposal, question, and blocker owner and target must resolve exactly.",
+        ),
+      );
+    }
+  }
+  for (const blocker of blockers) {
+    if (
+      (blocker.findingRefs ?? []).some((ref) => !findingById.has(ref)) ||
+      (blocker.questionRefs ?? []).some((ref) => !questionById.has(ref))
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `blockers.${blocker.id}`,
+          "Blocker finding and question references must resolve exactly.",
+        ),
+      );
+    }
+  }
+  for (const proposal of proposals) {
+    if (
+      proposal.status !== "proposed-not-executed" ||
+      ![
+        "request-approval",
+        "inspect-asset",
+        "invoke-approved-generation",
+        "retry-failed-generation",
+        "materialize-hosted-output",
+        "complete-output-review",
+        "revise-concept",
+      ].includes(proposal.actionKind)
+    ) {
+      findings.push(
+        finding(
+          "invalid_proposed_action",
+          `proposedOwnerActions.${proposal.id}`,
+          "Owner actions are typed future proposals only and never completed effects.",
+        ),
+      );
+    }
+  }
+
+  const usedPrincipalRefs = new Set([
+    manifest.creativeOwnerRef,
+    manifest.costOwnerRef,
+    manifest.rightsSafetyOwnerRef,
+    manifest.reviewOwnerRef,
+    handoff.ownerRef,
+    ...assets.flatMap((asset) => [asset.ownerRef, asset.rights?.reviewerRef]),
+    ...approvals.flatMap((approval) => [
+      approval.generationApproverRef,
+      approval.costApproverRef,
+      approval.safetyRightsReviewerRef,
+    ]),
+    ...reviewFindings.map((item) => item.reviewerRef),
+    ...ownerTargetRecords.map((item) => item.ownerRef),
+  ]);
+  if (
+    [...usedPrincipalRefs].some((ref) => !principalById.has(ref)) ||
+    principals.some((principal) => !usedPrincipalRefs.has(principal.id))
+  ) {
+    findings.push(
+      finding(
+        "authority_coverage_mismatch",
+        "authorityRegistry.principals",
+        "Every referenced principal must resolve and every authority record must be used; unused principals cannot bypass review.",
+      ),
+    );
+  }
+
+  if (
+    actions.length !== attempts.length ||
+    actions.some((action) => {
+      const attempt = attemptById.get(action.attemptRef);
+      const receipt = providerReceiptById.get(attempt?.receiptRef);
+      return (
+        !attempt ||
+        action.kind !== "approved-video-generate-call" ||
+        action.approvalRef !== attempt.approvalRef ||
+        (receipt && action.toolCallId !== receipt.toolCallId) ||
+        action.status !== "observed"
+      );
+    }) ||
+    attempts.some(
+      (attempt) =>
+        actions.filter((action) => action.attemptRef === attempt.id).length !== 1,
+    )
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_external_action",
+        "externalActions",
+        "Each invocation has exactly one observed approved video_generate external-action record and no other external effect is allowed.",
+      ),
+    );
+  }
+  if (!sameSet(value.prohibitedActions ?? [], requiredGates)) {
+    findings.push(
+      finding(
+        "missing_authority_gate",
+        "prohibitedActions",
+        "All generation, retry, budget, subject, final-approval, upload, advertising, distribution, publication, and credit-purchase gates are required.",
+      ),
+    );
+  }
+  if (
+    value.publication?.publicationState !== "not-published" ||
+    value.publication?.distributionState !== "not-distributed" ||
+    value.publication?.advertisingState !== "not-advertised" ||
+    value.publication?.externalUploadState !==
+      (attempts.length > 0
+        ? "approved-provider-inputs-only"
+        : "no-observed-upload") ||
+    value.publication?.creditPurchaseState !== "not-purchased" ||
+    value.publication?.publicationAuthority !== "not-granted" ||
+    handoff.publicationState !== "not-published" ||
+    handoff.distributionState !== "not-distributed" ||
+    handoff.publicationHandoff !== "not-authorized"
+  ) {
+    findings.push(
+      finding(
+        "unsafe_publication_state",
+        "publication",
+        "Publication, distribution, advertising, non-provider uploads, credit purchases, and publication authority remain absent.",
+      ),
+    );
+  }
+
+  const explicitPolicyRefs = [
+    ...plannedAssets,
+    ...assets,
+    ...variants,
+    ...conceptPlans,
+    ...outputs,
+    ...concepts,
+    ...shots,
+  ].map((item) => item.controlPolicyRef);
+  const bindingObjectRefs = bindings.map((binding) => binding.objectRef);
+  if (
+    !policy ||
+    policies.length !== 1 ||
+    policy.classification !== "private" ||
+    policy.evidenceStatus !== (isProduction ? "observed" : "illustrative-plan") ||
+    !sameSet(policy.audienceScope ?? [], manifest.internalAudience ?? []) ||
+    policy.providerRetentionVersion !== provider.retentionVersion ||
+    explicitPolicyRefs.some((ref) => ref !== policy.id) ||
+    assets.some(
+      (asset) =>
+        !sameSet(asset.rights?.permittedAudience ?? [], policy.audienceScope ?? []) ||
+        !sameSet(asset.rights?.rightsScope ?? [], policy.rightsScope ?? []) ||
+        !sameSet(asset.rights?.permittedUses ?? [], policy.permittedUses ?? []) ||
+        !sameSet(asset.rights?.territory ?? [], policy.territory ?? []),
+    ) ||
+    !sameSet(bindingObjectRefs, allIds) ||
+    bindings.some((binding) => binding.policyRef !== policy.id) ||
+    handoff.effectiveControlRef !== policy.id
+  ) {
+    findings.push(
+      finding(
+        "control_inheritance_mismatch",
+        "controlPolicies",
+        "The sole effective policy must govern every object, including authority, policy, receipt, and handoff records, with exact inherited controls and no unused policy.",
+      ),
+    );
+  }
+  if (
+    handoff.coverageComplete !== true ||
+    handoff.manifestPath !== "outputs/video-concept-generation-manifest.json" ||
+    !sameSet(handoff.principalRefs ?? [], principals.map((item) => item.id)) ||
+    !sameSet(handoff.policyRefs ?? [], policies.map((item) => item.id)) ||
+    !sameSet(handoff.coveredObjectRefs ?? [], allIds)
+  ) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff",
+        "The handoff must cover every present object exactly once, including all authority and policy records; coverage does not imply production readiness.",
+      ),
+    );
+  }
+
+  const allVariantsSucceeded =
+    variants.length === 2 &&
+    variants.every(
+      (variant) =>
+        attempts.filter(
+          (attempt) =>
+            attempt.variantRef === variant.id && attempt.status === "succeeded",
+        ).length === 1,
+    );
+  const allInitialApprovals =
+    variants.length === 2 &&
+    variants.every(
+      (variant) =>
+        approvals.filter(
+          (approval) =>
+            approval.variantRef === variant.id && approval.kind === "initial",
+        ).length === 1,
+    );
+  const completeMaterialization =
+    outputs.length === 2 &&
+    outputs.every(
+      (output) =>
+        output.delivery === "materialized-private-file" &&
+        materializationById.has(output.materializationReceiptRef),
+    );
+  const readyEvidence =
+    isProduction &&
+    assets.length === 2 &&
+    inspections.length === 2 &&
+    allInitialApprovals &&
+    allVariantsSucceeded &&
+    outputs.length === 2 &&
+    concepts.length === 2 &&
+    boards.length === 2 &&
+    completeMaterialization &&
+    completeShotCoverage &&
+    completeReviewCoverage &&
+    blockers.every((item) => item.status !== "open");
+  if (
+    (!isProduction &&
+      (manifest.readiness !== "blocked" || handoff.state !== "blocked")) ||
+    (!readyEvidence &&
+      (manifest.readiness !== "blocked" || handoff.state !== "blocked")) ||
+    (manifest.readiness === "ready-for-human-review" &&
+      handoff.state !== "ready-for-human-review")
+  ) {
+    findings.push(
+      finding(
+        "premature_readiness",
+        "manifest.readiness",
+        "Ready-for-human-review requires complete observed inputs, exact approvals, successful outputs, materialization probes, shot coverage, six-discipline human reviews, and no open blocker. Honest partial failure stays blocked.",
+      ),
+    );
+  }
+
+  function collectEditorialStrings(item, path = "$", key = "") {
+    if (path === "$.manifest.verbatimRequest" || key === "negativePrompt") return [];
+    if (typeof item === "string") {
+      return [
+        "objective",
+        "presentationUse",
+        "syntheticDisclosure",
+        "title",
+        "prompt",
+        "treatment",
+        "plannedBeats",
+        "summary",
+        "statement",
+        "text",
+        "description",
+        "motion",
+        "caveats",
+      ].includes(key)
+        ? [item]
+        : [];
+    }
+    if (Array.isArray(item)) {
+      return item.flatMap((child, index) =>
+        collectEditorialStrings(child, `${path}[${index}]`, key),
+      );
+    }
+    if (!item || typeof item !== "object") return [];
+    return Object.entries(item).flatMap(([childKey, child]) =>
+      collectEditorialStrings(child, `${path}.${childKey}`, childKey),
+    );
+  }
+  const editorialTexts = collectEditorialStrings(value);
+  const completedOrFinalClaim =
+    /\b(?:published|distributed|advertised|uploaded|posted|sent|purchased|bought)\b|\b(?:review|approval)\s+(?:was|were|is|are|has been|have been|had been)\s+(?:completed|finalized|approved)\b|\b(?:completed|finalized)\s+(?:the )?(?:review|approval)\b|\b(?:final(?:ly)? approved|final approval|fully approved|legally cleared|publication approved)\b/giu;
+  if (hasUnnegatedNarrativeMatch(editorialTexts, completedOrFinalClaim)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "All editorial and proposal text must avoid completed publication, purchase, upload, delivery, review, and broader final-approval claims; only the preserved verbatim request and negative exclusions are exempt.",
+      ),
+    );
+  }
+
+  const manifestDigest = computeVideoConceptManifestDigest(value);
+  if (
+    manifest.contentDigest !== manifestDigest ||
+    handoff.manifestDigest !== manifestDigest
+  ) {
+    findings.push(
+      finding(
+        "invalid_manifest_digest",
+        "manifest.contentDigest",
+        "The deterministic manifest digest must bind the complete present plan and evidence without self-reference.",
+      ),
+    );
+  }
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
@@ -30851,6 +33752,7 @@ const validators = {
   "travel-planner": itineraryPlanFindings,
   "travel-loyalty-points-organizer": travelLoyaltyFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
+  "video-concept-producer": videoConceptGenerationManifestFindings,
   "wardrobe-organizer": wardrobeFindings,
   "web-evidence-researcher": claimEvidenceInvestigationLedgerFindings,
   "warranty-returns-manager": warrantyReturnsFindings,
@@ -30862,10 +33764,10 @@ export function hasArtifactSemanticValidator(id) {
   return Object.hasOwn(validators, id);
 }
 
-export function validateArtifactSemantics(id, value) {
+export function validateArtifactSemantics(id, value, options = {}) {
   const validate = validators[id];
   if (!validate) {
     throw new Error(`No semantic artifact validator is registered for ${id}.`);
   }
-  return validate(value);
+  return validate(value, options);
 }
