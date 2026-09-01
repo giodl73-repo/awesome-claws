@@ -26,9 +26,15 @@ const validatorSource = await readFile(
   "utf8",
 );
 const validatorStart = validatorSource.indexOf("function meetingRecordFindings(");
+const validatorEnd = validatorSource.indexOf(
+  "\nfunction legacyVideoConceptGenerationManifestFindings(",
+  validatorStart + 1,
+);
+assert.notEqual(validatorStart, -1);
+assert.notEqual(validatorEnd, -1);
 const validatorBody = validatorSource.slice(
   validatorStart,
-  validatorSource.indexOf("\nfunction ", validatorStart + 1),
+  validatorEnd,
 );
 const emittedFindingCodes = new Set(
   [...validatorBody.matchAll(/finding\(\s*"([a-z_]+)"/gu)].map((match) => match[1]),
