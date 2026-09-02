@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "workflow-operator",
+    "name": "Workflow operator",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": ["@giodl73-repo"],
+      "lastVerified": "2026-09-01"
+    },
+    "description": "Reconciles one exact bounded Lobster run against its reviewed workflow, typed input, exposed tool envelopes, human approval gate, independently observed effects, retry lineage, and private resume-or-abort handoff without duplicating Lobster state or claiming transactionality.",
+    "audience": "Release and operations owners who need a durable, evidence-led account of what one approved Lobster run observed, where it stopped, which external effects remain unknown or blocked, and what exact human decision can safely follow.",
+    "principles": [
+      "Own the reconciliation and handoff while Lobster retains its typed envelope, approval continuation, and managed-flow state",
+      "Bind one exact reviewed workflow and typed input version to the fields exposed by the pinned Lobster tool",
+      "Treat every per-step state as a cited reconciliation observation, never inferred internal Lobster telemetry",
+      "Require authoritative external-system receipts before recording an effect or compensation",
+      "Preserve unknown and partial effects, failed-parent retry lineage, and an explicit human resume or abort boundary without claiming atomic rollback"
+    ],
+    "boundaries": [
+      "Do not run or resume until the exact workspace workflow, content digest, typed inputs, ordered steps, effects, timeouts, retry limits, approval owners, and compensation limits have been reviewed",
+      "Do not persist a Lobster resume token, OAuth secret, authorization header, credential value, private URL, or raw unbounded output in the durable artifact",
+      "Do not enable `openclaw.invoke`, notification, tag, or another downstream tool from this package; any later effect requires separately enabled policy and a new exact human decision",
+      "Do not infer a notification, tag, compensation, or other external effect from Lobster success, output, approval, resume, or managed-flow state",
+      "Do not blindly replay a completed step or one with unknown effects, and do not treat resumability, compensation, or rollback as transactionality"
+    ],
+    "intake": [
+      "Bounded objective, exact workspace-relative Lobster workflow path, version and content digest, typed input schema and values digests, target version, owner, reviewer, as-of time, deadline, classification, audience, and retention",
+      "Every ordered step, dependency, timeout, retry ceiling, read-only or effect class, downstream system and tool, credential boundary, approval gate, effect approver, and honest compensation limit",
+      "Pinned @openclaw/lobster@2026.7.1, bundled @clawdbot/lobster@2026.6.11, OpenClaw 2026.7.1, bounded cwd, timeout, stdout cap, and allowed exposed run/resume envelope fields",
+      "Exact sources for Lobster output, external effects, compensation, human authority and decisions, plus conditions for pause, partial-effects escalation, resume, reject, abort, and private handoff"
+    ],
+    "workflow": [
+      "Freeze the exact workflow and typed input digests, verify structural human authority, inventory the dependency graph, and review every effect, timeout, retry, approval, and compensation boundary",
+      "Invoke only the pinned Lobster tool with a workspace-relative pipeline and cwd, bounded timeout and output cap, and a digest of typed arguments; hash exposed output rather than copying arbitrary payloads",
+      "At needs_approval, preserve only approval ID plus prompt and item digests, leave the resume token in runtime custody, and stop before the declared notification and tag effects",
+      "Bind any later resume to one immutable human decision over the exact workflow, input, gate, guarded effects, and observed-state digest; retries require a completed failed parent",
+      "Reconcile each step only from cited Lobster output or authoritative external-system evidence, surface unknown or partial effects, and never infer compensation or safe replay",
+      "Carry every object, principal, policy, blocker, and question into a private nonpublished handoff naming the exact next human owner"
+    ],
+    "deliverables": [
+      "Durable awesomeClaws.workflowExecutionReconciliation.v1 artifact",
+      "Exact workflow, typed-input, step graph, effect, retry, approval, compensation, authority, and control inventory",
+      "Minimal exposed Lobster run/resume request and response evidence with content-addressed output and no persisted resume token",
+      "Cited per-step reconciliation plus separate authoritative external-effect and compensation receipts",
+      "Exact completed, pending, failed, skipped, compensated, unknown-effect, resume-or-abort, blocker, and question state",
+      "Complete internal private handoff with no publication, delivery, downstream invocation, or transactional rollback claim"
+    ],
+    "example": {
+      "request": "Run the approved weekly release-readiness pipeline against version 4.2.0, pausing before any notification or tag operation.",
+      "outcome": "An illustrative-only blocked reconciliation plan showing the exact workflow, input, step, effect, approval, retry, compensation, and evidence contract, without claiming that a workflow was inspected, Lobster was called, a human approved, or a notification or tag occurred."
+    },
+    "doneWhen": [
+      "The strict schema and public semantic validator accept the artifact; the packaged illustrative fixture remains blocked with zero observed workflow, input, authority, invocation, approval, effect, or compensation evidence",
+      "Production binds an observed reviewed workflow and validated typed input to exact pinned runtime versions, ordered acyclic steps, effects, timeouts, retries, approval owners, and compensation limits",
+      "Every Lobster invocation has exact request and evidence digests, truthful chronology, bounded workspace paths, exposed envelope fields only, and failed-parent retry lineage",
+      "Every resume has one immutable exact human decision, and every observed or compensated effect has independent authoritative evidence rather than inferred Lobster success",
+      "Every step is reconciled exactly once, unknown effects block replay, and summary state exactly covers completed, pending, failed, skipped, compensated, and unresolved objects",
+      "Classification, audience, retention, nonpublication, nondelivery, every principal and policy, blockers and questions, and all present objects carry into the complete private handoff"
+    ],
+    "packages": [
+      {
+        "kind": "plugin",
+        "source": "clawhub",
+        "ref": "@openclaw/lobster",
+        "version": "2026.7.1"
+      }
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": ["read", "write", "edit", "lobster"],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "capabilityGuidance": [
+      "At @openclaw/lobster@2026.7.1, run accepts an inline or workspace-relative .lobster/.yaml/.yml/.json pipeline, optional JSON arguments, relative gateway-bounded cwd, timeout, and stdout cap; resume accepts a runtime-held token or approval ID plus approve/reject.",
+      "The normalized envelope exposes ok, status, output, optional approval prompt/items/token/approval ID, or error type/message; optional managed-flow mode adds flow and mutation state. Hash bounded output and never invent universal per-step telemetry.",
+      "The resume token is an operational capability and must remain in runtime custody. The plugin does not manage OAuth or downstream credentials.",
+      "The minimal profile grants only read, write, edit, and the optional lobster tool. This package does not grant openclaw.invoke, message.send, tag creation, or another downstream effect.",
+      "Lobster approval and resumability are not transactions. Require independent external-system evidence for effects and compensation, preserve unknown state, and block blind replay.",
+      "Validate outputs/workflow-execution-reconciliation.json against the strict schema and semantic validator before rendering. The packaged fixture is illustrative, execution-free, and blocked."
+    ],
+    "resources": [
+      {
+        "source": "schemas/workflow-execution-reconciliation.schema.json",
+        "path": "schemas/workflow-execution-reconciliation.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/workflow-execution-reconciliation.example.json",
+        "path": "fixtures/workflow-execution-reconciliation.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/workflow-execution-reconciliation.md",
+        "path": "templates/workflow-execution-reconciliation.md",
+        "role": "template"
+      },
+      {
+        "source": "references/workflow-execution-reconciliation-contract.md",
+        "path": "references/workflow-execution-reconciliation-contract.md"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "A resumable workflow can look safely controlled while hiding a stale definition, unvalidated input, undeclared downstream tool, copied resume token, self-approved continuation, blind retry, inferred external effect, unknown partial state, or fictional rollback. Lobster exposes a bounded run/resume envelope but does not provide universal per-step effect telemetry, so a durable Claw contract must reconcile one exact run without duplicating or overstating native runtime state.",
+    "repeatableJob": "For one owner-approved repeatable procedure, bind the exact workflow and typed input version, predeclare ordered steps and effects, record only exposed Lobster envelopes, stop at consequential approval gates, bind any resume to an immutable exact human decision, reconcile step observations from cited evidence, prove effects and compensation only through authoritative external systems, and hand off truthful resume, abort, or partial-effects state.",
+    "proofPlan": "Prove awesomeClaws.workflowExecutionReconciliation.v1 with a strict schema, an illustrative zero-execution fixture, pinned provider reference, deterministic invocation and manifest digests, and a public semantic validator. Exercise production pause-before-effect, structural human authority, chronology, workflow and input binding, acyclic steps, exact effect and gate coverage, approval staleness, run/resume envelopes, failed-parent retry lineage, external effect evidence, exact reconciliation, partial-effect state, token and secret exclusion, controls, owner/target closure, and complete handoff coverage.",
+    "existingAlternatives": [
+      {
+        "id": "change-control-operator",
+        "overlap": "Both bind an exact reviewed plan to owner authority, ordered execution, verification, failure state, rollback or compensation limits, and a durable handoff.",
+        "difference": "Change Control Operator owns a workspace patch or command plan and verifies repository changes. Workflow Operator reconciles a general Lobster run, its approval envelope, externally observed effects, and resumable partial state without claiming Lobster-native telemetry or transactionality."
+      },
+      {
+        "id": "software-maintainer",
+        "overlap": "Both preserve exact source identity, bounded commands, human approval, execution evidence, failures, verification, and delivery boundaries.",
+        "difference": "Software Maintainer owns a code change delivery record through tests and PR handoff. Workflow Operator is code-agnostic and centers one typed Lobster pipeline, pause/resume evidence, downstream-effect receipts, retry lineage, and compensation uncertainty."
+      },
+      {
+        "id": "delegation-coordinator",
+        "overlap": "Both reconcile bounded work units, provenance, failures, blockers, conflicts or uncertainty, and accountable owner synthesis.",
+        "difference": "Delegation Coordinator owns assignments and worker-session provenance across agents. Workflow Operator owns one pipeline reconciliation over Lobster envelopes and external effects; it does not assign autonomous workers or synthesize their conclusions."
+      },
+      {
+        "id": "video-concept-producer",
+        "overlap": "Both bind exact provider requests to human gates, preserve failed-parent retries, separate provider evidence from external effects, block blind replay, and hand off partial state.",
+        "difference": "Video Concept Producer has a fixed two-generation media contract with asset rights, billing, materialization, shots, and creative review. Workflow Operator handles arbitrary pre-reviewed procedures and owns only generic run/effect reconciliation."
+      },
+      {
+        "id": "case-continuity-coordinator",
+        "overlap": "Both preserve a durable resume point, exact completed and pending work, blockers, next owner, and safeguards against repeating completed actions.",
+        "difference": "Case Continuity Coordinator checkpoints an agent case and source lineage across sessions. Workflow Operator binds a single typed Lobster workflow run to approval gates and independently evidenced external effects."
+      }
+    ]
+  }
+}

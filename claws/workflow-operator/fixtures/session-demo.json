@@ -9,7 +9,7 @@
     },
     {
       "role": "agent",
-      "text": "I identified the workflow decision, the evidence needed, and the boundary that must stay human-owned."
+      "text": "I mapped the exact workflow and typed input digests, ordered steps, notification and tag effects, approval stop, retry limits, and separate evidence required before any effect can be claimed."
     },
     {
       "role": "user",
@@ -17,41 +17,41 @@
     },
     {
       "role": "agent",
-      "text": "I produced outputs/workflow-operator-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+      "text": "I produced outputs/workflow-execution-reconciliation.json and a readable private handoff. The packaged example is explicitly illustrative and blocked; it records no Lobster call, approval, notification, or tag."
     }
   ],
   "report": {
     "title": "Workflow operator session handoff",
-    "summary": "A typed Lobster run with validated inputs, read-only checks, explicit pauses before external effects, durable receipts, and a reconciled resume or completion state.",
+    "summary": "An evidence-led reconciliation of one exact Lobster run that separates exposed tool envelopes from independently observed effects and stops before notification or tag.",
     "output": "outputs/workflow-operator-handoff.md",
     "items": [
       {
-        "title": "Workflow effect and approval plan",
-        "summary": "The exact workflow source, typed inputs, effects, approvers, retries, and compensation behavior were reviewed before execution",
+        "title": "Exact workflow and input basis",
+        "summary": "The durable artifact binds one reviewed workflow version, typed input envelope, pinned runtime, and ordered step graph.",
         "tags": [
           "fact-based",
           "reviewable"
         ]
       },
       {
-        "title": "Validated input envelope",
-        "summary": "Every consequential step has an approval receipt or remains pending",
+        "title": "Effect and approval boundary",
+        "summary": "Notification and tag effects remain behind one exact human gate, with the resume token left in runtime custody.",
         "tags": [
           "evidence",
           "owner-visible"
         ]
       },
       {
-        "title": "Execution and approval receipts",
-        "summary": "Do not run a workflow until its source, inputs, steps, external effects, approval owners, retry behavior, and rollback or compensation path have been reviewed",
+        "title": "Observed evidence domains",
+        "summary": "Lobster output can support step observations, while external effects and compensation require separate authoritative receipts.",
         "tags": [
           "approval-gated",
           "safe fallback"
         ]
       },
       {
-        "title": "Resume or compensation state",
-        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "title": "Resume, abort, or partial-effects state",
+        "summary": "The handoff reconciles every step and unresolved effect without blind replay or a transactional rollback claim.",
         "tags": [
           "handoff",
           "durable"

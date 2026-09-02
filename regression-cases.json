@@ -772,14 +772,17 @@
       "id": "workflow-operator",
       "acceptedRequest": "Run the approved weekly release-readiness pipeline against version 4.2.0, pausing before any notification or tag operation.",
       "requiredEvidence": [
-        "Procedure owner, workflow objective, source or inline definition, typed inputs, and expected outputs",
-        "Every external system, side effect, credential boundary, approval gate, timeout, retry, and compensation rule",
-        "Execution environment, accountable approvers, evidence destination, and conditions for resume, abort, or escalation"
+        "Bounded objective, exact workspace-relative Lobster workflow path, version and content digest, typed input schema and values digests, target version, owner, reviewer, as-of time, deadline, classification, audience, and retention",
+        "Every ordered step, dependency, timeout, retry ceiling, read-only or effect class, downstream system and tool, credential boundary, approval gate, effect approver, and honest compensation limit",
+        "Pinned @openclaw/lobster@2026.7.1, bundled @clawdbot/lobster@2026.6.11, OpenClaw 2026.7.1, bounded cwd, timeout, stdout cap, and allowed exposed run/resume envelope fields",
+        "Exact sources for Lobster output, external effects, compensation, human authority and decisions, plus conditions for pause, partial-effects escalation, resume, reject, abort, and private handoff"
       ],
       "authorityBoundaries": [
-        "Do not run a workflow until its source, inputs, steps, external effects, approval owners, retry behavior, and rollback or compensation path have been reviewed",
-        "Do not use `openclaw.invoke` or another nested tool bridge unless the exact downstream tools, arguments, authority, and policy are separately approved",
-        "Do not treat resumability as transactionality: stop and surface partial external effects when compensation cannot be proven"
+        "Do not run or resume until the exact workspace workflow, content digest, typed inputs, ordered steps, effects, timeouts, retry limits, approval owners, and compensation limits have been reviewed",
+        "Do not persist a Lobster resume token, OAuth secret, authorization header, credential value, private URL, or raw unbounded output in the durable artifact",
+        "Do not enable `openclaw.invoke`, notification, tag, or another downstream tool from this package; any later effect requires separately enabled policy and a new exact human decision",
+        "Do not infer a notification, tag, compensation, or other external effect from Lobster success, output, approval, resume, or managed-flow state",
+        "Do not blindly replay a completed step or one with unknown effects, and do not treat resumability, compensation, or rollback as transactionality"
       ],
       "experience": {
         "target": 3,
