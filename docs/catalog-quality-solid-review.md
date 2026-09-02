@@ -1,6 +1,6 @@
 # Solid-band review
 
-This review covers the 2 Claws remaining in the Solid band after Document
+This review is complete: no maintained Claw remains in the Solid band. Document
 Intake Analyst moved from 69 to 94, Fundraising Campaign Manager moved from 79
 to 95, Travel Concierge moved from 78 to 100, and Media Evidence Reviewer moved
 from 73 to 95, Spreadsheet Analyst moved from 73 to 95 on 2026-08-29, and Travel
@@ -21,25 +21,23 @@ Maintainer moved from 78 to 100 with its bounded change-delivery record on
 uplift on 2026-08-31, and Knowledge Gardener moved from 73 to 100 with its
 exact-version Notion change-plan uplift on 2026-08-31, and Presentation Producer
 moved from 73 to 95 with its exact-version deck evidence and review sidecar on
-2026-09-01. Both remaining entries pass the
-non-negotiable package, regression, resource, and Experience gates. Their lower scores describe
-reviewability and artifact-depth gaps, not observed live-model failures.
+2026-09-01, Video Concept Producer moved from 73 to 100 with its governed
+generation manifest, and Workflow Operator moved from 79 to 100 with its exact
+run reconciliation contract.
 
 ## Shared pattern
 
-- Both remaining entries are grandfathered without retrospective contribution records.
-  That is a five-point documentation gap, not a failed admission.
-- Both remaining entries lack registered semantic validators.
-- Both remaining entries lack a local structured-artifact schema.
-- Both have complete operating contracts, screenshots, regression cases, and
-  active maintenance.
+- Every formerly Solid entry now has a retrospective contribution record,
+  local structured-artifact schema, registered semantic validator, focused
+  negative proof, and generated package resources.
+- The uplifts preserve provider and source-system ownership rather than
+  duplicating external runtime state merely to raise a score.
 
 ## Current entries
 
 | Claw | Score | Evidence / verification gap | Review |
 | --- | ---: | --- | --- |
-| `workflow-operator` | 79 | No local schema or semantic validator | Lobster owns typed workflow state; avoid duplicating its contract without a concrete handoff need |
-| `video-concept-producer` | 79 | No local schema or semantic validator | A concept/shot/evidence manifest may help, but only if it governs the generated asset |
+| _None_ | — | Zero Solid entries remain | The 100-Claw catalog now contains 79 Exemplary and 21 Strong entries |
 
 ## Uplift batches
 
@@ -188,12 +186,21 @@ principal/policy/handoff coverage. The shipped fixture is intentionally
 illustrative, execution-free, and blocked; no live PixVerse or human-review
 proof is claimed.
 
-For `workflow-operator`, first identify a stable state object that the Claw
-itself owns. External plugin types, source documents, code diffs, and prose
-deliverables should not be duplicated merely to raise a score.
+`workflow-operator` now owns
+`awesomeClaws.workflowExecutionReconciliation.v1`, a durable handoff over one
+exact reviewed Lobster workflow and typed input version. It records only the
+bounded run/resume request and normalized envelope fields exposed by
+`@openclaw/lobster@2026.7.1`, leaves resume tokens in runtime custody, and treats
+per-step state as cited Claw reconciliation rather than invented Lobster
+telemetry. Notification, tag, compensation, and other external-effect claims
+require separate authoritative receipts. Exact human decisions bind any resume
+to the workflow, input, gate, guarded effects, and observed-state digest;
+unknown effects block blind replay, and resumability never becomes a
+transactionality claim. The fixture is intentionally illustrative,
+execution-free, and blocked.
 
 ## Recommended order
 
-Backfill contribution records alongside substantive work. For entries already
-at 78-79, a retrospective record alone may move the score into Strong, but it
-should capture a real distinctness decision rather than serve as score padding.
+Keep the zero-Solid baseline by requiring future entries to establish their
+owned state boundary, semantic proof, and provider/source-system truth during
+admission rather than relying on later score-only backfills.

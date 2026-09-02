@@ -184,6 +184,33 @@ export function computeVideoOutputIdentityDigest(output) {
   return sha256Digest(identity);
 }
 
+export function computeWorkflowInvocationRequestDigest(request) {
+  return sha256Digest(request);
+}
+
+export function computeWorkflowAuthorityScopeDigest(authorityScopes) {
+  return sha256Digest(authorityScopes);
+}
+
+export function computeWorkflowInvocationEvidenceDigest(invocation) {
+  return sha256Digest({
+    id: invocation.id,
+    action: invocation.action,
+    retryOfInvocationRef: invocation.retryOfInvocationRef,
+    toolCallId: invocation.toolCallId,
+    invokedAt: invocation.invokedAt,
+    completedAt: invocation.completedAt,
+    requestDigest: invocation.requestDigest,
+    response: invocation.response,
+  });
+}
+
+export function computeWorkflowExecutionReconciliationDigest(value) {
+  const { contentDigest: _contentDigest, ...manifest } = value.manifest;
+  const { manifestDigest: _manifestDigest, ...handoff } = value.handoff;
+  return sha256Digest({ ...value, manifest, handoff });
+}
+
 export function computePresentationTemplateInventoryDigest(inventory) {
   const { inventoryDigest: _inventoryDigest, ...digestInput } = inventory;
   return sha256Digest(digestInput);
@@ -33683,6 +33710,817 @@ function videoConceptGenerationManifestFindings(value, options = {}) {
   return findings;
 }
 
+function workflowExecutionReconciliationFindings(value, options = {}) {
+  const findings = [];
+  const manifest = value.manifest ?? {};
+  const principals = value.principals ?? [];
+  const attestations = value.authorityAttestations ?? [];
+  const workflow = value.workflowDefinition ?? {};
+  const steps = workflow.steps ?? [];
+  const input = value.inputEnvelope ?? {};
+  const effects = value.effectDeclarations ?? [];
+  const gates = value.approvalGates ?? [];
+  const decisions = value.approvalDecisions ?? [];
+  const invocations = value.invocations ?? [];
+  const evidence = value.evidenceReceipts ?? [];
+  const reconciliations = value.stepReconciliations ?? [];
+  const blockers = value.blockers ?? [];
+  const questions = value.questions ?? [];
+  const policy = value.controlPolicy ?? {};
+  const reconciliation = value.reconciliation ?? {};
+  const handoff = value.handoff ?? {};
+  const isProduction = manifest.artifactMode === "production";
+  const asOf = Date.parse(manifest.asOf);
+  const validationTime = options.validationTime
+    ? Date.parse(options.validationTime)
+    : Date.now();
+
+  const byId = (items) => new Map(items.map((item) => [item.id, item]));
+  const allUnique = (items) => new Set(items).size === items.length;
+  const sameSet = (left, right) =>
+    left.length === right.length &&
+    allUnique(left) &&
+    allUnique(right) &&
+    left.every((item) => right.includes(item));
+  const isDigest = (candidate) =>
+    /^sha256:[a-f0-9]{64}$/u.test(candidate ?? "");
+  const principalById = byId(principals);
+  const attestationById = byId(attestations);
+  const stepById = byId(steps);
+  const effectById = byId(effects);
+  const gateById = byId(gates);
+  const decisionById = byId(decisions);
+  const invocationById = byId(invocations);
+  const evidenceById = byId(evidence);
+  const reconciliationByStep = new Map(
+    reconciliations.map((item) => [item.stepRef, item]),
+  );
+
+  const idObjects = [
+    manifest,
+    ...principals,
+    ...attestations,
+    workflow,
+    ...steps,
+    input,
+    ...effects,
+    ...gates,
+    ...decisions,
+    ...invocations,
+    ...evidence,
+    ...reconciliations,
+    ...blockers,
+    ...questions,
+    policy,
+    handoff,
+  ];
+  const ids = idObjects.map((item) => item?.id).filter(Boolean);
+  if (!allUnique(ids)) {
+    findings.push(
+      finding(
+        "duplicate_workflow_object_id",
+        "$",
+        "Every workflow, authority, evidence, reconciliation, control, blocker, question, and handoff object needs one globally unique id.",
+      ),
+    );
+  }
+
+  if (
+    !Number.isFinite(asOf) ||
+    !Number.isFinite(validationTime) ||
+    asOf > validationTime ||
+    Date.parse(manifest.createdAt) > asOf ||
+    Date.parse(manifest.deadline) < asOf
+  ) {
+    findings.push(
+      finding(
+        "invalid_workflow_chronology",
+        "manifest.asOf",
+        "The externally bounded as-of time must follow creation, precede the deadline, and not be future-dated.",
+      ),
+    );
+  }
+
+  const humanNamePattern =
+    /\b(?:agent|assistant|bot|copilot|model|ai|automation|service account)\b/iu;
+  for (const principal of principals) {
+    const attestation = attestationById.get(principal.attestationRef);
+    if (
+      (isProduction &&
+        (principal.kind !== "human" ||
+          humanNamePattern.test(principal.displayName) ||
+          !attestation ||
+          attestation.principalRef !== principal.id ||
+          attestation.humanIdentityVerified !== true ||
+          attestation.scopeDigest !==
+            computeWorkflowAuthorityScopeDigest(principal.authorityScopes) ||
+          Date.parse(attestation.attestedAt) > asOf ||
+          Date.parse(attestation.receipt?.recordedAt) <
+            Date.parse(attestation.attestedAt) ||
+          Date.parse(attestation.receipt?.recordedAt) > asOf)) ||
+      (!isProduction &&
+        (principal.kind !== "planned-role" || principal.attestationRef !== null))
+    ) {
+      findings.push(
+        finding(
+          "invalid_workflow_authority",
+          `principals.${principal.id}`,
+          "Production authority requires a structurally attested human with exact scopes; illustrative role slots cannot approve or own observed work.",
+        ),
+      );
+    }
+  }
+  if (
+    !principalById.get(manifest.ownerRef)?.authorityScopes?.includes(
+      "own-workflow",
+    ) ||
+    !principalById.get(workflow.ownerRef)?.authorityScopes?.includes(
+      "review-workflow",
+    ) ||
+    !principalById.get(reconciliation.nextOwnerRef)?.authorityScopes?.includes(
+      "receive-handoff",
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid_workflow_authority",
+        "manifest.ownerRef",
+        "Workflow, review, and handoff ownership must resolve to principals with the exact required scopes.",
+      ),
+    );
+  }
+
+  if (
+    manifest.workflowDefinitionRef !== workflow.id ||
+    manifest.inputEnvelopeRef !== input.id ||
+    !isSafePackagePath(workflow.path ?? "") ||
+    !/^workflows\/.+\.(?:lobster|ya?ml|json)$/u.test(workflow.path ?? "") ||
+    !isDigest(workflow.contentDigest) ||
+    workflow.downstreamBridge !== "disabled" ||
+    (isProduction &&
+      (workflow.evidenceStatus !== "observed" ||
+        !workflow.reviewedAt ||
+        !workflow.reviewReceipt ||
+        Date.parse(workflow.reviewedAt) > asOf ||
+        Date.parse(workflow.reviewReceipt.recordedAt) <
+          Date.parse(workflow.reviewedAt) ||
+        Date.parse(workflow.reviewReceipt.recordedAt) > asOf))
+  ) {
+    findings.push(
+      finding(
+        "invalid_workflow_definition",
+        "workflowDefinition",
+        "The artifact must bind one observed, reviewed, digest-addressed workspace workflow in production and keep the downstream bridge disabled.",
+      ),
+    );
+  }
+  if (
+    !isDigest(input.schemaDigest) ||
+    !isDigest(input.valuesDigest) ||
+    typeof input.targetVersion !== "string" ||
+    input.targetVersion.trim().length === 0 ||
+    (isProduction &&
+      (input.evidenceStatus !== "observed" ||
+        input.validated !== true ||
+        !input.validatedAt ||
+        !input.validationReceipt ||
+        Date.parse(input.validatedAt) > asOf ||
+        Date.parse(input.validationReceipt.recordedAt) <
+          Date.parse(input.validatedAt) ||
+        Date.parse(input.validationReceipt.recordedAt) > asOf))
+  ) {
+    findings.push(
+      finding(
+        "invalid_workflow_input",
+        "inputEnvelope",
+        "Production requires one typed, digest-bound, observed and receipt-backed input envelope with an explicit target version.",
+      ),
+    );
+  }
+
+  const expectedOrdinals = steps.map((_, index) => index + 1);
+  let cyclic = false;
+  const visiting = new Set();
+  const visited = new Set();
+  const visit = (stepId) => {
+    if (visiting.has(stepId)) {
+      cyclic = true;
+      return;
+    }
+    if (visited.has(stepId)) return;
+    visiting.add(stepId);
+    for (const dependency of stepById.get(stepId)?.dependsOn ?? []) {
+      if (!stepById.has(dependency)) {
+        cyclic = true;
+      } else {
+        visit(dependency);
+      }
+    }
+    visiting.delete(stepId);
+    visited.add(stepId);
+  };
+  for (const step of steps) visit(step.id);
+  if (
+    steps.length < 3 ||
+    !sameSet(
+      steps.map((item) => item.ordinal),
+      expectedOrdinals,
+    ) ||
+    cyclic ||
+    steps.some((step) =>
+      (step.dependsOn ?? []).some(
+        (dependency) =>
+          stepById.get(dependency)?.ordinal >= step.ordinal,
+      ),
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid_workflow_step_graph",
+        "workflowDefinition.steps",
+        "Workflow steps need unique contiguous ordinals and an acyclic backward-only dependency graph.",
+      ),
+    );
+  }
+
+  const stopStep = stepById.get(manifest.expectedStopStepRef);
+  if (
+    !stopStep ||
+    stopStep.kind !== "approval-stop" ||
+    stopStep.approvalGateRef === null ||
+    effects.length === 0 ||
+    steps.some(
+      (step) =>
+        (step.kind === "read-only" && step.effectRefs.length > 0) ||
+        (step.kind === "external-effect" &&
+          step.effectRefs.some(
+            (effectRef) => effectById.get(effectRef)?.stepRef !== step.id,
+          )) ||
+        (step.kind === "approval-stop" &&
+          step.id !== stopStep.id &&
+          step.effectRefs.length > 0),
+    ) ||
+    effects.some((effect) => {
+      const step = stepById.get(effect.stepRef);
+      const approver = principalById.get(effect.approvalOwnerRef);
+      return (
+        !step ||
+        step.kind !== "external-effect" ||
+        step.ordinal <= stopStep.ordinal ||
+        !step.effectRefs?.includes(effect.id) ||
+        step.approvalGateRef !== stopStep.approvalGateRef ||
+        effect.bridgePolicy !== "not-enabled" ||
+        !approver?.authorityScopes?.includes("approve-effects") ||
+        !principalById
+          .get(effect.compensation?.ownerRef)
+          ?.authorityScopes?.includes("own-compensation")
+      );
+    })
+  ) {
+    findings.push(
+      finding(
+        "invalid_effect_boundary",
+        "effectDeclarations",
+        "Every declared consequential effect must remain after one approval stop, use disabled bridge policy, and name effect and compensation authorities.",
+      ),
+    );
+  }
+  const stopGate = gateById.get(stopStep?.approvalGateRef);
+  const stopGateDecision = decisionById.get(stopGate?.decisionRef);
+  const stopGateApprovalInvocation = invocations.find(
+    (invocation) =>
+      invocation.response?.status === "needs_approval" &&
+      invocation.response?.requiresApproval?.approvalId ===
+        stopGate?.lobsterApprovalId &&
+      invocation.response?.requiresApproval?.promptDigest ===
+        stopGate?.promptDigest &&
+      invocation.response?.requiresApproval?.itemsDigest === stopGate?.itemsDigest &&
+      Date.parse(invocation.completedAt) === Date.parse(stopGate?.surfacedAt),
+  );
+  if (
+    !stopGate ||
+    stopGate.stepRef !== stopStep?.id ||
+    !sameSet(
+      stopGate.guardedEffectRefs ?? [],
+      effects.map((item) => item.id),
+    ) ||
+    !sameSet(
+      stopStep?.effectRefs ?? [],
+      effects.map((item) => item.id),
+    ) ||
+    stopGate.resumeTokenCustody !== "runtime-custody-not-persisted" ||
+    (stopGate.state === "waiting" && !stopGateApprovalInvocation) ||
+    (["approved", "rejected"].includes(stopGate.state)
+      ? !stopGateDecision || stopGateDecision.gateRef !== stopGate.id
+      : stopGate.decisionRef !== null)
+  ) {
+    findings.push(
+      finding(
+        "invalid_approval_gate",
+        "approvalGates",
+        "The approval stop must bind every declared effect exactly while leaving any resume token in runtime custody.",
+      ),
+    );
+  }
+
+  for (const decision of decisions) {
+    const gate = gateById.get(decision.gateRef);
+    const decider = principalById.get(decision.deciderRef);
+    const surfacedBy = invocations.find(
+      (invocation) =>
+        invocation.response?.status === "needs_approval" &&
+        invocation.response?.requiresApproval?.approvalId ===
+          gate?.lobsterApprovalId,
+    );
+    if (
+      !gate ||
+      gate.decisionRef !== decision.id ||
+      gate.lobsterApprovalId === null ||
+      gate.surfacedAt === null ||
+      gate.state !==
+        (decision.decision === "approve-resume-once" ? "approved" : "rejected") ||
+      !surfacedBy ||
+      Date.parse(surfacedBy.completedAt) > Date.parse(gate.surfacedAt) ||
+      !decider?.authorityScopes?.includes("approve-resume") ||
+      !decider?.authorityScopes?.includes("approve-effects") ||
+      decision.workflowDigest !== workflow.contentDigest ||
+      decision.inputDigest !== input.valuesDigest ||
+      !sameSet(decision.guardedEffectRefs ?? [], gate.guardedEffectRefs ?? []) ||
+      Date.parse(decision.decidedAt) < Date.parse(gate.surfacedAt) ||
+      Date.parse(decision.decidedAt) > asOf ||
+      !isDigest(decision.observedStateDigest) ||
+      !isDigest(decision.receipt?.recordDigest) ||
+      Date.parse(decision.receipt?.recordedAt) <
+        Date.parse(decision.decidedAt) ||
+      Date.parse(decision.receipt?.recordedAt) > asOf
+    ) {
+      findings.push(
+        finding(
+          "stale_or_unauthorized_resume_decision",
+          `approvalDecisions.${decision.id}`,
+          "A resume decision must be an immutable human decision over the exact workflow, input, gate effects, and currently observed state.",
+        ),
+      );
+    }
+  }
+
+  for (const invocation of invocations) {
+    const request = invocation.request ?? {};
+    const response = invocation.response ?? {};
+    const parent = invocationById.get(invocation.retryOfInvocationRef);
+    const decision = decisionById.get(request.decisionRef);
+    if (
+      request.pipeline !== workflow.path ||
+      request.argsDigest !== input.valuesDigest ||
+      !isSafePackagePath(request.cwd ?? "") ||
+      invocation.requestDigest !==
+        computeWorkflowInvocationRequestDigest(request) ||
+      invocation.evidenceDigest !==
+        computeWorkflowInvocationEvidenceDigest(invocation) ||
+      Date.parse(invocation.invokedAt) > Date.parse(invocation.completedAt) ||
+      Date.parse(invocation.completedAt) > asOf ||
+      (response.status === "error"
+        ? response.ok !== false ||
+          response.requiresApproval !== null ||
+          !response.errorType ||
+          !response.errorMessage
+        : response.ok !== true ||
+          response.errorType !== null ||
+          response.errorMessage !== null ||
+          (response.status === "ok" && response.requiresApproval !== null)) ||
+      (invocation.action === "run" &&
+        (request.approvalId !== null ||
+          request.approve !== null ||
+          request.decisionRef !== null)) ||
+      (invocation.action === "resume" &&
+        (!decision ||
+          Date.parse(decision.decidedAt) > Date.parse(invocation.invokedAt) ||
+          Date.parse(decision.receipt?.recordedAt) >
+            Date.parse(invocation.invokedAt) ||
+          ((decision.decision === "approve-resume-once") !==
+            (request.approve === true)) ||
+          request.approvalId !== gateById.get(decision.gateRef)?.lobsterApprovalId))
+    ) {
+      findings.push(
+        finding(
+          "invalid_lobster_invocation",
+          `invocations.${invocation.id}`,
+          "Each run or resume must preserve only the exposed bounded request and response, exact digest and chronology; resume also needs a matching human decision.",
+        ),
+      );
+    }
+    if (
+      invocation.retryOfInvocationRef !== null &&
+      (!parent ||
+        parent.response?.ok !== false ||
+        Date.parse(parent.completedAt) > Date.parse(invocation.invokedAt))
+    ) {
+      findings.push(
+        finding(
+          "invalid_workflow_retry",
+          `invocations.${invocation.id}.retryOfInvocationRef`,
+          "A retry must identify an earlier completed failed invocation; completed or uncertain effects may never be blindly replayed.",
+        ),
+      );
+    }
+    if (
+      response.status === "needs_approval" &&
+      (!response.ok ||
+        !response.requiresApproval ||
+        !response.requiresApproval.approvalId ||
+        !stopGate?.lobsterApprovalId ||
+        !stopGate?.surfacedAt ||
+        stopGate.state === "not-reached" ||
+        Date.parse(stopGate.surfacedAt) !== Date.parse(invocation.completedAt) ||
+        response.requiresApproval.approvalId !== stopGate?.lobsterApprovalId ||
+        response.requiresApproval.promptDigest !== stopGate?.promptDigest ||
+        response.requiresApproval.itemsDigest !== stopGate?.itemsDigest)
+    ) {
+      findings.push(
+        finding(
+          "invalid_lobster_approval_evidence",
+          `invocations.${invocation.id}.response`,
+          "A needs_approval envelope must bind the surfaced gate to the exposed approval ID, prompt digest, and items digest without persisting the token.",
+        ),
+      );
+    }
+  }
+
+  for (const receipt of evidence) {
+    const sourceInvocation = invocations.find(
+      (invocation) => invocation.toolCallId === receipt.sourceRecordRef,
+    );
+    if (
+      Date.parse(receipt.observedAt) > asOf ||
+      !isDigest(receipt.recordDigest) ||
+      (receipt.kind === "lobster-output" &&
+        (!sourceInvocation ||
+          receipt.recordDigest !== sourceInvocation.response?.outputDigest ||
+          Date.parse(receipt.observedAt) !==
+            Date.parse(sourceInvocation.completedAt))) ||
+      (receipt.supportsStepRefs ?? []).some((ref) => !stepById.has(ref)) ||
+      (receipt.supportsEffectRefs ?? []).some((ref) => !effectById.has(ref)) ||
+      (receipt.kind !== "external-system" &&
+        (receipt.supportsEffectRefs?.length > 0 ||
+          !["none", "not-attempted"].includes(receipt.effectState)))
+    ) {
+      findings.push(
+        finding(
+          "invalid_workflow_evidence",
+          `evidenceReceipts.${receipt.id}`,
+          "Evidence must be current, digest-backed, reference known objects, and use an authoritative external system for effect claims.",
+        ),
+      );
+    }
+  }
+
+  if (
+    reconciliations.length !== steps.length ||
+    !sameSet(
+      reconciliations.map((item) => item.stepRef),
+      steps.map((item) => item.id),
+    )
+  ) {
+    findings.push(
+      finding(
+        "incomplete_step_reconciliation",
+        "stepReconciliations",
+        "Every workflow step needs exactly one Claw-owned reconciliation record.",
+      ),
+    );
+  }
+  for (const item of reconciliations) {
+    const step = stepById.get(item.stepRef);
+    const receipts = (item.evidenceRefs ?? []).map((ref) => evidenceById.get(ref));
+    const approvedDecision = decisionById.get(stopGate?.decisionRef);
+    const effectResume = (item.attemptRefs ?? [])
+      .map((ref) => invocationById.get(ref))
+      .find(
+        (invocation) =>
+          invocation?.action === "resume" &&
+          invocation.request?.decisionRef === approvedDecision?.id,
+      );
+    if (
+      !step ||
+      (item.attemptRefs ?? []).some((ref) => !invocationById.has(ref)) ||
+      receipts.some(
+        (receipt) =>
+          !receipt ||
+          !receipt.supportsStepRefs?.includes(item.stepRef) ||
+          (item.startedAt &&
+            (Date.parse(receipt.observedAt) < Date.parse(item.startedAt) ||
+              Date.parse(receipt.observedAt) > Date.parse(item.endedAt))),
+      ) ||
+      (["passed", "pending-approval", "failed", "compensated", "compensation-failed"].includes(
+        item.state,
+      ) &&
+        (receipts.length === 0 || !item.startedAt || !item.endedAt)) ||
+      (["not-run", "skipped"].includes(item.state) &&
+        (item.attemptRefs.length > 0 ||
+          item.evidenceRefs.length > 0 ||
+          item.startedAt !== null ||
+          item.endedAt !== null)) ||
+      (step?.kind === "external-effect" &&
+        ["not-run", "skipped"].includes(item.state) &&
+        item.effectState !== "not-attempted") ||
+      (step?.kind === "external-effect" &&
+        item.state === "passed" &&
+        !["observed", "compensated", "unknown"].includes(item.effectState)) ||
+      (step?.kind === "external-effect" &&
+        !["not-run", "skipped"].includes(item.state) &&
+        (stopGate?.state !== "approved" ||
+          approvedDecision?.decision !== "approve-resume-once" ||
+          !effectResume ||
+          (step.dependsOn ?? []).some(
+            (dependency) =>
+              !["passed", "compensated"].includes(
+                reconciliationByStep.get(dependency)?.state,
+              ),
+          ) ||
+          Date.parse(item.startedAt) < Date.parse(effectResume?.invokedAt))) ||
+      (step?.kind === "read-only" && item.effectState !== "none") ||
+      (step?.kind === "approval-stop" &&
+        !["none", "not-attempted"].includes(item.effectState)) ||
+      (item.state === "compensated" && item.effectState !== "compensated") ||
+      (item.startedAt &&
+        (Date.parse(item.startedAt) > Date.parse(item.endedAt) ||
+          Date.parse(item.endedAt) > asOf))
+    ) {
+      findings.push(
+        finding(
+          "invalid_step_reconciliation",
+          `stepReconciliations.${item.id}`,
+          "Step state, effect state, invocation and evidence lineage, and chronology must agree; skipped and not-run steps cannot carry observed evidence.",
+        ),
+      );
+    }
+    if (
+      step?.kind === "external-effect" &&
+      ["observed", "compensated"].includes(item.effectState) &&
+      !receipts.some(
+        (receipt) =>
+          receipt?.kind === "external-system" &&
+          receipt.supportsEffectRefs?.some((ref) => step.effectRefs.includes(ref)) &&
+          receipt.effectState === item.effectState,
+      )
+    ) {
+      findings.push(
+        finding(
+          "unproven_external_effect",
+          `stepReconciliations.${item.id}.effectState`,
+          "Lobster success never proves an external effect; observed or compensated effects require their authoritative external-system receipt.",
+        ),
+      );
+    }
+  }
+
+  const expectedCompleted = reconciliations
+    .filter((item) => ["passed", "compensated"].includes(item.state))
+    .map((item) => item.stepRef);
+  const expectedPending = reconciliations
+    .filter((item) => ["not-run", "pending-approval"].includes(item.state))
+    .map((item) => item.stepRef);
+  const expectedFailed = reconciliations
+    .filter((item) => ["failed", "compensation-failed"].includes(item.state))
+    .map((item) => item.stepRef);
+  const expectedSkipped = reconciliations
+    .filter((item) => item.state === "skipped")
+    .map((item) => item.stepRef);
+  const expectedCompensated = reconciliations
+    .filter((item) => item.state === "compensated")
+    .map((item) => item.stepRef);
+  const expectedUnresolvedEffects = effects
+    .filter((effect) => {
+      const item = reconciliationByStep.get(effect.stepRef);
+      return (
+        item?.effectState === "unknown" ||
+        (item?.effectState === "not-attempted" &&
+          (stopGate?.state === "approved" ||
+            !["skipped", "compensated"].includes(item?.state)))
+      );
+    })
+    .map((item) => item.id);
+  if (
+    !sameSet(reconciliation.completedStepRefs ?? [], expectedCompleted) ||
+    !sameSet(reconciliation.pendingStepRefs ?? [], expectedPending) ||
+    !sameSet(reconciliation.failedStepRefs ?? [], expectedFailed) ||
+    !sameSet(reconciliation.skippedStepRefs ?? [], expectedSkipped) ||
+    !sameSet(reconciliation.compensatedStepRefs ?? [], expectedCompensated) ||
+    !sameSet(
+      reconciliation.unresolvedEffectRefs ?? [],
+      expectedUnresolvedEffects,
+    )
+  ) {
+    findings.push(
+      finding(
+        "inaccurate_workflow_reconciliation",
+        "reconciliation",
+        "The summary must exactly reconcile completed, pending, failed, skipped, compensated, and unresolved effect state.",
+      ),
+    );
+  }
+
+  const anyUnknownEffect = reconciliations.some(
+    (item) => item.effectState === "unknown",
+  );
+  const waitingAtGate =
+    stopGate?.state === "waiting" &&
+    reconciliationByStep.get(stopStep?.id)?.state === "pending-approval";
+  const expectedState = !isProduction
+    ? "blocked"
+    : anyUnknownEffect
+      ? "partial-effects"
+      : waitingAtGate
+        ? "awaiting-human-decision"
+        : blockers.some((item) => item.status === "open") ||
+            expectedPending.length > 0 ||
+            expectedFailed.length > 0 ||
+            expectedUnresolvedEffects.length > 0
+          ? "blocked"
+          : "completed-reconciled";
+  const hasObservedEffect = effects.some((effect) =>
+    ["observed", "compensated"].includes(
+      reconciliationByStep.get(effect.stepRef)?.effectState,
+    ),
+  );
+  const expectedReconciliationStatus =
+    expectedState === "awaiting-human-decision"
+      ? "awaiting-owner"
+      : expectedState === "partial-effects"
+        ? "partial-effects"
+        : expectedState === "completed-reconciled"
+          ? hasObservedEffect
+            ? "completed-with-effects"
+            : "completed-read-only"
+          : "blocked";
+  if (
+    manifest.state !== expectedState ||
+    handoff.state !== expectedState ||
+    reconciliation.status !== expectedReconciliationStatus ||
+    reconciliation.transactionalityClaimed !== false ||
+    reconciliation.noBlindReplay !== true
+  ) {
+    findings.push(
+      finding(
+        "invalid_workflow_state",
+        "manifest.state",
+        "State must preserve waiting approval, open blockers, and unknown partial effects without claiming transactionality or safe blind replay.",
+      ),
+    );
+  }
+
+  if (
+    !isProduction &&
+    (invocations.length > 0 ||
+      evidence.length > 0 ||
+      decisions.length > 0 ||
+      attestations.length > 0 ||
+      workflow.evidenceStatus !== "planned" ||
+      workflow.reviewedAt !== null ||
+      workflow.reviewReceipt !== null ||
+      input.evidenceStatus !== "planned" ||
+      input.validated !== false ||
+      input.validatedAt !== null ||
+      input.validationReceipt !== null ||
+      gates.some(
+        (gate) =>
+          gate.state !== "not-reached" ||
+          gate.lobsterApprovalId !== null ||
+          gate.surfacedAt !== null ||
+          gate.decisionRef !== null,
+      ) ||
+      reconciliations.some((item) => item.state !== "not-run"))
+  ) {
+    findings.push(
+      finding(
+        "fictional_workflow_evidence",
+        "$",
+        "The illustrative fixture must remain zero-execution and cannot contain observed workflow, input, authority, invocation, decision, effect, or step evidence.",
+      ),
+    );
+  }
+
+  const knownRefs = new Set(ids);
+  for (const item of [...blockers, ...questions]) {
+    if (
+      !principalById.has(item.ownerRef) ||
+      (item.targetRefs ?? []).some((ref) => !knownRefs.has(ref))
+    ) {
+      findings.push(
+        finding(
+          "dangling_workflow_owner_or_target",
+          `${blockers.includes(item) ? "blockers" : "questions"}.${item.id}`,
+          "Every blocker and question must resolve to one known authority and known target objects.",
+        ),
+      );
+    }
+  }
+
+  const requiredProhibitions = [
+    "persist-resume-token",
+    "invoke-unapproved-downstream-tool",
+    "notify-before-new-approval",
+    "tag-before-new-approval",
+    "blindly-replay-completed-step",
+    "claim-transactional-rollback",
+    "infer-effect-from-lobster-success",
+    "publish-private-handoff",
+  ];
+  if (!sameSet(value.prohibitedActions ?? [], requiredProhibitions)) {
+    findings.push(
+      finding(
+        "incomplete_workflow_prohibitions",
+        "prohibitedActions",
+        "The contract must prohibit token persistence, downstream-tool overreach, premature effects, blind replay, transactionality claims, inferred effects, and publication.",
+      ),
+    );
+  }
+
+  const secretValuePattern =
+    /\b(?:bearer\s+[a-z0-9._~+/-]{8,}|api[_-]?key\s*[:=]\s*\S+|resume[_-]?token\s*[:=]\s*\S+)\b/iu;
+  const credentialUrlPattern = /\bhttps?:\/\/[^/\s@]+:[^/\s@]+@/iu;
+  const privateUrlPattern =
+    /\bhttps?:\/\/(?:localhost|\[?::1\]?|127(?:\.\d{1,3}){3}|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2}|(?:[a-z0-9-]+\.)*(?:internal|intranet|corp|private|local)(?:\.[a-z0-9-]+)*)\b/iu;
+  const containsSecret = (candidate) => {
+    if (typeof candidate === "string") {
+      return (
+        secretValuePattern.test(candidate) ||
+        credentialUrlPattern.test(candidate) ||
+        privateUrlPattern.test(candidate)
+      );
+    }
+    if (Array.isArray(candidate)) return candidate.some(containsSecret);
+    if (!candidate || typeof candidate !== "object") return false;
+    return Object.entries(candidate).some(
+      ([key, child]) =>
+        (["token", "authorization", "apiKey", "credential"].includes(key) &&
+          child !== null) ||
+        containsSecret(child),
+    );
+  };
+  if (containsSecret(value)) {
+    findings.push(
+      finding(
+        "workflow_secret_exposure",
+        "$",
+        "The durable artifact must not contain resume tokens, authorization headers, API keys, credential values, credential-bearing URLs, or private URLs.",
+      ),
+    );
+  }
+
+  if (
+    manifest.classification !== policy.classification ||
+    handoff.classification !== policy.classification ||
+    !sameSet(manifest.audienceRefs ?? [], policy.audienceRefs ?? []) ||
+    !sameSet(handoff.audienceRefs ?? [], policy.audienceRefs ?? []) ||
+    handoff.retentionDays !== policy.retentionDays ||
+    policy.publicationState !== "not-published" ||
+    policy.externalDeliveryState !== "not-delivered"
+  ) {
+    findings.push(
+      finding(
+        "invalid_workflow_controls",
+        "controlPolicy",
+        "Internal classification, audience, retention, nonpublication, and nondelivery controls must carry unchanged into the handoff.",
+      ),
+    );
+  }
+
+  if (
+    handoff.coverageComplete !== true ||
+    handoff.policyRef !== policy.id ||
+    !sameSet(
+      handoff.principalRefs ?? [],
+      principals.map((item) => item.id),
+    ) ||
+    !sameSet(handoff.coveredObjectRefs ?? [], ids)
+  ) {
+    findings.push(
+      finding(
+        "incomplete_workflow_handoff",
+        "handoff",
+        "The private handoff must cover every present object, principal, and policy exactly once.",
+      ),
+    );
+  }
+
+  const digest = computeWorkflowExecutionReconciliationDigest(value);
+  if (
+    manifest.contentDigest !== digest ||
+    handoff.manifestDigest !== digest
+  ) {
+    findings.push(
+      finding(
+        "invalid_workflow_manifest_digest",
+        "manifest.contentDigest",
+        "The deterministic digest must bind the complete workflow reconciliation without self-reference.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
 const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
@@ -33763,6 +34601,7 @@ const validators = {
   "warranty-returns-manager": warrantyReturnsFindings,
   "website-evidence-collector": websiteCaptureEvidenceLedgerFindings,
   "work-chief-of-staff": workChiefOfStaffFindings,
+  "workflow-operator": workflowExecutionReconciliationFindings,
 };
 
 export function hasArtifactSemanticValidator(id) {

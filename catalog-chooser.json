@@ -3759,15 +3759,15 @@
     {
       "id": "workflow-operator",
       "name": "Workflow operator",
-      "description": "Runs bounded Lobster pipelines with typed inputs, explicit approval gates, resumable state, and reviewable results.",
-      "audience": "Operators converting a repetitive, already-authorized procedure into a typed and approval-aware execution workflow.",
+      "description": "Reconciles one exact bounded Lobster run against its reviewed workflow, typed input, exposed tool envelopes, human approval gate, independently observed effects, retry lineage, and private resume-or-abort handoff without duplicating Lobster state or claiming transactionality.",
+      "audience": "Release and operations owners who need a durable, evidence-led account of what one approved Lobster run observed, where it stopped, which external effects remain unknown or blocked, and what exact human decision can safely follow.",
       "category": "operations",
       "maintenance": {
         "status": "active",
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-09-01"
       },
       "setup": {
         "level": "medium",

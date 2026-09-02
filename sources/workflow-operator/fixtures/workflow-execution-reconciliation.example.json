@@ -1,0 +1,451 @@
+{
+  "schemaVersion": "awesomeClaws.workflowExecutionReconciliation.v1",
+  "manifest": {
+    "id": "manifest-release-readiness-illustrative",
+    "artifactMode": "illustrative-fixture",
+    "verbatimRequest": "Run the approved weekly release-readiness pipeline against version 4.2.0, pausing before any notification or tag operation.",
+    "objective": "Describe the evidence required to reconcile one bounded release-readiness run without presenting planned checks or effects as observed.",
+    "createdAt": "2026-09-01T20:00:00Z",
+    "asOf": "2026-09-01T20:00:00Z",
+    "deadline": "2026-09-02T17:00:00Z",
+    "classification": "internal",
+    "audienceRefs": [
+      "planned-role-release-owner",
+      "planned-role-effect-approver"
+    ],
+    "ownerRef": "planned-role-release-owner",
+    "workflowDefinitionRef": "workflow-release-readiness",
+    "inputEnvelopeRef": "input-release-420",
+    "expectedStopStepRef": "step-approval-stop",
+    "state": "blocked",
+    "contentDigest": "sha256:04ed617a608663ac99b9527bf89da1229162ed61a3a7ba687aa7abe63142c96f"
+  },
+  "principals": [
+    {
+      "id": "planned-role-release-owner",
+      "kind": "planned-role",
+      "displayName": "Release owner role required",
+      "authorityScopes": [
+        "own-workflow",
+        "review-workflow",
+        "receive-handoff"
+      ],
+      "attestationRef": null
+    },
+    {
+      "id": "planned-role-effect-approver",
+      "kind": "planned-role",
+      "displayName": "Release effect approver role required",
+      "authorityScopes": [
+        "approve-resume",
+        "approve-effects",
+        "own-compensation",
+        "receive-handoff"
+      ],
+      "attestationRef": null
+    }
+  ],
+  "authorityAttestations": [],
+  "workflowDefinition": {
+    "id": "workflow-release-readiness",
+    "evidenceStatus": "planned",
+    "sourceKind": "workspace-file",
+    "path": "workflows/release-readiness.lobster",
+    "format": "lobster",
+    "version": "desired-weekly-v1",
+    "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "ownerRef": "planned-role-release-owner",
+    "reviewedAt": null,
+    "reviewReceipt": null,
+    "lobsterPackageVersion": "@openclaw/lobster@2026.7.1",
+    "lobsterRuntimeVersion": "@clawdbot/lobster@2026.6.11",
+    "openclawVersion": "2026.7.1",
+    "downstreamBridge": "disabled",
+    "steps": [
+      {
+        "id": "step-validate-input",
+        "ordinal": 1,
+        "kind": "read-only",
+        "summary": "Validate the exact typed release input envelope.",
+        "dependsOn": [],
+        "timeoutMs": 20000,
+        "retry": {
+          "maxAttempts": 1,
+          "blindRetryAllowed": false,
+          "requiresFailedParent": true
+        },
+        "effectRefs": [],
+        "approvalGateRef": null
+      },
+      {
+        "id": "step-run-tests",
+        "ordinal": 2,
+        "kind": "read-only",
+        "summary": "Collect the declared test result from the workflow output.",
+        "dependsOn": [
+          "step-validate-input"
+        ],
+        "timeoutMs": 120000,
+        "retry": {
+          "maxAttempts": 1,
+          "blindRetryAllowed": false,
+          "requiresFailedParent": true
+        },
+        "effectRefs": [],
+        "approvalGateRef": null
+      },
+      {
+        "id": "step-check-artifacts",
+        "ordinal": 3,
+        "kind": "read-only",
+        "summary": "Collect the declared artifact verification result.",
+        "dependsOn": [
+          "step-run-tests"
+        ],
+        "timeoutMs": 20000,
+        "retry": {
+          "maxAttempts": 1,
+          "blindRetryAllowed": false,
+          "requiresFailedParent": true
+        },
+        "effectRefs": [],
+        "approvalGateRef": null
+      },
+      {
+        "id": "step-approval-stop",
+        "ordinal": 4,
+        "kind": "approval-stop",
+        "summary": "Stop before any release notification or tag effect.",
+        "dependsOn": [
+          "step-check-artifacts"
+        ],
+        "timeoutMs": 20000,
+        "retry": {
+          "maxAttempts": 1,
+          "blindRetryAllowed": false,
+          "requiresFailedParent": true
+        },
+        "effectRefs": [
+          "effect-release-notification",
+          "effect-release-tag"
+        ],
+        "approvalGateRef": "gate-release-effects"
+      },
+      {
+        "id": "step-notify-release",
+        "ordinal": 5,
+        "kind": "external-effect",
+        "summary": "Send the declared release-readiness notification only after a new exact approval.",
+        "dependsOn": [
+          "step-approval-stop"
+        ],
+        "timeoutMs": 20000,
+        "retry": {
+          "maxAttempts": 1,
+          "blindRetryAllowed": false,
+          "requiresFailedParent": true
+        },
+        "effectRefs": [
+          "effect-release-notification"
+        ],
+        "approvalGateRef": "gate-release-effects"
+      },
+      {
+        "id": "step-create-tag",
+        "ordinal": 6,
+        "kind": "external-effect",
+        "summary": "Create the declared release tag only after a new exact approval.",
+        "dependsOn": [
+          "step-approval-stop"
+        ],
+        "timeoutMs": 20000,
+        "retry": {
+          "maxAttempts": 1,
+          "blindRetryAllowed": false,
+          "requiresFailedParent": true
+        },
+        "effectRefs": [
+          "effect-release-tag"
+        ],
+        "approvalGateRef": "gate-release-effects"
+      }
+    ]
+  },
+  "inputEnvelope": {
+    "id": "input-release-420",
+    "evidenceStatus": "planned",
+    "schemaDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "valuesDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "targetVersion": "4.2.0",
+    "validated": false,
+    "validatedAt": null,
+    "validationReceipt": null
+  },
+  "effectDeclarations": [
+    {
+      "id": "effect-release-notification",
+      "stepRef": "step-notify-release",
+      "kind": "notification",
+      "externalSystem": "release notification destination",
+      "downstreamTool": "message.send",
+      "credentialBoundary": "external-secret-store",
+      "approvalOwnerRef": "planned-role-effect-approver",
+      "approvalRequired": true,
+      "bridgePolicy": "not-enabled",
+      "compensation": {
+        "kind": "irreversible",
+        "description": "A delivered notification cannot be transactionally recalled.",
+        "ownerRef": "planned-role-effect-approver"
+      }
+    },
+    {
+      "id": "effect-release-tag",
+      "stepRef": "step-create-tag",
+      "kind": "release-tag",
+      "externalSystem": "release source repository",
+      "downstreamTool": "release-tag.create",
+      "credentialBoundary": "external-secret-store",
+      "approvalOwnerRef": "planned-role-effect-approver",
+      "approvalRequired": true,
+      "bridgePolicy": "not-enabled",
+      "compensation": {
+        "kind": "manual-best-effort",
+        "description": "Tag deletion would require a separately approved owner action and may not reverse downstream observation.",
+        "ownerRef": "planned-role-effect-approver"
+      }
+    }
+  ],
+  "approvalGates": [
+    {
+      "id": "gate-release-effects",
+      "stepRef": "step-approval-stop",
+      "state": "not-reached",
+      "lobsterApprovalId": null,
+      "resumeTokenCustody": "runtime-custody-not-persisted",
+      "promptDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "itemsDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "guardedEffectRefs": [
+        "effect-release-notification",
+        "effect-release-tag"
+      ],
+      "surfacedAt": null,
+      "decisionRef": null
+    }
+  ],
+  "approvalDecisions": [],
+  "invocations": [],
+  "evidenceReceipts": [],
+  "stepReconciliations": [
+    {
+      "id": "reconcile-validate-input",
+      "stepRef": "step-validate-input",
+      "state": "not-run",
+      "attemptRefs": [],
+      "startedAt": null,
+      "endedAt": null,
+      "evidenceRefs": [],
+      "effectState": "none",
+      "summary": "Illustrative only; no input validation was observed."
+    },
+    {
+      "id": "reconcile-run-tests",
+      "stepRef": "step-run-tests",
+      "state": "not-run",
+      "attemptRefs": [],
+      "startedAt": null,
+      "endedAt": null,
+      "evidenceRefs": [],
+      "effectState": "none",
+      "summary": "Illustrative only; no test execution was observed."
+    },
+    {
+      "id": "reconcile-check-artifacts",
+      "stepRef": "step-check-artifacts",
+      "state": "not-run",
+      "attemptRefs": [],
+      "startedAt": null,
+      "endedAt": null,
+      "evidenceRefs": [],
+      "effectState": "none",
+      "summary": "Illustrative only; no artifact verification was observed."
+    },
+    {
+      "id": "reconcile-approval-stop",
+      "stepRef": "step-approval-stop",
+      "state": "not-run",
+      "attemptRefs": [],
+      "startedAt": null,
+      "endedAt": null,
+      "evidenceRefs": [],
+      "effectState": "not-attempted",
+      "summary": "Illustrative only; the approval checkpoint was not reached."
+    },
+    {
+      "id": "reconcile-notify-release",
+      "stepRef": "step-notify-release",
+      "state": "not-run",
+      "attemptRefs": [],
+      "startedAt": null,
+      "endedAt": null,
+      "evidenceRefs": [],
+      "effectState": "not-attempted",
+      "summary": "The notification remains an unexecuted future effect."
+    },
+    {
+      "id": "reconcile-create-tag",
+      "stepRef": "step-create-tag",
+      "state": "not-run",
+      "attemptRefs": [],
+      "startedAt": null,
+      "endedAt": null,
+      "evidenceRefs": [],
+      "effectState": "not-attempted",
+      "summary": "The release tag remains an unexecuted future effect."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "blocker-illustrative-authority",
+      "status": "open",
+      "ownerRef": "planned-role-release-owner",
+      "targetRefs": [
+        "planned-role-release-owner",
+        "planned-role-effect-approver"
+      ],
+      "summary": "Named human principals and authority attestations are absent."
+    },
+    {
+      "id": "blocker-workflow-observation",
+      "status": "open",
+      "ownerRef": "planned-role-release-owner",
+      "targetRefs": [
+        "workflow-release-readiness"
+      ],
+      "summary": "The exact workflow version and review receipt are not observed."
+    },
+    {
+      "id": "blocker-input-validation",
+      "status": "open",
+      "ownerRef": "planned-role-release-owner",
+      "targetRefs": [
+        "input-release-420"
+      ],
+      "summary": "The typed input envelope has no validation receipt."
+    },
+    {
+      "id": "blocker-run-evidence",
+      "status": "open",
+      "ownerRef": "planned-role-release-owner",
+      "targetRefs": [
+        "step-validate-input",
+        "step-run-tests",
+        "step-check-artifacts",
+        "step-approval-stop"
+      ],
+      "summary": "No Lobster invocation or output evidence is represented."
+    }
+  ],
+  "questions": [
+    {
+      "id": "question-effect-approval",
+      "status": "open",
+      "ownerRef": "planned-role-effect-approver",
+      "targetRefs": [
+        "gate-release-effects"
+      ],
+      "text": "Who may issue a new exact decision if notification or tag execution is later requested?"
+    }
+  ],
+  "prohibitedActions": [
+    "persist-resume-token",
+    "invoke-unapproved-downstream-tool",
+    "notify-before-new-approval",
+    "tag-before-new-approval",
+    "blindly-replay-completed-step",
+    "claim-transactional-rollback",
+    "infer-effect-from-lobster-success",
+    "publish-private-handoff"
+  ],
+  "controlPolicy": {
+    "id": "policy-private-workflow-evidence",
+    "classification": "internal",
+    "audienceRefs": [
+      "planned-role-release-owner",
+      "planned-role-effect-approver"
+    ],
+    "retentionDays": 30,
+    "publicationState": "not-published",
+    "externalDeliveryState": "not-delivered"
+  },
+  "reconciliation": {
+    "status": "blocked",
+    "transactionalityClaimed": false,
+    "noBlindReplay": true,
+    "completedStepRefs": [],
+    "pendingStepRefs": [
+      "step-validate-input",
+      "step-run-tests",
+      "step-check-artifacts",
+      "step-approval-stop",
+      "step-notify-release",
+      "step-create-tag"
+    ],
+    "failedStepRefs": [],
+    "skippedStepRefs": [],
+    "compensatedStepRefs": [],
+    "unresolvedEffectRefs": [
+      "effect-release-notification",
+      "effect-release-tag"
+    ],
+    "nextAction": "Observe and review the exact workflow and inputs before any Lobster run.",
+    "nextOwnerRef": "planned-role-release-owner"
+  },
+  "handoff": {
+    "id": "handoff-release-readiness-illustrative",
+    "state": "blocked",
+    "path": "outputs/workflow-execution-reconciliation.json",
+    "manifestDigest": "sha256:04ed617a608663ac99b9527bf89da1229162ed61a3a7ba687aa7abe63142c96f",
+    "coverageComplete": true,
+    "coveredObjectRefs": [
+      "manifest-release-readiness-illustrative",
+      "planned-role-release-owner",
+      "planned-role-effect-approver",
+      "workflow-release-readiness",
+      "step-validate-input",
+      "step-run-tests",
+      "step-check-artifacts",
+      "step-approval-stop",
+      "step-notify-release",
+      "step-create-tag",
+      "input-release-420",
+      "effect-release-notification",
+      "effect-release-tag",
+      "gate-release-effects",
+      "reconcile-validate-input",
+      "reconcile-run-tests",
+      "reconcile-check-artifacts",
+      "reconcile-approval-stop",
+      "reconcile-notify-release",
+      "reconcile-create-tag",
+      "blocker-illustrative-authority",
+      "blocker-workflow-observation",
+      "blocker-input-validation",
+      "blocker-run-evidence",
+      "question-effect-approval",
+      "policy-private-workflow-evidence",
+      "handoff-release-readiness-illustrative"
+    ],
+    "principalRefs": [
+      "planned-role-release-owner",
+      "planned-role-effect-approver"
+    ],
+    "policyRef": "policy-private-workflow-evidence",
+    "classification": "internal",
+    "audienceRefs": [
+      "planned-role-release-owner",
+      "planned-role-effect-approver"
+    ],
+    "retentionDays": 30,
+    "summary": "Illustrative-only blocked handoff; no workflow review, input validation, Lobster call, approval, effect, compensation, or human authority is claimed."
+  }
+}

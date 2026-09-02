@@ -2,28 +2,41 @@
 
 ## Request
 
-Summarize the user request and the decision this claw is supporting.
+Name the exact workflow run, typed input version, stop boundary, and human
+decision this Claw is supporting.
 
 ## Known facts
 
-- Record only facts grounded in the supplied context or approved tools.
+- Link `outputs/workflow-execution-reconciliation.json`.
+- Separate the reviewed workflow definition and input envelope from observed
+  Lobster run or resume envelopes.
+- Do not copy a resume token or unbounded raw output.
 
 ## Assumptions and gaps
 
-- Separate assumptions from missing evidence.
+- Distinguish planned, observed, unknown, and partial-effect state.
+- Never infer a notification, tag, compensation, or rollback from Lobster
+  success or resumability.
 
 ## Evidence ledger
 
-- Link or name the source for every material claim.
+- Cite exact invocation request/evidence digests and chronology.
+- Cite Lobster output for step observations and authoritative external systems
+  for any effect or compensation.
 
 ## Recommendation or decision state
 
-- State the best supported next step and why.
+- Reconcile completed, pending, failed, skipped, compensated, and unresolved
+  steps and effects exactly once.
+- State whether the run is blocked, awaiting a human decision, carrying partial
+  effects, or completed as read-only reconciliation.
 
 ## Blocked actions
 
-- Keep external communication, irreversible changes, purchases, publication, and authority-sensitive actions blocked until explicitly approved.
+- Keep `openclaw.invoke`, notification, tag creation, blind replay, secret
+  persistence, publication, and transactionality claims blocked.
 
 ## Next owner
 
-Name the accountable human owner and where outputs/workflow-operator-handoff.md should be reviewed.
+Name the structurally attested human owner, exact resume/abort decision needed,
+open blockers or questions, and where the private artifacts should be reviewed.

@@ -1,0 +1,827 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/workflow-execution-reconciliation.schema.json",
+  "title": "Workflow execution reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "manifest",
+    "principals",
+    "authorityAttestations",
+    "workflowDefinition",
+    "inputEnvelope",
+    "effectDeclarations",
+    "approvalGates",
+    "approvalDecisions",
+    "invocations",
+    "evidenceReceipts",
+    "stepReconciliations",
+    "blockers",
+    "questions",
+    "prohibitedActions",
+    "controlPolicy",
+    "reconciliation",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.workflowExecutionReconciliation.v1"
+    },
+    "manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "artifactMode",
+        "verbatimRequest",
+        "objective",
+        "createdAt",
+        "asOf",
+        "deadline",
+        "classification",
+        "audienceRefs",
+        "ownerRef",
+        "workflowDefinitionRef",
+        "inputEnvelopeRef",
+        "expectedStopStepRef",
+        "state",
+        "contentDigest"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "artifactMode": {
+          "enum": ["illustrative-fixture", "production"]
+        },
+        "verbatimRequest": { "$ref": "#/$defs/text" },
+        "objective": { "$ref": "#/$defs/text" },
+        "createdAt": { "$ref": "#/$defs/dateTime" },
+        "asOf": { "$ref": "#/$defs/dateTime" },
+        "deadline": { "$ref": "#/$defs/dateTime" },
+        "classification": { "const": "internal" },
+        "audienceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "ownerRef": { "$ref": "#/$defs/id" },
+        "workflowDefinitionRef": { "$ref": "#/$defs/id" },
+        "inputEnvelopeRef": { "$ref": "#/$defs/id" },
+        "expectedStopStepRef": { "$ref": "#/$defs/id" },
+        "state": {
+          "enum": [
+            "blocked",
+            "awaiting-human-decision",
+            "partial-effects",
+            "completed-reconciled"
+          ]
+        },
+        "contentDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "displayName", "authorityScopes", "attestationRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["planned-role", "human"] },
+          "displayName": { "$ref": "#/$defs/text" },
+          "authorityScopes": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "own-workflow",
+                "review-workflow",
+                "approve-resume",
+                "approve-effects",
+                "own-compensation",
+                "receive-handoff"
+              ]
+            }
+          },
+          "attestationRef": {
+            "oneOf": [
+              { "$ref": "#/$defs/id" },
+              { "type": "null" }
+            ]
+          }
+        }
+      }
+    },
+    "authorityAttestations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "principalRef",
+          "humanIdentityVerified",
+          "scopeDigest",
+          "attestedAt",
+          "receipt"
+        ],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "principalRef": { "$ref": "#/$defs/id" },
+          "humanIdentityVerified": { "const": true },
+          "scopeDigest": { "$ref": "#/$defs/digest" },
+          "attestedAt": { "$ref": "#/$defs/dateTime" },
+          "receipt": { "$ref": "#/$defs/receipt" }
+        }
+      }
+    },
+    "workflowDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "evidenceStatus",
+        "sourceKind",
+        "path",
+        "format",
+        "version",
+        "contentDigest",
+        "ownerRef",
+        "reviewedAt",
+        "reviewReceipt",
+        "lobsterPackageVersion",
+        "lobsterRuntimeVersion",
+        "openclawVersion",
+        "downstreamBridge",
+        "steps"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "evidenceStatus": { "enum": ["planned", "observed"] },
+        "sourceKind": { "const": "workspace-file" },
+        "path": { "$ref": "#/$defs/workspacePath" },
+        "format": { "enum": ["lobster", "yaml", "yml", "json"] },
+        "version": { "$ref": "#/$defs/text" },
+        "contentDigest": { "$ref": "#/$defs/digest" },
+        "ownerRef": { "$ref": "#/$defs/id" },
+        "reviewedAt": {
+          "oneOf": [
+            { "$ref": "#/$defs/dateTime" },
+            { "type": "null" }
+          ]
+        },
+        "reviewReceipt": {
+          "oneOf": [
+            { "$ref": "#/$defs/receipt" },
+            { "type": "null" }
+          ]
+        },
+        "lobsterPackageVersion": { "const": "@openclaw/lobster@2026.7.1" },
+        "lobsterRuntimeVersion": { "const": "@clawdbot/lobster@2026.6.11" },
+        "openclawVersion": { "const": "2026.7.1" },
+        "downstreamBridge": { "const": "disabled" },
+        "steps": {
+          "type": "array",
+          "minItems": 3,
+          "items": { "$ref": "#/$defs/step" }
+        }
+      }
+    },
+    "inputEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "evidenceStatus",
+        "schemaDigest",
+        "valuesDigest",
+        "targetVersion",
+        "validated",
+        "validatedAt",
+        "validationReceipt"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "evidenceStatus": { "enum": ["planned", "observed"] },
+        "schemaDigest": { "$ref": "#/$defs/digest" },
+        "valuesDigest": { "$ref": "#/$defs/digest" },
+        "targetVersion": { "$ref": "#/$defs/text" },
+        "validated": { "type": "boolean" },
+        "validatedAt": {
+          "oneOf": [
+            { "$ref": "#/$defs/dateTime" },
+            { "type": "null" }
+          ]
+        },
+        "validationReceipt": {
+          "oneOf": [
+            { "$ref": "#/$defs/receipt" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "effectDeclarations": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/effect" }
+    },
+    "approvalGates": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/gate" }
+    },
+    "approvalDecisions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/decision" }
+    },
+    "invocations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/invocation" }
+    },
+    "evidenceReceipts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidence" }
+    },
+    "stepReconciliations": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "$ref": "#/$defs/stepReconciliation" }
+    },
+    "blockers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/blocker" }
+    },
+    "questions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/question" }
+    },
+    "prohibitedActions": {
+      "type": "array",
+      "minItems": 6,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "persist-resume-token",
+          "invoke-unapproved-downstream-tool",
+          "notify-before-new-approval",
+          "tag-before-new-approval",
+          "blindly-replay-completed-step",
+          "claim-transactional-rollback",
+          "infer-effect-from-lobster-success",
+          "publish-private-handoff"
+        ]
+      }
+    },
+    "controlPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "classification",
+        "audienceRefs",
+        "retentionDays",
+        "publicationState",
+        "externalDeliveryState"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "classification": { "const": "internal" },
+        "audienceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "retentionDays": { "type": "integer", "minimum": 1, "maximum": 90 },
+        "publicationState": { "const": "not-published" },
+        "externalDeliveryState": { "const": "not-delivered" }
+      }
+    },
+    "reconciliation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "transactionalityClaimed",
+        "noBlindReplay",
+        "completedStepRefs",
+        "pendingStepRefs",
+        "failedStepRefs",
+        "skippedStepRefs",
+        "compensatedStepRefs",
+        "unresolvedEffectRefs",
+        "nextAction",
+        "nextOwnerRef"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "blocked",
+            "awaiting-owner",
+            "partial-effects",
+            "completed-read-only",
+            "completed-with-effects"
+          ]
+        },
+        "transactionalityClaimed": { "const": false },
+        "noBlindReplay": { "const": true },
+        "completedStepRefs": { "$ref": "#/$defs/idSet" },
+        "pendingStepRefs": { "$ref": "#/$defs/idSet" },
+        "failedStepRefs": { "$ref": "#/$defs/idSet" },
+        "skippedStepRefs": { "$ref": "#/$defs/idSet" },
+        "compensatedStepRefs": { "$ref": "#/$defs/idSet" },
+        "unresolvedEffectRefs": { "$ref": "#/$defs/idSet" },
+        "nextAction": { "$ref": "#/$defs/text" },
+        "nextOwnerRef": { "$ref": "#/$defs/id" }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "state",
+        "path",
+        "manifestDigest",
+        "coverageComplete",
+        "coveredObjectRefs",
+        "principalRefs",
+        "policyRef",
+        "classification",
+        "audienceRefs",
+        "retentionDays",
+        "summary"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "state": {
+          "enum": [
+            "blocked",
+            "awaiting-human-decision",
+            "partial-effects",
+            "completed-reconciled"
+          ]
+        },
+        "path": {
+          "const": "outputs/workflow-execution-reconciliation.json"
+        },
+        "manifestDigest": { "$ref": "#/$defs/digest" },
+        "coverageComplete": { "type": "boolean" },
+        "coveredObjectRefs": { "$ref": "#/$defs/idSet" },
+        "principalRefs": { "$ref": "#/$defs/idSet" },
+        "policyRef": { "$ref": "#/$defs/id" },
+        "classification": { "const": "internal" },
+        "audienceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "retentionDays": { "type": "integer", "minimum": 1, "maximum": 90 },
+        "summary": { "$ref": "#/$defs/text" }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,95}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "workspacePath": {
+      "type": "string",
+      "pattern": "^(?![A-Za-z]:)(?![/\\\\])(?!.*(?:^|[/\\\\])\\.\\.(?:[/\\\\]|$))[A-Za-z0-9._/-]+$"
+    },
+    "idSet": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceSystem", "sourceRecordRef", "recordDigest", "recordedAt"],
+      "properties": {
+        "sourceSystem": { "$ref": "#/$defs/text" },
+        "sourceRecordRef": { "$ref": "#/$defs/text" },
+        "recordDigest": { "$ref": "#/$defs/digest" },
+        "recordedAt": { "$ref": "#/$defs/dateTime" }
+      }
+    },
+    "retry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxAttempts", "blindRetryAllowed", "requiresFailedParent"],
+      "properties": {
+        "maxAttempts": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "blindRetryAllowed": { "const": false },
+        "requiresFailedParent": { "const": true }
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ordinal",
+        "kind",
+        "summary",
+        "dependsOn",
+        "timeoutMs",
+        "retry",
+        "effectRefs",
+        "approvalGateRef"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "ordinal": { "type": "integer", "minimum": 1 },
+        "kind": { "enum": ["read-only", "approval-stop", "external-effect"] },
+        "summary": { "$ref": "#/$defs/text" },
+        "dependsOn": { "$ref": "#/$defs/idSet" },
+        "timeoutMs": { "type": "integer", "minimum": 200, "maximum": 120000 },
+        "retry": { "$ref": "#/$defs/retry" },
+        "effectRefs": { "$ref": "#/$defs/idSet" },
+        "approvalGateRef": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "effect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "stepRef",
+        "kind",
+        "externalSystem",
+        "downstreamTool",
+        "credentialBoundary",
+        "approvalOwnerRef",
+        "approvalRequired",
+        "bridgePolicy",
+        "compensation"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "stepRef": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": [
+            "notification",
+            "release-tag",
+            "external-write",
+            "external-delete",
+            "purchase",
+            "publication",
+            "other-consequential-effect"
+          ]
+        },
+        "externalSystem": { "$ref": "#/$defs/text" },
+        "downstreamTool": { "$ref": "#/$defs/text" },
+        "credentialBoundary": { "const": "external-secret-store" },
+        "approvalOwnerRef": { "$ref": "#/$defs/id" },
+        "approvalRequired": { "const": true },
+        "bridgePolicy": { "const": "not-enabled" },
+        "compensation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "description", "ownerRef"],
+          "properties": {
+            "kind": { "enum": ["manual-best-effort", "irreversible"] },
+            "description": { "$ref": "#/$defs/text" },
+            "ownerRef": { "$ref": "#/$defs/id" }
+          }
+        }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "stepRef",
+        "state",
+        "lobsterApprovalId",
+        "resumeTokenCustody",
+        "promptDigest",
+        "itemsDigest",
+        "guardedEffectRefs",
+        "surfacedAt",
+        "decisionRef"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "stepRef": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["not-reached", "waiting", "approved", "rejected"] },
+        "lobsterApprovalId": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ]
+        },
+        "resumeTokenCustody": { "const": "runtime-custody-not-persisted" },
+        "promptDigest": { "$ref": "#/$defs/digest" },
+        "itemsDigest": { "$ref": "#/$defs/digest" },
+        "guardedEffectRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "surfacedAt": {
+          "oneOf": [
+            { "$ref": "#/$defs/dateTime" },
+            { "type": "null" }
+          ]
+        },
+        "decisionRef": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "gateRef",
+        "decision",
+        "deciderRef",
+        "decidedAt",
+        "workflowDigest",
+        "inputDigest",
+        "observedStateDigest",
+        "guardedEffectRefs",
+        "receipt"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "gateRef": { "$ref": "#/$defs/id" },
+        "decision": { "enum": ["approve-resume-once", "reject-and-abort"] },
+        "deciderRef": { "$ref": "#/$defs/id" },
+        "decidedAt": { "$ref": "#/$defs/dateTime" },
+        "workflowDigest": { "$ref": "#/$defs/digest" },
+        "inputDigest": { "$ref": "#/$defs/digest" },
+        "observedStateDigest": { "$ref": "#/$defs/digest" },
+        "guardedEffectRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "receipt": { "$ref": "#/$defs/receipt" }
+      }
+    },
+    "invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "action",
+        "retryOfInvocationRef",
+        "toolCallId",
+        "invokedAt",
+        "completedAt",
+        "request",
+        "requestDigest",
+        "response",
+        "evidenceDigest"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "action": { "enum": ["run", "resume"] },
+        "retryOfInvocationRef": {
+          "oneOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ]
+        },
+        "toolCallId": { "$ref": "#/$defs/id" },
+        "invokedAt": { "$ref": "#/$defs/dateTime" },
+        "completedAt": { "$ref": "#/$defs/dateTime" },
+        "request": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pipeline",
+            "cwd",
+            "argsDigest",
+            "timeoutMs",
+            "maxStdoutBytes",
+            "approvalId",
+            "approve",
+            "decisionRef"
+          ],
+          "properties": {
+            "pipeline": { "$ref": "#/$defs/workspacePath" },
+            "cwd": { "$ref": "#/$defs/workspacePath" },
+            "argsDigest": { "$ref": "#/$defs/digest" },
+            "timeoutMs": { "type": "integer", "minimum": 200, "maximum": 120000 },
+            "maxStdoutBytes": { "type": "integer", "minimum": 1024, "maximum": 1048576 },
+            "approvalId": {
+              "oneOf": [
+                { "$ref": "#/$defs/id" },
+                { "type": "null" }
+              ]
+            },
+            "approve": {
+              "oneOf": [
+                { "type": "boolean" },
+                { "type": "null" }
+              ]
+            },
+            "decisionRef": {
+              "oneOf": [
+                { "$ref": "#/$defs/id" },
+                { "type": "null" }
+              ]
+            }
+          }
+        },
+        "requestDigest": { "$ref": "#/$defs/digest" },
+        "response": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ok",
+            "status",
+            "outputDigest",
+            "requiresApproval",
+            "errorType",
+            "errorMessage"
+          ],
+          "properties": {
+            "ok": { "type": "boolean" },
+            "status": { "enum": ["ok", "needs_approval", "error"] },
+            "outputDigest": { "$ref": "#/$defs/digest" },
+            "requiresApproval": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["approvalId", "promptDigest", "itemsDigest", "resumeTokenPresent"],
+                  "properties": {
+                    "approvalId": {
+                      "oneOf": [
+                        { "$ref": "#/$defs/id" },
+                        { "type": "null" }
+                      ]
+                    },
+                    "promptDigest": { "$ref": "#/$defs/digest" },
+                    "itemsDigest": { "$ref": "#/$defs/digest" },
+                    "resumeTokenPresent": { "type": "boolean" }
+                  }
+                },
+                { "type": "null" }
+              ]
+            },
+            "errorType": {
+              "oneOf": [
+                { "$ref": "#/$defs/text" },
+                { "type": "null" }
+              ]
+            },
+            "errorMessage": {
+              "oneOf": [
+                { "$ref": "#/$defs/text" },
+                { "type": "null" }
+              ]
+            }
+          }
+        },
+        "evidenceDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "sourceSystem",
+        "sourceRecordRef",
+        "observedAt",
+        "recordDigest",
+        "supportsStepRefs",
+        "supportsEffectRefs",
+        "effectState"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["lobster-output", "external-system", "operator-observation"] },
+        "sourceSystem": { "$ref": "#/$defs/text" },
+        "sourceRecordRef": { "$ref": "#/$defs/text" },
+        "observedAt": { "$ref": "#/$defs/dateTime" },
+        "recordDigest": { "$ref": "#/$defs/digest" },
+        "supportsStepRefs": { "$ref": "#/$defs/idSet" },
+        "supportsEffectRefs": { "$ref": "#/$defs/idSet" },
+        "effectState": {
+          "enum": ["none", "not-attempted", "observed", "compensated", "unknown"]
+        }
+      }
+    },
+    "stepReconciliation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "stepRef",
+        "state",
+        "attemptRefs",
+        "startedAt",
+        "endedAt",
+        "evidenceRefs",
+        "effectState",
+        "summary"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "stepRef": { "$ref": "#/$defs/id" },
+        "state": {
+          "enum": [
+            "not-run",
+            "passed",
+            "pending-approval",
+            "failed",
+            "skipped",
+            "compensated",
+            "compensation-failed"
+          ]
+        },
+        "attemptRefs": { "$ref": "#/$defs/idSet" },
+        "startedAt": {
+          "oneOf": [
+            { "$ref": "#/$defs/dateTime" },
+            { "type": "null" }
+          ]
+        },
+        "endedAt": {
+          "oneOf": [
+            { "$ref": "#/$defs/dateTime" },
+            { "type": "null" }
+          ]
+        },
+        "evidenceRefs": { "$ref": "#/$defs/idSet" },
+        "effectState": {
+          "enum": ["none", "not-attempted", "observed", "compensated", "unknown"]
+        },
+        "summary": { "$ref": "#/$defs/text" }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "ownerRef", "targetRefs", "summary"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["open", "resolved"] },
+        "ownerRef": { "$ref": "#/$defs/id" },
+        "targetRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "summary": { "$ref": "#/$defs/text" }
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "ownerRef", "targetRefs", "text"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["open", "answered"] },
+        "ownerRef": { "$ref": "#/$defs/id" },
+        "targetRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "text": { "$ref": "#/$defs/text" }
+      }
+    }
+  }
+}

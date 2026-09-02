@@ -111,7 +111,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Web evidence researcher](claws/web-evidence-researcher) | @giodl73-repo; last verified 2026-08-30 |
 | [Website evidence collector](claws/website-evidence-collector) | @giodl73-repo; last verified 2026-08-30 |
 | [Work chief of staff](claws/work-chief-of-staff) | @giodl73-repo; last verified 2026-08-21 |
-| [Workflow operator](claws/workflow-operator) | @giodl73-repo; last verified 2026-08-19 |
+| [Workflow operator](claws/workflow-operator) | @giodl73-repo; last verified 2026-09-01 |
 
 ### Needs Help (0)
 
@@ -438,7 +438,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Web evidence researcher](claws/web-evidence-researcher) | Produces a private, bounded claim-evidence investigation ledger that maps owner-approved public web authorities, reproducible searches, canonical sources, corroboration, conflicts, uncertainty, and decision implications without making the decision. |
 | [Website evidence collector](claws/website-evidence-collector) | Produces a private, bounded website capture evidence ledger that binds owner-approved public pages to retrieval attempts, minimized snapshots, and baseline change comparisons without deciding materiality. |
 | [Work chief of staff](claws/work-chief-of-staff) | Coordinates a multi-leader operating portfolio across specialist-Claw artifacts, shared resources, decision forums, and explicitly authorized commitments without becoming the executive or functional decision-maker. |
-| [Workflow operator](claws/workflow-operator) | Runs bounded Lobster pipelines with typed inputs, explicit approval gates, resumable state, and reviewable results. |
+| [Workflow operator](claws/workflow-operator) | Reconciles one exact bounded Lobster run against its reviewed workflow, typed input, exposed tool envelopes, human approval gate, independently observed effects, retry lineage, and private resume-or-abort handoff without duplicating Lobster state or claiming transactionality. |
 
 ### X4 (18)
 
@@ -547,7 +547,7 @@ Categories come directly from the catalog entry.
 | [Sales operations](claws/sales-operations) | X3; Improves pipeline decisions through clean definitions, evidence, and accountable follow-up. |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | X3; Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle. |
 | [Work chief of staff](claws/work-chief-of-staff) | X3; Coordinates a multi-leader operating portfolio across specialist-Claw artifacts, shared resources, decision forums, and explicitly authorized commitments without becoming the executive or functional decision-maker. |
-| [Workflow operator](claws/workflow-operator) | X3; Runs bounded Lobster pipelines with typed inputs, explicit approval gates, resumable state, and reviewable results. |
+| [Workflow operator](claws/workflow-operator) | X3; Reconciles one exact bounded Lobster run against its reviewed workflow, typed input, exposed tool envelopes, human approval gate, independently observed effects, retry lineage, and private resume-or-abort handoff without duplicating Lobster state or claiming transactionality. |
 
 ### Product (3)
 
