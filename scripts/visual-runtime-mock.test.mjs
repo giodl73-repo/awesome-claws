@@ -4,6 +4,7 @@ import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
 import { createServer } from "node:net";
 import { join } from "node:path";
 import { test } from "node:test";
+import { setTimeout as delay } from "node:timers/promises";
 import { root } from "./catalog-source.mjs";
 
 async function reservePort() {
@@ -16,6 +17,24 @@ async function reservePort() {
   const port = typeof address === "object" && address ? address.port : 0;
   await new Promise((resolve) => server.close(resolve));
   return port;
+}
+
+async function waitForHealth(child, url, timeoutMs = 10_000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null) {
+      throw new Error("Visual runtime mock exited before becoming healthy.");
+    }
+    if (
+      await fetch(url)
+        .then((response) => response.ok)
+        .catch(() => false)
+    ) {
+      return;
+    }
+    await delay(25);
+  }
+  throw new Error(`Visual runtime mock did not become healthy within ${timeoutMs}ms.`);
 }
 
 test("the visual runtime fixture drives writes, show_widget, then a final response", async () => {
@@ -35,19 +54,7 @@ test("the visual runtime fixture drives writes, show_widget, then a final respon
     stdio: "ignore",
   });
   try {
-    for (let attempt = 0; attempt < 50; attempt += 1) {
-      if (child.exitCode !== null) {
-        throw new Error("Visual runtime mock exited before becoming healthy.");
-      }
-      if (
-        await fetch(`http://127.0.0.1:${port}/health`)
-          .then((response) => response.ok)
-          .catch(() => false)
-      ) {
-        break;
-      }
-      await new Promise((resolve) => setTimeout(resolve, 20));
-    }
+    await waitForHealth(child, `http://127.0.0.1:${port}/health`);
     const outputs = [];
     for (let step = 0; step < 5; step += 1) {
       const response = await fetch(`http://127.0.0.1:${port}/v1/responses`, {
