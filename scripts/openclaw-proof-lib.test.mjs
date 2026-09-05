@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { test } from "node:test";
 import {
   assertAddPreview,
+  assertInspectResult,
   assertPreviewEnvelope,
   createProofEnvironment,
   failureRecord,
@@ -72,6 +73,29 @@ test("blocked previews retain a bounded plan for failure classification", () => 
   };
   assert.equal(assertPreviewEnvelope({ harness: { outcome: plan } }), plan);
   assert.throws(() => assertAddPreview(plan), /complete non-mutating add plan/);
+});
+
+test("inspect requires the complete public package contract", () => {
+  const inspected = {
+    schemaVersion: "openclaw.clawInspect.v1",
+    stability: "experimental",
+    valid: true,
+    source: { kind: "package", version: "1.0.0" },
+    manifest: { schemaVersion: 1, agent: { id: "customer-support" } },
+  };
+  assert.equal(assertInspectResult(inspected, "customer-support"), inspected);
+  assert.throws(
+    () =>
+      assertInspectResult(
+        { ...inspected, manifest: { schemaVersion: 1, agent: {} } },
+        "customer-support",
+      ),
+    /complete package contract/u,
+  );
+  assert.throws(
+    () => assertInspectResult(inspected, "different-id"),
+    /complete package contract/u,
+  );
 });
 
 test("failures retain a phase and concise message", () => {

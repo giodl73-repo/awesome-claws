@@ -60,6 +60,10 @@ next likely gaps, see the [Awesome Claws roadmap](docs/roadmap.md).
 For a repository-evidence quality baseline across all 100 Claws, see the
 [catalog quality rubric](docs/catalog-quality-rubric.md) and generated
 [scorecard](docs/catalog-quality-scorecard.md).
+For the separate observed-behavior pillar, identity-bound trial schemas, and
+300-trial baseline or 2,100-trial seven-day plan, see the [Runtime Evidence
+Quality rubric](docs/runtime-evidence-quality-rubric.md). Runtime results are
+reported beside, never blended into, the unchanged Catalog Quality score.
 For interactive search and shareable filters across proof lanes, capabilities,
 authority attention, ownership, and review freshness, open the generated
 [catalog explorer](https://giodl73-repo.github.io/awesome-claws/). Its

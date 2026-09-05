@@ -3,8 +3,10 @@ import { join } from "node:path";
 import { root } from "./openclaw-proof-lib.mjs";
 import { isSafePackagePath } from "./portable-paths.mjs";
 
-export async function readExperienceCases(catalog) {
-  const registry = JSON.parse(await readFile(join(root, "experience-cases.json"), "utf8"));
+export async function readExperienceCases(catalog, { targetRoot = root } = {}) {
+  const registry = JSON.parse(
+    await readFile(join(targetRoot, "experience-cases.json"), "utf8"),
+  );
   if (registry.schemaVersion !== 1) {
     throw new Error("experience-cases.json must use schemaVersion 1.");
   }
@@ -29,6 +31,12 @@ export async function readExperienceCases(catalog) {
     if (![3, 4, 5].includes(item.target)) {
       throw new Error(`${item.id} has an invalid Experience target.`);
     }
+    if (
+      !isSafePackagePath(item.output) ||
+      !item.output.startsWith("outputs/")
+    ) {
+      throw new Error(`${item.id} must declare a safe workspace output.`);
+    }
     if (item.target === 3) {
       const resources = new Set((entry.resources ?? []).map((resource) => resource.path));
       if (item.primary !== "artifact" || item.fallback !== "text" || !item.output) {
@@ -51,8 +59,6 @@ export async function readExperienceCases(catalog) {
     if (
       !resources.has(item.asset) ||
       !tools.has("show_widget") ||
-      !isSafePackagePath(item.output) ||
-      !item.output.startsWith("outputs/") ||
       !isSafePackagePath(item.fallback) ||
       !item.fallback.startsWith("outputs/") ||
       item.output === item.fallback

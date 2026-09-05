@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/runtime-evidence-run-manifest.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "runId",
+    "mode",
+    "schedule",
+    "generatedAt",
+    "identities",
+    "limits",
+    "safety",
+    "costPreflight",
+    "trials",
+    "disclaimer",
+    "manifestDigest"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.runtimeEvidenceRunManifest.v1" },
+    "runId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]+$" },
+    "mode": { "enum": ["mock", "live"] },
+    "schedule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "repetitions", "clawCount", "scenarioCount", "trialCount"],
+      "properties": {
+        "kind": { "enum": ["baseline", "seven-day"] },
+        "repetitions": { "enum": [1, 7] },
+        "clawCount": { "type": "integer", "minimum": 1 },
+        "scenarioCount": { "const": 3 },
+        "trialCount": { "type": "integer", "minimum": 3 }
+      }
+    },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "identities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["harness", "openclaw", "model"],
+      "properties": {
+        "harness": { "$ref": "#/$defs/harnessIdentity" },
+        "openclaw": { "$ref": "#/$defs/namedIdentity" },
+        "model": { "$ref": "#/$defs/modelIdentity" }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "concurrency",
+        "trialTimeoutMs",
+        "cleanupTimeoutMs",
+        "infrastructureRetries",
+        "maxInputTokensPerTrial",
+        "maxOutputTokensPerTrial",
+        "maxTotalTokens",
+        "maxUsd"
+      ],
+      "properties": {
+        "concurrency": { "type": "integer", "minimum": 1, "maximum": 16 },
+        "trialTimeoutMs": { "type": "integer", "minimum": 1000, "maximum": 1800000 },
+        "cleanupTimeoutMs": { "type": "integer", "minimum": 1000, "maximum": 300000 },
+        "infrastructureRetries": { "type": "integer", "minimum": 0, "maximum": 2 },
+        "maxInputTokensPerTrial": { "type": "integer", "minimum": 1 },
+        "maxOutputTokensPerTrial": { "type": "integer", "minimum": 1 },
+        "maxTotalTokens": { "type": "integer", "minimum": 1 },
+        "maxUsd": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixtures",
+        "workspaceIsolation",
+        "userState",
+        "sideEffects",
+        "rawProviderDataPersisted"
+      ],
+      "properties": {
+        "fixtures": { "const": "synthetic-privacy-safe" },
+        "workspaceIsolation": { "const": "per-trial" },
+        "userState": { "const": "isolated-never-host" },
+        "sideEffects": { "const": "disabled" },
+        "rawProviderDataPersisted": { "const": false }
+      }
+    },
+    "costPreflight": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inputUsdPerMillion",
+        "outputUsdPerMillion",
+        "selectedEstimateUsd",
+        "selectedEstimateTokens",
+        "tokenBudgetCoversSelectedWorstCase",
+        "usdBudgetCoversSelectedWorstCase",
+        "fullBaselineEstimateUsd",
+        "fullSevenDayEstimateUsd"
+      ],
+      "properties": {
+        "inputUsdPerMillion": { "type": "number", "minimum": 0 },
+        "outputUsdPerMillion": { "type": "number", "minimum": 0 },
+        "selectedEstimateUsd": { "type": "number", "minimum": 0 },
+        "selectedEstimateTokens": { "type": "integer", "minimum": 1 },
+        "tokenBudgetCoversSelectedWorstCase": { "type": "boolean" },
+        "usdBudgetCoversSelectedWorstCase": { "type": "boolean" },
+        "fullBaselineEstimateUsd": { "type": "number", "minimum": 0 },
+        "fullSevenDayEstimateUsd": { "type": "number", "minimum": 0 }
+      }
+    },
+    "trials": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "$ref": "#/$defs/trialPlan" }
+    },
+    "disclaimer": { "type": "string", "minLength": 1, "maxLength": 1000 },
+    "manifestDigest": { "$ref": "#/$defs/digest" }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "namedIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "revision", "digest"],
+      "properties": {
+        "version": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "minLength": 1 },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "harnessIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "revisionDigest", "contentDigest", "dirty"],
+      "properties": {
+        "revision": { "type": "string", "minLength": 1 },
+        "revisionDigest": { "$ref": "#/$defs/digest" },
+        "contentDigest": { "$ref": "#/$defs/digest" },
+        "dirty": { "type": "boolean" }
+      }
+    },
+    "modelIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "model",
+        "revision",
+        "settings",
+        "configDigest",
+        "configurationAssertion",
+        "digest"
+      ],
+      "properties": {
+        "provider": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "minLength": 1 },
+        "settings": { "type": "object" },
+        "configDigest": {
+          "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }]
+        },
+        "configurationAssertion": {
+          "enum": [
+            "matched",
+            "structurally-unavailable",
+            "not-provided",
+            "deterministic-mock"
+          ]
+        },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "trialPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trialId",
+        "clawId",
+        "scenarioType",
+        "repetition",
+        "packageDigest",
+        "artifacts",
+        "scenarioDigest",
+        "capabilityClasses"
+      ],
+      "properties": {
+        "trialId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]+$" },
+        "clawId": { "type": "string", "pattern": "^[a-z][a-z0-9-]+$" },
+        "scenarioType": {
+          "enum": [
+            "accepted-task",
+            "missing-conflicting-evidence",
+            "prohibited-authority"
+          ]
+        },
+        "repetition": { "type": "integer", "minimum": 1, "maximum": 7 },
+        "packageDigest": { "$ref": "#/$defs/digest" },
+        "artifacts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["handoffPath", "structuredPath", "schemaName", "digest"],
+          "properties": {
+            "handoffPath": {
+              "type": "string",
+              "pattern": "^outputs/[A-Za-z0-9._/-]+$"
+            },
+            "structuredPath": {
+              "type": ["string", "null"],
+              "pattern": "^outputs/[A-Za-z0-9._/-]+\\.json$"
+            },
+            "schemaName": {
+              "type": ["string", "null"],
+              "pattern": "^[A-Za-z0-9._-]+\\.schema\\.json$"
+            },
+            "digest": { "$ref": "#/$defs/digest" }
+          }
+        },
+        "scenarioDigest": { "$ref": "#/$defs/digest" },
+        "capabilityClasses": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}
