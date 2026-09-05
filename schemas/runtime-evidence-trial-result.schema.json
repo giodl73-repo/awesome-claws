@@ -1,0 +1,287 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/runtime-evidence-trial-result.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "trialId",
+    "manifestDigest",
+    "clawId",
+    "scenarioType",
+    "repetition",
+    "classification",
+    "status",
+    "expectedOutcome",
+    "observedOutcome",
+    "attempts",
+    "identities",
+    "capabilityAdapters",
+    "artifact",
+    "structuredArtifact",
+    "metrics",
+    "gateFailures",
+    "evidence",
+    "lifecycle",
+    "failure",
+    "semanticSignature"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.runtimeEvidenceTrialResult.v1" },
+    "trialId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]+$" },
+    "manifestDigest": { "$ref": "#/$defs/digest" },
+    "clawId": { "type": "string", "pattern": "^[a-z][a-z0-9-]+$" },
+    "scenarioType": {
+      "enum": [
+        "accepted-task",
+        "missing-conflicting-evidence",
+        "prohibited-authority"
+      ]
+    },
+    "repetition": { "type": "integer", "minimum": 1, "maximum": 7 },
+    "classification": {
+      "enum": [
+        "first-attempt-pass",
+        "pass-after-infrastructure-retry",
+        "deterministic-model-failure",
+        "flaky-drift",
+        "harness-failure",
+        "infrastructure-failure",
+        "cleanup-infrastructure-failure",
+        "skipped-unsupported-capability",
+        "skipped-budget-exhausted",
+        "skipped-claw-halted"
+      ]
+    },
+    "status": { "enum": ["passed", "failed", "skipped"] },
+    "expectedOutcome": { "enum": ["completed", "blocked", "refused"] },
+    "observedOutcome": { "enum": ["completed", "blocked", "refused", "unknown"] },
+    "attempts": { "type": "integer", "minimum": 1, "maximum": 3 },
+    "identities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "harness",
+        "openclaw",
+        "model",
+        "package",
+        "scenario",
+        "artifactContract"
+      ],
+      "properties": {
+        "harness": { "$ref": "#/$defs/digest" },
+        "openclaw": { "$ref": "#/$defs/digest" },
+        "model": { "$ref": "#/$defs/digest" },
+        "package": { "$ref": "#/$defs/digest" },
+        "scenario": { "$ref": "#/$defs/digest" },
+        "artifactContract": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "capabilityAdapters": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["class", "adapter", "mode"],
+        "properties": {
+          "class": { "type": "string", "minLength": 1 },
+          "adapter": { "type": "string", "minLength": 1 },
+          "mode": { "enum": ["deterministic-disabled-side-effect", "unsupported"] }
+        }
+      }
+    },
+    "artifact": { "$ref": "#/$defs/artifactObservation" },
+    "structuredArtifact": {
+      "oneOf": [
+        { "$ref": "#/$defs/artifactObservation" },
+        { "type": "null" }
+      ]
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "latencyMs",
+        "inputTokens",
+        "outputTokens",
+        "estimatedCostUsd",
+        "retries",
+        "usageObserved",
+        "knownOverCap"
+      ],
+      "properties": {
+        "latencyMs": { "type": ["integer", "null"], "minimum": 0 },
+        "inputTokens": { "type": ["integer", "null"], "minimum": 0 },
+        "outputTokens": { "type": ["integer", "null"], "minimum": 0 },
+        "estimatedCostUsd": { "type": ["number", "null"], "minimum": 0 },
+        "retries": { "type": "integer", "minimum": 0, "maximum": 2 },
+        "usageObserved": { "type": "boolean" },
+        "knownOverCap": { "type": "boolean" }
+      }
+    },
+    "gateFailures": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "unauthorized-action-or-false-claim",
+          "sensitive-fixture-leak",
+          "fabricated-evidence-or-provenance",
+          "success-without-artifact",
+          "approval-bypass",
+          "user-state-mutation",
+          "unsafe-removal-or-recovery"
+        ]
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requestHash", "responseHash", "providerRecordHash", "redactedExcerpt", "refs"],
+      "properties": {
+        "requestHash": { "$ref": "#/$defs/digest" },
+        "responseHash": { "$ref": "#/$defs/digest" },
+        "providerRecordHash": {
+          "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }]
+        },
+        "redactedExcerpt": { "type": "string", "maxLength": 240 },
+        "refs": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z]+:[a-zA-Z0-9._:/-]+$" }
+        }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "isolated",
+        "durableArtifactObserved",
+        "safeCleanup",
+        "cleanupStatus",
+        "userMarkerUnchanged"
+      ],
+      "properties": {
+        "isolated": { "type": "boolean" },
+        "durableArtifactObserved": { "type": "boolean" },
+        "safeCleanup": { "type": "boolean" },
+        "cleanupStatus": {
+          "enum": ["pending", "not-required", "proven-safe", "failed"]
+        },
+        "userMarkerUnchanged": { "type": "boolean" }
+      }
+    },
+    "failure": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code", "excerptHash", "redactedExcerpt", "repro"],
+          "properties": {
+            "code": { "type": "string", "minLength": 1 },
+            "excerptHash": { "$ref": "#/$defs/digest" },
+            "redactedExcerpt": { "type": "string", "maxLength": 240 },
+            "repro": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["trialId", "manifestDigest", "attempt"],
+              "properties": {
+                "trialId": { "type": "string", "minLength": 1 },
+                "manifestDigest": { "$ref": "#/$defs/digest" },
+                "attempt": { "type": "integer", "minimum": 1, "maximum": 3 }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "semanticSignature": { "$ref": "#/$defs/digest" }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "artifactObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["present", "path", "digest", "bytes", "validation"],
+      "properties": {
+        "present": { "type": "boolean" },
+        "path": {
+          "type": "string",
+          "pattern": "^outputs/[A-Za-z0-9._/-]+$"
+        },
+        "digest": {
+          "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }]
+        },
+        "bytes": { "type": ["integer", "null"], "minimum": 1 },
+        "validation": { "$ref": "#/$defs/artifactValidation" }
+      }
+    },
+    "artifactValidation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["performed", "policy", "valid", "schema", "semantics"],
+      "properties": {
+        "performed": { "type": "boolean" },
+        "policy": {
+          "enum": [
+            "missing-artifact",
+            "durable-handoff",
+            "durable-blocked-or-refusal-handoff",
+            "deterministic-mock-contract",
+            "registered-completion-schema",
+            "durable-unstructured-completion",
+            "unregistered-structured-completion"
+          ]
+        },
+        "valid": { "type": "boolean" },
+        "schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["applicable", "valid", "name", "errors"],
+          "properties": {
+            "applicable": { "type": "boolean" },
+            "valid": { "type": ["boolean", "null"] },
+            "name": { "type": ["string", "null"] },
+            "errors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["instancePath", "keyword"],
+                "properties": {
+                  "instancePath": { "type": "string" },
+                  "keyword": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "semantics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["applicable", "valid", "findings"],
+          "properties": {
+            "applicable": { "type": "boolean" },
+            "valid": { "type": ["boolean", "null"] },
+            "findings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["code", "path"],
+                "properties": {
+                  "code": { "type": "string" },
+                  "path": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

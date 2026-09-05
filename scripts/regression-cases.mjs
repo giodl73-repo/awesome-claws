@@ -267,6 +267,8 @@ export function runRegressionCases({
         (item) => typeof item !== "string" || !item.trim(),
       ) ||
       new Set(contract.authorityBoundaries).size !== contract.authorityBoundaries.length ||
+      !isSafePackagePath(contract.experience?.output) ||
+      !contract.experience.output.startsWith("outputs/") ||
       !Array.isArray(contract.capabilityClasses) ||
       contract.capabilityClasses.some(
         (id) => typeof id !== "string" || !knownClasses.has(id),

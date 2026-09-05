@@ -112,6 +112,22 @@ export function assertPreviewEnvelope(payload) {
   return plan;
 }
 
+export function assertInspectResult(payload, expectedId) {
+  const inspected = payload.harness?.outcome ?? payload;
+  if (
+    inspected.schemaVersion !== "openclaw.clawInspect.v1" ||
+    inspected.stability !== "experimental" ||
+    inspected.valid !== true ||
+    inspected.manifest?.schemaVersion !== 1 ||
+    inspected.manifest?.agent?.id !== expectedId ||
+    !["package", "development"].includes(inspected.source?.kind) ||
+    typeof inspected.source?.version !== "string"
+  ) {
+    throw new Error("OpenClaw inspect did not return the complete package contract.");
+  }
+  return inspected;
+}
+
 export function assertAddPreview(payload) {
   const plan = assertPreviewEnvelope(payload);
   if (
