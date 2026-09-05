@@ -668,6 +668,34 @@ test("scenario generation is exact, synthetic, and contract-bound", async () => 
   );
 });
 
+test("diagnostic manifests can select one exact scenario", async () => {
+  const source = await fixture();
+  const manifest = await buildRunManifest({
+    catalog: source.catalog,
+    regressionRegistry: source.regressionRegistry,
+    onlyIds: ["sales-operations"],
+    scenarioTypes: ["accepted-task"],
+    mode: "mock",
+    schedule: "baseline",
+  });
+  assert.equal(manifest.schedule.clawCount, 1);
+  assert.equal(manifest.schedule.scenarioCount, 1);
+  assert.equal(manifest.schedule.trialCount, 1);
+  assert.deepEqual(
+    manifest.trials.map((trial) => trial.scenarioType),
+    ["accepted-task"],
+  );
+  await assert.rejects(
+    buildRunManifest({
+      catalog: source.catalog,
+      regressionRegistry: source.regressionRegistry,
+      onlyIds: ["sales-operations"],
+      scenarioTypes: ["not-a-scenario"],
+    }),
+    /non-empty unique subset/u,
+  );
+});
+
 test("regression outputs reject traversal and remain catalog-derived", async () => {
   const source = await fixture();
   const contract = source.regressionRegistry.cases[0];

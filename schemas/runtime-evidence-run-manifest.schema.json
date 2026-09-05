@@ -29,8 +29,8 @@
         "kind": { "enum": ["baseline", "seven-day"] },
         "repetitions": { "enum": [1, 7] },
         "clawCount": { "type": "integer", "minimum": 1 },
-        "scenarioCount": { "const": 3 },
-        "trialCount": { "type": "integer", "minimum": 3 }
+        "scenarioCount": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "trialCount": { "type": "integer", "minimum": 1 }
       }
     },
     "generatedAt": { "type": "string", "format": "date-time" },
@@ -112,7 +112,7 @@
     },
     "trials": {
       "type": "array",
-      "minItems": 3,
+      "minItems": 1,
       "items": { "$ref": "#/$defs/trialPlan" }
     },
     "disclaimer": { "type": "string", "minLength": 1, "maxLength": 1000 },

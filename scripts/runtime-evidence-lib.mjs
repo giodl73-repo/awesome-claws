@@ -721,6 +721,7 @@ export async function buildRunManifest({
   catalog,
   regressionRegistry,
   onlyIds = [],
+  scenarioTypes = SCENARIO_TYPES,
   mode = "mock",
   schedule = "baseline",
   openclaw = {},
@@ -754,7 +755,18 @@ export async function buildRunManifest({
   if (entries.length === 0) {
     throw new Error("Runtime evidence requires at least one Claw.");
   }
+  if (
+    !Array.isArray(scenarioTypes) ||
+    scenarioTypes.length === 0 ||
+    new Set(scenarioTypes).size !== scenarioTypes.length ||
+    scenarioTypes.some((scenarioType) => !SCENARIO_TYPES.includes(scenarioType))
+  ) {
+    throw new Error(
+      `Runtime evidence scenarios must be a non-empty unique subset of: ${SCENARIO_TYPES.join(", ")}.`,
+    );
+  }
   const repetitions = schedule === "seven-day" ? 7 : 1;
+  const scenarioCount = scenarioTypes.length;
   const limits = {
     concurrency: requestedLimits.concurrency ?? 4,
     trialTimeoutMs: requestedLimits.trialTimeoutMs ?? 120_000,
@@ -765,7 +777,7 @@ export async function buildRunManifest({
     maxTotalTokens:
       requestedLimits.maxTotalTokens ??
       entries.length *
-        3 *
+        scenarioCount *
         repetitions *
         ((requestedLimits.infrastructureRetries ?? 1) + 1) *
         ((requestedLimits.maxInputTokensPerTrial ?? 4_000) +
@@ -774,7 +786,7 @@ export async function buildRunManifest({
   };
   const costPreflight = preflightBudgets({
     mode,
-    selectedTrialCount: entries.length * 3 * repetitions,
+    selectedTrialCount: entries.length * scenarioCount * repetitions,
     catalogClawCount: catalog.entries.length,
     limits,
     pricing: {
@@ -836,7 +848,9 @@ export async function buildRunManifest({
   const trials = [];
   for (const entry of entries) {
     const contract = contractById.get(entry.id);
-    const scenarios = buildScenarios(contract);
+    const scenarios = buildScenarios(contract).filter((scenario) =>
+      scenarioTypes.includes(scenario.scenarioType),
+    );
     const artifacts = artifactContracts.get(entry.id);
     for (let repetition = 1; repetition <= repetitions; repetition += 1) {
       for (const scenario of scenarios) {
@@ -875,7 +889,7 @@ export async function buildRunManifest({
       kind: schedule,
       repetitions,
       clawCount: entries.length,
-      scenarioCount: 3,
+      scenarioCount,
       trialCount: trials.length,
     },
     generatedAt: timestamp,
