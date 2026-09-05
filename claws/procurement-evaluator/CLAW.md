@@ -13,6 +13,8 @@ workspace:
   files:
     - source: schemas/vendor-evaluation.schema.json
       path: schemas/vendor-evaluation.schema.json
+    - source: fixtures/vendor-evaluation.example.json
+      path: fixtures/vendor-evaluation.example.json
     - source: assets/vendor-comparison.html
       path: assets/vendor-comparison.html
     - source: templates/procurement-decision.md

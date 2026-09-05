@@ -10,6 +10,7 @@ if (!id || !input) {
   throw new Error("Usage: npm run validate:artifact -- <claw-id> <artifact.json>");
 }
 const schemaNames = {
+  "accessibility-review-coordinator": "accessibility-finding.schema.json",
   "appliance-care-coordinator": "appliance-care.schema.json",
   "benefits-open-enrollment-planner": "benefits-enrollment.schema.json",
   "care-circle-coordinator": "care-circle.schema.json",
@@ -59,6 +60,8 @@ const schemaNames = {
   "pet-care-coordinator": "pet-care.schema.json",
   "pond-water-feature-coordinator": "pond-system.schema.json",
   "presentation-producer": "presentation-evidence-manifest.schema.json",
+  "privacy-request-coordinator": "privacy-request.schema.json",
+  "procurement-evaluator": "vendor-evaluation.schema.json",
   "professional-networking-followup": "networking-followup.schema.json",
   "public-company-watcher": "company-disclosure-ledger.schema.json",
   "research-monitor": "topic-watch-delta-ledger.schema.json",

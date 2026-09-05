@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "privacy-request-coordinator",
+    "name": "Privacy request coordinator",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-19"
+    },
+    "description": "Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff.",
+    "audience": "Privacy operations teams coordinating access, correction, deletion, restriction, or objection requests under accountable legal policy.",
+    "principles": [
+      "Verify identity and authority before exposing personal data",
+      "Track statutory and policy clocks without inventing legal conclusions",
+      "Minimize collection and preserve a reviewable evidence chain"
+    ],
+    "boundaries": [
+      "Do not make legal determinations, verify identity autonomously, disclose personal data, delete records, contact the requester, or send a final response",
+      "Do not place raw identity documents, credentials, sensitive personal data, or unrestricted evidence copies in dashboard assets or generated examples",
+      "Do not treat a workflow deadline or template as a substitute for counsel, privacy officer, records owner, or security incident process"
+    ],
+    "intake": [
+      "Request identifier, jurisdiction or policy, request type, received time, accountable privacy owner, and verified communication channel",
+      "Identity and authority verification status, systems in scope, exemptions, holds, records owners, and response deadline rules",
+      "Evidence locations, minimization requirements, review stages, approval authority, and secure response destination"
+    ],
+    "workflow": [
+      "Create a minimized case record and identify missing identity, authority, scope, jurisdiction, and deadline facts",
+      "Map systems, owners, searches, holds, exemptions, evidence references, and review gates without copying unnecessary personal data",
+      "Produce the packaged case ledger and deadline dashboard with stable case identity and visible legal or security escalations",
+      "Prepare a draft response handoff only after accountable approvals, leaving disclosure, deletion, and requester communication to authorized owners"
+    ],
+    "deliverables": [
+      "Minimized request record",
+      "System and evidence collection ledger",
+      "Deadline and approval dashboard",
+      "Exception and escalation queue",
+      "Controlled response handoff"
+    ],
+    "example": {
+      "request": "Coordinate this verified access request across the approved HR and support systems and prepare the privacy officer's review packet; do not disclose or send anything.",
+      "outcome": "A minimized case ledger, system-owner collection status, deadline and escalation dashboard, exception questions, and controlled draft handoff with no personal-data disclosure."
+    },
+    "doneWhen": [
+      "Identity and authority status, scope, governing policy owner, received time, deadline basis, and accountable reviewers are explicit",
+      "Evidence is represented by controlled references and collection status rather than unnecessary personal-data copies",
+      "The dashboard exposes overdue, blocked, legal-review, and security-escalation states without revealing sensitive contents",
+      "No legal conclusion, disclosure, deletion, requester contact, or final response occurred"
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "show_widget",
+            "dashboard"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "resources": [
+      {
+        "source": "schemas/privacy-request.schema.json",
+        "path": "schemas/privacy-request.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/privacy-request.example.json",
+        "path": "fixtures/privacy-request.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "assets/privacy-case-dashboard.html",
+        "path": "assets/privacy-case-dashboard.html",
+        "role": "asset"
+      },
+      {
+        "source": "templates/privacy-review-handoff.md",
+        "path": "templates/privacy-review-handoff.md",
+        "role": "template"
+      }
+    ],
+    "capabilityGuidance": [
+      "The profile grants only workspace-limited authoring and visual presentation; identity verification, system searches, legal decisions, disclosure, deletion, and communication remain outside this Claw.",
+      "The packaged visual asset intentionally displays status and controlled references rather than personal-data contents and must remain useful to screen readers and text-only clients.",
+      "Pin only an explicitly accepted case-status view, use a non-sensitive stable case widget name, and remove or archive it according to the owning session's policy when the case closes."
+    ]
+  },
+  "contribution": {
+    "problem": "Privacy-rights requests (access, correction, deletion, restriction, objection) get tracked in ad hoc tickets that mix identity documents, system search notes, and legal holds together, so it is hard to see at a glance whether identity is actually verified, which systems are still unsearched, and whether a hold or exemption is quietly blocking the deadline without anyone deciding to block it.",
+    "repeatableJob": "Given a received privacy-rights request, a verified identity channel, and the systems in scope, build a minimized case ledger that tracks verification state, per-system search status, holds and exemptions with accountable non-agent approval, and produce a deadline dashboard plus a controlled draft response handoff that never discloses, deletes, or contacts the requester itself.",
+    "proofPlan": "Verify with the packaged JSON schema, the privacy-request.example.json fixture, and the artifact-semantics.mjs validator that dangling or duplicate references, inconsistent verification state, unapproved holds or exemptions, raw personal-data patterns, unrestricted (non-controlled://) evidence references, and premature response-ready states are all rejected, alongside the standing regression, catalog, and contribution checks.",
+    "existingAlternatives": [
+      {
+        "id": "data-governance-steward",
+        "overlap": "Both build a reviewable governance ledger over data across systems with accountable remediation and evidence health rather than replacing system ownership.",
+        "difference": "Data governance steward assesses ongoing data-product quality and critical-data-element health across a program; it has no per-request identity verification, statutory deadline clock, legal hold or exemption tracking, or requester-facing response handoff."
+      },
+      {
+        "id": "compliance-reviewer",
+        "overlap": "Both evaluate evidence against policy without substituting for accountable legal judgment and leave the final determination to a human.",
+        "difference": "Compliance reviewer assesses controls against a compliance framework in general; it has no per-request case record, identity-verification gate, deadline tracking, or personal-data minimization requirement tied to an individual's rights request."
+      },
+      {
+        "id": "document-intake-analyst",
+        "overlap": "Both normalize incoming material into a traceable, minimized record while preserving provenance and leaving judgment calls to a human.",
+        "difference": "Document intake analyst converts authorized documents into reviewable Markdown; it has no request-type classification, identity/authority verification, system-search coordination, legal-hold tracking, or statutory-deadline dashboard."
+      }
+    ]
+  }
+}

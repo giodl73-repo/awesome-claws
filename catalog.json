@@ -4293,6 +4293,11 @@
           "role": "schema"
         },
         {
+          "source": "fixtures/vendor-evaluation.example.json",
+          "path": "fixtures/vendor-evaluation.example.json",
+          "role": "fixture"
+        },
+        {
           "source": "assets/vendor-comparison.html",
           "path": "assets/vendor-comparison.html",
           "role": "asset"
@@ -4476,6 +4481,11 @@
           "source": "schemas/privacy-request.schema.json",
           "path": "schemas/privacy-request.schema.json",
           "role": "schema"
+        },
+        {
+          "source": "fixtures/privacy-request.example.json",
+          "path": "fixtures/privacy-request.example.json",
+          "role": "fixture"
         },
         {
           "source": "assets/privacy-case-dashboard.html",
@@ -5111,6 +5121,11 @@
           "source": "schemas/accessibility-finding.schema.json",
           "path": "schemas/accessibility-finding.schema.json",
           "role": "schema"
+        },
+        {
+          "source": "fixtures/accessibility-finding.example.json",
+          "path": "fixtures/accessibility-finding.example.json",
+          "role": "fixture"
         },
         {
           "source": "assets/accessibility-review.html",

@@ -1,0 +1,357 @@
+{
+  "schemaVersion": "awesomeClaws.vendorEvaluation.v1",
+  "evaluation": {
+    "id": "eval-support-platform-2026-08",
+    "decisionOwner": {
+      "id": "owner-support-ops-director",
+      "kind": "human",
+      "role": "Support operations director"
+    },
+    "requirementsRef": "requirements-support-platform-2026",
+    "budgetBoundary": "Up to $180,000 annual subscription, owner-approved",
+    "asOf": "2026-08-29",
+    "state": "blocked"
+  },
+  "criteria": [
+    {
+      "id": "criterion-uptime-sla",
+      "description": "Meets or exceeds the 99.9% uptime SLA with service credits",
+      "weight": 0.25,
+      "disqualifying": true,
+      "domain": null
+    },
+    {
+      "id": "criterion-security-review",
+      "description": "Passes the accountable security team's review",
+      "weight": 0.2,
+      "disqualifying": true,
+      "domain": "security"
+    },
+    {
+      "id": "criterion-privacy-review",
+      "description": "Passes the accountable privacy officer's data-handling review",
+      "weight": 0.15,
+      "disqualifying": true,
+      "domain": "privacy"
+    },
+    {
+      "id": "criterion-accessibility-review",
+      "description": "Meets the accountable accessibility review for the agent console",
+      "weight": 0.1,
+      "disqualifying": false,
+      "domain": "accessibility"
+    },
+    {
+      "id": "criterion-total-cost",
+      "description": "Total cost of ownership fits the approved budget boundary",
+      "weight": 0.15,
+      "disqualifying": false,
+      "domain": null
+    },
+    {
+      "id": "criterion-integration-effort",
+      "description": "Integration effort with the existing ticketing stack",
+      "weight": 0.15,
+      "disqualifying": false,
+      "domain": null
+    }
+  ],
+  "vendors": [
+    {
+      "id": "vendor-alpha-desk",
+      "name": "AlphaDesk",
+      "submittedAt": "2026-08-15",
+      "disqualified": false
+    },
+    {
+      "id": "vendor-beacon-support",
+      "name": "Beacon Support",
+      "submittedAt": "2026-08-16",
+      "disqualified": true
+    },
+    {
+      "id": "vendor-crestline-care",
+      "name": "Crestline Care",
+      "submittedAt": "2026-08-14",
+      "disqualified": false
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-alpha-uptime",
+      "vendorRef": "vendor-alpha-desk",
+      "criterionRef": "criterion-uptime-sla",
+      "sourceRef": "AlphaDesk SLA attestation, submitted 2026-08-15",
+      "supportState": "supported",
+      "note": "Vendor-attested 99.95% trailing 12-month uptime with a documented credit schedule."
+    },
+    {
+      "id": "evidence-alpha-security",
+      "vendorRef": "vendor-alpha-desk",
+      "criterionRef": "criterion-security-review",
+      "sourceRef": "AlphaDesk SOC 2 Type II report, 2026-06-30",
+      "supportState": "supported",
+      "note": "Security team completed review of the SOC 2 report and vendor questionnaire."
+    },
+    {
+      "id": "evidence-alpha-privacy",
+      "vendorRef": "vendor-alpha-desk",
+      "criterionRef": "criterion-privacy-review",
+      "sourceRef": null,
+      "supportState": "missing",
+      "note": "Privacy officer has not completed the data-handling review; no evidence is accepted until that review closes."
+    },
+    {
+      "id": "evidence-alpha-accessibility",
+      "vendorRef": "vendor-alpha-desk",
+      "criterionRef": "criterion-accessibility-review",
+      "sourceRef": "AlphaDesk VPAT 2.5, 2026-05-12",
+      "supportState": "supported",
+      "note": "Accessibility review coordinator confirmed the VPAT against the agent console screens."
+    },
+    {
+      "id": "evidence-alpha-cost",
+      "vendorRef": "vendor-alpha-desk",
+      "criterionRef": "criterion-total-cost",
+      "sourceRef": "AlphaDesk quote Q-2026-0815, 2026-08-15",
+      "supportState": "supported",
+      "note": "Quoted annual subscription of $162,000 fits the approved budget boundary."
+    },
+    {
+      "id": "evidence-alpha-integration",
+      "vendorRef": "vendor-alpha-desk",
+      "criterionRef": "criterion-integration-effort",
+      "sourceRef": "AlphaDesk integration notes, 2026-08-18",
+      "supportState": "supported",
+      "note": "Native connector for the existing ticketing stack; estimated two-week integration."
+    },
+    {
+      "id": "evidence-beacon-uptime",
+      "vendorRef": "vendor-beacon-support",
+      "criterionRef": "criterion-uptime-sla",
+      "sourceRef": "Beacon Support SLA history, submitted 2026-08-16",
+      "supportState": "unsupported",
+      "note": "Vendor-attested 98.2% trailing 12-month uptime; falls short of the required 99.9% SLA threshold."
+    },
+    {
+      "id": "evidence-crestline-uptime",
+      "vendorRef": "vendor-crestline-care",
+      "criterionRef": "criterion-uptime-sla",
+      "sourceRef": "Crestline Care SLA attestation, submitted 2026-08-14",
+      "supportState": "supported",
+      "note": "Vendor-attested 99.92% trailing 12-month uptime with a documented credit schedule."
+    },
+    {
+      "id": "evidence-crestline-security",
+      "vendorRef": "vendor-crestline-care",
+      "criterionRef": "criterion-security-review",
+      "sourceRef": "Crestline Care SOC 2 Type II report, 2026-04-30",
+      "supportState": "supported",
+      "note": "Security team completed review of the SOC 2 report and vendor questionnaire."
+    },
+    {
+      "id": "evidence-crestline-privacy",
+      "vendorRef": "vendor-crestline-care",
+      "criterionRef": "criterion-privacy-review",
+      "sourceRef": "Crestline Care DPA and data-flow map, 2026-08-01",
+      "supportState": "supported",
+      "note": "Privacy officer completed the data-handling review against the submitted DPA and data-flow map."
+    },
+    {
+      "id": "evidence-crestline-accessibility",
+      "vendorRef": "vendor-crestline-care",
+      "criterionRef": "criterion-accessibility-review",
+      "sourceRef": null,
+      "supportState": "missing",
+      "note": "Accessibility review coordinator has not completed the console review; no evidence is accepted until that review closes."
+    },
+    {
+      "id": "evidence-crestline-cost",
+      "vendorRef": "vendor-crestline-care",
+      "criterionRef": "criterion-total-cost",
+      "sourceRef": "Crestline Care quote Q-2026-0814, 2026-08-14",
+      "supportState": "supported",
+      "note": "Quoted annual subscription of $171,000 fits the approved budget boundary."
+    },
+    {
+      "id": "evidence-crestline-integration",
+      "vendorRef": "vendor-crestline-care",
+      "criterionRef": "criterion-integration-effort",
+      "sourceRef": "Crestline Care integration notes, 2026-08-19",
+      "supportState": "supported",
+      "note": "Middleware connector for the existing ticketing stack; estimated four-week integration."
+    }
+  ],
+  "scores": [
+    {
+      "id": "score-alpha-uptime",
+      "vendorRef": "vendor-alpha-desk",
+      "criterionRef": "criterion-uptime-sla",
+      "rating": 5,
+      "weightedScore": 1.25,
+      "evidenceRefs": ["evidence-alpha-uptime"]
+    },
+    {
+      "id": "score-alpha-security",
+      "vendorRef": "vendor-alpha-desk",
+      "criterionRef": "criterion-security-review",
+      "rating": 4,
+      "weightedScore": 0.8,
+      "evidenceRefs": ["evidence-alpha-security"]
+    },
+    {
+      "id": "score-alpha-accessibility",
+      "vendorRef": "vendor-alpha-desk",
+      "criterionRef": "criterion-accessibility-review",
+      "rating": 4,
+      "weightedScore": 0.4,
+      "evidenceRefs": ["evidence-alpha-accessibility"]
+    },
+    {
+      "id": "score-alpha-cost",
+      "vendorRef": "vendor-alpha-desk",
+      "criterionRef": "criterion-total-cost",
+      "rating": 3,
+      "weightedScore": 0.45,
+      "evidenceRefs": ["evidence-alpha-cost"]
+    },
+    {
+      "id": "score-alpha-integration",
+      "vendorRef": "vendor-alpha-desk",
+      "criterionRef": "criterion-integration-effort",
+      "rating": 4,
+      "weightedScore": 0.6,
+      "evidenceRefs": ["evidence-alpha-integration"]
+    },
+    {
+      "id": "score-crestline-uptime",
+      "vendorRef": "vendor-crestline-care",
+      "criterionRef": "criterion-uptime-sla",
+      "rating": 4,
+      "weightedScore": 1.0,
+      "evidenceRefs": ["evidence-crestline-uptime"]
+    },
+    {
+      "id": "score-crestline-security",
+      "vendorRef": "vendor-crestline-care",
+      "criterionRef": "criterion-security-review",
+      "rating": 5,
+      "weightedScore": 1.0,
+      "evidenceRefs": ["evidence-crestline-security"]
+    },
+    {
+      "id": "score-crestline-privacy",
+      "vendorRef": "vendor-crestline-care",
+      "criterionRef": "criterion-privacy-review",
+      "rating": 4,
+      "weightedScore": 0.6,
+      "evidenceRefs": ["evidence-crestline-privacy"]
+    },
+    {
+      "id": "score-crestline-cost",
+      "vendorRef": "vendor-crestline-care",
+      "criterionRef": "criterion-total-cost",
+      "rating": 4,
+      "weightedScore": 0.6,
+      "evidenceRefs": ["evidence-crestline-cost"]
+    },
+    {
+      "id": "score-crestline-integration",
+      "vendorRef": "vendor-crestline-care",
+      "criterionRef": "criterion-integration-effort",
+      "rating": 3,
+      "weightedScore": 0.45,
+      "evidenceRefs": ["evidence-crestline-integration"]
+    }
+  ],
+  "specialistReviews": [
+    {
+      "id": "review-alpha-security",
+      "domain": "security",
+      "vendorRef": "vendor-alpha-desk",
+      "reviewer": "Security review team",
+      "status": "complete",
+      "completedAt": "2026-08-20"
+    },
+    {
+      "id": "review-alpha-privacy",
+      "domain": "privacy",
+      "vendorRef": "vendor-alpha-desk",
+      "reviewer": "Privacy officer",
+      "status": "pending",
+      "completedAt": null
+    },
+    {
+      "id": "review-alpha-accessibility",
+      "domain": "accessibility",
+      "vendorRef": "vendor-alpha-desk",
+      "reviewer": "Accessibility review coordinator",
+      "status": "complete",
+      "completedAt": "2026-08-21"
+    },
+    {
+      "id": "review-crestline-security",
+      "domain": "security",
+      "vendorRef": "vendor-crestline-care",
+      "reviewer": "Security review team",
+      "status": "complete",
+      "completedAt": "2026-08-19"
+    },
+    {
+      "id": "review-crestline-privacy",
+      "domain": "privacy",
+      "vendorRef": "vendor-crestline-care",
+      "reviewer": "Privacy officer",
+      "status": "complete",
+      "completedAt": "2026-08-22"
+    },
+    {
+      "id": "review-crestline-accessibility",
+      "domain": "accessibility",
+      "vendorRef": "vendor-crestline-care",
+      "reviewer": "Accessibility review coordinator",
+      "status": "pending",
+      "completedAt": null
+    }
+  ],
+  "disqualifiers": [
+    {
+      "id": "disqualifier-beacon-uptime",
+      "vendorRef": "vendor-beacon-support",
+      "criterionRef": "criterion-uptime-sla",
+      "evidenceRef": "evidence-beacon-uptime",
+      "reason": "Beacon Support's attested uptime falls below the disqualifying SLA threshold."
+    }
+  ],
+  "unresolvedReviews": ["review-alpha-privacy", "review-crestline-accessibility"],
+  "reviewQuestions": [
+    {
+      "id": "question-alpha-privacy-review",
+      "question": "Has the privacy officer completed the data-handling review for AlphaDesk?",
+      "reason": "AlphaDesk cannot be scored on the privacy criterion until this review closes.",
+      "refs": ["review-alpha-privacy"]
+    },
+    {
+      "id": "question-crestline-accessibility-review",
+      "question": "Has the accessibility review coordinator completed the console review for Crestline Care?",
+      "reason": "Crestline Care cannot be scored on the accessibility criterion until this review closes.",
+      "refs": ["review-crestline-accessibility"]
+    }
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "owner-support-ops-director",
+    "recommendationRange": "AlphaDesk and Crestline Care remain within the evaluated range once their outstanding specialist reviews close; Beacon Support is disqualified on uptime evidence and is not being carried forward.",
+    "vendorRefs": ["vendor-alpha-desk", "vendor-beacon-support", "vendor-crestline-care"],
+    "unresolvedReviewRefs": ["review-alpha-privacy", "review-crestline-accessibility"],
+    "prohibitedActions": [
+      "contact-vendor",
+      "request-quote",
+      "negotiate",
+      "accept-terms",
+      "approve-spend",
+      "select-supplier",
+      "make-purchase"
+    ]
+  }
+}
