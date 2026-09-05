@@ -17,6 +17,8 @@ workspace:
       path: assets/production-control.html
     - source: templates/shift-handoff.md
       path: templates/shift-handoff.md
+    - source: fixtures/production-plan.example.json
+      path: fixtures/production-plan.example.json
 packages: []
 mcpServers: {}
 cronJobs: []

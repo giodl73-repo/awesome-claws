@@ -4103,6 +4103,11 @@
           "source": "templates/event-handoff.md",
           "path": "templates/event-handoff.md",
           "role": "template"
+        },
+        {
+          "source": "fixtures/run-of-show.example.json",
+          "path": "fixtures/run-of-show.example.json",
+          "role": "fixture"
         }
       ],
       "capabilityGuidance": [
@@ -4589,6 +4594,11 @@
           "source": "templates/shift-handoff.md",
           "path": "templates/shift-handoff.md",
           "role": "template"
+        },
+        {
+          "source": "fixtures/production-plan.example.json",
+          "path": "fixtures/production-plan.example.json",
+          "role": "fixture"
         }
       ],
       "capabilityGuidance": [
@@ -4681,6 +4691,11 @@
           "source": "templates/facilities-handoff.md",
           "path": "templates/facilities-handoff.md",
           "role": "template"
+        },
+        {
+          "source": "fixtures/facilities-issue.example.json",
+          "path": "fixtures/facilities-issue.example.json",
+          "role": "fixture"
         }
       ],
       "capabilityGuidance": [

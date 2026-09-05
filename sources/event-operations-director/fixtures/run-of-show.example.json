@@ -1,0 +1,160 @@
+{
+  "schemaVersion": "awesomeClaws.runOfShow.v1",
+  "event": "Customer Summit 2026",
+  "timezone": "America/New_York",
+  "eventId": "event-customer-summit-2026",
+  "eventOwnerId": "owner-event-director",
+  "vendors": [
+    { "id": "vendor-avline-productions", "name": "AVLine Productions" },
+    { "id": "vendor-metro-catering", "name": "Metro Catering Co." }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-headcount-final",
+      "kind": "attendee",
+      "refId": null,
+      "vendorRef": null,
+      "sourceRef": "controlled://event-evidence/customer-summit-2026/registration-final-count-2026-09-10",
+      "note": "Final registration export confirms 412 confirmed attendees against a 450-person venue capacity.",
+      "assertedAt": "2026-09-10",
+      "assertion": "observation"
+    },
+    {
+      "id": "evidence-avline-permit",
+      "kind": "vendor",
+      "refId": null,
+      "vendorRef": "vendor-avline-productions",
+      "sourceRef": "controlled://event-evidence/customer-summit-2026/avline-rigging-permit-2026-09-05",
+      "note": "AVLine Productions submitted the venue's approved rigging and stage permit.",
+      "assertedAt": "2026-09-05",
+      "assertion": "observation"
+    },
+    {
+      "id": "evidence-safety-plan",
+      "kind": "run-of-show",
+      "refId": null,
+      "vendorRef": null,
+      "sourceRef": "controlled://event-evidence/customer-summit-2026/emergency-egress-plan-2026-09-08",
+      "note": "Venue-reviewed emergency egress and medical-station plan for the general session hall.",
+      "assertedAt": "2026-09-08",
+      "assertion": "observation"
+    },
+    {
+      "id": "evidence-catering-headcount",
+      "kind": "vendor",
+      "refId": null,
+      "vendorRef": "vendor-metro-catering",
+      "sourceRef": "controlled://event-evidence/customer-summit-2026/catering-final-guarantee-2026-09-10",
+      "note": "Metro Catering final guaranteed count and dietary-accommodation confirmation.",
+      "assertedAt": "2026-09-10",
+      "assertion": "observation"
+    },
+    {
+      "id": "evidence-registration-completion",
+      "kind": "run-of-show",
+      "refId": "item-registration-open",
+      "vendorRef": null,
+      "sourceRef": "controlled://event-evidence/customer-summit-2026/registration-desk-opened-confirmation-2026-09-11",
+      "note": "Venue operations confirmed the registration desk opened on time and processed the queue without incident.",
+      "assertedAt": "2026-09-11T08:04:00-04:00",
+      "assertion": "completion"
+    }
+  ],
+  "gates": [
+    {
+      "id": "gate-capacity",
+      "kind": "capacity",
+      "status": "cleared",
+      "evidenceRefs": ["evidence-headcount-final"],
+      "approvedBy": "owner-venue-operations-manager",
+      "approvedAt": "2026-09-10"
+    },
+    {
+      "id": "gate-permit",
+      "kind": "permit",
+      "status": "cleared",
+      "evidenceRefs": ["evidence-avline-permit"],
+      "approvedBy": "owner-venue-operations-manager",
+      "approvedAt": "2026-09-05"
+    },
+    {
+      "id": "gate-safety",
+      "kind": "safety",
+      "status": "open",
+      "evidenceRefs": ["evidence-safety-plan"],
+      "approvedBy": null,
+      "approvedAt": null
+    }
+  ],
+  "incidents": [
+    {
+      "id": "incident-catering-delay",
+      "reportedAt": "2026-09-09T14:00:00Z",
+      "description": "Metro Catering flagged a possible delivery delay for the opening breakfast.",
+      "severity": "low",
+      "status": "open",
+      "resolvedBy": null,
+      "resolvedAt": null,
+      "resolutionEvidenceRef": null
+    }
+  ],
+  "changes": [
+    {
+      "id": "change-breakfast-window",
+      "changeType": "schedule-shift",
+      "appliedAt": "2026-09-09T16:00:00Z",
+      "incidentRef": "incident-catering-delay",
+      "approvedBy": "owner-event-director",
+      "description": "Shifted the opening breakfast service window by 30 minutes to absorb the catering delivery delay."
+    }
+  ],
+  "items": [
+    {
+      "id": "item-registration-open",
+      "time": "2026-09-11T08:00:00-04:00",
+      "owner": "owner-registration-lead",
+      "state": "done",
+      "dependsOn": null,
+      "completedBy": "owner-registration-lead",
+      "completedAt": "2026-09-11T08:05:00-04:00",
+      "completionEvidenceRef": "evidence-registration-completion"
+    },
+    {
+      "id": "item-general-session",
+      "time": "2026-09-11T09:00:00-04:00",
+      "owner": "owner-program-lead",
+      "state": "in-progress",
+      "dependsOn": "item-registration-open",
+      "completedBy": null,
+      "completedAt": null,
+      "completionEvidenceRef": null
+    },
+    {
+      "id": "item-breakout-tracks",
+      "time": "2026-09-11T10:30:00-04:00",
+      "owner": "owner-program-lead",
+      "state": "planned",
+      "dependsOn": "item-general-session",
+      "completedBy": null,
+      "completedAt": null,
+      "completionEvidenceRef": null
+    }
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "owner-event-director",
+    "vendorRefs": ["vendor-avline-productions", "vendor-metro-catering"],
+    "unresolvedGateRefs": ["gate-safety"],
+    "unresolvedItemRefs": ["item-general-session", "item-breakout-tracks"],
+    "unresolvedIncidentRefs": ["incident-catering-delay"],
+    "summary": "Capacity and permit gates are cleared; the safety gate awaits emergency-services sign-off and the catering delay incident remains open. General session and breakout tracks are not yet complete.",
+    "prohibitedActions": [
+      "book-venue",
+      "purchase-service",
+      "contact-attendee",
+      "contact-vendor",
+      "publish-schedule",
+      "represent-event-owner"
+    ]
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "schemaVersion": "awesomeClaws.productionPlan.v1",
+  "horizon": "2026-09-08/2026-09-14",
+  "state": "proposed",
+  "planId": "plan-line3-week37-2026",
+  "planOwnerId": "owner-production-planner",
+  "lines": [
+    { "id": "line-3-assembly", "name": "Line 3 assembly" },
+    { "id": "line-4-packaging", "name": "Line 4 packaging" }
+  ],
+  "orders": [
+    { "id": "demand-sku-4410-w37", "sku": "SKU-4410", "dueDate": "2026-09-12", "quantity": 4200, "fulfillmentMode": "exact" },
+    { "id": "demand-sku-5820-w37", "sku": "SKU-5820", "dueDate": "2026-09-14", "quantity": 1800, "fulfillmentMode": "exact" }
+  ],
+  "capacitySlots": [
+    { "id": "capacity-line3-2026-09-10", "lineRef": "line-3-assembly", "date": "2026-09-10", "availableUnits": 2200 },
+    { "id": "capacity-line3-2026-09-11", "lineRef": "line-3-assembly", "date": "2026-09-11", "availableUnits": 2200 },
+    { "id": "capacity-line4-2026-09-12", "lineRef": "line-4-packaging", "date": "2026-09-12", "availableUnits": 1800 }
+  ],
+  "scheduleEntries": [
+    {
+      "id": "schedule-sku-4410-day1",
+      "demandRef": "demand-sku-4410-w37",
+      "lineRef": "line-3-assembly",
+      "capacitySlotRef": "capacity-line3-2026-09-10",
+      "quantity": 2100,
+      "state": "proposed"
+    },
+    {
+      "id": "schedule-sku-4410-day2",
+      "demandRef": "demand-sku-4410-w37",
+      "lineRef": "line-3-assembly",
+      "capacitySlotRef": "capacity-line3-2026-09-11",
+      "quantity": 2100,
+      "state": "proposed"
+    },
+    {
+      "id": "schedule-sku-5820-day1",
+      "demandRef": "demand-sku-5820-w37",
+      "lineRef": "line-4-packaging",
+      "capacitySlotRef": "capacity-line4-2026-09-12",
+      "quantity": 1800,
+      "state": "proposed"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "constraint-line3-material",
+      "kind": "material",
+      "scope": "line-3-assembly",
+      "status": "cleared",
+      "evidenceRefs": ["evidence-line3-material-receipt"],
+      "clearedBy": "owner-materials-planner",
+      "clearedAt": "2026-09-09"
+    },
+    {
+      "id": "constraint-line4-quality-hold",
+      "kind": "quality",
+      "scope": "line-4-packaging",
+      "status": "open",
+      "evidenceRefs": ["evidence-line4-quality-hold-notice"],
+      "clearedBy": null,
+      "clearedAt": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-line3-material-receipt",
+      "kind": "material",
+      "refId": "constraint-line3-material",
+      "sourceRef": "controlled://manufacturing-evidence/line3-week37/component-receipt-2026-09-09",
+      "note": "Confirmed receipt of the full component lot required for the week 37 SKU-4410 run.",
+      "assertion": "clearance",
+      "assertedAt": "2026-09-09"
+    },
+    {
+      "id": "evidence-line4-quality-hold-notice",
+      "kind": "quality",
+      "refId": "constraint-line4-quality-hold",
+      "sourceRef": "controlled://manufacturing-evidence/line4-week37/quality-hold-notice-2026-09-08",
+      "note": "Quality flagged an open hold on the incoming packaging film pending supplier corrective action.",
+      "assertion": "observation",
+      "assertedAt": "2026-09-08"
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "exception-line4-packaging-film",
+      "constraintRef": "constraint-line4-quality-hold",
+      "description": "Line 4 packaging cannot run SKU-5820 until the packaging-film quality hold clears or an approved substitute film is qualified.",
+      "ownerId": "owner-quality-engineer",
+      "status": "open",
+      "resolvedBy": null,
+      "resolvedAt": null,
+      "resolutionEvidenceRef": null
+    }
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "owner-production-planner",
+    "scheduleRefs": ["schedule-sku-4410-day1", "schedule-sku-4410-day2", "schedule-sku-5820-day1"],
+    "unresolvedConstraintRefs": ["constraint-line4-quality-hold"],
+    "unresolvedExceptionRefs": ["exception-line4-packaging-film"],
+    "summary": "Line 3 SKU-4410 is fully constraint-clear and feasible within capacity. Line 4 SKU-5820 remains proposed only: an open packaging-film quality hold and its linked exception block release.",
+    "prohibitedActions": [
+      "control-equipment",
+      "release-work-order",
+      "modify-erp-record",
+      "modify-mes-record",
+      "override-quality-hold",
+      "bypass-maintenance",
+      "direct-personnel"
+    ]
+  }
+}
