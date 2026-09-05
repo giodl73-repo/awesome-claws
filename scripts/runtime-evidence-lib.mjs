@@ -3447,6 +3447,7 @@ export async function runRuntimeEvidence({
         proofRoot: workRoot,
         sampleSource: join(targetRoot, "claws", sampleTrial.clawId),
         expectedId: sampleTrial.clawId,
+        timeoutMs: manifest.limits.trialTimeoutMs,
       });
     }
     const indexedGroups = new Map();
