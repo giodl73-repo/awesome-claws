@@ -13,6 +13,8 @@ workspace:
   files:
     - source: schemas/privacy-request.schema.json
       path: schemas/privacy-request.schema.json
+    - source: fixtures/privacy-request.example.json
+      path: fixtures/privacy-request.example.json
     - source: assets/privacy-case-dashboard.html
       path: assets/privacy-case-dashboard.html
     - source: templates/privacy-review-handoff.md

@@ -1,0 +1,123 @@
+{
+  "schemaVersion": "awesomeClaws.privacyRequest.v1",
+  "requestId": "privacy-req-2026-0421",
+  "requestType": "deletion",
+  "receivedAt": "2026-08-10",
+  "verificationState": "verified",
+  "deadline": "2026-09-09",
+  "jurisdiction": "state-privacy-act",
+  "owner": "owner-privacy-program-lead",
+  "subject": {
+    "subjectRef": "controlled://identity-vault/subject/8f2c1d",
+    "verificationMethod": "government-id-and-address-match",
+    "verifiedBy": "identity-verification-team",
+    "verifiedAt": "2026-08-11"
+  },
+  "systems": [
+    {
+      "id": "system-support-ticketing",
+      "name": "Support ticketing platform",
+      "owner": "support-systems-owner",
+      "searchStatus": "complete",
+      "recordsFound": true,
+      "holdRef": null,
+      "exemptionRef": "exemption-fraud-records"
+    },
+    {
+      "id": "system-billing-platform",
+      "name": "Billing platform",
+      "owner": "finance-systems-owner",
+      "searchStatus": "complete",
+      "recordsFound": true,
+      "holdRef": "hold-billing-dispute",
+      "exemptionRef": null
+    },
+    {
+      "id": "system-marketing-crm",
+      "name": "Marketing CRM",
+      "owner": "marketing-systems-owner",
+      "searchStatus": "pending",
+      "recordsFound": null,
+      "holdRef": null,
+      "exemptionRef": null
+    }
+  ],
+  "holds": [
+    {
+      "id": "hold-billing-dispute",
+      "systemRef": "system-billing-platform",
+      "reason": "Open billing dispute retains records under legal hold pending resolution.",
+      "approvedBy": "legal-owner-record-retention",
+      "approvedAt": "2026-08-05",
+      "status": "active"
+    }
+  ],
+  "exemptions": [
+    {
+      "id": "exemption-fraud-records",
+      "systemRef": "system-support-ticketing",
+      "basis": "fraud-prevention-retention-statute",
+      "approvedBy": "legal-owner-record-retention",
+      "approvedAt": "2026-08-12"
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-ticketing-export",
+      "systemRef": "system-support-ticketing",
+      "ref": "controlled://case-evidence/8f2c1d/ticketing-export",
+      "kind": "record-export"
+    },
+    {
+      "id": "source-billing-export",
+      "systemRef": "system-billing-platform",
+      "ref": "controlled://case-evidence/8f2c1d/billing-export",
+      "kind": "record-export"
+    }
+  ],
+  "reviewGates": [
+    {
+      "id": "gate-legal-hold-review",
+      "description": "Legal owner must confirm whether the billing hold can be narrowed or must remain in place before any deletion scope is finalized.",
+      "status": "open",
+      "ownerRole": "legal-owner",
+      "blockingRefs": ["hold-billing-dispute"]
+    },
+    {
+      "id": "gate-search-completion",
+      "description": "Confirm the marketing CRM search completes before the case can close.",
+      "status": "open",
+      "ownerRole": "privacy-program-owner",
+      "blockingRefs": ["system-marketing-crm"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-marketing-crm-search",
+      "question": "Has the marketing CRM search been completed?",
+      "reason": "The deletion scope cannot be finalized until every enumerated system has a definitive search status.",
+      "refs": ["system-marketing-crm"]
+    },
+    {
+      "id": "question-billing-hold-scope",
+      "question": "Can the legal owner narrow or lift the billing-platform hold for this request?",
+      "reason": "The hold currently blocks deletion of billing records referenced by this request.",
+      "refs": ["hold-billing-dispute"]
+    }
+  ],
+  "responseHandoff": {
+    "state": "blocked",
+    "owner": "owner-privacy-program-lead",
+    "destination": "controlled://response-portal/case/8f2c1d",
+    "summary": "Deletion request remains blocked pending the marketing CRM search and the legal owner's review of the billing-platform hold; no deletion, disclosure, or requester communication has occurred.",
+    "unresolvedRefs": ["gate-legal-hold-review", "gate-search-completion"],
+    "prohibitedActions": [
+      "make-legal-determination",
+      "verify-identity-autonomously",
+      "disclose-personal-data",
+      "delete-records",
+      "contact-requester",
+      "send-final-response"
+    ]
+  }
+}

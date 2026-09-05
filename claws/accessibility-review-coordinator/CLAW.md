@@ -13,6 +13,8 @@ workspace:
   files:
     - source: schemas/accessibility-finding.schema.json
       path: schemas/accessibility-finding.schema.json
+    - source: fixtures/accessibility-finding.example.json
+      path: fixtures/accessibility-finding.example.json
     - source: assets/accessibility-review.html
       path: assets/accessibility-review.html
     - source: templates/accessibility-handoff.md

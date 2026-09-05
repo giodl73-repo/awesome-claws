@@ -251,6 +251,16 @@ export function computePresentationApprovalContentDigest(value) {
 }
 
 function duplicates(values) {
+  // `duplicates` is invoked directly by `uniqueFindings`, whose callers thread
+  // through the very same schema-valid-but-possibly-malformed reference-list
+  // fields (e.g. handoff.vendorRefs) that `referenceFindings` below already
+  // guards for undefined/null/non-array shapes. Mirror that same total
+  // behavior here (no duplicates to report for a missing or malformed list)
+  // so `values.filter` is never reached with a non-array value, and so the
+  // caller isn't left with a second, redundant "malformed" finding on top of
+  // `referenceFindings`'s own `invalid_reference_list` finding for the same
+  // field.
+  if (!Array.isArray(values)) return [];
   const seen = new Set();
   return [...new Set(values.filter((value) => seen.size === seen.add(value).size))];
 }
@@ -260,7 +270,23 @@ function uniqueFindings(values, path, label) {
     finding("duplicate_reference", path, `${label} ${JSON.stringify(value)} is duplicated.`),
   );
 }
+// Several artifact schemas leave per-item reference-list fields (e.g. a review
+// question's `refs`) completely unconstrained, so a schema-valid record can omit
+// the field, set it null, or supply a non-array value. Treat a missing/null list
+// as "no references" (nothing to validate); a present-but-non-array value is
+// genuinely malformed and gets its own structured finding instead of throwing
+// out of `values.filter`.
 function referenceFindings(values, allowed, path, label) {
+  if (values === undefined || values === null) return [];
+  if (!Array.isArray(values)) {
+    return [
+      finding(
+        "invalid_reference_list",
+        path,
+        `${label} references at ${path} must be an array, not ${JSON.stringify(values)}.`,
+      ),
+    ];
+  }
   return values
     .filter((value) => !allowed.has(value))
     .map((value) =>
@@ -268,10 +294,89 @@ function referenceFindings(values, allowed, path, label) {
     );
 }
 
+// Several handoff records leave a bare `{"type":"array"}` string-list field
+// (e.g. `handoff.prohibitedActions`) completely unconstrained, so a
+// schema-valid record can omit it, set it null, or supply a non-array value
+// like `{}`. Calling `.includes()` directly on such a value throws. Treat a
+// missing/null list the same as the established `?? []` convention (no
+// finding, safe empty list); a present-but-non-array value is genuinely
+// malformed and gets its own structured finding instead of throwing. A true
+// array is returned unchanged: `.includes()`/equality comparisons against its
+// elements cannot throw regardless of element type, so no further
+// per-element normalization is needed here.
+function stringListFindings(values, path, label) {
+  if (values === undefined || values === null) return { findings: [], items: [] };
+  if (!Array.isArray(values)) {
+    return {
+      findings: [
+        finding(
+          "invalid_string_list",
+          path,
+          `${label} at ${path} must be an array, not ${JSON.stringify(values)}.`,
+        ),
+      ],
+      items: [],
+    };
+  }
+  return { findings: [], items: values };
+}
+
+function isRecord(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+// Several artifact schemas declare bare `{"type":"array"}` fields with no `items`
+// constraint, so JSON Schema validation accepts null, arrays, or primitive members
+// inside them (e.g. criteria, systems, findings). This guard keeps every semantic
+// validator total over any schema-accepted value: it records a structured finding
+// for each malformed element and returns only the well-formed entries, paired with
+// their original array index, so later map/filter/index passes can never
+// dereference a null or non-object array member.
+function recordArray(list, path, label) {
+  const findings = [];
+  const entries = [];
+  (Array.isArray(list) ? list : []).forEach((item, index) => {
+    if (isRecord(item)) {
+      entries.push([index, item]);
+    } else {
+      findings.push(
+        finding(
+          "invalid_array_record",
+          `${path}[${index}]`,
+          `${label} entry at ${path}[${index}] must be an object, not ${JSON.stringify(item)}.`,
+        ),
+      );
+    }
+  });
+  return { findings, entries, items: entries.map(([, item]) => item) };
+}
+
 function numbersEqual(left, right) {
   const scale = Math.max(1, Math.abs(left), Math.abs(right));
   return Math.abs(left - right) <= Number.EPSILON * scale * 8;
 }
+
+const AGENT_IDENTITY_EXACT_PATTERN = /^(?:the )?(?:agent|assistant|bot|system|claw)$/iu;
+const AGENT_IDENTITY_KEYWORD_PATTERN =
+  /\b(?:ai|bot|gpt|language model|agent|assistant|automation|service account|system account)\b/iu;
+
+// Narrow, reusable check for accountable-approver fields (legal holds, statutory
+// exemptions, accessibility waivers, and handoff owners): rejects agent/assistant/
+// bot/system identities, not merely empty strings.
+function isAgentIdentityName(name) {
+  if (typeof name !== "string") return false;
+  const trimmed = name.trim();
+  if (trimmed.length === 0) return false;
+  return AGENT_IDENTITY_EXACT_PATTERN.test(trimmed) || AGENT_IDENTITY_KEYWORD_PATTERN.test(name);
+}
+
+// Domain-specific self-identity predicates: reject the package's own role name as
+// an approver so an agent cannot approve its own privacy hold/exemption,
+// accessibility waiver/verification, or procurement specialist review, without
+// rejecting unrelated, legitimate human coordinator/evaluator titles.
+const PRIVACY_REQUEST_COORDINATOR_PATTERN = /\bprivacy request coordinator\b/iu;
+const ACCESSIBILITY_REVIEW_COORDINATOR_PATTERN = /\baccessibility review coordinator\b/iu;
+const PROCUREMENT_EVALUATOR_PATTERN = /\bprocurement evaluator\b/iu;
 
 function zoneOffsetMs(formatter, instant) {
   const parts = Object.fromEntries(
@@ -33710,6 +33815,1451 @@ function videoConceptGenerationManifestFindings(value, options = {}) {
   return findings;
 }
 
+function procurementEvaluationFindings(value) {
+  const findings = [];
+  // handoff/evaluation reference-list fields being compared here are schema-
+  // valid as any type, so a malformed-but-matching-length object (e.g.
+  // `{ length: 2 }`) could pass the length check and then throw once passed
+  // to `new Set(...)`, which requires an iterable. Fail closed (not equal)
+  // whenever either side isn't actually an array, before any length/Set work.
+  const sameSet = (left, right) =>
+    Array.isArray(left) &&
+    Array.isArray(right) &&
+    left.length === right.length &&
+    new Set(left).size === left.length &&
+    left.every((item) => new Set(right).has(item));
+  const criteriaRecord = recordArray(value.criteria, "criteria", "Criterion");
+  const vendorsRecord = recordArray(value.vendors, "vendors", "Vendor");
+  const evidenceRecord = recordArray(value.evidence, "evidence", "Evidence");
+  const scoresRecord = recordArray(value.scores, "scores", "Score");
+  const specialistReviewsRecord = recordArray(
+    value.specialistReviews,
+    "specialistReviews",
+    "Specialist review",
+  );
+  const disqualifiersRecord = recordArray(value.disqualifiers, "disqualifiers", "Disqualifier");
+  const reviewQuestionsRecord = recordArray(
+    value.reviewQuestions,
+    "reviewQuestions",
+    "Review question",
+  );
+  findings.push(
+    ...criteriaRecord.findings,
+    ...vendorsRecord.findings,
+    ...evidenceRecord.findings,
+    ...scoresRecord.findings,
+    ...specialistReviewsRecord.findings,
+    ...disqualifiersRecord.findings,
+    ...reviewQuestionsRecord.findings,
+  );
+  const criteria = criteriaRecord.items;
+  const vendors = vendorsRecord.items;
+  const evidence = evidenceRecord.items;
+  const scores = scoresRecord.items;
+  const specialistReviews = specialistReviewsRecord.items;
+  const disqualifiers = disqualifiersRecord.items;
+  const reviewQuestions = reviewQuestionsRecord.items;
+  const handoff = value.handoff ?? {};
+  const evaluation = value.evaluation ?? {};
+  const criteriaIds = new Set(criteria.map((item) => item.id));
+  const vendorIds = new Set(vendors.map((item) => item.id));
+  const evidenceIds = new Set(evidence.map((item) => item.id));
+  const scoreIds = new Set(scores.map((item) => item.id));
+  const reviewIds = new Set(specialistReviews.map((item) => item.id));
+  const criterionById = new Map(criteria.map((item) => [item.id, item]));
+  const evidenceById = new Map(evidence.map((item) => [item.id, item]));
+  const vendorById = new Map(vendors.map((item) => [item.id, item]));
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  requireReferences(
+    criteria.map((item) => item.id),
+    criteriaIds,
+    "criteria",
+    "Criterion",
+  );
+  requireReferences(
+    vendors.map((item) => item.id),
+    vendorIds,
+    "vendors",
+    "Vendor",
+  );
+  requireReferences(
+    evidence.map((item) => item.id),
+    evidenceIds,
+    "evidence",
+    "Evidence",
+  );
+  requireReferences(scores.map((item) => item.id), scoreIds, "scores", "Score");
+  requireReferences(
+    specialistReviews.map((item) => item.id),
+    reviewIds,
+    "specialistReviews",
+    "Specialist review",
+  );
+
+  const weightSum = criteria.reduce((total, item) => total + item.weight, 0);
+  if (!numbersEqual(weightSum, 1)) {
+    findings.push(
+      finding(
+        "invalid_criteria_weight_sum",
+        "criteria",
+        "The evaluated criteria weights must sum to exactly 1.",
+      ),
+    );
+  }
+
+  for (const [index, item] of evidenceRecord.entries) {
+    if (!vendorIds.has(item.vendorRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `evidence[${index}].vendorRef`,
+          `Vendor reference ${JSON.stringify(item.vendorRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!criteriaIds.has(item.criterionRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `evidence[${index}].criterionRef`,
+          `Criterion reference ${JSON.stringify(item.criterionRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (item.supportState === "missing" && item.sourceRef !== null) {
+      findings.push(
+        finding(
+          "fabricated_missing_evidence",
+          `evidence[${index}].sourceRef`,
+          "Evidence marked missing must not cite a fabricated source.",
+        ),
+      );
+    }
+    if (
+      item.supportState !== "missing" &&
+      (typeof item.sourceRef !== "string" || item.sourceRef.trim().length === 0)
+    ) {
+      findings.push(
+        finding(
+          "unsupported_evidence_citation",
+          `evidence[${index}].sourceRef`,
+          "Supported or unsupported evidence must cite a real source.",
+        ),
+      );
+    }
+  }
+
+  // A score is "grounded" only when at least one of its evidenceRefs resolves to a
+  // record that is marked supported for the very same vendor and criterion. Empty
+  // evidenceRefs, or refs that resolve to unsupported/missing/mismatched evidence,
+  // never ground a score.
+  function isGroundedScore(score) {
+    const refs = Array.isArray(score.evidenceRefs) ? score.evidenceRefs : [];
+    return refs.some((ref) => {
+      const supportingEvidence = evidenceById.get(ref);
+      return (
+        supportingEvidence &&
+        supportingEvidence.supportState === "supported" &&
+        supportingEvidence.vendorRef === score.vendorRef &&
+        supportingEvidence.criterionRef === score.criterionRef
+      );
+    });
+  }
+
+  // Exactly one score may exist per vendorRef+criterionRef pair: distinct score
+  // ids do not create distinct grounds for the same vendor/criterion, so a
+  // second (possibly conflicting) score for a pair that already has one must
+  // be rejected rather than silently coexisting.
+  const scorePairCounts = new Map();
+  for (const item of scores) {
+    const key = `${item.vendorRef}::${item.criterionRef}`;
+    scorePairCounts.set(key, (scorePairCounts.get(key) ?? 0) + 1);
+  }
+
+  for (const [index, item] of scoresRecord.entries) {
+    const criterion = criterionById.get(item.criterionRef);
+    if (criterion && !numbersEqual(item.weightedScore, item.rating * criterion.weight)) {
+      findings.push(
+        finding(
+          "invalid_weighted_score",
+          `scores[${index}].weightedScore`,
+          "The weighted score must equal the rating multiplied by the criterion's weight.",
+        ),
+      );
+    }
+    if ((scorePairCounts.get(`${item.vendorRef}::${item.criterionRef}`) ?? 0) > 1) {
+      findings.push(
+        finding(
+          "duplicate_vendor_criterion_score",
+          `scores[${index}]`,
+          `Vendor ${JSON.stringify(item.vendorRef)} has more than one score recorded for criterion ${JSON.stringify(
+            item.criterionRef,
+          )}; exactly one score per vendor/criterion pair is required.`,
+        ),
+      );
+    }
+    const vendor = vendorById.get(item.vendorRef);
+    if (vendor?.disqualified === true) {
+      findings.push(
+        finding(
+          "disqualified_vendor_scored",
+          `scores[${index}]`,
+          "A disqualified vendor must not carry a criterion score.",
+        ),
+      );
+    }
+    const evidenceRefs = Array.isArray(item.evidenceRefs) ? item.evidenceRefs : [];
+    if (evidenceRefs.length === 0) {
+      findings.push(
+        finding(
+          "missing_score_evidence",
+          `scores[${index}].evidenceRefs`,
+          "A score must cite at least one supported evidence record for the same vendor and criterion; empty evidenceRefs is not acceptable grounding.",
+        ),
+      );
+    }
+    for (const evidenceRef of evidenceRefs) {
+      const supportingEvidence = evidenceById.get(evidenceRef);
+      if (
+        !supportingEvidence ||
+        supportingEvidence.supportState !== "supported" ||
+        supportingEvidence.vendorRef !== item.vendorRef ||
+        supportingEvidence.criterionRef !== item.criterionRef
+      ) {
+        findings.push(
+          finding(
+            "unsupported_score_evidence",
+            `scores[${index}].evidenceRefs`,
+            "A score may only rely on evidence marked supported for the same vendor and criterion.",
+          ),
+        );
+      }
+    }
+  }
+
+  // A disqualifier is only valid when its vendor/criterion references resolve,
+  // the referenced criterion is itself marked disqualifying, and it is grounded
+  // in unsupported evidence for that exact same vendor and criterion. Shared by
+  // the vendor-level "must have a valid disqualifier to be disqualified" check
+  // below and the per-disqualifier-record checks further down, so both enforce
+  // identical grounding semantics. A criterion that is not disqualifying (e.g.
+  // total cost or integration effort) can never ground a disqualification, no
+  // matter how weak the vendor's evidence is for it.
+  function isValidDisqualifier(item) {
+    if (!vendorIds.has(item.vendorRef) || !criteriaIds.has(item.criterionRef)) return false;
+    const criterion = criterionById.get(item.criterionRef);
+    if (!criterion || criterion.disqualifying !== true) return false;
+    const groundingEvidence = evidenceById.get(item.evidenceRef);
+    return (
+      Boolean(groundingEvidence) &&
+      groundingEvidence.vendorRef === item.vendorRef &&
+      groundingEvidence.criterionRef === item.criterionRef &&
+      groundingEvidence.supportState === "unsupported"
+    );
+  }
+
+  for (const vendor of vendors) {
+    if (vendor.disqualified) {
+      // A vendor cannot bypass scored/reviewed criterion coverage merely by
+      // toggling disqualified: the disqualification itself must be backed by at
+      // least one valid, same-vendor disqualifier record.
+      const hasValidDisqualifier = disqualifiers.some(
+        (item) => item.vendorRef === vendor.id && isValidDisqualifier(item),
+      );
+      if (!hasValidDisqualifier) {
+        findings.push(
+          finding(
+            "unsupported_vendor_disqualification",
+            "vendors",
+            `Vendor ${JSON.stringify(vendor.id)} is marked disqualified without at least one valid, same-vendor disqualifier grounded in unsupported evidence for the same criterion.`,
+          ),
+        );
+      }
+      continue;
+    }
+    for (const item of evidence) {
+      if (item.vendorRef !== vendor.id || item.supportState !== "supported") continue;
+      const hasScore = scores.some(
+        (score) => score.vendorRef === vendor.id && score.criterionRef === item.criterionRef,
+      );
+      if (!hasScore) {
+        findings.push(
+          finding(
+            "missing_score",
+            "scores",
+            `Vendor ${JSON.stringify(vendor.id)} has supported evidence for ${JSON.stringify(
+              item.criterionRef,
+            )} without a recorded score.`,
+          ),
+        );
+      }
+    }
+    for (const criterion of criteria) {
+      if (!criterion.domain) continue;
+      const hasReview = specialistReviews.some(
+        (review) => review.vendorRef === vendor.id && review.domain === criterion.domain,
+      );
+      if (!hasReview) {
+        findings.push(
+          finding(
+            "missing_specialist_review",
+            "specialistReviews",
+            `Vendor ${JSON.stringify(vendor.id)} is missing a ${criterion.domain} specialist review.`,
+          ),
+        );
+      }
+    }
+  }
+
+  for (const [index, item] of disqualifiersRecord.entries) {
+    if (!vendorIds.has(item.vendorRef) || !criteriaIds.has(item.criterionRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `disqualifiers[${index}]`,
+          "Disqualifier vendor and criterion references must resolve.",
+        ),
+      );
+    }
+    if (!isValidDisqualifier(item)) {
+      findings.push(
+        finding(
+          "ungrounded_disqualifier",
+          `disqualifiers[${index}].evidenceRef`,
+          "A disqualifier must be grounded in unsupported evidence for the same vendor and criterion.",
+        ),
+      );
+    }
+    const vendor = vendorById.get(item.vendorRef);
+    if (vendor && vendor.disqualified !== true) {
+      findings.push(
+        finding(
+          "inconsistent_disqualification",
+          `vendors`,
+          `Vendor ${JSON.stringify(item.vendorRef)} has a disqualifier but is not marked disqualified.`,
+        ),
+      );
+    }
+  }
+
+  // A specialist review only counts as genuinely complete when it names an
+  // accountable, non-agent, non-self reviewer (rejecting the package's own
+  // "procurement evaluator" role, not merely empty strings) and records a
+  // completion time. A "complete" status with a self-attested or absent
+  // reviewer/completedAt cannot resolve the review or unlock readiness.
+  function isCompleteSpecialistReview(review) {
+    return (
+      review.status === "complete" &&
+      typeof review.reviewer === "string" &&
+      review.reviewer.trim().length > 0 &&
+      !isAgentIdentityName(review.reviewer) &&
+      !PROCUREMENT_EVALUATOR_PATTERN.test(review.reviewer) &&
+      typeof review.completedAt === "string" &&
+      review.completedAt.trim().length > 0
+    );
+  }
+  for (const [index, item] of specialistReviewsRecord.entries) {
+    if (item.status === "complete" && !isCompleteSpecialistReview(item)) {
+      findings.push(
+        finding(
+          "self_attested_specialist_review",
+          `specialistReviews[${index}]`,
+          "A specialist review can only be marked complete with an accountable, non-agent, non-self reviewer identity and a recorded completion time.",
+        ),
+      );
+    }
+  }
+
+  const pendingReviewIds = specialistReviews
+    .filter((review) => !isCompleteSpecialistReview(review))
+    .map((review) => review.id);
+  if (!sameSet(value.unresolvedReviews, pendingReviewIds)) {
+    findings.push(
+      finding(
+        "inconsistent_unresolved_reviews",
+        "unresolvedReviews",
+        "The unresolved review list must exactly match every non-complete specialist review.",
+      ),
+    );
+  }
+  requireReferences(
+    reviewQuestions.map((item) => item.id),
+    new Set(reviewQuestions.map((item) => item.id)),
+    "reviewQuestions",
+    "Review question",
+  );
+  for (const [index, item] of reviewQuestionsRecord.entries) {
+    findings.push(
+      ...referenceFindings(item.refs, reviewIds, `reviewQuestions[${index}].refs`, "Specialist review"),
+    );
+  }
+
+  requireReferences(handoff.vendorRefs ?? [], vendorIds, "handoff.vendorRefs", "Vendor");
+  if (!sameSet(handoff.vendorRefs ?? [], [...vendorIds])) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.vendorRefs",
+        "The handoff must reference every evaluated vendor exactly once.",
+      ),
+    );
+  }
+  if (!sameSet(handoff.unresolvedReviewRefs ?? [], pendingReviewIds)) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.unresolvedReviewRefs",
+        "The handoff's unresolved review references must exactly match every non-complete specialist review.",
+      ),
+    );
+  }
+
+  // Readiness requires complete, *grounded* criterion coverage for every
+  // non-disqualified vendor: a recorded score for every criterion, and that score
+  // must itself be grounded in at least one supported evidence record for the same
+  // vendor and criterion (see isGroundedScore above). An evidence-free score does
+  // not count as coverage, so simply adding scores with empty evidenceRefs cannot
+  // make a missing-evidence evaluation ready. The only modeled escape hatch is
+  // formal vendor disqualification (vendor.disqualified), not a lenient read of the
+  // evidence's supportState.
+  const missingScoreCoverage = vendors.some((vendor) => {
+    if (vendor.disqualified) return false;
+    return criteria.some(
+      (criterion) =>
+        !scores.some(
+          (score) =>
+            score.vendorRef === vendor.id &&
+            score.criterionRef === criterion.id &&
+            isGroundedScore(score),
+        ),
+    );
+  });
+  const expectedState = pendingReviewIds.length > 0 || missingScoreCoverage ? "blocked" : "ready";
+  if (handoff.state !== expectedState) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready while specialist reviews are unresolved or scored evidence coverage is incomplete.",
+      ),
+    );
+  }
+  if (evaluation.state !== handoff.state) {
+    findings.push(
+      finding(
+        "inconsistent_evaluation_state",
+        "evaluation.state",
+        "The evaluation record and the handoff must report the same readiness state.",
+      ),
+    );
+  }
+
+  const ownerCandidates = [evaluation.decisionOwner?.id, handoff.owner];
+  // Every named owner slot must independently carry a trimmed, non-empty,
+  // accountable identity: a missing/blank owner is just as much an authority
+  // gap as an agent-owned one, so it must trip the same finding rather than
+  // silently passing because neither isAgentIdentityName() nor the
+  // self-role pattern reject undefined/empty strings.
+  if (
+    ownerCandidates.some(
+      (owner) =>
+        typeof owner !== "string" ||
+        owner.trim().length === 0 ||
+        isAgentIdentityName(owner) ||
+        PROCUREMENT_EVALUATOR_PATTERN.test(owner),
+    )
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Vendor contact, negotiation, spend approval, and purchasing authority must remain with a named, accountable human decision owner (not missing, blank, or agent/package-owned).",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "contact-vendor",
+    "request-quote",
+    "negotiate",
+    "accept-terms",
+    "approve-spend",
+    "select-supplier",
+    "make-purchase",
+  ];
+  const prohibitedActionsRecord = stringListFindings(
+    handoff.prohibitedActions,
+    "handoff.prohibitedActions",
+    "Prohibited actions",
+  );
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `Vendor evaluations must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  const narrativeTexts = [
+    handoff.recommendationRange,
+    ...evidence.map((item) => item.note),
+    ...disqualifiers.map((item) => item.reason),
+  ].filter((text) => typeof text === "string");
+  const prohibitedNarrative =
+    /\b(?:contact(?:ed|ing)?\s+the\s+vendor|request(?:ed|ing)?\s+a\s+quote|negotiat(?:ed|ing|e)|accept(?:ed|ing)?\s+(?:the\s+)?terms|approv(?:ed|ing|e)\s+(?:the\s+)?spend|select(?:ed|ing)?\s+(?:a\s+|the\s+)?(?:supplier|vendor)|(?:was|were|has been|have been)\s+selected|(?:made?|make|making)\s+(?:the\s+|a\s+)?purchase|purchase\s+(?:was|were|has been|have been)\s+made|purchased|bought|signed\s+(?:the\s+)?contract|contract\s+(?:was|were|has been|have been)\s+signed)\b/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim vendor contact, quote requests, negotiation, term acceptance, spend approval, supplier selection, or a completed purchase.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
+function privacyRequestFindings(value) {
+  const findings = [];
+  // responseHandoff reference-list fields being compared here are schema-
+  // valid as any type, so a malformed-but-matching-length object (e.g.
+  // `{ length: 2 }`) could pass the length check and then throw once passed
+  // to `new Set(...)`, which requires an iterable. Fail closed (not equal)
+  // whenever either side isn't actually an array, before any length/Set work.
+  const sameSet = (left, right) =>
+    Array.isArray(left) &&
+    Array.isArray(right) &&
+    left.length === right.length &&
+    new Set(left).size === left.length &&
+    left.every((item) => new Set(right).has(item));
+  const systemsRecord = recordArray(value.systems, "systems", "System");
+  const holdsRecord = recordArray(value.holds, "holds", "Hold");
+  const exemptionsRecord = recordArray(value.exemptions, "exemptions", "Exemption");
+  const sourcesRecord = recordArray(value.sources, "sources", "Source");
+  const reviewGatesRecord = recordArray(value.reviewGates, "reviewGates", "Review gate");
+  const reviewQuestionsRecord = recordArray(
+    value.reviewQuestions,
+    "reviewQuestions",
+    "Review question",
+  );
+  findings.push(
+    ...systemsRecord.findings,
+    ...holdsRecord.findings,
+    ...exemptionsRecord.findings,
+    ...sourcesRecord.findings,
+    ...reviewGatesRecord.findings,
+    ...reviewQuestionsRecord.findings,
+  );
+  const systems = systemsRecord.items;
+  const holds = holdsRecord.items;
+  const exemptions = exemptionsRecord.items;
+  const sources = sourcesRecord.items;
+  const reviewGates = reviewGatesRecord.items;
+  const reviewQuestions = reviewQuestionsRecord.items;
+  const handoff = value.responseHandoff ?? {};
+  const systemIds = new Set(systems.map((item) => item.id));
+  const holdIds = new Set(holds.map((item) => item.id));
+  const exemptionIds = new Set(exemptions.map((item) => item.id));
+  const gateIds = new Set(reviewGates.map((item) => item.id));
+  const blockingIds = new Set([...systemIds, ...holdIds, ...exemptionIds]);
+  const holdById = new Map(holds.map((item) => [item.id, item]));
+  const exemptionById = new Map(exemptions.map((item) => [item.id, item]));
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  requireReferences(systems.map((item) => item.id), systemIds, "systems", "System");
+  requireReferences(holds.map((item) => item.id), holdIds, "holds", "Hold");
+  requireReferences(exemptions.map((item) => item.id), exemptionIds, "exemptions", "Exemption");
+  requireReferences(
+    sources.map((item) => item.id),
+    new Set(sources.map((item) => item.id)),
+    "sources",
+    "Source",
+  );
+  requireReferences(reviewGates.map((item) => item.id), gateIds, "reviewGates", "Review gate");
+
+  for (const [index, item] of systemsRecord.entries) {
+    if (item.holdRef !== null) {
+      const hold = holdById.get(item.holdRef);
+      if (!hold) {
+        findings.push(
+          finding(
+            "dangling_reference",
+            `systems[${index}].holdRef`,
+            `Hold reference ${JSON.stringify(item.holdRef)} does not resolve.`,
+          ),
+        );
+      } else if (hold.systemRef !== item.id) {
+        // A system's holdRef must resolve to a hold for that same system; a hold
+        // that legitimately resolves but is scoped to a *different* system cannot
+        // be borrowed to represent this system's hold status.
+        findings.push(
+          finding(
+            "inconsistent_system_reference",
+            `systems[${index}].holdRef`,
+            `Hold reference ${JSON.stringify(item.holdRef)} belongs to a different system.`,
+          ),
+        );
+      }
+    }
+    if (item.exemptionRef !== null) {
+      const exemption = exemptionById.get(item.exemptionRef);
+      if (!exemption) {
+        findings.push(
+          finding(
+            "dangling_reference",
+            `systems[${index}].exemptionRef`,
+            `Exemption reference ${JSON.stringify(item.exemptionRef)} does not resolve.`,
+          ),
+        );
+      } else if (exemption.systemRef !== item.id) {
+        findings.push(
+          finding(
+            "inconsistent_system_reference",
+            `systems[${index}].exemptionRef`,
+            `Exemption reference ${JSON.stringify(item.exemptionRef)} belongs to a different system.`,
+          ),
+        );
+      }
+    }
+    // A search cannot legitimately be reported "complete" without a definitive
+    // recordsFound outcome. `recordsFound` is schema-valid as any type (the
+    // schema does not constrain it), so null or any other non-boolean value
+    // must be flagged and must not count as a completed, resolved search.
+    if (item.searchStatus === "complete" && typeof item.recordsFound !== "boolean") {
+      findings.push(
+        finding(
+          "invalid_search_result",
+          `systems[${index}].recordsFound`,
+          "A completed system search must report recordsFound as exactly true or false; null or unknown results cannot count as resolved.",
+        ),
+      );
+    }
+  }
+  // Holds and review gates each have a small, fixed set of statuses modeled by
+  // the fixture/template semantics. Any other schema-valid string (the schema
+  // only types these fields as bare strings) must be flagged and must fail
+  // closed for readiness rather than silently being treated as resolved.
+  const PRIVACY_HOLD_STATUSES = new Set(["active", "released"]);
+  const PRIVACY_REVIEW_GATE_STATUSES = new Set(["open", "closed"]);
+
+  for (const [index, item] of holdsRecord.entries) {
+    if (!systemIds.has(item.systemRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `holds[${index}].systemRef`,
+          `System reference ${JSON.stringify(item.systemRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!PRIVACY_HOLD_STATUSES.has(item.status)) {
+      findings.push(
+        finding(
+          "unknown_hold_status",
+          `holds[${index}].status`,
+          `Hold status ${JSON.stringify(item.status)} is not one of the supported statuses (active, released).`,
+        ),
+      );
+    }
+    if (
+      typeof item.approvedBy !== "string" ||
+      item.approvedBy.trim().length === 0 ||
+      isAgentIdentityName(item.approvedBy) ||
+      PRIVACY_REQUEST_COORDINATOR_PATTERN.test(item.approvedBy)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_approval",
+          `holds[${index}].approvedBy`,
+          "A legal hold must name an accountable, non-agent approver.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of exemptionsRecord.entries) {
+    if (!systemIds.has(item.systemRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `exemptions[${index}].systemRef`,
+          `System reference ${JSON.stringify(item.systemRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (
+      typeof item.approvedBy !== "string" ||
+      item.approvedBy.trim().length === 0 ||
+      isAgentIdentityName(item.approvedBy) ||
+      PRIVACY_REQUEST_COORDINATOR_PATTERN.test(item.approvedBy)
+    ) {
+      findings.push(
+        finding(
+          "missing_authority_approval",
+          `exemptions[${index}].approvedBy`,
+          "A statutory exemption must name an accountable, non-agent approver.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of sourcesRecord.entries) {
+    if (!systemIds.has(item.systemRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `sources[${index}].systemRef`,
+          `System reference ${JSON.stringify(item.systemRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (typeof item.ref !== "string" || !item.ref.startsWith("controlled://")) {
+      findings.push(
+        finding(
+          "unrestricted_evidence_reference",
+          `sources[${index}].ref`,
+          "Evidence must be represented by a controlled:// reference rather than an unrestricted copy.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of reviewGatesRecord.entries) {
+    if (!PRIVACY_REVIEW_GATE_STATUSES.has(item.status)) {
+      findings.push(
+        finding(
+          "unknown_review_gate_status",
+          `reviewGates[${index}].status`,
+          `Review gate status ${JSON.stringify(item.status)} is not one of the supported statuses (open, closed).`,
+        ),
+      );
+    }
+    findings.push(
+      ...referenceFindings(
+        item.blockingRefs,
+        blockingIds,
+        `reviewGates[${index}].blockingRefs`,
+        "Blocking reference",
+      ),
+    );
+  }
+  for (const [index, item] of reviewQuestionsRecord.entries) {
+    findings.push(
+      ...referenceFindings(item.refs, blockingIds, `reviewQuestions[${index}].refs`, "Reference"),
+    );
+  }
+
+  if (value.subject?.subjectRef && !value.subject.subjectRef.startsWith("controlled://")) {
+    findings.push(
+      finding(
+        "unrestricted_evidence_reference",
+        "subject.subjectRef",
+        "The subject identity must be represented by a controlled:// reference rather than raw personal data.",
+      ),
+    );
+  }
+
+  // Identity verification must be performed by an accountable, non-agent, non-self
+  // reviewer: a package cannot mark its own "privacy request coordinator" role, or
+  // an agent/assistant/bot/system identity, as the verifier and thereby unlock
+  // ready state.
+  const selfAttestedVerifier =
+    typeof value.subject?.verifiedBy === "string" &&
+    value.subject.verifiedBy.trim().length > 0 &&
+    (isAgentIdentityName(value.subject.verifiedBy) ||
+      PRIVACY_REQUEST_COORDINATOR_PATTERN.test(value.subject.verifiedBy));
+  if (selfAttestedVerifier) {
+    findings.push(
+      finding(
+        "self_attested_identity_verification",
+        "subject.verifiedBy",
+        "The subject's identity verification must be performed by an accountable, non-agent reviewer, not the requesting package itself.",
+      ),
+    );
+  }
+  // A verifier/verification-time field is only "present" when it is a trimmed,
+  // non-empty string: a whitespace-only value is truthy under Boolean() but
+  // names no accountable reviewer and records no real verification time.
+  const verifiedByPresent =
+    typeof value.subject?.verifiedBy === "string" && value.subject.verifiedBy.trim().length > 0;
+  const verifiedAtPresent =
+    typeof value.subject?.verifiedAt === "string" && value.subject.verifiedAt.trim().length > 0;
+  const verified = verifiedByPresent && verifiedAtPresent && !selfAttestedVerifier;
+  if (
+    (value.verificationState === "verified") !== verified ||
+    !["pending", "verified", "rejected"].includes(value.verificationState)
+  ) {
+    findings.push(
+      finding(
+        "inconsistent_verification_state",
+        "verificationState",
+        "Verification state may only be verified once the subject's verifier and verification time are both recorded.",
+      ),
+    );
+  }
+  if (Date.parse(`${value.receivedAt}T00:00:00Z`) > Date.parse(`${value.deadline}T23:59:59Z`)) {
+    findings.push(
+      finding(
+        "invalid_deadline_chronology",
+        "deadline",
+        "The response deadline must fall on or after the received time.",
+      ),
+    );
+  }
+
+  // Readiness also requires controlled evidence coverage: any completed system
+  // search that found records must have at least one source record (sources[].ref,
+  // already required to be a controlled:// reference above) pointing back at it via
+  // systemRef. This is derived directly from the systems/sources schema fields, not
+  // a parallel model, so it cannot be satisfied by simply leaving recordsFound true
+  // while removing the corresponding source coverage.
+  const systemsMissingEvidenceCoverage = systems.filter(
+    (system) =>
+      system.searchStatus === "complete" &&
+      system.recordsFound === true &&
+      !sources.some((source) => source.systemRef === system.id),
+  );
+  for (const system of systemsMissingEvidenceCoverage) {
+    findings.push(
+      finding(
+        "missing_system_evidence_coverage",
+        "sources",
+        `System ${JSON.stringify(system.id)} found records but has no controlled evidence source recorded.`,
+      ),
+    );
+  }
+
+  if (!(handoff.destination ?? "").startsWith("controlled://")) {
+    findings.push(
+      finding(
+        "unsafe_response_destination",
+        "responseHandoff.destination",
+        "The response destination must remain a controlled:// reference, never a raw address or repository path.",
+      ),
+    );
+  }
+  requireReferences(
+    handoff.unresolvedRefs ?? [],
+    gateIds,
+    "responseHandoff.unresolvedRefs",
+    "Review gate",
+  );
+  // Fail closed: only the explicitly modeled "closed"/"released" statuses may
+  // be excluded from readiness-blocking. An unrecognized status (already
+  // flagged above) must still count as open/active rather than slip through.
+  const openGateIds = reviewGates.filter((gate) => gate.status !== "closed").map((gate) => gate.id);
+  const activeHoldIds = holds.filter((hold) => hold.status !== "released").map((hold) => hold.id);
+  // A "complete" search with a null/unknown recordsFound is not actually
+  // resolved: it must remain a readiness blocker alongside truly pending
+  // searches rather than silently reading as done.
+  const pendingSystems = systems.some(
+    (system) => system.searchStatus !== "complete" || typeof system.recordsFound !== "boolean",
+  );
+  // Readiness also requires the requester's identity to be fully verified; a
+  // pending or rejected verification state, or a self-attested verifier, blocks
+  // the handoff even if every gate, hold, and system search has otherwise
+  // cleared. This checks the derived `verified` flag rather than the raw
+  // `verificationState` field so a falsified "verified" state paired with a
+  // self-attested verifier still cannot reach readiness.
+  const expectedState =
+    openGateIds.length > 0 ||
+    activeHoldIds.length > 0 ||
+    pendingSystems ||
+    systemsMissingEvidenceCoverage.length > 0 ||
+    !verified
+      ? "blocked"
+      : "ready";
+  if (handoff.state !== expectedState) {
+    findings.push(
+      finding(
+        "premature_response_ready",
+        "responseHandoff.state",
+        "The response cannot be ready while any system search, hold, or review gate is unresolved.",
+      ),
+    );
+  }
+  if (!sameSet(handoff.unresolvedRefs ?? [], openGateIds)) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "responseHandoff.unresolvedRefs",
+        "The response handoff must reference every open review gate exactly once.",
+      ),
+    );
+  }
+
+  // Both the case's accountable owner (value.owner) and the response
+  // handoff's owner must independently carry a trimmed, non-empty,
+  // accountable identity: a missing/blank owner is just as much an authority
+  // gap as an agent-owned one, so it must trip the same finding rather than
+  // silently passing because neither isAgentIdentityName() nor the
+  // self-role pattern reject undefined/empty strings.
+  const ownerCandidates = [value.owner, handoff.owner];
+  if (
+    ownerCandidates.some(
+      (owner) =>
+        typeof owner !== "string" ||
+        owner.trim().length === 0 ||
+        isAgentIdentityName(owner) ||
+        PRIVACY_REQUEST_COORDINATOR_PATTERN.test(owner),
+    )
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "responseHandoff.owner",
+        "Disclosure, deletion, and requester-communication authority must remain with a named, accountable human privacy owner (not missing, blank, or agent/package-owned).",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "make-legal-determination",
+    "verify-identity-autonomously",
+    "disclose-personal-data",
+    "delete-records",
+    "contact-requester",
+    "send-final-response",
+  ];
+  const prohibitedActionsRecord = stringListFindings(
+    handoff.prohibitedActions,
+    "responseHandoff.prohibitedActions",
+    "Prohibited actions",
+  );
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "responseHandoff.prohibitedActions",
+          `Privacy request cases must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  function collectStrings(item, path = "$") {
+    if (path === "$.subject.subjectRef" || path.endsWith(".ref")) return [];
+    if (typeof item === "string") return [item];
+    if (Array.isArray(item)) {
+      return item.flatMap((child, index) => collectStrings(child, `${path}[${index}]`));
+    }
+    if (!item || typeof item !== "object") return [];
+    return Object.entries(item).flatMap(([key, child]) =>
+      collectStrings(child, `${path}.${key}`),
+    );
+  }
+  const allText = collectStrings(value);
+  const personalDataPattern =
+    /\b\d{3}-\d{2}-\d{4}\b|\b[\w.+-]+@[\w-]+\.[a-z]{2,}\b|\b\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b|\b(?:\d[ -]?){13,16}\b/iu;
+  if (allText.some((text) => personalDataPattern.test(text))) {
+    findings.push(
+      finding(
+        "raw_personal_data_pattern",
+        "$",
+        "The case record must not contain raw identity numbers, email addresses, phone numbers, or payment card numbers.",
+      ),
+    );
+  }
+
+  const prohibitedNarrative =
+    /\b(?:disclos(?:e|ed|ing)|delet(?:e|ed|ing)|sent|send(?:ing)?|contact(?:ed|ing)?)\s+(?:the\s+)?(?:requester|records|personal data|response)\b|\b(?:legal determination|final response|deletion|disclosure)\s+(?:was|is|has been)\s+(?:made|sent|completed|issued)\b/giu;
+  if (hasUnnegatedNarrativeMatch(allText, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim a completed legal determination, disclosure, deletion, or requester communication.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
+function accessibilityReviewFindings(value) {
+  const findings = [];
+  // handoff reference-list fields being compared here are schema-valid as any
+  // type, so a malformed-but-matching-length object (e.g. `{ length: 2 }`)
+  // could pass the length check and then throw once passed to `new Set(...)`,
+  // which requires an iterable. Fail closed (not equal) whenever either side
+  // isn't actually an array, before any length/Set work.
+  const sameSet = (left, right) =>
+    Array.isArray(left) &&
+    Array.isArray(right) &&
+    left.length === right.length &&
+    new Set(left).size === left.length &&
+    left.every((item) => new Set(right).has(item));
+  const standardsReferencesRecord = recordArray(
+    value.standardsReferences,
+    "standardsReferences",
+    "Standard reference",
+  );
+  const sourcesRecord = recordArray(value.sources, "sources", "Source");
+  const findingRecordsRecord = recordArray(value.findings, "findings", "Finding");
+  const remediationsRecord = recordArray(value.remediations, "remediations", "Remediation");
+  const verificationsRecord = recordArray(value.verifications, "verifications", "Verification");
+  const knownExceptionsRecord = recordArray(
+    value.knownExceptions,
+    "knownExceptions",
+    "Known exception",
+  );
+  const reviewQuestionsRecord = recordArray(
+    value.reviewQuestions,
+    "reviewQuestions",
+    "Review question",
+  );
+  findings.push(
+    ...standardsReferencesRecord.findings,
+    ...sourcesRecord.findings,
+    ...findingRecordsRecord.findings,
+    ...remediationsRecord.findings,
+    ...verificationsRecord.findings,
+    ...knownExceptionsRecord.findings,
+    ...reviewQuestionsRecord.findings,
+  );
+  const standardsReferences = standardsReferencesRecord.items;
+  const sources = sourcesRecord.items;
+  const findingRecords = findingRecordsRecord.items;
+  const remediations = remediationsRecord.items;
+  const verifications = verificationsRecord.items;
+  const knownExceptions = knownExceptionsRecord.items;
+  const reviewQuestions = reviewQuestionsRecord.items;
+  const handoff = value.handoff ?? {};
+  const standardIds = new Set(standardsReferences.map((item) => item.id));
+  const sourceIds = new Set(sources.map((item) => item.id));
+  const findingIds = new Set(findingRecords.map((item) => item.id));
+  const remediationIds = new Set(remediations.map((item) => item.id));
+  const sourceById = new Map(sources.map((item) => [item.id, item]));
+  const remediationById = new Map(remediations.map((item) => [item.id, item]));
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  requireReferences(
+    standardsReferences.map((item) => item.id),
+    standardIds,
+    "standardsReferences",
+    "Standard reference",
+  );
+  requireReferences(sources.map((item) => item.id), sourceIds, "sources", "Source");
+  requireReferences(findingRecords.map((item) => item.id), findingIds, "findings", "Finding");
+  requireReferences(
+    remediations.map((item) => item.id),
+    remediationIds,
+    "remediations",
+    "Remediation",
+  );
+
+  const expectedSourceKind = {
+    automated: "automated-scan",
+    manual: "manual-audit",
+    assistive: "assistive-technology-session",
+  };
+  for (const [index, item] of findingRecordsRecord.entries) {
+    if (!standardIds.has(item.criterionRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `findings[${index}].criterionRef`,
+          `Standard reference ${JSON.stringify(item.criterionRef)} does not resolve.`,
+        ),
+      );
+    }
+    const source = sourceById.get(item.sourceRef);
+    if (!source) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `findings[${index}].sourceRef`,
+          `Source reference ${JSON.stringify(item.sourceRef)} does not resolve.`,
+        ),
+      );
+    } else if (source.kind !== expectedSourceKind[item.evidenceKind]) {
+      findings.push(
+        finding(
+          "inconsistent_evidence_source",
+          `findings[${index}].sourceRef`,
+          `A ${item.evidenceKind} finding must cite a ${expectedSourceKind[item.evidenceKind]} source.`,
+        ),
+      );
+    }
+    if ((item.evidenceKind === "assistive") !== item.assistiveTechnologyUsed) {
+      findings.push(
+        finding(
+          "inconsistent_assistive_evidence",
+          `findings[${index}].assistiveTechnologyUsed`,
+          "Assistive-technology involvement must be flagged if and only if the evidence kind is assistive.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, item] of remediationsRecord.entries) {
+    if (!findingIds.has(item.findingRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `remediations[${index}].findingRef`,
+          `Finding reference ${JSON.stringify(item.findingRef)} does not resolve.`,
+        ),
+      );
+    }
+  }
+  // A finding can only be closed by an accountable, non-agent, non-self verifier:
+  // the package's own "accessibility review coordinator" role, or any
+  // agent/assistant/bot/system identity, cannot self-verify a passing outcome.
+  function isValidAccessibilityVerifier(name) {
+    return (
+      typeof name === "string" &&
+      name.trim().length > 0 &&
+      !isAgentIdentityName(name) &&
+      !ACCESSIBILITY_REVIEW_COORDINATOR_PATTERN.test(name)
+    );
+  }
+  // A closure-worthy verification must record when the verification actually
+  // happened; a missing or whitespace-only verifiedAt names no real event.
+  function hasRecordedVerificationTime(verifiedAt) {
+    return typeof verifiedAt === "string" && verifiedAt.trim().length > 0;
+  }
+
+  for (const [index, item] of verificationsRecord.entries) {
+    if (!findingIds.has(item.findingRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `verifications[${index}].findingRef`,
+          `Finding reference ${JSON.stringify(item.findingRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (item.outcome === "pass" && !isValidAccessibilityVerifier(item.verifiedBy)) {
+      findings.push(
+        finding(
+          "self_attested_verification",
+          `verifications[${index}].verifiedBy`,
+          "A passing verification must name an accountable, non-agent verifier and cannot be self-attested by the package's own role.",
+        ),
+      );
+    }
+    if (item.outcome === "pass" && !hasRecordedVerificationTime(item.verifiedAt)) {
+      findings.push(
+        finding(
+          "missing_verification_timestamp",
+          `verifications[${index}].verifiedAt`,
+          "A passing verification used for closure must record a trimmed, non-empty verifiedAt timestamp.",
+        ),
+      );
+    }
+    if (item.remediationRef !== null) {
+      const remediation = remediationById.get(item.remediationRef);
+      if (!remediation) {
+        findings.push(
+          finding(
+            "dangling_reference",
+            `verifications[${index}].remediationRef`,
+            `Remediation reference ${JSON.stringify(item.remediationRef)} does not resolve.`,
+          ),
+        );
+      } else if (remediation.findingRef !== item.findingRef) {
+        findings.push(
+          finding(
+            "inconsistent_remediation_reference",
+            `verifications[${index}].remediationRef`,
+            "A verification's remediation must resolve to the same finding as the verification.",
+          ),
+        );
+      } else if (item.outcome === "pass") {
+        // A passing verification that relies on a remediation must not close over
+        // planned or in-progress work: the remediation must be complete and carry
+        // the schema's completion metadata (completedAt).
+        const remediationComplete =
+          remediation.status === "complete" &&
+          typeof remediation.completedAt === "string" &&
+          remediation.completedAt.trim().length > 0;
+        if (!remediationComplete) {
+          findings.push(
+            finding(
+              "premature_verification_pass",
+              `verifications[${index}].remediationRef`,
+              "A passing verification cannot rely on a remediation that is not complete with recorded completion metadata.",
+            ),
+          );
+        }
+      }
+    } else if (item.outcome === "pass" && remediations.some((r) => r.findingRef === item.findingRef)) {
+      // remediationRef:null must not let a passing verification bypass a
+      // finding's own planned/in-progress remediation work: if the finding has
+      // any remediation records at all, closure must reference one of them.
+      findings.push(
+        finding(
+          "premature_verification_pass",
+          `verifications[${index}].remediationRef`,
+          "A passing verification for a finding with remediation records must reference a complete remediation for that finding; remediationRef cannot be null.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of knownExceptionsRecord.entries) {
+    if (!findingIds.has(item.findingRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `knownExceptions[${index}].findingRef`,
+          `Finding reference ${JSON.stringify(item.findingRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (
+      typeof item.approvedBy !== "string" ||
+      item.approvedBy.trim().length === 0 ||
+      isAgentIdentityName(item.approvedBy) ||
+      ACCESSIBILITY_REVIEW_COORDINATOR_PATTERN.test(item.approvedBy)
+    ) {
+      findings.push(
+        finding(
+          "unauthorized_waiver",
+          `knownExceptions[${index}].approvedBy`,
+          "A known exception must name an accountable, non-agent approver.",
+        ),
+      );
+    }
+  }
+  for (const [index, item] of reviewQuestionsRecord.entries) {
+    findings.push(
+      ...referenceFindings(item.refs, findingIds, `reviewQuestions[${index}].refs`, "Finding"),
+    );
+  }
+
+  // The only finding states the fixture/template/contract model: an "open"
+  // finding awaiting work, "remediated" once a fix ships but before
+  // independent verification, and the two states that can actually close a
+  // finding out of readiness ("verified" via a passing verification,
+  // "accepted-risk" via an approved known exception). Any other string is
+  // schema-valid (the schema only types `state` as a bare string) but is not a
+  // state this validator understands, so it must be flagged and must never be
+  // treated as resolved.
+  const ACCESSIBILITY_FINDING_STATES = new Set(["open", "remediated", "verified", "accepted-risk"]);
+  const ACCESSIBILITY_TERMINAL_FINDING_STATES = new Set(["verified", "accepted-risk"]);
+
+  for (const [index, item] of findingRecordsRecord.entries) {
+    const verification = verifications.find((entry) => entry.findingRef === item.id);
+    const remediation = remediations.find((entry) => entry.findingRef === item.id);
+    const exception = knownExceptions.find((entry) => entry.findingRef === item.id);
+    if (!ACCESSIBILITY_FINDING_STATES.has(item.state)) {
+      findings.push(
+        finding(
+          "unknown_finding_state",
+          `findings[${index}].state`,
+          `Finding state ${JSON.stringify(item.state)} is not one of the supported states (open, remediated, verified, accepted-risk).`,
+        ),
+      );
+    }
+    if (
+      item.state === "verified" &&
+      (!verification ||
+        verification.outcome !== "pass" ||
+        !isValidAccessibilityVerifier(verification.verifiedBy) ||
+        !hasRecordedVerificationTime(verification.verifiedAt))
+    ) {
+      findings.push(
+        finding(
+          "premature_finding_state",
+          `findings[${index}].state`,
+          "A finding cannot be verified without a passing verification record from an accountable, non-agent, non-self verifier.",
+        ),
+      );
+    }
+    if (item.state === "remediated" && (!remediation || remediation.status !== "complete")) {
+      findings.push(
+        finding(
+          "premature_finding_state",
+          `findings[${index}].state`,
+          "A finding cannot be remediated without a completed remediation record.",
+        ),
+      );
+    }
+    if (item.state === "accepted-risk" && !exception) {
+      findings.push(
+        finding(
+          "premature_finding_state",
+          `findings[${index}].state`,
+          "A finding cannot be accepted as risk without an approved known exception.",
+        ),
+      );
+    }
+  }
+
+  if (handoff.conformanceClaim !== "none") {
+    findings.push(
+      finding(
+        "conformance_claim_asserted",
+        "handoff.conformanceClaim",
+        "The review must never assert a conformance, compliance, certification, or approval claim.",
+      ),
+    );
+  }
+  requireReferences(handoff.findingRefs ?? [], findingIds, "handoff.findingRefs", "Finding");
+  if (!sameSet(handoff.findingRefs ?? [], [...findingIds])) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.findingRefs",
+        "The handoff must reference every finding exactly once.",
+      ),
+    );
+  }
+  // Readiness may only exclude findings in an explicitly terminal, modeled
+  // state ("verified" or "accepted-risk"); every other state -- "open",
+  // "remediated", or any unrecognized/invented state such as "closed" -- must
+  // remain unresolved so it cannot silently bypass readiness.
+  const unresolvedFindingIds = findingRecords
+    .filter((item) => !ACCESSIBILITY_TERMINAL_FINDING_STATES.has(item.state))
+    .map((item) => item.id);
+  if (!sameSet(handoff.unresolvedFindingRefs ?? [], unresolvedFindingIds)) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.unresolvedFindingRefs",
+        "The handoff's unresolved finding references must exactly match every open or remediated finding.",
+      ),
+    );
+  }
+  const expectedState = unresolvedFindingIds.length > 0 ? "blocked" : "ready";
+  if (handoff.state !== expectedState) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready while any finding remains open or awaiting verification.",
+      ),
+    );
+  }
+  if (value.state !== handoff.state) {
+    findings.push(
+      finding(
+        "inconsistent_review_state",
+        "state",
+        "The top-level review state and the handoff must report the same readiness state.",
+      ),
+    );
+  }
+
+  // Both the review's owner (review.owner) and the handoff owner must
+  // independently carry a trimmed, non-empty, accountable identity: a
+  // missing/blank owner is just as much an authority gap as an agent-owned
+  // one, so it must trip the same finding rather than silently passing
+  // because neither isAgentIdentityName() nor the self-role pattern reject
+  // undefined/empty strings.
+  const ownerCandidates = [value.review?.owner, handoff.owner];
+  if (
+    ownerCandidates.some(
+      (owner) =>
+        typeof owner !== "string" ||
+        owner.trim().length === 0 ||
+        isAgentIdentityName(owner) ||
+        ACCESSIBILITY_REVIEW_COORDINATOR_PATTERN.test(owner),
+    )
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Waiver, defect-closure, production-change, and conformance-claim authority must remain with a named, accountable human owner (not missing, blank, or agent/package-owned).",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "claim-conformance",
+    "claim-legal-compliance",
+    "claim-certification",
+    "claim-accessibility-approval",
+    "change-production-ui",
+    "close-defect",
+    "waive-finding-without-accountable-review",
+  ];
+  const prohibitedActionsRecord = stringListFindings(
+    handoff.prohibitedActions,
+    "handoff.prohibitedActions",
+    "Prohibited actions",
+  );
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `Accessibility reviews must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  function collectStrings(item, path = "$") {
+    if (path.endsWith(".ref") || path.endsWith(".sourceRef")) return [];
+    if (typeof item === "string") return [item];
+    if (Array.isArray(item)) {
+      return item.flatMap((child, index) => collectStrings(child, `${path}[${index}]`));
+    }
+    if (!item || typeof item !== "object") return [];
+    return Object.entries(item).flatMap(([key, child]) =>
+      collectStrings(child, `${path}.${key}`),
+    );
+  }
+  const allText = collectStrings(value);
+  const personalDataPattern =
+    /\b\d{3}-\d{2}-\d{4}\b|\b[\w.+-]+@[\w-]+\.[a-z]{2,}\b|\b\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b/iu;
+  if (allText.some((text) => personalDataPattern.test(text))) {
+    findings.push(
+      finding(
+        "raw_personal_data_pattern",
+        "$",
+        "Findings must not contain raw identity numbers, email addresses, or phone numbers about individual participants.",
+      ),
+    );
+  }
+
+  const prohibitedNarrative =
+    /\b(?:is|are|was|were|has been|have been)(?:\s+\S+){0,3}?\s+(?:conformant|compliant|certified|approved)\b|\b(?:meets|meet|passed|passes)\s+(?:wcag|conformance|compliance|certification)\b|\bconformance\s+(?:claim|is)\s+(?:made|established|granted)\b/giu;
+  if (hasUnnegatedNarrativeMatch(allText, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim conformance, compliance, certification, or accessibility approval.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
 function workflowExecutionReconciliationFindings(value, options = {}) {
   const findings = [];
   const manifest = value.manifest ?? {};
@@ -34522,6 +36072,7 @@ function workflowExecutionReconciliationFindings(value, options = {}) {
 }
 
 const validators = {
+  "accessibility-review-coordinator": accessibilityReviewFindings,
   "appliance-care-coordinator": applianceCareFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
   "care-circle-coordinator": careCircleFindings,
@@ -34578,6 +36129,8 @@ const validators = {
   "project-manager": projectFindings,
   "product-manager": productFindings,
   "presentation-producer": presentationEvidenceManifestFindings,
+  "privacy-request-coordinator": privacyRequestFindings,
+  "procurement-evaluator": procurementEvaluationFindings,
   "purchase-researcher": purchaseResearchFindings,
   "public-safety-monitor": publicSafetyFindings,
   "recruiting-coordinator": recruitingFindings,
