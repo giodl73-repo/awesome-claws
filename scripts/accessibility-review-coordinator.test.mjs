@@ -487,6 +487,129 @@ test("accessibility review rejects a passing verification missing a trimmed veri
   );
 });
 
+test("accessibility review closure is not order-dependent across a finding's verification, remediation, or exception history", () => {
+  // A finding's history can carry more than one verification, remediation, or
+  // known-exception record (retries, superseded attempts, etc.). Picking only
+  // the *first* matching record (as `.find()` did previously) is
+  // order-dependent: an earlier failed/invalid record must not block a later
+  // genuinely valid one, and an earlier valid-looking record must not be
+  // shadowed by a later invalid one either.
+
+  // An earlier failed verification attempt, placed first in the array, must
+  // not block the later valid pass that already closes this finding.
+  const retriedVerification = clone();
+  retriedVerification.verifications.unshift({
+    id: "verification-focus-visible-attempt-1",
+    findingRef: "finding-focus-visible-checkout",
+    remediationRef: null,
+    verifiedBy: "assistive-technology-tester",
+    verifiedAt: "2026-08-17",
+    method: "assistive",
+    outcome: "fail",
+  });
+  assert.equal(validateSchema(retriedVerification), true, JSON.stringify(validateSchema.errors));
+  assert.deepEqual(
+    validateArtifactSemantics("accessibility-review-coordinator", retriedVerification),
+    [],
+  );
+
+  // Two independently invalid passing verifications -- one with a valid
+  // verifier but an incomplete remediation link, one self-attested with a
+  // valid remediation link -- must not combine across records into a valid
+  // closure. Neither record alone satisfies every constraint together.
+  const mixedInvalidVerifications = clone();
+  mixedInvalidVerifications.remediations.push({
+    id: "remediation-focus-visible-followup",
+    findingRef: "finding-focus-visible-checkout",
+    description: "Follow-up remediation still in progress.",
+    owner: "checkout-frontend-team",
+    status: "planned",
+    completedAt: null,
+  });
+  mixedInvalidVerifications.verifications = [
+    {
+      id: "verification-focus-visible-incomplete-remediation",
+      findingRef: "finding-focus-visible-checkout",
+      remediationRef: "remediation-focus-visible-followup",
+      verifiedBy: "assistive-technology-tester",
+      verifiedAt: "2026-08-20",
+      method: "assistive",
+      outcome: "pass",
+    },
+    {
+      id: "verification-focus-visible-self-attested",
+      findingRef: "finding-focus-visible-checkout",
+      remediationRef: "remediation-focus-visible",
+      verifiedBy: "accessibility review coordinator",
+      verifiedAt: "2026-08-21",
+      method: "assistive",
+      outcome: "pass",
+    },
+  ];
+  assert.equal(
+    validateSchema(mixedInvalidVerifications),
+    true,
+    JSON.stringify(validateSchema.errors),
+  );
+  assert.equal(isValid(mixedInvalidVerifications), false);
+  assert.ok(
+    validateArtifactSemantics("accessibility-review-coordinator", mixedInvalidVerifications).some(
+      (item) => item.code === "premature_finding_state" && item.path === "findings[0].state",
+    ),
+  );
+
+  // An earlier "planned" remediation attempt must not block a later
+  // "complete" remediation from satisfying the finding's "remediated" state.
+  const retriedRemediation = clone();
+  retriedRemediation.findings.find(
+    (item) => item.id === "finding-error-announcement-screenreader",
+  ).state = "remediated";
+  retriedRemediation.remediations.push({
+    id: "remediation-error-announcement-shipped",
+    findingRef: "finding-error-announcement-screenreader",
+    description:
+      "Shipped an assertive live region announcing inline validation errors after the initial attempt.",
+    owner: "checkout-frontend-team",
+    status: "complete",
+    completedAt: "2026-08-25",
+  });
+  assert.equal(validateSchema(retriedRemediation), true, JSON.stringify(validateSchema.errors));
+  assert.ok(
+    !validateArtifactSemantics("accessibility-review-coordinator", retriedRemediation).some(
+      (item) => item.code === "premature_finding_state" && item.path === "findings[1].state",
+    ),
+  );
+
+  // An earlier self-attested exception attempt must not block a later
+  // validly approved exception from satisfying the finding's "accepted-risk"
+  // state; the invalid record must still be flagged on its own.
+  const retriedException = clone();
+  retriedException.knownExceptions.unshift({
+    id: "exception-secondary-button-contrast-self-attested",
+    findingRef: "finding-color-contrast-secondary-button",
+    reason: "An earlier, invalid self-attested waiver attempt.",
+    approvedBy: "accessibility review coordinator",
+    approvedAt: "2026-08-11",
+    expiresAt: "2026-11-30",
+  });
+  assert.equal(validateSchema(retriedException), true, JSON.stringify(validateSchema.errors));
+  const retriedExceptionFindings = validateArtifactSemantics(
+    "accessibility-review-coordinator",
+    retriedException,
+  );
+  assert.ok(
+    !retriedExceptionFindings.some(
+      (item) => item.code === "premature_finding_state" && item.path === "findings[2].state",
+    ),
+  );
+  assert.ok(
+    retriedExceptionFindings.some(
+      (item) =>
+        item.code === "unauthorized_waiver" && item.path === "knownExceptions[0].approvedBy",
+    ),
+  );
+});
+
 test("validate-artifact CLI accepts the packaged accessibility-review-coordinator fixture", () => {
   const result = spawnSync(
     process.execPath,

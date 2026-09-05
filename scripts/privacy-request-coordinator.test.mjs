@@ -623,3 +623,77 @@ test("validate-artifact CLI reports semantic findings for a premature-ready priv
     await rm(scratchPath, { force: true });
   }
 });
+
+test("privacy request rejects a timestamp receivedAt that falls after an earlier deadline instead of silently bypassing chronology", () => {
+  // The prior check force-appended "T00:00:00Z"/"T23:59:59Z" to both fields,
+  // so a receivedAt that already carries a time component (e.g. an ISO
+  // timestamp rather than a bare date) produced a doubled, unparseable
+  // string whose Date.parse result is NaN -- silently skipping the
+  // comparison. Late in the received day, after an earlier bare-date
+  // deadline, is exactly the case that must not bypass the check.
+  const timestampReceivedAt = clone();
+  timestampReceivedAt.receivedAt = "2026-09-09T23:30:00Z";
+  timestampReceivedAt.deadline = "2026-09-08";
+  assert.equal(
+    validateSchema(timestampReceivedAt),
+    true,
+    JSON.stringify(validateSchema.errors),
+  );
+  assert.doesNotThrow(() =>
+    validateArtifactSemantics("privacy-request-coordinator", timestampReceivedAt),
+  );
+  assert.ok(
+    validateArtifactSemantics("privacy-request-coordinator", timestampReceivedAt).some(
+      (item) => item.code === "invalid_deadline_chronology",
+    ),
+  );
+  assert.equal(isValid(timestampReceivedAt), false);
+
+  // A legitimate ISO timestamp receivedAt that lands on or before the
+  // deadline (compared at end-of-day for a bare date) must still validate
+  // cleanly -- the fix must not turn every timestamp receivedAt into a
+  // false positive.
+  const timestampReceivedAtOnTime = clone();
+  timestampReceivedAtOnTime.receivedAt = "2026-08-10T09:00:00Z";
+  assert.equal(
+    validateSchema(timestampReceivedAtOnTime),
+    true,
+    JSON.stringify(validateSchema.errors),
+  );
+  assert.deepEqual(
+    validateArtifactSemantics("privacy-request-coordinator", timestampReceivedAtOnTime),
+    [],
+  );
+});
+
+test("privacy request stays total and fails closed for malformed receivedAt/deadline chronology fields", () => {
+  const malformedReceivedAt = clone();
+  malformedReceivedAt.receivedAt = "not-a-timestamp";
+  assert.equal(
+    validateSchema(malformedReceivedAt),
+    true,
+    JSON.stringify(validateSchema.errors),
+  );
+  assert.doesNotThrow(() =>
+    validateArtifactSemantics("privacy-request-coordinator", malformedReceivedAt),
+  );
+  assert.ok(
+    validateArtifactSemantics("privacy-request-coordinator", malformedReceivedAt).some(
+      (item) => item.code === "invalid_deadline_chronology",
+    ),
+  );
+  assert.equal(isValid(malformedReceivedAt), false);
+
+  const malformedDeadline = clone();
+  malformedDeadline.deadline = "not-a-date";
+  assert.equal(validateSchema(malformedDeadline), true, JSON.stringify(validateSchema.errors));
+  assert.doesNotThrow(() =>
+    validateArtifactSemantics("privacy-request-coordinator", malformedDeadline),
+  );
+  assert.ok(
+    validateArtifactSemantics("privacy-request-coordinator", malformedDeadline).some(
+      (item) => item.code === "invalid_deadline_chronology",
+    ),
+  );
+  assert.equal(isValid(malformedDeadline), false);
+});

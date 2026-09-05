@@ -34614,12 +34614,28 @@ function privacyRequestFindings(value) {
       ),
     );
   }
-  if (Date.parse(`${value.receivedAt}T00:00:00Z`) > Date.parse(`${value.deadline}T23:59:59Z`)) {
+  // receivedAt/deadline are schema-valid as any string: parse each directly as
+  // an ISO date or timestamp rather than assuming a bare date. Blindly
+  // appending a time-of-day suffix (the prior approach) corrupts an
+  // already-complete timestamp (e.g. "...T09:00:00Z" + "T00:00:00Z") into an
+  // unparseable string whose Date.parse result is NaN, silently skipping the
+  // comparison and letting a same-day timestamp receivedAt bypass an earlier
+  // deadline. A bare "YYYY-MM-DD" deadline is compared at the end of that day
+  // (23:59:59.999Z) so it still covers the whole day it names; a deadline
+  // that already carries a time component is compared at that exact instant.
+  // Any unparseable receivedAt/deadline fails closed with a finding instead
+  // of throwing or silently passing the comparison.
+  const ISO_DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/u;
+  const receivedAtMs = Date.parse(value.receivedAt);
+  const deadlineMs = ISO_DATE_ONLY_PATTERN.test(value.deadline)
+    ? Date.parse(`${value.deadline}T23:59:59.999Z`)
+    : Date.parse(value.deadline);
+  if (!Number.isFinite(receivedAtMs) || !Number.isFinite(deadlineMs) || receivedAtMs > deadlineMs) {
     findings.push(
       finding(
         "invalid_deadline_chronology",
         "deadline",
-        "The response deadline must fall on or after the received time.",
+        "The response deadline must be a valid ISO date or timestamp on or after a valid received time.",
       ),
     );
   }
@@ -35023,6 +35039,18 @@ function accessibilityReviewFindings(value) {
       );
     }
   }
+  // A known exception only carries authority to accept risk when it names an
+  // accountable, non-agent, non-self approver; reused both to flag a
+  // malformed record on its own and to decide whether *any* exception record
+  // for a given finding actually qualifies to close it as accepted-risk.
+  function isApprovedAccessibilityException(item) {
+    return (
+      typeof item.approvedBy === "string" &&
+      item.approvedBy.trim().length > 0 &&
+      !isAgentIdentityName(item.approvedBy) &&
+      !ACCESSIBILITY_REVIEW_COORDINATOR_PATTERN.test(item.approvedBy)
+    );
+  }
   for (const [index, item] of knownExceptionsRecord.entries) {
     if (!findingIds.has(item.findingRef)) {
       findings.push(
@@ -35033,12 +35061,7 @@ function accessibilityReviewFindings(value) {
         ),
       );
     }
-    if (
-      typeof item.approvedBy !== "string" ||
-      item.approvedBy.trim().length === 0 ||
-      isAgentIdentityName(item.approvedBy) ||
-      ACCESSIBILITY_REVIEW_COORDINATOR_PATTERN.test(item.approvedBy)
-    ) {
+    if (!isApprovedAccessibilityException(item)) {
       findings.push(
         finding(
           "unauthorized_waiver",
@@ -35065,10 +35088,49 @@ function accessibilityReviewFindings(value) {
   const ACCESSIBILITY_FINDING_STATES = new Set(["open", "remediated", "verified", "accepted-risk"]);
   const ACCESSIBILITY_TERMINAL_FINDING_STATES = new Set(["verified", "accepted-risk"]);
 
+  // A finding's history can carry more than one verification, remediation, or
+  // known-exception record (retries, superseded attempts, etc.). Picking the
+  // *first* matching record with `.find()` is order-dependent: an earlier
+  // failed verification or an earlier incomplete remediation would wrongly
+  // block a later, fully valid closure, while an earlier passing-but-invalid
+  // verification could wrongly stand in for a later record that actually
+  // qualifies. Closure must instead ask whether *any* record for the finding
+  // satisfies every constraint together on that same record -- verifier,
+  // timestamp, and remediation linkage all evaluated on one candidate, not
+  // mixed across candidates -- so a single invalid pass can never qualify on
+  // its own and a later valid one is never shadowed by an earlier invalid one.
+  function isClosingVerification(entry, findingId) {
+    if (
+      entry.findingRef !== findingId ||
+      entry.outcome !== "pass" ||
+      !isValidAccessibilityVerifier(entry.verifiedBy) ||
+      !hasRecordedVerificationTime(entry.verifiedAt)
+    ) {
+      return false;
+    }
+    if (entry.remediationRef !== null) {
+      const remediation = remediationById.get(entry.remediationRef);
+      return (
+        remediation !== undefined &&
+        remediation.findingRef === findingId &&
+        remediation.status === "complete" &&
+        typeof remediation.completedAt === "string" &&
+        remediation.completedAt.trim().length > 0
+      );
+    }
+    // remediationRef:null only qualifies when the finding has no remediation
+    // records at all; otherwise closure must reference one of them.
+    return !remediations.some((remediationItem) => remediationItem.findingRef === findingId);
+  }
+
   for (const [index, item] of findingRecordsRecord.entries) {
-    const verification = verifications.find((entry) => entry.findingRef === item.id);
-    const remediation = remediations.find((entry) => entry.findingRef === item.id);
-    const exception = knownExceptions.find((entry) => entry.findingRef === item.id);
+    const hasClosingVerification = verifications.some((entry) => isClosingVerification(entry, item.id));
+    const hasCompleteRemediation = remediations.some(
+      (entry) => entry.findingRef === item.id && entry.status === "complete",
+    );
+    const hasApprovedException = knownExceptions.some(
+      (entry) => entry.findingRef === item.id && isApprovedAccessibilityException(entry),
+    );
     if (!ACCESSIBILITY_FINDING_STATES.has(item.state)) {
       findings.push(
         finding(
@@ -35078,13 +35140,7 @@ function accessibilityReviewFindings(value) {
         ),
       );
     }
-    if (
-      item.state === "verified" &&
-      (!verification ||
-        verification.outcome !== "pass" ||
-        !isValidAccessibilityVerifier(verification.verifiedBy) ||
-        !hasRecordedVerificationTime(verification.verifiedAt))
-    ) {
+    if (item.state === "verified" && !hasClosingVerification) {
       findings.push(
         finding(
           "premature_finding_state",
@@ -35093,7 +35149,7 @@ function accessibilityReviewFindings(value) {
         ),
       );
     }
-    if (item.state === "remediated" && (!remediation || remediation.status !== "complete")) {
+    if (item.state === "remediated" && !hasCompleteRemediation) {
       findings.push(
         finding(
           "premature_finding_state",
@@ -35102,7 +35158,7 @@ function accessibilityReviewFindings(value) {
         ),
       );
     }
-    if (item.state === "accepted-risk" && !exception) {
+    if (item.state === "accepted-risk" && !hasApprovedException) {
       findings.push(
         finding(
           "premature_finding_state",
