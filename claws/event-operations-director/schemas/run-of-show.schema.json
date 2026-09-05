@@ -1,9 +1,1 @@
-{
-  "type": "object",
-  "required": ["event", "timezone", "items"],
-  "properties": {
-    "event": {"type": "string"},
-    "timezone": {"type": "string"},
-    "items": {"type": "array", "items": {"type": "object", "required": ["time", "owner", "state"]}}
-  }
-}
+{"type":"object","required":["schemaVersion","event","timezone","eventId","eventOwnerId","vendors","evidence","gates","incidents","changes","items","handoff"],"properties":{"schemaVersion":{"type":"string","minLength":1},"event":{"type":"string","minLength":1},"timezone":{"type":"string","minLength":1},"eventId":{"type":"string","minLength":1},"eventOwnerId":{"type":"string","minLength":1},"vendors":{"type":"array"},"evidence":{"type":"array"},"gates":{"type":"array"},"incidents":{"type":"array"},"changes":{"type":"array"},"items":{"type":"array","items":{"type":"object","required":["id","time","owner","state","dependsOn","completedBy","completedAt","completionEvidenceRef"],"properties":{"id":{"type":"string","minLength":1},"time":{},"owner":{},"state":{},"dependsOn":{"type":["string","null"]},"completedBy":{"type":["string","null"]},"completedAt":{"type":["string","null"]},"completionEvidenceRef":{"type":["string","null"]}}}},"handoff":{"type":"object"}}}

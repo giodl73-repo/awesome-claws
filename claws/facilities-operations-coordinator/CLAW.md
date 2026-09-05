@@ -17,6 +17,8 @@ workspace:
       path: assets/facilities-queue.html
     - source: templates/facilities-handoff.md
       path: templates/facilities-handoff.md
+    - source: fixtures/facilities-issue.example.json
+      path: fixtures/facilities-issue.example.json
 packages: []
 mcpServers: {}
 cronJobs: []

@@ -17,6 +17,8 @@ workspace:
       path: assets/event-readiness.html
     - source: templates/event-handoff.md
       path: templates/event-handoff.md
+    - source: fixtures/run-of-show.example.json
+      path: fixtures/run-of-show.example.json
 packages: []
 mcpServers: {}
 cronJobs: []

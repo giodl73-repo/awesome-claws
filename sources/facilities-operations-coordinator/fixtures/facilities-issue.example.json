@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "awesomeClaws.facilitiesIssue.v1",
+  "portfolio": {
+    "id": "portfolio-hq-campus",
+    "name": "Riverside HQ two-building campus",
+    "ownerId": "owner-facilities-director"
+  },
+  "sites": [
+    { "id": "site-north-tower", "name": "North Tower" },
+    { "id": "site-south-annex", "name": "South Annex" }
+  ],
+  "assets": [
+    { "id": "asset-north-chiller-2", "siteRef": "site-north-tower", "name": "North Tower chiller unit 2" },
+    { "id": "asset-south-badge-reader-lobby", "siteRef": "site-south-annex", "name": "South Annex lobby badge reader" }
+  ],
+  "workOrders": [
+    {
+      "id": "wo-chiller-2-noise",
+      "siteRef": "site-north-tower",
+      "assetRef": "asset-north-chiller-2",
+      "description": "Chiller unit 2 reported an intermittent grinding noise during peak load.",
+      "priority": "high",
+      "status": "complete",
+      "observedAt": "2026-08-25",
+      "completedBy": "HVAC Service Technician Lead",
+      "completedAt": "2026-08-30",
+      "completionEvidenceRef": "evidence-chiller-2-vendor-report"
+    },
+    {
+      "id": "wo-badge-reader-offline",
+      "siteRef": "site-south-annex",
+      "assetRef": "asset-south-badge-reader-lobby",
+      "description": "Lobby badge reader is intermittently failing to authorize valid credentials.",
+      "priority": "emergency",
+      "status": "in-progress",
+      "observedAt": "2026-09-01",
+      "completedBy": null,
+      "completedAt": null,
+      "completionEvidenceRef": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-chiller-2-vendor-report",
+      "kind": "work-order",
+      "refId": "wo-chiller-2-noise",
+      "sourceRef": "controlled://facilities-evidence/hq-campus/chiller-2-vendor-service-report-2026-08-30",
+      "note": "HVAC vendor replaced a worn bearing and verified quiet operation across a full load cycle.",
+      "assertion": "completion",
+      "assertedAt": "2026-08-30"
+    },
+    {
+      "id": "evidence-north-tower-fire-inspection",
+      "kind": "site",
+      "refId": "site-north-tower",
+      "sourceRef": "controlled://facilities-evidence/hq-campus/north-tower-fire-inspection-2026-08-15",
+      "note": "Annual fire and life-safety inspection passed with no open findings.",
+      "assertion": "observation",
+      "assertedAt": "2026-08-15"
+    },
+    {
+      "id": "evidence-badge-reader-vendor-dispatch",
+      "kind": "asset",
+      "refId": "asset-south-badge-reader-lobby",
+      "sourceRef": "controlled://facilities-evidence/hq-campus/badge-reader-vendor-ticket-2026-09-02",
+      "note": "Access-control vendor ticket opened; technician visit scheduled but not yet completed.",
+      "assertion": "observation",
+      "assertedAt": "2026-09-02"
+    }
+  ],
+  "gates": [
+    {
+      "id": "gate-safety-north-tower",
+      "kind": "safety",
+      "status": "cleared",
+      "scopeKind": "workOrder",
+      "scopeRef": "wo-chiller-2-noise",
+      "evidenceRefs": ["evidence-chiller-2-vendor-report"],
+      "approvedBy": "owner-facilities-safety-lead",
+      "approvedAt": "2026-08-30"
+    },
+    {
+      "id": "gate-permit-north-tower",
+      "kind": "permit",
+      "status": "cleared",
+      "scopeKind": "site",
+      "scopeRef": "site-north-tower",
+      "evidenceRefs": ["evidence-north-tower-fire-inspection"],
+      "approvedBy": "owner-facilities-safety-lead",
+      "approvedAt": "2026-08-15"
+    },
+    {
+      "id": "gate-vendor-south-annex",
+      "kind": "vendor",
+      "status": "open",
+      "scopeKind": "asset",
+      "scopeRef": "asset-south-badge-reader-lobby",
+      "evidenceRefs": ["evidence-badge-reader-vendor-dispatch"],
+      "approvedBy": null,
+      "approvedAt": null
+    }
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "owner-facilities-director",
+    "workOrderRefs": ["wo-chiller-2-noise", "wo-badge-reader-offline"],
+    "unresolvedWorkOrderRefs": ["wo-badge-reader-offline"],
+    "unresolvedGateRefs": ["gate-vendor-south-annex"],
+    "summary": "Chiller repair is complete and verified by the vendor service report. The South Annex badge reader remains an open, in-progress emergency work order pending vendor completion.",
+    "prohibitedActions": [
+      "dispatch-technician",
+      "contact-vendor",
+      "contact-occupant",
+      "unlock-space",
+      "approve-spend",
+      "issue-emergency-instruction",
+      "modify-work-order-system"
+    ]
+  }
+}

@@ -377,6 +377,9 @@ function isAgentIdentityName(name) {
 const PRIVACY_REQUEST_COORDINATOR_PATTERN = /\bprivacy request coordinator\b/iu;
 const ACCESSIBILITY_REVIEW_COORDINATOR_PATTERN = /\baccessibility review coordinator\b/iu;
 const PROCUREMENT_EVALUATOR_PATTERN = /\bprocurement evaluator\b/iu;
+const EVENT_OPERATIONS_DIRECTOR_PATTERN = /\bevent operations director\b/iu;
+const FACILITIES_OPERATIONS_COORDINATOR_PATTERN = /\bfacilities operations coordinator\b/iu;
+const MANUFACTURING_OPERATIONS_PLANNER_PATTERN = /\bmanufacturing operations planner\b/iu;
 
 function zoneOffsetMs(formatter, instant) {
   const parts = Object.fromEntries(
@@ -35316,6 +35319,1695 @@ function accessibilityReviewFindings(value) {
   return findings;
 }
 
+function eventOperationsFindings(value) {
+  const findings = [];
+  // handoff/gate reference-list fields compared here are schema-valid as any
+  // type, so a malformed-but-matching-length object (e.g. `{ length: 2 }`)
+  // could pass a length check and then throw once passed to `new Set(...)`,
+  // which requires an iterable. Fail closed (not equal) whenever either side
+  // isn't actually an array, before any length/Set work.
+  const sameSet = (left, right) =>
+    Array.isArray(left) &&
+    Array.isArray(right) &&
+    left.length === right.length &&
+    new Set(left).size === left.length &&
+    left.every((item) => new Set(right).has(item));
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  function toEpochMillis(text) {
+    if (typeof text !== "string") return NaN;
+    const trimmed = text.trim();
+    if (trimmed.length === 0) return NaN;
+    const ms = Date.parse(trimmed);
+    return Number.isFinite(ms) ? ms : NaN;
+  }
+
+  const vendorsRecord = recordArray(value.vendors, "vendors", "Vendor");
+  const evidenceRecord = recordArray(value.evidence, "evidence", "Evidence");
+  const gatesRecord = recordArray(value.gates, "gates", "Gate");
+  const incidentsRecord = recordArray(value.incidents, "incidents", "Incident");
+  const changesRecord = recordArray(value.changes, "changes", "Change");
+  const itemsRecord = recordArray(value.items, "items", "Run-of-show item");
+  findings.push(
+    ...vendorsRecord.findings,
+    ...evidenceRecord.findings,
+    ...gatesRecord.findings,
+    ...incidentsRecord.findings,
+    ...changesRecord.findings,
+    ...itemsRecord.findings,
+  );
+  const vendors = vendorsRecord.items;
+  const evidence = evidenceRecord.items;
+  const gates = gatesRecord.items;
+  const incidents = incidentsRecord.items;
+  const changes = changesRecord.items;
+  const items = itemsRecord.items;
+  const handoff = value.handoff ?? {};
+
+  const vendorIds = new Set(vendors.map((item) => item.id));
+  const evidenceIds = new Set(evidence.map((item) => item.id));
+  const gateIds = new Set(gates.map((item) => item.id));
+  const incidentIds = new Set(incidents.map((item) => item.id));
+  const changeIds = new Set(changes.map((item) => item.id));
+  const itemIds = new Set(items.map((item) => item.id));
+  const evidenceById = new Map(evidence.map((item) => [item.id, item]));
+  const incidentById = new Map(incidents.map((item) => [item.id, item]));
+  const itemById = new Map(items.map((item) => [item.id, item]));
+
+  requireReferences(vendors.map((item) => item.id), vendorIds, "vendors", "Vendor");
+  requireReferences(evidence.map((item) => item.id), evidenceIds, "evidence", "Evidence");
+  requireReferences(gates.map((item) => item.id), gateIds, "gates", "Gate");
+  requireReferences(incidents.map((item) => item.id), incidentIds, "incidents", "Incident");
+  requireReferences(changes.map((item) => item.id), changeIds, "changes", "Change");
+  requireReferences(items.map((item) => item.id), itemIds, "items", "Run-of-show item");
+
+  const enumEvidenceKinds = new Set(["attendee", "vendor", "run-of-show"]);
+  const enumEvidenceAssertions = new Set(["observation", "resolution", "completion"]);
+  // A fabricated or unattributable note is not evidence: every record must
+  // carry a real, controlled/attributable source reference and its own
+  // parseable assertion timestamp, not merely a narrative claim.
+  function isSourceValidEvidence(record) {
+    return (
+      record !== undefined &&
+      typeof record.sourceRef === "string" &&
+      record.sourceRef.startsWith("controlled://")
+    );
+  }
+  for (const [index, item] of evidenceRecord.entries) {
+    if (!enumEvidenceKinds.has(item.kind)) {
+      findings.push(
+        finding(
+          "invalid_evidence_kind",
+          `evidence[${index}].kind`,
+          `Evidence kind ${JSON.stringify(item.kind)} is not a supported evidence kind.`,
+        ),
+      );
+    }
+    if (!enumEvidenceAssertions.has(item.assertion)) {
+      findings.push(
+        finding(
+          "invalid_evidence_assertion",
+          `evidence[${index}].assertion`,
+          `Evidence assertion ${JSON.stringify(item.assertion)} is not a supported assertion kind.`,
+        ),
+      );
+    }
+    if (
+      item.vendorRef !== null &&
+      item.vendorRef !== undefined &&
+      !vendorIds.has(item.vendorRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `evidence[${index}].vendorRef`,
+          `Vendor reference ${JSON.stringify(item.vendorRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!isSourceValidEvidence(item)) {
+      findings.push(
+        finding(
+          "untrusted_evidence_source",
+          `evidence[${index}].sourceRef`,
+          "Evidence must carry a valid, controlled/attributable source reference, not a fabricated or narrative source.",
+        ),
+      );
+    }
+    if (!Number.isFinite(toEpochMillis(item.assertedAt))) {
+      findings.push(
+        finding(
+          "invalid_evidence_timestamp",
+          `evidence[${index}].assertedAt`,
+          "Evidence must carry a parseable assertedAt timestamp.",
+        ),
+      );
+    }
+  }
+
+  // A gate is only meaningfully cleared when it is grounded in at least one
+  // source-valid evidence record of the kind that matches its own kind,
+  // asserted at or before the approval itself, and carries a trimmed,
+  // non-agent, non-self-attested approver identity plus a parseable
+  // approval timestamp. A bare "cleared" status text with no valid
+  // grounding or approver is a self-attestation-style bypass, not a real
+  // clearance.
+  const requiredEvidenceKindForGate = {
+    safety: "run-of-show",
+    capacity: "attendee",
+    permit: "vendor",
+  };
+  function isGateResolved(gate) {
+    const requiredKind = requiredEvidenceKindForGate[gate.kind];
+    if (!requiredKind) return false; // unknown gate kind fails closed
+    if (gate.status !== "cleared") return false;
+    if (typeof gate.approvedBy !== "string" || gate.approvedBy.trim().length === 0) return false;
+    if (isAgentIdentityName(gate.approvedBy) || EVENT_OPERATIONS_DIRECTOR_PATTERN.test(gate.approvedBy)) {
+      return false;
+    }
+    const approvedAt = toEpochMillis(gate.approvedAt);
+    if (!Number.isFinite(approvedAt)) return false;
+    const refs = Array.isArray(gate.evidenceRefs) ? gate.evidenceRefs : [];
+    return refs.some((ref) => {
+      const record = evidenceById.get(ref);
+      if (!record || record.kind !== requiredKind || !isSourceValidEvidence(record)) return false;
+      const assertedAt = toEpochMillis(record.assertedAt);
+      return Number.isFinite(assertedAt) && assertedAt <= approvedAt;
+    });
+  }
+
+  for (const [index, gate] of gatesRecord.entries) {
+    findings.push(...uniqueFindings(gate.evidenceRefs, `gates[${index}].evidenceRefs`, "Evidence"));
+    findings.push(
+      ...referenceFindings(gate.evidenceRefs, evidenceIds, `gates[${index}].evidenceRefs`, "Evidence"),
+    );
+    if (!Object.hasOwn(requiredEvidenceKindForGate, gate.kind)) {
+      findings.push(
+        finding(
+          "invalid_gate_kind",
+          `gates[${index}].kind`,
+          `Gate kind ${JSON.stringify(gate.kind)} is not a supported gate kind.`,
+        ),
+      );
+    } else if (gate.status === "cleared" && !isGateResolved(gate)) {
+      findings.push(
+        finding(
+          "self_attested_gate_clearance",
+          `gates[${index}]`,
+          "A gate can only be cleared with grounding evidence of the matching kind and a non-agent, non-self approver identity plus an approval timestamp.",
+        ),
+      );
+    }
+  }
+
+  // An incident is only genuinely resolved when it names a trimmed, non-agent,
+  // non-self resolver identity, carries a parseable resolution timestamp, and
+  // is grounded in a resolution-assertion evidence record for that same
+  // incident whose evidence is itself source-valid and asserted no earlier
+  // than the incident was reported and no later than the resolution it
+  // grounds. A bare "resolved" status text alone is a self-attestation bypass.
+  function isIncidentResolved(incident) {
+    if (incident.status !== "resolved") return false;
+    if (typeof incident.resolvedBy !== "string" || incident.resolvedBy.trim().length === 0) {
+      return false;
+    }
+    if (
+      isAgentIdentityName(incident.resolvedBy) ||
+      EVENT_OPERATIONS_DIRECTOR_PATTERN.test(incident.resolvedBy)
+    ) {
+      return false;
+    }
+    const resolvedAt = toEpochMillis(incident.resolvedAt);
+    if (!Number.isFinite(resolvedAt)) return false;
+    const reportedAt = toEpochMillis(incident.reportedAt);
+    if (!Number.isFinite(reportedAt) || resolvedAt < reportedAt) return false;
+    const supportingEvidence = evidenceById.get(incident.resolutionEvidenceRef);
+    if (
+      supportingEvidence === undefined ||
+      supportingEvidence.assertion !== "resolution" ||
+      supportingEvidence.refId !== incident.id ||
+      !isSourceValidEvidence(supportingEvidence)
+    ) {
+      return false;
+    }
+    const assertedAt = toEpochMillis(supportingEvidence.assertedAt);
+    return Number.isFinite(assertedAt) && assertedAt >= reportedAt && assertedAt <= resolvedAt;
+  }
+
+  const enumIncidentStatuses = new Set(["open", "resolved"]);
+  for (const [index, incident] of incidentsRecord.entries) {
+    if (!enumIncidentStatuses.has(incident.status)) {
+      findings.push(
+        finding(
+          "invalid_incident_status",
+          `incidents[${index}].status`,
+          `Incident status ${JSON.stringify(incident.status)} is not a supported state.`,
+        ),
+      );
+    } else if (incident.status === "resolved" && !isIncidentResolved(incident)) {
+      findings.push(
+        finding(
+          "self_attested_incident_resolution",
+          `incidents[${index}]`,
+          "An incident can only be resolved with a non-agent, non-self resolver identity, a parseable resolution timestamp, and grounding resolution evidence for that same incident.",
+        ),
+      );
+    }
+    if (!Number.isFinite(toEpochMillis(incident.reportedAt))) {
+      findings.push(
+        finding(
+          "invalid_timestamp",
+          `incidents[${index}].reportedAt`,
+          "Incident reportedAt must be a parseable timestamp.",
+        ),
+      );
+    }
+    if (
+      incident.resolutionEvidenceRef !== null &&
+      incident.resolutionEvidenceRef !== undefined &&
+      !evidenceIds.has(incident.resolutionEvidenceRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `incidents[${index}].resolutionEvidenceRef`,
+          `Resolution evidence reference ${JSON.stringify(incident.resolutionEvidenceRef)} does not resolve.`,
+        ),
+      );
+    }
+  }
+
+  for (const [index, change] of changesRecord.entries) {
+    const appliedAt = toEpochMillis(change.appliedAt);
+    if (change.incidentRef !== null && change.incidentRef !== undefined) {
+      const incident = incidentById.get(change.incidentRef);
+      if (!incident) {
+        findings.push(
+          finding(
+            "dangling_reference",
+            `changes[${index}].incidentRef`,
+            `Incident reference ${JSON.stringify(change.incidentRef)} does not resolve.`,
+          ),
+        );
+      } else {
+        const reportedAt = toEpochMillis(incident.reportedAt);
+        if (!Number.isFinite(appliedAt) || !Number.isFinite(reportedAt)) {
+          findings.push(
+            finding(
+              "invalid_change_chronology",
+              `changes[${index}].appliedAt`,
+              "A change linked to an incident must carry a parseable timestamp, as must the incident it references.",
+            ),
+          );
+        } else if (appliedAt < reportedAt) {
+          findings.push(
+            finding(
+              "invalid_change_chronology",
+              `changes[${index}].appliedAt`,
+              "A change cannot be applied before the incident that prompted it was reported.",
+            ),
+          );
+        }
+      }
+    } else if (!Number.isFinite(appliedAt)) {
+      findings.push(
+        finding(
+          "invalid_change_chronology",
+          `changes[${index}].appliedAt`,
+          "Every change must carry a parseable applied-at timestamp, even when it is not linked to an incident.",
+        ),
+      );
+    }
+    if (
+      typeof change.approvedBy !== "string" ||
+      change.approvedBy.trim().length === 0 ||
+      isAgentIdentityName(change.approvedBy) ||
+      EVENT_OPERATIONS_DIRECTOR_PATTERN.test(change.approvedBy)
+    ) {
+      findings.push(
+        finding(
+          "agent_owned_authority",
+          `changes[${index}].approvedBy`,
+          "Every run-of-show change must be approved by a named, accountable human, not an agent or the package's own role.",
+        ),
+      );
+    }
+  }
+
+  // An item is only genuinely done when it names a trimmed, non-agent,
+  // non-self completer identity, carries a parseable completion timestamp,
+  // and is grounded in a completion-assertion evidence record for that same
+  // item whose evidence is itself source-valid and asserted no earlier than
+  // the item's scheduled time and no later than the completion it grounds.
+  // Completion also cannot precede the item's own scheduled time. A bare
+  // "done" status text alone is a self-attestation bypass.
+  function isItemDone(item) {
+    if (item.state !== "done") return false;
+    if (typeof item.completedBy !== "string" || item.completedBy.trim().length === 0) {
+      return false;
+    }
+    if (
+      isAgentIdentityName(item.completedBy) ||
+      EVENT_OPERATIONS_DIRECTOR_PATTERN.test(item.completedBy)
+    ) {
+      return false;
+    }
+    const completedAt = toEpochMillis(item.completedAt);
+    if (!Number.isFinite(completedAt)) return false;
+    const scheduledAt = toEpochMillis(item.time);
+    if (!Number.isFinite(scheduledAt) || completedAt < scheduledAt) return false;
+    const supportingEvidence = evidenceById.get(item.completionEvidenceRef);
+    if (
+      supportingEvidence === undefined ||
+      supportingEvidence.assertion !== "completion" ||
+      supportingEvidence.refId !== item.id ||
+      !isSourceValidEvidence(supportingEvidence)
+    ) {
+      return false;
+    }
+    const assertedAt = toEpochMillis(supportingEvidence.assertedAt);
+    return Number.isFinite(assertedAt) && assertedAt >= scheduledAt && assertedAt <= completedAt;
+  }
+
+  const enumItemStates = new Set(["planned", "in-progress", "done", "blocked"]);
+  for (const [index, item] of itemsRecord.entries) {
+    if (!enumItemStates.has(item.state)) {
+      findings.push(
+        finding(
+          "invalid_item_state",
+          `items[${index}].state`,
+          `Run-of-show item state ${JSON.stringify(item.state)} is not a supported state.`,
+        ),
+      );
+    } else if (item.state === "done" && !isItemDone(item)) {
+      findings.push(
+        finding(
+          "self_attested_item_completion",
+          `items[${index}]`,
+          "An item can only be marked done with a non-agent, non-self completer identity, a parseable completion timestamp, and grounding completion evidence for that same item.",
+        ),
+      );
+    }
+    if (!Number.isFinite(toEpochMillis(item.time))) {
+      findings.push(
+        finding(
+          "invalid_timestamp",
+          `items[${index}].time`,
+          "Run-of-show item time must be a parseable timestamp.",
+        ),
+      );
+    }
+    if (
+      item.completionEvidenceRef !== null &&
+      item.completionEvidenceRef !== undefined &&
+      !evidenceIds.has(item.completionEvidenceRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `items[${index}].completionEvidenceRef`,
+          `Completion evidence reference ${JSON.stringify(item.completionEvidenceRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (item.dependsOn !== null && item.dependsOn !== undefined) {
+      const dependency = itemById.get(item.dependsOn);
+      if (!dependency) {
+        findings.push(
+          finding(
+            "dangling_reference",
+            `items[${index}].dependsOn`,
+            `Dependency reference ${JSON.stringify(item.dependsOn)} does not resolve.`,
+          ),
+        );
+      } else if (item.state === "done" && !isItemDone(dependency)) {
+        findings.push(
+          finding(
+            "premature_item_completion",
+            `items[${index}].state`,
+            "An item cannot be marked done while the item it depends on is not itself done.",
+          ),
+        );
+      }
+    }
+  }
+
+  const ownerCandidates = [value.eventOwnerId, handoff.owner];
+  // Every named owner slot must independently carry a trimmed, non-empty,
+  // accountable identity: a missing/blank owner is just as much an authority
+  // gap as an agent-owned one.
+  if (
+    ownerCandidates.some(
+      (owner) =>
+        typeof owner !== "string" ||
+        owner.trim().length === 0 ||
+        isAgentIdentityName(owner) ||
+        EVENT_OPERATIONS_DIRECTOR_PATTERN.test(owner),
+    )
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Event ownership and handoff authority must remain with a named, accountable human owner, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+
+  requireReferences(handoff.vendorRefs ?? [], vendorIds, "handoff.vendorRefs", "Vendor");
+  if (!sameSet(handoff.vendorRefs ?? [], [...vendorIds])) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.vendorRefs",
+        "The handoff must reference every vendor exactly once.",
+      ),
+    );
+  }
+
+  const unresolvedGateIds = gates.filter((gate) => !isGateResolved(gate)).map((gate) => gate.id);
+  requireReferences(handoff.unresolvedGateRefs ?? [], gateIds, "handoff.unresolvedGateRefs", "Gate");
+  if (!sameSet(handoff.unresolvedGateRefs ?? [], unresolvedGateIds)) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.unresolvedGateRefs",
+        "The handoff's unresolved gate references must exactly match every gate that is not validly cleared.",
+      ),
+    );
+  }
+
+  const unresolvedItemIds = items.filter((item) => !isItemDone(item)).map((item) => item.id);
+  requireReferences(
+    handoff.unresolvedItemRefs ?? [],
+    itemIds,
+    "handoff.unresolvedItemRefs",
+    "Run-of-show item",
+  );
+  if (!sameSet(handoff.unresolvedItemRefs ?? [], unresolvedItemIds)) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.unresolvedItemRefs",
+        "The handoff's unresolved item references must exactly match every item that is not done.",
+      ),
+    );
+  }
+
+  const unresolvedIncidentIds = incidents
+    .filter((incident) => !isIncidentResolved(incident))
+    .map((incident) => incident.id);
+  requireReferences(
+    handoff.unresolvedIncidentRefs ?? [],
+    incidentIds,
+    "handoff.unresolvedIncidentRefs",
+    "Incident",
+  );
+  if (!sameSet(handoff.unresolvedIncidentRefs ?? [], unresolvedIncidentIds)) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.unresolvedIncidentRefs",
+        "The handoff's unresolved incident references must exactly match every incident that is not validly resolved.",
+      ),
+    );
+  }
+
+  const hasBlockingIssue =
+    unresolvedGateIds.length > 0 || unresolvedItemIds.length > 0 || unresolvedIncidentIds.length > 0;
+  const expectedState = hasBlockingIssue ? "blocked" : "ready";
+  if (handoff.state !== expectedState) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready while any gate is unresolved, any run-of-show item is not done, or any incident remains open.",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "book-venue",
+    "purchase-service",
+    "contact-attendee",
+    "contact-vendor",
+    "publish-schedule",
+    "represent-event-owner",
+  ];
+  const prohibitedActionsRecord = stringListFindings(
+    handoff.prohibitedActions,
+    "handoff.prohibitedActions",
+    "Prohibited actions",
+  );
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `Event run-of-show handoffs must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  const narrativeTexts = [
+    handoff.summary,
+    ...incidents.map((item) => item.description),
+    ...changes.map((item) => item.description),
+  ].filter((text) => typeof text === "string");
+  const prohibitedNarrative =
+    /\bbook(?:ed|ing)?\s+the\s+venue|purchas(?:ed|ing|e)\s+(?:the\s+)?service|contact(?:ed|ing)?\s+(?:the\s+)?attendee|contact(?:ed|ing)?\s+(?:the\s+)?vendor|publish(?:ed|ing)?\s+the\s+schedule/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim venue booking, service purchase, attendee/vendor contact, or schedule publication.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
+function facilitiesOperationsFindings(value) {
+  const findings = [];
+  function toEpochMillis(text) {
+    if (typeof text !== "string") return NaN;
+    const trimmed = text.trim();
+    if (trimmed.length === 0) return NaN;
+    const ms = Date.parse(trimmed);
+    return Number.isFinite(ms) ? ms : NaN;
+  }
+
+  // A schema-valid legacy artifact is the pre-portfolio single-issue shape
+  // (id/site/observedAt/observation/priority/state) that the schema's oneOf
+  // still accepts for backward compatibility. That branch's schema formally
+  // forbids "schemaVersion", while the portfolio branch requires it, so the
+  // two shapes can never both match: this presence check is a sound,
+  // schema-guaranteed discriminator. Legacy artifacts never had sites,
+  // assets, work orders, gates, or evidence, so they get bounded legacy
+  // semantics instead of the full portfolio contract.
+  if (typeof value.schemaVersion !== "string") {
+    const enumLegacyStates = new Set(["open", "in-progress", "complete"]);
+    for (const field of ["id", "site", "observedAt", "observation", "priority", "state"]) {
+      if (typeof value[field] !== "string" || value[field].trim().length === 0) {
+        findings.push(
+          finding(
+            "invalid_legacy_field",
+            field,
+            `Legacy facilities issue field "${field}" must be a non-empty, trimmed string.`,
+          ),
+        );
+      }
+    }
+    if (typeof value.observedAt === "string" && !Number.isFinite(toEpochMillis(value.observedAt))) {
+      findings.push(
+        finding("invalid_timestamp", "observedAt", "Legacy facilities issue observedAt must be a parseable timestamp."),
+      );
+    }
+    if (typeof value.state === "string" && !enumLegacyStates.has(value.state)) {
+      findings.push(
+        finding(
+          "invalid_legacy_state",
+          "state",
+          `Legacy facilities issue state ${JSON.stringify(value.state)} is not a supported state.`,
+        ),
+      );
+    }
+    return findings;
+  }
+
+  // handoff/gate reference-list fields compared here are schema-valid as any
+  // type, so a malformed-but-matching-length object (e.g. `{ length: 2 }`)
+  // could pass a length check and then throw once passed to `new Set(...)`,
+  // which requires an iterable. Fail closed (not equal) whenever either side
+  // isn't actually an array, before any length/Set work.
+  const sameSet = (left, right) =>
+    Array.isArray(left) &&
+    Array.isArray(right) &&
+    left.length === right.length &&
+    new Set(left).size === left.length &&
+    left.every((item) => new Set(right).has(item));
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  const sitesRecord = recordArray(value.sites, "sites", "Site");
+  const assetsRecord = recordArray(value.assets, "assets", "Asset");
+  const workOrdersRecord = recordArray(value.workOrders, "workOrders", "Work order");
+  const evidenceRecord = recordArray(value.evidence, "evidence", "Evidence");
+  const gatesRecord = recordArray(value.gates, "gates", "Gate");
+  findings.push(
+    ...sitesRecord.findings,
+    ...assetsRecord.findings,
+    ...workOrdersRecord.findings,
+    ...evidenceRecord.findings,
+    ...gatesRecord.findings,
+  );
+
+  const sites = sitesRecord.items;
+  const assets = assetsRecord.items;
+  const workOrders = workOrdersRecord.items;
+  const evidence = evidenceRecord.items;
+  const gates = gatesRecord.items;
+  const portfolio = value.portfolio ?? {};
+  const handoff = value.handoff ?? {};
+
+  const siteIds = new Set(sites.map((item) => item.id));
+  const assetIds = new Set(assets.map((item) => item.id));
+  const workOrderIds = new Set(workOrders.map((item) => item.id));
+  const evidenceIds = new Set(evidence.map((item) => item.id));
+  const gateIds = new Set(gates.map((item) => item.id));
+  const assetById = new Map(assets.map((item) => [item.id, item]));
+  const evidenceById = new Map(evidence.map((item) => [item.id, item]));
+  const workOrderById = new Map(workOrders.map((item) => [item.id, item]));
+
+  requireReferences(sites.map((item) => item.id), siteIds, "sites", "Site");
+  requireReferences(assets.map((item) => item.id), assetIds, "assets", "Asset");
+  requireReferences(workOrders.map((item) => item.id), workOrderIds, "workOrders", "Work order");
+  requireReferences(evidence.map((item) => item.id), evidenceIds, "evidence", "Evidence");
+  requireReferences(gates.map((item) => item.id), gateIds, "gates", "Gate");
+
+  for (const [index, asset] of assetsRecord.entries) {
+    if (!siteIds.has(asset.siteRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `assets[${index}].siteRef`,
+          `Site reference ${JSON.stringify(asset.siteRef)} does not resolve.`,
+        ),
+      );
+    }
+  }
+
+  const requiredIdSetForEvidenceKind = { "work-order": workOrderIds, asset: assetIds, site: siteIds };
+  const enumEvidenceAssertions = new Set(["observation", "completion"]);
+  for (const [index, item] of evidenceRecord.entries) {
+    const knownIds = requiredIdSetForEvidenceKind[item.kind];
+    if (!knownIds) {
+      findings.push(
+        finding(
+          "invalid_evidence_kind",
+          `evidence[${index}].kind`,
+          `Evidence kind ${JSON.stringify(item.kind)} is not a supported evidence kind.`,
+        ),
+      );
+    } else if (!knownIds.has(item.refId)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `evidence[${index}].refId`,
+          `Evidence reference ${JSON.stringify(item.refId)} does not resolve.`,
+        ),
+      );
+    }
+    if (!enumEvidenceAssertions.has(item.assertion)) {
+      findings.push(
+        finding(
+          "invalid_evidence_assertion",
+          `evidence[${index}].assertion`,
+          `Evidence assertion ${JSON.stringify(item.assertion)} is not a supported assertion kind.`,
+        ),
+      );
+    }
+    // A fabricated or unattributable note is not evidence: every record must
+    // carry a real, controlled/attributable source reference, not merely a
+    // narrative claim.
+    if (typeof item.sourceRef !== "string" || !item.sourceRef.startsWith("controlled://")) {
+      findings.push(
+        finding(
+          "untrusted_evidence_source",
+          `evidence[${index}].sourceRef`,
+          "Evidence must carry a valid, controlled/attributable source reference, not a fabricated or narrative source.",
+        ),
+      );
+    }
+    // Every evidence record must carry its own parseable assertion
+    // timestamp: an evidence record with no dateable assertion cannot ground
+    // a completion or gate clearance, and a missing/unparseable value must
+    // surface its own finding rather than only failing silently downstream.
+    if (!Number.isFinite(toEpochMillis(item.assertedAt))) {
+      findings.push(
+        finding(
+          "invalid_evidence_timestamp",
+          `evidence[${index}].assertedAt`,
+          "Evidence must carry a parseable assertedAt timestamp.",
+        ),
+      );
+    }
+  }
+
+  const enumWorkOrderStatuses = new Set(["open", "in-progress", "complete"]);
+  // A work order can only be verified complete when it names a trimmed,
+  // non-agent, non-self completer identity, carries a parseable completion
+  // timestamp that is not earlier than when the issue was first observed
+  // (itself required to be parseable), and is grounded in a completion-
+  // assertion evidence record for that same work order whose own assertedAt
+  // is no later than the completion. A bare "complete" status text alone is
+  // a status-toggle bypass, not a verified completion.
+  function isVerifiedComplete(workOrder) {
+    if (workOrder.status !== "complete") return false;
+    if (typeof workOrder.completedBy !== "string" || workOrder.completedBy.trim().length === 0) {
+      return false;
+    }
+    if (
+      isAgentIdentityName(workOrder.completedBy) ||
+      FACILITIES_OPERATIONS_COORDINATOR_PATTERN.test(workOrder.completedBy)
+    ) {
+      return false;
+    }
+    const completedAt = toEpochMillis(workOrder.completedAt);
+    const observedAt = toEpochMillis(workOrder.observedAt);
+    if (!Number.isFinite(completedAt) || !Number.isFinite(observedAt) || completedAt < observedAt) {
+      return false;
+    }
+    const supportingEvidence = evidenceById.get(workOrder.completionEvidenceRef);
+    if (
+      !supportingEvidence ||
+      supportingEvidence.kind !== "work-order" ||
+      supportingEvidence.assertion !== "completion" ||
+      supportingEvidence.refId !== workOrder.id
+    ) {
+      return false;
+    }
+    const assertedAt = toEpochMillis(supportingEvidence.assertedAt);
+    return Number.isFinite(assertedAt) && assertedAt <= completedAt;
+  }
+
+  for (const [index, workOrder] of workOrdersRecord.entries) {
+    if (!enumWorkOrderStatuses.has(workOrder.status)) {
+      findings.push(
+        finding(
+          "invalid_work_order_status",
+          `workOrders[${index}].status`,
+          `Work order status ${JSON.stringify(workOrder.status)} is not a supported state.`,
+        ),
+      );
+    }
+    if (!Number.isFinite(toEpochMillis(workOrder.observedAt))) {
+      findings.push(
+        finding(
+          "invalid_timestamp",
+          `workOrders[${index}].observedAt`,
+          "Work order observedAt must be a parseable timestamp.",
+        ),
+      );
+    }
+    if (!siteIds.has(workOrder.siteRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `workOrders[${index}].siteRef`,
+          `Site reference ${JSON.stringify(workOrder.siteRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (workOrder.assetRef !== null && workOrder.assetRef !== undefined) {
+      const asset = assetById.get(workOrder.assetRef);
+      if (!asset) {
+        findings.push(
+          finding(
+            "dangling_reference",
+            `workOrders[${index}].assetRef`,
+            `Asset reference ${JSON.stringify(workOrder.assetRef)} does not resolve.`,
+          ),
+        );
+      } else if (asset.siteRef !== workOrder.siteRef) {
+        findings.push(
+          finding(
+            "inconsistent_asset_site",
+            `workOrders[${index}].assetRef`,
+            "A work order's asset must belong to the very same site the work order names.",
+          ),
+        );
+      }
+    }
+    if (
+      workOrder.completionEvidenceRef !== null &&
+      workOrder.completionEvidenceRef !== undefined &&
+      !evidenceIds.has(workOrder.completionEvidenceRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `workOrders[${index}].completionEvidenceRef`,
+          `Completion evidence reference ${JSON.stringify(workOrder.completionEvidenceRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (workOrder.status === "complete" && !isVerifiedComplete(workOrder)) {
+      findings.push(
+        finding(
+          "unverified_work_order_completion",
+          `workOrders[${index}].status`,
+          "A work order can only be marked complete with a non-agent, non-self completer identity, a parseable completion timestamp no earlier than when it was observed, and grounding completion evidence for that same work order.",
+        ),
+      );
+    }
+  }
+
+  // A gate is only meaningfully cleared when it is grounded in at least one
+  // evidence record of the kind that matches its own kind AND the gate's own
+  // exact scope (not merely any record of the right kind anywhere in the
+  // artifact), and carries a trimmed, non-agent, non-self-attested approver
+  // identity plus a parseable approval timestamp. A bare "cleared" status
+  // text with no valid grounding or approver is a self-attestation-style
+  // bypass, not a real clearance.
+  const requiredEvidenceKindForGate = {
+    safety: "work-order",
+    permit: "site",
+    access: "site",
+    vendor: "asset",
+  };
+  // Maps each evidence kind to the gate scope kind that carries it, and each
+  // scope kind to the set of ids it may legitimately resolve against.
+  const scopeKindForEvidenceKind = { "work-order": "workOrder", site: "site", asset: "asset" };
+  const idsForScopeKind = { workOrder: workOrderIds, site: siteIds, asset: assetIds };
+  function isGateScopeValid(gate) {
+    const requiredKind = requiredEvidenceKindForGate[gate.kind];
+    if (!requiredKind) return false;
+    const expectedScopeKind = scopeKindForEvidenceKind[requiredKind];
+    if (gate.scopeKind !== expectedScopeKind) return false;
+    const knownIds = idsForScopeKind[gate.scopeKind];
+    return knownIds !== undefined && knownIds.has(gate.scopeRef);
+  }
+  function isGateResolved(gate) {
+    const requiredKind = requiredEvidenceKindForGate[gate.kind];
+    if (!requiredKind) return false; // unknown gate kind fails closed
+    if (gate.status !== "cleared") return false;
+    if (!isGateScopeValid(gate)) return false;
+    if (typeof gate.approvedBy !== "string" || gate.approvedBy.trim().length === 0) return false;
+    if (
+      isAgentIdentityName(gate.approvedBy) ||
+      FACILITIES_OPERATIONS_COORDINATOR_PATTERN.test(gate.approvedBy)
+    ) {
+      return false;
+    }
+    const approvedAt = toEpochMillis(gate.approvedAt);
+    if (!Number.isFinite(approvedAt)) return false;
+    // Grounding evidence must match the gate's exact kind and scope, and its
+    // own assertion cannot postdate the approval it is claimed to support:
+    // evidence asserted after the fact cannot retroactively justify an
+    // already-recorded approval.
+    const refs = Array.isArray(gate.evidenceRefs) ? gate.evidenceRefs : [];
+    const grounded = refs.some((ref) => {
+      const record = evidenceById.get(ref);
+      if (!record || record.kind !== requiredKind || record.refId !== gate.scopeRef) return false;
+      const assertedAt = toEpochMillis(record.assertedAt);
+      return Number.isFinite(assertedAt) && assertedAt <= approvedAt;
+    });
+    if (!grounded) return false;
+    // A work-order-scoped approval cannot predate the very issue it clears.
+    if (gate.scopeKind === "workOrder") {
+      const scopedWorkOrder = workOrderById.get(gate.scopeRef);
+      const observedAt = toEpochMillis(scopedWorkOrder?.observedAt);
+      if (Number.isFinite(observedAt) && approvedAt < observedAt) return false;
+    }
+    return true;
+  }
+
+  for (const [index, gate] of gatesRecord.entries) {
+    findings.push(...uniqueFindings(gate.evidenceRefs, `gates[${index}].evidenceRefs`, "Evidence"));
+    findings.push(
+      ...referenceFindings(gate.evidenceRefs, evidenceIds, `gates[${index}].evidenceRefs`, "Evidence"),
+    );
+    if (!Object.hasOwn(requiredEvidenceKindForGate, gate.kind)) {
+      findings.push(
+        finding(
+          "invalid_gate_kind",
+          `gates[${index}].kind`,
+          `Gate kind ${JSON.stringify(gate.kind)} is not a supported gate kind.`,
+        ),
+      );
+    } else if (!isGateScopeValid(gate)) {
+      findings.push(
+        finding(
+          "invalid_gate_scope",
+          `gates[${index}].scopeRef`,
+          "A gate's scope must be the site, asset, or work order kind matching its gate kind, and must resolve to a real record.",
+        ),
+      );
+    } else if (gate.status === "cleared" && !isGateResolved(gate)) {
+      findings.push(
+        finding(
+          "self_attested_gate_clearance",
+          `gates[${index}]`,
+          "A gate can only be cleared with grounding evidence of the matching kind and exact scope, plus a non-agent, non-self approver identity and a parseable approval timestamp no earlier than when its scoped work order was observed.",
+        ),
+      );
+    }
+  }
+
+  const ownerCandidates = [portfolio.ownerId, handoff.owner];
+  if (
+    ownerCandidates.some(
+      (owner) =>
+        typeof owner !== "string" ||
+        owner.trim().length === 0 ||
+        isAgentIdentityName(owner) ||
+        FACILITIES_OPERATIONS_COORDINATOR_PATTERN.test(owner),
+    )
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Facilities portfolio ownership and handoff authority must remain with a named, accountable human owner, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+
+  requireReferences(handoff.workOrderRefs ?? [], workOrderIds, "handoff.workOrderRefs", "Work order");
+  if (!sameSet(handoff.workOrderRefs ?? [], [...workOrderIds])) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.workOrderRefs",
+        "The handoff must reference every work order exactly once.",
+      ),
+    );
+  }
+
+  const unresolvedWorkOrderIds = workOrders
+    .filter((item) => !isVerifiedComplete(item))
+    .map((item) => item.id);
+  requireReferences(
+    handoff.unresolvedWorkOrderRefs ?? [],
+    workOrderIds,
+    "handoff.unresolvedWorkOrderRefs",
+    "Work order",
+  );
+  if (!sameSet(handoff.unresolvedWorkOrderRefs ?? [], unresolvedWorkOrderIds)) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.unresolvedWorkOrderRefs",
+        "The handoff's unresolved work order references must exactly match every work order that is not verified complete.",
+      ),
+    );
+  }
+
+  const unresolvedGateIds = gates.filter((gate) => !isGateResolved(gate)).map((gate) => gate.id);
+  requireReferences(handoff.unresolvedGateRefs ?? [], gateIds, "handoff.unresolvedGateRefs", "Gate");
+  if (!sameSet(handoff.unresolvedGateRefs ?? [], unresolvedGateIds)) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.unresolvedGateRefs",
+        "The handoff's unresolved gate references must exactly match every gate that is not validly cleared.",
+      ),
+    );
+  }
+
+  const expectedState =
+    unresolvedWorkOrderIds.length > 0 || unresolvedGateIds.length > 0 ? "blocked" : "ready";
+  if (handoff.state !== expectedState) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready while any work order is not verified complete or any gate is unresolved.",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "dispatch-technician",
+    "contact-vendor",
+    "contact-occupant",
+    "unlock-space",
+    "approve-spend",
+    "issue-emergency-instruction",
+    "modify-work-order-system",
+  ];
+  const prohibitedActionsRecord = stringListFindings(
+    handoff.prohibitedActions,
+    "handoff.prohibitedActions",
+    "Prohibited actions",
+  );
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `Facilities operations handoffs must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  const narrativeTexts = [
+    handoff.summary,
+    ...workOrders.map((item) => item.description),
+    ...evidence.map((item) => item.note),
+  ].filter((text) => typeof text === "string");
+  const prohibitedNarrative =
+    /\bdispatch(?:ed|ing)?\s+(?:a\s+|the\s+)?technician|contact(?:ed|ing)?\s+(?:the\s+)?vendor|contact(?:ed|ing)?\s+(?:the\s+)?occupant|unlock(?:ed|ing)?\s+the\s+space|approv(?:ed|ing|e)\s+(?:the\s+)?spend|issu(?:ed|ing|e)\s+(?:an?\s+)?emergency\s+instruction/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim technician dispatch, vendor/occupant contact, unlocking a space, spend approval, or issuing an emergency instruction.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
+function manufacturingOperationsFindings(value) {
+  const findings = [];
+  // handoff/constraint reference-list fields compared here are schema-valid
+  // as any type, so a malformed-but-matching-length object (e.g.
+  // `{ length: 2 }`) could pass a length check and then throw once passed to
+  // `new Set(...)`, which requires an iterable. Fail closed (not equal)
+  // whenever either side isn't actually an array, before any length/Set work.
+  const sameSet = (left, right) =>
+    Array.isArray(left) &&
+    Array.isArray(right) &&
+    left.length === right.length &&
+    new Set(left).size === left.length &&
+    left.every((item) => new Set(right).has(item));
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  function toEpochMillis(text) {
+    if (typeof text !== "string") return NaN;
+    const trimmed = text.trim();
+    if (trimmed.length === 0) return NaN;
+    const ms = Date.parse(trimmed);
+    return Number.isFinite(ms) ? ms : NaN;
+  }
+
+  // A fabricated or unattributable note is not evidence: every record must
+  // carry a real, controlled/attributable source reference before it can
+  // ground any clearance or resolution predicate.
+  function isSourceValidEvidence(record) {
+    return (
+      record !== undefined &&
+      typeof record.sourceRef === "string" &&
+      record.sourceRef.startsWith("controlled://")
+    );
+  }
+
+  const linesRecord = recordArray(value.lines, "lines", "Line");
+  const demandOrdersRecord = recordArray(value.orders, "orders", "Demand order");
+  const capacitySlotsRecord = recordArray(value.capacitySlots, "capacitySlots", "Capacity slot");
+  const scheduleEntriesRecord = recordArray(
+    value.scheduleEntries,
+    "scheduleEntries",
+    "Schedule entry",
+  );
+  const constraintsRecord = recordArray(value.constraints, "constraints", "Constraint");
+  const evidenceRecord = recordArray(value.evidence, "evidence", "Evidence");
+  const exceptionsRecord = recordArray(value.exceptions, "exceptions", "Exception");
+  findings.push(
+    ...linesRecord.findings,
+    ...demandOrdersRecord.findings,
+    ...capacitySlotsRecord.findings,
+    ...scheduleEntriesRecord.findings,
+    ...constraintsRecord.findings,
+    ...evidenceRecord.findings,
+    ...exceptionsRecord.findings,
+  );
+
+  const lines = linesRecord.items;
+  const demandOrders = demandOrdersRecord.items;
+  const capacitySlots = capacitySlotsRecord.items;
+  const scheduleEntries = scheduleEntriesRecord.items;
+  const constraints = constraintsRecord.items;
+  const evidence = evidenceRecord.items;
+  const exceptions = exceptionsRecord.items;
+  const handoff = value.handoff ?? {};
+
+  const lineIds = new Set(lines.map((item) => item.id));
+  const demandIds = new Set(demandOrders.map((item) => item.id));
+  const capacitySlotIds = new Set(capacitySlots.map((item) => item.id));
+  const scheduleEntryIds = new Set(scheduleEntries.map((item) => item.id));
+  const constraintIds = new Set(constraints.map((item) => item.id));
+  const evidenceIds = new Set(evidence.map((item) => item.id));
+  const exceptionIds = new Set(exceptions.map((item) => item.id));
+  const capacitySlotById = new Map(capacitySlots.map((item) => [item.id, item]));
+  const evidenceById = new Map(evidence.map((item) => [item.id, item]));
+  const demandOrderById = new Map(demandOrders.map((item) => [item.id, item]));
+
+  requireReferences(lines.map((item) => item.id), lineIds, "lines", "Line");
+  requireReferences(demandOrders.map((item) => item.id), demandIds, "orders", "Demand order");
+  requireReferences(
+    capacitySlots.map((item) => item.id),
+    capacitySlotIds,
+    "capacitySlots",
+    "Capacity slot",
+  );
+  requireReferences(
+    scheduleEntries.map((item) => item.id),
+    scheduleEntryIds,
+    "scheduleEntries",
+    "Schedule entry",
+  );
+  requireReferences(constraints.map((item) => item.id), constraintIds, "constraints", "Constraint");
+  requireReferences(evidence.map((item) => item.id), evidenceIds, "evidence", "Evidence");
+  requireReferences(exceptions.map((item) => item.id), exceptionIds, "exceptions", "Exception");
+
+  for (const [index, slot] of capacitySlotsRecord.entries) {
+    if (!lineIds.has(slot.lineRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `capacitySlots[${index}].lineRef`,
+          `Line reference ${JSON.stringify(slot.lineRef)} does not resolve.`,
+        ),
+      );
+    }
+  }
+
+  const enumScheduleStates = new Set(["proposed", "released"]);
+  for (const [index, entry] of scheduleEntriesRecord.entries) {
+    if (!enumScheduleStates.has(entry.state)) {
+      findings.push(
+        finding(
+          "invalid_schedule_entry_state",
+          `scheduleEntries[${index}].state`,
+          `Schedule entry state ${JSON.stringify(entry.state)} is not a supported state.`,
+        ),
+      );
+    }
+    if (!demandIds.has(entry.demandRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `scheduleEntries[${index}].demandRef`,
+          `Demand reference ${JSON.stringify(entry.demandRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!lineIds.has(entry.lineRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `scheduleEntries[${index}].lineRef`,
+          `Line reference ${JSON.stringify(entry.lineRef)} does not resolve.`,
+        ),
+      );
+    }
+    const capacitySlot = capacitySlotById.get(entry.capacitySlotRef);
+    if (!capacitySlot) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `scheduleEntries[${index}].capacitySlotRef`,
+          `Capacity slot reference ${JSON.stringify(entry.capacitySlotRef)} does not resolve.`,
+        ),
+      );
+    } else {
+      if (capacitySlot.lineRef !== entry.lineRef) {
+        findings.push(
+          finding(
+            "inconsistent_capacity_line",
+            `scheduleEntries[${index}].capacitySlotRef`,
+            "A schedule entry's capacity slot must belong to the very same production line the entry names.",
+          ),
+        );
+      }
+    }
+    if (typeof entry.quantity !== "number" || !Number.isFinite(entry.quantity) || entry.quantity <= 0) {
+      findings.push(
+        finding(
+          "invalid_schedule_quantity",
+          `scheduleEntries[${index}].quantity`,
+          "A schedule entry's quantity must be a finite, positive number.",
+        ),
+      );
+    }
+  }
+
+  // Capacity and demand are cumulative constraints, not per-entry ones: two
+  // otherwise-legitimate-looking schedule entries (including an exact clone
+  // of an existing entry) can jointly overcommit a capacity slot or a
+  // demand order even though neither looks invalid in isolation. Aggregate
+  // every entry's quantity by the resource it draws against before judging
+  // any single entry as within bounds.
+  //
+  // Aggregating many entries' quantities accumulates ordinary
+  // floating-point summation noise (e.g. 0.1 + 0.2 diverges from 0.3 by a
+  // few ULPs); a raw `>` comparison against a limit would spuriously flag
+  // that noise as an overage. Only treat a total as exceeding a limit when
+  // it is strictly greater *and* not merely numerically-equal to it within
+  // `numbersEqual`'s tolerance, so a genuine, material overage still fails.
+  function isMeaningfullyGreaterThan(actual, limit) {
+    return (
+      typeof actual === "number" &&
+      typeof limit === "number" &&
+      actual > limit &&
+      !numbersEqual(actual, limit)
+    );
+  }
+  const quantityByCapacitySlot = new Map();
+  const quantityByDemand = new Map();
+  for (const entry of scheduleEntries) {
+    if (typeof entry.quantity !== "number" || !Number.isFinite(entry.quantity) || entry.quantity <= 0) continue;
+    if (typeof entry.capacitySlotRef === "string") {
+      quantityByCapacitySlot.set(
+        entry.capacitySlotRef,
+        (quantityByCapacitySlot.get(entry.capacitySlotRef) ?? 0) + entry.quantity,
+      );
+    }
+    if (typeof entry.demandRef === "string") {
+      quantityByDemand.set(entry.demandRef, (quantityByDemand.get(entry.demandRef) ?? 0) + entry.quantity);
+    }
+  }
+  for (const [index, slot] of capacitySlotsRecord.entries) {
+    const scheduledTotal = quantityByCapacitySlot.get(slot.id) ?? 0;
+    const availableUnitsValid =
+      typeof slot.availableUnits === "number" &&
+      Number.isFinite(slot.availableUnits) &&
+      slot.availableUnits >= 0;
+    if (!availableUnitsValid) {
+      findings.push(
+        finding(
+          "invalid_capacity_units",
+          `capacitySlots[${index}].availableUnits`,
+          "Capacity slot availableUnits must be a finite, non-negative number.",
+        ),
+      );
+    } else if (isMeaningfullyGreaterThan(scheduledTotal, slot.availableUnits)) {
+      findings.push(
+        finding(
+          "capacity_exceeded",
+          `capacitySlots[${index}].availableUnits`,
+          `The total scheduled quantity (${scheduledTotal}) across all schedule entries exceeds the ${slot.availableUnits} available units for this capacity slot.`,
+        ),
+      );
+    }
+  }
+
+  const enumFulfillmentModes = new Set(["exact", "partial"]);
+  // "exact" fulfillment forbids both over- and under-scheduling a demand
+  // order; "partial" only forbids overscheduling. An unrecognized mode
+  // fails closed to the stricter "exact" semantics rather than silently
+  // allowing unlimited overscheduling. Exact matching tolerates the same
+  // floating-point summation noise as the capacity check (via
+  // `numbersEqual`), but a material mismatch in either direction still
+  // fails.
+  function isDemandOverscheduled(order, scheduledTotal) {
+    if (typeof order.quantity !== "number" || !Number.isFinite(order.quantity) || order.quantity <= 0) {
+      return true; // an invalid demand quantity fails closed, never "satisfied"
+    }
+    if (order.fulfillmentMode === "partial") {
+      return isMeaningfullyGreaterThan(scheduledTotal, order.quantity);
+    }
+    return !numbersEqual(scheduledTotal, order.quantity);
+  }
+  for (const [index, order] of demandOrdersRecord.entries) {
+    if (!enumFulfillmentModes.has(order.fulfillmentMode)) {
+      findings.push(
+        finding(
+          "invalid_fulfillment_mode",
+          `orders[${index}].fulfillmentMode`,
+          `Fulfillment mode ${JSON.stringify(order.fulfillmentMode)} is not a supported fulfillment mode.`,
+        ),
+      );
+    }
+    if (typeof order.quantity !== "number" || !Number.isFinite(order.quantity) || order.quantity <= 0) {
+      findings.push(
+        finding(
+          "invalid_order_quantity",
+          `orders[${index}].quantity`,
+          "A demand order's quantity must be a finite, positive number.",
+        ),
+      );
+    }
+    const scheduledTotal = quantityByDemand.get(order.id) ?? 0;
+    if (isDemandOverscheduled(order, scheduledTotal)) {
+      findings.push(
+        finding(
+          "demand_overscheduled",
+          `orders[${index}].quantity`,
+          `The total scheduled quantity (${scheduledTotal}) across all schedule entries does not match this demand order's ${order.fulfillmentMode === "partial" ? "maximum" : "exact"} quantity of ${order.quantity}.`,
+        ),
+      );
+    }
+  }
+
+  const enumConstraintKinds = new Set(["material", "quality", "maintenance"]);
+  const enumConstraintStatuses = new Set(["open", "cleared"]);
+  const enumEvidenceAssertions = new Set(["observation", "clearance"]);
+  // A constraint is only genuinely cleared when it is grounded in at least
+  // one *clearance*-assertion evidence record of the matching kind for that
+  // same constraint (an "observation" record, such as the very notice that
+  // opened the hold, can never clear itself), whose own assertedAt is no
+  // later than the clearance itself, and names a trimmed, non-agent,
+  // non-self clearing identity plus a parseable clearance timestamp. A bare
+  // "cleared" status text alone is a status-toggle bypass.
+  function isConstraintResolved(constraint) {
+    if (!enumConstraintKinds.has(constraint.kind)) return false;
+    if (constraint.status !== "cleared") return false;
+    if (typeof constraint.clearedBy !== "string" || constraint.clearedBy.trim().length === 0) {
+      return false;
+    }
+    if (
+      isAgentIdentityName(constraint.clearedBy) ||
+      MANUFACTURING_OPERATIONS_PLANNER_PATTERN.test(constraint.clearedBy)
+    ) {
+      return false;
+    }
+    const clearedAt = toEpochMillis(constraint.clearedAt);
+    if (!Number.isFinite(clearedAt)) return false;
+    const refs = Array.isArray(constraint.evidenceRefs) ? constraint.evidenceRefs : [];
+    return refs.some((ref) => {
+      const supportingEvidence = evidenceById.get(ref);
+      if (
+        !supportingEvidence ||
+        supportingEvidence.kind !== constraint.kind ||
+        supportingEvidence.refId !== constraint.id ||
+        supportingEvidence.assertion !== "clearance" ||
+        !isSourceValidEvidence(supportingEvidence)
+      ) {
+        return false;
+      }
+      const assertedAt = toEpochMillis(supportingEvidence.assertedAt);
+      return Number.isFinite(assertedAt) && assertedAt <= clearedAt;
+    });
+  }
+
+  for (const [index, constraint] of constraintsRecord.entries) {
+    findings.push(
+      ...uniqueFindings(constraint.evidenceRefs, `constraints[${index}].evidenceRefs`, "Evidence"),
+    );
+    findings.push(
+      ...referenceFindings(
+        constraint.evidenceRefs,
+        evidenceIds,
+        `constraints[${index}].evidenceRefs`,
+        "Evidence",
+      ),
+    );
+    if (!enumConstraintKinds.has(constraint.kind)) {
+      findings.push(
+        finding(
+          "invalid_constraint_kind",
+          `constraints[${index}].kind`,
+          `Constraint kind ${JSON.stringify(constraint.kind)} is not a supported constraint kind.`,
+        ),
+      );
+    }
+    if (!enumConstraintStatuses.has(constraint.status)) {
+      findings.push(
+        finding(
+          "invalid_constraint_status",
+          `constraints[${index}].status`,
+          `Constraint status ${JSON.stringify(constraint.status)} is not a supported state.`,
+        ),
+      );
+    } else if (constraint.status === "cleared" && !isConstraintResolved(constraint)) {
+      findings.push(
+        finding(
+          "self_attested_constraint_clearance",
+          `constraints[${index}]`,
+          "A constraint can only be cleared with grounding clearance-assertion evidence of the matching kind (not a mere observation record) asserted at or before the clearance, plus a non-agent, non-self clearing identity and a parseable clearance timestamp.",
+        ),
+      );
+    }
+  }
+
+  const evidenceTargetIds = new Set([...constraintIds, ...exceptionIds]);
+  for (const [index, item] of evidenceRecord.entries) {
+    if (!enumConstraintKinds.has(item.kind)) {
+      findings.push(
+        finding(
+          "invalid_evidence_kind",
+          `evidence[${index}].kind`,
+          `Evidence kind ${JSON.stringify(item.kind)} is not a supported evidence kind.`,
+        ),
+      );
+    } else if (!evidenceTargetIds.has(item.refId)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `evidence[${index}].refId`,
+          `Evidence reference ${JSON.stringify(item.refId)} does not resolve.`,
+        ),
+      );
+    }
+    if (!enumEvidenceAssertions.has(item.assertion)) {
+      findings.push(
+        finding(
+          "invalid_evidence_assertion",
+          `evidence[${index}].assertion`,
+          `Evidence assertion ${JSON.stringify(item.assertion)} is not a supported assertion kind.`,
+        ),
+      );
+    }
+    if (!isSourceValidEvidence(item)) {
+      findings.push(
+        finding(
+          "untrusted_evidence_source",
+          `evidence[${index}].sourceRef`,
+          "Evidence must carry a valid, controlled/attributable source reference, not a fabricated or narrative source.",
+        ),
+      );
+    }
+  }
+
+  // Released schedule entries require the plan itself to be released, and no
+  // outstanding constraint scoped to that entry's line (or plan-wide, scope
+  // null) may remain unresolved: proposed-vs-released status text alone
+  // cannot authorize a release.
+  const unresolvedConstraintScopes = new Set(
+    constraints.filter((item) => !isConstraintResolved(item)).map((item) => item.scope ?? null),
+  );
+  function isUnauthorizedRelease(entry) {
+    if (entry.state !== "released") return false;
+    const blockingConstraint =
+      unresolvedConstraintScopes.has(entry.lineRef) || unresolvedConstraintScopes.has(null);
+    return value.state !== "released" || blockingConstraint;
+  }
+  for (const [index, entry] of scheduleEntriesRecord.entries) {
+    if (isUnauthorizedRelease(entry)) {
+      findings.push(
+        finding(
+          "unauthorized_release",
+          `scheduleEntries[${index}].state`,
+          "A schedule entry cannot be released unless the plan itself is released and no unresolved constraint applies to that line or the whole plan.",
+        ),
+      );
+    }
+  }
+
+  // Exceptions must always name an accountable, non-agent, non-self owner
+  // regardless of status: an exception cannot be created ownerless, and a
+  // resolved exception must be grounded in an equivalent source-grounded
+  // external resolution, not merely a status toggle plus a timestamp.
+  function isExceptionResolved(exception) {
+    if (exception.status !== "resolved") return false;
+    if (typeof exception.resolvedBy !== "string" || exception.resolvedBy.trim().length === 0) {
+      return false;
+    }
+    if (
+      isAgentIdentityName(exception.resolvedBy) ||
+      MANUFACTURING_OPERATIONS_PLANNER_PATTERN.test(exception.resolvedBy)
+    ) {
+      return false;
+    }
+    const resolvedAt = toEpochMillis(exception.resolvedAt);
+    if (!Number.isFinite(resolvedAt)) return false;
+    const supportingEvidence = evidenceById.get(exception.resolutionEvidenceRef);
+    if (
+      !supportingEvidence ||
+      supportingEvidence.refId !== exception.id ||
+      supportingEvidence.assertion !== "clearance" ||
+      !isSourceValidEvidence(supportingEvidence)
+    ) {
+      return false;
+    }
+    const assertedAt = toEpochMillis(supportingEvidence.assertedAt);
+    return Number.isFinite(assertedAt) && assertedAt <= resolvedAt;
+  }
+  for (const [index, exception] of exceptionsRecord.entries) {
+    if (
+      typeof exception.ownerId !== "string" ||
+      exception.ownerId.trim().length === 0 ||
+      isAgentIdentityName(exception.ownerId) ||
+      MANUFACTURING_OPERATIONS_PLANNER_PATTERN.test(exception.ownerId)
+    ) {
+      findings.push(
+        finding(
+          "agent_owned_authority",
+          `exceptions[${index}].ownerId`,
+          "Every exception must be owned by a named, accountable human, not an agent or the package's own role.",
+        ),
+      );
+    }
+    if (
+      exception.constraintRef !== null &&
+      exception.constraintRef !== undefined &&
+      !constraintIds.has(exception.constraintRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `exceptions[${index}].constraintRef`,
+          `Constraint reference ${JSON.stringify(exception.constraintRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (
+      exception.resolutionEvidenceRef !== null &&
+      exception.resolutionEvidenceRef !== undefined &&
+      !evidenceIds.has(exception.resolutionEvidenceRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `exceptions[${index}].resolutionEvidenceRef`,
+          `Resolution evidence reference ${JSON.stringify(exception.resolutionEvidenceRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (exception.status === "resolved" && !isExceptionResolved(exception)) {
+      findings.push(
+        finding(
+          "incomplete_exception_resolution",
+          `exceptions[${index}].resolvedAt`,
+          "A resolved exception can only be marked resolved with a non-agent, non-self resolver identity, a parseable resolution timestamp, and grounding clearance-assertion evidence for that same exception asserted at or before the resolution.",
+        ),
+      );
+    }
+  }
+
+  const ownerCandidates = [value.planOwnerId, handoff.owner];
+  if (
+    ownerCandidates.some(
+      (owner) =>
+        typeof owner !== "string" ||
+        owner.trim().length === 0 ||
+        isAgentIdentityName(owner) ||
+        MANUFACTURING_OPERATIONS_PLANNER_PATTERN.test(owner),
+    )
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Production plan ownership and handoff authority must remain with a named, accountable human owner, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+
+  requireReferences(handoff.scheduleRefs ?? [], scheduleEntryIds, "handoff.scheduleRefs", "Schedule entry");
+  if (!sameSet(handoff.scheduleRefs ?? [], [...scheduleEntryIds])) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.scheduleRefs",
+        "The handoff must reference every schedule entry exactly once.",
+      ),
+    );
+  }
+
+  const unresolvedConstraintIds = constraints
+    .filter((item) => !isConstraintResolved(item))
+    .map((item) => item.id);
+  requireReferences(
+    handoff.unresolvedConstraintRefs ?? [],
+    constraintIds,
+    "handoff.unresolvedConstraintRefs",
+    "Constraint",
+  );
+  if (!sameSet(handoff.unresolvedConstraintRefs ?? [], unresolvedConstraintIds)) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.unresolvedConstraintRefs",
+        "The handoff's unresolved constraint references must exactly match every constraint that is not validly cleared.",
+      ),
+    );
+  }
+
+  const unresolvedExceptionIds = exceptions
+    .filter((item) => !isExceptionResolved(item))
+    .map((item) => item.id);
+  requireReferences(
+    handoff.unresolvedExceptionRefs ?? [],
+    exceptionIds,
+    "handoff.unresolvedExceptionRefs",
+    "Exception",
+  );
+  if (!sameSet(handoff.unresolvedExceptionRefs ?? [], unresolvedExceptionIds)) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.unresolvedExceptionRefs",
+        "The handoff's unresolved exception references must exactly match every exception that is not resolved.",
+      ),
+    );
+  }
+
+  const hasUnauthorizedRelease = scheduleEntries.some((entry) => isUnauthorizedRelease(entry));
+  const expectedState =
+    unresolvedConstraintIds.length > 0 || unresolvedExceptionIds.length > 0 || hasUnauthorizedRelease
+      ? "blocked"
+      : "ready";
+  if (handoff.state !== expectedState) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready while any constraint is unresolved, any exception is unresolved, or any schedule entry is released without authorization.",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "control-equipment",
+    "release-work-order",
+    "modify-erp-record",
+    "modify-mes-record",
+    "override-quality-hold",
+    "bypass-maintenance",
+    "direct-personnel",
+  ];
+  const prohibitedActionsRecord = stringListFindings(
+    handoff.prohibitedActions,
+    "handoff.prohibitedActions",
+    "Prohibited actions",
+  );
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `Production plan handoffs must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  const narrativeTexts = [
+    handoff.summary,
+    ...exceptions.map((item) => item.description),
+  ].filter((text) => typeof text === "string");
+  const prohibitedNarrative =
+    /\breleas(?:ed|ing|e)\s+(?:the\s+)?work\s+order|overrid(?:den|ing|e)\s+(?:the\s+)?quality\s+hold|control(?:led|ling)?\s+(?:the\s+)?equipment|modif(?:ied|ying|y)\s+(?:the\s+)?(?:erp|mes)\s+record|direct(?:ed|ing)?\s+personnel|bypass(?:ed|ing)?\s+maintenance/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim work order release, quality hold override, equipment control, ERP/MES modification, personnel direction, or bypassed maintenance.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
 function workflowExecutionReconciliationFindings(value, options = {}) {
   const findings = [];
   const manifest = value.manifest ?? {};
@@ -36143,8 +37835,10 @@ const validators = {
   "delegation-coordinator": delegationFindings,
   "document-renewal-tracker": documentRenewalFindings,
   "document-intake-analyst": documentIntakeFindings,
+  "event-operations-director": eventOperationsFindings,
   "executive-assistant": executiveCommitmentLedgerFindings,
   "executive-briefing": executiveBriefingSnapshotFindings,
+  "facilities-operations-coordinator": facilitiesOperationsFindings,
   "financial-analyst": financialAnalysisFindings,
   "feed-intelligence-monitor": feedIntelligenceDeltaLedgerFindings,
   "freelance-client-pipeline": freelancePipelineFindings,
@@ -36165,6 +37859,7 @@ const validators = {
   "knowledge-gardener": knowledgeSpaceChangePlanFindings,
   "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
+  "manufacturing-operations-planner": manufacturingOperationsFindings,
   "meal-grocery-planner": mealGroceryFindings,
   "media-evidence-reviewer": mediaEvidenceFindings,
   "medical-appointment-prep": medicalAppointmentFindings,
