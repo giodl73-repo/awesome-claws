@@ -1,24 +1,332 @@
 {
-  "incidentId": "INC-2048",
-  "severity": "SEV-1",
-  "status": "mitigating",
-  "startedAt": "2026-08-16T14:07:00Z",
-  "incidentCommander": "Primary incident commander",
-  "impact": {"summary": "Checkout errors increased from 1% to 18% after deployment 2026.08.16.4.", "affectedServices": ["checkout-api", "payment-orchestrator"], "customerImpact": "partial-outage", "evidenceRef": "dashboard/checkout-errors/14-07", "observedAt": "2026-08-16T14:09:00Z"},
-  "timeline": [
-    {"timestamp": "2026-08-16T14:07:00Z", "kind": "observation", "summary": "Checkout error alert crossed the SEV-1 threshold.", "evidenceRef": "alert/checkout-errors-2048", "owner": "On-call engineer"},
-    {"timestamp": "2026-08-16T14:12:00Z", "kind": "hypothesis", "summary": "Deployment 2026.08.16.4 may have changed payment timeout handling.", "evidenceRef": "deploy/2026.08.16.4", "owner": "Checkout lead"},
-    {"timestamp": "2026-08-16T14:18:00Z", "kind": "decision", "summary": "Incident commander approved a rollback of checkout-api only.", "evidenceRef": "approval/INC-2048/rollback-checkout", "owner": "Primary incident commander"}
+  "schemaVersion": "awesomeClaws.incidentResponse.v1",
+  "incident": {
+    "id": "INC-2048",
+    "service": "checkout-platform",
+    "environment": "production",
+    "deploymentOrBuild": "checkout-api@2026.08.16.4",
+    "timelineSnapshotRef": "incident-snapshot-INC-2048-2026-09-05T1115Z",
+    "severity": "SEV-1",
+    "status": "recovering",
+    "startedAt": "2026-09-05T10:00:00Z",
+    "requestedAt": "2026-09-05T10:02:00Z"
+  },
+  "principals": [
+    {
+      "id": "principal-response-owner-alex",
+      "name": "Alex Rivera",
+      "scopes": [
+        "incident-coordination"
+      ]
+    },
+    {
+      "id": "principal-commander-riley",
+      "name": "Riley Chen",
+      "scopes": [
+        "incident-command-review"
+      ]
+    },
+    {
+      "id": "principal-checkout-owner-priya",
+      "name": "Priya Desai",
+      "scopes": [
+        "owner-execution"
+      ]
+    },
+    {
+      "id": "principal-recovery-verifier-jordan",
+      "name": "Jordan Blake",
+      "scopes": [
+        "recovery-verification"
+      ]
+    },
+    {
+      "id": "principal-communications-morgan",
+      "name": "Morgan Lee",
+      "scopes": [
+        "communication-draft"
+      ]
+    }
   ],
-  "mitigations": [
-    {"action": "Roll back checkout-api to 2026.08.16.3", "target": "checkout-api production", "owner": "Checkout lead", "state": "in-progress", "approvalRef": "approval/INC-2048/rollback-checkout", "verification": "Checkout errors remain below 2% for 15 minutes.", "rollbackCondition": "Stop if payment authorization failures increase above 3%."},
-    {"action": "Hold payment-orchestrator deployment", "target": "payment-orchestrator production", "owner": "Payments lead", "state": "approved", "approvalRef": "approval/INC-2048/deploy-hold", "verification": "No new payment-orchestrator version reaches production.", "rollbackCondition": "Release hold only after incident commander recovery review."}
+  "services": [
+    {
+      "id": "service-checkout-api",
+      "name": "checkout-api",
+      "environment": "production",
+      "deploymentOrBuild": "checkout-api@2026.08.16.4",
+      "ownerId": "principal-checkout-owner-priya"
+    },
+    {
+      "id": "service-payment-orchestrator",
+      "name": "payment-orchestrator",
+      "environment": "production",
+      "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+      "ownerId": "principal-checkout-owner-priya"
+    }
   ],
-  "recoveryCriteria": [
-    {"criterion": "Checkout errors below 2% for 15 minutes", "state": "unmet", "evidenceRef": "dashboard/checkout-errors/live", "owner": "Checkout lead"},
-    {"criterion": "Payment authorization failures remain below 3%", "state": "met", "evidenceRef": "dashboard/payment-auth/live", "owner": "Payments lead"},
-    {"criterion": "Rollback version and configuration are verified", "state": "blocked", "evidenceRef": "verification/rollback-pending", "owner": "Release engineer"}
+  "signals": [
+    {
+      "id": "signal-checkout-errors",
+      "serviceRef": "service-checkout-api",
+      "severity": "high",
+      "state": "resolved",
+      "evidenceRefs": [
+        "evidence-checkout-alert",
+        "evidence-checkout-recovery"
+      ],
+      "observedAt": "2026-09-05T10:03:00Z",
+      "resolvedAt": "2026-09-05T10:50:00Z"
+    },
+    {
+      "id": "signal-payment-latency",
+      "serviceRef": "service-payment-orchestrator",
+      "severity": "medium",
+      "state": "monitoring",
+      "evidenceRefs": [
+        "evidence-payment-signal"
+      ],
+      "observedAt": "2026-09-05T10:05:00Z"
+    }
   ],
-  "communications": [{"audience": "Customer support and status-page owner", "state": "draft", "owner": "Incident communications lead", "messageRef": "draft/INC-2048/update-1"}],
-  "decisionState": "not-ready"
+  "evidence": [
+    {
+      "id": "evidence-checkout-alert",
+      "kind": "signal",
+      "incidentRef": "INC-2048",
+      "serviceRef": "service-checkout-api",
+      "signalRef": "signal-checkout-errors",
+      "environment": "production",
+      "deploymentOrBuild": "checkout-api@2026.08.16.4",
+      "timelineSnapshotRef": "incident-snapshot-INC-2048-2026-09-05T1115Z",
+      "outcome": "observed",
+      "sourceRef": "controlled://incident-evidence/INC-2048/checkout-alert",
+      "assertedAt": "2026-09-05T10:04:00Z"
+    },
+    {
+      "id": "evidence-payment-signal",
+      "kind": "signal",
+      "incidentRef": "INC-2048",
+      "serviceRef": "service-payment-orchestrator",
+      "signalRef": "signal-payment-latency",
+      "environment": "production",
+      "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+      "timelineSnapshotRef": "incident-snapshot-INC-2048-2026-09-05T1115Z",
+      "outcome": "observed",
+      "sourceRef": "controlled://incident-evidence/INC-2048/payment-latency",
+      "assertedAt": "2026-09-05T10:06:00Z"
+    },
+    {
+      "id": "evidence-deployment-correlation",
+      "kind": "hypothesis",
+      "incidentRef": "INC-2048",
+      "serviceRef": "service-checkout-api",
+      "hypothesisRef": "hypothesis-timeout-regression",
+      "environment": "production",
+      "deploymentOrBuild": "checkout-api@2026.08.16.4",
+      "timelineSnapshotRef": "incident-snapshot-INC-2048-2026-09-05T1115Z",
+      "outcome": "confirmed",
+      "sourceRef": "controlled://incident-evidence/INC-2048/deployment-correlation",
+      "assertedAt": "2026-09-05T10:15:00Z"
+    },
+    {
+      "id": "evidence-rollback-approval",
+      "kind": "action-approval",
+      "incidentRef": "INC-2048",
+      "serviceRef": "service-checkout-api",
+      "actionRef": "action-checkout-rollback",
+      "approvedById": "principal-commander-riley",
+      "environment": "production",
+      "deploymentOrBuild": "checkout-api@2026.08.16.4",
+      "timelineSnapshotRef": "incident-snapshot-INC-2048-2026-09-05T1115Z",
+      "outcome": "approved",
+      "sourceRef": "controlled://incident-evidence/INC-2048/rollback-approval",
+      "assertedAt": "2026-09-05T10:20:00Z"
+    },
+    {
+      "id": "evidence-rollback-execution",
+      "kind": "owner-execution",
+      "incidentRef": "INC-2048",
+      "serviceRef": "service-checkout-api",
+      "actionRef": "action-checkout-rollback",
+      "environment": "production",
+      "deploymentOrBuild": "checkout-api@2026.08.16.4",
+      "timelineSnapshotRef": "incident-snapshot-INC-2048-2026-09-05T1115Z",
+      "outcome": "completed",
+      "sourceRef": "controlled://incident-evidence/INC-2048/rollback-execution",
+      "assertedAt": "2026-09-05T10:30:00Z"
+    },
+    {
+      "id": "evidence-checkout-recovery",
+      "kind": "recovery-check",
+      "incidentRef": "INC-2048",
+      "serviceRef": "service-checkout-api",
+      "signalRef": "signal-checkout-errors",
+      "recoveryCheckRef": "recovery-checkout-errors",
+      "environment": "production",
+      "deploymentOrBuild": "checkout-api@2026.08.16.4",
+      "timelineSnapshotRef": "incident-snapshot-INC-2048-2026-09-05T1115Z",
+      "outcome": "passed",
+      "sourceRef": "controlled://incident-evidence/INC-2048/checkout-recovery",
+      "assertedAt": "2026-09-05T10:45:00Z"
+    },
+    {
+      "id": "evidence-payment-recovery",
+      "kind": "recovery-check",
+      "incidentRef": "INC-2048",
+      "serviceRef": "service-payment-orchestrator",
+      "recoveryCheckRef": "recovery-payment-authorization",
+      "environment": "production",
+      "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+      "timelineSnapshotRef": "incident-snapshot-INC-2048-2026-09-05T1115Z",
+      "outcome": "passed",
+      "sourceRef": "controlled://incident-evidence/INC-2048/payment-recovery",
+      "assertedAt": "2026-09-05T10:47:00Z"
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "hypothesis-timeout-regression",
+      "serviceRef": "service-checkout-api",
+      "state": "confirmed",
+      "ownerId": "principal-checkout-owner-priya",
+      "evidenceRefs": [
+        "evidence-deployment-correlation"
+      ],
+      "updatedAt": "2026-09-05T10:16:00Z"
+    }
+  ],
+  "timelineEvents": [
+    {
+      "id": "event-alert",
+      "incidentRef": "INC-2048",
+      "kind": "signal",
+      "summary": "Checkout error rate crossed the declared incident threshold.",
+      "evidenceRefs": [
+        "evidence-checkout-alert"
+      ],
+      "ownerId": "principal-response-owner-alex",
+      "occurredAt": "2026-09-05T10:04:00Z"
+    },
+    {
+      "id": "event-hypothesis",
+      "incidentRef": "INC-2048",
+      "kind": "hypothesis",
+      "summary": "The current checkout deployment correlates with timeout failures.",
+      "evidenceRefs": [
+        "evidence-deployment-correlation"
+      ],
+      "ownerId": "principal-checkout-owner-priya",
+      "occurredAt": "2026-09-05T10:16:00Z"
+    },
+    {
+      "id": "event-action",
+      "incidentRef": "INC-2048",
+      "kind": "owner-action",
+      "summary": "The checkout owner completed the commander-approved rollback.",
+      "evidenceRefs": [
+        "evidence-rollback-approval",
+        "evidence-rollback-execution"
+      ],
+      "ownerId": "principal-checkout-owner-priya",
+      "occurredAt": "2026-09-05T10:30:00Z"
+    },
+    {
+      "id": "event-recovery",
+      "incidentRef": "INC-2048",
+      "kind": "recovery-verification",
+      "summary": "Current checks passed across both declared services.",
+      "evidenceRefs": [
+        "evidence-checkout-recovery",
+        "evidence-payment-recovery"
+      ],
+      "ownerId": "principal-recovery-verifier-jordan",
+      "occurredAt": "2026-09-05T10:48:00Z"
+    }
+  ],
+  "actions": [
+    {
+      "id": "action-checkout-rollback",
+      "incidentRef": "INC-2048",
+      "serviceRef": "service-checkout-api",
+      "kind": "rollback",
+      "summary": "Roll back checkout-api to the previous owner-approved build.",
+      "executionState": "owner-executed",
+      "ownerId": "principal-checkout-owner-priya",
+      "approvalEvidenceRef": "evidence-rollback-approval",
+      "executionEvidenceRef": "evidence-rollback-execution",
+      "executedAt": "2026-09-05T10:30:00Z"
+    }
+  ],
+  "recoveryChecks": [
+    {
+      "id": "recovery-checkout-errors",
+      "incidentRef": "INC-2048",
+      "serviceRef": "service-checkout-api",
+      "environment": "production",
+      "deploymentOrBuild": "checkout-api@2026.08.16.4",
+      "timelineSnapshotRef": "incident-snapshot-INC-2048-2026-09-05T1115Z",
+      "state": "passed",
+      "evidenceRef": "evidence-checkout-recovery",
+      "verifiedById": "principal-recovery-verifier-jordan",
+      "checkedAt": "2026-09-05T10:46:00Z"
+    },
+    {
+      "id": "recovery-payment-authorization",
+      "incidentRef": "INC-2048",
+      "serviceRef": "service-payment-orchestrator",
+      "environment": "production",
+      "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+      "timelineSnapshotRef": "incident-snapshot-INC-2048-2026-09-05T1115Z",
+      "state": "passed",
+      "evidenceRef": "evidence-payment-recovery",
+      "verifiedById": "principal-recovery-verifier-jordan",
+      "checkedAt": "2026-09-05T10:48:00Z"
+    }
+  ],
+  "communications": [
+    {
+      "id": "communication-status-draft",
+      "incidentRef": "INC-2048",
+      "audience": "Customer support and status-page owner",
+      "state": "approved-draft",
+      "ownerId": "principal-communications-morgan",
+      "approvedById": "principal-commander-riley",
+      "messageRef": "controlled://incident-drafts/INC-2048/status-update-1",
+      "updatedAt": "2026-09-05T10:55:00Z"
+    }
+  ],
+  "followUps": [
+    {
+      "id": "follow-up-timeout-test",
+      "incidentRef": "INC-2048",
+      "ownerId": "principal-checkout-owner-priya",
+      "state": "planned",
+      "summary": "Add a timeout-regression contract test before the next owner-controlled deployment.",
+      "dueAt": "2026-09-12T17:00:00Z"
+    }
+  ],
+  "limitations": [
+    "Recovery readiness is based on the declared timeline snapshot and current checks; incident declaration and closure remain commander decisions."
+  ],
+  "recommendation": {
+    "state": "ready-for-incident-command-review",
+    "reviewerId": "principal-commander-riley",
+    "reviewedAt": "2026-09-05T11:00:00Z",
+    "rationale": "Every declared service has a current exact-incident recovery check, the high-risk signal is resolved, and consequential action evidence identifies owner execution rather than Claw execution."
+  },
+  "owner": "Alex Rivera",
+  "ownerId": "principal-response-owner-alex",
+  "handoff": {
+    "state": "ready",
+    "owner": "Alex Rivera",
+    "summary": "The incident record is ready for incident-command review; closure and customer communication remain owner-controlled.",
+    "prohibitedActions": [
+      "mutate-production",
+      "revoke-credentials-or-sessions",
+      "shift-traffic",
+      "declare-incident",
+      "close-incident",
+      "send-communication"
+    ]
+  }
 }

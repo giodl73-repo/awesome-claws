@@ -2,12 +2,76 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 97,
-    "coveredCount": 97,
-    "recipeCount": 257,
-    "findingCodeCount": 216
+    "validatorCount": 100,
+    "coveredCount": 100,
+    "recipeCount": 266,
+    "findingCodeCount": 238
   },
   "entries": [
+    {
+      "id": "incident-response",
+      "recipes": [
+        {
+          "id": "semantic-cross-scope-evidence-1",
+          "operator": "replace",
+          "path": [
+            "incident",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "incomplete_recovery_coverage",
+            "invalid_incident_chronology",
+            "invalid_incident_follow_up",
+            "premature_incident_readiness",
+            "premature_ready_state",
+            "unsupported_communication_draft",
+            "unsupported_incident_action",
+            "unsupported_incident_signal",
+            "unsupported_recovery_check"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-evidence-2",
+          "operator": "remove",
+          "path": [
+            "incident",
+            "id"
+          ],
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "incomplete_recovery_coverage",
+            "invalid_incident_chronology",
+            "invalid_incident_follow_up",
+            "invalid_incident_scope",
+            "premature_incident_readiness",
+            "premature_ready_state",
+            "unsupported_communication_draft",
+            "unsupported_incident_action",
+            "unsupported_incident_signal",
+            "unsupported_recovery_check"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-evidence-3",
+          "operator": "replace",
+          "path": [
+            "incident",
+            "environment"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "cross_scope_service",
+            "incomplete_recovery_coverage",
+            "premature_incident_readiness",
+            "premature_ready_state",
+            "unsupported_recovery_check"
+          ]
+        }
+      ]
+    },
     {
       "id": "software-maintainer",
       "recipes": [
@@ -1418,6 +1482,64 @@
       ]
     },
     {
+      "id": "api-integration-engineer",
+      "recipes": [
+        {
+          "id": "semantic-cross-scope-evidence-1",
+          "operator": "replace",
+          "path": [
+            "integration",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "incomplete_rollout_rollback_readiness",
+            "premature_integration_readiness",
+            "premature_ready_state",
+            "unsupported_incompatibility_resolution"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-evidence-2",
+          "operator": "remove",
+          "path": [
+            "integration",
+            "id"
+          ],
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "incomplete_rollout_rollback_readiness",
+            "invalid_integration_scope",
+            "premature_integration_readiness",
+            "premature_ready_state",
+            "unsupported_incompatibility_resolution"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-contract-test-3",
+          "operator": "replace",
+          "path": [
+            "integration",
+            "targetCommit"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_contract_test",
+            "cross_scope_evidence",
+            "cross_scope_operation",
+            "incomplete_contract_test_coverage",
+            "incomplete_rollout_rollback_readiness",
+            "invalid_integration_scope",
+            "premature_integration_readiness",
+            "premature_ready_state",
+            "unsupported_execution_result",
+            "unsupported_incompatibility_resolution"
+          ]
+        }
+      ]
+    },
+    {
       "id": "procurement-evaluator",
       "recipes": [
         {
@@ -1973,6 +2095,55 @@
           "expectedCodes": [
             "dangling_reference",
             "unsupported_consent_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data-governance-steward",
+      "recipes": [
+        {
+          "id": "semantic-cross-scope-evidence-1",
+          "operator": "replace",
+          "path": [
+            "assessment",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "premature_governance_readiness",
+            "premature_ready_state"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-evidence-2",
+          "operator": "remove",
+          "path": [
+            "assessment",
+            "id"
+          ],
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "invalid_governance_scope",
+            "premature_governance_readiness",
+            "premature_ready_state"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-asset-3",
+          "operator": "replace",
+          "path": [
+            "assessment",
+            "dataProduct"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_asset",
+            "cross_scope_evidence",
+            "incomplete_governance_coverage",
+            "premature_governance_readiness",
+            "premature_ready_state"
           ]
         }
       ]
