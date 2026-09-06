@@ -14,7 +14,7 @@
   },
   "summary": {
     "entryCount": 100,
-    "average": 97.4,
+    "average": 97.5,
     "median": 100,
     "qualifiedCount": 100,
     "bands": {
@@ -159,7 +159,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 99
+      "rank": 100
     },
     {
       "id": "data-analyst",
@@ -318,7 +318,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 97
+      "rank": 98
     },
     {
       "id": "sales-operations",
@@ -582,7 +582,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 96
+      "rank": 97
     },
     {
       "id": "knowledge-curator",
@@ -955,7 +955,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 98
+      "rank": 99
     },
     {
       "id": "feed-intelligence-monitor",
@@ -1759,12 +1759,12 @@
       "id": "localization-program-manager",
       "name": "Localization program manager",
       "category": "productivity",
-      "total": 81,
+      "total": 87,
       "band": "strong",
       "dimensions": {
         "distinctness": 10,
         "operatingContract": 20,
-        "evidenceModel": 8,
+        "evidenceModel": 14,
         "authoritySafety": 20,
         "experience": 10,
         "verificationPortability": 8,
@@ -1793,7 +1793,7 @@
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives.",
         "Add semantic validation for cross-field evidence and authority invariants."
       ],
-      "rank": 100
+      "rank": 96
     },
     {
       "id": "accessibility-review-coordinator",

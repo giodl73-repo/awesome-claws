@@ -17,6 +17,8 @@ workspace:
       path: fixtures/inventory-api.openapi.json
     - source: schemas/integration-readiness.schema.json
       path: schemas/integration-readiness.schema.json
+    - source: fixtures/integration-readiness.example.json
+      path: fixtures/integration-readiness.example.json
     - source: assets/integration-console.html
       path: assets/integration-console.html
     - source: templates/integration-verification.md

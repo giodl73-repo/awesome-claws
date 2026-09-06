@@ -28,14 +28,30 @@ test("inventory derives the current portfolio oracle surface", async () => {
   assert.equal(inventory.evidenceClass, MOCK_PLUS_EVIDENCE_CLASS);
   assert.equal(inventory.mode, MOCK_PLUS_MODE);
   assert.equal(inventory.summary.clawCount, 100);
-  assert.equal(inventory.summary.registeredSchemaCount, 89);
-  assert.equal(inventory.summary.fixtureResourceClawCount, 96);
-  assert.deepEqual(inventory.summary.fixtureGapIds, [
-    "data-migration-planner",
-    "localization-program-manager",
-    "quality-assurance-lead",
-    "cloud-cost-analyst",
-  ]);
+  assert.equal(
+    inventory.summary.registeredSchemaCount,
+    inventory.entries.filter((entry) => entry.schema.registered).length,
+  );
+  assert.equal(
+    inventory.summary.fixtureResourceClawCount,
+    inventory.entries.filter((entry) => entry.fixtureResources.length > 0)
+      .length,
+  );
+  assert.equal(inventory.summary.packagedSchemaCount, 100);
+  assert.equal(
+    inventory.summary.schemaFixturePairClawCount,
+    inventory.entries.filter((entry) =>
+      entry.schemaContracts.some((contract) => contract.fixturePath !== null),
+    ).length,
+  );
+  assert.deepEqual(
+    inventory.summary.schemaFixtureGapIds,
+    inventory.entries
+      .filter((entry) =>
+        entry.schemaContracts.some((contract) => contract.fixturePath === null),
+      )
+      .map((entry) => entry.id),
+  );
 
   const byId = new Map(inventory.entries.map((entry) => [entry.id, entry]));
   assert.deepEqual(byId.get("data-analyst").capabilityClasses, ["visual"]);
@@ -66,6 +82,85 @@ test("three-Claw vertical kills applicable mutants without false kills", async (
   assert.equal(run.coverage.safety.blockingCount, 0);
   assert.equal(run.results.evidenceClass, MOCK_PLUS_EVIDENCE_CLASS);
   assert.equal(JSON.stringify(run).includes("MOCKPLUS_CANARY_NONLIVE"), false);
+});
+
+test("schema portfolio covers every Claw and active constraint family", async () => {
+  const run = await runMockPlus({
+    profile: "schema-portfolio",
+    writeOutput: false,
+  });
+  assert.equal(run.coverage.scope, "schema-portfolio");
+  assert.equal(run.coverage.status, "passed");
+  assert.equal(run.coverage.clawCount, 100);
+  assert.equal(run.coverage.counts["control-failed"], 0);
+  assert.equal(run.coverage.counts.survived, 0);
+  assert.equal(run.coverage.counts["unsupported-oracle"], 0);
+  assert.equal(run.coverage.counts["oracle-error"], 0);
+  assert.equal(run.coverage.safety.caseCount, 600);
+  assert.equal(run.coverage.safety.blockingCount, 0);
+  assert.equal(run.coverage.schema.clawCount, 100);
+  assert.equal(run.coverage.schema.survivedCount, 0);
+  assert.deepEqual(run.coverage.schema.keywordFamilies, [
+    "additionalProperties",
+    "anyOf",
+    "const",
+    "enum",
+    "exclusiveMinimum",
+    "format",
+    "maxItems",
+    "maxLength",
+    "maximum",
+    "minItems",
+    "minLength",
+    "minProperties",
+    "minimum",
+    "not",
+    "oneOf",
+    "pattern",
+    "required",
+    "type",
+    "uniqueItems",
+  ]);
+  for (const coverage of Object.values(run.coverage.schema.perClaw)) {
+    assert.equal(coverage.applicable, coverage.killed);
+    assert.deepEqual(coverage.uncoveredFamilies, []);
+  }
+  assert.match(run.outputRoot, /[\\/]mock-plus[\\/]schema-portfolio[\\/]/u);
+  for (const keyword of ["oneOf", "anyOf"]) {
+    assert.ok(
+      run.results.claws
+        .flatMap((claw) => claw.cases)
+        .some(
+          (result) =>
+            result.oracle.keyword === keyword &&
+            result.oracle.instancePath === "",
+        ),
+      keyword,
+    );
+  }
+  for (const claw of run.results.claws) {
+    assert.ok(
+      claw.cases.some(
+        (result) =>
+          result.family === "accepted-variants" &&
+          result.outcome === "control-passed",
+      ),
+      claw.id,
+    );
+    assert.ok(
+      claw.cases.some(
+        (result) => result.family === "schema" && result.outcome === "killed",
+      ),
+      claw.id,
+    );
+  }
+  const reversed = await runMockPlus({
+    profile: "schema-portfolio",
+    onlyIds: run.results.claws.map((claw) => claw.id).reverse(),
+    writeOutput: false,
+  });
+  assert.equal(reversed.canonicalDigest, run.canonicalDigest);
+  assert.deepEqual(reversed.manifest.claws, run.manifest.claws);
 });
 
 test("canonical evidence reproduces exactly", async () => {
@@ -166,8 +261,14 @@ test("run output is bounded, redacted, and removable", async () => {
     persisted.push(
       await readFile(join(run.provenanceRoot, "provenance.json"), "utf8"),
     );
-    assert.equal(persisted.some((text) => text.includes("MOCKPLUS_CANARY_NONLIVE")), false);
-    assert.match(persisted.find((text) => text.startsWith("#")), /MOCK EVIDENCE ONLY/u);
+    assert.equal(
+      persisted.some((text) => text.includes("MOCKPLUS_CANARY_NONLIVE")),
+      false,
+    );
+    assert.match(
+      persisted.find((text) => text.startsWith("#")),
+      /MOCK EVIDENCE ONLY/u,
+    );
   } finally {
     if (run) {
       await rm(run.outputRoot, { recursive: true, force: true });
@@ -195,11 +296,16 @@ test("CLI arguments require exact replay inputs", () => {
       explain: true,
       inventory: false,
       check: true,
+      profile: "vertical",
     },
   );
   assert.throws(() => parseMockPlusArgs(["--explain"]), /requires --case/u);
-  assert.throws(() => parseMockPlusArgs(["--unknown"]), /Unknown Mock\+ option/u);
+  assert.throws(
+    () => parseMockPlusArgs(["--unknown"]),
+    /Unknown Mock\+ option/u,
+  );
   assert.throws(() => parseMockPlusArgs(["--update"]), /not available yet/u);
+  assert.equal(parseMockPlusArgs(["--portfolio"]).profile, "schema-portfolio");
 });
 
 test("unknown Claws and inapplicable recipes fail explicitly", async () => {
@@ -237,14 +343,8 @@ test("diagnostics cannot overwrite the qualifying namespace", async () => {
     writeOutput: false,
   });
   const qualifying = await runMockPlus({ writeOutput: false });
-  assert.match(
-    diagnostic.outputRoot,
-    /[\\/]mock-plus[\\/]diagnostic[\\/]/u,
-  );
-  assert.match(
-    qualifying.outputRoot,
-    /[\\/]mock-plus[\\/]vertical[\\/]/u,
-  );
+  assert.match(diagnostic.outputRoot, /[\\/]mock-plus[\\/]diagnostic[\\/]/u);
+  assert.match(qualifying.outputRoot, /[\\/]mock-plus[\\/]vertical[\\/]/u);
 });
 
 test("junctioned evidence directories cannot cross namespaces", async (t) => {
@@ -254,9 +354,7 @@ test("junctioned evidence directories cannot cross namespaces", async (t) => {
   });
   const verticalRoot = join(root, ".tmp", "mock-plus", "vertical");
   await mkdir(verticalRoot, { recursive: true });
-  const target = await mkdtemp(
-    join(verticalRoot, "junction-target-"),
-  );
+  const target = await mkdtemp(join(verticalRoot, "junction-target-"));
   await mkdir(dirname(dryRun.outputRoot), { recursive: true });
   await rm(dryRun.outputRoot, { recursive: true, force: true });
   try {

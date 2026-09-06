@@ -11,9 +11,9 @@ reads or writes `openclaw.json`. Every output is labeled
 `evidenceClass: "mock-deterministic"` and `mode: "mock"`; Runtime Evidence
 aggregation rejects that evidence class.
 
-## Current scope
+## Profiles
 
-The first bounded slice covers:
+The default bounded vertical covers:
 
 - `sales-operations`: structured X3 artifact and semantic references;
 - `data-analyst`: visual capability classification and analysis lineage;
@@ -22,16 +22,20 @@ The first bounded slice covers:
 
 It runs valid controls before schema, semantic, authority, false-success,
 sensitive-data, path-escape, user-state, cleanup, and capability mutations. The
-portfolio inventory still covers all 100 maintained Claws and reports missing
-oracles explicitly. Expanding mutation execution beyond the three-Claw slice
-requires the later portfolio recipes; the current command does not claim that
-coverage.
+schema portfolio runs fixture-backed artifact controls, schema mutations, and
+all required safety recipes for all 100 maintained Claws. Schema cases are
+path-qualified and cover every applicable constraint reached through the
+fixture-active composition and conditional branches. `coverage.json` records
+applicable and killed counts by keyword and by Claw; any survivor or unsupported
+active constraint blocks the profile. It does not yet claim per-Claw semantic
+mutation coverage; that remains a separate profile.
 
 ## Commands
 
 ```powershell
 npm run mock-plus -- --inventory
 npm run mock-plus -- --check
+npm run mock-plus -- --portfolio --check
 npm run mock-plus -- --only sales-operations
 npm run mock-plus -- --only sales-operations --case semantic-dangling-reference --explain
 ```
@@ -41,8 +45,10 @@ deltas, gates, and redacted excerpts. It does not print raw fixture values.
 
 ## Evidence
 
-The complete qualifying slice writes under
+The complete qualifying vertical writes under
 `.tmp\mock-plus\vertical\<canonical-digest>\`.
+The schema portfolio writes under
+`.tmp\mock-plus\schema-portfolio\<canonical-digest>\`.
 Selections and one-case replays write under `.tmp\mock-plus\diagnostic\` so
 they cannot overwrite qualifying evidence. Both roots are ignored by git.
 
