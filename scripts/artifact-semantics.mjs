@@ -446,6 +446,8 @@ const UX_RESEARCH_SYNTHESIZER_PATTERN = /\bux research synthesizer\b/iu;
 const QUALITY_ASSURANCE_LEAD_PATTERN = /\bquality assurance lead\b/iu;
 const CLOUD_COST_ANALYST_PATTERN = /\bcloud cost analyst\b/iu;
 const DATA_MIGRATION_PLANNER_PATTERN = /\bdata migration planner\b/iu;
+const LOCALIZATION_PROGRAM_MANAGER_PATTERN = /^\s*localization program manager\s*$/iu;
+const LOCALE_CODE_PATTERN = /^[a-z]{2}(?:-[A-Z]{2})?$/u;
 
 function zoneOffsetMs(formatter, instant) {
   const parts = Object.fromEntries(
@@ -39715,6 +39717,916 @@ function qualityAssuranceReleaseFindings(value) {
   return findings;
 }
 
+function localizationReadinessFindings(value) {
+  const findings = [];
+  function toEpochMillis(text) {
+    if (typeof text !== "string") return NaN;
+    const trimmed = text.trim();
+    if (trimmed.length === 0) return NaN;
+    const ms = Date.parse(trimmed);
+    return Number.isFinite(ms) ? ms : NaN;
+  }
+
+  // The schema's anyOf keeps the exact original HEAD legacy branch (a bare
+  // release/sourceLocale/locales triple) alongside the enriched locale-
+  // readiness-ledger branch, so both can validate simultaneously. The legacy
+  // branch's own "release" and "locales" field names are reused (with
+  // different shapes) by the enriched branch, so neither name is a safe
+  // enriched-shape trigger: every legacy document already carries both keys,
+  // and keying dispatch off their mere presence would misclassify legacy
+  // documents as enriched. Dispatch on any of the remaining enriched-only
+  // properties instead; the enriched contract is a strict superset of fields
+  // the legacy branch never declares, so a partially deleted authority or
+  // handoff section still opts into full enriched validation and its
+  // missing fields fail closed.
+  const isEnrichedShape = [
+    "principals",
+    "surfaces",
+    "sourceStrings",
+    "translationTasks",
+    "translations",
+    "evidence",
+    "defects",
+    "terminology",
+    "limitations",
+    "recommendation",
+    "owner",
+    "ownerId",
+    "handoff",
+  ].some((field) => Object.hasOwn(value, field));
+  if (!isEnrichedShape) {
+    if (typeof value.release !== "string" || value.release.trim().length === 0) {
+      findings.push(
+        finding(
+          "invalid_legacy_field",
+          "release",
+          'Legacy locale readiness field "release" must be a non-empty, trimmed string.',
+        ),
+      );
+    }
+    if (typeof value.sourceLocale !== "string" || value.sourceLocale.trim().length === 0) {
+      findings.push(
+        finding(
+          "invalid_legacy_field",
+          "sourceLocale",
+          'Legacy locale readiness field "sourceLocale" must be a non-empty, trimmed string.',
+        ),
+      );
+    }
+    if (!Array.isArray(value.locales)) {
+      findings.push(
+        finding(
+          "invalid_legacy_field",
+          "locales",
+          'Legacy locale readiness field "locales" must be an array.',
+        ),
+      );
+    }
+    return findings;
+  }
+
+  const schemaVersionValid = value.schemaVersion === "awesomeClaws.localeReadiness.v1";
+  if (!schemaVersionValid) {
+    findings.push(
+      finding(
+        "invalid_schema_version",
+        "schemaVersion",
+        "Enriched locale readiness must declare schemaVersion awesomeClaws.localeReadiness.v1.",
+      ),
+    );
+  }
+
+  const principalsRecord = requiredRecordArray(value.principals, "principals", "Principal");
+  const localesRecord = requiredRecordArray(value.locales, "locales", "Locale");
+  const surfacesRecord = requiredRecordArray(value.surfaces, "surfaces", "Surface");
+  const sourceStringsRecord = requiredRecordArray(value.sourceStrings, "sourceStrings", "Source string");
+  const translationTasksRecord = requiredRecordArray(value.translationTasks, "translationTasks", "Translation task");
+  const translationsRecord = requiredRecordArray(value.translations, "translations", "Translation");
+  const evidenceRecord = requiredRecordArray(value.evidence, "evidence", "Evidence");
+  const defectsRecord = requiredRecordArray(value.defects, "defects", "Defect");
+  const terminologyRecord = requiredRecordArray(value.terminology, "terminology", "Terminology entry");
+  findings.push(
+    ...principalsRecord.findings,
+    ...localesRecord.findings,
+    ...surfacesRecord.findings,
+    ...sourceStringsRecord.findings,
+    ...translationTasksRecord.findings,
+    ...translationsRecord.findings,
+    ...evidenceRecord.findings,
+    ...defectsRecord.findings,
+    ...terminologyRecord.findings,
+  );
+
+  const principals = principalsRecord.items;
+  const locales = localesRecord.items;
+  const surfaces = surfacesRecord.items;
+  const sourceStrings = sourceStringsRecord.items;
+  const translationTasks = translationTasksRecord.items;
+  const translations = translationsRecord.items;
+  const evidence = evidenceRecord.items;
+  const defects = defectsRecord.items;
+  const terminology = terminologyRecord.items;
+  const release = isRecord(value.release) ? value.release : {};
+  const recommendation = isRecord(value.recommendation) ? value.recommendation : null;
+  const handoff = isRecord(value.handoff) ? value.handoff : {};
+
+  const releaseScopeValid =
+    typeof release.sourceLocale === "string" &&
+    LOCALE_CODE_PATTERN.test(release.sourceLocale) &&
+    typeof release.sourceVersion === "string" &&
+    release.sourceVersion.trim().length > 0 &&
+    typeof release.sourceSnapshotRef === "string" &&
+    release.sourceSnapshotRef.trim().length > 0;
+  if (!releaseScopeValid) {
+    findings.push(
+      finding(
+        "invalid_source_scope",
+        "release",
+        "The release must declare non-empty sourceLocale, sourceVersion, and sourceSnapshotRef identities before locale readiness can be evaluated.",
+      ),
+    );
+  }
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  findings.push(
+    ...recordIdFindings(principalsRecord, "principals", "Principal"),
+    ...recordIdFindings(localesRecord, "locales", "Locale"),
+    ...recordIdFindings(surfacesRecord, "surfaces", "Surface"),
+    ...recordIdFindings(sourceStringsRecord, "sourceStrings", "Source string"),
+    ...recordIdFindings(translationTasksRecord, "translationTasks", "Translation task"),
+    ...recordIdFindings(translationsRecord, "translations", "Translation"),
+    ...recordIdFindings(evidenceRecord, "evidence", "Evidence"),
+    ...recordIdFindings(defectsRecord, "defects", "Defect"),
+    ...recordIdFindings(terminologyRecord, "terminology", "Terminology entry"),
+  );
+  const principalIds = new Set(stableRecordIds(principals));
+  const principalsById = new Map(principals.filter(hasStableRecordId).map((item) => [item.id, item]));
+  const localeIds = new Set(stableRecordIds(locales));
+  const surfaceIds = new Set(stableRecordIds(surfaces));
+  const sourceStringIds = new Set(stableRecordIds(sourceStrings));
+  const sourceStringsById = new Map(sourceStrings.filter(hasStableRecordId).map((item) => [item.id, item]));
+  const taskIds = new Set(stableRecordIds(translationTasks));
+  const tasksById = new Map(translationTasks.filter(hasStableRecordId).map((item) => [item.id, item]));
+  const translationIds = new Set(stableRecordIds(translations));
+  const evidenceIds = new Set(stableRecordIds(evidence));
+  const evidenceById = new Map(evidence.filter(hasStableRecordId).map((item) => [item.id, item]));
+
+  requireReferences(principals.map((item) => item.id), principalIds, "principals", "Principal");
+  requireReferences(locales.map((item) => item.id), localeIds, "locales", "Locale");
+  requireReferences(surfaces.map((item) => item.id), surfaceIds, "surfaces", "Surface");
+  requireReferences(sourceStrings.map((item) => item.id), sourceStringIds, "sourceStrings", "Source string");
+  requireReferences(translationTasks.map((item) => item.id), taskIds, "translationTasks", "Translation task");
+  requireReferences(translations.map((item) => item.id), translationIds, "translations", "Translation");
+  requireReferences(evidence.map((item) => item.id), evidenceIds, "evidence", "Evidence");
+  requireReferences(defects.map((item) => item.id), new Set(defects.map((item) => item.id)), "defects", "Defect");
+  requireReferences(
+    terminology.map((item) => item.id),
+    new Set(terminology.map((item) => item.id)),
+    "terminology",
+    "Terminology entry",
+  );
+
+  // A principal only carries real accountability when it names a non-empty,
+  // non-agent, non-package-self-attested human, mirroring the same predicate
+  // used for owners, reviewers, and verifiers below.
+  function isAccountablePrincipalName(name) {
+    return (
+      typeof name === "string" &&
+      name.trim().length > 0 &&
+      !isAgentIdentityName(name) &&
+      !LOCALIZATION_PROGRAM_MANAGER_PATTERN.test(name)
+    );
+  }
+  for (const [index, principal] of principalsRecord.entries) {
+    if (!isAccountablePrincipalName(principal.name)) {
+      findings.push(
+        finding(
+          "invalid_principal_identity",
+          `principals[${index}].name`,
+          "A principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned.",
+        ),
+      );
+    }
+    if (!Array.isArray(principal.scopes)) {
+      findings.push(
+        finding("invalid_principal_scopes", `principals[${index}].scopes`, "A principal's scopes must be an array."),
+      );
+    }
+  }
+
+  const nowMs = Date.now();
+  const releaseRequestedMs = toEpochMillis(release.requestedAt);
+
+  for (const [index, surface] of surfacesRecord.entries) {
+    if (typeof surface.name !== "string" || surface.name.trim().length === 0) {
+      findings.push(finding("invalid_array_record", `surfaces[${index}].name`, "A surface must carry a non-empty name."));
+    }
+  }
+
+  let invalidLocaleCode = false;
+  for (const [index, locale] of localesRecord.entries) {
+    if (typeof locale.code !== "string" || !LOCALE_CODE_PATTERN.test(locale.code)) {
+      invalidLocaleCode = true;
+      findings.push(
+        finding(
+          "invalid_locale_code",
+          `locales[${index}].code`,
+          "A locale must use a lowercase ISO 639-1 language code with an optional uppercase ISO 3166-1 region code.",
+        ),
+      );
+    }
+    if (typeof locale.market !== "string" || locale.market.trim().length === 0) {
+      findings.push(finding("invalid_locale_market", `locales[${index}].market`, "A locale must carry a non-empty market."));
+    }
+    findings.push(...referenceFindings(locale.surfaceRefs, surfaceIds, `locales[${index}].surfaceRefs`, "Surface"));
+    const localeOwner = principalsById.get(locale.ownerId);
+    if (typeof locale.ownerId !== "string" || locale.ownerId.trim().length === 0) {
+      findings.push(
+        finding(
+          "agent_owned_authority",
+          `locales[${index}].ownerId`,
+          "A locale must be bound to a non-empty stable owner principal id.",
+        ),
+      );
+    } else if (!principalIds.has(locale.ownerId)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `locales[${index}].ownerId`,
+          `Locale owner principal reference ${JSON.stringify(locale.ownerId)} does not resolve.`,
+        ),
+      );
+    } else if (localeOwner !== undefined && !isAccountablePrincipalName(localeOwner.name)) {
+      findings.push(
+        finding(
+          "agent_owned_authority",
+          `locales[${index}].ownerId`,
+          "A locale owner principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, sourceString] of sourceStringsRecord.entries) {
+    if (!surfaceIds.has(sourceString.surfaceRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `sourceStrings[${index}].surfaceRef`,
+          `Surface reference ${JSON.stringify(sourceString.surfaceRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (typeof sourceString.text !== "string" || sourceString.text.trim().length === 0) {
+      findings.push(finding("invalid_array_record", `sourceStrings[${index}].text`, "A source string must carry non-empty source text."));
+    }
+    if (sourceString.sourceVersion !== release.sourceVersion || sourceString.snapshotRef !== release.sourceSnapshotRef) {
+      findings.push(
+        finding(
+          "stale_source_string",
+          `sourceStrings[${index}]`,
+          "A source string must match the release's current sourceVersion and snapshotRef; a prior-version or prior-snapshot source string cannot ground a current translation.",
+        ),
+      );
+    }
+    if (
+      sourceString.placeholders !== undefined &&
+      sourceString.placeholders !== null &&
+      !Array.isArray(sourceString.placeholders)
+    ) {
+      findings.push(
+        finding(
+          "invalid_reference_list",
+          `sourceStrings[${index}].placeholders`,
+          "Source string placeholders must be an array when present.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, task] of translationTasksRecord.entries) {
+    if (!localeIds.has(task.localeRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `translationTasks[${index}].localeRef`,
+          `Locale reference ${JSON.stringify(task.localeRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!sourceStringIds.has(task.sourceStringRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `translationTasks[${index}].sourceStringRef`,
+          `Source string reference ${JSON.stringify(task.sourceStringRef)} does not resolve.`,
+        ),
+      );
+    }
+  }
+
+  const enumTranslationStates = new Set(["translated", "needs-review", "rejected", "blocked"]);
+  const enumEvidenceKinds = new Set(["linguistic-qa", "defect-verification"]);
+
+  // Markup/placeholder preservation: every token the source string declares
+  // (e.g. "{amount}") must survive verbatim in the translated text.
+  function placeholdersPreserved(sourceString, text) {
+    const placeholders = Array.isArray(sourceString?.placeholders) ? sourceString.placeholders : [];
+    return placeholders.every(
+      (token) => typeof token === "string" && typeof text === "string" && text.includes(token),
+    );
+  }
+
+  // Terminology/glossary preservation: a glossary term only applies when the
+  // source string actually contains it, and once applicable the translation
+  // must carry the approved rendering rather than an arbitrary alternative.
+  function terminologyHonored(localeRef, sourceString, text) {
+    const applicable = terminology.filter(
+      (term) =>
+        term.localeRef === localeRef &&
+        typeof term.term === "string" &&
+        typeof sourceString?.text === "string" &&
+        sourceString.text.toLowerCase().includes(term.term.toLowerCase()),
+    );
+    return applicable.every(
+      (term) =>
+        typeof term.approvedTranslation === "string" &&
+        typeof text === "string" &&
+        text.includes(term.approvedTranslation),
+    );
+  }
+
+  // Evidence is only valid grounding when it carries the expected kind, was
+  // asserted for the exact same source version the release is being
+  // recommended for (never a stale source), cites a real controlled
+  // reference, its timestamp is parseable, not in the future, not older than
+  // the release was requested (stale reuse), not before the translation it
+  // supposedly grounds (out-of-order/fabricated evidence), and was approved
+  // by a reviewer distinct from the translator (no self-attestation).
+  function isTranslationGrounded(translation) {
+    const evidenceItem = evidenceById.get(translation.evidenceRef);
+    if (!evidenceItem) return false;
+    if (evidenceItem.kind !== "linguistic-qa") return false;
+    if (evidenceItem.translationRef !== translation.id) return false;
+    if (evidenceItem.sourceVersion !== release.sourceVersion) return false;
+    if (evidenceItem.sourceSnapshotRef !== release.sourceSnapshotRef) return false;
+    if (evidenceItem.outcome !== "approved") return false;
+    if (!isValidControlledReference(evidenceItem.sourceRef)) return false;
+    const reviewer = principalsById.get(evidenceItem.reviewedById);
+    if (!reviewer || !isAccountablePrincipalName(reviewer.name)) return false;
+    if (evidenceItem.reviewedById === translation.translatedById) return false;
+    const translatedMs = toEpochMillis(translation.translatedAt);
+    const assertedMs = toEpochMillis(evidenceItem.assertedAt);
+    if (!Number.isFinite(translatedMs) || !Number.isFinite(assertedMs)) return false;
+    if (assertedMs > nowMs) return false;
+    if (Number.isFinite(releaseRequestedMs) && assertedMs < releaseRequestedMs) return false;
+    if (assertedMs < translatedMs) return false;
+    return true;
+  }
+
+  // A translation only counts as covering its locale/source-string pair when
+  // it is current (matches the release's exact source version and snapshot,
+  // never a stale or cross-snapshot source), preserves placeholders and
+  // terminology, and is independently grounded by approved linguistic-QA
+  // evidence.
+  function isTranslationResolvedPositive(translation) {
+    if (!releaseScopeValid) return false;
+    if (!hasStableRecordId(translation)) return false;
+    const task = tasksById.get(translation.taskRef);
+    if (
+      !task ||
+      task.localeRef !== translation.localeRef ||
+      task.sourceStringRef !== translation.sourceStringRef
+    ) {
+      return false;
+    }
+    if (typeof translation.sourceStringRef !== "string" || translation.sourceStringRef.trim().length === 0) {
+      return false;
+    }
+    if (typeof translation.localeRef !== "string" || translation.localeRef.trim().length === 0) return false;
+    if (translation.sourceVersion !== release.sourceVersion || translation.snapshotRef !== release.sourceSnapshotRef) {
+      return false;
+    }
+    if (translation.state !== "translated") return false;
+    const translator = principalsById.get(translation.translatedById);
+    if (!translator || !isAccountablePrincipalName(translator.name)) return false;
+    const sourceString = sourceStringsById.get(translation.sourceStringRef);
+    if (!sourceString) return false;
+    if (!placeholdersPreserved(sourceString, translation.text)) return false;
+    if (!terminologyHonored(translation.localeRef, sourceString, translation.text)) return false;
+    return isTranslationGrounded(translation);
+  }
+
+  for (const [index, translation] of translationsRecord.entries) {
+    const task = tasksById.get(translation.taskRef);
+    if (!taskIds.has(translation.taskRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `translations[${index}].taskRef`,
+          `Translation task reference ${JSON.stringify(translation.taskRef)} does not resolve.`,
+        ),
+      );
+    } else if (
+      task?.localeRef !== translation.localeRef ||
+      task?.sourceStringRef !== translation.sourceStringRef
+    ) {
+      findings.push(
+        finding(
+          "cross_scope_translation_task",
+          `translations[${index}].taskRef`,
+          "A translation must match the referenced task's exact locale and source-string scope.",
+        ),
+      );
+    }
+    if (!localeIds.has(translation.localeRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `translations[${index}].localeRef`,
+          `Locale reference ${JSON.stringify(translation.localeRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!sourceStringIds.has(translation.sourceStringRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `translations[${index}].sourceStringRef`,
+          `Source string reference ${JSON.stringify(translation.sourceStringRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!principalIds.has(translation.translatedById)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `translations[${index}].translatedById`,
+          `Translator principal reference ${JSON.stringify(translation.translatedById)} does not resolve.`,
+        ),
+      );
+    }
+    if (!enumTranslationStates.has(translation.state)) {
+      findings.push(
+        finding(
+          "invalid_translation_state",
+          `translations[${index}].state`,
+          `Translation state ${JSON.stringify(translation.state)} is not supported.`,
+        ),
+      );
+      continue;
+    }
+    const sourceString = sourceStringsById.get(translation.sourceStringRef);
+    if (sourceString && !placeholdersPreserved(sourceString, translation.text)) {
+      findings.push(
+        finding(
+          "placeholder_not_preserved",
+          `translations[${index}].text`,
+          "A translation must preserve every placeholder token from its source string verbatim.",
+        ),
+      );
+    }
+    if (sourceString && !terminologyHonored(translation.localeRef, sourceString, translation.text)) {
+      findings.push(
+        finding(
+          "terminology_violation",
+          `translations[${index}].text`,
+          "A translation must use the approved glossary translation for every applicable terminology entry.",
+        ),
+      );
+    }
+    if (translation.state === "translated" && !isTranslationGrounded(translation)) {
+      findings.push(
+        finding(
+          "unsupported_translation",
+          `translations[${index}].evidenceRef`,
+          "A translated string must reference its own controlled, current-source-version linguistic-QA evidence, approved by an independent reviewer, asserted at or after translation and no earlier than the release request.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, item] of evidenceRecord.entries) {
+    if (!enumEvidenceKinds.has(item.kind)) {
+      findings.push(
+        finding("invalid_evidence_kind", `evidence[${index}].kind`, `Evidence kind ${JSON.stringify(item.kind)} is not supported.`),
+      );
+    }
+    if (!translationIds.has(item.translationRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `evidence[${index}].translationRef`,
+          `Translation reference ${JSON.stringify(item.translationRef)} does not resolve.`,
+        ),
+      );
+    }
+    const assertedMs = toEpochMillis(item.assertedAt);
+    if (!Number.isFinite(assertedMs)) {
+      findings.push(finding("invalid_timestamp", `evidence[${index}].assertedAt`, "Evidence assertedAt must be a parseable timestamp."));
+    } else if (assertedMs > nowMs) {
+      findings.push(finding("future_evidence", `evidence[${index}].assertedAt`, "Evidence assertedAt cannot be in the future."));
+    } else if (Number.isFinite(releaseRequestedMs) && assertedMs < releaseRequestedMs) {
+      findings.push(
+        finding(
+          "stale_evidence",
+          `evidence[${index}].assertedAt`,
+          "Evidence predating the release request cannot ground this locale readiness record.",
+        ),
+      );
+    }
+    if (!isValidControlledReference(item.sourceRef)) {
+      findings.push(
+        finding(
+          "untrusted_evidence_source",
+          `evidence[${index}].sourceRef`,
+          "Evidence must carry a valid, controlled/attributable source reference, not a fabricated or narrative source.",
+        ),
+      );
+    }
+    if (
+      item.sourceVersion !== release.sourceVersion ||
+      item.sourceSnapshotRef !== release.sourceSnapshotRef
+    ) {
+      findings.push(
+        finding(
+          "cross_scope_evidence",
+          `evidence[${index}]`,
+          "Localization evidence must match the release's exact source version and snapshot identity.",
+        ),
+      );
+    }
+    if (item.kind === "linguistic-qa" && !principalIds.has(item.reviewedById)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `evidence[${index}].reviewedById`,
+          `Reviewer principal reference ${JSON.stringify(item.reviewedById)} does not resolve.`,
+        ),
+      );
+    }
+  }
+
+  const enumDefectKinds = new Set([
+    "placeholder-mismatch",
+    "terminology-violation",
+    "markup-break",
+    "truncation",
+    "plural-rule-violation",
+    "accessibility-text-missing",
+  ]);
+  const enumDefectSeverities = new Set(["blocker", "critical", "major", "minor"]);
+  const enumDefectStatuses = new Set(["open", "fixed", "verified", "closed"]);
+  const resolvedDefectStatuses = new Set(["verified", "closed"]);
+  let unresolvedLocalizationDefect = false;
+  let invalidResolvedDefect = false;
+  const translationsById = new Map(translations.filter(hasStableRecordId).map((item) => [item.id, item]));
+  for (const [index, defect] of defectsRecord.entries) {
+    if (!translationIds.has(defect.translationRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `defects[${index}].translationRef`,
+          `Translation reference ${JSON.stringify(defect.translationRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!enumDefectKinds.has(defect.kind)) {
+      findings.push(finding("invalid_defect_kind", `defects[${index}].kind`, `Defect kind ${JSON.stringify(defect.kind)} is not supported.`));
+    }
+    if (!enumDefectSeverities.has(defect.severity)) {
+      findings.push(
+        finding("invalid_defect_severity", `defects[${index}].severity`, `Defect severity ${JSON.stringify(defect.severity)} is not supported.`),
+      );
+    }
+    if (!enumDefectStatuses.has(defect.status)) {
+      findings.push(
+        finding("invalid_defect_status", `defects[${index}].status`, `Defect status ${JSON.stringify(defect.status)} is not supported.`),
+      );
+    }
+    if (enumDefectSeverities.has(defect.severity) && !resolvedDefectStatuses.has(defect.status)) {
+      unresolvedLocalizationDefect = true;
+      findings.push(
+        finding(
+          "unresolved_localization_defect",
+          `defects[${index}].status`,
+          "Every localization defect must be verified or closed before handoff can be recommended.",
+        ),
+      );
+    }
+    const originatingTranslation = translationsById.get(defect.translationRef);
+    if (resolvedDefectStatuses.has(defect.status)) {
+      const foundMs = toEpochMillis(defect.foundAt);
+      const verifiedMs = toEpochMillis(defect.verifiedAt);
+      const selfVerified =
+        originatingTranslation !== undefined && defect.verifiedById === originatingTranslation.translatedById;
+      if (selfVerified) {
+        invalidResolvedDefect = true;
+        findings.push(
+          finding(
+            "self_verified_defect",
+            `defects[${index}].verifiedById`,
+            "A defect cannot be verified by the same principal who produced the translation that carries it.",
+          ),
+        );
+      }
+      const verifier = principalsById.get(defect.verifiedById);
+      if (!verifier || !isAccountablePrincipalName(verifier.name)) {
+        invalidResolvedDefect = true;
+        findings.push(
+          finding(
+            "invalid_principal_identity",
+            `defects[${index}].verifiedById`,
+            "A defect verifier must resolve to an accountable, non-agent, non-package-owned principal.",
+          ),
+        );
+      }
+      if (!Number.isFinite(verifiedMs) || !Number.isFinite(foundMs) || verifiedMs < foundMs || verifiedMs > nowMs) {
+        invalidResolvedDefect = true;
+        findings.push(
+          finding(
+            "invalid_defect_chronology",
+            `defects[${index}].verifiedAt`,
+            "A defect verification must be dated at or after it was found and not in the future.",
+          ),
+        );
+      }
+      const verificationEvidence = evidenceById.get(defect.verificationEvidenceRef);
+      const verificationEvidenceMs = toEpochMillis(verificationEvidence?.assertedAt);
+      const verificationGrounded =
+        verificationEvidence !== undefined &&
+        verificationEvidence.kind === "defect-verification" &&
+        verificationEvidence.defectRef === defect.id &&
+        verificationEvidence.translationRef === defect.translationRef &&
+        verificationEvidence.sourceVersion === release.sourceVersion &&
+        verificationEvidence.sourceSnapshotRef === release.sourceSnapshotRef &&
+        isValidControlledReference(verificationEvidence.sourceRef) &&
+        Number.isFinite(verificationEvidenceMs) &&
+        verificationEvidenceMs <= nowMs &&
+        (!Number.isFinite(foundMs) || verificationEvidenceMs >= foundMs);
+      if (
+        !verificationGrounded ||
+        !Number.isFinite(verifiedMs) ||
+        !Number.isFinite(verificationEvidenceMs) ||
+        verificationEvidenceMs > verifiedMs ||
+        selfVerified
+      ) {
+        invalidResolvedDefect = true;
+        findings.push(
+          finding(
+            "unsupported_defect_verification",
+            `defects[${index}].verificationEvidenceRef`,
+            "A verified or closed defect must cite controlled defect-verification evidence bound to that exact defect, translation, source version, and snapshot, asserted at or after discovery and no later than verification, by an independent verifier.",
+          ),
+        );
+      }
+    }
+  }
+
+  for (const [index, term] of terminologyRecord.entries) {
+    if (!localeIds.has(term.localeRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `terminology[${index}].localeRef`,
+          `Locale reference ${JSON.stringify(term.localeRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (typeof term.term !== "string" || term.term.trim().length === 0) {
+      findings.push(finding("invalid_array_record", `terminology[${index}].term`, "A terminology entry must carry a non-empty source term."));
+    }
+    if (typeof term.approvedTranslation !== "string" || term.approvedTranslation.trim().length === 0) {
+      findings.push(
+        finding(
+          "invalid_array_record",
+          `terminology[${index}].approvedTranslation`,
+          "A terminology entry must carry a non-empty approved translation.",
+        ),
+      );
+    }
+  }
+
+  // Completeness/reconciliation: every locale must resolve, with grounded
+  // current evidence, every in-scope source string under its declared
+  // surfaces before the portfolio can be called complete. An empty or
+  // vacuous portfolio (no locales, or a locale scoped to no real strings)
+  // fails closed rather than trivially passing.
+  let incompleteLocaleCoverage = false;
+  for (const [, locale] of localesRecord.entries) {
+    if (!hasStableRecordId(locale)) {
+      incompleteLocaleCoverage = true;
+      continue;
+    }
+    const scopeSurfaces = Array.isArray(locale.surfaceRefs) ? locale.surfaceRefs : [];
+    const inScopeStrings = sourceStrings.filter(
+      (item) => hasStableRecordId(item) && scopeSurfaces.includes(item.surfaceRef),
+    );
+    if (inScopeStrings.length === 0) {
+      incompleteLocaleCoverage = true;
+      continue;
+    }
+    const covered = inScopeStrings.every((sourceString) =>
+      translations.some(
+        (item) =>
+          item.localeRef === locale.id &&
+          item.sourceStringRef === sourceString.id &&
+          isTranslationResolvedPositive(item),
+      ),
+    );
+    if (!covered) incompleteLocaleCoverage = true;
+  }
+  if (locales.length === 0 || incompleteLocaleCoverage) {
+    findings.push(
+      finding(
+        "incomplete_locale_coverage",
+        "locales",
+        "Every in-scope source string must have a resolved, independently reviewed, current-source translation for every locale before handoff can be recommended.",
+      ),
+    );
+  }
+
+  const limitationsRecord = stringListFindings(value.limitations, "limitations", "Limitations");
+  findings.push(...limitationsRecord.findings);
+
+  if (
+    typeof value.owner !== "string" ||
+    value.owner.trim().length === 0 ||
+    isAgentIdentityName(value.owner) ||
+    LOCALIZATION_PROGRAM_MANAGER_PATTERN.test(value.owner)
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "owner",
+        "The locale readiness record must remain owned by a named, accountable human, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+  const ownerPrincipal = principalsById.get(value.ownerId);
+  if (typeof value.ownerId !== "string" || value.ownerId.trim().length === 0) {
+    findings.push(
+      finding("agent_owned_authority", "ownerId", "The owner must be bound to a non-empty stable principal id."),
+    );
+  } else if (!principalIds.has(value.ownerId)) {
+    findings.push(
+      finding("dangling_reference", "ownerId", `Owner principal reference ${JSON.stringify(value.ownerId)} does not resolve.`),
+    );
+  } else if (ownerPrincipal !== undefined && !isAccountablePrincipalName(ownerPrincipal.name)) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "ownerId",
+        "The owner principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+
+  const enumRecommendationStates = new Set(["recommend-handoff", "conditional", "blocked"]);
+  function isRecommendationValid() {
+    if (!isRecord(recommendation)) return false;
+    if (recommendation.state !== "recommend-handoff") return false;
+    if (!schemaVersionValid) return false;
+    if (!releaseScopeValid) return false;
+    if (locales.length === 0) return false;
+    if (invalidLocaleCode) return false;
+    if (incompleteLocaleCoverage) return false;
+    if (unresolvedLocalizationDefect) return false;
+    if (invalidResolvedDefect) return false;
+    const reviewer = principalsById.get(recommendation.reviewerId);
+    if (!reviewer || !isAccountablePrincipalName(reviewer.name)) return false;
+    if (!Array.isArray(reviewer.scopes) || !reviewer.scopes.includes("localization-release-authority")) return false;
+    if (recommendation.reviewerId === value.ownerId) return false;
+    const reviewedMs = toEpochMillis(recommendation.reviewedAt);
+    if (!Number.isFinite(reviewedMs) || reviewedMs > nowMs) return false;
+    const groundingTimestamps = [
+      ...translations
+        .filter((item) => item.sourceVersion === release.sourceVersion && item.snapshotRef === release.sourceSnapshotRef)
+        .map((item) => toEpochMillis(evidenceById.get(item.evidenceRef)?.assertedAt)),
+      ...defects
+        .filter((item) => resolvedDefectStatuses.has(item.status))
+        .map((item) => toEpochMillis(item.verifiedAt)),
+      ...defects
+        .filter((item) => resolvedDefectStatuses.has(item.status))
+        .map((item) => toEpochMillis(evidenceById.get(item.verificationEvidenceRef)?.assertedAt)),
+    ];
+    return groundingTimestamps.every((groundingMs) => Number.isFinite(groundingMs) && reviewedMs >= groundingMs);
+  }
+  const recommendationValid = isRecommendationValid();
+  if (recommendation !== null) {
+    if (
+      recommendation.reviewerId !== null &&
+      recommendation.reviewerId !== undefined &&
+      !principalIds.has(recommendation.reviewerId)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          "recommendation.reviewerId",
+          `Reviewer principal reference ${JSON.stringify(recommendation.reviewerId)} does not resolve.`,
+        ),
+      );
+    }
+    if (recommendation.state !== undefined && !enumRecommendationStates.has(recommendation.state)) {
+      findings.push(
+        finding(
+          "invalid_recommendation_state",
+          "recommendation.state",
+          `Recommendation state ${JSON.stringify(recommendation.state)} is not supported.`,
+        ),
+      );
+    }
+  }
+  if (recommendation?.state === "recommend-handoff" && !recommendationValid) {
+    findings.push(
+      finding(
+        "premature_localization_recommendation",
+        "recommendation.state",
+        "A recommend-handoff state requires a non-empty, fully covered locale portfolio, no unresolved defect, and an independent localization-release-authority reviewer (distinct from the owner) dated at or after every grounding translation and defect verification.",
+      ),
+    );
+  }
+
+  if (
+    typeof handoff.owner !== "string" ||
+    handoff.owner.trim().length === 0 ||
+    isAgentIdentityName(handoff.owner) ||
+    LOCALIZATION_PROGRAM_MANAGER_PATTERN.test(handoff.owner)
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "The handoff must remain owned by a named, accountable human, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+
+  const expectedHandoffState = recommendation?.state === "recommend-handoff" && recommendationValid ? "ready" : "blocked";
+  if (handoff.state !== expectedHandoffState) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready until locale readiness is validly recommended.",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "publish-strings",
+    "deploy-release",
+    "modify-production-resources",
+    "approve-legal-content",
+    "waive-blocker",
+    "close-defect",
+    "impersonate-native-reviewer",
+    "claim-linguistic-certification",
+  ];
+  const prohibitedActionsRecord = stringListFindings(
+    handoff.prohibitedActions,
+    "handoff.prohibitedActions",
+    "Prohibited actions",
+  );
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `Locale readiness handoffs must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  const narrativeTexts = [
+    handoff.summary,
+    isRecord(recommendation) ? recommendation.rationale : null,
+  ].filter((text) => typeof text === "string");
+  const prohibitedNarrative =
+    /\bpublish(?:ed|ing)?\s+(?:the\s+)?strings?|deploy(?:ed|ing)?\s+(?:the\s+)?release|modif(?:y|ied|ying)?\s+(?:the\s+)?production\s+resources?|approv(?:ed|ing)?\s+(?:the\s+)?legal\s+content|waiv(?:ed|ing)?\s+(?:the\s+)?blocker|clos(?:ed|ing)?\s+(?:the\s+)?defect|impersonat(?:ed|ing)?\s+(?:a\s+)?native\s+reviewer|claim(?:ed|ing)?\s+linguistic\s+certification/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim publishing strings, deploying the release, modifying production resources, approving legal content, waiving a blocker, closing a defect, impersonating a native reviewer, or claiming linguistic certification.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
 function cloudCostAnalysisFindings(value) {
   const findings = [];
   function toEpochMillis(text) {
@@ -41525,6 +42437,7 @@ const validators = {
   "knowledge-gardener": knowledgeSpaceChangePlanFindings,
   "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
+  "localization-program-manager": localizationReadinessFindings,
   "manufacturing-operations-planner": manufacturingOperationsFindings,
   "meal-grocery-planner": mealGroceryFindings,
   "media-evidence-reviewer": mediaEvidenceFindings,

@@ -1,9 +1,83 @@
 {
-  "release": "2026.09 synthetic readiness review",
-  "sourceLocale": "en-US",
+  "schemaVersion": "awesomeClaws.localeReadiness.v1",
+  "release": {
+    "id": "release-2026.9.0-mobile-checkout-l10n",
+    "name": "Mobile app 9.0 checkout localization",
+    "sourceLocale": "en-US",
+    "sourceVersion": "strings-v42",
+    "sourceSnapshotRef": "snapshot-2026-08-25-en-us",
+    "requestedAt": "2026-08-25T00:00:00Z"
+  },
+  "owner": "Jordan Blake, Localization Program Owner",
+  "ownerId": "principal-owner-jordan",
+  "principals": [
+    { "id": "principal-owner-jordan", "name": "Jordan Blake", "roles": ["localization-program-owner"], "scopes": ["release-owner"] },
+    { "id": "principal-translator-fr", "name": "Camille Laurent", "roles": ["translator"], "scopes": ["translation-fr-FR"] },
+    { "id": "principal-reviewer-fr", "name": "\u00c9tienne Roy", "roles": ["linguistic-reviewer"], "scopes": ["linguistic-review-fr-FR"] },
+    { "id": "principal-translator-de", "name": "Lena Fischer", "roles": ["translator"], "scopes": ["translation-de-DE"] },
+    { "id": "principal-reviewer-de", "name": "Matthias Voigt", "roles": ["linguistic-reviewer"], "scopes": ["linguistic-review-de-DE"] },
+    { "id": "principal-translator-ja", "name": "Aiko Tanaka", "roles": ["translator"], "scopes": ["translation-ja-JP"] },
+    { "id": "principal-reviewer-ja", "name": "Kenji Sato", "roles": ["linguistic-reviewer"], "scopes": ["linguistic-review-ja-JP"] },
+    { "id": "principal-release-authority-morgan", "name": "Morgan Ellis", "roles": ["localization-release-manager"], "scopes": ["localization-release-authority"] }
+  ],
+  "surfaces": [
+    { "id": "surface-checkout", "name": "Mobile checkout flow" }
+  ],
   "locales": [
-    "fr-FR",
-    "de-DE",
-    "ja-JP"
-  ]
+    { "id": "locale-fr-fr", "code": "fr-FR", "market": "France", "surfaceRefs": ["surface-checkout"], "ownerId": "principal-reviewer-fr" },
+    { "id": "locale-de-de", "code": "de-DE", "market": "Germany", "surfaceRefs": ["surface-checkout"], "ownerId": "principal-reviewer-de" },
+    { "id": "locale-ja-jp", "code": "ja-JP", "market": "Japan", "surfaceRefs": ["surface-checkout"], "ownerId": "principal-reviewer-ja" }
+  ],
+  "sourceStrings": [
+    { "id": "string-checkout-total", "key": "checkout.total.label", "surfaceRef": "surface-checkout", "text": "Total due: {amount}", "placeholders": ["{amount}"], "sourceVersion": "strings-v42", "snapshotRef": "snapshot-2026-08-25-en-us" },
+    { "id": "string-checkout-retry", "key": "checkout.payment.retry", "surfaceRef": "surface-checkout", "text": "Retry payment", "placeholders": [], "sourceVersion": "strings-v42", "snapshotRef": "snapshot-2026-08-25-en-us" }
+  ],
+  "translationTasks": [
+    { "id": "task-fr-total", "localeRef": "locale-fr-fr", "sourceStringRef": "string-checkout-total" },
+    { "id": "task-fr-retry", "localeRef": "locale-fr-fr", "sourceStringRef": "string-checkout-retry" },
+    { "id": "task-de-total", "localeRef": "locale-de-de", "sourceStringRef": "string-checkout-total" },
+    { "id": "task-de-retry", "localeRef": "locale-de-de", "sourceStringRef": "string-checkout-retry" },
+    { "id": "task-ja-total", "localeRef": "locale-ja-jp", "sourceStringRef": "string-checkout-total" },
+    { "id": "task-ja-retry", "localeRef": "locale-ja-jp", "sourceStringRef": "string-checkout-retry" }
+  ],
+  "translations": [
+    { "id": "translation-fr-total", "taskRef": "task-fr-total", "localeRef": "locale-fr-fr", "sourceStringRef": "string-checkout-total", "sourceVersion": "strings-v42", "snapshotRef": "snapshot-2026-08-25-en-us", "translatedById": "principal-translator-fr", "translatedAt": "2026-08-26T09:00:00Z", "text": "Total d\u00fb : {amount}", "state": "translated", "evidenceRef": "evidence-fr-total-qa" },
+    { "id": "translation-fr-retry", "taskRef": "task-fr-retry", "localeRef": "locale-fr-fr", "sourceStringRef": "string-checkout-retry", "sourceVersion": "strings-v42", "snapshotRef": "snapshot-2026-08-25-en-us", "translatedById": "principal-translator-fr", "translatedAt": "2026-08-26T09:05:00Z", "text": "R\u00e9essayer le paiement", "state": "translated", "evidenceRef": "evidence-fr-retry-qa" },
+    { "id": "translation-de-total", "taskRef": "task-de-total", "localeRef": "locale-de-de", "sourceStringRef": "string-checkout-total", "sourceVersion": "strings-v42", "snapshotRef": "snapshot-2026-08-25-en-us", "translatedById": "principal-translator-de", "translatedAt": "2026-08-26T09:00:00Z", "text": "F\u00e4lliger Betrag: {amount}", "state": "translated", "evidenceRef": "evidence-de-total-qa" },
+    { "id": "translation-de-retry", "taskRef": "task-de-retry", "localeRef": "locale-de-de", "sourceStringRef": "string-checkout-retry", "sourceVersion": "strings-v42", "snapshotRef": "snapshot-2026-08-25-en-us", "translatedById": "principal-translator-de", "translatedAt": "2026-08-26T09:05:00Z", "text": "Zahlung erneut versuchen", "state": "translated", "evidenceRef": "evidence-de-retry-qa" },
+    { "id": "translation-ja-total", "taskRef": "task-ja-total", "localeRef": "locale-ja-jp", "sourceStringRef": "string-checkout-total", "sourceVersion": "strings-v42", "snapshotRef": "snapshot-2026-08-25-en-us", "translatedById": "principal-translator-ja", "translatedAt": "2026-08-26T09:00:00Z", "text": "\u5408\u8a08\u91d1\u984d: {amount}", "state": "translated", "evidenceRef": "evidence-ja-total-qa" },
+    { "id": "translation-ja-retry", "taskRef": "task-ja-retry", "localeRef": "locale-ja-jp", "sourceStringRef": "string-checkout-retry", "sourceVersion": "strings-v42", "snapshotRef": "snapshot-2026-08-25-en-us", "translatedById": "principal-translator-ja", "translatedAt": "2026-08-26T09:05:00Z", "text": "\u652f\u6255\u3044\u3092\u518d\u8a66\u884c", "state": "translated", "evidenceRef": "evidence-ja-retry-qa" }
+  ],
+  "evidence": [
+    { "id": "evidence-fr-total-qa", "kind": "linguistic-qa", "translationRef": "translation-fr-total", "sourceVersion": "strings-v42", "sourceSnapshotRef": "snapshot-2026-08-25-en-us", "outcome": "approved", "reviewedById": "principal-reviewer-fr", "sourceRef": "controlled://l10n-evidence/release-2026.9.0-mobile-checkout-l10n/fr-total", "assertedAt": "2026-08-26T10:00:00Z" },
+    { "id": "evidence-fr-retry-qa", "kind": "linguistic-qa", "translationRef": "translation-fr-retry", "sourceVersion": "strings-v42", "sourceSnapshotRef": "snapshot-2026-08-25-en-us", "outcome": "approved", "reviewedById": "principal-reviewer-fr", "sourceRef": "controlled://l10n-evidence/release-2026.9.0-mobile-checkout-l10n/fr-retry", "assertedAt": "2026-08-26T10:05:00Z" },
+    { "id": "evidence-de-total-qa", "kind": "linguistic-qa", "translationRef": "translation-de-total", "sourceVersion": "strings-v42", "sourceSnapshotRef": "snapshot-2026-08-25-en-us", "outcome": "approved", "reviewedById": "principal-reviewer-de", "sourceRef": "controlled://l10n-evidence/release-2026.9.0-mobile-checkout-l10n/de-total", "assertedAt": "2026-08-26T10:10:00Z" },
+    { "id": "evidence-de-retry-qa", "kind": "linguistic-qa", "translationRef": "translation-de-retry", "sourceVersion": "strings-v42", "sourceSnapshotRef": "snapshot-2026-08-25-en-us", "outcome": "approved", "reviewedById": "principal-reviewer-de", "sourceRef": "controlled://l10n-evidence/release-2026.9.0-mobile-checkout-l10n/de-retry", "assertedAt": "2026-08-26T11:30:00Z" },
+    { "id": "evidence-ja-total-qa", "kind": "linguistic-qa", "translationRef": "translation-ja-total", "sourceVersion": "strings-v42", "sourceSnapshotRef": "snapshot-2026-08-25-en-us", "outcome": "approved", "reviewedById": "principal-reviewer-ja", "sourceRef": "controlled://l10n-evidence/release-2026.9.0-mobile-checkout-l10n/ja-total", "assertedAt": "2026-08-26T10:20:00Z" },
+    { "id": "evidence-ja-retry-qa", "kind": "linguistic-qa", "translationRef": "translation-ja-retry", "sourceVersion": "strings-v42", "sourceSnapshotRef": "snapshot-2026-08-25-en-us", "outcome": "approved", "reviewedById": "principal-reviewer-ja", "sourceRef": "controlled://l10n-evidence/release-2026.9.0-mobile-checkout-l10n/ja-retry", "assertedAt": "2026-08-26T10:25:00Z" },
+    { "id": "evidence-de-retry-defect-verification", "kind": "defect-verification", "translationRef": "translation-de-retry", "defectRef": "defect-de-retry-terminology", "sourceVersion": "strings-v42", "sourceSnapshotRef": "snapshot-2026-08-25-en-us", "sourceRef": "controlled://l10n-evidence/release-2026.9.0-mobile-checkout-l10n/de-retry-defect-verification", "assertedAt": "2026-08-26T11:00:00Z" }
+  ],
+  "defects": [
+    { "id": "defect-de-retry-terminology", "translationRef": "translation-de-retry", "kind": "terminology-violation", "severity": "major", "status": "verified", "foundAt": "2026-08-26T09:30:00Z", "verifiedById": "principal-reviewer-de", "verifiedAt": "2026-08-26T11:00:00Z", "verificationEvidenceRef": "evidence-de-retry-defect-verification" }
+  ],
+  "terminology": [
+    { "id": "term-total-fr", "term": "Total", "approvedTranslation": "Total d\u00fb", "localeRef": "locale-fr-fr" },
+    { "id": "term-retry-de", "term": "Retry", "approvedTranslation": "erneut versuchen", "localeRef": "locale-de-de" }
+  ],
+  "limitations": [
+    "Accessibility screen-reader text for the retry button was not evaluated in this cycle and requires a separate accessibility pass.",
+    "Right-to-left layout compatibility was out of scope for this checkout surface."
+  ],
+  "recommendation": {
+    "state": "recommend-handoff",
+    "rationale": "All three target locales have current-source-version, current-snapshot translations for every in-scope string, independently reviewed with approved linguistic QA evidence, and the one identified terminology defect was independently verified after correction; no blocker or critical defect remains open.",
+    "reviewerId": "principal-release-authority-morgan",
+    "reviewedAt": "2026-08-26T12:00:00Z"
+  },
+  "handoff": {
+    "owner": "Jordan Blake, Localization Program Owner",
+    "prohibitedActions": ["publish-strings", "deploy-release", "modify-production-resources", "approve-legal-content", "waive-blocker", "close-defect", "impersonate-native-reviewer", "claim-linguistic-certification"],
+    "state": "ready",
+    "summary": "Localization program recommends handoff for fr-FR, de-DE, and ja-JP; no string publication, production resource change, legal content approval, blocker waiver, defect closure, native-reviewer impersonation, or linguistic certification claim occurred."
+  }
 }

@@ -5073,11 +5073,6 @@
           "role": "schema"
         },
         {
-          "source": "fixtures/locale-readiness.example.json",
-          "path": "fixtures/locale-readiness.example.json",
-          "role": "fixture"
-        },
-        {
           "source": "assets/locale-readiness.html",
           "path": "assets/locale-readiness.html",
           "role": "asset"
@@ -5086,6 +5081,11 @@
           "source": "templates/localization-handoff.md",
           "path": "templates/localization-handoff.md",
           "role": "template"
+        },
+        {
+          "source": "fixtures/locale-readiness.example.json",
+          "path": "fixtures/locale-readiness.example.json",
+          "role": "fixture"
         }
       ],
       "capabilityGuidance": [

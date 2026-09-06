@@ -1,29 +1,64 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "release",
-    "sourceLocale",
-    "locales"
-  ],
-  "properties": {
-    "release": {
-      "type": "string",
-      "minLength": 1
+  "anyOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["release", "sourceLocale", "locales"],
+      "properties": {
+        "release": { "type": "string", "minLength": 1 },
+        "sourceLocale": {
+          "type": "string",
+          "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+        },
+        "locales": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+          }
+        }
+      }
     },
-    "sourceLocale": {
-      "type": "string",
-      "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
-    },
-    "locales": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "items": {
-        "type": "string",
-        "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+    {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "release",
+        "principals",
+        "locales",
+        "surfaces",
+        "sourceStrings",
+        "translationTasks",
+        "translations",
+        "evidence",
+        "defects",
+        "terminology",
+        "limitations",
+        "recommendation",
+        "owner",
+        "ownerId",
+        "handoff"
+      ],
+      "properties": {
+        "schemaVersion": { "type": "string" },
+        "release": { "type": "object" },
+        "principals": { "type": "array" },
+        "locales": { "type": "array" },
+        "surfaces": { "type": "array" },
+        "sourceStrings": { "type": "array" },
+        "translationTasks": { "type": "array" },
+        "translations": { "type": "array" },
+        "evidence": { "type": "array" },
+        "defects": { "type": "array" },
+        "terminology": { "type": "array" },
+        "limitations": { "type": "array" },
+        "recommendation": { "type": ["object", "null"] },
+        "owner": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "handoff": { "type": "object" }
       }
     }
-  }
+  ]
 }
