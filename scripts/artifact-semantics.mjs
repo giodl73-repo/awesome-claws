@@ -446,7 +446,7 @@ const UX_RESEARCH_SYNTHESIZER_PATTERN = /\bux research synthesizer\b/iu;
 const QUALITY_ASSURANCE_LEAD_PATTERN = /\bquality assurance lead\b/iu;
 const CLOUD_COST_ANALYST_PATTERN = /\bcloud cost analyst\b/iu;
 const DATA_MIGRATION_PLANNER_PATTERN = /\bdata migration planner\b/iu;
-const LOCALIZATION_PROGRAM_MANAGER_PATTERN = /\blocalization program manager\b/iu;
+const LOCALIZATION_PROGRAM_MANAGER_PATTERN = /^\s*localization program manager\s*$/iu;
 
 function zoneOffsetMs(formatter, instant) {
   const parts = Object.fromEntries(

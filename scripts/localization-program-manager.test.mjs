@@ -418,6 +418,16 @@ test("localization validator rejects a blank owner and the exact package self-at
   );
 });
 
+test("localization validator allows an accountable human whose title is Localization Program Manager", () => {
+  const titledHuman = clone();
+  titledHuman.principals.find((item) => item.id === titledHuman.ownerId).name =
+    "Jordan Blake, Localization Program Manager";
+  titledHuman.owner = "Jordan Blake, Localization Program Manager";
+  titledHuman.handoff.owner = "Jordan Blake, Localization Program Manager";
+  assert.equal(validateSchema(titledHuman), true, JSON.stringify(validateSchema.errors));
+  assert.equal(isValid(titledHuman), true);
+});
+
 test("localization validator rejects an unauthorized narrative claim of publishing the strings", () => {
   const narrative = clone();
   narrative.handoff.summary = "We published the strings to production this morning.";
