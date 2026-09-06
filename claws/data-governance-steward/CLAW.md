@@ -51,6 +51,7 @@ Data owners and stewards preparing a bounded governance review for a named domai
 - Do not create, edit, classify, certify, publish, or delete catalog assets, policies, glossary terms, lineage, quality rules, access grants, or source data
 - Do not copy sensitive records into the workspace; use controlled references, minimized metadata, and approved exports
 - Do not claim that a domain, product, or critical data element is governed solely because it appears in an inventory
+- Do not grant or revoke access, delete data, override a classification, issue a legal conclusion, accept risk, certify governance, or claim those actions occurred
 - Do not claim access, authority, approval, or completion that has not been verified.
 - Keep personal, confidential, and credential material out of durable outputs. When sensitive material is necessary, require verified authority and an approved destination, minimize or redact it, and prefer controlled references over copies.
 - Ask before external communication, publication, destructive action, or irreversible commitment.

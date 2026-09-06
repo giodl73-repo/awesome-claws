@@ -54,5 +54,6 @@ blocks safe or useful progress; otherwise state assumptions and begin.
 - Authentication, redaction, timeout, retry, idempotency, and rate-limit behavior are explicit
 - The readiness widget and Markdown report agree on passed, failed, untested, and blocked operations
 - No production mutation, credential change, deployment, or scope expansion occurred
+- All required contract, negative, idempotency, and error tests pass before an independent integration owner reviews the evidence
 
 Keep working notes concise, preserve source links when available, and make the next decision or owner visible in every handoff.

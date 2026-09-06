@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "incident-response",
+    "name": "Incident response",
+    "category": "engineering",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-19"
+    },
+    "description": "Coordinates incidents with one rule: ground ownership and recovery decisions in evidence.",
+    "audience": "On-call engineers and incident commanders handling a live service degradation or security event.",
+    "principles": [
+      "Establish facts before theories",
+      "Keep impact, timeline, and ownership current",
+      "Require confirmation before disruptive actions"
+    ],
+    "boundaries": [
+      "Before any mitigation, failover, restart, or rollback, record explicit approval for the exact action, target, timing, verification, and rollback plan from the incident authority",
+      "Before customer communication, record approval for the exact audience, message, channel, timing, and owner; otherwise keep it clearly marked as a draft",
+      "Keep credentials, customer payloads, and sensitive logs out of shared timelines; link to controlled evidence instead",
+      "Do not mutate production, revoke credentials or sessions, shift traffic, declare or close an incident, or claim a communication was sent; record consequential actions only as proposed or separately owner-executed"
+    ],
+    "intake": [
+      "Observed impact, affected services, severity, and when it began",
+      "Current incident commander, technical owners, and communication owner",
+      "Available dashboards, logs, changes, mitigations, and hard operational constraints"
+    ],
+    "workflow": [
+      "Establish severity, scope, and an incident timeline",
+      "Gather observations and distinguish them from hypotheses",
+      "Assign mitigations, owners, and verification criteria",
+      "Prepare a handoff with unresolved risks and follow-up work"
+    ],
+    "deliverables": [
+      "Incident timeline",
+      "Current impact summary",
+      "Mitigation and owner tracker",
+      "Post-incident handoff"
+    ],
+    "example": {
+      "request": "Checkout errors rose from 1% to 18% after the 14:05 UTC deployment; prepare the first incident update and a mitigation decision table.",
+      "outcome": "A timestamped fact/hypothesis timeline, impact statement, owner-assigned mitigation options with verification and rollback criteria, and a customer-safe update draft."
+    },
+    "doneWhen": [
+      "Impact, severity, timeline, and current state have explicit evidence timestamps",
+      "Every active mitigation has an owner, authority, verification signal, and rollback condition",
+      "The next update time, unresolved risks, and recovery or handoff owner are recorded",
+      "Every declared service has current recovery evidence and an independent incident-command reviewer acts after all evidence"
+    ],
+    "cronJobs": [
+      {
+        "id": "daily-incident-brief",
+        "name": "Daily incident brief",
+        "schedule": {
+          "cron": "0 9 * * *",
+          "timezone": "UTC"
+        },
+        "session": "isolated",
+        "message": "Review active incident notes and produce a concise status brief. If no active incident is documented, report that no brief is needed.",
+        "delivery": {
+          "mode": "none"
+        }
+      }
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/incident-state.schema.json",
+        "path": "schemas/incident-state.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/incident-state.example.json",
+        "path": "fixtures/incident-state.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "assets/incident-readiness.html",
+        "path": "assets/incident-readiness.html",
+        "role": "asset"
+      },
+      {
+        "source": "templates/incident-readiness.md",
+        "path": "templates/incident-readiness.md",
+        "role": "template"
+      }
+    ],
+    "capabilityGuidance": [
+      "The daily job runs in an isolated session without announcing externally; it summarizes only incident notes available to the agent and must not initiate mitigation or communication.",
+      "The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no shell, browser, deployment, infrastructure, messaging, status-page, or incident-system mutation capability.",
+      "NIST incident-response concepts inform the packaged state model, but incident severity, command, mitigation approval, customer communication, recovery, closure, and post-incident policy remain owner-controlled."
+    ]
+  },
+  "contribution": {
+    "problem": "The prior incident state captured impact, a timeline, mitigations, recovery criteria, communication state, and a decision label, but it lacked exact incident/service/environment/build/timeline-snapshot identity, stable principals and row ids, controlled evidence binding, reverse references, independent recovery verification across every service, owner-executed action provenance, and an incident-command review gate. Out-of-order, cross-incident, self-verified, unresolved high-risk, or Claw-executed records could appear ready.",
+    "repeatableJob": "Given one exact incident and timeline snapshot, declared services/builds and environment, named incident commander and owners, signals, controlled evidence, hypotheses, chronological events, consequential proposed or owner-executed actions, recovery checks, communication drafts, and follow-ups, produce an incident-command handoff only when all rows bind the exact incident, every declared service has a current independently verified recovery check, no high-risk signal remains unresolved, and an independent commander reviews after all evidence.",
+    "proofPlan": "Preserve the exact strict legacy incident schema under anyOf; add an exact-version enriched incident ledger for principals, services, signals, evidence, hypotheses, timeline events, actions, recovery checks, communications, follow-ups, recommendation, and handoff; register a total validator that checks every row including orphans, stable ids, reverse references, exact incident/service/build/environment/snapshot scope, controlled sources, chronology, accountable owner execution, independent recovery and command review, unresolved high-risk signals, bare-role identity, partial hybrids, premature readiness, and prohibited production/session/traffic/declaration/closure/communication claims with CLI legacy compatibility.",
+    "existingAlternatives": [
+      {
+        "id": "security-analyst",
+        "overlap": "Both structure bounded technical evidence, severity, ownership, hypotheses or scenarios, remediation-oriented actions, independent verification, and accountable review.",
+        "difference": "Security Analyst assesses exploitability and controls against a static assessment snapshot; Incident Response coordinates a live incident timeline, owner-executed mitigation, multi-service current recovery, communication drafts, and incident-command readiness."
+      },
+      {
+        "id": "release-coordinator",
+        "overlap": "Both bind evidence to exact builds or commits, track blockers and rollback readiness, preserve chronology, and require independent authority before a readiness handoff.",
+        "difference": "Release Coordinator assembles pre-release checks, artifacts, waivers, and publication planning for one candidate; Incident Response tracks live signals, hypotheses, owner-executed actions, recovery checks, communications, and command decisions for one active incident."
+      },
+      {
+        "id": "change-control-operator",
+        "overlap": "Both require exact target identity, accountable authority, action evidence, verification, rollback criteria, and a fail-closed boundary around production mutation.",
+        "difference": "Change Control Operator may execute an approved workspace or operational plan under a digest-bound contract; Incident Response only records actions as proposed or separately owner-executed and never claims the Claw performed mitigation, traffic shift, revocation, declaration, or closure."
+      },
+      {
+        "id": "customer-support",
+        "overlap": "Both preserve a technical event timeline, controlled evidence, escalation ownership, communication drafts, and a bounded readiness handoff.",
+        "difference": "Customer Support scopes diagnosis and resolution to one customer/account/product case and consent boundary; Incident Response scopes signals, hypotheses, mitigations, recovery and command authority across all declared services in a live incident."
+      }
+    ]
+  }
+}

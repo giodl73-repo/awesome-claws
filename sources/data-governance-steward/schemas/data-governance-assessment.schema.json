@@ -1,1 +1,297 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","additionalProperties":false,"required":["governanceDomain","reviewPeriod","domainOwner","dataProducts","evidence","issues","decisionState"],"properties":{"governanceDomain":{"type":"string","minLength":1},"reviewPeriod":{"type":"string","minLength":1},"domainOwner":{"type":"string","minLength":1},"dataProducts":{"type":"array","minItems":1,"items":{"type":"object","additionalProperties":false,"required":["name","owner","steward","lifecycleState","criticalDataElements"],"properties":{"name":{"type":"string","minLength":1},"owner":{"type":"string","minLength":1},"steward":{"type":"string","minLength":1},"lifecycleState":{"enum":["draft","active","deprecated","retired"]},"criticalDataElements":{"type":"array","minItems":1,"items":{"type":"string","minLength":1},"uniqueItems":true}}}},"evidence":{"type":"array","minItems":1,"items":{"type":"object","additionalProperties":false,"required":["subject","kind","state","reference","observedAt"],"properties":{"subject":{"type":"string","minLength":1},"kind":{"enum":["ownership","quality","lineage","classification","policy","usage"]},"state":{"enum":["verified","stale","missing","conflicting","not-applicable"]},"reference":{"type":"string","minLength":1},"observedAt":{"type":"string","format":"date-time"}}}},"issues":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["summary","severity","owner","state","followUp"],"properties":{"summary":{"type":"string","minLength":1},"severity":{"enum":["low","medium","high","critical"]},"owner":{"type":"string","minLength":1},"state":{"enum":["open","planned","resolved","accepted"]},"followUp":{"type":"string","minLength":1}}}},"decisionState":{"enum":["not-reviewable","needs-remediation","ready-for-owner-review","accepted"]}}}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "governanceDomain",
+        "reviewPeriod",
+        "domainOwner",
+        "dataProducts",
+        "evidence",
+        "issues",
+        "decisionState"
+      ],
+      "properties": {
+        "governanceDomain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewPeriod": {
+          "type": "string",
+          "minLength": 1
+        },
+        "domainOwner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dataProducts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "owner",
+              "steward",
+              "lifecycleState",
+              "criticalDataElements"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "steward": {
+                "type": "string",
+                "minLength": 1
+              },
+              "lifecycleState": {
+                "enum": [
+                  "draft",
+                  "active",
+                  "deprecated",
+                  "retired"
+                ]
+              },
+              "criticalDataElements": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              }
+            }
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "subject",
+              "kind",
+              "state",
+              "reference",
+              "observedAt"
+            ],
+            "properties": {
+              "subject": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "enum": [
+                  "ownership",
+                  "quality",
+                  "lineage",
+                  "classification",
+                  "policy",
+                  "usage"
+                ]
+              },
+              "state": {
+                "enum": [
+                  "verified",
+                  "stale",
+                  "missing",
+                  "conflicting",
+                  "not-applicable"
+                ]
+              },
+              "reference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "observedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "summary",
+              "severity",
+              "owner",
+              "state",
+              "followUp"
+            ],
+            "properties": {
+              "summary": {
+                "type": "string",
+                "minLength": 1
+              },
+              "severity": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "critical"
+                ]
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "state": {
+                "enum": [
+                  "open",
+                  "planned",
+                  "resolved",
+                  "accepted"
+                ]
+              },
+              "followUp": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "decisionState": {
+          "enum": [
+            "not-reviewable",
+            "needs-remediation",
+            "ready-for-owner-review",
+            "accepted"
+          ]
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "assessment",
+        "principals",
+        "assets",
+        "fields",
+        "requirements",
+        "evidence",
+        "findings",
+        "exceptions",
+        "remediations",
+        "verifications",
+        "limitations",
+        "recommendation",
+        "owner",
+        "ownerId",
+        "handoff"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "awesomeClaws.dataGovernanceAssessment.v1"
+        },
+        "assessment": {
+          "type": "object"
+        },
+        "principals": {
+          "type": "array"
+        },
+        "assets": {
+          "type": "array"
+        },
+        "fields": {
+          "type": "array"
+        },
+        "requirements": {
+          "type": "array"
+        },
+        "evidence": {
+          "type": "array"
+        },
+        "findings": {
+          "type": "array"
+        },
+        "exceptions": {
+          "type": "array"
+        },
+        "remediations": {
+          "type": "array"
+        },
+        "verifications": {
+          "type": "array"
+        },
+        "limitations": {
+          "type": "array"
+        },
+        "recommendation": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "owner": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "handoff": {
+          "type": "object"
+        }
+      },
+      "allOf": [
+        {
+          "not": {
+            "required": [
+              "governanceDomain"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "reviewPeriod"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "domainOwner"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "dataProducts"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "issues"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "decisionState"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
