@@ -73,7 +73,7 @@ test("security enriched records require the exact schema version and cannot down
   assert.equal(validateSchema(hybrid), false);
   assert.ok(findings(hybrid).some((item) => item.code === "invalid_array_list" && item.path === "principals"));
 
-  for (const field of ["assessmentMode", "riskOwner"]) {
+  for (const field of ["assessmentMode", "stopConditions", "riskOwner"]) {
     const partialHybrid = clone();
     partialHybrid[field] = legacy[field];
     assert.equal(isValid(partialHybrid), false);

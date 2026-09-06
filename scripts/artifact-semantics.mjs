@@ -41803,6 +41803,7 @@ function securityAssessmentFindings(input) {
     "assessmentScope",
     "assessmentMode",
     "authorizationRef",
+    "stopConditions",
     "riskOwner",
     "assessmentState",
   ]) {
