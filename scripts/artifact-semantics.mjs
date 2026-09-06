@@ -2975,7 +2975,7 @@ function giftRelationshipFindings(value) {
       if (gift.currency !== value.plan.currency) {
         findings.push(finding("gift_currency_mismatch", `giftIdeas.${index}.currency`, "Gift costs must use the plan currency."));
       }
-      if (occasion?.budget !== null && gift.estimatedCost > occasion.budget) {
+      if (occasion?.budget != null && gift.estimatedCost > occasion.budget) {
         findings.push(finding("budget_exceeded", `giftIdeas.${index}.estimatedCost`, "Gift ideas over the occasion budget cannot be recommended without owner review."));
       }
     }
@@ -2999,7 +2999,9 @@ function giftRelationshipFindings(value) {
       (!gift ||
         !["available", "limited"].includes(gift.availability) ||
         !["arrives-before-occasion", "not-needed"].includes(gift.shippingState) ||
-        (gift.estimatedCost !== null && occasion?.budget !== null && gift.estimatedCost > occasion.budget))
+        (gift.estimatedCost !== null &&
+          occasion?.budget != null &&
+          gift.estimatedCost > occasion.budget))
     ) {
       findings.push(finding("unsupported_recommendation", `shortlist.${index}`, "Recommended gifts require available evidence, acceptable timing, and budget fit."));
     }

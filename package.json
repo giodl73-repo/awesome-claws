@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/materialize-catalog.mjs && node scripts/generate-catalog-chooser.mjs",
-    "check": "node --test scripts/*.test.mjs && node scripts/materialize-catalog.mjs --check && node scripts/generate-catalog-chooser.mjs --check && node scripts/catalog-quality-score.mjs --check && node scripts/runtime-evidence.mjs --check && node scripts/validate-catalog.mjs && node scripts/validate-contributions.mjs && node scripts/regression-cases.mjs",
+    "check": "node --test scripts/*.test.mjs && node scripts/mock-plus-semantic-discover.mjs --check && node scripts/materialize-catalog.mjs --check && node scripts/generate-catalog-chooser.mjs --check && node scripts/catalog-quality-score.mjs --check && node scripts/runtime-evidence.mjs --check && node scripts/validate-catalog.mjs && node scripts/validate-contributions.mjs && node scripts/regression-cases.mjs",
     "score:catalog": "node scripts/catalog-quality-score.mjs",
     "score:catalog:check": "node scripts/catalog-quality-score.mjs --check",
     "create:claw": "node scripts/create-claw.mjs",
@@ -26,6 +26,8 @@
     "test:claw": "node scripts/test-claw.mjs",
     "eval:pilot": "node scripts/semantic-eval.mjs",
     "mock-plus": "node scripts/mock-plus.mjs",
+    "mock-plus:semantics:recipes": "node scripts/mock-plus-semantic-discover.mjs",
+    "mock-plus:semantics:recipes:check": "node scripts/mock-plus-semantic-discover.mjs --check",
     "runtime:evidence": "node scripts/runtime-evidence.mjs",
     "runtime:evidence:check": "node scripts/runtime-evidence.mjs --check",
     "runtime:evidence:mock": "node scripts/runtime-evidence.mjs --mode mock --schedule baseline",

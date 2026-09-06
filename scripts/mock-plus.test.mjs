@@ -89,6 +89,7 @@ test("schema portfolio covers every Claw and active constraint family", async ()
     profile: "schema-portfolio",
     writeOutput: false,
   });
+
   assert.equal(run.coverage.scope, "schema-portfolio");
   assert.equal(run.coverage.status, "passed");
   assert.equal(run.coverage.clawCount, 100);
@@ -156,6 +157,42 @@ test("schema portfolio covers every Claw and active constraint family", async ()
   }
   const reversed = await runMockPlus({
     profile: "schema-portfolio",
+    onlyIds: run.results.claws.map((claw) => claw.id).reverse(),
+    writeOutput: false,
+  });
+  assert.equal(reversed.canonicalDigest, run.canonicalDigest);
+  assert.deepEqual(reversed.manifest.claws, run.manifest.claws);
+});
+
+test("semantic portfolio covers every registered owner-defined validator", async () => {
+  const run = await runMockPlus({
+    profile: "semantic-portfolio",
+    writeOutput: false,
+  });
+  assert.equal(run.coverage.scope, "semantic-portfolio");
+  assert.equal(run.coverage.status, "passed");
+  assert.equal(run.coverage.clawCount, 100);
+  assert.equal(run.coverage.counts["control-failed"], 0);
+  assert.equal(run.coverage.counts.survived, 0);
+  assert.equal(run.coverage.counts["unsupported-oracle"], 0);
+  assert.equal(run.coverage.counts["oracle-error"], 0);
+  assert.equal(run.coverage.safety.caseCount, 600);
+  assert.equal(run.coverage.safety.blockingCount, 0);
+  assert.equal(run.coverage.semantics.applicableClawCount, 92);
+  assert.equal(run.coverage.semantics.caseCount, 242);
+  assert.equal(run.coverage.semantics.killedCount, 242);
+  assert.equal(run.coverage.semantics.findingCodeCount, 191);
+  assert.equal(Object.keys(run.coverage.semantics.perClaw).length, 92);
+  for (const coverage of Object.values(run.coverage.semantics.perClaw)) {
+    assert.equal(coverage.applicable, coverage.killed);
+    assert.deepEqual(coverage.uncoveredRecipeIds, []);
+  }
+  assert.match(
+    run.outputRoot,
+    /[\\/]mock-plus[\\/]semantic-portfolio[\\/]/u,
+  );
+  const reversed = await runMockPlus({
+    profile: "semantic-portfolio",
     onlyIds: run.results.claws.map((claw) => claw.id).reverse(),
     writeOutput: false,
   });
@@ -306,6 +343,14 @@ test("CLI arguments require exact replay inputs", () => {
   );
   assert.throws(() => parseMockPlusArgs(["--update"]), /not available yet/u);
   assert.equal(parseMockPlusArgs(["--portfolio"]).profile, "schema-portfolio");
+  assert.equal(
+    parseMockPlusArgs(["--semantics"]).profile,
+    "semantic-portfolio",
+  );
+  assert.throws(
+    () => parseMockPlusArgs(["--portfolio", "--semantics"]),
+    /mutually exclusive/u,
+  );
 });
 
 test("unknown Claws and inapplicable recipes fail explicitly", async () => {

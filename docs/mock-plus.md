@@ -28,7 +28,11 @@ path-qualified and cover every applicable constraint reached through the
 fixture-active composition and conditional branches. `coverage.json` records
 applicable and killed counts by keyword and by Claw; any survivor or unsupported
 active constraint blocks the profile. It does not yet claim per-Claw semantic
-mutation coverage; that remains a separate profile.
+mutation coverage. The semantic portfolio is that separate profile: it replays
+a checked registry of schema-valid mutations against every registered
+owner-defined semantic validator and requires the exact committed finding-code
+set. Claws without a semantic validator remain explicitly non-applicable rather
+than passing through a fallback oracle.
 
 ## Commands
 
@@ -36,6 +40,8 @@ mutation coverage; that remains a separate profile.
 npm run mock-plus -- --inventory
 npm run mock-plus -- --check
 npm run mock-plus -- --portfolio --check
+npm run mock-plus -- --semantics --check
+npm run mock-plus:semantics:recipes:check
 npm run mock-plus -- --only sales-operations
 npm run mock-plus -- --only sales-operations --case semantic-dangling-reference --explain
 ```
@@ -49,6 +55,8 @@ The complete qualifying vertical writes under
 `.tmp\mock-plus\vertical\<canonical-digest>\`.
 The schema portfolio writes under
 `.tmp\mock-plus\schema-portfolio\<canonical-digest>\`.
+The semantic portfolio writes under
+`.tmp\mock-plus\semantic-portfolio\<canonical-digest>\`.
 Selections and one-case replays write under `.tmp\mock-plus\diagnostic\` so
 they cannot overwrite qualifying evidence. Both roots are ignored by git.
 

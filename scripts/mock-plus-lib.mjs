@@ -61,6 +61,7 @@ const MAX_OUTPUT_BYTES = 25 * 1_048_576;
 const SAFE_CANARY = "MOCKPLUS_CANARY_NONLIVE_8D31C6A4";
 const HARNESS_PATHS = [
   "required-safety-recipes.json",
+  "required-semantic-recipes.json",
   join("scripts", "mock-plus-lib.mjs"),
   join("scripts", "mock-plus.mjs"),
   join("scripts", "artifact-validator-registry.mjs"),
@@ -296,18 +297,27 @@ export function buildMockPlusInventory({
   };
 }
 
-export async function loadMockPlusContext({ targetRoot = root } = {}) {
+export async function loadMockPlusContext({
+  targetRoot = root,
+  requireSemanticRegistry = true,
+} = {}) {
   const catalog =
     targetRoot === root
       ? await readCatalog({ loadResources: false })
       : JSON.parse(await readFile(join(targetRoot, "catalog.json"), "utf8"));
-  const [experienceCases, regressionRegistry, safetyRegistry] =
+  const [experienceCases, regressionRegistry, safetyRegistry, semanticRegistry] =
     await Promise.all([
       readExperienceCases(catalog, { targetRoot }),
       readRegressionCases({ targetRoot }),
       readFile(join(targetRoot, "required-safety-recipes.json"), "utf8").then(
         JSON.parse,
       ),
+      requireSemanticRegistry
+        ? readFile(
+            join(targetRoot, "required-semantic-recipes.json"),
+            "utf8",
+          ).then(JSON.parse)
+        : null,
     ]);
   const inventory = buildMockPlusInventory({
     catalog,
@@ -315,13 +325,67 @@ export async function loadMockPlusContext({ targetRoot = root } = {}) {
     regressionRegistry,
   });
   assertSafetyRegistry(safetyRegistry);
+  if (requireSemanticRegistry) {
+    assertSemanticRegistry(semanticRegistry, inventory);
+  }
   return {
     catalog,
     experienceCases,
     regressionRegistry,
     safetyRegistry,
+    semanticRegistry,
     inventory,
   };
+}
+
+function assertSemanticRegistry(registry, inventory) {
+  if (
+    registry?.schemaVersion !== "awesomeClaws.mockPlusSemanticRecipes.v1" ||
+    registry.evidenceClass !== MOCK_PLUS_EVIDENCE_CLASS ||
+    !Array.isArray(registry.entries)
+  ) {
+    throw new Error("Mock+ semantic recipe registry is malformed.");
+  }
+  const expectedIds = inventory.entries
+    .filter((entry) => entry.semanticValidator)
+    .map((entry) => entry.id);
+  const actualIds = registry.entries.map((entry) => entry.id);
+  if (
+    actualIds.length !== expectedIds.length ||
+    actualIds.some((id, index) => id !== expectedIds[index])
+  ) {
+    throw new Error(
+      "Mock+ semantic recipe registry does not match the source-derived validator inventory.",
+    );
+  }
+  for (const entry of registry.entries) {
+    if (!Array.isArray(entry.recipes) || entry.recipes.length === 0) {
+      throw new Error(`${entry.id} lacks a Mock+ semantic recipe.`);
+    }
+    const ids = new Set();
+    for (const recipe of entry.recipes) {
+      if (
+        typeof recipe.id !== "string" ||
+        ids.has(recipe.id) ||
+        !["replace", "remove"].includes(recipe.operator) ||
+        !Array.isArray(recipe.path) ||
+        recipe.path.length === 0 ||
+        !recipe.path.every(
+          (part) =>
+            (typeof part === "string" && part.length > 0) ||
+            (Number.isInteger(part) && part >= 0),
+        ) ||
+        !Array.isArray(recipe.expectedCodes) ||
+        recipe.expectedCodes.length === 0 ||
+        !recipe.expectedCodes.every(
+          (code) => typeof code === "string" && code.length > 0,
+        )
+      ) {
+        throw new Error(`${entry.id} has a malformed Mock+ semantic recipe.`);
+      }
+      ids.add(recipe.id);
+    }
+  }
 }
 
 function assertSafetyRegistry(registry) {
@@ -1191,6 +1255,85 @@ function semanticMutant(clawId, validate, fixture) {
   });
 }
 
+function semanticPortfolioMutants(clawId, validate, fixture, recipes) {
+  return recipes.map((recipe) => {
+    const candidate = structuredClone(fixture);
+    const before = resolveValue(candidate, recipe.path);
+    setValue(
+      candidate,
+      recipe.path,
+      recipe.replacement,
+      recipe.operator === "remove",
+    );
+    const schema = schemaResult(validate, candidate);
+    const oracle = {
+      type: "semantic-validator",
+      expectedCodes: recipe.expectedCodes,
+    };
+    if (!schema.valid) {
+      return {
+        ...baseResult({
+          clawId,
+          recipeId: recipe.id,
+          family: "semantics",
+          kind: "mutant",
+          oracle,
+        }),
+        outcome: "oracle-error",
+        observed: {
+          reason: "Committed semantic mutation is no longer schema-valid.",
+          schemaErrors: schema.errors,
+        },
+      };
+    }
+    let findings;
+    try {
+      findings = validateArtifactSemantics(clawId, candidate);
+    } catch (error) {
+      return {
+        ...baseResult({
+          clawId,
+          recipeId: recipe.id,
+          family: "semantics",
+          kind: "mutant",
+          oracle,
+        }),
+        outcome: "oracle-error",
+        observed: {
+          reason: "Semantic validator threw for schema-valid evidence.",
+          error: error instanceof Error ? error.message : String(error),
+        },
+      };
+    }
+    const actualCodes = [
+      ...new Set(findings.map((finding) => finding.code)),
+    ].sort();
+    const killed =
+      actualCodes.length === recipe.expectedCodes.length &&
+      actualCodes.every((code, index) => code === recipe.expectedCodes[index]);
+    return mutantResult({
+      clawId,
+      recipeId: recipe.id,
+      family: "semantics",
+      killed,
+      oracle,
+      observed: {
+        schemaValid: true,
+        findingCodes: actualCodes,
+        delta: {
+          operator: recipe.operator,
+          path: recipe.path.join("."),
+          before: describeValue(before),
+          after:
+            recipe.operator === "remove"
+              ? { type: "missing" }
+              : describeValue(recipe.replacement),
+        },
+      },
+    });
+  });
+}
+
 function gateMutant({
   clawId,
   recipe,
@@ -1405,6 +1548,7 @@ async function runClaw({
   entry,
   contract,
   inventoryEntry,
+  semanticRegistryEntry,
   profile,
   safetyRegistry,
   targetRoot,
@@ -1486,13 +1630,31 @@ async function runClaw({
           }),
       )),
     );
-    cases.push(
-      ...(vertical
-        ? await runBoundedMockPlusCaseGroup(`${entry.id}:schema-mutants`, () =>
-            schemaMutants(entry.id, schema, validate, fixture),
-          )
-        : await expandedSchemaMutants(entry.id, schema, validate, fixture)),
-    );
+    if (profile === "schema-portfolio") {
+      cases.push(
+        ...(await expandedSchemaMutants(entry.id, schema, validate, fixture)),
+      );
+    } else if (vertical) {
+      cases.push(
+        ...(await runBoundedMockPlusCaseGroup(
+          `${entry.id}:schema-mutants`,
+          () => schemaMutants(entry.id, schema, validate, fixture),
+        )),
+      );
+    } else if (semanticRegistryEntry) {
+      cases.push(
+        ...(await runBoundedMockPlusCaseGroup(
+          `${entry.id}:semantic-mutants`,
+          () =>
+            semanticPortfolioMutants(
+              entry.id,
+              validate,
+              fixture,
+              semanticRegistryEntry.recipes,
+            ),
+        )),
+      );
+    }
     if (vertical) {
       cases.push(
         await runBoundedMockPlusCaseGroup(`${entry.id}:semantic-mutant`, () =>
@@ -1574,6 +1736,9 @@ function coverageFor(
     ].includes(result.family),
   );
   const schemaCases = results.filter((result) => result.family === "schema");
+  const semanticCases = results.filter(
+    (result) => result.family === "semantics",
+  );
   const schemaKeywordFamilies = [
     ...new Set(
       schemaCases.map((result) => result.oracle.keyword).filter(Boolean),
@@ -1655,9 +1820,9 @@ function coverageFor(
     evidenceClass: MOCK_PLUS_EVIDENCE_CLASS,
     mode: MOCK_PLUS_MODE,
     scope: qualifying
-      ? profile === "schema-portfolio"
-        ? "schema-portfolio"
-        : "three-claw-vertical"
+      ? profile === "vertical"
+        ? "three-claw-vertical"
+        : profile
       : "diagnostic-selection",
     clawCount: claws.length,
     caseCount: results.length,
@@ -1685,6 +1850,43 @@ function coverageFor(
       keywordFamilies: schemaKeywordFamilies,
       keywordCounts: schemaKeywordCounts,
       perClaw: schemaPerClaw,
+    },
+    semantics: {
+      applicableClawCount: new Set(
+        semanticCases.map((result) => result.clawId),
+      ).size,
+      caseCount: semanticCases.length,
+      killedCount: semanticCases.filter(
+        (result) => result.outcome === "killed",
+      ).length,
+      findingCodeCount: new Set(
+        semanticCases.flatMap(
+          (result) => result.oracle.expectedCodes ?? [result.oracle.code],
+        ),
+      ).size,
+      perClaw: Object.fromEntries(
+        claws
+          .filter((claw) =>
+            claw.cases.some((result) => result.family === "semantics"),
+          )
+          .map((claw) => {
+            const matching = claw.cases.filter(
+              (result) => result.family === "semantics",
+            );
+            return [
+              claw.id,
+              {
+                applicable: matching.length,
+                killed: matching.filter(
+                  (result) => result.outcome === "killed",
+                ).length,
+                uncoveredRecipeIds: matching
+                  .filter((result) => result.outcome !== "killed")
+                  .map((result) => result.recipeId),
+              },
+            ];
+          }),
+      ),
     },
     inventoryGaps: (profile === "schema-portfolio"
       ? inventory.summary.schemaFixtureGapIds
@@ -1716,6 +1918,7 @@ function renderReport(manifest, coverage) {
 - Safety independent/derived/blocking: ${coverage.safety.independentCount}/${coverage.safety.derivedCount}/${coverage.safety.blockingCount}
 - Schema Claws/cases/killed/survived: ${coverage.schema.clawCount}/${coverage.schema.caseCount}/${coverage.schema.killedCount}/${coverage.schema.survivedCount}
 - Schema keyword families: ${coverage.schema.keywordFamilies.join(", ")}
+- Semantic Claws/cases/killed/codes: ${coverage.semantics.applicableClawCount}/${coverage.semantics.caseCount}/${coverage.semantics.killedCount}/${coverage.semantics.findingCodeCount}
 - Portfolio fixture oracle gaps: ${coverage.inventoryGaps.length}
 - Status: **${coverage.status}**
 `;
@@ -1914,7 +2117,7 @@ export async function runMockPlus({
   targetRoot = root,
   writeOutput = true,
 } = {}) {
-  if (!["vertical", "schema-portfolio"].includes(profile)) {
+  if (!["vertical", "schema-portfolio", "semantic-portfolio"].includes(profile)) {
     throw new Error(`Unknown Mock+ profile: ${profile}.`);
   }
   const started = performance.now();
@@ -1928,9 +2131,12 @@ export async function runMockPlus({
   const contractById = new Map(
     context.regressionRegistry.cases.map((item) => [item.id, item]),
   );
+  const semanticRegistryById = new Map(
+    context.semanticRegistry.entries.map((entry) => [entry.id, entry]),
+  );
   const requestedIds =
     onlyIds ??
-    (profile === "schema-portfolio"
+    (profile !== "vertical"
       ? context.catalog.entries.map((entry) => entry.id)
       : [...MOCK_PLUS_VERTICAL_IDS]);
   const unknown = requestedIds.filter((id) => !entryById.has(id));
@@ -1956,7 +2162,7 @@ export async function runMockPlus({
     requestedIds.length === portfolioIds.length &&
     portfolioIds.every((id) => requestedIds.includes(id));
   const selectedIds =
-    profile === "schema-portfolio" && coversPortfolio
+    profile !== "vertical" && coversPortfolio
       ? portfolioIds
       : coversVertical
         ? [...MOCK_PLUS_VERTICAL_IDS]
@@ -1972,6 +2178,7 @@ export async function runMockPlus({
         entry: entryById.get(id),
         contract: contractById.get(id),
         inventoryEntry: inventoryById.get(id),
+        semanticRegistryEntry: semanticRegistryById.get(id),
         profile,
         safetyRegistry: context.safetyRegistry,
         targetRoot,
@@ -1993,7 +2200,7 @@ export async function runMockPlus({
   assertCaseUniqueness(claws);
   const qualifying =
     caseId === null &&
-    (profile === "schema-portfolio" ? coversPortfolio : coversVertical);
+    (profile !== "vertical" ? coversPortfolio : coversVertical);
   const coverage = coverageFor(
     claws,
     context.inventory,
@@ -2015,6 +2222,7 @@ export async function runMockPlus({
     },
     harnessDigest,
     safetyRecipeDigest: mockPlusDigest(context.safetyRegistry),
+    semanticRecipeDigest: mockPlusDigest(context.semanticRegistry),
     claws: claws.map(({ id, identities, cases }) => ({
       id,
       identities,
@@ -2060,9 +2268,7 @@ export async function runMockPlus({
     ".tmp",
     "mock-plus",
     qualifying
-      ? profile === "schema-portfolio"
-        ? "schema-portfolio"
-        : "vertical"
+      ? profile
       : "diagnostic",
   );
   const resolvedOutputRoot = qualifying
