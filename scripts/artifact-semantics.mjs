@@ -451,6 +451,7 @@ const SECURITY_ANALYST_ROLE = "security analyst";
 const RELEASE_COORDINATOR_ROLE = "release coordinator";
 const CUSTOMER_SUPPORT_ROLE = "customer support";
 const COMPLIANCE_REVIEWER_ROLE = "compliance reviewer";
+const FINANCIAL_ANALYST_ROLE = "financial analyst";
 const LOCALE_CODE_PATTERN = /^[a-z]{2}(?:-[A-Z]{2})?$/u;
 
 function zoneOffsetMs(formatter, instant) {
@@ -1223,59 +1224,1174 @@ function documentIntakeFindings(value) {
   return findings;
 }
 
-function financialAnalysisFindings(value) {
-  const sourceIds = value.sources.map((item) => item.id);
-  const assumptionIds = value.assumptions.map((item) => item.id);
-  const scenarioIds = value.scenarios.map((item) => item.id);
-  const sources = new Set(sourceIds);
-  const assumptions = new Set(assumptionIds);
-  const scenarios = new Set(scenarioIds);
-  const findings = [
-    ...uniqueFindings(sourceIds, "sources", "Source id"),
-    ...uniqueFindings(assumptionIds, "assumptions", "Assumption id"),
-    ...uniqueFindings(scenarioIds, "scenarios", "Scenario id"),
-    ...uniqueFindings(value.risks.map((item) => item.id), "risks", "Risk id"),
-  ];
-  for (const [index, assumption] of value.assumptions.entries()) {
+function financialAnalysisFindings(input) {
+  const value = isRecord(input) ? input : {};
+  const findings = [];
+  const enriched = [
+    "schemaVersion",
+    "analysis",
+    "principals",
+    "inputs",
+    "evidence",
+    "assumptionRegister",
+    "scenarioModels",
+    "calculations",
+    "outcomes",
+    "reconciliations",
+    "sensitivityRegister",
+    "riskRegister",
+    "exceptions",
+    "limitations",
+    "recommendation",
+    "owner",
+    "ownerId",
+    "handoff",
+  ].some((field) => Object.hasOwn(value, field));
+  if (!enriched) {
+    const sourceIds = value.sources.map((item) => item.id);
+    const assumptionIds = value.assumptions.map((item) => item.id);
+    const scenarioIds = value.scenarios.map((item) => item.id);
+    const sources = new Set(sourceIds);
+    const assumptions = new Set(assumptionIds);
+    const scenarios = new Set(scenarioIds);
     findings.push(
-      ...uniqueFindings(assumption.sourceRefs, `assumptions.${index}.sourceRefs`, "Source reference"),
-      ...referenceFindings(
-        assumption.sourceRefs,
-        sources,
-        `assumptions.${index}.sourceRefs`,
-        "Source reference",
+      ...uniqueFindings(sourceIds, "sources", "Source id"),
+      ...uniqueFindings(assumptionIds, "assumptions", "Assumption id"),
+      ...uniqueFindings(scenarioIds, "scenarios", "Scenario id"),
+      ...uniqueFindings(
+        value.risks.map((item) => item.id),
+        "risks",
+        "Risk id",
+      ),
+    );
+    for (const [index, assumption] of value.assumptions.entries()) {
+      findings.push(
+        ...uniqueFindings(
+          assumption.sourceRefs,
+          `assumptions.${index}.sourceRefs`,
+          "Source reference",
+        ),
+        ...referenceFindings(
+          assumption.sourceRefs,
+          sources,
+          `assumptions.${index}.sourceRefs`,
+          "Source reference",
+        ),
+      );
+    }
+    for (const [index, scenario] of value.scenarios.entries()) {
+      findings.push(
+        ...uniqueFindings(
+          scenario.assumptionRefs,
+          `scenarios.${index}.assumptionRefs`,
+          "Assumption reference",
+        ),
+        ...referenceFindings(
+          scenario.assumptionRefs,
+          assumptions,
+          `scenarios.${index}.assumptionRefs`,
+          "Assumption reference",
+        ),
+      );
+    }
+    for (const [index, risk] of value.risks.entries()) {
+      findings.push(
+        ...uniqueFindings(
+          risk.sourceRefs,
+          `risks.${index}.sourceRefs`,
+          "Source reference",
+        ),
+        ...referenceFindings(
+          risk.sourceRefs,
+          sources,
+          `risks.${index}.sourceRefs`,
+          "Source reference",
+        ),
+        ...uniqueFindings(
+          risk.scenarioRefs,
+          `risks.${index}.scenarioRefs`,
+          "Scenario reference",
+        ),
+        ...referenceFindings(
+          risk.scenarioRefs,
+          scenarios,
+          `risks.${index}.scenarioRefs`,
+          "Scenario reference",
+        ),
+      );
+    }
+    return findings;
+  }
+
+  for (const field of [
+    "question",
+    "asOf",
+    "currency",
+    "sources",
+    "assumptions",
+    "scenarios",
+    "risks",
+    "decisionOwner",
+    "decisionState",
+  ]) {
+    if (Object.hasOwn(value, field)) {
+      findings.push(
+        finding(
+          "legacy_field_in_enriched_record",
+          field,
+          `Enriched financial analysis cannot carry ignored legacy field ${field}.`,
+        ),
+      );
+    }
+  }
+
+  const schemaVersionValid =
+    value.schemaVersion === "awesomeClaws.financialAnalysis.v1";
+  if (!schemaVersionValid) {
+    findings.push(
+      finding(
+        "invalid_schema_version",
+        "schemaVersion",
+        "Enriched financial analysis must declare schemaVersion awesomeClaws.financialAnalysis.v1.",
       ),
     );
   }
-  for (const [index, scenario] of value.scenarios.entries()) {
+
+  const ledgers = upliftLedger(
+    value,
+    [
+      ["principals", "Principal"],
+      ["inputs", "Input"],
+      ["evidence", "Evidence"],
+      ["assumptionRegister", "Assumption"],
+      ["scenarioModels", "Scenario"],
+      ["calculations", "Calculation"],
+      ["outcomes", "Outcome"],
+      ["reconciliations", "Reconciliation"],
+      ["sensitivityRegister", "Sensitivity"],
+      ["riskRegister", "Risk"],
+      ["exceptions", "Exception"],
+    ],
+    findings,
+  );
+  findings.push(
+    ...uniqueFindings(
+      Object.values(ledgers).flatMap((ledger) => stableRecordIds(ledger.items)),
+      "$",
+      "Financial ledger id",
+    ),
+  );
+
+  const principals = upliftPrincipalContext(
+    ledgers.principals,
+    FINANCIAL_ANALYST_ROLE,
+    findings,
+  );
+  const handoff = upliftOwnerFindings(
+    value,
+    ledgers.principals,
+    principals,
+    FINANCIAL_ANALYST_ROLE,
+    "The financial analysis",
+    findings,
+  );
+  if (
+    ledgers.principals.byId.get(value.ownerId)?.name !== value.owner ||
+    handoff.owner !== value.owner ||
+    !principals.hasScope(value.ownerId, "analysis-ownership")
+  ) {
     findings.push(
-      ...uniqueFindings(
-        scenario.assumptionRefs,
-        `scenarios.${index}.assumptionRefs`,
-        "Assumption reference",
-      ),
-      ...referenceFindings(
-        scenario.assumptionRefs,
-        assumptions,
-        `scenarios.${index}.assumptionRefs`,
-        "Assumption reference",
+      finding(
+        "owner_identity_mismatch",
+        "ownerId",
+        "Analysis owner, ownerId principal, handoff owner, and analysis-ownership scope must identify the same named human.",
       ),
     );
   }
-  for (const [index, risk] of value.risks.entries()) {
+
+  const analysis = isRecord(value.analysis) ? value.analysis : {};
+  const recommendation = isRecord(value.recommendation)
+    ? value.recommendation
+    : null;
+  const requestedMs = upliftTimestampMs(analysis.requestedAt);
+  const asOfMs = upliftTimestampMs(analysis.asOf);
+  const strictDateOnlyMs = (date) => {
+    const match =
+      typeof date === "string"
+        ? /^(\d{4})-(\d{2})-(\d{2})$/u.exec(date)
+        : null;
+    if (match === null) return Number.NaN;
+    const [, yearText, monthText, dayText] = match;
+    const year = Number(yearText);
+    const month = Number(monthText);
+    const day = Number(dayText);
+    const instant = new Date(0);
+    instant.setUTCFullYear(year, month - 1, day);
+    instant.setUTCHours(0, 0, 0, 0);
+    return instant.getUTCFullYear() === year &&
+      instant.getUTCMonth() === month - 1 &&
+      instant.getUTCDate() === day
+      ? instant.getTime()
+      : Number.NaN;
+  };
+  const periodStartMs = strictDateOnlyMs(analysis.periodStart);
+  const periodEndMs = strictDateOnlyMs(analysis.periodEnd);
+  const nowMs = Date.now();
+  const requiredScenarios = stringListFindings(
+    analysis.requiredScenarioKinds,
+    "analysis.requiredScenarioKinds",
+    "Required scenario kinds",
+  );
+  const requiredMetrics = stringListFindings(
+    analysis.requiredMetricIds,
+    "analysis.requiredMetricIds",
+    "Required metrics",
+  );
+  findings.push(...requiredScenarios.findings, ...requiredMetrics.findings);
+  const analysisScopeValid =
+    [
+      "id",
+      "question",
+      "entity",
+      "businessUnit",
+      "accountingBasis",
+      "periodStart",
+      "periodEnd",
+      "modelSnapshotRef",
+      "inputSnapshotRef",
+    ].every(
+      (field) =>
+        typeof analysis[field] === "string" &&
+        analysis[field].trim().length > 0,
+    ) &&
+    /^[A-Z]{3}$/u.test(analysis.currency ?? "") &&
+    Number.isFinite(requestedMs) &&
+    Number.isFinite(asOfMs) &&
+    requestedMs <= asOfMs &&
+    asOfMs <= nowMs &&
+    Number.isFinite(periodStartMs) &&
+    Number.isFinite(periodEndMs) &&
+    periodStartMs <= periodEndMs &&
+    Number.isFinite(analysis.freshnessWindowHours) &&
+    analysis.freshnessWindowHours > 0 &&
+    requiredScenarios.items.length >= 3 &&
+    requiredScenarios.items.every(
+      (item) => typeof item === "string" && item.trim().length > 0,
+    ) &&
+    new Set(requiredScenarios.items).size === requiredScenarios.items.length &&
+    requiredMetrics.items.length > 0 &&
+    requiredMetrics.items.every(
+      (item) => typeof item === "string" && item.trim().length > 0,
+    ) &&
+    new Set(requiredMetrics.items).size === requiredMetrics.items.length &&
+    Number.isFinite(analysis.materialityThreshold) &&
+    analysis.materialityThreshold >= 0;
+  if (!analysisScopeValid) {
     findings.push(
-      ...uniqueFindings(risk.sourceRefs, `risks.${index}.sourceRefs`, "Source reference"),
-      ...referenceFindings(risk.sourceRefs, sources, `risks.${index}.sourceRefs`, "Source reference"),
+      finding(
+        "invalid_financial_scope",
+        "analysis",
+        "Financial analysis must bind an exact question, entity, business unit, currency, accounting basis, period, model/input snapshots, bounded request/as-of times, freshness window, scenario/metric sets, and materiality.",
+      ),
+    );
+  }
+
+  function hasExactFinancialScope(record, snapshotField = null) {
+    return (
+      record.currency === analysis.currency &&
+      record.accountingBasis === analysis.accountingBasis &&
+      record.periodStart === analysis.periodStart &&
+      record.periodEnd === analysis.periodEnd &&
+      (snapshotField === null ||
+        record[snapshotField] === analysis[snapshotField])
+    );
+  }
+
+  function sameIdSet(values, ids) {
+    return (
+      Array.isArray(values) &&
+      values.length === ids.size &&
+      new Set(values).size === values.length &&
+      values.every((item) => ids.has(item))
+    );
+  }
+
+  let invalidEvidence = ledgers.evidence.items.length === 0;
+  for (const [index, evidence] of ledgers.evidence.entries) {
+    const observedMs = upliftEvidenceWindowFindings(
+      evidence,
+      index,
+      "observedAt",
+      requestedMs,
+      nowMs,
+      findings,
+    );
+    const subjectLedger =
+      evidence.subjectType === "input"
+        ? ledgers.inputs
+        : evidence.subjectType === "assumption"
+          ? ledgers.assumptionRegister
+          : null;
+    const subject = subjectLedger?.byId.get(evidence.subjectRef);
+    const expectedKind =
+      evidence.subjectType === "input"
+        ? "source-observation"
+        : evidence.subjectType === "assumption"
+          ? "owner-assumption"
+          : null;
+    const ownerScope =
+      evidence.kind === "owner-assumption"
+        ? "assumption-ownership"
+        : "source-ownership";
+    const scoped =
+      subject !== undefined &&
+      evidence.kind === expectedKind &&
+      evidence.entity === analysis.entity &&
+      evidence.businessUnit === analysis.businessUnit &&
+      evidence.inputSnapshotRef === analysis.inputSnapshotRef &&
+      hasExactFinancialScope(evidence) &&
+      evidence.sourceState === "current" &&
+      principals.hasScope(evidence.sourceOwnerId, ownerScope) &&
+      Number.isFinite(observedMs) &&
+      observedMs <= asOfMs &&
+      Number.isFinite(analysis.freshnessWindowHours) &&
+      asOfMs - observedMs <=
+        analysis.freshnessWindowHours * 60 * 60 * 1000;
+    const minimized =
+      ["sanitized-financial-record", "internal-financial-summary"].includes(
+        evidence.dataClass,
+      ) &&
+      evidence.containsSecrets === false &&
+      evidence.containsPersonalData === false &&
+      evidence.containsDurableRawData === false;
+    if (!scoped) {
+      invalidEvidence = true;
+      findings.push(
+        finding(
+          ["stale", "missing", "conflicting"].includes(evidence.sourceState)
+            ? "missing_or_conflicting_evidence"
+            : "cross_scope_evidence",
+          `evidence[${index}]`,
+          "Evidence must resolve to its exact input or assumption, named source owner, entity/business unit, current input snapshot, currency, accounting basis, period, and freshness window.",
+        ),
+      );
+    }
+    if (!minimized) {
+      invalidEvidence = true;
+      findings.push(
+        finding(
+          "unsafe_financial_evidence",
+          `evidence[${index}]`,
+          "Durable evidence must be controlled, minimized, secret-free, personal-data-free, and free of copied raw confidential records.",
+        ),
+      );
+    }
+  }
+  if (upliftContainsSecret(value)) {
+    invalidEvidence = true;
+    findings.push(
+      finding(
+        "secret_in_evidence",
+        "$",
+        "Financial analysis must not persist credential material or secret-bearing fields.",
+      ),
+    );
+  }
+
+  let invalidInput = ledgers.inputs.items.length === 0;
+  for (const [index, inputRecord] of ledgers.inputs.entries) {
+    const evidence = ledgers.evidence.byId.get(
+      inputRecord.sourceEvidenceRef,
+    );
+    const valid =
+      Number.isFinite(inputRecord.value) &&
+      typeof inputRecord.name === "string" &&
+      inputRecord.name.trim().length > 0 &&
+      typeof inputRecord.unit === "string" &&
+      inputRecord.unit.trim().length > 0 &&
+      hasExactFinancialScope(inputRecord, "inputSnapshotRef") &&
+      evidence?.subjectType === "input" &&
+      evidence.subjectRef === inputRecord.id &&
+      evidence.kind === "source-observation" &&
+      evidence.value === inputRecord.value &&
+      evidence.unit === inputRecord.unit &&
+      hasExactFinancialScope(evidence, "inputSnapshotRef");
+    if (!valid) {
+      invalidInput = true;
+      findings.push(
+        finding(
+          "unproven_financial_input",
+          `inputs[${index}]`,
+          "Every observed input must bind exact value, unit, currency, basis, period, input snapshot, and matching controlled source evidence.",
+        ),
+      );
+    }
+  }
+
+  let invalidAssumption = ledgers.assumptionRegister.items.length === 0;
+  for (const [index, assumption] of ledgers.assumptionRegister.entries) {
+    findings.push(
       ...uniqueFindings(
-        risk.scenarioRefs,
-        `risks.${index}.scenarioRefs`,
-        "Scenario reference",
+        assumption.evidenceRefs,
+        `assumptionRegister[${index}].evidenceRefs`,
+        "Evidence reference",
       ),
       ...referenceFindings(
-        risk.scenarioRefs,
-        scenarios,
-        `risks.${index}.scenarioRefs`,
-        "Scenario reference",
+        assumption.evidenceRefs,
+        ledgers.evidence.ids,
+        `assumptionRegister[${index}].evidenceRefs`,
+        "Evidence",
+      ),
+    );
+    const evidenceRefs = Array.isArray(assumption.evidenceRefs)
+      ? assumption.evidenceRefs
+      : [];
+    const uncertainty = isRecord(assumption.uncertainty)
+      ? assumption.uncertainty
+      : {};
+    const recordedMs = upliftTimestampMs(assumption.recordedAt);
+    const evidenceItems = evidenceRefs
+      .map((reference) => ledgers.evidence.byId.get(reference))
+      .filter(Boolean);
+    const valid =
+      typeof assumption.statement === "string" &&
+      assumption.statement.trim().length > 0 &&
+      Number.isFinite(assumption.value) &&
+      typeof assumption.unit === "string" &&
+      assumption.unit.trim().length > 0 &&
+      hasExactFinancialScope(assumption) &&
+      principals.hasScope(assumption.ownerId, "assumption-ownership") &&
+      evidenceRefs.length > 0 &&
+      evidenceItems.length === evidenceRefs.length &&
+      evidenceItems.every(
+        (evidence) =>
+          evidence.kind === "owner-assumption" &&
+          evidence.subjectType === "assumption" &&
+          evidence.subjectRef === assumption.id &&
+          evidence.sourceOwnerId === assumption.ownerId &&
+          evidence.value === assumption.value &&
+          evidence.unit === assumption.unit &&
+          hasExactFinancialScope(evidence),
+      ) &&
+      Number.isFinite(uncertainty.low) &&
+      Number.isFinite(uncertainty.expected) &&
+      Number.isFinite(uncertainty.high) &&
+      uncertainty.low <= uncertainty.expected &&
+      uncertainty.expected <= uncertainty.high &&
+      numbersEqual(uncertainty.expected, assumption.value) &&
+      Number.isFinite(recordedMs) &&
+      recordedMs >=
+        Math.max(
+          ...evidenceItems.map((evidence) =>
+            upliftTimestampMs(evidence.observedAt),
+          ),
+        ) &&
+      recordedMs <= asOfMs;
+    if (!valid) {
+      invalidAssumption = true;
+      findings.push(
+        finding(
+          "ungrounded_assumption",
+          `assumptionRegister[${index}]`,
+          "Assumptions must be explicit, owner-supplied, uncertainty-bounded, exact-scope, and recorded after matching controlled evidence.",
+        ),
+      );
+    }
+  }
+
+  let incompleteScenarios =
+    ledgers.scenarioModels.items.length === 0 ||
+    !sameIdSet(
+      ledgers.scenarioModels.items.map((scenario) => scenario.kind),
+      new Set(requiredScenarios.items),
+    );
+  let incompleteMetrics = false;
+  for (const [index, scenario] of ledgers.scenarioModels.entries) {
+    for (const [field, ledger, label] of [
+      ["assumptionRefs", ledgers.assumptionRegister, "Assumption"],
+      ["calculationRefs", ledgers.calculations, "Calculation"],
+      ["outcomeRefs", ledgers.outcomes, "Outcome"],
+      ["sensitivityRefs", ledgers.sensitivityRegister, "Sensitivity"],
+      ["riskRefs", ledgers.riskRegister, "Risk"],
+    ]) {
+      findings.push(
+        ...uniqueFindings(
+          scenario[field],
+          `scenarioModels[${index}].${field}`,
+          `${label} reference`,
+        ),
+        ...referenceFindings(
+          scenario[field],
+          ledger.ids,
+          `scenarioModels[${index}].${field}`,
+          label,
+        ),
+      );
+    }
+    const completeLists = [
+      "assumptionRefs",
+      "calculationRefs",
+      "outcomeRefs",
+      "sensitivityRefs",
+      "riskRefs",
+    ].every(
+      (field) =>
+        Array.isArray(scenario[field]) && scenario[field].length > 0,
+    );
+    if (
+      !requiredScenarios.items.includes(scenario.kind) ||
+      typeof scenario.name !== "string" ||
+      scenario.name.trim().length === 0 ||
+      !completeLists
+    ) {
+      incompleteScenarios = true;
+    }
+    for (const metricId of requiredMetrics.items) {
+      const calculations = ledgers.calculations.items.filter(
+        (calculation) =>
+          calculation.scenarioRef === scenario.id &&
+          calculation.metricId === metricId &&
+          Array.isArray(scenario.calculationRefs) &&
+          scenario.calculationRefs.includes(calculation.id),
+      );
+      const outcomes = ledgers.outcomes.items.filter(
+        (outcome) =>
+          outcome.scenarioRef === scenario.id &&
+          outcome.metricId === metricId &&
+          Array.isArray(scenario.outcomeRefs) &&
+          scenario.outcomeRefs.includes(outcome.id),
+      );
+      if (
+        calculations.length !== 1 ||
+        outcomes.length !== 1 ||
+        outcomes[0]?.calculationRef !== calculations[0]?.id
+      ) {
+        incompleteMetrics = true;
+      }
+    }
+  }
+  if (incompleteScenarios) {
+    findings.push(
+      finding(
+        "incomplete_scenario_coverage",
+        "scenarioModels",
+        "The declared complete scenario set needs one stable, fully referenced model for every required scenario kind.",
+      ),
+    );
+  }
+  if (incompleteMetrics) {
+    findings.push(
+      finding(
+        "incomplete_metric_coverage",
+        "scenarioModels",
+        "Every scenario must carry exactly one bound calculation and outcome for every required metric.",
+      ),
+    );
+  }
+
+  const operandById = new Map([
+    ...ledgers.inputs.byId,
+    ...ledgers.assumptionRegister.byId,
+  ]);
+  let invalidCalculation = ledgers.calculations.items.length === 0;
+  for (const [index, calculation] of ledgers.calculations.entries) {
+    const terms = requiredRecordArray(
+      calculation.terms,
+      `calculations[${index}].terms`,
+      "Calculation term",
+    );
+    findings.push(...terms.findings);
+    const scenario = ledgers.scenarioModels.byId.get(
+      calculation.scenarioRef,
+    );
+    const resolvedTerms = terms.items.map((term) => ({
+      term,
+      operand: operandById.get(term.ref),
+    }));
+    const calculatedMs = upliftTimestampMs(calculation.calculatedAt);
+    const expectedValue = resolvedTerms.reduce(
+      (sum, { term, operand }) =>
+        sum +
+        (Number.isFinite(term.multiplier) && Number.isFinite(operand?.value)
+          ? operand.value * term.multiplier
+          : NaN),
+      0,
+    );
+    const valid =
+      calculation.formula === "linear-combination" &&
+      terms.items.length >= 2 &&
+      resolvedTerms.every(
+        ({ term, operand }) =>
+          typeof term.ref === "string" &&
+          Number.isFinite(term.multiplier) &&
+          operand !== undefined &&
+          hasExactFinancialScope(operand) &&
+          operand.unit === calculation.unit &&
+          (!ledgers.assumptionRegister.ids.has(term.ref) ||
+            (Array.isArray(scenario?.assumptionRefs) &&
+              scenario.assumptionRefs.includes(term.ref))),
+      ) &&
+      scenario !== undefined &&
+      Array.isArray(scenario.calculationRefs) &&
+      scenario.calculationRefs.includes(calculation.id) &&
+      requiredMetrics.items.includes(calculation.metricId) &&
+      Number.isFinite(calculation.value) &&
+      Number.isFinite(expectedValue) &&
+      numbersEqual(calculation.value, expectedValue) &&
+      typeof calculation.unit === "string" &&
+      calculation.unit.trim().length > 0 &&
+      hasExactFinancialScope(calculation, "modelSnapshotRef") &&
+      Number.isFinite(calculatedMs) &&
+      calculatedMs >=
+        Math.max(
+          ...resolvedTerms.map(({ term, operand }) =>
+            upliftTimestampMs(
+              ledgers.assumptionRegister.ids.has(term.ref)
+                ? operand?.recordedAt
+                : ledgers.evidence.byId.get(operand?.sourceEvidenceRef)
+                    ?.observedAt,
+            ),
+          ),
+        ) &&
+      calculatedMs <= asOfMs;
+    if (!valid) {
+      invalidCalculation = true;
+      findings.push(
+        finding(
+          "invalid_financial_calculation",
+          `calculations[${index}]`,
+          "Calculations must recompute from resolved exact-scope terms, use declared scenario assumptions, preserve unit/currency/basis/period/model identity, and follow their grounding records.",
+        ),
+      );
+    }
+  }
+
+  let invalidOutcome = ledgers.outcomes.items.length === 0;
+  for (const [index, outcome] of ledgers.outcomes.entries) {
+    const scenario = ledgers.scenarioModels.byId.get(outcome.scenarioRef);
+    const calculation = ledgers.calculations.byId.get(
+      outcome.calculationRef,
+    );
+    const producedMs = upliftTimestampMs(outcome.producedAt);
+    const valid =
+      scenario !== undefined &&
+      calculation !== undefined &&
+      Array.isArray(scenario.outcomeRefs) &&
+      scenario.outcomeRefs.includes(outcome.id) &&
+      calculation.scenarioRef === outcome.scenarioRef &&
+      calculation.metricId === outcome.metricId &&
+      calculation.value === outcome.value &&
+      calculation.unit === outcome.unit &&
+      hasExactFinancialScope(outcome, "modelSnapshotRef") &&
+      Number.isFinite(producedMs) &&
+      producedMs >= upliftTimestampMs(calculation.calculatedAt) &&
+      producedMs <= asOfMs;
+    if (!valid) {
+      invalidOutcome = true;
+      findings.push(
+        finding(
+          "unbound_financial_outcome",
+          `outcomes[${index}]`,
+          "Every outcome must exactly mirror one scenario calculation and its metric, value, unit, currency, basis, period, model snapshot, and chronology.",
+        ),
+      );
+    }
+  }
+
+  let invalidReconciliation =
+    ledgers.reconciliations.items.length === 0;
+  let materialDifference = false;
+  for (const [index, reconciliation] of ledgers.reconciliations.entries) {
+    const calculation = ledgers.calculations.byId.get(
+      reconciliation.calculationRef,
+    );
+    const outcome = ledgers.outcomes.byId.get(reconciliation.outcomeRef);
+    const reconciledMs = upliftTimestampMs(reconciliation.reconciledAt);
+    const difference =
+      Number.isFinite(reconciliation.actualValue) &&
+      Number.isFinite(reconciliation.expectedValue)
+        ? reconciliation.actualValue - reconciliation.expectedValue
+        : NaN;
+    const materiallyDifferent =
+      Number.isFinite(difference) &&
+      Number.isFinite(reconciliation.materialityThreshold) &&
+      Math.abs(difference) > reconciliation.materialityThreshold;
+    const valid =
+      calculation !== undefined &&
+      outcome !== undefined &&
+      outcome.calculationRef === calculation.id &&
+      calculation.scenarioRef === outcome.scenarioRef &&
+      reconciliation.expectedValue === calculation.value &&
+      reconciliation.actualValue === outcome.value &&
+      Number.isFinite(reconciliation.difference) &&
+      Number.isFinite(difference) &&
+      numbersEqual(reconciliation.difference, difference) &&
+      reconciliation.materialityThreshold ===
+        analysis.materialityThreshold &&
+      reconciliation.state === "reconciled" &&
+      !materiallyDifferent &&
+      principals.hasScope(
+        reconciliation.verifiedById,
+        "calculation-verification",
+      ) &&
+      reconciliation.verifiedById !== value.ownerId &&
+      Number.isFinite(reconciledMs) &&
+      reconciledMs >= upliftTimestampMs(outcome.producedAt) &&
+      reconciledMs <= asOfMs;
+    if (!valid) {
+      invalidReconciliation = true;
+      findings.push(
+        finding(
+          materiallyDifferent
+            ? "material_unreconciled_difference"
+            : "invalid_financial_reconciliation",
+          `reconciliations[${index}]`,
+          "Reconciliation must bind one calculation/outcome pair, recompute its difference, respect declared materiality, and be independently verified after the outcome.",
+        ),
+      );
+    }
+    materialDifference ||= materiallyDifferent;
+  }
+  for (const calculation of ledgers.calculations.items) {
+    const matches = ledgers.reconciliations.items.filter(
+      (item) => item.calculationRef === calculation.id,
+    );
+    if (matches.length !== 1) invalidReconciliation = true;
+  }
+  for (const outcome of ledgers.outcomes.items) {
+    const matches = ledgers.reconciliations.items.filter(
+      (item) => item.outcomeRef === outcome.id,
+    );
+    if (matches.length !== 1) invalidReconciliation = true;
+  }
+  if (
+    invalidReconciliation &&
+    !findings.some((item) =>
+      [
+        "invalid_financial_reconciliation",
+        "material_unreconciled_difference",
+      ].includes(item.code),
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid_financial_reconciliation",
+        "reconciliations",
+        "Every calculation and outcome requires exactly one complete reconciliation.",
+      ),
+    );
+  }
+
+  let incompleteSensitivity =
+    ledgers.sensitivityRegister.items.length === 0;
+  for (const [index, sensitivity] of ledgers.sensitivityRegister.entries) {
+    findings.push(
+      ...uniqueFindings(
+        sensitivity.riskRefs,
+        `sensitivityRegister[${index}].riskRefs`,
+        "Risk reference",
+      ),
+      ...referenceFindings(
+        sensitivity.riskRefs,
+        ledgers.riskRegister.ids,
+        `sensitivityRegister[${index}].riskRefs`,
+        "Risk",
+      ),
+    );
+    const scenario = ledgers.scenarioModels.byId.get(
+      sensitivity.scenarioRef,
+    );
+    const assumption = ledgers.assumptionRegister.byId.get(
+      sensitivity.assumptionRef,
+    );
+    const outcome = ledgers.outcomes.byId.get(sensitivity.outcomeRef);
+    const valid =
+      scenario !== undefined &&
+      assumption !== undefined &&
+      outcome !== undefined &&
+      Array.isArray(scenario.sensitivityRefs) &&
+      scenario.sensitivityRefs.includes(sensitivity.id) &&
+      Array.isArray(scenario.assumptionRefs) &&
+      scenario.assumptionRefs.includes(assumption.id) &&
+      outcome.scenarioRef === scenario.id &&
+      outcome.metricId === sensitivity.metricId &&
+      ["increase", "decrease"].includes(sensitivity.direction) &&
+      Number.isFinite(sensitivity.assumptionChangePercent) &&
+      sensitivity.assumptionChangePercent !== 0 &&
+      Number.isFinite(sensitivity.outcomeChange) &&
+      sensitivity.unit === outcome.unit &&
+      Array.isArray(sensitivity.riskRefs) &&
+      sensitivity.riskRefs.length > 0 &&
+      Number.isFinite(upliftTimestampMs(sensitivity.assessedAt)) &&
+      upliftTimestampMs(sensitivity.assessedAt) >=
+        upliftTimestampMs(outcome.producedAt) &&
+      upliftTimestampMs(sensitivity.assessedAt) <= asOfMs;
+    if (!valid) {
+      incompleteSensitivity = true;
+      findings.push(
+        finding(
+          "unsupported_financial_sensitivity",
+          `sensitivityRegister[${index}]`,
+          "Sensitivities must bind one scenario assumption and metric outcome, quantify a non-zero change, link a risk, and follow the outcome.",
+        ),
+      );
+    }
+  }
+  for (const scenario of ledgers.scenarioModels.items) {
+    if (
+      !ledgers.sensitivityRegister.items.some(
+        (sensitivity) => sensitivity.scenarioRef === scenario.id,
+      )
+    ) {
+      incompleteSensitivity = true;
+    }
+  }
+  if (
+    incompleteSensitivity &&
+    !findings.some(
+      (item) => item.code === "unsupported_financial_sensitivity",
+    )
+  ) {
+    findings.push(
+      finding(
+        "unsupported_financial_sensitivity",
+        "sensitivityRegister",
+        "Every scenario needs at least one fully bound sensitivity.",
+      ),
+    );
+  }
+
+  let unresolvedRisk = ledgers.riskRegister.items.length === 0;
+  for (const [index, risk] of ledgers.riskRegister.entries) {
+    for (const [field, ledger, label] of [
+      ["scenarioRefs", ledgers.scenarioModels, "Scenario"],
+      ["assumptionRefs", ledgers.assumptionRegister, "Assumption"],
+      ["sensitivityRefs", ledgers.sensitivityRegister, "Sensitivity"],
+      ["evidenceRefs", ledgers.evidence, "Evidence"],
+    ]) {
+      findings.push(
+        ...uniqueFindings(
+          risk[field],
+          `riskRegister[${index}].${field}`,
+          `${label} reference`,
+        ),
+        ...referenceFindings(
+          risk[field],
+          ledger.ids,
+          `riskRegister[${index}].${field}`,
+          label,
+        ),
+      );
+    }
+    const reverseBound =
+      Array.isArray(risk.scenarioRefs) &&
+      risk.scenarioRefs.length > 0 &&
+      risk.scenarioRefs.every((reference) => {
+        const scenario = ledgers.scenarioModels.byId.get(reference);
+        return (
+          Array.isArray(scenario?.riskRefs) &&
+          scenario.riskRefs.includes(risk.id)
+        );
+      }) &&
+      Array.isArray(risk.sensitivityRefs) &&
+      risk.sensitivityRefs.length > 0 &&
+      risk.sensitivityRefs.every((reference) => {
+        const sensitivity = ledgers.sensitivityRegister.byId.get(reference);
+        return (
+          Array.isArray(sensitivity?.riskRefs) &&
+          sensitivity.riskRefs.includes(risk.id)
+        );
+      });
+    const materialOpen =
+      ["high", "critical"].includes(risk.severity) &&
+      !["mitigated", "resolved"].includes(risk.state);
+    const classificationValid =
+      ["low", "medium", "high", "critical"].includes(risk.severity) &&
+      ["open", "mitigated", "resolved"].includes(risk.state);
+    const valid =
+      typeof risk.description === "string" &&
+      risk.description.trim().length > 0 &&
+      classificationValid &&
+      principals.isAccountablePrincipal(risk.ownerId) &&
+      reverseBound &&
+      Array.isArray(risk.assumptionRefs) &&
+      risk.assumptionRefs.length > 0 &&
+      Array.isArray(risk.evidenceRefs) &&
+      risk.evidenceRefs.length > 0 &&
+      Number.isFinite(upliftTimestampMs(risk.updatedAt)) &&
+      upliftTimestampMs(risk.updatedAt) <= asOfMs &&
+      !materialOpen;
+    if (!valid) {
+      unresolvedRisk = true;
+      findings.push(
+        finding(
+          materialOpen
+            ? "unresolved_material_financial_risk"
+            : "unsupported_financial_risk",
+          `riskRegister[${index}]`,
+          "Risks must have recognized severity/state, accountable ownership, evidence, assumption/sensitivity coverage, bidirectional scenario binding, valid chronology, and no unresolved high or critical state.",
+        ),
+      );
+    }
+  }
+
+  let unresolvedException = false;
+  for (const [index, exception] of ledgers.exceptions.entries) {
+    findings.push(
+      ...uniqueFindings(
+        exception.evidenceRefs,
+        `exceptions[${index}].evidenceRefs`,
+        "Evidence reference",
+      ),
+      ...referenceFindings(
+        exception.evidenceRefs,
+        ledgers.evidence.ids,
+        `exceptions[${index}].evidenceRefs`,
+        "Evidence",
+      ),
+    );
+    const resolvedMs = upliftTimestampMs(exception.resolvedAt);
+    const evidenceRefs = Array.isArray(exception.evidenceRefs)
+      ? exception.evidenceRefs
+      : [];
+    const latestEvidenceMs = Math.max(
+      ...evidenceRefs.map((reference) =>
+        upliftTimestampMs(
+          ledgers.evidence.byId.get(reference)?.observedAt,
+        ),
+      ),
+    );
+    const valid =
+      exception.state === "resolved" &&
+      principals.isAccountablePrincipal(exception.ownerId) &&
+      evidenceRefs.length > 0 &&
+      evidenceRefs.every((reference) => ledgers.evidence.ids.has(reference)) &&
+      Number.isFinite(resolvedMs) &&
+      resolvedMs >= latestEvidenceMs &&
+      resolvedMs <= asOfMs;
+    if (!valid) {
+      unresolvedException = true;
+      findings.push(
+        finding(
+          "unresolved_financial_exception",
+          `exceptions[${index}]`,
+          "Every exception must remain blocking until a named owner resolves it after controlled evidence.",
+        ),
+      );
+    }
+  }
+
+  const usedPrincipalIds = new Set([
+    value.ownerId,
+    recommendation?.reviewerId,
+    ...ledgers.evidence.items.map((item) => item.sourceOwnerId),
+    ...ledgers.assumptionRegister.items.map((item) => item.ownerId),
+    ...ledgers.reconciliations.items.map((item) => item.verifiedById),
+    ...ledgers.riskRegister.items.map((item) => item.ownerId),
+    ...ledgers.exceptions.items.map((item) => item.ownerId),
+  ]);
+  for (const [index, principal] of ledgers.principals.entries) {
+    if (!usedPrincipalIds.has(principal.id)) {
+      findings.push(
+        finding(
+          "orphan_financial_row",
+          `principals[${index}]`,
+          "Every principal must own, source, verify, or review a declared financial record.",
+        ),
+      );
+    }
+  }
+  for (const [index, inputRecord] of ledgers.inputs.entries) {
+    const usedByCalculation = ledgers.calculations.items.some(
+      (calculation) =>
+        Array.isArray(calculation.terms) &&
+        calculation.terms.some((term) => term?.ref === inputRecord.id),
+    );
+    if (!usedByCalculation) {
+      findings.push(
+        finding(
+          "orphan_financial_row",
+          `inputs[${index}]`,
+          "Every input must be consumed by a declared calculation.",
+        ),
+      );
+    }
+  }
+  for (const [index, evidence] of ledgers.evidence.entries) {
+    const assumption = ledgers.assumptionRegister.byId.get(evidence.subjectRef);
+    const reverseBound =
+      (evidence.subjectType === "input" &&
+        ledgers.inputs.byId.get(evidence.subjectRef)?.sourceEvidenceRef ===
+          evidence.id) ||
+      (evidence.subjectType === "assumption" &&
+        Array.isArray(assumption?.evidenceRefs) &&
+        assumption.evidenceRefs.includes(evidence.id));
+    if (!reverseBound) {
+      findings.push(
+        finding(
+          "orphan_financial_row",
+          `evidence[${index}]`,
+          "Every evidence row must be referenced by its exact declared subject.",
+        ),
+      );
+    }
+  }
+  for (const [index, assumption] of ledgers.assumptionRegister.entries) {
+    const scenarioBound = ledgers.scenarioModels.items.some(
+      (scenario) =>
+        Array.isArray(scenario.assumptionRefs) &&
+        scenario.assumptionRefs.includes(assumption.id),
+    );
+    const calculationBound = ledgers.calculations.items.some(
+      (calculation) =>
+        Array.isArray(calculation.terms) &&
+        calculation.terms.some((term) => term?.ref === assumption.id),
+    );
+    if (!scenarioBound || !calculationBound) {
+      findings.push(
+        finding(
+          "orphan_financial_row",
+          `assumptionRegister[${index}]`,
+          "Every assumption must be used by a scenario and a calculation.",
+        ),
+      );
+    }
+  }
+  for (const [index, sensitivity] of ledgers.sensitivityRegister.entries) {
+    const riskBound = ledgers.riskRegister.items.some(
+      (risk) =>
+        Array.isArray(risk.sensitivityRefs) &&
+        risk.sensitivityRefs.includes(sensitivity.id),
+    );
+    if (!riskBound) {
+      findings.push(
+        finding(
+          "orphan_financial_row",
+          `sensitivityRegister[${index}]`,
+          "Every sensitivity must be referenced by a declared risk.",
+        ),
+      );
+    }
+  }
+
+  const recommendationCoverageValid =
+    sameIdSet(recommendation?.scenarioRefs, ledgers.scenarioModels.ids) &&
+    sameIdSet(
+      recommendation?.reconciliationRefs,
+      ledgers.reconciliations.ids,
+    ) &&
+    sameIdSet(recommendation?.riskRefs, ledgers.riskRegister.ids) &&
+    sameIdSet(recommendation?.exceptionRefs, ledgers.exceptions.ids);
+  if (!recommendationCoverageValid) {
+    findings.push(
+      finding(
+        "incomplete_recommendation_coverage",
+        "recommendation",
+        "The recommendation must reference every scenario, reconciliation, risk, and exception exactly once.",
+      ),
+    );
+  }
+
+  findings.push(
+    ...stringListFindings(value.limitations, "limitations", "Limitations")
+      .findings,
+  );
+  upliftRequiredActions(
+    handoff,
+    [
+      "execute-transactions",
+      "issue-buy-sell-hold-recommendation",
+      "approve-or-certify-accounting",
+      "provide-financial-advice",
+      "publish-or-communicate-analysis",
+      "mutate-source-data",
+    ],
+    findings,
+  );
+  if (
+    hasUnnegatedNarrativeMatch(
+      upliftNarrativeStrings(value),
+      /\b(?:we|i|the claw|the agent)\s+(?:executed|placed|completed)\s+(?:(?:a|the)\s+)?(?:transaction|trade)|\b(?:we|i|the claw|the agent)\s+(?:bought|sold)\s+(?:the\s+)?(?:stock|security|shares)|\b(?:we|i|the claw|the agent)\s+recommended\s+(?:buying|selling|holding)|\b(?:we|i|the claw|the agent)\s+(?:issued|made)\s+(?:an?\s+)?(?:buy|sell|hold|investment)\s+recommendation|\b(?:buy|sell|hold)\s+(?:the\s+)?(?:stock|security|shares)|\b(?:we|i|the claw|the agent)\s+(?:approved|certified)\s+(?:the\s+)?(?:accounting|financial statements?|books)|\b(?:we|i|the claw|the agent)\s+(?:provided|gave|issued)\s+(?:the\s+)?(?:financial|investment)\s+advice|\b(?:we|i|the claw|the agent)\s+(?:published|sent|emailed|communicated)\s+(?:the\s+)?(?:analysis|recommendation|report)|\b(?:we|i|the claw|the agent)\s+(?:mutated|changed|updated|wrote)\s+(?:the\s+)?(?:source data|ledger|system of record)/giu,
+    )
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim a transaction, buy/sell/hold recommendation, accounting approval/certification, financial advice, publication/communication, or source-data mutation.",
+      ),
+    );
+  }
+
+  const reviewedMs = upliftTimestampMs(recommendation?.reviewedAt);
+  const latestGroundingMs = Math.max(
+    requestedMs,
+    ...ledgers.evidence.items.map((item) =>
+      upliftTimestampMs(item.observedAt),
+    ),
+    ...ledgers.assumptionRegister.items.map((item) =>
+      upliftTimestampMs(item.recordedAt),
+    ),
+    ...ledgers.calculations.items.map((item) =>
+      upliftTimestampMs(item.calculatedAt),
+    ),
+    ...ledgers.outcomes.items.map((item) =>
+      upliftTimestampMs(item.producedAt),
+    ),
+    ...ledgers.reconciliations.items.map((item) =>
+      upliftTimestampMs(item.reconciledAt),
+    ),
+    ...ledgers.sensitivityRegister.items.map((item) =>
+      upliftTimestampMs(item.assessedAt),
+    ),
+    ...ledgers.riskRegister.items.map((item) =>
+      upliftTimestampMs(item.updatedAt),
+    ),
+    ...ledgers.exceptions.items.map((item) =>
+      upliftTimestampMs(item.resolvedAt),
+    ),
+  );
+  const recommendationValid =
+    findings.length === 0 &&
+    schemaVersionValid &&
+    analysisScopeValid &&
+    !invalidEvidence &&
+    !invalidInput &&
+    !invalidAssumption &&
+    !incompleteScenarios &&
+    !incompleteMetrics &&
+    !invalidCalculation &&
+    !invalidOutcome &&
+    !invalidReconciliation &&
+    !materialDifference &&
+    !incompleteSensitivity &&
+    !unresolvedRisk &&
+    !unresolvedException &&
+    recommendationCoverageValid &&
+    recommendation?.state === "ready-for-business-owner-decision" &&
+    recommendation.reviewerId !== value.ownerId &&
+    principals.hasScope(recommendation.reviewerId, "finance-review") &&
+    Number.isFinite(reviewedMs) &&
+    reviewedMs >= latestGroundingMs &&
+    reviewedMs <= asOfMs;
+  if (
+    recommendation?.state === "ready-for-business-owner-decision" &&
+    !recommendationValid
+  ) {
+    findings.push(
+      finding(
+        "premature_financial_readiness",
+        "recommendation.state",
+        "Financial readiness requires current exact-snapshot evidence, grounded uncertainty, complete scenarios/metrics, valid calculations and reconciliation, covered risks/exceptions, all authority gates, and independent named finance review after every grounding record.",
+      ),
+    );
+  }
+  if (handoff.state !== (recommendationValid ? "ready" : "blocked")) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The financial handoff cannot be ready before the independently reviewed recommendation is valid.",
       ),
     );
   }

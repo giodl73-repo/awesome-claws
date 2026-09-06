@@ -110,7 +110,7 @@ const definitions = [
     id: "financial-analyst",
     schema: "../claws/financial-analyst/schemas/financial-scenario.schema.json",
     fixture: "../claws/financial-analyst/fixtures/financial-scenario.example.json",
-    decisionField: "decisionState",
+    decisionField: "handoff.state",
   },
   {
     id: "freelance-client-pipeline",
@@ -1283,12 +1283,12 @@ test("fundraising campaign preserves evidence, consent, and owner authority", ()
   assert.equal(isValid("fundraising-campaign-manager", agentOwned), false);
 });
 
-test("financial analysis rejects dangling source and scenario references", () => {
+test("financial analysis rejects dangling evidence and scenario references", () => {
   const candidate = structuredClone(cases.get("financial-analyst").fixture);
-  candidate.assumptions[0].sourceRefs = ["missing-source"];
+  candidate.assumptionRegister[0].evidenceRefs = ["missing-evidence"];
   assert.equal(isValid("financial-analyst", candidate), false);
-  candidate.assumptions[0].sourceRefs = ["actuals-q2"];
-  candidate.risks[0].scenarioRefs = ["missing-scenario"];
+  candidate.assumptionRegister[0].evidenceRefs = ["evidence-loaded-cost-assumption"];
+  candidate.riskRegister[0].scenarioRefs = ["missing-scenario"];
   assert.equal(isValid("financial-analyst", candidate), false);
 });
 
@@ -4013,7 +4013,7 @@ test("decision artifacts reject duplicate semantic references", () => {
     ["child-activity-manager", (value) => value.activities[0].sourceRefs.push(value.activities[0].sourceRefs[0])],
     ["delegation-coordinator", (value) => value.synthesis.resultRefs.push(value.synthesis.resultRefs[0])],
     ["document-renewal-tracker", (value) => value.documents[0].sourceRefs.push(value.documents[0].sourceRefs[0])],
-    ["financial-analyst", (value) => value.risks[0].sourceRefs.push(value.risks[0].sourceRefs[0])],
+    ["financial-analyst", (value) => value.riskRegister[0].evidenceRefs.push(value.riskRegister[0].evidenceRefs[0])],
     ["freelance-client-pipeline", (value) => value.opportunities[0].sourceRefs.push(value.opportunities[0].sourceRefs[0])],
     ["conference-opportunity-scout", (value) => value.opportunities[0].sourceRefs.push(value.opportunities[0].sourceRefs[0])],
     ["fantasy-sports-manager", (value) => value.lineup[0].sourceRefs.push(value.lineup[0].sourceRefs[0])],

@@ -4,8 +4,8 @@
   "summary": {
     "validatorCount": 100,
     "coveredCount": 100,
-    "recipeCount": 266,
-    "findingCodeCount": 238
+    "recipeCount": 268,
+    "findingCodeCount": 244
   },
   "entries": [
     {
@@ -206,16 +206,49 @@
       "id": "financial-analyst",
       "recipes": [
         {
-          "id": "semantic-dangling-reference-1",
+          "id": "semantic-invalid-financial-scope-1",
+          "operator": "remove",
+          "path": [
+            "analysis",
+            "id"
+          ],
+          "expectedCodes": [
+            "invalid_financial_scope",
+            "premature_financial_readiness",
+            "premature_ready_state"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-evidence-2",
           "operator": "replace",
           "path": [
-            "sources",
-            "0",
-            "id"
+            "analysis",
+            "entity"
           ],
           "replacement": "mock-plus-missing",
           "expectedCodes": [
-            "dangling_reference"
+            "cross_scope_evidence",
+            "premature_financial_readiness",
+            "premature_ready_state"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-evidence-3",
+          "operator": "replace",
+          "path": [
+            "analysis",
+            "currency"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "invalid_financial_calculation",
+            "invalid_financial_scope",
+            "premature_financial_readiness",
+            "premature_ready_state",
+            "unbound_financial_outcome",
+            "ungrounded_assumption",
+            "unproven_financial_input"
           ]
         }
       ]

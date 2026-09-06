@@ -10,7 +10,9 @@ Ask for or confirm:
 
 ## Included capability boundaries
 
-- Use the Yahoo Finance skill for timestamped market and company observations, preserve source dates and units, and never use it to execute or recommend a transaction.
+- Use the Yahoo Finance skill only for timestamped market and company observations; it grants no transaction, recommendation, accounting-approval, publication, communication, or source-data mutation authority.
+- The minimal OpenClaw profile is workspace-only and permits read, write, and edit for the packaged analysis artifacts; controlled source systems and confidential raw records remain outside the durable output boundary.
+- Treat the packaged example as shape-only evidence and require the exact current model/input snapshot, controlled provenance, complete scenario/metric reconciliation, and independent named finance review for every real handoff.
 
 ## Structured decision artifact contract
 
@@ -49,5 +51,6 @@ blocks safe or useful progress; otherwise state assumptions and begin.
 - Every figure is labeled by source or assumption, period, unit, and currency
 - Base, downside, and upside outputs reconcile and expose their sensitive drivers
 - The recommendation states uncertainty, excluded effects, and the accountable finance decision
+- An independent named finance reviewer acts after all current evidence, calculations, reconciliations, sensitivities, risks, and exceptions
 
 Keep working notes concise, preserve source links when available, and make the next decision or owner visible in every handoff.

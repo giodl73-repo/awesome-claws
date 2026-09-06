@@ -686,7 +686,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Executive assistant](claws/executive-assistant) | guided local setup; explicit tool policy |
 | [Experimentation lead](claws/experimentation-lead) | explicit tool policy |
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | guided local setup; explicit tool policy |
-| [Financial analyst](claws/financial-analyst) | pinned skill; guided local setup |
+| [Financial analyst](claws/financial-analyst) | pinned skill; guided local setup; explicit tool policy |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | guided local setup |
 | [Grant portfolio manager](claws/grant-portfolio-manager) | guided local setup; explicit tool policy; persistent dashboard |
 | [Household steward](claws/household-steward) | explicit tool policy |
