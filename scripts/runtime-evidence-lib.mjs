@@ -908,7 +908,7 @@ export async function buildRunManifest({
       `Evidence is limited to ${identities.model.provider}/${identities.model.model}@${identities.model.revision}, ` +
       `model/settings identity ${identities.model.digest}, ` +
       `OpenClaw ${identities.openclaw.version}@${identities.openclaw.revision}, and the exact ` +
-      `${SCENARIO_TYPES.join(", ")} package/scenario digests in this manifest.`,
+      `${scenarioTypes.join(", ")} package/scenario digests in this manifest.`,
   };
   const manifest = { ...unsigned, manifestDigest: digest(unsigned) };
   await validateManifest(manifest, { targetRoot });
@@ -3348,6 +3348,7 @@ export function aggregateRuntimeEvidence({
 }
 
 export function renderRuntimeEvidenceReport(report, manifest) {
+  const scenarioTypes = [...new Set(manifest.trials.map((trial) => trial.scenarioType))];
   const rows = report.claws
     .map(
       (claw) =>
@@ -3364,7 +3365,7 @@ ${report.evidenceMode === "mock" ? "**MOCK EVIDENCE ONLY - no provider or live m
 **Manifest:** \`${report.manifestDigest}\`
 **OpenClaw:** \`${manifest.identities.openclaw.version}@${manifest.identities.openclaw.revision}\`
 **Model:** \`${manifest.identities.model.provider}/${manifest.identities.model.model}@${manifest.identities.model.revision}\`
-**Scenarios:** ${SCENARIO_TYPES.map((item) => `\`${item}\``).join(", ")}
+**Scenarios:** ${scenarioTypes.map((item) => `\`${item}\``).join(", ")}
 
 ${report.disclaimer}
 
@@ -3384,7 +3385,7 @@ meanings.
 - Tokens input/output: **${report.portfolio.tokens.input} / ${report.portfolio.tokens.output}**
 - Estimated cost: **$${report.portfolio.estimatedCostUsd.toFixed(6)}**
 - Shared token budget observed/accounted/cap: **${report.budget?.observedTotalTokens ?? 0} / ${report.budget?.accountedTokens ?? 0} / ${report.budget?.tokenCap ?? manifest.limits.maxTotalTokens}**
-- Shared USD budget observed/accounted/cap: **$${(report.budget?.observedCostUsd ?? 0).toFixed(6)} / $${(report.budget?.accountedUsd ?? 0).toFixed(6)} / ${report.budget?.usdCap === null ? "unlimited" : `$${report.budget.usdCap.toFixed(6)}`}**
+- Shared USD budget observed/accounted/cap: **$${(report.budget?.observedCostUsd ?? 0).toFixed(6)} / $${(report.budget?.accountedUsd ?? 0).toFixed(6)} / ${report.budget?.usdCap == null ? "unlimited" : `$${report.budget.usdCap.toFixed(6)}`}**
 - Trials with unavailable usage: **${report.budget?.missingUsageTrials ?? 0}**
 - Trials skipped by shared budget: **${report.budget?.skippedTrials ?? 0}**
 

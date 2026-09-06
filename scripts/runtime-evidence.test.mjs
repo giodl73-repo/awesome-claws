@@ -29,6 +29,7 @@ import {
   inferAssistantOutcome,
   inspectLiveConfig,
   preflightBudgets,
+  renderRuntimeEvidenceReport,
   runRuntimeEvidence,
   safeEvidence,
   sanitizeModelSettings,
@@ -685,6 +686,22 @@ test("diagnostic manifests can select one exact scenario", async () => {
     manifest.trials.map((trial) => trial.scenarioType),
     ["accepted-task"],
   );
+  assert.match(manifest.disclaimer, /exact accepted-task package\/scenario/u);
+  assert.doesNotMatch(manifest.disclaimer, /missing-conflicting-evidence/u);
+  const run = await runRuntimeEvidence({
+    ...source,
+    manifest,
+    outputRoot: null,
+    persist: false,
+  });
+  const report = aggregateRuntimeEvidence({
+    manifest,
+    results: run.results,
+    catalogScores: source.catalogScores,
+  });
+  const markdown = renderRuntimeEvidenceReport(report, manifest);
+  assert.match(markdown, /\*\*Scenarios:\*\* `accepted-task`/u);
+  assert.doesNotMatch(markdown, /\*\*Scenarios:\*\*.*missing-conflicting-evidence/u);
   await assert.rejects(
     buildRunManifest({
       catalog: source.catalog,
