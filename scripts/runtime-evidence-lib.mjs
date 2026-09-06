@@ -1081,6 +1081,21 @@ function redactText(value, sensitiveValues = []) {
   return excerpt;
 }
 
+export function redactFailureExcerpt(value, sensitiveValues = []) {
+  const redacted = redactCredentialText(value, sensitiveValues).replace(/\s+/gu, " ").trim();
+  const excerpt =
+    redacted.length <= 240
+      ? redacted
+      : `${redacted.slice(0, 96)} ... ${redacted.slice(-(240 - 101))}`;
+  if (
+    containsSensitiveValue(excerpt, sensitiveValues) ||
+    containsCredential(excerpt)
+  ) {
+    throw new Error("Credential redaction failed closed.");
+  }
+  return excerpt;
+}
+
 export function assertCredentialFreeRedactedExcerpts(
   value,
   { sensitiveValues = [], exactMatchObserved = false } = {},
@@ -1147,7 +1162,7 @@ function safeFailure(
   return {
     code: code || "runtime-evidence-failure",
     excerptHash: digest(redacted),
-    redactedExcerpt: redactText(redacted, sensitiveValues),
+    redactedExcerpt: redactFailureExcerpt(redacted, sensitiveValues),
     repro: { trialId, manifestDigest, attempt },
   };
 }

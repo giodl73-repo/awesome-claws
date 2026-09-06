@@ -29,6 +29,7 @@ import {
   inferAssistantOutcome,
   inspectLiveConfig,
   preflightBudgets,
+  redactFailureExcerpt,
   renderRuntimeEvidenceReport,
   runRuntimeEvidence,
   safeEvidence,
@@ -239,6 +240,18 @@ test("safe evidence hashes raw data and redacts bounded excerpts", () => {
   assert.match(evidence.providerRecordHash, /^sha256:[a-f0-9]{64}$/u);
   assert.doesNotMatch(serialized, /SOAK_SECRET|token-secret-value|secret-value/u);
   assert.ok(evidence.redactedExcerpt.length <= 240);
+});
+
+test("failure excerpts preserve bounded error tails", () => {
+  const credential = `ghp_${"s".repeat(36)}`;
+  const excerpt = redactFailureExcerpt(
+    `transport start ${"x".repeat(300)} provider rejected request: ${credential}`,
+    [credential],
+  );
+  assert.ok(excerpt.length <= 240);
+  assert.match(excerpt, /^transport start/u);
+  assert.match(excerpt, /provider rejected request: \[REDACTED\]$/u);
+  assert.doesNotMatch(excerpt, /ghp_/u);
 });
 
 test("credential-shaped excerpts are redacted without treating digests as secrets", () => {
