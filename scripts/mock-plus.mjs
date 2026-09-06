@@ -35,13 +35,19 @@ export function parseMockPlusArgs(args) {
       options.inventory = true;
     } else if (argument === "--check") {
       options.check = true;
-    } else if (argument === "--portfolio" || argument === "--semantics") {
+    } else if (
+      argument === "--portfolio" ||
+      argument === "--semantics" ||
+      argument === "--lifecycle"
+    ) {
       if (options.profile !== "vertical") {
         throw new Error("Mock+ profile flags are mutually exclusive.");
       }
       options.profile = "schema-portfolio";
       if (argument === "--semantics") {
         options.profile = "semantic-portfolio";
+      } else if (argument === "--lifecycle") {
+        options.profile = "lifecycle-portfolio";
       }
     } else if (argument === "--update") {
       throw new Error(

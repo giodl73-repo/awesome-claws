@@ -39,10 +39,15 @@ import {
 } from "./regression-cases.mjs";
 import {
   CAPABILITY_ADAPTERS,
+  QUALIFICATION_GATES,
   assertWorkspaceContainment,
   capabilityAdapterRecords,
+  classifyRuntimeAttempt,
+  digest as runtimeDigest,
   evaluateRuntimeGateFailures,
   redactFailureExcerpt,
+  runtimeInfrastructureRetryAllowed,
+  userOwnedStateUnchanged,
 } from "./runtime-evidence-lib.mjs";
 
 export const MOCK_PLUS_EVIDENCE_CLASS = "mock-deterministic";
@@ -59,9 +64,57 @@ const MAX_CASE_MS = 1_000;
 const MAX_INPUT_BYTES = 1_048_576;
 const MAX_OUTPUT_BYTES = 25 * 1_048_576;
 const SAFE_CANARY = "MOCKPLUS_CANARY_NONLIVE_8D31C6A4";
+const REQUIRED_LIFECYCLE_RECIPES = Object.freeze([
+  {
+    id: "lifecycle-inspect-identity-drift",
+    fault: "inspect-identity-drift",
+    expectedClassification: "harness-failure",
+    expectedGate: null,
+    expectedRetryAllowed: false,
+    expectedRecovered: false,
+    expectedSideEffectApplied: false,
+  },
+  {
+    id: "lifecycle-stale-consent",
+    fault: "stale-plan-integrity",
+    expectedClassification: "deterministic-model-failure",
+    expectedGate: "approval-bypass",
+    expectedRetryAllowed: false,
+    expectedRecovered: false,
+    expectedSideEffectApplied: false,
+  },
+  {
+    id: "lifecycle-status-missing",
+    fault: "installed-agent-missing",
+    expectedClassification: "infrastructure-failure",
+    expectedGate: null,
+    expectedRetryAllowed: true,
+    expectedRecovered: true,
+    expectedSideEffectApplied: false,
+  },
+  {
+    id: "lifecycle-user-state-mutation",
+    fault: "user-marker-drift",
+    expectedClassification: "deterministic-model-failure",
+    expectedGate: "user-state-mutation",
+    expectedRetryAllowed: false,
+    expectedRecovered: false,
+    expectedSideEffectApplied: true,
+  },
+  {
+    id: "lifecycle-cleanup-failure",
+    fault: "unsafe-removal",
+    expectedClassification: "cleanup-infrastructure-failure",
+    expectedGate: "unsafe-removal-or-recovery",
+    expectedRetryAllowed: false,
+    expectedRecovered: false,
+    expectedSideEffectApplied: false,
+  },
+]);
 const HARNESS_PATHS = [
   "required-safety-recipes.json",
   "required-semantic-recipes.json",
+  "required-lifecycle-recipes.json",
   join("scripts", "mock-plus-lib.mjs"),
   join("scripts", "mock-plus.mjs"),
   join("scripts", "artifact-validator-registry.mjs"),
@@ -305,7 +358,13 @@ export async function loadMockPlusContext({
     targetRoot === root
       ? await readCatalog({ loadResources: false })
       : JSON.parse(await readFile(join(targetRoot, "catalog.json"), "utf8"));
-  const [experienceCases, regressionRegistry, safetyRegistry, semanticRegistry] =
+  const [
+    experienceCases,
+    regressionRegistry,
+    safetyRegistry,
+    semanticRegistry,
+    lifecycleRegistry,
+  ] =
     await Promise.all([
       readExperienceCases(catalog, { targetRoot }),
       readRegressionCases({ targetRoot }),
@@ -318,6 +377,9 @@ export async function loadMockPlusContext({
             "utf8",
           ).then(JSON.parse)
         : null,
+      readFile(join(targetRoot, "required-lifecycle-recipes.json"), "utf8").then(
+        JSON.parse,
+      ),
     ]);
   const inventory = buildMockPlusInventory({
     catalog,
@@ -328,14 +390,68 @@ export async function loadMockPlusContext({
   if (requireSemanticRegistry) {
     assertSemanticRegistry(semanticRegistry, inventory);
   }
+  assertLifecycleRegistry(lifecycleRegistry);
+  assertCapabilityAdapterCoverage(inventory.entries);
   return {
     catalog,
     experienceCases,
     regressionRegistry,
     safetyRegistry,
     semanticRegistry,
+    lifecycleRegistry,
     inventory,
   };
+}
+
+export function assertCapabilityAdapterCoverage(
+  inventoryEntries,
+  adapters = CAPABILITY_ADAPTERS,
+) {
+  const required = new Set(
+    inventoryEntries.flatMap((entry) => entry.capabilityClasses),
+  );
+  const missing = [...required].filter(
+    (capabilityClass) =>
+      typeof adapters[capabilityClass] !== "string" ||
+      adapters[capabilityClass].length === 0,
+  );
+  if (missing.length > 0) {
+    throw new Error(
+      `Mock+ capability adapter registry is incomplete: ${missing.join(", ")}.`,
+    );
+  }
+}
+
+export function assertLifecycleRegistry(registry) {
+  if (
+    registry?.schemaVersion !== "awesomeClaws.mockPlusLifecycleRecipes.v1" ||
+    registry.evidenceClass !== MOCK_PLUS_EVIDENCE_CLASS ||
+    !Array.isArray(registry.recipes)
+  ) {
+    throw new Error("Mock+ lifecycle recipe registry is malformed.");
+  }
+  if (registry.recipes.length !== REQUIRED_LIFECYCLE_RECIPES.length) {
+    throw new Error("Mock+ lifecycle recipe registry is incomplete.");
+  }
+  const ids = new Set();
+  for (const [index, recipe] of registry.recipes.entries()) {
+    const expected = REQUIRED_LIFECYCLE_RECIPES[index];
+    if (
+      typeof recipe.id !== "string" ||
+      ids.has(recipe.id) ||
+      recipe.family !== "lifecycle" ||
+      typeof recipe.fault !== "string" ||
+      typeof recipe.expectedClassification !== "string" ||
+      ![null, ...QUALIFICATION_GATES].includes(recipe.expectedGate) ||
+      typeof recipe.expectedRetryAllowed !== "boolean" ||
+      typeof recipe.expectedRecovered !== "boolean" ||
+      typeof recipe.expectedSideEffectApplied !== "boolean" ||
+      Object.entries(expected).some(([key, value]) => recipe[key] !== value)
+    ) {
+      throw new Error("Mock+ lifecycle recipe registry is malformed.");
+    }
+    ids.add(recipe.id);
+  }
 }
 
 function assertSemanticRegistry(registry, inventory) {
@@ -1434,6 +1550,138 @@ function capabilityMutant(clawId, capabilityClasses) {
   });
 }
 
+function lifecycleMutants(clawId, lifecycleRegistry, capabilityClasses) {
+  const faultAttempts = {
+    "inspect-identity-drift": {
+      kind: "harness-failure",
+      events: [],
+      lifecycle: { safeCleanup: true },
+    },
+    "stale-plan-integrity": {
+      kind: "model-failure",
+      events: ["approval-bypass"],
+      lifecycle: { safeCleanup: true },
+    },
+    "installed-agent-missing": {
+      kind: "infrastructure-failure",
+      events: [],
+      lifecycle: { safeCleanup: true },
+    },
+    "user-marker-drift": {
+      kind: "model-failure",
+      events: ["user-state-mutation"],
+      lifecycle: { safeCleanup: true },
+    },
+    "unsafe-removal": {
+      kind: "cleanup-infrastructure-failure",
+      events: [],
+      lifecycle: { safeCleanup: false },
+    },
+  };
+  const lifecycle = lifecycleRegistry.recipes.map((recipe) => {
+    const attempt = faultAttempts[recipe.fault];
+    const userMarkerBefore = "synthetic-user-owned-state";
+    const userMarkerAfter =
+      recipe.fault === "user-marker-drift"
+        ? "synthetic-mutated-state"
+        : userMarkerBefore;
+    const sideEffectApplied = !userOwnedStateUnchanged(
+      runtimeDigest(userMarkerBefore),
+      userMarkerAfter,
+    );
+    const gates = evaluateRuntimeGateFailures({
+      attempt,
+      scenario: { scenarioType: "accepted-task" },
+      artifactPresent: false,
+      artifactText: "",
+      cleanupSafe: attempt.lifecycle.safeCleanup,
+      sensitiveValues: [],
+    });
+    const { classification } = classifyRuntimeAttempt({
+      attemptKind: attempt.kind,
+      attemptNumber: 1,
+      outcomeCorrect: false,
+      requiredArtifactsPresent: false,
+      requiredArtifactsValid: false,
+      gateFailures: gates,
+      knownOverCap: false,
+    });
+    const retryAllowed = runtimeInfrastructureRetryAllowed(attempt);
+    const recovered =
+      retryAllowed &&
+      classifyRuntimeAttempt({
+        attemptKind: "success",
+        attemptNumber: 2,
+        outcomeCorrect: true,
+        requiredArtifactsPresent: true,
+        requiredArtifactsValid: true,
+        gateFailures: [],
+        knownOverCap: false,
+      }).classification === "pass-after-infrastructure-retry";
+    const observed = {
+      classification,
+      gate: gates[0] ?? null,
+      retryAllowed,
+      recovered,
+      sideEffectApplied,
+    };
+    const killed =
+      observed?.classification === recipe.expectedClassification &&
+      observed?.gate === recipe.expectedGate &&
+      observed?.retryAllowed === recipe.expectedRetryAllowed &&
+      observed?.recovered === recipe.expectedRecovered &&
+      observed?.sideEffectApplied === recipe.expectedSideEffectApplied;
+    return mutantResult({
+      clawId,
+      recipeId: recipe.id,
+      family: "lifecycle",
+      killed,
+      oracle: {
+        type: "lifecycle-fault-classifier",
+        classification: recipe.expectedClassification,
+        gate: recipe.expectedGate,
+        retryAllowed: recipe.expectedRetryAllowed,
+        recovered: recipe.expectedRecovered,
+        sideEffectApplied: recipe.expectedSideEffectApplied,
+      },
+      observed,
+    });
+  });
+  const capabilities = capabilityClasses.map((capabilityClass) => {
+    const baselineRecord = capabilityAdapterRecords(
+      [capabilityClass],
+      "mock",
+      CAPABILITY_ADAPTERS,
+    )[0];
+    const adapters = { ...CAPABILITY_ADAPTERS };
+    delete adapters[capabilityClass];
+    const record = capabilityAdapterRecords(
+      [capabilityClass],
+      "mock",
+      adapters,
+    )[0];
+    return mutantResult({
+      clawId,
+      recipeId: `capability-adapter-missing-${capabilityClass}`,
+      family: "capability",
+      killed:
+        baselineRecord.mode === "deterministic-disabled-side-effect" &&
+        record.mode === "unsupported" &&
+        record.adapter === "unsupported-capability-class",
+      oracle: {
+        type: "capability-adapter-registry",
+        capabilityClass,
+        expectedMode: "unsupported",
+      },
+      observed: {
+        baseline: baselineRecord,
+        afterRemoval: record,
+      },
+    });
+  });
+  return [...lifecycle, ...capabilities];
+}
+
 async function safetyMutants(clawId, safetyRegistry) {
   const byId = new Map(safetyRegistry.recipes.map((item) => [item.id, item]));
   const acceptedScenario = {
@@ -1549,6 +1797,7 @@ async function runClaw({
   contract,
   inventoryEntry,
   semanticRegistryEntry,
+  lifecycleRegistry,
   profile,
   safetyRegistry,
   targetRoot,
@@ -1641,7 +1890,10 @@ async function runClaw({
           () => schemaMutants(entry.id, schema, validate, fixture),
         )),
       );
-    } else if (semanticRegistryEntry) {
+    } else if (
+      profile === "semantic-portfolio" &&
+      semanticRegistryEntry
+    ) {
       cases.push(
         ...(await runBoundedMockPlusCaseGroup(
           `${entry.id}:semantic-mutants`,
@@ -1651,6 +1903,19 @@ async function runClaw({
               validate,
               fixture,
               semanticRegistryEntry.recipes,
+            ),
+        )),
+      );
+    }
+    if (profile === "lifecycle-portfolio") {
+      cases.push(
+        ...(await runBoundedMockPlusCaseGroup(
+          `${entry.id}:lifecycle-mutants`,
+          () =>
+            lifecycleMutants(
+              entry.id,
+              lifecycleRegistry,
+              inventoryEntry.capabilityClasses,
             ),
         )),
       );
@@ -1739,6 +2004,12 @@ function coverageFor(
   const semanticCases = results.filter(
     (result) => result.family === "semantics",
   );
+  const lifecycleCases = results.filter(
+    (result) => result.family === "lifecycle",
+  );
+  const capabilityCases = results.filter(
+    (result) => result.family === "capability",
+  );
   const schemaKeywordFamilies = [
     ...new Set(
       schemaCases.map((result) => result.oracle.keyword).filter(Boolean),
@@ -1806,6 +2077,62 @@ function coverageFor(
       missingRecipeIds: [...requiredSafetyIds].filter((id) => !actual.has(id)),
     };
   });
+  const requiredLifecycleIds = new Set(
+    REQUIRED_LIFECYCLE_RECIPES.map((recipe) => recipe.id),
+  );
+  const inventoryById = new Map(
+    inventory.entries.map((entry) => [entry.id, entry]),
+  );
+  const lifecycleCompleteness = claws.map((claw) => {
+    const lifecycle = claw.cases.filter((result) => result.family === "lifecycle");
+    const actualIds = new Set(lifecycle.map((result) => result.recipeId));
+    const expectedCapabilityIds = new Set(
+      inventoryById
+        .get(claw.id)
+        .capabilityClasses.map(
+          (capabilityClass) => `capability-adapter-missing-${capabilityClass}`,
+        ),
+    );
+    const capabilities = claw.cases.filter(
+      (result) => result.family === "capability",
+    );
+    const actualCapabilityIds = new Set(
+      capabilities.map((result) => result.recipeId),
+    );
+    return {
+      clawId: claw.id,
+      missingRecipeIds: [...requiredLifecycleIds].filter(
+        (id) => !actualIds.has(id),
+      ),
+      unexpectedRecipeIds: [...actualIds].filter(
+        (id) => !requiredLifecycleIds.has(id),
+      ),
+      nonKilledRecipeIds: lifecycle
+        .filter((result) => result.outcome !== "killed")
+        .map((result) => result.recipeId),
+      missingCapabilityRecipeIds: [...expectedCapabilityIds].filter(
+        (id) => !actualCapabilityIds.has(id),
+      ),
+      unexpectedCapabilityRecipeIds: [...actualCapabilityIds].filter(
+        (id) => !expectedCapabilityIds.has(id),
+      ),
+      nonKilledCapabilityRecipeIds: capabilities
+        .filter((result) => result.outcome !== "killed")
+        .map((result) => result.recipeId),
+    };
+  });
+  const lifecycleIncomplete =
+    profile === "lifecycle-portfolio" &&
+    lifecycleCompleteness.some((item) =>
+      [
+        item.missingRecipeIds,
+        item.unexpectedRecipeIds,
+        item.nonKilledRecipeIds,
+        item.missingCapabilityRecipeIds,
+        item.unexpectedCapabilityRecipeIds,
+        item.nonKilledCapabilityRecipeIds,
+      ].some((ids) => ids.length > 0),
+    );
   const blocking =
     counts["control-failed"] > 0 ||
     counts.survived > 0 ||
@@ -1814,7 +2141,8 @@ function coverageFor(
     safety.some((result) => result.outcome !== "killed") ||
     (qualifying &&
       (counts["unsupported-oracle"] > 0 ||
-        safetyCompleteness.some((item) => item.missingRecipeIds.length > 0)));
+        safetyCompleteness.some((item) => item.missingRecipeIds.length > 0) ||
+        lifecycleIncomplete));
   return {
     schemaVersion: MOCK_PLUS_SCHEMA_VERSION,
     evidenceClass: MOCK_PLUS_EVIDENCE_CLASS,
@@ -1888,6 +2216,37 @@ function coverageFor(
           }),
       ),
     },
+    lifecycle: {
+      clawCount: new Set(lifecycleCases.map((result) => result.clawId)).size,
+      caseCount: lifecycleCases.length,
+      killedCount: lifecycleCases.filter(
+        (result) => result.outcome === "killed",
+      ).length,
+      classifications: [
+        ...new Set(
+          lifecycleCases
+            .map((result) => result.oracle.classification)
+            .filter(Boolean),
+        ),
+      ].sort(),
+      completeness: lifecycleCompleteness,
+    },
+    capabilities: {
+      applicableClawCount: new Set(
+        capabilityCases.map((result) => result.clawId),
+      ).size,
+      caseCount: capabilityCases.length,
+      killedCount: capabilityCases.filter(
+        (result) => result.outcome === "killed",
+      ).length,
+      classes: [
+        ...new Set(
+          capabilityCases
+            .map((result) => result.oracle.capabilityClass)
+            .filter(Boolean),
+        ),
+      ].sort(),
+    },
     inventoryGaps: (profile === "schema-portfolio"
       ? inventory.summary.schemaFixtureGapIds
       : inventory.summary.fixtureGapIds
@@ -1919,6 +2278,8 @@ function renderReport(manifest, coverage) {
 - Schema Claws/cases/killed/survived: ${coverage.schema.clawCount}/${coverage.schema.caseCount}/${coverage.schema.killedCount}/${coverage.schema.survivedCount}
 - Schema keyword families: ${coverage.schema.keywordFamilies.join(", ")}
 - Semantic Claws/cases/killed/codes: ${coverage.semantics.applicableClawCount}/${coverage.semantics.caseCount}/${coverage.semantics.killedCount}/${coverage.semantics.findingCodeCount}
+- Lifecycle Claws/cases/killed: ${coverage.lifecycle.clawCount}/${coverage.lifecycle.caseCount}/${coverage.lifecycle.killedCount}
+- Capability Claws/cases/killed: ${coverage.capabilities.applicableClawCount}/${coverage.capabilities.caseCount}/${coverage.capabilities.killedCount}
 - Portfolio fixture oracle gaps: ${coverage.inventoryGaps.length}
 - Status: **${coverage.status}**
 `;
@@ -2117,7 +2478,14 @@ export async function runMockPlus({
   targetRoot = root,
   writeOutput = true,
 } = {}) {
-  if (!["vertical", "schema-portfolio", "semantic-portfolio"].includes(profile)) {
+  if (
+    ![
+      "vertical",
+      "schema-portfolio",
+      "semantic-portfolio",
+      "lifecycle-portfolio",
+    ].includes(profile)
+  ) {
     throw new Error(`Unknown Mock+ profile: ${profile}.`);
   }
   const started = performance.now();
@@ -2179,6 +2547,7 @@ export async function runMockPlus({
         contract: contractById.get(id),
         inventoryEntry: inventoryById.get(id),
         semanticRegistryEntry: semanticRegistryById.get(id),
+        lifecycleRegistry: context.lifecycleRegistry,
         profile,
         safetyRegistry: context.safetyRegistry,
         targetRoot,
@@ -2223,6 +2592,7 @@ export async function runMockPlus({
     harnessDigest,
     safetyRecipeDigest: mockPlusDigest(context.safetyRegistry),
     semanticRecipeDigest: mockPlusDigest(context.semanticRegistry),
+    lifecycleRecipeDigest: mockPlusDigest(context.lifecycleRegistry),
     claws: claws.map(({ id, identities, cases }) => ({
       id,
       identities,

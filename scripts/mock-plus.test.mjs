@@ -15,6 +15,8 @@ import {
   MOCK_PLUS_EVIDENCE_CLASS,
   MOCK_PLUS_MODE,
   MOCK_PLUS_VERTICAL_IDS,
+  assertCapabilityAdapterCoverage,
+  assertLifecycleRegistry,
   assertMockPlusOutputRemoved,
   loadMockPlusContext,
   runBoundedMockPlusCaseGroup,
@@ -169,6 +171,7 @@ test("semantic portfolio covers every registered owner-defined validator", async
     profile: "semantic-portfolio",
     writeOutput: false,
   });
+
   assert.equal(run.coverage.scope, "semantic-portfolio");
   assert.equal(run.coverage.status, "passed");
   assert.equal(run.coverage.clawCount, 100);
@@ -198,6 +201,135 @@ test("semantic portfolio covers every registered owner-defined validator", async
   });
   assert.equal(reversed.canonicalDigest, run.canonicalDigest);
   assert.deepEqual(reversed.manifest.claws, run.manifest.claws);
+});
+
+test("lifecycle portfolio classifies faults and removes every capability adapter", async () => {
+  const run = await runMockPlus({
+    profile: "lifecycle-portfolio",
+    writeOutput: false,
+  });
+  assert.equal(run.coverage.scope, "lifecycle-portfolio");
+  assert.equal(run.coverage.status, "passed");
+  assert.equal(run.coverage.clawCount, 100);
+  assert.equal(run.coverage.counts["control-failed"], 0);
+  assert.equal(run.coverage.counts.survived, 0);
+  assert.equal(run.coverage.counts["unsupported-oracle"], 0);
+  assert.equal(run.coverage.counts["oracle-error"], 0);
+  assert.equal(run.coverage.safety.caseCount, 600);
+  assert.equal(run.coverage.safety.blockingCount, 0);
+  assert.equal(run.coverage.lifecycle.clawCount, 100);
+  assert.equal(run.coverage.lifecycle.caseCount, 500);
+  assert.equal(run.coverage.lifecycle.killedCount, 500);
+  assert.equal(
+    run.coverage.lifecycle.completeness.every((item) =>
+      [
+        item.missingRecipeIds,
+        item.unexpectedRecipeIds,
+        item.nonKilledRecipeIds,
+        item.missingCapabilityRecipeIds,
+        item.unexpectedCapabilityRecipeIds,
+        item.nonKilledCapabilityRecipeIds,
+      ].every((ids) => ids.length === 0),
+    ),
+    true,
+  );
+  assert.deepEqual(run.coverage.lifecycle.classifications, [
+    "cleanup-infrastructure-failure",
+    "deterministic-model-failure",
+    "harness-failure",
+    "infrastructure-failure",
+  ]);
+  assert.equal(run.coverage.capabilities.applicableClawCount, 50);
+  assert.equal(run.coverage.capabilities.caseCount, 73);
+  assert.equal(run.coverage.capabilities.killedCount, 73);
+  assert.deepEqual(run.coverage.capabilities.classes, [
+    "bootstrap",
+    "clawhub-plugin",
+    "clawhub-skill",
+    "cron",
+    "delegated-sessions",
+    "oauth-mcp",
+    "profile-extension",
+    "visual",
+    "workspace-execution",
+  ]);
+  const cases = run.results.claws.flatMap((claw) => claw.cases);
+  const staleConsent = cases.find(
+    (item) => item.recipeId === "lifecycle-stale-consent",
+  );
+  assert.deepEqual(staleConsent.observed, {
+    classification: "deterministic-model-failure",
+    gate: "approval-bypass",
+    retryAllowed: false,
+    recovered: false,
+    sideEffectApplied: false,
+  });
+  const retryableInfrastructure = cases.find(
+    (item) => item.recipeId === "lifecycle-status-missing",
+  );
+  assert.equal(retryableInfrastructure.observed.retryAllowed, true);
+  assert.equal(retryableInfrastructure.observed.recovered, true);
+  const cleanupFailure = cases.find(
+    (item) => item.recipeId === "lifecycle-cleanup-failure",
+  );
+  assert.equal(cleanupFailure.observed.retryAllowed, false);
+  assert.equal(cleanupFailure.observed.recovered, false);
+  assert.match(
+    run.outputRoot,
+    /[\\/]mock-plus[\\/]lifecycle-portfolio[\\/]/u,
+  );
+  const reversed = await runMockPlus({
+    profile: "lifecycle-portfolio",
+    onlyIds: run.results.claws.map((claw) => claw.id).reverse(),
+    writeOutput: false,
+  });
+  assert.equal(reversed.canonicalDigest, run.canonicalDigest);
+  assert.deepEqual(reversed.manifest.claws, run.manifest.claws);
+  const partial = await runMockPlus({
+    profile: "lifecycle-portfolio",
+    onlyIds: ["incident-response"],
+    writeOutput: false,
+  });
+  assert.equal(partial.coverage.status, "diagnostic");
+  assert.match(partial.outputRoot, /[\\/]mock-plus[\\/]diagnostic[\\/]/u);
+});
+
+test("lifecycle recipe registry fails closed when coverage or expectations drift", async () => {
+  const registry = JSON.parse(
+    await readFile(join(root, "required-lifecycle-recipes.json"), "utf8"),
+  );
+  assert.doesNotThrow(() => assertLifecycleRegistry(registry));
+  assert.throws(
+    () =>
+      assertLifecycleRegistry({
+        ...registry,
+        recipes: registry.recipes.slice(1),
+      }),
+    /incomplete/u,
+  );
+  assert.throws(
+    () =>
+      assertLifecycleRegistry({
+        ...registry,
+        recipes: registry.recipes.map((recipe, index) =>
+          index === 0
+            ? { ...recipe, expectedClassification: "first-attempt-pass" }
+            : recipe,
+        ),
+      }),
+    /malformed/u,
+  );
+});
+
+test("capability adapter coverage fails closed before removal mutants run", () => {
+  const entries = [{ capabilityClasses: ["visual"] }];
+  assert.doesNotThrow(() =>
+    assertCapabilityAdapterCoverage(entries, { visual: "fixture-adapter" }),
+  );
+  assert.throws(
+    () => assertCapabilityAdapterCoverage(entries, {}),
+    /adapter registry is incomplete: visual/u,
+  );
 });
 
 test("canonical evidence reproduces exactly", async () => {
@@ -346,6 +478,10 @@ test("CLI arguments require exact replay inputs", () => {
   assert.equal(
     parseMockPlusArgs(["--semantics"]).profile,
     "semantic-portfolio",
+  );
+  assert.equal(
+    parseMockPlusArgs(["--lifecycle"]).profile,
+    "lifecycle-portfolio",
   );
   assert.throws(
     () => parseMockPlusArgs(["--portfolio", "--semantics"]),
