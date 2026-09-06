@@ -2612,6 +2612,12 @@ test("gift relationship manager preserves privacy, budget, and owner authority",
   const mismatch = structuredClone(cases.get("gift-relationship-manager").fixture);
   mismatch.giftIdeas[0].recipientRef = "recipient-team";
   assert.equal(isValid("gift-relationship-manager", mismatch), false);
+
+  const danglingOccasion = structuredClone(
+    cases.get("gift-relationship-manager").fixture,
+  );
+  danglingOccasion.giftIdeas[0].occasionRef = "occasion-missing";
+  assert.equal(isValid("gift-relationship-manager", danglingOccasion), false);
 });
 
 test("personal archive curator preserves privacy, retention, and owner authority", () => {

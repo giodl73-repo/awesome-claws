@@ -35,8 +35,14 @@ export function parseMockPlusArgs(args) {
       options.inventory = true;
     } else if (argument === "--check") {
       options.check = true;
-    } else if (argument === "--portfolio") {
+    } else if (argument === "--portfolio" || argument === "--semantics") {
+      if (options.profile !== "vertical") {
+        throw new Error("Mock+ profile flags are mutually exclusive.");
+      }
       options.profile = "schema-portfolio";
+      if (argument === "--semantics") {
+        options.profile = "semantic-portfolio";
+      }
     } else if (argument === "--update") {
       throw new Error(
         "--update is reserved for the canonical-profile slice and is not available yet.",

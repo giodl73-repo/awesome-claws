@@ -1,0 +1,3696 @@
+{
+  "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
+  "evidenceClass": "mock-deterministic",
+  "summary": {
+    "validatorCount": 92,
+    "coveredCount": 92,
+    "recipeCount": 242,
+    "findingCodeCount": 191
+  },
+  "entries": [
+    {
+      "id": "software-maintainer",
+      "recipes": [
+        {
+          "id": "semantic-unverbatim-request-record-1",
+          "operator": "replace",
+          "path": [
+            "request",
+            "statementVerbatim"
+          ],
+          "replacement": false,
+          "expectedCodes": [
+            "unverbatim_request_record"
+          ]
+        },
+        {
+          "id": "semantic-invalid-delivery-chronology-2",
+          "operator": "replace",
+          "path": [
+            "request",
+            "receivedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_delivery_chronology"
+          ]
+        },
+        {
+          "id": "semantic-future-source-evidence-3",
+          "operator": "replace",
+          "path": [
+            "request",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "future_source_evidence",
+            "invalid_delivery_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data-analyst",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "sources",
+            "0",
+            "reference"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "research-briefing",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "claims",
+            "0",
+            "claim"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "financial-analyst",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "sources",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sales-operations",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "deals",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recruiting-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "constraints",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-invalid-time-range-2",
+          "operator": "replace",
+          "path": [
+            "sessions",
+            "0",
+            "start"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_time_range"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "content-operations",
+      "recipes": [
+        {
+          "id": "semantic-inconsistent-package-handoff-1",
+          "operator": "replace",
+          "path": [
+            "package",
+            "owner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "inconsistent_package_handoff"
+          ]
+        },
+        {
+          "id": "semantic-channel-owner-approval-mismatch-2",
+          "operator": "replace",
+          "path": [
+            "package",
+            "channelOwner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "channel_owner_approval_mismatch",
+            "inconsistent_package_handoff"
+          ]
+        },
+        {
+          "id": "semantic-invalid-package-chronology-3",
+          "operator": "replace",
+          "path": [
+            "package",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_package_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "executive-assistant",
+      "recipes": [
+        {
+          "id": "semantic-invalid-horizon-chronology-1",
+          "operator": "replace",
+          "path": [
+            "horizon",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_horizon_chronology"
+          ]
+        },
+        {
+          "id": "semantic-future-decision-record-2",
+          "operator": "replace",
+          "path": [
+            "horizon",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "future_decision_record",
+            "future_source_evidence",
+            "unsupported_acknowledgement"
+          ]
+        },
+        {
+          "id": "semantic-deadline-outside-horizon-3",
+          "operator": "replace",
+          "path": [
+            "horizon",
+            "periodStart"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "deadline_outside_horizon",
+            "invalid_horizon_chronology",
+            "invalid_meeting_window",
+            "invalid_priority_timebox"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "project-manager",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "milestones",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "product-manager",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "0",
+            "reference"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_terminal_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "knowledge-curator",
+      "recipes": [
+        {
+          "id": "semantic-incomplete-findings-1",
+          "operator": "replace",
+          "path": [
+            "collection",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "incomplete_findings",
+            "invalid_collection_chronology",
+            "overstated_claim_status"
+          ]
+        },
+        {
+          "id": "semantic-incomplete-findings-2",
+          "operator": "replace",
+          "path": [
+            "collection",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "incomplete_findings",
+            "invalid_claim_authority",
+            "invalid_claim_chronology",
+            "invalid_decision_chronology",
+            "invalid_decision_provenance",
+            "invalid_duplicate_group",
+            "invalid_owner_attribution",
+            "invalid_source_authorization",
+            "invalid_source_chronology",
+            "irrelevant_evidence",
+            "overstated_claim_status",
+            "unsafe_source_representation"
+          ]
+        },
+        {
+          "id": "semantic-inconsistent-handoff-3",
+          "operator": "replace",
+          "path": [
+            "collection",
+            "maintenanceOwner",
+            "name"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "inconsistent_handoff"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "executive-briefing",
+      "recipes": [
+        {
+          "id": "semantic-unauthorized-narrative-action-1",
+          "operator": "replace",
+          "path": [
+            "run",
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "unauthorized_narrative_action"
+          ]
+        },
+        {
+          "id": "semantic-invalid-freshness-cutoff-2",
+          "operator": "replace",
+          "path": [
+            "run",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_freshness_cutoff",
+            "invalid_run_chronology",
+            "invalid_source_authorization"
+          ]
+        },
+        {
+          "id": "semantic-future-source-evidence-3",
+          "operator": "replace",
+          "path": [
+            "run",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "future_source_evidence",
+            "invalid_freshness_cutoff",
+            "invalid_run_chronology",
+            "invalid_source_authorization",
+            "unsupported_weather_forecast"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "meeting-intelligence",
+      "recipes": [
+        {
+          "id": "semantic-owner-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "meeting",
+            "decisionOwner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-broken-correction-lineage-2",
+          "operator": "replace",
+          "path": [
+            "meeting",
+            "startedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "broken_correction_lineage",
+            "invalid_decision_chronology",
+            "invalid_meeting_chronology",
+            "invalid_recording_window"
+          ]
+        },
+        {
+          "id": "semantic-invalid-action-due-date-3",
+          "operator": "replace",
+          "path": [
+            "meeting",
+            "endedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_action_due_date",
+            "invalid_meeting_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spreadsheet-analyst",
+      "recipes": [
+        {
+          "id": "semantic-owner-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "workbook",
+            "owner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-source-sheet-mutation-2",
+          "operator": "replace",
+          "path": [
+            "sheets",
+            "0",
+            "sourcePreserved"
+          ],
+          "replacement": false,
+          "expectedCodes": [
+            "source_sheet_mutation"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "transformations",
+            "0",
+            "targetSheetRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "knowledge-gardener",
+      "recipes": [
+        {
+          "id": "semantic-invalid-plan-digest-1",
+          "operator": "replace",
+          "path": [
+            "plan",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_plan_digest",
+            "stale_approval"
+          ]
+        },
+        {
+          "id": "semantic-invalid-issue-evidence-2",
+          "operator": "replace",
+          "path": [
+            "plan",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_issue_evidence",
+            "invalid_plan_chronology",
+            "invalid_plan_digest",
+            "stale_approval"
+          ]
+        },
+        {
+          "id": "semantic-false-staleness-3",
+          "operator": "replace",
+          "path": [
+            "plan",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "false_staleness",
+            "invalid_approval_chronology",
+            "invalid_issue_evidence",
+            "invalid_observation_export",
+            "invalid_operation_chronology",
+            "invalid_plan_chronology",
+            "invalid_plan_digest",
+            "stale_approval"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "research-monitor",
+      "recipes": [
+        {
+          "id": "semantic-incoherent-review-queue-1",
+          "operator": "replace",
+          "path": [
+            "watch",
+            "decisionOwner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incoherent_review_queue",
+            "invalid_priority_policy",
+            "owner_mismatch",
+            "private_handoff_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-invalid-watch-chronology-2",
+          "operator": "replace",
+          "path": [
+            "watch",
+            "window",
+            "start"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_watch_chronology",
+            "query_outside_review_window",
+            "stale_current_source"
+          ]
+        },
+        {
+          "id": "semantic-invalid-source-chronology-3",
+          "operator": "replace",
+          "path": [
+            "watch",
+            "run",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_source_chronology",
+            "invalid_watch_chronology",
+            "query_outside_review_window"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "presentation-producer",
+      "recipes": [
+        {
+          "id": "semantic-invalid-content-digest-1",
+          "operator": "replace",
+          "path": [
+            "manifest",
+            "verbatimRequest"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_content_digest",
+            "stale_approval"
+          ]
+        },
+        {
+          "id": "semantic-control-inheritance-mismatch-2",
+          "operator": "replace",
+          "path": [
+            "manifest",
+            "audienceScope",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "control_inheritance_mismatch",
+            "hidden_content_exposure",
+            "invalid_citation_binding",
+            "invalid_content_digest",
+            "invalid_visual_asset",
+            "stale_approval"
+          ]
+        },
+        {
+          "id": "semantic-incomplete-blocker-coverage-3",
+          "operator": "replace",
+          "path": [
+            "manifest",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "incomplete_blocker_coverage",
+            "invalid_content_digest",
+            "invalid_source_use_assessment",
+            "stale_approval"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "document-intake-analyst",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "outputs",
+            "0",
+            "sourceRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "missing_produced_output",
+            "missing_source_output"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "outputs",
+            "1",
+            "sourceRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "finding_source_mismatch",
+            "missing_produced_output",
+            "missing_source_output"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "outputs",
+            "2",
+            "sourceRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "finding_source_mismatch",
+            "missing_produced_output",
+            "missing_source_output",
+            "review_source_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "media-evidence-reviewer",
+      "recipes": [
+        {
+          "id": "semantic-owner-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "review",
+            "owner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-future-source-evidence-2",
+          "operator": "replace",
+          "path": [
+            "review",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "future_source_evidence"
+          ]
+        },
+        {
+          "id": "semantic-premature-ready-state-3",
+          "operator": "replace",
+          "path": [
+            "authority",
+            "processingAuthorized"
+          ],
+          "replacement": false,
+          "expectedCodes": [
+            "premature_ready_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "feed-intelligence-monitor",
+      "recipes": [
+        {
+          "id": "semantic-incoherent-delivery-queue-1",
+          "operator": "replace",
+          "path": [
+            "monitor",
+            "owner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incoherent_delivery_queue",
+            "incoherent_review_queue",
+            "invalid_triage_policy",
+            "missing_recheck_handling",
+            "owner_mismatch",
+            "private_handoff_mismatch",
+            "subscription_owner_gate"
+          ]
+        },
+        {
+          "id": "semantic-invalid-monitor-chronology-2",
+          "operator": "replace",
+          "path": [
+            "monitor",
+            "window",
+            "start"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_monitor_chronology"
+          ]
+        },
+        {
+          "id": "semantic-invalid-cursor-chronology-3",
+          "operator": "replace",
+          "path": [
+            "monitor",
+            "run",
+            "startedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_cursor_chronology",
+            "invalid_monitor_chronology",
+            "invalid_retrieval_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "travel-planner",
+      "recipes": [
+        {
+          "id": "semantic-owner-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "trip",
+            "owner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-invalid-timezone-2",
+          "operator": "replace",
+          "path": [
+            "trip",
+            "timezone"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_timezone",
+            "itinerary_local_date_mismatch",
+            "timezone_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-expired-current-source-3",
+          "operator": "replace",
+          "path": [
+            "trip",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "expired_current_source",
+            "stale_recheck_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "travel-concierge",
+      "recipes": [
+        {
+          "id": "semantic-owner-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "trip",
+            "owner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-future-option-evidence-2",
+          "operator": "replace",
+          "path": [
+            "trip",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "future_option_evidence",
+            "future_source_evidence"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "constraints",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "web-evidence-researcher",
+      "recipes": [
+        {
+          "id": "semantic-incoherent-review-question-1",
+          "operator": "replace",
+          "path": [
+            "investigation",
+            "decisionOwner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incoherent_review_question",
+            "invalid_conflict_state",
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-invalid-investigation-chronology-2",
+          "operator": "replace",
+          "path": [
+            "investigation",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_investigation_chronology"
+          ]
+        },
+        {
+          "id": "semantic-invalid-investigation-chronology-3",
+          "operator": "replace",
+          "path": [
+            "investigation",
+            "run",
+            "startedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_investigation_chronology",
+            "query_outside_investigation_run"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "website-evidence-collector",
+      "recipes": [
+        {
+          "id": "semantic-incoherent-review-question-1",
+          "operator": "replace",
+          "path": [
+            "collection",
+            "decisionOwner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incoherent_review_question",
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-invalid-collection-chronology-2",
+          "operator": "replace",
+          "path": [
+            "collection",
+            "deadline"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_collection_chronology"
+          ]
+        },
+        {
+          "id": "semantic-invalid-attempt-chronology-3",
+          "operator": "replace",
+          "path": [
+            "collection",
+            "run",
+            "startedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_attempt_chronology",
+            "invalid_collection_chronology",
+            "search_outside_collection_run"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-concept-producer",
+      "recipes": [
+        {
+          "id": "semantic-invalid-manifest-digest-1",
+          "operator": "replace",
+          "path": [
+            "manifest",
+            "verbatimRequest"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_manifest_digest"
+          ]
+        },
+        {
+          "id": "semantic-invalid-chronology-2",
+          "operator": "replace",
+          "path": [
+            "manifest",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_chronology",
+            "invalid_manifest_digest"
+          ]
+        },
+        {
+          "id": "semantic-control-inheritance-mismatch-3",
+          "operator": "replace",
+          "path": [
+            "providerConfiguration",
+            "retentionVersion"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "control_inheritance_mismatch",
+            "invalid_manifest_digest"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "workflow-operator",
+      "recipes": [
+        {
+          "id": "semantic-incomplete-workflow-handoff-1",
+          "operator": "replace",
+          "path": [
+            "manifest",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incomplete_workflow_handoff",
+            "invalid_workflow_manifest_digest"
+          ]
+        },
+        {
+          "id": "semantic-invalid-workflow-chronology-2",
+          "operator": "replace",
+          "path": [
+            "manifest",
+            "createdAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_workflow_chronology",
+            "invalid_workflow_manifest_digest"
+          ]
+        },
+        {
+          "id": "semantic-invalid-workflow-controls-3",
+          "operator": "replace",
+          "path": [
+            "manifest",
+            "audienceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_workflow_controls",
+            "invalid_workflow_manifest_digest"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "public-company-watcher",
+      "recipes": [
+        {
+          "id": "semantic-owner-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "watch",
+            "owner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-invalid-source-chronology-2",
+          "operator": "replace",
+          "path": [
+            "watch",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_source_chronology"
+          ]
+        },
+        {
+          "id": "semantic-invalid-materiality-policy-3",
+          "operator": "replace",
+          "path": [
+            "watch",
+            "materialityPolicy",
+            "thresholds",
+            "0",
+            "unit"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_materiality_policy"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "research-scout",
+      "recipes": [
+        {
+          "id": "semantic-incoherent-review-queue-1",
+          "operator": "replace",
+          "path": [
+            "watch",
+            "decisionOwner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incoherent_review_queue",
+            "owner_mismatch",
+            "private_handoff_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-invalid-watch-chronology-2",
+          "operator": "replace",
+          "path": [
+            "watch",
+            "window",
+            "start"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_watch_chronology",
+            "query_outside_review_window",
+            "stale_current_source"
+          ]
+        },
+        {
+          "id": "semantic-invalid-source-chronology-3",
+          "operator": "replace",
+          "path": [
+            "watch",
+            "run",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_source_chronology",
+            "invalid_watch_chronology",
+            "query_outside_review_window"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "public-safety-monitor",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "alerts",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-invalid-time-range-2",
+          "operator": "replace",
+          "path": [
+            "alerts",
+            "0",
+            "issuedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_time_range"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "civic-data-analyst",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "geography",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "event-operations-director",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "eventOwnerId"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "remove",
+          "path": [
+            "vendors",
+            "0"
+          ],
+          "expectedCodes": [
+            "dangling_reference",
+            "incomplete_handoff"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "remove",
+          "path": [
+            "evidence",
+            "0"
+          ],
+          "expectedCodes": [
+            "dangling_reference",
+            "incomplete_handoff",
+            "self_attested_gate_clearance"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "procurement-evaluator",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "remove",
+          "path": [
+            "evaluation"
+          ],
+          "expectedCodes": [
+            "agent_owned_authority",
+            "inconsistent_evaluation_state"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "remove",
+          "path": [
+            "criteria",
+            "0"
+          ],
+          "expectedCodes": [
+            "dangling_reference",
+            "invalid_criteria_weight_sum",
+            "ungrounded_disqualifier",
+            "unsupported_vendor_disqualification"
+          ]
+        },
+        {
+          "id": "semantic-invalid-criteria-weight-sum-3",
+          "operator": "replace",
+          "path": [
+            "criteria",
+            "0",
+            "weight"
+          ],
+          "replacement": 1.25,
+          "expectedCodes": [
+            "invalid_criteria_weight_sum",
+            "invalid_weighted_score"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "grant-portfolio-manager",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "ownerId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "agent_owned_authority",
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-incomplete-handoff-2",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "asOfDate"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incomplete_handoff",
+            "invalid_timestamp",
+            "premature_ready_state"
+          ]
+        },
+        {
+          "id": "semantic-future-approval-timestamp-3",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "asOfDate"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "future_approval_timestamp",
+            "future_evidence_timestamp",
+            "incomplete_handoff",
+            "premature_ready_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "privacy-request-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-deadline-chronology-1",
+          "operator": "replace",
+          "path": [
+            "receivedAt"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_deadline_chronology"
+          ]
+        },
+        {
+          "id": "semantic-inconsistent-verification-state-2",
+          "operator": "replace",
+          "path": [
+            "verificationState"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "inconsistent_verification_state"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "manufacturing-operations-planner",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "planOwnerId"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "remove",
+          "path": [
+            "lines",
+            "0"
+          ],
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "orders",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "demand_overscheduled"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "facilities-operations-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "ownerId"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "remove",
+          "path": [
+            "sites",
+            "0"
+          ],
+          "expectedCodes": [
+            "dangling_reference",
+            "incomplete_handoff",
+            "invalid_gate_scope"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "assets",
+            "0",
+            "siteRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "inconsistent_asset_site"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ux-research-synthesizer",
+      "recipes": [
+        {
+          "id": "semantic-invalid-study-method-1",
+          "operator": "replace",
+          "path": [
+            "study",
+            "method"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_study_method"
+          ]
+        },
+        {
+          "id": "semantic-contradiction-flag-mismatch-2",
+          "operator": "replace",
+          "path": [
+            "study",
+            "consentStatus"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "contradiction_flag_mismatch",
+            "invalid_consent_status",
+            "premature_ready_state",
+            "theme_evidence_link_mismatch",
+            "unapproved_evidence_source"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "study",
+            "accountableResearcher"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "experimentation-lead",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "ownerId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-premature-decision-state-3",
+          "operator": "remove",
+          "path": [
+            "ownerId"
+          ],
+          "expectedCodes": [
+            "premature_decision_state",
+            "premature_ready_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data-migration-planner",
+      "recipes": [
+        {
+          "id": "semantic-invalid-schema-version-1",
+          "operator": "replace",
+          "path": [
+            "schemaVersion"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_schema_version",
+            "premature_ready_state"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-2",
+          "operator": "replace",
+          "path": [
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "agent_owned_authority",
+            "premature_ready_state"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "ownerId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "premature_ready_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "accessibility-review-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-inconsistent-review-state-1",
+          "operator": "replace",
+          "path": [
+            "state"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "inconsistent_review_state"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-2",
+          "operator": "remove",
+          "path": [
+            "review"
+          ],
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "remove",
+          "path": [
+            "standardsReferences"
+          ],
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quality-assurance-lead",
+      "recipes": [
+        {
+          "id": "semantic-invalid-schema-version-1",
+          "operator": "replace",
+          "path": [
+            "schemaVersion"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_schema_version",
+            "premature_ready_state",
+            "premature_release_recommendation"
+          ]
+        },
+        {
+          "id": "semantic-premature-ready-state-2",
+          "operator": "replace",
+          "path": [
+            "release",
+            "buildId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "premature_ready_state",
+            "premature_release_recommendation",
+            "unsupported_defect_verification",
+            "untested_required_criterion"
+          ]
+        },
+        {
+          "id": "semantic-invalid-release-scope-3",
+          "operator": "remove",
+          "path": [
+            "release",
+            "buildId"
+          ],
+          "expectedCodes": [
+            "invalid_release_scope",
+            "premature_ready_state",
+            "premature_release_recommendation",
+            "untested_required_criterion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cloud-cost-analyst",
+      "recipes": [
+        {
+          "id": "semantic-invalid-schema-version-1",
+          "operator": "replace",
+          "path": [
+            "schemaVersion"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_schema_version",
+            "premature_ready_state"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-evidence-2",
+          "operator": "replace",
+          "path": [
+            "currency"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "premature_ready_state"
+          ]
+        },
+        {
+          "id": "semantic-premature-ready-state-3",
+          "operator": "replace",
+          "path": [
+            "total"
+          ],
+          "replacement": 128451.32,
+          "expectedCodes": [
+            "premature_ready_state",
+            "total_reconciliation_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fundraising-campaign-manager",
+      "recipes": [
+        {
+          "id": "semantic-owner-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "campaign",
+            "owner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "claims",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_claim_kind"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "audiences",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_consent_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "change-control-operator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-plan-digest-1",
+          "operator": "replace",
+          "path": [
+            "plan",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_plan_digest"
+          ]
+        },
+        {
+          "id": "semantic-invalid-plan-digest-2",
+          "operator": "replace",
+          "path": [
+            "plan",
+            "generatedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_plan_digest",
+            "invalid_time_order"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "plan",
+            "steps",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "invalid_plan_digest"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "case-continuity-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-future-evidence-reference-2",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "0",
+            "observedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "future_evidence_reference",
+            "invalid_time_range"
+          ]
+        },
+        {
+          "id": "semantic-invalid-time-range-3",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "0",
+            "expiresAt"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_time_range",
+            "stale_evidence_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "delegation-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-owner-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "decisionOwner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "sources",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "assignments",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "missing_completed_result"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "model-evaluation-adjudicator",
+      "recipes": [
+        {
+          "id": "semantic-owner-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "study",
+            "decisionOwner",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-2",
+          "operator": "replace",
+          "path": [
+            "study",
+            "decisionOwner",
+            "id"
+          ],
+          "replacement": "model-evaluation-adjudicator",
+          "expectedCodes": [
+            "agent_owned_authority",
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-anchor-criterion-mismatch-3",
+          "operator": "replace",
+          "path": [
+            "criteria",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "anchor_criterion_mismatch",
+            "dangling_reference",
+            "incomplete_sampling_plan"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vehicle-service-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "owner",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-incoherent-appointment-state-3",
+          "operator": "remove",
+          "path": [
+            "appointment",
+            "plan"
+          ],
+          "expectedCodes": [
+            "incoherent_appointment_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home-repair-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "resident",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "1",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_repair_step"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "green-thumb-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "resident",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-incoherent-appointment-state-3",
+          "operator": "remove",
+          "path": [
+            "appointment",
+            "plan"
+          ],
+          "expectedCodes": [
+            "incoherent_appointment_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pet-care-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "guardian",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "2",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_pet_care"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "appliance-care-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-unsupported-maintenance-1",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "unsupported_maintenance"
+          ]
+        },
+        {
+          "id": "semantic-unsupported-coverage-state-2",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "unsupported_coverage_state",
+            "unsupported_maintenance",
+            "unsupported_recall_state"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "owner",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pond-water-feature-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "resident",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "2",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_installation_requirement"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "household-steward",
+      "recipes": [
+        {
+          "id": "semantic-unsupported-source-artifact-1",
+          "operator": "replace",
+          "path": [
+            "household",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "unsupported_source_artifact"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "members",
+            "0",
+            "authorityEvidenceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "members",
+            "2",
+            "authorityEvidenceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_member_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "work-chief-of-staff",
+      "recipes": [
+        {
+          "id": "semantic-incoherent-decision-forum-1",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "incoherent_decision_forum",
+            "unsupported_work_source_artifact"
+          ]
+        },
+        {
+          "id": "semantic-future-work-evidence-2",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "future_work_evidence",
+            "unsupported_work_source_artifact",
+            "work_result_scope_drift"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "principals",
+            "0",
+            "authorityEvidenceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "care-circle-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "helpers",
+            "0",
+            "availabilityEvidenceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-unsupported-consent-scope-2",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "0",
+            "capturedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "unsupported_consent_scope"
+          ]
+        },
+        {
+          "id": "semantic-invalid-time-range-3",
+          "operator": "replace",
+          "path": [
+            "needs",
+            "0",
+            "dueStart"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_time_range"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stock-portfolio-monitor",
+      "recipes": [
+        {
+          "id": "semantic-allocation-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "positions",
+            "0",
+            "quantity"
+          ],
+          "replacement": 11,
+          "expectedCodes": [
+            "allocation_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "positions",
+            "0",
+            "positionSourceRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-unsupported-cost-basis-3",
+          "operator": "remove",
+          "path": [
+            "positions",
+            "0",
+            "costBasis",
+            "currency"
+          ],
+          "expectedCodes": [
+            "unsupported_cost_basis"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sports-team-watcher",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "teams",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-2",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "sports-team-watcher",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "movie-streaming-organizer",
+      "recipes": [
+        {
+          "id": "semantic-region-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "collection",
+            "region"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "region_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-unsupported-service-2",
+          "operator": "replace",
+          "path": [
+            "collection",
+            "services",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "unsupported_service"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "titles",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "subscription-manager",
+      "recipes": [
+        {
+          "id": "semantic-renewal-window-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "renewal_window_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "subscriptions",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "subscription-manager",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "music-organizer",
+      "recipes": [
+        {
+          "id": "semantic-region-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "library",
+            "region"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "region_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-unsupported-service-2",
+          "operator": "replace",
+          "path": [
+            "library",
+            "services",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "unsupported_service"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "items",
+            "0",
+            "id"
+          ],
+          "replacement": "music-organizer",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gift-relationship-manager",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "recipients",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "occasions",
+            "0",
+            "recipientRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "occasion_recipient_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "giftIdeas",
+            "0",
+            "id"
+          ],
+          "replacement": "gift-relationship-manager",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_recommendation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "personal-archive-curator",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "items",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "retrievalCues",
+            "1",
+            "sourceRefs",
+            "1"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_retrieval_source"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "personal-archive-curator",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "restaurant-venue-scout",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "venues",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-availability-venue-mismatch-2",
+          "operator": "replace",
+          "path": [
+            "availability",
+            "0",
+            "venueRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "availability_venue_mismatch",
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "availability",
+            "1",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_availability_source"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "local-events-watcher",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "venues",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "events",
+            "1",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_event_source"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "ticketing",
+            "0",
+            "eventRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "ticketing_event_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "school-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "students",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "items",
+            "1",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_school_source"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "guardian"
+          ],
+          "replacement": "school-coordinator",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "games-backlog-manager",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "games",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-availability-game-mismatch-2",
+          "operator": "replace",
+          "path": [
+            "availability",
+            "0",
+            "gameRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "availability_game_mismatch",
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "availability",
+            "2",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_availability_source"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home-inventory-binder",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "rooms",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "items",
+            "2",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_item_source"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "evidence",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_evidence_source"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "meal-grocery-planner",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "sources",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_meal_source"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "sources",
+            "1",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_grocery_source",
+            "unsupported_inventory_source"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "constraints",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_meal_ready_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "insurance-policy-organizer",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "policies",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "coverageItems",
+            "1",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_coverage_source"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tax-document-organizer",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "documents",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_document_source"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "evidenceItems",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_evidence_source"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "deadlines",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_deadline_source"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "purchase-researcher",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "constraints",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_constraint_source"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "candidates",
+            "1",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_candidate_source"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "claims",
+            "0",
+            "candidateRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_recommendation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "household-budget-steward",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "categories",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "bills",
+            "0",
+            "categoryRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_variance"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "household-budget-steward",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "life-timeline-keeper",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "people",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "events",
+            "1",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_event_certainty"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "life-timeline-keeper",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "child-activity-manager",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "children",
+            "0",
+            "id"
+          ],
+          "replacement": "child-activity-manager",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "activities",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_activity_source"
+          ]
+        },
+        {
+          "id": "semantic-invalid-time-range-3",
+          "operator": "replace",
+          "path": [
+            "sessions",
+            "0",
+            "startsAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_time_range"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neighborhood-operations-watcher",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "zones",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "notices",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_notice_source"
+          ]
+        },
+        {
+          "id": "semantic-invalid-time-range-3",
+          "operator": "replace",
+          "path": [
+            "schedules",
+            "0",
+            "startsAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_time_range"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wardrobe-organizer",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "sources",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_fit_state"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "sources",
+            "2",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_fit_state",
+            "unsupported_outfit_state"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-3",
+          "operator": "replace",
+          "path": [
+            "items",
+            "1",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "outfit_blocked_by_care"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "document-renewal-tracker",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "sources",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_expiration_state",
+            "unsupported_urgency"
+          ]
+        },
+        {
+          "id": "semantic-invalid-renewal-window-2",
+          "operator": "replace",
+          "path": [
+            "renewalWindows",
+            "0",
+            "opensAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_renewal_window"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "document-renewal-tracker",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "medical-appointment-prep",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "sources",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_preparation_state"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "sources",
+            "2",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_medication_freshness"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "medical-appointment-prep",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fantasy-sports-manager",
+      "recipes": [
+        {
+          "id": "semantic-dangling-reference-1",
+          "operator": "replace",
+          "path": [
+            "rules",
+            "0",
+            "sourceRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_rule_state"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "lineup",
+            "0",
+            "playerRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dangling_reference",
+            "unsupported_lineup_state"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "fantasy-sports-manager",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "health-records-binder",
+      "recipes": [
+        {
+          "id": "semantic-missing-record-date-1",
+          "operator": "remove",
+          "path": [
+            "records",
+            "0",
+            "date"
+          ],
+          "expectedCodes": [
+            "missing_record_date"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-2",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "health-records-binder",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "benefits-open-enrollment-planner",
+      "recipes": [
+        {
+          "id": "semantic-invalid-enrollment-window-1",
+          "operator": "replace",
+          "path": [
+            "windows",
+            "0",
+            "opensAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_enrollment_window"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-2",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "benefits-open-enrollment-planner",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "warranty-returns-manager",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "warranty-returns-manager",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "job-application-tracker",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "job-application-tracker",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "travel-loyalty-points-organizer",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "travel-loyalty-points-organizer",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "professional-networking-followup",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "professional-networking-followup",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "resume-portfolio-curator",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "resume-portfolio-curator",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "certification-renewal-planner",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "certification-renewal-planner",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "freelance-client-pipeline",
+      "recipes": [
+        {
+          "id": "semantic-agent-owned-authority-1",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "freelance-client-pipeline",
+          "expectedCodes": [
+            "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "invoice-payment-followup",
+      "recipes": [
+        {
+          "id": "semantic-owner-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "ledger",
+            "owner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-dangling-reference-2",
+          "operator": "replace",
+          "path": [
+            "invoices",
+            "0",
+            "id"
+          ],
+          "replacement": "invoice-payment-followup",
+          "expectedCodes": [
+            "dangling_reference",
+            "unreconciled_invoice_balance"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "invoice-payment-followup",
+          "expectedCodes": [
+            "agent_owned_authority",
+            "owner_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conference-opportunity-scout",
+      "recipes": [
+        {
+          "id": "semantic-owner-mismatch-1",
+          "operator": "replace",
+          "path": [
+            "scout",
+            "owner"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "owner_mismatch"
+          ]
+        },
+        {
+          "id": "semantic-missing-official-url-2",
+          "operator": "remove",
+          "path": [
+            "sources",
+            "0",
+            "url"
+          ],
+          "expectedCodes": [
+            "missing_official_url"
+          ]
+        },
+        {
+          "id": "semantic-agent-owned-authority-3",
+          "operator": "replace",
+          "path": [
+            "handoff",
+            "owner"
+          ],
+          "replacement": "conference-opportunity-scout",
+          "expectedCodes": [
+            "agent_owned_authority",
+            "owner_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "moving-checklist-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-public-address-evidence-1",
+          "operator": "remove",
+          "path": [
+            "sources",
+            "1",
+            "locationDataHandling"
+          ],
+          "expectedCodes": [
+            "public_address_evidence"
+          ]
+        },
+        {
+          "id": "semantic-invalid-milestone-date-evidence-2",
+          "operator": "remove",
+          "path": [
+            "sources",
+            "1",
+            "subjectRef"
+          ],
+          "expectedCodes": [
+            "invalid_milestone_date_evidence",
+            "invalid_readiness_evidence",
+            "unbound_address_evidence"
+          ]
+        },
+        {
+          "id": "semantic-invalid-gate-applicability-evidence-3",
+          "operator": "remove",
+          "path": [
+            "sources",
+            "2",
+            "subjectRef"
+          ],
+          "expectedCodes": [
+            "invalid_gate_applicability_evidence",
+            "unbound_address_evidence"
+          ]
+        }
+      ]
+    }
+  ]
+}
