@@ -363,6 +363,30 @@ function requiredRecordArray(list, path, label) {
   };
 }
 
+function hasStableRecordId(item) {
+  return typeof item.id === "string" && item.id.trim().length > 0;
+}
+
+function recordIdFindings(record, path, label) {
+  const findings = [];
+  for (const [index, item] of record.entries) {
+    if (!hasStableRecordId(item)) {
+      findings.push(
+        finding(
+          "invalid_array_record",
+          `${path}[${index}].id`,
+          `${label} at ${path}[${index}] must carry a non-empty stable id.`,
+        ),
+      );
+    }
+  }
+  return findings;
+}
+
+function stableRecordIds(items) {
+  return items.filter(hasStableRecordId).map((item) => item.id);
+}
+
 function numbersEqual(left, right) {
   const scale = Math.max(1, Math.abs(left), Math.abs(right));
   return Math.abs(left - right) <= Number.EPSILON * scale * 8;
@@ -419,6 +443,9 @@ const MANUFACTURING_OPERATIONS_PLANNER_PATTERN = /\bmanufacturing operations pla
 const GRANT_PORTFOLIO_MANAGER_PATTERN = /\bgrant portfolio manager\b/iu;
 const EXPERIMENTATION_LEAD_PATTERN = /\bexperimentation lead\b/iu;
 const UX_RESEARCH_SYNTHESIZER_PATTERN = /\bux research synthesizer\b/iu;
+const QUALITY_ASSURANCE_LEAD_PATTERN = /\bquality assurance lead\b/iu;
+const CLOUD_COST_ANALYST_PATTERN = /\bcloud cost analyst\b/iu;
+const DATA_MIGRATION_PLANNER_PATTERN = /\bdata migration planner\b/iu;
 
 function zoneOffsetMs(formatter, instant) {
   const parts = Object.fromEntries(
@@ -464,14 +491,35 @@ function isResolvableTimeZone(timeZone) {
 // instant is resolved through the named zone's own offset instead of a UTC day
 // boundary. Returns null when the zone name is not a resolvable IANA zone.
 export function endOfLocalDayMs(date, timeZone) {
+  if (typeof date !== "string") {
+    return null;
+  }
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+  if (match === null) {
+    return null;
+  }
+  const [, yearText, monthText, dayText] = match;
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+  const calendarDate = new Date(0);
+  calendarDate.setUTCFullYear(year, month - 1, day);
+  calendarDate.setUTCHours(0, 0, 0, 0);
+  if (
+    calendarDate.getUTCFullYear() !== year ||
+    calendarDate.getUTCMonth() !== month - 1 ||
+    calendarDate.getUTCDate() !== day
+  ) {
+    return null;
+  }
   const formatter = localDayFormatter(timeZone);
   if (formatter === null) {
     return null;
   }
-  const [year, month, day] = date.split("-").map(Number);
   // Resolved on whole seconds so the formatter's second-precision parts stay
   // exact, then carried to the last millisecond of the local day.
-  const localEnd = Date.UTC(year, month - 1, day, 23, 59, 59);
+  calendarDate.setUTCHours(23, 59, 59, 0);
+  const localEnd = calendarDate.getTime();
   const approximate = localEnd - zoneOffsetMs(formatter, localEnd);
   return localEnd - zoneOffsetMs(formatter, approximate) + 999;
 }
@@ -39059,6 +39107,1567 @@ function researchSynthesisFindings(value) {
   return findings;
 }
 
+function qualityAssuranceReleaseFindings(value) {
+  const findings = [];
+  function toEpochMillis(text) {
+    if (typeof text !== "string") return NaN;
+    const trimmed = text.trim();
+    if (trimmed.length === 0) return NaN;
+    const ms = Date.parse(trimmed);
+    return Number.isFinite(ms) ? ms : NaN;
+  }
+
+  // The schema's anyOf keeps the exact original HEAD legacy branch (a single
+  // requirementId/risk/testId/state/evidence row) alongside the enriched
+  // release-evidence-ledger branch, so both can validate simultaneously and
+  // schemaVersion presence alone is no longer a sound discriminator. Dispatch
+  // on whether any enriched-only property is present instead, regardless of
+  // its value type. The enriched contract is a strict superset of fields the
+  // legacy branch never declares (the legacy "evidence" field is a single
+  // string, so it cannot by itself signal the enriched ledger), so waiting for
+  // every enriched property would let a partially deleted authority or
+  // handoff section downgrade to bounded legacy validation. A schemaVersion by
+  // itself remains legacy-compatible; any other enriched-only property opts
+  // the record into the full contract and its missing fields fail closed.
+  const isEnrichedShape = [
+    "release",
+    "requirements",
+    "principals",
+    "testCases",
+    "testRuns",
+    "defects",
+    "limitations",
+    "recommendation",
+    "owner",
+    "ownerId",
+    "handoff",
+  ].some((field) => Object.hasOwn(value, field));
+  if (!isEnrichedShape) {
+    for (const field of ["requirementId", "risk", "testId", "state", "evidence"]) {
+      if (typeof value[field] !== "string" || value[field].trim().length === 0) {
+        findings.push(
+          finding(
+            "invalid_legacy_field",
+            field,
+            `Legacy test evidence field "${field}" must be a non-empty, trimmed string.`,
+          ),
+        );
+      }
+    }
+    return findings;
+  }
+  const schemaVersionValid = value.schemaVersion === "awesomeClaws.testEvidence.v1";
+  if (!schemaVersionValid) {
+    findings.push(
+      finding(
+        "invalid_schema_version",
+        "schemaVersion",
+        "Enriched test evidence must declare schemaVersion awesomeClaws.testEvidence.v1.",
+      ),
+    );
+  }
+
+  const requirementsRecord = requiredRecordArray(value.requirements, "requirements", "Requirement");
+  const principalsRecord = requiredRecordArray(value.principals, "principals", "Principal");
+  const testCasesRecord = requiredRecordArray(value.testCases, "testCases", "Test case");
+  const testRunsRecord = requiredRecordArray(value.testRuns, "testRuns", "Test run");
+  const evidenceRecord = requiredRecordArray(value.evidence, "evidence", "Evidence");
+  const defectsRecord = requiredRecordArray(value.defects, "defects", "Defect");
+  findings.push(
+    ...requirementsRecord.findings,
+    ...principalsRecord.findings,
+    ...testCasesRecord.findings,
+    ...testRunsRecord.findings,
+    ...evidenceRecord.findings,
+    ...defectsRecord.findings,
+  );
+
+  const requirements = requirementsRecord.items;
+  const principals = principalsRecord.items;
+  const testCases = testCasesRecord.items;
+  const testRuns = testRunsRecord.items;
+  const evidence = evidenceRecord.items;
+  const defects = defectsRecord.items;
+  const release = isRecord(value.release) ? value.release : {};
+  const recommendation = isRecord(value.recommendation) ? value.recommendation : null;
+  const handoff = isRecord(value.handoff) ? value.handoff : {};
+  const releaseScopeValid =
+    typeof release.buildId === "string" &&
+    release.buildId.trim().length > 0 &&
+    typeof release.environment === "string" &&
+    release.environment.trim().length > 0;
+  if (!releaseScopeValid) {
+    findings.push(
+      finding(
+        "invalid_release_scope",
+        "release",
+        "The release must declare non-empty buildId and environment identities before test evidence can be evaluated.",
+      ),
+    );
+  }
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  findings.push(
+    ...recordIdFindings(requirementsRecord, "requirements", "Requirement"),
+    ...recordIdFindings(principalsRecord, "principals", "Principal"),
+    ...recordIdFindings(testCasesRecord, "testCases", "Test case"),
+    ...recordIdFindings(testRunsRecord, "testRuns", "Test run"),
+    ...recordIdFindings(evidenceRecord, "evidence", "Evidence"),
+    ...recordIdFindings(defectsRecord, "defects", "Defect"),
+  );
+  const requirementIds = new Set(stableRecordIds(requirements));
+  const principalIds = new Set(stableRecordIds(principals));
+  const principalsById = new Map(principals.filter(hasStableRecordId).map((item) => [item.id, item]));
+  const testCaseIds = new Set(stableRecordIds(testCases));
+  const testRunIds = new Set(stableRecordIds(testRuns));
+  const testRunsById = new Map(testRuns.filter(hasStableRecordId).map((item) => [item.id, item]));
+  const evidenceIds = new Set(stableRecordIds(evidence));
+  const evidenceById = new Map(evidence.filter(hasStableRecordId).map((item) => [item.id, item]));
+
+  requireReferences(requirements.map((item) => item.id), requirementIds, "requirements", "Requirement");
+  requireReferences(principals.map((item) => item.id), principalIds, "principals", "Principal");
+  requireReferences(testCases.map((item) => item.id), testCaseIds, "testCases", "Test case");
+  requireReferences(testRuns.map((item) => item.id), testRunIds, "testRuns", "Test run");
+  requireReferences(evidence.map((item) => item.id), evidenceIds, "evidence", "Evidence");
+  requireReferences(defects.map((item) => item.id), new Set(defects.map((item) => item.id)), "defects", "Defect");
+
+  // A principal only carries real accountability when it names a non-empty,
+  // non-agent, non-package-self-attested human, mirroring the same predicate
+  // used for owners, reviewers, and verifiers below.
+  function isAccountablePrincipalName(name) {
+    return (
+      typeof name === "string" &&
+      name.trim().length > 0 &&
+      !isAgentIdentityName(name) &&
+      !QUALITY_ASSURANCE_LEAD_PATTERN.test(name)
+    );
+  }
+  for (const [index, principal] of principalsRecord.entries) {
+    if (!isAccountablePrincipalName(principal.name)) {
+      findings.push(
+        finding(
+          "invalid_principal_identity",
+          `principals[${index}].name`,
+          "A principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned.",
+        ),
+      );
+    }
+    if (!Array.isArray(principal.scopes)) {
+      findings.push(
+        finding("invalid_principal_scopes", `principals[${index}].scopes`, "A principal's scopes must be an array."),
+      );
+    }
+  }
+
+  const nowMs = Date.now();
+  const releaseRequestedMs = toEpochMillis(release.requestedAt);
+
+  // Evidence is only valid grounding when it carries the expected kind, was
+  // asserted for the exact same build the release is being recommended for
+  // (never a different build's stale results), cites a real controlled
+  // reference, its timestamp is parseable, not in the future, not older
+  // than the release was requested (stale reuse), not before the test run
+  // it supposedly grounds (out-of-order/fabricated evidence), and -- for
+  // execution-result evidence -- reports the exact outcome the caller
+  // expects. This last check is what prevents a bare "raw toggle" of a test
+  // run's declared result: flipping a run from failed to passed without any
+  // corresponding change to the evidence's own recorded outcome leaves the
+  // grounding evidence and the claimed result in disagreement.
+  function isEvidenceGroundingValid(evidenceRef, expectedKind, expectedBuildId, groundedAtMs, expectedOutcome) {
+    const record = evidenceById.get(evidenceRef);
+    if (!record) return false;
+    if (record.kind !== expectedKind) return false;
+    if (expectedBuildId !== undefined && record.buildId !== expectedBuildId) return false;
+    if (expectedOutcome !== undefined && record.outcome !== expectedOutcome) return false;
+    if (!isValidControlledReference(record.sourceRef)) return false;
+    const assertedMs = toEpochMillis(record.assertedAt);
+    if (!Number.isFinite(assertedMs)) return false;
+    if (assertedMs > nowMs) return false;
+    if (Number.isFinite(releaseRequestedMs) && assertedMs < releaseRequestedMs) return false;
+    if (Number.isFinite(groundedAtMs) && assertedMs < groundedAtMs) return false;
+    return true;
+  }
+
+  for (const [index, item] of evidenceRecord.entries) {
+    if (item.kind !== "execution-result" && item.kind !== "defect-verification") {
+      findings.push(
+        finding("invalid_evidence_kind", `evidence[${index}].kind`, `Evidence kind ${JSON.stringify(item.kind)} is not supported.`),
+      );
+    }
+    const assertedMs = toEpochMillis(item.assertedAt);
+    if (!Number.isFinite(assertedMs)) {
+      findings.push(finding("invalid_timestamp", `evidence[${index}].assertedAt`, "Evidence assertedAt must be a parseable timestamp."));
+    } else if (assertedMs > nowMs) {
+      findings.push(finding("future_evidence", `evidence[${index}].assertedAt`, "Evidence assertedAt cannot be in the future."));
+    } else if (Number.isFinite(releaseRequestedMs) && assertedMs < releaseRequestedMs) {
+      findings.push(
+        finding(
+          "stale_evidence",
+          `evidence[${index}].assertedAt`,
+          "Evidence predating the release request cannot ground this release's results.",
+        ),
+      );
+    }
+    if (!isValidControlledReference(item.sourceRef)) {
+      findings.push(
+        finding(
+          "untrusted_evidence_source",
+          `evidence[${index}].sourceRef`,
+          "Evidence must carry a valid, controlled/attributable source reference, not a fabricated or narrative source.",
+        ),
+      );
+    }
+  }
+
+  const enumTestResults = new Set(["passed", "failed", "blocked", "flaky", "skipped"]);
+  let untestedRequiredCriterion = false;
+  for (const [index, testCase] of testCasesRecord.entries) {
+    if (!requirementIds.has(testCase.requirementRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `testCases[${index}].requirementRef`,
+          `Requirement reference ${JSON.stringify(testCase.requirementRef)} does not resolve.`,
+        ),
+      );
+    }
+  }
+
+  for (const [index, run] of testRunsRecord.entries) {
+    if (!testCaseIds.has(run.testCaseRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `testRuns[${index}].testCaseRef`,
+          `Test case reference ${JSON.stringify(run.testCaseRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!principalIds.has(run.executedById)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `testRuns[${index}].executedById`,
+          `Executor principal reference ${JSON.stringify(run.executedById)} does not resolve.`,
+        ),
+      );
+    }
+    if (!enumTestResults.has(run.result)) {
+      findings.push(
+        finding("invalid_test_result", `testRuns[${index}].result`, `Test result ${JSON.stringify(run.result)} is not supported.`),
+      );
+      continue;
+    }
+    if (run.result === "blocked" || run.result === "skipped") continue;
+    const executedMs = toEpochMillis(run.executedAt);
+    const grounded = isEvidenceGroundingValid(
+      run.evidenceRef,
+      "execution-result",
+      run.buildId,
+      executedMs,
+      run.result,
+    );
+    const evidenceOwnedByRun = evidenceById.get(run.evidenceRef)?.testRunRef === run.id;
+    if (!grounded || !evidenceOwnedByRun) {
+      findings.push(
+        finding(
+          "unsupported_test_result",
+          `testRuns[${index}].evidenceRef`,
+          "A passed, failed, or flaky test run must reference its own controlled, current-build execution-result evidence that reports the matching outcome and is asserted at or after execution and no earlier than the release request.",
+        ),
+      );
+    }
+  }
+
+  const enumDefectSeverities = new Set(["blocker", "critical", "major", "minor"]);
+  const enumDefectStatuses = new Set(["open", "fixed", "verified", "closed"]);
+  const resolvedDefectStatuses = new Set(["verified", "closed"]);
+  let openReleaseBlockingDefect = false;
+  let invalidResolvedDefect = false;
+  for (const [index, defect] of defectsRecord.entries) {
+    if (!testRunIds.has(defect.testRunRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `defects[${index}].testRunRef`,
+          `Test run reference ${JSON.stringify(defect.testRunRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!enumDefectSeverities.has(defect.severity)) {
+      findings.push(
+        finding("invalid_defect_severity", `defects[${index}].severity`, `Defect severity ${JSON.stringify(defect.severity)} is not supported.`),
+      );
+    }
+    if (!enumDefectStatuses.has(defect.status)) {
+      findings.push(
+        finding("invalid_defect_status", `defects[${index}].status`, `Defect status ${JSON.stringify(defect.status)} is not supported.`),
+      );
+    }
+    if (
+      enumDefectSeverities.has(defect.severity) &&
+      (defect.severity === "blocker" || defect.severity === "critical") &&
+      !resolvedDefectStatuses.has(defect.status)
+    ) {
+      openReleaseBlockingDefect = true;
+      findings.push(
+        finding(
+          "open_release_blocking_defect",
+          `defects[${index}].status`,
+          "A blocker or critical severity defect must be verified or closed before the release can be recommended.",
+        ),
+      );
+    }
+    const originatingRun = testRunsById.get(defect.testRunRef);
+    if (resolvedDefectStatuses.has(defect.status)) {
+      const foundMs = toEpochMillis(defect.foundAt);
+      const verifiedMs = toEpochMillis(defect.verifiedAt);
+      const selfVerified =
+        originatingRun !== undefined && defect.verifiedById === originatingRun.executedById;
+      if (selfVerified) {
+        invalidResolvedDefect = true;
+        findings.push(
+          finding(
+            "self_verified_defect",
+            `defects[${index}].verifiedById`,
+            "A defect cannot be verified by the same principal who executed the test run that found it.",
+          ),
+        );
+      }
+      const verifierPrincipal = principalsById.get(defect.verifiedById);
+      if (!verifierPrincipal || !isAccountablePrincipalName(verifierPrincipal.name)) {
+        invalidResolvedDefect = true;
+        findings.push(
+          finding(
+            "invalid_principal_identity",
+            `defects[${index}].verifiedById`,
+            "A defect verifier must resolve to an accountable, non-agent, non-package-owned principal.",
+          ),
+        );
+      }
+      if (!Number.isFinite(verifiedMs) || !Number.isFinite(foundMs) || verifiedMs < foundMs || verifiedMs > nowMs) {
+        invalidResolvedDefect = true;
+        findings.push(
+          finding(
+            "invalid_defect_chronology",
+            `defects[${index}].verifiedAt`,
+            "A defect verification must be dated at or after it was found and not in the future.",
+          ),
+        );
+      }
+      const verificationEvidence = evidenceById.get(defect.verificationEvidenceRef);
+      const verificationEvidenceMs = toEpochMillis(verificationEvidence?.assertedAt);
+      if (
+        !isEvidenceGroundingValid(
+          defect.verificationEvidenceRef,
+          "defect-verification",
+          release.buildId,
+          foundMs,
+        ) ||
+        verificationEvidence?.defectRef !== defect.id ||
+        !Number.isFinite(verifiedMs) ||
+        !Number.isFinite(verificationEvidenceMs) ||
+        verificationEvidenceMs > verifiedMs ||
+        selfVerified
+      ) {
+        invalidResolvedDefect = true;
+        findings.push(
+          finding(
+            "unsupported_defect_verification",
+            `defects[${index}].verificationEvidenceRef`,
+            "A verified or closed defect must cite controlled defect-verification evidence bound to that exact defect and build, asserted at or after discovery and no later than verification, by an independent verifier.",
+          ),
+        );
+      }
+    }
+  }
+
+  // A test case is covered only when at least one of its runs matches the
+  // release's exact current build and environment (never a different or
+  // prior build) and has grounded passing evidence. Independently verified
+  // defect closure does not substitute for a passing rerun. `.some()` (not
+  // the first match) lets a passing retest after a fix count even though an
+  // earlier run for the same case failed.
+  function isRunResolvedPositive(run) {
+    if (!releaseScopeValid) return false;
+    if (!hasStableRecordId(run) || typeof run.testCaseRef !== "string" || run.testCaseRef.trim().length === 0) {
+      return false;
+    }
+    if (run.buildId !== release.buildId || run.environment !== release.environment) return false;
+    if (run.result !== "passed") return false;
+    const executedMs = toEpochMillis(run.executedAt);
+    return (
+      isEvidenceGroundingValid(run.evidenceRef, "execution-result", run.buildId, executedMs, "passed") &&
+      evidenceById.get(run.evidenceRef)?.testRunRef === run.id
+    );
+  }
+
+  for (const requirement of requirements) {
+    if (!hasStableRecordId(requirement)) {
+      untestedRequiredCriterion = true;
+      continue;
+    }
+    const coveringCases = testCases.filter(
+      (item) => hasStableRecordId(item) && item.requirementRef === requirement.id,
+    );
+    const coveringRuns = testRuns.filter((run) => coveringCases.some((item) => item.id === run.testCaseRef));
+    if (coveringCases.length === 0 || !coveringRuns.some(isRunResolvedPositive)) {
+      untestedRequiredCriterion = true;
+    }
+  }
+  if (untestedRequiredCriterion) {
+    findings.push(
+      finding(
+        "untested_required_criterion",
+        "requirements",
+        "Every requirement must have at least one current-build, current-environment test run that resolves positively before a release can be recommended.",
+      ),
+    );
+  }
+
+  const limitationsRecord = stringListFindings(value.limitations, "limitations", "Limitations");
+  findings.push(...limitationsRecord.findings);
+
+  if (
+    typeof value.owner !== "string" ||
+    value.owner.trim().length === 0 ||
+    isAgentIdentityName(value.owner) ||
+    QUALITY_ASSURANCE_LEAD_PATTERN.test(value.owner)
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "owner",
+        "The release must remain owned by a named, accountable human, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+  const ownerPrincipal = principalsById.get(value.ownerId);
+  if (typeof value.ownerId !== "string" || value.ownerId.trim().length === 0) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "ownerId",
+        "The release owner must be bound to a non-empty stable principal id.",
+      ),
+    );
+  } else if (!principalIds.has(value.ownerId)) {
+    findings.push(
+      finding("dangling_reference", "ownerId", `Owner principal reference ${JSON.stringify(value.ownerId)} does not resolve.`),
+    );
+  } else if (ownerPrincipal !== undefined && !isAccountablePrincipalName(ownerPrincipal.name)) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "ownerId",
+        "The release owner principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+
+  const enumRecommendationStates = new Set(["recommend-release", "conditional", "blocked"]);
+  function isRecommendationValid() {
+    if (!isRecord(recommendation)) return false;
+    if (recommendation.state !== "recommend-release") return false;
+    if (!schemaVersionValid) return false;
+    if (!releaseScopeValid) return false;
+    if (requirements.length === 0) return false;
+    if (untestedRequiredCriterion) return false;
+    if (openReleaseBlockingDefect) return false;
+    if (invalidResolvedDefect) return false;
+    const reviewer = principalsById.get(recommendation.reviewerId);
+    if (!reviewer || !isAccountablePrincipalName(reviewer.name)) return false;
+    if (!Array.isArray(reviewer.scopes) || !reviewer.scopes.includes("qa-release-authority")) return false;
+    if (recommendation.reviewerId === value.ownerId) return false;
+    const reviewedMs = toEpochMillis(recommendation.reviewedAt);
+    if (!Number.isFinite(reviewedMs) || reviewedMs > nowMs) return false;
+    const groundingTimestamps = [
+      ...testRuns
+        .filter((run) => run.buildId === release.buildId && run.environment === release.environment)
+        .map((run) => toEpochMillis(run.executedAt)),
+      ...defects
+        .filter((defect) => resolvedDefectStatuses.has(defect.status))
+        .map((defect) => toEpochMillis(defect.verifiedAt)),
+      ...testRuns
+        .filter((run) => run.buildId === release.buildId && run.environment === release.environment)
+        .map((run) => toEpochMillis(evidenceById.get(run.evidenceRef)?.assertedAt)),
+      ...defects
+        .filter((defect) => resolvedDefectStatuses.has(defect.status))
+        .map((defect) => toEpochMillis(evidenceById.get(defect.verificationEvidenceRef)?.assertedAt)),
+    ];
+    return groundingTimestamps.every(
+      (groundingMs) => Number.isFinite(groundingMs) && reviewedMs >= groundingMs,
+    );
+  }
+  const recommendationValid = isRecommendationValid();
+  if (recommendation !== null) {
+    if (
+      recommendation.reviewerId !== null &&
+      recommendation.reviewerId !== undefined &&
+      !principalIds.has(recommendation.reviewerId)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          "recommendation.reviewerId",
+          `Reviewer principal reference ${JSON.stringify(recommendation.reviewerId)} does not resolve.`,
+        ),
+      );
+    }
+    if (recommendation.state !== undefined && !enumRecommendationStates.has(recommendation.state)) {
+      findings.push(
+        finding(
+          "invalid_recommendation_state",
+          "recommendation.state",
+          `Recommendation state ${JSON.stringify(recommendation.state)} is not supported.`,
+        ),
+      );
+    }
+  }
+  if (recommendation?.state === "recommend-release" && !recommendationValid) {
+    findings.push(
+      finding(
+        "premature_release_recommendation",
+        "recommendation.state",
+        "A recommend-release state requires a non-empty, fully tested current-build/environment requirement set, no open blocker/critical defect, and an independent qa-release-authority reviewer (distinct from the release owner) dated at or after every grounding test run and defect verification.",
+      ),
+    );
+  }
+
+  if (
+    typeof handoff.owner !== "string" ||
+    handoff.owner.trim().length === 0 ||
+    isAgentIdentityName(handoff.owner) ||
+    QUALITY_ASSURANCE_LEAD_PATTERN.test(handoff.owner)
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "The handoff must remain owned by a named, accountable human, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+
+  const expectedHandoffState = recommendation?.state === "recommend-release" && recommendationValid ? "ready" : "blocked";
+  if (handoff.state !== expectedHandoffState) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready until the release is validly recommended.",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "deploy-release",
+    "merge-release",
+    "publish-release",
+    "alter-environment",
+    "close-defect",
+    "waive-failure",
+    "approve-release",
+  ];
+  const prohibitedActionsRecord = stringListFindings(
+    handoff.prohibitedActions,
+    "handoff.prohibitedActions",
+    "Prohibited actions",
+  );
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `Release handoffs must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  const narrativeTexts = [
+    handoff.summary,
+    isRecord(recommendation) ? recommendation.rationale : null,
+  ].filter((text) => typeof text === "string");
+  const prohibitedNarrative =
+    /\bdeploy(?:ed|ing)?\s+(?:the\s+)?release|merg(?:ed|ing)?\s+(?:the\s+)?release|publish(?:ed|ing)?\s+(?:the\s+)?release|alter(?:ed|ing)?\s+(?:the\s+)?environment|clos(?:ed|ing)?\s+(?:the\s+)?defect|waiv(?:ed|ing)?\s+(?:the\s+)?failure|approv(?:ed|ing)?\s+(?:the\s+)?release/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim deploying, merging, publishing, altering an environment, closing a defect, waiving a failure, or approving the release.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
+function cloudCostAnalysisFindings(value) {
+  const findings = [];
+  function toEpochMillis(text) {
+    if (typeof text !== "string") return NaN;
+    const trimmed = text.trim();
+    if (trimmed.length === 0) return NaN;
+    const ms = Date.parse(trimmed);
+    return Number.isFinite(ms) ? ms : NaN;
+  }
+
+  // The schema's anyOf keeps the exact original HEAD legacy branch (a single
+  // period/currency/basis/total/allocations snapshot) alongside the enriched
+  // reconciliation branch, and the enriched branch deliberately reuses the
+  // legacy's own field names (period, currency, basis, total, allocations)
+  // with compatible types, so a complete enriched record always also
+  // satisfies the legacy branch structurally. schemaVersion presence alone
+  // is therefore not a sound discriminator, and neither is any of the five
+  // shared field names: dispatch on whether any field the legacy branch
+  // never declares is present instead, regardless of its value type. A
+  // partially deleted enriched record that still carries any other
+  // enriched-only property must fail closed rather than silently downgrade
+  // to the permissive legacy checks below.
+  const isEnrichedShape = [
+    "snapshot",
+    "accounts",
+    "principals",
+    "evidence",
+    "anomalies",
+    "recommendations",
+    "savingsBaseline",
+    "owner",
+    "ownerId",
+    "handoff",
+  ].some((field) => Object.hasOwn(value, field));
+  if (!isEnrichedShape) {
+    for (const field of ["period", "currency", "basis"]) {
+      if (typeof value[field] !== "string" || value[field].trim().length === 0) {
+        findings.push(
+          finding(
+            "invalid_legacy_field",
+            field,
+            `Legacy cloud cost record field "${field}" must be a non-empty, trimmed string.`,
+          ),
+        );
+      }
+    }
+    if (typeof value.total !== "number" || !Number.isFinite(value.total)) {
+      findings.push(finding("invalid_legacy_field", "total", "Legacy cloud cost record field \"total\" must be a finite number."));
+    }
+    if (!Array.isArray(value.allocations)) {
+      findings.push(finding("invalid_legacy_field", "allocations", "Legacy cloud cost record field \"allocations\" must be an array."));
+    }
+    return findings;
+  }
+  if (value.schemaVersion !== "awesomeClaws.cloudCostRecord.v1") {
+    findings.push(
+      finding(
+        "invalid_schema_version",
+        "schemaVersion",
+        "An enriched cloud cost record must declare schemaVersion awesomeClaws.cloudCostRecord.v1.",
+      ),
+    );
+  }
+
+  const accountsRecord = requiredRecordArray(value.accounts, "accounts", "Account");
+  const principalsRecord = requiredRecordArray(value.principals, "principals", "Principal");
+  const allocationsRecord = requiredRecordArray(value.allocations, "allocations", "Allocation");
+  const evidenceRecord = requiredRecordArray(value.evidence, "evidence", "Evidence");
+  const anomaliesRecord = requiredRecordArray(value.anomalies, "anomalies", "Anomaly");
+  const recommendationsRecord = requiredRecordArray(value.recommendations, "recommendations", "Recommendation");
+  findings.push(
+    ...accountsRecord.findings,
+    ...principalsRecord.findings,
+    ...allocationsRecord.findings,
+    ...evidenceRecord.findings,
+    ...anomaliesRecord.findings,
+    ...recommendationsRecord.findings,
+  );
+
+  const accounts = accountsRecord.items;
+  const principals = principalsRecord.items;
+  const allocations = allocationsRecord.items;
+  const evidence = evidenceRecord.items;
+  const anomalies = anomaliesRecord.items;
+  const recommendations = recommendationsRecord.items;
+  const snapshot = isRecord(value.snapshot) ? value.snapshot : {};
+  const handoff = isRecord(value.handoff) ? value.handoff : {};
+
+  findings.push(
+    ...recordIdFindings(accountsRecord, "accounts", "Account"),
+    ...recordIdFindings(principalsRecord, "principals", "Principal"),
+    ...recordIdFindings(allocationsRecord, "allocations", "Allocation"),
+    ...recordIdFindings(evidenceRecord, "evidence", "Evidence"),
+    ...recordIdFindings(anomaliesRecord, "anomalies", "Anomaly"),
+    ...recordIdFindings(recommendationsRecord, "recommendations", "Recommendation"),
+  );
+  const accountIds = new Set(stableRecordIds(accounts));
+  const principalIds = new Set(stableRecordIds(principals));
+  const principalsById = new Map(principals.filter(hasStableRecordId).map((item) => [item.id, item]));
+  const evidenceIds = new Set(stableRecordIds(evidence));
+  const evidenceById = new Map(evidence.filter(hasStableRecordId).map((item) => [item.id, item]));
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+  requireReferences(accounts.map((item) => item.id), accountIds, "accounts", "Account");
+  requireReferences(principals.map((item) => item.id), principalIds, "principals", "Principal");
+  requireReferences(evidence.map((item) => item.id), evidenceIds, "evidence", "Evidence");
+  requireReferences(allocations.map((item) => item.id), new Set(allocations.map((item) => item.id)), "allocations", "Allocation");
+  requireReferences(anomalies.map((item) => item.id), new Set(anomalies.map((item) => item.id)), "anomalies", "Anomaly");
+  requireReferences(recommendations.map((item) => item.id), new Set(recommendations.map((item) => item.id)), "recommendations", "Recommendation");
+
+  function isAccountablePrincipalName(name) {
+    return (
+      typeof name === "string" &&
+      name.trim().length > 0 &&
+      !isAgentIdentityName(name) &&
+      !CLOUD_COST_ANALYST_PATTERN.test(name)
+    );
+  }
+  for (const [index, principal] of principalsRecord.entries) {
+    if (!isAccountablePrincipalName(principal.name)) {
+      findings.push(
+        finding(
+          "invalid_principal_identity",
+          `principals[${index}].name`,
+          "A principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned.",
+        ),
+      );
+    }
+    if (!Array.isArray(principal.scopes)) {
+      findings.push(
+        finding("invalid_principal_scopes", `principals[${index}].scopes`, "A principal's scopes must be an array."),
+      );
+    }
+  }
+
+  const nowMs = Date.now();
+  const requestedMs = toEpochMillis(snapshot.requestedAt);
+  const windowStartMs = toEpochMillis(snapshot.windowStart);
+  const windowEndMs = toEpochMillis(snapshot.windowEnd);
+  // "asOf" is a date-only field (e.g. "2026-09-01"); treat it as bounded by
+  // the end of that local day rather than midnight so a same-day snapshot
+  // is never spuriously treated as "in the future" relative to Date.now().
+  const asOfEndMs = typeof snapshot.asOf === "string" ? endOfLocalDayMs(snapshot.asOf, "UTC") : null;
+
+  if (accounts.length === 0) {
+    findings.push(finding("premature_ready_state", "accounts", "A cloud cost record must scope at least one account."));
+  }
+  if (!Number.isFinite(windowStartMs) || !Number.isFinite(windowEndMs) || windowStartMs > windowEndMs) {
+    findings.push(finding("invalid_timestamp", "snapshot", "The billing snapshot window must have a parseable start at or before its end."));
+  }
+  if (asOfEndMs === null || asOfEndMs > nowMs) {
+    findings.push(finding("future_evidence", "snapshot.asOf", "The billing snapshot asOf date cannot resolve to the future."));
+  }
+  if (snapshot.currency !== value.currency) {
+    findings.push(finding("cross_scope_evidence", "snapshot.currency", "The billing snapshot currency must match the record's declared currency."));
+  }
+
+  // Evidence only grounds an allocation/anomaly/recommendation when it is a
+  // billing export for the exact same account, the exact same currency, and
+  // the exact same billing window as the snapshot (never a different
+  // account, window, or currency's export), cites a real controlled
+  // reference, and its own timestamp is parseable, not in the future, and
+  // not asserted before the window it reports on has actually closed.
+  function isEvidenceGroundingValid(evidenceRef, expectedAccountRef) {
+    const record = evidenceById.get(evidenceRef);
+    if (!record) return false;
+    if (record.kind !== "billing-export") return false;
+    if (expectedAccountRef !== undefined && record.accountRef !== expectedAccountRef) return false;
+    if (record.currency !== value.currency) return false;
+    if (record.windowStart !== snapshot.windowStart || record.windowEnd !== snapshot.windowEnd) return false;
+    if (!isValidControlledReference(record.sourceRef)) return false;
+    const assertedMs = toEpochMillis(record.assertedAt);
+    if (!Number.isFinite(assertedMs)) return false;
+    if (assertedMs > nowMs) return false;
+    if (Number.isFinite(windowEndMs) && assertedMs < windowEndMs) return false;
+    if (Number.isFinite(requestedMs) && assertedMs < requestedMs - 24 * 60 * 60 * 1000) return false;
+    return true;
+  }
+
+  for (const [index, item] of evidenceRecord.entries) {
+    if (item.kind !== "billing-export") {
+      findings.push(finding("invalid_evidence_kind", `evidence[${index}].kind`, `Evidence kind ${JSON.stringify(item.kind)} is not supported.`));
+    }
+    if (!accountIds.has(item.accountRef)) {
+      findings.push(finding("dangling_reference", `evidence[${index}].accountRef`, `Account reference ${JSON.stringify(item.accountRef)} does not resolve.`));
+    }
+    const assertedMs = toEpochMillis(item.assertedAt);
+    if (!Number.isFinite(assertedMs)) {
+      findings.push(finding("invalid_timestamp", `evidence[${index}].assertedAt`, "Evidence assertedAt must be a parseable timestamp."));
+    } else if (assertedMs > nowMs) {
+      findings.push(finding("future_evidence", `evidence[${index}].assertedAt`, "Evidence assertedAt cannot be in the future."));
+    } else if (Number.isFinite(windowEndMs) && assertedMs < windowEndMs) {
+      findings.push(finding("stale_evidence", `evidence[${index}].assertedAt`, "Billing export evidence cannot be asserted before its own billing window closes."));
+    }
+    if (!isValidControlledReference(item.sourceRef)) {
+      findings.push(finding("untrusted_evidence_source", `evidence[${index}].sourceRef`, "Evidence must carry a valid, controlled/attributable source reference, not a fabricated or narrative source."));
+    }
+    if (item.currency !== value.currency || item.windowStart !== snapshot.windowStart || item.windowEnd !== snapshot.windowEnd) {
+      findings.push(finding("cross_scope_evidence", `evidence[${index}]`, "Evidence must share the record's exact currency and billing window; a different scope's export cannot ground this record."));
+    }
+  }
+
+  let allocationTotal = 0;
+  let hasNumericAllocationIssue = false;
+  for (const [index, item] of allocationsRecord.entries) {
+    if (!accountIds.has(item.accountRef)) {
+      findings.push(finding("dangling_reference", `allocations[${index}].accountRef`, `Account reference ${JSON.stringify(item.accountRef)} does not resolve.`));
+    }
+    if (typeof item.amount !== "number" || !Number.isFinite(item.amount) || item.amount < 0) {
+      findings.push(finding("invalid_legacy_field", `allocations[${index}].amount`, "An allocation amount must be a finite, nonnegative number."));
+      hasNumericAllocationIssue = true;
+    } else {
+      allocationTotal += item.amount;
+    }
+    if (!isEvidenceGroundingValid(item.evidenceRef, item.accountRef)) {
+      findings.push(
+        finding(
+          "cross_scope_evidence",
+          `allocations[${index}].evidenceRef`,
+          "An allocation must reference its own account's controlled billing-export evidence, scoped to the exact same currency and billing window.",
+        ),
+      );
+    }
+  }
+  if (!hasNumericAllocationIssue && !numbersEqual(allocationTotal, value.total)) {
+    findings.push(
+      finding(
+        "total_reconciliation_mismatch",
+        "allocations",
+        `Allocation amounts sum to ${allocationTotal}, which does not reconcile with the declared total ${value.total}.`,
+      ),
+    );
+  }
+
+  for (const [index, item] of anomaliesRecord.entries) {
+    if (!accountIds.has(item.accountRef)) {
+      findings.push(finding("dangling_reference", `anomalies[${index}].accountRef`, `Account reference ${JSON.stringify(item.accountRef)} does not resolve.`));
+    }
+    if (!isEvidenceGroundingValid(item.evidenceRef, item.accountRef)) {
+      findings.push(
+        finding(
+          "cross_scope_evidence",
+          `anomalies[${index}].evidenceRef`,
+          "An anomaly must reference its own account's controlled billing-export evidence, scoped to the exact same currency and billing window.",
+        ),
+      );
+    }
+  }
+
+  const enumApprovalStates = new Set(["pending", "accepted", "rejected"]);
+  const savingsKeys = [];
+  let acceptedSavingsTotal = 0;
+  for (const [index, item] of recommendationsRecord.entries) {
+    if (!accountIds.has(item.accountRef)) {
+      findings.push(finding("dangling_reference", `recommendations[${index}].accountRef`, `Account reference ${JSON.stringify(item.accountRef)} does not resolve.`));
+    }
+    if (!isEvidenceGroundingValid(item.evidenceRef, item.accountRef)) {
+      findings.push(
+        finding(
+          "cross_scope_evidence",
+          `recommendations[${index}].evidenceRef`,
+          "A recommendation must reference its own account's controlled billing-export evidence, scoped to the exact same currency and billing window.",
+        ),
+      );
+    }
+    if (typeof item.estimatedSavings !== "number" || !Number.isFinite(item.estimatedSavings) || item.estimatedSavings < 0) {
+      findings.push(finding("negative_savings_recommendation", `recommendations[${index}].estimatedSavings`, "Estimated savings must be a finite, nonnegative number."));
+    }
+    if (typeof item.confidence !== "number" || item.confidence < 0 || item.confidence > 1) {
+      findings.push(finding("invalid_recommendation_confidence", `recommendations[${index}].confidence`, "Recommendation confidence must be a number between 0 and 1."));
+    }
+    if (typeof item.basis !== "string" || item.basis.trim().length < 10) {
+      findings.push(finding("unsupported_recommendation_approval", `recommendations[${index}].basis`, "A recommendation must state a substantive, evidence-linked basis."));
+    }
+    const ownerPrincipal = principalsById.get(item.ownerId);
+    if (!item.ownerId || !principalIds.has(item.ownerId) || !ownerPrincipal || !isAccountablePrincipalName(ownerPrincipal.name)) {
+      findings.push(finding("agent_owned_authority", `recommendations[${index}].ownerId`, "A recommendation must be bound to an accountable, registered, non-agent owner principal."));
+    }
+    // A recommendation cannot smuggle in a claim of realized savings: this
+    // is advisory-only, and any truthy "realized"-style marker (however it
+    // was added) must be rejected outright rather than silently ignored.
+    if (item.realized === true || item.savingsRealized === true || item.status === "realized") {
+      findings.push(finding("savings_realized_claim", `recommendations[${index}]`, "A recommendation cannot claim realized savings; it may only be proposed, pending, accepted, or rejected."));
+    }
+
+    const approval = isRecord(item.approval) ? item.approval : {};
+    if (approval.state !== undefined && !enumApprovalStates.has(approval.state)) {
+      findings.push(finding("invalid_recommendation_state", `recommendations[${index}].approval.state`, `Approval state ${JSON.stringify(approval.state)} is not supported.`));
+    }
+    if (approval.state === "accepted") {
+      const approverId = approval.approverId;
+      const approver = principalsById.get(approverId);
+      const selfApproved = approverId === item.ownerId;
+      if (selfApproved) {
+        findings.push(finding("self_approved_recommendation", `recommendations[${index}].approval.approverId`, "A recommendation cannot be approved by the same principal who owns it."));
+      }
+      if (
+        approverId !== null &&
+        approverId !== undefined &&
+        !principalIds.has(approverId)
+      ) {
+        findings.push(finding("dangling_reference", `recommendations[${index}].approval.approverId`, `Approver principal reference ${JSON.stringify(approverId)} does not resolve.`));
+      } else if (
+        !selfApproved &&
+        (!approver || !isAccountablePrincipalName(approver.name) || !Array.isArray(approver.scopes) || !approver.scopes.includes("cost-approval-authority"))
+      ) {
+        findings.push(finding("unsupported_recommendation_approval", `recommendations[${index}].approval.approverId`, "An accepted recommendation must be approved by an accountable principal holding cost-approval-authority."));
+      }
+      const approvedMs = toEpochMillis(approval.approvedAt);
+      const evidenceRecordForItem = evidenceById.get(item.evidenceRef);
+      const evidenceAssertedMs = toEpochMillis(evidenceRecordForItem?.assertedAt);
+      if (
+        !Number.isFinite(approvedMs) ||
+        approvedMs > nowMs ||
+        (Number.isFinite(evidenceAssertedMs) && approvedMs < evidenceAssertedMs)
+      ) {
+        findings.push(finding("unsupported_recommendation_approval", `recommendations[${index}].approval.approvedAt`, "An accepted recommendation's approval must be dated at or after its grounding evidence and not in the future."));
+      }
+      savingsKeys.push(`${item.accountRef}\u0000${item.type}\u0000${item.basis}`);
+      if (typeof item.estimatedSavings === "number" && Number.isFinite(item.estimatedSavings) && item.estimatedSavings >= 0) {
+        acceptedSavingsTotal += item.estimatedSavings;
+      }
+    }
+  }
+  findings.push(...uniqueFindings(savingsKeys, "recommendations", "Accepted recommendation").map((item) => ({ ...item, code: "duplicate_savings_recommendation" })));
+
+  if (typeof value.savingsBaseline !== "number" || !Number.isFinite(value.savingsBaseline) || value.savingsBaseline < 0) {
+    findings.push(finding("invalid_legacy_field", "savingsBaseline", "The savings baseline must be a finite, nonnegative number."));
+  } else if (acceptedSavingsTotal > value.savingsBaseline + Number.EPSILON * Math.max(1, value.savingsBaseline) * 8) {
+    findings.push(
+      finding(
+        "savings_exceeds_baseline",
+        "recommendations",
+        `Accepted recommendation savings total ${acceptedSavingsTotal}, which exceeds the eligible savings baseline ${value.savingsBaseline}.`,
+      ),
+    );
+  }
+
+  if (
+    typeof value.owner !== "string" ||
+    value.owner.trim().length === 0 ||
+    isAgentIdentityName(value.owner) ||
+    CLOUD_COST_ANALYST_PATTERN.test(value.owner)
+  ) {
+    findings.push(finding("agent_owned_authority", "owner", "The cost record must remain owned by a named, accountable human, not missing, blank, or agent/package-owned."));
+  }
+  const ownerPrincipal = principalsById.get(value.ownerId);
+  if (typeof value.ownerId !== "string" || value.ownerId.trim().length === 0) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "ownerId",
+        "The cost record owner must be bound to a non-empty stable principal id.",
+      ),
+    );
+  } else if (!principalIds.has(value.ownerId)) {
+    findings.push(finding("dangling_reference", "ownerId", `Owner principal reference ${JSON.stringify(value.ownerId)} does not resolve.`));
+  } else if (ownerPrincipal !== undefined && !isAccountablePrincipalName(ownerPrincipal.name)) {
+    findings.push(finding("agent_owned_authority", "ownerId", "The cost record owner principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned."));
+  }
+
+  if (
+    typeof handoff.owner !== "string" ||
+    handoff.owner.trim().length === 0 ||
+    isAgentIdentityName(handoff.owner) ||
+    CLOUD_COST_ANALYST_PATTERN.test(handoff.owner)
+  ) {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "The handoff must remain owned by a named, accountable human, not missing, blank, or agent/package-owned."));
+  }
+
+  const hasBlockingFindingsSoFar = findings.some((item) =>
+    [
+      "invalid_schema_version",
+      "invalid_array_list",
+      "invalid_array_record",
+      "dangling_reference",
+      "duplicate_reference",
+      "invalid_evidence_kind",
+      "invalid_timestamp",
+      "future_evidence",
+      "stale_evidence",
+      "untrusted_evidence_source",
+      "cross_scope_evidence",
+      "total_reconciliation_mismatch",
+      "invalid_recommendation_confidence",
+      "negative_savings_recommendation",
+      "duplicate_savings_recommendation",
+      "savings_exceeds_baseline",
+      "savings_realized_claim",
+      "self_approved_recommendation",
+      "unsupported_recommendation_approval",
+      "invalid_recommendation_state",
+      "agent_owned_authority",
+      "invalid_principal_identity",
+      "invalid_principal_scopes",
+    ].includes(item.code),
+  );
+  const readyValid = accounts.length > 0 && !hasBlockingFindingsSoFar;
+  if (handoff.state === "ready" && !readyValid) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready until the billing snapshot reconciles, every allocation/anomaly/recommendation resolves to scoped controlled evidence, and no savings, approval, or authority defect remains.",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "change-cloud-resources",
+    "purchase-commitment",
+    "apply-tags",
+    "apply-budget",
+    "terminate-service",
+    "represent-finance-approval",
+    "claim-realized-savings",
+  ];
+  const prohibitedActionsRecord = stringListFindings(handoff.prohibitedActions, "handoff.prohibitedActions", "Prohibited actions");
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(finding("missing_authority_gate", "handoff.prohibitedActions", `Cloud cost handoffs must keep ${action} explicitly prohibited.`));
+    }
+  }
+
+  const narrativeTexts = [
+    handoff.summary,
+    ...recommendations.map((item) => item.description),
+  ].filter((text) => typeof text === "string");
+  const prohibitedNarrative =
+    /\bchang(?:ed|ing)?\s+(?:the\s+)?cloud\s+resources?|purchas(?:ed|ing)?\s+(?:the\s+)?commitment|appl(?:ied|ying)?\s+(?:the\s+)?tags?|appl(?:ied|ying)?\s+(?:the\s+)?budget|terminat(?:ed|ing)?\s+(?:the\s+)?service|(?:finance|financial)\s+approv(?:ed|al)|realiz(?:ed|ing)?\s+(?:the\s+)?savings/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim changing cloud resources, purchasing a commitment, applying tags/budget, terminating a service, representing finance approval, or realizing savings.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
+function dataMigrationReadinessFindings(value) {
+  const findings = [];
+  function toEpochMillis(text) {
+    if (typeof text !== "string") return NaN;
+    const trimmed = text.trim();
+    if (trimmed.length === 0) return NaN;
+    const ms = Date.parse(trimmed);
+    return Number.isFinite(ms) ? ms : NaN;
+  }
+
+  // The schema's anyOf keeps the exact original HEAD legacy branch (a single
+  // sourceVersion/targetVersion/mappings/reconciliation snapshot) alongside
+  // the enriched cutover-readiness branch, and the enriched branch reuses
+  // the legacy's own field names (sourceVersion, targetVersion, mappings,
+  // reconciliation) with compatible types, so a complete enriched record
+  // always also satisfies the legacy branch structurally. schemaVersion
+  // presence alone is therefore not a sound discriminator, and neither is
+  // any of the four shared field names: dispatch on whether any field the
+  // legacy branch never declares is present instead, regardless of its
+  // value type. A partially deleted enriched record that still carries any
+  // other enriched-only property must fail closed rather than silently
+  // downgrade to the permissive legacy checks below.
+  const isEnrichedShape = [
+    "systems",
+    "requiredFields",
+    "principals",
+    "evidence",
+    "exceptions",
+    "dataQualityFindings",
+    "rollback",
+    "owner",
+    "ownerId",
+    "cutoverApproval",
+    "handoff",
+  ].some((field) => Object.hasOwn(value, field));
+  if (!isEnrichedShape) {
+    for (const field of ["sourceVersion", "targetVersion"]) {
+      if (typeof value[field] !== "string" || value[field].trim().length === 0) {
+        findings.push(
+          finding(
+            "invalid_legacy_field",
+            field,
+            `Legacy migration mapping field "${field}" must be a non-empty, trimmed string.`,
+          ),
+        );
+      }
+    }
+    for (const field of ["mappings", "reconciliation"]) {
+      if (!Array.isArray(value[field])) {
+        findings.push(
+          finding("invalid_legacy_field", field, `Legacy migration mapping field "${field}" must be an array.`),
+        );
+      }
+    }
+    return findings;
+  }
+  if (value.schemaVersion !== "awesomeClaws.migrationMapping.v1") {
+    findings.push(
+      finding(
+        "invalid_schema_version",
+        "schemaVersion",
+        "An enriched migration mapping must declare schemaVersion awesomeClaws.migrationMapping.v1.",
+      ),
+    );
+  }
+
+  const mappingsRecord = requiredRecordArray(value.mappings, "mappings", "Mapping");
+  const reconciliationRecord = requiredRecordArray(value.reconciliation, "reconciliation", "Batch");
+  const principalsRecord = requiredRecordArray(value.principals, "principals", "Principal");
+  const evidenceRecord = requiredRecordArray(value.evidence, "evidence", "Evidence");
+  const exceptionsRecord = requiredRecordArray(value.exceptions, "exceptions", "Exception");
+  const dataQualityRecord = requiredRecordArray(value.dataQualityFindings, "dataQualityFindings", "Data quality finding");
+  findings.push(
+    ...mappingsRecord.findings,
+    ...reconciliationRecord.findings,
+    ...principalsRecord.findings,
+    ...evidenceRecord.findings,
+    ...exceptionsRecord.findings,
+    ...dataQualityRecord.findings,
+  );
+
+  const mappings = mappingsRecord.items;
+  const batches = reconciliationRecord.items;
+  const principals = principalsRecord.items;
+  const evidence = evidenceRecord.items;
+  const exceptions = exceptionsRecord.items;
+  const dataQualityFindingsList = dataQualityRecord.items;
+  const systems = isRecord(value.systems) ? value.systems : {};
+  const source = isRecord(systems.source) ? systems.source : {};
+  const target = isRecord(systems.target) ? systems.target : {};
+  const rollback = isRecord(value.rollback) ? value.rollback : {};
+  const handoff = isRecord(value.handoff) ? value.handoff : {};
+  const cutoverApproval = isRecord(value.cutoverApproval) ? value.cutoverApproval : {};
+
+  findings.push(
+    ...recordIdFindings(mappingsRecord, "mappings", "Mapping"),
+    ...recordIdFindings(reconciliationRecord, "reconciliation", "Batch"),
+    ...recordIdFindings(principalsRecord, "principals", "Principal"),
+    ...recordIdFindings(evidenceRecord, "evidence", "Evidence"),
+    ...recordIdFindings(exceptionsRecord, "exceptions", "Exception"),
+    ...recordIdFindings(dataQualityRecord, "dataQualityFindings", "Data quality finding"),
+  );
+  const principalIds = new Set(stableRecordIds(principals));
+  const principalsById = new Map(principals.filter(hasStableRecordId).map((item) => [item.id, item]));
+  const evidenceIds = new Set(stableRecordIds(evidence));
+  const evidenceById = new Map(evidence.filter(hasStableRecordId).map((item) => [item.id, item]));
+  const batchIds = new Set(stableRecordIds(batches));
+  const batchesById = new Map(batches.filter(hasStableRecordId).map((item) => [item.id, item]));
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+  requireReferences(principals.map((item) => item.id), principalIds, "principals", "Principal");
+  requireReferences(evidence.map((item) => item.id), evidenceIds, "evidence", "Evidence");
+  requireReferences(mappings.map((item) => item.id), new Set(mappings.map((item) => item.id)), "mappings", "Mapping");
+  requireReferences(batches.map((item) => item.id), batchIds, "reconciliation", "Batch");
+  requireReferences(exceptions.map((item) => item.id), new Set(exceptions.map((item) => item.id)), "exceptions", "Exception");
+  requireReferences(
+    dataQualityFindingsList.map((item) => item.id),
+    new Set(dataQualityFindingsList.map((item) => item.id)),
+    "dataQualityFindings",
+    "Data quality finding",
+  );
+
+  for (const [index, mapping] of mappingsRecord.entries) {
+    if (typeof mapping.sourceField !== "string" || mapping.sourceField.trim().length === 0) {
+      findings.push(finding("invalid_array_record", `mappings[${index}].sourceField`, "A mapping must carry a non-empty source field."));
+    }
+    if (typeof mapping.targetField !== "string" || mapping.targetField.trim().length === 0) {
+      findings.push(finding("invalid_array_record", `mappings[${index}].targetField`, "A mapping must carry a non-empty target field."));
+    }
+  }
+
+  function isAccountablePrincipalName(name) {
+    return (
+      typeof name === "string" &&
+      name.trim().length > 0 &&
+      !isAgentIdentityName(name) &&
+      !DATA_MIGRATION_PLANNER_PATTERN.test(name)
+    );
+  }
+  for (const [index, principal] of principalsRecord.entries) {
+    if (!isAccountablePrincipalName(principal.name)) {
+      findings.push(
+        finding(
+          "invalid_principal_identity",
+          `principals[${index}].name`,
+          "A principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned.",
+        ),
+      );
+    }
+    if (!Array.isArray(principal.scopes)) {
+      findings.push(
+        finding("invalid_principal_scopes", `principals[${index}].scopes`, "A principal's scopes must be an array."),
+      );
+    }
+  }
+
+  const nowMs = Date.now();
+  for (const [label, system] of [["source", source], ["target", target]]) {
+    if (typeof system.id !== "string" || system.id.trim().length === 0) {
+      findings.push(finding("invalid_array_record", `systems.${label}.id`, `The ${label} system must carry a non-empty id.`));
+    }
+    if (typeof system.snapshotId !== "string" || system.snapshotId.trim().length === 0) {
+      findings.push(finding("invalid_array_record", `systems.${label}.snapshotId`, `The ${label} system must carry a non-empty snapshot identity.`));
+    }
+  }
+  const sourceAsOfEndMs = typeof source.asOf === "string" ? endOfLocalDayMs(source.asOf, "UTC") : null;
+  const targetAsOfEndMs = typeof target.asOf === "string" ? endOfLocalDayMs(target.asOf, "UTC") : null;
+  if (sourceAsOfEndMs === null || sourceAsOfEndMs > nowMs) {
+    findings.push(finding("future_evidence", "systems.source.asOf", "The source snapshot asOf date must be parseable and cannot resolve to the future."));
+  }
+  if (targetAsOfEndMs === null || targetAsOfEndMs > nowMs) {
+    findings.push(finding("future_evidence", "systems.target.asOf", "The target snapshot asOf date must be parseable and cannot resolve to the future."));
+  }
+  const snapshotReadyMs = Math.max(sourceAsOfEndMs ?? -Infinity, targetAsOfEndMs ?? -Infinity);
+
+  const requiredFieldsRecord = stringListFindings(value.requiredFields, "requiredFields", "Required fields");
+  findings.push(...requiredFieldsRecord.findings);
+  const requiredFields = requiredFieldsRecord.items;
+  if (mappings.length === 0) {
+    findings.push(
+      finding(
+        "missing_mapping",
+        "mappings",
+        "A migration readiness artifact must define at least one source-to-target mapping.",
+      ),
+    );
+  }
+  const mappedSourceFields = new Set(mappings.map((item) => item.sourceField));
+  for (const field of requiredFields) {
+    if (!mappedSourceFields.has(field)) {
+      findings.push(finding("missing_mapping", "mappings", `Required source field ${JSON.stringify(field)} has no mapping.`));
+    }
+  }
+
+  // Evidence only grounds a batch/rollback drill when it is scoped to the
+  // exact same source and target snapshot identity declared by "systems"
+  // (never a different snapshot's export), optionally the exact same batch,
+  // cites a real controlled reference, and its own timestamp is parseable,
+  // not in the future, and not asserted before both snapshots existed.
+  function isEvidenceGroundingValid(evidenceRef, expectedKinds, expectedBatchRef) {
+    const record = evidenceById.get(evidenceRef);
+    if (!record) return false;
+    if (!Array.isArray(expectedKinds) || !expectedKinds.includes(record.kind)) return false;
+    if (expectedBatchRef !== undefined && record.batchRef !== expectedBatchRef) return false;
+    if (record.sourceSnapshotId !== source.snapshotId || record.targetSnapshotId !== target.snapshotId) return false;
+    if (!isValidControlledReference(record.sourceRef)) return false;
+    const assertedMs = toEpochMillis(record.assertedAt);
+    if (!Number.isFinite(assertedMs)) return false;
+    if (assertedMs > nowMs) return false;
+    if (Number.isFinite(snapshotReadyMs) && assertedMs < snapshotReadyMs) return false;
+    return true;
+  }
+
+  const enumEvidenceKinds = new Set(["rehearsal-run", "production-run", "rollback-drill"]);
+  for (const [index, item] of evidenceRecord.entries) {
+    if (!enumEvidenceKinds.has(item.kind)) {
+      findings.push(
+        finding(
+          "invalid_evidence_kind",
+          `evidence[${index}].kind`,
+          `Evidence kind ${JSON.stringify(item.kind)} is not supported.`,
+        ),
+      );
+    }
+    const assertedMs = toEpochMillis(item.assertedAt);
+    if (!Number.isFinite(assertedMs)) {
+      findings.push(finding("invalid_timestamp", `evidence[${index}].assertedAt`, "Evidence assertedAt must be a parseable timestamp."));
+    } else if (assertedMs > nowMs) {
+      findings.push(finding("future_evidence", `evidence[${index}].assertedAt`, "Evidence assertedAt cannot be in the future."));
+    } else if (Number.isFinite(snapshotReadyMs) && assertedMs < snapshotReadyMs) {
+      findings.push(finding("stale_evidence", `evidence[${index}].assertedAt`, "Migration evidence cannot be asserted before both source and target snapshots exist."));
+    }
+    if (!isValidControlledReference(item.sourceRef)) {
+      findings.push(finding("untrusted_evidence_source", `evidence[${index}].sourceRef`, "Evidence must carry a valid, controlled/attributable source reference, not a fabricated or narrative source."));
+    }
+    if (item.sourceSnapshotId !== source.snapshotId || item.targetSnapshotId !== target.snapshotId) {
+      findings.push(finding("cross_scope_evidence", `evidence[${index}]`, "Evidence must share the record's exact source and target snapshot identity; a different snapshot's evidence cannot ground this record."));
+    }
+  }
+
+  const enumBatchKinds = new Set(["rehearsal", "production"]);
+  for (const [index, batch] of reconciliationRecord.entries) {
+    if (!enumBatchKinds.has(batch.kind)) {
+      findings.push(
+        finding(
+          "invalid_batch_kind",
+          `reconciliation[${index}].kind`,
+          `Batch kind ${JSON.stringify(batch.kind)} is not supported.`,
+        ),
+      );
+    }
+    const counts = ["sourceCount", "migratedCount", "rejectedCount", "heldCount"];
+    let allCountsValid = true;
+    for (const field of counts) {
+      const isOptionalHeld = field === "heldCount" && batch[field] === undefined;
+      if (isOptionalHeld) continue;
+      if (typeof batch[field] !== "number" || !Number.isFinite(batch[field]) || batch[field] < 0) {
+        findings.push(finding("invalid_batch_count", `reconciliation[${index}].${field}`, `Batch ${field} must be a finite, nonnegative number.`));
+        allCountsValid = false;
+      }
+    }
+    if (allCountsValid) {
+      const heldCount = batch.heldCount ?? 0;
+      if (!numbersEqual(batch.sourceCount, batch.migratedCount + batch.rejectedCount + heldCount)) {
+        findings.push(
+          finding(
+            "count_reconciliation_mismatch",
+            `reconciliation[${index}]`,
+            `Batch source count ${batch.sourceCount} does not reconcile with migrated (${batch.migratedCount}) + rejected (${batch.rejectedCount}) + held (${heldCount}).`,
+          ),
+        );
+      }
+      if (
+        typeof batch.sourceChecksum === "string" &&
+        typeof batch.targetChecksum === "string" &&
+        batch.rejectedCount === 0 &&
+        heldCount === 0 &&
+        batch.sourceChecksum !== batch.targetChecksum
+      ) {
+        findings.push(
+          finding(
+            "checksum_mismatch",
+            `reconciliation[${index}]`,
+            "A fully migrated batch's source and target control totals/checksums must match.",
+          ),
+        );
+      }
+    }
+    const expectedEvidenceKind = enumBatchKinds.has(batch.kind) ? `${batch.kind}-run` : null;
+    if (
+      expectedEvidenceKind === null ||
+      !isEvidenceGroundingValid(batch.evidenceRef, [expectedEvidenceKind], batch.id)
+    ) {
+      findings.push(
+        finding(
+          "cross_scope_evidence",
+          `reconciliation[${index}].evidenceRef`,
+          "A reconciliation batch must reference its own controlled rehearsal/production evidence, scoped to the exact same source/target snapshot identity.",
+        ),
+      );
+    }
+  }
+
+  let hasUnresolvedException = false;
+  for (const [index, item] of exceptionsRecord.entries) {
+    if (!batchIds.has(item.batchRef)) {
+      findings.push(finding("dangling_reference", `exceptions[${index}].batchRef`, `Batch reference ${JSON.stringify(item.batchRef)} does not resolve.`));
+    }
+    const validDispositions = new Set(["resolved", "waived", "pending"]);
+    if (!validDispositions.has(item.disposition)) {
+      findings.push(finding("invalid_disposition", `exceptions[${index}].disposition`, `Exception disposition ${JSON.stringify(item.disposition)} is not supported.`));
+      hasUnresolvedException = true;
+      continue;
+    }
+    if (item.disposition !== "resolved") {
+      // Waived and pending exceptions are schema-valid dispositions, but
+      // neither one is an evidenced resolution: this artifact must never
+      // treat a waived defect as clearing the exception for readiness.
+      findings.push(finding("unresolved_reject", `exceptions[${index}].disposition`, "Every exception must be explicitly resolved with verified evidence before cutover readiness; pending or waived rejects remain open."));
+      hasUnresolvedException = true;
+      continue;
+    }
+    const batchKind = batchesById.get(item.batchRef)?.kind;
+    const expectedEvidenceKind = enumBatchKinds.has(batchKind) ? `${batchKind}-run` : null;
+    if (
+      expectedEvidenceKind === null ||
+      !isEvidenceGroundingValid(item.evidenceRef, [expectedEvidenceKind], item.batchRef)
+    ) {
+      findings.push(finding("unresolved_reject", `exceptions[${index}].evidenceRef`, "A resolved exception must reference controlled evidence scoped to its own batch and snapshot identity."));
+      hasUnresolvedException = true;
+    }
+    const verifiedMs = toEpochMillis(item.verifiedAt);
+    const groundingEvidence = evidenceById.get(item.evidenceRef);
+    const groundingMs = toEpochMillis(groundingEvidence?.assertedAt);
+    if (!Number.isFinite(verifiedMs) || verifiedMs > nowMs || (Number.isFinite(groundingMs) && verifiedMs < groundingMs)) {
+      findings.push(finding("unresolved_reject", `exceptions[${index}].verifiedAt`, "A resolved exception's verification must be dated at or after its grounding evidence and not in the future."));
+      hasUnresolvedException = true;
+    }
+  }
+
+  for (const [index, item] of dataQualityRecord.entries) {
+    if (!isEvidenceGroundingValid(item.evidenceRef, ["rehearsal-run", "production-run"])) {
+      findings.push(finding("cross_scope_evidence", `dataQualityFindings[${index}].evidenceRef`, "A data quality finding must reference controlled evidence scoped to the record's exact source/target snapshot identity."));
+    }
+  }
+
+  const rollbackPlanValid = typeof rollback.plan === "string" && rollback.plan.trim().length >= 10;
+  const rollbackEvidenceValid = isEvidenceGroundingValid(rollback.evidenceRef, ["rollback-drill"]);
+  const rollbackVerified = rollback.verified === true;
+  if (!rollbackPlanValid || !rollbackEvidenceValid || !rollbackVerified) {
+    findings.push(finding("missing_rollback", "rollback", "Cutover readiness requires an explicit rollback plan grounded in verified, controlled evidence."));
+  }
+
+  const enumApprovalStates = new Set(["pending", "accepted", "rejected"]);
+  if (cutoverApproval.state !== undefined && !enumApprovalStates.has(cutoverApproval.state)) {
+    findings.push(finding("invalid_recommendation_state", "cutoverApproval.state", `Cutover approval state ${JSON.stringify(cutoverApproval.state)} is not supported.`));
+  }
+  let cutoverApprovalValid = false;
+  if (cutoverApproval.state === "accepted") {
+    const approverId = cutoverApproval.approverId;
+    const approver = principalsById.get(approverId);
+    const selfApproved = approverId === value.ownerId;
+    if (selfApproved) {
+      findings.push(finding("self_approved_cutover", "cutoverApproval.approverId", "Cutover readiness cannot be approved by the same principal who owns the migration."));
+    }
+    if (approverId !== null && approverId !== undefined && !principalIds.has(approverId)) {
+      findings.push(finding("dangling_reference", "cutoverApproval.approverId", `Approver principal reference ${JSON.stringify(approverId)} does not resolve.`));
+    } else if (
+      !selfApproved &&
+      (!approver || !isAccountablePrincipalName(approver.name) || !Array.isArray(approver.scopes) || !approver.scopes.includes("cutover-approval-authority"))
+    ) {
+      findings.push(finding("unsupported_cutover_approval", "cutoverApproval.approverId", "Cutover readiness must be approved by an accountable principal holding cutover-approval-authority."));
+    }
+    const approvedMs = toEpochMillis(cutoverApproval.approvedAt);
+    const latestEvidenceMs = evidence.reduce((max, item) => {
+      const ms = toEpochMillis(item.assertedAt);
+      return Number.isFinite(ms) && ms > max ? ms : max;
+    }, -Infinity);
+    if (
+      !Number.isFinite(approvedMs) ||
+      approvedMs > nowMs ||
+      (Number.isFinite(latestEvidenceMs) && approvedMs < latestEvidenceMs)
+    ) {
+      findings.push(finding("unsupported_cutover_approval", "cutoverApproval.approvedAt", "Cutover approval must be dated at or after all grounding evidence and not in the future."));
+    } else if (!selfApproved && approver && Array.isArray(approver.scopes) && approver.scopes.includes("cutover-approval-authority")) {
+      cutoverApprovalValid = true;
+    }
+  }
+
+  if (
+    typeof value.owner !== "string" ||
+    value.owner.trim().length === 0 ||
+    isAgentIdentityName(value.owner) ||
+    DATA_MIGRATION_PLANNER_PATTERN.test(value.owner)
+  ) {
+    findings.push(finding("agent_owned_authority", "owner", "The migration record must remain owned by a named, accountable human, not missing, blank, or agent/package-owned."));
+  }
+  const ownerPrincipal = principalsById.get(value.ownerId);
+  if (typeof value.ownerId !== "string" || value.ownerId.trim().length === 0) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "ownerId",
+        "The migration record owner must be bound to a non-empty stable principal id.",
+      ),
+    );
+  } else if (!principalIds.has(value.ownerId)) {
+    findings.push(finding("dangling_reference", "ownerId", `Owner principal reference ${JSON.stringify(value.ownerId)} does not resolve.`));
+  } else if (ownerPrincipal !== undefined && !isAccountablePrincipalName(ownerPrincipal.name)) {
+    findings.push(finding("agent_owned_authority", "ownerId", "The migration record owner principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned."));
+  }
+
+  if (
+    typeof handoff.owner !== "string" ||
+    handoff.owner.trim().length === 0 ||
+    isAgentIdentityName(handoff.owner) ||
+    DATA_MIGRATION_PLANNER_PATTERN.test(handoff.owner)
+  ) {
+    findings.push(finding("agent_owned_authority", "handoff.owner", "The handoff must remain owned by a named, accountable human, not missing, blank, or agent/package-owned."));
+  }
+
+  const hasBlockingFindingsSoFar = findings.some((item) =>
+    [
+      "invalid_schema_version",
+      "invalid_array_list",
+      "invalid_array_record",
+      "dangling_reference",
+      "duplicate_reference",
+      "invalid_timestamp",
+      "future_evidence",
+      "stale_evidence",
+      "untrusted_evidence_source",
+      "invalid_evidence_kind",
+      "invalid_batch_kind",
+      "cross_scope_evidence",
+      "missing_mapping",
+      "invalid_batch_count",
+      "count_reconciliation_mismatch",
+      "checksum_mismatch",
+      "invalid_disposition",
+      "unresolved_reject",
+      "missing_rollback",
+      "invalid_recommendation_state",
+      "self_approved_cutover",
+      "unsupported_cutover_approval",
+      "agent_owned_authority",
+      "invalid_principal_identity",
+      "invalid_principal_scopes",
+    ].includes(item.code),
+  );
+  const readyValid =
+    batches.length > 0 &&
+    !hasUnresolvedException &&
+    cutoverApprovalValid &&
+    !hasBlockingFindingsSoFar;
+  if (handoff.state === "ready" && !readyValid) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready until every batch reconciles with grounded evidence, every exception is resolved and verified, rollback is verified, and an independent, authorized cutover approval postdates all grounding evidence.",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "execute-migration",
+    "execute-cutover",
+    "write-source",
+    "write-target",
+    "waive-defect",
+    "delete-data",
+    "represent-business-approval",
+    "represent-security-approval",
+  ];
+  const prohibitedActionsRecord = stringListFindings(handoff.prohibitedActions, "handoff.prohibitedActions", "Prohibited actions");
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(finding("missing_authority_gate", "handoff.prohibitedActions", `Migration handoffs must keep ${action} explicitly prohibited.`));
+    }
+  }
+
+  const narrativeTexts = [handoff.summary, rollback.plan].filter((text) => typeof text === "string");
+  const prohibitedNarrative =
+    /\bexecut(?:ed|ing)?\s+(?:the\s+)?migration|execut(?:ed|ing)?\s+(?:the\s+)?cutover|wrot(?:e)?\s+(?:to\s+)?(?:the\s+)?source|writ(?:ing)?\s+(?:to\s+)?(?:the\s+)?source|wrot(?:e)?\s+(?:to\s+)?(?:the\s+)?target|writ(?:ing)?\s+(?:to\s+)?(?:the\s+)?target|waiv(?:ed|ing)?\s+(?:the\s+)?defect|delet(?:ed|ing)?\s+(?:the\s+)?data|(?:business|security)\s+approv(?:ed|al)/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim executing the migration or cutover, writing source/target, waiving a defect, deleting data, or representing business/security approval.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
 function workflowExecutionReconciliationFindings(value, options = {}) {
   const findings = [];
   const manifest = value.manifest ?? {};
@@ -39881,6 +41490,8 @@ const validators = {
   "change-control-operator": changeControlFindings,
   "child-activity-manager": childActivityFindings,
   "civic-data-analyst": civicDataFindings,
+  "cloud-cost-analyst": cloudCostAnalysisFindings,
+  "data-migration-planner": dataMigrationReadinessFindings,
   "content-operations": publicationReadinessRecordFindings,
   "data-analyst": dataAnalysisFindings,
   "delegation-coordinator": delegationFindings,
@@ -39937,6 +41548,7 @@ const validators = {
   "procurement-evaluator": procurementEvaluationFindings,
   "purchase-researcher": purchaseResearchFindings,
   "public-safety-monitor": publicSafetyFindings,
+  "quality-assurance-lead": qualityAssuranceReleaseFindings,
   "recruiting-coordinator": recruitingFindings,
   "restaurant-venue-scout": restaurantVenueFindings,
   "research-briefing": researchFindings,

@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "cloud-cost-analyst",
+    "name": "Cloud cost analyst",
+    "category": "analysis",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-19"
+    },
+    "description": "Reconciles approved cloud billing exports into allocation, anomaly, commitment, and optimization evidence without changing cloud resources.",
+    "audience": "Engineering, finance, and FinOps teams reviewing a bounded cloud-cost period and accountable optimization decisions.",
+    "principles": [
+      "Reconcile currency, billing period, account, service, tags, credits, and amortization",
+      "Separate observed spend from allocation assumptions and forecast",
+      "Show reliability and operational tradeoffs before savings"
+    ],
+    "boundaries": [
+      "Do not access cloud accounts, purchase commitments, resize or delete resources, change budgets or tags, or contact providers",
+      "Do not expose account identifiers, customer data, credentials, or detailed security topology beyond the approved audience",
+      "Do not present estimates as invoices, accounting approval, guaranteed savings, or safe operational changes"
+    ],
+    "intake": [
+      "Approved billing exports, provider, accounts, period, currency, cost basis, and accountable finance owner",
+      "Allocation rules, tags, shared-cost policy, commitments, credits, budgets, service owners, and known changes",
+      "Optimization constraints, reliability requirements, forecast horizon, anomaly thresholds, and action authority"
+    ],
+    "workflow": [
+      "Validate export completeness and normalize period, currency, accounts, services, tags, credits, and amortization",
+      "Reconcile totals and apply explicit allocation assumptions with unallocated cost preserved",
+      "Populate the packaged cost schema, inline operating view, and complete analysis report",
+      "Frame anomalies and optimization options with reliability, migration, commitment, and owner constraints without changing cloud state"
+    ],
+    "deliverables": [
+      "Billing reconciliation",
+      "Allocation and unallocated-cost ledger",
+      "Inline cost and anomaly view",
+      "Optimization option register",
+      "Finance and service-owner handoff"
+    ],
+    "example": {
+      "request": "Analyze this synthetic three-month cloud billing export, explain the database-cost increase, and prepare optimization options; do not access or change cloud resources.",
+      "outcome": "A reconciled cost basis, allocation and anomaly evidence, accessible cost view, constrained optimization options, and owner handoff without cloud mutation."
+    },
+    "doneWhen": [
+      "Reported totals reconcile to the approved export by period, currency, account, service, credits, and amortization basis",
+      "Observed cost, allocation assumption, anomaly, forecast, and optimization estimate remain distinct",
+      "The visual and Markdown report agree and expose unallocated, unknown, and low-confidence amounts",
+      "No cloud access, commitment purchase, resource change, budget change, deletion, or provider contact occurred"
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "resources": [
+      {
+        "source": "schemas/cloud-cost-record.schema.json",
+        "path": "schemas/cloud-cost-record.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "assets/cloud-cost-view.html",
+        "path": "assets/cloud-cost-view.html",
+        "role": "asset"
+      },
+      {
+        "source": "templates/cloud-cost-analysis.md",
+        "path": "templates/cloud-cost-analysis.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/cloud-cost-record.example.json",
+        "path": "fixtures/cloud-cost-record.example.json",
+        "role": "fixture"
+      }
+    ],
+    "capabilityGuidance": [
+      "The profile grants workspace-limited analysis and inline visualization only; it does not provide cloud, billing, budget, commitment, tagging, or resource-management access.",
+      "Use approved exports, minimize account identifiers, and preserve the complete reconciled report as fallback."
+    ]
+  },
+  "contribution": {
+    "problem": "Cost/finance-adjacent entries in this catalog either model a single scoped ledger with no cross-record reconciliation (so allocations, anomalies, and recommendations could silently reference a different account, billing window, or currency than the one being reported) or leave savings claims as free narrative with no accepted/duplicate/baseline guard, so a review could double-count savings, exceed an eligible baseline, or represent a still-pending recommendation as already realized.",
+    "repeatableJob": "Given a billing snapshot (asOf/window/currency), a set of accounts, controlled per-account billing-export evidence, allocations, anomalies, and savings recommendations, reconcile allocation totals against the declared total within tolerance, ground every allocation/anomaly/recommendation to evidence scoped to the exact same account/window/currency, and gate an accepted recommendation on an independent, non-self approval so the record can only report accepted savings that are grounded, non-duplicated, and bounded by an explicit eligible-savings baseline.",
+    "proofPlan": "The packaged schema keeps the exact legacy period/currency/basis/total/allocations object valid under anyOf (the enriched branch reuses those same field names/types at the top level so a complete enriched record also satisfies the legacy branch), while the enriched branch additionally requires a snapshot, accounts, principals, evidence, anomalies, recommendations, a savingsBaseline, and a handoff; a total semantic validator registered in scripts/artifact-semantics.mjs enforces total reconciliation via numbersEqual, cross-account/window/currency evidence grounding, duplicate/negative/exceeds-baseline savings checks, self/arbitrary-approval rejection, and a realistic synthetic two-account quarterly billing fixture backs a focused adversarial test suite covering cross-scope evidence, mismatched totals, duplicate and realized-savings claims, and CLI/legacy compatibility.",
+    "existingAlternatives": [
+      {
+        "id": "facilities-operations-coordinator",
+        "overlap": "Both reconcile a multi-entity operational ledger (billing allocations versus work orders/assets across sites) against controlled evidence before an accountable handoff can be marked ready.",
+        "difference": "Facilities operations coordinator grounds readiness in work-order completion and asset condition evidence per site, while cloud cost analyst grounds readiness in billing-export reconciliation and bounded savings recommendations per account; the evidence shapes and the domain reconciliation math (labor/parts versus currency totals) are not interchangeable."
+      },
+      {
+        "id": "accessibility-review-coordinator",
+        "overlap": "Both produce a structured, severity/finding-style ledger (accessibility findings versus cost anomalies/recommendations) gated by an accountable reviewer distinct from the record owner before a release-facing recommendation is marked ready.",
+        "difference": "Accessibility review coordinator scopes findings to WCAG success criteria and remediation verification, while cloud cost analyst scopes findings to billing anomalies and savings recommendations bounded by an eligible-savings baseline, a materially different evidence and reconciliation model."
+      },
+      {
+        "id": "data-migration-planner",
+        "overlap": "Both are analysis/engineering-category models that reconcile a quantitative ledger (billing totals versus row/checksum counts) against controlled evidence before an irreversible or accountable downstream decision.",
+        "difference": "Data migration planner reconciles source-to-target record counts and checksums for a one-time cutover, while cloud cost analyst reconciles allocation amounts against a billing total for a recurring cost period; the underlying quantities, tolerance rules, and approval gates are domain-specific and not substitutable."
+      },
+      {
+        "id": "procurement-evaluator",
+        "overlap": "Both bind a monetary recommendation (savings versus vendor award) to controlled evidence and an accountable, non-self approval before it can be treated as accepted.",
+        "difference": "Procurement evaluator scores competing vendor bids against weighted criteria to recommend an award, while cloud cost analyst reconciles observed billing allocations and gates savings recommendations against an eligible baseline; the two do not share an evidence or scoring model."
+      }
+    ]
+  }
+}

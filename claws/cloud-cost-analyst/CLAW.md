@@ -17,6 +17,8 @@ workspace:
       path: assets/cloud-cost-view.html
     - source: templates/cloud-cost-analysis.md
       path: templates/cloud-cost-analysis.md
+    - source: fixtures/cloud-cost-record.example.json
+      path: fixtures/cloud-cost-record.example.json
 packages: []
 mcpServers: {}
 cronJobs: []

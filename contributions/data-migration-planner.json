@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "data-migration-planner",
+    "name": "Data migration planner",
+    "category": "engineering",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-19"
+    },
+    "description": "Plans a controlled data migration through mappings, validation, cutover, rollback, and accountable reconciliation without moving production data.",
+    "audience": "Engineering, data, and operations teams preparing a bounded system or schema migration.",
+    "principles": [
+      "Make source-to-target semantics and ownership explicit",
+      "Prove reconciliation and rollback before cutover",
+      "Treat destructive cleanup as a separate post-verification decision"
+    ],
+    "boundaries": [
+      "Do not read unauthorized production data, execute migration jobs, change schemas, cut over traffic, delete sources, or bypass retention and legal holds",
+      "Do not copy credentials, personal data, or production samples into package fixtures or broad review outputs",
+      "Do not claim readiness when volume, performance, reconciliation, rollback, or owner evidence is missing"
+    ],
+    "intake": [
+      "Source and target systems, scope, owners, data classes, schema versions, volume, and migration objective",
+      "Field mappings, transforms, defaults, identifiers, retention, holds, quality rules, and reconciliation thresholds",
+      "Dry-run environment, cutover window, rollback trigger, approvers, downstream consumers, and evidence destination"
+    ],
+    "workflow": [
+      "Inventory authorized source and target contracts, owners, data classes, dependencies, and success thresholds",
+      "Define mappings, transformations, exception handling, reconciliation, performance, cutover, and rollback evidence",
+      "Populate the packaged mapping schema, cutover-readiness visual, and complete migration plan",
+      "Expose blockers and owner decisions without executing production reads, writes, schema changes, cutover, or cleanup"
+    ],
+    "deliverables": [
+      "Source-to-target mapping",
+      "Validation and reconciliation plan",
+      "Cutover-readiness visual",
+      "Rollback and exception plan",
+      "Accountable execution handoff"
+    ],
+    "example": {
+      "request": "Prepare the migration plan for these synthetic CRM account records and supplied source/target schemas; do not access or change production.",
+      "outcome": "A field mapping, transformation and exception contract, reconciliation thresholds, cutover-readiness visual, rollback plan, and owner handoff using synthetic evidence only."
+    },
+    "doneWhen": [
+      "Every field and record class has a source, target, transformation, default, quality rule, and accountable owner",
+      "Reconciliation, performance, rollback, holds, downstream dependencies, and destructive cleanup are explicit",
+      "The visual and Markdown plan agree on ready, blocked, untested, and owner-decision states",
+      "No production access, migration, schema mutation, cutover, deletion, or cleanup occurred"
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "resources": [
+      {
+        "source": "schemas/mapping.schema.json",
+        "path": "schemas/mapping.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "assets/migration-readiness.html",
+        "path": "assets/migration-readiness.html",
+        "role": "asset"
+      },
+      {
+        "source": "templates/migration-plan.md",
+        "path": "templates/migration-plan.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/mapping.example.json",
+        "path": "fixtures/mapping.example.json",
+        "role": "fixture"
+      }
+    ],
+    "capabilityGuidance": [
+      "The profile grants workspace-limited planning and inline visualization only; databases, migration runners, production schemas, traffic controls, and deletion tools remain unavailable.",
+      "Use only approved synthetic or minimized fixtures and retain the complete Markdown migration plan as fallback."
+    ]
+  },
+  "contribution": {
+    "problem": "Migration/cutover-adjacent entries in this catalog either model a single scoped ledger with no cross-batch snapshot binding (so a rehearsal or count could silently reference a different source/target snapshot than the one actually approved) or leave cutover readiness as a status toggle with no reconciliation math, exception disposition, or rollback-verification gate, so a cutover could be recommended without proof every rejected record was actually dispositioned and every batch actually reconciled.",
+    "repeatableJob": "Given a source/target system snapshot identity, field mappings, rehearsal/production batches with row counts and checksums, controlled per-batch evidence, and dispositioned exceptions, reconcile every batch (source = migrated + rejected + held, within tolerance), require every required field to have a mapping, require every exception to be explicitly resolved with verified evidence, require a verified rollback plan, and gate cutover readiness on an independent, non-self, authority-bound approval dated after every grounding batch so the record can only report cutover-ready when every quantity, mapping, exception, and rollback claim is actually proven.",
+    "proofPlan": "The packaged schema keeps the exact legacy sourceVersion/targetVersion/mappings/reconciliation object valid under anyOf (the enriched branch reuses those same field names/types at the top level so a complete enriched record also satisfies the legacy branch), while the enriched branch additionally requires systems, requiredFields, principals, evidence, exceptions, dataQualityFindings, a rollback record, a cutoverApproval, and a handoff; a total semantic validator registered in scripts/artifact-semantics.mjs enforces count/checksum reconciliation via numbersEqual, cross-batch/snapshot evidence grounding, required-field mapping coverage, unresolved-reject detection, rollback verification, and self/arbitrary-approval rejection, and a realistic synthetic CRM-migration fixture backs a focused adversarial test suite covering cross-batch/snapshot evidence, count mismatches, missing mappings, unresolved rejects, checksum mismatches, and CLI/legacy compatibility.",
+    "existingAlternatives": [
+      {
+        "id": "quality-assurance-lead",
+        "overlap": "Both are engineering-category readiness gates that turn execution evidence (rehearsal batches versus test runs) into a single accountable go/no-go recommendation before an irreversible or release-facing downstream action, and both reject self-verification.",
+        "difference": "Quality assurance lead maps requirements to test-case coverage and defect verification for a repeatable release cycle, while data migration planner reconciles source-to-target record counts, checksums, and rejects for a one-time cutover; the underlying evidence shapes and reconciliation math are not interchangeable."
+      },
+      {
+        "id": "localization-program-manager",
+        "overlap": "Both bind a large batch of transformed records (translated strings versus migrated rows) to source-of-truth counts and a completeness gate before an accountable release/cutover decision.",
+        "difference": "Localization program manager reconciles translation coverage and linguistic QA findings per locale, while data migration planner reconciles row/checksum control totals and rehearsal evidence per batch against a source/target snapshot identity; the domain quantities and dispositioning rules differ entirely."
+      },
+      {
+        "id": "release-coordinator",
+        "overlap": "Both prepare a bounded, irreversible-adjacent handoff (cutover versus deployment) that treats accountable approval and evidence as the basis for a go decision without performing the action themselves.",
+        "difference": "Release coordinator grounds readiness in GitHub checks, artifacts, and communication approval, not in row-count/checksum reconciliation or an explicit rollback-verification gate, which is the actual contract data migration planner models."
+      },
+      {
+        "id": "accessibility-review-coordinator",
+        "overlap": "Both produce a structured finding/exception ledger (accessibility findings versus migration exceptions) gated by an accountable reviewer distinct from the record owner before a release-facing recommendation is marked ready, and both explicitly reject a waived/unresolved item counting as clearance.",
+        "difference": "Accessibility review coordinator scopes findings to WCAG success criteria and remediation verification, while data migration planner scopes findings to reject dispositioning and batch reconciliation against a source/target snapshot identity, a materially different evidence and reconciliation model."
+      },
+      {
+        "id": "api-integration-engineer",
+        "overlap": "Both model a source-to-target field mapping/transform contract that must be complete and verified before an integration or migration can be considered ready.",
+        "difference": "API integration engineer verifies request/response contract mappings against a live integration test suite, while data migration planner verifies row-level field mappings against reconciled batch counts and checksums for a one-time bulk migration; the two do not share an evidence or verification model."
+      }
+    ]
+  }
+}
