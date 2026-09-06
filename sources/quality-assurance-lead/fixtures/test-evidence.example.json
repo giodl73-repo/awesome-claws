@@ -1,0 +1,153 @@
+{
+  "schemaVersion": "awesomeClaws.testEvidence.v1",
+  "release": {
+    "id": "release-2026.9.0-mobile-checkout",
+    "buildId": "release-2026.9.0-mobile",
+    "environment": "staging-mobile-qa",
+    "scope": "Checkout and payments flow, mobile app v9.0",
+    "requestedAt": "2026-08-28T00:00:00Z"
+  },
+  "owner": "Jordan Blake, Engineering Release Owner",
+  "ownerId": "principal-jordan-blake",
+  "principals": [
+    { "id": "principal-jordan-blake", "name": "Jordan Blake", "roles": ["engineering-lead"], "scopes": ["release-owner"] },
+    { "id": "principal-qa-engineer-alex", "name": "Alex Rivera", "roles": ["qa-engineer"], "scopes": ["test-execution"] },
+    { "id": "principal-qa-engineer-priya", "name": "Priya Desai", "roles": ["qa-engineer"], "scopes": ["test-execution", "defect-verification"] },
+    { "id": "principal-qa-lead-morgan", "name": "Morgan Ellis", "roles": ["qa-lead"], "scopes": ["qa-release-authority"] }
+  ],
+  "requirements": [
+    { "id": "req-checkout-completion", "description": "Checkout completes in three taps or fewer on the mobile app.", "priority": "critical" },
+    { "id": "req-payment-retry", "description": "A transient payment decline can be retried without losing the cart.", "priority": "critical" },
+    { "id": "req-offline-cart-sync", "description": "Cart contents resynchronize correctly after a brief offline period.", "priority": "high" }
+  ],
+  "testCases": [
+    { "id": "tc-checkout-completion-happy", "requirementRef": "req-checkout-completion", "description": "Complete checkout end to end with a saved payment method." },
+    { "id": "tc-payment-retry-decline", "requirementRef": "req-payment-retry", "description": "Force a transient decline, then retry payment and confirm cart integrity." },
+    { "id": "tc-offline-cart-sync-reconnect", "requirementRef": "req-offline-cart-sync", "description": "Add items while offline, reconnect, and confirm the cart reconciles with the server." }
+  ],
+  "testRuns": [
+    {
+      "id": "run-checkout-completion-1",
+      "testCaseRef": "tc-checkout-completion-happy",
+      "buildId": "release-2026.9.0-mobile",
+      "environment": "staging-mobile-qa",
+      "executedAt": "2026-09-01T10:00:00Z",
+      "executedById": "principal-qa-engineer-alex",
+      "result": "passed",
+      "evidenceRef": "evidence-run-checkout-completion-1"
+    },
+    {
+      "id": "run-payment-retry-1",
+      "testCaseRef": "tc-payment-retry-decline",
+      "buildId": "release-2026.9.0-mobile",
+      "environment": "staging-mobile-qa",
+      "executedAt": "2026-09-01T11:00:00Z",
+      "executedById": "principal-qa-engineer-alex",
+      "result": "failed",
+      "evidenceRef": "evidence-run-payment-retry-1"
+    },
+    {
+      "id": "run-payment-retry-2",
+      "testCaseRef": "tc-payment-retry-decline",
+      "buildId": "release-2026.9.0-mobile",
+      "environment": "staging-mobile-qa",
+      "executedAt": "2026-09-02T09:00:00Z",
+      "executedById": "principal-qa-engineer-alex",
+      "result": "passed",
+      "evidenceRef": "evidence-run-payment-retry-2"
+    },
+    {
+      "id": "run-offline-cart-sync-1",
+      "testCaseRef": "tc-offline-cart-sync-reconnect",
+      "buildId": "release-2026.9.0-mobile",
+      "environment": "staging-mobile-qa",
+      "executedAt": "2026-09-01T12:00:00Z",
+      "executedById": "principal-qa-engineer-priya",
+      "result": "passed",
+      "evidenceRef": "evidence-run-offline-cart-sync-1"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-run-checkout-completion-1",
+      "kind": "execution-result",
+      "testRunRef": "run-checkout-completion-1",
+      "buildId": "release-2026.9.0-mobile",
+      "outcome": "passed",
+      "sourceRef": "controlled://qa-evidence/release-2026.9.0-mobile/checkout-completion-1",
+      "assertedAt": "2026-09-01T10:05:00Z"
+    },
+    {
+      "id": "evidence-run-payment-retry-1",
+      "kind": "execution-result",
+      "testRunRef": "run-payment-retry-1",
+      "buildId": "release-2026.9.0-mobile",
+      "outcome": "failed",
+      "sourceRef": "controlled://qa-evidence/release-2026.9.0-mobile/payment-retry-1",
+      "assertedAt": "2026-09-01T11:05:00Z"
+    },
+    {
+      "id": "evidence-run-payment-retry-2",
+      "kind": "execution-result",
+      "testRunRef": "run-payment-retry-2",
+      "buildId": "release-2026.9.0-mobile",
+      "outcome": "passed",
+      "sourceRef": "controlled://qa-evidence/release-2026.9.0-mobile/payment-retry-2",
+      "assertedAt": "2026-09-02T09:05:00Z"
+    },
+    {
+      "id": "evidence-run-offline-cart-sync-1",
+      "kind": "execution-result",
+      "testRunRef": "run-offline-cart-sync-1",
+      "buildId": "release-2026.9.0-mobile",
+      "outcome": "passed",
+      "sourceRef": "controlled://qa-evidence/release-2026.9.0-mobile/offline-cart-sync-1",
+      "assertedAt": "2026-09-01T12:05:00Z"
+    },
+    {
+      "id": "evidence-defect-verification-payment-retry",
+      "kind": "defect-verification",
+      "defectRef": "defect-payment-retry-decline",
+      "testRunRef": "run-payment-retry-2",
+      "buildId": "release-2026.9.0-mobile",
+      "sourceRef": "controlled://qa-evidence/release-2026.9.0-mobile/defect-payment-retry-verification",
+      "assertedAt": "2026-09-02T09:30:00Z"
+    }
+  ],
+  "defects": [
+    {
+      "id": "defect-payment-retry-decline",
+      "testRunRef": "run-payment-retry-1",
+      "severity": "major",
+      "status": "verified",
+      "foundAt": "2026-09-01T11:05:00Z",
+      "verifiedById": "principal-qa-engineer-priya",
+      "verifiedAt": "2026-09-02T09:30:00Z",
+      "verificationEvidenceRef": "evidence-defect-verification-payment-retry"
+    }
+  ],
+  "limitations": [
+    "Load and security testing were out of scope for this cycle and require separate authorization.",
+    "Offline cart sync was validated only on the primary reconnect path; secondary carrier failover is untested."
+  ],
+  "recommendation": {
+    "state": "recommend-release",
+    "rationale": "All three release-blocking requirements have current-build passing coverage, the one major payment-retry defect was independently verified after a fix, and no blocker/critical defects remain open.",
+    "reviewerId": "principal-qa-lead-morgan",
+    "reviewedAt": "2026-09-02T10:00:00Z"
+  },
+  "handoff": {
+    "owner": "Jordan Blake, Engineering Release Owner",
+    "prohibitedActions": [
+      "deploy-release",
+      "merge-release",
+      "publish-release",
+      "alter-environment",
+      "close-defect",
+      "waive-failure",
+      "approve-release"
+    ],
+    "state": "ready",
+    "summary": "QA recommends release; no deployment, merge, publication, environment change, defect closure, waiver, or release approval occurred."
+  }
+}

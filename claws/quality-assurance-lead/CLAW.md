@@ -17,6 +17,8 @@ workspace:
       path: assets/qa-coverage.html
     - source: templates/release-quality.md
       path: templates/release-quality.md
+    - source: fixtures/test-evidence.example.json
+      path: fixtures/test-evidence.example.json
 packages: []
 mcpServers: {}
 cronJobs: []

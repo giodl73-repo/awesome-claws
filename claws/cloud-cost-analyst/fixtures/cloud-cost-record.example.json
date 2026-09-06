@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "awesomeClaws.cloudCostRecord.v1",
+  "period": "2026-08",
+  "currency": "USD",
+  "basis": "amortized",
+  "total": 128450.32,
+  "savingsBaseline": 128450.32,
+  "owner": "Sam Ortiz, Finance Owner",
+  "ownerId": "principal-finance-owner-sam",
+  "snapshot": {
+    "asOf": "2026-09-01",
+    "windowStart": "2026-08-01T00:00:00Z",
+    "windowEnd": "2026-08-31T23:59:59Z",
+    "currency": "USD",
+    "requestedAt": "2026-09-01T00:00:00Z"
+  },
+  "accounts": [
+    { "id": "account-prod", "name": "Contoso Production", "provider": "aws" },
+    { "id": "account-staging", "name": "Contoso Staging", "provider": "aws" }
+  ],
+  "principals": [
+    { "id": "principal-finance-owner-sam", "name": "Sam Ortiz", "roles": ["finance-owner"], "scopes": ["cost-owner"] },
+    { "id": "principal-finops-lead-dana", "name": "Dana Whitfield", "roles": ["finops-lead"], "scopes": ["cost-approval-authority"] },
+    { "id": "principal-eng-owner-riley", "name": "Riley Chen", "roles": ["service-owner"], "scopes": ["service-owner"] }
+  ],
+  "allocations": [
+    { "id": "alloc-prod-compute", "accountRef": "account-prod", "service": "compute", "costCenter": "platform-eng", "amount": 52000.00, "evidenceRef": "evidence-billing-prod" },
+    { "id": "alloc-prod-storage", "accountRef": "account-prod", "service": "storage", "costCenter": "platform-eng", "amount": 18000.00, "evidenceRef": "evidence-billing-prod" },
+    { "id": "alloc-prod-database", "accountRef": "account-prod", "service": "database", "costCenter": "platform-eng", "amount": 41000.32, "evidenceRef": "evidence-billing-prod" },
+    { "id": "alloc-staging-compute", "accountRef": "account-staging", "service": "compute", "costCenter": "qa-infra", "amount": 17450.00, "evidenceRef": "evidence-billing-staging" }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-billing-prod",
+      "kind": "billing-export",
+      "accountRef": "account-prod",
+      "windowStart": "2026-08-01T00:00:00Z",
+      "windowEnd": "2026-08-31T23:59:59Z",
+      "currency": "USD",
+      "sourceRef": "controlled://billing-evidence/account-prod/2026-08",
+      "assertedAt": "2026-09-01T02:00:00Z"
+    },
+    {
+      "id": "evidence-billing-staging",
+      "kind": "billing-export",
+      "accountRef": "account-staging",
+      "windowStart": "2026-08-01T00:00:00Z",
+      "windowEnd": "2026-08-31T23:59:59Z",
+      "currency": "USD",
+      "sourceRef": "controlled://billing-evidence/account-staging/2026-08",
+      "assertedAt": "2026-09-01T02:05:00Z"
+    }
+  ],
+  "anomalies": [
+    {
+      "id": "anomaly-database-spike",
+      "accountRef": "account-prod",
+      "service": "database",
+      "description": "Database compute cost increased 34% versus the prior month due to an unindexed query causing extra read IOPS.",
+      "evidenceRef": "evidence-billing-prod",
+      "severity": "moderate"
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "rec-rightsizing-staging-compute",
+      "accountRef": "account-staging",
+      "type": "rightsizing",
+      "description": "Downsize staging compute instances outside business hours.",
+      "estimatedSavings": 3200.00,
+      "basis": "Observed 62% average utilization across the billing window supports a smaller instance family.",
+      "confidence": 0.78,
+      "evidenceRef": "evidence-billing-staging",
+      "ownerId": "principal-eng-owner-riley",
+      "approval": {
+        "state": "accepted",
+        "approverId": "principal-finops-lead-dana",
+        "approvedAt": "2026-09-02T00:00:00Z"
+      }
+    },
+    {
+      "id": "rec-reserved-instance-prod-database",
+      "accountRef": "account-prod",
+      "type": "reserved-instance",
+      "description": "Purchase a 1-year reserved instance commitment for steady-state prod database compute.",
+      "estimatedSavings": 9100.00,
+      "basis": "12-month steady-state usage projection derived from the current billing export.",
+      "confidence": 0.65,
+      "evidenceRef": "evidence-billing-prod",
+      "ownerId": "principal-eng-owner-riley",
+      "approval": {
+        "state": "pending",
+        "approverId": null,
+        "approvedAt": null
+      }
+    }
+  ],
+  "handoff": {
+    "owner": "Sam Ortiz, Finance Owner",
+    "prohibitedActions": [
+      "change-cloud-resources",
+      "purchase-commitment",
+      "apply-tags",
+      "apply-budget",
+      "terminate-service",
+      "represent-finance-approval",
+      "claim-realized-savings"
+    ],
+    "state": "ready",
+    "summary": "Billing reconciled with grounded allocations and one accepted, evidence-based rightsizing recommendation."
+  }
+}

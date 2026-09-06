@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "awesomeClaws.migrationMapping.v1",
+  "sourceVersion": "legacy-crm@2026.7",
+  "targetVersion": "cloud-crm@2026.9",
+  "owner": "Dana Ruiz, Migration Lead",
+  "ownerId": "principal-migration-lead-dana",
+  "systems": {
+    "source": { "id": "system-legacy-crm", "name": "Legacy CRM (on-prem)", "snapshotId": "snap-source-2026-08-30", "asOf": "2026-08-30" },
+    "target": { "id": "system-cloud-crm", "name": "Cloud CRM", "snapshotId": "snap-target-2026-08-30", "asOf": "2026-08-30" }
+  },
+  "requiredFields": ["AccountID", "AccountName", "PrimaryEmail"],
+  "mappings": [
+    { "id": "map-account-id", "sourceField": "AccountID", "targetField": "account_id", "transform": "direct", "required": true },
+    { "id": "map-account-name", "sourceField": "AccountName", "targetField": "account_name", "transform": "trim", "required": true },
+    { "id": "map-account-email", "sourceField": "PrimaryEmail", "targetField": "primary_email", "transform": "lowercase", "required": true },
+    { "id": "map-account-owner", "sourceField": "OwnerId", "targetField": "owner_ref", "transform": "lookup", "required": false }
+  ],
+  "principals": [
+    { "id": "principal-migration-lead-dana", "name": "Dana Ruiz", "roles": ["migration-lead"], "scopes": ["migration-owner"] },
+    { "id": "principal-cutover-authority-neil", "name": "Neil Prakash", "roles": ["cutover-authority"], "scopes": ["cutover-approval-authority"] },
+    { "id": "principal-data-steward-omar", "name": "Omar Haddad", "roles": ["data-steward"], "scopes": ["data-quality-owner"] }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-rehearsal-1",
+      "kind": "rehearsal-run",
+      "batchRef": "batch-rehearsal-1",
+      "sourceSnapshotId": "snap-source-2026-08-30",
+      "targetSnapshotId": "snap-target-2026-08-30",
+      "sourceRef": "controlled://migration-evidence/batch-rehearsal-1",
+      "assertedAt": "2026-08-31T10:00:00Z"
+    },
+    {
+      "id": "evidence-rehearsal-2",
+      "kind": "rehearsal-run",
+      "batchRef": "batch-rehearsal-2",
+      "sourceSnapshotId": "snap-source-2026-08-30",
+      "targetSnapshotId": "snap-target-2026-08-30",
+      "sourceRef": "controlled://migration-evidence/batch-rehearsal-2",
+      "assertedAt": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "evidence-rollback-drill",
+      "kind": "rollback-drill",
+      "batchRef": "batch-rehearsal-2",
+      "sourceSnapshotId": "snap-source-2026-08-30",
+      "targetSnapshotId": "snap-target-2026-08-30",
+      "sourceRef": "controlled://migration-evidence/rollback-drill-1",
+      "assertedAt": "2026-09-01T12:00:00Z"
+    }
+  ],
+  "reconciliation": [
+    {
+      "id": "batch-rehearsal-1",
+      "kind": "rehearsal",
+      "sourceCount": 5000,
+      "migratedCount": 4950,
+      "rejectedCount": 50,
+      "heldCount": 0,
+      "sourceChecksum": "chk-src-r1",
+      "targetChecksum": "chk-tgt-r1-partial",
+      "evidenceRef": "evidence-rehearsal-1"
+    },
+    {
+      "id": "batch-rehearsal-2",
+      "kind": "rehearsal",
+      "sourceCount": 5200,
+      "migratedCount": 5200,
+      "rejectedCount": 0,
+      "heldCount": 0,
+      "sourceChecksum": "chk-src-r2",
+      "targetChecksum": "chk-src-r2",
+      "evidenceRef": "evidence-rehearsal-2"
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "exc-rehearsal-1-missing-email",
+      "batchRef": "batch-rehearsal-1",
+      "recordRef": "rec-src-10432",
+      "reason": "PrimaryEmail was blank for 50 legacy accounts flagged by the rehearsal run.",
+      "disposition": "resolved",
+      "evidenceRef": "evidence-rehearsal-1",
+      "verifiedAt": "2026-08-31T12:00:00Z"
+    }
+  ],
+  "dataQualityFindings": [
+    {
+      "id": "dq-duplicate-account-names",
+      "description": "A small number of source accounts share a normalized AccountName after trimming; target dedupe key remains AccountID so no collision occurs.",
+      "severity": "minor",
+      "evidenceRef": "evidence-rehearsal-1"
+    }
+  ],
+  "rollback": {
+    "plan": "Restore the target CRM from the pre-migration target snapshot and replay no further writes; verified in a rollback drill against the rehearsal-2 batch.",
+    "evidenceRef": "evidence-rollback-drill",
+    "verified": true
+  },
+  "cutoverApproval": {
+    "state": "accepted",
+    "approverId": "principal-cutover-authority-neil",
+    "approvedAt": "2026-09-02T00:00:00Z"
+  },
+  "handoff": {
+    "owner": "Dana Ruiz, Migration Lead",
+    "prohibitedActions": [
+      "execute-migration",
+      "execute-cutover",
+      "write-source",
+      "write-target",
+      "waive-defect",
+      "delete-data",
+      "represent-business-approval",
+      "represent-security-approval"
+    ],
+    "state": "ready",
+    "summary": "Rehearsal batches reconciled with grounded evidence and an independently approved cutover readiness decision."
+  }
+}

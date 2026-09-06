@@ -17,6 +17,8 @@ workspace:
       path: assets/migration-readiness.html
     - source: templates/migration-plan.md
       path: templates/migration-plan.md
+    - source: fixtures/mapping.example.json
+      path: fixtures/mapping.example.json
 packages: []
 mcpServers: {}
 cronJobs: []
