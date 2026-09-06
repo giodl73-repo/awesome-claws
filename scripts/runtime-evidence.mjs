@@ -74,6 +74,10 @@ async function buildFromOptions(options, overrides = {}) {
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
+  const scenarioTypes = (options.scenarios ?? "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
   const modelSettings = options["model-settings"]
     ? await readJson(options["model-settings"], "Model settings")
     : {};
@@ -84,9 +88,10 @@ async function buildFromOptions(options, overrides = {}) {
     1,
   );
   const selectedClawCount = onlyIds.length || source.catalog.entries.length;
+  const selectedScenarioCount = scenarioTypes.length || 3;
   const defaultTotalTokens =
     selectedClawCount *
-    3 *
+    selectedScenarioCount *
     repetitions *
     (infrastructureRetries + 1) *
     (integerOption(options, "max-input-tokens", 4_000) +
@@ -101,6 +106,7 @@ async function buildFromOptions(options, overrides = {}) {
   const manifest = await buildRunManifest({
     ...source,
     onlyIds,
+    scenarioTypes: scenarioTypes.length > 0 ? scenarioTypes : undefined,
     mode,
     schedule,
     openclaw: {
@@ -225,6 +231,7 @@ export async function main(argv = process.argv.slice(2)) {
     "mode",
     "schedule",
     "only",
+    "scenarios",
     "output",
     "openclaw-entry",
     "openclaw-config",
@@ -250,8 +257,10 @@ export async function main(argv = process.argv.slice(2)) {
     throw new Error(`Unknown runtime evidence options: ${unknown.join(", ")}.`);
   }
   if (flags.has("check")) {
-    if (options.only) {
-      throw new Error("--check always covers the full catalog; do not combine it with --only.");
+    if (options.only || options.scenarios) {
+      throw new Error(
+        "--check always covers the full catalog and scenario set; do not combine it with --only or --scenarios.",
+      );
     }
     await runCheck(options);
     return;

@@ -178,6 +178,12 @@ npm run runtime:evidence -- --mode live --schedule baseline \
   --max-usd <explicit-total-budget>
 ```
 
+For a bounded diagnostic rerun of an already-planned trial, select an exact
+scenario with `--scenarios accepted-task`, `missing-conflicting-evidence`, or
+`prohibited-authority`. Comma-separated subsets are accepted. This option is
+diagnostic-only: deterministic `--check`, the complete baseline, and the
+seven-day soak always require all three scenarios.
+
 The live preflight calculates selected-run, full-baseline, and full-seven-day
 worst-case estimates including the configured retry allowance. A smaller
 explicit cap is allowed and honestly produces partial results. Dispatch uses
