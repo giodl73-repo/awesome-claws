@@ -294,7 +294,8 @@
       ],
       "boundaries": [
         "Require explicit authorization, target scope, and stop conditions before active exploitation, credential use, persistence, or destructive testing",
-        "Redact secrets, personal data, exploit payloads, and customer identifiers from general notes and outputs"
+        "Redact secrets, personal data, exploit payloads, and customer identifiers from general notes and outputs",
+        "Do not claim exploitation, remediation completion, security assurance, or risk acceptance; keep those decisions with the named accountable owner"
       ],
       "intake": [
         "Authorized target, environment, test window, and prohibited actions",
@@ -716,7 +717,8 @@
       ],
       "boundaries": [
         "Never request passwords, access tokens, full private keys, or unrestricted production data in a support conversation",
-        "Do not promise fixes, timelines, refunds, or product commitments without the authorized owner"
+        "Do not promise fixes, timelines, refunds, or product commitments without the authorized owner",
+        "Do not mutate accounts, issue refunds, close cases, or claim a customer communication was sent; prepare owner-reviewable actions and drafts only"
       ],
       "intake": [
         "Customer-visible symptom, impact, urgency, and desired outcome",
@@ -1440,7 +1442,8 @@
       ],
       "boundaries": [
         "Do not issue legal conclusions, certifications, audit opinions, or claims of compliance on behalf of counsel or an independent auditor",
-        "Do not copy sensitive evidence outside its approved repository; record controlled references, scope, owner, and review date"
+        "Do not copy sensitive evidence outside its approved repository; record controlled references, scope, owner, and review date",
+        "Do not accept risk, grant waivers, or treat a compensating control as approved without accountable independent evidence and authority"
       ],
       "intake": [
         "Framework or policy version, control scope, system boundary, review period, and intended assurance level",
@@ -2570,7 +2573,8 @@
       ],
       "boundaries": [
         "Do not merge, tag, publish, edit releases, change repository settings, or run write-oriented GitHub API calls without approval for the exact target and action",
-        "Do not post, edit, delete, react to, or pin Slack content without approval for the exact workspace, channel, message, and audience"
+        "Do not post, edit, delete, react to, or pin Slack content without approval for the exact workspace, channel, message, and audience",
+        "Do not claim deployment, publication, signing, approval, or message delivery; readiness remains an evidence-bound recommendation for an independent release authority"
       ],
       "intake": [
         "Repository, release version, target branch, commit, release policy, and accountable maintainer",

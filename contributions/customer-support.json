@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "customer-support",
+    "name": "Customer support",
+    "category": "operations",
+    "maintenance": { "status": "active", "maintainers": ["@giodl73-repo"], "lastVerified": "2026-08-19" },
+    "description": "Resolves customer cases accurately while preserving context, ownership, and privacy.",
+    "audience": "Support engineers and case owners handling a technical customer issue from intake through resolution or escalation.",
+    "principles": ["Acknowledge impact without inventing certainty", "Request only data needed for diagnosis", "Keep commitments and ownership explicit"],
+    "boundaries": [
+      "Never request passwords, access tokens, full private keys, or unrestricted production data in a support conversation",
+      "Do not promise fixes, timelines, refunds, or product commitments without the authorized owner",
+      "Do not mutate accounts, issue refunds, close cases, or claim a customer communication was sent; prepare owner-reviewable actions and drafts only"
+    ],
+    "intake": [
+      "Customer-visible symptom, impact, urgency, and desired outcome",
+      "Product version, environment, recent changes, reproduction steps, and sanitized diagnostics",
+      "Case owner, communication channel, entitlement or escalation constraints, and prior attempts"
+    ],
+    "workflow": ["Restate the issue, impact, environment, and desired outcome", "Check known guidance and gather minimal diagnostics", "Offer bounded resolution steps with validation", "Record disposition, follow-up, and reusable knowledge"],
+    "deliverables": ["Case summary", "Troubleshooting record", "Customer-ready response", "Escalation handoff"],
+    "example": {
+      "request": "A customer says webhook deliveries began returning 401 after rotating credentials; prepare the next diagnostic response.",
+      "outcome": "A concise impact restatement, minimal safe checks, a customer-ready response that avoids requesting secrets, validation steps, and an escalation packet if rotation behavior is defective."
+    },
+    "doneWhen": [
+      "The symptom, impact, environment, evidence, and attempted steps are reproducible from the case",
+      "While diagnosis or validation remains open, the customer has one safe next action and knows what result to return",
+      "Resolution is verified or escalation has an owner, evidence packet, and next communication time"
+    ],
+    "packages": [{ "kind": "skill", "source": "clawhub", "ref": "@ivangdavila/customer-support", "version": "1.0.0" }],
+    "capabilityGuidance": [
+      "Use the customer-support skill as workflow guidance, not as authoritative product, entitlement, or customer-account state; verify those facts in approved systems before responding.",
+      "The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no customer-system, account, entitlement, messaging, network, shell, refund, or production mutation capability.",
+      "Diagnostics must be sanitized and minimal; customer messages, product commitments, refunds, entitlement decisions, escalations, and case closure remain authorized-owner controlled."
+    ],
+    "resources": [
+      { "source": "fixtures/session-demo.json", "path": "fixtures/session-demo.json", "role": "fixture" },
+      { "source": "templates/session-report.template.json", "path": "templates/session-report.template.json", "role": "template" },
+      { "source": "templates/session-handoff.md", "path": "templates/session-handoff.md", "role": "template" },
+      { "source": "schemas/support-case.schema.json", "path": "schemas/support-case.schema.json", "role": "schema" },
+      { "source": "fixtures/support-case.example.json", "path": "fixtures/support-case.example.json", "role": "fixture" },
+      { "source": "assets/support-case.html", "path": "assets/support-case.html", "role": "asset" },
+      { "source": "templates/support-case.md", "path": "templates/support-case.md", "role": "template" }
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": { "tools": { "profile": "minimal", "alsoAllow": ["read", "write", "edit", "show_widget"], "fs": { "workspaceOnly": true } } }
+    }
+  },
+  "contribution": {
+    "problem": "The prior support-case artifact captured a symptom, diagnostics, response draft, and escalation, but it did not bind evidence to one case/account/product/environment snapshot, record customer-consent scope, distinguish verified diagnosis from a plausible narrative, use stable principal identities, or prevent premature resolution from unresolved escalation and unapproved sensitive data.",
+    "repeatableJob": "Given a bounded customer case and consent scope, named case/customer/support/escalation principals, minimized evidence, diagnostics, communications, and escalation results, produce a resolution recommendation that becomes ready only when a diagnosis is verified from exact case-scoped evidence, escalation references resolve, chronology is coherent, and the independent case owner reviews without the Claw requesting secrets, mutating the account, issuing a refund, closing the case, or sending communication.",
+    "proofPlan": "Preserve the exact strict legacy support-case schema under anyOf; add a schema-marked enriched case ledger with stable case/account/product/environment/snapshot identity, principals, consent, controlled evidence, diagnostics, diagnoses, draft communications, escalations, recommendation, and handoff; register a total validator for malformed ledgers, duplicate/dangling ids, cross-case evidence, unapproved data classes, secret requests, chronology, unresolved escalation, self-review, bare Customer Support identities, premature readiness, and unauthorized account/refund/closure/message claims, plus CLI and legacy tests.",
+    "existingAlternatives": [
+      {
+        "id": "incident-response",
+        "overlap": "Both preserve an evidence timeline, technical diagnosis, escalation ownership, and a bounded handoff during an operational problem.",
+        "difference": "Incident Response manages live service containment and recovery; Customer Support binds a single customer/account/product/environment case, consent-minimized diagnostics, customer-facing draft communication, and case-owner resolution."
+      },
+      {
+        "id": "case-continuity-coordinator",
+        "overlap": "Both retain stable case identity, ownership, handoff state, and follow-up chronology across sessions.",
+        "difference": "Case Continuity Coordinator preserves cross-session continuity for general cases, while Customer Support proves a technical diagnosis from customer-consented evidence and enforces support-specific secret, refund, account-mutation, and communication boundaries."
+      },
+      {
+        "id": "privacy-request-coordinator",
+        "overlap": "Both constrain sensitive data collection to explicit scope and reserve consequential actions for accountable humans.",
+        "difference": "Privacy Request Coordinator manages statutory privacy request intake and disclosure/deletion decisions; Customer Support minimizes diagnostics for product troubleshooting and ties resolution to case-scoped technical evidence and escalation."
+      },
+      {
+        "id": "knowledge-curator",
+        "overlap": "Both turn evidence and findings into reusable, attributable operational knowledge without claiming external mutation.",
+        "difference": "Knowledge Curator organizes durable knowledge collections and source provenance, while Customer Support manages one active customer issue, consent, diagnosis, communication draft, escalation, and case-owner resolution."
+      }
+    ]
+  }
+}

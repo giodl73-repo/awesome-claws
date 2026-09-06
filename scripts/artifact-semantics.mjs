@@ -447,6 +447,10 @@ const QUALITY_ASSURANCE_LEAD_PATTERN = /\bquality assurance lead\b/iu;
 const CLOUD_COST_ANALYST_PATTERN = /\bcloud cost analyst\b/iu;
 const DATA_MIGRATION_PLANNER_PATTERN = /\bdata migration planner\b/iu;
 const LOCALIZATION_PROGRAM_MANAGER_PATTERN = /^\s*localization program manager\s*$/iu;
+const SECURITY_ANALYST_ROLE = "security analyst";
+const RELEASE_COORDINATOR_ROLE = "release coordinator";
+const CUSTOMER_SUPPORT_ROLE = "customer support";
+const COMPLIANCE_REVIEWER_ROLE = "compliance reviewer";
 const LOCALE_CODE_PATTERN = /^[a-z]{2}(?:-[A-Z]{2})?$/u;
 
 function zoneOffsetMs(formatter, instant) {
@@ -41582,6 +41586,1731 @@ function dataMigrationReadinessFindings(value) {
   return findings;
 }
 
+function upliftTimestampMs(value) {
+  if (typeof value !== "string" || value.trim().length === 0) return NaN;
+  const milliseconds = Date.parse(value);
+  return Number.isFinite(milliseconds) ? milliseconds : NaN;
+}
+
+function upliftLedger(value, specifications, findings) {
+  const ledgers = {};
+  for (const [field, label] of specifications) {
+    const record = requiredRecordArray(value[field], field, label);
+    findings.push(
+      ...record.findings,
+      ...recordIdFindings(record, field, label),
+      ...uniqueFindings(stableRecordIds(record.items), field, label),
+    );
+    ledgers[field] = {
+      ...record,
+      ids: new Set(stableRecordIds(record.items)),
+      byId: new Map(record.items.filter(hasStableRecordId).map((item) => [item.id, item])),
+    };
+  }
+  return ledgers;
+}
+
+function upliftPrincipalContext(principalLedger, packageRole, findings) {
+  function isAccountableName(name) {
+    return (
+      typeof name === "string" &&
+      name.trim().length > 0 &&
+      !isAgentIdentityName(name) &&
+      name.trim().toLowerCase() !== packageRole
+    );
+  }
+  for (const [index, principal] of principalLedger.entries) {
+    if (!isAccountableName(principal.name)) {
+      findings.push(
+        finding(
+          "invalid_principal_identity",
+          `principals[${index}].name`,
+          "A principal must carry a named human identity, not a blank, agent, or bare package-role identity.",
+        ),
+      );
+    }
+    if (!Array.isArray(principal.scopes)) {
+      findings.push(
+        finding(
+          "invalid_principal_scopes",
+          `principals[${index}].scopes`,
+          "Principal scopes must be an array.",
+        ),
+      );
+    }
+  }
+  return {
+    isAccountableName,
+    isAccountablePrincipal(id) {
+      const principal = principalLedger.byId.get(id);
+      return principal !== undefined && isAccountableName(principal.name);
+    },
+    hasScope(id, scope) {
+      const principal = principalLedger.byId.get(id);
+      return (
+        principal !== undefined &&
+        isAccountableName(principal.name) &&
+        Array.isArray(principal.scopes) &&
+        principal.scopes.includes(scope)
+      );
+    },
+  };
+}
+
+function upliftOwnerFindings(value, principalLedger, principalContext, packageRole, subject, findings) {
+  const ownerNameValid =
+    typeof value.owner === "string" &&
+    value.owner.trim().length > 0 &&
+    !isAgentIdentityName(value.owner) &&
+    value.owner.trim().toLowerCase() !== packageRole;
+  if (!ownerNameValid) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "owner",
+        `${subject} must remain owned by a named human, not a blank, agent, or bare package-role identity.`,
+      ),
+    );
+  }
+  if (typeof value.ownerId !== "string" || value.ownerId.trim().length === 0) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "ownerId",
+        `${subject} owner must be bound to a non-empty stable principal id.`,
+      ),
+    );
+  } else if (!principalLedger.ids.has(value.ownerId)) {
+    findings.push(
+      finding(
+        "dangling_reference",
+        "ownerId",
+        `Owner principal reference ${JSON.stringify(value.ownerId)} does not resolve.`,
+      ),
+    );
+  } else if (!principalContext.isAccountablePrincipal(value.ownerId)) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "ownerId",
+        `${subject} owner id must resolve to a named human principal.`,
+      ),
+    );
+  }
+  const handoff = isRecord(value.handoff) ? value.handoff : {};
+  if (
+    typeof handoff.owner !== "string" ||
+    handoff.owner.trim().length === 0 ||
+    isAgentIdentityName(handoff.owner) ||
+    handoff.owner.trim().toLowerCase() === packageRole
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "The handoff must remain owned by a named human, not a blank, agent, or bare package-role identity.",
+      ),
+    );
+  }
+  return handoff;
+}
+
+function upliftEvidenceWindowFindings(item, index, timeField, requestedMs, nowMs, findings) {
+  const assertedMs = upliftTimestampMs(item[timeField]);
+  if (!Number.isFinite(assertedMs)) {
+    findings.push(
+      finding(
+        "invalid_timestamp",
+        `evidence[${index}].${timeField}`,
+        `Evidence ${timeField} must be a parseable timestamp.`,
+      ),
+    );
+  } else if (assertedMs > nowMs) {
+    findings.push(
+      finding(
+        "future_evidence",
+        `evidence[${index}].${timeField}`,
+        "Evidence cannot be dated in the future.",
+      ),
+    );
+  } else if (Number.isFinite(requestedMs) && assertedMs < requestedMs) {
+    findings.push(
+      finding(
+        "stale_evidence",
+        `evidence[${index}].${timeField}`,
+        "Evidence predating the bounded request cannot ground the current decision.",
+      ),
+    );
+  }
+  if (!isValidControlledReference(item.sourceRef)) {
+    findings.push(
+      finding(
+        "untrusted_evidence_source",
+        `evidence[${index}].sourceRef`,
+        "Evidence must use a complete controlled reference.",
+      ),
+    );
+  }
+  return assertedMs;
+}
+
+function upliftRequiredActions(handoff, requiredActions, findings) {
+  const actionRecord = stringListFindings(
+    handoff.prohibitedActions,
+    "handoff.prohibitedActions",
+    "Prohibited actions",
+  );
+  findings.push(...actionRecord.findings);
+  for (const action of requiredActions) {
+    if (!actionRecord.items.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `The handoff must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+}
+
+function upliftNarrativeStrings(value) {
+  if (typeof value === "string") return [value];
+  if (Array.isArray(value)) return value.flatMap(upliftNarrativeStrings);
+  if (!isRecord(value)) return [];
+  return Object.values(value).flatMap(upliftNarrativeStrings);
+}
+
+function securityAssessmentFindings(input) {
+  const value = isRecord(input) ? input : {};
+  const findings = [];
+  const enriched = [
+    "assessment",
+    "principals",
+    "observations",
+    "evidence",
+    "controlAssertions",
+    "remediations",
+    "verifications",
+    "limitations",
+    "recommendation",
+    "owner",
+    "ownerId",
+    "handoff",
+  ].some((field) => Object.hasOwn(value, field));
+  if (!enriched) return findings;
+  for (const field of [
+    "assessmentScope",
+    "assessmentMode",
+    "authorizationRef",
+    "stopConditions",
+    "riskOwner",
+    "assessmentState",
+  ]) {
+    if (Object.hasOwn(value, field)) {
+      findings.push(
+        finding(
+          "legacy_field_in_enriched_record",
+          field,
+          `Enriched threat assessments cannot carry ignored legacy field ${field}.`,
+        ),
+      );
+    }
+  }
+
+  const schemaVersionValid = value.schemaVersion === "awesomeClaws.threatAssessment.v1";
+  if (!schemaVersionValid) {
+    findings.push(
+      finding(
+        "invalid_schema_version",
+        "schemaVersion",
+        "Enriched threat assessments must declare schemaVersion awesomeClaws.threatAssessment.v1.",
+      ),
+    );
+  }
+  const ledgers = upliftLedger(
+    value,
+    [
+      ["principals", "Principal"],
+      ["assets", "Asset"],
+      ["scenarios", "Scenario"],
+      ["observations", "Observation"],
+      ["evidence", "Evidence"],
+      ["controlAssertions", "Control assertion"],
+      ["remediations", "Remediation"],
+      ["verifications", "Verification"],
+    ],
+    findings,
+  );
+  const principals = upliftPrincipalContext(ledgers.principals, SECURITY_ANALYST_ROLE, findings);
+  const handoff = upliftOwnerFindings(
+    value,
+    ledgers.principals,
+    principals,
+    SECURITY_ANALYST_ROLE,
+    "The assessment",
+    findings,
+  );
+  const assessment = isRecord(value.assessment) ? value.assessment : {};
+  const recommendation = isRecord(value.recommendation) ? value.recommendation : null;
+  const assessmentScopeValid =
+    typeof assessment.id === "string" &&
+    assessment.id.trim().length > 0 &&
+    typeof assessment.scope === "string" &&
+    assessment.scope.trim().length > 0 &&
+    typeof assessment.snapshotRef === "string" &&
+    assessment.snapshotRef.trim().length > 0 &&
+    typeof assessment.authorizationRef === "string" &&
+    isValidControlledReference(assessment.authorizationRef);
+  if (!assessmentScopeValid) {
+    findings.push(
+      finding(
+        "invalid_assessment_scope",
+        "assessment",
+        "The assessment must bind a stable id, scope, snapshot, and controlled authorization reference.",
+      ),
+    );
+  }
+  const assessmentModeValid = [
+    "evidence-review",
+    "safe-reproduction",
+    "active-testing",
+  ].includes(assessment.mode);
+  if (!assessmentModeValid) {
+    findings.push(
+      finding(
+        "invalid_assessment_mode",
+        "assessment.mode",
+        "The assessment mode must be evidence-review, safe-reproduction, or active-testing.",
+      ),
+    );
+  }
+  if (
+    assessment.mode === "active-testing" &&
+    (!Array.isArray(assessment.stopConditions) ||
+      assessment.stopConditions.length === 0 ||
+      assessment.stopConditions.some(
+        (item) => typeof item !== "string" || item.trim().length === 0,
+      ))
+  ) {
+    findings.push(
+      finding(
+        "missing_stop_conditions",
+        "assessment.stopConditions",
+        "Active testing requires explicit stop conditions.",
+      ),
+    );
+  }
+  for (const [index, asset] of ledgers.assets.entries) {
+    if (!principals.isAccountablePrincipal(asset.ownerId)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `assets[${index}].ownerId`,
+          `Asset owner ${JSON.stringify(asset.ownerId)} must resolve to an accountable principal.`,
+        ),
+      );
+    }
+  }
+  const requestedMs = upliftTimestampMs(assessment.requestedAt);
+  const nowMs = Date.now();
+  for (const [index, evidence] of ledgers.evidence.entries) {
+    upliftEvidenceWindowFindings(evidence, index, "assertedAt", requestedMs, nowMs, findings);
+    const scenario = ledgers.scenarios.byId.get(evidence.scenarioRef);
+    if (!scenario) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `evidence[${index}].scenarioRef`,
+          `Scenario reference ${JSON.stringify(evidence.scenarioRef)} does not resolve.`,
+        ),
+      );
+    } else if (
+      evidence.assetRef !== scenario.assetRef ||
+      evidence.snapshotRef !== assessment.snapshotRef ||
+      evidence.snapshotRef !== scenario.snapshotRef
+    ) {
+      findings.push(
+        finding(
+          "cross_scope_evidence",
+          `evidence[${index}]`,
+          "Evidence must bind the exact scenario asset and current assessment snapshot.",
+        ),
+      );
+    }
+  }
+  for (const [index, observation] of ledgers.observations.entries) {
+    const scenario = ledgers.scenarios.byId.get(observation.scenarioRef);
+    const evidence = ledgers.evidence.byId.get(observation.evidenceRef);
+    const observedMs = upliftTimestampMs(observation.observedAt);
+    const assertedMs = upliftTimestampMs(evidence?.assertedAt);
+    const valid =
+      scenario !== undefined &&
+      observation.assetRef === scenario.assetRef &&
+      observation.snapshotRef === assessment.snapshotRef &&
+      observation.result === scenario.supportState &&
+      principals.isAccountablePrincipal(observation.observedById) &&
+      evidence?.kind === "observation" &&
+      evidence.scenarioRef === observation.scenarioRef &&
+      evidence.assetRef === observation.assetRef &&
+      evidence.snapshotRef === assessment.snapshotRef &&
+      Number.isFinite(observedMs) &&
+      observedMs >= requestedMs &&
+      Number.isFinite(assertedMs) &&
+      assertedMs >= observedMs &&
+      assertedMs <= nowMs &&
+      isValidControlledReference(evidence.sourceRef);
+    if (!valid) {
+      findings.push(
+        finding(
+          "unsupported_observation",
+          `observations[${index}]`,
+          "Every observation must have an accountable observer and controlled evidence bound to its exact scenario, asset, and current snapshot with valid chronology.",
+        ),
+      );
+    }
+  }
+  let incompleteCoverage = ledgers.scenarios.items.length === 0;
+  let unsupportedMaterialScenario = false;
+  for (const [index, scenario] of ledgers.scenarios.entries) {
+    if (!ledgers.assets.ids.has(scenario.assetRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `scenarios[${index}].assetRef`,
+          `Asset reference ${JSON.stringify(scenario.assetRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (scenario.snapshotRef !== assessment.snapshotRef) {
+      findings.push(
+        finding(
+          "cross_scope_scenario",
+          `scenarios[${index}].snapshotRef`,
+          "Every scenario must be bound to the current assessment snapshot.",
+        ),
+      );
+    }
+    findings.push(
+      ...referenceFindings(
+        scenario.observationRefs,
+        ledgers.observations.ids,
+        `scenarios[${index}].observationRefs`,
+        "Observation",
+      ),
+      ...referenceFindings(
+        scenario.controlAssertionRefs,
+        ledgers.controlAssertions.ids,
+        `scenarios[${index}].controlAssertionRefs`,
+        "Control assertion",
+      ),
+    );
+    if (
+      scenario.remediationRef !== undefined &&
+      !ledgers.remediations.ids.has(scenario.remediationRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `scenarios[${index}].remediationRef`,
+          `Remediation reference ${JSON.stringify(scenario.remediationRef)} does not resolve.`,
+        ),
+      );
+    }
+    const observations = Array.isArray(scenario.observationRefs)
+      ? scenario.observationRefs
+          .map((reference) => ledgers.observations.byId.get(reference))
+          .filter(Boolean)
+      : [];
+    const covered = observations.some((observation) => {
+      const evidence = ledgers.evidence.byId.get(observation.evidenceRef);
+      const observedMs = upliftTimestampMs(observation.observedAt);
+      const assertedMs = upliftTimestampMs(evidence?.assertedAt);
+      return (
+        observation.scenarioRef === scenario.id &&
+        observation.assetRef === scenario.assetRef &&
+        observation.snapshotRef === assessment.snapshotRef &&
+        observation.result === scenario.supportState &&
+        ledgers.principals.ids.has(observation.observedById) &&
+        evidence?.kind === "observation" &&
+        evidence.scenarioRef === scenario.id &&
+        evidence.assetRef === scenario.assetRef &&
+        evidence.snapshotRef === assessment.snapshotRef &&
+        Number.isFinite(observedMs) &&
+        Number.isFinite(assertedMs) &&
+        assertedMs >= observedMs &&
+        assertedMs <= nowMs &&
+        isValidControlledReference(evidence.sourceRef)
+      );
+    });
+    if (!covered) incompleteCoverage = true;
+    if (
+      ["high", "critical"].includes(scenario.severity) &&
+      !["supported", "reproduced"].includes(scenario.supportState)
+    ) {
+      unsupportedMaterialScenario = true;
+      findings.push(
+        finding(
+          "unsupported_material_scenario",
+          `scenarios[${index}].supportState`,
+          "A high or critical scenario must be supported by current scoped evidence before risk-owner review.",
+        ),
+      );
+    }
+  }
+  if (incompleteCoverage) {
+    findings.push(
+      finding(
+        "incomplete_scenario_coverage",
+        "scenarios",
+        "Every scenario must have an observation grounded in exact scenario, asset, and snapshot evidence.",
+      ),
+    );
+  }
+  for (const [index, assertion] of ledgers.controlAssertions.entries) {
+    const scenario = ledgers.scenarios.byId.get(assertion.scenarioRef);
+    findings.push(
+      ...referenceFindings(
+        assertion.evidenceRefs,
+        ledgers.evidence.ids,
+        `controlAssertions[${index}].evidenceRefs`,
+        "Evidence",
+      ),
+    );
+    const valid =
+      scenario !== undefined &&
+      assertion.assetRef === scenario.assetRef &&
+      assertion.snapshotRef === assessment.snapshotRef &&
+      Array.isArray(assertion.evidenceRefs) &&
+      assertion.evidenceRefs.length > 0 &&
+      assertion.evidenceRefs.every((reference) => {
+        const evidence = ledgers.evidence.byId.get(reference);
+        return (
+          evidence?.kind === "control-assertion" &&
+          evidence.scenarioRef === assertion.scenarioRef &&
+          evidence.assetRef === assertion.assetRef &&
+          evidence.snapshotRef === assessment.snapshotRef
+        );
+      });
+    if (!valid) {
+      findings.push(
+        finding(
+          "unsupported_control_assertion",
+          `controlAssertions[${index}]`,
+          "A control assertion must be grounded in evidence for its exact scenario, asset, and snapshot.",
+        ),
+      );
+    }
+  }
+  let invalidVerifiedRemediation = false;
+  for (const [index, remediation] of ledgers.remediations.entries) {
+    if (!ledgers.scenarios.ids.has(remediation.scenarioRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `remediations[${index}].scenarioRef`,
+          `Scenario reference ${JSON.stringify(remediation.scenarioRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!ledgers.principals.ids.has(remediation.ownerId)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `remediations[${index}].ownerId`,
+          `Remediation owner ${JSON.stringify(remediation.ownerId)} does not resolve.`,
+        ),
+      );
+    }
+    if (remediation.state !== "verified") continue;
+    const verification = ledgers.verifications.byId.get(remediation.verificationRef);
+    const scenario = ledgers.scenarios.byId.get(remediation.scenarioRef);
+    const evidence = ledgers.evidence.byId.get(verification?.evidenceRef);
+    const valid =
+      verification?.state === "verified" &&
+      verification.remediationRef === remediation.id &&
+      verification.scenarioRef === remediation.scenarioRef &&
+      verification.assetRef === scenario?.assetRef &&
+      verification.snapshotRef === assessment.snapshotRef &&
+      verification.verifiedById !== remediation.ownerId &&
+      principals.hasScope(verification.verifiedById, "remediation-verification") &&
+      evidence?.kind === "remediation-verification" &&
+      evidence.remediationRef === remediation.id &&
+      evidence.scenarioRef === remediation.scenarioRef &&
+      evidence.assetRef === scenario?.assetRef &&
+      evidence.snapshotRef === assessment.snapshotRef &&
+      upliftTimestampMs(evidence.assertedAt) <= upliftTimestampMs(verification.verifiedAt);
+    if (!valid) {
+      invalidVerifiedRemediation = true;
+      findings.push(
+        finding(
+          verification?.verifiedById === remediation.ownerId
+            ? "self_verified_remediation"
+            : "unsupported_remediation_verification",
+          `remediations[${index}].verificationRef`,
+          "A verified remediation requires independent, exact-scope verification evidence.",
+        ),
+      );
+    }
+  }
+  const limitations = stringListFindings(value.limitations, "limitations", "Limitations");
+  findings.push(...limitations.findings);
+  const preRecommendationValid =
+    findings.length === 0 &&
+    schemaVersionValid &&
+    assessmentScopeValid &&
+    !incompleteCoverage &&
+    !unsupportedMaterialScenario &&
+    !invalidVerifiedRemediation;
+  const reviewedMs = upliftTimestampMs(recommendation?.reviewedAt);
+  const latestEvidenceMs = Math.max(
+    requestedMs,
+    ...ledgers.evidence.items.map((item) => upliftTimestampMs(item.assertedAt)),
+    ...ledgers.verifications.items.map((item) => upliftTimestampMs(item.verifiedAt)),
+  );
+  const recommendationValid =
+    preRecommendationValid &&
+    recommendation?.state === "ready-for-risk-owner-review" &&
+    recommendation.reviewerId === value.ownerId &&
+    principals.hasScope(recommendation.reviewerId, "risk-owner-review") &&
+    Number.isFinite(reviewedMs) &&
+    reviewedMs >= latestEvidenceMs &&
+    reviewedMs <= nowMs;
+  if (recommendation?.state === "ready-for-risk-owner-review" && !recommendationValid) {
+    findings.push(
+      finding(
+        "premature_risk_owner_review",
+        "recommendation.state",
+        "Risk-owner review requires complete current-snapshot coverage, supported material scenarios, valid remediation verification, and an accountable risk owner reviewing after all evidence.",
+      ),
+    );
+  }
+  const expectedHandoffState = recommendationValid ? "ready" : "blocked";
+  if (handoff.state !== expectedHandoffState) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready before valid risk-owner review.",
+      ),
+    );
+  }
+  upliftRequiredActions(
+    handoff,
+    ["exploit-target", "execute-remediation", "accept-risk", "claim-security-assurance"],
+    findings,
+  );
+  if (
+    hasUnnegatedNarrativeMatch(
+      upliftNarrativeStrings(value),
+      /\b(?:exploited|remediated|fixed|completed\s+(?:the\s+)?remediation|accepted\s+(?:the\s+)?risk|certified\s+(?:the\s+)?security|declared\s+(?:the\s+)?system\s+secure)\b/giu,
+    )
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim exploitation, remediation, risk acceptance, or security assurance by the Claw.",
+      ),
+    );
+  }
+  return findings;
+}
+
+function releaseReadinessFindings(input) {
+  const value = isRecord(input) ? input : {};
+  const findings = [];
+  const enriched = [
+    "release",
+    "principals",
+    "requiredChecks",
+    "evidence",
+    "waivers",
+    "rollback",
+    "limitations",
+    "recommendation",
+    "owner",
+    "ownerId",
+    "handoff",
+  ].some((field) => Object.hasOwn(value, field));
+  if (!enriched) return findings;
+  for (const field of [
+    "repository",
+    "version",
+    "targetCommit",
+    "checks",
+    "decisionState",
+    "communicationState",
+  ]) {
+    if (Object.hasOwn(value, field)) {
+      findings.push(
+        finding(
+          "legacy_field_in_enriched_record",
+          field,
+          `Enriched release readiness cannot carry ignored legacy field ${field}.`,
+        ),
+      );
+    }
+  }
+  const schemaVersionValid = value.schemaVersion === "awesomeClaws.releaseReadiness.v1";
+  if (!schemaVersionValid) {
+    findings.push(
+      finding(
+        "invalid_schema_version",
+        "schemaVersion",
+        "Enriched release readiness must declare schemaVersion awesomeClaws.releaseReadiness.v1.",
+      ),
+    );
+  }
+  const ledgers = upliftLedger(
+    value,
+    [
+      ["principals", "Principal"],
+      ["requiredChecks", "Required check"],
+      ["artifacts", "Artifact"],
+      ["evidence", "Evidence"],
+      ["blockers", "Blocker"],
+      ["waivers", "Waiver"],
+    ],
+    findings,
+  );
+  const principals = upliftPrincipalContext(ledgers.principals, RELEASE_COORDINATOR_ROLE, findings);
+  const handoff = upliftOwnerFindings(
+    value,
+    ledgers.principals,
+    principals,
+    RELEASE_COORDINATOR_ROLE,
+    "The release",
+    findings,
+  );
+  const release = isRecord(value.release) ? value.release : {};
+  const recommendation = isRecord(value.recommendation) ? value.recommendation : null;
+  const rollback = isRecord(value.rollback) ? value.rollback : {};
+  const releaseScopeValid =
+    typeof release.id === "string" &&
+    release.id.trim().length > 0 &&
+    typeof release.repository === "string" &&
+    release.repository.trim().length > 0 &&
+    typeof release.version === "string" &&
+    release.version.trim().length > 0 &&
+    /^[0-9a-f]{7,64}$/u.test(release.targetCommit ?? "") &&
+    typeof release.candidateId === "string" &&
+    release.candidateId.trim().length > 0 &&
+    typeof release.snapshotRef === "string" &&
+    release.snapshotRef.trim().length > 0;
+  if (!releaseScopeValid) {
+    findings.push(
+      finding(
+        "invalid_release_scope",
+        "release",
+        "The release must bind repository, version, target commit, candidate, and snapshot identities.",
+      ),
+    );
+  }
+  const requestedMs = upliftTimestampMs(release.requestedAt);
+  const nowMs = Date.now();
+  function evidenceMatches(item, kind, bindingField, bindingId, outcome) {
+    return (
+      item?.kind === kind &&
+      item?.[bindingField] === bindingId &&
+      item.releaseRef === release.id &&
+      item.targetCommit === release.targetCommit &&
+      item.candidateId === release.candidateId &&
+      item.snapshotRef === release.snapshotRef &&
+      (outcome === undefined || item.outcome === outcome) &&
+      isValidControlledReference(item.sourceRef)
+    );
+  }
+  for (const [index, evidence] of ledgers.evidence.entries) {
+    upliftEvidenceWindowFindings(evidence, index, "assertedAt", requestedMs, nowMs, findings);
+    if (
+      evidence.releaseRef !== release.id ||
+      evidence.targetCommit !== release.targetCommit ||
+      evidence.candidateId !== release.candidateId ||
+      evidence.snapshotRef !== release.snapshotRef
+    ) {
+      findings.push(
+        finding(
+          "cross_scope_evidence",
+          `evidence[${index}]`,
+          "Release evidence must bind the exact release, target commit, candidate, and snapshot.",
+        ),
+      );
+    }
+  }
+  for (const [index, waiver] of ledgers.waivers.entries) {
+    const check = ledgers.requiredChecks.byId.get(waiver.checkRef);
+    const evidence = ledgers.evidence.byId.get(waiver.evidenceRef);
+    const approvedMs = upliftTimestampMs(waiver.approvedAt);
+    const assertedMs = upliftTimestampMs(evidence?.assertedAt);
+    const valid =
+      check?.waiverRef === waiver.id &&
+      check.state === "waived" &&
+      principals.hasScope(waiver.ownerId, "release-waiver-authority") &&
+      evidenceMatches(
+        evidence,
+        "waiver-approval",
+        "waiverRef",
+        waiver.id,
+        "approved",
+      ) &&
+      Number.isFinite(approvedMs) &&
+      Number.isFinite(assertedMs) &&
+      approvedMs >= assertedMs &&
+      approvedMs <= nowMs;
+    if (!valid) {
+      findings.push(
+        finding(
+          "unsupported_release_waiver",
+          `waivers[${index}]`,
+          "Every waiver must be referenced by its exact check and carry accountable release-waiver authority, exact-target controlled approval evidence, and valid chronology.",
+        ),
+      );
+    }
+  }
+  let incompleteChecks = ledgers.requiredChecks.items.length === 0;
+  for (const [index, check] of ledgers.requiredChecks.entries) {
+    if (!ledgers.principals.ids.has(check.ownerId)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `requiredChecks[${index}].ownerId`,
+          `Check owner ${JSON.stringify(check.ownerId)} does not resolve.`,
+        ),
+      );
+    }
+    if (check.required !== true) continue;
+    let valid = false;
+    if (check.state === "passed") {
+      valid = evidenceMatches(
+        ledgers.evidence.byId.get(check.evidenceRef),
+        "check-result",
+        "checkRef",
+        check.id,
+        "passed",
+      );
+    } else if (check.state === "waived") {
+      const waiver = ledgers.waivers.byId.get(check.waiverRef);
+      const waiverEvidence = ledgers.evidence.byId.get(waiver?.evidenceRef);
+      valid =
+        waiver?.checkRef === check.id &&
+        principals.hasScope(waiver?.ownerId, "release-waiver-authority") &&
+        evidenceMatches(
+          waiverEvidence,
+          "waiver-approval",
+          "waiverRef",
+          waiver?.id,
+          "approved",
+        ) &&
+        upliftTimestampMs(waiverEvidence?.assertedAt) <= upliftTimestampMs(waiver?.approvedAt);
+    }
+    if (!valid) {
+      incompleteChecks = true;
+      findings.push(
+        finding(
+          "unresolved_required_check",
+          `requiredChecks[${index}]`,
+          "Every required check must pass with exact-target evidence or carry an explicit accountable waiver.",
+        ),
+      );
+    }
+  }
+  let invalidArtifact = ledgers.artifacts.items.length === 0;
+  for (const [index, artifact] of ledgers.artifacts.entries) {
+    const provenance = ledgers.evidence.byId.get(artifact.provenanceEvidenceRef);
+    const integrity = ledgers.evidence.byId.get(artifact.integrityEvidenceRef);
+    const valid =
+      /^sha256:[0-9a-f]{64}$/u.test(artifact.digest ?? "") &&
+      artifact.targetCommit === release.targetCommit &&
+      artifact.candidateId === release.candidateId &&
+      evidenceMatches(provenance, "artifact-provenance", "artifactRef", artifact.id, "verified") &&
+      evidenceMatches(integrity, "artifact-integrity", "artifactRef", artifact.id, "verified") &&
+      integrity.digest === artifact.digest;
+    if (!valid) {
+      invalidArtifact = true;
+      findings.push(
+        finding(
+          "unbound_release_artifact",
+          `artifacts[${index}]`,
+          "Every artifact must carry a sha256 digest and controlled provenance and integrity evidence for the exact target commit and candidate.",
+        ),
+      );
+    }
+  }
+  let unresolvedBlocker = false;
+  for (const [index, blocker] of ledgers.blockers.entries) {
+    const resolutionEvidence = ledgers.evidence.byId.get(blocker.resolutionEvidenceRef);
+    const resolvedMs = upliftTimestampMs(blocker.resolvedAt);
+    const resolutionEvidenceMs = upliftTimestampMs(resolutionEvidence?.assertedAt);
+    const validResolution =
+      blocker.state === "resolved" &&
+      principals.isAccountablePrincipal(blocker.ownerId) &&
+      typeof blocker.summary === "string" &&
+      blocker.summary.trim().length > 0 &&
+      evidenceMatches(
+        resolutionEvidence,
+        "blocker-resolution",
+        "blockerRef",
+        blocker.id,
+        "resolved",
+      ) &&
+      Number.isFinite(resolvedMs) &&
+      Number.isFinite(resolutionEvidenceMs) &&
+      resolvedMs >= resolutionEvidenceMs &&
+      resolvedMs <= nowMs;
+    if (!validResolution) {
+      unresolvedBlocker = true;
+      findings.push(
+        finding(
+          blocker.state === "resolved"
+            ? "unsupported_blocker_resolution"
+            : "unresolved_release_blocker",
+          `blockers[${index}]`,
+          "A release blocker must remain unresolved unless an accountable owner resolves it with exact-target controlled evidence and valid chronology.",
+        ),
+      );
+    }
+  }
+  const rollbackEvidence = ledgers.evidence.byId.get(rollback.evidenceRef);
+  const rollbackValid =
+    typeof rollback.plan === "string" &&
+    rollback.plan.trim().length > 0 &&
+    ledgers.principals.ids.has(rollback.ownerId) &&
+    evidenceMatches(rollbackEvidence, "rollback-proof", "releaseRef", release.id, "verified");
+  if (!rollbackValid) {
+    findings.push(
+      finding(
+        "missing_rollback_proof",
+        "rollback",
+        "Release readiness requires a named rollback owner, plan, and controlled proof for the exact target.",
+      ),
+    );
+  }
+  findings.push(...stringListFindings(value.limitations, "limitations", "Limitations").findings);
+  const reviewedMs = upliftTimestampMs(recommendation?.reviewedAt);
+  const latestEvidenceMs = Math.max(
+    requestedMs,
+    ...ledgers.evidence.items.map((item) => upliftTimestampMs(item.assertedAt)),
+    ...ledgers.waivers.items.map((item) => upliftTimestampMs(item.approvedAt)),
+    ...ledgers.blockers.items.map((item) => upliftTimestampMs(item.resolvedAt)),
+  );
+  const recommendationValid =
+    findings.length === 0 &&
+    schemaVersionValid &&
+    releaseScopeValid &&
+    !incompleteChecks &&
+    !invalidArtifact &&
+    !unresolvedBlocker &&
+    rollbackValid &&
+    recommendation?.state === "ready-for-release-authority" &&
+    recommendation.reviewerId !== value.ownerId &&
+    principals.hasScope(recommendation.reviewerId, "release-authority") &&
+    Number.isFinite(reviewedMs) &&
+    reviewedMs >= latestEvidenceMs &&
+    reviewedMs <= nowMs;
+  if (recommendation?.state === "ready-for-release-authority" && !recommendationValid) {
+    findings.push(
+      finding(
+        "premature_release_readiness",
+        "recommendation.state",
+        "Release readiness requires resolved checks or accountable waivers, exact-target artifacts, no blocker, rollback proof, and independent release authority after all evidence.",
+      ),
+    );
+  }
+  if (handoff.state !== (recommendationValid ? "ready" : "blocked")) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The release handoff cannot be ready before the release recommendation is valid.",
+      ),
+    );
+  }
+  upliftRequiredActions(
+    handoff,
+    [
+      "deploy-release",
+      "publish-release",
+      "sign-artifact",
+      "approve-release",
+      "send-communication",
+      "merge-release",
+    ],
+    findings,
+  );
+  if (
+    hasUnnegatedNarrativeMatch(
+      upliftNarrativeStrings(value),
+      /\b(?:deployed|published|signed|approved|sent|merged)\s+(?:the\s+)?(?:release|artifact|package|message|communication|change)\b|\bdeployed\s+to\b/giu,
+    )
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim deployment, publication, signing, approval, communication sending, or merge by the Claw.",
+      ),
+    );
+  }
+  return findings;
+}
+
+function customerSupportCaseFindings(input) {
+  const value = isRecord(input) ? input : {};
+  const findings = [];
+  const enriched = [
+    "case",
+    "principals",
+    "consent",
+    "diagnoses",
+    "communications",
+    "escalations",
+    "limitations",
+    "resolution",
+    "owner",
+    "ownerId",
+    "handoff",
+  ].some((field) => Object.hasOwn(value, field));
+  if (!enriched) return findings;
+  for (const field of [
+    "caseId",
+    "symptom",
+    "impact",
+    "environment",
+    "responseDraft",
+    "escalation",
+    "caseOwner",
+    "disposition",
+  ]) {
+    if (Object.hasOwn(value, field)) {
+      findings.push(
+        finding(
+          "legacy_field_in_enriched_record",
+          field,
+          `Enriched support cases cannot carry ignored legacy field ${field}.`,
+        ),
+      );
+    }
+  }
+  const schemaVersionValid = value.schemaVersion === "awesomeClaws.supportCase.v1";
+  if (!schemaVersionValid) {
+    findings.push(
+      finding(
+        "invalid_schema_version",
+        "schemaVersion",
+        "Enriched support cases must declare schemaVersion awesomeClaws.supportCase.v1.",
+      ),
+    );
+  }
+  const ledgers = upliftLedger(
+    value,
+    [
+      ["principals", "Principal"],
+      ["evidence", "Evidence"],
+      ["diagnostics", "Diagnostic"],
+      ["diagnoses", "Diagnosis"],
+      ["communications", "Communication"],
+      ["escalations", "Escalation"],
+    ],
+    findings,
+  );
+  const principals = upliftPrincipalContext(ledgers.principals, CUSTOMER_SUPPORT_ROLE, findings);
+  const handoff = upliftOwnerFindings(
+    value,
+    ledgers.principals,
+    principals,
+    CUSTOMER_SUPPORT_ROLE,
+    "The case",
+    findings,
+  );
+  const supportCase = isRecord(value.case) ? value.case : {};
+  const consent = isRecord(value.consent) ? value.consent : {};
+  const resolution = isRecord(value.resolution) ? value.resolution : null;
+  const caseScopeValid = ["id", "accountId", "productId", "environmentId", "snapshotRef"].every(
+    (field) => typeof supportCase[field] === "string" && supportCase[field].trim().length > 0,
+  );
+  if (!caseScopeValid) {
+    findings.push(
+      finding(
+        "invalid_case_scope",
+        "case",
+        "The support case must bind case, account, product, environment, and snapshot identities.",
+      ),
+    );
+  }
+  const openedMs = upliftTimestampMs(supportCase.openedAt);
+  const nowMs = Date.now();
+  const consentValid =
+    typeof consent.scopeId === "string" &&
+    consent.scopeId.trim().length > 0 &&
+    principals.hasScope(consent.approvedById, "customer-consent") &&
+    Array.isArray(consent.dataClasses) &&
+    consent.dataClasses.length > 0 &&
+    Number.isFinite(upliftTimestampMs(consent.approvedAt)) &&
+    upliftTimestampMs(consent.approvedAt) >= openedMs;
+  if (!consentValid) {
+    findings.push(
+      finding(
+        "invalid_customer_consent",
+        "consent",
+        "Diagnostic evidence requires a bounded consent scope, allowed data classes, and accountable customer approval.",
+      ),
+    );
+  }
+  let invalidEvidence = false;
+  for (const [index, evidence] of ledgers.evidence.entries) {
+    const observedMs = upliftEvidenceWindowFindings(
+      evidence,
+      index,
+      "observedAt",
+      openedMs,
+      nowMs,
+      findings,
+    );
+    const scoped =
+      evidence.caseRef === supportCase.id &&
+      evidence.accountId === supportCase.accountId &&
+      evidence.productId === supportCase.productId &&
+      evidence.environmentId === supportCase.environmentId &&
+      evidence.snapshotRef === supportCase.snapshotRef;
+    const minimized =
+      ["public", "sanitized-diagnostic", "customer-approved-metadata"].includes(
+        evidence.dataClass,
+      ) &&
+      Array.isArray(consent.dataClasses) &&
+      consent.dataClasses.includes(evidence.dataClass) &&
+      observedMs >= upliftTimestampMs(consent.approvedAt);
+    if (!scoped) {
+      invalidEvidence = true;
+      findings.push(
+        finding(
+          "cross_scope_evidence",
+          `evidence[${index}]`,
+          "Support evidence must bind the exact case, account, product, environment, and snapshot.",
+        ),
+      );
+    }
+    if (!minimized) {
+      invalidEvidence = true;
+      findings.push(
+        finding(
+          "unapproved_sensitive_data",
+          `evidence[${index}].dataClass`,
+          "Evidence data must be minimized and explicitly allowed by the customer consent scope.",
+        ),
+      );
+    }
+  }
+  let invalidDiagnostic = ledgers.diagnostics.items.length === 0;
+  const secretPattern = /\b(?:password|access token|refresh token|private key|secret|full payload|production dump)\b/iu;
+  for (const [index, diagnostic] of ledgers.diagnostics.entries) {
+    findings.push(
+      ...referenceFindings(
+        diagnostic.evidenceRefs,
+        ledgers.evidence.ids,
+        `diagnostics[${index}].evidenceRefs`,
+        "Evidence",
+      ),
+    );
+    const evidenceItems = Array.isArray(diagnostic.evidenceRefs)
+      ? diagnostic.evidenceRefs.map((reference) => ledgers.evidence.byId.get(reference)).filter(Boolean)
+      : [];
+    const performedMs = upliftTimestampMs(diagnostic.performedAt);
+    const valid =
+      principals.isAccountablePrincipal(diagnostic.performedById) &&
+      Array.isArray(diagnostic.evidenceRefs) &&
+      diagnostic.evidenceRefs.length > 0 &&
+      evidenceItems.length === diagnostic.evidenceRefs.length &&
+      evidenceItems.every(
+        (evidence) => performedMs >= upliftTimestampMs(evidence.observedAt),
+      ) &&
+      Array.isArray(consent.dataClasses) &&
+      consent.dataClasses.includes(diagnostic.dataClass) &&
+      typeof diagnostic.result === "string" &&
+      diagnostic.result.trim().length > 0 &&
+      typeof diagnostic.requestedData === "string" &&
+      !secretPattern.test(diagnostic.requestedData);
+    if (!valid) {
+      invalidDiagnostic = true;
+      findings.push(
+        finding(
+          secretPattern.test(diagnostic.requestedData ?? "")
+            ? "secret_request"
+            : "unsupported_diagnostic",
+          `diagnostics[${index}]`,
+          "Diagnostics must use consented minimal data and current case-scoped evidence without requesting secrets.",
+        ),
+      );
+    }
+  }
+  let invalidDiagnosis = ledgers.diagnoses.items.length === 0;
+  for (const [index, diagnosis] of ledgers.diagnoses.entries) {
+    findings.push(
+      ...referenceFindings(
+        diagnosis.diagnosticRefs,
+        ledgers.diagnostics.ids,
+        `diagnoses[${index}].diagnosticRefs`,
+        "Diagnostic",
+      ),
+      ...referenceFindings(
+        diagnosis.evidenceRefs,
+        ledgers.evidence.ids,
+        `diagnoses[${index}].evidenceRefs`,
+        "Evidence",
+      ),
+    );
+    const verificationMs = upliftTimestampMs(diagnosis.verifiedAt);
+    const diagnosisDiagnosticRefs = Array.isArray(diagnosis.diagnosticRefs)
+      ? diagnosis.diagnosticRefs
+      : [];
+    const diagnosisEvidenceRefs = Array.isArray(diagnosis.evidenceRefs)
+      ? diagnosis.evidenceRefs
+      : [];
+    const latestGroundingMs = Math.max(
+      ...diagnosisDiagnosticRefs.map((reference) =>
+        upliftTimestampMs(ledgers.diagnostics.byId.get(reference)?.performedAt),
+      ),
+      ...diagnosisEvidenceRefs.map((reference) =>
+        upliftTimestampMs(ledgers.evidence.byId.get(reference)?.observedAt),
+      ),
+    );
+    const valid =
+      diagnosis.state === "verified" &&
+      principals.isAccountablePrincipal(diagnosis.verifiedById) &&
+      diagnosisDiagnosticRefs.length > 0 &&
+      diagnosisDiagnosticRefs.every((reference) => ledgers.diagnostics.ids.has(reference)) &&
+      diagnosisEvidenceRefs.length > 0 &&
+      diagnosisEvidenceRefs.every((reference) => ledgers.evidence.ids.has(reference)) &&
+      Number.isFinite(verificationMs) &&
+      verificationMs >= latestGroundingMs &&
+      verificationMs <= nowMs;
+    if (!valid) {
+      invalidDiagnosis = true;
+      findings.push(
+        finding(
+          "unsupported_diagnosis",
+          `diagnoses[${index}]`,
+          "A verified diagnosis must resolve to current diagnostics and case-scoped evidence and be verified after its grounding records.",
+        ),
+      );
+    }
+  }
+  let invalidEscalation = false;
+  for (const [index, escalation] of ledgers.escalations.entries) {
+    findings.push(
+      ...referenceFindings(
+        escalation.evidenceRefs,
+        ledgers.evidence.ids,
+        `escalations[${index}].evidenceRefs`,
+        "Evidence",
+      ),
+    );
+    const resolvedMs = upliftTimestampMs(escalation.resolvedAt);
+    const createdMs = upliftTimestampMs(escalation.createdAt);
+    const latestEscalationEvidenceMs = Math.max(
+      ...(Array.isArray(escalation.evidenceRefs) ? escalation.evidenceRefs : []).map(
+        (reference) =>
+          upliftTimestampMs(ledgers.evidence.byId.get(reference)?.observedAt),
+      ),
+    );
+    if (
+      !principals.isAccountablePrincipal(escalation.ownerId) ||
+      !Array.isArray(escalation.evidenceRefs) ||
+      escalation.evidenceRefs.length === 0 ||
+      !escalation.evidenceRefs.every((reference) => ledgers.evidence.ids.has(reference)) ||
+      escalation.state !== "resolved" ||
+      !Number.isFinite(resolvedMs) ||
+      resolvedMs < createdMs ||
+      resolvedMs < latestEscalationEvidenceMs
+    ) {
+      invalidEscalation = true;
+      findings.push(
+        finding(
+          "unresolved_escalation",
+          `escalations[${index}]`,
+          "Each escalation must have an accountable owner, resolving evidence references, and valid chronology before resolution readiness.",
+        ),
+      );
+    }
+  }
+  let invalidCommunication = false;
+  for (const [index, communication] of ledgers.communications.entries) {
+    if (communication.state === "sent") {
+      invalidCommunication = true;
+      findings.push(
+        finding(
+          "unauthorized_communication_state",
+          `communications[${index}].state`,
+          "The Claw may prepare or record an approved draft but cannot claim a communication was sent.",
+        ),
+      );
+      continue;
+    }
+    const evidenceRefs = Array.isArray(communication.evidenceRefs)
+      ? communication.evidenceRefs
+      : [];
+    const recordedMs = upliftTimestampMs(communication.recordedAt);
+    const latestCommunicationEvidenceMs = Math.max(
+      ...evidenceRefs.map((reference) =>
+        upliftTimestampMs(ledgers.evidence.byId.get(reference)?.observedAt),
+      ),
+    );
+    const valid =
+      ["draft", "approved-draft"].includes(communication.state) &&
+      principals.isAccountablePrincipal(communication.authorId) &&
+      evidenceRefs.length > 0 &&
+      evidenceRefs.every((reference) => ledgers.evidence.ids.has(reference)) &&
+      Number.isFinite(recordedMs) &&
+      recordedMs >= latestCommunicationEvidenceMs &&
+      recordedMs <= nowMs &&
+      (communication.state !== "approved-draft" ||
+        (communication.approvedById !== communication.authorId &&
+          principals.hasScope(communication.approvedById, "resolution-review")));
+    if (!valid) {
+      invalidCommunication = true;
+      findings.push(
+        finding(
+          "unsupported_communication_draft",
+          `communications[${index}]`,
+          "A communication draft requires an accountable author, resolved case evidence, valid chronology, and independent resolution-review approval when marked approved.",
+        ),
+      );
+    }
+  }
+  findings.push(...stringListFindings(value.limitations, "limitations", "Limitations").findings);
+  const diagnosis = ledgers.diagnoses.byId.get(resolution?.diagnosisRef);
+  const reviewedMs = upliftTimestampMs(resolution?.reviewedAt);
+  const latestCaseMs = Math.max(
+    openedMs,
+    ...ledgers.evidence.items.map((item) => upliftTimestampMs(item.observedAt)),
+    ...ledgers.diagnostics.items.map((item) => upliftTimestampMs(item.performedAt)),
+    ...ledgers.diagnoses.items.map((item) => upliftTimestampMs(item.verifiedAt)),
+    ...ledgers.escalations.items.map((item) => upliftTimestampMs(item.resolvedAt)),
+    ...ledgers.communications.items.map((item) => upliftTimestampMs(item.recordedAt)),
+  );
+  const resolutionValid =
+    findings.length === 0 &&
+    schemaVersionValid &&
+    caseScopeValid &&
+    consentValid &&
+    !invalidEvidence &&
+    !invalidDiagnostic &&
+    !invalidDiagnosis &&
+    !invalidEscalation &&
+    !invalidCommunication &&
+    resolution?.state === "ready-for-resolution-review" &&
+    diagnosis?.state === "verified" &&
+    resolution.reviewerId === value.ownerId &&
+    resolution.reviewerId !== diagnosis.verifiedById &&
+    principals.hasScope(resolution.reviewerId, "resolution-review") &&
+    Number.isFinite(reviewedMs) &&
+    reviewedMs >= latestCaseMs &&
+    reviewedMs <= nowMs;
+  if (resolution?.state === "ready-for-resolution-review" && !resolutionValid) {
+    findings.push(
+      finding(
+        "premature_resolution_readiness",
+        "resolution.state",
+        "Resolution readiness requires a verified case-scoped diagnosis, approved minimal data, resolved escalation evidence, chronology, and independent case-owner review.",
+      ),
+    );
+  }
+  if (handoff.state !== (resolutionValid ? "ready" : "blocked")) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The case handoff cannot be ready before the resolution recommendation is valid.",
+      ),
+    );
+  }
+  upliftRequiredActions(
+    handoff,
+    [
+      "request-secret",
+      "mutate-account",
+      "issue-refund",
+      "close-case",
+      "send-communication",
+      "promise-fix",
+    ],
+    findings,
+  );
+  if (
+    hasUnnegatedNarrativeMatch(
+      upliftNarrativeStrings(value),
+      /\b(?:requested|shared|send)\s+(?:the\s+)?(?:password|access token|private key|secret)|\b(?:mutated|changed|disabled|enabled)\s+(?:the\s+)?account|\b(?:issued|approved)\s+(?:the\s+)?refund|\brefunded\b|\bclosed\s+(?:the\s+)?case|\b(?:sent|emailed|messaged)\s+(?:the\s+)?customer\b/giu,
+    )
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim requesting secrets, mutating an account, issuing a refund, closing a case, or sending customer communication.",
+      ),
+    );
+  }
+  return findings;
+}
+
+function complianceAssessmentFindings(input) {
+  const value = isRecord(input) ? input : {};
+  const findings = [];
+  const enriched = [
+    "review",
+    "principals",
+    "evidence",
+    "findings",
+    "compensatingControls",
+    "verifications",
+    "limitations",
+    "recommendation",
+    "owner",
+    "ownerId",
+    "handoff",
+  ].some((field) => Object.hasOwn(value, field));
+  if (!enriched) return findings;
+  for (const field of [
+    "framework",
+    "frameworkVersion",
+    "systemBoundary",
+    "reviewPeriod",
+    "assessmentDecision",
+  ]) {
+    if (Object.hasOwn(value, field)) {
+      findings.push(
+        finding(
+          "legacy_field_in_enriched_record",
+          field,
+          `Enriched control assessments cannot carry ignored legacy field ${field}.`,
+        ),
+      );
+    }
+  }
+  const schemaVersionValid = value.schemaVersion === "awesomeClaws.controlAssessment.v1";
+  if (!schemaVersionValid) {
+    findings.push(
+      finding(
+        "invalid_schema_version",
+        "schemaVersion",
+        "Enriched control assessments must declare schemaVersion awesomeClaws.controlAssessment.v1.",
+      ),
+    );
+  }
+  const ledgers = upliftLedger(
+    value,
+    [
+      ["principals", "Principal"],
+      ["requirements", "Requirement"],
+      ["evidence", "Evidence"],
+      ["findings", "Finding"],
+      ["compensatingControls", "Compensating control"],
+      ["remediation", "Remediation"],
+      ["verifications", "Verification"],
+    ],
+    findings,
+  );
+  const principals = upliftPrincipalContext(ledgers.principals, COMPLIANCE_REVIEWER_ROLE, findings);
+  const handoff = upliftOwnerFindings(
+    value,
+    ledgers.principals,
+    principals,
+    COMPLIANCE_REVIEWER_ROLE,
+    "The review",
+    findings,
+  );
+  const review = isRecord(value.review) ? value.review : {};
+  const recommendation = isRecord(value.recommendation) ? value.recommendation : null;
+  const reviewScopeValid = [
+    "id",
+    "framework",
+    "frameworkVersion",
+    "systemBoundary",
+    "reviewPeriod",
+    "snapshotRef",
+  ].every((field) => typeof review[field] === "string" && review[field].trim().length > 0);
+  if (!reviewScopeValid) {
+    findings.push(
+      finding(
+        "invalid_review_scope",
+        "review",
+        "The review must bind framework/version, system boundary, period, snapshot, and stable review identity.",
+      ),
+    );
+  }
+  const requestedMs = upliftTimestampMs(review.requestedAt);
+  const nowMs = Date.now();
+  for (const [index, evidence] of ledgers.evidence.entries) {
+    upliftEvidenceWindowFindings(
+      evidence,
+      index,
+      "collectedAt",
+      requestedMs,
+      nowMs,
+      findings,
+    );
+    if (
+      !ledgers.requirements.ids.has(evidence.requirementRef) ||
+      evidence.snapshotRef !== review.snapshotRef
+    ) {
+      findings.push(
+        finding(
+          ledgers.requirements.ids.has(evidence.requirementRef)
+            ? "cross_scope_evidence"
+            : "dangling_reference",
+          `evidence[${index}].requirementRef`,
+          "Compliance evidence must bind an existing exact requirement and the current review snapshot.",
+        ),
+      );
+    }
+  }
+  let incompleteCoverage = ledgers.requirements.items.length === 0;
+  let invalidCompensatingControl = false;
+  for (const [index, control] of ledgers.compensatingControls.entries) {
+    const requirement = ledgers.requirements.byId.get(control.requirementRef);
+    const valid =
+      requirement?.compensatingControlRef === control.id &&
+      control.state === "supported" &&
+      principals.isAccountablePrincipal(control.ownerId) &&
+      Array.isArray(control.evidenceRefs) &&
+      control.evidenceRefs.length > 0 &&
+      control.evidenceRefs.every((reference) => {
+        const evidence = ledgers.evidence.byId.get(reference);
+        return (
+          evidence?.kind === "compensating-control" &&
+          evidence.requirementRef === control.requirementRef &&
+          evidence.compensatingControlRef === control.id &&
+          evidence.snapshotRef === review.snapshotRef &&
+          isValidControlledReference(evidence.sourceRef)
+        );
+      });
+    if (!valid) {
+      invalidCompensatingControl = true;
+      findings.push(
+        finding(
+          "unsupported_compensating_control",
+          `compensatingControls[${index}]`,
+          "Every compensating control must be referenced by its exact requirement and carry accountable ownership plus controlled current-snapshot evidence.",
+        ),
+      );
+    }
+  }
+  for (const [index, requirement] of ledgers.requirements.entries) {
+    if (!principals.isAccountablePrincipal(requirement.controlOwnerId)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `requirements[${index}].controlOwnerId`,
+          `Control owner ${JSON.stringify(requirement.controlOwnerId)} must resolve to an accountable principal.`,
+        ),
+      );
+    }
+    findings.push(
+      ...referenceFindings(
+        requirement.evidenceRefs,
+        ledgers.evidence.ids,
+        `requirements[${index}].evidenceRefs`,
+        "Evidence",
+      ),
+    );
+    const covered =
+      Array.isArray(requirement.evidenceRefs) &&
+      requirement.evidenceRefs.length > 0 &&
+      requirement.evidenceRefs.every((reference) => {
+        const evidence = ledgers.evidence.byId.get(reference);
+        return (
+          evidence?.requirementRef === requirement.id &&
+          evidence.snapshotRef === review.snapshotRef &&
+          isValidControlledReference(evidence.sourceRef)
+        );
+      });
+    if (!covered) incompleteCoverage = true;
+    const findingRecord = ledgers.findings.byId.get(requirement.findingRef);
+    if (findingRecord?.requirementRef !== requirement.id) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `requirements[${index}].findingRef`,
+          "Each requirement must reference a finding bound to that exact requirement.",
+        ),
+      );
+      incompleteCoverage = true;
+    }
+    if (requirement.compensatingControlRef !== undefined) {
+      const control = ledgers.compensatingControls.byId.get(
+        requirement.compensatingControlRef,
+      );
+      const valid =
+        control?.requirementRef === requirement.id &&
+        control.state === "supported" &&
+        principals.isAccountablePrincipal(control.ownerId) &&
+        Array.isArray(control.evidenceRefs) &&
+        control.evidenceRefs.length > 0 &&
+        control.evidenceRefs.every((reference) => {
+          const evidence = ledgers.evidence.byId.get(reference);
+          return (
+            evidence?.kind === "compensating-control" &&
+            evidence.requirementRef === requirement.id &&
+            evidence.compensatingControlRef === control.id &&
+            evidence.snapshotRef === review.snapshotRef
+          );
+        });
+      if (!valid) {
+        invalidCompensatingControl = true;
+        findings.push(
+          finding(
+            "unsupported_compensating_control",
+            `requirements[${index}].compensatingControlRef`,
+            "A compensating control must have accountable ownership and controlled evidence for its exact requirement and snapshot.",
+          ),
+        );
+      }
+    }
+  }
+  if (incompleteCoverage) {
+    findings.push(
+      finding(
+        "incomplete_requirement_coverage",
+        "requirements",
+        "Every requirement must have current-snapshot evidence and a bound finding.",
+      ),
+    );
+  }
+  let unresolvedMaterialFinding = false;
+  let invalidResolvedRemediation = false;
+  for (const [index, findingRecord] of ledgers.findings.entries) {
+    if (!ledgers.requirements.ids.has(findingRecord.requirementRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `findings[${index}].requirementRef`,
+          `Requirement reference ${JSON.stringify(findingRecord.requirementRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (
+      ["high", "critical"].includes(findingRecord.severity) &&
+      findingRecord.state !== "resolved"
+    ) {
+      unresolvedMaterialFinding = true;
+      findings.push(
+        finding(
+          "unresolved_material_finding",
+          `findings[${index}].state`,
+          "No high or critical finding may remain unresolved for independent-review readiness.",
+        ),
+      );
+    }
+    if (["accepted", "accepted-risk", "waived"].includes(findingRecord.state)) {
+      findings.push(
+        finding(
+          "unauthorized_risk_disposition",
+          `findings[${index}].state`,
+          "The Claw cannot accept risk or waive a compliance finding.",
+        ),
+      );
+    }
+    if (["high", "critical"].includes(findingRecord.severity) && findingRecord.state === "resolved") {
+      const remediation = ledgers.remediation.items.find(
+        (item) => item.findingRef === findingRecord.id && item.state === "verified",
+      );
+      const verification = ledgers.verifications.byId.get(remediation?.verificationRef);
+      const evidence = ledgers.evidence.byId.get(verification?.evidenceRef);
+      const valid =
+        remediation !== undefined &&
+        principals.isAccountablePrincipal(remediation.ownerId) &&
+        verification?.state === "verified" &&
+        verification.remediationRef === remediation.id &&
+        verification.requirementRef === findingRecord.requirementRef &&
+        verification.snapshotRef === review.snapshotRef &&
+        verification.verifiedById !== remediation.ownerId &&
+        principals.hasScope(verification.verifiedById, "remediation-verification") &&
+        evidence?.kind === "remediation-verification" &&
+        evidence.remediationRef === remediation.id &&
+        evidence.requirementRef === findingRecord.requirementRef &&
+        evidence.snapshotRef === review.snapshotRef &&
+        upliftTimestampMs(evidence.collectedAt) <= upliftTimestampMs(verification.verifiedAt);
+      if (!valid) {
+        invalidResolvedRemediation = true;
+        findings.push(
+          finding(
+            verification?.verifiedById === remediation?.ownerId
+              ? "self_verified_remediation"
+              : "unsupported_remediation_verification",
+            `findings[${index}]`,
+            "A resolved high or critical finding requires independently verified remediation for the exact requirement and snapshot.",
+          ),
+        );
+      }
+    }
+  }
+  findings.push(...stringListFindings(value.limitations, "limitations", "Limitations").findings);
+  const reviewedMs = upliftTimestampMs(recommendation?.reviewedAt);
+  const latestEvidenceMs = Math.max(
+    requestedMs,
+    ...ledgers.evidence.items.map((item) => upliftTimestampMs(item.collectedAt)),
+    ...ledgers.verifications.items.map((item) => upliftTimestampMs(item.verifiedAt)),
+  );
+  const recommendationValid =
+    findings.length === 0 &&
+    schemaVersionValid &&
+    reviewScopeValid &&
+    !incompleteCoverage &&
+    !invalidCompensatingControl &&
+    !unresolvedMaterialFinding &&
+    !invalidResolvedRemediation &&
+    recommendation?.state === "ready-for-independent-review" &&
+    recommendation.reviewerId !== value.ownerId &&
+    principals.hasScope(recommendation.reviewerId, "independent-compliance-review") &&
+    Number.isFinite(reviewedMs) &&
+    reviewedMs >= latestEvidenceMs &&
+    reviewedMs <= nowMs;
+  if (recommendation?.state === "ready-for-independent-review" && !recommendationValid) {
+    findings.push(
+      finding(
+        "premature_independent_review",
+        "recommendation.state",
+        "Independent-review readiness requires complete exact-snapshot coverage, valid compensating controls, verified remediation, no unresolved material finding, and an independent reviewer after all evidence.",
+      ),
+    );
+  }
+  if (handoff.state !== (recommendationValid ? "ready" : "blocked")) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The compliance handoff cannot be ready before the independent-review recommendation is valid.",
+      ),
+    );
+  }
+  upliftRequiredActions(
+    handoff,
+    [
+      "certify-compliance",
+      "issue-legal-conclusion",
+      "accept-risk",
+      "grant-waiver",
+      "issue-audit-opinion",
+    ],
+    findings,
+  );
+  if (
+    hasUnnegatedNarrativeMatch(
+      upliftNarrativeStrings(value),
+      /\b(?:certified|declared)\s+(?:the\s+)?(?:compliance|system|organization)|\b(?:issued|made)\s+(?:a\s+)?legal\s+(?:conclusion|determination)|\baccepted\s+(?:the\s+)?risk|\b(?:granted|issued)\s+(?:the\s+)?waiver|\bissued\s+(?:an?\s+)?audit\s+opinion|\bapproved\s+(?:the\s+)?compensating\s+control\b/giu,
+    )
+  ) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim certification, a legal conclusion, risk acceptance, a waiver, or an audit opinion.",
+      ),
+    );
+  }
+  return findings;
+}
+
 function workflowExecutionReconciliationFindings(value, options = {}) {
   const findings = [];
   const manifest = value.manifest ?? {};
@@ -42405,8 +44134,10 @@ const validators = {
   "child-activity-manager": childActivityFindings,
   "civic-data-analyst": civicDataFindings,
   "cloud-cost-analyst": cloudCostAnalysisFindings,
+  "compliance-reviewer": complianceAssessmentFindings,
   "data-migration-planner": dataMigrationReadinessFindings,
   "content-operations": publicationReadinessRecordFindings,
+  "customer-support": customerSupportCaseFindings,
   "data-analyst": dataAnalysisFindings,
   "delegation-coordinator": delegationFindings,
   "document-renewal-tracker": documentRenewalFindings,
@@ -42465,10 +44196,12 @@ const validators = {
   "public-safety-monitor": publicSafetyFindings,
   "quality-assurance-lead": qualityAssuranceReleaseFindings,
   "recruiting-coordinator": recruitingFindings,
+  "release-coordinator": releaseReadinessFindings,
   "restaurant-venue-scout": restaurantVenueFindings,
   "research-briefing": researchFindings,
   "sales-operations": salesOperationsFindings,
   "school-coordinator": schoolCoordinatorFindings,
+  "security-analyst": securityAssessmentFindings,
   "software-maintainer": changeDeliveryRecordFindings,
   "sports-team-watcher": sportsTeamWatchFindings,
   "spreadsheet-analyst": spreadsheetChangeFindings,

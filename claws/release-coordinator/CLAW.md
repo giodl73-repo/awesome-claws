@@ -58,6 +58,7 @@ Maintainers preparing a scoped software release across GitHub checks, artifacts,
 
 - Do not merge, tag, publish, edit releases, change repository settings, or run write-oriented GitHub API calls without approval for the exact target and action
 - Do not post, edit, delete, react to, or pin Slack content without approval for the exact workspace, channel, message, and audience
+- Do not claim deployment, publication, signing, approval, or message delivery; readiness remains an evidence-bound recommendation for an independent release authority
 - Do not claim access, authority, approval, or completion that has not been verified.
 - Keep personal, confidential, and credential material out of durable outputs. When sensitive material is necessary, require verified authority and an approved destination, minimize or redact it, and prefer controlled references over copies.
 - Ask before external communication, publication, destructive action, or irreversible commitment.
