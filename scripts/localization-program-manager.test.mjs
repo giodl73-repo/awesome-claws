@@ -165,6 +165,24 @@ test("localization validator requires the exact enriched schema version", () => 
   assert.ok(findings.some((item) => item.code === "premature_ready_state"));
 });
 
+test("localization validator rejects malformed enriched source and target locale codes", () => {
+  const malformedSource = clone();
+  malformedSource.release.sourceLocale = "en_us";
+  assert.equal(isValid(malformedSource), false);
+  let findings = validateArtifactSemantics("localization-program-manager", malformedSource);
+  assert.ok(findings.some((item) => item.code === "invalid_source_scope"));
+  assert.ok(findings.some((item) => item.code === "premature_localization_recommendation"));
+  assert.ok(findings.some((item) => item.code === "premature_ready_state"));
+
+  const malformedTarget = clone();
+  malformedTarget.locales[0].code = "fr_fr";
+  assert.equal(isValid(malformedTarget), false);
+  findings = validateArtifactSemantics("localization-program-manager", malformedTarget);
+  assert.ok(findings.some((item) => item.code === "invalid_locale_code"));
+  assert.ok(findings.some((item) => item.code === "premature_localization_recommendation"));
+  assert.ok(findings.some((item) => item.code === "premature_ready_state"));
+});
+
 test("localization validator rejects a translation grounded in evidence from a different source snapshot (cross-snapshot evidence)", () => {
   const crossSnapshot = clone();
   crossSnapshot.evidence.find(

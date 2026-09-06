@@ -447,6 +447,7 @@ const QUALITY_ASSURANCE_LEAD_PATTERN = /\bquality assurance lead\b/iu;
 const CLOUD_COST_ANALYST_PATTERN = /\bcloud cost analyst\b/iu;
 const DATA_MIGRATION_PLANNER_PATTERN = /\bdata migration planner\b/iu;
 const LOCALIZATION_PROGRAM_MANAGER_PATTERN = /^\s*localization program manager\s*$/iu;
+const LOCALE_CODE_PATTERN = /^[a-z]{2}(?:-[A-Z]{2})?$/u;
 
 function zoneOffsetMs(formatter, instant) {
   const parts = Object.fromEntries(
@@ -39829,7 +39830,7 @@ function localizationReadinessFindings(value) {
 
   const releaseScopeValid =
     typeof release.sourceLocale === "string" &&
-    release.sourceLocale.trim().length > 0 &&
+    LOCALE_CODE_PATTERN.test(release.sourceLocale) &&
     typeof release.sourceVersion === "string" &&
     release.sourceVersion.trim().length > 0 &&
     typeof release.sourceSnapshotRef === "string" &&
@@ -39926,9 +39927,17 @@ function localizationReadinessFindings(value) {
     }
   }
 
+  let invalidLocaleCode = false;
   for (const [index, locale] of localesRecord.entries) {
-    if (typeof locale.code !== "string" || locale.code.trim().length === 0) {
-      findings.push(finding("invalid_locale_code", `locales[${index}].code`, "A locale must carry a non-empty locale code."));
+    if (typeof locale.code !== "string" || !LOCALE_CODE_PATTERN.test(locale.code)) {
+      invalidLocaleCode = true;
+      findings.push(
+        finding(
+          "invalid_locale_code",
+          `locales[${index}].code`,
+          "A locale must use a lowercase ISO 639-1 language code with an optional uppercase ISO 3166-1 region code.",
+        ),
+      );
     }
     if (typeof locale.market !== "string" || locale.market.trim().length === 0) {
       findings.push(finding("invalid_locale_market", `locales[${index}].market`, "A locale must carry a non-empty market."));
@@ -40484,6 +40493,7 @@ function localizationReadinessFindings(value) {
     if (!schemaVersionValid) return false;
     if (!releaseScopeValid) return false;
     if (locales.length === 0) return false;
+    if (invalidLocaleCode) return false;
     if (incompleteLocaleCoverage) return false;
     if (unresolvedLocalizationDefect) return false;
     if (invalidResolvedDefect) return false;
