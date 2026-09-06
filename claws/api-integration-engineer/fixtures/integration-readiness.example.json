@@ -1,0 +1,14 @@
+{
+  "contractVersion": "inventory-api@1.0.0",
+  "operations": [
+    {
+      "operationId": "listItems",
+      "state": "tested-synthetic",
+      "evidence": [
+        "Synthetic 200 response contract",
+        "Synthetic 429 throttling contract",
+        "No production request performed"
+      ]
+    }
+  ]
+}

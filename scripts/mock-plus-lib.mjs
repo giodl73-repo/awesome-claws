@@ -11,7 +11,14 @@ import {
   rm,
   writeFile,
 } from "node:fs/promises";
-import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
+import {
+  basename,
+  dirname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+} from "node:path";
 import { tmpdir } from "node:os";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
@@ -166,10 +173,24 @@ function completionFixturePath(entry, schemaName) {
   return (
     (entry.resources ?? []).find(
       (resource) =>
-        resource.role === "fixture" &&
-        basename(resource.path) === expected,
+        resource.role === "fixture" && basename(resource.path) === expected,
     )?.path ?? null
   );
+}
+
+function schemaContracts(entry) {
+  const fixtures = new Set(fixturePaths(entry));
+  return (entry.resources ?? [])
+    .filter((resource) => resource.role === "schema")
+    .map((resource) => {
+      const fixture = resource.path
+        .replace(/^schemas\//u, "fixtures/")
+        .replace(/\.schema\.json$/u, ".example.json");
+      return {
+        schemaPath: resource.path,
+        fixturePath: fixtures.has(fixture) ? fixture : null,
+      };
+    });
 }
 
 function fixturePaths(entry) {
@@ -184,12 +205,17 @@ export function buildMockPlusInventory({
   experienceCases,
   regressionRegistry,
 }) {
-  const experienceById = new Map(experienceCases.map((item) => [item.id, item]));
-  const contractById = new Map(regressionRegistry.cases.map((item) => [item.id, item]));
+  const experienceById = new Map(
+    experienceCases.map((item) => [item.id, item]),
+  );
+  const contractById = new Map(
+    regressionRegistry.cases.map((item) => [item.id, item]),
+  );
   const entries = catalog.entries.map((entry) => {
     const schemaName = artifactSchemaName(entry.id);
     const fixtures = fixturePaths(entry);
     const completionFixture = completionFixturePath(entry, schemaName);
+    const packagedSchemaContracts = schemaContracts(entry);
     const capabilities = capabilityClassesForEntry(
       entry,
       experienceById.get(entry.id),
@@ -199,6 +225,7 @@ export function buildMockPlusInventory({
       id: entry.id,
       fixtureResources: fixtures,
       completionFixture,
+      schemaContracts: packagedSchemaContracts,
       schema: {
         registered: schemaName !== null,
         name: schemaName,
@@ -208,7 +235,9 @@ export function buildMockPlusInventory({
       applicableFamilies: {
         controls: Boolean(contract),
         fixture: fixtures.length > 0,
-        schema: schemaName !== null && completionFixture !== null,
+        schema: packagedSchemaContracts.some(
+          (contract) => contract.fixturePath !== null,
+        ),
         semantics:
           hasArtifactSemanticValidator(entry.id) && completionFixture !== null,
         authority: (contract?.authorityBoundaries?.length ?? 0) > 0,
@@ -222,6 +251,11 @@ export function buildMockPlusInventory({
         ...(schemaName !== null && completionFixture === null
           ? ["completion-fixture"]
           : []),
+        ...(packagedSchemaContracts.some(
+          (contract) => contract.fixturePath === null,
+        )
+          ? ["schema-fixture-pair"]
+          : []),
       ],
     };
   });
@@ -232,15 +266,28 @@ export function buildMockPlusInventory({
     summary: {
       clawCount: entries.length,
       registeredSchemaCount: Object.keys(ARTIFACT_SCHEMA_NAMES).length,
+      packagedSchemaCount: entries.reduce(
+        (total, entry) => total + entry.schemaContracts.length,
+        0,
+      ),
+      schemaFixturePairClawCount: entries.filter((entry) =>
+        entry.schemaContracts.some((contract) => contract.fixturePath !== null),
+      ).length,
+      schemaFixtureGapIds: entries
+        .filter((entry) =>
+          entry.schemaContracts.some(
+            (contract) => contract.fixturePath === null,
+          ),
+        )
+        .map((entry) => entry.id),
       fixtureResourceClawCount: entries.filter(
         (entry) => entry.fixtureResources.length > 0,
       ).length,
       fixtureGapIds: entries
         .filter((entry) => entry.fixtureResources.length === 0)
         .map((entry) => entry.id),
-      semanticValidatorCount: entries.filter(
-        (entry) => entry.semanticValidator,
-      ).length,
+      semanticValidatorCount: entries.filter((entry) => entry.semanticValidator)
+        .length,
       capabilityBearingClawCount: entries.filter(
         (entry) => entry.capabilityClasses.length > 0,
       ).length,
@@ -254,13 +301,14 @@ export async function loadMockPlusContext({ targetRoot = root } = {}) {
     targetRoot === root
       ? await readCatalog({ loadResources: false })
       : JSON.parse(await readFile(join(targetRoot, "catalog.json"), "utf8"));
-  const [experienceCases, regressionRegistry, safetyRegistry] = await Promise.all([
-    readExperienceCases(catalog, { targetRoot }),
-    readRegressionCases({ targetRoot }),
-    readFile(join(targetRoot, "required-safety-recipes.json"), "utf8").then(
-      JSON.parse,
-    ),
-  ]);
+  const [experienceCases, regressionRegistry, safetyRegistry] =
+    await Promise.all([
+      readExperienceCases(catalog, { targetRoot }),
+      readRegressionCases({ targetRoot }),
+      readFile(join(targetRoot, "required-safety-recipes.json"), "utf8").then(
+        JSON.parse,
+      ),
+    ]);
   const inventory = buildMockPlusInventory({
     catalog,
     experienceCases,
@@ -375,6 +423,7 @@ function schemaTargets(schema, value, path = []) {
 }
 
 function instancePath(path) {
+  if (path.length === 0) return "";
   return `/${path.map((part) => String(part).replaceAll("~", "~0").replaceAll("/", "~1")).join("/")}`;
 }
 
@@ -404,6 +453,463 @@ function schemaResult(validate, candidate) {
       keyword,
     })),
   };
+}
+
+const expandedSchemaKeywords = [
+  "required",
+  "type",
+  "enum",
+  "additionalProperties",
+  "format",
+  "minItems",
+  "maxItems",
+  "uniqueItems",
+  "minProperties",
+  "maxProperties",
+  "minLength",
+  "maxLength",
+  "pattern",
+  "minimum",
+  "maximum",
+  "exclusiveMinimum",
+  "const",
+  "oneOf",
+  "anyOf",
+  "not",
+];
+
+function resolveSchemaPointer(rootSchema, reference) {
+  if (!reference.startsWith("#/")) return null;
+  return reference
+    .slice(2)
+    .split("/")
+    .map((part) => part.replaceAll("~1", "/").replaceAll("~0", "~"))
+    .reduce((value, part) => value?.[part], rootSchema);
+}
+
+function expandedSchemaTargets(
+  schema,
+  value,
+  rootSchema,
+  ajv,
+  path = [],
+  visited = new Set(),
+) {
+  if (!schema || typeof schema !== "object") return [];
+  const targets = [];
+  if (typeof schema.$ref === "string") {
+    const visitKey = `${schema.$ref}\0${path.join(".")}`;
+    if (!visited.has(visitKey)) {
+      visited.add(visitKey);
+      targets.push(
+        ...expandedSchemaTargets(
+          resolveSchemaPointer(rootSchema, schema.$ref),
+          value,
+          rootSchema,
+          ajv,
+          path,
+          visited,
+        ),
+      );
+    }
+  }
+  for (const keyword of expandedSchemaKeywords) {
+    if (
+      keyword === "required" &&
+      Array.isArray(schema.required) &&
+      value &&
+      !Array.isArray(value) &&
+      typeof value === "object"
+    ) {
+      for (const requiredKey of schema.required) {
+        if (Object.hasOwn(value, requiredKey)) {
+          targets.push({ keyword, path, schema, value, requiredKey });
+        }
+      }
+    } else if (
+      Object.hasOwn(schema, keyword) &&
+      value !== undefined &&
+      !(keyword === "additionalProperties" && schema[keyword] !== false)
+    ) {
+      targets.push({ keyword, path, schema, value });
+    }
+  }
+  for (const child of schema.allOf ?? []) {
+    targets.push(
+      ...expandedSchemaTargets(child, value, rootSchema, ajv, path, visited),
+    );
+  }
+  for (const keyword of ["oneOf", "anyOf"]) {
+    const activeBranches = (schema[keyword] ?? []).filter((child) =>
+      schemaBranchMatches(ajv, child, rootSchema, value),
+    );
+    const traversableBranches =
+      keyword === "oneOf" || activeBranches.length === 1 ? activeBranches : [];
+    for (const child of traversableBranches) {
+      targets.push(
+        ...expandedSchemaTargets(child, value, rootSchema, ajv, path, visited),
+      );
+    }
+  }
+  if (schema.if) {
+    const branch = schemaBranchMatches(ajv, schema.if, rootSchema, value)
+      ? schema.then
+      : schema.else;
+    if (branch) {
+      targets.push(
+        ...expandedSchemaTargets(branch, value, rootSchema, ajv, path, visited),
+      );
+    }
+  }
+  if (schema.properties && value && typeof value === "object") {
+    for (const [key, child] of Object.entries(schema.properties)) {
+      if (Object.hasOwn(value, key)) {
+        targets.push(
+          ...expandedSchemaTargets(
+            child,
+            value[key],
+            rootSchema,
+            ajv,
+            [...path, key],
+            visited,
+          ),
+        );
+      }
+    }
+  }
+  if (schema.items && Array.isArray(value) && value.length > 0) {
+    targets.push(
+      ...expandedSchemaTargets(
+        schema.items,
+        value[0],
+        rootSchema,
+        ajv,
+        [...path, 0],
+        visited,
+      ),
+    );
+  }
+  return targets;
+}
+
+function schemaBranchMatches(ajv, branch, rootSchema, value) {
+  const standalone = structuredClone(branch);
+  delete standalone.$id;
+  standalone.$schema ??= rootSchema.$schema;
+  if (rootSchema.$defs) standalone.$defs ??= rootSchema.$defs;
+  if (rootSchema.definitions) {
+    standalone.definitions ??= rootSchema.definitions;
+  }
+  return ajv.compile(standalone)(value);
+}
+
+function replacementCandidates(target) {
+  const { keyword, schema, value } = target;
+  if (keyword === "required") {
+    return [{ mode: "remove-required", key: target.requiredKey }];
+  }
+  if (keyword === "type") {
+    const allowed = Array.isArray(schema.type) ? schema.type : [schema.type];
+    const candidates = [null, {}, [], "", 0, false];
+    return candidates.filter((candidate) => {
+      const type = Array.isArray(candidate)
+        ? "array"
+        : candidate === null
+          ? "null"
+          : typeof candidate === "number"
+            ? Number.isInteger(candidate)
+              ? "integer"
+              : "number"
+            : typeof candidate;
+      return (
+        !allowed.includes(type) &&
+        !(type === "integer" && allowed.includes("number"))
+      );
+    });
+  }
+  if (keyword === "enum") {
+    return [null, {}, [], "mock-plus-invalid-enum", 104729].filter(
+      (candidate) =>
+        !schema.enum.some(
+          (allowed) => JSON.stringify(allowed) === JSON.stringify(candidate),
+        ),
+    );
+  }
+  if (keyword === "additionalProperties") {
+    if (
+      schema.additionalProperties === false &&
+      value &&
+      typeof value === "object"
+    ) {
+      return [{ mode: "add-property", value: "mock-plus-extra" }];
+    }
+    return [];
+  }
+  if (keyword === "format") {
+    return [
+      schema.format === "uri"
+        ? "not a uri"
+        : schema.format === "date"
+          ? "2026-99-99"
+          : "not-a-date-time",
+    ];
+  }
+  if (keyword === "minItems" && schema.minItems > 0) return [[]];
+  if (keyword === "maxItems" && Array.isArray(value)) {
+    const seed = value[0] ?? null;
+    return [
+      Array.from({ length: schema.maxItems + 1 }, (_, index) =>
+        seed && typeof seed === "object"
+          ? { ...structuredClone(seed), __mockPlusIndex: index }
+          : `${String(seed)}-${index}`,
+      ),
+    ];
+  }
+  if (keyword === "uniqueItems" && schema.uniqueItems === true) {
+    const seeds =
+      value.length > 0
+        ? [structuredClone(value[0])]
+        : [null, "mock-plus-duplicate", 104729, false, {}];
+    return seeds.map((seed) => [...value, seed, structuredClone(seed)]);
+  }
+  if (
+    keyword === "minProperties" &&
+    Number.isInteger(schema.minProperties) &&
+    schema.minProperties > 0 &&
+    value &&
+    !Array.isArray(value) &&
+    typeof value === "object"
+  ) {
+    return [{ mode: "retain-properties", count: schema.minProperties - 1 }];
+  }
+  if (
+    keyword === "maxProperties" &&
+    Number.isInteger(schema.maxProperties) &&
+    value &&
+    !Array.isArray(value) &&
+    typeof value === "object"
+  ) {
+    return [{ mode: "add-properties", count: schema.maxProperties + 1 }];
+  }
+  if (keyword === "minLength" && schema.minLength > 0) return [""];
+  if (keyword === "maxLength") return ["x".repeat(schema.maxLength + 1)];
+  if (keyword === "pattern") {
+    return ["", "!", "mock-plus-pattern-miss", "\n"];
+  }
+  if (keyword === "minimum") return [schema.minimum - 1];
+  if (keyword === "maximum") return [schema.maximum + 1];
+  if (keyword === "exclusiveMinimum") return [schema.exclusiveMinimum];
+  if (keyword === "const") {
+    if (typeof value === "string") return [`${value}-mock-plus`];
+    if (typeof value === "number") return [value + 1];
+    if (typeof value === "boolean") return [!value];
+    return ["mock-plus-not-const"];
+  }
+  if (keyword === "oneOf" || keyword === "anyOf") {
+    return [null, {}, [], "mock-plus-no-branch"];
+  }
+  if (
+    keyword === "not" &&
+    schema.not?.required &&
+    value &&
+    !Array.isArray(value) &&
+    typeof value === "object"
+  ) {
+    return [{ mode: "satisfy-not-required", required: schema.not.required }];
+  }
+  return [];
+}
+
+function withExpandedReplacement(fixture, target, replacement, operation) {
+  if (
+    target.path.length === 0 &&
+    ![
+      "required",
+      "additionalProperties",
+      "minProperties",
+      "maxProperties",
+      "not",
+    ].includes(target.keyword)
+  ) {
+    return operation(replacement);
+  }
+  const object =
+    target.path.length === 0 ? fixture : resolveValue(fixture, target.path);
+  if (target.keyword === "required") {
+    const previous = object[replacement.key];
+    delete object[replacement.key];
+    try {
+      return operation(fixture);
+    } finally {
+      object[replacement.key] = previous;
+    }
+  }
+  if (target.keyword === "additionalProperties") {
+    object.__mockPlusUnexpected = replacement.value;
+    try {
+      return operation(fixture);
+    } finally {
+      delete object.__mockPlusUnexpected;
+    }
+  }
+  if (target.keyword === "minProperties") {
+    const removed = Object.keys(object)
+      .slice(replacement.count)
+      .map((key) => [key, object[key]]);
+    for (const [key] of removed) {
+      delete object[key];
+    }
+    try {
+      return operation(fixture);
+    } finally {
+      for (const [key, value] of removed) object[key] = value;
+    }
+  }
+  if (target.keyword === "maxProperties") {
+    const added = [];
+    for (
+      let index = Object.keys(object).length;
+      index < replacement.count;
+      index += 1
+    ) {
+      const key = `__mockPlusProperty${index}`;
+      object[key] = index;
+      added.push(key);
+    }
+    try {
+      return operation(fixture);
+    } finally {
+      for (const key of added) delete object[key];
+    }
+  }
+  if (target.keyword === "not") {
+    const added = replacement.required.filter(
+      (key) => !Object.hasOwn(object, key),
+    );
+    for (const key of added) object[key] = null;
+    try {
+      return operation(fixture);
+    } finally {
+      for (const key of added) delete object[key];
+    }
+  }
+  const previous = target.value;
+  setValue(fixture, target.path, replacement);
+  try {
+    return operation(fixture);
+  } finally {
+    setValue(fixture, target.path, previous);
+  }
+}
+
+function expandedSchemaMutantsForTargets(clawId, validate, fixture, targets) {
+  const results = [];
+  for (const target of targets) {
+    const { keyword, targetIndex } = target;
+    let selected = null;
+    const replacements = replacementCandidates(target);
+    const pathId =
+      target.path.length === 0
+        ? "root"
+        : target.path.map((part) => encodeURIComponent(String(part))).join("-");
+    const recipeId = `schema-${keyword}-${pathId}-${targetIndex + 1}`;
+    for (const replacement of replacements) {
+      const observed = withExpandedReplacement(
+        fixture,
+        target,
+        replacement,
+        (candidate) => schemaResult(validate, candidate),
+      );
+      const expectedPath = instancePath(target.path);
+      const killed = observed.errors.some(
+        (error) =>
+          error.keyword === keyword && error.instancePath === expectedPath,
+      );
+      selected = mutantResult({
+        clawId,
+        recipeId,
+        family: "schema",
+        killed,
+        oracle: { type: "ajv", keyword, instancePath: expectedPath },
+        observed: {
+          errors: observed.errors,
+          delta: {
+            path: target.path.join(".") || "$",
+            before: describeValue(target.value),
+            after: [
+              "required",
+              "additionalProperties",
+              "minProperties",
+              "maxProperties",
+              "not",
+            ].includes(target.keyword)
+              ? { mutation: replacement.mode }
+              : describeValue(replacement),
+          },
+        },
+      });
+      if (killed) break;
+    }
+    if (!selected) {
+      selected = {
+        ...baseResult({
+          clawId,
+          recipeId,
+          family: "schema",
+          kind: "mutant",
+          oracle: {
+            type: "missing",
+            keyword,
+            instancePath: instancePath(target.path),
+          },
+        }),
+        outcome: "unsupported-oracle",
+        observed: {
+          reason: `No deterministic ${keyword} mutation is implemented for this active constraint.`,
+        },
+      };
+    }
+    results.push(selected);
+  }
+  return results;
+}
+
+async function expandedSchemaMutants(clawId, schema, validate, fixture) {
+  const targets = await runBoundedMockPlusCaseGroup(
+    `${clawId}:schema-targets`,
+    () => {
+      const branchAjv = new Ajv2020({ allErrors: true, strict: false });
+      addFormats(branchAjv);
+      const discovered = expandedSchemaTargets(
+        schema,
+        fixture,
+        schema,
+        branchAjv,
+      );
+      return expandedSchemaKeywords.flatMap((keyword) =>
+        discovered
+          .filter((target) => target.keyword === keyword)
+          .map((target, targetIndex) => ({ ...target, targetIndex })),
+      );
+    },
+  );
+  const results = [];
+  const chunkSize = 20;
+  for (let offset = 0; offset < targets.length; offset += chunkSize) {
+    results.push(
+      ...(await runBoundedMockPlusCaseGroup(
+        `${clawId}:schema-mutants:${offset / chunkSize + 1}`,
+        () =>
+          expandedSchemaMutantsForTargets(
+            clawId,
+            validate,
+            fixture,
+            targets.slice(offset, offset + chunkSize),
+          ),
+      )),
+    );
+  }
+  return results;
 }
 
 function baseResult({ clawId, recipeId, family, kind, oracle }) {
@@ -491,7 +997,12 @@ function regressionControls(clawId, contract) {
   ];
 }
 
-function artifactControls(clawId, validate, fixture) {
+function artifactControls(
+  clawId,
+  validate,
+  fixture,
+  { semanticValidator = true } = {},
+) {
   const variants = [
     ["control-valid-artifact", structuredClone(fixture), "packaged fixture"],
     [
@@ -512,15 +1023,19 @@ function artifactControls(clawId, validate, fixture) {
   ];
   return variants.map(([recipeId, candidate, description]) => {
     const schema = schemaResult(validate, candidate);
-    const findings = schema.valid
-      ? validateArtifactSemantics(clawId, candidate)
-      : [];
+    const findings =
+      schema.valid && semanticValidator
+        ? validateArtifactSemantics(clawId, candidate)
+        : [];
     return controlResult({
       clawId,
       recipeId,
       family: "accepted-variants",
       passed: schema.valid && findings.length === 0,
-      oracle: { type: "schema-and-semantics", expected: "valid" },
+      oracle: {
+        type: semanticValidator ? "schema-and-semantics" : "schema",
+        expected: "valid",
+      },
       observed: {
         schemaValid: schema.valid,
         semanticFindingCodes: findings.map((item) => item.code).sort(),
@@ -548,10 +1063,13 @@ function schemaMutants(clawId, schema, validate, fixture) {
         family: "schema",
         killed: observed.errors.some(
           (error) =>
-            error.keyword === "required" &&
-            error.instancePath === expectedPath,
+            error.keyword === "required" && error.instancePath === expectedPath,
         ),
-        oracle: { type: "ajv", keyword: "required", instancePath: expectedPath },
+        oracle: {
+          type: "ajv",
+          keyword: "required",
+          instancePath: expectedPath,
+        },
         observed: {
           errors: observed.errors,
           delta: { path: required, before, after: { type: "missing" } },
@@ -862,8 +1380,8 @@ async function packageDigest(entry, targetRoot) {
 async function identitiesFor({
   entry,
   contract,
-  completionFixture,
-  schemaName,
+  fixturePath,
+  schemaPath,
   targetRoot,
   harnessDigest,
   semanticDigest,
@@ -872,12 +1390,12 @@ async function identitiesFor({
     harness: harnessDigest,
     package: await packageDigest(entry, targetRoot),
     contract: mockPlusDigest(contract),
-    fixture: await fileDigest(
-      join(targetRoot, "claws", entry.id, completionFixture),
-    ),
-    schema: await fileDigest(
-      join(targetRoot, "claws", entry.id, "schemas", schemaName),
-    ),
+    fixture: fixturePath
+      ? await fileDigest(join(targetRoot, "claws", entry.id, fixturePath))
+      : null,
+    schema: schemaPath
+      ? await fileDigest(join(targetRoot, "claws", entry.id, schemaPath))
+      : null,
     semantics: semanticDigest,
     capabilityAdapters: mockPlusDigest(CAPABILITY_ADAPTERS),
   };
@@ -887,63 +1405,27 @@ async function runClaw({
   entry,
   contract,
   inventoryEntry,
+  profile,
   safetyRegistry,
   targetRoot,
   harnessDigest,
   semanticDigest,
 }) {
-  if (
-    !inventoryEntry.completionFixture ||
-    !inventoryEntry.schema.registered ||
-    !inventoryEntry.semanticValidator
-  ) {
-    return {
-      id: entry.id,
-      identities: null,
-      inputBytes: 0,
-      cases: [
-        {
-          ...baseResult({
-            clawId: entry.id,
-            recipeId: "fixture-backed-control",
-            family: "fixture",
-            kind: "control",
-            oracle: { type: "missing", owner: "claw-package" },
-          }),
-          outcome: "unsupported-oracle",
-          observed: {
-            missing: inventoryEntry.unsupportedOracles,
-          },
-        },
-      ],
-    };
-  }
-  const fixturePath = join(
-    targetRoot,
-    "claws",
-    entry.id,
-    inventoryEntry.completionFixture,
-  );
-  const schemaPath = join(
-    targetRoot,
-    "claws",
-    entry.id,
-    "schemas",
-    inventoryEntry.schema.name,
-  );
-  const [fixture, schema] = await Promise.all([
-    readFile(fixturePath, "utf8").then(JSON.parse),
-    readFile(schemaPath, "utf8").then(JSON.parse),
-  ]);
-  const inputBytes = enforceInputBound(entry.id, fixture);
-  const ajv = new Ajv2020({ allErrors: true, strict: true });
-  addFormats(ajv);
-  const validate = ajv.compile(schema);
+  const vertical = profile === "vertical";
+  const selectedSchemaContract = vertical
+    ? inventoryEntry.schemaContracts.find(
+        (item) =>
+          item.fixturePath === inventoryEntry.completionFixture &&
+          basename(item.schemaPath) === inventoryEntry.schema.name,
+      )
+    : (inventoryEntry.schemaContracts.find(
+        (item) => item.fixturePath !== null,
+      ) ?? inventoryEntry.schemaContracts[0]);
   const identities = await identitiesFor({
     entry,
     contract,
-    completionFixture: inventoryEntry.completionFixture,
-    schemaName: inventoryEntry.schema.name,
+    fixturePath: selectedSchemaContract?.fixturePath ?? null,
+    schemaPath: selectedSchemaContract?.schemaPath ?? null,
     targetRoot,
     harnessDigest,
     semanticDigest,
@@ -953,34 +1435,81 @@ async function runClaw({
       `${entry.id}:regression-controls`,
       () => regressionControls(entry.id, contract),
     )),
-    ...(await runBoundedMockPlusCaseGroup(
-      `${entry.id}:artifact-controls`,
-      () => artifactControls(entry.id, validate, fixture),
-    )),
-    ...(await runBoundedMockPlusCaseGroup(
-      `${entry.id}:schema-mutants`,
-      () => schemaMutants(entry.id, schema, validate, fixture),
-    )),
-    await runBoundedMockPlusCaseGroup(
-      `${entry.id}:semantic-mutant`,
-      () => semanticMutant(entry.id, validate, fixture),
-    ),
-    ...(await runBoundedMockPlusCaseGroup(
-      `${entry.id}:safety-mutants`,
-      () => safetyMutants(entry.id, safetyRegistry),
+    ...(await runBoundedMockPlusCaseGroup(`${entry.id}:safety-mutants`, () =>
+      safetyMutants(entry.id, safetyRegistry),
     )),
   ];
-  const capabilityCase = await runBoundedMockPlusCaseGroup(
-    `${entry.id}:capability-mutant`,
-    () =>
-      capabilityMutant(
-        entry.id,
-        inventoryEntry.capabilityClasses,
-      ),
-  );
-  if (capabilityCase) {
-    cases.push(capabilityCase);
+  let inputBytes = 0;
+
+  if (!selectedSchemaContract?.fixturePath) {
+    cases.push({
+      ...baseResult({
+        clawId: entry.id,
+        recipeId: "fixture-backed-schema-control",
+        family: "fixture",
+        kind: "control",
+        oracle: { type: "missing", owner: "claw-package" },
+      }),
+      outcome: "unsupported-oracle",
+      observed: {
+        missing: ["schema-fixture-pair"],
+        schemaPath: selectedSchemaContract?.schemaPath ?? null,
+      },
+    });
+  } else {
+    const fixturePath = join(
+      targetRoot,
+      "claws",
+      entry.id,
+      selectedSchemaContract.fixturePath,
+    );
+    const schemaPath = join(
+      targetRoot,
+      "claws",
+      entry.id,
+      selectedSchemaContract.schemaPath,
+    );
+    const [fixture, schema] = await Promise.all([
+      readFile(fixturePath, "utf8").then(JSON.parse),
+      readFile(schemaPath, "utf8").then(JSON.parse),
+    ]);
+    inputBytes = enforceInputBound(entry.id, fixture);
+    const ajv = new Ajv2020({ allErrors: true, strict: true });
+    addFormats(ajv);
+    const validate = ajv.compile(schema);
+    cases.push(
+      ...(await runBoundedMockPlusCaseGroup(
+        `${entry.id}:artifact-controls`,
+        () =>
+          artifactControls(entry.id, validate, fixture, {
+            semanticValidator: inventoryEntry.semanticValidator,
+          }),
+      )),
+    );
+    cases.push(
+      ...(vertical
+        ? await runBoundedMockPlusCaseGroup(`${entry.id}:schema-mutants`, () =>
+            schemaMutants(entry.id, schema, validate, fixture),
+          )
+        : await expandedSchemaMutants(entry.id, schema, validate, fixture)),
+    );
+    if (vertical) {
+      cases.push(
+        await runBoundedMockPlusCaseGroup(`${entry.id}:semantic-mutant`, () =>
+          semanticMutant(entry.id, validate, fixture),
+        ),
+      );
+    }
   }
+
+  if (vertical) {
+    const capabilityCase = await runBoundedMockPlusCaseGroup(
+      `${entry.id}:capability-mutant`,
+      () => capabilityMutant(entry.id, inventoryEntry.capabilityClasses),
+    );
+    if (capabilityCase) cases.push(capabilityCase);
+  }
+
   const boundCases = cases.map((result) => ({
     ...result,
     caseDigest: mockPlusDigest({
@@ -1013,7 +1542,12 @@ function assertCaseUniqueness(claws) {
   }
 }
 
-function coverageFor(claws, inventory, safetyRegistry, { qualifying }) {
+function coverageFor(
+  claws,
+  inventory,
+  safetyRegistry,
+  { qualifying, profile },
+) {
   const results = claws.flatMap((claw) => claw.cases);
   const counts = Object.fromEntries(
     [
@@ -1038,6 +1572,60 @@ function coverageFor(claws, inventory, safetyRegistry, { qualifying }) {
       "user-state",
       "cleanup",
     ].includes(result.family),
+  );
+  const schemaCases = results.filter((result) => result.family === "schema");
+  const schemaKeywordFamilies = [
+    ...new Set(
+      schemaCases.map((result) => result.oracle.keyword).filter(Boolean),
+    ),
+  ].sort();
+  const schemaKeywordCounts = Object.fromEntries(
+    schemaKeywordFamilies.map((keyword) => {
+      const matching = schemaCases.filter(
+        (result) => result.oracle.keyword === keyword,
+      );
+      return [
+        keyword,
+        {
+          applicable: matching.length,
+          killed: matching.filter((result) => result.outcome === "killed")
+            .length,
+          survived: matching.filter((result) => result.outcome === "survived")
+            .length,
+          unsupported: matching.filter(
+            (result) => result.outcome === "unsupported-oracle",
+          ).length,
+        },
+      ];
+    }),
+  );
+  const schemaPerClaw = Object.fromEntries(
+    claws.map((claw) => {
+      const matching = claw.cases.filter(
+        (result) => result.family === "schema",
+      );
+      const families = [
+        ...new Set(
+          matching.map((result) => result.oracle.keyword).filter(Boolean),
+        ),
+      ].sort();
+      return [
+        claw.id,
+        {
+          applicable: matching.length,
+          killed: matching.filter((result) => result.outcome === "killed")
+            .length,
+          families,
+          uncoveredFamilies: families.filter((keyword) =>
+            matching.some(
+              (result) =>
+                result.oracle.keyword === keyword &&
+                result.outcome !== "killed",
+            ),
+          ),
+        },
+      ];
+    }),
   );
   const requiredSafetyIds = new Set(
     safetyRegistry.recipes.map((recipe) => recipe.id),
@@ -1066,7 +1654,11 @@ function coverageFor(claws, inventory, safetyRegistry, { qualifying }) {
     schemaVersion: MOCK_PLUS_SCHEMA_VERSION,
     evidenceClass: MOCK_PLUS_EVIDENCE_CLASS,
     mode: MOCK_PLUS_MODE,
-    scope: qualifying ? "three-claw-vertical" : "diagnostic-selection",
+    scope: qualifying
+      ? profile === "schema-portfolio"
+        ? "schema-portfolio"
+        : "three-claw-vertical"
+      : "diagnostic-selection",
     clawCount: claws.length,
     caseCount: results.length,
     counts,
@@ -1082,10 +1674,26 @@ function coverageFor(claws, inventory, safetyRegistry, { qualifying }) {
         .length,
       completeness: safetyCompleteness,
     },
-    inventoryGaps: inventory.summary.fixtureGapIds.map((id) => ({
+    schema: {
+      clawCount: new Set(schemaCases.map((result) => result.clawId)).size,
+      caseCount: schemaCases.length,
+      killedCount: schemaCases.filter((result) => result.outcome === "killed")
+        .length,
+      survivedCount: schemaCases.filter(
+        (result) => result.outcome === "survived",
+      ).length,
+      keywordFamilies: schemaKeywordFamilies,
+      keywordCounts: schemaKeywordCounts,
+      perClaw: schemaPerClaw,
+    },
+    inventoryGaps: (profile === "schema-portfolio"
+      ? inventory.summary.schemaFixtureGapIds
+      : inventory.summary.fixtureGapIds
+    ).map((id) => ({
       clawId: id,
       outcome: "unsupported-oracle",
-      oracle: "fixture",
+      oracle:
+        profile === "schema-portfolio" ? "schema-fixture-pair" : "fixture",
     })),
     status: blocking ? "failed" : qualifying ? "passed" : "diagnostic",
   };
@@ -1106,6 +1714,8 @@ function renderReport(manifest, coverage) {
 - Controls passed/failed: ${coverage.counts["control-passed"]}/${coverage.counts["control-failed"]}
 - Mutants killed/survived: ${coverage.counts.killed}/${coverage.counts.survived}
 - Safety independent/derived/blocking: ${coverage.safety.independentCount}/${coverage.safety.derivedCount}/${coverage.safety.blockingCount}
+- Schema Claws/cases/killed/survived: ${coverage.schema.clawCount}/${coverage.schema.caseCount}/${coverage.schema.killedCount}/${coverage.schema.survivedCount}
+- Schema keyword families: ${coverage.schema.keywordFamilies.join(", ")}
 - Portfolio fixture oracle gaps: ${coverage.inventoryGaps.length}
 - Status: **${coverage.status}**
 `;
@@ -1130,7 +1740,8 @@ async function nearestExistingRealPath(path) {
       if (error.code !== "ENOENT") throw error;
     }
     const parent = dirname(candidate);
-    if (parent === candidate) throw new Error(`No existing ancestor for ${path}.`);
+    if (parent === candidate)
+      throw new Error(`No existing ancestor for ${path}.`);
     candidate = parent;
   }
 }
@@ -1188,7 +1799,12 @@ async function verifyImmutableDirectory(outputRoot, records, namespaceReal) {
   }
 }
 
-async function persistImmutableDirectory(outputRoot, records, namespaceRoot, targetRoot) {
+async function persistImmutableDirectory(
+  outputRoot,
+  records,
+  namespaceRoot,
+  targetRoot,
+) {
   const namespaceReal = await prepareNamespaceRoot(targetRoot, namespaceRoot);
   try {
     await lstat(outputRoot);
@@ -1261,9 +1877,19 @@ async function writeRunFiles(outputRoot, documents, targetRoot, namespaceRoot) {
   ) {
     throw new Error("Mock+ persisted output contains the synthetic canary.");
   }
-  await persistImmutableDirectory(outputRoot, records, namespaceRoot, targetRoot);
+  await persistImmutableDirectory(
+    outputRoot,
+    records,
+    namespaceRoot,
+    targetRoot,
+  );
 
-  const provenanceNamespace = join(targetRoot, ".tmp", "mock-plus", "provenance");
+  const provenanceNamespace = join(
+    targetRoot,
+    ".tmp",
+    "mock-plus",
+    "provenance",
+  );
   const provenanceRoot = join(
     provenanceNamespace,
     documents.provenance.canonicalDigest.slice(7),
@@ -1282,39 +1908,59 @@ async function writeRunFiles(outputRoot, documents, targetRoot, namespaceRoot) {
 }
 
 export async function runMockPlus({
-  onlyIds = MOCK_PLUS_VERTICAL_IDS,
+  onlyIds = null,
   caseId = null,
+  profile = "vertical",
   targetRoot = root,
   writeOutput = true,
 } = {}) {
+  if (!["vertical", "schema-portfolio"].includes(profile)) {
+    throw new Error(`Unknown Mock+ profile: ${profile}.`);
+  }
   const started = performance.now();
   const context = await loadMockPlusContext({ targetRoot });
-  const entryById = new Map(context.catalog.entries.map((entry) => [entry.id, entry]));
+  const entryById = new Map(
+    context.catalog.entries.map((entry) => [entry.id, entry]),
+  );
   const inventoryById = new Map(
     context.inventory.entries.map((entry) => [entry.id, entry]),
   );
   const contractById = new Map(
     context.regressionRegistry.cases.map((item) => [item.id, item]),
   );
-  const unknown = onlyIds.filter((id) => !entryById.has(id));
+  const requestedIds =
+    onlyIds ??
+    (profile === "schema-portfolio"
+      ? context.catalog.entries.map((entry) => entry.id)
+      : [...MOCK_PLUS_VERTICAL_IDS]);
+  const unknown = requestedIds.filter((id) => !entryById.has(id));
   if (unknown.length > 0) {
     throw new Error(`Unknown Mock+ Claw ids: ${unknown.join(", ")}.`);
   }
-  if (new Set(onlyIds).size !== onlyIds.length) {
+  if (new Set(requestedIds).size !== requestedIds.length) {
     throw new Error("Mock+ Claw selections must not contain duplicates.");
   }
-  const outsideVertical = onlyIds.filter(
+  const outsideVertical = requestedIds.filter(
     (id) => !MOCK_PLUS_VERTICAL_IDS.includes(id),
   );
-  if (outsideVertical.length > 0) {
+  if (profile === "vertical" && outsideVertical.length > 0) {
     throw new Error(
       `Mock+ V1 execution is limited to the reviewed vertical slice: ${outsideVertical.join(", ")}.`,
     );
   }
   const coversVertical =
-    onlyIds.length === MOCK_PLUS_VERTICAL_IDS.length &&
-    MOCK_PLUS_VERTICAL_IDS.every((id) => onlyIds.includes(id));
-  const selectedIds = coversVertical ? [...MOCK_PLUS_VERTICAL_IDS] : onlyIds;
+    requestedIds.length === MOCK_PLUS_VERTICAL_IDS.length &&
+    MOCK_PLUS_VERTICAL_IDS.every((id) => requestedIds.includes(id));
+  const portfolioIds = context.catalog.entries.map((entry) => entry.id);
+  const coversPortfolio =
+    requestedIds.length === portfolioIds.length &&
+    portfolioIds.every((id) => requestedIds.includes(id));
+  const selectedIds =
+    profile === "schema-portfolio" && coversPortfolio
+      ? portfolioIds
+      : coversVertical
+        ? [...MOCK_PLUS_VERTICAL_IDS]
+        : requestedIds;
   const [harnessDigest, semanticDigest] = await Promise.all([
     combinedFileDigest(HARNESS_PATHS, targetRoot),
     fileDigest(join(targetRoot, "scripts", "artifact-semantics.mjs")),
@@ -1326,6 +1972,7 @@ export async function runMockPlus({
         entry: entryById.get(id),
         contract: contractById.get(id),
         inventoryEntry: inventoryById.get(id),
+        profile,
         safetyRegistry: context.safetyRegistry,
         targetRoot,
         harnessDigest,
@@ -1338,24 +1985,27 @@ export async function runMockPlus({
       claw.cases = claw.cases.filter((result) => result.recipeId === caseId);
     }
     if (claws.every((claw) => claw.cases.length === 0)) {
-      throw new Error(`Mock+ recipe ${caseId} did not apply to the selected Claws.`);
+      throw new Error(
+        `Mock+ recipe ${caseId} did not apply to the selected Claws.`,
+      );
     }
   }
   assertCaseUniqueness(claws);
   const qualifying =
     caseId === null &&
-    coversVertical;
+    (profile === "schema-portfolio" ? coversPortfolio : coversVertical);
   const coverage = coverageFor(
     claws,
     context.inventory,
     context.safetyRegistry,
-    { qualifying },
+    { qualifying, profile },
   );
   const manifestBody = {
     schemaVersion: MOCK_PLUS_SCHEMA_VERSION,
     evidenceClass: MOCK_PLUS_EVIDENCE_CLASS,
     mode: MOCK_PLUS_MODE,
-    scope: qualifying ? "three-claw-vertical" : "diagnostic-selection",
+    scope: coverage.scope,
+    profile,
     seed: DEFAULT_SEED,
     limits: {
       concurrency: 1,
@@ -1409,17 +2059,20 @@ export async function runMockPlus({
     targetRoot,
     ".tmp",
     "mock-plus",
-    qualifying ? "vertical" : "diagnostic",
-  );
-  const resolvedOutputRoot =
     qualifying
-      ? join(namespaceRoot, canonicalDigest.slice(7))
-      : join(
-          namespaceRoot,
-          selectedIds.join("+"),
-          caseId ?? "all-cases",
-          canonicalDigest.slice(7),
-        );
+      ? profile === "schema-portfolio"
+        ? "schema-portfolio"
+        : "vertical"
+      : "diagnostic",
+  );
+  const resolvedOutputRoot = qualifying
+    ? join(namespaceRoot, canonicalDigest.slice(7))
+    : join(
+        namespaceRoot,
+        selectedIds.join("+"),
+        caseId ?? "all-cases",
+        canonicalDigest.slice(7),
+      );
   const persisted = writeOutput
     ? await writeRunFiles(
         resolvedOutputRoot,

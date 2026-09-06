@@ -4205,6 +4205,11 @@
           "role": "schema"
         },
         {
+          "source": "fixtures/integration-readiness.example.json",
+          "path": "fixtures/integration-readiness.example.json",
+          "role": "fixture"
+        },
+        {
           "source": "assets/integration-console.html",
           "path": "assets/integration-console.html",
           "role": "asset"
@@ -5066,6 +5071,11 @@
           "source": "schemas/locale-readiness.schema.json",
           "path": "schemas/locale-readiness.schema.json",
           "role": "schema"
+        },
+        {
+          "source": "fixtures/locale-readiness.example.json",
+          "path": "fixtures/locale-readiness.example.json",
+          "role": "fixture"
         },
         {
           "source": "assets/locale-readiness.html",

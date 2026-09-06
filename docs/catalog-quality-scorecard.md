@@ -4,7 +4,7 @@ This report scores all 100 maintained Claws as of 2026-09-06. It uses only repos
 
 ## Portfolio result
 
-- Average: **97.4/100**
+- Average: **97.5/100**
 - Median: **100/100**
 - Qualified through all non-negotiable gates: **100/100**
 
@@ -32,11 +32,11 @@ The queue is ordered from lowest score upward. It is a documentation and contrac
 
 | Claw | Score | Recommended uplift |
 | --- | ---: | --- |
-| `localization-program-manager` | 81 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Add semantic validation for cross-field evidence and authority invariants. |
 | `security-analyst` | 86 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Add semantic validation for cross-field evidence and authority invariants. |
 | `release-coordinator` | 86 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Add semantic validation for cross-field evidence and authority invariants. |
 | `customer-support` | 86 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Add semantic validation for cross-field evidence and authority invariants. |
 | `compliance-reviewer` | 86 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Add semantic validation for cross-field evidence and authority invariants. |
+| `localization-program-manager` | 87 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Add semantic validation for cross-field evidence and authority invariants. |
 | `incident-response` | 87 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Add semantic validation for cross-field evidence and authority invariants. |
 | `data-governance-steward` | 87 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Add semantic validation for cross-field evidence and authority invariants. |
 | `api-integration-engineer` | 87 | Add a retrospective contribution record with a proof plan and at least three specific alternatives. Add semantic validation for cross-field evidence and authority invariants. |
@@ -147,10 +147,10 @@ The queue is ordered from lowest score upward. It is a documentation and contrac
 | 93 | `api-integration-engineer` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
 | 94 | `data-governance-steward` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
 | 95 | `incident-response` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
-| 96 | `compliance-reviewer` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
-| 97 | `customer-support` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
-| 98 | `release-coordinator` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
-| 99 | `security-analyst` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
-| 100 | `localization-program-manager` | 81 | strong | 10 | 20 | 8 | 20 | 10 | 8 | 5 |
+| 96 | `localization-program-manager` | 87 | strong | 10 | 20 | 14 | 20 | 10 | 8 | 5 |
+| 97 | `compliance-reviewer` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
+| 98 | `customer-support` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
+| 99 | `release-coordinator` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
+| 100 | `security-analyst` | 86 | strong | 10 | 20 | 14 | 19 | 10 | 8 | 5 |
 
 The machine-readable source for this report is [`catalog-quality-scores.json`](../catalog-quality-scores.json).

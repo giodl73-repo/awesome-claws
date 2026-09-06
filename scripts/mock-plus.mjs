@@ -1,6 +1,5 @@
 import { pathToFileURL } from "node:url";
 import {
-  MOCK_PLUS_VERTICAL_IDS,
   loadMockPlusContext,
   runMockPlus,
 } from "./mock-plus-lib.mjs";
@@ -12,6 +11,7 @@ export function parseMockPlusArgs(args) {
     explain: false,
     inventory: false,
     check: false,
+    profile: "vertical",
   };
   for (let index = 0; index < args.length; index += 1) {
     const argument = args[index];
@@ -35,6 +35,8 @@ export function parseMockPlusArgs(args) {
       options.inventory = true;
     } else if (argument === "--check") {
       options.check = true;
+    } else if (argument === "--portfolio") {
+      options.profile = "schema-portfolio";
     } else if (argument === "--update") {
       throw new Error(
         "--update is reserved for the canonical-profile slice and is not available yet.",
@@ -58,8 +60,9 @@ export async function main(args = process.argv.slice(2)) {
   }
 
   const run = await runMockPlus({
-    onlyIds: options.onlyIds ?? MOCK_PLUS_VERTICAL_IDS,
+    onlyIds: options.onlyIds,
     caseId: options.caseId,
+    profile: options.profile,
   });
   if (options.explain) {
     const results = run.results.claws.flatMap((claw) => claw.cases);

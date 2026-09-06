@@ -13,6 +13,8 @@ workspace:
   files:
     - source: schemas/locale-readiness.schema.json
       path: schemas/locale-readiness.schema.json
+    - source: fixtures/locale-readiness.example.json
+      path: fixtures/locale-readiness.example.json
     - source: assets/locale-readiness.html
       path: assets/locale-readiness.html
     - source: templates/localization-handoff.md
