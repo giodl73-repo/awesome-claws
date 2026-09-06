@@ -1,0 +1,172 @@
+{
+  "schemaVersion": "1",
+  "experimentId": "exp-onboarding-checklist-2026-q3",
+  "decision": "Adopt the streamlined onboarding checklist if activation improves without breaching the support-load guardrail.",
+  "owner": "Priya Natarajan, Growth PM",
+  "ownerId": "principal-priya-natarajan",
+  "hypothesis": "Reducing the onboarding checklist from 7 steps to 4 increases 7-day activation without increasing first-week support contacts.",
+  "population": "New individual-plan signups on the web onboarding flow during the study window, excluding invited team members.",
+  "principals": [
+    {
+      "id": "principal-priya-natarajan",
+      "name": "Priya Natarajan",
+      "roles": ["growth-pm"],
+      "scopes": ["experiment-owner"]
+    },
+    {
+      "id": "principal-jordan-kim",
+      "name": "Jordan Kim",
+      "roles": ["vp-product"],
+      "scopes": ["experiment-decision-authority"]
+    }
+  ],
+  "metrics": [
+    {
+      "id": "metric-activation",
+      "name": "7-day activation rate",
+      "role": "primary",
+      "predeclaredAt": "2026-07-01T00:00:00Z"
+    },
+    {
+      "id": "metric-support-load",
+      "name": "First-week support contacts per user",
+      "role": "secondary",
+      "predeclaredAt": "2026-07-01T00:00:00Z"
+    }
+  ],
+  "guardrails": [
+    {
+      "id": "guardrail-support-load",
+      "name": "First-week support contact rate",
+      "status": "within-bounds",
+      "metricRef": "metric-support-load",
+      "evidenceRef": "evidence-guardrail-support-load"
+    }
+  ],
+  "exposurePlan": {
+    "eligibility": "New individual-plan signups on the web onboarding flow, US region only",
+    "controlGroupPercent": 50,
+    "treatmentGroupPercent": 50,
+    "startAt": "2026-07-15T00:00:00Z",
+    "plannedEndAt": "2026-08-12T00:00:00Z",
+    "actualEndAt": "2026-08-12T00:00:00Z",
+    "arms": [
+      {
+        "id": "arm-control",
+        "group": "control",
+        "plannedCount": 5000,
+        "observedCount": 4918,
+        "evidenceRef": "evidence-exposure-count-control"
+      },
+      {
+        "id": "arm-treatment",
+        "group": "treatment",
+        "plannedCount": 5000,
+        "observedCount": 4932,
+        "evidenceRef": "evidence-exposure-count-treatment"
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "id": "evidence-readout-activation",
+      "kind": "readout",
+      "metricRef": "metric-activation",
+      "sourceRef": "controlled://experiment-platform/readouts/exp-onboarding-checklist-2026-q3/activation",
+      "assertedAt": "2026-08-13T10:00:00Z",
+      "observedValue": 0.462,
+      "uncertainty": { "type": "confidence-interval", "lower": 0.441, "upper": 0.483 },
+      "sampleSize": 9850,
+      "analysisMethod": "two-proportion-z-test",
+      "result": "significant",
+      "resolved": null,
+      "note": null
+    },
+    {
+      "id": "evidence-guardrail-support-load",
+      "kind": "readout",
+      "metricRef": "metric-support-load",
+      "sourceRef": "controlled://experiment-platform/readouts/exp-onboarding-checklist-2026-q3/support-load",
+      "assertedAt": "2026-08-13T10:05:00Z",
+      "observedValue": 0.118,
+      "uncertainty": { "type": "confidence-interval", "lower": 0.101, "upper": 0.135 },
+      "sampleSize": 9850,
+      "analysisMethod": "two-proportion-z-test",
+      "result": "not-significant",
+      "resolved": null,
+      "note": null
+    },
+    {
+      "id": "evidence-exposure-count-control",
+      "kind": "exposure-count",
+      "metricRef": null,
+      "armRef": "arm-control",
+      "sourceRef": "controlled://experiment-platform/exposure-counts/exp-onboarding-checklist-2026-q3/control",
+      "assertedAt": "2026-08-12T06:00:00Z",
+      "resolved": null,
+      "note": null
+    },
+    {
+      "id": "evidence-exposure-count-treatment",
+      "kind": "exposure-count",
+      "metricRef": null,
+      "armRef": "arm-treatment",
+      "sourceRef": "controlled://experiment-platform/exposure-counts/exp-onboarding-checklist-2026-q3/treatment",
+      "assertedAt": "2026-08-12T06:00:00Z",
+      "resolved": null,
+      "note": null
+    },
+    {
+      "id": "evidence-preregistration-receipt",
+      "kind": "preregistration-receipt",
+      "metricRef": null,
+      "sourceRef": "controlled://experiment-platform/preregistration/exp-onboarding-checklist-2026-q3/receipt",
+      "assertedAt": "2026-07-08T00:00:00Z",
+      "digest": "22b27c79b8604605dcbe00e622f10340fff467e270e07a171b3ee66ddbb565ab",
+      "resolved": null,
+      "note": null
+    },
+    {
+      "id": "evidence-instrumentation-check",
+      "kind": "instrumentation-check",
+      "metricRef": null,
+      "sourceRef": "controlled://experiment-platform/qa/exp-onboarding-checklist-2026-q3/instrumentation",
+      "assertedAt": "2026-07-14T09:00:00Z",
+      "resolved": null,
+      "note": "Event logging parity confirmed before launch."
+    },
+    {
+      "id": "evidence-exposure-incident-minor",
+      "kind": "exposure-incident",
+      "metricRef": null,
+      "sourceRef": "controlled://experiment-platform/incidents/exp-onboarding-checklist-2026-q3/logging-gap",
+      "assertedAt": "2026-07-20T08:00:00Z",
+      "resolved": true,
+      "note": "Brief client-side logging gap on 2026-07-20 was identified and patched same day, then re-validated against server-side counts."
+    }
+  ],
+  "decisionState": "decision-recorded",
+  "conclusion": {
+    "metricRef": "metric-activation",
+    "evidenceRef": "evidence-readout-activation",
+    "effect": "positive",
+    "summary": "Activation improved by 6.2 percentage points with the support-load guardrail remaining within bounds; recommend adoption pending the growth PM's decision."
+  },
+  "decisionRecord": {
+    "decisionOwnerId": "principal-jordan-kim",
+    "decidedAt": "2026-08-14T09:00:00Z",
+    "rationale": "Activation lift is significant with the support-load guardrail within bounds and exposure counts reconciled; approving adoption."
+  },
+  "handoff": {
+    "owner": "Priya Natarajan, Growth PM",
+    "prohibitedActions": [
+      "launch-experiment",
+      "stop-experiment",
+      "ramp-experiment",
+      "target-experiment",
+      "reconfigure-production-feature"
+    ],
+    "state": "ready",
+    "summary": "Decision memo is ready for review; no launch, stop, ramp, targeting, or production reconfiguration has occurred."
+  }
+}

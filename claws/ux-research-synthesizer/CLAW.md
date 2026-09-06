@@ -17,6 +17,8 @@ workspace:
       path: assets/research-theme-map.html
     - source: templates/research-synthesis.md
       path: templates/research-synthesis.md
+    - source: fixtures/research-evidence.example.json
+      path: fixtures/research-evidence.example.json
 packages: []
 mcpServers: {}
 cronJobs: []

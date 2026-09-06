@@ -351,6 +351,18 @@ function recordArray(list, path, label) {
   return { findings, entries, items: entries.map(([, item]) => item) };
 }
 
+function requiredRecordArray(list, path, label) {
+  const result = recordArray(list, path, label);
+  if (Array.isArray(list)) return result;
+  return {
+    ...result,
+    findings: [
+      finding("invalid_array_list", path, `${label} records at ${path} must be an array.`),
+      ...result.findings,
+    ],
+  };
+}
+
 function numbersEqual(left, right) {
   const scale = Math.max(1, Math.abs(left), Math.abs(right));
   return Math.abs(left - right) <= Number.EPSILON * scale * 8;
@@ -370,6 +382,30 @@ function isAgentIdentityName(name) {
   return AGENT_IDENTITY_EXACT_PATTERN.test(trimmed) || AGENT_IDENTITY_KEYWORD_PATTERN.test(name);
 }
 
+// Shared strict validator for the "controlled://<authority>/<identifier>" evidence
+// reference scheme used across the grant, experiment, and research validators. A
+// bare "controlled://" prefix check alone accepts degenerate references with an
+// empty authority and/or path (e.g. "controlled://", "controlled:///", "controlled://x")
+// that carry no real, resolvable identifier. This helper requires the reference to
+// parse as a URL with the "controlled:" scheme, a non-empty authority, a non-empty
+// path identifier beyond a bare "/", and no credentials/query/fragment (which would
+// smuggle in unrelated, unattributable, or unsafe data). Returns false for any
+// non-string or unparseable input instead of throwing.
+function isValidControlledReference(ref) {
+  if (typeof ref !== "string" || !ref.startsWith("controlled://")) return false;
+  let url;
+  try {
+    url = new URL(ref);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== "controlled:") return false;
+  if (url.username || url.password || url.search || url.hash) return false;
+  const authority = url.hostname.trim();
+  const identifier = url.pathname.replace(/^\/+/u, "").trim();
+  return authority.length > 0 && identifier.length > 0;
+}
+
 // Domain-specific self-identity predicates: reject the package's own role name as
 // an approver so an agent cannot approve its own privacy hold/exemption,
 // accessibility waiver/verification, or procurement specialist review, without
@@ -380,6 +416,9 @@ const PROCUREMENT_EVALUATOR_PATTERN = /\bprocurement evaluator\b/iu;
 const EVENT_OPERATIONS_DIRECTOR_PATTERN = /\bevent operations director\b/iu;
 const FACILITIES_OPERATIONS_COORDINATOR_PATTERN = /\bfacilities operations coordinator\b/iu;
 const MANUFACTURING_OPERATIONS_PLANNER_PATTERN = /\bmanufacturing operations planner\b/iu;
+const GRANT_PORTFOLIO_MANAGER_PATTERN = /\bgrant portfolio manager\b/iu;
+const EXPERIMENTATION_LEAD_PATTERN = /\bexperimentation lead\b/iu;
+const UX_RESEARCH_SYNTHESIZER_PATTERN = /\bux research synthesizer\b/iu;
 
 function zoneOffsetMs(formatter, instant) {
   const parts = Object.fromEntries(
@@ -37008,6 +37047,2018 @@ function manufacturingOperationsFindings(value) {
   return findings;
 }
 
+function grantPortfolioFindings(value) {
+  const findings = [];
+  function toEpochMillis(text) {
+    if (typeof text !== "string") return NaN;
+    const trimmed = text.trim();
+    if (trimmed.length === 0) return NaN;
+    const ms = Date.parse(trimmed);
+    return Number.isFinite(ms) ? ms : NaN;
+  }
+
+  // The schema's anyOf keeps the exact original HEAD legacy branch
+  // (id/source/deadline/eligibility/readiness, arbitrary/no schemaVersion, any
+  // other properties) alongside the enriched portfolio branch, so both can
+  // validate simultaneously and schemaVersion presence alone is no longer a
+  // sound discriminator. Any enriched-only property opts the record into the
+  // full contract, regardless of its value type, so a partially deleted hybrid
+  // record cannot downgrade to bounded legacy validation. A schemaVersion by
+  // itself remains legacy-compatible.
+  const isEnrichedShape = [
+    "portfolio",
+    "principals",
+    "opportunities",
+    "evidence",
+    "approvals",
+    "handoff",
+  ].some((field) => Object.hasOwn(value, field));
+  if (!isEnrichedShape) {
+    const enumLegacyReadiness = new Set(["draft", "in-review", "ready", "withdrawn", "declined"]);
+    for (const field of ["id", "source", "deadline", "eligibility", "readiness"]) {
+      if (typeof value[field] !== "string" || value[field].trim().length === 0) {
+        findings.push(
+          finding(
+            "invalid_legacy_field",
+            field,
+            `Legacy grant opportunity field "${field}" must be a non-empty, trimmed string.`,
+          ),
+        );
+      }
+    }
+    if (typeof value.deadline === "string" && !Number.isFinite(toEpochMillis(value.deadline))) {
+      findings.push(
+        finding(
+          "invalid_timestamp",
+          "deadline",
+          "Legacy grant opportunity deadline must be a parseable timestamp.",
+        ),
+      );
+    }
+    if (typeof value.readiness === "string" && !enumLegacyReadiness.has(value.readiness)) {
+      findings.push(
+        finding(
+          "invalid_legacy_readiness",
+          "readiness",
+          `Legacy grant opportunity readiness ${JSON.stringify(value.readiness)} is not a supported readiness state.`,
+        ),
+      );
+    }
+    return findings;
+  }
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  // A fabricated or unattributable note is not evidence: every record must
+  // carry a real, controlled/attributable source reference before it can
+  // ground any eligibility, requirement, budget, partner, or freshness check.
+  function isSourceValidEvidence(record) {
+    return record !== undefined && isValidControlledReference(record.sourceRef);
+  }
+
+  const opportunitiesRecord = requiredRecordArray(value.opportunities, "opportunities", "Opportunity");
+  const evidenceRecord = requiredRecordArray(value.evidence, "evidence", "Evidence");
+  const approvalsRecord = requiredRecordArray(value.approvals, "approvals", "Approval");
+  const principalsRecord = requiredRecordArray(value.principals, "principals", "Principal");
+  findings.push(
+    ...opportunitiesRecord.findings,
+    ...evidenceRecord.findings,
+    ...approvalsRecord.findings,
+    ...principalsRecord.findings,
+  );
+
+  const opportunities = opportunitiesRecord.items;
+  const evidence = evidenceRecord.items;
+  const approvals = approvalsRecord.items;
+  const principals = principalsRecord.items;
+  const portfolio = isRecord(value.portfolio) ? value.portfolio : {};
+  const handoff = isRecord(value.handoff) ? value.handoff : {};
+
+  const opportunityIds = new Set(opportunities.map((item) => item.id));
+  const evidenceIds = new Set(evidence.map((item) => item.id));
+  const approvalIds = new Set(approvals.map((item) => item.id));
+  const evidenceById = new Map(evidence.map((item) => [item.id, item]));
+  const principalIds = new Set(principals.map((item) => item.id));
+  const principalsById = new Map(principals.map((item) => [item.id, item]));
+
+  requireReferences(principals.map((item) => item.id), principalIds, "principals", "Principal");
+
+  // The authority registry itself: every principal must carry a stable id and a
+  // real, accountable, non-agent/non-package-self-attested human name before it
+  // can ever be bound as an owner, assessor, or approver below.
+  function isAccountablePrincipalName(name) {
+    return (
+      typeof name === "string" &&
+      name.trim().length > 0 &&
+      !isAgentIdentityName(name) &&
+      !GRANT_PORTFOLIO_MANAGER_PATTERN.test(name)
+    );
+  }
+  for (const [index, principal] of principalsRecord.entries) {
+    if (!isAccountablePrincipalName(principal.name)) {
+      findings.push(
+        finding(
+          "invalid_principal_identity",
+          `principals[${index}].name`,
+          "A principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned.",
+        ),
+      );
+    }
+    if (!Array.isArray(principal.scopes)) {
+      findings.push(
+        finding(
+          "invalid_principal_scopes",
+          `principals[${index}].scopes`,
+          "A principal's scopes must be an array.",
+        ),
+      );
+    }
+  }
+
+  // Resolve a raw principal-id field to a usable, accountable principal record,
+  // recording a dangling_reference finding for any unknown/arbitrary id instead
+  // of silently treating it as unauthorized.
+  function resolvePrincipal(principalId, path, label) {
+    if (principalId === null || principalId === undefined) return null;
+    const principal = principalsById.get(principalId);
+    if (principal === undefined) {
+      findings.push(
+        finding("dangling_reference", path, `${label} principal reference ${JSON.stringify(principalId)} does not resolve.`),
+      );
+      return null;
+    }
+    return principal;
+  }
+
+  requireReferences(opportunities.map((item) => item.id), opportunityIds, "opportunities", "Opportunity");
+  requireReferences(evidence.map((item) => item.id), evidenceIds, "evidence", "Evidence");
+  requireReferences(approvals.map((item) => item.id), approvalIds, "approvals", "Approval");
+
+  // A bare "YYYY-MM-DD" asOfDate is compared at the end of that day so it still
+  // covers the whole day it names, matching the end-of-day chronology convention
+  // used elsewhere; a value that already carries a time component is compared at
+  // that exact instant.
+  const ISO_DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/u;
+  const asOfMs =
+    typeof portfolio.asOfDate === "string" && ISO_DATE_ONLY_PATTERN.test(portfolio.asOfDate)
+      ? toEpochMillis(`${portfolio.asOfDate}T23:59:59.999Z`)
+      : toEpochMillis(portfolio.asOfDate);
+  if (!Number.isFinite(asOfMs)) {
+    findings.push(
+      finding("invalid_timestamp", "portfolio.asOfDate", "Portfolio asOfDate must be a parseable timestamp."),
+    );
+  }
+  const freshnessMaxDays = portfolio.sourceFreshnessMaxDays;
+  const freshnessValid =
+    typeof freshnessMaxDays === "number" && Number.isFinite(freshnessMaxDays) && freshnessMaxDays >= 0;
+  if (!freshnessValid) {
+    findings.push(
+      finding(
+        "invalid_freshness_window",
+        "portfolio.sourceFreshnessMaxDays",
+        "Portfolio sourceFreshnessMaxDays must be a finite number that is zero or greater.",
+      ),
+    );
+  }
+
+  const enumEligibilityStatus = new Set(["eligible", "ineligible", "uncertain"]);
+  const enumEvidenceKinds = new Set([
+    "source-listing",
+    "eligibility",
+    "requirement",
+    "budget",
+    "partner-commitment",
+  ]);
+  const enumApprovalDecisions = new Set(["approved", "rejected", "deferred"]);
+  const enumReadiness = new Set(["draft", "in-review", "ready", "withdrawn", "declined"]);
+  const terminalReadiness = new Set(["withdrawn", "declined"]);
+
+  for (const [index, item] of evidenceRecord.entries) {
+    if (!enumEvidenceKinds.has(item.kind)) {
+      findings.push(
+        finding(
+          "invalid_evidence_kind",
+          `evidence[${index}].kind`,
+          `Evidence kind ${JSON.stringify(item.kind)} is not a supported evidence kind.`,
+        ),
+      );
+    }
+    if (
+      item.opportunityRef !== null &&
+      item.opportunityRef !== undefined &&
+      !opportunityIds.has(item.opportunityRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `evidence[${index}].opportunityRef`,
+          `Opportunity reference ${JSON.stringify(item.opportunityRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!isSourceValidEvidence(item)) {
+      findings.push(
+        finding(
+          "untrusted_evidence_source",
+          `evidence[${index}].sourceRef`,
+          "Evidence must carry a valid, controlled/attributable source reference, not a fabricated or narrative source.",
+        ),
+      );
+    }
+    const evidenceAssertedMs = toEpochMillis(item.assertedAt);
+    if (!Number.isFinite(evidenceAssertedMs)) {
+      findings.push(
+        finding(
+          "invalid_timestamp",
+          `evidence[${index}].assertedAt`,
+          "Evidence assertedAt must be a parseable timestamp.",
+        ),
+      );
+    } else if (Number.isFinite(asOfMs) && evidenceAssertedMs > asOfMs) {
+      findings.push(
+        finding(
+          "future_evidence_timestamp",
+          `evidence[${index}].assertedAt`,
+          "Evidence assertedAt cannot be after the portfolio's asOfDate.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, approval] of approvalsRecord.entries) {
+    if (
+      approval.opportunityRef !== null &&
+      approval.opportunityRef !== undefined &&
+      !opportunityIds.has(approval.opportunityRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `approvals[${index}].opportunityRef`,
+          `Opportunity reference ${JSON.stringify(approval.opportunityRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!enumApprovalDecisions.has(approval.decision)) {
+      findings.push(
+        finding(
+          "invalid_approval_decision",
+          `approvals[${index}].decision`,
+          `Approval decision ${JSON.stringify(approval.decision)} is not a supported decision.`,
+        ),
+      );
+    }
+    const approvalAtMs = toEpochMillis(approval.approvedAt);
+    if (!Number.isFinite(approvalAtMs)) {
+      findings.push(
+        finding(
+          "invalid_timestamp",
+          `approvals[${index}].approvedAt`,
+          "Approval approvedAt must be a parseable timestamp.",
+        ),
+      );
+    } else if (Number.isFinite(asOfMs) && approvalAtMs > asOfMs) {
+      findings.push(
+        finding(
+          "future_approval_timestamp",
+          `approvals[${index}].approvedAt`,
+          "Approval approvedAt cannot be after the portfolio's asOfDate.",
+        ),
+      );
+    }
+    const approverPrincipal = resolvePrincipal(
+      approval.approverId,
+      `approvals[${index}].approverId`,
+      "Approver",
+    );
+    if (approverPrincipal === null || !isAccountablePrincipalName(approverPrincipal.name)) {
+      findings.push(
+        finding(
+          "self_attested_approval",
+          `approvals[${index}].approverId`,
+          "An approval must resolve to a registered, accountable human approver identity, not missing, unknown, or agent/package self-attested.",
+        ),
+      );
+    }
+  }
+
+  // A qualifying approval must be bound to a registered principal who (a) actually
+  // holds submission-readiness approval scope, (b) is not the portfolio owner, the
+  // opportunity's eligibility assessor, or a principal flagged conflicted for this
+  // exact opportunity, and (c) is not an agent/package self-attestation. Approver
+  // identity is resolved strictly by principal id, never by matching a raw display
+  // string, so an arbitrary or unregistered "approverId" can never qualify.
+  function isSubmissionReadinessApprover(principal, ownerId, assessorId, opportunityId) {
+    if (!isRecord(principal)) return false;
+    if (!isAccountablePrincipalName(principal.name)) return false;
+    if (!Array.isArray(principal.scopes) || !principal.scopes.includes("submission-readiness-approval")) {
+      return false;
+    }
+    if (principal.id === ownerId || principal.id === assessorId) return false;
+    if (
+      Array.isArray(principal.conflictedOpportunityRefs) &&
+      principal.conflictedOpportunityRefs.includes(opportunityId)
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  function qualifyingApprovals(opportunity, ownerId, assessorId, deadlineMs, groundingTimestamps) {
+    return approvals.filter((approval) => {
+      if (approval.opportunityRef !== opportunity.id || approval.decision !== "approved") return false;
+      const principal = principalsById.get(approval.approverId);
+      if (!isSubmissionReadinessApprover(principal, ownerId, assessorId, opportunity.id)) {
+        return false;
+      }
+      const approvedMs = toEpochMillis(approval.approvedAt);
+      if (!Number.isFinite(approvedMs) || approvedMs > deadlineMs) return false;
+      if (Number.isFinite(asOfMs) && approvedMs > asOfMs) return false;
+      return groundingTimestamps.every((ms) => approvedMs >= ms);
+    });
+  }
+
+  function requirementSatisfied(requirement, opportunityId) {
+    if (!isRecord(requirement)) return false;
+    if (requirement.evidenceRef === null || requirement.evidenceRef === undefined) return false;
+    const record = evidenceById.get(requirement.evidenceRef);
+    if (
+      record !== undefined &&
+      record.kind === "requirement" &&
+      record.opportunityRef === opportunityId &&
+      isSourceValidEvidence(record) &&
+      Number.isFinite(toEpochMillis(record.assertedAt))
+    ) {
+      const assertedMs = toEpochMillis(record.assertedAt);
+      return !Number.isFinite(asOfMs) || assertedMs <= asOfMs;
+    }
+    return false;
+  }
+
+  function budgetSatisfied(budget, opportunityId) {
+    if (!isRecord(budget)) return false;
+    const requestedValid =
+      typeof budget.requestedAmount === "number" &&
+      Number.isFinite(budget.requestedAmount) &&
+      budget.requestedAmount >= 0;
+    const securedValid =
+      typeof budget.matchSecuredAmount === "number" &&
+      Number.isFinite(budget.matchSecuredAmount) &&
+      budget.matchSecuredAmount >= 0;
+    if (!requestedValid || !securedValid) return false;
+    if (budget.matchRequired === true) {
+      const meetsMatch =
+        budget.matchSecuredAmount >= budget.requestedAmount ||
+        numbersEqual(budget.matchSecuredAmount, budget.requestedAmount);
+      if (!meetsMatch) return false;
+    }
+    if (budget.evidenceRef === null || budget.evidenceRef === undefined) return false;
+    const record = evidenceById.get(budget.evidenceRef);
+    if (
+      record !== undefined &&
+      record.kind === "budget" &&
+      record.opportunityRef === opportunityId &&
+      isSourceValidEvidence(record) &&
+      Number.isFinite(toEpochMillis(record.assertedAt))
+    ) {
+      const assertedMs = toEpochMillis(record.assertedAt);
+      return !Number.isFinite(asOfMs) || assertedMs <= asOfMs;
+    }
+    return false;
+  }
+
+  function sourceFreshnessSatisfied(opportunity) {
+    if (!Number.isFinite(asOfMs) || !freshnessValid) return false;
+    const record = evidenceById.get(opportunity.sourceCheckedEvidenceRef);
+    if (record === undefined || record.kind !== "source-listing" || record.opportunityRef !== opportunity.id) {
+      return false;
+    }
+    if (!isSourceValidEvidence(record)) return false;
+    const assertedMs = toEpochMillis(record.assertedAt);
+    if (!Number.isFinite(assertedMs) || assertedMs > asOfMs) return false;
+    return asOfMs - assertedMs <= freshnessMaxDays * 86400000;
+  }
+
+  function isOpportunityReady(opportunity) {
+    const eligibility = isRecord(opportunity.eligibility) ? opportunity.eligibility : {};
+    const eligibilityEvidence = evidenceById.get(eligibility.evidenceRef);
+    const assessorPrincipal = principalsById.get(eligibility.assessedById);
+    const eligibilityAssessedMs = toEpochMillis(eligibility.assessedAt);
+    const eligibilityValid =
+      eligibility.status === "eligible" &&
+      eligibilityEvidence !== undefined &&
+      eligibilityEvidence.kind === "eligibility" &&
+      eligibilityEvidence.opportunityRef === opportunity.id &&
+      isSourceValidEvidence(eligibilityEvidence) &&
+      assessorPrincipal !== undefined &&
+      isAccountablePrincipalName(assessorPrincipal.name) &&
+      Number.isFinite(eligibilityAssessedMs) &&
+      (!Number.isFinite(asOfMs) || eligibilityAssessedMs <= asOfMs) &&
+      // Evidence must precede the assessment it grounds: an assessor cannot rely
+      // on evidence gathered after they already rendered the assessment.
+      eligibilityAssessedMs >= toEpochMillis(eligibilityEvidence.assertedAt);
+    if (!eligibilityValid) return false;
+
+    const requirements = Array.isArray(opportunity.requirements) ? opportunity.requirements : null;
+    if (requirements === null || !requirements.every((item) => requirementSatisfied(item, opportunity.id))) {
+      return false;
+    }
+
+    if (!budgetSatisfied(opportunity.budget, opportunity.id)) return false;
+
+    const partnerRefs = Array.isArray(opportunity.partnerEvidenceRefs) ? opportunity.partnerEvidenceRefs : null;
+    if (
+      partnerRefs === null ||
+      !partnerRefs.every((ref) => {
+        const record = evidenceById.get(ref);
+        if (
+          record !== undefined &&
+          record.kind === "partner-commitment" &&
+          record.opportunityRef === opportunity.id &&
+          isSourceValidEvidence(record)
+        ) {
+          const assertedMs = toEpochMillis(record.assertedAt);
+          return Number.isFinite(assertedMs) && (!Number.isFinite(asOfMs) || assertedMs <= asOfMs);
+        }
+        return false;
+      })
+    ) {
+      return false;
+    }
+
+    if (!sourceFreshnessSatisfied(opportunity)) return false;
+
+    const deadlineMs =
+      typeof opportunity.deadline === "string" && ISO_DATE_ONLY_PATTERN.test(opportunity.deadline)
+        ? toEpochMillis(`${opportunity.deadline}T23:59:59.999Z`)
+        : toEpochMillis(opportunity.deadline);
+    if (!Number.isFinite(deadlineMs) || !Number.isFinite(asOfMs) || deadlineMs < asOfMs) return false;
+
+    const groundingTimestamps = [
+      eligibilityAssessedMs,
+      ...requirements.map((item) => toEpochMillis(evidenceById.get(item.evidenceRef)?.assertedAt)),
+      toEpochMillis(evidenceById.get(opportunity.budget?.evidenceRef)?.assertedAt),
+      ...partnerRefs.map((ref) => toEpochMillis(evidenceById.get(ref)?.assertedAt)),
+      toEpochMillis(evidenceById.get(opportunity.sourceCheckedEvidenceRef)?.assertedAt),
+    ].filter((ms) => Number.isFinite(ms));
+    return (
+      qualifyingApprovals(opportunity, portfolio.ownerId, eligibility.assessedById, deadlineMs, groundingTimestamps)
+        .length > 0
+    );
+  }
+
+  const readyOpportunityIds = [];
+  for (const [index, opportunity] of opportunitiesRecord.entries) {
+    if (typeof opportunity.name !== "string" || opportunity.name.trim().length === 0) {
+      findings.push(
+        finding("invalid_opportunity_name", `opportunities[${index}].name`, "Opportunity name must be a non-empty string."),
+      );
+    }
+    if (!enumReadiness.has(opportunity.readiness)) {
+      findings.push(
+        finding(
+          "invalid_opportunity_readiness",
+          `opportunities[${index}].readiness`,
+          `Opportunity readiness ${JSON.stringify(opportunity.readiness)} is not a supported readiness state.`,
+        ),
+      );
+    }
+    const eligibility = isRecord(opportunity.eligibility) ? opportunity.eligibility : {};
+    if (!enumEligibilityStatus.has(eligibility.status)) {
+      findings.push(
+        finding(
+          "invalid_eligibility_status",
+          `opportunities[${index}].eligibility.status`,
+          `Eligibility status ${JSON.stringify(eligibility.status)} is not a supported status.`,
+        ),
+      );
+    }
+    resolvePrincipal(
+      eligibility.assessedById,
+      `opportunities[${index}].eligibility.assessedById`,
+      "Eligibility assessor",
+    );
+    const ready = isOpportunityReady(opportunity);
+    if (ready) readyOpportunityIds.push(opportunity.id);
+    if (opportunity.readiness === "ready" && !ready) {
+      findings.push(
+        finding(
+          "premature_ready_state",
+          `opportunities[${index}].readiness`,
+          "An opportunity cannot be ready until eligibility, every requirement, budget, partner evidence, source freshness, deadline, and a non-self-attested qualifying approval are all valid.",
+        ),
+      );
+    }
+  }
+
+  const ownerPrincipal = resolvePrincipal(portfolio.ownerId, "portfolio.ownerId", "Portfolio owner");
+  if (
+    ownerPrincipal === null ||
+    !isAccountablePrincipalName(ownerPrincipal.name) ||
+    typeof handoff.owner !== "string" ||
+    handoff.owner.trim().length === 0 ||
+    isAgentIdentityName(handoff.owner) ||
+    GRANT_PORTFOLIO_MANAGER_PATTERN.test(handoff.owner)
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "Portfolio ownership must resolve to a registered, accountable human principal and handoff authority must remain with a named, accountable human owner, not missing, unknown, blank, or agent/package-owned.",
+      ),
+    );
+  }
+
+  requireReferences(handoff.opportunityRefs ?? [], opportunityIds, "handoff.opportunityRefs", "Opportunity");
+  const sameSet = (left, right) =>
+    Array.isArray(left) &&
+    Array.isArray(right) &&
+    left.length === right.length &&
+    new Set(left).size === left.length &&
+    left.every((item) => new Set(right).has(item));
+  if (!sameSet(handoff.opportunityRefs ?? [], [...opportunityIds])) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.opportunityRefs",
+        "The handoff must reference every opportunity exactly once.",
+      ),
+    );
+  }
+
+  requireReferences(handoff.readyOpportunityRefs ?? [], opportunityIds, "handoff.readyOpportunityRefs", "Opportunity");
+  if (!sameSet(handoff.readyOpportunityRefs ?? [], readyOpportunityIds)) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.readyOpportunityRefs",
+        "The handoff's ready-opportunity references must exactly match every opportunity that is validly ready.",
+      ),
+    );
+  }
+
+  const readyIdSet = new Set(readyOpportunityIds);
+  const hasBlockingOpportunity =
+    opportunities.length === 0 ||
+    opportunities.some((item) => !readyIdSet.has(item.id) && !terminalReadiness.has(item.readiness));
+  const expectedState = hasBlockingOpportunity ? "blocked" : "ready";
+  if (handoff.state !== expectedState) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready while any opportunity is neither validly ready nor in a terminal withdrawn/declined state.",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "submit-application",
+    "certify-eligibility",
+    "accept-terms",
+    "contact-funder",
+    "commit-matching-funds",
+    "represent-organizational-approval",
+  ];
+  const prohibitedActionsRecord = stringListFindings(
+    handoff.prohibitedActions,
+    "handoff.prohibitedActions",
+    "Prohibited actions",
+  );
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `Grant portfolio handoffs must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  const narrativeTexts = [handoff.summary, ...opportunities.map((item) => item.notes)].filter(
+    (text) => typeof text === "string",
+  );
+  const prohibitedNarrative =
+    /\bsubmit(?:ted|ting)?\s+(?:the\s+|an?\s+)?application|certif(?:ied|ying|y)\s+(?:the\s+)?eligibility|accept(?:ed|ing)?\s+(?:the\s+)?terms|contact(?:ed|ing)?\s+(?:the\s+)?funder|commit(?:ted|ting)?\s+(?:the\s+)?matching\s+funds|represent(?:ed|ing)?\s+(?:the\s+)?organizational\s+approval/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim application submission, eligibility certification, term acceptance, funder contact, matching-fund commitment, or represented organizational approval.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
+function experimentDesignFindings(value) {
+  const findings = [];
+  function toEpochMillis(text) {
+    if (typeof text !== "string") return NaN;
+    const trimmed = text.trim();
+    if (trimmed.length === 0) return NaN;
+    const ms = Date.parse(trimmed);
+    return Number.isFinite(ms) ? ms : NaN;
+  }
+
+  // The schema's anyOf keeps the exact original HEAD legacy branch alongside
+  // the enriched branch, so both can validate simultaneously and schemaVersion
+  // presence alone is no longer a sound discriminator. Dispatch on whether the
+  // any enriched-only property is present instead, regardless of value type.
+  // The enriched contract is a strict superset of the legacy fields, so waiting
+  // for every enriched property would let a partially deleted authority or
+  // handoff section downgrade to bounded legacy validation. A schemaVersion by
+  // itself remains legacy-compatible; any other enriched-only property opts the
+  // record into the full contract and its missing fields fail closed.
+  const isEnrichedShape = [
+    "experimentId",
+    "decision",
+    "exposurePlan",
+    "evidence",
+    "owner",
+    "ownerId",
+    "principals",
+    "conclusion",
+    "decisionRecord",
+    "handoff",
+  ].some((field) => Object.hasOwn(value, field));
+  if (!isEnrichedShape) {
+    for (const field of ["hypothesis", "population", "decisionState"]) {
+      if (typeof value[field] !== "string" || value[field].trim().length === 0) {
+        findings.push(
+          finding(
+            "invalid_legacy_field",
+            field,
+            `Legacy experiment record field "${field}" must be a non-empty, trimmed string.`,
+          ),
+        );
+      }
+    }
+    for (const field of ["metrics", "guardrails"]) {
+      if (!Array.isArray(value[field])) {
+        findings.push(
+          finding(
+            "invalid_legacy_field",
+            field,
+            `Legacy experiment record field "${field}" must be an array.`,
+          ),
+        );
+      }
+    }
+    const enumLegacyDecisionStates = new Set(["draft", "running", "analysis-ready", "decision-recorded"]);
+    if (typeof value.decisionState === "string" && !enumLegacyDecisionStates.has(value.decisionState)) {
+      findings.push(
+        finding(
+          "invalid_legacy_decision_state",
+          "decisionState",
+          `Legacy experiment record decisionState ${JSON.stringify(value.decisionState)} is not a supported state.`,
+        ),
+      );
+    }
+    return findings;
+  }
+
+  // A fabricated or unattributable note is not evidence: every record must
+  // carry a real, controlled/attributable source reference before it can
+  // ground a metric readout, guardrail evaluation, or recorded conclusion.
+  function isSourceValidEvidence(record) {
+    return record !== undefined && isValidControlledReference(record.sourceRef);
+  }
+
+  const metricsRecord = requiredRecordArray(value.metrics, "metrics", "Metric");
+  const guardrailsRecord = requiredRecordArray(value.guardrails, "guardrails", "Guardrail");
+  const evidenceRecord = requiredRecordArray(value.evidence, "evidence", "Evidence");
+  const principalsRecord = requiredRecordArray(value.principals, "principals", "Principal");
+  findings.push(
+    ...metricsRecord.findings,
+    ...guardrailsRecord.findings,
+    ...evidenceRecord.findings,
+    ...principalsRecord.findings,
+  );
+
+  const metrics = metricsRecord.items;
+  const guardrails = guardrailsRecord.items;
+  const evidence = evidenceRecord.items;
+  const principals = principalsRecord.items;
+  const exposurePlan = isRecord(value.exposurePlan) ? value.exposurePlan : {};
+  const handoff = isRecord(value.handoff) ? value.handoff : {};
+  const conclusion = value.conclusion === null || value.conclusion === undefined ? null : value.conclusion;
+  const decisionRecord = isRecord(value.decisionRecord) ? value.decisionRecord : null;
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  const metricIds = new Set(metrics.map((item) => item.id));
+  const evidenceIds = new Set(evidence.map((item) => item.id));
+  const evidenceById = new Map(evidence.map((item) => [item.id, item]));
+  const principalIds = new Set(principals.map((item) => item.id));
+  const principalsById = new Map(principals.map((item) => [item.id, item]));
+
+  requireReferences(metrics.map((item) => item.id), metricIds, "metrics", "Metric");
+  requireReferences(
+    guardrails.map((item) => item.id),
+    new Set(guardrails.map((item) => item.id)),
+    "guardrails",
+    "Guardrail",
+  );
+  requireReferences(evidence.map((item) => item.id), evidenceIds, "evidence", "Evidence");
+  requireReferences(principals.map((item) => item.id), principalIds, "principals", "Principal");
+
+  // The decision-authority registry: every principal must carry a stable id
+  // and a real, accountable, non-agent/non-package-self-attested human name
+  // before it can ever be bound as an independent decision owner below.
+  function isAccountablePrincipalName(name) {
+    return (
+      typeof name === "string" &&
+      name.trim().length > 0 &&
+      !isAgentIdentityName(name) &&
+      !EXPERIMENTATION_LEAD_PATTERN.test(name)
+    );
+  }
+  for (const [index, principal] of principalsRecord.entries) {
+    if (!isAccountablePrincipalName(principal.name)) {
+      findings.push(
+        finding(
+          "invalid_principal_identity",
+          `principals[${index}].name`,
+          "A principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned.",
+        ),
+      );
+    }
+    if (!Array.isArray(principal.scopes)) {
+      findings.push(
+        finding("invalid_principal_scopes", `principals[${index}].scopes`, "A principal's scopes must be an array."),
+      );
+    }
+  }
+  function resolvePrincipal(principalId, path, label) {
+    if (principalId === null || principalId === undefined) return null;
+    const principal = principalsById.get(principalId);
+    if (principal === undefined) {
+      findings.push(
+        finding("dangling_reference", path, `${label} principal reference ${JSON.stringify(principalId)} does not resolve.`),
+      );
+      return null;
+    }
+    return principal;
+  }
+
+  const startMs = toEpochMillis(exposurePlan.startAt);
+  const plannedEndMs = toEpochMillis(exposurePlan.plannedEndAt);
+  const actualEndMs = exposurePlan.actualEndAt === null || exposurePlan.actualEndAt === undefined
+    ? null
+    : toEpochMillis(exposurePlan.actualEndAt);
+  if (!Number.isFinite(startMs)) {
+    findings.push(finding("invalid_timestamp", "exposurePlan.startAt", "Exposure plan startAt must be a parseable timestamp."));
+  }
+  if (!Number.isFinite(plannedEndMs) || (Number.isFinite(startMs) && plannedEndMs < startMs)) {
+    findings.push(
+      finding(
+        "invalid_exposure_chronology",
+        "exposurePlan.plannedEndAt",
+        "Exposure plan plannedEndAt must be a parseable timestamp at or after startAt.",
+      ),
+    );
+  }
+  if (exposurePlan.actualEndAt !== null && exposurePlan.actualEndAt !== undefined) {
+    if (!Number.isFinite(actualEndMs) || (Number.isFinite(startMs) && actualEndMs < startMs)) {
+      findings.push(
+        finding(
+          "invalid_exposure_chronology",
+          "exposurePlan.actualEndAt",
+          "Exposure plan actualEndAt, when present, must be a parseable timestamp at or after startAt.",
+        ),
+      );
+    }
+  }
+  const control = exposurePlan.controlGroupPercent;
+  const treatment = exposurePlan.treatmentGroupPercent;
+  const percentagesValid =
+    typeof control === "number" &&
+    Number.isFinite(control) &&
+    control > 0 &&
+    typeof treatment === "number" &&
+    Number.isFinite(treatment) &&
+    treatment > 0 &&
+    numbersEqual(control + treatment, 100);
+  if (!percentagesValid) {
+    findings.push(
+      finding(
+        "invalid_exposure_allocation",
+        "exposurePlan.controlGroupPercent",
+        "Exposure plan control and treatment percentages must be finite, strictly positive, and sum to exactly 100.",
+      ),
+    );
+  }
+  if (typeof exposurePlan.eligibility !== "string" || exposurePlan.eligibility.trim().length === 0) {
+    findings.push(
+      finding("invalid_exposure_eligibility", "exposurePlan.eligibility", "Exposure plan eligibility must be a non-empty string."),
+    );
+  }
+
+  const enumMetricRoles = new Set(["primary", "secondary"]);
+  const enumGuardrailStatuses = new Set(["within-bounds", "breached", "not-evaluated"]);
+  const enumEvidenceKinds = new Set([
+    "readout",
+    "exposure-incident",
+    "instrumentation-check",
+    "exposure-count",
+    "preregistration-receipt",
+  ]);
+  const enumReadoutResults = new Set(["significant", "not-significant", "inconclusive"]);
+  const enumConclusionEffects = new Set(["positive", "negative", "neutral", "inconclusive"]);
+  const enumDecisionStates = new Set(["draft", "running", "analysis-ready", "decision-recorded"]);
+  const enumArmGroups = new Set(["control", "treatment"]);
+
+  // A structured readout must carry an observed value, an explicit uncertainty
+  // representation, a positive sample count, and a named analysis method/result,
+  // not merely a URL and a timestamp, before it can ground a guardrail
+  // evaluation or the recorded conclusion for a specific metric.
+  function isValidUncertainty(uncertainty) {
+    if (!isRecord(uncertainty)) return false;
+    if (uncertainty.type === "confidence-interval") {
+      return (
+        typeof uncertainty.lower === "number" &&
+        Number.isFinite(uncertainty.lower) &&
+        typeof uncertainty.upper === "number" &&
+        Number.isFinite(uncertainty.upper) &&
+        uncertainty.upper >= uncertainty.lower
+      );
+    }
+    if (uncertainty.type === "standard-error") {
+      return typeof uncertainty.value === "number" && Number.isFinite(uncertainty.value) && uncertainty.value >= 0;
+    }
+    if (uncertainty.type === "explicit") {
+      return typeof uncertainty.description === "string" && uncertainty.description.trim().length > 0;
+    }
+    return false;
+  }
+  function isValidReadoutEvidence(record, expectedMetricRef) {
+    if (record === undefined) return false;
+    if (record.kind !== "readout") return false;
+    if (record.metricRef !== expectedMetricRef) return false;
+    if (!isSourceValidEvidence(record)) return false;
+    if (!Number.isFinite(toEpochMillis(record.assertedAt))) return false;
+    if (typeof record.observedValue !== "number" || !Number.isFinite(record.observedValue)) return false;
+    if (!isValidUncertainty(record.uncertainty)) return false;
+    if (typeof record.sampleSize !== "number" || !Number.isFinite(record.sampleSize) || record.sampleSize <= 0) {
+      return false;
+    }
+    if (typeof record.analysisMethod !== "string" || record.analysisMethod.trim().length === 0) return false;
+    if (!enumReadoutResults.has(record.result)) return false;
+    return true;
+  }
+
+  let primaryMetricCount = 0;
+  let primaryMetricId = null;
+  for (const [index, metric] of metricsRecord.entries) {
+    if (!enumMetricRoles.has(metric.role)) {
+      findings.push(
+        finding("invalid_metric_role", `metrics[${index}].role`, `Metric role ${JSON.stringify(metric.role)} is not supported.`),
+      );
+    } else if (metric.role === "primary") {
+      primaryMetricCount += 1;
+      primaryMetricId = metric.id;
+    }
+    const predeclaredMs = toEpochMillis(metric.predeclaredAt);
+    if (!Number.isFinite(predeclaredMs) || (Number.isFinite(startMs) && predeclaredMs > startMs)) {
+      findings.push(
+        finding(
+          "post_hoc_metric_declaration",
+          `metrics[${index}].predeclaredAt`,
+          "A metric's predeclaredAt must be a parseable timestamp at or before the exposure plan's startAt; metrics cannot be declared after exposure begins.",
+        ),
+      );
+    }
+  }
+  if (primaryMetricCount !== 1) {
+    findings.push(
+      finding(
+        "invalid_primary_metric_count",
+        "metrics",
+        "An experiment record must declare exactly one primary metric.",
+      ),
+    );
+  }
+
+  for (const [index, guardrail] of guardrailsRecord.entries) {
+    if (!enumGuardrailStatuses.has(guardrail.status)) {
+      findings.push(
+        finding(
+          "invalid_guardrail_status",
+          `guardrails[${index}].status`,
+          `Guardrail status ${JSON.stringify(guardrail.status)} is not supported.`,
+        ),
+      );
+      continue;
+    }
+    if (
+      guardrail.metricRef !== null &&
+      guardrail.metricRef !== undefined &&
+      !metricIds.has(guardrail.metricRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `guardrails[${index}].metricRef`,
+          `Metric reference ${JSON.stringify(guardrail.metricRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (guardrail.status === "not-evaluated") continue;
+    const record = evidenceById.get(guardrail.evidenceRef);
+    const groundingValid =
+      isValidReadoutEvidence(record, guardrail.metricRef) &&
+      (actualEndMs === null || !Number.isFinite(actualEndMs) || toEpochMillis(record.assertedAt) >= actualEndMs);
+    if (!groundingValid) {
+      findings.push(
+        finding(
+          "unsupported_guardrail_evaluation",
+          `guardrails[${index}].evidenceRef`,
+          "An evaluated guardrail must declare its own metricRef and reference a fully structured, source-valid readout for that exact metric (observed value, uncertainty, sample size, analysis method, and result) asserted at or after the exposure plan's actualEndAt.",
+        ),
+      );
+    }
+  }
+
+  // A guardrail is only genuinely evaluated (usable to unlock a recorded
+  // decision) when its status, metric binding, and grounding evidence are all
+  // independently valid -- mirrors the finding logic above as a boolean gate.
+  function guardrailEvaluationValid(guardrail) {
+    if (!enumGuardrailStatuses.has(guardrail.status) || guardrail.status === "not-evaluated") return false;
+    if (!metricIds.has(guardrail.metricRef)) return false;
+    const record = evidenceById.get(guardrail.evidenceRef);
+    if (!isValidReadoutEvidence(record, guardrail.metricRef)) return false;
+    if (actualEndMs !== null && Number.isFinite(actualEndMs) && toEpochMillis(record.assertedAt) < actualEndMs) {
+      return false;
+    }
+    return true;
+  }
+
+  // Exposure counts per arm: exactly one control and one treatment arm, each
+  // with a positive planned/observed count grounded in source-valid
+  // exposure-count evidence that references that same arm.
+  const armsRecordResult = recordArray(exposurePlan.arms, "exposurePlan.arms", "Arm");
+  findings.push(...armsRecordResult.findings);
+  const arms = armsRecordResult.items;
+  const armIds = new Set(arms.map((item) => item.id));
+  requireReferences(arms.map((item) => item.id), armIds, "exposurePlan.arms", "Arm");
+
+  let controlArmCount = 0;
+  let treatmentArmCount = 0;
+  function armEvidenceValid(arm) {
+    const record = evidenceById.get(arm.evidenceRef);
+    return (
+      record !== undefined &&
+      record.kind === "exposure-count" &&
+      record.armRef === arm.id &&
+      isSourceValidEvidence(record) &&
+      Number.isFinite(toEpochMillis(record.assertedAt))
+    );
+  }
+  for (const [index, arm] of armsRecordResult.entries) {
+    if (!enumArmGroups.has(arm.group)) {
+      findings.push(
+        finding("invalid_arm_group", `exposurePlan.arms[${index}].group`, `Arm group ${JSON.stringify(arm.group)} is not supported.`),
+      );
+    } else if (arm.group === "control") {
+      controlArmCount += 1;
+    } else {
+      treatmentArmCount += 1;
+    }
+    if (!(typeof arm.plannedCount === "number" && Number.isFinite(arm.plannedCount) && arm.plannedCount > 0)) {
+      findings.push(
+        finding(
+          "invalid_arm_count",
+          `exposurePlan.arms[${index}].plannedCount`,
+          "Arm plannedCount must be a positive finite number.",
+        ),
+      );
+    }
+    if (!(typeof arm.observedCount === "number" && Number.isFinite(arm.observedCount) && arm.observedCount > 0)) {
+      findings.push(
+        finding(
+          "invalid_arm_count",
+          `exposurePlan.arms[${index}].observedCount`,
+          "Arm observedCount must be a positive finite number.",
+        ),
+      );
+    }
+    if (!armEvidenceValid(arm)) {
+      findings.push(
+        finding(
+          "unsupported_arm_evidence",
+          `exposurePlan.arms[${index}].evidenceRef`,
+          "An arm's observed count must be grounded in source-valid exposure-count evidence that references that same arm.",
+        ),
+      );
+    }
+  }
+  if (controlArmCount !== 1 || treatmentArmCount !== 1) {
+    findings.push(
+      finding(
+        "invalid_arm_allocation",
+        "exposurePlan.arms",
+        "Exposure plan must declare exactly one control arm and one treatment arm.",
+      ),
+    );
+  }
+  function armsValid() {
+    return (
+      arms.length > 0 &&
+      controlArmCount === 1 &&
+      treatmentArmCount === 1 &&
+      arms.every(
+        (arm) =>
+          enumArmGroups.has(arm.group) &&
+          typeof arm.plannedCount === "number" &&
+          Number.isFinite(arm.plannedCount) &&
+          arm.plannedCount > 0 &&
+          typeof arm.observedCount === "number" &&
+          Number.isFinite(arm.observedCount) &&
+          arm.observedCount > 0 &&
+          armEvidenceValid(arm),
+      )
+    );
+  }
+
+  // An immutable preregistration/analysis-plan receipt must be recorded before
+  // exposure begins, binding the hypothesis, population, exposure eligibility,
+  // primary metric, and allocation to a content digest -- so any post-hoc
+  // mutation of those fields (without a fresh, correctly re-dated receipt)
+  // shows up as a digest mismatch rather than silently passing.
+  function computePreregistrationDigest() {
+    const primaryMetric = metrics.find((item) => item.id === primaryMetricId);
+    return createHash("sha256")
+      .update(
+        canonicalJson({
+          hypothesis: value.hypothesis,
+          population: value.population,
+          exposureEligibility: exposurePlan.eligibility,
+          primaryMetricId,
+          primaryMetricName: isRecord(primaryMetric) ? primaryMetric.name : null,
+          controlGroupPercent: control,
+          treatmentGroupPercent: treatment,
+        }),
+      )
+      .digest("hex");
+  }
+  const preregistrationDigest = computePreregistrationDigest();
+  const preregistrationRecordValid = evidence.some(
+    (item) =>
+      item.kind === "preregistration-receipt" &&
+      isSourceValidEvidence(item) &&
+      typeof item.digest === "string" &&
+      item.digest === preregistrationDigest &&
+      Number.isFinite(toEpochMillis(item.assertedAt)) &&
+      (!Number.isFinite(startMs) || toEpochMillis(item.assertedAt) <= startMs),
+  );
+  if (!preregistrationRecordValid) {
+    findings.push(
+      finding(
+        "missing_preregistration_receipt",
+        "evidence",
+        "An immutable preregistration/analysis-plan receipt whose digest matches the current hypothesis, population, exposure eligibility, primary metric, and allocation must be recorded at or before the exposure plan's startAt.",
+      ),
+    );
+  }
+
+  let unresolvedExposureIncident = false;
+  for (const [index, item] of evidenceRecord.entries) {
+    if (!enumEvidenceKinds.has(item.kind)) {
+      findings.push(
+        finding("invalid_evidence_kind", `evidence[${index}].kind`, `Evidence kind ${JSON.stringify(item.kind)} is not supported.`),
+      );
+    }
+    if (item.kind === "readout" && item.metricRef !== null && item.metricRef !== undefined && !metricIds.has(item.metricRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `evidence[${index}].metricRef`,
+          `Metric reference ${JSON.stringify(item.metricRef)} does not resolve.`,
+        ),
+      );
+    }
+    if (!isSourceValidEvidence(item)) {
+      findings.push(
+        finding(
+          "untrusted_evidence_source",
+          `evidence[${index}].sourceRef`,
+          "Evidence must carry a valid, controlled/attributable source reference, not a fabricated or narrative source.",
+        ),
+      );
+    }
+    if (!Number.isFinite(toEpochMillis(item.assertedAt))) {
+      findings.push(
+        finding("invalid_timestamp", `evidence[${index}].assertedAt`, "Evidence assertedAt must be a parseable timestamp."),
+      );
+    }
+    if (item.kind === "exposure-incident" && item.resolved !== true) {
+      unresolvedExposureIncident = true;
+    }
+  }
+
+  if (!enumDecisionStates.has(value.decisionState)) {
+    findings.push(
+      finding(
+        "invalid_decision_state",
+        "decisionState",
+        `Decision state ${JSON.stringify(value.decisionState)} is not a supported state.`,
+      ),
+    );
+  }
+
+  function isDecisionRecordedValid() {
+    if (unresolvedExposureIncident) return false;
+    if (actualEndMs === null || !Number.isFinite(actualEndMs)) return false;
+    if (primaryMetricCount !== 1) return false;
+    if (guardrails.length === 0 || !guardrails.every(guardrailEvaluationValid)) return false;
+    if (!armsValid()) return false;
+    if (!preregistrationRecordValid) return false;
+    if (!isRecord(conclusion)) return false;
+    if (!enumConclusionEffects.has(conclusion.effect)) return false;
+    if (conclusion.metricRef !== primaryMetricId) return false;
+    const record = evidenceById.get(conclusion.evidenceRef);
+    if (!isValidReadoutEvidence(record, primaryMetricId)) return false;
+    const assertedMs = toEpochMillis(record.assertedAt);
+    if (!Number.isFinite(assertedMs) || assertedMs < actualEndMs) return false;
+
+    // A recorded decision needs a valid, independent authority-registry
+    // decision owner and an attributable record dated after the readout it
+    // relies on -- not merely the readout's own URL and timestamp.
+    if (!isRecord(decisionRecord)) return false;
+    if (typeof decisionRecord.rationale !== "string" || decisionRecord.rationale.trim().length === 0) return false;
+    const decisionOwnerPrincipal = principalsById.get(decisionRecord.decisionOwnerId);
+    if (!isRecord(decisionOwnerPrincipal) || !isAccountablePrincipalName(decisionOwnerPrincipal.name)) return false;
+    if (
+      !Array.isArray(decisionOwnerPrincipal.scopes) ||
+      !decisionOwnerPrincipal.scopes.includes("experiment-decision-authority")
+    ) {
+      return false;
+    }
+    if (
+      // Independence is bound by stable principal id, not display-name
+      // text, so a self-decision cannot be laundered through a
+      // title/format variant of the same person's name (e.g. "Priya
+      // Natarajan" vs "Priya Natarajan, Growth PM").
+      typeof value.ownerId !== "string" ||
+      decisionRecord.decisionOwnerId === value.ownerId
+    ) {
+      return false;
+    }
+    const decidedMs = toEpochMillis(decisionRecord.decidedAt);
+    const decisionGroundingTimestamps = [
+      assertedMs,
+      ...guardrails.map((guardrail) =>
+        toEpochMillis(evidenceById.get(guardrail.evidenceRef)?.assertedAt),
+      ),
+      ...arms.map((arm) => toEpochMillis(evidenceById.get(arm.evidenceRef)?.assertedAt)),
+      ...evidence
+        .filter((item) => item.kind === "exposure-incident")
+        .map((item) => toEpochMillis(item.assertedAt)),
+    ];
+    return (
+      Number.isFinite(decidedMs) &&
+      decisionGroundingTimestamps.every(
+        (groundingMs) => Number.isFinite(groundingMs) && decidedMs >= groundingMs,
+      )
+    );
+  }
+
+  const decisionRecordedValid = isDecisionRecordedValid();
+  if (decisionRecord !== null) {
+    resolvePrincipal(decisionRecord.decisionOwnerId, "decisionRecord.decisionOwnerId", "Decision owner");
+  }
+  if (value.decisionState === "decision-recorded" && !decisionRecordedValid) {
+    findings.push(
+      finding(
+        "premature_decision_state",
+        "decisionState",
+        "A recorded decision requires no unresolved exposure incident, a concluded exposure window, exactly one primary metric, every guardrail genuinely evaluated, valid per-arm exposure counts, a matching preregistration receipt, a structured conclusion grounded in source-valid readout evidence for that same primary metric asserted after exposure ends, and an attributable decision record from an independent, non-self, authority-registry decision owner dated at or after every guardrail, exposure-count, incident-resolution, and primary-readout record it relies on.",
+      ),
+    );
+  }
+
+  if (
+    typeof value.owner !== "string" ||
+    value.owner.trim().length === 0 ||
+    isAgentIdentityName(value.owner) ||
+    EXPERIMENTATION_LEAD_PATTERN.test(value.owner)
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "owner",
+        "The experiment must remain owned by a named, accountable human, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+  const ownerPrincipal = resolvePrincipal(value.ownerId, "ownerId", "Experiment owner");
+  if (ownerPrincipal !== null && !isAccountablePrincipalName(ownerPrincipal.name)) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "ownerId",
+        "The experiment owner principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+  if (
+    typeof handoff.owner !== "string" ||
+    handoff.owner.trim().length === 0 ||
+    isAgentIdentityName(handoff.owner) ||
+    EXPERIMENTATION_LEAD_PATTERN.test(handoff.owner)
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "The handoff must remain owned by a named, accountable human, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+
+  const expectedState = value.decisionState === "decision-recorded" && decisionRecordedValid ? "ready" : "blocked";
+  if (handoff.state !== expectedState) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready until the decision is validly recorded.",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "launch-experiment",
+    "stop-experiment",
+    "ramp-experiment",
+    "target-experiment",
+    "reconfigure-production-feature",
+  ];
+  const prohibitedActionsRecord = stringListFindings(
+    handoff.prohibitedActions,
+    "handoff.prohibitedActions",
+    "Prohibited actions",
+  );
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `Experiment handoffs must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  const narrativeTexts = [value.decision, handoff.summary, isRecord(conclusion) ? conclusion.summary : null].filter(
+    (text) => typeof text === "string",
+  );
+  const prohibitedNarrative =
+    /\blaunch(?:ed|ing)?\s+(?:the\s+)?experiment|stopp?(?:ed|ing)?\s+(?:the\s+)?experiment|ramp(?:ed|ing)?\s+(?:the\s+)?experiment|target(?:ed|ing)?\s+(?:the\s+)?experiment|reconfigur(?:ed|ing)?\s+(?:the\s+)?production\s+feature/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim launching, stopping, ramping, targeting, or reconfiguring a production feature.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
+function researchSynthesisFindings(value) {
+  const findings = [];
+  function toEpochMillis(text) {
+    if (typeof text !== "string") return NaN;
+    const trimmed = text.trim();
+    if (trimmed.length === 0) return NaN;
+    const ms = Date.parse(trimmed);
+    return Number.isFinite(ms) ? ms : NaN;
+  }
+
+  // The schema's anyOf keeps the exact original HEAD legacy branch alongside
+  // the enriched ledger branch, so both can validate simultaneously and
+  // schemaVersion presence alone is no longer a sound discriminator.
+  // Any enriched-only property opts the record into the full ledger contract,
+  // regardless of its value type, so a partially deleted hybrid record cannot
+  // downgrade to bounded legacy validation. A schemaVersion by itself remains
+  // legacy-compatible.
+  const isEnrichedShape = [
+    "study",
+    "sources",
+    "evidence",
+    "themes",
+    "decisionQuestions",
+    "principals",
+    "limitations",
+    "handoff",
+  ].some((field) => Object.hasOwn(value, field));
+  if (!isEnrichedShape) {
+    const enumLegacyConfidence = new Set(["low", "medium", "high"]);
+    for (const field of ["evidenceId", "observation", "theme", "confidence"]) {
+      if (typeof value[field] !== "string" || value[field].trim().length === 0) {
+        findings.push(
+          finding(
+            "invalid_legacy_field",
+            field,
+            `Legacy research evidence field "${field}" must be a non-empty, trimmed string.`,
+          ),
+        );
+      }
+    }
+    if (typeof value.confidence === "string" && !enumLegacyConfidence.has(value.confidence)) {
+      findings.push(
+        finding(
+          "invalid_legacy_confidence",
+          "confidence",
+          `Legacy research evidence confidence ${JSON.stringify(value.confidence)} is not a supported confidence level.`,
+        ),
+      );
+    }
+    return findings;
+  }
+
+  function requireReferences(refs, known, path, label) {
+    findings.push(
+      ...uniqueFindings(refs, path, label),
+      ...referenceFindings(refs, known, path, label),
+    );
+  }
+
+  const sameSet = (left, right) =>
+    Array.isArray(left) &&
+    Array.isArray(right) &&
+    left.length === right.length &&
+    new Set(left).size === left.length &&
+    left.every((item) => new Set(right).has(item));
+
+  // A minimized participant reference is a short, non-identifying alias
+  // (e.g. "P1"), never an email address, phone number, or a two-word
+  // "First Last"-shaped full name.
+  const EMAIL_LIKE_PATTERN = /[^\s@]+@[^\s@]+\.[^\s@]+/u;
+  const PHONE_LIKE_PATTERN = /\d{3}[.\-\s]?\d{3}[.\-\s]?\d{4}/u;
+  const FULL_NAME_ALIAS_PATTERN = /^[A-Z][a-z]+\s+[A-Z][a-z]+$/u;
+  const PARTICIPANT_NAME_IN_TEXT_PATTERN =
+    /\b(?:(?:[Pp]articipant|[Rr]espondent|[Ii]nterviewee|[Cc]ustomer|[Uu]ser)\s+(?:named\s+)?|[Ww]e\s+(?:followed up with|contacted)\s+|[Cc]ontacted\s+|[Pp]er\s+)[A-Z][a-z]+\s+[A-Z][a-z]+\b|\b[A-Z][a-z]+\s+[A-Z][a-z]+\s+(?:said|reported|noted|struggled|asked|preferred|stated|mentioned|explained)\b/u;
+  function isMinimizedParticipantAlias(alias) {
+    return (
+      typeof alias === "string" &&
+      alias.trim().length > 0 &&
+      !EMAIL_LIKE_PATTERN.test(alias) &&
+      !PHONE_LIKE_PATTERN.test(alias) &&
+      !FULL_NAME_ALIAS_PATTERN.test(alias.trim())
+    );
+  }
+
+  const sourcesRecord = requiredRecordArray(value.sources, "sources", "Source");
+  const evidenceRecord = requiredRecordArray(value.evidence, "evidence", "Evidence");
+  const themesRecord = requiredRecordArray(value.themes, "themes", "Theme");
+  const decisionQuestionsRecord = requiredRecordArray(
+    value.decisionQuestions,
+    "decisionQuestions",
+    "Decision question",
+  );
+  const principalsRecord = requiredRecordArray(value.principals, "principals", "Principal");
+  findings.push(
+    ...sourcesRecord.findings,
+    ...evidenceRecord.findings,
+    ...themesRecord.findings,
+    ...decisionQuestionsRecord.findings,
+    ...principalsRecord.findings,
+  );
+
+  const sources = sourcesRecord.items;
+  const evidence = evidenceRecord.items;
+  const themes = themesRecord.items;
+  const decisionQuestions = decisionQuestionsRecord.items;
+  const principals = principalsRecord.items;
+  const study = isRecord(value.study) ? value.study : {};
+  const handoff = isRecord(value.handoff) ? value.handoff : {};
+
+  const sourceIds = new Set(sources.map((item) => item.id));
+  const evidenceIds = new Set(evidence.map((item) => item.id));
+  const themeIds = new Set(themes.map((item) => item.id));
+  const questionIds = new Set(decisionQuestions.map((item) => item.id));
+  const principalIds = new Set(principals.map((item) => item.id));
+  const principalsById = new Map(principals.map((item) => [item.id, item]));
+
+  requireReferences(sources.map((item) => item.id), sourceIds, "sources", "Source");
+  requireReferences(evidence.map((item) => item.id), evidenceIds, "evidence", "Evidence");
+  requireReferences(themes.map((item) => item.id), themeIds, "themes", "Theme");
+  requireReferences(decisionQuestions.map((item) => item.id), questionIds, "decisionQuestions", "Decision question");
+  requireReferences(principals.map((item) => item.id), principalIds, "principals", "Principal");
+
+  // The decision-authority registry: every principal must carry a stable id
+  // and a real, accountable, non-agent/non-package-self-attested human name.
+  // Binding the researcher and the decision owner by id (rather than by
+  // free-text display name) means a decision question can never be answered
+  // by the researcher under a shortened or reformatted name variant.
+  function isAccountablePrincipalName(name) {
+    return (
+      typeof name === "string" &&
+      name.trim().length > 0 &&
+      !isAgentIdentityName(name) &&
+      !UX_RESEARCH_SYNTHESIZER_PATTERN.test(name)
+    );
+  }
+  for (const [index, principal] of principalsRecord.entries) {
+    if (!isAccountablePrincipalName(principal.name)) {
+      findings.push(
+        finding(
+          "invalid_principal_identity",
+          `principals[${index}].name`,
+          "A principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned.",
+        ),
+      );
+    }
+    if (!Array.isArray(principal.scopes)) {
+      findings.push(
+        finding("invalid_principal_scopes", `principals[${index}].scopes`, "A principal's scopes must be an array."),
+      );
+    }
+  }
+  function resolvePrincipal(principalId, path, label) {
+    if (principalId === null || principalId === undefined) return null;
+    const principal = principalsById.get(principalId);
+    if (principal === undefined) {
+      findings.push(
+        finding("dangling_reference", path, `${label} principal reference ${JSON.stringify(principalId)} does not resolve.`),
+      );
+      return null;
+    }
+    return principal;
+  }
+
+  const enumMethods = new Set(["interview", "usability-test", "survey", "diary-study", "field-observation"]);
+  const enumConsentStatus = new Set(["consented", "withdrawn"]);
+  const enumConfidence = new Set(["low", "medium", "high"]);
+  const enumQuestionStatus = new Set(["open", "answered"]);
+
+  // A minimized participant reference is a short, non-identifying alias
+  // (e.g. "P1"), never an email address, phone number, or a two-word
+  // "First Last"-shaped full name. The same three leak patterns are reused
+  // below to scan every free-text field a synthesis can carry (observation,
+  // quote, theme name/contradiction note, decision question/note,
+  // limitations, and handoff summary) since any of them could otherwise
+  // smuggle in an identifier that participant minimization was meant to
+  // strip out.
+  function hasLeakedIdentifier(text) {
+    return (
+      typeof text === "string" &&
+      (EMAIL_LIKE_PATTERN.test(text) ||
+        PHONE_LIKE_PATTERN.test(text) ||
+        FULL_NAME_ALIAS_PATTERN.test(text.trim()) ||
+        PARTICIPANT_NAME_IN_TEXT_PATTERN.test(text))
+    );
+  }
+
+  if (!enumMethods.has(study.method)) {
+    findings.push(
+      finding("invalid_study_method", "study.method", `Study method ${JSON.stringify(study.method)} is not supported.`),
+    );
+  }
+  const consentValid = enumConsentStatus.has(study.consentStatus) && study.consentStatus === "consented";
+  if (!enumConsentStatus.has(study.consentStatus)) {
+    findings.push(
+      finding(
+        "invalid_consent_status",
+        "study.consentStatus",
+        `Consent status ${JSON.stringify(study.consentStatus)} is not a supported status.`,
+      ),
+    );
+  }
+  if (
+    typeof study.accountableResearcher !== "string" ||
+    study.accountableResearcher.trim().length === 0 ||
+    isAgentIdentityName(study.accountableResearcher) ||
+    UX_RESEARCH_SYNTHESIZER_PATTERN.test(study.accountableResearcher)
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "study.accountableResearcher",
+        "The study must remain owned by a named, accountable human researcher, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+  const researcherPrincipal = resolvePrincipal(
+    study.accountableResearcherId,
+    "study.accountableResearcherId",
+    "Accountable researcher",
+  );
+  if (researcherPrincipal !== null && !isAccountablePrincipalName(researcherPrincipal.name)) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "study.accountableResearcherId",
+        "The study's accountable researcher principal must carry a non-empty, accountable human name, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+  if (study.participantMinimizationApplied !== true) {
+    findings.push(
+      finding(
+        "participant_minimization_not_applied",
+        "study.participantMinimizationApplied",
+        "The study must explicitly confirm participant minimization was applied before any evidence can be shared.",
+      ),
+    );
+  }
+  // A bare "YYYY-MM-DD" asOfDate is compared at the end of that day so it
+  // still covers the whole day it names, matching the end-of-day chronology
+  // convention used elsewhere; a value that already carries a time
+  // component is compared at that exact instant.
+  const ISO_DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/u;
+  const asOfMs =
+    typeof study.asOfDate === "string" && ISO_DATE_ONLY_PATTERN.test(study.asOfDate)
+      ? toEpochMillis(`${study.asOfDate}T23:59:59.999Z`)
+      : toEpochMillis(study.asOfDate);
+  if (!Number.isFinite(asOfMs)) {
+    findings.push(finding("invalid_timestamp", "study.asOfDate", "Study asOfDate must be a parseable timestamp."));
+  }
+
+  const limitationsRecord = stringListFindings(value.limitations, "limitations", "Limitation");
+  findings.push(...limitationsRecord.findings);
+  const limitations = limitationsRecord.items;
+  const limitationsValid =
+    limitations.length > 0 &&
+    limitations.every((text) => typeof text === "string" && text.trim().length > 0);
+  if (limitations.length === 0) {
+    findings.push(
+      finding(
+        "missing_limitation_coverage",
+        "limitations",
+        "The synthesis must explicitly record at least one limitation or uncertainty before it can be considered ready.",
+      ),
+    );
+  }
+  limitations.forEach((text, index) => {
+    if (typeof text !== "string" || text.trim().length === 0) {
+      findings.push(finding("invalid_limitation", `limitations[${index}]`, "A limitation entry must be a non-empty string."));
+    } else if (hasLeakedIdentifier(text)) {
+      findings.push(
+        finding(
+          "participant_identifier_leak",
+          `limitations[${index}]`,
+          "A limitation entry cannot contain an email address, phone number, or full participant name.",
+        ),
+      );
+    }
+  });
+
+  for (const [index, source] of sourcesRecord.entries) {
+    if (!enumMethods.has(source.method)) {
+      findings.push(
+        finding("invalid_study_method", `sources[${index}].method`, `Source method ${JSON.stringify(source.method)} is not supported.`),
+      );
+    }
+    if (!isMinimizedParticipantAlias(source.participantAlias)) {
+      findings.push(
+        finding(
+          "unminimized_participant_reference",
+          `sources[${index}].participantAlias`,
+          "A source's participant alias must be a minimized, non-identifying reference, not an email, phone number, or full name.",
+        ),
+      );
+    }
+    if (!enumConsentStatus.has(source.consentStatus)) {
+      findings.push(
+        finding(
+          "invalid_source_consent",
+          `sources[${index}].consentStatus`,
+          `Source consent status ${JSON.stringify(source.consentStatus)} is not a supported status.`,
+        ),
+      );
+    }
+    if (!isValidControlledReference(source.provenanceRef)) {
+      findings.push(
+        finding(
+          "untrusted_source_provenance",
+          `sources[${index}].provenanceRef`,
+          "A source must carry a valid, controlled/attributable provenance reference, not a fabricated or narrative source.",
+        ),
+      );
+    }
+    const capturedMs = toEpochMillis(source.capturedAt);
+    if (!Number.isFinite(capturedMs)) {
+      findings.push(
+        finding("invalid_timestamp", `sources[${index}].capturedAt`, "Source capturedAt must be a parseable timestamp."),
+      );
+    } else if (Number.isFinite(asOfMs) && capturedMs > asOfMs) {
+      findings.push(
+        finding(
+          "future_capture_timestamp",
+          `sources[${index}].capturedAt`,
+          "A source cannot be captured after the study's asOfDate synthesis snapshot.",
+        ),
+      );
+    }
+  }
+
+  // A source is approved -- usable to ground evidence -- only when both the
+  // overall study consent and that specific participant's own per-source
+  // consent scope are affirmatively "consented". A source flagged withdrawn
+  // (or with an otherwise unsupported consent status) can never support
+  // anything, even if the study as a whole remains consented.
+  const approvedSourceIds = new Set(
+    sources.filter((source) => consentValid && source.consentStatus === "consented").map((source) => source.id),
+  );
+
+  for (const [index, item] of evidenceRecord.entries) {
+    // A null/missing sourceRef is not a benign gap: it is unusable evidence
+    // that must never be allowed to support a theme, a decision question,
+    // or the ready state, so it is flagged directly instead of being
+    // silently skipped.
+    if (typeof item.sourceRef !== "string" || item.sourceRef.trim().length === 0) {
+      findings.push(
+        finding(
+          "missing_evidence_source",
+          `evidence[${index}].sourceRef`,
+          "Evidence must reference a source; a null or missing sourceRef cannot support any observation.",
+        ),
+      );
+    } else if (!sourceIds.has(item.sourceRef)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `evidence[${index}].sourceRef`,
+          `Source reference ${JSON.stringify(item.sourceRef)} does not resolve.`,
+        ),
+      );
+    } else if (!approvedSourceIds.has(item.sourceRef)) {
+      findings.push(
+        finding(
+          "unapproved_evidence_source",
+          `evidence[${index}].sourceRef`,
+          "Evidence must resolve to a consented, approved source; a withdrawn or otherwise unapproved source cannot support any observation.",
+        ),
+      );
+    }
+    if (typeof item.observation !== "string" || item.observation.trim().length === 0) {
+      findings.push(
+        finding("invalid_observation", `evidence[${index}].observation`, "Evidence observation must be a non-empty string."),
+      );
+    } else if (hasLeakedIdentifier(item.observation)) {
+      findings.push(
+        finding(
+          "participant_identifier_leak",
+          `evidence[${index}].observation`,
+          "An observation cannot contain an email address, phone number, or full participant name.",
+        ),
+      );
+    }
+    if (typeof item.quote === "string" && hasLeakedIdentifier(item.quote)) {
+      findings.push(
+        finding(
+          "participant_identifier_leak",
+          `evidence[${index}].quote`,
+          "A quote cannot contain an email address, phone number, or full participant name.",
+        ),
+      );
+    }
+    findings.push(
+      ...uniqueFindings(item.themeRefs, `evidence[${index}].themeRefs`, "Theme"),
+      ...referenceFindings(item.themeRefs, themeIds, `evidence[${index}].themeRefs`, "Theme"),
+    );
+    if (!enumConfidence.has(item.confidence)) {
+      findings.push(
+        finding(
+          "invalid_confidence_level",
+          `evidence[${index}].confidence`,
+          `Confidence level ${JSON.stringify(item.confidence)} is not supported.`,
+        ),
+      );
+    }
+    if (item.contradicts !== null && item.contradicts !== undefined) {
+      if (item.contradicts === item.id) {
+        findings.push(
+          finding(
+            "self_contradiction",
+            `evidence[${index}].contradicts`,
+            "An evidence entry cannot contradict itself.",
+          ),
+        );
+      } else if (!evidenceIds.has(item.contradicts)) {
+        findings.push(
+          finding(
+            "dangling_reference",
+            `evidence[${index}].contradicts`,
+            `Contradicting evidence reference ${JSON.stringify(item.contradicts)} does not resolve.`,
+          ),
+        );
+      }
+    }
+  }
+
+  // Evidence with no resolved, approved source is unusable: it can never
+  // count toward a theme's supporting-evidence pool or contribute to a
+  // genuine internal contradiction, no matter what themeRefs/contradicts
+  // it declares.
+  function hasApprovedSource(item) {
+    return typeof item.sourceRef === "string" && approvedSourceIds.has(item.sourceRef);
+  }
+
+  const evidenceById = new Map(evidence.map((item) => [item.id, item]));
+  let anyThemeEvidenceBacked = false;
+  for (const [index, theme] of themesRecord.entries) {
+    const supporting = Array.isArray(theme.supportingEvidenceRefs) ? theme.supportingEvidenceRefs : null;
+    findings.push(
+      ...uniqueFindings(theme.supportingEvidenceRefs, `themes[${index}].supportingEvidenceRefs`, "Evidence"),
+      ...referenceFindings(theme.supportingEvidenceRefs, evidenceIds, `themes[${index}].supportingEvidenceRefs`, "Evidence"),
+    );
+    if (typeof theme.name !== "string" || theme.name.trim().length === 0) {
+      findings.push(finding("invalid_theme_name", `themes[${index}].name`, "A theme name must be a non-empty string."));
+    } else if (hasLeakedIdentifier(theme.name)) {
+      findings.push(
+        finding(
+          "participant_identifier_leak",
+          `themes[${index}].name`,
+          "A theme name cannot contain an email address, phone number, or full participant name.",
+        ),
+      );
+    }
+    if (supporting === null || supporting.length === 0) {
+      findings.push(
+        finding(
+          "unsupported_theme",
+          `themes[${index}].supportingEvidenceRefs`,
+          "A theme must reference at least one supporting evidence entry.",
+        ),
+      );
+    } else {
+      // Unsourced or unapproved evidence can never count toward a theme's
+      // supporting pool: it "cannot support anything".
+      const derivedSupporting = evidence
+        .filter((item) => Array.isArray(item.themeRefs) && item.themeRefs.includes(theme.id) && hasApprovedSource(item))
+        .map((item) => item.id);
+      if (derivedSupporting.length > 0) anyThemeEvidenceBacked = true;
+      if (!sameSet(supporting, derivedSupporting)) {
+        findings.push(
+          finding(
+            "theme_evidence_link_mismatch",
+            `themes[${index}].supportingEvidenceRefs`,
+            "A theme's supporting evidence references must exactly match every evidence entry that references this theme back.",
+          ),
+        );
+      }
+    }
+    const derivedContradiction = evidence.some((item) => {
+      if (!Array.isArray(item.themeRefs) || !item.themeRefs.includes(theme.id) || !hasApprovedSource(item)) return false;
+      const counterpart = evidenceById.get(item.contradicts);
+      return (
+        counterpart !== undefined &&
+        Array.isArray(counterpart.themeRefs) &&
+        counterpart.themeRefs.includes(theme.id) &&
+        hasApprovedSource(counterpart)
+      );
+    });
+    if (Boolean(theme.hasContradiction) !== derivedContradiction) {
+      findings.push(
+        finding(
+          "contradiction_flag_mismatch",
+          `themes[${index}].hasContradiction`,
+          "A theme's hasContradiction flag must exactly match whether its supporting evidence pool contains a genuine internal contradiction.",
+        ),
+      );
+    }
+    if (
+      theme.hasContradiction === true &&
+      (typeof theme.contradictionNote !== "string" || theme.contradictionNote.trim().length === 0)
+    ) {
+      findings.push(
+        finding(
+          "missing_contradiction_note",
+          `themes[${index}].contradictionNote`,
+          "A theme flagged with a contradiction must carry a non-empty contradiction note.",
+        ),
+      );
+    } else if (typeof theme.contradictionNote === "string" && hasLeakedIdentifier(theme.contradictionNote)) {
+      findings.push(
+        finding(
+          "participant_identifier_leak",
+          `themes[${index}].contradictionNote`,
+          "A contradiction note cannot contain an email address, phone number, or full participant name.",
+        ),
+      );
+    }
+  }
+
+  function isQuestionResolved(question) {
+    // Independence from the researcher is bound by stable principal id, not
+    // display-name text, so a decision question can never be answered by
+    // the researcher under a shortened or reformatted name variant.
+    const answeredByPrincipal = principalsById.get(question.answeredById);
+    return (
+      question.status === "answered" &&
+      isRecord(answeredByPrincipal) &&
+      isAccountablePrincipalName(answeredByPrincipal.name) &&
+      Array.isArray(answeredByPrincipal.scopes) &&
+      answeredByPrincipal.scopes.includes("product-decision-authority") &&
+      typeof study.accountableResearcherId === "string" &&
+      question.answeredById !== study.accountableResearcherId &&
+      Number.isFinite(toEpochMillis(question.answeredAt)) &&
+      toEpochMillis(question.answeredAt) >= asOfMs &&
+      typeof question.decisionNote === "string" &&
+      question.decisionNote.trim().length > 0 &&
+      !hasLeakedIdentifier(question.decisionNote)
+    );
+  }
+
+  const openQuestionIds = [];
+  for (const [index, question] of decisionQuestionsRecord.entries) {
+    findings.push(
+      ...uniqueFindings(question.themeRefs, `decisionQuestions[${index}].themeRefs`, "Theme"),
+      ...referenceFindings(question.themeRefs, themeIds, `decisionQuestions[${index}].themeRefs`, "Theme"),
+    );
+    if (!Array.isArray(question.themeRefs) || question.themeRefs.length === 0) {
+      findings.push(
+        finding(
+          "unsupported_decision_question",
+          `decisionQuestions[${index}].themeRefs`,
+          "A decision question must reference at least one theme.",
+        ),
+      );
+    }
+    if (typeof question.question !== "string" || question.question.trim().length === 0) {
+      findings.push(
+        finding("invalid_decision_question", `decisionQuestions[${index}].question`, "A decision question must be a non-empty string."),
+      );
+    } else if (hasLeakedIdentifier(question.question)) {
+      findings.push(
+        finding(
+          "participant_identifier_leak",
+          `decisionQuestions[${index}].question`,
+          "A decision question cannot contain an email address, phone number, or full participant name.",
+        ),
+      );
+    }
+    if (question.answeredById !== null && question.answeredById !== undefined) {
+      resolvePrincipal(question.answeredById, `decisionQuestions[${index}].answeredById`, "Decision owner");
+    }
+    if (!enumQuestionStatus.has(question.status)) {
+      findings.push(
+        finding(
+          "invalid_question_status",
+          `decisionQuestions[${index}].status`,
+          `Decision question status ${JSON.stringify(question.status)} is not supported.`,
+        ),
+      );
+    }
+    const resolved = enumQuestionStatus.has(question.status) && isQuestionResolved(question);
+    if (!resolved) openQuestionIds.push(question.id);
+    if (question.status === "answered" && !resolved) {
+      findings.push(
+        finding(
+          "premature_question_resolution",
+          `decisionQuestions[${index}].status`,
+          "A decision question can only be answered by an independent, authority-registry decision owner (never the researcher, regardless of display-name variation) with an answeredAt at or after the synthesis snapshot and a non-empty, identifier-free decision note.",
+        ),
+      );
+    }
+  }
+
+  if (
+    typeof handoff.owner !== "string" ||
+    handoff.owner.trim().length === 0 ||
+    isAgentIdentityName(handoff.owner) ||
+    UX_RESEARCH_SYNTHESIZER_PATTERN.test(handoff.owner)
+  ) {
+    findings.push(
+      finding(
+        "agent_owned_authority",
+        "handoff.owner",
+        "The handoff must remain owned by a named, accountable human, not missing, blank, or agent/package-owned.",
+      ),
+    );
+  }
+
+  requireReferences(handoff.sourceRefs ?? [], sourceIds, "handoff.sourceRefs", "Source");
+  if (!sameSet(handoff.sourceRefs ?? [], [...sourceIds])) {
+    findings.push(
+      finding("incomplete_handoff", "handoff.sourceRefs", "The handoff must reference every source exactly once."),
+    );
+  }
+  requireReferences(handoff.themeRefs ?? [], themeIds, "handoff.themeRefs", "Theme");
+  if (!sameSet(handoff.themeRefs ?? [], [...themeIds])) {
+    findings.push(
+      finding("incomplete_handoff", "handoff.themeRefs", "The handoff must reference every theme exactly once."),
+    );
+  }
+  requireReferences(handoff.openQuestionRefs ?? [], questionIds, "handoff.openQuestionRefs", "Decision question");
+  if (!sameSet(handoff.openQuestionRefs ?? [], openQuestionIds)) {
+    findings.push(
+      finding(
+        "incomplete_handoff",
+        "handoff.openQuestionRefs",
+        "The handoff's open-question references must exactly match every decision question that is not validly resolved.",
+      ),
+    );
+  }
+
+  const hasApprovedSourceAtAll = sources.some((source) => approvedSourceIds.has(source.id));
+  const hasApprovedEvidenceAtAll = evidence.some((item) => hasApprovedSource(item));
+  const expectedState =
+    consentValid &&
+    study.participantMinimizationApplied === true &&
+    openQuestionIds.length === 0 &&
+    sources.length > 0 &&
+    hasApprovedSourceAtAll &&
+    evidence.length > 0 &&
+    hasApprovedEvidenceAtAll &&
+    themes.length > 0 &&
+    anyThemeEvidenceBacked &&
+    limitationsValid
+      ? "ready"
+      : "blocked";
+  if (handoff.state !== expectedState) {
+    findings.push(
+      finding(
+        "premature_ready_state",
+        "handoff.state",
+        "The handoff cannot be ready until consent is confirmed, participant minimization is applied, every decision question is validly resolved, at least one approved source and approved-source evidence entry exists, at least one theme is genuinely evidence-backed, and at least one limitation/uncertainty is recorded -- an empty ledger can never be ready.",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "identify-participant",
+    "contact-participant",
+    "compensate-participant",
+    "record-participant",
+    "publish-participant-material",
+    "commit-product-decision",
+  ];
+  const prohibitedActionsRecord = stringListFindings(
+    handoff.prohibitedActions,
+    "handoff.prohibitedActions",
+    "Prohibited actions",
+  );
+  findings.push(...prohibitedActionsRecord.findings);
+  const prohibitedActions = prohibitedActionsRecord.items;
+  for (const action of requiredActions) {
+    if (!prohibitedActions.includes(action)) {
+      findings.push(
+        finding(
+          "missing_authority_gate",
+          "handoff.prohibitedActions",
+          `Research synthesis handoffs must keep ${action} explicitly prohibited.`,
+        ),
+      );
+    }
+  }
+
+  if (typeof handoff.summary === "string" && hasLeakedIdentifier(handoff.summary)) {
+    findings.push(
+      finding(
+        "participant_identifier_leak",
+        "handoff.summary",
+        "The handoff summary cannot contain an email address, phone number, or full participant name.",
+      ),
+    );
+  }
+
+  const narrativeTexts = [
+    handoff.summary,
+    ...evidence.map((item) => item.observation),
+    ...decisionQuestions.map((item) => item.decisionNote),
+  ].filter((text) => typeof text === "string");
+  const prohibitedNarrative =
+    /\bidentif(?:ied|ying|y)\s+(?:the\s+)?participant|contact(?:ed|ing)?\s+(?:the\s+)?participant|compensat(?:ed|ing)?\s+(?:the\s+)?participant|record(?:ed|ing)?\s+(?:the\s+)?participant|publish(?:ed|ing)?\s+(?:the\s+)?participant\s+material|commit(?:ted|ting)?\s+to\s+(?:the\s+|a\s+)?product\s+decision/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_narrative_action",
+        "$",
+        "Narrative text cannot claim participant identification, contact, compensation, recording, publication, or a committed product decision.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
 function workflowExecutionReconciliationFindings(value, options = {}) {
   const findings = [];
   const manifest = value.manifest ?? {};
@@ -37838,6 +39889,7 @@ const validators = {
   "event-operations-director": eventOperationsFindings,
   "executive-assistant": executiveCommitmentLedgerFindings,
   "executive-briefing": executiveBriefingSnapshotFindings,
+  "experimentation-lead": experimentDesignFindings,
   "facilities-operations-coordinator": facilitiesOperationsFindings,
   "financial-analyst": financialAnalysisFindings,
   "feed-intelligence-monitor": feedIntelligenceDeltaLedgerFindings,
@@ -37846,6 +39898,7 @@ const validators = {
   "fantasy-sports-manager": fantasySportsFindings,
   "games-backlog-manager": gamesBacklogFindings,
   "gift-relationship-manager": giftRelationshipFindings,
+  "grant-portfolio-manager": grantPortfolioFindings,
   "green-thumb-coordinator": greenThumbFindings,
   "health-records-binder": healthRecordsFindings,
   "home-repair-coordinator": homeRepairFindings,
@@ -37898,6 +39951,7 @@ const validators = {
   "travel-concierge": travelShortlistFindings,
   "travel-planner": itineraryPlanFindings,
   "travel-loyalty-points-organizer": travelLoyaltyFindings,
+  "ux-research-synthesizer": researchSynthesisFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
   "video-concept-producer": videoConceptGenerationManifestFindings,
   "wardrobe-organizer": wardrobeFindings,

@@ -1,0 +1,185 @@
+{
+  "schemaVersion": "1",
+  "portfolio": {
+    "ownerId": "principal-dana-whitfield",
+    "asOfDate": "2026-09-03",
+    "sourceFreshnessMaxDays": 30
+  },
+  "principals": [
+    {
+      "id": "principal-dana-whitfield",
+      "name": "Dana Whitfield",
+      "roles": ["development-director"],
+      "scopes": ["portfolio-owner", "eligibility-assessment"]
+    },
+    {
+      "id": "principal-marcus-alvarez",
+      "name": "Marcus Alvarez",
+      "roles": ["executive-director"],
+      "scopes": ["submission-readiness-approval"]
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "opp-youth-workforce-2026",
+      "name": "State Youth Workforce Innovation Grant",
+      "sourceCheckedEvidenceRef": "evidence-source-youth-workforce",
+      "deadline": "2026-11-15",
+      "eligibility": {
+        "status": "eligible",
+        "evidenceRef": "evidence-eligibility-youth-workforce",
+        "assessedById": "principal-dana-whitfield",
+        "assessedAt": "2026-09-02T14:55:00Z"
+      },
+      "requirements": [
+        {
+          "id": "req-determination-letter",
+          "description": "501(c)(3) determination letter on file",
+          "evidenceRef": "evidence-requirement-determination-letter"
+        },
+        {
+          "id": "req-outcomes-report",
+          "description": "Prior-year program outcomes report",
+          "evidenceRef": "evidence-requirement-outcomes-report"
+        }
+      ],
+      "budget": {
+        "requestedAmount": 150000,
+        "currency": "USD",
+        "matchRequired": true,
+        "matchSecuredAmount": 150000,
+        "evidenceRef": "evidence-budget-youth-workforce"
+      },
+      "partnerEvidenceRefs": ["evidence-partner-workforce-board"],
+      "readiness": "ready",
+      "notes": "Portfolio review confirmed no funder contact or submission has occurred; only the executive director's final sign-off remains outstanding."
+    },
+    {
+      "id": "opp-arts-access-2026",
+      "name": "Regional Arts Access Community Grant",
+      "sourceCheckedEvidenceRef": "evidence-source-arts-access",
+      "deadline": "2026-12-01",
+      "eligibility": {
+        "status": "eligible",
+        "evidenceRef": "evidence-eligibility-arts-access",
+        "assessedById": "principal-dana-whitfield",
+        "assessedAt": "2026-09-02T15:05:00Z"
+      },
+      "requirements": [
+        {
+          "id": "req-board-roster",
+          "description": "Board roster and conflict-of-interest policy",
+          "evidenceRef": null
+        }
+      ],
+      "budget": {
+        "requestedAmount": 40000,
+        "currency": "USD",
+        "matchRequired": false,
+        "matchSecuredAmount": 0,
+        "evidenceRef": "evidence-budget-arts-access"
+      },
+      "partnerEvidenceRefs": [],
+      "readiness": "in-review",
+      "notes": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-source-youth-workforce",
+      "kind": "source-listing",
+      "opportunityRef": "opp-youth-workforce-2026",
+      "sourceRef": "controlled://state-grants-portal/youth-workforce-2026",
+      "assertedAt": "2026-08-25T09:00:00Z",
+      "note": null
+    },
+    {
+      "id": "evidence-eligibility-youth-workforce",
+      "kind": "eligibility",
+      "opportunityRef": "opp-youth-workforce-2026",
+      "sourceRef": "controlled://internal-grants-crm/eligibility/youth-workforce-2026",
+      "assertedAt": "2026-09-02T14:50:00Z",
+      "note": null
+    },
+    {
+      "id": "evidence-requirement-determination-letter",
+      "kind": "requirement",
+      "opportunityRef": "opp-youth-workforce-2026",
+      "sourceRef": "controlled://internal-document-vault/determination-letter",
+      "assertedAt": "2026-08-20T10:00:00Z",
+      "note": null
+    },
+    {
+      "id": "evidence-requirement-outcomes-report",
+      "kind": "requirement",
+      "opportunityRef": "opp-youth-workforce-2026",
+      "sourceRef": "controlled://internal-document-vault/outcomes-report-2025",
+      "assertedAt": "2026-08-20T10:05:00Z",
+      "note": null
+    },
+    {
+      "id": "evidence-budget-youth-workforce",
+      "kind": "budget",
+      "opportunityRef": "opp-youth-workforce-2026",
+      "sourceRef": "controlled://internal-finance-system/budget/youth-workforce-2026",
+      "assertedAt": "2026-08-28T12:00:00Z",
+      "note": null
+    },
+    {
+      "id": "evidence-partner-workforce-board",
+      "kind": "partner-commitment",
+      "opportunityRef": "opp-youth-workforce-2026",
+      "sourceRef": "controlled://partner-portal/workforce-board-commitment-letter",
+      "assertedAt": "2026-08-27T12:00:00Z",
+      "note": null
+    },
+    {
+      "id": "evidence-source-arts-access",
+      "kind": "source-listing",
+      "opportunityRef": "opp-arts-access-2026",
+      "sourceRef": "controlled://state-grants-portal/arts-access-2026",
+      "assertedAt": "2026-08-26T09:00:00Z",
+      "note": null
+    },
+    {
+      "id": "evidence-eligibility-arts-access",
+      "kind": "eligibility",
+      "opportunityRef": "opp-arts-access-2026",
+      "sourceRef": "controlled://internal-grants-crm/eligibility/arts-access-2026",
+      "assertedAt": "2026-09-02T15:00:00Z",
+      "note": null
+    },
+    {
+      "id": "evidence-budget-arts-access",
+      "kind": "budget",
+      "opportunityRef": "opp-arts-access-2026",
+      "sourceRef": "controlled://internal-finance-system/budget/arts-access-2026",
+      "assertedAt": "2026-08-29T12:00:00Z",
+      "note": null
+    }
+  ],
+  "approvals": [
+    {
+      "id": "approval-youth-workforce",
+      "opportunityRef": "opp-youth-workforce-2026",
+      "approverId": "principal-marcus-alvarez",
+      "decision": "approved",
+      "approvedAt": "2026-09-03T09:00:00Z"
+    }
+  ],
+  "handoff": {
+    "owner": "Dana Whitfield, Development Director",
+    "opportunityRefs": ["opp-youth-workforce-2026", "opp-arts-access-2026"],
+    "readyOpportunityRefs": ["opp-youth-workforce-2026"],
+    "prohibitedActions": [
+      "submit-application",
+      "certify-eligibility",
+      "accept-terms",
+      "contact-funder",
+      "commit-matching-funds",
+      "represent-organizational-approval"
+    ],
+    "state": "blocked",
+    "summary": "Youth workforce opportunity is submission-ready pending the executive director's sign-off; arts access opportunity still needs the board roster requirement before it can be ready. No funder contact, certification, matching-fund commitment, or submission has occurred."
+  }
+}

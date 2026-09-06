@@ -4404,6 +4404,11 @@
           "source": "templates/grant-portfolio.md",
           "path": "templates/grant-portfolio.md",
           "role": "template"
+        },
+        {
+          "source": "fixtures/grant-opportunity.example.json",
+          "path": "fixtures/grant-opportunity.example.json",
+          "role": "fixture"
         }
       ],
       "capabilityGuidance": [
@@ -4786,6 +4791,11 @@
           "source": "templates/research-synthesis.md",
           "path": "templates/research-synthesis.md",
           "role": "template"
+        },
+        {
+          "source": "fixtures/research-evidence.example.json",
+          "path": "fixtures/research-evidence.example.json",
+          "role": "fixture"
         }
       ],
       "capabilityGuidance": [
@@ -4876,6 +4886,11 @@
           "source": "templates/experiment-decision.md",
           "path": "templates/experiment-decision.md",
           "role": "template"
+        },
+        {
+          "source": "fixtures/experiment-record.example.json",
+          "path": "fixtures/experiment-record.example.json",
+          "role": "fixture"
         }
       ],
       "capabilityGuidance": [
