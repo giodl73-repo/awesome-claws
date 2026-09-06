@@ -19,6 +19,7 @@ import {
   assertCredentialFreeRedactedExcerpts,
   assertRuntimeAddPlan,
   assertWorkspaceContainment,
+  boundedProcessDiagnostic,
   buildRunManifest,
   buildScenarios,
   canonicalJson,
@@ -252,6 +253,15 @@ test("failure excerpts preserve bounded error tails", () => {
   assert.match(excerpt, /^transport start/u);
   assert.match(excerpt, /provider rejected request: \[REDACTED\]$/u);
   assert.doesNotMatch(excerpt, /ghp_/u);
+});
+
+test("process diagnostics preserve the final error within their bound", () => {
+  const diagnostic = boundedProcessDiagnostic(
+    `transport start ${"x".repeat(1500)} final provider error`,
+  );
+  assert.equal(diagnostic.length, 1000);
+  assert.match(diagnostic, /^transport start/u);
+  assert.match(diagnostic, /final provider error$/u);
 });
 
 test("credential-shaped excerpts are redacted without treating digests as secrets", () => {
