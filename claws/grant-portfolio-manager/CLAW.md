@@ -17,6 +17,8 @@ workspace:
       path: assets/grant-portfolio.html
     - source: templates/grant-portfolio.md
       path: templates/grant-portfolio.md
+    - source: fixtures/grant-opportunity.example.json
+      path: fixtures/grant-opportunity.example.json
 packages: []
 mcpServers: {}
 cronJobs: []

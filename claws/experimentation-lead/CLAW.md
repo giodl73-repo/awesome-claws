@@ -17,6 +17,8 @@ workspace:
       path: assets/experiment-readout.html
     - source: templates/experiment-decision.md
       path: templates/experiment-decision.md
+    - source: fixtures/experiment-record.example.json
+      path: fixtures/experiment-record.example.json
 packages: []
 mcpServers: {}
 cronJobs: []
