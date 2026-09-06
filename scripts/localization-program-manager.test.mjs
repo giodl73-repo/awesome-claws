@@ -62,15 +62,8 @@ test("localization validator is total over schema-valid malformed nested records
   }
 });
 
-// Malforming a required enriched field's array type (e.g. setting it to a
-// bare object) breaks the enriched anyOf branch, and this schema's legacy
-// branch shares "release" and "locales" field names with the enriched branch
-// (deliberately excluded from enriched dispatch since every legacy document
-// already carries both), so overlay the exact legacy required fields to keep
-// the document validating via the legacy anyOf branch while the target
-// enriched field is malformed; enriched semantic dispatch still fires
-// because other enriched-only properties (owner, handoff, etc.) remain
-// present.
+// Overlay the legacy field shapes so malformed enriched records exercise both
+// schema branches while semantic validation remains total and fails closed.
 function withLegacyOverlay(value) {
   return {
     ...value,
@@ -92,7 +85,7 @@ test("localization validator rejects non-array required ledgers", () => {
   ]) {
     const malformed = withLegacyOverlay(clone());
     malformed[field] = {};
-    assert.equal(validateSchema(malformed), true, JSON.stringify(validateSchema.errors));
+    assert.equal(validateSchema(malformed), false);
     assert.doesNotThrow(() => validateArtifactSemantics("localization-program-manager", malformed));
     assert.ok(
       validateArtifactSemantics("localization-program-manager", malformed).some(
@@ -137,7 +130,7 @@ test("localization validator keeps the handoff blocked when recommendation is nu
 test("localization validator does not downgrade a malformed enriched owner field to legacy semantics", () => {
   const malformed = withLegacyOverlay(clone());
   malformed.owner = 42;
-  assert.equal(validateSchema(malformed), true, JSON.stringify(validateSchema.errors));
+  assert.equal(validateSchema(malformed), false);
   assert.doesNotThrow(() => validateArtifactSemantics("localization-program-manager", malformed));
   assert.equal(isValid(malformed), false);
   assert.ok(
@@ -147,18 +140,12 @@ test("localization validator does not downgrade a malformed enriched owner field
   );
 });
 
-test("localization validator fails closed on a hybrid record that satisfies the legacy branch but has a partially deleted enriched shape", () => {
-  // A document can carry the exact HEAD legacy required fields (which the
-  // legacy anyOf branch accepts regardless of any other properties present)
-  // alongside most, but not all, of the enriched contract. Semantic dispatch
-  // must still recognize the surviving enriched-only properties (owner,
-  // handoff, etc.) and fail closed on the missing "principals" ledger rather
-  // than silently accepting the now schema-valid-via-legacy-branch document.
+test("localization validator fails closed on a hybrid record with a partially deleted enriched shape", () => {
   const hybrid = clone();
   delete hybrid.principals;
   hybrid.release = "legacy release note";
   hybrid.sourceLocale = "en-US";
-  assert.equal(validateSchema(hybrid), true, JSON.stringify(validateSchema.errors));
+  assert.equal(validateSchema(hybrid), false);
   assert.doesNotThrow(() => validateArtifactSemantics("localization-program-manager", hybrid));
   assert.equal(isValid(hybrid), false);
   const findings = validateArtifactSemantics("localization-program-manager", hybrid);
@@ -477,18 +464,12 @@ const legacyLocaleReadiness = {
   locales: ["fr-FR", "de-DE", "ja-JP"],
 };
 
-test("locale readiness schema preserves the original HEAD legacy single-record shape as a distinct anyOf branch", () => {
+test("locale readiness schema preserves the strict legacy single-record shape as a distinct anyOf branch", () => {
   assert.equal(validateSchema(legacyLocaleReadiness), true, JSON.stringify(validateSchema.errors));
   assert.deepEqual(validateArtifactSemantics("localization-program-manager", legacyLocaleReadiness), []);
 
-  // The anyOf legacy branch is schemaVersion-agnostic (exactly like the
-  // original HEAD schema), so a legacy-shaped document combined with an
-  // arbitrary "schemaVersion" marker remains schema-valid -- HEAD would
-  // have accepted it, and this schema must too. Semantic dispatch must
-  // still treat it as legacy (bounded semantics) because it carries no
-  // other enriched-only property.
   const bothShapesAtOnce = { ...legacyLocaleReadiness, schemaVersion: "awesomeClaws.localeReadiness.v1" };
-  assert.equal(validateSchema(bothShapesAtOnce), true, JSON.stringify(validateSchema.errors));
+  assert.equal(validateSchema(bothShapesAtOnce), false);
   assert.deepEqual(validateArtifactSemantics("localization-program-manager", bothShapesAtOnce), []);
 
   for (const field of Object.keys(legacyLocaleReadiness)) {
@@ -502,9 +483,23 @@ test("locale readiness schema preserves the original HEAD legacy single-record s
   }
 });
 
+test("locale readiness schema retains every strict legacy constraint", () => {
+  for (const malformed of [
+    { ...legacyLocaleReadiness, release: "" },
+    { ...legacyLocaleReadiness, sourceLocale: "en_us" },
+    { ...legacyLocaleReadiness, locales: [] },
+    { ...legacyLocaleReadiness, locales: ["fr-FR", "fr-FR"] },
+    { ...legacyLocaleReadiness, locales: ["fr-fr"] },
+    { ...legacyLocaleReadiness, locales: [42] },
+    { ...legacyLocaleReadiness, unexpected: true },
+  ]) {
+    assert.equal(validateSchema(malformed), false);
+  }
+});
+
 test("localization validator applies bounded legacy semantics without requiring enriched-only fields", () => {
   const blankField = { ...legacyLocaleReadiness, sourceLocale: "   " };
-  assert.equal(validateSchema(blankField), true, JSON.stringify(validateSchema.errors));
+  assert.equal(validateSchema(blankField), false);
   assert.ok(
     validateArtifactSemantics("localization-program-manager", blankField).some(
       (item) => item.code === "invalid_legacy_field",
