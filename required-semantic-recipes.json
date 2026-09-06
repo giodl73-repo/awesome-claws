@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 92,
-    "coveredCount": 92,
-    "recipeCount": 242,
-    "findingCodeCount": 191
+    "validatorCount": 93,
+    "coveredCount": 93,
+    "recipeCount": 245,
+    "findingCodeCount": 196
   },
   "entries": [
     {
@@ -1548,6 +1548,57 @@
           "expectedCodes": [
             "dangling_reference",
             "premature_ready_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "localization-program-manager",
+      "recipes": [
+        {
+          "id": "semantic-invalid-schema-version-1",
+          "operator": "replace",
+          "path": [
+            "schemaVersion"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_schema_version",
+            "premature_localization_recommendation",
+            "premature_ready_state"
+          ]
+        },
+        {
+          "id": "semantic-incomplete-locale-coverage-2",
+          "operator": "replace",
+          "path": [
+            "release",
+            "sourceLocale"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incomplete_locale_coverage",
+            "invalid_source_scope",
+            "premature_localization_recommendation",
+            "premature_ready_state"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-evidence-3",
+          "operator": "replace",
+          "path": [
+            "release",
+            "sourceVersion"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "incomplete_locale_coverage",
+            "premature_localization_recommendation",
+            "premature_ready_state",
+            "stale_source_string",
+            "unsupported_defect_verification",
+            "unsupported_translation"
           ]
         }
       ]
