@@ -1,0 +1,352 @@
+import assert from "node:assert/strict";
+import {
+  mkdir,
+  mkdtemp,
+  readFile,
+  rm,
+  symlink,
+  writeFile,
+} from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { tmpdir } from "node:os";
+import { test } from "node:test";
+import { root } from "./catalog-source.mjs";
+import {
+  MOCK_PLUS_EVIDENCE_CLASS,
+  MOCK_PLUS_MODE,
+  MOCK_PLUS_VERTICAL_IDS,
+  assertMockPlusOutputRemoved,
+  loadMockPlusContext,
+  runBoundedMockPlusCaseGroup,
+  runMockPlus,
+} from "./mock-plus-lib.mjs";
+import { parseMockPlusArgs } from "./mock-plus.mjs";
+import { aggregateRuntimeEvidence } from "./runtime-evidence-lib.mjs";
+
+test("inventory derives the current portfolio oracle surface", async () => {
+  const { inventory } = await loadMockPlusContext();
+  assert.equal(inventory.evidenceClass, MOCK_PLUS_EVIDENCE_CLASS);
+  assert.equal(inventory.mode, MOCK_PLUS_MODE);
+  assert.equal(inventory.summary.clawCount, 100);
+  assert.equal(inventory.summary.registeredSchemaCount, 89);
+  assert.equal(inventory.summary.fixtureResourceClawCount, 96);
+  assert.deepEqual(inventory.summary.fixtureGapIds, [
+    "data-migration-planner",
+    "localization-program-manager",
+    "quality-assurance-lead",
+    "cloud-cost-analyst",
+  ]);
+
+  const byId = new Map(inventory.entries.map((entry) => [entry.id, entry]));
+  assert.deepEqual(byId.get("data-analyst").capabilityClasses, ["visual"]);
+  assert.deepEqual(byId.get("software-maintainer").capabilityClasses, [
+    "profile-extension",
+    "oauth-mcp",
+    "workspace-execution",
+  ]);
+});
+
+test("three-Claw vertical kills applicable mutants without false kills", async () => {
+  const run = await runMockPlus({ writeOutput: false });
+  assert.deepEqual(
+    run.results.claws.map((claw) => claw.id),
+    MOCK_PLUS_VERTICAL_IDS,
+  );
+  assert.equal(run.coverage.status, "passed");
+  assert.equal(run.coverage.clawCount, 3);
+  assert.equal(run.coverage.caseCount, 53);
+  assert.equal(run.coverage.counts["control-passed"], 21);
+  assert.equal(run.coverage.counts["control-failed"], 0);
+  assert.equal(run.coverage.counts.killed, 32);
+  assert.equal(run.coverage.counts.survived, 0);
+  assert.equal(run.coverage.counts["oracle-error"], 0);
+  assert.equal(run.coverage.safety.caseCount, 18);
+  assert.equal(run.coverage.safety.independentCount, 12);
+  assert.equal(run.coverage.safety.derivedCount, 6);
+  assert.equal(run.coverage.safety.blockingCount, 0);
+  assert.equal(run.results.evidenceClass, MOCK_PLUS_EVIDENCE_CLASS);
+  assert.equal(JSON.stringify(run).includes("MOCKPLUS_CANARY_NONLIVE"), false);
+});
+
+test("canonical evidence reproduces exactly", async () => {
+  const first = await runMockPlus({ writeOutput: false });
+  const second = await runMockPlus({ writeOutput: false });
+  assert.equal(second.canonicalDigest, first.canonicalDigest);
+  assert.deepEqual(second.manifest, first.manifest);
+  assert.deepEqual(second.results, first.results);
+  assert.deepEqual(second.coverage, first.coverage);
+});
+
+test("qualifying selection order canonicalizes to one digest", async () => {
+  const canonical = await runMockPlus({ writeOutput: false });
+  const reversed = await runMockPlus({
+    onlyIds: [...MOCK_PLUS_VERTICAL_IDS].reverse(),
+    writeOutput: false,
+  });
+  assert.equal(reversed.coverage.status, "passed");
+  assert.equal(reversed.canonicalDigest, canonical.canonicalDigest);
+  assert.deepEqual(reversed.manifest.claws, canonical.manifest.claws);
+});
+
+test("case-group budget overruns fail before qualification", async () => {
+  const started = performance.now();
+  await assert.rejects(
+    runBoundedMockPlusCaseGroup(
+      "deliberately-slow",
+      () => new Promise(() => {}),
+      20,
+    ),
+    (error) => error.code === "mock-plus-case-timeout",
+  );
+  assert.ok(performance.now() - started < 150);
+});
+
+test("one-case reproduction stays scoped and explainable", async () => {
+  const run = await runMockPlus({
+    onlyIds: ["sales-operations"],
+    caseId: "semantic-dangling-reference",
+    writeOutput: false,
+  });
+  assert.equal(run.results.claws.length, 1);
+  assert.equal(run.coverage.status, "diagnostic");
+  assert.equal(run.coverage.scope, "diagnostic-selection");
+  assert.match(
+    run.outputRoot,
+    /[\\/]mock-plus[\\/]diagnostic[\\/]sales-operations[\\/]semantic-dangling-reference[\\/][a-f0-9]{64}$/u,
+  );
+  assert.equal(run.results.claws[0].cases.length, 1);
+  const { caseDigest, ...result } = run.results.claws[0].cases[0];
+  assert.match(caseDigest, /^sha256:[a-f0-9]{64}$/u);
+  assert.deepEqual(result, {
+    schemaVersion: "awesomeClaws.mockPlus.v1",
+    evidenceClass: "mock-deterministic",
+    mode: "mock",
+    clawId: "sales-operations",
+    recipeId: "semantic-dangling-reference",
+    family: "semantics",
+    kind: "mutant",
+    oracle: {
+      type: "semantic-validator",
+      code: "dangling_reference",
+      path: "actions.0.dealRefs",
+    },
+    outcome: "killed",
+    observed: {
+      schemaValid: true,
+      findings: [
+        {
+          code: "dangling_reference",
+          path: "actions.0.dealRefs",
+        },
+      ],
+      delta: {
+        path: "actions.0.dealRefs",
+        before: { type: "reference-list" },
+        after: { type: "dangling-reference-list" },
+      },
+    },
+  });
+});
+
+test("run output is bounded, redacted, and removable", async () => {
+  let run;
+  try {
+    run = await runMockPlus({ onlyIds: ["sales-operations"] });
+    assert.ok(run.outputBytes > 0);
+    assert.ok(run.outputBytes < 25 * 1_048_576);
+    const persisted = await Promise.all(
+      [
+        "manifest.json",
+        "results.json",
+        "coverage.json",
+        "inventory.json",
+        "report.md",
+      ].map((name) => readFile(join(run.outputRoot, name), "utf8")),
+    );
+    persisted.push(
+      await readFile(join(run.provenanceRoot, "provenance.json"), "utf8"),
+    );
+    assert.equal(persisted.some((text) => text.includes("MOCKPLUS_CANARY_NONLIVE")), false);
+    assert.match(persisted.find((text) => text.startsWith("#")), /MOCK EVIDENCE ONLY/u);
+  } finally {
+    if (run) {
+      await rm(run.outputRoot, { recursive: true, force: true });
+      await rm(run.provenanceRoot, { recursive: true, force: true });
+    }
+  }
+  assert.ok(run);
+  await assertMockPlusOutputRemoved(run.outputRoot);
+  await assertMockPlusOutputRemoved(run.provenanceRoot);
+});
+
+test("CLI arguments require exact replay inputs", () => {
+  assert.deepEqual(
+    parseMockPlusArgs([
+      "--only",
+      "sales-operations,data-analyst",
+      "--case",
+      "schema-invalid-enum",
+      "--explain",
+      "--check",
+    ]),
+    {
+      onlyIds: ["sales-operations", "data-analyst"],
+      caseId: "schema-invalid-enum",
+      explain: true,
+      inventory: false,
+      check: true,
+    },
+  );
+  assert.throws(() => parseMockPlusArgs(["--explain"]), /requires --case/u);
+  assert.throws(() => parseMockPlusArgs(["--unknown"]), /Unknown Mock\+ option/u);
+  assert.throws(() => parseMockPlusArgs(["--update"]), /not available yet/u);
+});
+
+test("unknown Claws and inapplicable recipes fail explicitly", async () => {
+  await assert.rejects(
+    runMockPlus({
+      onlyIds: ["sales-operations", "sales-operations"],
+      writeOutput: false,
+    }),
+    /must not contain duplicates/u,
+  );
+  await assert.rejects(
+    runMockPlus({ onlyIds: ["not-a-claw"], writeOutput: false }),
+    /Unknown Mock\+ Claw ids/u,
+  );
+  await assert.rejects(
+    runMockPlus({
+      onlyIds: ["data-migration-planner"],
+      writeOutput: false,
+    }),
+    /limited to the reviewed vertical slice/u,
+  );
+  await assert.rejects(
+    runMockPlus({
+      onlyIds: ["sales-operations"],
+      caseId: "capability-adapter-absent",
+      writeOutput: false,
+    }),
+    /did not apply/u,
+  );
+});
+
+test("diagnostics cannot overwrite the qualifying namespace", async () => {
+  const diagnostic = await runMockPlus({
+    onlyIds: ["sales-operations"],
+    writeOutput: false,
+  });
+  const qualifying = await runMockPlus({ writeOutput: false });
+  assert.match(
+    diagnostic.outputRoot,
+    /[\\/]mock-plus[\\/]diagnostic[\\/]/u,
+  );
+  assert.match(
+    qualifying.outputRoot,
+    /[\\/]mock-plus[\\/]vertical[\\/]/u,
+  );
+});
+
+test("junctioned evidence directories cannot cross namespaces", async (t) => {
+  const dryRun = await runMockPlus({
+    onlyIds: ["sales-operations"],
+    writeOutput: false,
+  });
+  const verticalRoot = join(root, ".tmp", "mock-plus", "vertical");
+  await mkdir(verticalRoot, { recursive: true });
+  const target = await mkdtemp(
+    join(verticalRoot, "junction-target-"),
+  );
+  await mkdir(dirname(dryRun.outputRoot), { recursive: true });
+  await rm(dryRun.outputRoot, { recursive: true, force: true });
+  try {
+    try {
+      await symlink(target, dryRun.outputRoot, "junction");
+    } catch (error) {
+      if (["EPERM", "EACCES", "ENOSYS"].includes(error.code)) {
+        t.skip(`Junction creation unavailable: ${error.code}`);
+        return;
+      }
+      throw error;
+    }
+    await assert.rejects(
+      runMockPlus({ onlyIds: ["sales-operations"] }),
+      /output resolves outside its namespace/u,
+    );
+  } finally {
+    await rm(dryRun.outputRoot, { recursive: true, force: true });
+    await rm(target, { recursive: true, force: true });
+  }
+});
+
+test("pre-existing evidence-file links are never followed", async (t) => {
+  const dryRun = await runMockPlus({
+    onlyIds: ["sales-operations"],
+    writeOutput: false,
+  });
+  const outside = await mkdtemp(join(tmpdir(), "mock-plus-file-link-target-"));
+  const outsideFile = join(outside, "outside.json");
+  await rm(dryRun.outputRoot, { recursive: true, force: true });
+  await mkdir(dryRun.outputRoot, { recursive: true });
+  await writeFile(outsideFile, "owner-data");
+  try {
+    try {
+      await symlink(
+        outsideFile,
+        join(dryRun.outputRoot, "manifest.json"),
+        "file",
+      );
+    } catch (error) {
+      if (["EPERM", "EACCES", "ENOSYS"].includes(error.code)) {
+        t.skip(`File link creation unavailable: ${error.code}`);
+        return;
+      }
+      throw error;
+    }
+    await assert.rejects(
+      runMockPlus({ onlyIds: ["sales-operations"] }),
+      /immutable evidence directory has unexpected files|refuses a non-regular evidence destination/u,
+    );
+    assert.equal(await readFile(outsideFile, "utf8"), "owner-data");
+  } finally {
+    await rm(dryRun.outputRoot, { recursive: true, force: true });
+    await rm(outside, { recursive: true, force: true });
+  }
+});
+
+test("unsafe provenance is rejected before persistence", async () => {
+  const previous = process.env.GITHUB_SHA;
+  process.env.GITHUB_SHA = "MOCKPLUS_CANARY_NONLIVE_8D31C6A4";
+  try {
+    await assert.rejects(
+      runMockPlus({ onlyIds: ["sales-operations"] }),
+      /persisted output contains the synthetic canary/u,
+    );
+  } finally {
+    if (previous === undefined) delete process.env.GITHUB_SHA;
+    else process.env.GITHUB_SHA = previous;
+  }
+});
+
+test("Runtime Evidence aggregation rejects Mock+ evidence", () => {
+  assert.throws(
+    () =>
+      aggregateRuntimeEvidence({
+        manifest: {
+          evidenceClass: MOCK_PLUS_EVIDENCE_CLASS,
+        },
+        results: [],
+        catalogScores: { scores: [] },
+      }),
+    /rejects Mock\+ deterministic evidence/u,
+  );
+  assert.throws(
+    () =>
+      aggregateRuntimeEvidence({
+        manifest: {},
+        results: [{ evidenceClass: MOCK_PLUS_EVIDENCE_CLASS }],
+        catalogScores: { scores: [] },
+      }),
+    /rejects Mock\+ deterministic evidence/u,
+  );
+});
