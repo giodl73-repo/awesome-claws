@@ -34,6 +34,13 @@ owner-defined semantic validator and requires the exact committed finding-code
 set. Claws without a semantic validator remain explicitly non-applicable rather
 than passing through a fallback oracle.
 
+The lifecycle portfolio classifies inspect identity drift, stale consent,
+missing installed state, user-owned state mutation, and unsafe cleanup for every
+Claw. It also removes each applicable deterministic capability adapter one at a
+time. The separate `proof:openclaw` and `proof:portfolio` commands exercise the
+real public OpenClaw lifecycle in disposable local state; Mock+ does not
+reimplement that lifecycle.
+
 ## Commands
 
 ```powershell
@@ -41,6 +48,7 @@ npm run mock-plus -- --inventory
 npm run mock-plus -- --check
 npm run mock-plus -- --portfolio --check
 npm run mock-plus -- --semantics --check
+npm run mock-plus -- --lifecycle --check
 npm run mock-plus:semantics:recipes:check
 npm run mock-plus -- --only sales-operations
 npm run mock-plus -- --only sales-operations --case semantic-dangling-reference --explain
@@ -57,6 +65,8 @@ The schema portfolio writes under
 `.tmp\mock-plus\schema-portfolio\<canonical-digest>\`.
 The semantic portfolio writes under
 `.tmp\mock-plus\semantic-portfolio\<canonical-digest>\`.
+The lifecycle portfolio writes under
+`.tmp\mock-plus\lifecycle-portfolio\<canonical-digest>\`.
 Selections and one-case replays write under `.tmp\mock-plus\diagnostic\` so
 they cannot overwrite qualifying evidence. Both roots are ignored by git.
 

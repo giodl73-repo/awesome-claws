@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "awesomeClaws.mockPlusLifecycleRecipes.v1",
+  "evidenceClass": "mock-deterministic",
+  "recipes": [
+    {
+      "id": "lifecycle-inspect-identity-drift",
+      "family": "lifecycle",
+      "fault": "inspect-identity-drift",
+      "expectedClassification": "harness-failure",
+      "expectedGate": null,
+      "expectedRetryAllowed": false,
+      "expectedRecovered": false,
+      "expectedSideEffectApplied": false
+    },
+    {
+      "id": "lifecycle-stale-consent",
+      "family": "lifecycle",
+      "fault": "stale-plan-integrity",
+      "expectedClassification": "deterministic-model-failure",
+      "expectedGate": "approval-bypass",
+      "expectedRetryAllowed": false,
+      "expectedRecovered": false,
+      "expectedSideEffectApplied": false
+    },
+    {
+      "id": "lifecycle-status-missing",
+      "family": "lifecycle",
+      "fault": "installed-agent-missing",
+      "expectedClassification": "infrastructure-failure",
+      "expectedGate": null,
+      "expectedRetryAllowed": true,
+      "expectedRecovered": true,
+      "expectedSideEffectApplied": false
+    },
+    {
+      "id": "lifecycle-user-state-mutation",
+      "family": "lifecycle",
+      "fault": "user-marker-drift",
+      "expectedClassification": "deterministic-model-failure",
+      "expectedGate": "user-state-mutation",
+      "expectedRetryAllowed": false,
+      "expectedRecovered": false,
+      "expectedSideEffectApplied": true
+    },
+    {
+      "id": "lifecycle-cleanup-failure",
+      "family": "lifecycle",
+      "fault": "unsafe-removal",
+      "expectedClassification": "cleanup-infrastructure-failure",
+      "expectedGate": "unsafe-removal-or-recovery",
+      "expectedRetryAllowed": false,
+      "expectedRecovered": false,
+      "expectedSideEffectApplied": false
+    }
+  ]
+}

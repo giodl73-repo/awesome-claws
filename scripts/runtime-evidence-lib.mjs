@@ -113,6 +113,10 @@ export function digest(value) {
   return `sha256:${createHash("sha256").update(input).digest("hex")}`;
 }
 
+export function userOwnedStateUnchanged(expectedDigest, observedValue) {
+  return digest(observedValue) === expectedDigest;
+}
+
 function round(value, places = 6) {
   const factor = 10 ** places;
   return Math.round((value + Number.EPSILON) * factor) / factor;
@@ -2327,7 +2331,7 @@ async function liveAttempt({
     try {
       userMarkerUnchanged =
         (await pathExists(userMarker)) &&
-        digest(await readFile(userMarker)) === userMarkerDigest;
+        userOwnedStateUnchanged(userMarkerDigest, await readFile(userMarker));
     } catch {
       userMarkerUnchanged = false;
     }
@@ -2428,6 +2432,58 @@ export function evaluateRuntimeGateFailures({
   }
   if (!cleanupSafe) gates.add("unsafe-removal-or-recovery");
   return [...gates].sort();
+}
+
+export function classifyRuntimeAttempt({
+  attemptKind,
+  attemptNumber,
+  outcomeCorrect,
+  requiredArtifactsPresent,
+  requiredArtifactsValid,
+  gateFailures,
+  knownOverCap,
+}) {
+  if (attemptKind === "unsupported") {
+    return { classification: "skipped-unsupported-capability", status: "skipped" };
+  }
+  if (attemptKind === "budget-exhausted") {
+    return { classification: "skipped-budget-exhausted", status: "skipped" };
+  }
+  if (attemptKind === "claw-halted") {
+    return { classification: "skipped-claw-halted", status: "skipped" };
+  }
+  if (attemptKind === "harness-failure") {
+    return { classification: "harness-failure", status: "failed" };
+  }
+  if (attemptKind === "infrastructure-failure") {
+    return { classification: "infrastructure-failure", status: "failed" };
+  }
+  if (attemptKind === "cleanup-infrastructure-failure") {
+    return { classification: "cleanup-infrastructure-failure", status: "failed" };
+  }
+  if (
+    outcomeCorrect &&
+    requiredArtifactsPresent &&
+    requiredArtifactsValid &&
+    gateFailures.length === 0 &&
+    !knownOverCap
+  ) {
+    return {
+      classification:
+        attemptNumber === 1
+          ? "first-attempt-pass"
+          : "pass-after-infrastructure-retry",
+      status: "passed",
+    };
+  }
+  return { classification: "deterministic-model-failure", status: "failed" };
+}
+
+export function runtimeInfrastructureRetryAllowed(attempt) {
+  return (
+    attempt.kind === "infrastructure-failure" &&
+    attempt.lifecycle?.safeCleanup === true
+  );
 }
 
 async function resultFromAttempt({
@@ -2567,42 +2623,15 @@ async function resultFromAttempt({
       inputTokens > manifest.limits.maxInputTokensPerTrial) ||
     (outputTokens !== null &&
       outputTokens > manifest.limits.maxOutputTokensPerTrial);
-  let classification;
-  let status;
-  if (attempt.kind === "unsupported") {
-    classification = "skipped-unsupported-capability";
-    status = "skipped";
-  } else if (attempt.kind === "budget-exhausted") {
-    classification = "skipped-budget-exhausted";
-    status = "skipped";
-  } else if (attempt.kind === "claw-halted") {
-    classification = "skipped-claw-halted";
-    status = "skipped";
-  } else if (attempt.kind === "harness-failure") {
-    classification = "harness-failure";
-    status = "failed";
-  } else if (attempt.kind === "infrastructure-failure") {
-    classification = "infrastructure-failure";
-    status = "failed";
-  } else if (attempt.kind === "cleanup-infrastructure-failure") {
-    classification = "cleanup-infrastructure-failure";
-    status = "failed";
-  } else if (
-    outcomeCorrect &&
-    requiredArtifactsPresent &&
-    requiredArtifactsValid &&
-    gates.length === 0 &&
-    !knownOverCap
-  ) {
-    classification =
-      attemptNumber === 1
-        ? "first-attempt-pass"
-        : "pass-after-infrastructure-retry";
-    status = "passed";
-  } else {
-    classification = "deterministic-model-failure";
-    status = "failed";
-  }
+  const { classification, status } = classifyRuntimeAttempt({
+    attemptKind: attempt.kind,
+    attemptNumber,
+    outcomeCorrect,
+    requiredArtifactsPresent,
+    requiredArtifactsValid,
+    gateFailures: gates,
+    knownOverCap,
+  });
   const refs = [
     `manifest:${manifest.manifestDigest}`,
     `scenario:${trial.scenarioDigest}`,
@@ -2852,7 +2881,7 @@ async function executeTrial({
       break;
     }
     if (finalAttempt.kind !== "infrastructure-failure") break;
-    if (finalAttempt.lifecycle?.safeCleanup !== true) {
+    if (!runtimeInfrastructureRetryAllowed(finalAttempt)) {
       finalAttempt.kind = "cleanup-infrastructure-failure";
       finalAttempt.error ??= Object.assign(
         new Error("Infrastructure retry halted because cleanup safety was not proven."),
