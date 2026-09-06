@@ -1096,6 +1096,15 @@ export function redactFailureExcerpt(value, sensitiveValues = []) {
   return excerpt;
 }
 
+export function boundedProcessDiagnostic(value, maxLength = 1000) {
+  const normalized = String(value ?? "").replace(/\s+/gu, " ").trim();
+  if (normalized.length <= maxLength) return normalized;
+  const separator = " ... ";
+  const headLength = Math.floor((maxLength - separator.length) / 2);
+  const tailLength = maxLength - separator.length - headLength;
+  return `${normalized.slice(0, headLength)}${separator}${normalized.slice(-tailLength)}`;
+}
+
 export function assertCredentialFreeRedactedExcerpts(
   value,
   { sensitiveValues = [], exactMatchObserved = false } = {},
@@ -1574,7 +1583,7 @@ async function runOpenClawJson(entry, args, env, cwd, timeoutMs, label) {
           const safeDetail = redactCredentialText(detail, sensitiveValues);
           rejectPromise(
             Object.assign(
-              new Error(`${label} failed (${code}): ${safeDetail.slice(0, 1000)}`),
+              new Error(`${label} failed (${code}): ${boundedProcessDiagnostic(safeDetail)}`),
               {
                 code: isInfrastructureText(detail)
                   ? "infrastructure-openclaw"
