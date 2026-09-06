@@ -209,6 +209,13 @@ test("security handoff rejects authority claims and missing gates", () => {
   const claim = clone();
   claim.handoff.summary = "We exploited the target and accepted the risk.";
   assert.ok(findings(claim).some((item) => item.code === "unauthorized_narrative_action"));
+  const remediationClaim = clone();
+  remediationClaim.handoff.summary = "Completed remediation for the preview service.";
+  assert.ok(
+    findings(remediationClaim).some(
+      (item) => item.code === "unauthorized_narrative_action",
+    ),
+  );
   const missingGate = clone();
   missingGate.handoff.prohibitedActions = missingGate.handoff.prohibitedActions.filter((item) => item !== "accept-risk");
   assert.ok(findings(missingGate).some((item) => item.code === "missing_authority_gate"));

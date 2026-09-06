@@ -42185,7 +42185,7 @@ function securityAssessmentFindings(input) {
   if (
     hasUnnegatedNarrativeMatch(
       upliftNarrativeStrings(value),
-      /\b(?:exploited|remediated|fixed|accepted\s+(?:the\s+)?risk|certified\s+(?:the\s+)?security|declared\s+(?:the\s+)?system\s+secure)\b/giu,
+      /\b(?:exploited|remediated|fixed|completed\s+(?:the\s+)?remediation|accepted\s+(?:the\s+)?risk|certified\s+(?:the\s+)?security|declared\s+(?:the\s+)?system\s+secure)\b/giu,
     )
   ) {
     findings.push(
@@ -42505,7 +42505,7 @@ function releaseReadinessFindings(input) {
   if (
     hasUnnegatedNarrativeMatch(
       upliftNarrativeStrings(value),
-      /\b(?:deployed|published|signed|approved|sent|merged)\s+(?:the\s+)?(?:release|artifact|package|message|communication|change)\b/giu,
+      /\b(?:deployed|published|signed|approved|sent|merged)\s+(?:the\s+)?(?:release|artifact|package|message|communication|change)\b|\bdeployed\s+to\b/giu,
     )
   ) {
     findings.push(
@@ -42883,7 +42883,7 @@ function customerSupportCaseFindings(input) {
   if (
     hasUnnegatedNarrativeMatch(
       upliftNarrativeStrings(value),
-      /\b(?:requested|shared|send)\s+(?:the\s+)?(?:password|access token|private key|secret)|\b(?:mutated|changed|disabled|enabled)\s+(?:the\s+)?account|\b(?:issued|approved)\s+(?:the\s+)?refund|\bclosed\s+(?:the\s+)?case|\b(?:sent|emailed|messaged)\s+(?:the\s+)?customer\b/giu,
+      /\b(?:requested|shared|send)\s+(?:the\s+)?(?:password|access token|private key|secret)|\b(?:mutated|changed|disabled|enabled)\s+(?:the\s+)?account|\b(?:issued|approved)\s+(?:the\s+)?refund|\brefunded\b|\bclosed\s+(?:the\s+)?case|\b(?:sent|emailed|messaged)\s+(?:the\s+)?customer\b/giu,
     )
   ) {
     findings.push(
@@ -43224,7 +43224,7 @@ function complianceAssessmentFindings(input) {
   if (
     hasUnnegatedNarrativeMatch(
       upliftNarrativeStrings(value),
-      /\b(?:certified|declared)\s+(?:the\s+)?(?:compliance|system|organization)|\b(?:issued|made)\s+(?:a\s+)?legal\s+(?:conclusion|determination)|\baccepted\s+(?:the\s+)?risk|\b(?:granted|issued)\s+(?:the\s+)?waiver|\bissued\s+(?:an?\s+)?audit\s+opinion/giu,
+      /\b(?:certified|declared)\s+(?:the\s+)?(?:compliance|system|organization)|\b(?:issued|made)\s+(?:a\s+)?legal\s+(?:conclusion|determination)|\baccepted\s+(?:the\s+)?risk|\b(?:granted|issued)\s+(?:the\s+)?waiver|\bissued\s+(?:an?\s+)?audit\s+opinion|\bapproved\s+(?:the\s+)?compensating\s+control\b/giu,
     )
   ) {
     findings.push(

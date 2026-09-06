@@ -161,6 +161,13 @@ test("compliance forbids risk acceptance and assurance claims", () => {
   const claim = clone();
   claim.handoff.summary = "We certified compliance and accepted the risk.";
   assert.ok(findings(claim).some((item) => item.code === "unauthorized_narrative_action"));
+  const approvalClaim = clone();
+  approvalClaim.handoff.summary = "Approved the compensating control.";
+  assert.ok(
+    findings(approvalClaim).some(
+      (item) => item.code === "unauthorized_narrative_action",
+    ),
+  );
   const missingGate = clone();
   missingGate.handoff.prohibitedActions = missingGate.handoff.prohibitedActions.filter((item) => item !== "grant-waiver");
   assert.ok(findings(missingGate).some((item) => item.code === "missing_authority_gate"));

@@ -142,6 +142,13 @@ test("support forbids sent communication and consequential claims", () => {
   const claim = clone();
   claim.handoff.summary = "We closed the case and issued the refund.";
   assert.ok(findings(claim).some((item) => item.code === "unauthorized_narrative_action"));
+  const refundClaim = clone();
+  refundClaim.handoff.summary = "Refunded the customer after review.";
+  assert.ok(
+    findings(refundClaim).some(
+      (item) => item.code === "unauthorized_narrative_action",
+    ),
+  );
   const missingGate = clone();
   missingGate.handoff.prohibitedActions = missingGate.handoff.prohibitedActions.filter((item) => item !== "mutate-account");
   assert.ok(findings(missingGate).some((item) => item.code === "missing_authority_gate"));

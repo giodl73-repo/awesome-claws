@@ -182,6 +182,13 @@ test("release handoff rejects mutation and communication claims", () => {
   const claim = clone();
   claim.handoff.summary = "We published the release and sent the communication.";
   assert.ok(findings(claim).some((item) => item.code === "unauthorized_narrative_action"));
+  const deploymentClaim = clone();
+  deploymentClaim.handoff.summary = "Deployed to production after the review.";
+  assert.ok(
+    findings(deploymentClaim).some(
+      (item) => item.code === "unauthorized_narrative_action",
+    ),
+  );
   const missingGate = clone();
   missingGate.handoff.prohibitedActions = missingGate.handoff.prohibitedActions.filter((item) => item !== "sign-artifact");
   assert.ok(findings(missingGate).some((item) => item.code === "missing_authority_gate"));
