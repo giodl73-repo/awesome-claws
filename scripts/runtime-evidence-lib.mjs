@@ -65,7 +65,7 @@ export const RUNTIME_WEIGHTS = Object.freeze({
   observabilityFailureRecovery: 5,
 });
 
-const CAPABILITY_ADAPTERS = Object.freeze({
+export const CAPABILITY_ADAPTERS = Object.freeze({
   "clawhub-skill": "pinned-package-resolution-stub",
   "clawhub-plugin": "pinned-plugin-resolution-stub",
   "profile-extension": "extension-readiness-stub",
@@ -231,6 +231,12 @@ export async function validateTrialResult(
   manifest,
   { targetRoot = root } = {},
 ) {
+  if (
+    result?.evidenceClass === "mock-deterministic" ||
+    manifest?.evidenceClass === "mock-deterministic"
+  ) {
+    throw new Error("Runtime Evidence rejects Mock+ deterministic evidence.");
+  }
   const validate = (await validators(targetRoot)).trial;
   if (!validate(result)) {
     throw schemaFailure("Runtime evidence trial result", validate);
@@ -1213,22 +1219,26 @@ function mockArtifact(contract, scenario, adapters) {
   });
 }
 
-function adapterRecords(capabilityClasses, mode) {
+export function capabilityAdapterRecords(
+  capabilityClasses,
+  mode,
+  adapters = CAPABILITY_ADAPTERS,
+) {
   return capabilityClasses.map((capabilityClass) => ({
     class: capabilityClass,
     adapter:
       mode === "mock"
-        ? (CAPABILITY_ADAPTERS[capabilityClass] ?? "unsupported-capability-class")
+        ? (adapters[capabilityClass] ?? "unsupported-capability-class")
         : "no-reviewed-live-adapter",
     mode:
-      mode === "mock" && CAPABILITY_ADAPTERS[capabilityClass]
+      mode === "mock" && adapters[capabilityClass]
         ? "deterministic-disabled-side-effect"
         : "unsupported",
   }));
 }
 
 async function mockAttempt({ contract, scenario, attemptRoot, trial }) {
-  const capabilityAdapters = adapterRecords(trial.capabilityClasses, "mock");
+  const capabilityAdapters = capabilityAdapterRecords(trial.capabilityClasses, "mock");
   if (capabilityAdapters.some((adapter) => adapter.mode === "unsupported")) {
     return {
       kind: "unsupported",
@@ -1954,7 +1964,7 @@ async function liveAttempt({
   manifest,
   sensitiveValues,
 }) {
-  const capabilityAdapters = adapterRecords(trial.capabilityClasses, "live");
+  const capabilityAdapters = capabilityAdapterRecords(trial.capabilityClasses, "live");
   if (capabilityAdapters.length > 0) {
     return {
       kind: "unsupported",
@@ -2362,7 +2372,7 @@ async function liveAttempt({
   }
 }
 
-function gateFailuresFor({
+export function evaluateRuntimeGateFailures({
   attempt,
   scenario,
   artifactPresent,
@@ -2533,7 +2543,7 @@ async function resultFromAttempt({
   if (exactSensitiveLeak && persistenceState) {
     persistenceState.exactMatchObserved = true;
   }
-  const gates = gateFailuresFor({
+  const gates = evaluateRuntimeGateFailures({
     attempt,
     scenario,
     artifactPresent: requiredArtifactsPresent,
@@ -2764,7 +2774,10 @@ async function executeTrial({
       finalAttempt = {
         kind: error?.infrastructure ? "infrastructure-failure" : "harness-failure",
         observedOutcome: "unknown",
-        capabilityAdapters: adapterRecords(trial.capabilityClasses, manifest.mode),
+        capabilityAdapters: capabilityAdapterRecords(
+          trial.capabilityClasses,
+          manifest.mode,
+        ),
         response: "",
         error,
         lifecycle: {
@@ -3026,7 +3039,10 @@ function maxTrialCost(limits, pricing) {
           kind,
           observedOutcome: "unknown",
           response: message,
-          capabilityAdapters: adapterRecords(trial.capabilityClasses, manifest.mode),
+          capabilityAdapters: capabilityAdapterRecords(
+            trial.capabilityClasses,
+            manifest.mode,
+          ),
           lifecycle: {
             isolated: true,
             durableArtifactObserved: false,
@@ -3238,6 +3254,12 @@ export function aggregateRuntimeEvidence({
   catalogScores,
   budget = null,
 }) {
+  if (
+    manifest?.evidenceClass === "mock-deterministic" ||
+    results.some((result) => result?.evidenceClass === "mock-deterministic")
+  ) {
+    throw new Error("Runtime Evidence rejects Mock+ deterministic evidence.");
+  }
   const scoresById = new Map(catalogScores.scores.map((score) => [score.id, score]));
   const groups = new Map();
   for (const result of results) {

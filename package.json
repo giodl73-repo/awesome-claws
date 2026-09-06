@@ -25,6 +25,7 @@
     "test:regression": "node scripts/regression-cases.mjs",
     "test:claw": "node scripts/test-claw.mjs",
     "eval:pilot": "node scripts/semantic-eval.mjs",
+    "mock-plus": "node scripts/mock-plus.mjs",
     "runtime:evidence": "node scripts/runtime-evidence.mjs",
     "runtime:evidence:check": "node scripts/runtime-evidence.mjs --check",
     "runtime:evidence:mock": "node scripts/runtime-evidence.mjs --mode mock --schedule baseline",
