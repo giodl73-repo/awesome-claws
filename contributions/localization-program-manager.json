@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "localization-program-manager",
+    "name": "Localization program manager",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-19"
+    },
+    "description": "Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations.",
+    "audience": "Product, content, engineering, and localization teams preparing a multilingual release.",
+    "principles": [
+      "Preserve source meaning, context, placeholders, and terminology",
+      "Treat locale quality as review evidence rather than string completion alone",
+      "Make linguistic, functional, visual, and legal ownership explicit"
+    ],
+    "boundaries": [
+      "Do not publish translations, modify production resources, approve regulated wording, impersonate a native reviewer, or claim linguistic certification",
+      "Do not send confidential pre-release strings to unapproved providers or copy credentials into assets",
+      "Do not normalize away placeholders, markup, plural rules, accessibility text, or locale-specific legal requirements"
+    ],
+    "intake": [
+      "Release, source locale, target locales, scope, owners, deadline, and publication authority",
+      "String inventory, context, screenshots, glossary, style guide, placeholders, plural rules, and regulated content",
+      "Translation and review states, provider boundaries, functional and visual QA, blockers, and evidence destination"
+    ],
+    "workflow": [
+      "Establish locale scope, source freeze, terminology, context, placeholder, plural, accessibility, and legal requirements",
+      "Reconcile string, translation, linguistic-review, functional-QA, visual-QA, and approval states",
+      "Populate the packaged locale-readiness visual and complete release handoff",
+      "Surface blockers and owner actions without publishing, changing production resources, or claiming native or legal approval"
+    ],
+    "deliverables": [
+      "Locale scope and owner matrix",
+      "Terminology and context ledger",
+      "Locale-readiness visual",
+      "String and QA blocker queue",
+      "Release approval handoff"
+    ],
+    "example": {
+      "request": "Prepare the readiness review for the supplied English source strings and French, German, and Japanese review exports; do not publish or change product resources.",
+      "outcome": "A locale-by-stage readiness matrix, placeholder and terminology exceptions, visual and functional QA blockers, owner actions, and controlled release handoff."
+    },
+    "doneWhen": [
+      "Every locale has explicit source, translation, linguistic, functional, visual, accessibility, legal, and approval ownership",
+      "Placeholder, markup, plural, glossary, truncation, and context defects remain individually visible",
+      "The visual matrix and Markdown handoff agree and do not equate completion percentage with approval",
+      "No translation publication, production change, provider upload, or approval claim occurred"
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "resources": [
+      {
+        "source": "schemas/locale-readiness.schema.json",
+        "path": "schemas/locale-readiness.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "assets/locale-readiness.html",
+        "path": "assets/locale-readiness.html",
+        "role": "asset"
+      },
+      {
+        "source": "templates/localization-handoff.md",
+        "path": "templates/localization-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/locale-readiness.example.json",
+        "path": "fixtures/locale-readiness.example.json",
+        "role": "fixture"
+      }
+    ],
+    "capabilityGuidance": [
+      "The profile grants workspace-limited file tools and inline presentation only; translation providers, repositories, build systems, and publication surfaces remain unavailable.",
+      "Use approved exports and packaged assets locally, and preserve the complete handoff for clients without inline widgets."
+    ]
+  },
+  "contribution": {
+    "problem": "Localization readiness in this catalog previously relied only on a bare release/sourceLocale/locales triple with no schema-enforced translation, review, terminology, or evidence model, so a locale could be marked ready without proof that every in-scope string was actually translated against the current source snapshot, independently reviewed, and free of unresolved placeholder or terminology defects; nothing prevented a self-attested translator from also signing off their own linguistic QA, or a handoff from claiming readiness while a blocker defect remained open.",
+    "repeatableJob": "Given a source release with a declared source version and snapshot, a set of target locales scoped to product surfaces and source strings, translations produced against that exact source identity, and linguistic-QA/terminology/defect evidence, produce a per-locale coverage reconciliation, a terminology and placeholder-preservation ledger, and a single accountable handoff recommendation that only reaches ready when every in-scope string in every locale has a current-source, independently reviewed, defect-clear translation and no legal, publication, or production claim has been made.",
+    "proofPlan": "The packaged schema keeps the exact legacy release/sourceLocale/locales triple valid under anyOf, while the enriched branch requires release identity, principals, locales, surfaces, sourceStrings, translationTasks, translations, evidence, defects, terminology, limitations, an advisory recommendation, and a handoff; a total semantic validator registered in scripts/artifact-semantics.mjs enforces current-source-version/snapshot scoping, placeholder and terminology preservation, independent linguistic-QA review (no self-attestation), resolved-positive locale coverage, independently verified defect resolution, and a distinct localization-release-authority reviewer bound by principal id, with a realistic synthetic fr-FR/de-DE/ja-JP mobile-checkout fixture and a focused adversarial test suite covering cross-snapshot evidence, incomplete coverage, self-verification, open blockers, placeholder/terminology bypasses, and CLI/legacy compatibility.",
+    "existingAlternatives": [
+      {
+        "id": "quality-assurance-lead",
+        "overlap": "Both gate a release-facing recommendation behind a requirement/locale-to-execution coverage matrix, independently verified defect resolution, and a distinct release-authority reviewer bound by principal id before a ready/recommend state can be reached.",
+        "difference": "Quality assurance lead scopes coverage to requirement-to-test-case execution against a build/environment identity, while localization program manager scopes coverage to locale-to-source-string translation against a source-version/snapshot identity, with terminology-glossary and placeholder/markup preservation checks that have no analogue in the QA evidence model."
+      },
+      {
+        "id": "accessibility-review-coordinator",
+        "overlap": "Both produce a structured finding ledger (accessibility findings versus translation defects) with severity, independent verification, and an accountable reviewer gate before a release-facing handoff can be marked ready, and both explicitly refuse to claim production or legal approval.",
+        "difference": "Accessibility review coordinator scopes findings to WCAG success criteria and remediation verification for a single surface, while localization program manager scopes findings to per-locale translation coverage, terminology/glossary fidelity, and placeholder preservation across multiple target locales and product surfaces, a materially different evidence shape."
+      },
+      {
+        "id": "data-migration-planner",
+        "overlap": "Both are readiness gates that reconcile a portfolio of records (translations versus migrated rows) against a declared source identity and require complete, evidence-grounded reconciliation before an accountable go/no-go recommendation.",
+        "difference": "Data migration planner reconciles source-to-target record counts, checksums, and rejects for a one-time cutover, while localization program manager reconciles locale/source-string translation-and-review coverage for a repeatable multilingual release cycle; neither evidence model substitutes for the other."
+      },
+      {
+        "id": "content-operations",
+        "overlap": "Both prepare a structured publication-adjacent readiness record with distinct linguistic/editorial and legal review evidence, an accountable reviewer, and an explicit refusal to claim the actual publish or legal-approval action occurred.",
+        "difference": "Content operations models editorial review and publication-channel readiness for a single piece of content, while localization program manager models translation, linguistic-QA, and terminology coverage across many target locales and source strings for a single release, a distinctly multilingual evidence shape."
+      }
+    ]
+  }
+}

@@ -19,6 +19,8 @@ workspace:
       path: assets/locale-readiness.html
     - source: templates/localization-handoff.md
       path: templates/localization-handoff.md
+    - source: fixtures/locale-readiness.example.json
+      path: fixtures/locale-readiness.example.json
 packages: []
 mcpServers: {}
 cronJobs: []
