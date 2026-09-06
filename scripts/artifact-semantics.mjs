@@ -41799,6 +41799,23 @@ function securityAssessmentFindings(input) {
     "handoff",
   ].some((field) => Object.hasOwn(value, field));
   if (!enriched) return findings;
+  for (const field of [
+    "assessmentScope",
+    "assessmentMode",
+    "authorizationRef",
+    "riskOwner",
+    "assessmentState",
+  ]) {
+    if (Object.hasOwn(value, field)) {
+      findings.push(
+        finding(
+          "legacy_field_in_enriched_record",
+          field,
+          `Enriched threat assessments cannot carry ignored legacy field ${field}.`,
+        ),
+      );
+    }
+  }
 
   const schemaVersionValid = value.schemaVersion === "awesomeClaws.threatAssessment.v1";
   if (!schemaVersionValid) {
@@ -42216,6 +42233,24 @@ function releaseReadinessFindings(input) {
     "handoff",
   ].some((field) => Object.hasOwn(value, field));
   if (!enriched) return findings;
+  for (const field of [
+    "repository",
+    "version",
+    "targetCommit",
+    "checks",
+    "decisionState",
+    "communicationState",
+  ]) {
+    if (Object.hasOwn(value, field)) {
+      findings.push(
+        finding(
+          "legacy_field_in_enriched_record",
+          field,
+          `Enriched release readiness cannot carry ignored legacy field ${field}.`,
+        ),
+      );
+    }
+  }
   const schemaVersionValid = value.schemaVersion === "awesomeClaws.releaseReadiness.v1";
   if (!schemaVersionValid) {
     findings.push(
@@ -42536,6 +42571,26 @@ function customerSupportCaseFindings(input) {
     "handoff",
   ].some((field) => Object.hasOwn(value, field));
   if (!enriched) return findings;
+  for (const field of [
+    "caseId",
+    "symptom",
+    "impact",
+    "environment",
+    "responseDraft",
+    "escalation",
+    "caseOwner",
+    "disposition",
+  ]) {
+    if (Object.hasOwn(value, field)) {
+      findings.push(
+        finding(
+          "legacy_field_in_enriched_record",
+          field,
+          `Enriched support cases cannot carry ignored legacy field ${field}.`,
+        ),
+      );
+    }
+  }
   const schemaVersionValid = value.schemaVersion === "awesomeClaws.supportCase.v1";
   if (!schemaVersionValid) {
     findings.push(
@@ -42914,6 +42969,23 @@ function complianceAssessmentFindings(input) {
     "handoff",
   ].some((field) => Object.hasOwn(value, field));
   if (!enriched) return findings;
+  for (const field of [
+    "framework",
+    "frameworkVersion",
+    "systemBoundary",
+    "reviewPeriod",
+    "assessmentDecision",
+  ]) {
+    if (Object.hasOwn(value, field)) {
+      findings.push(
+        finding(
+          "legacy_field_in_enriched_record",
+          field,
+          `Enriched control assessments cannot carry ignored legacy field ${field}.`,
+        ),
+      );
+    }
+  }
   const schemaVersionValid = value.schemaVersion === "awesomeClaws.controlAssessment.v1";
   if (!schemaVersionValid) {
     findings.push(

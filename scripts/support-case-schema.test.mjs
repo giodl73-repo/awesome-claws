@@ -58,6 +58,18 @@ test("support enriched marker is exact and hybrid deletion fails closed", () => 
   delete hybrid.principals;
   assert.equal(validateSchema(hybrid), false);
   assert.ok(findings(hybrid).some((item) => item.code === "invalid_array_list" && item.path === "principals"));
+
+  for (const field of ["symptom", "disposition"]) {
+    const partialHybrid = clone();
+    partialHybrid[field] = legacy[field];
+    assert.equal(isValid(partialHybrid), false);
+    assert.ok(
+      findings(partialHybrid).some(
+        (item) =>
+          item.code === "legacy_field_in_enriched_record" && item.path === field,
+      ),
+    );
+  }
 });
 
 test("support validator rejects unstable ids and dangling escalation evidence", () => {

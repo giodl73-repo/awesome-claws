@@ -72,6 +72,18 @@ test("security enriched records require the exact schema version and cannot down
   delete hybrid.principals;
   assert.equal(validateSchema(hybrid), false);
   assert.ok(findings(hybrid).some((item) => item.code === "invalid_array_list" && item.path === "principals"));
+
+  for (const field of ["assessmentMode", "riskOwner"]) {
+    const partialHybrid = clone();
+    partialHybrid[field] = legacy[field];
+    assert.equal(isValid(partialHybrid), false);
+    assert.ok(
+      findings(partialHybrid).some(
+        (item) =>
+          item.code === "legacy_field_in_enriched_record" && item.path === field,
+      ),
+    );
+  }
 });
 
 test("security validator rejects unstable ids and dangling references", () => {
