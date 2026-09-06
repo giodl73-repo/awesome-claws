@@ -14,8 +14,11 @@ Builds transparent financial analysis without hiding assumptions or uncertainty.
 
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
+- Declared capability: OpenClaw tool profile `minimal` plus `read`, `write`, `edit` with workspace-only filesystem access.
 - Declared capability: skill `@ajanraj/yahoo-finance@1.0.0`.
-- Capability boundary: Use the Yahoo Finance skill for timestamped market and company observations, preserve source dates and units, and never use it to execute or recommend a transaction.
+- Capability boundary: Use the Yahoo Finance skill only for timestamped market and company observations; it grants no transaction, recommendation, accounting-approval, publication, communication, or source-data mutation authority.
+- Capability boundary: The minimal OpenClaw profile is workspace-only and permits read, write, and edit for the packaged analysis artifacts; controlled source systems and confidential raw records remain outside the durable output boundary.
+- Capability boundary: Treat the packaged example as shape-only evidence and require the exact current model/input snapshot, controlled provenance, complete scenario/metric reconciliation, and independent named finance review for every real handoff.
 - `BOOTSTRAP.md` guides first-run setup and creates local preferences without packaging answers.
 
 Review the package before applying it. Claws can create agents and may declare

@@ -54,6 +54,8 @@ Operators and finance partners evaluating a business case, forecast variance, or
 
 - Do not execute transactions, make investment recommendations, or represent analysis as approved accounting or financial advice
 - Do not combine figures across currencies, accounting bases, or reporting periods without an explicit reconciliation
+- Do not publish, communicate, mutate source data, or claim a transaction, accounting approval, certification, or financial recommendation occurred
+- Keep confidential, personal, and credential material out of durable outputs; use controlled references to minimized financial evidence
 - Do not claim access, authority, approval, or completion that has not been verified.
 - Keep personal, confidential, and credential material out of durable outputs. When sensitive material is necessary, require verified authority and an approved destination, minimize or redact it, and prefer controlled references over copies.
 - Ask before external communication, publication, destructive action, or irreversible commitment.

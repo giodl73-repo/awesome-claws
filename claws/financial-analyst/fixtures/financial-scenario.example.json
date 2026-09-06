@@ -1,57 +1,620 @@
 {
-  "question": "Does adding two support engineers pay back within 12 months?",
-  "asOf": "2026-08-01T12:00:00Z",
-  "currency": "USD",
-  "sources": [
+  "schemaVersion": "awesomeClaws.financialAnalysis.v1",
+  "analysis": {
+    "id": "analysis-support-staffing-fy2027",
+    "question": "Does adding two support engineers create positive annual net benefit under downside, base, and upside ticket-growth scenarios?",
+    "entity": "Northwind Software",
+    "businessUnit": "Customer Support",
+    "currency": "USD",
+    "accountingBasis": "management-reporting-accrual",
+    "periodStart": "2027-01-01",
+    "periodEnd": "2027-12-31",
+    "modelSnapshotRef": "model-support-staffing-v7",
+    "inputSnapshotRef": "inputs-support-staffing-2026-09-05T1200Z",
+    "requestedAt": "2026-09-05T09:00:00Z",
+    "asOf": "2026-09-05T12:00:00Z",
+    "freshnessWindowHours": 24,
+    "requiredScenarioKinds": [
+      "downside",
+      "base",
+      "upside"
+    ],
+    "requiredMetricIds": [
+      "annual-net-benefit"
+    ],
+    "materialityThreshold": 1
+  },
+  "principals": [
     {
-      "id": "actuals-q2",
-      "kind": "actual",
-      "reference": "finance/q2-support-actuals",
-      "observedAt": "2026-07-31T18:00:00Z",
-      "state": "supported"
+      "id": "principal-analysis-owner-alex",
+      "name": "Alex Rivera, Financial Analyst",
+      "scopes": [
+        "analysis-ownership"
+      ]
     },
     {
-      "id": "growth-plan",
-      "kind": "forecast",
-      "reference": "planning/q3-ticket-growth",
-      "observedAt": "2026-07-28T16:00:00Z",
-      "state": "limited"
-    }
-  ],
-  "assumptions": [
-    {
-      "id": "loaded-cost",
-      "statement": "Two engineers cost 240000 USD fully loaded for twelve months.",
-      "sourceRefs": ["actuals-q2"]
+      "id": "principal-finance-reviewer-riley",
+      "name": "Riley Chen, Finance Director",
+      "scopes": [
+        "finance-review",
+        "calculation-verification"
+      ]
     },
     {
-      "id": "ticket-growth",
-      "statement": "Ticket volume follows the approved base growth plan.",
-      "sourceRefs": ["growth-plan"]
-    }
-  ],
-  "scenarios": [
-    {
-      "id": "downside",
-      "name": "Downside",
-      "assumptionRefs": ["loaded-cost"],
-      "outcomes": [{ "name": "paybackMonths", "value": 18, "unit": "months" }]
+      "id": "principal-source-owner-priya",
+      "name": "Priya Desai, Support Controller",
+      "scopes": [
+        "source-ownership"
+      ]
     },
     {
-      "id": "base",
-      "name": "Base",
-      "assumptionRefs": ["loaded-cost", "ticket-growth"],
-      "outcomes": [{ "name": "paybackMonths", "value": 11, "unit": "months" }]
+      "id": "principal-assumption-owner-morgan",
+      "name": "Morgan Lee, Support Planning Lead",
+      "scopes": [
+        "assumption-ownership"
+      ]
     }
   ],
-  "risks": [
+  "inputs": [
     {
-      "id": "growth-uncertainty",
-      "description": "The ticket-growth plan has not yet been observed.",
-      "sourceRefs": ["growth-plan"],
-      "scenarioRefs": ["base"]
+      "id": "input-baseline-avoidable-cost",
+      "name": "Annual avoidable support cost at current volume",
+      "value": 120000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "inputSnapshotRef": "inputs-support-staffing-2026-09-05T1200Z",
+      "sourceEvidenceRef": "evidence-baseline-avoidable-cost"
     }
   ],
-  "decisionOwner": "Finance director",
-  "decisionState": "ready-for-owner-review"
+  "evidence": [
+    {
+      "id": "evidence-baseline-avoidable-cost",
+      "kind": "source-observation",
+      "subjectType": "input",
+      "subjectRef": "input-baseline-avoidable-cost",
+      "value": 120000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "entity": "Northwind Software",
+      "businessUnit": "Customer Support",
+      "inputSnapshotRef": "inputs-support-staffing-2026-09-05T1200Z",
+      "sourceState": "current",
+      "sourceOwnerId": "principal-source-owner-priya",
+      "sourceRef": "controlled://finance-source/support-ledger/fy2027-baseline-avoidable-cost",
+      "observedAt": "2026-09-05T09:20:00Z",
+      "containsSecrets": false,
+      "containsPersonalData": false,
+      "containsDurableRawData": false,
+      "dataClass": "internal-financial-summary"
+    },
+    {
+      "id": "evidence-loaded-cost-assumption",
+      "kind": "owner-assumption",
+      "subjectType": "assumption",
+      "subjectRef": "assumption-loaded-cost",
+      "value": 240000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "entity": "Northwind Software",
+      "businessUnit": "Customer Support",
+      "inputSnapshotRef": "inputs-support-staffing-2026-09-05T1200Z",
+      "sourceState": "current",
+      "sourceOwnerId": "principal-assumption-owner-morgan",
+      "sourceRef": "controlled://finance-assumptions/support-plan/fy2027-loaded-cost",
+      "observedAt": "2026-09-05T09:30:00Z",
+      "containsSecrets": false,
+      "containsPersonalData": false,
+      "containsDurableRawData": false,
+      "dataClass": "sanitized-financial-record"
+    },
+    {
+      "id": "evidence-downside-savings-assumption",
+      "kind": "owner-assumption",
+      "subjectType": "assumption",
+      "subjectRef": "assumption-downside-incremental-savings",
+      "value": 60000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "entity": "Northwind Software",
+      "businessUnit": "Customer Support",
+      "inputSnapshotRef": "inputs-support-staffing-2026-09-05T1200Z",
+      "sourceState": "current",
+      "sourceOwnerId": "principal-assumption-owner-morgan",
+      "sourceRef": "controlled://finance-assumptions/support-plan/fy2027-downside-savings",
+      "observedAt": "2026-09-05T09:35:00Z",
+      "containsSecrets": false,
+      "containsPersonalData": false,
+      "containsDurableRawData": false,
+      "dataClass": "sanitized-financial-record"
+    },
+    {
+      "id": "evidence-base-savings-assumption",
+      "kind": "owner-assumption",
+      "subjectType": "assumption",
+      "subjectRef": "assumption-base-incremental-savings",
+      "value": 180000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "entity": "Northwind Software",
+      "businessUnit": "Customer Support",
+      "inputSnapshotRef": "inputs-support-staffing-2026-09-05T1200Z",
+      "sourceState": "current",
+      "sourceOwnerId": "principal-assumption-owner-morgan",
+      "sourceRef": "controlled://finance-assumptions/support-plan/fy2027-base-savings",
+      "observedAt": "2026-09-05T09:40:00Z",
+      "containsSecrets": false,
+      "containsPersonalData": false,
+      "containsDurableRawData": false,
+      "dataClass": "sanitized-financial-record"
+    },
+    {
+      "id": "evidence-upside-savings-assumption",
+      "kind": "owner-assumption",
+      "subjectType": "assumption",
+      "subjectRef": "assumption-upside-incremental-savings",
+      "value": 300000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "entity": "Northwind Software",
+      "businessUnit": "Customer Support",
+      "inputSnapshotRef": "inputs-support-staffing-2026-09-05T1200Z",
+      "sourceState": "current",
+      "sourceOwnerId": "principal-assumption-owner-morgan",
+      "sourceRef": "controlled://finance-assumptions/support-plan/fy2027-upside-savings",
+      "observedAt": "2026-09-05T09:45:00Z",
+      "containsSecrets": false,
+      "containsPersonalData": false,
+      "containsDurableRawData": false,
+      "dataClass": "sanitized-financial-record"
+    }
+  ],
+  "assumptionRegister": [
+    {
+      "id": "assumption-loaded-cost",
+      "statement": "Two support engineers carry 240000 USD of fully loaded annual cost.",
+      "value": 240000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "ownerId": "principal-assumption-owner-morgan",
+      "evidenceRefs": [
+        "evidence-loaded-cost-assumption"
+      ],
+      "uncertainty": {
+        "low": 228000,
+        "expected": 240000,
+        "high": 264000
+      },
+      "recordedAt": "2026-09-05T09:50:00Z"
+    },
+    {
+      "id": "assumption-downside-incremental-savings",
+      "statement": "The downside case produces 60000 USD of incremental annual avoidable cost.",
+      "value": 60000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "ownerId": "principal-assumption-owner-morgan",
+      "evidenceRefs": [
+        "evidence-downside-savings-assumption"
+      ],
+      "uncertainty": {
+        "low": 30000,
+        "expected": 60000,
+        "high": 90000
+      },
+      "recordedAt": "2026-09-05T09:55:00Z"
+    },
+    {
+      "id": "assumption-base-incremental-savings",
+      "statement": "The base case produces 180000 USD of incremental annual avoidable cost.",
+      "value": 180000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "ownerId": "principal-assumption-owner-morgan",
+      "evidenceRefs": [
+        "evidence-base-savings-assumption"
+      ],
+      "uncertainty": {
+        "low": 120000,
+        "expected": 180000,
+        "high": 240000
+      },
+      "recordedAt": "2026-09-05T10:00:00Z"
+    },
+    {
+      "id": "assumption-upside-incremental-savings",
+      "statement": "The upside case produces 300000 USD of incremental annual avoidable cost.",
+      "value": 300000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "ownerId": "principal-assumption-owner-morgan",
+      "evidenceRefs": [
+        "evidence-upside-savings-assumption"
+      ],
+      "uncertainty": {
+        "low": 240000,
+        "expected": 300000,
+        "high": 360000
+      },
+      "recordedAt": "2026-09-05T10:05:00Z"
+    }
+  ],
+  "scenarioModels": [
+    {
+      "id": "scenario-downside",
+      "kind": "downside",
+      "name": "Downside ticket growth",
+      "assumptionRefs": [
+        "assumption-loaded-cost",
+        "assumption-downside-incremental-savings"
+      ],
+      "calculationRefs": [
+        "calculation-downside-net-benefit"
+      ],
+      "outcomeRefs": [
+        "outcome-downside-net-benefit"
+      ],
+      "sensitivityRefs": [
+        "sensitivity-downside-loaded-cost"
+      ],
+      "riskRefs": [
+        "risk-demand-realization"
+      ]
+    },
+    {
+      "id": "scenario-base",
+      "kind": "base",
+      "name": "Approved base ticket growth",
+      "assumptionRefs": [
+        "assumption-loaded-cost",
+        "assumption-base-incremental-savings"
+      ],
+      "calculationRefs": [
+        "calculation-base-net-benefit"
+      ],
+      "outcomeRefs": [
+        "outcome-base-net-benefit"
+      ],
+      "sensitivityRefs": [
+        "sensitivity-base-loaded-cost"
+      ],
+      "riskRefs": [
+        "risk-demand-realization"
+      ]
+    },
+    {
+      "id": "scenario-upside",
+      "kind": "upside",
+      "name": "Upside ticket growth",
+      "assumptionRefs": [
+        "assumption-loaded-cost",
+        "assumption-upside-incremental-savings"
+      ],
+      "calculationRefs": [
+        "calculation-upside-net-benefit"
+      ],
+      "outcomeRefs": [
+        "outcome-upside-net-benefit"
+      ],
+      "sensitivityRefs": [
+        "sensitivity-upside-loaded-cost"
+      ],
+      "riskRefs": [
+        "risk-demand-realization"
+      ]
+    }
+  ],
+  "calculations": [
+    {
+      "id": "calculation-downside-net-benefit",
+      "scenarioRef": "scenario-downside",
+      "metricId": "annual-net-benefit",
+      "formula": "linear-combination",
+      "terms": [
+        {
+          "ref": "input-baseline-avoidable-cost",
+          "multiplier": 1
+        },
+        {
+          "ref": "assumption-downside-incremental-savings",
+          "multiplier": 1
+        },
+        {
+          "ref": "assumption-loaded-cost",
+          "multiplier": -1
+        }
+      ],
+      "value": -60000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "modelSnapshotRef": "model-support-staffing-v7",
+      "calculatedAt": "2026-09-05T11:00:00Z"
+    },
+    {
+      "id": "calculation-base-net-benefit",
+      "scenarioRef": "scenario-base",
+      "metricId": "annual-net-benefit",
+      "formula": "linear-combination",
+      "terms": [
+        {
+          "ref": "input-baseline-avoidable-cost",
+          "multiplier": 1
+        },
+        {
+          "ref": "assumption-base-incremental-savings",
+          "multiplier": 1
+        },
+        {
+          "ref": "assumption-loaded-cost",
+          "multiplier": -1
+        }
+      ],
+      "value": 60000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "modelSnapshotRef": "model-support-staffing-v7",
+      "calculatedAt": "2026-09-05T11:01:00Z"
+    },
+    {
+      "id": "calculation-upside-net-benefit",
+      "scenarioRef": "scenario-upside",
+      "metricId": "annual-net-benefit",
+      "formula": "linear-combination",
+      "terms": [
+        {
+          "ref": "input-baseline-avoidable-cost",
+          "multiplier": 1
+        },
+        {
+          "ref": "assumption-upside-incremental-savings",
+          "multiplier": 1
+        },
+        {
+          "ref": "assumption-loaded-cost",
+          "multiplier": -1
+        }
+      ],
+      "value": 180000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "modelSnapshotRef": "model-support-staffing-v7",
+      "calculatedAt": "2026-09-05T11:02:00Z"
+    }
+  ],
+  "outcomes": [
+    {
+      "id": "outcome-downside-net-benefit",
+      "scenarioRef": "scenario-downside",
+      "metricId": "annual-net-benefit",
+      "calculationRef": "calculation-downside-net-benefit",
+      "value": -60000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "modelSnapshotRef": "model-support-staffing-v7",
+      "producedAt": "2026-09-05T11:05:00Z"
+    },
+    {
+      "id": "outcome-base-net-benefit",
+      "scenarioRef": "scenario-base",
+      "metricId": "annual-net-benefit",
+      "calculationRef": "calculation-base-net-benefit",
+      "value": 60000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "modelSnapshotRef": "model-support-staffing-v7",
+      "producedAt": "2026-09-05T11:06:00Z"
+    },
+    {
+      "id": "outcome-upside-net-benefit",
+      "scenarioRef": "scenario-upside",
+      "metricId": "annual-net-benefit",
+      "calculationRef": "calculation-upside-net-benefit",
+      "value": 180000,
+      "unit": "USD",
+      "currency": "USD",
+      "accountingBasis": "management-reporting-accrual",
+      "periodStart": "2027-01-01",
+      "periodEnd": "2027-12-31",
+      "modelSnapshotRef": "model-support-staffing-v7",
+      "producedAt": "2026-09-05T11:07:00Z"
+    }
+  ],
+  "reconciliations": [
+    {
+      "id": "reconciliation-downside-net-benefit",
+      "calculationRef": "calculation-downside-net-benefit",
+      "outcomeRef": "outcome-downside-net-benefit",
+      "expectedValue": -60000,
+      "actualValue": -60000,
+      "difference": 0,
+      "materialityThreshold": 1,
+      "state": "reconciled",
+      "verifiedById": "principal-finance-reviewer-riley",
+      "reconciledAt": "2026-09-05T11:20:00Z"
+    },
+    {
+      "id": "reconciliation-base-net-benefit",
+      "calculationRef": "calculation-base-net-benefit",
+      "outcomeRef": "outcome-base-net-benefit",
+      "expectedValue": 60000,
+      "actualValue": 60000,
+      "difference": 0,
+      "materialityThreshold": 1,
+      "state": "reconciled",
+      "verifiedById": "principal-finance-reviewer-riley",
+      "reconciledAt": "2026-09-05T11:21:00Z"
+    },
+    {
+      "id": "reconciliation-upside-net-benefit",
+      "calculationRef": "calculation-upside-net-benefit",
+      "outcomeRef": "outcome-upside-net-benefit",
+      "expectedValue": 180000,
+      "actualValue": 180000,
+      "difference": 0,
+      "materialityThreshold": 1,
+      "state": "reconciled",
+      "verifiedById": "principal-finance-reviewer-riley",
+      "reconciledAt": "2026-09-05T11:22:00Z"
+    }
+  ],
+  "sensitivityRegister": [
+    {
+      "id": "sensitivity-downside-loaded-cost",
+      "scenarioRef": "scenario-downside",
+      "assumptionRef": "assumption-loaded-cost",
+      "outcomeRef": "outcome-downside-net-benefit",
+      "metricId": "annual-net-benefit",
+      "direction": "increase",
+      "assumptionChangePercent": 10,
+      "outcomeChange": -24000,
+      "unit": "USD",
+      "riskRefs": [
+        "risk-demand-realization"
+      ],
+      "assessedAt": "2026-09-05T11:23:00Z"
+    },
+    {
+      "id": "sensitivity-base-loaded-cost",
+      "scenarioRef": "scenario-base",
+      "assumptionRef": "assumption-loaded-cost",
+      "outcomeRef": "outcome-base-net-benefit",
+      "metricId": "annual-net-benefit",
+      "direction": "increase",
+      "assumptionChangePercent": 10,
+      "outcomeChange": -24000,
+      "unit": "USD",
+      "riskRefs": [
+        "risk-demand-realization"
+      ],
+      "assessedAt": "2026-09-05T11:24:00Z"
+    },
+    {
+      "id": "sensitivity-upside-loaded-cost",
+      "scenarioRef": "scenario-upside",
+      "assumptionRef": "assumption-loaded-cost",
+      "outcomeRef": "outcome-upside-net-benefit",
+      "metricId": "annual-net-benefit",
+      "direction": "increase",
+      "assumptionChangePercent": 10,
+      "outcomeChange": -24000,
+      "unit": "USD",
+      "riskRefs": [
+        "risk-demand-realization"
+      ],
+      "assessedAt": "2026-09-05T11:25:00Z"
+    }
+  ],
+  "riskRegister": [
+    {
+      "id": "risk-demand-realization",
+      "description": "Ticket-growth and avoidable-cost realization may differ from owner-supplied scenario assumptions.",
+      "severity": "medium",
+      "state": "mitigated",
+      "ownerId": "principal-analysis-owner-alex",
+      "scenarioRefs": [
+        "scenario-downside",
+        "scenario-base",
+        "scenario-upside"
+      ],
+      "assumptionRefs": [
+        "assumption-downside-incremental-savings",
+        "assumption-base-incremental-savings",
+        "assumption-upside-incremental-savings"
+      ],
+      "sensitivityRefs": [
+        "sensitivity-downside-loaded-cost",
+        "sensitivity-base-loaded-cost",
+        "sensitivity-upside-loaded-cost"
+      ],
+      "evidenceRefs": [
+        "evidence-downside-savings-assumption",
+        "evidence-base-savings-assumption",
+        "evidence-upside-savings-assumption"
+      ],
+      "updatedAt": "2026-09-05T11:30:00Z"
+    }
+  ],
+  "exceptions": [],
+  "limitations": [
+    "This management-reporting business case is not investment advice, an accounting approval or certification, authorization to transact, or permission to publish or communicate the analysis."
+  ],
+  "recommendation": {
+    "state": "ready-for-business-owner-decision",
+    "reviewerId": "principal-finance-reviewer-riley",
+    "scenarioRefs": [
+      "scenario-downside",
+      "scenario-base",
+      "scenario-upside"
+    ],
+    "reconciliationRefs": [
+      "reconciliation-downside-net-benefit",
+      "reconciliation-base-net-benefit",
+      "reconciliation-upside-net-benefit"
+    ],
+    "riskRefs": [
+      "risk-demand-realization"
+    ],
+    "exceptionRefs": [],
+    "reviewedAt": "2026-09-05T11:45:00Z",
+    "rationale": "The exact FY2027 business-unit snapshot has complete downside, base, and upside calculations, zero reconciliation differences, explicit uncertainty, and independent finance review."
+  },
+  "owner": "Alex Rivera, Financial Analyst",
+  "ownerId": "principal-analysis-owner-alex",
+  "handoff": {
+    "state": "ready",
+    "owner": "Alex Rivera, Financial Analyst",
+    "summary": "The business case is ready for the accountable business owner's decision; no transaction, accounting approval, publication, communication, or source-data mutation occurred.",
+    "prohibitedActions": [
+      "execute-transactions",
+      "issue-buy-sell-hold-recommendation",
+      "approve-or-certify-accounting",
+      "provide-financial-advice",
+      "publish-or-communicate-analysis",
+      "mutate-source-data"
+    ]
+  }
 }

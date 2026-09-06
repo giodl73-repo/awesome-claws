@@ -147,7 +147,9 @@
       ],
       "authorityBoundaries": [
         "Do not execute transactions, make investment recommendations, or represent analysis as approved accounting or financial advice",
-        "Do not combine figures across currencies, accounting bases, or reporting periods without an explicit reconciliation"
+        "Do not combine figures across currencies, accounting bases, or reporting periods without an explicit reconciliation",
+        "Do not publish, communicate, mutate source data, or claim a transaction, accounting approval, certification, or financial recommendation occurred",
+        "Keep confidential, personal, and credential material out of durable outputs; use controlled references to minimized financial evidence"
       ],
       "experience": {
         "target": 3,
@@ -159,7 +161,7 @@
         "clawhub-skill",
         "bootstrap"
       ],
-      "capabilityDigest": "sha256:6f0e2efa94ebf02c569f1e3756cd8fa1d28a46d26fe35f43a639a3c2232ecee1"
+      "capabilityDigest": "sha256:744e90a9968a997e1dc18ca262cd7b25d7873017c3aa622acd18926056a0ae5c"
     },
     {
       "id": "customer-support",
