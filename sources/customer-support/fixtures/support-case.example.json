@@ -1,46 +1,59 @@
 {
-  "caseId": "SUP-4017",
-  "symptom": "Webhook deliveries return 401 after credential rotation",
-  "impact": "high",
-  "environment": "Production webhook sender, version 4.8",
+  "schemaVersion": "awesomeClaws.supportCase.v1",
+  "case": {
+    "id": "case-sup-4017",
+    "accountId": "account-acme-42",
+    "productId": "webhook-service-v4.8",
+    "environmentId": "production-webhook-sender",
+    "snapshotRef": "snapshot-case-sup-4017-2026-09-01",
+    "openedAt": "2026-09-01T08:00:00Z",
+    "symptom": "Webhook deliveries return 401 after credential rotation"
+  },
+  "owner": "Jordan Blake, Case Owner",
+  "ownerId": "principal-case-owner-jordan",
+  "principals": [
+    { "id": "principal-case-owner-jordan", "name": "Jordan Blake", "scopes": ["case-owner", "resolution-review"] },
+    { "id": "principal-support-alex", "name": "Alex Rivera", "scopes": ["support-diagnostics"] },
+    { "id": "principal-customer-riley", "name": "Riley Chen", "scopes": ["customer-consent"] },
+    { "id": "principal-escalation-priya", "name": "Priya Desai", "scopes": ["engineering-escalation"] }
+  ],
+  "consent": {
+    "scopeId": "consent-sup-4017-diagnostics",
+    "approvedById": "principal-customer-riley",
+    "approvedAt": "2026-09-01T08:10:00Z",
+    "dataClasses": ["sanitized-diagnostic", "customer-approved-metadata"],
+    "purpose": "Diagnose post-rotation webhook authentication failures without collecting secrets or payloads."
+  },
   "evidence": [
-    {
-      "reference": "case/SUP-4017/sanitized-delivery-log",
-      "source": "Customer-approved diagnostic excerpt",
-      "observedAt": "2026-08-16T10:30:00Z",
-      "state": "verified"
-    }
+    { "id": "evidence-sanitized-delivery-log", "caseRef": "case-sup-4017", "accountId": "account-acme-42", "productId": "webhook-service-v4.8", "environmentId": "production-webhook-sender", "snapshotRef": "snapshot-case-sup-4017-2026-09-01", "dataClass": "sanitized-diagnostic", "sourceRef": "controlled://support-evidence/case-sup-4017/sanitized-delivery-log", "observedAt": "2026-09-01T08:30:00Z" },
+    { "id": "evidence-credential-metadata", "caseRef": "case-sup-4017", "accountId": "account-acme-42", "productId": "webhook-service-v4.8", "environmentId": "production-webhook-sender", "snapshotRef": "snapshot-case-sup-4017-2026-09-01", "dataClass": "customer-approved-metadata", "sourceRef": "controlled://support-evidence/case-sup-4017/credential-metadata", "observedAt": "2026-09-01T08:35:00Z" },
+    { "id": "evidence-escalation-response", "caseRef": "case-sup-4017", "accountId": "account-acme-42", "productId": "webhook-service-v4.8", "environmentId": "production-webhook-sender", "snapshotRef": "snapshot-case-sup-4017-2026-09-01", "dataClass": "sanitized-diagnostic", "sourceRef": "controlled://support-evidence/case-sup-4017/escalation-response", "observedAt": "2026-09-01T09:15:00Z" }
   ],
   "diagnostics": [
-    {
-      "check": "Confirm the active credential identifier matches the webhook configuration",
-      "requestedData": "Last four characters of the credential identifier and rotation timestamp",
-      "dataClass": "customer-approved-metadata",
-      "expectedResult": "Configured identifier matches the active credential",
-      "state": "proposed"
-    },
-    {
-      "check": "Compare signature algorithm header before and after rotation",
-      "requestedData": "Sanitized header names and algorithm value; no secret or full payload",
-      "dataClass": "sanitized-diagnostic",
-      "expectedResult": "Algorithm remains supported and unchanged",
-      "state": "proposed"
-    }
+    { "id": "diagnostic-credential-id", "performedById": "principal-support-alex", "performedAt": "2026-09-01T08:40:00Z", "requestedData": "Last four characters of the credential identifier and rotation timestamp", "dataClass": "customer-approved-metadata", "evidenceRefs": ["evidence-credential-metadata"], "result": "The configured identifier matches the active credential." },
+    { "id": "diagnostic-signature-header", "performedById": "principal-support-alex", "performedAt": "2026-09-01T08:45:00Z", "requestedData": "Sanitized signature algorithm header only", "dataClass": "sanitized-diagnostic", "evidenceRefs": ["evidence-sanitized-delivery-log"], "result": "The sender still uses the supported algorithm." }
   ],
-  "responseDraft": {
-    "audience": "Customer technical contact",
-    "message": "We can narrow this without sharing secrets. Please confirm the rotation time, the last four characters of the active credential identifier, and the sanitized signature algorithm header.",
-    "state": "draft",
-    "nextUpdateAt": "2026-08-16T15:00:00Z"
+  "diagnoses": [
+    { "id": "diagnosis-cache-lag", "state": "verified", "summary": "A credential-cache refresh lag caused post-rotation requests to use the prior public identifier.", "diagnosticRefs": ["diagnostic-credential-id", "diagnostic-signature-header"], "evidenceRefs": ["evidence-sanitized-delivery-log", "evidence-credential-metadata", "evidence-escalation-response"], "verifiedById": "principal-escalation-priya", "verifiedAt": "2026-09-01T09:30:00Z" }
+  ],
+  "communications": [
+    { "id": "communication-resolution-draft", "state": "approved-draft", "audience": "Customer technical contact", "message": "The evidence supports a credential-cache refresh lag. Please retry once the owner confirms propagation; do not send credentials or payloads.", "authorId": "principal-support-alex", "approvedById": "principal-case-owner-jordan", "recordedAt": "2026-09-01T09:40:00Z", "evidenceRefs": ["evidence-escalation-response"] }
+  ],
+  "escalations": [
+    { "id": "escalation-webhook-owner", "ownerId": "principal-escalation-priya", "state": "resolved", "reason": "Confirm cache propagation behavior after credential rotation.", "createdAt": "2026-09-01T08:50:00Z", "resolvedAt": "2026-09-01T09:20:00Z", "evidenceRefs": ["evidence-escalation-response"] }
+  ],
+  "limitations": ["No customer account, credential, entitlement, refund, message, or case state was mutated."],
+  "resolution": {
+    "state": "ready-for-resolution-review",
+    "diagnosisRef": "diagnosis-cache-lag",
+    "rationale": "The verified diagnosis is grounded in consented, case-scoped evidence and the escalation evidence resolves.",
+    "reviewerId": "principal-case-owner-jordan",
+    "reviewedAt": "2026-09-01T10:00:00Z"
   },
-  "escalation": {
-    "needed": true,
-    "owner": "Webhook service owner",
-    "reason": "Escalate if the configured identifier matches but post-rotation signatures remain rejected",
-    "evidenceRefs": [
-      "case/SUP-4017/sanitized-delivery-log"
-    ]
-  },
-  "caseOwner": "Support engineer",
-  "disposition": "investigating"
+  "handoff": {
+    "owner": "Jordan Blake, Case Owner",
+    "state": "ready",
+    "prohibitedActions": ["request-secret", "mutate-account", "issue-refund", "close-case", "send-communication", "promise-fix"],
+    "summary": "The case is ready for accountable case-owner resolution review; no secret request, account mutation, refund, closure, sent communication, or product commitment is claimed."
+  }
 }

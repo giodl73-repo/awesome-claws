@@ -1,60 +1,59 @@
 {
-  "framework": "Software Supply-Chain Policy",
-  "frameworkVersion": "2026.3",
-  "systemBoundary": "Acme SaaS build, signing, deployment, and rollback process",
-  "reviewPeriod": "2026-Q3",
+  "schemaVersion": "awesomeClaws.controlAssessment.v1",
+  "review": {
+    "id": "review-supply-chain-2026-q3",
+    "framework": "Software Supply-Chain Policy",
+    "frameworkVersion": "2026.3",
+    "systemBoundary": "Acme SaaS build, artifact, deployment, and rollback process",
+    "reviewPeriod": "2026-Q3",
+    "snapshotRef": "snapshot-supply-chain-2026-09-01",
+    "requestedAt": "2026-09-01T08:00:00Z"
+  },
+  "owner": "Jordan Blake, Control Review Owner",
+  "ownerId": "principal-review-owner-jordan",
+  "principals": [
+    { "id": "principal-review-owner-jordan", "name": "Jordan Blake", "scopes": ["review-owner"] },
+    { "id": "principal-control-owner-alex", "name": "Alex Rivera", "scopes": ["control-owner"] },
+    { "id": "principal-remediation-owner-priya", "name": "Priya Desai", "scopes": ["remediation-owner"] },
+    { "id": "principal-verifier-riley", "name": "Riley Chen", "scopes": ["remediation-verification"] },
+    { "id": "principal-independent-reviewer-morgan", "name": "Morgan Ellis", "scopes": ["independent-compliance-review"] }
+  ],
   "requirements": [
-    {
-      "requirementId": "SUP-01",
-      "requirement": "Production artifacts are built by the approved CI service from reviewed source.",
-      "controlOwner": "Build Platform",
-      "implementationState": "implemented",
-      "evidenceState": "supported",
-      "evidence": [{"reference": "ci-run/1842", "source": "CI export", "custodian": "Build Platform", "collectedAt": "2026-08-15T18:00:00Z", "integrityRef": "sha256:ci-example"}],
-      "finding": {"severity": "none", "summary": "Approved CI provenance is supported for the sampled release.", "state": "resolved"}
-    },
-    {
-      "requirementId": "SEC-07",
-      "requirement": "Release artifacts have a current vulnerability assessment before deployment.",
-      "controlOwner": "Product Security",
-      "implementationState": "partial",
-      "evidenceState": "stale",
-      "evidence": [{"reference": "scan/2026-06-01", "source": "Scanner export", "custodian": "Product Security", "collectedAt": "2026-06-01T16:00:00Z"}],
-      "finding": {"severity": "high", "summary": "The supplied scan predates the reviewed release candidate.", "state": "open"}
-    },
-    {
-      "requirementId": "REL-04",
-      "requirement": "Rollback instructions match the production deployment mechanism.",
-      "controlOwner": "Release Engineering",
-      "implementationState": "partial",
-      "evidenceState": "conflicting",
-      "evidence": [{"reference": "runbook/rollback-v4", "source": "Runbook export", "custodian": "Release Engineering", "collectedAt": "2026-08-14T17:00:00Z"}, {"reference": "pipeline/deploy-v5", "source": "Pipeline export", "custodian": "Build Platform", "collectedAt": "2026-08-15T17:30:00Z"}],
-      "finding": {"severity": "high", "summary": "The rollback runbook names a retired deployment job.", "state": "open"}
-    },
-    {
-      "requirementId": "IAM-03",
-      "requirement": "Production release approval requires independent separation of duties.",
-      "controlOwner": "Identity Governance",
-      "implementationState": "partial",
-      "evidenceState": "compensating-control",
-      "evidence": [{"reference": "approval-log/2026-08-15", "source": "Approval export", "custodian": "Release Engineering", "collectedAt": "2026-08-15T19:00:00Z"}],
-      "compensatingControl": {"controlId": "IAM-03-C1", "rationale": "A separately authorized operations approver reviews the immutable release digest.", "owner": "Operations Assurance", "evidenceReferences": ["approval-log/2026-08-15"]},
-      "finding": {"severity": "medium", "summary": "The compensating control requires independent reviewer acceptance.", "state": "accepted"}
-    },
-    {
-      "requirementId": "LOG-02",
-      "requirement": "Release actions retain attributable audit records for the policy retention period.",
-      "controlOwner": "Security Operations",
-      "implementationState": "not-implemented",
-      "evidenceState": "unsupported",
-      "evidence": [{"reference": "evidence-request/LOG-02", "source": "Review evidence request", "custodian": "Compliance Operations", "collectedAt": "2026-08-15T20:00:00Z"}],
-      "finding": {"severity": "critical", "summary": "No controlled audit-retention evidence was supplied.", "state": "open"}
-    }
+    { "id": "requirement-sup-01", "requirement": "Production artifacts are built by approved CI from reviewed source.", "controlOwnerId": "principal-control-owner-alex", "evidenceRefs": ["evidence-ci-provenance"], "findingRef": "finding-sup-01" },
+    { "id": "requirement-iam-03", "requirement": "Production release approval has separation of duties.", "controlOwnerId": "principal-control-owner-alex", "evidenceRefs": ["evidence-approval-log"], "compensatingControlRef": "compensating-control-iam-03", "findingRef": "finding-iam-03" },
+    { "id": "requirement-rel-04", "requirement": "Rollback instructions match the deployment mechanism.", "controlOwnerId": "principal-control-owner-alex", "evidenceRefs": ["evidence-rollback-runbook"], "findingRef": "finding-rel-04" }
+  ],
+  "evidence": [
+    { "id": "evidence-ci-provenance", "kind": "requirement-evidence", "requirementRef": "requirement-sup-01", "snapshotRef": "snapshot-supply-chain-2026-09-01", "sourceRef": "controlled://compliance-evidence/supply-chain/ci-provenance", "collectedAt": "2026-09-01T09:00:00Z" },
+    { "id": "evidence-approval-log", "kind": "compensating-control", "requirementRef": "requirement-iam-03", "compensatingControlRef": "compensating-control-iam-03", "snapshotRef": "snapshot-supply-chain-2026-09-01", "sourceRef": "controlled://compliance-evidence/supply-chain/approval-log", "collectedAt": "2026-09-01T09:10:00Z" },
+    { "id": "evidence-rollback-runbook", "kind": "requirement-evidence", "requirementRef": "requirement-rel-04", "snapshotRef": "snapshot-supply-chain-2026-09-01", "sourceRef": "controlled://compliance-evidence/supply-chain/rollback-runbook", "collectedAt": "2026-09-01T09:20:00Z" },
+    { "id": "evidence-remediation-verification", "kind": "remediation-verification", "requirementRef": "requirement-rel-04", "snapshotRef": "snapshot-supply-chain-2026-09-01", "remediationRef": "remediation-rel-04", "sourceRef": "controlled://compliance-evidence/supply-chain/rollback-verification", "collectedAt": "2026-09-02T10:00:00Z" }
+  ],
+  "findings": [
+    { "id": "finding-sup-01", "requirementRef": "requirement-sup-01", "severity": "none", "state": "resolved", "summary": "Approved CI provenance is supported for the reviewed snapshot." },
+    { "id": "finding-iam-03", "requirementRef": "requirement-iam-03", "severity": "medium", "state": "accepted-control", "summary": "A separately accountable operations approver supplies separation of duties." },
+    { "id": "finding-rel-04", "requirementRef": "requirement-rel-04", "severity": "high", "state": "resolved", "summary": "The rollback runbook was reconciled to the current deployment mechanism." }
+  ],
+  "compensatingControls": [
+    { "id": "compensating-control-iam-03", "requirementRef": "requirement-iam-03", "ownerId": "principal-control-owner-alex", "state": "supported", "evidenceRefs": ["evidence-approval-log"], "rationale": "A separate operations approver reviews the immutable release digest." }
   ],
   "remediation": [
-    {"requirementId": "SEC-07", "action": "Run the approved scanner against the release candidate and retain the attributable export.", "owner": "Product Security", "state": "planned"},
-    {"requirementId": "REL-04", "action": "Reconcile the rollback runbook with the production deployment pipeline.", "owner": "Release Engineering", "state": "proposed"},
-    {"requirementId": "LOG-02", "action": "Provide audit-retention configuration and sampled records from the authoritative logging system.", "owner": "Security Operations", "state": "proposed"}
+    { "id": "remediation-rel-04", "findingRef": "finding-rel-04", "ownerId": "principal-remediation-owner-priya", "state": "verified", "verificationRef": "verification-rel-04", "action": "Reconcile the rollback runbook with the current deployment pipeline." }
   ],
-  "assessmentDecision": "needs-remediation"
+  "verifications": [
+    { "id": "verification-rel-04", "remediationRef": "remediation-rel-04", "requirementRef": "requirement-rel-04", "snapshotRef": "snapshot-supply-chain-2026-09-01", "verifiedById": "principal-verifier-riley", "verifiedAt": "2026-09-02T10:05:00Z", "evidenceRef": "evidence-remediation-verification", "state": "verified" }
+  ],
+  "limitations": ["This internal review does not provide certification, legal advice, an audit opinion, risk acceptance, or a waiver."],
+  "recommendation": {
+    "state": "ready-for-independent-review",
+    "rationale": "Every requirement has current-snapshot evidence, the compensating control is supported, the resolved high finding has independent verification, and no high or critical finding remains unresolved.",
+    "reviewerId": "principal-independent-reviewer-morgan",
+    "reviewedAt": "2026-09-02T11:00:00Z"
+  },
+  "handoff": {
+    "owner": "Jordan Blake, Control Review Owner",
+    "state": "ready",
+    "prohibitedActions": ["certify-compliance", "issue-legal-conclusion", "accept-risk", "grant-waiver", "issue-audit-opinion"],
+    "summary": "The assessment is ready for accountable independent review; no certification, legal conclusion, risk acceptance, waiver, or audit opinion is claimed."
+  }
 }

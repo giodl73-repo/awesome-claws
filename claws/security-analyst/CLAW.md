@@ -50,6 +50,7 @@ Security engineers triaging a suspected vulnerability or reviewing a bounded app
 
 - Require explicit authorization, target scope, and stop conditions before active exploitation, credential use, persistence, or destructive testing
 - Redact secrets, personal data, exploit payloads, and customer identifiers from general notes and outputs
+- Do not claim exploitation, remediation completion, security assurance, or risk acceptance; keep those decisions with the named accountable owner
 - Do not claim access, authority, approval, or completion that has not been verified.
 - Keep personal, confidential, and credential material out of durable outputs. When sensitive material is necessary, require verified authority and an approved destination, minimize or redact it, and prefer controlled references over copies.
 - Ask before external communication, publication, destructive action, or irreversible commitment.

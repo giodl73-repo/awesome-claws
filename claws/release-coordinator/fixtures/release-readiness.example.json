@@ -1,18 +1,56 @@
 {
-  "repository": "acme/widget",
-  "version": "v2.4.0",
-  "targetCommit": "8f1c2d4",
-  "checks": [
-    {"name": "required CI", "state": "passed", "evidence": "workflow run 1842"},
-    {"name": "upgrade smoke", "state": "blocked", "evidence": "Windows runner owner: release-eng"}
+  "schemaVersion": "awesomeClaws.releaseReadiness.v1",
+  "release": {
+    "id": "release-acme-widget-v2-4-0",
+    "repository": "acme/widget",
+    "version": "v2.4.0",
+    "targetCommit": "8f1c2d4a7b9e6c5d4f3a2b1c0d9e8f7a6b5c4d3e",
+    "candidateId": "rc-acme-widget-v2.4.0-3",
+    "snapshotRef": "snapshot-release-1842",
+    "requestedAt": "2026-09-01T08:00:00Z"
+  },
+  "owner": "Jordan Blake, Release Owner",
+  "ownerId": "principal-release-owner-jordan",
+  "principals": [
+    { "id": "principal-release-owner-jordan", "name": "Jordan Blake", "scopes": ["release-owner"] },
+    { "id": "principal-ci-owner-alex", "name": "Alex Rivera", "scopes": ["check-owner"] },
+    { "id": "principal-waiver-owner-priya", "name": "Priya Desai", "scopes": ["release-waiver-authority"] },
+    { "id": "principal-release-authority-morgan", "name": "Morgan Ellis", "scopes": ["release-authority"] }
+  ],
+  "requiredChecks": [
+    { "id": "check-required-ci", "name": "Required CI", "required": true, "state": "passed", "evidenceRef": "evidence-check-ci", "ownerId": "principal-ci-owner-alex" },
+    { "id": "check-platform-smoke", "name": "Legacy platform smoke", "required": true, "state": "waived", "waiverRef": "waiver-platform-smoke", "ownerId": "principal-ci-owner-alex" }
   ],
   "artifacts": [
-    {"name": "signed package", "state": "passed", "evidence": "sha256:example"},
-    {"name": "rollback bundle", "state": "missing", "evidence": "owner: operations"}
+    { "id": "artifact-package", "name": "npm package", "digest": "sha256:5b68f3a0a7564bfe87fcf7e7efcfa06f48199c4d9085f574379868edeb89a5ef", "targetCommit": "8f1c2d4a7b9e6c5d4f3a2b1c0d9e8f7a6b5c4d3e", "candidateId": "rc-acme-widget-v2.4.0-3", "provenanceEvidenceRef": "evidence-package-provenance", "integrityEvidenceRef": "evidence-package-integrity" }
   ],
-  "blockers": [
-    {"summary": "Upgrade smoke is blocked", "owner": "release-eng", "state": "open"}
+  "evidence": [
+    { "id": "evidence-check-ci", "kind": "check-result", "checkRef": "check-required-ci", "releaseRef": "release-acme-widget-v2-4-0", "targetCommit": "8f1c2d4a7b9e6c5d4f3a2b1c0d9e8f7a6b5c4d3e", "candidateId": "rc-acme-widget-v2.4.0-3", "snapshotRef": "snapshot-release-1842", "outcome": "passed", "sourceRef": "controlled://release-evidence/acme-widget/workflow-1842", "assertedAt": "2026-09-01T10:00:00Z" },
+    { "id": "evidence-waiver-platform-smoke", "kind": "waiver-approval", "waiverRef": "waiver-platform-smoke", "releaseRef": "release-acme-widget-v2-4-0", "targetCommit": "8f1c2d4a7b9e6c5d4f3a2b1c0d9e8f7a6b5c4d3e", "candidateId": "rc-acme-widget-v2.4.0-3", "snapshotRef": "snapshot-release-1842", "outcome": "approved", "sourceRef": "controlled://release-evidence/acme-widget/waiver-platform-smoke", "assertedAt": "2026-09-01T10:15:00Z" },
+    { "id": "evidence-package-provenance", "kind": "artifact-provenance", "artifactRef": "artifact-package", "releaseRef": "release-acme-widget-v2-4-0", "targetCommit": "8f1c2d4a7b9e6c5d4f3a2b1c0d9e8f7a6b5c4d3e", "candidateId": "rc-acme-widget-v2.4.0-3", "snapshotRef": "snapshot-release-1842", "outcome": "verified", "sourceRef": "controlled://release-evidence/acme-widget/package-provenance", "assertedAt": "2026-09-01T10:30:00Z" },
+    { "id": "evidence-package-integrity", "kind": "artifact-integrity", "artifactRef": "artifact-package", "releaseRef": "release-acme-widget-v2-4-0", "targetCommit": "8f1c2d4a7b9e6c5d4f3a2b1c0d9e8f7a6b5c4d3e", "candidateId": "rc-acme-widget-v2.4.0-3", "snapshotRef": "snapshot-release-1842", "outcome": "verified", "digest": "sha256:5b68f3a0a7564bfe87fcf7e7efcfa06f48199c4d9085f574379868edeb89a5ef", "sourceRef": "controlled://release-evidence/acme-widget/package-integrity", "assertedAt": "2026-09-01T10:35:00Z" },
+    { "id": "evidence-rollback-proof", "kind": "rollback-proof", "releaseRef": "release-acme-widget-v2-4-0", "targetCommit": "8f1c2d4a7b9e6c5d4f3a2b1c0d9e8f7a6b5c4d3e", "candidateId": "rc-acme-widget-v2.4.0-3", "snapshotRef": "snapshot-release-1842", "outcome": "verified", "sourceRef": "controlled://release-evidence/acme-widget/rollback-rehearsal-1842", "assertedAt": "2026-09-01T11:00:00Z" }
   ],
-  "decisionState": "not-ready",
-  "communicationState": "draft"
+  "blockers": [],
+  "waivers": [
+    { "id": "waiver-platform-smoke", "checkRef": "check-platform-smoke", "ownerId": "principal-waiver-owner-priya", "evidenceRef": "evidence-waiver-platform-smoke", "approvedAt": "2026-09-01T10:20:00Z", "rationale": "The retired platform is outside the supported release matrix." }
+  ],
+  "rollback": {
+    "plan": "Restore the previous immutable package digest and configuration revision through the owner-operated release system.",
+    "ownerId": "principal-release-owner-jordan",
+    "evidenceRef": "evidence-rollback-proof"
+  },
+  "limitations": ["This is a readiness recommendation only; no deployment, publication, signing, approval, or communication action was performed."],
+  "recommendation": {
+    "state": "ready-for-release-authority",
+    "rationale": "Every required check passed or has an accountable waiver, the artifact is bound to the exact candidate and commit with controlled provenance and integrity, no blocker remains, and rollback proof is current.",
+    "reviewerId": "principal-release-authority-morgan",
+    "reviewedAt": "2026-09-01T12:00:00Z"
+  },
+  "handoff": {
+    "owner": "Jordan Blake, Release Owner",
+    "state": "ready",
+    "prohibitedActions": ["deploy-release", "publish-release", "sign-artifact", "approve-release", "send-communication", "merge-release"],
+    "summary": "The exact release candidate is ready for independent release-authority review; no deployment, publication, signing, approval, message sending, or merge is claimed."
+  }
 }

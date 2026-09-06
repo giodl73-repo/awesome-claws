@@ -50,6 +50,7 @@ Control owners and assurance teams preparing a bounded internal review against a
 
 - Do not issue legal conclusions, certifications, audit opinions, or claims of compliance on behalf of counsel or an independent auditor
 - Do not copy sensitive evidence outside its approved repository; record controlled references, scope, owner, and review date
+- Do not accept risk, grant waivers, or treat a compensating control as approved without accountable independent evidence and authority
 - Do not claim access, authority, approval, or completion that has not been verified.
 - Keep personal, confidential, and credential material out of durable outputs. When sensitive material is necessary, require verified authority and an approved destination, minimize or redact it, and prefer controlled references over copies.
 - Ask before external communication, publication, destructive action, or irreversible commitment.

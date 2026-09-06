@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 93,
-    "coveredCount": 93,
-    "recipeCount": 245,
-    "findingCodeCount": 196
+    "validatorCount": 97,
+    "coveredCount": 97,
+    "recipeCount": 257,
+    "findingCodeCount": 216
   },
   "entries": [
     {
@@ -46,6 +46,58 @@
           "expectedCodes": [
             "future_source_evidence",
             "invalid_delivery_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-analyst",
+      "recipes": [
+        {
+          "id": "semantic-invalid-assessment-scope-1",
+          "operator": "remove",
+          "path": [
+            "assessment",
+            "id"
+          ],
+          "expectedCodes": [
+            "invalid_assessment_scope",
+            "premature_ready_state",
+            "premature_risk_owner_review"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-evidence-2",
+          "operator": "replace",
+          "path": [
+            "assessment",
+            "snapshotRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "cross_scope_scenario",
+            "incomplete_scenario_coverage",
+            "premature_ready_state",
+            "premature_risk_owner_review",
+            "unsupported_control_assertion",
+            "unsupported_observation",
+            "unsupported_remediation_verification"
+          ]
+        },
+        {
+          "id": "semantic-premature-ready-state-3",
+          "operator": "replace",
+          "path": [
+            "assessment",
+            "requestedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "premature_ready_state",
+            "premature_risk_owner_review",
+            "stale_evidence",
+            "unsupported_observation"
           ]
         }
       ]
@@ -100,6 +152,53 @@
           "replacement": "mock-plus-missing",
           "expectedCodes": [
             "dangling_reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "customer-support",
+      "recipes": [
+        {
+          "id": "semantic-cross-scope-evidence-1",
+          "operator": "replace",
+          "path": [
+            "case",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "premature_ready_state",
+            "premature_resolution_readiness"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-evidence-2",
+          "operator": "remove",
+          "path": [
+            "case",
+            "id"
+          ],
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "invalid_case_scope",
+            "premature_ready_state",
+            "premature_resolution_readiness"
+          ]
+        },
+        {
+          "id": "semantic-invalid-customer-consent-3",
+          "operator": "replace",
+          "path": [
+            "case",
+            "openedAt"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_customer_consent",
+            "premature_ready_state",
+            "premature_resolution_readiness"
           ]
         }
       ]
@@ -274,6 +373,55 @@
           "expectedCodes": [
             "dangling_reference",
             "unsupported_terminal_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compliance-reviewer",
+      "recipes": [
+        {
+          "id": "semantic-invalid-review-scope-1",
+          "operator": "remove",
+          "path": [
+            "review",
+            "id"
+          ],
+          "expectedCodes": [
+            "invalid_review_scope",
+            "premature_independent_review",
+            "premature_ready_state"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-evidence-2",
+          "operator": "replace",
+          "path": [
+            "review",
+            "snapshotRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "incomplete_requirement_coverage",
+            "premature_independent_review",
+            "premature_ready_state",
+            "unsupported_compensating_control",
+            "unsupported_remediation_verification"
+          ]
+        },
+        {
+          "id": "semantic-premature-independent-review-3",
+          "operator": "replace",
+          "path": [
+            "review",
+            "requestedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "premature_independent_review",
+            "premature_ready_state",
+            "stale_evidence"
           ]
         }
       ]
@@ -711,6 +859,61 @@
           "replacement": false,
           "expectedCodes": [
             "premature_ready_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "release-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-cross-scope-evidence-1",
+          "operator": "replace",
+          "path": [
+            "release",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "missing_rollback_proof",
+            "premature_ready_state",
+            "premature_release_readiness",
+            "unbound_release_artifact",
+            "unresolved_required_check",
+            "unsupported_release_waiver"
+          ]
+        },
+        {
+          "id": "semantic-cross-scope-evidence-2",
+          "operator": "remove",
+          "path": [
+            "release",
+            "id"
+          ],
+          "expectedCodes": [
+            "cross_scope_evidence",
+            "invalid_release_scope",
+            "missing_rollback_proof",
+            "premature_ready_state",
+            "premature_release_readiness",
+            "unbound_release_artifact",
+            "unresolved_required_check",
+            "unsupported_release_waiver"
+          ]
+        },
+        {
+          "id": "semantic-premature-ready-state-3",
+          "operator": "replace",
+          "path": [
+            "release",
+            "requestedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "premature_ready_state",
+            "premature_release_readiness",
+            "stale_evidence"
           ]
         }
       ]

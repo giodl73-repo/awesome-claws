@@ -1,46 +1,62 @@
 {
-  "assessmentScope": "Document preview URL retrieval path and cloud metadata boundary",
-  "assessmentMode": "evidence-review",
-  "authorizationRef": "security-review/approved-scope-2026-08-15",
+  "schemaVersion": "awesomeClaws.threatAssessment.v1",
+  "assessment": {
+    "id": "assessment-preview-fetch-2026-09",
+    "scope": "Document preview URL retrieval path and cloud metadata boundary",
+    "snapshotRef": "snapshot-preview-service-8f1c2d4",
+    "requestedAt": "2026-09-01T08:00:00Z",
+    "mode": "evidence-review",
+    "authorizationRef": "controlled://security-authorizations/preview-fetch-review-2026-09",
+    "stopConditions": ["Stop if active exploitation, credential use, production mutation, or out-of-scope infrastructure access would be required."]
+  },
+  "owner": "Riley Chen, Document Platform Risk Owner",
+  "ownerId": "principal-risk-owner-riley",
+  "principals": [
+    { "id": "principal-risk-owner-riley", "name": "Riley Chen", "scopes": ["risk-owner", "risk-owner-review"] },
+    { "id": "principal-assessor-alex", "name": "Alex Rivera", "scopes": ["security-assessment"] },
+    { "id": "principal-network-owner-priya", "name": "Priya Desai", "scopes": ["remediation-owner"] },
+    { "id": "principal-verifier-morgan", "name": "Morgan Ellis", "scopes": ["remediation-verification"] }
+  ],
   "assets": [
-    {"name": "Document preview service", "owner": "Document Platform", "trustBoundary": "Internet request to isolated preview worker", "criticality": "high"},
-    {"name": "Outbound fetch proxy", "owner": "Platform Networking", "trustBoundary": "Preview worker to approved external destinations", "criticality": "high"},
-    {"name": "Cloud instance metadata", "owner": "Cloud Platform", "trustBoundary": "Link-local metadata endpoint", "criticality": "critical"}
+    { "id": "asset-preview-service", "name": "Document preview service", "ownerId": "principal-risk-owner-riley", "trustBoundary": "Internet request to isolated preview worker", "criticality": "high" },
+    { "id": "asset-fetch-proxy", "name": "Outbound fetch proxy", "ownerId": "principal-network-owner-priya", "trustBoundary": "Preview worker to approved external destinations", "criticality": "critical" }
   ],
   "scenarios": [
-    {
-      "id": "SEC-001",
-      "title": "User-supplied image URL reaches cloud metadata",
-      "asset": "Document preview service",
-      "threatSource": "Unauthenticated document author",
-      "attackTechnique": "MITRE ATT&CK T1190 - Exploit Public-Facing Application",
-      "exploitPreconditions": ["The preview worker fetches user-supplied URLs", "The worker can route to link-local addresses", "Metadata requests are not blocked or authenticated"],
-      "existingControls": ["URL scheme allowlist", "Preview worker network isolation"],
-      "evidenceState": "inferred",
-      "evidence": [{"reference": "architecture/preview-fetch-v3", "source": "Approved architecture export", "observedAt": "2026-08-15T17:00:00Z", "state": "verified"}, {"reference": "code-review/url-fetcher", "source": "Reviewed source excerpt", "observedAt": "2026-08-15T18:00:00Z", "state": "verified"}],
-      "likelihood": "possible",
-      "impact": "severe",
-      "confidence": "medium",
-      "severity": "high",
-      "remediation": {"action": "Deny link-local, loopback, private, and redirect-resolved internal destinations at the outbound fetch boundary.", "owner": "Platform Networking", "verification": "Run the separately authorized SSRF regression suite against direct and redirect destinations.", "state": "proposed"}
-    },
-    {
-      "id": "SEC-002",
-      "title": "Redirect handling bypasses destination validation",
-      "asset": "Outbound fetch proxy",
-      "threatSource": "External server controlled by a document author",
-      "attackTechnique": "MITRE ATT&CK T1105 - Ingress Tool Transfer",
-      "exploitPreconditions": ["Initial URLs are validated before redirects", "Redirect targets are not revalidated", "The proxy follows redirects to internal destinations"],
-      "existingControls": ["Initial destination validation", "Redirect limit"],
-      "evidenceState": "contradictory",
-      "evidence": [{"reference": "test/url-policy-direct", "source": "Unit test export", "observedAt": "2026-08-15T18:30:00Z", "state": "verified"}, {"reference": "evidence-request/redirect-revalidation", "source": "Security review request", "observedAt": "2026-08-15T19:00:00Z", "state": "missing"}],
-      "likelihood": "possible",
-      "impact": "major",
-      "confidence": "low",
-      "severity": "medium",
-      "remediation": {"action": "Apply destination policy after every redirect and preserve the final resolved address in security logs.", "owner": "Document Platform", "verification": "Add a non-destructive redirect-chain regression with an internal final target.", "state": "planned"}
-    }
+    { "id": "scenario-link-local-fetch", "assetRef": "asset-preview-service", "snapshotRef": "snapshot-preview-service-8f1c2d4", "title": "User-supplied URL reaches a link-local destination", "severity": "critical", "supportState": "supported", "observationRefs": ["observation-link-local-policy"], "controlAssertionRefs": ["control-egress-policy"], "remediationRef": "remediation-egress-policy" },
+    { "id": "scenario-redirect-revalidation", "assetRef": "asset-fetch-proxy", "snapshotRef": "snapshot-preview-service-8f1c2d4", "title": "Redirect target bypasses destination validation", "severity": "medium", "supportState": "supported", "observationRefs": ["observation-redirect-policy"], "controlAssertionRefs": ["control-redirect-revalidation"] }
   ],
-  "riskOwner": "Document Platform Director",
-  "assessmentState": "needs-remediation"
+  "observations": [
+    { "id": "observation-link-local-policy", "scenarioRef": "scenario-link-local-fetch", "assetRef": "asset-preview-service", "snapshotRef": "snapshot-preview-service-8f1c2d4", "observedAt": "2026-09-01T10:00:00Z", "observedById": "principal-assessor-alex", "result": "supported", "evidenceRef": "evidence-link-local-policy" },
+    { "id": "observation-redirect-policy", "scenarioRef": "scenario-redirect-revalidation", "assetRef": "asset-fetch-proxy", "snapshotRef": "snapshot-preview-service-8f1c2d4", "observedAt": "2026-09-01T10:30:00Z", "observedById": "principal-assessor-alex", "result": "supported", "evidenceRef": "evidence-redirect-policy" }
+  ],
+  "evidence": [
+    { "id": "evidence-link-local-policy", "kind": "observation", "scenarioRef": "scenario-link-local-fetch", "assetRef": "asset-preview-service", "snapshotRef": "snapshot-preview-service-8f1c2d4", "sourceRef": "controlled://security-evidence/preview-service/link-local-policy", "assertedAt": "2026-09-01T10:05:00Z" },
+    { "id": "evidence-redirect-policy", "kind": "observation", "scenarioRef": "scenario-redirect-revalidation", "assetRef": "asset-fetch-proxy", "snapshotRef": "snapshot-preview-service-8f1c2d4", "sourceRef": "controlled://security-evidence/fetch-proxy/redirect-policy", "assertedAt": "2026-09-01T10:35:00Z" },
+    { "id": "evidence-control-egress", "kind": "control-assertion", "scenarioRef": "scenario-link-local-fetch", "assetRef": "asset-preview-service", "snapshotRef": "snapshot-preview-service-8f1c2d4", "sourceRef": "controlled://security-evidence/preview-service/egress-control", "assertedAt": "2026-09-01T11:00:00Z" },
+    { "id": "evidence-control-redirect", "kind": "control-assertion", "scenarioRef": "scenario-redirect-revalidation", "assetRef": "asset-fetch-proxy", "snapshotRef": "snapshot-preview-service-8f1c2d4", "sourceRef": "controlled://security-evidence/fetch-proxy/redirect-control", "assertedAt": "2026-09-01T11:05:00Z" },
+    { "id": "evidence-remediation-verification", "kind": "remediation-verification", "scenarioRef": "scenario-link-local-fetch", "assetRef": "asset-preview-service", "snapshotRef": "snapshot-preview-service-8f1c2d4", "remediationRef": "remediation-egress-policy", "sourceRef": "controlled://security-evidence/preview-service/egress-regression", "assertedAt": "2026-09-02T14:00:00Z" }
+  ],
+  "controlAssertions": [
+    { "id": "control-egress-policy", "scenarioRef": "scenario-link-local-fetch", "assetRef": "asset-preview-service", "snapshotRef": "snapshot-preview-service-8f1c2d4", "state": "effective", "evidenceRefs": ["evidence-control-egress"] },
+    { "id": "control-redirect-revalidation", "scenarioRef": "scenario-redirect-revalidation", "assetRef": "asset-fetch-proxy", "snapshotRef": "snapshot-preview-service-8f1c2d4", "state": "effective", "evidenceRefs": ["evidence-control-redirect"] }
+  ],
+  "remediations": [
+    { "id": "remediation-egress-policy", "scenarioRef": "scenario-link-local-fetch", "ownerId": "principal-network-owner-priya", "state": "verified", "verificationRef": "verification-egress-policy", "action": "Deny link-local, loopback, private, and redirect-resolved internal destinations at the outbound boundary." }
+  ],
+  "verifications": [
+    { "id": "verification-egress-policy", "remediationRef": "remediation-egress-policy", "scenarioRef": "scenario-link-local-fetch", "assetRef": "asset-preview-service", "snapshotRef": "snapshot-preview-service-8f1c2d4", "verifiedById": "principal-verifier-morgan", "verifiedAt": "2026-09-02T14:05:00Z", "evidenceRef": "evidence-remediation-verification", "state": "verified" }
+  ],
+  "limitations": ["No active exploitation, credential use, or production mutation was performed; this artifact records evidence review only."],
+  "recommendation": {
+    "state": "ready-for-risk-owner-review",
+    "rationale": "Every scenario is covered by current-snapshot evidence; the critical scenario is supported and its claimed remediation was independently verified.",
+    "reviewerId": "principal-risk-owner-riley",
+    "reviewedAt": "2026-09-02T15:00:00Z"
+  },
+  "handoff": {
+    "owner": "Riley Chen, Document Platform Risk Owner",
+    "state": "ready",
+    "prohibitedActions": ["exploit-target", "execute-remediation", "accept-risk", "claim-security-assurance"],
+    "summary": "The assessment is ready for accountable risk-owner review; no exploitation, remediation execution, risk acceptance, or security certification is claimed."
+  }
 }

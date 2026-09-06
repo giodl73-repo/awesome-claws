@@ -1,1 +1,88 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","additionalProperties":false,"required":["caseId","symptom","impact","environment","evidence","diagnostics","responseDraft","escalation","caseOwner","disposition"],"properties":{"caseId":{"type":"string","minLength":1},"symptom":{"type":"string","minLength":1},"impact":{"enum":["low","medium","high","critical"]},"environment":{"type":"string","minLength":1},"evidence":{"type":"array","minItems":1,"items":{"type":"object","additionalProperties":false,"required":["reference","source","observedAt","state"],"properties":{"reference":{"type":"string","minLength":1},"source":{"type":"string","minLength":1},"observedAt":{"type":"string","format":"date-time"},"state":{"enum":["verified","stale","missing","conflicting"]}}}},"diagnostics":{"type":"array","minItems":1,"items":{"type":"object","additionalProperties":false,"required":["check","requestedData","dataClass","expectedResult","state"],"properties":{"check":{"type":"string","minLength":1},"requestedData":{"type":"string","minLength":1},"dataClass":{"enum":["public","sanitized-diagnostic","customer-approved-metadata"]},"expectedResult":{"type":"string","minLength":1},"state":{"enum":["proposed","received","verified","inconclusive"]}}}},"responseDraft":{"type":"object","additionalProperties":false,"required":["audience","message","state","nextUpdateAt"],"properties":{"audience":{"type":"string","minLength":1},"message":{"type":"string","minLength":1},"state":{"enum":["draft","approved","sent","corrected"]},"nextUpdateAt":{"type":"string","format":"date-time"}}},"escalation":{"type":"object","additionalProperties":false,"required":["needed","owner","reason","evidenceRefs"],"properties":{"needed":{"type":"boolean"},"owner":{"type":"string","minLength":1},"reason":{"type":"string","minLength":1},"evidenceRefs":{"type":"array","minItems":1,"items":{"type":"string","minLength":1}}}},"caseOwner":{"type":"string","minLength":1},"disposition":{"enum":["investigating","awaiting-customer","awaiting-owner","ready-for-resolution-review","closed-by-case-owner"]}}}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["caseId", "symptom", "impact", "environment", "evidence", "diagnostics", "responseDraft", "escalation", "caseOwner", "disposition"],
+      "properties": {
+        "caseId": { "type": "string", "minLength": 1 },
+        "symptom": { "type": "string", "minLength": 1 },
+        "impact": { "enum": ["low", "medium", "high", "critical"] },
+        "environment": { "type": "string", "minLength": 1 },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/legacyEvidence" } },
+        "diagnostics": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/legacyDiagnostic" } },
+        "responseDraft": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["audience", "message", "state", "nextUpdateAt"],
+          "properties": {
+            "audience": { "type": "string", "minLength": 1 },
+            "message": { "type": "string", "minLength": 1 },
+            "state": { "enum": ["draft", "approved", "sent", "corrected"] },
+            "nextUpdateAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "escalation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["needed", "owner", "reason", "evidenceRefs"],
+          "properties": {
+            "needed": { "type": "boolean" },
+            "owner": { "type": "string", "minLength": 1 },
+            "reason": { "type": "string", "minLength": 1 },
+            "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+          }
+        },
+        "caseOwner": { "type": "string", "minLength": 1 },
+        "disposition": { "enum": ["investigating", "awaiting-customer", "awaiting-owner", "ready-for-resolution-review", "closed-by-case-owner"] }
+      }
+    },
+    {
+      "type": "object",
+      "required": ["schemaVersion", "case", "principals", "consent", "evidence", "diagnostics", "diagnoses", "communications", "escalations", "limitations", "resolution", "owner", "ownerId", "handoff"],
+      "properties": {
+        "schemaVersion": { "const": "awesomeClaws.supportCase.v1" },
+        "case": { "type": "object" },
+        "principals": { "type": "array" },
+        "consent": { "type": "object" },
+        "evidence": { "type": "array" },
+        "diagnostics": { "type": "array" },
+        "diagnoses": { "type": "array" },
+        "communications": { "type": "array" },
+        "escalations": { "type": "array" },
+        "limitations": { "type": "array" },
+        "resolution": { "type": ["object", "null"] },
+        "owner": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "handoff": { "type": "object" }
+      },
+      "not": { "required": ["caseId"] }
+    }
+  ],
+  "$defs": {
+    "legacyEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference", "source", "observedAt", "state"],
+      "properties": {
+        "reference": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "state": { "enum": ["verified", "stale", "missing", "conflicting"] }
+      }
+    },
+    "legacyDiagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["check", "requestedData", "dataClass", "expectedResult", "state"],
+      "properties": {
+        "check": { "type": "string", "minLength": 1 },
+        "requestedData": { "type": "string", "minLength": 1 },
+        "dataClass": { "enum": ["public", "sanitized-diagnostic", "customer-approved-metadata"] },
+        "expectedResult": { "type": "string", "minLength": 1 },
+        "state": { "enum": ["proposed", "received", "verified", "inconclusive"] }
+      }
+    }
+  }
+}

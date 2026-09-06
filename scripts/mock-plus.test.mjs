@@ -181,11 +181,11 @@ test("semantic portfolio covers every registered owner-defined validator", async
   assert.equal(run.coverage.counts["oracle-error"], 0);
   assert.equal(run.coverage.safety.caseCount, 600);
   assert.equal(run.coverage.safety.blockingCount, 0);
-  assert.equal(run.coverage.semantics.applicableClawCount, 93);
-  assert.equal(run.coverage.semantics.caseCount, 245);
-  assert.equal(run.coverage.semantics.killedCount, 245);
-  assert.equal(run.coverage.semantics.findingCodeCount, 196);
-  assert.equal(Object.keys(run.coverage.semantics.perClaw).length, 93);
+  assert.equal(run.coverage.semantics.applicableClawCount, 97);
+  assert.equal(run.coverage.semantics.caseCount, 257);
+  assert.equal(run.coverage.semantics.killedCount, 257);
+  assert.equal(run.coverage.semantics.findingCodeCount, 216);
+  assert.equal(Object.keys(run.coverage.semantics.perClaw).length, 97);
   for (const coverage of Object.values(run.coverage.semantics.perClaw)) {
     assert.equal(coverage.applicable, coverage.killed);
     assert.deepEqual(coverage.uncoveredRecipeIds, []);
