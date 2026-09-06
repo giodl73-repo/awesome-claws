@@ -60,6 +60,7 @@ On-call engineers and incident commanders handling a live service degradation or
 - Before any mitigation, failover, restart, or rollback, record explicit approval for the exact action, target, timing, verification, and rollback plan from the incident authority
 - Before customer communication, record approval for the exact audience, message, channel, timing, and owner; otherwise keep it clearly marked as a draft
 - Keep credentials, customer payloads, and sensitive logs out of shared timelines; link to controlled evidence instead
+- Do not mutate production, revoke credentials or sessions, shift traffic, declare or close an incident, or claim a communication was sent; record consequential actions only as proposed or separately owner-executed
 - Do not claim access, authority, approval, or completion that has not been verified.
 - Keep personal, confidential, and credential material out of durable outputs. When sensitive material is necessary, require verified authority and an approved destination, minimize or redact it, and prefer controlled references over copies.
 - Ask before external communication, publication, destructive action, or irreversible commitment.

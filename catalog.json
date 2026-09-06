@@ -22,7 +22,8 @@
       "boundaries": [
         "Before any mitigation, failover, restart, or rollback, record explicit approval for the exact action, target, timing, verification, and rollback plan from the incident authority",
         "Before customer communication, record approval for the exact audience, message, channel, timing, and owner; otherwise keep it clearly marked as a draft",
-        "Keep credentials, customer payloads, and sensitive logs out of shared timelines; link to controlled evidence instead"
+        "Keep credentials, customer payloads, and sensitive logs out of shared timelines; link to controlled evidence instead",
+        "Do not mutate production, revoke credentials or sessions, shift traffic, declare or close an incident, or claim a communication was sent; record consequential actions only as proposed or separately owner-executed"
       ],
       "intake": [
         "Observed impact, affected services, severity, and when it began",
@@ -48,7 +49,8 @@
       "doneWhen": [
         "Impact, severity, timeline, and current state have explicit evidence timestamps",
         "Every active mitigation has an owner, authority, verification signal, and rollback condition",
-        "The next update time, unresolved risks, and recovery or handoff owner are recorded"
+        "The next update time, unresolved risks, and recovery or handoff owner are recorded",
+        "Every declared service has current recovery evidence and an independent incident-command reviewer acts after all evidence"
       ],
       "cronJobs": [
         {
@@ -4141,7 +4143,8 @@
       "boundaries": [
         "Do not send production mutations, rotate credentials, deploy code, alter provider settings, or widen scopes without exact authorization",
         "Do not embed secrets, production identifiers, or customer payloads in fixtures, widget assets, logs, or generated examples",
-        "Do not claim compatibility from schema inspection alone when runtime behavior was not exercised"
+        "Do not claim compatibility from schema inspection alone when runtime behavior was not exercised",
+        "Do not create credentials, mutate production, deploy or approve the integration, or claim a handoff or communication was sent"
       ],
       "intake": [
         "Repository, API contract version, target operation, environment, ownership boundary, and acceptance criteria",
@@ -4169,7 +4172,8 @@
         "Every implemented operation maps to an exact contract version and tested synthetic behavior",
         "Authentication, redaction, timeout, retry, idempotency, and rate-limit behavior are explicit",
         "The readiness widget and Markdown report agree on passed, failed, untested, and blocked operations",
-        "No production mutation, credential change, deployment, or scope expansion occurred"
+        "No production mutation, credential change, deployment, or scope expansion occurred",
+        "All required contract, negative, idempotency, and error tests pass before an independent integration owner reviews the evidence"
       ],
       "openclawProfile": {
         "schemaVersion": 1,
@@ -5498,7 +5502,8 @@
       "boundaries": [
         "Do not create, edit, classify, certify, publish, or delete catalog assets, policies, glossary terms, lineage, quality rules, access grants, or source data",
         "Do not copy sensitive records into the workspace; use controlled references, minimized metadata, and approved exports",
-        "Do not claim that a domain, product, or critical data element is governed solely because it appears in an inventory"
+        "Do not claim that a domain, product, or critical data element is governed solely because it appears in an inventory",
+        "Do not grant or revoke access, delete data, override a classification, issue a legal conclusion, accept risk, certify governance, or claim those actions occurred"
       ],
       "intake": [
         "Governance domain, review period, accountable domain owner, steward, scope, and decision authority",
@@ -5525,7 +5530,8 @@
         "Every assessed data product names its owner, steward, lifecycle state, and at least one critical data element",
         "Every material conclusion traces to a typed, dated, controlled evidence reference and preserves missing, stale, or conflicting states",
         "Issues name severity, accountable owner, state, and the exact owner-system follow-up required",
-        "No catalog, policy, glossary, lineage, quality, access, or source-data mutation occurred"
+        "No catalog, policy, glossary, lineage, quality, access, or source-data mutation occurred",
+        "Every asset and policy requirement is covered, exceptions remain independently authorized and unexpired, remediation is independently verified, and governance review follows all evidence"
       ],
       "openclawProfile": {
         "schemaVersion": 1,

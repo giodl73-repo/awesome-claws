@@ -1,34 +1,378 @@
 {
-  "governanceDomain": "Customer 360",
-  "reviewPeriod": "2026-Q3",
-  "domainOwner": "VP Data Platforms",
-  "dataProducts": [
+  "schemaVersion": "awesomeClaws.dataGovernanceAssessment.v1",
+  "assessment": {
+    "id": "governance-review-customer-360-q3",
+    "dataProduct": "Customer 360",
+    "domain": "Customer Data",
+    "policyVersion": "data-governance-policy@4.2",
+    "catalogSnapshotRef": "purview-snapshot-2026-09-05",
+    "reviewPeriod": "2026-Q3",
+    "requestedAt": "2026-09-05T08:00:00Z"
+  },
+  "principals": [
     {
-      "name": "Customer profile",
-      "owner": "Customer Data Product",
-      "steward": "CRM Data Steward",
-      "lifecycleState": "active",
-      "criticalDataElements": ["Customer ID", "Consent status"]
+      "id": "principal-domain-owner-riley",
+      "name": "Riley Chen",
+      "scopes": [
+        "domain-owner"
+      ]
     },
     {
-      "name": "Customer engagement",
-      "owner": "Growth Analytics",
-      "steward": "Engagement Data Steward",
-      "lifecycleState": "active",
-      "criticalDataElements": ["Campaign interaction ID"]
+      "id": "principal-data-owner-priya",
+      "name": "Priya Desai",
+      "scopes": [
+        "data-owner",
+        "remediation-owner"
+      ]
+    },
+    {
+      "id": "principal-verifier-alex",
+      "name": "Alex Rivera",
+      "scopes": [
+        "remediation-verification"
+      ]
+    },
+    {
+      "id": "principal-governance-reviewer-jordan",
+      "name": "Jordan Blake",
+      "scopes": [
+        "independent-governance-review",
+        "governance-exception-authority"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-customer-profile",
+      "name": "Customer profile",
+      "dataProduct": "Customer 360",
+      "domain": "Customer Data",
+      "catalogSnapshotRef": "purview-snapshot-2026-09-05",
+      "ownerId": "principal-data-owner-priya",
+      "fieldRefs": [
+        "field-customer-id",
+        "field-consent-status"
+      ],
+      "requirementRefs": [
+        "requirement-lineage",
+        "requirement-quality",
+        "requirement-classification",
+        "requirement-access",
+        "requirement-retention"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "field-customer-id",
+      "assetRef": "asset-customer-profile",
+      "name": "Customer ID",
+      "classification": "confidential-identifier",
+      "ownerId": "principal-data-owner-priya",
+      "evidenceRefs": [
+        "evidence-lineage",
+        "evidence-classification"
+      ]
+    },
+    {
+      "id": "field-consent-status",
+      "assetRef": "asset-customer-profile",
+      "name": "Consent status",
+      "classification": "restricted-privacy",
+      "ownerId": "principal-data-owner-priya",
+      "evidenceRefs": [
+        "evidence-lineage",
+        "evidence-classification"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "requirement-lineage",
+      "kind": "lineage",
+      "assetRefs": [
+        "asset-customer-profile"
+      ],
+      "ownerId": "principal-data-owner-priya",
+      "evidenceRefs": [
+        "evidence-lineage"
+      ],
+      "findingRef": "finding-lineage"
+    },
+    {
+      "id": "requirement-quality",
+      "kind": "quality",
+      "assetRefs": [
+        "asset-customer-profile"
+      ],
+      "ownerId": "principal-data-owner-priya",
+      "evidenceRefs": [
+        "evidence-quality"
+      ],
+      "findingRef": "finding-quality"
+    },
+    {
+      "id": "requirement-classification",
+      "kind": "classification",
+      "assetRefs": [
+        "asset-customer-profile"
+      ],
+      "ownerId": "principal-data-owner-priya",
+      "evidenceRefs": [
+        "evidence-classification"
+      ],
+      "findingRef": "finding-classification"
+    },
+    {
+      "id": "requirement-access",
+      "kind": "access",
+      "assetRefs": [
+        "asset-customer-profile"
+      ],
+      "ownerId": "principal-data-owner-priya",
+      "evidenceRefs": [
+        "evidence-access"
+      ],
+      "findingRef": "finding-access"
+    },
+    {
+      "id": "requirement-retention",
+      "kind": "retention",
+      "assetRefs": [
+        "asset-customer-profile"
+      ],
+      "ownerId": "principal-data-owner-priya",
+      "evidenceRefs": [
+        "evidence-retention"
+      ],
+      "findingRef": "finding-retention",
+      "exceptionRef": "exception-retention-transition"
     }
   ],
   "evidence": [
-    {"subject": "Customer profile", "kind": "ownership", "state": "verified", "reference": "purview-export/products/customer-profile", "observedAt": "2026-08-15T18:00:00Z"},
-    {"subject": "Customer profile", "kind": "quality", "state": "verified", "reference": "quality-report/customer-profile/2026-08-15", "observedAt": "2026-08-15T19:00:00Z"},
-    {"subject": "Customer ID", "kind": "lineage", "state": "verified", "reference": "lineage-export/customer-id", "observedAt": "2026-08-14T20:00:00Z"},
-    {"subject": "Consent status", "kind": "policy", "state": "verified", "reference": "policy/privacy-consent/v4", "observedAt": "2026-08-12T17:00:00Z"},
-    {"subject": "Customer engagement", "kind": "quality", "state": "stale", "reference": "quality-report/customer-engagement/2026-06-01", "observedAt": "2026-06-01T16:00:00Z"},
-    {"subject": "Campaign interaction ID", "kind": "classification", "state": "missing", "reference": "owner-system follow-up required", "observedAt": "2026-08-15T20:00:00Z"}
+    {
+      "id": "evidence-lineage",
+      "kind": "lineage",
+      "assessmentRef": "governance-review-customer-360-q3",
+      "requirementRef": "requirement-lineage",
+      "assetRef": "asset-customer-profile",
+      "fieldRefs": [
+        "field-customer-id",
+        "field-consent-status"
+      ],
+      "dataProduct": "Customer 360",
+      "domain": "Customer Data",
+      "policyVersion": "data-governance-policy@4.2",
+      "catalogSnapshotRef": "purview-snapshot-2026-09-05",
+      "outcome": "verified",
+      "sourceRef": "controlled://governance-evidence/customer-360/lineage-export",
+      "assertedAt": "2026-09-05T09:00:00Z"
+    },
+    {
+      "id": "evidence-quality",
+      "kind": "quality",
+      "assessmentRef": "governance-review-customer-360-q3",
+      "requirementRef": "requirement-quality",
+      "assetRef": "asset-customer-profile",
+      "fieldRefs": [
+        "field-customer-id",
+        "field-consent-status"
+      ],
+      "dataProduct": "Customer 360",
+      "domain": "Customer Data",
+      "policyVersion": "data-governance-policy@4.2",
+      "catalogSnapshotRef": "purview-snapshot-2026-09-05",
+      "outcome": "verified",
+      "sourceRef": "controlled://governance-evidence/customer-360/quality-report",
+      "assertedAt": "2026-09-05T09:10:00Z"
+    },
+    {
+      "id": "evidence-classification",
+      "kind": "classification",
+      "assessmentRef": "governance-review-customer-360-q3",
+      "requirementRef": "requirement-classification",
+      "assetRef": "asset-customer-profile",
+      "fieldRefs": [
+        "field-customer-id",
+        "field-consent-status"
+      ],
+      "dataProduct": "Customer 360",
+      "domain": "Customer Data",
+      "policyVersion": "data-governance-policy@4.2",
+      "catalogSnapshotRef": "purview-snapshot-2026-09-05",
+      "outcome": "verified",
+      "sourceRef": "controlled://governance-evidence/customer-360/classification-export",
+      "assertedAt": "2026-09-05T09:20:00Z"
+    },
+    {
+      "id": "evidence-access",
+      "kind": "access",
+      "assessmentRef": "governance-review-customer-360-q3",
+      "requirementRef": "requirement-access",
+      "assetRef": "asset-customer-profile",
+      "fieldRefs": [
+        "field-customer-id",
+        "field-consent-status"
+      ],
+      "dataProduct": "Customer 360",
+      "domain": "Customer Data",
+      "policyVersion": "data-governance-policy@4.2",
+      "catalogSnapshotRef": "purview-snapshot-2026-09-05",
+      "outcome": "verified",
+      "sourceRef": "controlled://governance-evidence/customer-360/access-review",
+      "assertedAt": "2026-09-05T09:30:00Z"
+    },
+    {
+      "id": "evidence-retention",
+      "kind": "retention",
+      "assessmentRef": "governance-review-customer-360-q3",
+      "requirementRef": "requirement-retention",
+      "assetRef": "asset-customer-profile",
+      "fieldRefs": [
+        "field-customer-id",
+        "field-consent-status"
+      ],
+      "dataProduct": "Customer 360",
+      "domain": "Customer Data",
+      "policyVersion": "data-governance-policy@4.2",
+      "catalogSnapshotRef": "purview-snapshot-2026-09-05",
+      "outcome": "verified",
+      "sourceRef": "controlled://governance-evidence/customer-360/retention-review",
+      "assertedAt": "2026-09-05T09:40:00Z"
+    },
+    {
+      "id": "evidence-exception-approval",
+      "kind": "exception-approval",
+      "assessmentRef": "governance-review-customer-360-q3",
+      "requirementRef": "requirement-retention",
+      "assetRef": "asset-customer-profile",
+      "exceptionRef": "exception-retention-transition",
+      "dataProduct": "Customer 360",
+      "domain": "Customer Data",
+      "policyVersion": "data-governance-policy@4.2",
+      "catalogSnapshotRef": "purview-snapshot-2026-09-05",
+      "outcome": "approved",
+      "sourceRef": "controlled://governance-evidence/customer-360/retention-exception-approval",
+      "assertedAt": "2026-09-05T09:50:00Z"
+    },
+    {
+      "id": "evidence-remediation-verification",
+      "kind": "remediation-verification",
+      "assessmentRef": "governance-review-customer-360-q3",
+      "requirementRef": "requirement-quality",
+      "assetRef": "asset-customer-profile",
+      "remediationRef": "remediation-quality-threshold",
+      "verificationRef": "verification-quality-threshold",
+      "dataProduct": "Customer 360",
+      "domain": "Customer Data",
+      "policyVersion": "data-governance-policy@4.2",
+      "catalogSnapshotRef": "purview-snapshot-2026-09-05",
+      "outcome": "verified",
+      "sourceRef": "controlled://governance-evidence/customer-360/quality-remediation-verification",
+      "assertedAt": "2026-09-05T10:10:00Z"
+    }
   ],
-  "issues": [
-    {"summary": "Customer engagement quality evidence is outside the freshness window", "severity": "high", "owner": "Growth Analytics", "state": "open", "followUp": "Run the approved quality suite and record the result in the quality owner system"},
-    {"summary": "Campaign interaction ID has no verified classification", "severity": "medium", "owner": "Engagement Data Steward", "state": "planned", "followUp": "Review and classify the element in the authoritative catalog"}
+  "findings": [
+    {
+      "id": "finding-lineage",
+      "requirementRef": "requirement-lineage",
+      "assetRef": "asset-customer-profile",
+      "severity": "none",
+      "state": "clear"
+    },
+    {
+      "id": "finding-quality",
+      "requirementRef": "requirement-quality",
+      "assetRef": "asset-customer-profile",
+      "severity": "high",
+      "state": "resolved",
+      "remediationRef": "remediation-quality-threshold"
+    },
+    {
+      "id": "finding-classification",
+      "requirementRef": "requirement-classification",
+      "assetRef": "asset-customer-profile",
+      "severity": "none",
+      "state": "clear"
+    },
+    {
+      "id": "finding-access",
+      "requirementRef": "requirement-access",
+      "assetRef": "asset-customer-profile",
+      "severity": "none",
+      "state": "clear"
+    },
+    {
+      "id": "finding-retention",
+      "requirementRef": "requirement-retention",
+      "assetRef": "asset-customer-profile",
+      "severity": "medium",
+      "state": "approved-exception",
+      "exceptionRef": "exception-retention-transition"
+    }
   ],
-  "decisionState": "needs-remediation"
+  "exceptions": [
+    {
+      "id": "exception-retention-transition",
+      "requirementRef": "requirement-retention",
+      "findingRef": "finding-retention",
+      "assetRef": "asset-customer-profile",
+      "ownerId": "principal-data-owner-priya",
+      "approvedById": "principal-governance-reviewer-jordan",
+      "approvalEvidenceRef": "evidence-exception-approval",
+      "approvedAt": "2026-09-05T10:00:00Z",
+      "expiresAt": "2099-12-31T23:59:59Z",
+      "state": "approved"
+    }
+  ],
+  "remediations": [
+    {
+      "id": "remediation-quality-threshold",
+      "findingRef": "finding-quality",
+      "requirementRef": "requirement-quality",
+      "assetRef": "asset-customer-profile",
+      "ownerId": "principal-data-owner-priya",
+      "state": "verified",
+      "verificationRef": "verification-quality-threshold"
+    }
+  ],
+  "verifications": [
+    {
+      "id": "verification-quality-threshold",
+      "remediationRef": "remediation-quality-threshold",
+      "findingRef": "finding-quality",
+      "requirementRef": "requirement-quality",
+      "assetRef": "asset-customer-profile",
+      "catalogSnapshotRef": "purview-snapshot-2026-09-05",
+      "verifiedById": "principal-verifier-alex",
+      "evidenceRef": "evidence-remediation-verification",
+      "state": "verified",
+      "verifiedAt": "2026-09-05T10:20:00Z"
+    }
+  ],
+  "limitations": [
+    "The assessment covers the Customer profile asset in the supplied catalog snapshot only."
+  ],
+  "recommendation": {
+    "state": "ready-for-independent-governance-review",
+    "reviewerId": "principal-governance-reviewer-jordan",
+    "reviewedAt": "2026-09-05T10:30:00Z",
+    "rationale": "All declared assets, fields, and requirements have current controlled evidence; the material remediation is independently verified and the bounded retention exception remains valid."
+  },
+  "owner": "Riley Chen",
+  "ownerId": "principal-domain-owner-riley",
+  "handoff": {
+    "state": "ready",
+    "owner": "Riley Chen",
+    "summary": "The exact-snapshot governance assessment is ready for independent owner review without changing catalog or source-system state.",
+    "prohibitedActions": [
+      "grant-access",
+      "revoke-access",
+      "delete-data",
+      "override-classification",
+      "issue-legal-conclusion",
+      "accept-risk",
+      "claim-certification"
+    ]
+  }
 }

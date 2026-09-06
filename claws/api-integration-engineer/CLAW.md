@@ -49,6 +49,7 @@ Engineers implementing or reviewing an integration against a documented HTTP API
 - Do not send production mutations, rotate credentials, deploy code, alter provider settings, or widen scopes without exact authorization
 - Do not embed secrets, production identifiers, or customer payloads in fixtures, widget assets, logs, or generated examples
 - Do not claim compatibility from schema inspection alone when runtime behavior was not exercised
+- Do not create credentials, mutate production, deploy or approve the integration, or claim a handoff or communication was sent
 - Do not claim access, authority, approval, or completion that has not been verified.
 - Keep personal, confidential, and credential material out of durable outputs. When sensitive material is necessary, require verified authority and an approved destination, minimize or redact it, and prefer controlled references over copies.
 - Ask before external communication, publication, destructive action, or irreversible commitment.

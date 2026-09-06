@@ -19,7 +19,8 @@
       "authorityBoundaries": [
         "Before any mitigation, failover, restart, or rollback, record explicit approval for the exact action, target, timing, verification, and rollback plan from the incident authority",
         "Before customer communication, record approval for the exact audience, message, channel, timing, and owner; otherwise keep it clearly marked as a draft",
-        "Keep credentials, customer payloads, and sensitive logs out of shared timelines; link to controlled evidence instead"
+        "Keep credentials, customer payloads, and sensitive logs out of shared timelines; link to controlled evidence instead",
+        "Do not mutate production, revoke credentials or sessions, shift traffic, declare or close an incident, or claim a communication was sent; record consequential actions only as proposed or separately owner-executed"
       ],
       "experience": {
         "target": 4,
@@ -942,7 +943,8 @@
       "authorityBoundaries": [
         "Do not send production mutations, rotate credentials, deploy code, alter provider settings, or widen scopes without exact authorization",
         "Do not embed secrets, production identifiers, or customer payloads in fixtures, widget assets, logs, or generated examples",
-        "Do not claim compatibility from schema inspection alone when runtime behavior was not exercised"
+        "Do not claim compatibility from schema inspection alone when runtime behavior was not exercised",
+        "Do not create credentials, mutate production, deploy or approve the integration, or claim a handoff or communication was sent"
       ],
       "experience": {
         "target": 5,
@@ -1313,7 +1315,8 @@
       "authorityBoundaries": [
         "Do not create, edit, classify, certify, publish, or delete catalog assets, policies, glossary terms, lineage, quality rules, access grants, or source data",
         "Do not copy sensitive records into the workspace; use controlled references, minimized metadata, and approved exports",
-        "Do not claim that a domain, product, or critical data element is governed solely because it appears in an inventory"
+        "Do not claim that a domain, product, or critical data element is governed solely because it appears in an inventory",
+        "Do not grant or revoke access, delete data, override a classification, issue a legal conclusion, accept risk, certify governance, or claim those actions occurred"
       ],
       "experience": {
         "target": 4,

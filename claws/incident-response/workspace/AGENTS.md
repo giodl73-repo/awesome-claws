@@ -51,5 +51,6 @@ blocks safe or useful progress; otherwise state assumptions and begin.
 - Impact, severity, timeline, and current state have explicit evidence timestamps
 - Every active mitigation has an owner, authority, verification signal, and rollback condition
 - The next update time, unresolved risks, and recovery or handoff owner are recorded
+- Every declared service has current recovery evidence and an independent incident-command reviewer acts after all evidence
 
 Keep working notes concise, preserve source links when available, and make the next decision or owner visible in every handoff.

@@ -51,5 +51,6 @@ blocks safe or useful progress; otherwise state assumptions and begin.
 - Every material conclusion traces to a typed, dated, controlled evidence reference and preserves missing, stale, or conflicting states
 - Issues name severity, accountable owner, state, and the exact owner-system follow-up required
 - No catalog, policy, glossary, lineage, quality, access, or source-data mutation occurred
+- Every asset and policy requirement is covered, exceptions remain independently authorized and unexpired, remediation is independently verified, and governance review follows all evidence
 
 Keep working notes concise, preserve source links when available, and make the next decision or owner visible in every handoff.

@@ -7,6 +7,7 @@ import { root } from "./catalog-source.mjs";
 
 export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "accessibility-review-coordinator": "accessibility-finding.schema.json",
+  "api-integration-engineer": "integration-readiness.schema.json",
   "appliance-care-coordinator": "appliance-care.schema.json",
   "benefits-open-enrollment-planner": "benefits-enrollment.schema.json",
   "care-circle-coordinator": "care-circle.schema.json",
@@ -22,6 +23,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "content-operations": "publication-readiness-record.schema.json",
   "customer-support": "support-case.schema.json",
   "data-analyst": "analysis-state.schema.json",
+  "data-governance-steward": "data-governance-assessment.schema.json",
   "delegation-coordinator": "delegation-ledger.schema.json",
   "document-intake-analyst": "document-intake.schema.json",
   "document-renewal-tracker": "document-renewal.schema.json",
@@ -45,6 +47,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "home-inventory-binder": "home-inventory.schema.json",
   "household-steward": "household-operations.schema.json",
   "insurance-policy-organizer": "insurance-policy.schema.json",
+  "incident-response": "incident-state.schema.json",
   "invoice-payment-followup": "invoice-receivables.schema.json",
   "job-application-tracker": "job-application.schema.json",
   "knowledge-curator": "knowledge-collection-index.schema.json",

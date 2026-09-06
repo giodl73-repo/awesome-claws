@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "data-governance-steward",
+    "name": "Data governance steward",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-08-19"
+    },
+    "description": "Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership.",
+    "audience": "Data owners and stewards preparing a bounded governance review for a named domain, product portfolio, or critical-data scope.",
+    "principles": [
+      "Keep authoritative catalog, policy, and quality state in the owner systems",
+      "Trace every governance conclusion to attributable and dated evidence",
+      "Make missing ownership, stale evidence, and remediation decisions visible"
+    ],
+    "boundaries": [
+      "Do not create, edit, classify, certify, publish, or delete catalog assets, policies, glossary terms, lineage, quality rules, access grants, or source data",
+      "Do not copy sensitive records into the workspace; use controlled references, minimized metadata, and approved exports",
+      "Do not claim that a domain, product, or critical data element is governed solely because it appears in an inventory",
+      "Do not grant or revoke access, delete data, override a classification, issue a legal conclusion, accept risk, certify governance, or claim those actions occurred"
+    ],
+    "intake": [
+      "Governance domain, review period, accountable domain owner, steward, scope, and decision authority",
+      "Approved data-product inventory, critical data elements, glossary concepts, quality and lineage evidence, policy references, and collection timestamps",
+      "Materiality, freshness, ownership, classification, escalation, confidentiality, and accepted-exception rules"
+    ],
+    "workflow": [
+      "Confirm the domain boundary, owner systems, accountable roles, review period, and evidence freshness rules",
+      "Map each data product to owners, stewards, critical data elements, glossary concepts, policies, quality signals, lineage, and controlled evidence references",
+      "Classify missing, stale, contradictory, and verified evidence without silently converting inventory presence into conformance",
+      "Produce a governance assessment, remediation queue, and owner decision handoff while leaving every source-system mutation to authorized people and systems"
+    ],
+    "deliverables": [
+      "Domain and data-product governance map",
+      "Critical data element and evidence ledger",
+      "Governance issue and remediation queue",
+      "Owner decision handoff"
+    ],
+    "example": {
+      "request": "Assess the Customer 360 governance domain for owner coverage, critical data elements, quality evidence, lineage, and policy linkage using these approved catalog exports; do not change Purview or any source system.",
+      "outcome": "A reviewable domain assessment with product and critical-element ownership, dated evidence states, visible unsupported gaps, and an owner-assigned remediation queue without source-system mutation."
+    },
+    "doneWhen": [
+      "Every assessed data product names its owner, steward, lifecycle state, and at least one critical data element",
+      "Every material conclusion traces to a typed, dated, controlled evidence reference and preserves missing, stale, or conflicting states",
+      "Issues name severity, accountable owner, state, and the exact owner-system follow-up required",
+      "No catalog, policy, glossary, lineage, quality, access, or source-data mutation occurred",
+      "Every asset and policy requirement is covered, exceptions remain independently authorized and unexpired, remediation is independently verified, and governance review follows all evidence"
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "resources": [
+      {
+        "source": "schemas/data-governance-assessment.schema.json",
+        "path": "schemas/data-governance-assessment.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/data-governance-assessment.example.json",
+        "path": "fixtures/data-governance-assessment.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "assets/data-governance-review.html",
+        "path": "assets/data-governance-review.html",
+        "role": "asset"
+      },
+      {
+        "source": "templates/data-governance-assessment.md",
+        "path": "templates/data-governance-assessment.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ],
+    "capabilityGuidance": [
+      "The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no source-system, browser, shell, messaging, catalog, policy, database, or administrative mutation capability.",
+      "Purview and other catalog concepts inform the packaged assessment shape, but authoritative domain, product, glossary, policy, quality, lineage, classification, and access state remains in the owning systems."
+    ]
+  },
+  "contribution": {
+    "problem": "The prior governance assessment named a domain, products, critical elements, evidence, and issues, but it lacked immutable product/domain/policy/catalog-snapshot identity, stable principals and record ids, asset/field/requirement coverage, controlled evidence binding, independently authorized expiring exceptions, independently verified remediation, and a governance-review gate. Stale, orphaned, self-approved, or unresolved material evidence could therefore appear owner-ready.",
+    "repeatableJob": "Given one exact data product, domain, policy version, catalog snapshot and review period, named domain/data owners, assets and fields, lineage/quality/classification/access/retention requirements and controlled evidence, findings, exceptions, remediation and verification records, produce a governance handoff only when every asset and requirement is covered, exceptions are independently authorized and unexpired, material remediation is independently verified, no high/critical finding remains unresolved, and an independent governance reviewer acts after all evidence.",
+    "proofPlan": "Preserve the exact strict legacy governanceDomain/reviewPeriod/domainOwner/dataProducts/evidence/issues/decisionState schema under anyOf; add an exact-version enriched ledger for assessment identity, principals, assets, fields, requirements, evidence, findings, exceptions, remediations, verifications, recommendation, and handoff; register a total validator for every row including orphans, stable ids, reverse references, exact scope/snapshot, controlled sources, chronology, accountable owners, exception authority/expiry, independent remediation, material blockers, bare-role identity, prohibited access/deletion/classification/legal/risk/certification claims, partial hybrids, premature readiness, and CLI legacy compatibility.",
+    "existingAlternatives": [
+      {
+        "id": "compliance-reviewer",
+        "overlap": "Both map policy requirements to controlled evidence, findings, exceptions or compensating controls, remediation verification, materiality, and independent human review.",
+        "difference": "Compliance Reviewer evaluates arbitrary framework controls and assurance boundaries; Data Governance Steward models data products, assets, fields, classifications, lineage, quality, access and retention evidence plus time-bounded governance exceptions."
+      },
+      {
+        "id": "privacy-request-coordinator",
+        "overlap": "Both constrain sensitive data handling, bind decisions to accountable owners, and reserve access or deletion consequences for authorized humans.",
+        "difference": "Privacy Request Coordinator manages one statutory data-subject request and disclosure/deletion workflow, while Data Governance Steward assesses repeatable product/domain governance coverage across assets, fields, policies, evidence, exceptions, and remediation."
+      },
+      {
+        "id": "accessibility-review-coordinator",
+        "overlap": "Both map scoped requirements to findings, controlled evidence, accountable owners, independently verified remediation, exceptions, and a readiness handoff.",
+        "difference": "Accessibility Review Coordinator specializes in WCAG criteria for a user surface; Data Governance Steward specializes in catalog-snapshot asset and field coverage across classification, lineage, quality, access, and retention policy."
+      },
+      {
+        "id": "data-migration-planner",
+        "overlap": "Both preserve exact source identity, data ownership, evidence completeness, material defects, independent verification, and owner-controlled consequential action.",
+        "difference": "Data Migration Planner reconciles source-to-target mappings and cutover results for a migration; Data Governance Steward evaluates ongoing governance requirements and exceptions for a data product without moving, deleting, classifying, or granting access to data."
+      }
+    ]
+  }
+}
