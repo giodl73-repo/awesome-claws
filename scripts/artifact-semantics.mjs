@@ -40273,7 +40273,7 @@ function localizationReadinessFindings(value) {
   const enumDefectSeverities = new Set(["blocker", "critical", "major", "minor"]);
   const enumDefectStatuses = new Set(["open", "fixed", "verified", "closed"]);
   const resolvedDefectStatuses = new Set(["verified", "closed"]);
-  let openLocalizationBlockingDefect = false;
+  let unresolvedLocalizationDefect = false;
   let invalidResolvedDefect = false;
   const translationsById = new Map(translations.filter(hasStableRecordId).map((item) => [item.id, item]));
   for (const [index, defect] of defectsRecord.entries) {
@@ -40299,17 +40299,13 @@ function localizationReadinessFindings(value) {
         finding("invalid_defect_status", `defects[${index}].status`, `Defect status ${JSON.stringify(defect.status)} is not supported.`),
       );
     }
-    if (
-      enumDefectSeverities.has(defect.severity) &&
-      (defect.severity === "blocker" || defect.severity === "critical") &&
-      !resolvedDefectStatuses.has(defect.status)
-    ) {
-      openLocalizationBlockingDefect = true;
+    if (enumDefectSeverities.has(defect.severity) && !resolvedDefectStatuses.has(defect.status)) {
+      unresolvedLocalizationDefect = true;
       findings.push(
         finding(
-          "open_localization_blocker",
+          "unresolved_localization_defect",
           `defects[${index}].status`,
-          "A blocker or critical severity defect must be verified or closed before handoff can be recommended.",
+          "Every localization defect must be verified or closed before handoff can be recommended.",
         ),
       );
     }
@@ -40489,7 +40485,7 @@ function localizationReadinessFindings(value) {
     if (!releaseScopeValid) return false;
     if (locales.length === 0) return false;
     if (incompleteLocaleCoverage) return false;
-    if (openLocalizationBlockingDefect) return false;
+    if (unresolvedLocalizationDefect) return false;
     if (invalidResolvedDefect) return false;
     const reviewer = principalsById.get(recommendation.reviewerId);
     if (!reviewer || !isAccountablePrincipalName(reviewer.name)) return false;
@@ -40540,7 +40536,7 @@ function localizationReadinessFindings(value) {
       finding(
         "premature_localization_recommendation",
         "recommendation.state",
-        "A recommend-handoff state requires a non-empty, fully covered locale portfolio, no open blocker/critical defect, and an independent localization-release-authority reviewer (distinct from the owner) dated at or after every grounding translation and defect verification.",
+        "A recommend-handoff state requires a non-empty, fully covered locale portfolio, no unresolved defect, and an independent localization-release-authority reviewer (distinct from the owner) dated at or after every grounding translation and defect verification.",
       ),
     );
   }

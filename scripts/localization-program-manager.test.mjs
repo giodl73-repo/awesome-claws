@@ -258,8 +258,30 @@ test("localization validator rejects an open blocker-severity defect", () => {
   });
   assert.equal(isValid(openBlocker), false);
   const findings = validateArtifactSemantics("localization-program-manager", openBlocker);
-  assert.ok(findings.some((item) => item.code === "open_localization_blocker"));
+  assert.ok(findings.some((item) => item.code === "unresolved_localization_defect"));
   assert.ok(findings.some((item) => item.code === "premature_localization_recommendation"));
+});
+
+test("localization validator blocks handoff while major or minor defects remain unresolved", () => {
+  for (const [severity, status] of [
+    ["major", "open"],
+    ["minor", "fixed"],
+  ]) {
+    const unresolved = clone();
+    unresolved.defects.push({
+      id: `defect-${severity}-${status}`,
+      translationRef: "translation-fr-total",
+      kind: "truncation",
+      severity,
+      status,
+      foundAt: "2026-08-26T09:10:00Z",
+    });
+    assert.equal(isValid(unresolved), false);
+    const findings = validateArtifactSemantics("localization-program-manager", unresolved);
+    assert.ok(findings.some((item) => item.code === "unresolved_localization_defect"));
+    assert.ok(findings.some((item) => item.code === "premature_localization_recommendation"));
+    assert.ok(findings.some((item) => item.code === "premature_ready_state"));
+  }
 });
 
 test("localization validator rejects a defect verified by the same principal who produced the translation (self-verification)", () => {
