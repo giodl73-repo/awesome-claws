@@ -1,6 +1,6 @@
 # Awesome Claws roadmap
 
-Awesome Claws has 102 maintained starter Claws. The catalog now covers a broad
+Awesome Claws has 103 maintained starter Claws. The catalog now covers a broad
 personal-agent lane, a work-operations lane, and several capstone examples that
 show how Claws compose into larger managed workflows.
 
@@ -12,7 +12,7 @@ show how Claws compose into larger managed workflows.
 | Operations | 22 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
 | Analysis | 16 | Research, evidence collection, financial monitoring, public/company watching, data work, and model evaluation |
 | Engineering | 8 | Software delivery, incidents, release readiness, security, migration, QA, and controlled local change execution |
-| Governance | 6 | Compliance, privacy requests, accessibility review, data governance, legal-matter preservation, and records retention and disposition |
+| Governance | 7 | Compliance, privacy requests, accessibility review, data governance, legal-matter preservation, records retention and disposition, and vulnerability exposure disposition |
 | Product | 3 | Product decisions, UX synthesis, and experiments |
 
 The strongest recent expansion is practical personal work: vehicle service,
@@ -39,15 +39,15 @@ read specialist artifacts, surface conflicts, and prepare owner decisions.
 ## Quality Uplift
 
 The [catalog quality scorecard](catalog-quality-scorecard.md) is now the primary
-post-100 prioritization tool. The current baseline has 102 of 102 Claws passing
+post-100 prioritization tool. The current baseline has 103 of 103 Claws passing
 the non-negotiable package, regression, resource, and Experience gates. The
 highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 91 of 102 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 102 of 102 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 102 of 102 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 92 of 103 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 103 of 103 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 103 of 103 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
@@ -134,6 +134,22 @@ outcome state, authoritative independent certificates, and residual-copy
 closure. Records, legal, custody, approval, execution, compliance, and risk
 owners remain authoritative; the Claw has no records-system, eDiscovery,
 deletion, movement, communication, or repository capability.
+
+Vulnerability Exposure Disposition Coordinator owns the exposure-reconciliation
+lane. It is filed under governance rather than engineering because its object is
+a persistent exposure triple reconciled under named human authority, not a
+delivery-lifecycle artifact scoped to one change, incident, or release. It
+derives every deployed instance, component identity, and advisory-at-revision
+triple from supplied inventory and exact affected, fixed, and backport version
+strings, compares the current and prior universes for set equality against a
+declared coverage index, requires kind-specific terminal evidence for every
+current triple and one reopened row per prior triple, invalidates every exception
+a widening, retraction, or withdrawal killed against the exact revision that
+killed it, and keeps every suppressed scanner signal visible. Range expressions
+stay owner-system provenance and are never parsed. Engineering, exception-
+approval, investigation, and risk owners remain authoritative; the Claw does not
+scan, reach networks or registries, infer severity or exploitability, patch,
+gate a release, publish VEX, or claim remediation, compliance, or security.
 
 Potential additions remain subject to the
 [contribution admission policy](contribution-admission.md). Civic Services

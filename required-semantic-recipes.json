@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 102,
-    "coveredCount": 102,
-    "recipeCount": 274,
-    "findingCodeCount": 278
+    "validatorCount": 103,
+    "coveredCount": 103,
+    "recipeCount": 277,
+    "findingCodeCount": 284
   },
   "entries": [
     {
@@ -4267,6 +4267,52 @@
           "replacement": "mock-plus-missing",
           "expectedCodes": [
             "invalid_retention_snapshot_binding"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vulnerability-disposition-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-expired-exception-not-reopened-1",
+          "operator": "replace",
+          "path": [
+            "snapshot",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "expired_exception_not_reopened",
+            "invalid_handoff_state",
+            "missing_investigation_owner"
+          ]
+        },
+        {
+          "id": "semantic-expired-exception-not-reopened-2",
+          "operator": "replace",
+          "path": [
+            "snapshot",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "expired_exception_not_reopened",
+            "invalid_disposition_chronology",
+            "invalid_vulnerability_evidence"
+          ]
+        },
+        {
+          "id": "semantic-invalid-vulnerability-snapshot-binding-3",
+          "operator": "replace",
+          "path": [
+            "snapshot",
+            "timezone"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_vulnerability_snapshot_binding",
+            "missing_investigation_owner"
           ]
         }
       ]

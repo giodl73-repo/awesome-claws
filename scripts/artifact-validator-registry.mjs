@@ -106,6 +106,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "wardrobe-organizer": "wardrobe-plan.schema.json",
   "warranty-returns-manager": "warranty-returns.schema.json",
   "website-evidence-collector": "website-capture-evidence-ledger.schema.json",
+  "vulnerability-disposition-coordinator": "vulnerability-disposition.schema.json",
   "work-chief-of-staff": "operating-portfolio.schema.json",
   "workflow-operator": "workflow-execution-reconciliation.schema.json",
 });

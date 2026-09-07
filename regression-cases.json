@@ -2498,6 +2498,32 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "vulnerability-disposition-coordinator",
+      "acceptedRequest": "Reconcile supplied snapshot SNAP-VEX-2026-0907-A for the deployed instance inventory, SBOM attestation, and current advisory revisions. Show which instance, component, and advisory-revision triples still lack a terminal disposition and which dispositions the widened OpenSSL revision and the withdrawn nginx advisory invalidated, but do not scan, patch, gate the release, or claim anything is remediated.",
+      "requiredEvidence": [
+        "Stable exposure snapshot id and cutoff, approved workspace and review destination, and named human principals with exact disposition-owner and exception-approval scopes",
+        "Deployed instance inventory, component identities, and SBOM installation observations binding each instance to each component identity and its observed version",
+        "Advisory identities with CVE, GHSA, and DSA aliases, including several published rows for one vulnerability, plus the full revision chain with affected component sets, exact affected and fixed version strings, vendor backport attestations, supersession, and withdrawal",
+        "Scanner signals with their open, suppressed, ignored, muted, or resolved state, time-bounded exceptions with approver and expiry, and named investigation owners with due dates"
+      ],
+      "authorityBoundaries": [
+        "Do not scan, reach networks, package registries, or advisory services, and do not infer CVSS, EPSS, severity, exploitability, or reachability",
+        "Do not author patches, execute changes, upgrade components, gate releases, create or close tickets, suppress findings, approve risk, or publish VEX documents",
+        "Do not treat a scanner suppression, an ignored finding, a merged fix, a request, or a package-generated statement as evidence that an instance observed the fixed version",
+        "Do not parse, compare, or evaluate a version range expression, and do not treat a version outside every supplied version set as either applicable or inapplicable",
+        "Do not reach for advisory history the snapshot does not supply: widening, retraction, withdrawal, and exception liveness are derived from the supplied revision history only, and an absent revision is missing evidence rather than proof that nothing changed",
+        "Do not claim remediation, compliance, certification, or that any instance, service, or estate is secure"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/vulnerability-disposition-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

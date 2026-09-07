@@ -49482,6 +49482,1941 @@ function legalMatterFindings(input) {
   return findings;
 }
 
+function vulnerabilityDispositionFindings(input) {
+  const value = isRecord(input) ? input : {};
+  const findings = [];
+  if (value.schemaVersion !== "awesomeClaws.vulnerabilityDisposition.v1") {
+    findings.push(
+      finding(
+        "invalid_vulnerability_disposition_schema_version",
+        "schemaVersion",
+        "Exposure disposition artifacts must declare awesomeClaws.vulnerabilityDisposition.v1.",
+      ),
+    );
+  }
+
+  const ledgerSpecifications = [
+    ["principals", "principalRefs", "Principal"],
+    ["evidence", "evidenceRefs", "Evidence"],
+    ["instances", "instanceRefs", "Deployed instance"],
+    ["components", "componentRefs", "Component identity"],
+    ["installations", "installationRefs", "SBOM installation"],
+    ["advisories", "advisoryRefs", "Advisory"],
+    ["advisoryRevisions", "advisoryRevisionRefs", "Advisory revision"],
+    ["scannerSignals", "scannerSignalRefs", "Scanner signal"],
+    ["exceptions", "exceptionRefs", "Exception"],
+    ["dispositions", "dispositionRefs", "Disposition"],
+    ["blockers", "blockerRefs", "Blocker"],
+  ];
+  const ledgers = upliftLedger(
+    value,
+    ledgerSpecifications.map(([field, , label]) => [field, label]),
+    findings,
+  );
+  const principals = upliftPrincipalContext(
+    ledgers.principals,
+    "vulnerability exposure disposition coordinator",
+    findings,
+  );
+
+  const allowedJustifications = new Set([
+    "vulnerable_code_not_present",
+    "vulnerable_code_not_in_execute_path",
+    "vulnerable_code_cannot_be_controlled_by_adversary",
+    "inline_mitigations_already_exist",
+  ]);
+  const nonApprovingSignalStates = new Set(["suppressed", "ignored", "muted"]);
+  // The exact evidence kinds a disposition of each kind is decided on. A decision
+  // is dated against these facts, because an owner cannot have decided on a record
+  // that did not exist yet.
+  const decisionEvidenceKinds = new Set([
+    "post-fix-version-observation",
+    "vendor-backport-attestation",
+    "component-analysis",
+    "named-human-exception-approval",
+    "investigation-assignment",
+  ]);
+  const inventoryStates = new Set([
+    "supplied-complete",
+    "incomplete",
+    "unknown",
+    "conflicting",
+  ]);
+  const dispositionOwnerScope = "vulnerability-disposition-owner";
+  // The controlled record an advisory identity and every revision of its chain are
+  // read out of. Nothing about an advisory is derivable from a row that names no
+  // supplied record, and no record supports a row it does not name.
+  const advisoryRecordKind = "advisory-record";
+  // The controlled record an exception approval is read out of. It is the approver's
+  // own record: nobody else supplies it on the approver's behalf.
+  const approvalEvidenceKind = "named-human-exception-approval";
+  // Exact blocker codes. Every gap this package refuses to resolve has to be named
+  // by an open blocker bound to the exact rows the gap is about, so that omission
+  // cannot pass for reconciliation.
+  const instanceAbsentBlocker = "instance-absent-from-sbom";
+  const unclassifiedVersionBlocker = "version-not-classified-by-revision";
+  const unreconciledSignalBlocker = "scanner-signal-unreconciled";
+  const signalWithoutTripleBlocker = "scanner-signal-without-triple";
+  const inventoryUnresolvedBlocker = "inventory-state-unresolved";
+  const bareVulnerabilityRole =
+    /^(?:security(?: team| engineer| owner| analyst)?|vulnerability(?: management| owner| manager)?|appsec|platform team|engineering|the owner|risk owner|approver|exception approver|investigation owner|scanner|vulnerability-disposition-coordinator)$/iu;
+
+  const snapshot = isRecord(value.snapshot) ? value.snapshot : {};
+  const coverage = isRecord(value.coverage) ? value.coverage : {};
+  const handoff = isRecord(value.handoff) ? value.handoff : {};
+
+  function timestamp(candidate) {
+    const milliseconds = upliftTimestampMs(candidate);
+    return Number.isFinite(milliseconds) ? milliseconds : null;
+  }
+
+  function sameSet(actual, expected) {
+    return (
+      Array.isArray(actual) &&
+      actual.length === expected.size &&
+      new Set(actual).size === actual.length &&
+      actual.every((item) => expected.has(item))
+    );
+  }
+
+  const asOfMs = timestamp(snapshot.asOf);
+  const allIdList = ledgerSpecifications.flatMap(([field]) => [...ledgers[field].ids]);
+  const allIds = new Set(allIdList);
+  findings.push(...uniqueFindings(allIdList, "$", "Ledger id"));
+
+  if (
+    typeof snapshot.id !== "string" ||
+    asOfMs === null ||
+    typeof snapshot.timezone !== "string" ||
+    snapshot.timezone.length === 0 ||
+    !isResolvableTimeZone(snapshot.timezone) ||
+    !inventoryStates.has(snapshot.inventoryState) ||
+    !isValidControlledReference(snapshot.workspaceRef) ||
+    !isValidControlledReference(snapshot.destinationRef)
+  ) {
+    findings.push(
+      finding(
+        "invalid_vulnerability_snapshot_binding",
+        "snapshot",
+        "The artifact needs one stable snapshot id, cutoff, resolvable timezone, declared inventory state, controlled workspace, and controlled review destination.",
+      ),
+    );
+  }
+
+  for (const [field, indexField, label] of ledgerSpecifications) {
+    if (!sameSet(snapshot[indexField], ledgers[field].ids)) {
+      findings.push(
+        finding(
+          "incomplete_vulnerability_index",
+          `snapshot.${indexField}`,
+          `${label} index must cover every current row exactly once.`,
+        ),
+      );
+    }
+    for (const [index, row] of ledgers[field].entries) {
+      if (row.snapshotRef !== snapshot.id) {
+        findings.push(
+          finding(
+            "cross_vulnerability_snapshot",
+            `${field}[${index}].snapshotRef`,
+            "Every ledger row must bind to the exact exposure snapshot.",
+          ),
+        );
+      }
+    }
+  }
+  if (coverage.snapshotRef !== snapshot.id || handoff.snapshotRef !== snapshot.id) {
+    findings.push(
+      finding(
+        "cross_vulnerability_snapshot",
+        "coverage.snapshotRef",
+        "Coverage and handoff must bind to the exact exposure snapshot.",
+      ),
+    );
+  }
+
+  function reference(owner, field, path, allowed, label, { nullable = false } = {}) {
+    const ref = owner?.[field];
+    if (nullable && ref === null) return null;
+    if (typeof ref !== "string" || !allowed.has(ref)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `${path}.${field}`,
+          `${label} ${JSON.stringify(ref)} does not resolve.`,
+        ),
+      );
+      return null;
+    }
+    return ref;
+  }
+
+  function stringList(owner, field, path, label) {
+    const result = stringListFindings(owner?.[field], `${path}.${field}`, label);
+    findings.push(
+      ...result.findings,
+      ...uniqueFindings(result.items, `${path}.${field}`, label),
+    );
+    return result.items;
+  }
+
+  function referenceList(owner, field, path, allowed, label) {
+    const items = stringList(owner, field, path, label);
+    findings.push(...referenceFindings(items, allowed, `${path}.${field}`, label));
+    return items;
+  }
+
+  function evidenceSupports(ref, subjectRef, kind) {
+    const evidence = ledgers.evidence.byId.get(ref);
+    return (
+      isRecord(evidence) &&
+      (kind === undefined || evidence.kind === kind) &&
+      Array.isArray(evidence.subjectRefs) &&
+      evidence.subjectRefs.includes(subjectRef) &&
+      isValidControlledReference(evidence.controlledRef)
+    );
+  }
+
+  // An approval is the approver's own act. Controlled approval evidence naming the
+  // exception supports it only when the approver supplied it: a requester, the
+  // disposition owner who benefits, or any other principal filing a record of
+  // someone else's approval is manufacturing that approval, not carrying it.
+  function approvalEvidenceSupports(exception, ref) {
+    return (
+      evidenceSupports(ref, exception.id, approvalEvidenceKind) &&
+      ledgers.evidence.byId.get(ref).suppliedByRef === exception.approvedByRef
+    );
+  }
+
+  for (const [index, principal] of ledgers.principals.entries) {
+    const path = `principals[${index}]`;
+    const evidenceRefs = referenceList(
+      principal,
+      "evidenceRefs",
+      path,
+      ledgers.evidence.ids,
+      "Principal evidence",
+    );
+    if (
+      typeof principal.name !== "string" ||
+      bareVulnerabilityRole.test(principal.name.trim())
+    ) {
+      findings.push(
+        finding(
+          "bare_vulnerability_role_principal",
+          `${path}.name`,
+          "Exposure authority requires a named human, not a bare role or package identity.",
+        ),
+      );
+    }
+    if (
+      !evidenceRefs.some((ref) => evidenceSupports(ref, principal.id, "authority-roster"))
+    ) {
+      findings.push(
+        finding(
+          "invalid_vulnerability_evidence",
+          `${path}.evidenceRefs`,
+          "Every named principal needs controlled authority evidence that names that principal.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, row] of ledgers.evidence.entries) {
+    const path = `evidence[${index}]`;
+    reference(row, "suppliedByRef", path, ledgers.principals.ids, "Evidence supplier");
+    const subjectRefs = referenceList(
+      row,
+      "subjectRefs",
+      path,
+      allIds,
+      "Evidence subject",
+    );
+    const observedAt = timestamp(row.observedAt);
+    if (
+      subjectRefs.length === 0 ||
+      subjectRefs.includes(row.id) ||
+      !isValidControlledReference(row.controlledRef) ||
+      observedAt === null ||
+      (asOfMs !== null && observedAt > asOfMs)
+    ) {
+      findings.push(
+        finding(
+          "invalid_vulnerability_evidence",
+          path,
+          "Evidence needs a controlled reference, an observation time at or before the cutoff, and at least one other subject.",
+        ),
+      );
+    }
+  }
+
+  const installationsByInstance = new Map();
+  const installationsByComponent = new Map();
+  const installationByPair = new Map();
+  const installationIndexById = new Map();
+  for (const [index, row] of ledgers.installations.entries) {
+    const path = `installations[${index}]`;
+    installationIndexById.set(row.id, index);
+    const instanceRef = reference(
+      row,
+      "instanceRef",
+      path,
+      ledgers.instances.ids,
+      "Installation instance",
+    );
+    const componentRef = reference(
+      row,
+      "componentRef",
+      path,
+      ledgers.components.ids,
+      "Installation component",
+    );
+    const evidenceRefs = referenceList(
+      row,
+      "evidenceRefs",
+      path,
+      ledgers.evidence.ids,
+      "Installation evidence",
+    );
+    if (!evidenceRefs.some((ref) => evidenceSupports(ref, row.id, "sbom-attestation"))) {
+      findings.push(
+        finding(
+          "invalid_vulnerability_evidence",
+          `${path}.evidenceRefs`,
+          "Every SBOM installation needs a controlled attestation that names it.",
+        ),
+      );
+    }
+    if (instanceRef === null || componentRef === null) continue;
+    const pair = `${instanceRef}|${componentRef}`;
+    if (installationByPair.has(pair)) {
+      findings.push(
+        finding(
+          "duplicate_installation",
+          path,
+          "One instance carries one installation row per component identity.",
+        ),
+      );
+      continue;
+    }
+    installationByPair.set(pair, row);
+    installationsByInstance.set(instanceRef, [
+      ...(installationsByInstance.get(instanceRef) ?? []),
+      row,
+    ]);
+    installationsByComponent.set(componentRef, [
+      ...(installationsByComponent.get(componentRef) ?? []),
+      row,
+    ]);
+  }
+
+  const openBlockers = [];
+  for (const [index, row] of ledgers.blockers.entries) {
+    const path = `blockers[${index}]`;
+    reference(row, "ownerRef", path, ledgers.principals.ids, "Blocker owner");
+    referenceList(row, "targetRefs", path, allIds, "Blocker target");
+    referenceList(row, "evidenceRefs", path, ledgers.evidence.ids, "Blocker evidence");
+    if (row.status === "open") openBlockers.push(row);
+  }
+
+  // An exact blocker names every row the gap is about, so a blocker for one
+  // installation or one revision can never stand in for a different one.
+  function hasExactBlocker(code, targetRefs) {
+    return openBlockers.some(
+      (blocker) =>
+        blocker.code === code &&
+        Array.isArray(blocker.targetRefs) &&
+        targetRefs.every((ref) => blocker.targetRefs.includes(ref)),
+    );
+  }
+
+  for (const [index, row] of ledgers.instances.entries) {
+    const path = `instances[${index}]`;
+    reference(row, "ownerRef", path, ledgers.principals.ids, "Instance owner");
+    const evidenceRefs = referenceList(
+      row,
+      "evidenceRefs",
+      path,
+      ledgers.evidence.ids,
+      "Instance evidence",
+    );
+    if (!evidenceRefs.some((ref) => evidenceSupports(ref, row.id, "deployment-inventory"))) {
+      findings.push(
+        finding(
+          "invalid_vulnerability_evidence",
+          `${path}.evidenceRefs`,
+          "Every deployed instance needs a controlled deployment inventory that names it.",
+        ),
+      );
+    }
+    const installed = installationsByInstance.get(row.id) ?? [];
+    if (
+      installed.length === 0 &&
+      !(
+        snapshot.inventoryState === "incomplete" &&
+        hasExactBlocker(instanceAbsentBlocker, [row.id])
+      )
+    ) {
+      findings.push(
+        finding(
+          "orphan_instance_without_inventory",
+          path,
+          "Every deployed instance needs SBOM installation rows, or an incomplete snapshot with an open instance-absent-from-sbom blocker.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, row] of ledgers.components.entries) {
+    const path = `components[${index}]`;
+    const evidenceRefs = referenceList(
+      row,
+      "evidenceRefs",
+      path,
+      ledgers.evidence.ids,
+      "Component evidence",
+    );
+    if (!evidenceRefs.some((ref) => evidenceSupports(ref, row.id, "sbom-attestation"))) {
+      findings.push(
+        finding(
+          "invalid_vulnerability_evidence",
+          `${path}.evidenceRefs`,
+          "Every component identity needs a controlled SBOM attestation that names it.",
+        ),
+      );
+    }
+  }
+
+  // A CVE row, its GHSA row, and its DSA row are one vulnerability published under
+  // several identities, so several advisory rows in one alias group are legitimate.
+  // The claim has to be reciprocal: each row's canonical identity and aliases must
+  // name the other row's canonical identity. A one-sided free-text alias is one
+  // row's unverified assertion about another, and honoring it would let a shadow
+  // advisory collapse a distinct vulnerability, its scanner signals, its
+  // disposition, and its exception scope into an existing group. The duplicate this
+  // rejects is two rows claiming the same canonical identity.
+  const aliasParent = new Map();
+  function aliasFind(node) {
+    let cursor = node;
+    while (aliasParent.get(cursor) !== cursor) {
+      aliasParent.set(cursor, aliasParent.get(aliasParent.get(cursor)));
+      cursor = aliasParent.get(cursor);
+    }
+    return cursor;
+  }
+  function aliasUnion(left, right) {
+    const leftRoot = aliasFind(left);
+    const rightRoot = aliasFind(right);
+    if (leftRoot !== rightRoot) aliasParent.set(leftRoot, rightRoot);
+  }
+  const canonicalOwners = new Map();
+  const advisoryIdentities = new Map();
+  for (const [index, row] of ledgers.advisories.entries) {
+    if (!aliasParent.has(row.id)) aliasParent.set(row.id, row.id);
+    advisoryIdentities.set(
+      row.id,
+      new Set(
+        [row.canonicalId, ...(Array.isArray(row.aliases) ? row.aliases : [])].filter(
+          (item) => typeof item === "string",
+        ),
+      ),
+    );
+    if (typeof row.canonicalId !== "string") continue;
+    const owner = canonicalOwners.get(row.canonicalId);
+    if (owner === undefined) {
+      canonicalOwners.set(row.canonicalId, row.id);
+      continue;
+    }
+    findings.push(
+      finding(
+        "duplicate_advisory_alias",
+        `advisories[${index}].canonicalId`,
+        `Advisory repeats the canonical identity of ${owner}; one canonical advisory id carries one advisory row.`,
+      ),
+    );
+  }
+  // Only a reciprocal pair merges. An identity no supplied advisory row carries as
+  // its canonical id names nothing this snapshot could reconcile against, so it
+  // stays provenance; an identity another row does carry has to be claimed back.
+  for (const [index, row] of ledgers.advisories.entries) {
+    for (const alias of advisoryIdentities.get(row.id) ?? []) {
+      const counterpart = canonicalOwners.get(alias);
+      if (counterpart === undefined || counterpart === row.id) continue;
+      if (
+        typeof row.canonicalId === "string" &&
+        advisoryIdentities.get(counterpart)?.has(row.canonicalId) === true
+      ) {
+        aliasUnion(row.id, counterpart);
+        continue;
+      }
+      findings.push(
+        finding(
+          "unreciprocated_advisory_alias",
+          `advisories[${index}].aliases`,
+          `Advisory ${row.id} claims ${alias}, which ${counterpart} carries as its canonical identity, but ${counterpart} does not name ${JSON.stringify(row.canonicalId)} back; one vulnerability published under several identities needs both rows to name each other, and a one-sided claim merges nothing.`,
+        ),
+      );
+    }
+  }
+  const groupByAdvisory = new Map();
+  const advisoriesInGroup = new Map();
+  for (const row of ledgers.advisories.items) {
+    const group = aliasFind(row.id);
+    groupByAdvisory.set(row.id, group);
+    advisoriesInGroup.set(group, [...(advisoriesInGroup.get(group) ?? []), row.id]);
+  }
+  function groupOf(advisoryRef) {
+    return groupByAdvisory.get(advisoryRef) ?? `ungrouped:${advisoryRef}`;
+  }
+  // An advisory identity the supplied advisory record does not name back is an
+  // identity this snapshot cannot show anyone supplied: the row and the record have
+  // to name each other, the way every other controlled evidence binding does.
+  for (const [index, row] of ledgers.advisories.entries) {
+    const evidenceRefs = referenceList(
+      row,
+      "evidenceRefs",
+      `advisories[${index}]`,
+      ledgers.evidence.ids,
+      "Advisory evidence",
+    );
+    if (!evidenceRefs.some((ref) => evidenceSupports(ref, row.id, advisoryRecordKind))) {
+      findings.push(
+        finding(
+          "invalid_vulnerability_evidence",
+          `advisories[${index}].evidenceRefs`,
+          `Advisory ${row.id} needs controlled ${advisoryRecordKind} evidence naming that exact advisory row.`,
+        ),
+      );
+    }
+  }
+
+  function affectedByComponent(revision) {
+    const map = new Map();
+    const entries = Array.isArray(revision?.affected) ? revision.affected : [];
+    for (const entry of entries) {
+      if (!isRecord(entry) || typeof entry.componentRef !== "string") continue;
+      const backports = Array.isArray(entry.backportFixedVersions)
+        ? entry.backportFixedVersions.filter(
+            (item) => isRecord(item) && typeof item.version === "string",
+          )
+        : [];
+      map.set(entry.componentRef, {
+        affected: new Set(
+          (Array.isArray(entry.affectedVersions) ? entry.affectedVersions : []).filter(
+            (item) => typeof item === "string",
+          ),
+        ),
+        fixed: new Set(
+          (Array.isArray(entry.fixedVersions) ? entry.fixedVersions : []).filter(
+            (item) => typeof item === "string",
+          ),
+        ),
+        backports: new Map(backports.map((item) => [item.version, item.attestationRef])),
+      });
+    }
+    return map;
+  }
+
+  // Exact version-set membership is the only classification this package performs.
+  // `rangeExpression` is owner-system provenance and is never parsed or compared.
+  function versionClassifications(entry, version) {
+    const found = new Set();
+    if (typeof version !== "string") return found;
+    if (entry.affected.has(version)) found.add("affected");
+    if (entry.fixed.has(version)) found.add("fixed");
+    if (entry.backports.has(version)) found.add("backport-fixed");
+    return found;
+  }
+
+  function preferredClassification(classifications) {
+    for (const candidate of ["affected", "fixed", "backport-fixed"]) {
+      if (classifications.has(candidate)) return candidate;
+    }
+    return null;
+  }
+
+  function conflictingClassification(classifications) {
+    return classifications.has("affected") && classifications.size > 1;
+  }
+
+  function mergeClassificationEntries(entries) {
+    const merged = { affected: new Set(), fixed: new Set(), backports: new Map() };
+    for (const entry of entries) {
+      for (const version of entry.affected) merged.affected.add(version);
+      for (const version of entry.fixed) merged.fixed.add(version);
+      for (const [version, attestationRef] of entry.backports) {
+        merged.backports.set(version, attestationRef);
+      }
+    }
+    return merged;
+  }
+
+  function revisionWidens(previous, next) {
+    if (next?.withdrawn === true) return true;
+    const before = affectedByComponent(previous);
+    const after = affectedByComponent(next);
+    for (const [componentRef, entry] of after) {
+      const prior = before.get(componentRef);
+      if (!prior) return true;
+      for (const version of entry.affected) {
+        if (!prior.affected.has(version)) return true;
+      }
+    }
+    for (const [componentRef, prior] of before) {
+      const entry = after.get(componentRef);
+      if (!entry) continue;
+      for (const version of prior.fixed) {
+        if (!entry.fixed.has(version)) return true;
+      }
+      for (const version of prior.backports.keys()) {
+        if (!entry.backports.has(version)) return true;
+      }
+    }
+    return false;
+  }
+
+  // The same widening test restricted to one component, which is the scope an
+  // exception is written against: a newly named component, a newly affected
+  // version, a retracted fixed version, or a withdrawal. A widening of one
+  // component says nothing about another.
+  function revisionWidensComponent(previous, next, componentRef) {
+    if (next?.withdrawn === true) return true;
+    if (typeof componentRef !== "string") return false;
+    const after = affectedByComponent(next).get(componentRef);
+    if (after === undefined) return false;
+    const before = affectedByComponent(previous).get(componentRef);
+    if (before === undefined) return true;
+    for (const version of after.affected) {
+      if (!before.affected.has(version)) return true;
+    }
+    for (const version of before.fixed) {
+      if (!after.fixed.has(version)) return true;
+    }
+    for (const version of before.backports.keys()) {
+      if (!after.backports.has(version)) return true;
+    }
+    return false;
+  }
+
+  const revisionsByAdvisory = new Map();
+  const supersededRevisionRefs = new Set();
+  for (const [index, row] of ledgers.advisoryRevisions.entries) {
+    const path = `advisoryRevisions[${index}]`;
+    const advisoryRef = reference(
+      row,
+      "advisoryRef",
+      path,
+      ledgers.advisories.ids,
+      "Revision advisory",
+    );
+    const evidenceRefs = referenceList(
+      row,
+      "evidenceRefs",
+      path,
+      ledgers.evidence.ids,
+      "Revision evidence",
+    );
+    if (!evidenceRefs.some((ref) => evidenceSupports(ref, row.id, advisoryRecordKind))) {
+      findings.push(
+        finding(
+          "invalid_vulnerability_evidence",
+          `${path}.evidenceRefs`,
+          `Revision ${row.id} needs controlled ${advisoryRecordKind} evidence naming that exact revision; widening, retraction, supersession, and withdrawal are read out of the supplied record.`,
+        ),
+      );
+    }
+    for (const [entryIndex, entry] of (Array.isArray(row.affected)
+      ? row.affected
+      : []
+    ).entries()) {
+      if (!isRecord(entry)) continue;
+      reference(
+        entry,
+        "componentRef",
+        `${path}.affected[${entryIndex}]`,
+        ledgers.components.ids,
+        "Affected component",
+      );
+      for (const backport of Array.isArray(entry.backportFixedVersions)
+        ? entry.backportFixedVersions
+        : []) {
+        if (!isRecord(backport)) continue;
+        reference(
+          backport,
+          "attestationRef",
+          `${path}.affected[${entryIndex}].backportFixedVersions`,
+          ledgers.evidence.ids,
+          "Backport attestation",
+        );
+      }
+    }
+    const supersedes = reference(
+      row,
+      "supersedesRef",
+      path,
+      ledgers.advisoryRevisions.ids,
+      "Superseded revision",
+      { nullable: true },
+    );
+    if (supersedes !== null) {
+      const previous = ledgers.advisoryRevisions.byId.get(supersedes);
+      if (
+        previous?.advisoryRef !== row.advisoryRef ||
+        !(Number(previous?.revision) < Number(row.revision))
+      ) {
+        findings.push(
+          finding(
+            "ambiguous_advisory_revision_chain",
+            `${path}.supersedesRef`,
+            "A revision may only supersede an earlier revision of the same advisory.",
+          ),
+        );
+      }
+      if (supersededRevisionRefs.has(supersedes)) {
+        findings.push(
+          finding(
+            "ambiguous_advisory_revision_chain",
+            `${path}.supersedesRef`,
+            "One revision may be superseded by at most one later revision.",
+          ),
+        );
+      }
+      supersededRevisionRefs.add(supersedes);
+    }
+    if (advisoryRef === null) continue;
+    revisionsByAdvisory.set(advisoryRef, [
+      ...(revisionsByAdvisory.get(advisoryRef) ?? []),
+      row,
+    ]);
+  }
+
+  const currentRevisionByAdvisory = new Map();
+  for (const [index, row] of ledgers.advisories.entries) {
+    const revisions = revisionsByAdvisory.get(row.id) ?? [];
+    const current = revisions.filter(
+      (revision) => !supersededRevisionRefs.has(revision.id),
+    );
+    if (current.length !== 1) {
+      findings.push(
+        finding(
+          "ambiguous_advisory_revision_chain",
+          `advisories[${index}]`,
+          "Every advisory needs exactly one revision that no later revision supersedes.",
+        ),
+      );
+      continue;
+    }
+    currentRevisionByAdvisory.set(row.id, current[0]);
+  }
+
+  const widenedRevisionRefs = new Set();
+  for (const row of ledgers.advisoryRevisions.items) {
+    const previous = ledgers.advisoryRevisions.byId.get(row.supersedesRef);
+    if (isRecord(previous) && revisionWidens(previous, row)) {
+      widenedRevisionRefs.add(row.id);
+    }
+  }
+
+  // Whether an exception is still alive is a fact of the advisory record, not of
+  // what a disposition still admits to relying on: an exception dies when a
+  // revision published after its approval widened the affected range, retracted a
+  // fixed version, or withdrew its alias group's coverage of its exact component.
+  // Deleting the reliance from a historical disposition changes no such fact.
+  function invalidatingRevisionFor(exception) {
+    const approvedMs = timestamp(exception.approvedAt) ?? -Infinity;
+    const group = groupOf(exception.advisoryRef);
+    const invalidators = [];
+    for (const row of ledgers.advisoryRevisions.items) {
+      if (typeof row.advisoryRef !== "string" || groupOf(row.advisoryRef) !== group) {
+        continue;
+      }
+      const previous = ledgers.advisoryRevisions.byId.get(row.supersedesRef);
+      if (
+        !isRecord(previous) ||
+        !revisionWidensComponent(previous, row, exception.componentRef)
+      ) {
+        continue;
+      }
+      // An unparseable publication time fails closed: it cannot be shown to
+      // predate the approval, so it still invalidates.
+      const publishedMs = timestamp(row.publishedAt) ?? Infinity;
+      if (publishedMs <= approvedMs) continue;
+      invalidators.push({ row, publishedMs });
+    }
+    // The exception binds to the terminal invalidator, which is the withdrawing
+    // revision whenever the advisory was withdrawn, so widening and withdrawal
+    // never demand two different bindings for one exception.
+    invalidators.sort((left, right) => {
+      if (left.publishedMs !== right.publishedMs) {
+        return left.publishedMs < right.publishedMs ? -1 : 1;
+      }
+      const leftRevision = Number(left.row.revision);
+      const rightRevision = Number(right.row.revision);
+      if (
+        Number.isFinite(leftRevision) &&
+        Number.isFinite(rightRevision) &&
+        leftRevision !== rightRevision
+      ) {
+        return leftRevision < rightRevision ? -1 : 1;
+      }
+      return String(left.row.id).localeCompare(String(right.row.id));
+    });
+    return invalidators.at(-1)?.row;
+  }
+
+  function chainReopenReason(revisionRef, advisoryRef) {
+    const current = currentRevisionByAdvisory.get(advisoryRef);
+    if (!current) return null;
+    if (current.withdrawn === true) return "advisory-withdrawn";
+    let cursor = current;
+    let guard = 0;
+    while (isRecord(cursor) && cursor.id !== revisionRef && guard < 64) {
+      if (widenedRevisionRefs.has(cursor.id)) return "revision-widened";
+      cursor = ledgers.advisoryRevisions.byId.get(cursor.supersedesRef);
+      guard += 1;
+    }
+    return "revision-superseded";
+  }
+
+  // A version the supplied revision never classifies is neither applicable nor
+  // inapplicable. It derives no triple and it silences nothing: the snapshot has
+  // to carry an open blocker naming that exact installation and revision.
+  function requireVersionClassification(installation, revisionRefs) {
+    if (
+      hasExactBlocker(unclassifiedVersionBlocker, [installation.id, ...revisionRefs])
+    ) {
+      return;
+    }
+    findings.push(
+      finding(
+        "unclassified_installed_version",
+        `installations[${installationIndexById.get(installation.id)}].observedVersion`,
+        `Version ${JSON.stringify(installation.observedVersion)} on ${installation.id} appears in no affected, fixed, or backport version set of ${revisionRefs.join(", ")}; an unclassified version needs an open ${unclassifiedVersionBlocker} blocker naming that exact installation and revision.`,
+      ),
+    );
+  }
+
+  // Current triples are canonicalized by alias group: one instance, one component,
+  // and one vulnerability identity reach one triple however many CVE, GHSA, or DSA
+  // rows publish it.
+  const aliasBuckets = new Map();
+  const withdrawnAdvisoryRefs = new Set();
+  for (const [advisoryRef, revision] of currentRevisionByAdvisory) {
+    if (revision.withdrawn === true) {
+      withdrawnAdvisoryRefs.add(advisoryRef);
+      continue;
+    }
+    for (const [componentRef, entry] of affectedByComponent(revision)) {
+      for (const installation of installationsByComponent.get(componentRef) ?? []) {
+        const bucketKey = `${groupOf(advisoryRef)}|${installation.instanceRef}|${componentRef}`;
+        const bucket = aliasBuckets.get(bucketKey) ?? {
+          group: groupOf(advisoryRef),
+          componentRef,
+          installation,
+          members: [],
+          entries: [],
+        };
+        bucket.members.push({ advisoryRef, revision });
+        bucket.entries.push(entry);
+        aliasBuckets.set(bucketKey, bucket);
+      }
+    }
+  }
+
+  const derivedTriples = new Map();
+  const tripleKeyByBucket = new Map();
+  const applicableAdvisoryRefs = new Set();
+  const unclassifiedAdvisoryGroups = new Set();
+  for (const [bucketKey, bucket] of aliasBuckets) {
+    const revisionRefs = bucket.members.map((member) => member.revision.id);
+    const classifications = new Set(
+      bucket.entries.flatMap((entry) => [
+        ...versionClassifications(entry, bucket.installation.observedVersion),
+      ]),
+    );
+    if (classifications.size === 0) {
+      requireVersionClassification(bucket.installation, revisionRefs);
+      unclassifiedAdvisoryGroups.add(bucket.group);
+      continue;
+    }
+    if (conflictingClassification(classifications)) {
+      findings.push(
+        finding(
+          "conflicting_version_classification",
+          `installations[${installationIndexById.get(bucket.installation.id)}].observedVersion`,
+          `Revisions ${revisionRefs.join(", ")} classify version ${JSON.stringify(bucket.installation.observedVersion)} as both affected and fixed; the owner system must resolve the conflict.`,
+        ),
+      );
+    }
+    const canonical = [...bucket.members].sort((left, right) =>
+      String(left.advisoryRef).localeCompare(String(right.advisoryRef)),
+    )[0];
+    const tripleKey = `${bucket.installation.instanceRef}|${bucket.componentRef}|${canonical.revision.id}`;
+    tripleKeyByBucket.set(bucketKey, tripleKey);
+    derivedTriples.set(tripleKey, {
+      group: bucket.group,
+      advisoryRef: canonical.advisoryRef,
+      revision: canonical.revision,
+      revisionRefs,
+      entry: mergeClassificationEntries(bucket.entries),
+      installation: bucket.installation,
+      classification: preferredClassification(classifications),
+    });
+    for (const advisoryId of advisoriesInGroup.get(bucket.group) ?? [
+      canonical.advisoryRef,
+    ]) {
+      applicableAdvisoryRefs.add(advisoryId);
+    }
+  }
+
+  // Prior revisions are canonicalized by alias group and revision number just like
+  // the current universe is canonicalized by alias group. Equivalent CVE/GHSA/DSA
+  // histories therefore carry one reopened row, while successive revisions in one
+  // advisory chain remain distinct.
+  const priorAliasBuckets = new Map();
+  for (const revision of ledgers.advisoryRevisions.items) {
+    const current = currentRevisionByAdvisory.get(revision.advisoryRef);
+    if (!isRecord(current) || current.id === revision.id) continue;
+    for (const [componentRef, entry] of affectedByComponent(revision)) {
+      for (const installation of installationsByComponent.get(componentRef) ?? []) {
+        const bucketKey = `${groupOf(revision.advisoryRef)}|${installation.instanceRef}|${componentRef}|${revision.revision}`;
+        const bucket = priorAliasBuckets.get(bucketKey) ?? {
+          group: groupOf(revision.advisoryRef),
+          componentRef,
+          installation,
+          members: [],
+          entries: [],
+        };
+        bucket.members.push({ advisoryRef: revision.advisoryRef, revision });
+        bucket.entries.push(entry);
+        priorAliasBuckets.set(bucketKey, bucket);
+      }
+    }
+  }
+
+  const priorTriples = new Map();
+  const priorTriplesByPair = new Map();
+  const priorCanonicalKeyByExact = new Map();
+  for (const bucket of priorAliasBuckets.values()) {
+    const revisionRefs = bucket.members.map((member) => member.revision.id);
+    const classifications = new Set(
+      bucket.entries.flatMap((entry) => [
+        ...versionClassifications(entry, bucket.installation.observedVersion),
+      ]),
+    );
+    if (classifications.size === 0) {
+      requireVersionClassification(bucket.installation, revisionRefs);
+      continue;
+    }
+    if (conflictingClassification(classifications)) {
+      findings.push(
+        finding(
+          "conflicting_version_classification",
+          `installations[${installationIndexById.get(bucket.installation.id)}].observedVersion`,
+          `Revisions ${revisionRefs.join(", ")} classify version ${JSON.stringify(bucket.installation.observedVersion)} as both affected and fixed; the owner system must resolve the conflict.`,
+        ),
+      );
+    }
+    const canonical = [...bucket.members].sort((left, right) =>
+      String(left.advisoryRef).localeCompare(String(right.advisoryRef)),
+    )[0];
+    const tripleKey = `${bucket.installation.instanceRef}|${bucket.componentRef}|${canonical.revision.id}`;
+    priorTriples.set(tripleKey, {
+      group: bucket.group,
+      advisoryRef: canonical.advisoryRef,
+      revision: canonical.revision,
+      revisionRefs,
+      entry: mergeClassificationEntries(bucket.entries),
+      installation: bucket.installation,
+      classification: preferredClassification(classifications),
+    });
+    for (const member of bucket.members) {
+      priorCanonicalKeyByExact.set(
+        `${bucket.installation.instanceRef}|${bucket.componentRef}|${member.revision.id}`,
+        tripleKey,
+      );
+    }
+    const pairKey = `${bucket.installation.instanceRef}|${bucket.componentRef}`;
+    priorTriplesByPair.set(pairKey, [
+      ...(priorTriplesByPair.get(pairKey) ?? []),
+      { tripleKey, advisoryRef: canonical.advisoryRef },
+    ]);
+  }
+
+  // The scopes this snapshot actually derives: one alias group, one instance, and
+  // one component reached by a current or a prior triple. An exception written
+  // against any other combination is scoped to nothing the snapshot reconciles.
+  const derivedScopeKeys = new Set(tripleKeyByBucket.keys());
+  for (const triple of priorTriples.values()) {
+    derivedScopeKeys.add(
+      `${groupOf(triple.advisoryRef)}|${triple.installation.instanceRef}|${triple.installation.componentRef}`,
+    );
+  }
+
+  // Alias-group identity, not the exact advisory row, is the scope an exception is
+  // written against: a CVE row and its GHSA row are one vulnerability, so an
+  // exception approved under either covers a disposition bound to the other. The
+  // instance and the component stay exact.
+  function exceptionCoversScope(exception, instanceRef, componentRef, advisoryRef) {
+    return (
+      isRecord(exception) &&
+      exception.componentRef === componentRef &&
+      Array.isArray(exception.instanceRefs) &&
+      exception.instanceRefs.includes(instanceRef) &&
+      groupOf(exception.advisoryRef) === groupOf(advisoryRef)
+    );
+  }
+
+  const declaredInapplicable = referenceList(
+    coverage,
+    "inapplicableAdvisoryRefs",
+    "coverage",
+    ledgers.advisories.ids,
+    "Inapplicable advisory",
+  );
+  const declaredUnclassified = referenceList(
+    coverage,
+    "unclassifiedAdvisoryRefs",
+    "coverage",
+    ledgers.advisories.ids,
+    "Unclassified advisory",
+  );
+  const declaredWithdrawn = referenceList(
+    coverage,
+    "withdrawnAdvisoryRefs",
+    "coverage",
+    ledgers.advisories.ids,
+    "Withdrawn advisory",
+  );
+  // An advisory whose alias group reaches no triple because a supplied revision
+  // classifies none of the installed versions it names is neither applicable nor
+  // inapplicable. Forcing it into the inapplicable list would turn missing
+  // classification evidence into a negative finding, so it reaches a bucket of its
+  // own and stays blocked: `unclassified_installed_version` still demands the open
+  // blocker naming that exact installation and revision.
+  const unclassifiedAdvisoryRefs = new Set(
+    [...ledgers.advisories.ids].filter(
+      (id) =>
+        !applicableAdvisoryRefs.has(id) &&
+        !withdrawnAdvisoryRefs.has(id) &&
+        unclassifiedAdvisoryGroups.has(groupOf(id)),
+    ),
+  );
+  const expectedInapplicable = new Set(
+    [...ledgers.advisories.ids].filter(
+      (id) =>
+        !applicableAdvisoryRefs.has(id) &&
+        !withdrawnAdvisoryRefs.has(id) &&
+        !unclassifiedAdvisoryRefs.has(id),
+    ),
+  );
+  if (!sameSet(declaredInapplicable, expectedInapplicable)) {
+    findings.push(
+      finding(
+        "orphan_advisory_without_coverage",
+        "coverage.inapplicableAdvisoryRefs",
+        "Every advisory must reach the triple universe, the withdrawn list, the unclassified list, or the inapplicable list exactly once.",
+      ),
+    );
+  }
+  if (!sameSet(declaredUnclassified, unclassifiedAdvisoryRefs)) {
+    findings.push(
+      finding(
+        "orphan_advisory_without_coverage",
+        "coverage.unclassifiedAdvisoryRefs",
+        "The unclassified advisory list must equal the advisories that reach no triple because a supplied revision classifies none of the installed versions they name.",
+      ),
+    );
+  }
+  if (!sameSet(declaredWithdrawn, withdrawnAdvisoryRefs)) {
+    findings.push(
+      finding(
+        "orphan_advisory_without_coverage",
+        "coverage.withdrawnAdvisoryRefs",
+        "The withdrawn advisory list must equal the advisories whose current revision is withdrawn.",
+      ),
+    );
+  }
+
+  const declaredTripleKeys = stringList(
+    coverage,
+    "tripleKeys",
+    "coverage",
+    "Coverage triple key",
+  );
+  if (
+    !sameSet(declaredTripleKeys, new Set(derivedTriples.keys())) ||
+    coverage.expectedTripleCount !== derivedTriples.size
+  ) {
+    findings.push(
+      finding(
+        "incomplete_triple_coverage_index",
+        "coverage.tripleKeys",
+        `The declared coverage index must equal the ${derivedTriples.size} triples derivable from inventory.`,
+      ),
+    );
+  }
+
+  const declaredPriorTripleKeys = stringList(
+    coverage,
+    "priorTripleKeys",
+    "coverage",
+    "Coverage prior triple key",
+  );
+  if (
+    !sameSet(declaredPriorTripleKeys, new Set(priorTriples.keys())) ||
+    coverage.expectedPriorTripleCount !== priorTriples.size
+  ) {
+    findings.push(
+      finding(
+        "incomplete_prior_triple_coverage_index",
+        "coverage.priorTripleKeys",
+        `The declared prior coverage index must equal the ${priorTriples.size} triples derivable from the superseded revisions.`,
+      ),
+    );
+  }
+
+  const currentTripleOwners = new Map();
+  const reopenedTripleOwners = new Map();
+  // Lapsed-exception history is keyed by the triple and the exact exception it
+  // records, so one triple can carry the history of two different exceptions but
+  // never two rows for the same one.
+  const expiredExceptionHistory = new Map();
+
+  // A disposition states when a named owner decided, and that time is a fact of the
+  // supplied record rather than a label: it cannot follow the cutoff, precede the
+  // revision it is bound to, or precede the exact evidence and approval it rests
+  // on. A reopened row keeps the time of the original decision, so it is bounded
+  // above by the publication that reopened it instead of being reinterpreted as the
+  // reopen time.
+  function checkDispositionChronology(row, path) {
+    const decidedAt = timestamp(row.decidedAt);
+    if (decidedAt === null || (asOfMs !== null && decidedAt > asOfMs)) {
+      findings.push(
+        finding(
+          "invalid_disposition_chronology",
+          `${path}.decidedAt`,
+          "Every disposition needs a decision time that parses and falls at or before the snapshot cutoff.",
+        ),
+      );
+      return;
+    }
+    const revision = ledgers.advisoryRevisions.byId.get(row.advisoryRevisionRef);
+    const supportingFacts = [];
+    const publishedMs = timestamp(revision?.publishedAt);
+    if (publishedMs !== null) {
+      supportingFacts.push([publishedMs, `revision ${revision.id} was published`]);
+    }
+    for (const ref of [
+      ...(Array.isArray(row.evidenceRefs) ? row.evidenceRefs : []),
+      row.fixObservationRef,
+      row.backportAttestationRef,
+    ]) {
+      const evidenceRow = ledgers.evidence.byId.get(ref);
+      if (!isRecord(evidenceRow) || !decisionEvidenceKinds.has(evidenceRow.kind)) {
+        continue;
+      }
+      const observedAt = timestamp(evidenceRow.observedAt);
+      if (observedAt !== null) {
+        supportingFacts.push([observedAt, `evidence ${ref} was observed`]);
+      }
+    }
+    const exception = ledgers.exceptions.byId.get(row.exceptionRef);
+    if (isRecord(exception)) {
+      const approvedAt = timestamp(exception.approvedAt);
+      if (approvedAt !== null) {
+        supportingFacts.push([approvedAt, `exception ${exception.id} was approved`]);
+      }
+      for (const ref of Array.isArray(exception.approvalEvidenceRefs)
+        ? exception.approvalEvidenceRefs
+        : []) {
+        const approval = ledgers.evidence.byId.get(ref);
+        if (approval?.kind !== approvalEvidenceKind) continue;
+        const observedAt = timestamp(approval.observedAt);
+        if (observedAt !== null) {
+          supportingFacts.push([observedAt, `approval evidence ${ref} was observed`]);
+        }
+      }
+    }
+    const unsupported = supportingFacts.find(([boundMs]) => decidedAt < boundMs);
+    if (unsupported !== undefined) {
+      findings.push(
+        finding(
+          "invalid_disposition_chronology",
+          `${path}.decidedAt`,
+          `Disposition ${row.id} is dated before ${unsupported[1]}; a decision never predates the revision it is bound to or the evidence and approval that support it.`,
+        ),
+      );
+    }
+    const reopeningRevision = ledgers.advisoryRevisions.byId.get(
+      row.reopenedByRevisionRef,
+    );
+    const reopenedMs = timestamp(reopeningRevision?.publishedAt);
+    if (reopenedMs !== null && decidedAt > reopenedMs) {
+      findings.push(
+        finding(
+          "invalid_disposition_chronology",
+          `${path}.decidedAt`,
+          `Disposition ${row.id} is dated after revision ${reopeningRevision.id} reopened it; decidedAt records the original decision, never the reopening.`,
+        ),
+      );
+    }
+  }
+
+  for (const [index, row] of ledgers.dispositions.entries) {
+    const path = `dispositions[${index}]`;
+    const instanceRef = reference(
+      row,
+      "instanceRef",
+      path,
+      ledgers.instances.ids,
+      "Disposition instance",
+    );
+    const componentRef = reference(
+      row,
+      "componentRef",
+      path,
+      ledgers.components.ids,
+      "Disposition component",
+    );
+    const revisionRef = reference(
+      row,
+      "advisoryRevisionRef",
+      path,
+      ledgers.advisoryRevisions.ids,
+      "Disposition advisory revision",
+    );
+    reference(row, "ownerRef", path, ledgers.principals.ids, "Disposition owner");
+    referenceList(row, "evidenceRefs", path, ledgers.evidence.ids, "Disposition evidence");
+    const signalRefs = referenceList(
+      row,
+      "scannerSignalRefs",
+      path,
+      ledgers.scannerSignals.ids,
+      "Disposition scanner signal",
+    );
+    for (const signalRef of signalRefs) {
+      const signal = ledgers.scannerSignals.byId.get(signalRef);
+      if (isRecord(signal) && nonApprovingSignalStates.has(signal.state)) {
+        findings.push(
+          finding(
+            "scanner_suppression_not_approval",
+            `${path}.scannerSignalRefs`,
+            `Scanner signal ${signalRef} is ${signal.state}; suppression is never a disposition, approval, or justification.`,
+          ),
+        );
+      }
+    }
+    const acknowledgedSignalRefs = referenceList(
+      row,
+      "suppressedSignalRefs",
+      path,
+      ledgers.scannerSignals.ids,
+      "Disposition suppressed signal",
+    );
+
+    checkDispositionChronology(row, path);
+
+    if (instanceRef === null || componentRef === null || revisionRef === null) continue;
+    const revision = ledgers.advisoryRevisions.byId.get(revisionRef);
+    const advisoryRef = revision?.advisoryRef;
+    const currentRevision = currentRevisionByAdvisory.get(advisoryRef);
+    const exactTripleKey = `${instanceRef}|${componentRef}|${revisionRef}`;
+    const isCurrentRevision = currentRevision?.id === revisionRef;
+
+    // An acknowledgement records a suppression against the exact triple it belongs
+    // to; it never supports the disposition, and it cannot point somewhere else.
+    for (const signalRef of acknowledgedSignalRefs) {
+      const signal = ledgers.scannerSignals.byId.get(signalRef);
+      if (
+        !isRecord(signal) ||
+        !nonApprovingSignalStates.has(signal.state) ||
+        signal.instanceRef !== instanceRef ||
+        signal.componentRef !== componentRef ||
+        groupOf(signal.advisoryRef) !== groupOf(advisoryRef)
+      ) {
+        findings.push(
+          finding(
+            "invalid_suppressed_signal_acknowledgement",
+            `${path}.suppressedSignalRefs`,
+            `Scanner signal ${signalRef} is not a suppressed, ignored, or muted signal for this exact instance, component, and advisory identity.`,
+          ),
+        );
+      }
+    }
+
+    if (row.state === "reopened") {
+      const exception = ledgers.exceptions.byId.get(row.exceptionRef);
+      // However a row was reopened, the exception it names is scope-checked the
+      // way a current affected row's is: one alias group, this exact component,
+      // this exact instance. A supersession-reopened row is history of a real
+      // reliance, so it cannot name an exception that never covered it.
+      if (
+        row.exceptionRef !== null &&
+        !exceptionCoversScope(exception, instanceRef, componentRef, advisoryRef)
+      ) {
+        findings.push(
+          finding(
+            "invalid_exception_binding",
+            `${path}.exceptionRef`,
+            "A reopened disposition may only name an exception covering this exact instance, component, and advisory identity.",
+          ),
+        );
+      }
+      const expiresAt = timestamp(exception?.expiresAt);
+      const expiredExceptionReopen =
+        row.reopenReason === "exception-expired" &&
+        isCurrentRevision &&
+        row.reopenedByRevisionRef === null &&
+        expiresAt !== null &&
+        asOfMs !== null &&
+        expiresAt <= asOfMs;
+      const supersessionReopen =
+        !isCurrentRevision &&
+        row.reopenReason === chainReopenReason(revisionRef, advisoryRef) &&
+        row.reopenedByRevisionRef === currentRevision?.id;
+      if (!expiredExceptionReopen && !supersessionReopen) {
+        findings.push(
+          finding(
+            "invalid_reopen_binding",
+            path,
+            "A reopened disposition must name the exact revision that invalidated it and the matching reopen reason.",
+          ),
+        );
+      }
+      // A lapsed exception on a current triple is optional history, but it is
+      // history of something the snapshot actually derives: this exact triple, an
+      // exception scoped to it, and one row per triple and exception.
+      if (expiredExceptionReopen) {
+        if (row.disposition !== "affected") {
+          findings.push(
+            finding(
+              "invalid_reopen_binding",
+              path,
+              "An exception never justified a fixed, not_affected, or under_investigation disposition, so only an affected row reopens when one lapses.",
+            ),
+          );
+        }
+        const bucketTripleKey = tripleKeyByBucket.get(
+          `${groupOf(advisoryRef)}|${instanceRef}|${componentRef}`,
+        );
+        const triple =
+          bucketTripleKey === undefined ? undefined : derivedTriples.get(bucketTripleKey);
+        if (triple === undefined || !triple.revisionRefs.includes(revisionRef)) {
+          findings.push(
+            finding(
+              "undeclared_reopened_triple",
+              path,
+              "An exception-expired reopened disposition records the history of a current triple; this instance, component, and revision derive none from the supplied inventory.",
+            ),
+          );
+        }
+        const historyKey = `${bucketTripleKey ?? exactTripleKey}|${row.exceptionRef}`;
+        if (expiredExceptionHistory.has(historyKey)) {
+          findings.push(
+            finding(
+              "duplicate_reopened_disposition_triple",
+              path,
+              "One triple and one lapsed exception carry at most one exception-expired reopened disposition.",
+            ),
+          );
+        } else {
+          expiredExceptionHistory.set(historyKey, row);
+        }
+      }
+      if (!isCurrentRevision) {
+        const priorTripleKey = priorCanonicalKeyByExact.get(exactTripleKey);
+        if (priorTripleKey === undefined) {
+          findings.push(
+            finding(
+              "undeclared_reopened_triple",
+              path,
+              "This reopened triple is not derivable from the superseded revision and the supplied inventory.",
+            ),
+          );
+        } else if (reopenedTripleOwners.has(priorTripleKey)) {
+          findings.push(
+            finding(
+              "duplicate_reopened_disposition_triple",
+              path,
+              "Each prior triple carries exactly one reopened disposition.",
+            ),
+          );
+        } else {
+          reopenedTripleOwners.set(priorTripleKey, row);
+        }
+      }
+      continue;
+    }
+
+    if (row.state !== "current") {
+      findings.push(
+        finding("invalid_reopen_binding", `${path}.state`, "Unknown disposition state."),
+      );
+      continue;
+    }
+
+    if (!isCurrentRevision) {
+      findings.push(
+        finding(
+          "stale_disposition_not_reopened",
+          path,
+          "A disposition bound to a superseded revision must be reopened, not current.",
+        ),
+      );
+      continue;
+    }
+    if (currentRevision?.withdrawn === true) {
+      findings.push(
+        finding(
+          "withdrawn_advisory_disposition",
+          path,
+          "A withdrawn advisory revision justifies no disposition; withdrawal is not not_affected.",
+        ),
+      );
+      continue;
+    }
+    if (!principals.hasScope(row.ownerRef, dispositionOwnerScope)) {
+      findings.push(
+        finding(
+          "unscoped_disposition_owner",
+          `${path}.ownerRef`,
+          `Every current disposition, whatever its kind, needs an owner carrying the ${dispositionOwnerScope} scope.`,
+        ),
+      );
+    }
+    const tripleKey = tripleKeyByBucket.get(
+      `${groupOf(advisoryRef)}|${instanceRef}|${componentRef}`,
+    );
+    if (tripleKey === undefined) {
+      findings.push(
+        finding(
+          "undeclared_disposition_triple",
+          path,
+          "This triple is not derivable from the supplied inventory, the current advisory revisions, and the exact version classification.",
+        ),
+      );
+      continue;
+    }
+    if (currentTripleOwners.has(tripleKey)) {
+      const owner = currentTripleOwners.get(tripleKey);
+      const ownerAdvisoryRef = ledgers.advisoryRevisions.byId.get(
+        owner.advisoryRevisionRef,
+      )?.advisoryRef;
+      findings.push(
+        ownerAdvisoryRef === advisoryRef
+          ? finding(
+              "duplicate_disposition_triple",
+              path,
+              "Each triple reaches exactly one terminal disposition.",
+            )
+          : finding(
+              "duplicate_alias_group_disposition",
+              path,
+              `CVE, GHSA, and DSA rows of one alias group carry a single disposition per instance and component; ${owner.id} already dispositioned this triple.`,
+            ),
+      );
+      continue;
+    }
+    currentTripleOwners.set(tripleKey, row);
+
+    const triple = derivedTriples.get(tripleKey);
+    const installedVersion = triple.installation.observedVersion;
+
+    if (row.disposition === "fixed") {
+      const backportAttestation = triple.entry.backports.get(row.observedVersion);
+      const fixedByRelease = triple.entry.fixed.has(row.observedVersion);
+      const fixedByBackport =
+        backportAttestation !== undefined &&
+        row.backportAttestationRef === backportAttestation &&
+        evidenceSupports(
+          row.backportAttestationRef,
+          triple.installation.id,
+          "vendor-backport-attestation",
+        );
+      if (
+        row.observedVersion !== installedVersion ||
+        !evidenceSupports(
+          row.fixObservationRef,
+          triple.installation.id,
+          "post-fix-version-observation",
+        ) ||
+        !(fixedByRelease || fixedByBackport)
+      ) {
+        findings.push(
+          finding(
+            "unobserved_fix_claim",
+            path,
+            "A fixed disposition needs the post-fix version observed on that exact instance, matching a published fixed version or an attested vendor backport.",
+          ),
+        );
+      }
+    } else if (row.disposition === "not_affected") {
+      if (!allowedJustifications.has(row.justification)) {
+        findings.push(
+          finding(
+            "missing_machine_readable_justification",
+            `${path}.justification`,
+            "A not_affected disposition needs an allowed machine-readable justification; narrative text alone is not one.",
+          ),
+        );
+      }
+      if (
+        !row.evidenceRefs?.some?.((ref) =>
+          evidenceSupports(ref, triple.installation.id, "component-analysis"),
+        )
+      ) {
+        findings.push(
+          finding(
+            "invalid_vulnerability_evidence",
+            `${path}.evidenceRefs`,
+            "A not_affected disposition needs controlled component analysis naming that installation.",
+          ),
+        );
+      }
+    } else if (row.disposition === "affected") {
+      const exception = ledgers.exceptions.byId.get(row.exceptionRef);
+      if (!isRecord(exception)) {
+        findings.push(
+          finding(
+            "invalid_exception_binding",
+            `${path}.exceptionRef`,
+            "An affected disposition needs a time-bounded exception.",
+          ),
+        );
+      } else {
+        const expiresAt = timestamp(exception.expiresAt);
+        const approvedAt = timestamp(exception.approvedAt);
+        if (!exceptionCoversScope(exception, instanceRef, componentRef, advisoryRef)) {
+          findings.push(
+            finding(
+              "invalid_exception_binding",
+              `${path}.exceptionRef`,
+              "The exception scope must cover this exact instance, component, and advisory identity.",
+            ),
+          );
+        }
+        if (
+          exception.approvedByRef === exception.requestedByRef ||
+          exception.approvedByRef === row.ownerRef ||
+          !principals.hasScope(
+            exception.approvedByRef,
+            "vulnerability-exception-approval",
+          ) ||
+          !exception.approvalEvidenceRefs?.some?.((ref) =>
+            approvalEvidenceSupports(exception, ref),
+          )
+        ) {
+          findings.push(
+            finding(
+              "self_approved_exception",
+              `${path}.exceptionRef`,
+              "An affected disposition needs approval by a different scoped named human with controlled approval evidence that approver supplied.",
+            ),
+          );
+        }
+        if (
+          exception.status !== "active" ||
+          expiresAt === null ||
+          asOfMs === null ||
+          expiresAt <= asOfMs ||
+          approvedAt === null ||
+          approvedAt > asOfMs
+        ) {
+          findings.push(
+            finding(
+              "expired_exception_not_reopened",
+              `${path}.exceptionRef`,
+              "An expired, revoked, or invalidated exception reopens the affected disposition instead of terminating it.",
+            ),
+          );
+        }
+      }
+    } else if (row.disposition === "under_investigation") {
+      const dueMs = endOfLocalDayMs(row.dueDate, snapshot.timezone);
+      if (
+        dueMs === null ||
+        asOfMs === null ||
+        dueMs < asOfMs ||
+        !row.evidenceRefs?.some?.((ref) =>
+          evidenceSupports(ref, row.id, "investigation-assignment"),
+        )
+      ) {
+        findings.push(
+          finding(
+            "missing_investigation_owner",
+            path,
+            "An under_investigation disposition needs a future due date and a controlled assignment record naming it.",
+          ),
+        );
+      }
+    } else {
+      findings.push(
+        finding("invalid_ledger_row", `${path}.disposition`, "Unknown disposition kind."),
+      );
+    }
+  }
+
+  for (const tripleKey of derivedTriples.keys()) {
+    if (!currentTripleOwners.has(tripleKey)) {
+      findings.push(
+        finding(
+          "missing_disposition_for_triple",
+          "dispositions",
+          `Triple ${tripleKey} has no current terminal disposition.`,
+        ),
+      );
+    }
+  }
+
+  for (const tripleKey of priorTriples.keys()) {
+    if (!reopenedTripleOwners.has(tripleKey)) {
+      findings.push(
+        finding(
+          "missing_reopened_disposition_for_prior_triple",
+          "dispositions",
+          `Prior triple ${tripleKey} has no reopened disposition; every triple a superseded revision once justified must be carried forward exactly once.`,
+        ),
+      );
+    }
+  }
+
+  for (const [index, row] of ledgers.exceptions.entries) {
+    const path = `exceptions[${index}]`;
+    const advisoryRef = reference(
+      row,
+      "advisoryRef",
+      path,
+      ledgers.advisories.ids,
+      "Exception advisory",
+    );
+    const componentRef = reference(
+      row,
+      "componentRef",
+      path,
+      ledgers.components.ids,
+      "Exception component",
+    );
+    const instanceRefs = referenceList(
+      row,
+      "instanceRefs",
+      path,
+      ledgers.instances.ids,
+      "Exception instance",
+    );
+    reference(row, "requestedByRef", path, ledgers.principals.ids, "Exception requester");
+    reference(row, "approvedByRef", path, ledgers.principals.ids, "Exception approver");
+    referenceList(
+      row,
+      "approvalEvidenceRefs",
+      path,
+      ledgers.evidence.ids,
+      "Exception approval evidence",
+    );
+    reference(
+      row,
+      "invalidatedByRevisionRef",
+      path,
+      ledgers.advisoryRevisions.ids,
+      "Exception invalidating revision",
+      { nullable: true },
+    );
+    const benefitingOwnerRefs = new Set(
+      ledgers.dispositions.items
+        .filter((disposition) => disposition.exceptionRef === row.id)
+        .map((disposition) => disposition.ownerRef),
+    );
+    if (
+      row.approvedByRef === row.requestedByRef ||
+      benefitingOwnerRefs.has(row.approvedByRef) ||
+      !principals.hasScope(row.approvedByRef, "vulnerability-exception-approval") ||
+      !row.approvalEvidenceRefs?.some?.((ref) => approvalEvidenceSupports(row, ref))
+    ) {
+      findings.push(
+        finding(
+          "self_approved_exception",
+          `${path}.approvalEvidenceRefs`,
+          "Every exception needs approval by a different scoped named human, with controlled approval evidence supplied by that approver.",
+        ),
+      );
+    }
+    for (const ref of Array.isArray(row.approvalEvidenceRefs)
+      ? row.approvalEvidenceRefs
+      : []) {
+      const approval = ledgers.evidence.byId.get(ref);
+      if (approval?.kind === "scanner-export") {
+        findings.push(
+          finding(
+            "scanner_suppression_not_approval",
+            `${path}.approvalEvidenceRefs`,
+            "A scanner export is never exception approval evidence.",
+          ),
+        );
+      }
+      // Authorship is checked where the exception owns its approval ledger, not
+      // only where a current affected row happens to rely on it: an approval
+      // record the approver did not supply is somebody else's account of an
+      // approval, whichever disposition names the exception and whether or not
+      // any still does.
+      if (
+        approval?.kind === approvalEvidenceKind &&
+        approval.suppliedByRef !== row.approvedByRef
+      ) {
+        findings.push(
+          finding(
+            "self_approved_exception",
+            `${path}.approvalEvidenceRefs`,
+            `Approval evidence ${ref} was supplied by ${JSON.stringify(approval.suppliedByRef)} rather than by approver ${JSON.stringify(row.approvedByRef)}; a requester, a benefiting disposition owner, or any other principal never files another named human's approval.`,
+          ),
+        );
+      }
+    }
+    if (advisoryRef === null) continue;
+    // An exception is only alive against something the snapshot derives. Rescoping
+    // one onto a component the SBOM never placed on that instance, or onto a pair
+    // its alias group never reached, puts it outside every widening, retraction,
+    // and withdrawal test and would otherwise keep it active by being unreal.
+    if (componentRef !== null) {
+      for (const instanceRef of instanceRefs.filter((ref) =>
+        ledgers.instances.ids.has(ref),
+      )) {
+        if (
+          !installationByPair.has(`${instanceRef}|${componentRef}`) ||
+          !derivedScopeKeys.has(`${groupOf(advisoryRef)}|${instanceRef}|${componentRef}`)
+        ) {
+          findings.push(
+            finding(
+              "undeclared_exception_scope",
+              `${path}.instanceRefs`,
+              `Exception ${row.id} is scoped to ${instanceRef} and ${componentRef}; an exception needs an SBOM installation placing that component on that instance and a current or prior triple of its advisory identity reaching that pair.`,
+            ),
+          );
+        }
+      }
+    }
+    const currentRevision = currentRevisionByAdvisory.get(advisoryRef);
+    if (
+      currentRevision?.withdrawn === true &&
+      (row.status !== "invalidated" ||
+        row.invalidatedByRevisionRef !== currentRevision.id)
+    ) {
+      findings.push(
+        finding(
+          "uninvalidated_exception_after_withdrawal",
+          path,
+          "Withdrawing an advisory invalidates every exception that justified a disposition under it.",
+        ),
+      );
+    }
+    const invalidator = invalidatingRevisionFor(row);
+    if (
+      invalidator !== undefined &&
+      (row.status !== "invalidated" || row.invalidatedByRevisionRef !== invalidator.id)
+    ) {
+      findings.push(
+        finding(
+          "uninvalidated_exception_after_widening",
+          path,
+          `Revision ${invalidator.id} widened the affected range, retracted a fixed version, or withdrew this exception's alias group coverage of ${row.componentRef} after the exception was approved; the exception must be invalidated and bound to ${invalidator.id}.`,
+        ),
+      );
+    }
+  }
+
+  // Every scanner signal binds to an exact current or prior triple, and a signal
+  // the owner system muted stays visible: the triple's disposition acknowledges
+  // it, or an exact open blocker carries it. Omitting it launders the suppression.
+  for (const [index, row] of ledgers.scannerSignals.entries) {
+    const path = `scannerSignals[${index}]`;
+    const instanceRef = reference(
+      row,
+      "instanceRef",
+      path,
+      ledgers.instances.ids,
+      "Signal instance",
+    );
+    const componentRef = reference(
+      row,
+      "componentRef",
+      path,
+      ledgers.components.ids,
+      "Signal component",
+    );
+    const advisoryRef = reference(
+      row,
+      "advisoryRef",
+      path,
+      ledgers.advisories.ids,
+      "Signal advisory",
+    );
+    const evidenceRefs = referenceList(
+      row,
+      "evidenceRefs",
+      path,
+      ledgers.evidence.ids,
+      "Signal evidence",
+    );
+    // A signal is a reading of the owner system's scanner, so the binding to the
+    // supplied export is reciprocal like every other controlled binding here: an
+    // empty list, or a list naming only some other kind of record, is a signal
+    // state nobody supplied. This makes the state readable, never approval.
+    if (!evidenceRefs.some((ref) => evidenceSupports(ref, row.id, "scanner-export"))) {
+      findings.push(
+        finding(
+          "invalid_vulnerability_evidence",
+          `${path}.evidenceRefs`,
+          `Scanner signal ${row.id} needs controlled scanner-export evidence naming that exact signal; a scanner state no supplied export names is unsupplied, and naming it is never approval.`,
+        ),
+      );
+    }
+    if (instanceRef === null || componentRef === null || advisoryRef === null) continue;
+
+    const currentTripleKey = tripleKeyByBucket.get(
+      `${groupOf(advisoryRef)}|${instanceRef}|${componentRef}`,
+    );
+    const priorTripleKeys = (
+      priorTriplesByPair.get(`${instanceRef}|${componentRef}`) ?? []
+    )
+      .filter((item) => groupOf(item.advisoryRef) === groupOf(advisoryRef))
+      .map((item) => item.tripleKey);
+    if (currentTripleKey === undefined && priorTripleKeys.length === 0) {
+      if (!hasExactBlocker(signalWithoutTripleBlocker, [row.id])) {
+        findings.push(
+          finding(
+            "unaccounted_scanner_signal",
+            path,
+            `Scanner signal ${row.id} binds to no derivable current or prior triple; it needs an open ${signalWithoutTripleBlocker} blocker naming that exact signal.`,
+          ),
+        );
+      }
+      continue;
+    }
+    if (!nonApprovingSignalStates.has(row.state)) continue;
+
+    const owners = [
+      currentTripleKey === undefined
+        ? undefined
+        : currentTripleOwners.get(currentTripleKey),
+      ...priorTripleKeys.map((key) => reopenedTripleOwners.get(key)),
+    ].filter((owner) => isRecord(owner));
+    const acknowledged = owners.some(
+      (owner) =>
+        Array.isArray(owner.suppressedSignalRefs) &&
+        owner.suppressedSignalRefs.includes(row.id),
+    );
+    if (
+      !acknowledged &&
+      !hasExactBlocker(unreconciledSignalBlocker, [row.id, instanceRef, componentRef])
+    ) {
+      findings.push(
+        finding(
+          "unacknowledged_suppressed_signal",
+          path,
+          `Scanner signal ${row.id} is ${row.state}; the disposition owning its triple must acknowledge it, or an open ${unreconciledSignalBlocker} blocker must name that exact signal, instance, and component.`,
+        ),
+      );
+    }
+  }
+
+  const currentDispositions = [...currentTripleOwners.values()];
+  const inventorySupplied = snapshot.inventoryState === "supplied-complete";
+  if (
+    snapshot.inventoryState === "unknown" ||
+    snapshot.inventoryState === "conflicting"
+  ) {
+    for (const [index, row] of ledgers.instances.entries) {
+      if (hasExactBlocker(inventoryUnresolvedBlocker, [row.id])) continue;
+      findings.push(
+        finding(
+          "unrepresented_inventory_gap",
+          `instances[${index}]`,
+          `An ${snapshot.inventoryState} inventory state leaves every instance unresolved, so each one needs an open ${inventoryUnresolvedBlocker} blocker naming it.`,
+        ),
+      );
+    }
+  } else if (
+    snapshot.inventoryState === "incomplete" &&
+    !openBlockers.some((blocker) => blocker.code === instanceAbsentBlocker)
+  ) {
+    findings.push(
+      finding(
+        "unrepresented_inventory_gap",
+        "snapshot.inventoryState",
+        `An incomplete inventory needs at least one open ${instanceAbsentBlocker} blocker naming the exact gap.`,
+      ),
+    );
+  }
+  const expectedState =
+    openBlockers.length > 0 || !inventorySupplied
+      ? "blocked"
+      : currentDispositions.some((row) =>
+            ["affected", "under_investigation"].includes(row.disposition),
+          )
+        ? "ready-for-owner-action"
+        : "complete-reconciled";
+  if (handoff.state !== expectedState) {
+    findings.push(
+      finding(
+        "invalid_handoff_state",
+        "handoff.state",
+        `Handoff state must be ${expectedState} for the declared inventory state, blocker register, and disposition ledger.`,
+      ),
+    );
+  }
+  reference(handoff, "nextOwnerRef", "handoff", ledgers.principals.ids, "Handoff owner");
+  if (
+    !isValidControlledReference(handoff.destinationRef) ||
+    handoff.destinationRef !== snapshot.destinationRef ||
+    (timestamp(handoff.generatedAt) ?? -Infinity) < (asOfMs ?? Infinity)
+  ) {
+    findings.push(
+      finding(
+        "invalid_handoff_state",
+        "handoff",
+        "The handoff must render to the approved snapshot destination at or after the cutoff.",
+      ),
+    );
+  }
+  if (!sameSet(handoff.coveredRefs, allIds)) {
+    findings.push(
+      finding(
+        "incomplete_vulnerability_index",
+        "handoff.coveredRefs",
+        "The handoff must cover every ledger row exactly once.",
+      ),
+    );
+  }
+  if (!sameSet(handoff.blockingRefs, new Set(openBlockers.map((row) => row.id)))) {
+    findings.push(
+      finding(
+        "incomplete_vulnerability_index",
+        "handoff.blockingRefs",
+        "The handoff must list exactly the open blockers.",
+      ),
+    );
+  }
+
+  const narrativeTexts = upliftNarrativeStrings({
+    summary: handoff.summary,
+    justificationNarratives: ledgers.dispositions.items.map(
+      (row) => row.justificationNarrative,
+    ),
+  });
+  const prohibitedNarrative =
+    /\b(?:remediated|remediation complete|fully patched|patched everywhere|compliant|compliance achieved|certified|secure|hardened|no longer vulnerable|vulnerability[- ]free|risk accepted|clean scan|zero (?:known )?vulnerabilities)\b/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "prohibited_vulnerability_narrative",
+        "handoff.summary",
+        "This package reconciles supplied evidence and never claims remediation, compliance, certification, or security.",
+      ),
+    );
+  }
+
+  return findings;
+}
+
 const validators = {
   "accessibility-review-coordinator": accessibilityReviewFindings,
   "api-integration-engineer": apiIntegrationReadinessFindings,
@@ -49579,6 +51514,7 @@ const validators = {
   "ux-research-synthesizer": researchSynthesisFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
   "video-concept-producer": videoConceptGenerationManifestFindings,
+  "vulnerability-disposition-coordinator": vulnerabilityDispositionFindings,
   "wardrobe-organizer": wardrobeFindings,
   "web-evidence-researcher": claimEvidenceInvestigationLedgerFindings,
   "warranty-returns-manager": warrantyReturnsFindings,
