@@ -50068,6 +50068,9 @@ function vulnerabilityDispositionFindings(input) {
       for (const version of prior.fixed) {
         if (!entry.fixed.has(version)) return true;
       }
+      for (const version of prior.backports.keys()) {
+        if (!entry.backports.has(version)) return true;
+      }
     }
     return false;
   }
@@ -50088,6 +50091,9 @@ function vulnerabilityDispositionFindings(input) {
     }
     for (const version of before.fixed) {
       if (!after.fixed.has(version)) return true;
+    }
+    for (const version of before.backports.keys()) {
+      if (!after.backports.has(version)) return true;
     }
     return false;
   }
@@ -50363,47 +50369,78 @@ function vulnerabilityDispositionFindings(input) {
     }
   }
 
-  // The prior universe is derived the same way, per superseded revision, so the
-  // reopen ledger is a set equality rather than a courtesy note.
-  const priorTriples = new Map();
-  const priorTriplesByPair = new Map();
+  // Prior revisions are canonicalized by alias group and revision number just like
+  // the current universe is canonicalized by alias group. Equivalent CVE/GHSA/DSA
+  // histories therefore carry one reopened row, while successive revisions in one
+  // advisory chain remain distinct.
+  const priorAliasBuckets = new Map();
   for (const revision of ledgers.advisoryRevisions.items) {
     const current = currentRevisionByAdvisory.get(revision.advisoryRef);
     if (!isRecord(current) || current.id === revision.id) continue;
     for (const [componentRef, entry] of affectedByComponent(revision)) {
       for (const installation of installationsByComponent.get(componentRef) ?? []) {
-        const classifications = versionClassifications(
-          entry,
-          installation.observedVersion,
-        );
-        if (classifications.size === 0) {
-          requireVersionClassification(installation, [revision.id]);
-          continue;
-        }
-        if (conflictingClassification(classifications)) {
-          findings.push(
-            finding(
-              "conflicting_version_classification",
-              `installations[${installationIndexById.get(installation.id)}].observedVersion`,
-              `Revision ${revision.id} classifies version ${JSON.stringify(installation.observedVersion)} as both affected and fixed; the owner system must resolve the conflict.`,
-            ),
-          );
-        }
-        const tripleKey = `${installation.instanceRef}|${componentRef}|${revision.id}`;
-        priorTriples.set(tripleKey, {
-          advisoryRef: revision.advisoryRef,
-          revision,
-          entry,
+        const bucketKey = `${groupOf(revision.advisoryRef)}|${installation.instanceRef}|${componentRef}|${revision.revision}`;
+        const bucket = priorAliasBuckets.get(bucketKey) ?? {
+          group: groupOf(revision.advisoryRef),
+          componentRef,
           installation,
-          classification: preferredClassification(classifications),
-        });
-        const pairKey = `${installation.instanceRef}|${componentRef}`;
-        priorTriplesByPair.set(pairKey, [
-          ...(priorTriplesByPair.get(pairKey) ?? []),
-          { tripleKey, advisoryRef: revision.advisoryRef },
-        ]);
+          members: [],
+          entries: [],
+        };
+        bucket.members.push({ advisoryRef: revision.advisoryRef, revision });
+        bucket.entries.push(entry);
+        priorAliasBuckets.set(bucketKey, bucket);
       }
     }
+  }
+
+  const priorTriples = new Map();
+  const priorTriplesByPair = new Map();
+  const priorCanonicalKeyByExact = new Map();
+  for (const bucket of priorAliasBuckets.values()) {
+    const revisionRefs = bucket.members.map((member) => member.revision.id);
+    const classifications = new Set(
+      bucket.entries.flatMap((entry) => [
+        ...versionClassifications(entry, bucket.installation.observedVersion),
+      ]),
+    );
+    if (classifications.size === 0) {
+      requireVersionClassification(bucket.installation, revisionRefs);
+      continue;
+    }
+    if (conflictingClassification(classifications)) {
+      findings.push(
+        finding(
+          "conflicting_version_classification",
+          `installations[${installationIndexById.get(bucket.installation.id)}].observedVersion`,
+          `Revisions ${revisionRefs.join(", ")} classify version ${JSON.stringify(bucket.installation.observedVersion)} as both affected and fixed; the owner system must resolve the conflict.`,
+        ),
+      );
+    }
+    const canonical = [...bucket.members].sort((left, right) =>
+      String(left.advisoryRef).localeCompare(String(right.advisoryRef)),
+    )[0];
+    const tripleKey = `${bucket.installation.instanceRef}|${bucket.componentRef}|${canonical.revision.id}`;
+    priorTriples.set(tripleKey, {
+      group: bucket.group,
+      advisoryRef: canonical.advisoryRef,
+      revision: canonical.revision,
+      revisionRefs,
+      entry: mergeClassificationEntries(bucket.entries),
+      installation: bucket.installation,
+      classification: preferredClassification(classifications),
+    });
+    for (const member of bucket.members) {
+      priorCanonicalKeyByExact.set(
+        `${bucket.installation.instanceRef}|${bucket.componentRef}|${member.revision.id}`,
+        tripleKey,
+      );
+    }
+    const pairKey = `${bucket.installation.instanceRef}|${bucket.componentRef}`;
+    priorTriplesByPair.set(pairKey, [
+      ...(priorTriplesByPair.get(pairKey) ?? []),
+      { tripleKey, advisoryRef: canonical.advisoryRef },
+    ]);
   }
 
   // The scopes this snapshot actually derives: one alias group, one instance, and
@@ -50788,7 +50825,8 @@ function vulnerabilityDispositionFindings(input) {
         }
       }
       if (!isCurrentRevision) {
-        if (!priorTriples.has(exactTripleKey)) {
+        const priorTripleKey = priorCanonicalKeyByExact.get(exactTripleKey);
+        if (priorTripleKey === undefined) {
           findings.push(
             finding(
               "undeclared_reopened_triple",
@@ -50796,7 +50834,7 @@ function vulnerabilityDispositionFindings(input) {
               "This reopened triple is not derivable from the superseded revision and the supplied inventory.",
             ),
           );
-        } else if (reopenedTripleOwners.has(exactTripleKey)) {
+        } else if (reopenedTripleOwners.has(priorTripleKey)) {
           findings.push(
             finding(
               "duplicate_reopened_disposition_triple",
@@ -50805,7 +50843,7 @@ function vulnerabilityDispositionFindings(input) {
             ),
           );
         } else {
-          reopenedTripleOwners.set(exactTripleKey, row);
+          reopenedTripleOwners.set(priorTripleKey, row);
         }
       }
       continue;
