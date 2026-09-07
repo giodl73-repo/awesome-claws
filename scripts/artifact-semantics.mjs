@@ -47307,7 +47307,7 @@ function legalMatterFindings(input) {
         dueAt === null ||
         !/(?:Z|[+-]\d{2}:\d{2})$/u.test(candidate.dueAt ?? "") ||
         !isResolvableTimeZone(candidate.timezone) ||
-        candidate.authority === "unknown" ||
+        ["internal-system", "unknown"].includes(candidate.authority) ||
         !sourceRefs.includes(candidate.sourceRef) ||
         source?.sourceAuthority !== authoritySourceKinds.get(candidate.authority)
       ) {
@@ -47324,7 +47324,7 @@ function legalMatterFindings(input) {
     const resolvedAt = timestamp(deadline.resolvedDueAt);
     if (
       deadline.verificationState !== "confirmed" ||
-      deadline.authority === "unknown" ||
+      ["internal-system", "unknown"].includes(deadline.authority) ||
       !candidateAuthorities.has(deadline.authority) ||
       resolvedAt === null ||
       candidateInstants.size !== 1 ||

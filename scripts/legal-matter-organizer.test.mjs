@@ -180,6 +180,20 @@ test("legal matter enforces chronology and authoritative deadline reconciliation
     value.deadlines[0].candidates[0].authority = "internal-system";
   });
   assert.ok(codes(unsupportedAuthority).has("invalid_deadline_candidate"));
+
+  const internallyConsistentAuthority = mutate((value) => {
+    value.deadlines[0].candidates = [
+      {
+        ...value.deadlines[0].candidates[0],
+        authority: "internal-system",
+        sourceRef: "source-evidence-inventory",
+      },
+    ];
+    value.deadlines[0].authority = "internal-system";
+    value.deadlines[0].sourceRefs = ["source-evidence-inventory"];
+  });
+  assert.ok(codes(internallyConsistentAuthority).has("invalid_deadline_candidate"));
+  assert.ok(codes(internallyConsistentAuthority).has("unready_legal_deadline"));
 });
 
 test("legal matter requires scoped named counsel for privilege and review", () => {
