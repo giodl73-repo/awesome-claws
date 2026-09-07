@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Legal matter organizer session report",
+  "output": "outputs/legal-matter-organizer-handoff.md",
+  "sections": [
+    "matter_snapshot",
+    "named_principals",
+    "parties_and_workstreams",
+    "sources_and_custody",
+    "filing_correspondence_evidence_indexes",
+    "chronology_and_deadlines",
+    "privilege_holds_conflicts",
+    "tasks_decisions_review_gates",
+    "authority_gates",
+    "counsel_review_handoff"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the same preservation-safe sections as Markdown; keep the handoff blocked or ready-for-counsel-review and never approved."
+}

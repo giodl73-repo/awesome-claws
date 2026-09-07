@@ -275,6 +275,12 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "legal-matter-organizer",
+    schema: "../claws/legal-matter-organizer/schemas/legal-matter.schema.json",
+    fixture: "../claws/legal-matter-organizer/fixtures/legal-matter.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "movie-streaming-organizer",
     schema: "../claws/movie-streaming-organizer/schemas/movie-streaming.schema.json",
     fixture: "../claws/movie-streaming-organizer/fixtures/movie-streaming.example.json",

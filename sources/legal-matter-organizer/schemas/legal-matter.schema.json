@@ -1,0 +1,1618 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/legal-matter.schema.json",
+  "title": "Legal matter organizer snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "matter",
+    "principals",
+    "parties",
+    "workstreams",
+    "sources",
+    "custodyEvents",
+    "records",
+    "chronology",
+    "deadlines",
+    "privilegeLabels",
+    "holds",
+    "conflicts",
+    "tasks",
+    "decisions",
+    "reviewGates",
+    "authorityGates",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.legalMatter.v1"
+    },
+    "matter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "neutralTitle",
+        "counselScope",
+        "snapshotRef",
+        "asOf",
+        "timezone",
+        "workspaceRef",
+        "destinationRef",
+        "supervisingCounselRef",
+        "principalRefs",
+        "partyRefs",
+        "workstreamRefs",
+        "sourceRefs",
+        "custodyEventRefs",
+        "recordRefs",
+        "chronologyRefs",
+        "deadlineRefs",
+        "privilegeLabelRefs",
+        "holdRefs",
+        "conflictRefs",
+        "taskRefs",
+        "decisionRefs",
+        "reviewGateRefs",
+        "authorityGateRefs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^MAT-[0-9]{4}-[0-9]{3,}$"
+        },
+        "neutralTitle": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 120
+        },
+        "counselScope": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 500
+        },
+        "snapshotRef": {
+          "type": "string",
+          "pattern": "^SNAP-[A-Z0-9-]+$"
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "workspaceRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "destinationRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "supervisingCounselRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "principalRefs": {
+          "$ref": "#/$defs/principalRefs"
+        },
+        "partyRefs": {
+          "$ref": "#/$defs/partyRefs"
+        },
+        "workstreamRefs": {
+          "$ref": "#/$defs/workstreamRefs"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "custodyEventRefs": {
+          "$ref": "#/$defs/custodyEventRefs"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/recordRefs"
+        },
+        "chronologyRefs": {
+          "$ref": "#/$defs/chronologyRefs"
+        },
+        "deadlineRefs": {
+          "$ref": "#/$defs/deadlineRefs"
+        },
+        "privilegeLabelRefs": {
+          "$ref": "#/$defs/privilegeLabelRefs"
+        },
+        "holdRefs": {
+          "$ref": "#/$defs/holdRefs"
+        },
+        "conflictRefs": {
+          "$ref": "#/$defs/conflictRefs"
+        },
+        "taskRefs": {
+          "$ref": "#/$defs/taskRefs"
+        },
+        "decisionRefs": {
+          "$ref": "#/$defs/decisionRefs"
+        },
+        "reviewGateRefs": {
+          "$ref": "#/$defs/reviewGateRefs"
+        },
+        "authorityGateRefs": {
+          "$ref": "#/$defs/authorityGateRefs"
+        }
+      }
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "parties": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/party"
+      }
+    },
+    "workstreams": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/workstream"
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "custodyEvents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/custodyEvent"
+      }
+    },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    },
+    "chronology": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/chronologyEvent"
+      }
+    },
+    "deadlines": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/deadline"
+      }
+    },
+    "privilegeLabels": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/privilegeLabel"
+      }
+    },
+    "holds": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/hold"
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/conflict"
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/task"
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    },
+    "reviewGates": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "$ref": "#/$defs/reviewGate"
+      }
+    },
+    "authorityGates": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "items": {
+        "$ref": "#/$defs/authorityGate"
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "matterRef",
+        "snapshotRef",
+        "state",
+        "approvalState",
+        "generatedAt",
+        "counselReviewerRef",
+        "destinationRef",
+        "sourceRefs",
+        "reviewGateRefs",
+        "authorityGateRefs",
+        "coveredRefs",
+        "blockingRefs"
+      ],
+      "properties": {
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "blocked",
+            "ready-for-counsel-review"
+          ]
+        },
+        "approvalState": {
+          "const": "not-approved"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "counselReviewerRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "destinationRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "reviewGateRefs": {
+          "$ref": "#/$defs/reviewGateRefs"
+        },
+        "authorityGateRefs": {
+          "$ref": "#/$defs/authorityGateRefs"
+        },
+        "coveredRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ledgerRef"
+          }
+        },
+        "blockingRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ledgerRef"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "matterRef": {
+      "type": "string",
+      "pattern": "^MAT-[0-9]{4}-[0-9]{3,}$"
+    },
+    "snapshotRef": {
+      "type": "string",
+      "pattern": "^SNAP-[A-Z0-9-]+$"
+    },
+    "principalRef": {
+      "type": "string",
+      "pattern": "^principal-[a-z0-9-]+$"
+    },
+    "partyRef": {
+      "type": "string",
+      "pattern": "^party-[a-z0-9-]+$"
+    },
+    "workstreamRef": {
+      "type": "string",
+      "pattern": "^workstream-[a-z0-9-]+$"
+    },
+    "sourceRef": {
+      "type": "string",
+      "pattern": "^source-[a-z0-9-]+$"
+    },
+    "custodyEventRef": {
+      "type": "string",
+      "pattern": "^custody-[a-z0-9-]+$"
+    },
+    "recordRef": {
+      "type": "string",
+      "pattern": "^record-[a-z0-9-]+$"
+    },
+    "chronologyRef": {
+      "type": "string",
+      "pattern": "^chronology-[a-z0-9-]+$"
+    },
+    "deadlineRef": {
+      "type": "string",
+      "pattern": "^deadline-[a-z0-9-]+$"
+    },
+    "privilegeLabelRef": {
+      "type": "string",
+      "pattern": "^privilege-[a-z0-9-]+$"
+    },
+    "holdRef": {
+      "type": "string",
+      "pattern": "^hold-[a-z0-9-]+$"
+    },
+    "conflictRef": {
+      "type": "string",
+      "pattern": "^conflict-[a-z0-9-]+$"
+    },
+    "taskRef": {
+      "type": "string",
+      "pattern": "^task-[a-z0-9-]+$"
+    },
+    "decisionRef": {
+      "type": "string",
+      "pattern": "^decision-[a-z0-9-]+$"
+    },
+    "reviewGateRef": {
+      "type": "string",
+      "pattern": "^review-[a-z0-9-]+$"
+    },
+    "authorityGateRef": {
+      "type": "string",
+      "pattern": "^authority-[a-z0-9-]+$"
+    },
+    "ledgerRef": {
+      "type": "string",
+      "pattern": "^(principal|party|workstream|source|custody|record|chronology|deadline|privilege|hold|conflict|task|decision|review|authority)-[a-z0-9-]+$"
+    },
+    "principalRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/principalRef"
+      }
+    },
+    "partyRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/partyRef"
+      }
+    },
+    "workstreamRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/workstreamRef"
+      }
+    },
+    "sourceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/sourceRef"
+      }
+    },
+    "custodyEventRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/custodyEventRef"
+      }
+    },
+    "recordRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/recordRef"
+      }
+    },
+    "chronologyRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/chronologyRef"
+      }
+    },
+    "deadlineRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/deadlineRef"
+      }
+    },
+    "privilegeLabelRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/privilegeLabelRef"
+      }
+    },
+    "holdRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/holdRef"
+      }
+    },
+    "conflictRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/conflictRef"
+      }
+    },
+    "taskRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/taskRef"
+      }
+    },
+    "decisionRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/decisionRef"
+      }
+    },
+    "reviewGateRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/reviewGateRef"
+      }
+    },
+    "authorityGateRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/authorityGateRef"
+      }
+    },
+    "controlledRef": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^controlled://[^/?#]+/[^?#]+$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "binding": {
+      "type": "object",
+      "required": [
+        "matterRef",
+        "snapshotRef"
+      ],
+      "properties": {
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "name",
+        "title",
+        "scopes",
+        "sourceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 120
+        },
+        "title": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "matter-supervision",
+              "deadline-confirmation",
+              "privilege-confirmation",
+              "hold-issuance",
+              "conflict-confirmation",
+              "task-ownership",
+              "custody-recording",
+              "handoff-review"
+            ]
+          }
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "party": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "label",
+        "role",
+        "conflictState",
+        "sensitivity",
+        "sourceRefs",
+        "recordRefs",
+        "conflictRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/partyRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 120
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "represented-organization",
+            "opposing-organization",
+            "other-counsel-supplied-role"
+          ]
+        },
+        "conflictState": {
+          "type": "string",
+          "enum": [
+            "counsel-cleared",
+            "counsel-unresolved",
+            "counsel-flagged",
+            "not-assessed"
+          ]
+        },
+        "sensitivity": {
+          "type": "string",
+          "enum": [
+            "minimized",
+            "confidential",
+            "restricted"
+          ]
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/recordRefs"
+        },
+        "conflictRefs": {
+          "$ref": "#/$defs/conflictRefs"
+        }
+      }
+    },
+    "workstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "title",
+        "state",
+        "sourceRefs",
+        "recordRefs",
+        "deadlineRefs",
+        "taskRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/workstreamRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 160
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "active",
+            "blocked",
+            "counsel-review"
+          ]
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/recordRefs"
+        },
+        "deadlineRefs": {
+          "$ref": "#/$defs/deadlineRefs"
+        },
+        "taskRefs": {
+          "$ref": "#/$defs/taskRefs"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "kind",
+        "controlledRef",
+        "sourceAuthority",
+        "custodianRef",
+        "suppliedByRef",
+        "observedAt",
+        "receivedAt",
+        "immutableVersion",
+        "integrityDigest",
+        "classification",
+        "holdRefs",
+        "custodyEventRefs",
+        "recordRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "file-stamped-order",
+            "docket-export",
+            "counsel-note",
+            "party-correspondence",
+            "evidence-inventory",
+            "legal-hold-notice",
+            "privilege-confirmation",
+            "conflict-confirmation"
+          ]
+        },
+        "controlledRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "sourceAuthority": {
+          "type": "string",
+          "enum": [
+            "counsel-supplied",
+            "file-stamped-filing",
+            "court-or-agency-record",
+            "party-correspondence",
+            "internal-system"
+          ]
+        },
+        "custodianRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "receivedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "immutableVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "integrityDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "confidential",
+            "privileged-candidate",
+            "restricted"
+          ]
+        },
+        "holdRefs": {
+          "$ref": "#/$defs/holdRefs"
+        },
+        "custodyEventRefs": {
+          "$ref": "#/$defs/custodyEventRefs"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/recordRefs"
+        }
+      }
+    },
+    "custodyEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "sourceRef",
+        "sequence",
+        "eventType",
+        "occurredAt",
+        "suppliedByRef",
+        "priorEventRef",
+        "integrityDigest",
+        "custodyEffect"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/custodyEventRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "eventType": {
+          "type": "string",
+          "enum": [
+            "received",
+            "indexed",
+            "integrity-verified",
+            "review-copy-recorded"
+          ]
+        },
+        "occurredAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "priorEventRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/custodyEventRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "integrityDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "custodyEffect": {
+          "const": "record-only-no-transfer"
+        }
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "kind",
+        "title",
+        "indexState",
+        "sourceRefs",
+        "partyRefs",
+        "workstreamRefs",
+        "chronologyRefs",
+        "deadlineRefs",
+        "privilegeLabelRefs",
+        "holdRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/recordRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "filing",
+            "correspondence",
+            "evidence"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 160
+        },
+        "indexState": {
+          "const": "indexed"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "partyRefs": {
+          "$ref": "#/$defs/partyRefs"
+        },
+        "workstreamRefs": {
+          "$ref": "#/$defs/workstreamRefs"
+        },
+        "chronologyRefs": {
+          "$ref": "#/$defs/chronologyRefs"
+        },
+        "deadlineRefs": {
+          "$ref": "#/$defs/deadlineRefs"
+        },
+        "privilegeLabelRefs": {
+          "$ref": "#/$defs/privilegeLabelRefs"
+        },
+        "holdRefs": {
+          "$ref": "#/$defs/holdRefs"
+        }
+      }
+    },
+    "chronologyEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "summary",
+        "temporalState",
+        "eventAt",
+        "timezone",
+        "sourceRefs",
+        "recordRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/chronologyRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
+        "temporalState": {
+          "type": "string",
+          "enum": [
+            "occurred",
+            "reported",
+            "scheduled",
+            "unknown"
+          ]
+        },
+        "eventAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timezone": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/recordRefs"
+        }
+      }
+    },
+    "deadlineCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dueAt",
+        "timezone",
+        "authority",
+        "sourceRef"
+      ],
+      "properties": {
+        "dueAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "enum": [
+            "counsel-supplied",
+            "file-stamped-filing",
+            "court-or-agency-notice",
+            "party-correspondence",
+            "internal-system",
+            "unknown"
+          ]
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        }
+      }
+    },
+    "deadline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "title",
+        "candidates",
+        "resolvedDueAt",
+        "timezone",
+        "authority",
+        "verificationState",
+        "status",
+        "confirmingCounselRef",
+        "confirmedAt",
+        "sourceRefs",
+        "recordRefs",
+        "workstreamRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/deadlineRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 160
+        },
+        "candidates": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/deadlineCandidate"
+          }
+        },
+        "resolvedDueAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "enum": [
+            "counsel-supplied",
+            "file-stamped-filing",
+            "court-or-agency-notice",
+            "party-correspondence",
+            "internal-system",
+            "unknown"
+          ]
+        },
+        "verificationState": {
+          "type": "string",
+          "enum": [
+            "confirmed",
+            "unverified",
+            "conflicting",
+            "stale",
+            "unsupported",
+            "inferred"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "open",
+            "completed"
+          ]
+        },
+        "confirmingCounselRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/principalRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confirmedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/recordRefs"
+        },
+        "workstreamRefs": {
+          "$ref": "#/$defs/workstreamRefs"
+        }
+      }
+    },
+    "privilegeLabel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "recordRefs",
+        "state",
+        "counselRef",
+        "decidedAt",
+        "evidenceSourceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/privilegeLabelRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/recordRefs"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "unreviewed-claim",
+            "counsel-confirmed",
+            "counsel-rejected",
+            "not-assessed"
+          ]
+        },
+        "counselRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/principalRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decidedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidenceSourceRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/sourceRef"
+          }
+        }
+      }
+    },
+    "hold": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "state",
+        "coveredSourceRefs",
+        "coveredRecordRefs",
+        "issuingCounselRef",
+        "issuedAt",
+        "evidenceSourceRefs",
+        "releasedByRef",
+        "releasedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/holdRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "active",
+            "released",
+            "contradicted",
+            "missing-coverage"
+          ]
+        },
+        "coveredSourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "coveredRecordRefs": {
+          "$ref": "#/$defs/recordRefs"
+        },
+        "issuingCounselRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "issuedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "evidenceSourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "releasedByRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/principalRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "releasedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "partyRefs",
+        "state",
+        "counselRef",
+        "assessedAt",
+        "sourceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/conflictRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "partyRefs": {
+          "$ref": "#/$defs/partyRefs"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "counsel-cleared",
+            "counsel-unresolved",
+            "counsel-flagged",
+            "not-assessed"
+          ]
+        },
+        "counselRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/principalRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assessedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "title",
+        "ownerRef",
+        "status",
+        "readinessRequired",
+        "completedAt",
+        "sourceRefs",
+        "workstreamRefs",
+        "targetRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/taskRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "open",
+            "blocked",
+            "completed"
+          ]
+        },
+        "readinessRequired": {
+          "type": "boolean"
+        },
+        "completedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "workstreamRefs": {
+          "$ref": "#/$defs/workstreamRefs"
+        },
+        "targetRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ledgerRef"
+          }
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "sequence",
+        "decisionType",
+        "outcome",
+        "deciderRef",
+        "decidedAt",
+        "sourceRefs",
+        "targetRefs",
+        "priorDecisionRef",
+        "origin"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/decisionRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "decisionType": {
+          "type": "string",
+          "enum": [
+            "scope-confirmed",
+            "deadline-confirmed",
+            "privilege-confirmed",
+            "hold-issued",
+            "conflict-cleared",
+            "handoff-quality-reviewed"
+          ]
+        },
+        "outcome": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
+        "deciderRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "decidedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "targetRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ledgerRef"
+          }
+        },
+        "priorDecisionRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/decisionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "const": "supplied-human-decision"
+        }
+      }
+    },
+    "reviewGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "gateType",
+        "state",
+        "reviewerRef",
+        "reviewedAt",
+        "evidenceSourceRefs",
+        "targetRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/reviewGateRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "gateType": {
+          "type": "string",
+          "enum": [
+            "scope-binding",
+            "source-coverage",
+            "reference-integrity",
+            "deadline-reconciliation",
+            "hold-coverage",
+            "privilege-resolution",
+            "conflict-resolution",
+            "independent-counsel-review"
+          ]
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "satisfied",
+            "blocked"
+          ]
+        },
+        "reviewerRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "reviewedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "evidenceSourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        },
+        "targetRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ledgerRef"
+          }
+        }
+      }
+    },
+    "authorityGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "matterRef",
+        "snapshotRef",
+        "action",
+        "state",
+        "retainedByRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/authorityGateRef"
+        },
+        "matterRef": {
+          "$ref": "#/$defs/matterRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "interpret-law",
+            "give-legal-advice",
+            "determine-legal-strategy",
+            "determine-privilege",
+            "file-or-serve",
+            "contact-legal-participants",
+            "sign",
+            "negotiate",
+            "settle",
+            "waive",
+            "commit",
+            "alter-custody-or-destroy",
+            "release-hold",
+            "approve-handoff"
+          ]
+        },
+        "state": {
+          "const": "prohibited"
+        },
+        "retainedByRef": {
+          "$ref": "#/$defs/principalRef"
+        }
+      }
+    }
+  }
+}

@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (100)
+### Active (101)
 
 | Claw | Detail |
 | --- | --- |
@@ -58,6 +58,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Job application tracker](claws/job-application-tracker) | @giodl73-repo; last verified 2026-08-28 |
 | [Knowledge curator](claws/knowledge-curator) | @giodl73-repo; last verified 2026-08-31 |
 | [Knowledge gardener](claws/knowledge-gardener) | @giodl73-repo; last verified 2026-08-31 |
+| [Legal matter organizer](claws/legal-matter-organizer) | @giodl73; last verified 2026-09-06 |
 | [Life timeline keeper](claws/life-timeline-keeper) | @giodl73-repo; last verified 2026-08-27 |
 | [Local events watcher](claws/local-events-watcher) | @giodl73-repo; last verified 2026-08-23 |
 | [Localization program manager](claws/localization-program-manager) | @giodl73-repo; last verified 2026-08-19 |
@@ -127,7 +128,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (70)
+### Low setup (71)
 
 | Claw | Detail |
 | --- | --- |
@@ -165,6 +166,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Job application tracker](claws/job-application-tracker) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
 | [Knowledge gardener](claws/knowledge-gardener) | no bootstrap, external dependency, or schedule |
+| [Legal matter organizer](claws/legal-matter-organizer) | no bootstrap, external dependency, or schedule |
 | [Life timeline keeper](claws/life-timeline-keeper) | no bootstrap, external dependency, or schedule |
 | [Local events watcher](claws/local-events-watcher) | no bootstrap, external dependency, or schedule |
 | [Localization program manager](claws/localization-program-manager) | no bootstrap, external dependency, or schedule |
@@ -246,7 +248,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (78)
+### No external dependencies (79)
 
 | Claw | Detail |
 | --- | --- |
@@ -290,6 +292,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Job application tracker](claws/job-application-tracker) | None |
 | [Knowledge curator](claws/knowledge-curator) | None |
 | [Knowledge gardener](claws/knowledge-gardener) | None |
+| [Legal matter organizer](claws/legal-matter-organizer) | None |
 | [Life timeline keeper](claws/life-timeline-keeper) | None |
 | [Local events watcher](claws/local-events-watcher) | None |
 | [Localization program manager](claws/localization-program-manager) | None |
@@ -360,7 +363,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (75)
+### X3 (76)
 
 | Claw | Detail |
 | --- | --- |
@@ -397,6 +400,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Job application tracker](claws/job-application-tracker) | Organizes owner-supplied job postings, application materials, recruiter notes, interview schedules, follow-up drafts, status evidence, and offer questions into a private job-search pipeline without applying to jobs, fabricating credentials, contacting employers, changing accounts, accepting offers, negotiating commitments, or giving legal, immigration, tax, financial, or career advice. |
 | [Knowledge curator](claws/knowledge-curator) | Maintains one bounded, durable, normalized, source-linked collection index of topics, claims, human-owned decisions, duplicates, disputes, gaps, freshness, retention, and review state without owning or mutating source systems. |
 | [Knowledge gardener](claws/knowledge-gardener) | Maintains a private, digest-bound, exact-version change plan from one operator-supplied, versioned, secret-free read-only Notion observation export and authorization/scope receipt, without Notion, network, or source-mutation access. |
+| [Legal matter organizer](claws/legal-matter-organizer) | Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action. |
 | [Life timeline keeper](claws/life-timeline-keeper) | Maintains an owner-reviewed timeline of important trips, moves, milestones, family events, achievements, and document or media pointers without posting publicly, identifying faces, making legal claims, or disclosing sensitive memories. |
 | [Local events watcher](claws/local-events-watcher) | Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
 | [Meal and grocery planner](claws/meal-grocery-planner) | Plans meals, pantry use, grocery lists, dietary constraints, budget fit, and store-availability evidence from approved sources without ordering food, checking out carts, changing subscriptions, editing calendars, or giving medical nutrition advice. |
@@ -513,13 +517,14 @@ Categories come directly from the catalog entry.
 | [Security analyst](claws/security-analyst) | X4; Assesses security questions with explicit trust boundaries and reproducible evidence. |
 | [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 
-### Governance (4)
+### Governance (5)
 
 | Claw | Detail |
 | --- | --- |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | X4; Organizes accessibility evidence, findings, remediation ownership, and verification against an approved review scope without claiming certification. |
 | [Compliance reviewer](claws/compliance-reviewer) | X4; Evaluates controls and evidence without substituting for accountable legal judgment. |
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
+| [Legal matter organizer](claws/legal-matter-organizer) | X3; Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 
 ### Operations (22)
@@ -613,7 +618,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (48)
+### Standard attention (49)
 
 | Claw | Detail |
 | --- | --- |
@@ -638,6 +643,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | portable workspace artifacts only |
 | [Job application tracker](claws/job-application-tracker) | portable workspace artifacts only |
 | [Knowledge curator](claws/knowledge-curator) | portable workspace artifacts only |
+| [Legal matter organizer](claws/legal-matter-organizer) | portable workspace artifacts only |
 | [Life timeline keeper](claws/life-timeline-keeper) | portable workspace artifacts only |
 | [Local events watcher](claws/local-events-watcher) | portable workspace artifacts only |
 | [Meal and grocery planner](claws/meal-grocery-planner) | portable workspace artifacts only |

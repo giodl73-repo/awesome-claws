@@ -2450,6 +2450,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "legal-matter-organizer",
+      "acceptedRequest": "Maintain the supplied MAT-2026-014 commercial-dispute snapshot from the file-stamped scheduling order, docket export, counsel deadline note, opposing-party correspondence, evidence inventory, and active hold. Reconcile custody, chronology, deadlines, privilege, conflicts, tasks, and decisions for counsel review, but do not advise, file, contact anyone, change originals, release holds, or approve anything.",
+      "requiredEvidence": [
+        "Stable matter ID, neutral title, counsel-supplied scope, exact snapshot reference and cutoff, approved workspace and destination, and named humans with scoped matter, deadline, privilege, hold, task, and handoff responsibilities",
+        "Counsel-supplied parties, roles, workstreams, conflict and sensitivity states, filing, correspondence, and evidence indexes, minimized labels, and controlled party references",
+        "Controlled source references, source authority, custodians, observed and received timestamps, immutable versions, integrity digests, classifications, hold coverage, and supplied append-only custody events",
+        "Source-backed chronology, authoritative deadline candidates and timezones, privilege labels, legal holds, tasks, supplied human decisions, review gates, and unresolved questions"
+      ],
+      "authorityBoundaries": [
+        "Do not interpret law, give legal advice, infer claims or defenses, determine strategy or privilege, clear conflicts, issue or release holds, or represent the artifact as counsel-approved",
+        "Do not file, serve, sign, contact parties, witnesses, counsel, courts, regulators, or agencies, negotiate, settle, waive, commit, communicate externally, or approve the matter handoff",
+        "Do not delete, alter, move, release, transfer custody of, or destroy originals, evidence, correspondence, filings, source versions, custody records, or hold-covered material",
+        "Do not expose party identities, personal data, confidential facts, legal theories, privileged content, credentials, or uncontrolled source locations beyond the approved workspace and destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/legal-matter-organizer-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

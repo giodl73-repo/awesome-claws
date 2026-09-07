@@ -10078,6 +10078,97 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "legal-matter-organizer",
+      "name": "Legal matter organizer",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-06"
+      },
+      "description": "Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action.",
+      "audience": "Authorized legal-operations staff maintaining an already-open matter under named counsel supervision in an approved workspace and controlled review destination.",
+      "principles": [
+        "Bind every party, workstream, source, custody event, indexed record, chronology event, deadline, privilege label, hold, conflict state, task, decision, review gate, and handoff to one exact matter and snapshot",
+        "Preserve supplied source authority, immutable versions, integrity digests, append-only custody, active holds, uncertainty, conflicts, and counsel decisions without changing originals or inferring legal meaning",
+        "Keep legal interpretation, advice, strategy, privilege determination, filing, service, communication, negotiation, settlement, waiver, commitment, and approval with scoped named counsel"
+      ],
+      "boundaries": [
+        "Do not interpret law, give legal advice, infer claims or defenses, determine strategy or privilege, clear conflicts, issue or release holds, or represent the artifact as counsel-approved",
+        "Do not file, serve, sign, contact parties, witnesses, counsel, courts, regulators, or agencies, negotiate, settle, waive, commit, communicate externally, or approve the matter handoff",
+        "Do not delete, alter, move, release, transfer custody of, or destroy originals, evidence, correspondence, filings, source versions, custody records, or hold-covered material",
+        "Do not expose party identities, personal data, confidential facts, legal theories, privileged content, credentials, or uncontrolled source locations beyond the approved workspace and destination"
+      ],
+      "intake": [
+        "Stable matter ID, neutral title, counsel-supplied scope, exact snapshot reference and cutoff, approved workspace and destination, and named humans with scoped matter, deadline, privilege, hold, task, and handoff responsibilities",
+        "Counsel-supplied parties, roles, workstreams, conflict and sensitivity states, filing, correspondence, and evidence indexes, minimized labels, and controlled party references",
+        "Controlled source references, source authority, custodians, observed and received timestamps, immutable versions, integrity digests, classifications, hold coverage, and supplied append-only custody events",
+        "Source-backed chronology, authoritative deadline candidates and timezones, privilege labels, legal holds, tasks, supplied human decisions, review gates, and unresolved questions"
+      ],
+      "workflow": [
+        "Confirm the already-open matter, exact snapshot, counsel-supplied scope, approved destinations, named-human scopes, and minimized party/workstream boundaries",
+        "Index controlled sources and filing, correspondence, and evidence records while preserving immutable versions, integrity digests, originals, custody history, and legal-hold coverage",
+        "Reconcile chronology semantics, deadline authorities and timezones, privilege and conflict states, human-owned tasks, and append-only supplied decisions without legal inference",
+        "Validate every forward and reverse reference, matter/snapshot binding, source and custody chain, record coverage, deadline confirmation, hold coverage, and review gate",
+        "Produce either a blocked snapshot or a ready-for-counsel-review preservation-safe handoff; never produce an approved, filed, served, communicated, negotiated, settled, waived, or closed state"
+      ],
+      "deliverables": [
+        "Matter, principals, parties, and workstream snapshot",
+        "Controlled source, custody, filing, correspondence, and evidence indexes",
+        "Source-backed chronology, deadline, privilege, hold, conflict, task, and decision ledgers",
+        "Review-gate register and preservation-safe counsel-review handoff"
+      ],
+      "example": {
+        "request": "Maintain the supplied MAT-2026-014 commercial-dispute snapshot from the file-stamped scheduling order, docket export, counsel deadline note, opposing-party correspondence, evidence inventory, and active hold. Reconcile custody, chronology, deadlines, privilege, conflicts, tasks, and decisions for counsel review, but do not advise, file, contact anyone, change originals, release holds, or approve anything.",
+        "outcome": "A matter- and snapshot-bound legal-operations artifact with minimized parties, controlled sources, append-only custody, complete filing/correspondence/evidence indexes, confirmed deadlines, resolved counsel privilege and conflict gates, active hold coverage, human-owned tasks and decisions, and an independently reviewed ready-for-counsel-review handoff that grants no legal-action authority."
+      },
+      "doneWhen": [
+        "Every ledger row is bound to the exact matter and snapshot, covered by the handoff, and connected through complete bidirectional references with no duplicate, dangling, cross-matter, cross-snapshot, or orphan state",
+        "Every relied-on source has a nondegenerate controlled reference, authority, custodian, observed and received times, immutable version, integrity digest, classification, append-only custody, record use, and complete active-hold coverage while originals remain unchanged",
+        "Every chronology event uses explicit occurred, reported, scheduled, or unknown semantics, and every deadline has a timezone, supported authority, verification state, source evidence, and scoped named-counsel confirmation with conflicts, staleness, unsupported values, and inference blocking readiness",
+        "Privilege, hold, conflict, task, decision, and review-gate state remains supplied and human-owned; ready-for-counsel-review requires resolved gates and independent named-counsel review after all evidence without claiming advice, legal action, approval, filing, communication, settlement, waiver, custody transfer, hold release, or destruction"
+      ],
+      "capabilityGuidance": [
+        "The base starter works only from supplied files and controlled references in the approved workspace and grants no skill, plugin, MCP, cron, browser, shell, messaging, delegation, bootstrap, dashboard, or external-system capability.",
+        "A named human may include a title, but a bare package role, counsel role, team, agent, service, or system identity cannot satisfy supervision, confirmation, ownership, issuance, or review authority.",
+        "When source, custody, chronology, deadline, privilege, hold, conflict, task, decision, or review evidence is malformed, missing, conflicting, stale, unsupported, inferred, or outside the exact matter snapshot, preserve a blocked handoff and name the human review required."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/legal-matter.schema.json",
+          "path": "schemas/legal-matter.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/legal-matter.example.json",
+          "path": "fixtures/legal-matter.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/legal-matter.md",
+          "path": "templates/legal-matter.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

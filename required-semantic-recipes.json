@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 100,
-    "coveredCount": 100,
-    "recipeCount": 268,
-    "findingCodeCount": 244
+    "validatorCount": 101,
+    "coveredCount": 101,
+    "recipeCount": 271,
+    "findingCodeCount": 263
   },
   "entries": [
     {
@@ -4146,6 +4146,68 @@
           "expectedCodes": [
             "invalid_gate_applicability_evidence",
             "unbound_address_evidence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "legal-matter-organizer",
+      "recipes": [
+        {
+          "id": "semantic-incomplete-legal-matter-index-1",
+          "operator": "replace",
+          "path": [
+            "matter",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "incomplete_legal_matter_index",
+            "invalid_custody_event",
+            "invalid_legal_chronology",
+            "invalid_legal_handoff_binding",
+            "invalid_legal_source_integrity",
+            "invalid_legal_task_state",
+            "invalid_supplied_legal_decision",
+            "premature_counsel_review_handoff",
+            "unready_legal_deadline",
+            "unresolved_legal_conflict",
+            "unresolved_privilege_label",
+            "unsafe_legal_hold_state",
+            "unsatisfied_legal_review_gate"
+          ]
+        },
+        {
+          "id": "semantic-invalid-legal-matter-binding-2",
+          "operator": "replace",
+          "path": [
+            "matter",
+            "timezone"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_legal_matter_binding",
+            "premature_counsel_review_handoff"
+          ]
+        },
+        {
+          "id": "semantic-invalid-custody-event-3",
+          "operator": "replace",
+          "path": [
+            "principals",
+            "0",
+            "name"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_custody_event",
+            "invalid_human_task_owner",
+            "invalid_legal_handoff_binding",
+            "invalid_legal_source_custodian",
+            "invalid_legal_source_supplier",
+            "invalid_principal_identity",
+            "missing_legal_authority_scope",
+            "premature_counsel_review_handoff"
           ]
         }
       ]

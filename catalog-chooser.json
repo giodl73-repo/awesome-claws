@@ -1716,6 +1716,40 @@
       }
     },
     {
+      "id": "legal-matter-organizer",
+      "name": "Legal matter organizer",
+      "description": "Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action.",
+      "audience": "Authorized legal-operations staff maintaining an already-open matter under named counsel supervision in an approved workspace and controlled review destination.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-06"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "life-timeline-keeper",
       "name": "Life timeline keeper",
       "description": "Maintains an owner-reviewed timeline of important trips, moves, milestones, family events, achievements, and document or media pointers without posting publicly, identifying faces, making legal claims, or disclosing sensitive memories.",

@@ -1,0 +1,1731 @@
+{
+  "schemaVersion": "awesomeClaws.legalMatter.v1",
+  "matter": {
+    "id": "MAT-2026-014",
+    "neutralTitle": "Synthetic commercial dispute matter",
+    "counselScope": "Maintain the supplied preservation, scheduling, correspondence, evidence, and review indexes for counsel review only.",
+    "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+    "asOf": "2026-09-06T22:00:00Z",
+    "timezone": "America/Los_Angeles",
+    "workspaceRef": "controlled://legal-ops/MAT-2026-014/workspace",
+    "destinationRef": "controlled://legal-ops/MAT-2026-014/counsel-review",
+    "supervisingCounselRef": "principal-jordan-lee",
+    "principalRefs": [
+      "principal-jordan-lee",
+      "principal-priya-shah",
+      "principal-alex-morgan",
+      "principal-taylor-kim"
+    ],
+    "partyRefs": [
+      "party-represented-org",
+      "party-opposing-org"
+    ],
+    "workstreamRefs": [
+      "workstream-pleadings-scheduling",
+      "workstream-correspondence",
+      "workstream-evidence-preservation"
+    ],
+    "sourceRefs": [
+      "source-scheduling-order",
+      "source-docket-export",
+      "source-deadline-note",
+      "source-opposing-correspondence",
+      "source-evidence-inventory",
+      "source-legal-hold",
+      "source-privilege-confirmation",
+      "source-conflict-confirmation"
+    ],
+    "custodyEventRefs": [
+      "custody-scheduling-order",
+      "custody-docket-export",
+      "custody-deadline-note",
+      "custody-opposing-correspondence",
+      "custody-evidence-inventory",
+      "custody-legal-hold",
+      "custody-privilege-confirmation",
+      "custody-conflict-confirmation"
+    ],
+    "recordRefs": [
+      "record-scheduling-order",
+      "record-docket-export",
+      "record-deadline-note",
+      "record-opposing-correspondence",
+      "record-evidence-inventory",
+      "record-legal-hold",
+      "record-privilege-confirmation",
+      "record-conflict-confirmation"
+    ],
+    "chronologyRefs": [
+      "chronology-order-filed",
+      "chronology-deadline-scheduled",
+      "chronology-correspondence-received",
+      "chronology-inventory-recorded",
+      "chronology-hold-issued",
+      "chronology-privilege-reviewed",
+      "chronology-conflict-reviewed"
+    ],
+    "deadlineRefs": [
+      "deadline-initial-disclosures"
+    ],
+    "privilegeLabelRefs": [
+      "privilege-scheduling-order",
+      "privilege-docket-export",
+      "privilege-deadline-note",
+      "privilege-opposing-correspondence",
+      "privilege-evidence-inventory",
+      "privilege-legal-hold",
+      "privilege-confirmation-record",
+      "privilege-conflict-confirmation"
+    ],
+    "holdRefs": [
+      "hold-matter-preservation"
+    ],
+    "conflictRefs": [
+      "conflict-matter-parties"
+    ],
+    "taskRefs": [
+      "task-index-records",
+      "task-reconcile-deadline",
+      "task-substantive-counsel-review"
+    ],
+    "decisionRefs": [
+      "decision-scope-confirmed",
+      "decision-deadline-confirmed",
+      "decision-privilege-confirmed",
+      "decision-hold-issued",
+      "decision-conflict-cleared",
+      "decision-handoff-quality-reviewed"
+    ],
+    "reviewGateRefs": [
+      "review-scope-binding",
+      "review-source-coverage",
+      "review-reference-integrity",
+      "review-deadline-reconciliation",
+      "review-hold-coverage",
+      "review-privilege-resolution",
+      "review-conflict-resolution",
+      "review-independent-counsel"
+    ],
+    "authorityGateRefs": [
+      "authority-interpret-law",
+      "authority-give-legal-advice",
+      "authority-determine-legal-strategy",
+      "authority-determine-privilege",
+      "authority-file-or-serve",
+      "authority-contact-legal-participants",
+      "authority-sign",
+      "authority-negotiate",
+      "authority-settle",
+      "authority-waive",
+      "authority-commit",
+      "authority-alter-custody-or-destroy",
+      "authority-release-hold",
+      "authority-approve-handoff"
+    ]
+  },
+  "principals": [
+    {
+      "id": "principal-jordan-lee",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "name": "Jordan Lee",
+      "title": "Supervising counsel",
+      "scopes": [
+        "matter-supervision",
+        "deadline-confirmation",
+        "privilege-confirmation",
+        "hold-issuance",
+        "conflict-confirmation"
+      ],
+      "sourceRefs": [
+        "source-deadline-note",
+        "source-legal-hold",
+        "source-privilege-confirmation",
+        "source-conflict-confirmation"
+      ]
+    },
+    {
+      "id": "principal-priya-shah",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "name": "Priya Shah",
+      "title": "Independent reviewing counsel",
+      "scopes": [
+        "handoff-review"
+      ],
+      "sourceRefs": [
+        "source-privilege-confirmation"
+      ]
+    },
+    {
+      "id": "principal-alex-morgan",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "name": "Alex Morgan",
+      "title": "Legal operations specialist",
+      "scopes": [
+        "task-ownership"
+      ],
+      "sourceRefs": [
+        "source-evidence-inventory"
+      ]
+    },
+    {
+      "id": "principal-taylor-kim",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "name": "Taylor Kim",
+      "title": "Records custodian",
+      "scopes": [
+        "custody-recording",
+        "task-ownership"
+      ],
+      "sourceRefs": [
+        "source-scheduling-order",
+        "source-docket-export",
+        "source-opposing-correspondence"
+      ]
+    }
+  ],
+  "parties": [
+    {
+      "id": "party-represented-org",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "label": "Represented organization (synthetic)",
+      "role": "represented-organization",
+      "conflictState": "counsel-cleared",
+      "sensitivity": "minimized",
+      "sourceRefs": [
+        "source-conflict-confirmation",
+        "source-evidence-inventory"
+      ],
+      "recordRefs": [
+        "record-scheduling-order",
+        "record-docket-export",
+        "record-deadline-note",
+        "record-evidence-inventory",
+        "record-legal-hold",
+        "record-privilege-confirmation",
+        "record-conflict-confirmation"
+      ],
+      "conflictRefs": [
+        "conflict-matter-parties"
+      ]
+    },
+    {
+      "id": "party-opposing-org",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "label": "Opposing organization (synthetic)",
+      "role": "opposing-organization",
+      "conflictState": "counsel-cleared",
+      "sensitivity": "minimized",
+      "sourceRefs": [
+        "source-conflict-confirmation",
+        "source-opposing-correspondence"
+      ],
+      "recordRefs": [
+        "record-scheduling-order",
+        "record-docket-export",
+        "record-deadline-note",
+        "record-opposing-correspondence",
+        "record-conflict-confirmation"
+      ],
+      "conflictRefs": [
+        "conflict-matter-parties"
+      ]
+    }
+  ],
+  "workstreams": [
+    {
+      "id": "workstream-pleadings-scheduling",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "title": "Pleadings and scheduling index",
+      "state": "counsel-review",
+      "sourceRefs": [
+        "source-scheduling-order",
+        "source-docket-export",
+        "source-deadline-note",
+        "source-conflict-confirmation"
+      ],
+      "recordRefs": [
+        "record-scheduling-order",
+        "record-docket-export",
+        "record-deadline-note",
+        "record-conflict-confirmation"
+      ],
+      "deadlineRefs": [
+        "deadline-initial-disclosures"
+      ],
+      "taskRefs": [
+        "task-index-records",
+        "task-reconcile-deadline",
+        "task-substantive-counsel-review"
+      ]
+    },
+    {
+      "id": "workstream-correspondence",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "title": "Correspondence index",
+      "state": "active",
+      "sourceRefs": [
+        "source-opposing-correspondence"
+      ],
+      "recordRefs": [
+        "record-opposing-correspondence"
+      ],
+      "deadlineRefs": [],
+      "taskRefs": [
+        "task-index-records"
+      ]
+    },
+    {
+      "id": "workstream-evidence-preservation",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "title": "Evidence preservation index",
+      "state": "active",
+      "sourceRefs": [
+        "source-evidence-inventory",
+        "source-legal-hold",
+        "source-privilege-confirmation"
+      ],
+      "recordRefs": [
+        "record-evidence-inventory",
+        "record-legal-hold",
+        "record-privilege-confirmation"
+      ],
+      "deadlineRefs": [],
+      "taskRefs": [
+        "task-index-records"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-scheduling-order",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "file-stamped-order",
+      "controlledRef": "controlled://matter-files/MAT-2026-014/scheduling-order-v1",
+      "sourceAuthority": "file-stamped-filing",
+      "custodianRef": "principal-taylor-kim",
+      "suppliedByRef": "principal-taylor-kim",
+      "observedAt": "2026-09-06T16:00:00Z",
+      "receivedAt": "2026-09-06T16:05:00Z",
+      "immutableVersion": "v1-file-stamped",
+      "integrityDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "classification": "confidential",
+      "holdRefs": [
+        "hold-matter-preservation"
+      ],
+      "custodyEventRefs": [
+        "custody-scheduling-order"
+      ],
+      "recordRefs": [
+        "record-scheduling-order"
+      ]
+    },
+    {
+      "id": "source-docket-export",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "docket-export",
+      "controlledRef": "controlled://matter-files/MAT-2026-014/docket-export-v1",
+      "sourceAuthority": "court-or-agency-record",
+      "custodianRef": "principal-taylor-kim",
+      "suppliedByRef": "principal-taylor-kim",
+      "observedAt": "2026-09-06T16:10:00Z",
+      "receivedAt": "2026-09-06T16:15:00Z",
+      "immutableVersion": "v1-export",
+      "integrityDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "classification": "confidential",
+      "holdRefs": [
+        "hold-matter-preservation"
+      ],
+      "custodyEventRefs": [
+        "custody-docket-export"
+      ],
+      "recordRefs": [
+        "record-docket-export"
+      ]
+    },
+    {
+      "id": "source-deadline-note",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "counsel-note",
+      "controlledRef": "controlled://matter-files/MAT-2026-014/counsel-deadline-note-v1",
+      "sourceAuthority": "counsel-supplied",
+      "custodianRef": "principal-jordan-lee",
+      "suppliedByRef": "principal-jordan-lee",
+      "observedAt": "2026-09-06T16:20:00Z",
+      "receivedAt": "2026-09-06T16:25:00Z",
+      "immutableVersion": "v1-counsel-note",
+      "integrityDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "classification": "privileged-candidate",
+      "holdRefs": [
+        "hold-matter-preservation"
+      ],
+      "custodyEventRefs": [
+        "custody-deadline-note"
+      ],
+      "recordRefs": [
+        "record-deadline-note"
+      ]
+    },
+    {
+      "id": "source-opposing-correspondence",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "party-correspondence",
+      "controlledRef": "controlled://matter-files/MAT-2026-014/opposing-correspondence-v1",
+      "sourceAuthority": "party-correspondence",
+      "custodianRef": "principal-taylor-kim",
+      "suppliedByRef": "principal-taylor-kim",
+      "observedAt": "2026-09-06T16:30:00Z",
+      "receivedAt": "2026-09-06T16:35:00Z",
+      "immutableVersion": "v1-received-copy",
+      "integrityDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "classification": "confidential",
+      "holdRefs": [
+        "hold-matter-preservation"
+      ],
+      "custodyEventRefs": [
+        "custody-opposing-correspondence"
+      ],
+      "recordRefs": [
+        "record-opposing-correspondence"
+      ]
+    },
+    {
+      "id": "source-evidence-inventory",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "evidence-inventory",
+      "controlledRef": "controlled://matter-files/MAT-2026-014/evidence-inventory-v1",
+      "sourceAuthority": "internal-system",
+      "custodianRef": "principal-taylor-kim",
+      "suppliedByRef": "principal-alex-morgan",
+      "observedAt": "2026-09-06T16:40:00Z",
+      "receivedAt": "2026-09-06T16:45:00Z",
+      "immutableVersion": "v1-inventory",
+      "integrityDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "classification": "restricted",
+      "holdRefs": [
+        "hold-matter-preservation"
+      ],
+      "custodyEventRefs": [
+        "custody-evidence-inventory"
+      ],
+      "recordRefs": [
+        "record-evidence-inventory"
+      ]
+    },
+    {
+      "id": "source-legal-hold",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "legal-hold-notice",
+      "controlledRef": "controlled://matter-files/MAT-2026-014/legal-hold-v1",
+      "sourceAuthority": "counsel-supplied",
+      "custodianRef": "principal-jordan-lee",
+      "suppliedByRef": "principal-jordan-lee",
+      "observedAt": "2026-09-06T16:50:00Z",
+      "receivedAt": "2026-09-06T16:55:00Z",
+      "immutableVersion": "v1-active",
+      "integrityDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "classification": "privileged-candidate",
+      "holdRefs": [
+        "hold-matter-preservation"
+      ],
+      "custodyEventRefs": [
+        "custody-legal-hold"
+      ],
+      "recordRefs": [
+        "record-legal-hold"
+      ]
+    },
+    {
+      "id": "source-privilege-confirmation",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "privilege-confirmation",
+      "controlledRef": "controlled://matter-files/MAT-2026-014/privilege-confirmation-v1",
+      "sourceAuthority": "counsel-supplied",
+      "custodianRef": "principal-jordan-lee",
+      "suppliedByRef": "principal-jordan-lee",
+      "observedAt": "2026-09-06T17:00:00Z",
+      "receivedAt": "2026-09-06T17:05:00Z",
+      "immutableVersion": "v1-counsel-confirmation",
+      "integrityDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "classification": "privileged-candidate",
+      "holdRefs": [
+        "hold-matter-preservation"
+      ],
+      "custodyEventRefs": [
+        "custody-privilege-confirmation"
+      ],
+      "recordRefs": [
+        "record-privilege-confirmation"
+      ]
+    },
+    {
+      "id": "source-conflict-confirmation",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "conflict-confirmation",
+      "controlledRef": "controlled://matter-files/MAT-2026-014/conflict-confirmation-v1",
+      "sourceAuthority": "counsel-supplied",
+      "custodianRef": "principal-jordan-lee",
+      "suppliedByRef": "principal-jordan-lee",
+      "observedAt": "2026-09-06T17:10:00Z",
+      "receivedAt": "2026-09-06T17:15:00Z",
+      "immutableVersion": "v1-counsel-confirmation",
+      "integrityDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "classification": "restricted",
+      "holdRefs": [
+        "hold-matter-preservation"
+      ],
+      "custodyEventRefs": [
+        "custody-conflict-confirmation"
+      ],
+      "recordRefs": [
+        "record-conflict-confirmation"
+      ]
+    }
+  ],
+  "custodyEvents": [
+    {
+      "id": "custody-scheduling-order",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sourceRef": "source-scheduling-order",
+      "sequence": 1,
+      "eventType": "received",
+      "occurredAt": "2026-09-06T16:05:00Z",
+      "suppliedByRef": "principal-taylor-kim",
+      "priorEventRef": null,
+      "integrityDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "custodyEffect": "record-only-no-transfer"
+    },
+    {
+      "id": "custody-docket-export",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sourceRef": "source-docket-export",
+      "sequence": 1,
+      "eventType": "received",
+      "occurredAt": "2026-09-06T16:15:00Z",
+      "suppliedByRef": "principal-taylor-kim",
+      "priorEventRef": null,
+      "integrityDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "custodyEffect": "record-only-no-transfer"
+    },
+    {
+      "id": "custody-deadline-note",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sourceRef": "source-deadline-note",
+      "sequence": 1,
+      "eventType": "received",
+      "occurredAt": "2026-09-06T16:25:00Z",
+      "suppliedByRef": "principal-jordan-lee",
+      "priorEventRef": null,
+      "integrityDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "custodyEffect": "record-only-no-transfer"
+    },
+    {
+      "id": "custody-opposing-correspondence",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sourceRef": "source-opposing-correspondence",
+      "sequence": 1,
+      "eventType": "received",
+      "occurredAt": "2026-09-06T16:35:00Z",
+      "suppliedByRef": "principal-taylor-kim",
+      "priorEventRef": null,
+      "integrityDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "custodyEffect": "record-only-no-transfer"
+    },
+    {
+      "id": "custody-evidence-inventory",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sourceRef": "source-evidence-inventory",
+      "sequence": 1,
+      "eventType": "received",
+      "occurredAt": "2026-09-06T16:45:00Z",
+      "suppliedByRef": "principal-alex-morgan",
+      "priorEventRef": null,
+      "integrityDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "custodyEffect": "record-only-no-transfer"
+    },
+    {
+      "id": "custody-legal-hold",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sourceRef": "source-legal-hold",
+      "sequence": 1,
+      "eventType": "received",
+      "occurredAt": "2026-09-06T16:55:00Z",
+      "suppliedByRef": "principal-jordan-lee",
+      "priorEventRef": null,
+      "integrityDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "custodyEffect": "record-only-no-transfer"
+    },
+    {
+      "id": "custody-privilege-confirmation",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sourceRef": "source-privilege-confirmation",
+      "sequence": 1,
+      "eventType": "received",
+      "occurredAt": "2026-09-06T17:05:00Z",
+      "suppliedByRef": "principal-jordan-lee",
+      "priorEventRef": null,
+      "integrityDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "custodyEffect": "record-only-no-transfer"
+    },
+    {
+      "id": "custody-conflict-confirmation",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sourceRef": "source-conflict-confirmation",
+      "sequence": 1,
+      "eventType": "received",
+      "occurredAt": "2026-09-06T17:15:00Z",
+      "suppliedByRef": "principal-jordan-lee",
+      "priorEventRef": null,
+      "integrityDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "custodyEffect": "record-only-no-transfer"
+    }
+  ],
+  "records": [
+    {
+      "id": "record-scheduling-order",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "filing",
+      "title": "File-stamped scheduling order",
+      "indexState": "indexed",
+      "sourceRefs": [
+        "source-scheduling-order"
+      ],
+      "partyRefs": [
+        "party-represented-org",
+        "party-opposing-org"
+      ],
+      "workstreamRefs": [
+        "workstream-pleadings-scheduling"
+      ],
+      "chronologyRefs": [
+        "chronology-order-filed",
+        "chronology-deadline-scheduled"
+      ],
+      "deadlineRefs": [
+        "deadline-initial-disclosures"
+      ],
+      "privilegeLabelRefs": [
+        "privilege-scheduling-order"
+      ],
+      "holdRefs": [
+        "hold-matter-preservation"
+      ]
+    },
+    {
+      "id": "record-docket-export",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "filing",
+      "title": "Synthetic docket export",
+      "indexState": "indexed",
+      "sourceRefs": [
+        "source-docket-export"
+      ],
+      "partyRefs": [
+        "party-represented-org",
+        "party-opposing-org"
+      ],
+      "workstreamRefs": [
+        "workstream-pleadings-scheduling"
+      ],
+      "chronologyRefs": [
+        "chronology-order-filed"
+      ],
+      "deadlineRefs": [
+        "deadline-initial-disclosures"
+      ],
+      "privilegeLabelRefs": [
+        "privilege-docket-export"
+      ],
+      "holdRefs": [
+        "hold-matter-preservation"
+      ]
+    },
+    {
+      "id": "record-deadline-note",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "evidence",
+      "title": "Counsel-supplied deadline note",
+      "indexState": "indexed",
+      "sourceRefs": [
+        "source-deadline-note"
+      ],
+      "partyRefs": [
+        "party-represented-org",
+        "party-opposing-org"
+      ],
+      "workstreamRefs": [
+        "workstream-pleadings-scheduling"
+      ],
+      "chronologyRefs": [
+        "chronology-deadline-scheduled"
+      ],
+      "deadlineRefs": [
+        "deadline-initial-disclosures"
+      ],
+      "privilegeLabelRefs": [
+        "privilege-deadline-note"
+      ],
+      "holdRefs": [
+        "hold-matter-preservation"
+      ]
+    },
+    {
+      "id": "record-opposing-correspondence",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "correspondence",
+      "title": "Opposing-party correspondence",
+      "indexState": "indexed",
+      "sourceRefs": [
+        "source-opposing-correspondence"
+      ],
+      "partyRefs": [
+        "party-opposing-org"
+      ],
+      "workstreamRefs": [
+        "workstream-correspondence"
+      ],
+      "chronologyRefs": [
+        "chronology-correspondence-received"
+      ],
+      "deadlineRefs": [],
+      "privilegeLabelRefs": [
+        "privilege-opposing-correspondence"
+      ],
+      "holdRefs": [
+        "hold-matter-preservation"
+      ]
+    },
+    {
+      "id": "record-evidence-inventory",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "evidence",
+      "title": "Minimized evidence inventory",
+      "indexState": "indexed",
+      "sourceRefs": [
+        "source-evidence-inventory"
+      ],
+      "partyRefs": [
+        "party-represented-org"
+      ],
+      "workstreamRefs": [
+        "workstream-evidence-preservation"
+      ],
+      "chronologyRefs": [
+        "chronology-inventory-recorded"
+      ],
+      "deadlineRefs": [],
+      "privilegeLabelRefs": [
+        "privilege-evidence-inventory"
+      ],
+      "holdRefs": [
+        "hold-matter-preservation"
+      ]
+    },
+    {
+      "id": "record-legal-hold",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "evidence",
+      "title": "Active legal-hold notice",
+      "indexState": "indexed",
+      "sourceRefs": [
+        "source-legal-hold"
+      ],
+      "partyRefs": [
+        "party-represented-org"
+      ],
+      "workstreamRefs": [
+        "workstream-evidence-preservation"
+      ],
+      "chronologyRefs": [
+        "chronology-hold-issued"
+      ],
+      "deadlineRefs": [],
+      "privilegeLabelRefs": [
+        "privilege-legal-hold"
+      ],
+      "holdRefs": [
+        "hold-matter-preservation"
+      ]
+    },
+    {
+      "id": "record-privilege-confirmation",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "evidence",
+      "title": "Counsel privilege confirmation",
+      "indexState": "indexed",
+      "sourceRefs": [
+        "source-privilege-confirmation"
+      ],
+      "partyRefs": [
+        "party-represented-org"
+      ],
+      "workstreamRefs": [
+        "workstream-evidence-preservation"
+      ],
+      "chronologyRefs": [
+        "chronology-privilege-reviewed"
+      ],
+      "deadlineRefs": [],
+      "privilegeLabelRefs": [
+        "privilege-confirmation-record"
+      ],
+      "holdRefs": [
+        "hold-matter-preservation"
+      ]
+    },
+    {
+      "id": "record-conflict-confirmation",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "kind": "evidence",
+      "title": "Counsel conflict confirmation",
+      "indexState": "indexed",
+      "sourceRefs": [
+        "source-conflict-confirmation"
+      ],
+      "partyRefs": [
+        "party-represented-org",
+        "party-opposing-org"
+      ],
+      "workstreamRefs": [
+        "workstream-pleadings-scheduling"
+      ],
+      "chronologyRefs": [
+        "chronology-conflict-reviewed"
+      ],
+      "deadlineRefs": [],
+      "privilegeLabelRefs": [
+        "privilege-conflict-confirmation"
+      ],
+      "holdRefs": [
+        "hold-matter-preservation"
+      ]
+    }
+  ],
+  "chronology": [
+    {
+      "id": "chronology-order-filed",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "summary": "The supplied order bears a synthetic file stamp.",
+      "temporalState": "occurred",
+      "eventAt": "2026-09-04T09:30:00-07:00",
+      "timezone": "America/Los_Angeles",
+      "sourceRefs": [
+        "source-scheduling-order",
+        "source-docket-export"
+      ],
+      "recordRefs": [
+        "record-scheduling-order",
+        "record-docket-export"
+      ]
+    },
+    {
+      "id": "chronology-deadline-scheduled",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "summary": "The confirmed initial-disclosures deadline is scheduled.",
+      "temporalState": "scheduled",
+      "eventAt": "2026-10-15T17:00:00-07:00",
+      "timezone": "America/Los_Angeles",
+      "sourceRefs": [
+        "source-scheduling-order",
+        "source-deadline-note"
+      ],
+      "recordRefs": [
+        "record-scheduling-order",
+        "record-deadline-note"
+      ]
+    },
+    {
+      "id": "chronology-correspondence-received",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "summary": "Opposing-party correspondence was received into the controlled matter source set.",
+      "temporalState": "reported",
+      "eventAt": "2026-09-05T14:10:00-07:00",
+      "timezone": "America/Los_Angeles",
+      "sourceRefs": [
+        "source-opposing-correspondence"
+      ],
+      "recordRefs": [
+        "record-opposing-correspondence"
+      ]
+    },
+    {
+      "id": "chronology-inventory-recorded",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "summary": "The minimized evidence inventory was recorded.",
+      "temporalState": "occurred",
+      "eventAt": "2026-09-06T09:40:00-07:00",
+      "timezone": "America/Los_Angeles",
+      "sourceRefs": [
+        "source-evidence-inventory"
+      ],
+      "recordRefs": [
+        "record-evidence-inventory"
+      ]
+    },
+    {
+      "id": "chronology-hold-issued",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "summary": "Named counsel supplied the active legal-hold notice.",
+      "temporalState": "reported",
+      "eventAt": "2026-09-06T09:50:00-07:00",
+      "timezone": "America/Los_Angeles",
+      "sourceRefs": [
+        "source-legal-hold"
+      ],
+      "recordRefs": [
+        "record-legal-hold"
+      ]
+    },
+    {
+      "id": "chronology-privilege-reviewed",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "summary": "Named counsel supplied the privilege review result.",
+      "temporalState": "reported",
+      "eventAt": "2026-09-06T10:00:00-07:00",
+      "timezone": "America/Los_Angeles",
+      "sourceRefs": [
+        "source-privilege-confirmation"
+      ],
+      "recordRefs": [
+        "record-privilege-confirmation"
+      ]
+    },
+    {
+      "id": "chronology-conflict-reviewed",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "summary": "Named counsel supplied the conflict review result.",
+      "temporalState": "reported",
+      "eventAt": "2026-09-06T10:10:00-07:00",
+      "timezone": "America/Los_Angeles",
+      "sourceRefs": [
+        "source-conflict-confirmation"
+      ],
+      "recordRefs": [
+        "record-conflict-confirmation"
+      ]
+    }
+  ],
+  "deadlines": [
+    {
+      "id": "deadline-initial-disclosures",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "title": "Initial disclosures due",
+      "candidates": [
+        {
+          "dueAt": "2026-10-15T17:00:00-07:00",
+          "timezone": "America/Los_Angeles",
+          "authority": "file-stamped-filing",
+          "sourceRef": "source-scheduling-order"
+        },
+        {
+          "dueAt": "2026-10-15T17:00:00-07:00",
+          "timezone": "America/Los_Angeles",
+          "authority": "counsel-supplied",
+          "sourceRef": "source-deadline-note"
+        }
+      ],
+      "resolvedDueAt": "2026-10-15T17:00:00-07:00",
+      "timezone": "America/Los_Angeles",
+      "authority": "file-stamped-filing",
+      "verificationState": "confirmed",
+      "status": "open",
+      "confirmingCounselRef": "principal-jordan-lee",
+      "confirmedAt": "2026-09-06T18:00:00Z",
+      "sourceRefs": [
+        "source-scheduling-order",
+        "source-docket-export",
+        "source-deadline-note"
+      ],
+      "recordRefs": [
+        "record-scheduling-order",
+        "record-docket-export",
+        "record-deadline-note"
+      ],
+      "workstreamRefs": [
+        "workstream-pleadings-scheduling"
+      ]
+    }
+  ],
+  "privilegeLabels": [
+    {
+      "id": "privilege-scheduling-order",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "recordRefs": [
+        "record-scheduling-order"
+      ],
+      "state": "counsel-rejected",
+      "counselRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T18:10:00Z",
+      "evidenceSourceRefs": [
+        "source-privilege-confirmation"
+      ]
+    },
+    {
+      "id": "privilege-docket-export",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "recordRefs": [
+        "record-docket-export"
+      ],
+      "state": "counsel-rejected",
+      "counselRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T18:10:00Z",
+      "evidenceSourceRefs": [
+        "source-privilege-confirmation"
+      ]
+    },
+    {
+      "id": "privilege-deadline-note",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "recordRefs": [
+        "record-deadline-note"
+      ],
+      "state": "counsel-confirmed",
+      "counselRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T18:10:00Z",
+      "evidenceSourceRefs": [
+        "source-privilege-confirmation"
+      ]
+    },
+    {
+      "id": "privilege-opposing-correspondence",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "recordRefs": [
+        "record-opposing-correspondence"
+      ],
+      "state": "counsel-rejected",
+      "counselRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T18:10:00Z",
+      "evidenceSourceRefs": [
+        "source-privilege-confirmation"
+      ]
+    },
+    {
+      "id": "privilege-evidence-inventory",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "recordRefs": [
+        "record-evidence-inventory"
+      ],
+      "state": "counsel-confirmed",
+      "counselRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T18:10:00Z",
+      "evidenceSourceRefs": [
+        "source-privilege-confirmation"
+      ]
+    },
+    {
+      "id": "privilege-legal-hold",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "recordRefs": [
+        "record-legal-hold"
+      ],
+      "state": "counsel-confirmed",
+      "counselRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T18:10:00Z",
+      "evidenceSourceRefs": [
+        "source-privilege-confirmation"
+      ]
+    },
+    {
+      "id": "privilege-confirmation-record",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "recordRefs": [
+        "record-privilege-confirmation"
+      ],
+      "state": "counsel-confirmed",
+      "counselRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T18:10:00Z",
+      "evidenceSourceRefs": [
+        "source-privilege-confirmation"
+      ]
+    },
+    {
+      "id": "privilege-conflict-confirmation",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "recordRefs": [
+        "record-conflict-confirmation"
+      ],
+      "state": "counsel-confirmed",
+      "counselRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T18:10:00Z",
+      "evidenceSourceRefs": [
+        "source-privilege-confirmation"
+      ]
+    }
+  ],
+  "holds": [
+    {
+      "id": "hold-matter-preservation",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "state": "active",
+      "coveredSourceRefs": [
+        "source-scheduling-order",
+        "source-docket-export",
+        "source-deadline-note",
+        "source-opposing-correspondence",
+        "source-evidence-inventory",
+        "source-legal-hold",
+        "source-privilege-confirmation",
+        "source-conflict-confirmation"
+      ],
+      "coveredRecordRefs": [
+        "record-scheduling-order",
+        "record-docket-export",
+        "record-deadline-note",
+        "record-opposing-correspondence",
+        "record-evidence-inventory",
+        "record-legal-hold",
+        "record-privilege-confirmation",
+        "record-conflict-confirmation"
+      ],
+      "issuingCounselRef": "principal-jordan-lee",
+      "issuedAt": "2026-09-06T17:50:00Z",
+      "evidenceSourceRefs": [
+        "source-legal-hold"
+      ],
+      "releasedByRef": null,
+      "releasedAt": null
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-matter-parties",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "partyRefs": [
+        "party-represented-org",
+        "party-opposing-org"
+      ],
+      "state": "counsel-cleared",
+      "counselRef": "principal-jordan-lee",
+      "assessedAt": "2026-09-06T18:20:00Z",
+      "sourceRefs": [
+        "source-conflict-confirmation"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task-index-records",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "title": "Complete the minimized filing, correspondence, and evidence indexes",
+      "ownerRef": "principal-alex-morgan",
+      "status": "completed",
+      "readinessRequired": true,
+      "completedAt": "2026-09-06T19:00:00Z",
+      "sourceRefs": [
+        "source-evidence-inventory"
+      ],
+      "workstreamRefs": [
+        "workstream-pleadings-scheduling",
+        "workstream-correspondence",
+        "workstream-evidence-preservation"
+      ],
+      "targetRefs": [
+        "record-scheduling-order",
+        "record-docket-export",
+        "record-deadline-note",
+        "record-opposing-correspondence",
+        "record-evidence-inventory",
+        "record-legal-hold",
+        "record-privilege-confirmation",
+        "record-conflict-confirmation"
+      ]
+    },
+    {
+      "id": "task-reconcile-deadline",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "title": "Reconcile the authoritative initial-disclosures deadline for counsel confirmation",
+      "ownerRef": "principal-alex-morgan",
+      "status": "completed",
+      "readinessRequired": true,
+      "completedAt": "2026-09-06T19:10:00Z",
+      "sourceRefs": [
+        "source-scheduling-order",
+        "source-docket-export",
+        "source-deadline-note"
+      ],
+      "workstreamRefs": [
+        "workstream-pleadings-scheduling"
+      ],
+      "targetRefs": [
+        "deadline-initial-disclosures"
+      ]
+    },
+    {
+      "id": "task-substantive-counsel-review",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "title": "Conduct the supervising counsel substantive matter review",
+      "ownerRef": "principal-jordan-lee",
+      "status": "open",
+      "readinessRequired": false,
+      "completedAt": null,
+      "sourceRefs": [
+        "source-deadline-note"
+      ],
+      "workstreamRefs": [
+        "workstream-pleadings-scheduling"
+      ],
+      "targetRefs": [
+        "review-independent-counsel"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-scope-confirmed",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sequence": 1,
+      "decisionType": "scope-confirmed",
+      "outcome": "The supplied snapshot scope is confirmed for legal-operations maintenance and counsel review.",
+      "deciderRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T17:30:00Z",
+      "sourceRefs": [
+        "source-deadline-note"
+      ],
+      "targetRefs": [
+        "workstream-pleadings-scheduling",
+        "workstream-correspondence",
+        "workstream-evidence-preservation"
+      ],
+      "priorDecisionRef": null,
+      "origin": "supplied-human-decision"
+    },
+    {
+      "id": "decision-deadline-confirmed",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sequence": 2,
+      "decisionType": "deadline-confirmed",
+      "outcome": "The source-aligned initial-disclosures timestamp is confirmed.",
+      "deciderRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T18:00:00Z",
+      "sourceRefs": [
+        "source-scheduling-order",
+        "source-docket-export",
+        "source-deadline-note"
+      ],
+      "targetRefs": [
+        "deadline-initial-disclosures"
+      ],
+      "priorDecisionRef": "decision-scope-confirmed",
+      "origin": "supplied-human-decision"
+    },
+    {
+      "id": "decision-privilege-confirmed",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sequence": 3,
+      "decisionType": "privilege-confirmed",
+      "outcome": "The supplied privilege label outcomes are confirmed for this snapshot.",
+      "deciderRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T18:10:00Z",
+      "sourceRefs": [
+        "source-privilege-confirmation"
+      ],
+      "targetRefs": [
+        "privilege-scheduling-order",
+        "privilege-docket-export",
+        "privilege-deadline-note",
+        "privilege-opposing-correspondence",
+        "privilege-evidence-inventory",
+        "privilege-legal-hold",
+        "privilege-confirmation-record",
+        "privilege-conflict-confirmation"
+      ],
+      "priorDecisionRef": "decision-deadline-confirmed",
+      "origin": "supplied-human-decision"
+    },
+    {
+      "id": "decision-hold-issued",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sequence": 4,
+      "decisionType": "hold-issued",
+      "outcome": "The supplied legal hold is active across every indexed source and record.",
+      "deciderRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T18:15:00Z",
+      "sourceRefs": [
+        "source-legal-hold"
+      ],
+      "targetRefs": [
+        "hold-matter-preservation"
+      ],
+      "priorDecisionRef": "decision-privilege-confirmed",
+      "origin": "supplied-human-decision"
+    },
+    {
+      "id": "decision-conflict-cleared",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sequence": 5,
+      "decisionType": "conflict-cleared",
+      "outcome": "The counsel-supplied party conflict state is cleared for this snapshot.",
+      "deciderRef": "principal-jordan-lee",
+      "decidedAt": "2026-09-06T18:20:00Z",
+      "sourceRefs": [
+        "source-conflict-confirmation"
+      ],
+      "targetRefs": [
+        "conflict-matter-parties"
+      ],
+      "priorDecisionRef": "decision-hold-issued",
+      "origin": "supplied-human-decision"
+    },
+    {
+      "id": "decision-handoff-quality-reviewed",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "sequence": 6,
+      "decisionType": "handoff-quality-reviewed",
+      "outcome": "Independent counsel reviewed the snapshot integrity and preservation gates without approving substantive legal action.",
+      "deciderRef": "principal-priya-shah",
+      "decidedAt": "2026-09-06T21:00:00Z",
+      "sourceRefs": [
+        "source-scheduling-order",
+        "source-docket-export",
+        "source-deadline-note",
+        "source-opposing-correspondence",
+        "source-evidence-inventory",
+        "source-legal-hold",
+        "source-privilege-confirmation",
+        "source-conflict-confirmation"
+      ],
+      "targetRefs": [
+        "review-independent-counsel"
+      ],
+      "priorDecisionRef": "decision-conflict-cleared",
+      "origin": "supplied-human-decision"
+    }
+  ],
+  "reviewGates": [
+    {
+      "id": "review-scope-binding",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "gateType": "scope-binding",
+      "state": "satisfied",
+      "reviewerRef": "principal-jordan-lee",
+      "reviewedAt": "2026-09-06T19:20:00Z",
+      "evidenceSourceRefs": [
+        "source-deadline-note"
+      ],
+      "targetRefs": [
+        "decision-scope-confirmed"
+      ]
+    },
+    {
+      "id": "review-source-coverage",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "gateType": "source-coverage",
+      "state": "satisfied",
+      "reviewerRef": "principal-alex-morgan",
+      "reviewedAt": "2026-09-06T19:30:00Z",
+      "evidenceSourceRefs": [
+        "source-evidence-inventory"
+      ],
+      "targetRefs": [
+        "task-index-records"
+      ]
+    },
+    {
+      "id": "review-reference-integrity",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "gateType": "reference-integrity",
+      "state": "satisfied",
+      "reviewerRef": "principal-alex-morgan",
+      "reviewedAt": "2026-09-06T19:40:00Z",
+      "evidenceSourceRefs": [
+        "source-evidence-inventory"
+      ],
+      "targetRefs": [
+        "task-index-records"
+      ]
+    },
+    {
+      "id": "review-deadline-reconciliation",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "gateType": "deadline-reconciliation",
+      "state": "satisfied",
+      "reviewerRef": "principal-jordan-lee",
+      "reviewedAt": "2026-09-06T19:50:00Z",
+      "evidenceSourceRefs": [
+        "source-scheduling-order",
+        "source-docket-export",
+        "source-deadline-note"
+      ],
+      "targetRefs": [
+        "deadline-initial-disclosures",
+        "decision-deadline-confirmed"
+      ]
+    },
+    {
+      "id": "review-hold-coverage",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "gateType": "hold-coverage",
+      "state": "satisfied",
+      "reviewerRef": "principal-jordan-lee",
+      "reviewedAt": "2026-09-06T20:00:00Z",
+      "evidenceSourceRefs": [
+        "source-legal-hold"
+      ],
+      "targetRefs": [
+        "hold-matter-preservation",
+        "decision-hold-issued"
+      ]
+    },
+    {
+      "id": "review-privilege-resolution",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "gateType": "privilege-resolution",
+      "state": "satisfied",
+      "reviewerRef": "principal-jordan-lee",
+      "reviewedAt": "2026-09-06T20:10:00Z",
+      "evidenceSourceRefs": [
+        "source-privilege-confirmation"
+      ],
+      "targetRefs": [
+        "decision-privilege-confirmed"
+      ]
+    },
+    {
+      "id": "review-conflict-resolution",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "gateType": "conflict-resolution",
+      "state": "satisfied",
+      "reviewerRef": "principal-jordan-lee",
+      "reviewedAt": "2026-09-06T20:20:00Z",
+      "evidenceSourceRefs": [
+        "source-conflict-confirmation"
+      ],
+      "targetRefs": [
+        "conflict-matter-parties",
+        "decision-conflict-cleared"
+      ]
+    },
+    {
+      "id": "review-independent-counsel",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "gateType": "independent-counsel-review",
+      "state": "satisfied",
+      "reviewerRef": "principal-priya-shah",
+      "reviewedAt": "2026-09-06T21:00:00Z",
+      "evidenceSourceRefs": [
+        "source-scheduling-order",
+        "source-docket-export",
+        "source-deadline-note",
+        "source-opposing-correspondence",
+        "source-evidence-inventory",
+        "source-legal-hold",
+        "source-privilege-confirmation",
+        "source-conflict-confirmation"
+      ],
+      "targetRefs": [
+        "decision-handoff-quality-reviewed"
+      ]
+    }
+  ],
+  "authorityGates": [
+    {
+      "id": "authority-interpret-law",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "interpret-law",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-give-legal-advice",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "give-legal-advice",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-determine-legal-strategy",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "determine-legal-strategy",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-determine-privilege",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "determine-privilege",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-file-or-serve",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "file-or-serve",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-contact-legal-participants",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "contact-legal-participants",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-sign",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "sign",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-negotiate",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "negotiate",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-settle",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "settle",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-waive",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "waive",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-commit",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "commit",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-alter-custody-or-destroy",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "alter-custody-or-destroy",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-release-hold",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "release-hold",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-approve-handoff",
+      "matterRef": "MAT-2026-014",
+      "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+      "action": "approve-handoff",
+      "state": "prohibited",
+      "retainedByRef": "principal-jordan-lee"
+    }
+  ],
+  "handoff": {
+    "matterRef": "MAT-2026-014",
+    "snapshotRef": "SNAP-MAT-2026-014-20260906T220000Z",
+    "state": "ready-for-counsel-review",
+    "approvalState": "not-approved",
+    "generatedAt": "2026-09-06T21:30:00Z",
+    "counselReviewerRef": "principal-jordan-lee",
+    "destinationRef": "controlled://legal-ops/MAT-2026-014/counsel-review",
+    "sourceRefs": [
+      "source-scheduling-order",
+      "source-docket-export",
+      "source-deadline-note",
+      "source-opposing-correspondence",
+      "source-evidence-inventory",
+      "source-legal-hold",
+      "source-privilege-confirmation",
+      "source-conflict-confirmation"
+    ],
+    "reviewGateRefs": [
+      "review-scope-binding",
+      "review-source-coverage",
+      "review-reference-integrity",
+      "review-deadline-reconciliation",
+      "review-hold-coverage",
+      "review-privilege-resolution",
+      "review-conflict-resolution",
+      "review-independent-counsel"
+    ],
+    "authorityGateRefs": [
+      "authority-interpret-law",
+      "authority-give-legal-advice",
+      "authority-determine-legal-strategy",
+      "authority-determine-privilege",
+      "authority-file-or-serve",
+      "authority-contact-legal-participants",
+      "authority-sign",
+      "authority-negotiate",
+      "authority-settle",
+      "authority-waive",
+      "authority-commit",
+      "authority-alter-custody-or-destroy",
+      "authority-release-hold",
+      "authority-approve-handoff"
+    ],
+    "coveredRefs": [
+      "principal-jordan-lee",
+      "principal-priya-shah",
+      "principal-alex-morgan",
+      "principal-taylor-kim",
+      "party-represented-org",
+      "party-opposing-org",
+      "workstream-pleadings-scheduling",
+      "workstream-correspondence",
+      "workstream-evidence-preservation",
+      "source-scheduling-order",
+      "source-docket-export",
+      "source-deadline-note",
+      "source-opposing-correspondence",
+      "source-evidence-inventory",
+      "source-legal-hold",
+      "source-privilege-confirmation",
+      "source-conflict-confirmation",
+      "custody-scheduling-order",
+      "custody-docket-export",
+      "custody-deadline-note",
+      "custody-opposing-correspondence",
+      "custody-evidence-inventory",
+      "custody-legal-hold",
+      "custody-privilege-confirmation",
+      "custody-conflict-confirmation",
+      "record-scheduling-order",
+      "record-docket-export",
+      "record-deadline-note",
+      "record-opposing-correspondence",
+      "record-evidence-inventory",
+      "record-legal-hold",
+      "record-privilege-confirmation",
+      "record-conflict-confirmation",
+      "chronology-order-filed",
+      "chronology-deadline-scheduled",
+      "chronology-correspondence-received",
+      "chronology-inventory-recorded",
+      "chronology-hold-issued",
+      "chronology-privilege-reviewed",
+      "chronology-conflict-reviewed",
+      "deadline-initial-disclosures",
+      "privilege-scheduling-order",
+      "privilege-docket-export",
+      "privilege-deadline-note",
+      "privilege-opposing-correspondence",
+      "privilege-evidence-inventory",
+      "privilege-legal-hold",
+      "privilege-confirmation-record",
+      "privilege-conflict-confirmation",
+      "hold-matter-preservation",
+      "conflict-matter-parties",
+      "task-index-records",
+      "task-reconcile-deadline",
+      "task-substantive-counsel-review",
+      "decision-scope-confirmed",
+      "decision-deadline-confirmed",
+      "decision-privilege-confirmed",
+      "decision-hold-issued",
+      "decision-conflict-cleared",
+      "decision-handoff-quality-reviewed",
+      "review-scope-binding",
+      "review-source-coverage",
+      "review-reference-integrity",
+      "review-deadline-reconciliation",
+      "review-hold-coverage",
+      "review-privilege-resolution",
+      "review-conflict-resolution",
+      "review-independent-counsel",
+      "authority-interpret-law",
+      "authority-give-legal-advice",
+      "authority-determine-legal-strategy",
+      "authority-determine-privilege",
+      "authority-file-or-serve",
+      "authority-contact-legal-participants",
+      "authority-sign",
+      "authority-negotiate",
+      "authority-settle",
+      "authority-waive",
+      "authority-commit",
+      "authority-alter-custody-or-destroy",
+      "authority-release-hold",
+      "authority-approve-handoff"
+    ],
+    "blockingRefs": []
+  }
+}

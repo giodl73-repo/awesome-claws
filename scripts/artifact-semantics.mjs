@@ -1,25 +1,35 @@
 import { createHash } from "node:crypto";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 
-function hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) {
+export function hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) {
   const adjacentNegation =
     /\b(?:do not|does not|did not|is not|are not|was not|were not|not|no|never|without|cannot|can't|must not|mustn't|should not|shouldn't|will not|won't)\s*$/iu;
   const coordinatedNegation =
     /^\s*(?:(?:[A-Za-z0-9_-]+\s+){0,6})(?:,?\s*(?:and|or)\s*)$/iu;
+  const coordinatedAnd =
+    /^\s*(?:(?:[A-Za-z0-9_-]+\s+){0,6})(?:,?\s*and\s*)$/iu;
+  const pastNegation = /\b(?:did not|was not|were not)\s*$/iu;
   function hasUnnegatedMatch(clause) {
     let previousEnd = 0;
     let previousNegated = false;
+    let previousNegationWasPast = false;
     for (const match of clause.matchAll(prohibitedNarrative)) {
       const prefix = clause.slice(0, match.index);
       const connector = clause.slice(previousEnd, match.index);
+      const directlyNegated = adjacentNegation.test(prefix);
       const negated =
-        adjacentNegation.test(prefix) ||
-        (previousNegated && coordinatedNegation.test(connector));
+        directlyNegated ||
+        (previousNegated &&
+          coordinatedNegation.test(connector) &&
+          !(previousNegationWasPast && coordinatedAnd.test(connector)));
       if (!negated) {
         return true;
       }
       previousEnd = match.index + match[0].length;
       previousNegated = true;
+      if (directlyNegated) {
+        previousNegationWasPast = pastNegation.test(prefix);
+      }
     }
     return false;
   }
@@ -46901,6 +46911,941 @@ function workflowExecutionReconciliationFindings(value, options = {}) {
   return findings;
 }
 
+function legalMatterFindings(input) {
+  const value = isRecord(input) ? input : {};
+  const findings = [];
+  if (value.schemaVersion !== "awesomeClaws.legalMatter.v1") {
+    findings.push(
+      finding(
+        "invalid_legal_matter_schema_version",
+        "schemaVersion",
+        "Legal matter artifacts must declare awesomeClaws.legalMatter.v1.",
+      ),
+    );
+  }
+  const ledgers = upliftLedger(
+    value,
+    [
+      ["principals", "Principal"],
+      ["parties", "Party"],
+      ["workstreams", "Workstream"],
+      ["sources", "Source"],
+      ["custodyEvents", "Custody event"],
+      ["records", "Indexed record"],
+      ["chronology", "Chronology event"],
+      ["deadlines", "Deadline"],
+      ["privilegeLabels", "Privilege label"],
+      ["holds", "Legal hold"],
+      ["conflicts", "Conflict state"],
+      ["tasks", "Task"],
+      ["decisions", "Decision"],
+      ["reviewGates", "Review gate"],
+      ["authorityGates", "Authority gate"],
+    ],
+    findings,
+  );
+  const principalContext = upliftPrincipalContext(
+    ledgers.principals,
+    "legal matter organizer",
+    findings,
+  );
+  const matter = isRecord(value.matter) ? value.matter : {};
+  const handoff = isRecord(value.handoff) ? value.handoff : {};
+  const asOfMs = upliftTimestampMs(matter.asOf);
+  const allIdList = Object.values(ledgers).flatMap((ledger) => [...ledger.ids]);
+  const allIds = new Set(allIdList);
+  findings.push(...uniqueFindings(allIdList, "$", "Ledger id"));
+
+  function safeRefs(owner, field, path, allowed, label) {
+    const result = stringListFindings(owner?.[field], `${path}.${field}`, label);
+    findings.push(
+      ...result.findings,
+      ...uniqueFindings(result.items, `${path}.${field}`, label),
+      ...referenceFindings(result.items, allowed, `${path}.${field}`, label),
+    );
+    return result.items;
+  }
+
+  function exactRefs(actual, expected, path, label) {
+    if (
+      !Array.isArray(actual) ||
+      actual.length !== expected.length ||
+      new Set(actual).size !== actual.length ||
+      expected.some((id) => !actual.includes(id))
+    ) {
+      findings.push(
+        finding(
+          "incomplete_legal_matter_index",
+          path,
+          `${label} must cover every current row exactly once.`,
+        ),
+      );
+    }
+  }
+
+  function requireScope(principalRef, scope, path, label) {
+    if (!ledgers.principals.ids.has(principalRef)) {
+      findings.push(finding("dangling_reference", path, `${label} principal does not resolve.`));
+    } else if (!principalContext.hasScope(principalRef, scope)) {
+      findings.push(
+        finding(
+          "missing_legal_authority_scope",
+          path,
+          `${label} requires a named human with ${scope} scope.`,
+        ),
+      );
+    }
+  }
+
+  function timestamp(value) {
+    const milliseconds = upliftTimestampMs(value);
+    return Number.isFinite(milliseconds) ? milliseconds : null;
+  }
+
+  if (
+    typeof matter.id !== "string" ||
+    typeof matter.snapshotRef !== "string" ||
+    !Number.isFinite(asOfMs) ||
+    !isResolvableTimeZone(matter.timezone) ||
+    !isValidControlledReference(matter.workspaceRef) ||
+    !isValidControlledReference(matter.destinationRef)
+  ) {
+    findings.push(
+      finding(
+        "invalid_legal_matter_binding",
+        "matter",
+        "The matter needs stable identity, an exact snapshot and cutoff, a resolvable timezone, and controlled workspace and destination references.",
+      ),
+    );
+  }
+  requireScope(
+    matter.supervisingCounselRef,
+    "matter-supervision",
+    "matter.supervisingCounselRef",
+    "Matter supervision",
+  );
+
+  for (const [field, ledger] of [
+    ["principalRefs", ledgers.principals],
+    ["partyRefs", ledgers.parties],
+    ["workstreamRefs", ledgers.workstreams],
+    ["sourceRefs", ledgers.sources],
+    ["custodyEventRefs", ledgers.custodyEvents],
+    ["recordRefs", ledgers.records],
+    ["chronologyRefs", ledgers.chronology],
+    ["deadlineRefs", ledgers.deadlines],
+    ["privilegeLabelRefs", ledgers.privilegeLabels],
+    ["holdRefs", ledgers.holds],
+    ["conflictRefs", ledgers.conflicts],
+    ["taskRefs", ledgers.tasks],
+    ["decisionRefs", ledgers.decisions],
+    ["reviewGateRefs", ledgers.reviewGates],
+    ["authorityGateRefs", ledgers.authorityGates],
+  ]) {
+    exactRefs(matter[field], [...ledger.ids], `matter.${field}`, `Matter ${field}`);
+  }
+  for (const [field, ledger] of Object.entries(ledgers)) {
+    for (const [index, item] of ledger.entries) {
+      if (item.matterRef !== matter.id || item.snapshotRef !== matter.snapshotRef) {
+        findings.push(
+          finding(
+            "cross_legal_matter_snapshot",
+            `${field}[${index}]`,
+            "Every ledger row must bind to the exact matter and snapshot.",
+          ),
+        );
+      }
+    }
+  }
+
+  const bareLegalRole =
+    /^(?:(?:(?:independent|named|outside|inside|lead|reviewing|supervising)\s+)?counsel|legal operations(?: specialist)?|records custodian|matter supervisor|deadline confirmer|privilege reviewer|hold issuer|task owner|handoff reviewer)$/iu;
+  for (const [index, principal] of ledgers.principals.entries) {
+    safeRefs(
+      principal,
+      "sourceRefs",
+      `principals[${index}]`,
+      ledgers.sources.ids,
+      "Principal source reference",
+    );
+    if (
+      typeof principal.name !== "string" ||
+      bareLegalRole.test(principal.name.trim()) ||
+      principal.name.trim().toLowerCase() === "legal-matter-organizer"
+    ) {
+      findings.push(
+        finding(
+          "bare_legal_role_principal",
+          `principals[${index}].name`,
+          "Legal authority requires a named human; a bare role or package identity is insufficient.",
+        ),
+      );
+    }
+  }
+
+  const referenceSpecs = [
+    [ledgers.parties, "sourceRefs", ledgers.sources, "Party source"],
+    [ledgers.parties, "recordRefs", ledgers.records, "Party record"],
+    [ledgers.parties, "conflictRefs", ledgers.conflicts, "Party conflict"],
+    [ledgers.workstreams, "sourceRefs", ledgers.sources, "Workstream source"],
+    [ledgers.workstreams, "recordRefs", ledgers.records, "Workstream record"],
+    [ledgers.workstreams, "deadlineRefs", ledgers.deadlines, "Workstream deadline"],
+    [ledgers.workstreams, "taskRefs", ledgers.tasks, "Workstream task"],
+    [ledgers.sources, "holdRefs", ledgers.holds, "Source hold"],
+    [ledgers.sources, "custodyEventRefs", ledgers.custodyEvents, "Source custody"],
+    [ledgers.sources, "recordRefs", ledgers.records, "Source record"],
+    [ledgers.records, "sourceRefs", ledgers.sources, "Record source"],
+    [ledgers.records, "partyRefs", ledgers.parties, "Record party"],
+    [ledgers.records, "workstreamRefs", ledgers.workstreams, "Record workstream"],
+    [ledgers.records, "chronologyRefs", ledgers.chronology, "Record chronology"],
+    [ledgers.records, "deadlineRefs", ledgers.deadlines, "Record deadline"],
+    [ledgers.records, "privilegeLabelRefs", ledgers.privilegeLabels, "Record privilege"],
+    [ledgers.records, "holdRefs", ledgers.holds, "Record hold"],
+    [ledgers.chronology, "sourceRefs", ledgers.sources, "Chronology source"],
+    [ledgers.chronology, "recordRefs", ledgers.records, "Chronology record"],
+    [ledgers.deadlines, "sourceRefs", ledgers.sources, "Deadline source"],
+    [ledgers.deadlines, "recordRefs", ledgers.records, "Deadline record"],
+    [ledgers.deadlines, "workstreamRefs", ledgers.workstreams, "Deadline workstream"],
+    [ledgers.privilegeLabels, "recordRefs", ledgers.records, "Privilege record"],
+    [ledgers.privilegeLabels, "evidenceSourceRefs", ledgers.sources, "Privilege evidence"],
+    [ledgers.holds, "coveredSourceRefs", ledgers.sources, "Hold source"],
+    [ledgers.holds, "coveredRecordRefs", ledgers.records, "Hold record"],
+    [ledgers.holds, "evidenceSourceRefs", ledgers.sources, "Hold evidence"],
+    [ledgers.conflicts, "partyRefs", ledgers.parties, "Conflict party"],
+    [ledgers.conflicts, "sourceRefs", ledgers.sources, "Conflict source"],
+    [ledgers.tasks, "sourceRefs", ledgers.sources, "Task source"],
+    [ledgers.tasks, "workstreamRefs", ledgers.workstreams, "Task workstream"],
+    [ledgers.tasks, "targetRefs", { ids: allIds }, "Task target"],
+    [ledgers.decisions, "sourceRefs", ledgers.sources, "Decision source"],
+    [ledgers.decisions, "targetRefs", { ids: allIds }, "Decision target"],
+    [ledgers.reviewGates, "evidenceSourceRefs", ledgers.sources, "Review evidence"],
+    [ledgers.reviewGates, "targetRefs", { ids: allIds }, "Review target"],
+  ];
+  for (const [ledger, field, target, label] of referenceSpecs) {
+    for (const [index, item] of ledger.entries) {
+      safeRefs(item, field, `${label.replaceAll(" ", "")}[${index}]`, target.ids, label);
+    }
+  }
+
+  const digestPattern = /^sha256:[a-f0-9]{64}$/u;
+  for (const [index, source] of ledgers.sources.entries) {
+    const observedAt = timestamp(source.observedAt);
+    const receivedAt = timestamp(source.receivedAt);
+    if (
+      !isValidControlledReference(source.controlledRef) ||
+      !digestPattern.test(source.integrityDigest ?? "") ||
+      typeof source.immutableVersion !== "string" ||
+      source.immutableVersion.trim().length === 0 ||
+      observedAt === null ||
+      receivedAt === null ||
+      observedAt > receivedAt ||
+      (Number.isFinite(asOfMs) && receivedAt > asOfMs)
+    ) {
+      findings.push(
+        finding(
+          "invalid_legal_source_integrity",
+          `sources[${index}]`,
+          "Sources need nondegenerate controlled references, immutable versions, SHA-256 digests, and ordered timestamps within the snapshot.",
+        ),
+      );
+    }
+    if (!principalContext.isAccountablePrincipal(source.custodianRef)) {
+      findings.push(
+        finding(
+          "invalid_legal_source_custodian",
+          `sources[${index}].custodianRef`,
+          "Every source needs a named human custodian.",
+        ),
+      );
+    }
+    if (!principalContext.isAccountablePrincipal(source.suppliedByRef)) {
+      findings.push(
+        finding(
+          "invalid_legal_source_supplier",
+          `sources[${index}].suppliedByRef`,
+          "Every source needs a named human supplier.",
+        ),
+      );
+    }
+  }
+
+  const custodyBySource = new Map();
+  for (const [index, event] of ledgers.custodyEvents.entries) {
+    const source = ledgers.sources.byId.get(event.sourceRef);
+    const events = custodyBySource.get(event.sourceRef) ?? [];
+    events.push(event);
+    custodyBySource.set(event.sourceRef, events);
+    if (!source) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `custodyEvents[${index}].sourceRef`,
+          "Custody source does not resolve.",
+        ),
+      );
+    }
+    if (
+      event.priorEventRef !== null &&
+      !ledgers.custodyEvents.ids.has(event.priorEventRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `custodyEvents[${index}].priorEventRef`,
+          "Prior custody event does not resolve.",
+        ),
+      );
+    }
+    const occurredAt = timestamp(event.occurredAt);
+    if (
+      !Number.isInteger(event.sequence) ||
+      event.sequence < 1 ||
+      event.custodyEffect !== "record-only-no-transfer" ||
+      !digestPattern.test(event.integrityDigest ?? "") ||
+      (source && event.integrityDigest !== source.integrityDigest) ||
+      occurredAt === null ||
+      (source && occurredAt < (timestamp(source.receivedAt) ?? Infinity)) ||
+      (Number.isFinite(asOfMs) && occurredAt > asOfMs) ||
+      !principalContext.isAccountablePrincipal(event.suppliedByRef)
+    ) {
+      findings.push(
+        finding(
+          "invalid_custody_event",
+          `custodyEvents[${index}]`,
+          "Custody must be supplied, append-only, digest-bound, timestamped, and record-only with no transfer.",
+        ),
+      );
+    }
+  }
+  for (const source of ledgers.sources.items) {
+    const ordered = [...(custodyBySource.get(source.id) ?? [])].sort(
+      (left, right) => left.sequence - right.sequence,
+    );
+    exactRefs(
+      source.custodyEventRefs,
+      ordered.map((event) => event.id),
+      `${source.id}.custodyEventRefs`,
+      "Source custody chain",
+    );
+    ordered.forEach((event, index) => {
+      const expectedPrior = index === 0 ? null : ordered[index - 1].id;
+      if (event.sequence !== index + 1 || event.priorEventRef !== expectedPrior) {
+        findings.push(
+          finding(
+            "broken_custody_chain",
+            `${source.id}.custodyEventRefs`,
+            "Custody events must form a complete append-only sequence.",
+          ),
+        );
+      }
+    });
+  }
+
+  for (const [index, party] of ledgers.parties.entries) {
+    if (
+      typeof party.label !== "string" ||
+      /@|https?:\/\/|\b\d{3}-\d{2}-\d{4}\b|\b(?:\+?\d[\s().-]*){8,}\b/iu.test(
+        party.label,
+      )
+    ) {
+      findings.push(
+        finding(
+          "unminimized_legal_party_data",
+          `parties[${index}].label`,
+          "Party labels must be minimized and cannot expose email, URL, government identifier, or phone-like data.",
+        ),
+      );
+    }
+  }
+  for (const [index, event] of ledgers.chronology.entries) {
+    const eventAt = timestamp(event.eventAt);
+    const unknown = event.temporalState === "unknown";
+    if (
+      (unknown && (event.eventAt !== null || event.timezone !== null)) ||
+      (!unknown &&
+        (eventAt === null ||
+          !isResolvableTimeZone(event.timezone) ||
+          (event.temporalState !== "scheduled" &&
+            Number.isFinite(asOfMs) &&
+            eventAt > asOfMs)))
+    ) {
+      findings.push(
+        finding(
+          "invalid_legal_chronology",
+          `chronology[${index}]`,
+          "Chronology must distinguish occurred, reported, scheduled, and unknown semantics with valid timezones.",
+        ),
+      );
+    }
+  }
+
+  const authoritySourceKinds = new Map([
+    ["counsel-supplied", "counsel-supplied"],
+    ["file-stamped-filing", "file-stamped-filing"],
+    ["court-or-agency-notice", "court-or-agency-record"],
+    ["party-correspondence", "party-correspondence"],
+    ["internal-system", "internal-system"],
+  ]);
+  for (const [index, deadline] of ledgers.deadlines.entries) {
+    const candidates = recordArray(
+      deadline.candidates,
+      `deadlines[${index}].candidates`,
+      "Deadline candidate",
+    );
+    findings.push(...candidates.findings);
+    const sourceRefs = Array.isArray(deadline.sourceRefs) ? deadline.sourceRefs : [];
+    const candidateInstants = new Set();
+    const candidateAuthorities = new Set();
+    let latestEvidence = -Infinity;
+    for (const [candidateIndex, candidate] of candidates.entries) {
+      const dueAt = timestamp(candidate.dueAt);
+      const source = ledgers.sources.byId.get(candidate.sourceRef);
+      candidateInstants.add(dueAt);
+      candidateAuthorities.add(candidate.authority);
+      latestEvidence = Math.max(latestEvidence, timestamp(source?.receivedAt) ?? -Infinity);
+      if (
+        dueAt === null ||
+        !/(?:Z|[+-]\d{2}:\d{2})$/u.test(candidate.dueAt ?? "") ||
+        !isResolvableTimeZone(candidate.timezone) ||
+        ["internal-system", "unknown"].includes(candidate.authority) ||
+        !sourceRefs.includes(candidate.sourceRef) ||
+        source?.sourceAuthority !== authoritySourceKinds.get(candidate.authority)
+      ) {
+        findings.push(
+          finding(
+            "invalid_deadline_candidate",
+            `deadlines[${index}].candidates[${candidateIndex}]`,
+            "Deadline candidates require offsets, timezones, supported authorities, and exact matching source authority.",
+          ),
+        );
+      }
+    }
+    const confirmedAt = timestamp(deadline.confirmedAt);
+    const resolvedAt = timestamp(deadline.resolvedDueAt);
+    if (
+      deadline.verificationState !== "confirmed" ||
+      ["internal-system", "unknown"].includes(deadline.authority) ||
+      !candidateAuthorities.has(deadline.authority) ||
+      resolvedAt === null ||
+      candidateInstants.size !== 1 ||
+      !candidateInstants.has(resolvedAt) ||
+      !isResolvableTimeZone(deadline.timezone) ||
+      confirmedAt === null ||
+      confirmedAt < latestEvidence ||
+      (Number.isFinite(asOfMs) && confirmedAt > asOfMs)
+    ) {
+      findings.push(
+        finding(
+          "unready_legal_deadline",
+          `deadlines[${index}]`,
+          "Conflicting, stale, unsupported, inferred, unknown-authority, or unconfirmed deadlines block readiness.",
+        ),
+      );
+    }
+    requireScope(
+      deadline.confirmingCounselRef,
+      "deadline-confirmation",
+      `deadlines[${index}].confirmingCounselRef`,
+      "Deadline confirmation",
+    );
+  }
+
+  const privilegeCoverage = [];
+  for (const [index, label] of ledgers.privilegeLabels.entries) {
+    const recordRefs = Array.isArray(label.recordRefs) ? label.recordRefs : [];
+    const evidenceRefs = Array.isArray(label.evidenceSourceRefs)
+      ? label.evidenceSourceRefs
+      : [];
+    privilegeCoverage.push(...recordRefs);
+    const latestEvidence = Math.max(
+      ...evidenceRefs.map(
+        (sourceRef) => timestamp(ledgers.sources.byId.get(sourceRef)?.receivedAt) ?? -Infinity,
+      ),
+    );
+    const decidedAt = timestamp(label.decidedAt);
+    if (
+      !["counsel-confirmed", "counsel-rejected"].includes(label.state) ||
+      decidedAt === null ||
+      decidedAt < latestEvidence ||
+      (Number.isFinite(asOfMs) && decidedAt > asOfMs) ||
+      evidenceRefs.length === 0
+    ) {
+      findings.push(
+        finding(
+          "unresolved_privilege_label",
+          `privilegeLabels[${index}]`,
+          "Readiness requires each privilege claim to be confirmed or rejected by scoped named counsel with controlled evidence.",
+        ),
+      );
+    }
+    requireScope(
+      label.counselRef,
+      "privilege-confirmation",
+      `privilegeLabels[${index}].counselRef`,
+      "Privilege confirmation",
+    );
+  }
+  exactRefs(
+    privilegeCoverage,
+    [...ledgers.records.ids],
+    "privilegeLabels",
+    "Privilege record coverage",
+  );
+
+  const heldSources = [];
+  const heldRecords = [];
+  for (const [index, hold] of ledgers.holds.entries) {
+    const coveredSources = Array.isArray(hold.coveredSourceRefs)
+      ? hold.coveredSourceRefs
+      : [];
+    const coveredRecords = Array.isArray(hold.coveredRecordRefs)
+      ? hold.coveredRecordRefs
+      : [];
+    if (
+      hold.state !== "active" ||
+      hold.releasedByRef !== null ||
+      hold.releasedAt !== null ||
+      timestamp(hold.issuedAt) === null ||
+      (Number.isFinite(asOfMs) && timestamp(hold.issuedAt) > asOfMs)
+    ) {
+      findings.push(
+        finding(
+          "unsafe_legal_hold_state",
+          `holds[${index}]`,
+          "Active holds are normal; release, contradiction, missing coverage, or invalid issuance blocks readiness.",
+        ),
+      );
+    } else {
+      heldSources.push(...coveredSources);
+      heldRecords.push(...coveredRecords);
+    }
+    requireScope(
+      hold.issuingCounselRef,
+      "hold-issuance",
+      `holds[${index}].issuingCounselRef`,
+      "Hold issuance",
+    );
+  }
+  exactRefs(heldSources, [...ledgers.sources.ids], "holds", "Active-hold source coverage");
+  exactRefs(heldRecords, [...ledgers.records.ids], "holds", "Active-hold record coverage");
+
+  const conflictCoverage = [];
+  for (const [index, conflict] of ledgers.conflicts.entries) {
+    const partyRefs = Array.isArray(conflict.partyRefs) ? conflict.partyRefs : [];
+    const sourceRefs = Array.isArray(conflict.sourceRefs) ? conflict.sourceRefs : [];
+    conflictCoverage.push(...partyRefs);
+    const latestEvidence = Math.max(
+      ...sourceRefs.map(
+        (sourceRef) => timestamp(ledgers.sources.byId.get(sourceRef)?.receivedAt) ?? -Infinity,
+      ),
+    );
+    const assessedAt = timestamp(conflict.assessedAt);
+    if (
+      conflict.state !== "counsel-cleared" ||
+      assessedAt === null ||
+      assessedAt < latestEvidence ||
+      (Number.isFinite(asOfMs) && assessedAt > asOfMs)
+    ) {
+      findings.push(
+        finding(
+          "unresolved_legal_conflict",
+          `conflicts[${index}]`,
+          "Unresolved, flagged, unassessed, unsupported, or stale conflict state blocks readiness.",
+        ),
+      );
+    }
+    requireScope(
+      conflict.counselRef,
+      "conflict-confirmation",
+      `conflicts[${index}].counselRef`,
+      "Conflict confirmation",
+    );
+    for (const partyRef of partyRefs) {
+      if (ledgers.parties.byId.get(partyRef)?.conflictState !== conflict.state) {
+        findings.push(
+          finding(
+            "inconsistent_party_conflict_state",
+            `conflicts[${index}].partyRefs`,
+            "Party and conflict-ledger states must agree.",
+          ),
+        );
+      }
+    }
+  }
+  exactRefs(conflictCoverage, [...ledgers.parties.ids], "conflicts", "Conflict party coverage");
+
+  for (const [index, task] of ledgers.tasks.entries) {
+    if (
+      !principalContext.hasScope(task.ownerRef, "task-ownership") &&
+      !principalContext.hasScope(task.ownerRef, "matter-supervision")
+    ) {
+      findings.push(
+        finding(
+          "invalid_human_task_owner",
+          `tasks[${index}].ownerRef`,
+          "Every task must remain owned by a scoped named human.",
+        ),
+      );
+    }
+    const completedAt = timestamp(task.completedAt);
+    const taskSourceRefs = Array.isArray(task.sourceRefs) ? task.sourceRefs : [];
+    const latestTaskEvidence = Math.max(
+      ...taskSourceRefs.map(
+        (sourceRef) => timestamp(ledgers.sources.byId.get(sourceRef)?.receivedAt) ?? -Infinity,
+      ),
+    );
+    if (
+      (task.status === "completed" && completedAt === null) ||
+      (task.status !== "completed" && task.completedAt !== null) ||
+      (task.readinessRequired === true && task.status !== "completed") ||
+      (completedAt !== null && completedAt < latestTaskEvidence) ||
+      (completedAt !== null && Number.isFinite(asOfMs) && completedAt > asOfMs)
+    ) {
+      findings.push(
+        finding(
+          "invalid_legal_task_state",
+          `tasks[${index}]`,
+          "Readiness-required tasks need source-backed human completion; open work cannot carry a completion timestamp.",
+        ),
+      );
+    }
+  }
+
+  const decisionScopes = new Map([
+    ["scope-confirmed", "matter-supervision"],
+    ["deadline-confirmed", "deadline-confirmation"],
+    ["privilege-confirmed", "privilege-confirmation"],
+    ["hold-issued", "hold-issuance"],
+    ["conflict-cleared", "conflict-confirmation"],
+    ["handoff-quality-reviewed", "handoff-review"],
+  ]);
+  const orderedDecisions = [...ledgers.decisions.items].sort(
+    (left, right) => left.sequence - right.sequence,
+  );
+  for (const [index, decision] of ledgers.decisions.entries) {
+    if (
+      decision.priorDecisionRef !== null &&
+      !ledgers.decisions.ids.has(decision.priorDecisionRef)
+    ) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `decisions[${index}].priorDecisionRef`,
+          "Prior decision does not resolve.",
+        ),
+      );
+    }
+    const sourceRefs = Array.isArray(decision.sourceRefs) ? decision.sourceRefs : [];
+    const latestEvidence = Math.max(
+      ...sourceRefs.map(
+        (sourceRef) => timestamp(ledgers.sources.byId.get(sourceRef)?.receivedAt) ?? -Infinity,
+      ),
+    );
+    const decidedAt = timestamp(decision.decidedAt);
+    if (
+      decision.origin !== "supplied-human-decision" ||
+      decidedAt === null ||
+      decidedAt < latestEvidence ||
+      (Number.isFinite(asOfMs) && decidedAt > asOfMs)
+    ) {
+      findings.push(
+        finding(
+          "invalid_supplied_legal_decision",
+          `decisions[${index}]`,
+          "Decisions must be append-only, source-backed, timely, and explicitly supplied by a named human.",
+        ),
+      );
+    }
+    requireScope(
+      decision.deciderRef,
+      decisionScopes.get(decision.decisionType),
+      `decisions[${index}].deciderRef`,
+      "Legal decision",
+    );
+  }
+  for (const [index, decision] of orderedDecisions.entries()) {
+    const prior = index === 0 ? null : orderedDecisions[index - 1].id;
+    if (decision.sequence !== index + 1 || decision.priorDecisionRef !== prior) {
+      findings.push(
+        finding(
+          "broken_legal_decision_chain",
+          "decisions",
+          "Supplied decisions must form a complete append-only sequence.",
+        ),
+      );
+      break;
+    }
+  }
+
+  const requiredReviewTypes = [
+    "scope-binding",
+    "source-coverage",
+    "reference-integrity",
+    "deadline-reconciliation",
+    "hold-coverage",
+    "privilege-resolution",
+    "conflict-resolution",
+    "independent-counsel-review",
+  ];
+  exactRefs(
+    ledgers.reviewGates.items.map((gate) => gate.gateType),
+    requiredReviewTypes,
+    "reviewGates",
+    "Required review-gate types",
+  );
+  const reviewScopes = new Map([
+    ["scope-binding", "matter-supervision"],
+    ["source-coverage", "task-ownership"],
+    ["reference-integrity", "task-ownership"],
+    ["deadline-reconciliation", "deadline-confirmation"],
+    ["hold-coverage", "hold-issuance"],
+    ["privilege-resolution", "privilege-confirmation"],
+    ["conflict-resolution", "conflict-confirmation"],
+    ["independent-counsel-review", "handoff-review"],
+  ]);
+  let independentReview = null;
+  for (const [index, gate] of ledgers.reviewGates.entries) {
+    const evidenceRefs = Array.isArray(gate.evidenceSourceRefs)
+      ? gate.evidenceSourceRefs
+      : [];
+    const latestEvidence = Math.max(
+      ...evidenceRefs.map(
+        (sourceRef) => timestamp(ledgers.sources.byId.get(sourceRef)?.receivedAt) ?? -Infinity,
+      ),
+    );
+    const reviewedAt = timestamp(gate.reviewedAt);
+    requireScope(
+      gate.reviewerRef,
+      reviewScopes.get(gate.gateType),
+      `reviewGates[${index}].reviewerRef`,
+      "Review gate",
+    );
+    if (
+      gate.state !== "satisfied" ||
+      reviewedAt === null ||
+      reviewedAt < latestEvidence ||
+      (Number.isFinite(asOfMs) && reviewedAt > asOfMs)
+    ) {
+      findings.push(
+        finding(
+          "unsatisfied_legal_review_gate",
+          `reviewGates[${index}]`,
+          "Readiness gates must be satisfied by scoped named humans after controlled evidence.",
+        ),
+      );
+    }
+    if (gate.gateType === "independent-counsel-review") independentReview = gate;
+  }
+  const latestEvidence = Math.max(
+    ...ledgers.sources.items.map((source) => timestamp(source.receivedAt) ?? -Infinity),
+    ...ledgers.decisions.items.map((decision) => timestamp(decision.decidedAt) ?? -Infinity),
+    ...ledgers.tasks.items.map((task) => timestamp(task.completedAt) ?? -Infinity),
+  );
+  const independentReviewer = ledgers.principals.byId.get(independentReview?.reviewerRef);
+  if (
+    !independentReview ||
+    typeof independentReviewer?.title !== "string" ||
+    !/\bcounsel\b/iu.test(independentReviewer.title) ||
+    independentReview.reviewerRef === matter.supervisingCounselRef ||
+    (timestamp(independentReview.reviewedAt) ?? -Infinity) < latestEvidence
+  ) {
+    findings.push(
+      finding(
+        "invalid_independent_counsel_review",
+        "reviewGates",
+        "A different named counsel reviewer must review after all source, task, and decision evidence.",
+      ),
+    );
+  }
+
+  const requiredActions = [
+    "interpret-law",
+    "give-legal-advice",
+    "determine-legal-strategy",
+    "determine-privilege",
+    "file-or-serve",
+    "contact-legal-participants",
+    "sign",
+    "negotiate",
+    "settle",
+    "waive",
+    "commit",
+    "alter-custody-or-destroy",
+    "release-hold",
+    "approve-handoff",
+  ];
+  exactRefs(
+    ledgers.authorityGates.items.map((gate) => gate.action),
+    requiredActions,
+    "authorityGates",
+    "Required legal authority gates",
+  );
+  for (const [index, gate] of ledgers.authorityGates.entries) {
+    if (
+      gate.state !== "prohibited" ||
+      gate.retainedByRef !== matter.supervisingCounselRef
+    ) {
+      findings.push(
+        finding(
+          "invalid_legal_authority_gate",
+          `authorityGates[${index}]`,
+          "Every legal action must remain prohibited and retained by supervising counsel.",
+        ),
+      );
+    }
+    requireScope(
+      gate.retainedByRef,
+      "matter-supervision",
+      `authorityGates[${index}].retainedByRef`,
+      "Legal authority",
+    );
+  }
+
+  function reciprocal(left, leftField, right, rightField, label) {
+    for (const item of left.items) {
+      for (const rightRef of Array.isArray(item[leftField]) ? item[leftField] : []) {
+        const target = right.byId.get(rightRef);
+        if (
+          target &&
+          !(Array.isArray(target[rightField]) ? target[rightField] : []).includes(item.id)
+        ) {
+          findings.push(
+            finding(
+              "missing_reverse_legal_reference",
+              `${item.id}.${leftField}`,
+              `${label} must be represented in both directions.`,
+            ),
+          );
+        }
+      }
+    }
+  }
+  for (const [left, leftField, right, rightField, label] of [
+    [ledgers.sources, "recordRefs", ledgers.records, "sourceRefs", "Source/record"],
+    [ledgers.records, "sourceRefs", ledgers.sources, "recordRefs", "Record/source"],
+    [ledgers.sources, "holdRefs", ledgers.holds, "coveredSourceRefs", "Source/hold"],
+    [ledgers.records, "holdRefs", ledgers.holds, "coveredRecordRefs", "Record/hold"],
+    [ledgers.records, "partyRefs", ledgers.parties, "recordRefs", "Record/party"],
+    [ledgers.parties, "recordRefs", ledgers.records, "partyRefs", "Party/record"],
+    [ledgers.parties, "conflictRefs", ledgers.conflicts, "partyRefs", "Party/conflict"],
+    [ledgers.conflicts, "partyRefs", ledgers.parties, "conflictRefs", "Conflict/party"],
+    [ledgers.records, "workstreamRefs", ledgers.workstreams, "recordRefs", "Record/workstream"],
+    [ledgers.workstreams, "recordRefs", ledgers.records, "workstreamRefs", "Workstream/record"],
+    [ledgers.records, "chronologyRefs", ledgers.chronology, "recordRefs", "Record/chronology"],
+    [ledgers.chronology, "recordRefs", ledgers.records, "chronologyRefs", "Chronology/record"],
+    [ledgers.records, "deadlineRefs", ledgers.deadlines, "recordRefs", "Record/deadline"],
+    [ledgers.deadlines, "recordRefs", ledgers.records, "deadlineRefs", "Deadline/record"],
+    [ledgers.records, "privilegeLabelRefs", ledgers.privilegeLabels, "recordRefs", "Record/privilege"],
+    [ledgers.privilegeLabels, "recordRefs", ledgers.records, "privilegeLabelRefs", "Privilege/record"],
+    [ledgers.workstreams, "deadlineRefs", ledgers.deadlines, "workstreamRefs", "Workstream/deadline"],
+    [ledgers.deadlines, "workstreamRefs", ledgers.workstreams, "deadlineRefs", "Deadline/workstream"],
+    [ledgers.workstreams, "taskRefs", ledgers.tasks, "workstreamRefs", "Workstream/task"],
+    [ledgers.tasks, "workstreamRefs", ledgers.workstreams, "taskRefs", "Task/workstream"],
+  ]) {
+    reciprocal(left, leftField, right, rightField, label);
+  }
+
+  safeRefs(handoff, "sourceRefs", "handoff", ledgers.sources.ids, "Handoff source");
+  safeRefs(
+    handoff,
+    "reviewGateRefs",
+    "handoff",
+    ledgers.reviewGates.ids,
+    "Handoff review gate",
+  );
+  safeRefs(
+    handoff,
+    "authorityGateRefs",
+    "handoff",
+    ledgers.authorityGates.ids,
+    "Handoff authority gate",
+  );
+  safeRefs(handoff, "coveredRefs", "handoff", allIds, "Handoff covered row");
+  safeRefs(handoff, "blockingRefs", "handoff", allIds, "Handoff blocker");
+  exactRefs(handoff.sourceRefs, [...ledgers.sources.ids], "handoff.sourceRefs", "Handoff sources");
+  exactRefs(
+    handoff.reviewGateRefs,
+    [...ledgers.reviewGates.ids],
+    "handoff.reviewGateRefs",
+    "Handoff review gates",
+  );
+  exactRefs(
+    handoff.authorityGateRefs,
+    [...ledgers.authorityGates.ids],
+    "handoff.authorityGateRefs",
+    "Handoff authority gates",
+  );
+  exactRefs(handoff.coveredRefs, allIdList, "handoff.coveredRefs", "Handoff ledger rows");
+  const generatedAt = timestamp(handoff.generatedAt);
+  if (
+    handoff.matterRef !== matter.id ||
+    handoff.snapshotRef !== matter.snapshotRef ||
+    handoff.destinationRef !== matter.destinationRef ||
+    handoff.approvalState !== "not-approved" ||
+    !principalContext.hasScope(handoff.counselReviewerRef, "matter-supervision") ||
+    generatedAt === null ||
+    (independentReview && generatedAt < timestamp(independentReview.reviewedAt)) ||
+    (Number.isFinite(asOfMs) && generatedAt > asOfMs)
+  ) {
+    findings.push(
+      finding(
+        "invalid_legal_handoff_binding",
+        "handoff",
+        "The handoff must preserve exact matter, snapshot, destination, nonapproval, named counsel, and post-review generation time.",
+      ),
+    );
+  }
+  if (
+    handoff.state === "ready-for-counsel-review" &&
+    (!Array.isArray(handoff.blockingRefs) ||
+      handoff.blockingRefs.length > 0 ||
+      findings.length > 0)
+  ) {
+    findings.push(
+      finding(
+        "premature_counsel_review_handoff",
+        "handoff.state",
+        "Ready-for-counsel-review requires complete binding, references, deadlines, holds, privilege, conflicts, tasks, and independent review.",
+      ),
+    );
+  } else if (
+    handoff.state === "blocked" &&
+    (!Array.isArray(handoff.blockingRefs) || handoff.blockingRefs.length === 0)
+  ) {
+    findings.push(
+      finding(
+        "unexplained_blocked_legal_handoff",
+        "handoff.blockingRefs",
+        "A blocked handoff must name at least one exact blocking row.",
+      ),
+    );
+  }
+
+  const narrativeTexts = upliftNarrativeStrings({
+    neutralTitle: matter.neutralTitle,
+    counselScope: matter.counselScope,
+    parties: ledgers.parties.items.map((item) => item.label),
+    workstreams: ledgers.workstreams.items.map((item) => item.title),
+    records: ledgers.records.items.map((item) => item.title),
+    chronology: ledgers.chronology.items.map((item) => item.summary),
+    deadlines: ledgers.deadlines.items.map((item) => item.title),
+    tasks: ledgers.tasks.items.map((item) => item.title),
+    decisions: ledgers.decisions.items.map((item) => item.outcome),
+  });
+  const prohibitedNarrative =
+    /\b(?:interpret(?:ed|s|ing)?\s+(?:the\s+)?law|(?:gave|give|giving|provid(?:e[ds]?|ing))\s+legal\s+advice|(?:determin(?:e[ds]?|ing)|creat(?:e[ds]?|ing)|set)\s+(?:the\s+)?(?:legal\s+)?(?:strategy|privilege)|(?:fil(?:e[ds]?|ing)|serv(?:e[ds]?|ing))\s+(?:occurred|the\s+(?:motion|matter|filing|document|papers?))|contact(?:ed|ing|s)?\s+(?:with\s+)?(?:the\s+)?(?:part(?:y|ies)|witness(?:es)?|counsel|court|regulator|agency)|sign(?:ed|ing|s)?\s+(?:the\s+)?(?:agreement|filing|document)|negotiat(?:e[ds]?|ing)\s+(?:with|the)|settl(?:e[ds]?|ing)\s+(?:the\s+)?matter|waiv(?:e[ds]?|ing)\s+(?:the\s+)?(?:privilege|right)|commit(?:ted|ting|s)?\s+(?:the\s+)?(?:client|organization|matter)|mov(?:e[ds]?|ing)\s+or\s+destroy(?:ed|s|ing)?\s+(?:the\s+)?(?:originals?|evidence|records?|source|custody)|(?:delet(?:e[ds]?|ing)|alter(?:ed|s|ing)?|mov(?:e[ds]?|ing)|destroy(?:ed|s|ing)?|transfer(?:s|red|ring)?)\s+(?:the\s+)?(?:originals?|evidence|records?|source|custody)|releas(?:e[ds]?|ing)\s+(?:the\s+)?hold|(?:counsel\s+approved|approved\s+by\s+counsel|handoff\s+(?:was\s+)?approved))\b/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_legal_narrative_action",
+        "$",
+        "Narrative text cannot affirm legal advice/action, privilege creation, external contact, commitment, preservation changes, hold release, or counsel approval.",
+      ),
+    );
+  }
+  return findings;
+}
+
 const validators = {
   "accessibility-review-coordinator": accessibilityReviewFindings,
   "api-integration-engineer": apiIntegrationReadinessFindings,
@@ -46948,6 +47893,7 @@ const validators = {
   "job-application-tracker": jobApplicationFindings,
   "knowledge-curator": knowledgeCollectionIndexFindings,
   "knowledge-gardener": knowledgeSpaceChangePlanFindings,
+  "legal-matter-organizer": legalMatterFindings,
   "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
   "localization-program-manager": localizationReadinessFindings,
