@@ -82,7 +82,8 @@
       "conference-opportunity-scout",
       "moving-checklist-coordinator",
       "legal-matter-organizer",
-      "records-retention-disposition-coordinator"
+      "records-retention-disposition-coordinator",
+      "vulnerability-disposition-coordinator"
     ]
   },
   "visualCases": [

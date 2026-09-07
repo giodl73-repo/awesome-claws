@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (102)
+### Active (103)
 
 | Claw | Detail |
 | --- | --- |
@@ -108,6 +108,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [UX research synthesizer](claws/ux-research-synthesizer) | @giodl73-repo; last verified 2026-08-19 |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Video concept producer](claws/video-concept-producer) | @giodl73-repo; last verified 2026-09-01 |
+| [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | @giodl73; last verified 2026-09-07 |
 | [Wardrobe organizer](claws/wardrobe-organizer) | @giodl73-repo; last verified 2026-08-27 |
 | [Warranty and returns manager](claws/warranty-returns-manager) | @giodl73-repo; last verified 2026-08-28 |
 | [Web evidence researcher](claws/web-evidence-researcher) | @giodl73-repo; last verified 2026-08-30 |
@@ -129,7 +130,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (72)
+### Low setup (73)
 
 | Claw | Detail |
 | --- | --- |
@@ -202,6 +203,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | no bootstrap, external dependency, or schedule |
 | [UX research synthesizer](claws/ux-research-synthesizer) | no bootstrap, external dependency, or schedule |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | no bootstrap, external dependency, or schedule |
+| [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | no bootstrap, external dependency, or schedule |
 | [Wardrobe organizer](claws/wardrobe-organizer) | no bootstrap, external dependency, or schedule |
 | [Warranty and returns manager](claws/warranty-returns-manager) | no bootstrap, external dependency, or schedule |
 | [Work chief of staff](claws/work-chief-of-staff) | no bootstrap, external dependency, or schedule |
@@ -250,7 +252,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (80)
+### No external dependencies (81)
 
 | Claw | Detail |
 | --- | --- |
@@ -331,6 +333,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | None |
 | [UX research synthesizer](claws/ux-research-synthesizer) | None |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | None |
+| [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | None |
 | [Wardrobe organizer](claws/wardrobe-organizer) | None |
 | [Warranty and returns manager](claws/warranty-returns-manager) | None |
 | [Work chief of staff](claws/work-chief-of-staff) | None |
@@ -366,7 +369,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (77)
+### X3 (78)
 
 | Claw | Detail |
 | --- | --- |
@@ -441,6 +444,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Travel planner](claws/travel-planner) | Builds a reviewable trip plan from current public sources without booking, paying, or retaining sensitive traveler records. |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle. |
 | [Video concept producer](claws/video-concept-producer) | Plans exactly two private six-second PixVerse concepts and, only when evidence exists, records inspected inputs, exact signed approvals, exposed OpenClaw/PixVerse results, optional billing and materialization receipts, output-bound review, inherited controls, and nonpublication state. |
+| [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 | [Wardrobe organizer](claws/wardrobe-organizer) | Tracks clothing inventory, sizes, fit notes, outfit needs, events, packing lists, care tasks, alterations, gaps, and owner review questions from supplied evidence without buying, selling, donating, sharing photos, inferring body or health details, or changing accounts. |
 | [Warranty and returns manager](claws/warranty-returns-manager) | Organizes owner-supplied receipts, order confirmations, product records, return windows, warranty terms, serial numbers, issue notes, packaging status, and review questions without initiating returns, filing warranty claims, contacting sellers, creating shipping labels, requesting refunds, changing accounts, or giving legal, financial, tax, safety, repair, or consumer-rights advice. |
 | [Web evidence researcher](claws/web-evidence-researcher) | Produces a private, bounded claim-evidence investigation ledger that maps owner-approved public web authorities, reproducible searches, canonical sources, corroboration, conflicts, uncertainty, and decision implications without making the decision. |
@@ -521,7 +525,7 @@ Categories come directly from the catalog entry.
 | [Security analyst](claws/security-analyst) | X4; Assesses security questions with explicit trust boundaries and reproducible evidence. |
 | [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 
-### Governance (6)
+### Governance (7)
 
 | Claw | Detail |
 | --- | --- |
@@ -531,6 +535,7 @@ Categories come directly from the catalog entry.
 | [Legal matter organizer](claws/legal-matter-organizer) | X3; Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | X3; Reconciles an authoritative retention schedule, exact record-copy inventory, trigger and hold evidence, approved disposition batch, independently observed outcomes and certificates, and residual-copy closure into one snapshot-bound human-review handoff without interpreting policy or executing disposition. |
+| [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
 ### Operations (22)
 
@@ -623,7 +628,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (50)
+### Standard attention (51)
 
 | Claw | Detail |
 | --- | --- |
@@ -675,6 +680,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Tax document organizer](claws/tax-document-organizer) | portable workspace artifacts only |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | portable workspace artifacts only |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | portable workspace artifacts only |
+| [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | portable workspace artifacts only |
 | [Wardrobe organizer](claws/wardrobe-organizer) | portable workspace artifacts only |
 | [Warranty and returns manager](claws/warranty-returns-manager) | portable workspace artifacts only |
 
