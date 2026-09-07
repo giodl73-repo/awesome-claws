@@ -25,6 +25,7 @@ import {
 import { parseMockPlusArgs } from "./mock-plus.mjs";
 import {
   MOCK_PLUS_PROFILE_NAMES,
+  assertMockPlusConvergence,
   buildMockPlusProfile,
 } from "./mock-plus-profile.mjs";
 import { aggregateRuntimeEvidence } from "./runtime-evidence-lib.mjs";
@@ -499,6 +500,24 @@ test("CLI arguments require exact replay inputs", () => {
 });
 
 test("canonical profile summarizes only complete passing profiles", () => {
+  const convergence = {
+    schemaVersion: "awesomeClaws.mockPlusConvergence.v1",
+    evidenceClass: "mock-deterministic",
+    entries: [
+      "runtime-mock-structured-artifact",
+      "owner-schema-contract-tests",
+      "runtime-gate-unit-tests",
+      "wrong-path-artifact-tests",
+      "visual-runtime-mock",
+      "specialized-semantic-tests",
+    ].map((id) => ({
+      id,
+      decision: "retain",
+      replacementStatus: "not-equivalent",
+      evidence: ["test"],
+      reason: "Independent oracle.",
+    })),
+  };
   const runs = MOCK_PLUS_PROFILE_NAMES.map((name, index) => ({
     manifest: { profile: name },
     canonicalDigest: `sha256:${String(index).repeat(64)}`,
@@ -518,7 +537,7 @@ test("canonical profile summarizes only complete passing profiles", () => {
       safety: { blockingCount: 0 },
     },
   }));
-  const profile = buildMockPlusProfile(runs);
+  const profile = buildMockPlusProfile(runs, convergence);
   assert.equal(profile.evidenceClass, "mock-deterministic");
   assert.equal(profile.mode, "mock");
   assert.equal(profile.totals.profileCount, 4);
@@ -527,14 +546,37 @@ test("canonical profile summarizes only complete passing profiles", () => {
   assert.match(profile.profileDigest, /^sha256:[a-f0-9]{64}$/u);
   assert.throws(
     () =>
-      buildMockPlusProfile([
-        ...runs.slice(0, -1),
-        {
-          ...runs.at(-1),
-          coverage: { ...runs.at(-1).coverage, status: "failed" },
-        },
-      ]),
+      buildMockPlusProfile(
+        [
+          ...runs.slice(0, -1),
+          {
+            ...runs.at(-1),
+            coverage: { ...runs.at(-1).coverage, status: "failed" },
+          },
+        ],
+        convergence,
+      ),
     /requires every qualifying profile/u,
+  );
+  assert.throws(
+    () =>
+      assertMockPlusConvergence({
+        ...convergence,
+        entries: convergence.entries.slice(1),
+      }),
+    /malformed or incomplete/u,
+  );
+  assert.throws(
+    () =>
+      assertMockPlusConvergence({
+        ...convergence,
+        entries: convergence.entries.map((entry, index) =>
+          index === 0
+            ? { ...entry, decision: "delete", replacementStatus: "covered" }
+            : entry,
+        ),
+      }),
+    /malformed or incomplete/u,
   );
 });
 

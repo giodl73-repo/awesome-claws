@@ -8,10 +8,11 @@
     "win32"
   ],
   "maxCommittedBytes": 2097152,
+  "convergenceDigest": "sha256:ec119c9c3fba73ce56214fbac2113e6c20905535c04781b0a5cd079f5ba5428b",
   "profiles": [
     {
       "name": "vertical",
-      "canonicalDigest": "sha256:372b8133aa108a870bd5684033d9aefc46258e18ea789154fd68be061935b8d2",
+      "canonicalDigest": "sha256:808f318e3b43efc041e9415cadf01be4aa8be659d62885d7b1461b59cf9d56af",
       "clawCount": 3,
       "caseCount": 53,
       "controlsPassed": 21,
@@ -25,7 +26,7 @@
     },
     {
       "name": "schema-portfolio",
-      "canonicalDigest": "sha256:9c97f08d7cdfbf1ea48e0ea9684733fe8312ec86447d7466552f18ca60cbe29f",
+      "canonicalDigest": "sha256:0ab5c5b2ae2fb0cdb8a1d21eb6dec521363b5a15ca44ba80b651f2cba599d017",
       "clawCount": 101,
       "caseCount": 26435,
       "controlsPassed": 707,
@@ -39,7 +40,7 @@
     },
     {
       "name": "semantic-portfolio",
-      "canonicalDigest": "sha256:9933309f1066edbb9fd7781200837e2fa527f535a19ad189d6d905a0a2ddc5ab",
+      "canonicalDigest": "sha256:c54acab01c1913ad6863e62755c20c3c1757fa679d9e2ef6c92ac13415821ada",
       "clawCount": 101,
       "caseCount": 1584,
       "controlsPassed": 707,
@@ -53,7 +54,7 @@
     },
     {
       "name": "lifecycle-portfolio",
-      "canonicalDigest": "sha256:6ac3412d3d5fa22d0ca62231027653a101f96c2c7773fe7f5eb71f060363e5ce",
+      "canonicalDigest": "sha256:5008d877fe470325ec6da489f82122d11d741168e8e2f7adca93eb64ee21f336",
       "clawCount": 101,
       "caseCount": 1891,
       "controlsPassed": 707,
@@ -74,5 +75,5 @@
     "mutantsSurvived": 0,
     "safetyBlockers": 0
   },
-  "profileDigest": "sha256:673adfae3c14ecab3b73ac964973378f518ad821e40119bdf14e9e8ef98ae1b2"
+  "profileDigest": "sha256:6fb982810cce9f26b0d311dd692999d57949f36a00a5b385fe194a42a3036c7e"
 }
