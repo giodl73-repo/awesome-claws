@@ -340,6 +340,7 @@ test("legal matter rejects every prohibited affirmative narrative and permits ge
     "Delete the original.",
     "Alter the evidence.",
     "Move the records.",
+    "Destroy the evidence.",
     "Transfer custody.",
     "Release the hold.",
   ];
