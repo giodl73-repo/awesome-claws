@@ -44,7 +44,7 @@ const validatorStart = validatorSource.indexOf(
   "function workflowExecutionReconciliationFindings(",
 );
 const validatorEnd = validatorSource.indexOf(
-  "\nfunction legalMatterFindings(",
+  "\nfunction retentionDispositionFindings(",
   validatorStart,
 );
 assert.notEqual(validatorStart, -1);

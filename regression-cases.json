@@ -2474,6 +2474,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "records-retention-disposition-coordinator",
+      "acceptedRequest": "Reconcile supplied SNAP-RET-2026-0907-A for the approved schedule version, synthetic finance records and every known copy, event triggers, hold and exception evidence, approved batch, custodian outcomes, independent certificates, and residual backups. Show whether owner action is blocked, ready, or completely reconciled, but do not interpret policy, release holds, approve, delete, move, contact anyone, or claim compliance.",
+      "requiredEvidence": [
+        "Stable snapshot ID and cutoff, approved workspace and destination, named human principals with exact scopes, and the authoritative schedule version, digest, effective period, and controlled evidence",
+        "Record series, records, every known copy and location, bidirectional lineage, supplied classifications, applicable rules, trigger types, trigger events, evidence, timezones, and exact eligibility calculations",
+        "Legal, regulatory, and audit holds including broader, unknown, conflicting, or incomplete scope; supplied exceptions with expiry and evidence; exact proposals, approval decisions, and digest-bound batches",
+        "Append-only custody events, requested and attempted actions, failed, partial, succeeded, or unknown outcomes, authoritative independent certificates, residual backups, replicas, copies, and unknown-location closure evidence"
+      ],
+      "authorityBoundaries": [
+        "Do not create or interpret retention schedules, classify records, determine legal obligations, issue or release holds, grant exceptions, approve batches, accept risk, or declare compliance or certification",
+        "Do not delete, destroy, move, transfer, alter, publish, message about, discover, collect, or mutate records, copies, repositories, owner systems, or disposition destinations",
+        "Do not treat a request, command, attempt, tool response, custodian assertion, or package-generated statement as evidence that disposition occurred",
+        "Do not expose raw record content, personal data, confidential matter detail, credentials, secrets, uncontrolled locations, or evidence outside the approved workspace and destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/records-retention-disposition-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

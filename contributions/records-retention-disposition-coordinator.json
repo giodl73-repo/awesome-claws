@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "records-retention-disposition-coordinator",
+    "name": "Records retention and disposition coordinator",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73"
+      ],
+      "lastVerified": "2026-09-07"
+    },
+    "description": "Reconciles an authoritative retention schedule, exact record-copy inventory, trigger and hold evidence, approved disposition batch, independently observed outcomes and certificates, and residual-copy closure into one snapshot-bound human-review handoff without interpreting policy or executing disposition.",
+    "audience": "Authorized records-operations staff coordinating an exact supplied inventory snapshot with named records, legal, approval, custody, execution-observation, and residual-closure owners in an approved workspace and destination.",
+    "principles": [
+      "Keep the working records, legal, custody, approval, and execution systems authoritative while reconciling their supplied evidence into one exact inventory snapshot",
+      "Bind schedule version, record series, records, copies, triggers, rules, holds, exceptions, proposals, batches, approvals, custody, outcomes, certificates, residual locations, review gates, and handoff state through complete bidirectional lineage",
+      "Fail closed on unsupported eligibility, every active or uncertain hold, stale or self-approved exceptions, premature approval, unobserved execution, incomplete certificates, and residual copies"
+    ],
+    "boundaries": [
+      "Do not create or interpret retention schedules, classify records, determine legal obligations, issue or release holds, grant exceptions, approve batches, accept risk, or declare compliance or certification",
+      "Do not delete, destroy, move, transfer, alter, publish, message about, discover, collect, or mutate records, copies, repositories, owner systems, or disposition destinations",
+      "Do not treat a request, command, attempt, tool response, custodian assertion, or package-generated statement as evidence that disposition occurred",
+      "Do not expose raw record content, personal data, confidential matter detail, credentials, secrets, uncontrolled locations, or evidence outside the approved workspace and destination"
+    ],
+    "intake": [
+      "Stable snapshot ID and cutoff, approved workspace and destination, named human principals with exact scopes, and the authoritative schedule version, digest, effective period, and controlled evidence",
+      "Record series, records, every known copy and location, bidirectional lineage, supplied classifications, applicable rules, trigger types, trigger events, evidence, timezones, and exact eligibility calculations",
+      "Legal, regulatory, and audit holds including broader, unknown, conflicting, or incomplete scope; supplied exceptions with expiry and evidence; exact proposals, approval decisions, and digest-bound batches",
+      "Append-only custody events, requested and attempted actions, failed, partial, succeeded, or unknown outcomes, authoritative independent certificates, residual backups, replicas, copies, and unknown-location closure evidence"
+    ],
+    "workflow": [
+      "Confirm the exact inventory snapshot, cutoff, approved destination, named-human scopes, authoritative schedule version and digest, effective period, and controlled source evidence",
+      "Reconcile record series, records, every known copy and location, supplied classifications, trigger evidence, timezone-safe chronology, retention-rule matches, and calculated eligibility in both directions",
+      "Apply fail-closed hold precedence and validate exception expiry, evidence, scope, independent approval, and chronology without issuing, releasing, interpreting, or overriding owner decisions",
+      "Bind exact disposition proposals and human decisions to a deterministic batch digest, then require approval after every consequential eligibility, hold, exception, and batch evidence timestamp",
+      "Separate requests and attempts from outcomes; reconcile append-only custody, independently observed authoritative certificates, exact record-copy-method-custodian bindings, and every residual location",
+      "Validate exact blockers and review gates, then render only blocked, ready-for-owner-action, or complete-reconciled handoff state without claiming execution, compliance, certification, or authority"
+    ],
+    "deliverables": [
+      "Snapshot, named-principal, authoritative-schedule, record-series, record, copy-location, classification, trigger, rule, and eligibility ledgers",
+      "Hold-precedence, exception, disposition-proposal, batch, approval, and append-only custody ledgers",
+      "Requested, attempted, failed, partial, succeeded, and unknown outcome reconciliation with independent certificate and residual-copy closure evidence",
+      "Exact review-gate and blocker register with a blocked, ready-for-owner-action, or complete-reconciled destination-bound handoff"
+    ],
+    "example": {
+      "request": "Reconcile supplied SNAP-RET-2026-0907-A for the approved schedule version, synthetic finance records and every known copy, event triggers, hold and exception evidence, approved batch, custodian outcomes, independent certificates, and residual backups. Show whether owner action is blocked, ready, or completely reconciled, but do not interpret policy, release holds, approve, delete, move, contact anyone, or claim compliance.",
+      "outcome": "A strict snapshot-bound lifecycle artifact that proves the supplied schedule, record-copy lineage, trigger calculation, hold precedence, independent exception and batch decisions, append-only custody, observed outcome certificates, and residual closure, with exact blockers and no autonomous disposition or compliance claim."
+    },
+    "doneWhen": [
+      "Every ledger row binds the exact snapshot, every globally stable ID is unique, all controlled references and digests are nondegenerate, and all forward, reverse, orphan, and handoff coverage checks are exact",
+      "Eligibility exists only for supported schedule versions, supplied classifications, supported trigger evidence, exact timezone-safe calculations, and matched rules, with every active, unknown, conflicting, incomplete, or broader hold blocking readiness and completion",
+      "Exceptions and approvals are unexpired, evidence-bound, scoped to different named humans, chronologically after all consequential evidence, and bound to the exact proposal items, method, destination, and batch digest",
+      "Complete reconciliation requires independently observed authoritative certificates after approval for every exact record and copy, method, custodian, and batch plus closure of all backups, replicas, residual copies, and unknown locations; failed, partial, unknown, or remaining state stays blocked"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only supplied workspace artifacts and grants no browser, shell, MCP, plugin, cron, messaging, delegation, eDiscovery, records-system, repository, movement, transfer, deletion, or destruction capability.",
+      "Named records, legal, approval, custody, execution-observation, exception, and risk owners retain all schedule, classification, trigger, hold, exception, approval, execution, certification, closure, legal-interpretation, compliance, and risk authority.",
+      "Malformed, missing, stale, contradictory, incomplete, broader-scope, unobserved, partial, failed, unknown, or residual evidence produces exact blockers and a concise owner handoff rather than ceremony or an inferred success state."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/retention-disposition.schema.json",
+        "path": "schemas/retention-disposition.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/retention-disposition.example.json",
+        "path": "fixtures/retention-disposition.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/retention-disposition.md",
+        "path": "templates/retention-disposition.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Records teams manually cross-check retention schedules, record and copy inventories, event triggers, legal holds, exceptions, approvals, disposition requests, custodian outcomes, certificates, and residual backups across owner systems and trackers, leaving cross-ledger eligibility and closure invariants difficult to prove atomically.",
+    "repeatableJob": "For authorized records operations, reconcile one exact inventory snapshot from authoritative owner-system evidence into a fail-closed blocked, ready-for-owner-action, or complete-reconciled handoff spanning schedule application through independently observed disposition and residual-copy closure.",
+    "proofPlan": "Prove an X3 artifact with a strict versioned schema, total semantic validator, global unique IDs, exact snapshot binding, controlled references and digests, complete forward/reverse/orphan checks, timezone-safe eligibility, broad hold precedence, independent scoped exception and approval chronology, digest-bound batches, append-only custody, separated requests/attempts/outcomes, authoritative independent certificates, exact residual closure, blocker equality, prohibited narrative detection with genuine negation, base-only capability proof, public CLI validation, focused adversarial tests, and catalog-wide generated recipe and workflow checks.",
+    "existingAlternatives": [
+      {
+        "id": "data-governance-steward",
+        "overlap": "Both reconcile retention and access requirements, exceptions, remediation evidence, accountable review, and governance handoffs.",
+        "difference": "Data Governance Steward lacks an exact record-series and every-copy inventory, event-trigger calculations, broader legal-hold precedence, digest-bound disposition batches, custody and independently observed outcome certificates, and residual-copy closure."
+      },
+      {
+        "id": "knowledge-curator",
+        "overlap": "Both preserve retention labels, source provenance, controlled destinations, human review, and a non-destructive coordination boundary.",
+        "difference": "Knowledge Curator owns collection curation rather than authoritative schedule application, per-copy eligibility and hold precedence, approved disposition batches, execution-result reconciliation, certificates, or residual closure."
+      },
+      {
+        "id": "knowledge-gardener",
+        "overlap": "Both preserve source provenance, retention context, exact review scope, approval chronology, and blocked destructive changes in a controlled destination.",
+        "difference": "Knowledge Gardener proposes governed edits within one knowledge space; it does not own enterprise record-series and copy inventories, event-triggered eligibility, hold precedence, disposition batches, authoritative execution certificates, or residual-location closure."
+      },
+      {
+        "id": "legal-matter-organizer",
+        "overlap": "Both preserve immutable record, custody, controlled evidence, named legal authority, exact snapshot binding, and legal-hold state.",
+        "difference": "Legal Matter Organizer is bound to one already-active legal matter and preservation-safe counsel review; it never owns enterprise retention eligibility, disposition batches, execution certificates, or residual-copy closure."
+      },
+      {
+        "id": "privacy-request-coordinator",
+        "overlap": "Both use exact snapshots, minimized records, legal holds, exemptions or exceptions, accountable approvals, and controlled evidence.",
+        "difference": "Privacy Request Coordinator coordinates one privacy-rights request and its identity, search, deadline, and response lifecycle, not enterprise record-series schedules, every-copy disposition, certificates, or residual closure."
+      },
+      {
+        "id": "compliance-reviewer",
+        "overlap": "Both reconcile governance requirements, exceptions, source-backed evidence, independent review, blockers, and bounded conclusions.",
+        "difference": "Compliance Reviewer assesses controls against a framework; it does not calculate item eligibility from schedule and event evidence or reconcile hold precedence, approved disposition batches, execution outcomes, certificates, and residual locations."
+      },
+      {
+        "id": "personal-archive-curator",
+        "overlap": "Both inventory records and sources, preserve provenance and retention context, surface gaps, and keep destructive action with a human owner.",
+        "difference": "Personal Archive Curator organizes a personal archive; it has no authoritative enterprise schedule versions, event-based eligibility, legal-hold overrides, scoped exceptions, approved disposition batches, independently observed certificates, or residual-copy closure."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both apply date and source evidence to official records, expose conflicts and missing evidence, and prepare an owner-controlled handoff.",
+        "difference": "Document Renewal Tracker coordinates renewal dates and filing preparation, not retention schedules, copy-level hold precedence, digest-bound disposition, execution certificates, or backup and replica closure."
+      }
+    ]
+  }
+}

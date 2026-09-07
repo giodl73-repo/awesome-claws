@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 101,
-    "coveredCount": 101,
-    "recipeCount": 271,
-    "findingCodeCount": 263
+    "validatorCount": 102,
+    "coveredCount": 102,
+    "recipeCount": 274,
+    "findingCodeCount": 278
   },
   "entries": [
     {
@@ -4208,6 +4208,65 @@
             "invalid_principal_identity",
             "missing_legal_authority_scope",
             "premature_counsel_review_handoff"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "records-retention-disposition-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-disposition-approval-1",
+          "operator": "replace",
+          "path": [
+            "snapshot",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_disposition_approval",
+            "invalid_disposition_batch_digest",
+            "invalid_disposition_outcome",
+            "invalid_retention_exception",
+            "invalid_retention_handoff_state",
+            "unexplained_blocked_retention_handoff",
+            "unsupported_disposition_proposal"
+          ]
+        },
+        {
+          "id": "semantic-invalid-disposition-approval-2",
+          "operator": "replace",
+          "path": [
+            "snapshot",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_disposition_approval",
+            "invalid_disposition_batch_digest",
+            "invalid_disposition_outcome",
+            "invalid_retention_custody_event",
+            "invalid_retention_eligibility",
+            "invalid_retention_evidence",
+            "invalid_retention_handoff_state",
+            "invalid_retention_hold_evidence",
+            "invalid_retention_review_gate",
+            "unexplained_blocked_retention_handoff",
+            "unsupported_disposition_proposal",
+            "unsupported_retention_trigger",
+            "unsupported_supplied_classification"
+          ]
+        },
+        {
+          "id": "semantic-invalid-retention-snapshot-binding-3",
+          "operator": "replace",
+          "path": [
+            "snapshot",
+            "timezone"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_retention_snapshot_binding"
           ]
         }
       ]

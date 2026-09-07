@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Records retention and disposition coordinator session report",
+  "output": "outputs/records-retention-disposition-coordinator-handoff.md",
+  "sections": [
+    "exact_inventory_snapshot",
+    "named_principals_and_scopes",
+    "authoritative_schedule_and_supplied_classifications",
+    "record_series_records_copies_and_locations",
+    "triggers_rules_and_timezone_safe_eligibility",
+    "hold_precedence_and_exceptions",
+    "digest_bound_proposals_batches_and_approvals",
+    "append_only_custody_and_separated_outcomes",
+    "independent_certificates_and_residual_closure",
+    "review_gates_exact_blockers_and_handoff",
+    "prohibited_authority"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the same lifecycle evidence as Markdown; preserve exact blocked, ready-for-owner-action, or complete-reconciled state without claiming compliance or certification."
+}
