@@ -330,6 +330,18 @@ test("legal matter rejects every prohibited affirmative narrative and permits ge
     "Released the hold.",
     "Counsel approved the handoff.",
     "The handoff was approved.",
+    "Determine legal strategy.",
+    "Create privilege.",
+    "File the motion.",
+    "Serve the papers.",
+    "Negotiate with the opposing party.",
+    "Settle the matter.",
+    "Waive privilege.",
+    "Delete the original.",
+    "Alter the evidence.",
+    "Move the records.",
+    "Transfer custody.",
+    "Release the hold.",
   ];
   for (const text of prohibited) {
     const candidate = mutate((value) => {
