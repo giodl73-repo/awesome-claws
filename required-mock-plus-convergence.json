@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "awesomeClaws.mockPlusConvergence.v1",
+  "evidenceClass": "mock-deterministic",
+  "entries": [
+    {
+      "id": "runtime-mock-structured-artifact",
+      "decision": "retain",
+      "replacementStatus": "not-equivalent",
+      "evidence": [
+        "scripts/runtime-evidence-lib.mjs:mockAttempt",
+        "scripts/runtime-evidence.test.mjs"
+      ],
+      "reason": "The runtime mock is an independent end-to-end harness smoke for manifest, artifact, scoring, persistence, and aggregation behavior. Mock+ consumes parts of that production path but does not replace the runtime harness."
+    },
+    {
+      "id": "owner-schema-contract-tests",
+      "decision": "retain",
+      "replacementStatus": "not-equivalent",
+      "evidence": [
+        "scripts/*-schema.test.mjs",
+        "scripts/mock-plus-lib.mjs:schema-portfolio"
+      ],
+      "reason": "Owner tests define intended required fields, enums, legacy branches, and semantic invariants. Schema-derived Mock+ recipes consume the current schema; deleting the independent owner assertions would let an accidental schema weakening disappear from applicability."
+    },
+    {
+      "id": "runtime-gate-unit-tests",
+      "decision": "retain",
+      "replacementStatus": "not-equivalent",
+      "evidence": [
+        "scripts/runtime-evidence.test.mjs",
+        "required-safety-recipes.json",
+        "required-lifecycle-recipes.json"
+      ],
+      "reason": "Runtime gate tests define and independently exercise the production detector, redaction, classification, and persistence oracles. Mock+ invokes those oracles with mutations and cannot safely become their only proof."
+    },
+    {
+      "id": "wrong-path-artifact-tests",
+      "decision": "retain",
+      "replacementStatus": "missing",
+      "evidence": [
+        "scripts/runtime-evidence.test.mjs:workspace artifact sinks reject lexical and resolved escapes",
+        "scripts/runtime-evidence.test.mjs:workspace and artifact junction escapes are rejected before reads"
+      ],
+      "reason": "Mock+ covers workspace escape and cleanup gates but has no equivalent wrong-artifact-path and resolved-junction read oracle. Deletion remains blocked until an independent replacement exists."
+    },
+    {
+      "id": "visual-runtime-mock",
+      "decision": "retain",
+      "replacementStatus": "not-equivalent",
+      "evidence": [
+        "scripts/visual-runtime-mock.mjs",
+        "scripts/visual-runtime-mock.test.mjs"
+      ],
+      "reason": "This fixture proves deterministic show_widget tool ordering and persisted widget content. Capability adapter mutation does not execute or observe that tool sequence."
+    },
+    {
+      "id": "specialized-semantic-tests",
+      "decision": "retain",
+      "replacementStatus": "not-equivalent",
+      "evidence": [
+        "scripts/artifact-semantics.mjs",
+        "scripts/*.test.mjs",
+        "required-semantic-recipes.json"
+      ],
+      "reason": "Specialized tests define semantic validators and stable finding codes. The semantic portfolio is their consumer and mutation coverage, not an independent replacement oracle."
+    }
+  ]
+}

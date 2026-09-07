@@ -16,6 +16,14 @@ export const MOCK_PLUS_PROFILE_NAMES = Object.freeze([
   "semantic-portfolio",
   "lifecycle-portfolio",
 ]);
+const REQUIRED_CONVERGENCE_IDS = Object.freeze([
+  "runtime-mock-structured-artifact",
+  "owner-schema-contract-tests",
+  "runtime-gate-unit-tests",
+  "wrong-path-artifact-tests",
+  "visual-runtime-mock",
+  "specialized-semantic-tests",
+]);
 
 const MAX_COMMITTED_PROFILE_BYTES = 2 * 1_048_576;
 
@@ -36,7 +44,36 @@ function profileSummary(run) {
   };
 }
 
-export function buildMockPlusProfile(runs) {
+export function assertMockPlusConvergence(convergence) {
+  if (
+    convergence?.schemaVersion !== "awesomeClaws.mockPlusConvergence.v1" ||
+    convergence.evidenceClass !== "mock-deterministic" ||
+    !Array.isArray(convergence.entries) ||
+    convergence.entries.length !== REQUIRED_CONVERGENCE_IDS.length
+  ) {
+    throw new Error("Mock+ convergence registry is malformed or incomplete.");
+  }
+  for (const [index, entry] of convergence.entries.entries()) {
+    if (
+      entry.id !== REQUIRED_CONVERGENCE_IDS[index] ||
+      entry.decision !== "retain" ||
+      !["covered", "missing", "not-equivalent"].includes(
+        entry.replacementStatus,
+      ) ||
+      !Array.isArray(entry.evidence) ||
+      entry.evidence.length === 0 ||
+      entry.evidence.some(
+        (item) => typeof item !== "string" || item.length === 0,
+      ) ||
+      typeof entry.reason !== "string" ||
+      entry.reason.length === 0
+    ) {
+      throw new Error("Mock+ convergence registry is malformed or incomplete.");
+    }
+  }
+}
+
+export function buildMockPlusProfile(runs, convergence) {
   if (
     runs.length !== MOCK_PLUS_PROFILE_NAMES.length ||
     runs.some(
@@ -49,6 +86,7 @@ export function buildMockPlusProfile(runs) {
       "Canonical Mock+ profile requires every qualifying profile in canonical order.",
     );
   }
+  assertMockPlusConvergence(convergence);
   const profiles = runs.map(profileSummary);
   const body = {
     schemaVersion: "awesomeClaws.mockPlusProfile.v1",
@@ -58,6 +96,7 @@ export function buildMockPlusProfile(runs) {
       "Deterministic mock evidence only; no live model, provider, production outcome, or quality-score claim.",
     crossPlatformCheck: ["linux", "win32"],
     maxCommittedBytes: MAX_COMMITTED_PROFILE_BYTES,
+    convergenceDigest: digest(convergence),
     profiles,
     totals: {
       profileCount: profiles.length,
@@ -84,11 +123,14 @@ export function buildMockPlusProfile(runs) {
 }
 
 export async function runMockPlusProfile() {
+  const convergence = JSON.parse(
+    await readFile(join(root, "required-mock-plus-convergence.json"), "utf8"),
+  );
   const runs = [];
   for (const profile of MOCK_PLUS_PROFILE_NAMES) {
     runs.push(await runMockPlus({ profile, writeOutput: false }));
   }
-  return buildMockPlusProfile(runs);
+  return buildMockPlusProfile(runs, convergence);
 }
 
 function profileText(profile) {

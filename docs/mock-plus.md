@@ -93,6 +93,12 @@ Windows CI matrix. Both platforms compare against the same expected digests, so
 either platform fails on canonicalization drift. Mock+ remains outside
 `npm run check` because it is a deliberately heavier standalone evidence gate.
 
+The deletion audit is recorded in `docs/mock-plus-convergence.md` and
+`required-mock-plus-convergence.json`. The convergence registry is canonical
+profile input and fails closed if a required decision is missing or if a
+deletion is requested. V1 records retain decisions only; it cannot authorize
+test deletion from self-declared evidence.
+
 The slice runs sequentially, caps fixture input at 1 MiB, uses a one-second
 per-case evaluation budget, caps run output at 25 MiB, and fails if a synthetic
 canary reaches persisted evidence. Safety survivors block and cannot be

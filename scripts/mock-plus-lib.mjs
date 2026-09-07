@@ -115,6 +115,7 @@ const HARNESS_PATHS = [
   "required-safety-recipes.json",
   "required-semantic-recipes.json",
   "required-lifecycle-recipes.json",
+  "required-mock-plus-convergence.json",
   join("scripts", "mock-plus-lib.mjs"),
   join("scripts", "mock-plus-profile.mjs"),
   join("scripts", "mock-plus.mjs"),
