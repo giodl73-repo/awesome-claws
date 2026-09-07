@@ -1,6 +1,6 @@
 # Awesome Claws roadmap
 
-Awesome Claws has 100 maintained starter Claws. The catalog now covers a broad
+Awesome Claws has 102 maintained starter Claws. The catalog now covers a broad
 personal-agent lane, a work-operations lane, and several capstone examples that
 show how Claws compose into larger managed workflows.
 
@@ -12,7 +12,7 @@ show how Claws compose into larger managed workflows.
 | Operations | 22 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
 | Analysis | 16 | Research, evidence collection, financial monitoring, public/company watching, data work, and model evaluation |
 | Engineering | 8 | Software delivery, incidents, release readiness, security, migration, QA, and controlled local change execution |
-| Governance | 4 | Compliance, privacy requests, accessibility review, and data governance |
+| Governance | 6 | Compliance, privacy requests, accessibility review, data governance, legal-matter preservation, and records retention and disposition |
 | Product | 3 | Product decisions, UX synthesis, and experiments |
 
 The strongest recent expansion is practical personal work: vehicle service,
@@ -39,15 +39,15 @@ read specialist artifacts, surface conflicts, and prepare owner decisions.
 ## Quality Uplift
 
 The [catalog quality scorecard](catalog-quality-scorecard.md) is now the primary
-post-100 prioritization tool. The current baseline has 100 of 100 Claws passing
+post-100 prioritization tool. The current baseline has 102 of 102 Claws passing
 the non-negotiable package, regression, resource, and Experience gates. The
 highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 60 of 100 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 92 of 100 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 72 of 100 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 91 of 102 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 102 of 102 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 102 of 102 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
@@ -125,10 +125,20 @@ that required no change, and work that ended blocked, are recorded as exactly
 that. It does not gate a release, assess coverage across a product, evaluate an
 external API contract, or carry project state between requests.
 
+Records Retention and Disposition Coordinator owns the enterprise
+record-lifecycle reconciliation lane. It binds one authoritative schedule
+version to an exact record and every-copy inventory, supplied classifications,
+event triggers, hold precedence, independently approved exceptions and
+digest-bound batches, append-only custody, separated request, attempt, and
+outcome state, authoritative independent certificates, and residual-copy
+closure. Records, legal, custody, approval, execution, compliance, and risk
+owners remain authoritative; the Claw has no records-system, eDiscovery,
+deletion, movement, communication, or repository capability.
+
 Potential additions remain subject to the
 [contribution admission policy](contribution-admission.md). Civic Services
-Navigator, Learning Plan Coordinator, and Legal Matter Organizer remain
-plausible candidates. Home Project Planner should first be tested as an
+Navigator and Learning Plan Coordinator remain plausible candidates. Home
+Project Planner should first be tested as an
 improvement or composition of Moving Checklist Coordinator, Home Repair
 Coordinator, Facilities Operations Coordinator, and Household Steward.
 

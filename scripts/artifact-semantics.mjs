@@ -3,12 +3,12 @@ import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-pa
 
 export function hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) {
   const adjacentNegation =
-    /\b(?:do not|does not|did not|is not|are not|was not|were not|not|no|never|without|cannot|can't|must not|mustn't|should not|shouldn't|will not|won't)\s*$/iu;
+    /\b(?:do not|does not|doesn't|did not|didn't|is not|isn't|are not|aren't|was not|wasn't|were not|weren't|not|no|never|without|cannot|can't|must not|mustn't|should not|shouldn't|will not|won't)\s*$/iu;
   const coordinatedNegation =
     /^\s*(?:(?:[A-Za-z0-9_-]+\s+){0,6})(?:,?\s*(?:and|or)\s*)$/iu;
   const coordinatedAnd =
     /^\s*(?:(?:[A-Za-z0-9_-]+\s+){0,6})(?:,?\s*and\s*)$/iu;
-  const pastNegation = /\b(?:did not|was not|were not)\s*$/iu;
+  const pastNegation = /\b(?:did not|didn't|was not|wasn't|were not|weren't)\s*$/iu;
   function hasUnnegatedMatch(clause) {
     let previousEnd = 0;
     let previousNegated = false;
@@ -99,6 +99,12 @@ function canonicalJson(value) {
 export function computeChangePlanDigest(plan) {
   const { digest: _digest, ...digestInput } = plan;
   return createHash("sha256").update(canonicalJson(digestInput)).digest("hex");
+}
+
+export function computeRetentionDispositionBatchDigest(batch) {
+  if (!isRecord(batch)) return null;
+  const { digest: _digest, ...digestInput } = batch;
+  return `sha256:${createHash("sha256").update(canonicalJson(digestInput)).digest("hex")}`;
 }
 
 export function computeKnowledgeSpaceChangePlanDigest(value) {
@@ -46911,6 +46917,1636 @@ function workflowExecutionReconciliationFindings(value, options = {}) {
   return findings;
 }
 
+function retentionDispositionFindings(input) {
+  const value = isRecord(input) ? input : {};
+  const findings = [];
+  if (value.schemaVersion !== "awesomeClaws.retentionDisposition.v1") {
+    findings.push(
+      finding(
+        "invalid_retention_disposition_schema_version",
+        "schemaVersion",
+        "Retention and disposition artifacts must declare awesomeClaws.retentionDisposition.v1.",
+      ),
+    );
+  }
+  const ledgers = upliftLedger(
+    value,
+    [
+      ["principals", "Principal"],
+      ["evidence", "Evidence"],
+      ["schedules", "Retention schedule"],
+      ["series", "Record series"],
+      ["records", "Record"],
+      ["copies", "Record copy"],
+      ["classifications", "Classification"],
+      ["triggerTypes", "Trigger type"],
+      ["triggerEvents", "Trigger event"],
+      ["rules", "Retention rule"],
+      ["eligibilities", "Eligibility calculation"],
+      ["holds", "Hold"],
+      ["exceptions", "Exception"],
+      ["proposals", "Disposition proposal"],
+      ["batches", "Disposition batch"],
+      ["approvals", "Disposition approval"],
+      ["custodyEvents", "Custody event"],
+      ["outcomes", "Disposition outcome"],
+      ["certificates", "Disposition certificate"],
+      ["residuals", "Residual copy"],
+      ["reviewGates", "Review gate"],
+      ["authorityGates", "Authority gate"],
+      ["blockers", "Blocker"],
+    ],
+    findings,
+  );
+  const principals = upliftPrincipalContext(
+    ledgers.principals,
+    "records retention and disposition coordinator",
+    findings,
+  );
+  const snapshot = isRecord(value.snapshot) ? value.snapshot : {};
+  const handoff = isRecord(value.handoff) ? value.handoff : {};
+  const asOfMs = upliftTimestampMs(snapshot.asOf);
+  const allIdList = Object.values(ledgers).flatMap((ledger) => [...ledger.ids]);
+  const allIds = new Set(allIdList);
+  findings.push(...uniqueFindings(allIdList, "$", "Ledger id"));
+
+  function timestamp(candidate) {
+    const milliseconds = upliftTimestampMs(candidate);
+    return Number.isFinite(milliseconds) ? milliseconds : null;
+  }
+
+  function sameIds(left, right) {
+    return (
+      Array.isArray(left) &&
+      left.length === right.length &&
+      new Set(left).size === left.length &&
+      right.every((id) => left.includes(id))
+    );
+  }
+
+  function exactRefs(actual, expected, path, label) {
+    if (!sameIds(actual, expected)) {
+      findings.push(
+        finding(
+          "incomplete_retention_disposition_index",
+          path,
+          `${label} must cover every current row exactly once.`,
+        ),
+      );
+    }
+  }
+
+  function safeRefs(owner, field, path, allowed, label) {
+    const result = stringListFindings(owner?.[field], `${path}.${field}`, label);
+    findings.push(
+      ...result.findings,
+      ...uniqueFindings(result.items, `${path}.${field}`, label),
+      ...referenceFindings(result.items, allowed, `${path}.${field}`, label),
+    );
+    return result.items;
+  }
+
+  function scalarRef(owner, field, path, allowed, label, { nullable = false } = {}) {
+    const reference = owner?.[field];
+    if (nullable && reference === null) return null;
+    if (typeof reference !== "string" || !allowed.has(reference)) {
+      findings.push(
+        finding(
+          "dangling_reference",
+          `${path}.${field}`,
+          `${label} ${JSON.stringify(reference)} does not resolve.`,
+        ),
+      );
+      return null;
+    }
+    return reference;
+  }
+
+  function requireScope(principalRef, scope, path, label) {
+    if (!ledgers.principals.ids.has(principalRef)) {
+      findings.push(
+        finding("dangling_reference", path, `${label} principal does not resolve.`),
+      );
+      return false;
+    }
+    if (!principals.hasScope(principalRef, scope)) {
+      findings.push(
+        finding(
+          "missing_retention_authority_scope",
+          path,
+          `${label} requires a named human with ${scope} scope.`,
+        ),
+      );
+      return false;
+    }
+    return true;
+  }
+
+  function evidenceFor(ref) {
+    return ledgers.evidence.byId.get(ref);
+  }
+
+  function evidenceSupports(ref, subjectRef, kind) {
+    const evidence = evidenceFor(ref);
+    return (
+      evidence !== undefined &&
+      (kind === undefined || evidence.kind === kind) &&
+      Array.isArray(evidence.subjectRefs) &&
+      evidence.subjectRefs.includes(subjectRef) &&
+      isValidControlledReference(evidence.controlledRef)
+    );
+  }
+
+  function latestEvidenceMs(refs) {
+    return Math.max(
+      -Infinity,
+      ...(Array.isArray(refs) ? refs : []).map(
+        (ref) => timestamp(evidenceFor(ref)?.observedAt) ?? -Infinity,
+      ),
+    );
+  }
+
+  if (
+    typeof snapshot.id !== "string" ||
+    !Number.isFinite(asOfMs) ||
+    !isResolvableTimeZone(snapshot.timezone) ||
+    !isValidControlledReference(snapshot.workspaceRef) ||
+    !isValidControlledReference(snapshot.destinationRef)
+  ) {
+    findings.push(
+      finding(
+        "invalid_retention_snapshot_binding",
+        "snapshot",
+        "The artifact needs one stable snapshot, cutoff, resolvable timezone, controlled workspace, and controlled review destination.",
+      ),
+    );
+  }
+
+  const snapshotReferenceFields = [
+    ["principalRefs", ledgers.principals],
+    ["evidenceRefs", ledgers.evidence],
+    ["scheduleRefs", ledgers.schedules],
+    ["seriesRefs", ledgers.series],
+    ["recordRefs", ledgers.records],
+    ["copyRefs", ledgers.copies],
+    ["classificationRefs", ledgers.classifications],
+    ["triggerTypeRefs", ledgers.triggerTypes],
+    ["triggerEventRefs", ledgers.triggerEvents],
+    ["ruleRefs", ledgers.rules],
+    ["eligibilityRefs", ledgers.eligibilities],
+    ["holdRefs", ledgers.holds],
+    ["exceptionRefs", ledgers.exceptions],
+    ["proposalRefs", ledgers.proposals],
+    ["batchRefs", ledgers.batches],
+    ["approvalRefs", ledgers.approvals],
+    ["custodyEventRefs", ledgers.custodyEvents],
+    ["outcomeRefs", ledgers.outcomes],
+    ["certificateRefs", ledgers.certificates],
+    ["residualRefs", ledgers.residuals],
+    ["reviewGateRefs", ledgers.reviewGates],
+    ["authorityGateRefs", ledgers.authorityGates],
+    ["blockerRefs", ledgers.blockers],
+  ];
+  for (const [field, ledger] of snapshotReferenceFields) {
+    exactRefs(snapshot[field], [...ledger.ids], `snapshot.${field}`, `Snapshot ${field}`);
+  }
+  for (const [field, ledger] of Object.entries(ledgers)) {
+    for (const [index, item] of ledger.entries) {
+      if (item.snapshotRef !== snapshot.id) {
+        findings.push(
+          finding(
+            "cross_retention_snapshot",
+            `${field}[${index}].snapshotRef`,
+            "Every ledger row must bind to the exact inventory snapshot.",
+          ),
+        );
+      }
+    }
+  }
+
+  const bareRecordsRole =
+    /^(?:records?(?: schedule| classification| operations?)?(?: owner| specialist| manager| coordinator| custodian)?|legal counsel|records counsel|counsel|legal owner|retention authority|schedule authority|classification authority|legal hold owner|hold issuer|hold releaser|business event owner|disposition approver|evidence reviewer|exception requester|exception approver)$/iu;
+  for (const [index, principal] of ledgers.principals.entries) {
+    const authorityEvidenceRefs = safeRefs(
+      principal,
+      "evidenceRefs",
+      `principals[${index}]`,
+      ledgers.evidence.ids,
+      "Principal evidence",
+    );
+    if (
+      typeof principal.name !== "string" ||
+      bareRecordsRole.test(principal.name.trim()) ||
+      principal.name.trim().toLowerCase() ===
+        "records-retention-disposition-coordinator"
+    ) {
+      findings.push(
+        finding(
+          "bare_retention_role_principal",
+          `principals[${index}].name`,
+          "Records authority requires a named human, not a bare role or package identity.",
+        ),
+      );
+    }
+    if (
+      authorityEvidenceRefs.length === 0 ||
+      !authorityEvidenceRefs.some((ref) => evidenceSupports(ref, principal.id))
+    ) {
+      findings.push(
+        finding(
+          "invalid_retention_evidence",
+          `principals[${index}].evidenceRefs`,
+          "Every named principal needs controlled authority evidence that names that principal.",
+        ),
+      );
+    }
+  }
+
+  const digestPattern = /^sha256:[a-f0-9]{64}$/u;
+  for (const [index, evidence] of ledgers.evidence.entries) {
+    safeRefs(
+      evidence,
+      "subjectRefs",
+      `evidence[${index}]`,
+      allIds,
+      "Evidence subject",
+    );
+    const observedAt = timestamp(evidence.observedAt);
+    if (
+      !isValidControlledReference(evidence.controlledRef) ||
+      !digestPattern.test(evidence.digest ?? "") ||
+      !Array.isArray(evidence.subjectRefs) ||
+      evidence.subjectRefs.length === 0 ||
+      evidence.subjectRefs.includes(evidence.id) ||
+      observedAt === null ||
+      (Number.isFinite(asOfMs) && observedAt > asOfMs) ||
+      evidence.contentExcluded !== true ||
+      !principals.isAccountablePrincipal(evidence.suppliedByRef)
+    ) {
+      findings.push(
+        finding(
+          "invalid_retention_evidence",
+          `evidence[${index}]`,
+          "Evidence must be controlled, digest-bound, timely, content-minimized, and supplied by a named human.",
+        ),
+      );
+    }
+  }
+  if (
+    upliftContainsSecret(value) ||
+    upliftNarrativeStrings({
+      principals: ledgers.principals.items.map((item) => [item.name, item.title]),
+      series: ledgers.series.items.map((item) => item.title),
+      summary: handoff.summary,
+      blockers: ledgers.blockers.items.map((item) => item.code),
+    }).some((text) =>
+      /(?:\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b|\b\d{3}-\d{2}-\d{4}\b|\b(?:\+?\d[\s().-]*){8,}\b|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)/iu.test(
+        text,
+      ),
+    )
+  ) {
+    findings.push(
+      finding(
+        "unminimized_retention_content",
+        "$",
+        "The durable artifact cannot contain secrets, raw credentials, email addresses, government identifiers, phone-like data, or confidential record content.",
+      ),
+    );
+  }
+
+  const listReferenceSpecs = [
+    [ledgers.series, "recordRefs", ledgers.records.ids, "Series record"],
+    [ledgers.series, "ruleRefs", ledgers.rules.ids, "Series rule"],
+    [ledgers.series, "evidenceRefs", ledgers.evidence.ids, "Series evidence"],
+    [ledgers.records, "copyRefs", ledgers.copies.ids, "Record copy"],
+    [ledgers.records, "triggerEventRefs", ledgers.triggerEvents.ids, "Record trigger"],
+    [ledgers.records, "holdRefs", ledgers.holds.ids, "Record hold"],
+    [ledgers.records, "exceptionRefs", ledgers.exceptions.ids, "Record exception"],
+    [ledgers.records, "proposalRefs", ledgers.proposals.ids, "Record proposal"],
+    [ledgers.records, "evidenceRefs", ledgers.evidence.ids, "Record evidence"],
+    [ledgers.copies, "holdRefs", ledgers.holds.ids, "Copy hold"],
+    [ledgers.copies, "custodyEventRefs", ledgers.custodyEvents.ids, "Copy custody"],
+    [ledgers.copies, "outcomeRefs", ledgers.outcomes.ids, "Copy outcome"],
+    [ledgers.copies, "certificateRefs", ledgers.certificates.ids, "Copy certificate"],
+    [ledgers.copies, "evidenceRefs", ledgers.evidence.ids, "Copy evidence"],
+    [ledgers.classifications, "recordRefs", ledgers.records.ids, "Classification record"],
+    [ledgers.triggerTypes, "eventRefs", ledgers.triggerEvents.ids, "Trigger event"],
+    [ledgers.triggerEvents, "recordRefs", ledgers.records.ids, "Trigger record"],
+    [ledgers.rules, "seriesRefs", ledgers.series.ids, "Rule series"],
+    [ledgers.rules, "triggerTypeRefs", ledgers.triggerTypes.ids, "Rule trigger type"],
+    [ledgers.eligibilities, "copyRefs", ledgers.copies.ids, "Eligibility copy"],
+    [ledgers.eligibilities, "evidenceRefs", ledgers.evidence.ids, "Eligibility evidence"],
+    [ledgers.proposals, "recordRefs", ledgers.records.ids, "Proposal record"],
+    [ledgers.proposals, "copyRefs", ledgers.copies.ids, "Proposal copy"],
+    [ledgers.proposals, "eligibilityRefs", ledgers.eligibilities.ids, "Proposal eligibility"],
+    [ledgers.proposals, "evidenceRefs", ledgers.evidence.ids, "Proposal evidence"],
+    [ledgers.batches, "proposalRefs", ledgers.proposals.ids, "Batch proposal"],
+    [ledgers.batches, "recordRefs", ledgers.records.ids, "Batch record"],
+    [ledgers.batches, "copyRefs", ledgers.copies.ids, "Batch copy"],
+    [ledgers.approvals, "proposalRefs", ledgers.proposals.ids, "Approval proposal"],
+    [ledgers.approvals, "recordRefs", ledgers.records.ids, "Approval record"],
+    [ledgers.approvals, "copyRefs", ledgers.copies.ids, "Approval copy"],
+    [ledgers.reviewGates, "targetRefs", allIds, "Review target"],
+    [ledgers.reviewGates, "evidenceRefs", ledgers.evidence.ids, "Review evidence"],
+    [ledgers.blockers, "targetRefs", allIds, "Blocker target"],
+    [ledgers.blockers, "evidenceRefs", ledgers.evidence.ids, "Blocker evidence"],
+  ];
+  for (const [ledger, field, allowed, label] of listReferenceSpecs) {
+    for (const [index, item] of ledger.entries) {
+      safeRefs(item, field, `${label.replaceAll(" ", "")}[${index}]`, allowed, label);
+    }
+  }
+  const retentionScopeIds = new Set([
+    ...ledgers.series.ids,
+    ...ledgers.records.ids,
+    ...ledgers.copies.ids,
+  ]);
+  for (const [index, hold] of ledgers.holds.entries) {
+    safeRefs(hold, "coveredRefs", `holds[${index}]`, retentionScopeIds, "Hold target");
+  }
+  const recordAndCopyIds = new Set([...ledgers.records.ids, ...ledgers.copies.ids]);
+  for (const [index, item] of ledgers.exceptions.entries) {
+    safeRefs(
+      item,
+      "targetRefs",
+      `exceptions[${index}]`,
+      recordAndCopyIds,
+      "Exception target",
+    );
+  }
+
+  const scalarReferenceSpecs = [
+    [ledgers.schedules, "authorityRef", ledgers.principals.ids, "Schedule authority"],
+    [ledgers.schedules, "evidenceRef", ledgers.evidence.ids, "Schedule evidence"],
+    [ledgers.series, "scheduleRef", ledgers.schedules.ids, "Series schedule"],
+    [ledgers.records, "seriesRef", ledgers.series.ids, "Record series"],
+    [ledgers.records, "classificationRef", ledgers.classifications.ids, "Record classification"],
+    [ledgers.records, "ruleRef", ledgers.rules.ids, "Record rule"],
+    [ledgers.records, "eligibilityRef", ledgers.eligibilities.ids, "Record eligibility"],
+    [ledgers.copies, "recordRef", ledgers.records.ids, "Copy record"],
+    [ledgers.copies, "custodianRef", ledgers.principals.ids, "Copy custodian"],
+    [ledgers.copies, "residualRef", ledgers.residuals.ids, "Copy residual"],
+    [ledgers.classifications, "classifiedByRef", ledgers.principals.ids, "Classification authority"],
+    [ledgers.classifications, "evidenceRef", ledgers.evidence.ids, "Classification evidence"],
+    [ledgers.triggerTypes, "scheduleRef", ledgers.schedules.ids, "Trigger schedule"],
+    [ledgers.triggerEvents, "triggerTypeRef", ledgers.triggerTypes.ids, "Trigger type"],
+    [ledgers.triggerEvents, "confirmedByRef", ledgers.principals.ids, "Trigger confirmer"],
+    [ledgers.triggerEvents, "evidenceRef", ledgers.evidence.ids, "Trigger evidence"],
+    [ledgers.rules, "scheduleRef", ledgers.schedules.ids, "Rule schedule"],
+    [ledgers.rules, "evidenceRef", ledgers.evidence.ids, "Rule evidence"],
+    [ledgers.eligibilities, "recordRef", ledgers.records.ids, "Eligibility record"],
+    [ledgers.eligibilities, "scheduleRef", ledgers.schedules.ids, "Eligibility schedule"],
+    [ledgers.eligibilities, "classificationRef", ledgers.classifications.ids, "Eligibility classification"],
+    [ledgers.eligibilities, "triggerEventRef", ledgers.triggerEvents.ids, "Eligibility trigger"],
+    [ledgers.eligibilities, "ruleRef", ledgers.rules.ids, "Eligibility rule"],
+    [ledgers.eligibilities, "calculatedByRef", ledgers.principals.ids, "Eligibility calculator"],
+    [ledgers.holds, "issuedByRef", ledgers.principals.ids, "Hold issuer"],
+    [ledgers.holds, "issueEvidenceRef", ledgers.evidence.ids, "Hold issue evidence"],
+    [ledgers.exceptions, "requestedByRef", ledgers.principals.ids, "Exception requester"],
+    [ledgers.exceptions, "requestEvidenceRef", ledgers.evidence.ids, "Exception request evidence"],
+    [ledgers.proposals, "proposedByRef", ledgers.principals.ids, "Proposal owner"],
+    [ledgers.batches, "createdByRef", ledgers.principals.ids, "Batch creator"],
+    [ledgers.approvals, "batchRef", ledgers.batches.ids, "Approval batch"],
+    [ledgers.approvals, "decidedByRef", ledgers.principals.ids, "Approval decider"],
+    [ledgers.approvals, "evidenceRef", ledgers.evidence.ids, "Approval evidence"],
+    [ledgers.custodyEvents, "copyRef", ledgers.copies.ids, "Custody copy"],
+    [ledgers.custodyEvents, "custodianRef", ledgers.principals.ids, "Custody principal"],
+    [ledgers.custodyEvents, "evidenceRef", ledgers.evidence.ids, "Custody evidence"],
+    [ledgers.outcomes, "batchRef", ledgers.batches.ids, "Outcome batch"],
+    [ledgers.outcomes, "recordRef", ledgers.records.ids, "Outcome record"],
+    [ledgers.outcomes, "copyRef", ledgers.copies.ids, "Outcome copy"],
+    [ledgers.outcomes, "custodianRef", ledgers.principals.ids, "Outcome custodian"],
+    [ledgers.outcomes, "evidenceRef", ledgers.evidence.ids, "Outcome evidence"],
+    [ledgers.certificates, "batchRef", ledgers.batches.ids, "Certificate batch"],
+    [ledgers.certificates, "recordRef", ledgers.records.ids, "Certificate record"],
+    [ledgers.certificates, "copyRef", ledgers.copies.ids, "Certificate copy"],
+    [ledgers.certificates, "custodianRef", ledgers.principals.ids, "Certificate custodian"],
+    [ledgers.certificates, "outcomeRef", ledgers.outcomes.ids, "Certificate outcome"],
+    [ledgers.certificates, "observedByRef", ledgers.principals.ids, "Certificate observer"],
+    [ledgers.certificates, "evidenceRef", ledgers.evidence.ids, "Certificate evidence"],
+    [ledgers.residuals, "recordRef", ledgers.records.ids, "Residual record"],
+    [ledgers.residuals, "copyRef", ledgers.copies.ids, "Residual copy"],
+    [ledgers.residuals, "observedByRef", ledgers.principals.ids, "Residual observer"],
+    [ledgers.residuals, "evidenceRef", ledgers.evidence.ids, "Residual evidence"],
+    [ledgers.reviewGates, "reviewerRef", ledgers.principals.ids, "Review principal"],
+    [ledgers.authorityGates, "ownerRef", ledgers.principals.ids, "Authority owner"],
+    [ledgers.blockers, "ownerRef", ledgers.principals.ids, "Blocker owner"],
+  ];
+  for (const [ledger, field, allowed, label] of scalarReferenceSpecs) {
+    for (const [index, item] of ledger.entries) {
+      scalarRef(item, field, `${label.replaceAll(" ", "")}[${index}]`, allowed, label);
+    }
+  }
+  for (const [index, hold] of ledgers.holds.entries) {
+    scalarRef(
+      hold,
+      "releasedByRef",
+      `holds[${index}]`,
+      ledgers.principals.ids,
+      "Hold releaser",
+      { nullable: true },
+    );
+    scalarRef(
+      hold,
+      "releaseEvidenceRef",
+      `holds[${index}]`,
+      ledgers.evidence.ids,
+      "Hold release evidence",
+      { nullable: true },
+    );
+  }
+  for (const [index, item] of ledgers.exceptions.entries) {
+    scalarRef(
+      item,
+      "approvedByRef",
+      `exceptions[${index}]`,
+      ledgers.principals.ids,
+      "Exception approver",
+      { nullable: true },
+    );
+    scalarRef(
+      item,
+      "approvalEvidenceRef",
+      `exceptions[${index}]`,
+      ledgers.evidence.ids,
+      "Exception approval evidence",
+      { nullable: true },
+    );
+  }
+  for (const [index, item] of ledgers.residuals.entries) {
+    scalarRef(
+      item,
+      "certificateRef",
+      `residuals[${index}]`,
+      ledgers.certificates.ids,
+      "Residual certificate",
+      { nullable: true },
+    );
+  }
+
+  function reciprocal(left, leftField, right, rightField, label) {
+    for (const item of left.items) {
+      const outgoing = Array.isArray(item[leftField])
+        ? item[leftField]
+        : typeof item[leftField] === "string"
+          ? [item[leftField]]
+          : [];
+      for (const rightRef of outgoing) {
+        const target = right.byId.get(rightRef);
+        const reverse = Array.isArray(target?.[rightField])
+          ? target[rightField]
+          : typeof target?.[rightField] === "string"
+            ? [target[rightField]]
+            : [];
+        if (target && !reverse.includes(item.id)) {
+          findings.push(
+            finding(
+              "missing_reverse_retention_reference",
+              `${item.id}.${leftField}`,
+              `${label} must be represented in both directions.`,
+            ),
+          );
+        }
+      }
+    }
+  }
+  for (const [left, leftField, right, rightField, label] of [
+    [ledgers.schedules, "seriesRefs", ledgers.series, "scheduleRef", "Schedule/series"],
+    [ledgers.schedules, "ruleRefs", ledgers.rules, "scheduleRef", "Schedule/rule"],
+    [ledgers.series, "recordRefs", ledgers.records, "seriesRef", "Series/record"],
+    [ledgers.series, "ruleRefs", ledgers.rules, "seriesRefs", "Series/rule"],
+    [ledgers.records, "copyRefs", ledgers.copies, "recordRef", "Record/copy"],
+    [ledgers.records, "triggerEventRefs", ledgers.triggerEvents, "recordRefs", "Record/trigger"],
+    [ledgers.records, "holdRefs", ledgers.holds, "coveredRefs", "Record/hold"],
+    [ledgers.records, "exceptionRefs", ledgers.exceptions, "targetRefs", "Record/exception"],
+    [ledgers.records, "proposalRefs", ledgers.proposals, "recordRefs", "Record/proposal"],
+    [ledgers.copies, "holdRefs", ledgers.holds, "coveredRefs", "Copy/hold"],
+    [ledgers.copies, "custodyEventRefs", ledgers.custodyEvents, "copyRef", "Copy/custody"],
+    [ledgers.copies, "outcomeRefs", ledgers.outcomes, "copyRef", "Copy/outcome"],
+    [ledgers.copies, "certificateRefs", ledgers.certificates, "copyRef", "Copy/certificate"],
+    [ledgers.classifications, "recordRefs", ledgers.records, "classificationRef", "Classification/record"],
+    [ledgers.triggerTypes, "eventRefs", ledgers.triggerEvents, "triggerTypeRef", "Trigger type/event"],
+  ]) {
+    reciprocal(left, leftField, right, rightField, label);
+    reciprocal(right, rightField, left, leftField, label);
+  }
+  for (const ledger of [ledgers.records, ledgers.copies]) {
+    for (const item of ledger.items) {
+      for (const evidenceRef of Array.isArray(item.evidenceRefs) ? item.evidenceRefs : []) {
+        if (evidenceFor(evidenceRef) && !evidenceSupports(evidenceRef, item.id)) {
+          findings.push(
+            finding(
+              "missing_reverse_retention_reference",
+              `${item.id}.evidenceRefs`,
+              "Record and copy evidence must name the exact source row in evidence.subjectRefs.",
+            ),
+          );
+        }
+      }
+    }
+  }
+  for (const rule of ledgers.rules.items) {
+    if (evidenceFor(rule.evidenceRef) && !evidenceSupports(rule.evidenceRef, rule.id)) {
+      findings.push(
+        finding(
+          "missing_reverse_retention_reference",
+          `${rule.id}.evidenceRef`,
+          "Rule evidence must name the exact rule in evidence.subjectRefs.",
+        ),
+      );
+    }
+  }
+  for (const copy of ledgers.copies.items) {
+    if (ledgers.residuals.byId.get(copy.residualRef)?.copyRef !== copy.id) {
+      findings.push(
+        finding(
+          "missing_reverse_retention_reference",
+          `${copy.id}.residualRef`,
+          "Every copy and residual row must identify each other.",
+        ),
+      );
+    }
+  }
+
+  function isIsoCalendarDate(value) {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/u.test(value)) return false;
+    const parsed = new Date(`${value}T00:00:00Z`);
+    return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+  }
+
+  for (const [index, schedule] of ledgers.schedules.entries) {
+    const effectiveDatesValid =
+      isIsoCalendarDate(schedule.effectiveFrom) &&
+      isIsoCalendarDate(schedule.effectiveThrough) &&
+      schedule.effectiveFrom <= schedule.effectiveThrough;
+    const scheduleEvidence = evidenceFor(schedule.evidenceRef);
+    if (
+      schedule.supported !== true ||
+      !digestPattern.test(schedule.digest ?? "") ||
+      !effectiveDatesValid ||
+      !requireScope(
+        schedule.authorityRef,
+        "schedule-authority",
+        `schedules[${index}].authorityRef`,
+        "Schedule authority",
+      ) ||
+      !evidenceSupports(schedule.evidenceRef, schedule.id, "authoritative-schedule") ||
+      scheduleEvidence?.suppliedByRef !== schedule.authorityRef
+    ) {
+      findings.push(
+        finding(
+          "unsupported_retention_schedule",
+          `schedules[${index}]`,
+          "Eligibility requires a supported, versioned, digest-bound authoritative schedule in its effective period.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, classification] of ledgers.classifications.entries) {
+    const classifiedAt = timestamp(classification.classifiedAt);
+    const classificationEvidence = evidenceFor(classification.evidenceRef);
+    const classificationEvidenceAt = timestamp(classificationEvidence?.observedAt);
+    if (
+      classification.supplied !== true ||
+      classifiedAt === null ||
+      classificationEvidenceAt === null ||
+      classificationEvidenceAt < classifiedAt ||
+      (Number.isFinite(asOfMs) && classifiedAt > asOfMs) ||
+      !requireScope(
+        classification.classifiedByRef,
+        "classification-authority",
+        `classifications[${index}].classifiedByRef`,
+        "Classification",
+      ) ||
+      classificationEvidence?.suppliedByRef !== classification.classifiedByRef ||
+      !evidenceSupports(
+        classification.evidenceRef,
+        classification.id,
+        "supplied-classification",
+      )
+    ) {
+      findings.push(
+        finding(
+          "unsupported_supplied_classification",
+          `classifications[${index}]`,
+          "Classification must be supplied by a scoped named human with controlled evidence; this Claw cannot infer it.",
+        ),
+      );
+    }
+  }
+
+  for (const [index, event] of ledgers.triggerEvents.entries) {
+    const confirmedAt = timestamp(event.confirmedAt);
+    const triggerEvidence = evidenceFor(event.evidenceRef);
+    const triggerEvidenceAt = timestamp(triggerEvidence?.observedAt);
+    if (
+      event.supported !== true ||
+      !isResolvableTimeZone(event.timezone) ||
+      endOfLocalDayMs(event.occurredOn, event.timezone) === null ||
+      confirmedAt === null ||
+      triggerEvidenceAt === null ||
+      triggerEvidenceAt < confirmedAt ||
+      (Number.isFinite(asOfMs) && confirmedAt > asOfMs) ||
+      !requireScope(
+        event.confirmedByRef,
+        "trigger-confirmation",
+        `triggerEvents[${index}].confirmedByRef`,
+        "Trigger confirmation",
+      ) ||
+      triggerEvidence?.suppliedByRef !== event.confirmedByRef ||
+      !evidenceSupports(event.evidenceRef, event.id, "business-event-confirmation")
+    ) {
+      findings.push(
+        finding(
+          "unsupported_retention_trigger",
+          `triggerEvents[${index}]`,
+          "Trigger events require supplied evidence, a resolvable timezone, and scoped named-human confirmation.",
+        ),
+      );
+    }
+  }
+
+  const globallyBlockingHolds = [];
+  for (const [index, hold] of ledgers.holds.entries) {
+    const issuedAt = timestamp(hold.issuedAt);
+    const releasedAt = timestamp(hold.releasedAt);
+    const issueEvidenceAt = timestamp(evidenceFor(hold.issueEvidenceRef)?.observedAt);
+    const releaseEvidenceAt = timestamp(evidenceFor(hold.releaseEvidenceRef)?.observedAt);
+    const coveredRefs = Array.isArray(hold.coveredRefs) ? hold.coveredRefs : [];
+    const coveredRecordRefs = coveredRefs.filter((ref) => ledgers.records.ids.has(ref));
+    const coveredSeriesRefs = coveredRefs.filter((ref) => ledgers.series.ids.has(ref));
+    const expectedRecordScope = [
+      ...coveredRecordRefs,
+      ...coveredRecordRefs.flatMap(
+        (ref) => ledgers.records.byId.get(ref)?.copyRefs ?? [],
+      ),
+    ];
+    const expectedSeriesScope = [
+      ...coveredSeriesRefs,
+      ...coveredSeriesRefs.flatMap((ref) => {
+        const recordRefs = ledgers.series.byId.get(ref)?.recordRefs ?? [];
+        return [
+          ...recordRefs,
+          ...recordRefs.flatMap(
+            (recordRef) => ledgers.records.byId.get(recordRef)?.copyRefs ?? [],
+          ),
+        ];
+      }),
+    ];
+    const scopeValid =
+      coveredRefs.length > 0 &&
+      (hold.scopeKind === "copy"
+        ? coveredRefs.every((ref) => ledgers.copies.ids.has(ref))
+        : hold.scopeKind === "record"
+          ? coveredRecordRefs.length > 0 && sameIds(coveredRefs, expectedRecordScope)
+          : hold.scopeKind === "series"
+            ? coveredSeriesRefs.length > 0 && sameIds(coveredRefs, expectedSeriesScope)
+            : hold.scopeKind === "broader" &&
+              coveredRefs.every((ref) => retentionScopeIds.has(ref)));
+    const issueValid =
+      scopeValid &&
+      issuedAt !== null &&
+      issueEvidenceAt !== null &&
+      issueEvidenceAt >= issuedAt &&
+      (!Number.isFinite(asOfMs) || issueEvidenceAt <= asOfMs) &&
+      requireScope(
+        hold.issuedByRef,
+        "hold-issuance",
+        `holds[${index}].issuedByRef`,
+        "Hold issuance",
+      ) &&
+      evidenceFor(hold.issueEvidenceRef)?.suppliedByRef === hold.issuedByRef &&
+      evidenceSupports(hold.issueEvidenceRef, hold.id, "hold-issue-notice");
+    const releasedValid =
+      hold.state === "released" &&
+      releasedAt !== null &&
+      releaseEvidenceAt !== null &&
+      releasedAt >= issuedAt &&
+      releaseEvidenceAt >= releasedAt &&
+      (!Number.isFinite(asOfMs) || releaseEvidenceAt <= asOfMs) &&
+      requireScope(
+        hold.releasedByRef,
+        "hold-release",
+        `holds[${index}].releasedByRef`,
+        "Hold release",
+      ) &&
+      evidenceFor(hold.releaseEvidenceRef)?.suppliedByRef === hold.releasedByRef &&
+      evidenceSupports(hold.releaseEvidenceRef, hold.id, "hold-release-notice");
+    const unreleasedShapeValid =
+      hold.state !== "released" &&
+      hold.releasedByRef === null &&
+      hold.releasedAt === null &&
+      hold.releaseEvidenceRef === null;
+    if (!issueValid || (!releasedValid && !unreleasedShapeValid)) {
+      findings.push(
+        finding(
+          "invalid_retention_hold_evidence",
+          `holds[${index}]`,
+          "Hold issue and release state requires ordered controlled evidence and the exact scoped named-human authority.",
+        ),
+      );
+    }
+    if (
+      ["active", "unknown", "conflicting", "incomplete"].includes(hold.state) ||
+      hold.scopeKind === "broader"
+    ) {
+      globallyBlockingHolds.push(hold.id);
+    }
+  }
+
+  const validApprovedExceptions = new Set();
+  for (const [index, item] of ledgers.exceptions.entries) {
+    const requestedAt = timestamp(item.requestedAt);
+    const approvedAt = timestamp(item.approvedAt);
+    const expiresAt = timestamp(item.expiresAt);
+    const requestEvidenceAt = timestamp(evidenceFor(item.requestEvidenceRef)?.observedAt);
+    const approvalEvidenceAt = timestamp(evidenceFor(item.approvalEvidenceRef)?.observedAt);
+    const targetRefs = Array.isArray(item.targetRefs) ? item.targetRefs : [];
+    const targetRecordRefs = targetRefs.filter((ref) => ledgers.records.ids.has(ref));
+    const expectedTargetRefs = [
+      ...targetRecordRefs,
+      ...targetRecordRefs.flatMap(
+        (ref) => ledgers.records.byId.get(ref)?.copyRefs ?? [],
+      ),
+    ];
+    const scopeValid =
+      targetRecordRefs.length > 0 && sameIds(targetRefs, expectedTargetRefs);
+    const requesterValid = requireScope(
+      item.requestedByRef,
+      "exception-request",
+      `exceptions[${index}].requestedByRef`,
+      "Exception request",
+    );
+    const approvedValid =
+      item.state === "approved" &&
+      scopeValid &&
+      requesterValid &&
+      requestedAt !== null &&
+      requestEvidenceAt !== null &&
+      requestEvidenceAt >= requestedAt &&
+      approvedAt !== null &&
+      approvalEvidenceAt !== null &&
+      approvedAt >= requestEvidenceAt &&
+      approvalEvidenceAt >= approvedAt &&
+      expiresAt !== null &&
+      (!Number.isFinite(asOfMs) || expiresAt > asOfMs) &&
+      item.approvedByRef !== item.requestedByRef &&
+      requireScope(
+        item.approvedByRef,
+        "exception-approval",
+        `exceptions[${index}].approvedByRef`,
+        "Exception approval",
+      ) &&
+      evidenceFor(item.requestEvidenceRef)?.suppliedByRef === item.requestedByRef &&
+      evidenceFor(item.approvalEvidenceRef)?.suppliedByRef === item.approvedByRef &&
+      evidenceSupports(item.requestEvidenceRef, item.id, "exception-request") &&
+      evidenceSupports(item.approvalEvidenceRef, item.id, "exception-approval");
+    const pendingShapeValid =
+      ["pending", "denied", "expired"].includes(item.state) &&
+      scopeValid &&
+      requestedAt !== null &&
+      requesterValid &&
+      (item.state === "pending"
+        ? item.approvedByRef === null &&
+          item.approvedAt === null &&
+          item.approvalEvidenceRef === null
+        : true);
+    if (approvedValid) {
+      validApprovedExceptions.add(item.id);
+    } else if (!pendingShapeValid) {
+      findings.push(
+        finding(
+          "invalid_retention_exception",
+          `exceptions[${index}]`,
+          "Approved exceptions require unexpired evidence, ordered chronology, exact scopes, and a different named human approver.",
+        ),
+      );
+    }
+  }
+
+  const validEligibilityIds = new Set();
+  for (const [index, eligibility] of ledgers.eligibilities.entries) {
+    const record = ledgers.records.byId.get(eligibility.recordRef);
+    const schedule = ledgers.schedules.byId.get(eligibility.scheduleRef);
+    const classification = ledgers.classifications.byId.get(eligibility.classificationRef);
+    const event = ledgers.triggerEvents.byId.get(eligibility.triggerEventRef);
+    const triggerType = ledgers.triggerTypes.byId.get(event?.triggerTypeRef);
+    const rule = ledgers.rules.byId.get(eligibility.ruleRef);
+    let expectedEligibleOn = null;
+    if (
+      typeof event?.occurredOn === "string" &&
+      Number.isInteger(rule?.durationValue) &&
+      rule.durationUnit === "calendar-years"
+    ) {
+      const calendar = new Date(`${event.occurredOn}T00:00:00Z`);
+      if (Number.isFinite(calendar.getTime())) {
+        calendar.setUTCFullYear(calendar.getUTCFullYear() + rule.durationValue);
+        expectedEligibleOn = calendar.toISOString().slice(0, 10);
+      }
+    }
+    const expectedEligibleAt =
+      expectedEligibleOn === null
+        ? null
+        : endOfLocalDayMs(expectedEligibleOn, event?.timezone);
+    const triggerInstant = endOfLocalDayMs(event?.occurredOn, event?.timezone);
+    const triggerDate = event?.occurredOn;
+    const calculationValid =
+      record !== undefined &&
+      schedule?.supported === true &&
+      schedule.version === eligibility.scheduleVersion &&
+      schedule.digest === eligibility.scheduleDigest &&
+      record.classificationRef === classification?.id &&
+      classification?.supplied === true &&
+      record.triggerEventRefs?.includes(event?.id) &&
+      event?.supported === true &&
+      triggerType !== undefined &&
+      triggerType.scheduleRef === schedule?.id &&
+      rule?.scheduleRef === schedule?.id &&
+      rule.seriesRefs?.includes(record.seriesRef) &&
+      rule.classificationLabels?.includes(classification?.label) &&
+      rule.triggerTypeRefs?.includes(triggerType.id) &&
+      sameIds(
+        eligibility.evidenceRefs,
+        [
+          ...new Set([
+            schedule.evidenceRef,
+            rule.evidenceRef,
+            classification.evidenceRef,
+            event.evidenceRef,
+            ...(record.evidenceRefs ?? []),
+          ]),
+        ],
+      ) &&
+      record.ruleRef === rule.id &&
+      record.eligibilityRef === eligibility.id &&
+      sameIds(eligibility.copyRefs, record.copyRefs ?? []) &&
+      Number.isFinite(triggerInstant) &&
+      isIsoCalendarDate(triggerDate) &&
+      isIsoCalendarDate(schedule?.effectiveFrom) &&
+      isIsoCalendarDate(schedule?.effectiveThrough) &&
+      triggerDate >= schedule.effectiveFrom &&
+      triggerDate <= schedule.effectiveThrough &&
+      eligibility.calculation ===
+        "trigger-date-plus-calendar-years-end-of-local-day" &&
+      eligibility.eligibleOn === expectedEligibleOn &&
+      timestamp(eligibility.eligibleAt) === expectedEligibleAt &&
+      timestamp(eligibility.calculatedAt) !== null &&
+      timestamp(eligibility.calculatedAt) >=
+        Math.max(
+          timestamp(classification?.classifiedAt) ?? Infinity,
+          timestamp(event?.confirmedAt) ?? Infinity,
+          latestEvidenceMs(eligibility.evidenceRefs),
+        ) &&
+      requireScope(
+        eligibility.calculatedByRef,
+        "eligibility-review",
+        `eligibilities[${index}].calculatedByRef`,
+        "Eligibility calculation",
+      );
+    const expectedState = !calculationValid
+      ? "blocked"
+      : globallyBlockingHolds.length > 0
+        ? "blocked"
+        : expectedEligibleAt <= asOfMs
+          ? "eligible"
+          : "ineligible";
+    if (!calculationValid || eligibility.state !== expectedState) {
+      findings.push(
+        finding(
+          globallyBlockingHolds.length > 0
+            ? "hold_blocks_retention_eligibility"
+            : "invalid_retention_eligibility",
+          `eligibilities[${index}]`,
+          "Eligibility needs an exact supported schedule version, supplied classification, supported trigger, matching rule, timezone-safe calendar calculation, and no blocking hold.",
+        ),
+      );
+    } else if (expectedState === "eligible") {
+      validEligibilityIds.add(eligibility.id);
+    }
+  }
+
+  const validProposalIds = new Set();
+  for (const [index, proposal] of ledgers.proposals.entries) {
+    const recordRefs = Array.isArray(proposal.recordRefs) ? proposal.recordRefs : [];
+    const copyRefs = Array.isArray(proposal.copyRefs) ? proposal.copyRefs : [];
+    const eligibilityRefs = Array.isArray(proposal.eligibilityRefs)
+      ? proposal.eligibilityRefs
+      : [];
+    const expectedCopies = [
+      ...new Set(
+        recordRefs.flatMap(
+          (recordRef) => ledgers.records.byId.get(recordRef)?.copyRefs ?? [],
+        ),
+      ),
+    ];
+    const expectedEligibilities = [
+      ...new Set(
+        recordRefs
+          .map((recordRef) => ledgers.records.byId.get(recordRef)?.eligibilityRef)
+          .filter((ref) => typeof ref === "string"),
+      ),
+    ];
+    const latestEligibility = Math.max(
+      -Infinity,
+      ...eligibilityRefs.map(
+        (ref) => timestamp(ledgers.eligibilities.byId.get(ref)?.calculatedAt) ?? Infinity,
+      ),
+    );
+    const latestHoldOrException = Math.max(
+      -Infinity,
+      ...recordRefs.flatMap((recordRef) => {
+        const record = ledgers.records.byId.get(recordRef);
+        return [
+          ...(record?.holdRefs ?? []).map(
+            (ref) => timestamp(ledgers.holds.byId.get(ref)?.releasedAt) ?? Infinity,
+          ),
+          ...(record?.exceptionRefs ?? []).map(
+            (ref) => timestamp(ledgers.exceptions.byId.get(ref)?.approvedAt) ?? Infinity,
+          ),
+        ];
+      }),
+    );
+    const ruleMethods = new Set(
+      eligibilityRefs
+        .map((ref) => ledgers.eligibilities.byId.get(ref))
+        .map((eligibility) => ledgers.rules.byId.get(eligibility?.ruleRef)?.dispositionMethod),
+    );
+    const valid =
+      recordRefs.length > 0 &&
+      sameIds(copyRefs, expectedCopies) &&
+      sameIds(eligibilityRefs, expectedEligibilities) &&
+      eligibilityRefs.every((ref) => validEligibilityIds.has(ref)) &&
+      recordRefs.every((ref) =>
+        (ledgers.records.byId.get(ref)?.exceptionRefs ?? []).every((exceptionRef) =>
+          validApprovedExceptions.has(exceptionRef),
+        ),
+      ) &&
+      ruleMethods.size === 1 &&
+      ruleMethods.has(proposal.method) &&
+      proposal.destinationRef === snapshot.destinationRef &&
+      proposal.state === "proposed" &&
+      timestamp(proposal.proposedAt) >=
+        Math.max(latestEligibility, latestHoldOrException) &&
+      latestEvidenceMs(proposal.evidenceRefs) >= timestamp(proposal.proposedAt) &&
+      requireScope(
+        proposal.proposedByRef,
+        "disposition-proposal",
+        `proposals[${index}].proposedByRef`,
+        "Disposition proposal",
+      ) &&
+      (proposal.evidenceRefs ?? []).some((ref) =>
+        evidenceSupports(ref, proposal.id, "disposition-proposal") &&
+        evidenceFor(ref)?.suppliedByRef === proposal.proposedByRef,
+      );
+    if (!valid) {
+      findings.push(
+        finding(
+          "unsupported_disposition_proposal",
+          `proposals[${index}]`,
+          "A proposal must cover exact eligible records and copies, preserve the rule method and destination, and follow hold, exception, and eligibility evidence.",
+        ),
+      );
+    } else {
+      validProposalIds.add(proposal.id);
+    }
+  }
+
+  const validBatchIds = new Set();
+  for (const [index, batch] of ledgers.batches.entries) {
+    const proposals = (Array.isArray(batch.proposalRefs) ? batch.proposalRefs : [])
+      .map((ref) => ledgers.proposals.byId.get(ref))
+      .filter(Boolean);
+    const expectedRecords = [...new Set(proposals.flatMap((item) => item.recordRefs ?? []))];
+    const expectedCopies = [...new Set(proposals.flatMap((item) => item.copyRefs ?? []))];
+    const methods = new Set(proposals.map((item) => item.method));
+    const createdAt = timestamp(batch.createdAt);
+    const valid =
+      proposals.length > 0 &&
+      proposals.length === batch.proposalRefs?.length &&
+      batch.proposalRefs.every((ref) => validProposalIds.has(ref)) &&
+      sameIds(batch.recordRefs, expectedRecords) &&
+      sameIds(batch.copyRefs, expectedCopies) &&
+      methods.size === 1 &&
+      methods.has(batch.method) &&
+      batch.destinationRef === snapshot.destinationRef &&
+      createdAt !== null &&
+      createdAt >=
+        Math.max(...proposals.map((item) => timestamp(item.proposedAt) ?? Infinity)) &&
+      batch.digest === computeRetentionDispositionBatchDigest(batch) &&
+      requireScope(
+        batch.createdByRef,
+        "batch-preparation",
+        `batches[${index}].createdByRef`,
+        "Batch preparation",
+      );
+    if (!valid) {
+      findings.push(
+        finding(
+          "invalid_disposition_batch_digest",
+          `batches[${index}]`,
+          "The batch digest must bind the exact approved destination, proposals, records, copies, method, creator, and creation time.",
+        ),
+      );
+    } else {
+      validBatchIds.add(batch.id);
+    }
+  }
+
+  const validApprovalDecisionsByBatch = new Map();
+  for (const [index, approval] of ledgers.approvals.entries) {
+    const batch = ledgers.batches.byId.get(approval.batchRef);
+    const decisionAt = timestamp(approval.decidedAt);
+    const evidence = evidenceFor(approval.evidenceRef);
+    const evidenceAt = timestamp(evidence?.observedAt);
+    const proposals = (batch?.proposalRefs ?? [])
+      .map((ref) => ledgers.proposals.byId.get(ref))
+      .filter(Boolean);
+    const consequentialEvidenceRefs = [
+      ...ledgers.eligibilities.items.flatMap((item) => item.evidenceRefs ?? []),
+      ...ledgers.holds.items.flatMap((item) =>
+        [item.issueEvidenceRef, item.releaseEvidenceRef].filter(Boolean),
+      ),
+      ...ledgers.exceptions.items.flatMap((item) =>
+        [item.requestEvidenceRef, item.approvalEvidenceRef].filter(Boolean),
+      ),
+      ...proposals.flatMap((item) => item.evidenceRefs ?? []),
+    ];
+    const valid =
+      batch !== undefined &&
+      validBatchIds.has(batch.id) &&
+      approval.batchDigest === batch.digest &&
+      sameIds(approval.proposalRefs, batch.proposalRefs ?? []) &&
+      sameIds(approval.recordRefs, batch.recordRefs ?? []) &&
+      sameIds(approval.copyRefs, batch.copyRefs ?? []) &&
+      approval.method === batch.method &&
+      approval.destinationRef === batch.destinationRef &&
+      decisionAt !== null &&
+      decisionAt >=
+        Math.max(
+          timestamp(batch.createdAt) ?? Infinity,
+          latestEvidenceMs(consequentialEvidenceRefs),
+        ) &&
+      evidenceAt !== null &&
+      evidenceAt >= decisionAt &&
+      evidenceSupports(approval.evidenceRef, approval.id, "batch-approval") &&
+      evidence?.suppliedByRef === approval.decidedByRef &&
+      approval.decidedByRef !== batch.createdByRef &&
+      proposals.every((item) => item.proposedByRef !== approval.decidedByRef) &&
+      requireScope(
+        approval.decidedByRef,
+        "disposition-approval",
+        `approvals[${index}].decidedByRef`,
+        "Disposition approval",
+      );
+    if (!valid) {
+      findings.push(
+        finding(
+          "invalid_disposition_approval",
+          `approvals[${index}]`,
+          "Approval must be independent, postdate all eligibility, hold, exception, proposal, and batch evidence, and bind the exact batch digest, items, method, and destination.",
+        ),
+      );
+    } else {
+      const decisions = validApprovalDecisionsByBatch.get(batch.id) ?? [];
+      decisions.push({ decision: approval.decision, decidedAt: decisionAt });
+      validApprovalDecisionsByBatch.set(batch.id, decisions);
+    }
+  }
+  const validApprovedBatchIds = new Set();
+  for (const [batchId, decisions] of validApprovalDecisionsByBatch) {
+    const latestAt = Math.max(...decisions.map((item) => item.decidedAt));
+    const latestDecisions = decisions.filter((item) => item.decidedAt === latestAt);
+    if (
+      latestDecisions.length === 1 &&
+      latestDecisions[0].decision === "approved"
+    ) {
+      validApprovedBatchIds.add(batchId);
+    }
+  }
+
+  const custodyByCopy = new Map();
+  for (const [index, event] of ledgers.custodyEvents.entries) {
+    const copy = ledgers.copies.byId.get(event.copyRef);
+    const events = custodyByCopy.get(event.copyRef) ?? [];
+    events.push(event);
+    custodyByCopy.set(event.copyRef, events);
+    const occurredAt = timestamp(event.occurredAt);
+    if (
+      !copy ||
+      !Number.isInteger(event.sequence) ||
+      event.sequence < 1 ||
+      event.custodyEffect !== "record-only-no-transfer" ||
+      !digestPattern.test(event.copyDigest ?? "") ||
+      !isValidControlledReference(copy?.locationRef) ||
+      occurredAt === null ||
+      (Number.isFinite(asOfMs) && occurredAt > asOfMs) ||
+      !requireScope(
+        event.custodianRef,
+        "custody-recording",
+        `custodyEvents[${index}].custodianRef`,
+        "Custody recording",
+      ) ||
+      evidenceFor(event.evidenceRef)?.suppliedByRef !== event.custodianRef ||
+      !evidenceSupports(event.evidenceRef, event.id)
+    ) {
+      findings.push(
+        finding(
+          "invalid_retention_custody_event",
+          `custodyEvents[${index}]`,
+          "Custody events must be append-only, copy-bound, digest-bound, timely, human-supplied, and record-only.",
+        ),
+      );
+    }
+  }
+  for (const copy of ledgers.copies.items) {
+    const events = [...(custodyByCopy.get(copy.id) ?? [])].sort(
+      (left, right) => left.sequence - right.sequence,
+    );
+    exactRefs(
+      copy.custodyEventRefs,
+      events.map((event) => event.id),
+      `${copy.id}.custodyEventRefs`,
+      "Copy custody chain",
+    );
+    for (const [index, event] of events.entries()) {
+      const expectedPrior = index === 0 ? null : events[index - 1].id;
+      if (
+        event.sequence !== index + 1 ||
+        event.priorEventRef !== expectedPrior ||
+        (index > 0 &&
+          timestamp(event.occurredAt) <
+            timestamp(events[index - 1].occurredAt))
+      ) {
+        findings.push(
+          finding(
+            "broken_retention_custody_chain",
+            `${copy.id}.custodyEventRefs`,
+            "Each copy needs one ordered append-only custody chain.",
+          ),
+        );
+        break;
+      }
+    }
+  }
+
+  const outcomesByCopy = new Map();
+  for (const [index, outcome] of ledgers.outcomes.entries) {
+    const batch = ledgers.batches.byId.get(outcome.batchRef);
+    const copy = ledgers.copies.byId.get(outcome.copyRef);
+    const record = ledgers.records.byId.get(outcome.recordRef);
+    const evidence = evidenceFor(outcome.evidenceRef);
+    const evidenceKind = new Map([
+      ["requested", "disposition-request"],
+      ["attempted", "disposition-attempt"],
+      ["failed", "custodian-outcome"],
+      ["partial", "custodian-outcome"],
+      ["succeeded", "custodian-outcome"],
+      ["unknown", "custodian-outcome"],
+    ]).get(outcome.status);
+    const items = outcomesByCopy.get(outcome.copyRef) ?? [];
+    items.push(outcome);
+    outcomesByCopy.set(outcome.copyRef, items);
+    if (
+      !batch ||
+      !copy ||
+      !record ||
+      copy.recordRef !== record.id ||
+      !validApprovedBatchIds.has(batch.id) ||
+      outcome.batchDigest !== batch.digest ||
+      outcome.method !== batch.method ||
+      !batch.recordRefs?.includes(record.id) ||
+      !batch.copyRefs?.includes(copy.id) ||
+      timestamp(outcome.reportedAt) <
+        Math.max(
+          ...ledgers.approvals.items
+            .filter(
+              (approval) =>
+                approval.batchRef === batch.id && approval.decision === "approved",
+            )
+            .map((approval) => timestamp(approval.decidedAt) ?? Infinity),
+        ) ||
+      timestamp(evidence?.observedAt) < timestamp(outcome.reportedAt) ||
+      !evidenceSupports(outcome.evidenceRef, outcome.id, evidenceKind) ||
+      evidence?.suppliedByRef !== outcome.custodianRef ||
+      !requireScope(
+        outcome.custodianRef,
+        "outcome-reporting",
+        `outcomes[${index}].custodianRef`,
+        "Outcome reporting",
+      )
+    ) {
+      findings.push(
+        finding(
+          "invalid_disposition_outcome",
+          `outcomes[${index}]`,
+          "Requests, attempts, and outcomes must remain distinct, follow approval, and bind the exact batch, record, copy, method, custodian, and evidence.",
+        ),
+      );
+    }
+  }
+  const latestOutcomeByCopy = new Map();
+  for (const copy of ledgers.copies.items) {
+    const outcomes = [...(outcomesByCopy.get(copy.id) ?? [])].sort(
+      (left, right) => left.sequence - right.sequence,
+    );
+    exactRefs(
+      copy.outcomeRefs,
+      outcomes.map((outcome) => outcome.id),
+      `${copy.id}.outcomeRefs`,
+      "Copy outcome chain",
+    );
+    for (const [index, outcome] of outcomes.entries()) {
+      const expectedPrior = index === 0 ? null : outcomes[index - 1].id;
+      const expectedStatus =
+        index === 0 ? "requested" : index === 1 ? "attempted" : outcome.status;
+      if (
+        outcome.sequence !== index + 1 ||
+        outcome.priorOutcomeRef !== expectedPrior ||
+        outcome.status !== expectedStatus ||
+        index > 2 ||
+        (index > 0 &&
+          timestamp(outcome.reportedAt) <
+            timestamp(outcomes[index - 1].reportedAt))
+      ) {
+        findings.push(
+          finding(
+            "broken_disposition_outcome_chain",
+            `${copy.id}.outcomeRefs`,
+            "Each copy outcome chain must start requested, then attempted, and preserve ordered terminal outcome evidence.",
+          ),
+        );
+        break;
+      }
+    }
+    if (outcomes.length > 0) {
+      latestOutcomeByCopy.set(copy.id, outcomes.at(-1));
+    }
+  }
+
+  const validCertificateCopyIds = new Set();
+  for (const [index, certificate] of ledgers.certificates.entries) {
+    const batch = ledgers.batches.byId.get(certificate.batchRef);
+    const copy = ledgers.copies.byId.get(certificate.copyRef);
+    const outcome = ledgers.outcomes.byId.get(certificate.outcomeRef);
+    const evidenceAt = timestamp(evidenceFor(certificate.evidenceRef)?.observedAt);
+    const valid =
+      batch !== undefined &&
+      copy !== undefined &&
+      copy.recordRef === certificate.recordRef &&
+      outcome !== undefined &&
+      outcome.status === "succeeded" &&
+      outcome.copyRef === copy.id &&
+      outcome.recordRef === certificate.recordRef &&
+      outcome.batchRef === batch.id &&
+      certificate.batchDigest === batch.digest &&
+      certificate.method === batch.method &&
+      certificate.custodianRef === outcome.custodianRef &&
+      certificate.authoritative === true &&
+      certificate.independentlyObserved === true &&
+      certificate.observedByRef !== certificate.custodianRef &&
+      !ledgers.approvals.items.some(
+        (approval) =>
+          approval.batchRef === batch.id &&
+          approval.decidedByRef === certificate.observedByRef,
+      ) &&
+      timestamp(certificate.observedAt) >
+        Math.max(
+          timestamp(outcome.reportedAt) ?? Infinity,
+          ...ledgers.approvals.items
+            .filter((approval) => approval.batchRef === batch.id)
+            .map((approval) => timestamp(approval.decidedAt) ?? Infinity),
+        ) &&
+      evidenceAt >= timestamp(certificate.observedAt) &&
+      digestPattern.test(certificate.certificateDigest ?? "") &&
+      evidenceFor(certificate.evidenceRef)?.suppliedByRef ===
+        certificate.observedByRef &&
+      requireScope(
+        certificate.observedByRef,
+        "certificate-observation",
+        `certificates[${index}].observedByRef`,
+        "Certificate observation",
+      ) &&
+      evidenceSupports(
+        certificate.evidenceRef,
+        certificate.id,
+        "authoritative-disposition-certificate",
+      );
+    if (!valid) {
+      findings.push(
+        finding(
+          "invalid_authoritative_disposition_certificate",
+          `certificates[${index}]`,
+          "Completion needs independently observed authoritative certificate evidence after approval and outcome, bound to the exact batch digest, record, copy, method, and custodian.",
+        ),
+      );
+    } else {
+      validCertificateCopyIds.add(copy.id);
+    }
+  }
+
+  const closedResidualCopyIds = new Set();
+  for (const [index, residual] of ledgers.residuals.entries) {
+    const copy = ledgers.copies.byId.get(residual.copyRef);
+    const certificate = ledgers.certificates.byId.get(residual.certificateRef);
+    const evidenceAt = timestamp(evidenceFor(residual.evidenceRef)?.observedAt);
+    const expectedLocationKind =
+      copy?.copyKind === "authoritative" ? "primary" : copy?.copyKind;
+    const validClosure =
+      copy !== undefined &&
+      copy.recordRef === residual.recordRef &&
+      residual.locationRef === copy.locationRef &&
+      residual.locationKind === expectedLocationKind &&
+      residual.state === "closed" &&
+      certificate?.copyRef === copy.id &&
+      validCertificateCopyIds.has(copy.id) &&
+      timestamp(residual.observedAt) > timestamp(certificate.observedAt) &&
+      evidenceAt >= timestamp(residual.observedAt) &&
+      evidenceFor(residual.evidenceRef)?.suppliedByRef === residual.observedByRef &&
+      requireScope(
+        residual.observedByRef,
+        "residual-closure",
+        `residuals[${index}].observedByRef`,
+        "Residual closure",
+      ) &&
+      evidenceSupports(
+        residual.evidenceRef,
+        residual.id,
+        "residual-closure-observation",
+      );
+    if (validClosure) {
+      closedResidualCopyIds.add(copy.id);
+    } else if (residual.state === "closed") {
+      findings.push(
+        finding(
+          "invalid_residual_copy_closure",
+          `residuals[${index}]`,
+          "Closed residuals need independent evidence after the exact copy certificate; remaining, backup, replica, and unknown locations cannot be hidden.",
+        ),
+      );
+    }
+  }
+  exactRefs(
+    ledgers.residuals.items.map((item) => item.copyRef),
+    [...ledgers.copies.ids],
+    "residuals",
+    "Residual copy coverage",
+  );
+
+  const requiredReviewGates = [
+    "snapshot-binding",
+    "schedule-classification",
+    "record-copy-lineage",
+    "trigger-eligibility",
+    "hold-exception",
+    "batch-approval",
+    "custody-outcome",
+    "certificate-residual",
+    "independent-handoff",
+  ];
+  exactRefs(
+    ledgers.reviewGates.items.map((gate) => gate.gate),
+    requiredReviewGates,
+    "reviewGates",
+    "Required retention review gates",
+  );
+  const latestConsequentialEvidence = Math.max(
+    -Infinity,
+    ...ledgers.evidence.items
+      .filter((item) => item.kind !== "independent-review-record")
+      .map((item) => timestamp(item.observedAt) ?? Infinity),
+  );
+  let reviewReady = true;
+  let independentReview = null;
+  for (const [index, gate] of ledgers.reviewGates.entries) {
+    const reviewedAt = timestamp(gate.reviewedAt);
+    const evidenceAt = latestEvidenceMs(gate.evidenceRefs);
+    const authorityValid = requireScope(
+      gate.reviewerRef,
+      "handoff-review",
+      `reviewGates[${index}].reviewerRef`,
+      "Review gate",
+    );
+    if (
+      reviewedAt === null ||
+      reviewedAt < latestConsequentialEvidence ||
+      evidenceAt < reviewedAt ||
+      !(gate.evidenceRefs ?? []).some(
+        (ref) =>
+          evidenceSupports(ref, gate.id, "independent-review-record") &&
+          evidenceFor(ref)?.suppliedByRef === gate.reviewerRef,
+      ) ||
+      (Number.isFinite(asOfMs) && evidenceAt > asOfMs) ||
+      !authorityValid
+    ) {
+      findings.push(
+        finding(
+          "invalid_retention_review_gate",
+          `reviewGates[${index}]`,
+          "Review gates need scoped named-human review after consequential evidence and a controlled review record.",
+        ),
+      );
+      reviewReady = false;
+    }
+    if (gate.state !== "passed") reviewReady = false;
+    if (gate.gate === "independent-handoff") independentReview = gate;
+  }
+  const approvalPrincipals = new Set(
+    ledgers.approvals.items.map((item) => item.decidedByRef),
+  );
+  const operationalPrincipals = new Set([
+    ...ledgers.proposals.items.map((item) => item.proposedByRef),
+    ...ledgers.outcomes.items.map((item) => item.custodianRef),
+  ]);
+  if (
+    !independentReview ||
+    approvalPrincipals.has(independentReview.reviewerRef) ||
+    operationalPrincipals.has(independentReview.reviewerRef)
+  ) {
+    findings.push(
+      finding(
+        "invalid_independent_retention_review",
+        "reviewGates",
+        "The final handoff reviewer must be a different scoped named human from proposal, approval, and outcome owners.",
+      ),
+    );
+    reviewReady = false;
+  }
+
+  const requiredAuthorityActions = [
+    "interpret-retention-schedule",
+    "classify-record",
+    "determine-legal-obligation",
+    "issue-hold",
+    "release-hold",
+    "grant-exception",
+    "approve-disposition",
+    "accept-risk",
+    "delete-or-destroy-record",
+    "move-or-transfer-record",
+    "mutate-owner-system",
+    "declare-compliance",
+    "certify-disposition",
+    "contact-or-publish",
+  ];
+  exactRefs(
+    ledgers.authorityGates.items.map((gate) => gate.action),
+    requiredAuthorityActions,
+    "authorityGates",
+    "Required retention authority gates",
+  );
+  for (const [index, gate] of ledgers.authorityGates.entries) {
+    if (
+      gate.state !== "prohibited" ||
+      !principals.isAccountablePrincipal(gate.ownerRef)
+    ) {
+      findings.push(
+        finding(
+          "invalid_retention_authority_gate",
+          `authorityGates[${index}]`,
+          "Every consequential action must stay prohibited and retained by a named human owner.",
+        ),
+      );
+    }
+  }
+
+  const openBlockerIds = ledgers.blockers.items
+    .filter((item) => item.status === "open")
+    .map((item) => item.id);
+  exactRefs(
+    snapshot.blockerRefs,
+    openBlockerIds,
+    "snapshot.blockerRefs",
+    "Snapshot blockers",
+  );
+  exactRefs(
+    handoff.blockingRefs,
+    openBlockerIds,
+    "handoff.blockingRefs",
+    "Handoff blockers",
+  );
+
+  const baseReady =
+    snapshot.inventoryState === "supplied-complete" &&
+    globallyBlockingHolds.length === 0 &&
+    ledgers.eligibilities.items.length > 0 &&
+    validEligibilityIds.size === ledgers.eligibilities.items.length &&
+    ledgers.exceptions.items.every((item) => validApprovedExceptions.has(item.id)) &&
+    ledgers.proposals.items.length > 0 &&
+    validProposalIds.size === ledgers.proposals.items.length &&
+    ledgers.batches.items.length > 0 &&
+    validBatchIds.size === ledgers.batches.items.length &&
+    validApprovedBatchIds.size === ledgers.batches.items.length &&
+    reviewReady &&
+    openBlockerIds.length === 0;
+  const complete =
+    baseReady &&
+    ledgers.copies.items.length > 0 &&
+    ledgers.copies.items.every(
+      (copy) =>
+        latestOutcomeByCopy.get(copy.id)?.status === "succeeded" &&
+        validCertificateCopyIds.has(copy.id) &&
+        closedResidualCopyIds.has(copy.id),
+    );
+  const anyOutcomeStarted = ledgers.outcomes.items.length > 0;
+  const expectedState = !baseReady
+    ? "blocked"
+    : complete
+      ? "complete-reconciled"
+      : anyOutcomeStarted
+        ? "blocked"
+        : "ready-for-owner-action";
+  if (expectedState === "blocked" && openBlockerIds.length === 0) {
+    findings.push(
+      finding(
+        "unexplained_blocked_retention_handoff",
+        "handoff.blockingRefs",
+        "A blocked lifecycle must name every exact open blocker in the blocker ledger.",
+      ),
+    );
+  }
+
+  safeRefs(handoff, "coveredRefs", "handoff", allIds, "Handoff covered row");
+  safeRefs(
+    handoff,
+    "reviewGateRefs",
+    "handoff",
+    ledgers.reviewGates.ids,
+    "Handoff review gate",
+  );
+  safeRefs(
+    handoff,
+    "authorityGateRefs",
+    "handoff",
+    ledgers.authorityGates.ids,
+    "Handoff authority gate",
+  );
+  safeRefs(
+    handoff,
+    "blockingRefs",
+    "handoff",
+    ledgers.blockers.ids,
+    "Handoff blocker",
+  );
+  exactRefs(
+    handoff.coveredRefs,
+    allIdList,
+    "handoff.coveredRefs",
+    "Handoff ledger rows",
+  );
+  exactRefs(
+    handoff.reviewGateRefs,
+    [...ledgers.reviewGates.ids],
+    "handoff.reviewGateRefs",
+    "Handoff review gates",
+  );
+  exactRefs(
+    handoff.authorityGateRefs,
+    [...ledgers.authorityGates.ids],
+    "handoff.authorityGateRefs",
+    "Handoff authority gates",
+  );
+  const generatedAt = timestamp(handoff.generatedAt);
+  if (
+    handoff.snapshotRef !== snapshot.id ||
+    handoff.destinationRef !== snapshot.destinationRef ||
+    handoff.complianceState !== "not-claimed" ||
+    handoff.certificationState !== "evidence-reconciled-not-certified" ||
+    !principals.hasScope(handoff.nextOwnerRef, "receive-handoff") ||
+    generatedAt === null ||
+    generatedAt <
+      (timestamp(independentReview?.reviewedAt) ?? Infinity) ||
+    (Number.isFinite(asOfMs) && generatedAt > asOfMs) ||
+    handoff.state !== expectedState
+  ) {
+    findings.push(
+      finding(
+        "invalid_retention_handoff_state",
+        "handoff",
+        "The handoff must bind the exact snapshot and destination, preserve non-compliance and non-certification claims, name a scoped owner, and exactly reflect blocked, ready, or complete lifecycle evidence.",
+      ),
+    );
+  }
+
+  const narrativeTexts = upliftNarrativeStrings({
+    handoff: handoff.summary,
+    series: ledgers.series.items.map((item) => item.title),
+    blockers: ledgers.blockers.items.map((item) => item.code),
+  });
+  const prohibitedNarrative =
+    /\b(?:(?:creat(?:e[ds]?|ing)|interpret(?:ed|s|ing)?)\s+(?:(?:the|an?)\s+)?retention\s+schedules?|classif(?:y|ies|ied|ying)\s+(?:(?:the|an?)\s+)?records?|determin(?:e[ds]?|ing)\s+(?:(?:the|an?)\s+)?legal\s+obligations?|issu(?:e[ds]?|ing)\s+(?:(?:the|an?)\s+)?holds?|releas(?:e[ds]?|ing)\s+(?:(?:the|an?)\s+)?holds?|grant(?:ed|s|ing)?\s+(?:(?:the|an?)\s+)?exceptions?|approv(?:e[ds]?|ing)\s+(?:(?:the|an?)\s+)?(?:batch|disposition|exception)|accept(?:ed|s|ing)?\s+(?:(?:the|an?)\s+)?risk|delet(?:e[ds]?|ing)\s+(?:(?:the|an?)\s+)?(?:records?|cop(?:y|ies)|data)|destroy(?:ed|s|ing)?\s+(?:(?:the|an?)\s+)?(?:records?|cop(?:y|ies)|data)|mov(?:e[ds]?|ing)\s+(?:(?:the|an?)\s+)?(?:records?|cop(?:y|ies)|data)|transfer(?:s|red|ring)?\s+(?:(?:the|an?)\s+)?(?:records?|cop(?:y|ies)|custody|data)|mutat(?:e[ds]?|ing)\s+(?:(?:the|an?)\s+)?(?:repository|records?\s+system|owner\s+system)|declar(?:e[ds]?|ing)\s+(?:(?:the|an?)\s+)?compliance|certif(?:y|ies|ied|ying)\s+(?:(?:the|an?)\s+)?(?:disposition|destruction|deletion)|(?:(?:the|an?)\s+)?(?:artifact|batch|disposition|destruction|deletion)\s+(?:is|was|has\s+been)\s+(?:compliant|certified|approved)|contact(?:ed|s|ing)?\s+(?:(?:the|an?)\s+)?(?:custodian|records?\s+owner|legal\s+owner|reviewer)|publish(?:ed|es|ing)?\s+(?:(?:the|an?)\s+)?(?:artifact|handoff|certificate))\b/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    findings.push(
+      finding(
+        "unauthorized_retention_narrative_action",
+        "$",
+        "Narrative text cannot claim schedule interpretation, classification, legal judgment, hold or exception authority, approval, disposition action, system mutation, contact, publication, risk acceptance, compliance, or certification.",
+      ),
+    );
+  }
+  return findings;
+}
+
 function legalMatterFindings(input) {
   const value = isRecord(input) ? input : {};
   const findings = [];
@@ -47925,6 +49561,7 @@ const validators = {
   "quality-assurance-lead": qualityAssuranceReleaseFindings,
   "recruiting-coordinator": recruitingFindings,
   "release-coordinator": releaseReadinessFindings,
+  "records-retention-disposition-coordinator": retentionDispositionFindings,
   "restaurant-venue-scout": restaurantVenueFindings,
   "research-briefing": researchFindings,
   "sales-operations": salesOperationsFindings,

@@ -1,0 +1,1510 @@
+{
+  "schemaVersion": "awesomeClaws.retentionDisposition.v1",
+  "snapshot": {
+    "id": "SNAP-RET-2026-0907-A",
+    "asOf": "2026-09-07T20:00:00Z",
+    "timezone": "America/Los_Angeles",
+    "workspaceRef": "controlled://records-ops/snap-ret-2026-0907-a/workspace",
+    "destinationRef": "controlled://records-ops/snap-ret-2026-0907-a/review",
+    "inventoryState": "supplied-complete",
+    "principalRefs": [
+      "principal-jordan-lee",
+      "principal-morgan-chen",
+      "principal-priya-shah",
+      "principal-elena-garcia",
+      "principal-alex-morgan",
+      "principal-dana-brooks",
+      "principal-taylor-kim",
+      "principal-cameron-reed"
+    ],
+    "evidenceRefs": [
+      "evidence-authority-roster",
+      "evidence-schedule",
+      "evidence-inventory",
+      "evidence-classification",
+      "evidence-trigger",
+      "evidence-hold-issue",
+      "evidence-hold-release",
+      "evidence-exception-request",
+      "evidence-exception-approval",
+      "evidence-proposal",
+      "evidence-batch-approval",
+      "evidence-custody-primary",
+      "evidence-custody-backup",
+      "evidence-request-primary",
+      "evidence-attempt-primary",
+      "evidence-outcome-primary",
+      "evidence-request-backup",
+      "evidence-attempt-backup",
+      "evidence-outcome-backup",
+      "evidence-certificate-primary",
+      "evidence-certificate-backup",
+      "evidence-residual-primary",
+      "evidence-residual-backup",
+      "evidence-review"
+    ],
+    "scheduleRefs": [
+      "schedule-finance-v7"
+    ],
+    "seriesRefs": [
+      "series-finance-close"
+    ],
+    "recordRefs": [
+      "record-finance-close-2020"
+    ],
+    "copyRefs": [
+      "copy-finance-close-primary",
+      "copy-finance-close-backup"
+    ],
+    "classificationRefs": [
+      "classification-finance-record"
+    ],
+    "triggerTypeRefs": [
+      "trigger-type-fiscal-close"
+    ],
+    "triggerEventRefs": [
+      "trigger-event-fiscal-close-2020"
+    ],
+    "ruleRefs": [
+      "rule-finance-close-six-years"
+    ],
+    "eligibilityRefs": [
+      "eligibility-finance-close-2020"
+    ],
+    "holdRefs": [
+      "hold-audit-finance-2026"
+    ],
+    "exceptionRefs": [
+      "exception-approved-window"
+    ],
+    "proposalRefs": [
+      "proposal-finance-close-2020"
+    ],
+    "batchRefs": [
+      "batch-finance-2026-09-a"
+    ],
+    "approvalRefs": [
+      "approval-finance-2026-09-a"
+    ],
+    "custodyEventRefs": [
+      "custody-primary-inventory",
+      "custody-primary-outcome-observed",
+      "custody-backup-inventory",
+      "custody-backup-outcome-observed"
+    ],
+    "outcomeRefs": [
+      "outcome-primary-requested",
+      "outcome-primary-attempted",
+      "outcome-primary-succeeded",
+      "outcome-backup-requested",
+      "outcome-backup-attempted",
+      "outcome-backup-succeeded"
+    ],
+    "certificateRefs": [
+      "certificate-finance-primary",
+      "certificate-finance-backup"
+    ],
+    "residualRefs": [
+      "residual-finance-primary",
+      "residual-finance-backup"
+    ],
+    "reviewGateRefs": [
+      "review-snapshot-binding",
+      "review-schedule-classification",
+      "review-record-copy-lineage",
+      "review-trigger-eligibility",
+      "review-hold-exception",
+      "review-batch-approval",
+      "review-custody-outcome",
+      "review-certificate-residual",
+      "review-independent-handoff"
+    ],
+    "authorityGateRefs": [
+      "authority-interpret-schedule",
+      "authority-classify-record",
+      "authority-determine-legal-obligation",
+      "authority-issue-hold",
+      "authority-release-hold",
+      "authority-grant-exception",
+      "authority-approve-disposition",
+      "authority-accept-risk",
+      "authority-delete-destroy",
+      "authority-move-transfer",
+      "authority-mutate-owner-system",
+      "authority-declare-compliance",
+      "authority-certify-disposition",
+      "authority-contact-publish"
+    ],
+    "blockerRefs": []
+  },
+  "principals": [
+    {
+      "id": "principal-jordan-lee",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "name": "Jordan Lee",
+      "title": "Records schedule owner",
+      "scopes": [
+        "schedule-authority",
+        "series-authority",
+        "eligibility-review",
+        "receive-handoff"
+      ],
+      "evidenceRefs": [
+        "evidence-authority-roster"
+      ]
+    },
+    {
+      "id": "principal-morgan-chen",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "name": "Morgan Chen",
+      "title": "Records classification owner",
+      "scopes": [
+        "classification-authority"
+      ],
+      "evidenceRefs": [
+        "evidence-authority-roster"
+      ]
+    },
+    {
+      "id": "principal-priya-shah",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "name": "Priya Shah",
+      "title": "Business event owner",
+      "scopes": [
+        "trigger-confirmation"
+      ],
+      "evidenceRefs": [
+        "evidence-authority-roster"
+      ]
+    },
+    {
+      "id": "principal-elena-garcia",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "name": "Elena Garcia",
+      "title": "Legal hold owner",
+      "scopes": [
+        "hold-issuance",
+        "hold-release"
+      ],
+      "evidenceRefs": [
+        "evidence-authority-roster"
+      ]
+    },
+    {
+      "id": "principal-alex-morgan",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "name": "Alex Morgan",
+      "title": "Records operations specialist",
+      "scopes": [
+        "exception-request",
+        "disposition-proposal",
+        "batch-preparation"
+      ],
+      "evidenceRefs": [
+        "evidence-authority-roster"
+      ]
+    },
+    {
+      "id": "principal-dana-brooks",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "name": "Dana Brooks",
+      "title": "Independent disposition approver",
+      "scopes": [
+        "exception-approval",
+        "disposition-approval"
+      ],
+      "evidenceRefs": [
+        "evidence-authority-roster"
+      ]
+    },
+    {
+      "id": "principal-taylor-kim",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "name": "Taylor Kim",
+      "title": "Records custodian",
+      "scopes": [
+        "custody-recording",
+        "outcome-reporting"
+      ],
+      "evidenceRefs": [
+        "evidence-authority-roster"
+      ]
+    },
+    {
+      "id": "principal-cameron-reed",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "name": "Cameron Reed",
+      "title": "Independent evidence reviewer",
+      "scopes": [
+        "certificate-observation",
+        "residual-closure",
+        "handoff-review"
+      ],
+      "evidenceRefs": [
+        "evidence-authority-roster"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-authority-roster",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "authority-roster",
+      "controlledRef": "controlled://records-authority/roster-2026-09-07",
+      "digest": "sha256:0101010101010101010101010101010101010101010101010101010101010101",
+      "observedAt": "2026-09-01T15:00:00Z",
+      "suppliedByRef": "principal-jordan-lee",
+      "subjectRefs": [
+        "principal-jordan-lee",
+        "principal-morgan-chen",
+        "principal-priya-shah",
+        "principal-elena-garcia",
+        "principal-alex-morgan",
+        "principal-dana-brooks",
+        "principal-taylor-kim",
+        "principal-cameron-reed"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-schedule",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "authoritative-schedule",
+      "controlledRef": "controlled://records-schedule/finance-v7",
+      "digest": "sha256:0202020202020202020202020202020202020202020202020202020202020202",
+      "observedAt": "2026-09-01T15:05:00Z",
+      "suppliedByRef": "principal-jordan-lee",
+      "subjectRefs": [
+        "schedule-finance-v7",
+        "series-finance-close",
+        "rule-finance-close-six-years",
+        "trigger-type-fiscal-close"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-inventory",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "exact-copy-inventory",
+      "controlledRef": "controlled://records-inventory/snap-ret-2026-0907-a",
+      "digest": "sha256:0303030303030303030303030303030303030303030303030303030303030303",
+      "observedAt": "2026-09-01T15:10:00Z",
+      "suppliedByRef": "principal-taylor-kim",
+      "subjectRefs": [
+        "series-finance-close",
+        "record-finance-close-2020",
+        "copy-finance-close-primary",
+        "copy-finance-close-backup",
+        "custody-primary-inventory",
+        "custody-backup-inventory"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-classification",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "supplied-classification",
+      "controlledRef": "controlled://records-classification/finance-close-2020",
+      "digest": "sha256:0404040404040404040404040404040404040404040404040404040404040404",
+      "observedAt": "2026-09-01T15:15:00Z",
+      "suppliedByRef": "principal-morgan-chen",
+      "subjectRefs": [
+        "classification-finance-record",
+        "record-finance-close-2020"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-trigger",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "business-event-confirmation",
+      "controlledRef": "controlled://business-events/fiscal-close-2020",
+      "digest": "sha256:0505050505050505050505050505050505050505050505050505050505050505",
+      "observedAt": "2026-09-01T15:20:00Z",
+      "suppliedByRef": "principal-priya-shah",
+      "subjectRefs": [
+        "trigger-event-fiscal-close-2020",
+        "record-finance-close-2020"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-hold-issue",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "hold-issue-notice",
+      "controlledRef": "controlled://legal-holds/audit-finance-2026-issue",
+      "digest": "sha256:0606060606060606060606060606060606060606060606060606060606060606",
+      "observedAt": "2026-01-10T18:00:00Z",
+      "suppliedByRef": "principal-elena-garcia",
+      "subjectRefs": [
+        "hold-audit-finance-2026",
+        "record-finance-close-2020",
+        "copy-finance-close-primary",
+        "copy-finance-close-backup"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-hold-release",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "hold-release-notice",
+      "controlledRef": "controlled://legal-holds/audit-finance-2026-release",
+      "digest": "sha256:0707070707070707070707070707070707070707070707070707070707070707",
+      "observedAt": "2026-09-01T17:01:00Z",
+      "suppliedByRef": "principal-elena-garcia",
+      "subjectRefs": [
+        "hold-audit-finance-2026"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-exception-request",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "exception-request",
+      "controlledRef": "controlled://records-exceptions/approved-window-request",
+      "digest": "sha256:0808080808080808080808080808080808080808080808080808080808080808",
+      "observedAt": "2026-09-01T18:01:00Z",
+      "suppliedByRef": "principal-alex-morgan",
+      "subjectRefs": [
+        "exception-approved-window",
+        "record-finance-close-2020"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-exception-approval",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "exception-approval",
+      "controlledRef": "controlled://records-exceptions/approved-window-decision",
+      "digest": "sha256:0909090909090909090909090909090909090909090909090909090909090909",
+      "observedAt": "2026-09-01T19:01:00Z",
+      "suppliedByRef": "principal-dana-brooks",
+      "subjectRefs": [
+        "exception-approved-window"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-proposal",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "disposition-proposal",
+      "controlledRef": "controlled://records-proposals/finance-close-2020",
+      "digest": "sha256:1010101010101010101010101010101010101010101010101010101010101010",
+      "observedAt": "2026-09-02T10:01:00Z",
+      "suppliedByRef": "principal-alex-morgan",
+      "subjectRefs": [
+        "proposal-finance-close-2020",
+        "eligibility-finance-close-2020"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-batch-approval",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "batch-approval",
+      "controlledRef": "controlled://records-approvals/batch-finance-2026-09-a",
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "observedAt": "2026-09-02T12:01:00Z",
+      "suppliedByRef": "principal-dana-brooks",
+      "subjectRefs": [
+        "batch-finance-2026-09-a",
+        "approval-finance-2026-09-a"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-custody-primary",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "append-only-custody-log",
+      "controlledRef": "controlled://records-custody/finance-primary",
+      "digest": "sha256:1212121212121212121212121212121212121212121212121212121212121212",
+      "observedAt": "2026-09-02T15:06:00Z",
+      "suppliedByRef": "principal-taylor-kim",
+      "subjectRefs": [
+        "custody-primary-inventory",
+        "custody-primary-outcome-observed",
+        "copy-finance-close-primary"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-custody-backup",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "append-only-custody-log",
+      "controlledRef": "controlled://records-custody/finance-backup",
+      "digest": "sha256:1313131313131313131313131313131313131313131313131313131313131313",
+      "observedAt": "2026-09-02T15:11:00Z",
+      "suppliedByRef": "principal-taylor-kim",
+      "subjectRefs": [
+        "custody-backup-inventory",
+        "custody-backup-outcome-observed",
+        "copy-finance-close-backup"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-request-primary",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "disposition-request",
+      "controlledRef": "controlled://records-outcomes/finance-primary-request",
+      "digest": "sha256:1414141414141414141414141414141414141414141414141414141414141414",
+      "observedAt": "2026-09-02T13:01:00Z",
+      "suppliedByRef": "principal-taylor-kim",
+      "subjectRefs": [
+        "outcome-primary-requested"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-attempt-primary",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "disposition-attempt",
+      "controlledRef": "controlled://records-outcomes/finance-primary-attempt",
+      "digest": "sha256:1515151515151515151515151515151515151515151515151515151515151515",
+      "observedAt": "2026-09-02T14:01:00Z",
+      "suppliedByRef": "principal-taylor-kim",
+      "subjectRefs": [
+        "outcome-primary-attempted"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-outcome-primary",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "custodian-outcome",
+      "controlledRef": "controlled://records-outcomes/finance-primary-succeeded",
+      "digest": "sha256:1616161616161616161616161616161616161616161616161616161616161616",
+      "observedAt": "2026-09-02T15:01:00Z",
+      "suppliedByRef": "principal-taylor-kim",
+      "subjectRefs": [
+        "outcome-primary-succeeded"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-request-backup",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "disposition-request",
+      "controlledRef": "controlled://records-outcomes/finance-backup-request",
+      "digest": "sha256:1717171717171717171717171717171717171717171717171717171717171717",
+      "observedAt": "2026-09-02T13:02:00Z",
+      "suppliedByRef": "principal-taylor-kim",
+      "subjectRefs": [
+        "outcome-backup-requested"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-attempt-backup",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "disposition-attempt",
+      "controlledRef": "controlled://records-outcomes/finance-backup-attempt",
+      "digest": "sha256:1818181818181818181818181818181818181818181818181818181818181818",
+      "observedAt": "2026-09-02T14:02:00Z",
+      "suppliedByRef": "principal-taylor-kim",
+      "subjectRefs": [
+        "outcome-backup-attempted"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-outcome-backup",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "custodian-outcome",
+      "controlledRef": "controlled://records-outcomes/finance-backup-succeeded",
+      "digest": "sha256:1919191919191919191919191919191919191919191919191919191919191919",
+      "observedAt": "2026-09-02T15:02:00Z",
+      "suppliedByRef": "principal-taylor-kim",
+      "subjectRefs": [
+        "outcome-backup-succeeded"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-certificate-primary",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "authoritative-disposition-certificate",
+      "controlledRef": "controlled://records-certificates/finance-primary",
+      "digest": "sha256:2020202020202020202020202020202020202020202020202020202020202020",
+      "observedAt": "2026-09-02T16:01:00Z",
+      "suppliedByRef": "principal-cameron-reed",
+      "subjectRefs": [
+        "certificate-finance-primary",
+        "outcome-primary-succeeded",
+        "copy-finance-close-primary"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-certificate-backup",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "authoritative-disposition-certificate",
+      "controlledRef": "controlled://records-certificates/finance-backup",
+      "digest": "sha256:2121212121212121212121212121212121212121212121212121212121212121",
+      "observedAt": "2026-09-02T16:02:00Z",
+      "suppliedByRef": "principal-cameron-reed",
+      "subjectRefs": [
+        "certificate-finance-backup",
+        "outcome-backup-succeeded",
+        "copy-finance-close-backup"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-residual-primary",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "residual-closure-observation",
+      "controlledRef": "controlled://records-residuals/finance-primary",
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "observedAt": "2026-09-02T17:01:00Z",
+      "suppliedByRef": "principal-cameron-reed",
+      "subjectRefs": [
+        "residual-finance-primary",
+        "copy-finance-close-primary"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-residual-backup",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "residual-closure-observation",
+      "controlledRef": "controlled://records-residuals/finance-backup",
+      "digest": "sha256:2323232323232323232323232323232323232323232323232323232323232323",
+      "observedAt": "2026-09-02T17:02:00Z",
+      "suppliedByRef": "principal-cameron-reed",
+      "subjectRefs": [
+        "residual-finance-backup",
+        "copy-finance-close-backup"
+      ],
+      "contentExcluded": true
+    },
+    {
+      "id": "evidence-review",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "kind": "independent-review-record",
+      "controlledRef": "controlled://records-review/snap-ret-2026-0907-a",
+      "digest": "sha256:2424242424242424242424242424242424242424242424242424242424242424",
+      "observedAt": "2026-09-07T19:01:00Z",
+      "suppliedByRef": "principal-cameron-reed",
+      "subjectRefs": [
+        "review-snapshot-binding",
+        "review-schedule-classification",
+        "review-record-copy-lineage",
+        "review-trigger-eligibility",
+        "review-hold-exception",
+        "review-batch-approval",
+        "review-custody-outcome",
+        "review-certificate-residual",
+        "review-independent-handoff"
+      ],
+      "contentExcluded": true
+    }
+  ],
+  "schedules": [
+    {
+      "id": "schedule-finance-v7",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "scheduleKey": "FIN-RETENTION",
+      "version": "7.0",
+      "digest": "sha256:2525252525252525252525252525252525252525252525252525252525252525",
+      "effectiveFrom": "2020-01-01",
+      "effectiveThrough": "2030-12-31",
+      "supported": true,
+      "authorityRef": "principal-jordan-lee",
+      "evidenceRef": "evidence-schedule",
+      "seriesRefs": [
+        "series-finance-close"
+      ],
+      "ruleRefs": [
+        "rule-finance-close-six-years"
+      ]
+    }
+  ],
+  "series": [
+    {
+      "id": "series-finance-close",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "scheduleRef": "schedule-finance-v7",
+      "seriesKey": "FIN-CLOSE",
+      "title": "Synthetic finance close records",
+      "recordRefs": [
+        "record-finance-close-2020"
+      ],
+      "ruleRefs": [
+        "rule-finance-close-six-years"
+      ],
+      "evidenceRefs": [
+        "evidence-schedule",
+        "evidence-inventory"
+      ]
+    }
+  ],
+  "records": [
+    {
+      "id": "record-finance-close-2020",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "seriesRef": "series-finance-close",
+      "recordKey": "FIN-CLOSE-2020-SYNTHETIC",
+      "copyRefs": [
+        "copy-finance-close-primary",
+        "copy-finance-close-backup"
+      ],
+      "classificationRef": "classification-finance-record",
+      "triggerEventRefs": [
+        "trigger-event-fiscal-close-2020"
+      ],
+      "ruleRef": "rule-finance-close-six-years",
+      "eligibilityRef": "eligibility-finance-close-2020",
+      "holdRefs": [
+        "hold-audit-finance-2026"
+      ],
+      "exceptionRefs": [
+        "exception-approved-window"
+      ],
+      "proposalRefs": [
+        "proposal-finance-close-2020"
+      ],
+      "evidenceRefs": [
+        "evidence-inventory",
+        "evidence-classification",
+        "evidence-trigger"
+      ]
+    }
+  ],
+  "copies": [
+    {
+      "id": "copy-finance-close-primary",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "recordRef": "record-finance-close-2020",
+      "copyKind": "authoritative",
+      "locationRef": "controlled://records-store/finance-close-primary",
+      "custodianRef": "principal-taylor-kim",
+      "holdRefs": [
+        "hold-audit-finance-2026"
+      ],
+      "custodyEventRefs": [
+        "custody-primary-inventory",
+        "custody-primary-outcome-observed"
+      ],
+      "outcomeRefs": [
+        "outcome-primary-requested",
+        "outcome-primary-attempted",
+        "outcome-primary-succeeded"
+      ],
+      "certificateRefs": [
+        "certificate-finance-primary"
+      ],
+      "residualRef": "residual-finance-primary",
+      "evidenceRefs": [
+        "evidence-inventory",
+        "evidence-custody-primary"
+      ]
+    },
+    {
+      "id": "copy-finance-close-backup",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "recordRef": "record-finance-close-2020",
+      "copyKind": "backup",
+      "locationRef": "controlled://backup-vault/finance-close-backup",
+      "custodianRef": "principal-taylor-kim",
+      "holdRefs": [
+        "hold-audit-finance-2026"
+      ],
+      "custodyEventRefs": [
+        "custody-backup-inventory",
+        "custody-backup-outcome-observed"
+      ],
+      "outcomeRefs": [
+        "outcome-backup-requested",
+        "outcome-backup-attempted",
+        "outcome-backup-succeeded"
+      ],
+      "certificateRefs": [
+        "certificate-finance-backup"
+      ],
+      "residualRef": "residual-finance-backup",
+      "evidenceRefs": [
+        "evidence-inventory",
+        "evidence-custody-backup"
+      ]
+    }
+  ],
+  "classifications": [
+    {
+      "id": "classification-finance-record",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "label": "finance-record",
+      "supplied": true,
+      "classifiedByRef": "principal-morgan-chen",
+      "classifiedAt": "2026-09-01T15:14:00Z",
+      "evidenceRef": "evidence-classification",
+      "recordRefs": [
+        "record-finance-close-2020"
+      ]
+    }
+  ],
+  "triggerTypes": [
+    {
+      "id": "trigger-type-fiscal-close",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "code": "fiscal-close",
+      "scheduleRef": "schedule-finance-v7",
+      "eventRefs": [
+        "trigger-event-fiscal-close-2020"
+      ]
+    }
+  ],
+  "triggerEvents": [
+    {
+      "id": "trigger-event-fiscal-close-2020",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "triggerTypeRef": "trigger-type-fiscal-close",
+      "occurredOn": "2020-08-31",
+      "timezone": "America/Los_Angeles",
+      "supported": true,
+      "confirmedByRef": "principal-priya-shah",
+      "confirmedAt": "2026-09-01T15:19:00Z",
+      "evidenceRef": "evidence-trigger",
+      "recordRefs": [
+        "record-finance-close-2020"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule-finance-close-six-years",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "scheduleRef": "schedule-finance-v7",
+      "seriesRefs": [
+        "series-finance-close"
+      ],
+      "classificationLabels": [
+        "finance-record"
+      ],
+      "triggerTypeRefs": [
+        "trigger-type-fiscal-close"
+      ],
+      "durationValue": 6,
+      "durationUnit": "calendar-years",
+      "dispositionMethod": "verified-secure-destruction",
+      "evidenceRef": "evidence-schedule"
+    }
+  ],
+  "eligibilities": [
+    {
+      "id": "eligibility-finance-close-2020",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "recordRef": "record-finance-close-2020",
+      "copyRefs": [
+        "copy-finance-close-primary",
+        "copy-finance-close-backup"
+      ],
+      "scheduleRef": "schedule-finance-v7",
+      "scheduleVersion": "7.0",
+      "scheduleDigest": "sha256:2525252525252525252525252525252525252525252525252525252525252525",
+      "classificationRef": "classification-finance-record",
+      "triggerEventRef": "trigger-event-fiscal-close-2020",
+      "ruleRef": "rule-finance-close-six-years",
+      "calculation": "trigger-date-plus-calendar-years-end-of-local-day",
+      "eligibleOn": "2026-08-31",
+      "eligibleAt": "2026-09-01T06:59:59.999Z",
+      "state": "eligible",
+      "calculatedAt": "2026-09-01T16:00:00Z",
+      "calculatedByRef": "principal-jordan-lee",
+      "evidenceRefs": [
+        "evidence-schedule",
+        "evidence-inventory",
+        "evidence-classification",
+        "evidence-trigger"
+      ]
+    }
+  ],
+  "holds": [
+    {
+      "id": "hold-audit-finance-2026",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "holdType": "audit",
+      "scopeKind": "record",
+      "coveredRefs": [
+        "record-finance-close-2020",
+        "copy-finance-close-primary",
+        "copy-finance-close-backup"
+      ],
+      "state": "released",
+      "issuedByRef": "principal-elena-garcia",
+      "issuedAt": "2026-01-10T17:59:00Z",
+      "issueEvidenceRef": "evidence-hold-issue",
+      "releasedByRef": "principal-elena-garcia",
+      "releasedAt": "2026-09-01T17:00:00Z",
+      "releaseEvidenceRef": "evidence-hold-release"
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "exception-approved-window",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "targetRefs": [
+        "record-finance-close-2020",
+        "copy-finance-close-primary",
+        "copy-finance-close-backup"
+      ],
+      "state": "approved",
+      "requestedByRef": "principal-alex-morgan",
+      "requestedAt": "2026-09-01T18:00:00Z",
+      "requestEvidenceRef": "evidence-exception-request",
+      "approvedByRef": "principal-dana-brooks",
+      "approvedAt": "2026-09-01T19:00:00Z",
+      "approvalEvidenceRef": "evidence-exception-approval",
+      "expiresAt": "2026-09-30T23:59:59Z"
+    }
+  ],
+  "proposals": [
+    {
+      "id": "proposal-finance-close-2020",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "recordRefs": [
+        "record-finance-close-2020"
+      ],
+      "copyRefs": [
+        "copy-finance-close-primary",
+        "copy-finance-close-backup"
+      ],
+      "eligibilityRefs": [
+        "eligibility-finance-close-2020"
+      ],
+      "method": "verified-secure-destruction",
+      "destinationRef": "controlled://records-ops/snap-ret-2026-0907-a/review",
+      "state": "proposed",
+      "proposedByRef": "principal-alex-morgan",
+      "proposedAt": "2026-09-02T10:00:00Z",
+      "evidenceRefs": [
+        "evidence-proposal"
+      ]
+    }
+  ],
+  "batches": [
+    {
+      "id": "batch-finance-2026-09-a",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "proposalRefs": [
+        "proposal-finance-close-2020"
+      ],
+      "recordRefs": [
+        "record-finance-close-2020"
+      ],
+      "copyRefs": [
+        "copy-finance-close-primary",
+        "copy-finance-close-backup"
+      ],
+      "method": "verified-secure-destruction",
+      "destinationRef": "controlled://records-ops/snap-ret-2026-0907-a/review",
+      "createdByRef": "principal-alex-morgan",
+      "createdAt": "2026-09-02T11:00:00Z",
+      "digest": "sha256:49aa35aa4ba20fe764686bb53b450780ca3c44d02b642226908e3c09fb2bbb34"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "approval-finance-2026-09-a",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "batchRef": "batch-finance-2026-09-a",
+      "batchDigest": "sha256:49aa35aa4ba20fe764686bb53b450780ca3c44d02b642226908e3c09fb2bbb34",
+      "proposalRefs": [
+        "proposal-finance-close-2020"
+      ],
+      "recordRefs": [
+        "record-finance-close-2020"
+      ],
+      "copyRefs": [
+        "copy-finance-close-primary",
+        "copy-finance-close-backup"
+      ],
+      "method": "verified-secure-destruction",
+      "destinationRef": "controlled://records-ops/snap-ret-2026-0907-a/review",
+      "decision": "approved",
+      "decidedByRef": "principal-dana-brooks",
+      "decidedAt": "2026-09-02T12:00:00Z",
+      "evidenceRef": "evidence-batch-approval"
+    }
+  ],
+  "custodyEvents": [
+    {
+      "id": "custody-primary-inventory",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "copyRef": "copy-finance-close-primary",
+      "sequence": 1,
+      "priorEventRef": null,
+      "eventType": "inventory-observed",
+      "custodianRef": "principal-taylor-kim",
+      "occurredAt": "2026-09-01T15:09:00Z",
+      "evidenceRef": "evidence-inventory",
+      "copyDigest": "sha256:2626262626262626262626262626262626262626262626262626262626262626",
+      "custodyEffect": "record-only-no-transfer"
+    },
+    {
+      "id": "custody-primary-outcome-observed",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "copyRef": "copy-finance-close-primary",
+      "sequence": 2,
+      "priorEventRef": "custody-primary-inventory",
+      "eventType": "outcome-recorded",
+      "custodianRef": "principal-taylor-kim",
+      "occurredAt": "2026-09-02T15:05:00Z",
+      "evidenceRef": "evidence-custody-primary",
+      "copyDigest": "sha256:2626262626262626262626262626262626262626262626262626262626262626",
+      "custodyEffect": "record-only-no-transfer"
+    },
+    {
+      "id": "custody-backup-inventory",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "copyRef": "copy-finance-close-backup",
+      "sequence": 1,
+      "priorEventRef": null,
+      "eventType": "inventory-observed",
+      "custodianRef": "principal-taylor-kim",
+      "occurredAt": "2026-09-01T15:09:30Z",
+      "evidenceRef": "evidence-inventory",
+      "copyDigest": "sha256:2727272727272727272727272727272727272727272727272727272727272727",
+      "custodyEffect": "record-only-no-transfer"
+    },
+    {
+      "id": "custody-backup-outcome-observed",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "copyRef": "copy-finance-close-backup",
+      "sequence": 2,
+      "priorEventRef": "custody-backup-inventory",
+      "eventType": "outcome-recorded",
+      "custodianRef": "principal-taylor-kim",
+      "occurredAt": "2026-09-02T15:10:00Z",
+      "evidenceRef": "evidence-custody-backup",
+      "copyDigest": "sha256:2727272727272727272727272727272727272727272727272727272727272727",
+      "custodyEffect": "record-only-no-transfer"
+    }
+  ],
+  "outcomes": [
+    {
+      "id": "outcome-primary-requested",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "batchRef": "batch-finance-2026-09-a",
+      "batchDigest": "sha256:49aa35aa4ba20fe764686bb53b450780ca3c44d02b642226908e3c09fb2bbb34",
+      "recordRef": "record-finance-close-2020",
+      "copyRef": "copy-finance-close-primary",
+      "sequence": 1,
+      "priorOutcomeRef": null,
+      "status": "requested",
+      "method": "verified-secure-destruction",
+      "custodianRef": "principal-taylor-kim",
+      "reportedAt": "2026-09-02T13:00:00Z",
+      "evidenceRef": "evidence-request-primary"
+    },
+    {
+      "id": "outcome-primary-attempted",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "batchRef": "batch-finance-2026-09-a",
+      "batchDigest": "sha256:49aa35aa4ba20fe764686bb53b450780ca3c44d02b642226908e3c09fb2bbb34",
+      "recordRef": "record-finance-close-2020",
+      "copyRef": "copy-finance-close-primary",
+      "sequence": 2,
+      "priorOutcomeRef": "outcome-primary-requested",
+      "status": "attempted",
+      "method": "verified-secure-destruction",
+      "custodianRef": "principal-taylor-kim",
+      "reportedAt": "2026-09-02T14:00:00Z",
+      "evidenceRef": "evidence-attempt-primary"
+    },
+    {
+      "id": "outcome-primary-succeeded",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "batchRef": "batch-finance-2026-09-a",
+      "batchDigest": "sha256:49aa35aa4ba20fe764686bb53b450780ca3c44d02b642226908e3c09fb2bbb34",
+      "recordRef": "record-finance-close-2020",
+      "copyRef": "copy-finance-close-primary",
+      "sequence": 3,
+      "priorOutcomeRef": "outcome-primary-attempted",
+      "status": "succeeded",
+      "method": "verified-secure-destruction",
+      "custodianRef": "principal-taylor-kim",
+      "reportedAt": "2026-09-02T15:00:00Z",
+      "evidenceRef": "evidence-outcome-primary"
+    },
+    {
+      "id": "outcome-backup-requested",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "batchRef": "batch-finance-2026-09-a",
+      "batchDigest": "sha256:49aa35aa4ba20fe764686bb53b450780ca3c44d02b642226908e3c09fb2bbb34",
+      "recordRef": "record-finance-close-2020",
+      "copyRef": "copy-finance-close-backup",
+      "sequence": 1,
+      "priorOutcomeRef": null,
+      "status": "requested",
+      "method": "verified-secure-destruction",
+      "custodianRef": "principal-taylor-kim",
+      "reportedAt": "2026-09-02T13:01:00Z",
+      "evidenceRef": "evidence-request-backup"
+    },
+    {
+      "id": "outcome-backup-attempted",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "batchRef": "batch-finance-2026-09-a",
+      "batchDigest": "sha256:49aa35aa4ba20fe764686bb53b450780ca3c44d02b642226908e3c09fb2bbb34",
+      "recordRef": "record-finance-close-2020",
+      "copyRef": "copy-finance-close-backup",
+      "sequence": 2,
+      "priorOutcomeRef": "outcome-backup-requested",
+      "status": "attempted",
+      "method": "verified-secure-destruction",
+      "custodianRef": "principal-taylor-kim",
+      "reportedAt": "2026-09-02T14:01:00Z",
+      "evidenceRef": "evidence-attempt-backup"
+    },
+    {
+      "id": "outcome-backup-succeeded",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "batchRef": "batch-finance-2026-09-a",
+      "batchDigest": "sha256:49aa35aa4ba20fe764686bb53b450780ca3c44d02b642226908e3c09fb2bbb34",
+      "recordRef": "record-finance-close-2020",
+      "copyRef": "copy-finance-close-backup",
+      "sequence": 3,
+      "priorOutcomeRef": "outcome-backup-attempted",
+      "status": "succeeded",
+      "method": "verified-secure-destruction",
+      "custodianRef": "principal-taylor-kim",
+      "reportedAt": "2026-09-02T15:01:00Z",
+      "evidenceRef": "evidence-outcome-backup"
+    }
+  ],
+  "certificates": [
+    {
+      "id": "certificate-finance-primary",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "batchRef": "batch-finance-2026-09-a",
+      "batchDigest": "sha256:49aa35aa4ba20fe764686bb53b450780ca3c44d02b642226908e3c09fb2bbb34",
+      "recordRef": "record-finance-close-2020",
+      "copyRef": "copy-finance-close-primary",
+      "method": "verified-secure-destruction",
+      "custodianRef": "principal-taylor-kim",
+      "outcomeRef": "outcome-primary-succeeded",
+      "authoritative": true,
+      "independentlyObserved": true,
+      "observedByRef": "principal-cameron-reed",
+      "observedAt": "2026-09-02T16:00:00Z",
+      "evidenceRef": "evidence-certificate-primary",
+      "certificateDigest": "sha256:2828282828282828282828282828282828282828282828282828282828282828"
+    },
+    {
+      "id": "certificate-finance-backup",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "batchRef": "batch-finance-2026-09-a",
+      "batchDigest": "sha256:49aa35aa4ba20fe764686bb53b450780ca3c44d02b642226908e3c09fb2bbb34",
+      "recordRef": "record-finance-close-2020",
+      "copyRef": "copy-finance-close-backup",
+      "method": "verified-secure-destruction",
+      "custodianRef": "principal-taylor-kim",
+      "outcomeRef": "outcome-backup-succeeded",
+      "authoritative": true,
+      "independentlyObserved": true,
+      "observedByRef": "principal-cameron-reed",
+      "observedAt": "2026-09-02T16:01:00Z",
+      "evidenceRef": "evidence-certificate-backup",
+      "certificateDigest": "sha256:2929292929292929292929292929292929292929292929292929292929292929"
+    }
+  ],
+  "residuals": [
+    {
+      "id": "residual-finance-primary",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "recordRef": "record-finance-close-2020",
+      "copyRef": "copy-finance-close-primary",
+      "locationKind": "primary",
+      "locationRef": "controlled://records-store/finance-close-primary",
+      "state": "closed",
+      "observedByRef": "principal-cameron-reed",
+      "observedAt": "2026-09-02T17:00:00Z",
+      "evidenceRef": "evidence-residual-primary",
+      "certificateRef": "certificate-finance-primary"
+    },
+    {
+      "id": "residual-finance-backup",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "recordRef": "record-finance-close-2020",
+      "copyRef": "copy-finance-close-backup",
+      "locationKind": "backup",
+      "locationRef": "controlled://backup-vault/finance-close-backup",
+      "state": "closed",
+      "observedByRef": "principal-cameron-reed",
+      "observedAt": "2026-09-02T17:01:00Z",
+      "evidenceRef": "evidence-residual-backup",
+      "certificateRef": "certificate-finance-backup"
+    }
+  ],
+  "reviewGates": [
+    {
+      "id": "review-snapshot-binding",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "gate": "snapshot-binding",
+      "state": "passed",
+      "reviewerRef": "principal-cameron-reed",
+      "reviewedAt": "2026-09-07T19:00:00Z",
+      "targetRefs": [
+        "schedule-finance-v7"
+      ],
+      "evidenceRefs": [
+        "evidence-review"
+      ]
+    },
+    {
+      "id": "review-schedule-classification",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "gate": "schedule-classification",
+      "state": "passed",
+      "reviewerRef": "principal-cameron-reed",
+      "reviewedAt": "2026-09-07T19:00:00Z",
+      "targetRefs": [
+        "schedule-finance-v7",
+        "classification-finance-record"
+      ],
+      "evidenceRefs": [
+        "evidence-review"
+      ]
+    },
+    {
+      "id": "review-record-copy-lineage",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "gate": "record-copy-lineage",
+      "state": "passed",
+      "reviewerRef": "principal-cameron-reed",
+      "reviewedAt": "2026-09-07T19:00:00Z",
+      "targetRefs": [
+        "series-finance-close",
+        "record-finance-close-2020",
+        "copy-finance-close-primary",
+        "copy-finance-close-backup"
+      ],
+      "evidenceRefs": [
+        "evidence-review"
+      ]
+    },
+    {
+      "id": "review-trigger-eligibility",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "gate": "trigger-eligibility",
+      "state": "passed",
+      "reviewerRef": "principal-cameron-reed",
+      "reviewedAt": "2026-09-07T19:00:00Z",
+      "targetRefs": [
+        "trigger-event-fiscal-close-2020",
+        "rule-finance-close-six-years",
+        "eligibility-finance-close-2020"
+      ],
+      "evidenceRefs": [
+        "evidence-review"
+      ]
+    },
+    {
+      "id": "review-hold-exception",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "gate": "hold-exception",
+      "state": "passed",
+      "reviewerRef": "principal-cameron-reed",
+      "reviewedAt": "2026-09-07T19:00:00Z",
+      "targetRefs": [
+        "hold-audit-finance-2026",
+        "exception-approved-window"
+      ],
+      "evidenceRefs": [
+        "evidence-review"
+      ]
+    },
+    {
+      "id": "review-batch-approval",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "gate": "batch-approval",
+      "state": "passed",
+      "reviewerRef": "principal-cameron-reed",
+      "reviewedAt": "2026-09-07T19:00:00Z",
+      "targetRefs": [
+        "proposal-finance-close-2020",
+        "batch-finance-2026-09-a",
+        "approval-finance-2026-09-a"
+      ],
+      "evidenceRefs": [
+        "evidence-review"
+      ]
+    },
+    {
+      "id": "review-custody-outcome",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "gate": "custody-outcome",
+      "state": "passed",
+      "reviewerRef": "principal-cameron-reed",
+      "reviewedAt": "2026-09-07T19:00:00Z",
+      "targetRefs": [
+        "custody-primary-outcome-observed",
+        "custody-backup-outcome-observed",
+        "outcome-primary-succeeded",
+        "outcome-backup-succeeded"
+      ],
+      "evidenceRefs": [
+        "evidence-review"
+      ]
+    },
+    {
+      "id": "review-certificate-residual",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "gate": "certificate-residual",
+      "state": "passed",
+      "reviewerRef": "principal-cameron-reed",
+      "reviewedAt": "2026-09-07T19:00:00Z",
+      "targetRefs": [
+        "certificate-finance-primary",
+        "certificate-finance-backup",
+        "residual-finance-primary",
+        "residual-finance-backup"
+      ],
+      "evidenceRefs": [
+        "evidence-review"
+      ]
+    },
+    {
+      "id": "review-independent-handoff",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "gate": "independent-handoff",
+      "state": "passed",
+      "reviewerRef": "principal-cameron-reed",
+      "reviewedAt": "2026-09-07T19:00:00Z",
+      "targetRefs": [
+        "approval-finance-2026-09-a",
+        "certificate-finance-primary",
+        "certificate-finance-backup"
+      ],
+      "evidenceRefs": [
+        "evidence-review"
+      ]
+    }
+  ],
+  "authorityGates": [
+    {
+      "id": "authority-interpret-schedule",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "interpret-retention-schedule",
+      "state": "prohibited",
+      "ownerRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-classify-record",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "classify-record",
+      "state": "prohibited",
+      "ownerRef": "principal-morgan-chen"
+    },
+    {
+      "id": "authority-determine-legal-obligation",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "determine-legal-obligation",
+      "state": "prohibited",
+      "ownerRef": "principal-elena-garcia"
+    },
+    {
+      "id": "authority-issue-hold",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "issue-hold",
+      "state": "prohibited",
+      "ownerRef": "principal-elena-garcia"
+    },
+    {
+      "id": "authority-release-hold",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "release-hold",
+      "state": "prohibited",
+      "ownerRef": "principal-elena-garcia"
+    },
+    {
+      "id": "authority-grant-exception",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "grant-exception",
+      "state": "prohibited",
+      "ownerRef": "principal-dana-brooks"
+    },
+    {
+      "id": "authority-approve-disposition",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "approve-disposition",
+      "state": "prohibited",
+      "ownerRef": "principal-dana-brooks"
+    },
+    {
+      "id": "authority-accept-risk",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "accept-risk",
+      "state": "prohibited",
+      "ownerRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-delete-destroy",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "delete-or-destroy-record",
+      "state": "prohibited",
+      "ownerRef": "principal-taylor-kim"
+    },
+    {
+      "id": "authority-move-transfer",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "move-or-transfer-record",
+      "state": "prohibited",
+      "ownerRef": "principal-taylor-kim"
+    },
+    {
+      "id": "authority-mutate-owner-system",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "mutate-owner-system",
+      "state": "prohibited",
+      "ownerRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-declare-compliance",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "declare-compliance",
+      "state": "prohibited",
+      "ownerRef": "principal-jordan-lee"
+    },
+    {
+      "id": "authority-certify-disposition",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "certify-disposition",
+      "state": "prohibited",
+      "ownerRef": "principal-cameron-reed"
+    },
+    {
+      "id": "authority-contact-publish",
+      "snapshotRef": "SNAP-RET-2026-0907-A",
+      "action": "contact-or-publish",
+      "state": "prohibited",
+      "ownerRef": "principal-jordan-lee"
+    }
+  ],
+  "blockers": [],
+  "handoff": {
+    "snapshotRef": "SNAP-RET-2026-0907-A",
+    "state": "complete-reconciled",
+    "complianceState": "not-claimed",
+    "certificationState": "evidence-reconciled-not-certified",
+    "generatedAt": "2026-09-07T19:30:00Z",
+    "destinationRef": "controlled://records-ops/snap-ret-2026-0907-a/review",
+    "nextOwnerRef": "principal-jordan-lee",
+    "coveredRefs": [
+      "principal-jordan-lee",
+      "principal-morgan-chen",
+      "principal-priya-shah",
+      "principal-elena-garcia",
+      "principal-alex-morgan",
+      "principal-dana-brooks",
+      "principal-taylor-kim",
+      "principal-cameron-reed",
+      "evidence-authority-roster",
+      "evidence-schedule",
+      "evidence-inventory",
+      "evidence-classification",
+      "evidence-trigger",
+      "evidence-hold-issue",
+      "evidence-hold-release",
+      "evidence-exception-request",
+      "evidence-exception-approval",
+      "evidence-proposal",
+      "evidence-batch-approval",
+      "evidence-custody-primary",
+      "evidence-custody-backup",
+      "evidence-request-primary",
+      "evidence-attempt-primary",
+      "evidence-outcome-primary",
+      "evidence-request-backup",
+      "evidence-attempt-backup",
+      "evidence-outcome-backup",
+      "evidence-certificate-primary",
+      "evidence-certificate-backup",
+      "evidence-residual-primary",
+      "evidence-residual-backup",
+      "evidence-review",
+      "schedule-finance-v7",
+      "series-finance-close",
+      "record-finance-close-2020",
+      "copy-finance-close-primary",
+      "copy-finance-close-backup",
+      "classification-finance-record",
+      "trigger-type-fiscal-close",
+      "trigger-event-fiscal-close-2020",
+      "rule-finance-close-six-years",
+      "eligibility-finance-close-2020",
+      "hold-audit-finance-2026",
+      "exception-approved-window",
+      "proposal-finance-close-2020",
+      "batch-finance-2026-09-a",
+      "approval-finance-2026-09-a",
+      "custody-primary-inventory",
+      "custody-primary-outcome-observed",
+      "custody-backup-inventory",
+      "custody-backup-outcome-observed",
+      "outcome-primary-requested",
+      "outcome-primary-attempted",
+      "outcome-primary-succeeded",
+      "outcome-backup-requested",
+      "outcome-backup-attempted",
+      "outcome-backup-succeeded",
+      "certificate-finance-primary",
+      "certificate-finance-backup",
+      "residual-finance-primary",
+      "residual-finance-backup",
+      "review-snapshot-binding",
+      "review-schedule-classification",
+      "review-record-copy-lineage",
+      "review-trigger-eligibility",
+      "review-hold-exception",
+      "review-batch-approval",
+      "review-custody-outcome",
+      "review-certificate-residual",
+      "review-independent-handoff",
+      "authority-interpret-schedule",
+      "authority-classify-record",
+      "authority-determine-legal-obligation",
+      "authority-issue-hold",
+      "authority-release-hold",
+      "authority-grant-exception",
+      "authority-approve-disposition",
+      "authority-accept-risk",
+      "authority-delete-destroy",
+      "authority-move-transfer",
+      "authority-mutate-owner-system",
+      "authority-declare-compliance",
+      "authority-certify-disposition",
+      "authority-contact-publish"
+    ],
+    "reviewGateRefs": [
+      "review-snapshot-binding",
+      "review-schedule-classification",
+      "review-record-copy-lineage",
+      "review-trigger-eligibility",
+      "review-hold-exception",
+      "review-batch-approval",
+      "review-custody-outcome",
+      "review-certificate-residual",
+      "review-independent-handoff"
+    ],
+    "authorityGateRefs": [
+      "authority-interpret-schedule",
+      "authority-classify-record",
+      "authority-determine-legal-obligation",
+      "authority-issue-hold",
+      "authority-release-hold",
+      "authority-grant-exception",
+      "authority-approve-disposition",
+      "authority-accept-risk",
+      "authority-delete-destroy",
+      "authority-move-transfer",
+      "authority-mutate-owner-system",
+      "authority-declare-compliance",
+      "authority-certify-disposition",
+      "authority-contact-publish"
+    ],
+    "blockingRefs": [],
+    "summary": "The supplied evidence reconciles the owner-decided batch through independent outcome evidence and residual-copy closure. This Claw performed no consequential action and makes no compliance or certification claim."
+  }
+}

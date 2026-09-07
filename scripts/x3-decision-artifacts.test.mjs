@@ -281,6 +281,14 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "records-retention-disposition-coordinator",
+    schema:
+      "../claws/records-retention-disposition-coordinator/schemas/retention-disposition.schema.json",
+    fixture:
+      "../claws/records-retention-disposition-coordinator/fixtures/retention-disposition.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "movie-streaming-organizer",
     schema: "../claws/movie-streaming-organizer/schemas/movie-streaming.schema.json",
     fixture: "../claws/movie-streaming-organizer/fixtures/movie-streaming.example.json",

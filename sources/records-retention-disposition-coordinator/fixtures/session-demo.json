@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "records-retention-disposition-coordinator",
+  "scenario": "Reconcile supplied SNAP-RET-2026-0907-A for the approved schedule version, synthetic finance records and every known copy, event triggers, hold and exception evidence, approved batch, custodian outcomes, independent certificates, and residual backups. Show whether owner action is blocked, ready, or completely reconciled, but do not interpret policy, release holds, approve, delete, move, contact anyone, or claim compliance.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile supplied SNAP-RET-2026-0907-A for the approved schedule version, synthetic finance records and every known copy, event triggers, hold and exception evidence, approved batch, custodian outcomes, independent certificates, and residual backups. Show whether owner action is blocked, ready, or completely reconciled, but do not interpret policy, release holds, approve, delete, move, contact anyone, or claim compliance."
+    },
+    {
+      "role": "agent",
+      "text": "I bound the supplied schedule, exact record-copy inventory, classifications, triggers, holds, exception, proposal, batch, approval, custody, outcomes, certificates, residual closure, and named-human scopes to SNAP-RET-2026-0907-A."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/records-retention-disposition-coordinator-handoff.md as a complete-reconciled evidence handoff. No schedule or legal interpretation, classification, hold action, exception, approval, disposition, movement, owner-system mutation, contact, publication, risk acceptance, compliance declaration, or certification was performed or claimed."
+    }
+  ],
+  "report": {
+    "title": "Records retention and disposition coordinator session handoff",
+    "summary": "A strict snapshot-bound lifecycle artifact that proves the supplied schedule, record-copy lineage, trigger calculation, hold precedence, independent exception and batch decisions, append-only custody, observed outcome certificates, and residual closure, with exact blockers and no autonomous disposition or compliance claim.",
+    "output": "outputs/records-retention-disposition-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Snapshot, named-principal, authoritative-schedule, record-series, record, copy-location, classification, trigger, rule, and eligibility ledgers",
+        "summary": "Every ledger row binds the exact snapshot, every globally stable ID is unique, all controlled references and digests are nondegenerate, and all forward, reverse, orphan, and handoff coverage checks are exact",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Hold-precedence, exception, disposition-proposal, batch, approval, and append-only custody ledgers",
+        "summary": "Eligibility exists only for supported schedule versions, supplied classifications, supported trigger evidence, exact timezone-safe calculations, and matched rules, with every active, unknown, conflicting, incomplete, or broader hold blocking readiness and completion",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Requested, attempted, failed, partial, succeeded, and unknown outcome reconciliation with independent certificate and residual-copy closure evidence",
+        "summary": "Exceptions and approvals are unexpired, evidence-bound, scoped to different named humans, chronologically after all consequential evidence, and bound to the exact proposal items, method, destination, and batch digest",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exact review-gate and blocker register with a blocked, ready-for-owner-action, or complete-reconciled destination-bound handoff",
+        "summary": "Complete reconciliation requires independently observed authoritative certificates after approval for every exact record and copy, method, custodian, and batch plus closure of all backups, replicas, residual copies, and unknown locations; failed, partial, unknown, or remaining state stays blocked",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

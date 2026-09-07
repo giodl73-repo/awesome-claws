@@ -23,7 +23,7 @@ The default bounded vertical covers:
 It runs valid controls before schema, semantic, authority, false-success,
 sensitive-data, path-escape, user-state, cleanup, and capability mutations. The
 schema portfolio runs fixture-backed artifact controls, schema mutations, and
-all required safety recipes for all 100 maintained Claws. Schema cases are
+all required safety recipes for all 102 maintained Claws. Schema cases are
 path-qualified and cover every applicable constraint reached through the
 fixture-active composition and conditional branches. `coverage.json` records
 applicable and killed counts by keyword and by Claw; any survivor or unsupported

@@ -81,7 +81,8 @@
       "invoice-payment-followup",
       "conference-opportunity-scout",
       "moving-checklist-coordinator",
-      "legal-matter-organizer"
+      "legal-matter-organizer",
+      "records-retention-disposition-coordinator"
     ]
   },
   "visualCases": [

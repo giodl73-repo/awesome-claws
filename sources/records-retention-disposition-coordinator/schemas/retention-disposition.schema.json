@@ -1,0 +1,1724 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/retention-disposition.schema.json",
+  "title": "Records retention and disposition reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "snapshot",
+    "principals",
+    "evidence",
+    "schedules",
+    "series",
+    "records",
+    "copies",
+    "classifications",
+    "triggerTypes",
+    "triggerEvents",
+    "rules",
+    "eligibilities",
+    "holds",
+    "exceptions",
+    "proposals",
+    "batches",
+    "approvals",
+    "custodyEvents",
+    "outcomes",
+    "certificates",
+    "residuals",
+    "reviewGates",
+    "authorityGates",
+    "blockers",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.retentionDisposition.v1"
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "asOf",
+        "timezone",
+        "workspaceRef",
+        "destinationRef",
+        "inventoryState",
+        "principalRefs",
+        "evidenceRefs",
+        "scheduleRefs",
+        "seriesRefs",
+        "recordRefs",
+        "copyRefs",
+        "classificationRefs",
+        "triggerTypeRefs",
+        "triggerEventRefs",
+        "ruleRefs",
+        "eligibilityRefs",
+        "holdRefs",
+        "exceptionRefs",
+        "proposalRefs",
+        "batchRefs",
+        "approvalRefs",
+        "custodyEventRefs",
+        "outcomeRefs",
+        "certificateRefs",
+        "residualRefs",
+        "reviewGateRefs",
+        "authorityGateRefs",
+        "blockerRefs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^SNAP-RET-[A-Z0-9-]+$"
+        },
+        "asOf": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "workspaceRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "destinationRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "inventoryState": {
+          "enum": [
+            "supplied-complete",
+            "incomplete",
+            "unknown",
+            "conflicting"
+          ]
+        },
+        "principalRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "scheduleRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "seriesRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "copyRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "classificationRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "triggerTypeRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "triggerEventRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "ruleRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "eligibilityRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "holdRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "exceptionRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "proposalRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "batchRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "approvalRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "custodyEventRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "outcomeRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "certificateRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "residualRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "reviewGateRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "authorityGateRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 7,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "schedules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/schedule"
+      }
+    },
+    "series": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/series"
+      }
+    },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    },
+    "copies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/copy"
+      }
+    },
+    "classifications": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/classification"
+      }
+    },
+    "triggerTypes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/triggerType"
+      }
+    },
+    "triggerEvents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/triggerEvent"
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/rule"
+      }
+    },
+    "eligibilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/eligibility"
+      }
+    },
+    "holds": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hold"
+      }
+    },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/exception"
+      }
+    },
+    "proposals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/proposal"
+      }
+    },
+    "batches": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/batch"
+      }
+    },
+    "approvals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/approval"
+      }
+    },
+    "custodyEvents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/custodyEvent"
+      }
+    },
+    "outcomes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/outcome"
+      }
+    },
+    "certificates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/certificate"
+      }
+    },
+    "residuals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/residual"
+      }
+    },
+    "reviewGates": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "$ref": "#/$defs/reviewGate"
+      }
+    },
+    "authorityGates": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "items": {
+        "$ref": "#/$defs/authorityGate"
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blocker"
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshotRef",
+        "state",
+        "complianceState",
+        "certificationState",
+        "generatedAt",
+        "destinationRef",
+        "nextOwnerRef",
+        "coveredRefs",
+        "reviewGateRefs",
+        "authorityGateRefs",
+        "blockingRefs",
+        "summary"
+      ],
+      "properties": {
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "state": {
+          "enum": [
+            "blocked",
+            "ready-for-owner-action",
+            "complete-reconciled"
+          ]
+        },
+        "complianceState": {
+          "const": "not-claimed"
+        },
+        "certificationState": {
+          "const": "evidence-reconciled-not-certified"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "destinationRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "nextOwnerRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "coveredRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "reviewGateRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "authorityGateRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "blockingRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000
+        }
+      }
+    }
+  },
+  "$defs": {
+    "snapshotRef": {
+      "type": "string",
+      "pattern": "^SNAP-RET-[A-Z0-9-]+$"
+    },
+    "stableId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,127}$"
+    },
+    "principalRef": {
+      "type": "string",
+      "pattern": "^principal-[a-z0-9-]+$"
+    },
+    "refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/stableId"
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "controlledRef": {
+      "type": "string",
+      "pattern": "^controlled://[^/?#]+/[^?#]+$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "name",
+        "title",
+        "scopes",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 120
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 120
+        },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 3
+          }
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "kind",
+        "controlledRef",
+        "digest",
+        "observedAt",
+        "suppliedByRef",
+        "subjectRefs",
+        "contentExcluded"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 3
+        },
+        "controlledRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "subjectRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "contentExcluded": {
+          "const": true
+        }
+      }
+    },
+    "schedule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "scheduleKey",
+        "version",
+        "digest",
+        "effectiveFrom",
+        "effectiveThrough",
+        "supported",
+        "authorityRef",
+        "evidenceRef",
+        "seriesRefs",
+        "ruleRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "scheduleKey": {
+          "type": "string",
+          "minLength": 3
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "effectiveFrom": {
+          "$ref": "#/$defs/date"
+        },
+        "effectiveThrough": {
+          "$ref": "#/$defs/date"
+        },
+        "supported": {
+          "type": "boolean"
+        },
+        "authorityRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "seriesRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "ruleRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "series": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "scheduleRef",
+        "seriesKey",
+        "title",
+        "recordRefs",
+        "ruleRefs",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "scheduleRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "seriesKey": {
+          "type": "string",
+          "minLength": 3
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "ruleRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "seriesRef",
+        "recordKey",
+        "copyRefs",
+        "classificationRef",
+        "triggerEventRefs",
+        "ruleRef",
+        "eligibilityRef",
+        "holdRefs",
+        "exceptionRefs",
+        "proposalRefs",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "seriesRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "recordKey": {
+          "type": "string",
+          "minLength": 3
+        },
+        "copyRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "classificationRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "triggerEventRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "ruleRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "eligibilityRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "holdRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "exceptionRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "proposalRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "copy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "recordRef",
+        "copyKind",
+        "locationRef",
+        "custodianRef",
+        "holdRefs",
+        "custodyEventRefs",
+        "outcomeRefs",
+        "certificateRefs",
+        "residualRef",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "recordRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "copyKind": {
+          "enum": [
+            "authoritative",
+            "working",
+            "backup",
+            "replica"
+          ]
+        },
+        "locationRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "custodianRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "holdRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "custodyEventRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "outcomeRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "certificateRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "residualRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "label",
+        "supplied",
+        "classifiedByRef",
+        "classifiedAt",
+        "evidenceRef",
+        "recordRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 2
+        },
+        "supplied": {
+          "const": true
+        },
+        "classifiedByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "classifiedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "triggerType": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "code",
+        "scheduleRef",
+        "eventRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 3
+        },
+        "scheduleRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "eventRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "triggerEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "triggerTypeRef",
+        "occurredOn",
+        "timezone",
+        "supported",
+        "confirmedByRef",
+        "confirmedAt",
+        "evidenceRef",
+        "recordRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "triggerTypeRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "occurredOn": {
+          "$ref": "#/$defs/date"
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supported": {
+          "type": "boolean"
+        },
+        "confirmedByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "confirmedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "scheduleRef",
+        "seriesRefs",
+        "classificationLabels",
+        "triggerTypeRefs",
+        "durationValue",
+        "durationUnit",
+        "dispositionMethod",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "scheduleRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "seriesRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "classificationLabels": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "triggerTypeRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "durationValue": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "durationUnit": {
+          "const": "calendar-years"
+        },
+        "dispositionMethod": {
+          "type": "string",
+          "minLength": 3
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/stableId"
+        }
+      }
+    },
+    "eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "recordRef",
+        "copyRefs",
+        "scheduleRef",
+        "scheduleVersion",
+        "scheduleDigest",
+        "classificationRef",
+        "triggerEventRef",
+        "ruleRef",
+        "calculation",
+        "eligibleOn",
+        "eligibleAt",
+        "state",
+        "calculatedAt",
+        "calculatedByRef",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "recordRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "copyRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "scheduleRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "scheduleVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scheduleDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "classificationRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "triggerEventRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "ruleRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "calculation": {
+          "const": "trigger-date-plus-calendar-years-end-of-local-day"
+        },
+        "eligibleOn": {
+          "$ref": "#/$defs/date"
+        },
+        "eligibleAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "state": {
+          "enum": [
+            "eligible",
+            "ineligible",
+            "blocked"
+          ]
+        },
+        "calculatedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "calculatedByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "hold": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "holdType",
+        "scopeKind",
+        "coveredRefs",
+        "state",
+        "issuedByRef",
+        "issuedAt",
+        "issueEvidenceRef",
+        "releasedByRef",
+        "releasedAt",
+        "releaseEvidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "holdType": {
+          "enum": [
+            "legal",
+            "regulatory",
+            "audit"
+          ]
+        },
+        "scopeKind": {
+          "enum": [
+            "series",
+            "record",
+            "copy",
+            "broader"
+          ]
+        },
+        "coveredRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "state": {
+          "enum": [
+            "active",
+            "released",
+            "unknown",
+            "conflicting",
+            "incomplete"
+          ]
+        },
+        "issuedByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "issueEvidenceRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "releasedByRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/principalRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "releasedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "releaseEvidenceRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/stableId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "exception": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "targetRefs",
+        "state",
+        "requestedByRef",
+        "requestedAt",
+        "requestEvidenceRef",
+        "approvedByRef",
+        "approvedAt",
+        "approvalEvidenceRef",
+        "expiresAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "state": {
+          "enum": [
+            "approved",
+            "denied",
+            "pending",
+            "expired"
+          ]
+        },
+        "requestedByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "requestedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "requestEvidenceRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "approvedByRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/principalRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "approvedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "approvalEvidenceRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/stableId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "recordRefs",
+        "copyRefs",
+        "eligibilityRefs",
+        "method",
+        "destinationRef",
+        "state",
+        "proposedByRef",
+        "proposedAt",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "copyRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "eligibilityRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "method": {
+          "type": "string",
+          "minLength": 3
+        },
+        "destinationRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "state": {
+          "const": "proposed"
+        },
+        "proposedByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "proposedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "proposalRefs",
+        "recordRefs",
+        "copyRefs",
+        "method",
+        "destinationRef",
+        "createdByRef",
+        "createdAt",
+        "digest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "proposalRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "copyRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "method": {
+          "type": "string",
+          "minLength": 3
+        },
+        "destinationRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "createdByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "batchRef",
+        "batchDigest",
+        "proposalRefs",
+        "recordRefs",
+        "copyRefs",
+        "method",
+        "destinationRef",
+        "decision",
+        "decidedByRef",
+        "decidedAt",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "batchRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "batchDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "proposalRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "recordRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "copyRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "method": {
+          "type": "string",
+          "minLength": 3
+        },
+        "destinationRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "decision": {
+          "enum": [
+            "approved",
+            "rejected"
+          ]
+        },
+        "decidedByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "decidedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/stableId"
+        }
+      }
+    },
+    "custodyEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "copyRef",
+        "sequence",
+        "priorEventRef",
+        "eventType",
+        "custodianRef",
+        "occurredAt",
+        "evidenceRef",
+        "copyDigest",
+        "custodyEffect"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "copyRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "priorEventRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/stableId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "eventType": {
+          "type": "string",
+          "minLength": 3
+        },
+        "custodianRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "occurredAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "copyDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "custodyEffect": {
+          "const": "record-only-no-transfer"
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "batchRef",
+        "batchDigest",
+        "recordRef",
+        "copyRef",
+        "sequence",
+        "priorOutcomeRef",
+        "status",
+        "method",
+        "custodianRef",
+        "reportedAt",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "batchRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "batchDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "recordRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "copyRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "priorOutcomeRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/stableId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "requested",
+            "attempted",
+            "failed",
+            "partial",
+            "succeeded",
+            "unknown"
+          ]
+        },
+        "method": {
+          "type": "string",
+          "minLength": 3
+        },
+        "custodianRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "reportedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/stableId"
+        }
+      }
+    },
+    "certificate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "batchRef",
+        "batchDigest",
+        "recordRef",
+        "copyRef",
+        "method",
+        "custodianRef",
+        "outcomeRef",
+        "authoritative",
+        "independentlyObserved",
+        "observedByRef",
+        "observedAt",
+        "evidenceRef",
+        "certificateDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "batchRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "batchDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "recordRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "copyRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "method": {
+          "type": "string",
+          "minLength": 3
+        },
+        "custodianRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "outcomeRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "authoritative": {
+          "const": true
+        },
+        "independentlyObserved": {
+          "const": true
+        },
+        "observedByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "certificateDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "residual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "recordRef",
+        "copyRef",
+        "locationKind",
+        "locationRef",
+        "state",
+        "observedByRef",
+        "observedAt",
+        "evidenceRef",
+        "certificateRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "recordRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "copyRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "locationKind": {
+          "enum": [
+            "primary",
+            "working",
+            "backup",
+            "replica",
+            "unknown"
+          ]
+        },
+        "locationRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/controlledRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "enum": [
+            "closed",
+            "remaining",
+            "unknown"
+          ]
+        },
+        "observedByRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/stableId"
+        },
+        "certificateRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/stableId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "reviewGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "gate",
+        "state",
+        "reviewerRef",
+        "reviewedAt",
+        "targetRefs",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "gate": {
+          "type": "string",
+          "minLength": 3
+        },
+        "state": {
+          "enum": [
+            "passed",
+            "blocked"
+          ]
+        },
+        "reviewerRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "reviewedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "authorityGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "action",
+        "state",
+        "ownerRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "action": {
+          "type": "string",
+          "minLength": 3
+        },
+        "state": {
+          "const": "prohibited"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/principalRef"
+        }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "code",
+        "status",
+        "ownerRef",
+        "targetRefs",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/snapshotRef"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 3
+        },
+        "status": {
+          "enum": [
+            "open",
+            "resolved"
+          ]
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/refs"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    }
+  }
+}
