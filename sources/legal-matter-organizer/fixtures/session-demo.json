@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "legal-matter-organizer",
+  "scenario": "Maintain the supplied MAT-2026-014 commercial-dispute snapshot from the file-stamped scheduling order, docket export, counsel deadline note, opposing-party correspondence, evidence inventory, and active hold. Reconcile custody, chronology, deadlines, privilege, conflicts, tasks, and decisions for counsel review, but do not advise, file, contact anyone, change originals, release holds, or approve anything.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Maintain the supplied MAT-2026-014 commercial-dispute snapshot from the file-stamped scheduling order, docket export, counsel deadline note, opposing-party correspondence, evidence inventory, and active hold. Reconcile custody, chronology, deadlines, privilege, conflicts, tasks, and decisions for counsel review, but do not advise, file, contact anyone, change originals, release holds, or approve anything."
+    },
+    {
+      "role": "agent",
+      "text": "I bound the supplied parties, sources, custody, indexes, chronology, deadlines, privilege, holds, conflicts, tasks, decisions, and review gates to MAT-2026-014 and its exact snapshot while keeping all legal authority with named counsel."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/legal-matter-organizer-handoff.md as a preservation-safe ready-for-counsel-review handoff. It is not approved, and no filing, service, contact, advice, strategy, privilege determination, negotiation, settlement, waiver, custody transfer, hold release, or destructive action occurred."
+    }
+  ],
+  "report": {
+    "title": "Legal matter organizer session handoff",
+    "summary": "A matter- and snapshot-bound legal-operations artifact with minimized parties, controlled sources, append-only custody, complete filing/correspondence/evidence indexes, confirmed deadlines, resolved counsel privilege and conflict gates, active hold coverage, human-owned tasks and decisions, and an independently reviewed ready-for-counsel-review handoff that grants no legal-action authority.",
+    "output": "outputs/legal-matter-organizer-handoff.md",
+    "items": [
+      {
+        "title": "Matter, principals, parties, and workstream snapshot",
+        "summary": "Every ledger row is bound to the exact matter and snapshot, covered by the handoff, and connected through complete bidirectional references with no duplicate, dangling, cross-matter, cross-snapshot, or orphan state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Controlled source, custody, filing, correspondence, and evidence indexes",
+        "summary": "Every relied-on source has a nondegenerate controlled reference, authority, custodian, observed and received times, immutable version, integrity digest, classification, append-only custody, record use, and complete active-hold coverage while originals remain unchanged",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Source-backed chronology, deadline, privilege, hold, conflict, task, and decision ledgers",
+        "summary": "Every chronology event uses explicit occurred, reported, scheduled, or unknown semantics, and every deadline has a timezone, supported authority, verification state, source evidence, and scoped named-counsel confirmation with conflicts, staleness, unsupported values, and inference blocking readiness",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Review-gate register and preservation-safe counsel-review handoff",
+        "summary": "Privilege, hold, conflict, task, decision, and review-gate state remains supplied and human-owned; ready-for-counsel-review requires resolved gates and independent named-counsel review after all evidence without claiming advice, legal action, approval, filing, communication, settlement, waiver, custody transfer, hold release, or destruction",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "legal-matter-organizer",
+    "name": "Legal matter organizer",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73"
+      ],
+      "lastVerified": "2026-09-06"
+    },
+    "description": "Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action.",
+    "audience": "Authorized legal-operations staff maintaining an already-open matter under named counsel supervision in an approved workspace and controlled review destination.",
+    "principles": [
+      "Bind every party, workstream, source, custody event, indexed record, chronology event, deadline, privilege label, hold, conflict state, task, decision, review gate, and handoff to one exact matter and snapshot",
+      "Preserve supplied source authority, immutable versions, integrity digests, append-only custody, active holds, uncertainty, conflicts, and counsel decisions without changing originals or inferring legal meaning",
+      "Keep legal interpretation, advice, strategy, privilege determination, filing, service, communication, negotiation, settlement, waiver, commitment, and approval with scoped named counsel"
+    ],
+    "boundaries": [
+      "Do not interpret law, give legal advice, infer claims or defenses, determine strategy or privilege, clear conflicts, issue or release holds, or represent the artifact as counsel-approved",
+      "Do not file, serve, sign, contact parties, witnesses, counsel, courts, regulators, or agencies, negotiate, settle, waive, commit, communicate externally, or approve the matter handoff",
+      "Do not delete, alter, move, release, transfer custody of, or destroy originals, evidence, correspondence, filings, source versions, custody records, or hold-covered material",
+      "Do not expose party identities, personal data, confidential facts, legal theories, privileged content, credentials, or uncontrolled source locations beyond the approved workspace and destination"
+    ],
+    "intake": [
+      "Stable matter ID, neutral title, counsel-supplied scope, exact snapshot reference and cutoff, approved workspace and destination, and named humans with scoped matter, deadline, privilege, hold, task, and handoff responsibilities",
+      "Counsel-supplied parties, roles, workstreams, conflict and sensitivity states, filing, correspondence, and evidence indexes, minimized labels, and controlled party references",
+      "Controlled source references, source authority, custodians, observed and received timestamps, immutable versions, integrity digests, classifications, hold coverage, and supplied append-only custody events",
+      "Source-backed chronology, authoritative deadline candidates and timezones, privilege labels, legal holds, tasks, supplied human decisions, review gates, and unresolved questions"
+    ],
+    "workflow": [
+      "Confirm the already-open matter, exact snapshot, counsel-supplied scope, approved destinations, named-human scopes, and minimized party/workstream boundaries",
+      "Index controlled sources and filing, correspondence, and evidence records while preserving immutable versions, integrity digests, originals, custody history, and legal-hold coverage",
+      "Reconcile chronology semantics, deadline authorities and timezones, privilege and conflict states, human-owned tasks, and append-only supplied decisions without legal inference",
+      "Validate every forward and reverse reference, matter/snapshot binding, source and custody chain, record coverage, deadline confirmation, hold coverage, and review gate",
+      "Produce either a blocked snapshot or a ready-for-counsel-review preservation-safe handoff; never produce an approved, filed, served, communicated, negotiated, settled, waived, or closed state"
+    ],
+    "deliverables": [
+      "Matter, principals, parties, and workstream snapshot",
+      "Controlled source, custody, filing, correspondence, and evidence indexes",
+      "Source-backed chronology, deadline, privilege, hold, conflict, task, and decision ledgers",
+      "Review-gate register and preservation-safe counsel-review handoff"
+    ],
+    "example": {
+      "request": "Maintain the supplied MAT-2026-014 commercial-dispute snapshot from the file-stamped scheduling order, docket export, counsel deadline note, opposing-party correspondence, evidence inventory, and active hold. Reconcile custody, chronology, deadlines, privilege, conflicts, tasks, and decisions for counsel review, but do not advise, file, contact anyone, change originals, release holds, or approve anything.",
+      "outcome": "A matter- and snapshot-bound legal-operations artifact with minimized parties, controlled sources, append-only custody, complete filing/correspondence/evidence indexes, confirmed deadlines, resolved counsel privilege and conflict gates, active hold coverage, human-owned tasks and decisions, and an independently reviewed ready-for-counsel-review handoff that grants no legal-action authority."
+    },
+    "doneWhen": [
+      "Every ledger row is bound to the exact matter and snapshot, covered by the handoff, and connected through complete bidirectional references with no duplicate, dangling, cross-matter, cross-snapshot, or orphan state",
+      "Every relied-on source has a nondegenerate controlled reference, authority, custodian, observed and received times, immutable version, integrity digest, classification, append-only custody, record use, and complete active-hold coverage while originals remain unchanged",
+      "Every chronology event uses explicit occurred, reported, scheduled, or unknown semantics, and every deadline has a timezone, supported authority, verification state, source evidence, and scoped named-counsel confirmation with conflicts, staleness, unsupported values, and inference blocking readiness",
+      "Privilege, hold, conflict, task, decision, and review-gate state remains supplied and human-owned; ready-for-counsel-review requires resolved gates and independent named-counsel review after all evidence without claiming advice, legal action, approval, filing, communication, settlement, waiver, custody transfer, hold release, or destruction"
+    ],
+    "capabilityGuidance": [
+      "The base starter works only from supplied files and controlled references in the approved workspace and grants no skill, plugin, MCP, cron, browser, shell, messaging, delegation, bootstrap, dashboard, or external-system capability.",
+      "A named human may include a title, but a bare package role, counsel role, team, agent, service, or system identity cannot satisfy supervision, confirmation, ownership, issuance, or review authority.",
+      "When source, custody, chronology, deadline, privilege, hold, conflict, task, decision, or review evidence is malformed, missing, conflicting, stale, unsupported, inferred, or outside the exact matter snapshot, preserve a blocked handoff and name the human review required."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/legal-matter.schema.json",
+        "path": "schemas/legal-matter.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/legal-matter.example.json",
+        "path": "fixtures/legal-matter.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/legal-matter.md",
+        "path": "templates/legal-matter.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Already-open legal matters fragment source custody, filings, correspondence, evidence, chronology, deadlines, privilege claims, legal holds, conflict state, tasks, and counsel decisions across folders and trackers, making a preservation-safe review snapshot difficult without accidentally drifting into legal advice or unauthorized action.",
+    "repeatableJob": "For authorized legal-operations staff under named counsel supervision, maintain one exact already-open matter snapshot that reconciles controlled sources, append-only custody, matter-specific indexes, chronology, deadlines, privilege, holds, conflicts, tasks, supplied decisions, and review gates into a blocked or ready-for-counsel-review preservation-safe handoff.",
+    "proofPlan": "Prove an X3 artifact with strict top-level schemas, total semantic validation, complete forward/reverse and orphan checks, exact matter/snapshot binding, controlled-reference and integrity enforcement, chronology and deadline authority reconciliation, counsel-confirmed privilege, active-hold coverage, conflict gates, named-human tasks and decisions, independent post-evidence counsel review, exact prohibited-action gates, prohibited narrative detection with safe negation, base-only capability proof, CLI validation, and focused malformed/adversarial fixtures.",
+    "existingAlternatives": [
+      {
+        "id": "case-continuity-coordinator",
+        "overlap": "Both preserve an exact resumable snapshot, source freshness, owner-visible actions, predecessor continuity, and a reviewable handoff without silently closing work.",
+        "difference": "Case Continuity Coordinator has no matter-specific named-counsel supervision, party/conflict model, immutable source and append-only custody chain, active legal-hold coverage, privilege determinations, authoritative legal deadlines, filing/correspondence/evidence indexes, or supplied counsel-decision semantics."
+      },
+      {
+        "id": "privacy-request-coordinator",
+        "overlap": "Both use controlled evidence, legal holds, accountable review, deadline clocks, minimization, and a non-sending controlled handoff.",
+        "difference": "Privacy Request Coordinator owns a rights-request lifecycle and identity/system-search workflow; it lacks an already-open matter snapshot, party and conflict semantics, record custody and immutable versions, filing/correspondence/evidence indexes, matter chronology, privilege labels, counsel strategy boundary, and append-only counsel decisions."
+      },
+      {
+        "id": "compliance-reviewer",
+        "overlap": "Both organize source-backed governance evidence, exceptions, accountable human review, and strict separation from legal conclusions.",
+        "difference": "Compliance Reviewer assesses controls against a framework; it lacks matter-specific counsel and parties, conflict state, custody and holds, privilege confirmation, legal deadline authority, filing/correspondence/evidence indexes, chronology, and supplied matter-decision semantics."
+      },
+      {
+        "id": "document-intake-analyst",
+        "overlap": "Both normalize supplied documents with provenance, controlled references, minimization, review questions, and no autonomous legal judgment.",
+        "difference": "Document Intake Analyst produces reviewable document summaries; it lacks exact matter/snapshot binding, named-counsel supervision, party/conflict state, append-only custody, legal holds, privilege labels, authoritative deadlines, filing/correspondence/evidence relationships, chronology, and counsel decisions."
+      },
+      {
+        "id": "tax-document-organizer",
+        "overlap": "Both organize sensitive supplied records, source authority, deadlines, missing or conflicting evidence, professional-review questions, and blocked legal or filing actions.",
+        "difference": "Tax Document Organizer owns tax-season collection and preparer handoff; it lacks an already-open legal matter, parties/conflicts, custody events and integrity versions, active holds, privilege confirmation, court/agency or correspondence deadline authority, filing/correspondence/evidence indexes, and supplied counsel decisions."
+      },
+      {
+        "id": "insurance-policy-organizer",
+        "overlap": "Both preserve sensitive source provenance, deadline and conflict visibility, review gates, and blocked advice, filing, payment, contact, or account action.",
+        "difference": "Insurance Policy Organizer owns policy and claim-readiness evidence; it lacks matter-specific counsel supervision, parties and conflict clearance, append-only custody, legal holds, privilege labels, legal chronology and deadline authority, filing/correspondence indexes, and supplied counsel-decision semantics."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both track official records, source-backed deadlines, stale or conflicting evidence, accountable owners, and blocked filing, contact, signature, payment, or account actions.",
+        "difference": "Document Renewal Tracker owns expiring-document workflows; it lacks legal-matter and snapshot identity, named counsel, parties/conflicts, custody and holds, privilege, filing/correspondence/evidence indexes, matter chronology, and append-only counsel decisions."
+      },
+      {
+        "id": "procurement-evaluator",
+        "overlap": "Both preserve controlled sources, conflicts and sensitive-party concerns, review gates, decision evidence, and authority retained by named humans.",
+        "difference": "Procurement Evaluator compares vendors and recommendations; it lacks an already-open matter, counsel supervision, party/legal-conflict semantics, source custody, active holds, privilege confirmation, legal deadlines, filing/correspondence/evidence indexes, matter chronology, and preservation-safe handoff rules."
+      },
+      {
+        "id": "knowledge-curator",
+        "overlap": "Both maintain a durable indexed collection with source provenance, controlled destinations, review questions, and no destructive or publishing authority.",
+        "difference": "Knowledge Curator organizes a general collection; it lacks matter-specific counsel, parties/conflicts, source custody and integrity, legal holds, privilege state, deadline authority, filing/correspondence/evidence semantics, legal chronology, and append-only supplied decisions."
+      }
+    ]
+  }
+}
