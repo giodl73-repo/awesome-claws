@@ -4311,7 +4311,8 @@
           ],
           "replacement": "mock-plus-missing",
           "expectedCodes": [
-            "invalid_vulnerability_snapshot_binding"
+            "invalid_vulnerability_snapshot_binding",
+            "missing_investigation_owner"
           ]
         }
       ]

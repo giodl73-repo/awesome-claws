@@ -49570,16 +49570,6 @@ function vulnerabilityDispositionFindings(input) {
     return Number.isFinite(milliseconds) ? milliseconds : null;
   }
 
-  // A date-only investigation deadline resolves at the end of that UTC day rather
-  // than the end of the snapshot's local day. Every other rule here fails closed,
-  // and the UTC boundary is the earlier, stricter one.
-  function endOfDayMs(candidate) {
-    if (typeof candidate !== "string" || !/^\d{4}-\d{2}-\d{2}$/u.test(candidate)) {
-      return null;
-    }
-    return timestamp(`${candidate}T23:59:59.999Z`);
-  }
-
   function sameSet(actual, expected) {
     return (
       Array.isArray(actual) &&
@@ -51005,7 +50995,7 @@ function vulnerabilityDispositionFindings(input) {
         }
       }
     } else if (row.disposition === "under_investigation") {
-      const dueMs = endOfDayMs(row.dueDate);
+      const dueMs = endOfLocalDayMs(row.dueDate, snapshot.timezone);
       if (
         dueMs === null ||
         asOfMs === null ||
