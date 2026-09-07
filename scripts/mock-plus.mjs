@@ -11,6 +11,7 @@ export function parseMockPlusArgs(args) {
     explain: false,
     inventory: false,
     check: false,
+    update: false,
     profile: "vertical",
   };
   for (let index = 0; index < args.length; index += 1) {
@@ -50,9 +51,7 @@ export function parseMockPlusArgs(args) {
         options.profile = "lifecycle-portfolio";
       }
     } else if (argument === "--update") {
-      throw new Error(
-        "--update is reserved for the canonical-profile slice and is not available yet.",
-      );
+      options.update = true;
     } else {
       throw new Error(`Unknown Mock+ option: ${argument}.`);
     }
@@ -60,11 +59,41 @@ export function parseMockPlusArgs(args) {
   if (options.explain && !options.caseId) {
     throw new Error("--explain requires --case.");
   }
+  if (
+    options.update &&
+    (options.check ||
+      options.inventory ||
+      options.explain ||
+      options.caseId ||
+      options.onlyIds ||
+      options.profile !== "vertical")
+  ) {
+    throw new Error("--update cannot be combined with other Mock+ options.");
+  }
   return options;
 }
 
 export async function main(args = process.argv.slice(2)) {
   const options = parseMockPlusArgs(args);
+  if (
+    options.update ||
+    (options.check &&
+      !options.onlyIds &&
+      !options.caseId &&
+      options.profile === "vertical")
+  ) {
+    const { checkMockPlusProfile, updateMockPlusProfile } = await import(
+      "./mock-plus-profile.mjs"
+    );
+    const profile = options.update
+      ? await updateMockPlusProfile()
+      : await checkMockPlusProfile();
+    console.log(
+      `Mock+ canonical profile ${options.update ? "updated" : "checked"}: ${profile.totals.profileCount} profiles, ${profile.totals.caseCount} cases, ${profile.totals.mutantsKilled} mutants killed.`,
+    );
+    console.log(`Profile digest: ${profile.profileDigest}`);
+    return profile;
+  }
   if (options.inventory) {
     const { inventory } = await loadMockPlusContext();
     console.log(JSON.stringify(inventory, null, 2));

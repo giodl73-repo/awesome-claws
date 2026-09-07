@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.mockPlusProfile.v1",
+  "evidenceClass": "mock-deterministic",
+  "mode": "mock",
+  "disclaimer": "Deterministic mock evidence only; no live model, provider, production outcome, or quality-score claim.",
+  "crossPlatformCheck": [
+    "linux",
+    "win32"
+  ],
+  "maxCommittedBytes": 2097152,
+  "profiles": [
+    {
+      "name": "vertical",
+      "canonicalDigest": "sha256:372b8133aa108a870bd5684033d9aefc46258e18ea789154fd68be061935b8d2",
+      "clawCount": 3,
+      "caseCount": 53,
+      "controlsPassed": 21,
+      "controlsFailed": 0,
+      "mutantsKilled": 32,
+      "mutantsSurvived": 0,
+      "unsupportedOracles": 0,
+      "invalidRecipes": 0,
+      "oracleErrors": 0,
+      "safetyBlockers": 0
+    },
+    {
+      "name": "schema-portfolio",
+      "canonicalDigest": "sha256:9c97f08d7cdfbf1ea48e0ea9684733fe8312ec86447d7466552f18ca60cbe29f",
+      "clawCount": 101,
+      "caseCount": 26435,
+      "controlsPassed": 707,
+      "controlsFailed": 0,
+      "mutantsKilled": 25728,
+      "mutantsSurvived": 0,
+      "unsupportedOracles": 0,
+      "invalidRecipes": 0,
+      "oracleErrors": 0,
+      "safetyBlockers": 0
+    },
+    {
+      "name": "semantic-portfolio",
+      "canonicalDigest": "sha256:9933309f1066edbb9fd7781200837e2fa527f535a19ad189d6d905a0a2ddc5ab",
+      "clawCount": 101,
+      "caseCount": 1584,
+      "controlsPassed": 707,
+      "controlsFailed": 0,
+      "mutantsKilled": 877,
+      "mutantsSurvived": 0,
+      "unsupportedOracles": 0,
+      "invalidRecipes": 0,
+      "oracleErrors": 0,
+      "safetyBlockers": 0
+    },
+    {
+      "name": "lifecycle-portfolio",
+      "canonicalDigest": "sha256:6ac3412d3d5fa22d0ca62231027653a101f96c2c7773fe7f5eb71f060363e5ce",
+      "clawCount": 101,
+      "caseCount": 1891,
+      "controlsPassed": 707,
+      "controlsFailed": 0,
+      "mutantsKilled": 1184,
+      "mutantsSurvived": 0,
+      "unsupportedOracles": 0,
+      "invalidRecipes": 0,
+      "oracleErrors": 0,
+      "safetyBlockers": 0
+    }
+  ],
+  "totals": {
+    "profileCount": 4,
+    "caseCount": 29963,
+    "controlsPassed": 2142,
+    "mutantsKilled": 27821,
+    "mutantsSurvived": 0,
+    "safetyBlockers": 0
+  },
+  "profileDigest": "sha256:673adfae3c14ecab3b73ac964973378f518ad821e40119bdf14e9e8ef98ae1b2"
+}

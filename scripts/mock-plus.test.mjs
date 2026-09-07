@@ -23,6 +23,10 @@ import {
   runMockPlus,
 } from "./mock-plus-lib.mjs";
 import { parseMockPlusArgs } from "./mock-plus.mjs";
+import {
+  MOCK_PLUS_PROFILE_NAMES,
+  buildMockPlusProfile,
+} from "./mock-plus-profile.mjs";
 import { aggregateRuntimeEvidence } from "./runtime-evidence-lib.mjs";
 
 test("inventory derives the current portfolio oracle surface", async () => {
@@ -465,6 +469,7 @@ test("CLI arguments require exact replay inputs", () => {
       explain: true,
       inventory: false,
       check: true,
+      update: false,
       profile: "vertical",
     },
   );
@@ -473,7 +478,11 @@ test("CLI arguments require exact replay inputs", () => {
     () => parseMockPlusArgs(["--unknown"]),
     /Unknown Mock\+ option/u,
   );
-  assert.throws(() => parseMockPlusArgs(["--update"]), /not available yet/u);
+  assert.equal(parseMockPlusArgs(["--update"]).update, true);
+  assert.throws(
+    () => parseMockPlusArgs(["--update", "--check"]),
+    /cannot be combined/u,
+  );
   assert.equal(parseMockPlusArgs(["--portfolio"]).profile, "schema-portfolio");
   assert.equal(
     parseMockPlusArgs(["--semantics"]).profile,
@@ -486,6 +495,46 @@ test("CLI arguments require exact replay inputs", () => {
   assert.throws(
     () => parseMockPlusArgs(["--portfolio", "--semantics"]),
     /mutually exclusive/u,
+  );
+});
+
+test("canonical profile summarizes only complete passing profiles", () => {
+  const runs = MOCK_PLUS_PROFILE_NAMES.map((name, index) => ({
+    manifest: { profile: name },
+    canonicalDigest: `sha256:${String(index).repeat(64)}`,
+    coverage: {
+      status: "passed",
+      clawCount: index === 0 ? 3 : 100,
+      caseCount: 10 + index,
+      counts: {
+        "control-passed": 7,
+        "control-failed": 0,
+        killed: 3 + index,
+        survived: 0,
+        "unsupported-oracle": 0,
+        "invalid-recipe": 0,
+        "oracle-error": 0,
+      },
+      safety: { blockingCount: 0 },
+    },
+  }));
+  const profile = buildMockPlusProfile(runs);
+  assert.equal(profile.evidenceClass, "mock-deterministic");
+  assert.equal(profile.mode, "mock");
+  assert.equal(profile.totals.profileCount, 4);
+  assert.equal(profile.totals.caseCount, 46);
+  assert.equal(profile.totals.mutantsKilled, 18);
+  assert.match(profile.profileDigest, /^sha256:[a-f0-9]{64}$/u);
+  assert.throws(
+    () =>
+      buildMockPlusProfile([
+        ...runs.slice(0, -1),
+        {
+          ...runs.at(-1),
+          coverage: { ...runs.at(-1).coverage, status: "failed" },
+        },
+      ]),
+    /requires every qualifying profile/u,
   );
 });
 
