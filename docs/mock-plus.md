@@ -49,6 +49,8 @@ npm run mock-plus -- --check
 npm run mock-plus -- --portfolio --check
 npm run mock-plus -- --semantics --check
 npm run mock-plus -- --lifecycle --check
+npm run mock-plus -- --update
+npm run mock-plus -- --check
 npm run mock-plus:semantics:recipes:check
 npm run mock-plus -- --only sales-operations
 npm run mock-plus -- --only sales-operations --case semantic-dangling-reference --explain
@@ -56,6 +58,12 @@ npm run mock-plus -- --only sales-operations --case semantic-dangling-reference 
 
 `--explain` prints only stable validator codes, paths, type-level mutation
 deltas, gates, and redacted excerpts. It does not print raw fixture values.
+
+Bare `--check` regenerates all four qualifying profiles without persisting
+per-case output and compares their exact canonical digests and aggregate counts
+with `generated/mock-plus-profile.json`. `--update` refreshes that reviewed
+summary. Profile-specific checks such as `--portfolio --check` remain available
+for focused validation.
 
 ## Evidence
 
@@ -80,6 +88,10 @@ they cannot overwrite qualifying evidence. Both roots are ignored by git.
 The canonical digest excludes platform, architecture, commit, timestamps, and
 durations. Content identity includes the harness, package, regression contract,
 fixture, schema, semantic validator, capability adapters, recipe, and seed.
+The committed profile is capped at 2 MiB and is checked in a separate Linux and
+Windows CI matrix. Both platforms compare against the same expected digests, so
+either platform fails on canonicalization drift. Mock+ remains outside
+`npm run check` because it is a deliberately heavier standalone evidence gate.
 
 The slice runs sequentially, caps fixture input at 1 MiB, uses a one-second
 per-case evaluation budget, caps run output at 25 MiB, and fails if a synthetic

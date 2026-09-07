@@ -26,6 +26,7 @@
     "test:claw": "node scripts/test-claw.mjs",
     "eval:pilot": "node scripts/semantic-eval.mjs",
     "mock-plus": "node scripts/mock-plus.mjs",
+    "mock-plus:profile:check": "node scripts/mock-plus-profile.mjs --check",
     "mock-plus:semantics:recipes": "node scripts/mock-plus-semantic-discover.mjs",
     "mock-plus:semantics:recipes:check": "node scripts/mock-plus-semantic-discover.mjs --check",
     "runtime:evidence": "node scripts/runtime-evidence.mjs",
