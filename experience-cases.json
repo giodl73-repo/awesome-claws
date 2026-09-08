@@ -84,7 +84,8 @@
       "legal-matter-organizer",
       "records-retention-disposition-coordinator",
       "vulnerability-disposition-coordinator",
-      "infrastructure-drift-reconciliation-coordinator"
+      "infrastructure-drift-reconciliation-coordinator",
+      "access-entitlement-review-coordinator"
     ]
   },
   "visualCases": [

@@ -10454,6 +10454,111 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "access-entitlement-review-coordinator",
+      "name": "Access Entitlement Review Coordinator",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-07"
+      },
+      "description": "Reconciles one exact owner-supplied access-assignment snapshot, bound to a locale-independent recomputed assignment-manifest digest, so that every in-scope principal, resource, entitlement, and assignment key carries exactly one fresh named-human retain or revoke recertification decision or one exact non-decision, with per-row reviewer authority, a content-bound owner authority roster, controlled evidence that content-addresses both its envelope and the exact semantic payload of the row it supports, a scoped non-subject handoff recipient, and a record that carries no free-text field at all, and without reaching identity systems, inferring effective access, carrying any prior decision forward, or changing access.",
+      "audience": "Authorized identity-governance, access-owner, and audit-support staff running a periodic entitlement recertification round over approved access exports in a controlled workspace, while IAM systems, resource and entitlement catalogs, HR and identity sources, access owners, reviewers, and executors remain authoritative.",
+      "principles": [
+        "Keep IAM systems, entitlement catalogs, identity sources, and named access owners authoritative, and recertify only the assignment rows they exported",
+        "Treat recertification as a human act: only a named human holding evidence-backed, current-round authority over the exact resource and entitlement may record retain or revoke",
+        "Recertify from scratch every round: each new owner snapshot costs fresh named-human decisions, and no prior decision, recommendation, or default may stand in for a current row",
+        "Carry owner recommendations, inactivity, and peer-affiliation signals as typed closed values from the declared source system, and never let one become a decision, a default, or a terminal state",
+        "Expose every owner assignment key exactly once across reviewed and excluded populations, and keep every excluded, unreviewed, and escalated row visible, so an omission or duplicate can never read as a review",
+        "Infer no identity, employment, group expansion, effective access, role equivalence, or risk, and declare the access paths the supplied snapshot does not cover",
+        "Keep the machine record free of narrative: every field is a closed enum, an exact reference, a digest, a timestamp, or a typed value, so no claim has anywhere to live",
+        "Bind every controlled record to the exact semantic payload of the row it supports, and bind the owner-controlled round and snapshot configuration into the round export, so an unchanged reference can never stand behind changed campaign controls, decisions, authority, signals, non-decisions, or blockers"
+      ],
+      "boundaries": [
+        "Do not reach directories, identity providers, IAM systems, cloud consoles, HR systems, networks, browsers, shells, MCP servers, plugins, cron jobs, messaging, or ticketing",
+        "Do not grant, revoke, modify, provision, deprovision, or otherwise change any access, group, role, entitlement, or assignment",
+        "Do not expand groups, resolve nested or inherited membership, compute effective access, or suggest the review covers access paths the owner did not export",
+        "Do not infer identity, employment state, role equivalence, entitlement risk, or privilege; unsupplied privilege stays unknown and blocks rather than defaulting to unprivileged",
+        "Do not generate, rank, or accept access recommendations; a system default, auto-apply, no-response default, or accepted recommendation is never a decision",
+        "Do not carry, inherit, or replay any prior-round decision, and do not derive review authority from inside the artifact; scopes hold only while a content-bound owner roster record covers the exact principal ledger",
+        "Do not emit or accept free-text notes, summaries, rationales, or reproduced source-system prose anywhere in the machine record, so attestation, non-repudiation, certification, compliance, audit-readiness, least-privilege, risk-acceptance, and executed-change claims have no field to occupy"
+      ],
+      "intake": [
+        "Round identity with the opaque prior-round reference, cutoff, review window, fresh-decision cadence, approved private destination, the exact owner authority-roster reference, and one content-addressed export naming the round, the snapshot, and every assignment row",
+        "Assignment snapshot whose digest is the recomputed, locale-independent manifest of every owner-supplied row field, with an in-scope flag and closed exclusion code per row, direct or owner-expanded resolution mode, a per-row assignment digest, the declared owner source system, the owner entitlement catalog, and the fixed register of access paths the export does not cover",
+        "Owner authority roster whose digest is recomputed from every principal id, name, kind, and exact scope set, bound to one content-addressed custodian export naming the roster and every principal in the ledger",
+        "Principal ledger that separates named people from teams, service identities, systems, agents, and roles, with round-running scopes for humans including the declared execution-handoff recipient, supplier scopes for the declared source system, and the owner-supplied grantor for every assignment row",
+        "Reviewer authority grants naming the exact resource and entitlement, review and privileged-review scopes, an active interval wholly contained by the current round, a rostered issuing owner who is not the subject, and reciprocal controlled evidence issued between the snapshot cutoff and grant activation",
+        "Source-system signals bound to the current round, snapshot digest, row reference and row digest, carrying a typed inactive-day count or a typed recommendation code and exactly one reciprocal content-addressed record from the declared source system"
+      ],
+      "workflow": [
+        "Recompute the assignment-manifest and authority-roster digests under code-unit ordering, confirm the round cutoff, review window, cadence, approved private destination, declared handoff recipient, roster boundary, source system, entitlement catalog, source-signal index, and not-covered access paths all match the exact content-addressed owner export before reading any assignment row",
+        "Derive the exact in-scope assignment key universe from owner-supplied scope only, and hold every excluded row visible under the closed exclusion code its owner supplied",
+        "Validate every decision maker as a named human whose current-round grant covers the exact resource and entitlement, was active at the decision instant, and was issued by a rostered owner who is not the subject",
+        "Refuse every non-human decision maker and every system default, auto-apply, no-response default, or accepted recommendation, and render source-system signals structurally without letting one settle a row",
+        "Bind each decision to the exact assignment reference, row digest, current snapshot manifest digest, current round, and one controlled record its decider authored at the decision instant that binds that decision's exact semantic payload, and hold every decision, non-decision, and blocker to one window rule: after the snapshot cutoff, no earlier than the window opens, no later than it closes",
+        "Require exactly one retain, revoke, or non-decision for each in-scope key, and fail closed on unknown or absent privilege, missing authority, escalation without a scoped next reviewer, and any coverage gap",
+        "Render only blocked or ready-for-owner-execution to the recipient the round declared, with the exact key coverage index, exclusion index, blocker index, rendered signal index under a constant not-a-decision presentation, and the access paths the snapshot does not cover"
+      ],
+      "deliverables": [
+        "Round, snapshot, principal, and evidence ledgers bound to one recomputed assignment-manifest digest, with every controlled record content-addressed, payload-bound to the row it supports, uniquely identified, and consumed exactly once",
+        "Exact in-scope assignment key coverage index carrying one named-human retain or revoke decision or one exact non-decision per key",
+        "Reviewer authority ledger proving per-row resource and entitlement coverage, active interval, privileged separation from subject and grantor, and a rostered issuing owner for every decision",
+        "Content-bound owner authority roster naming its independent custodian, its recomputed digest over every principal, and the point past which this package proves nothing about who may authorize whom",
+        "Blocked or ready-for-owner-execution handoff to a named human holding the owner execution-handoff scope who is not a reviewed subject, with the exclusion index, rendered signal index, not-covered access paths, and no summary, outcome, certificate, attestation, or compliance lane"
+      ],
+      "doneWhen": [
+        "The recomputed assignment-manifest digest equals the declared snapshot digest, the recomputed roster digest equals the declared roster digest under an independent custodian export, and the derived in-scope key universe equals the declared coverage index exactly, with no duplicate key, hidden row, laundered exclusion, or key carrying more than one terminal record",
+        "Every decision, non-decision, and blocker sits after this snapshot cutoff, no earlier than the review window opens and no later than it closes, and every decision is a fresh named-human retain or revoke bound to the exact assignment reference, row digest, current snapshot manifest digest, and current round, evidenced by exactly one content-addressed record its decider authored at the decision instant",
+        "Every decision maker holds an owner-supplied grant whose active interval is wholly contained by the current round and covers the exact resource and entitlement at the decision instant, every evidence record is observed between the snapshot cutoff and round close, excluded rows assert no privilege value, privileged rows separate the reviewer from the subject and the owner-supplied grantor under privileged-review scope, and unknown or absent privilege blocks instead of defaulting",
+        "No system default, auto-apply, no-response default, accepted recommendation, prior-round decision, or source-system signal reaches a terminal state, and every controlled record is content-addressed, uniquely identified, consumed exactly once, and bound to the exact semantic payload of the row it supports as well as its exact subjects, author, instant, and snapshot digest",
+        "The handoff goes to the recipient the round declared, who holds the owner execution-handoff scope and is no reviewed subject, and it is blocked whenever a non-decision, blocker, evidence, payload, authority, scope, chronology, manifest, roster, source-authority, or coverage gap exists, and it carries no field in which execution, attestation, certification, compliance, or effective-access coverage could be claimed"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses only supplied workspace artifacts and grants no directory, IAM, HR, cloud, browser, shell, network, MCP, plugin, cron, messaging, or ticketing capability.",
+        "IAM systems, resource and entitlement catalogs, HR and identity sources, access owners, reviewers, and executors retain all identity, scope, privilege, authority, alternative-access planning, and execution authority.",
+        "Malformed, duplicated, excluded, unscoped, expired, self-reviewed, machine-sourced, changed, stale, or incompletely covered evidence produces exact blockers and an owner handoff rather than an inferred decision, a hidden row, or an executed change."
+      ],
+      "example": {
+        "request": "Coordinate our Q3 entitlement recertification from these supplied access exports. Show every in-scope assignment with its named-human retain or revoke decision for this round, prove each reviewer was authorized for that exact resource and entitlement by someone the owner roster names, keep the source-system inactivity and recommendation signals visible without letting them decide anything, and do not let last quarter's approvals stand in for this quarter's. Do not reach our directory, expand groups, compute effective access, change access, or claim we are compliant.",
+        "outcome": "A strict review artifact whose snapshot digest is the recomputed owner assignment manifest and whose authority roster is a content-bound custodian record, proving exactly one fresh named-human decision or one exact non-decision for every in-scope assignment key, refusing a service-account reviewer and an auto-applied default, keeping an owner-excluded workload-identity row visibly out of scope under a closed exclusion code, recording a privileged revoke by a reviewer who is neither its subject nor its grantor, recording a third current retain against a source-system deny recommendation, rendering the six access paths this snapshot does not cover, and handing execution to the named access owner with no replacement, modification, or field anywhere in which to claim the change was made."
+      },
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/access-entitlement-review.schema.json",
+          "path": "schemas/access-entitlement-review.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/access-entitlement-review.example.json",
+          "path": "fixtures/access-entitlement-review.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/access-entitlement-review.md",
+          "path": "templates/access-entitlement-review.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

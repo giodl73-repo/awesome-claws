@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 104,
-    "coveredCount": 104,
-    "recipeCount": 280,
-    "findingCodeCount": 296
+    "validatorCount": 105,
+    "coveredCount": 105,
+    "recipeCount": 283,
+    "findingCodeCount": 304
   },
   "entries": [
     {
@@ -4369,6 +4369,61 @@
             "invalid_infrastructure_drift_handoff",
             "invalid_infrastructure_drift_identity_state",
             "missing_infrastructure_drift_disposition"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "access-entitlement-review-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-evidence-payload-binding-1",
+          "operator": "replace",
+          "path": [
+            "round",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_evidence_payload_binding",
+            "invalid_review_handoff",
+            "invalid_round_binding",
+            "invalid_signal_binding"
+          ]
+        },
+        {
+          "id": "semantic-invalid-authority-roster-2",
+          "operator": "replace",
+          "path": [
+            "round",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_authority_roster",
+            "invalid_evidence_payload_binding",
+            "invalid_handoff_authority",
+            "invalid_principal_scope",
+            "invalid_review_handoff",
+            "invalid_round_binding",
+            "invalid_signal_binding",
+            "invalid_source_authority"
+          ]
+        },
+        {
+          "id": "semantic-invalid-decision-chronology-3",
+          "operator": "replace",
+          "path": [
+            "round",
+            "window",
+            "opensAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_decision_chronology",
+            "invalid_evidence_payload_binding",
+            "invalid_review_handoff",
+            "invalid_round_binding"
           ]
         }
       ]

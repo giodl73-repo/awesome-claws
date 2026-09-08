@@ -2550,6 +2550,35 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "access-entitlement-review-coordinator",
+      "acceptedRequest": "Coordinate our Q3 entitlement recertification from these supplied access exports. Show every in-scope assignment with its named-human retain or revoke decision for this round, prove each reviewer was authorized for that exact resource and entitlement by someone the owner roster names, keep the source-system inactivity and recommendation signals visible without letting them decide anything, and do not let last quarter's approvals stand in for this quarter's. Do not reach our directory, expand groups, compute effective access, change access, or claim we are compliant.",
+      "requiredEvidence": [
+        "Round identity with the opaque prior-round reference, cutoff, review window, fresh-decision cadence, approved private destination, the exact owner authority-roster reference, and one content-addressed export naming the round, the snapshot, and every assignment row",
+        "Assignment snapshot whose digest is the recomputed, locale-independent manifest of every owner-supplied row field, with an in-scope flag and closed exclusion code per row, direct or owner-expanded resolution mode, a per-row assignment digest, the declared owner source system, the owner entitlement catalog, and the fixed register of access paths the export does not cover",
+        "Owner authority roster whose digest is recomputed from every principal id, name, kind, and exact scope set, bound to one content-addressed custodian export naming the roster and every principal in the ledger",
+        "Principal ledger that separates named people from teams, service identities, systems, agents, and roles, with round-running scopes for humans including the declared execution-handoff recipient, supplier scopes for the declared source system, and the owner-supplied grantor for every assignment row",
+        "Reviewer authority grants naming the exact resource and entitlement, review and privileged-review scopes, an active interval wholly contained by the current round, a rostered issuing owner who is not the subject, and reciprocal controlled evidence issued between the snapshot cutoff and grant activation",
+        "Source-system signals bound to the current round, snapshot digest, row reference and row digest, carrying a typed inactive-day count or a typed recommendation code and exactly one reciprocal content-addressed record from the declared source system"
+      ],
+      "authorityBoundaries": [
+        "Do not reach directories, identity providers, IAM systems, cloud consoles, HR systems, networks, browsers, shells, MCP servers, plugins, cron jobs, messaging, or ticketing",
+        "Do not grant, revoke, modify, provision, deprovision, or otherwise change any access, group, role, entitlement, or assignment",
+        "Do not expand groups, resolve nested or inherited membership, compute effective access, or suggest the review covers access paths the owner did not export",
+        "Do not infer identity, employment state, role equivalence, entitlement risk, or privilege; unsupplied privilege stays unknown and blocks rather than defaulting to unprivileged",
+        "Do not generate, rank, or accept access recommendations; a system default, auto-apply, no-response default, or accepted recommendation is never a decision",
+        "Do not carry, inherit, or replay any prior-round decision, and do not derive review authority from inside the artifact; scopes hold only while a content-bound owner roster record covers the exact principal ledger",
+        "Do not emit or accept free-text notes, summaries, rationales, or reproduced source-system prose anywhere in the machine record, so attestation, non-repudiation, certification, compliance, audit-readiness, least-privilege, risk-acceptance, and executed-change claims have no field to occupy"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/access-entitlement-review-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

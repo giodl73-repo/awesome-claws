@@ -1,0 +1,594 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.invalid/spikes/access-entitlement-review.schema.json",
+  "title": "Access entitlement review round (spike)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "round",
+    "snapshot",
+    "authorityRoster",
+    "principals",
+    "evidence",
+    "assignments",
+    "authorityGrants",
+    "sourceSignals",
+    "decisions",
+    "nonDecisions",
+    "blockers",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.accessEntitlementReview.spike.v1"
+    },
+    "round": { "$ref": "#/$defs/round" },
+    "snapshot": { "$ref": "#/$defs/snapshot" },
+    "authorityRoster": { "$ref": "#/$defs/authorityRoster" },
+    "principals": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/principal" }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/evidence" }
+    },
+    "assignments": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/assignment" }
+    },
+    "authorityGrants": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/authorityGrant" }
+    },
+    "sourceSignals": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/sourceSignal" }
+    },
+    "decisions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/decision" }
+    },
+    "nonDecisions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/nonDecision" }
+    },
+    "blockers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/blocker" }
+    },
+    "handoff": { "$ref": "#/$defs/handoff" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{2,120}$" },
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "uriRef": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9+.-]*://[a-z0-9][a-z0-9.-]*(?:/[a-z0-9][a-z0-9._-]*)+$"
+    },
+    "ownerRecordRef": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,80}$" },
+    "controlledSource": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,60}$" },
+    "controlledPurpose": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*(?:/[a-z0-9][a-z0-9._-]*)*$"
+    },
+    "destinationRef": {
+      "type": "string",
+      "pattern": "^controlled://[a-z0-9][a-z0-9-]{2,60}/[a-z0-9][a-z0-9._/-]*$"
+    },
+    "contentAddressedRef": {
+      "type": "string",
+      "pattern": "^controlled://[a-z0-9][a-z0-9-]{2,60}/[a-z0-9][a-z0-9._/-]*@sha256-[a-f0-9]{64}$"
+    },
+    "strings": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "nullableId": {
+      "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }]
+    },
+    "round": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "priorRoundRef",
+        "snapshotRef",
+        "snapshotDigest",
+        "asOf",
+        "window",
+        "cadence",
+        "destination",
+        "authorityBoundary",
+        "handoffOwnerRef",
+        "exportEvidenceRef",
+        "assignmentRefs",
+        "authorityGrantRefs",
+        "sourceSignalRefs",
+        "decisionRefs",
+        "nonDecisionRefs",
+        "blockerRefs"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "priorRoundRef": {
+          "anyOf": [{ "$ref": "#/$defs/ownerRecordRef" }, { "type": "null" }]
+        },
+        "snapshotRef": { "$ref": "#/$defs/id" },
+        "snapshotDigest": { "$ref": "#/$defs/digest" },
+        "asOf": { "$ref": "#/$defs/timestamp" },
+        "window": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["opensAt", "closesAt"],
+          "properties": {
+            "opensAt": { "$ref": "#/$defs/timestamp" },
+            "closesAt": { "$ref": "#/$defs/timestamp" }
+          }
+        },
+        "cadence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["intervalDays", "recertificationBasis"],
+          "properties": {
+            "intervalDays": { "type": "integer", "minimum": 1 },
+            "recertificationBasis": { "const": "fresh-decision-each-round" }
+          }
+        },
+        "destination": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["controlledRef", "visibility", "approvedByRef"],
+          "properties": {
+            "controlledRef": { "$ref": "#/$defs/destinationRef" },
+            "visibility": { "const": "private" },
+            "approvedByRef": { "$ref": "#/$defs/id" }
+          }
+        },
+        "authorityBoundary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["rosterRef", "basis"],
+          "properties": {
+            "rosterRef": { "$ref": "#/$defs/id" },
+            "basis": { "const": "owner-supplied-roster-not-derived" }
+          }
+        },
+        "handoffOwnerRef": { "$ref": "#/$defs/id" },
+        "exportEvidenceRef": { "$ref": "#/$defs/id" },
+        "assignmentRefs": { "$ref": "#/$defs/strings" },
+        "authorityGrantRefs": { "$ref": "#/$defs/strings" },
+        "sourceSignalRefs": { "$ref": "#/$defs/strings" },
+        "decisionRefs": { "$ref": "#/$defs/strings" },
+        "nonDecisionRefs": { "$ref": "#/$defs/strings" },
+        "blockerRefs": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "digest",
+        "asOf",
+        "coverageBasis",
+        "privilegeClassification",
+        "sourceSystemRef",
+        "entitlementCatalogRefs",
+        "notCoveredAccessPaths",
+        "exportEvidenceRef"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "digest": { "$ref": "#/$defs/digest" },
+        "asOf": { "$ref": "#/$defs/timestamp" },
+        "coverageBasis": { "const": "owner-declared-assignment-rows-only" },
+        "privilegeClassification": { "enum": ["supplied", "absent"] },
+        "sourceSystemRef": { "$ref": "#/$defs/id" },
+        "entitlementCatalogRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/uriRef" }
+        },
+        "notCoveredAccessPaths": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/accessPath" }
+        },
+        "exportEvidenceRef": { "$ref": "#/$defs/id" }
+      }
+    },
+    "accessPath": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "pathKind"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "pathKind": {
+          "enum": [
+            "inherited-group-membership",
+            "nested-group-expansion",
+            "effective-access-computation",
+            "standing-role-assignment",
+            "break-glass-account",
+            "external-federated-access"
+          ]
+        }
+      }
+    },
+    "authorityRoster": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "controlledRef",
+        "rosterDigest",
+        "custodianRef",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "controlledRef": { "$ref": "#/$defs/contentAddressedRef" },
+        "rosterDigest": { "$ref": "#/$defs/digest" },
+        "custodianRef": { "$ref": "#/$defs/id" },
+        "evidenceRef": { "$ref": "#/$defs/id" }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "kind", "scopes"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 3, "maxLength": 120 },
+        "kind": {
+          "enum": [
+            "named-human",
+            "team",
+            "service-identity",
+            "system",
+            "agent",
+            "role"
+          ]
+        },
+        "scopes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "review-authority-issuer",
+              "review-destination-approver",
+              "review-round-coordinator",
+              "review-execution-handoff-owner",
+              "assignment-snapshot-supplier",
+              "source-signal-supplier"
+            ]
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "controlledSource",
+        "controlledPurpose",
+        "controlledRef",
+        "recordDigest",
+        "payloadDigest",
+        "observedAt",
+        "suppliedByRef",
+        "snapshotDigest",
+        "subjectRefs"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": [
+            "round-snapshot-export",
+            "assignment-record",
+            "authority-roster-export",
+            "authority-grant-record",
+            "decision-record",
+            "non-decision-record",
+            "blocker-record",
+            "source-signal-record"
+          ]
+        },
+        "controlledSource": { "$ref": "#/$defs/controlledSource" },
+        "controlledPurpose": { "$ref": "#/$defs/controlledPurpose" },
+        "controlledRef": { "$ref": "#/$defs/contentAddressedRef" },
+        "recordDigest": { "$ref": "#/$defs/digest" },
+        "payloadDigest": { "$ref": "#/$defs/digest" },
+        "observedAt": { "$ref": "#/$defs/timestamp" },
+        "suppliedByRef": { "$ref": "#/$defs/id" },
+        "snapshotDigest": { "$ref": "#/$defs/digest" },
+        "subjectRefs": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "principalRef",
+        "resourceRef",
+        "entitlementRef",
+        "assignmentRef",
+        "assignmentDigest",
+        "inScope",
+        "exclusionCode",
+        "resolutionMode",
+        "privileged",
+        "grantedByRef",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "snapshotRef": { "$ref": "#/$defs/id" },
+        "principalRef": { "$ref": "#/$defs/id" },
+        "resourceRef": { "$ref": "#/$defs/uriRef" },
+        "entitlementRef": { "$ref": "#/$defs/uriRef" },
+        "assignmentRef": { "$ref": "#/$defs/ownerRecordRef" },
+        "assignmentDigest": { "$ref": "#/$defs/digest" },
+        "inScope": { "type": "boolean" },
+        "exclusionCode": {
+          "anyOf": [
+            {
+              "enum": [
+                "non-human-identity-campaign",
+                "separate-owner-campaign",
+                "owner-withdrew-row",
+                "subject-out-of-population"
+              ]
+            },
+            { "type": "null" }
+          ]
+        },
+        "resolutionMode": { "enum": ["direct", "owner-expanded"] },
+        "privileged": { "type": ["boolean", "null"] },
+        "grantedByRef": { "$ref": "#/$defs/nullableId" },
+        "evidenceRefs": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "authorityGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "granteeRef",
+        "resourceRef",
+        "entitlementRef",
+        "scopes",
+        "activeFrom",
+        "activeUntil",
+        "grantedByRef",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "granteeRef": { "$ref": "#/$defs/id" },
+        "resourceRef": { "$ref": "#/$defs/uriRef" },
+        "entitlementRef": { "$ref": "#/$defs/uriRef" },
+        "scopes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["entitlement-review-decision", "privileged-review"]
+          }
+        },
+        "activeFrom": { "$ref": "#/$defs/timestamp" },
+        "activeUntil": { "$ref": "#/$defs/timestamp" },
+        "grantedByRef": { "$ref": "#/$defs/id" },
+        "evidenceRefs": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "sourceSignal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "roundRef",
+        "snapshotRef",
+        "snapshotDigest",
+        "assignmentRowRef",
+        "assignmentRef",
+        "assignmentDigest",
+        "suppliedByRef",
+        "observedAt",
+        "recommendation",
+        "inactiveDays",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": [
+            "inactivity",
+            "last-sign-in",
+            "peer-affiliation",
+            "recommendation",
+            "risk-signal"
+          ]
+        },
+        "roundRef": { "$ref": "#/$defs/id" },
+        "snapshotRef": { "$ref": "#/$defs/id" },
+        "snapshotDigest": { "$ref": "#/$defs/digest" },
+        "assignmentRowRef": { "$ref": "#/$defs/id" },
+        "assignmentRef": { "$ref": "#/$defs/ownerRecordRef" },
+        "assignmentDigest": { "$ref": "#/$defs/digest" },
+        "suppliedByRef": { "$ref": "#/$defs/id" },
+        "observedAt": { "$ref": "#/$defs/timestamp" },
+        "recommendation": {
+          "anyOf": [
+            { "enum": ["deny", "approve", "no-recommendation"] },
+            { "type": "null" }
+          ]
+        },
+        "inactiveDays": {
+          "anyOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }]
+        },
+        "evidenceRefs": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "roundRef",
+        "snapshotDigest",
+        "assignmentRowRef",
+        "assignmentRef",
+        "assignmentDigest",
+        "state",
+        "decisionBasis",
+        "decisionSource",
+        "decidedByRef",
+        "decidedAt",
+        "authorityGrantRef",
+        "privilegedReview",
+        "replacementRequest",
+        "sourceSignalRefs",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "roundRef": { "$ref": "#/$defs/id" },
+        "snapshotDigest": { "$ref": "#/$defs/digest" },
+        "assignmentRowRef": { "$ref": "#/$defs/id" },
+        "assignmentRef": { "$ref": "#/$defs/ownerRecordRef" },
+        "assignmentDigest": { "$ref": "#/$defs/digest" },
+        "state": { "enum": ["retain", "revoke"] },
+        "decisionBasis": { "const": "independent-human-judgment" },
+        "decisionSource": {
+          "enum": [
+            "named-human-review",
+            "system-default",
+            "auto-applied",
+            "no-response-default",
+            "recommendation-accepted"
+          ]
+        },
+        "decidedByRef": { "$ref": "#/$defs/id" },
+        "decidedAt": { "$ref": "#/$defs/timestamp" },
+        "authorityGrantRef": { "$ref": "#/$defs/id" },
+        "privilegedReview": { "type": "boolean" },
+        "replacementRequest": { "type": "null" },
+        "sourceSignalRefs": { "$ref": "#/$defs/strings" },
+        "evidenceRefs": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "nonDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "roundRef",
+        "assignmentRowRef",
+        "assignmentRef",
+        "assignmentDigest",
+        "state",
+        "recordedByRef",
+        "recordedAt",
+        "escalation",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "roundRef": { "$ref": "#/$defs/id" },
+        "assignmentRowRef": { "$ref": "#/$defs/id" },
+        "assignmentRef": { "$ref": "#/$defs/ownerRecordRef" },
+        "assignmentDigest": { "$ref": "#/$defs/digest" },
+        "state": {
+          "enum": ["not-reviewed", "escalated"]
+        },
+        "recordedByRef": { "$ref": "#/$defs/id" },
+        "recordedAt": { "$ref": "#/$defs/timestamp" },
+        "escalation": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["nextReviewerRef", "authorityGrantRef", "dueAt"],
+              "properties": {
+                "nextReviewerRef": { "$ref": "#/$defs/id" },
+                "authorityGrantRef": { "$ref": "#/$defs/id" },
+                "dueAt": { "$ref": "#/$defs/timestamp" }
+              }
+            },
+            { "type": "null" }
+          ]
+        },
+        "evidenceRefs": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "code",
+        "targetRefs",
+        "status",
+        "ownedByRef",
+        "raisedAt",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "code": {
+          "enum": [
+            "privilege-classification-absent",
+            "assignment-privilege-unknown"
+          ]
+        },
+        "targetRefs": { "$ref": "#/$defs/strings" },
+        "status": { "enum": ["open", "resolved"] },
+        "ownedByRef": { "$ref": "#/$defs/id" },
+        "raisedAt": { "$ref": "#/$defs/timestamp" },
+        "evidenceRefs": { "$ref": "#/$defs/strings" }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "coveredAssignmentKeys",
+        "excludedAssignmentRefs",
+        "blockingRefs",
+        "renderedSignalRefs",
+        "signalPresentation",
+        "renderedNotCoveredPathRefs",
+        "effectiveAccessCoverage",
+        "attestationClaim",
+        "complianceClaim",
+        "nextOwnerRef"
+      ],
+      "properties": {
+        "state": { "enum": ["blocked", "ready-for-owner-execution"] },
+        "coveredAssignmentKeys": { "$ref": "#/$defs/strings" },
+        "excludedAssignmentRefs": { "$ref": "#/$defs/strings" },
+        "blockingRefs": { "$ref": "#/$defs/strings" },
+        "renderedSignalRefs": { "$ref": "#/$defs/strings" },
+        "signalPresentation": { "const": "source-system-signal-not-a-decision" },
+        "renderedNotCoveredPathRefs": { "$ref": "#/$defs/strings" },
+        "effectiveAccessCoverage": { "const": "not-claimed" },
+        "attestationClaim": { "const": "not-claimed" },
+        "complianceClaim": { "const": "not-claimed" },
+        "nextOwnerRef": { "$ref": "#/$defs/id" }
+      }
+    }
+  }
+}
