@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { test } from "node:test";
 import {
@@ -10,6 +10,7 @@ import {
   failureRecord,
   readCatalog,
   root,
+  runJson,
 } from "./openclaw-proof-lib.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
 
@@ -103,6 +104,30 @@ test("failures retain a phase and concise message", () => {
     phase: "status",
     message: "drift",
   });
+});
+
+test("command failures retain both structured stdout and diagnostic stderr", async () => {
+  const testRoot = join(root, ".tmp");
+  await mkdir(testRoot, { recursive: true });
+  const proofRoot = await mkdtemp(join(testRoot, "proof-command-failure-"));
+  const entry = join(proofRoot, "failure.mjs");
+  try {
+    await writeFile(
+      entry,
+      'process.stdout.write(JSON.stringify({ error: { code: "cleanup_failed" } })); process.stderr.write("ownership warning"); process.exit(1);\n',
+    );
+    let failure;
+    try {
+      runJson(entry, [], { env: process.env, label: "remove apply" });
+    } catch (error) {
+      failure = failureRecord("remove-apply", error);
+    }
+    assert.match(failure.message, /stdout:\s*\{"error":\{"code":"cleanup_failed"\}\}/u);
+    assert.match(failure.message, /stderr:\s*ownership warning/u);
+    assert.deepEqual(failure.commandOutcome, { errorCode: "cleanup_failed" });
+  } finally {
+    await rm(proofRoot, { recursive: true, force: true });
+  }
 });
 
 test("each proof environment isolates adapter snapshots", async () => {

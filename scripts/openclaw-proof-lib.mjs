@@ -53,6 +53,41 @@ function parseJsonOutput(stdout, label) {
   }
 }
 
+function formatCommandFailureOutput(result) {
+  const sections = [];
+  const stdout = result.stdout?.trim();
+  const stderr = result.stderr?.trim();
+  if (stdout) {
+    sections.push(`stdout:\n${stdout}`);
+  }
+  if (stderr) {
+    sections.push(`stderr:\n${stderr}`);
+  }
+  return sections.length > 0 ? `:\n${sections.join("\n")}` : "";
+}
+
+function commandFailureOutcome(record) {
+  try {
+    const payload = JSON.parse(record?.stdout ?? "");
+    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+      return undefined;
+    }
+    const errorCode =
+      payload.error && typeof payload.error === "object" && !Array.isArray(payload.error)
+        ? payload.error.code
+        : undefined;
+    return {
+      ...(typeof payload.schemaVersion === "string"
+        ? { schemaVersion: payload.schemaVersion }
+        : {}),
+      ...(typeof payload.status === "string" ? { status: payload.status } : {}),
+      ...(typeof errorCode === "string" ? { errorCode } : {}),
+    };
+  } catch {
+    return undefined;
+  }
+}
+
 export function runJson(entry, args, options) {
   const result = spawnSync(process.execPath, [entry, ...args], {
     encoding: "utf8",
@@ -69,14 +104,19 @@ export function runJson(entry, args, options) {
     stderr: result.stderr ?? "",
   };
   if (result.error) {
-    throw Object.assign(new Error(`${options.label} failed to start: ${result.error.message}`), {
-      record,
-    });
+    throw Object.assign(
+      new Error(
+        `${options.label} failed to start: ${result.error.message}${formatCommandFailureOutput(result)}`,
+      ),
+      { record },
+    );
   }
   const acceptedStatuses = options.acceptedStatuses ?? [0];
   if (!acceptedStatuses.includes(result.status)) {
     throw Object.assign(
-      new Error(`${options.label} failed (${result.status}):\n${result.stderr || result.stdout}`),
+      new Error(
+        `${options.label} failed (${result.status})${formatCommandFailureOutput(result)}`,
+      ),
       { record },
     );
   }
@@ -140,9 +180,11 @@ export function assertAddPreview(payload) {
 }
 
 export function failureRecord(phase, error) {
+  const commandOutcome = commandFailureOutcome(error?.record);
   return {
     phase,
     message: error instanceof Error ? error.message : String(error),
     ...(error?.record ? { command: error.record } : {}),
+    ...(commandOutcome && Object.keys(commandOutcome).length > 0 ? { commandOutcome } : {}),
   };
 }
