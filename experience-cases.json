@@ -83,7 +83,8 @@
       "moving-checklist-coordinator",
       "legal-matter-organizer",
       "records-retention-disposition-coordinator",
-      "vulnerability-disposition-coordinator"
+      "vulnerability-disposition-coordinator",
+      "infrastructure-drift-reconciliation-coordinator"
     ]
   },
   "visualCases": [

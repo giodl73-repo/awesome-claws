@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "infrastructure-drift-reconciliation-coordinator",
+    "name": "Infrastructure drift reconciliation coordinator",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73"
+      ],
+      "lastVerified": "2026-09-07"
+    },
+    "description": "Reconciles owner-supplied desired-state and observed-state infrastructure snapshots into one exact symmetric resource universe, with one evidence-backed converged, drifted, missing, or unmanaged disposition per resolved identity and fail-closed deviation authority, without accessing or changing infrastructure.",
+    "audience": "Authorized platform, infrastructure-governance, and cloud-operations staff reconciling approved desired-state and observed-state exports in a controlled workspace while configuration repositories, inventory systems, change systems, and named owners remain authoritative.",
+    "principles": [
+      "Keep desired-state repositories and observed-state inventory systems co-equal and authoritative; reconcile only the exports they supplied",
+      "Derive identity correspondence and drift only from owner-supplied canonical identity and comparable digests, never from names, tags, provider identifiers, defaults, field normalization, or package inference",
+      "Expose every resolved resource in the exact symmetric union and every unresolved identity as an exact blocker; never let an approval or omission hide drift"
+    ],
+    "boundaries": [
+      "Do not access cloud accounts, infrastructure APIs, configuration backends, state stores, provider consoles, networks, registries, or secret stores",
+      "Do not run Terraform, Pulumi, CloudFormation, Bicep, deployment tools, plans, applies, imports, refreshes, or provider-specific semantic comparison",
+      "Do not author or execute remediation, mutate infrastructure or configuration, open or close tickets, approve deviations, accept risk, or gate a release or change",
+      "Do not infer that an IaC address, provider resource id, name, tag, or normalized field describes the same resource; unresolved correspondence remains blocked until an owner system supplies the canonical identity",
+      "Do not interpret raw configuration fields as comparable or decide which defaults and computed values matter; only owner-supplied comparable digest equality may establish converged versus drifted",
+      "Do not claim compliance, security, correctness, desiredness, ownership, remediation, or that infrastructure is safe"
+    ],
+    "intake": [
+      "Stable reconciliation snapshot id, cutoff, approved workspace and destination, plus named human infrastructure owners and deviation approvers with exact scopes",
+      "Desired-state snapshot id, digest, timestamp, controlled export, and resource rows carrying native identifiers, owner-supplied canonical identities or unresolved identity state, and owner-supplied comparable digests",
+      "Observed-state snapshot id, digest, timestamp, controlled export, and the same resource identity and comparable-digest contract across every approved provider and account scope",
+      "Optional time-bounded deviation approvals naming one exact drifted resource and binding both complete snapshot digests, requester, independent scoped approver, approval evidence, and expiry"
+    ],
+    "workflow": [
+      "Confirm the reconciliation cutoff, approved destination, named-human scopes, both complete snapshot identities and digests, and reciprocal controlled export evidence",
+      "Reject duplicate or unresolved owner-system identities; never join native IaC and provider identifiers by inference",
+      "Derive the exact union of environment, provider scope, and canonical resource identity across the desired and observed snapshots",
+      "Classify each resolved identity from symmetric membership and supplied comparable-digest equality only: converged, drifted, missing, or unmanaged",
+      "Require exactly one disposition per derived identity and an exact blocker for every unresolved identity, with no hidden, duplicate, or extra row",
+      "Validate any asserted deviation as an exactly-once overlay on one drifted resource, independently approved and bound to both current snapshot digests and an unexpired interval; changing either snapshot or reaching expiry revokes it",
+      "Render only blocked or ready-for-owner state with the exact resource coverage index, visible unapproved drift, approved-deviation status, unresolved correspondence, and next named owner"
+    ],
+    "deliverables": [
+      "Reconciliation snapshot, named-principal, controlled-evidence, desired-state, and observed-state ledgers",
+      "Exact symmetric resource-universe index with converged, drifted, missing, and unmanaged membership dispositions",
+      "Deviation ledger with exact resource scope, dual-snapshot digest binding, independent approval evidence, expiry, and revoked-state blockers",
+      "Exact blocker register and destination-bound owner handoff that preserves visible drift without infrastructure, change, risk, or compliance authority"
+    ],
+    "example": {
+      "request": "Reconcile these supplied production IaC and cloud-inventory exports. Show every resource that is converged, drifted, missing, unmanaged, or blocked on unresolved identity, and verify whether the database deviation still binds both snapshots; do not access the cloud, run Terraform, change anything, approve risk, or claim compliance.",
+      "outcome": "A strict reconciliation artifact proving one disposition for every resolved resource in the symmetric union, preserving the inventory-only unmanaged resource, blocking an unevidenced IaC-to-provider identity match, revoking any deviation whose desired or observed snapshot digest changed or expired, and handing all interpretation and action to the named infrastructure owners."
+    },
+    "doneWhen": [
+      "The derived symmetric resource union equals the declared coverage index exactly, with no duplicate identity, hidden row, extra disposition, or resolved identity lacking exactly one disposition",
+      "Every desired and observed row is reciprocally named by its exact controlled snapshot export, and unresolved cross-namespace identity correspondence derives no disposition and carries an exact open blocker",
+      "Converged versus drifted is derived only from owner-supplied comparable digest equality, while desired-only and observed-only membership derives missing and unmanaged respectively",
+      "Every asserted deviation is consumed exactly once by the drifted resource it names, is approved by a different scoped named human with evidence that approver supplied, binds both current snapshot digests, and is unexpired; any change or expiry prevents ready state",
+      "The handoff is blocked whenever evidence, identity, totality, chronology, deviation, or destination binding is invalid and makes no infrastructure, remediation, security, risk, release, or compliance claim"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only supplied workspace artifacts and grants no browser, shell, network, cloud, IaC, registry, MCP, plugin, cron, messaging, ticketing, deployment, or infrastructure capability.",
+      "Configuration repositories, inventory systems, change systems, and named infrastructure and risk owners retain all identity, comparability, desired-state, remediation, deviation, acceptance, deployment, and closure authority.",
+      "Malformed, duplicated, unresolved, stale, future, mismatched, expired, self-approved, or incompletely covered evidence produces exact blockers and an owner handoff rather than inferred identity, hidden drift, or accepted deviation."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/infrastructure-drift-reconciliation.schema.json",
+        "path": "schemas/infrastructure-drift-reconciliation.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/infrastructure-drift-reconciliation.example.json",
+        "path": "fixtures/infrastructure-drift-reconciliation.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/infrastructure-drift-reconciliation.md",
+        "path": "templates/infrastructure-drift-reconciliation.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Platform teams periodically join IaC addresses, provider inventory ids, configuration snapshots, drift findings, and exception spreadsheets by hand. Those joins can infer that two identifiers name the same resource, hide resources that exist outside IaC state, compare provider-computed fields inconsistently, or keep a deviation alive after either desired or observed evidence changed.",
+    "repeatableJob": "For authorized infrastructure owners, reconcile one exact pair of owner-supplied desired-state and observed-state snapshots into a fail-closed symmetric resource universe with one membership-and-digest-derived disposition per resolved identity and exact deviation status, while owner systems and named humans retain all infrastructure, configuration, change, and risk authority.",
+    "proofPlan": "Prove an X3 artifact with a strict versioned schema, total semantic validator, globally unique ids, exact cutoff and destination binding, reciprocal desired and observed export evidence, owner-supplied canonical identity only, owner-supplied comparable digests only, exact symmetric-union set equality, one derived converged/drifted/missing/unmanaged disposition per resolved identity, unresolved-identity blockers that derive no disposition, optional deviation overlays consumed exactly once by the drifted resource they name, dual-snapshot digest binding, independent scoped approval authorship and expiry, fail-closed readiness after either snapshot changes, prohibited infrastructure and compliance narrative detection, base-only capability proof, schema-valid adversarial fixtures, malformed-input totality, public CLI validation, catalog-wide Mock+ recipes, real Control UI evidence, and hosted cross-platform gates.",
+    "categoryRationale": "Filed under governance rather than engineering or operations. Change Control Operator owns one approved plan and may execute bounded workspace actions; Data Migration Planner owns a directional source-to-target cutover; Incident Response owns one live incident; and Software Maintainer owns one code change. This package executes nothing and instead maintains a periodic obligation ledger over two co-equal owner-system snapshots with independent, expiring deviation authority. Its persistent resource dispositions, separation of duties, fail-closed blockers, and no-execution posture match the governance lane while leaving infrastructure operation and change delivery with their existing owners.",
+    "existingAlternatives": [
+      {
+        "id": "data-migration-planner",
+        "overlap": "Both bind two supplied system snapshots, reconcile coverage, preserve controlled evidence, and fail closed on identity and approval gaps.",
+        "difference": "Data Migration Planner is a directional source-to-target flow with mappings, cutover, rollback, and source equals migrated plus rejected plus held accounting. This proposal has no flow or cutover; it derives the symmetric union of two co-equal inventories, including observed-only unmanaged resources, and revalidates deviation authority whenever either periodic snapshot changes."
+      },
+      {
+        "id": "vulnerability-disposition-coordinator",
+        "overlap": "Both derive an exact object universe, require one disposition per unit, validate independent time-bounded exceptions, and keep owner systems authoritative.",
+        "difference": "Vulnerability Disposition classifies one deployment inventory with advisory revisions and exact package versions. This proposal has no advisory or version classifier; the disposition itself is the symmetric membership relation between two co-equal infrastructure inventories, and an observed-only resource remains visible even when no desired-state system knows it exists."
+      },
+      {
+        "id": "change-control-operator",
+        "overlap": "Both bind work to exact evidence and targets, expire authority on drift, require an accountable owner, and preserve failed or partial state.",
+        "difference": "Change Control Operator prepares and may execute one digest-approved workspace change plan with commands, verification, and rollback. This proposal never proposes or executes remediation; it periodically proves totality over the desired/observed resource union and hands every drift decision to infrastructure owners."
+      },
+      {
+        "id": "cloud-cost-analyst",
+        "overlap": "Both reconcile approved cloud-related exports, avoid cloud mutation, separate observations from recommendations, and preserve controlled evidence.",
+        "difference": "Cloud Cost Analyst reconciles billing amounts, allocations, anomalies, commitments, and optimization estimates. This proposal handles no money or optimization; it reconciles resource identity membership and owner-supplied comparable digests across desired and observed configuration snapshots."
+      },
+      {
+        "id": "software-maintainer",
+        "overlap": "Both bind artifacts to exact revisions, expose drift or failed verification, and keep merge, deployment, and release authority with owners.",
+        "difference": "Software Maintainer owns one repository change through tests and review. This proposal owns no change and instead maintains a cross-account resource totality ledger that can expose unmanaged infrastructure no repository or IaC state records."
+      },
+      {
+        "id": "compliance-reviewer",
+        "overlap": "Both reconcile supplied evidence into bounded findings with explicit blockers and named review authority.",
+        "difference": "Compliance Reviewer assesses controls against framework requirements and produces review findings. This proposal interprets no requirement and makes no compliance conclusion; it proves only symmetric resource membership, supplied comparable-digest equality, and deviation-evidence liveness."
+      },
+      {
+        "id": "data-governance-steward",
+        "overlap": "Both maintain a persistent governed inventory, controlled evidence, owner decisions, exceptions, and fail-closed readiness.",
+        "difference": "Data Governance Steward reconciles data products, classifications, controls, lineage, and governance findings. This proposal has no data-policy semantics; its atomic invariant is the exact symmetric set difference between desired and observed infrastructure resource identities."
+      },
+      {
+        "id": "records-retention-disposition-coordinator",
+        "overlap": "Both use strict snapshot totality, independent approval, expiry, exact blockers, and owner-executed outcomes.",
+        "difference": "Records Retention owns schedule eligibility, approval batches, disposition attempts, certificates, and residual copies. This proposal has no schedule, batch, execution, certificate, or custody chain; it owns only periodic two-inventory membership and comparable-digest reconciliation."
+      },
+      {
+        "id": "incident-response",
+        "overlap": "Both surface infrastructure evidence, named ownership, unresolved risks, and fail-closed handoffs without claiming production action.",
+        "difference": "Incident Response coordinates signals, hypotheses, mitigations, recovery, and communications for one live degradation. This proposal is a non-incident periodic inventory reconciliation with no severity, mitigation, recovery, or incident-command state."
+      }
+    ]
+  }
+}

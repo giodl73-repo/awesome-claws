@@ -289,6 +289,14 @@ const definitions = [
     decisionField: "handoff.state",
   },
   {
+    id: "infrastructure-drift-reconciliation-coordinator",
+    schema:
+      "../claws/infrastructure-drift-reconciliation-coordinator/schemas/infrastructure-drift-reconciliation.schema.json",
+    fixture:
+      "../claws/infrastructure-drift-reconciliation-coordinator/fixtures/infrastructure-drift-reconciliation.example.json",
+    decisionField: "handoff.state",
+  },
+  {
     id: "vulnerability-disposition-coordinator",
     schema:
       "../claws/vulnerability-disposition-coordinator/schemas/vulnerability-disposition.schema.json",
