@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (103)
+### Active (104)
 
 | Claw | Detail |
 | --- | --- |
@@ -53,6 +53,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Household budget steward](claws/household-budget-steward) | @giodl73-repo; last verified 2026-08-27 |
 | [Household steward](claws/household-steward) | @giodl73-repo; last verified 2026-08-21 |
 | [Incident response](claws/incident-response) | @giodl73-repo; last verified 2026-08-19 |
+| [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | @giodl73; last verified 2026-09-07 |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | @giodl73-repo; last verified 2026-08-25 |
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | @giodl73; last verified 2026-08-29 |
 | [Job application tracker](claws/job-application-tracker) | @giodl73-repo; last verified 2026-08-28 |
@@ -130,7 +131,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (73)
+### Low setup (74)
 
 | Claw | Detail |
 | --- | --- |
@@ -163,6 +164,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Home repair coordinator](claws/home-repair-coordinator) | no bootstrap, external dependency, or schedule |
 | [Household budget steward](claws/household-budget-steward) | no bootstrap, external dependency, or schedule |
 | [Household steward](claws/household-steward) | no bootstrap, external dependency, or schedule |
+| [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | no bootstrap, external dependency, or schedule |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | no bootstrap, external dependency, or schedule |
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | no bootstrap, external dependency, or schedule |
 | [Job application tracker](claws/job-application-tracker) | no bootstrap, external dependency, or schedule |
@@ -252,7 +254,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (81)
+### No external dependencies (82)
 
 | Claw | Detail |
 | --- | --- |
@@ -291,6 +293,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Household budget steward](claws/household-budget-steward) | None |
 | [Household steward](claws/household-steward) | None |
 | [Incident response](claws/incident-response) | None |
+| [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | None |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | None |
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | None |
 | [Job application tracker](claws/job-application-tracker) | None |
@@ -369,7 +372,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (78)
+### X3 (79)
 
 | Claw | Detail |
 | --- | --- |
@@ -401,6 +404,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Home repair coordinator](claws/home-repair-coordinator) | Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments. |
 | [Household budget steward](claws/household-budget-steward) | Reviews owner-supplied household bills, recurring expenses, categories, budget targets, variance evidence, and owner questions without banking access, payments, credit, tax/legal/financial advice, vendor contact, or cancellations. |
 | [Household steward](claws/household-steward) | Coordinates a multi-person household's priorities, responsibilities, specialist-Claw handoffs, shared constraints, and explicitly authorized external actions without becoming the household decision-maker. |
+| [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | Reconciles owner-supplied desired-state and observed-state infrastructure snapshots into one exact symmetric resource universe, with one evidence-backed converged, drifted, missing, or unmanaged disposition per resolved identity and fail-closed deviation authority, without accessing or changing infrastructure. |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | Organizes insurance policies, declarations pages, premiums, deductibles, coverage evidence, renewal dates, claim-readiness evidence, and owner-review questions without giving insurance or legal advice, filing claims, changing coverage, contacting carriers, or paying premiums. |
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money. |
 | [Job application tracker](claws/job-application-tracker) | Organizes owner-supplied job postings, application materials, recruiter notes, interview schedules, follow-up drafts, status evidence, and offer questions into a private job-search pipeline without applying to jobs, fabricating credentials, contacting employers, changing accounts, accepting offers, negotiating commitments, or giving legal, immigration, tax, financial, or career advice. |
@@ -525,13 +529,14 @@ Categories come directly from the catalog entry.
 | [Security analyst](claws/security-analyst) | X4; Assesses security questions with explicit trust boundaries and reproducible evidence. |
 | [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 
-### Governance (7)
+### Governance (8)
 
 | Claw | Detail |
 | --- | --- |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | X4; Organizes accessibility evidence, findings, remediation ownership, and verification against an approved review scope without claiming certification. |
 | [Compliance reviewer](claws/compliance-reviewer) | X4; Evaluates controls and evidence without substituting for accountable legal judgment. |
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
+| [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | X3; Reconciles owner-supplied desired-state and observed-state infrastructure snapshots into one exact symmetric resource universe, with one evidence-backed converged, drifted, missing, or unmanaged disposition per resolved identity and fail-closed deviation authority, without accessing or changing infrastructure. |
 | [Legal matter organizer](claws/legal-matter-organizer) | X3; Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | X3; Reconciles an authoritative retention schedule, exact record-copy inventory, trigger and hold evidence, approved disposition batch, independently observed outcomes and certificates, and residual-copy closure into one snapshot-bound human-review handoff without interpreting policy or executing disposition. |
@@ -628,7 +633,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (51)
+### Standard attention (52)
 
 | Claw | Detail |
 | --- | --- |
@@ -649,6 +654,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Home inventory binder](claws/home-inventory-binder) | portable workspace artifacts only |
 | [Home repair coordinator](claws/home-repair-coordinator) | portable workspace artifacts only |
 | [Household budget steward](claws/household-budget-steward) | portable workspace artifacts only |
+| [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | portable workspace artifacts only |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | portable workspace artifacts only |
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | portable workspace artifacts only |
 | [Job application tracker](claws/job-application-tracker) | portable workspace artifacts only |

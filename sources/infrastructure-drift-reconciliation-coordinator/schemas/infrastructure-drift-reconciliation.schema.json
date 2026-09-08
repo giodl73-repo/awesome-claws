@@ -1,0 +1,568 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Infrastructure drift reconciliation artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "snapshot",
+    "desiredSnapshot",
+    "observedSnapshot",
+    "principals",
+    "evidence",
+    "desiredResources",
+    "observedResources",
+    "deviations",
+    "dispositions",
+    "blockers",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.infrastructureDriftReconciliation.v1"
+    },
+    "snapshot": {
+      "$ref": "#/$defs/reconciliationSnapshot"
+    },
+    "desiredSnapshot": {
+      "$ref": "#/$defs/sourceSnapshot"
+    },
+    "observedSnapshot": {
+      "$ref": "#/$defs/sourceSnapshot"
+    },
+    "principals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "desiredResources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/resource"
+      }
+    },
+    "observedResources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/resource"
+      }
+    },
+    "deviations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/deviation"
+      }
+    },
+    "dispositions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/disposition"
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blocker"
+      }
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,100}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "controlledRef": {
+      "type": "string",
+      "pattern": "^controlled://[^\\s]+$"
+    },
+    "strings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "nullableId": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nullableDigest": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/digest"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "resourceKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "environment",
+        "providerScope",
+        "canonicalResourceId"
+      ],
+      "properties": {
+        "environment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "providerScope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "canonicalResourceId": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "reconciliationSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "digest",
+        "asOf",
+        "workspaceRef",
+        "destinationRef",
+        "evidenceRef",
+        "principalRefs",
+        "evidenceRefs",
+        "desiredResourceRefs",
+        "observedResourceRefs",
+        "deviationRefs",
+        "dispositionRefs",
+        "blockerRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "asOf": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "workspaceRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "destinationRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "principalRefs": {
+          "$ref": "#/$defs/strings"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/strings"
+        },
+        "desiredResourceRefs": {
+          "$ref": "#/$defs/strings"
+        },
+        "observedResourceRefs": {
+          "$ref": "#/$defs/strings"
+        },
+        "deviationRefs": {
+          "$ref": "#/$defs/strings"
+        },
+        "dispositionRefs": {
+          "$ref": "#/$defs/strings"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/strings"
+        }
+      }
+    },
+    "sourceSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "reconciliationSnapshotRef",
+        "digest",
+        "observedAt",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "reconciliationSnapshotRef": {
+          "$ref": "#/$defs/id"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "name",
+        "scopes",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 3
+        },
+        "scopes": {
+          "$ref": "#/$defs/strings"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/strings"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "reconciliationSnapshotRef",
+        "sourceSnapshotRef",
+        "kind",
+        "controlledRef",
+        "snapshotDigest",
+        "observedAt",
+        "suppliedByRef",
+        "subjectRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "reconciliationSnapshotRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceSnapshotRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "kind": {
+          "enum": [
+            "reconciliation-snapshot-export",
+            "desired-state-export",
+            "observed-state-export",
+            "authority-roster",
+            "drift-deviation-approval"
+          ]
+        },
+        "controlledRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "snapshotDigest": {
+          "$ref": "#/$defs/nullableDigest"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "subjectRefs": {
+          "$ref": "#/$defs/strings"
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "reconciliationSnapshotRef",
+        "sourceSnapshotRef",
+        "environment",
+        "providerScope",
+        "nativeId",
+        "identityState",
+        "canonicalResourceId",
+        "comparableDigest",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "reconciliationSnapshotRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceSnapshotRef": {
+          "$ref": "#/$defs/id"
+        },
+        "environment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "providerScope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nativeId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "identityState": {
+          "enum": [
+            "matched",
+            "unmatched",
+            "unresolved"
+          ]
+        },
+        "canonicalResourceId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "comparableDigest": {
+          "$ref": "#/$defs/nullableDigest"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/strings"
+        }
+      }
+    },
+    "deviation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "resourceKey",
+        "desiredSnapshotDigest",
+        "observedSnapshotDigest",
+        "requestedByRef",
+        "approvedByRef",
+        "approvedAt",
+        "expiresAt",
+        "approvalEvidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/id"
+        },
+        "resourceKey": {
+          "$ref": "#/$defs/resourceKey"
+        },
+        "desiredSnapshotDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedSnapshotDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "requestedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "approvalEvidenceRefs": {
+          "$ref": "#/$defs/strings"
+        }
+      }
+    },
+    "disposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "resourceKey",
+        "state",
+        "deviationRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/id"
+        },
+        "resourceKey": {
+          "$ref": "#/$defs/resourceKey"
+        },
+        "state": {
+          "enum": [
+            "converged",
+            "drifted",
+            "missing",
+            "unmanaged"
+          ]
+        },
+        "deviationRef": {
+          "$ref": "#/$defs/nullableId"
+        }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "snapshotRef",
+        "code",
+        "status",
+        "ownerRef",
+        "targetRefs",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/id"
+        },
+        "code": {
+          "const": "identity-correspondence-unresolved"
+        },
+        "status": {
+          "enum": [
+            "open",
+            "resolved"
+          ]
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/strings"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/strings"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshotRef",
+        "destinationRef",
+        "state",
+        "coveredKeys",
+        "blockingRefs",
+        "nextOwnerRef",
+        "infrastructureState",
+        "remediationState",
+        "changeState",
+        "riskAcceptanceState",
+        "complianceState",
+        "securityState",
+        "correctnessState",
+        "summary"
+      ],
+      "properties": {
+        "snapshotRef": {
+          "$ref": "#/$defs/id"
+        },
+        "destinationRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "state": {
+          "enum": [
+            "ready-for-owner",
+            "blocked"
+          ]
+        },
+        "coveredKeys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/resourceKey"
+          }
+        },
+        "blockingRefs": {
+          "$ref": "#/$defs/strings"
+        },
+        "nextOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "infrastructureState": {
+          "const": "not-claimed"
+        },
+        "remediationState": {
+          "const": "not-claimed"
+        },
+        "changeState": {
+          "const": "not-claimed"
+        },
+        "riskAcceptanceState": {
+          "const": "not-claimed"
+        },
+        "complianceState": {
+          "const": "not-claimed"
+        },
+        "securityState": {
+          "const": "not-claimed"
+        },
+        "correctnessState": {
+          "const": "not-claimed"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

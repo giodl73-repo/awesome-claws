@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Infrastructure drift reconciliation owner handoff",
+  "artifact": "outputs/infrastructure-drift-reconciliation.json",
+  "output": "outputs/infrastructure-drift-reconciliation-coordinator-handoff.md",
+  "sections": [
+    "request",
+    "current_snapshot_and_destination",
+    "controlled_snapshot_exports",
+    "symmetric_resource_coverage",
+    "visible_drift_and_deviation_status",
+    "unresolved_identity_blockers",
+    "authority_boundary",
+    "next_named_owner"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the same tuple-key coverage, blockers, deviation status, authority boundary, and named owner as Markdown when rich clients are unavailable."
+}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "infrastructure-drift-reconciliation-coordinator",
+  "scenario": "Reconcile these supplied production IaC and cloud-inventory exports. Show every resource that is converged, drifted, missing, unmanaged, or blocked on unresolved identity, and verify whether the database deviation still binds both snapshots; do not access the cloud, run Terraform, change anything, approve risk, or claim compliance.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile these supplied production IaC and cloud-inventory exports. Show every resource that is converged, drifted, missing, unmanaged, or blocked on unresolved identity, and verify whether the database deviation still binds both snapshots; do not access the cloud, run Terraform, change anything, approve risk, or claim compliance."
+    },
+    {
+      "role": "agent",
+      "text": "I will reconcile only the supplied snapshots: the exact tuple key is environment, provider scope, and the owner-supplied canonical resource id. Native IaC and provider identifiers remain evidence, never join keys."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/infrastructure-drift-reconciliation.json and outputs/infrastructure-drift-reconciliation-coordinator-handoff.md. The result keeps converged, drifted, missing, unmanaged, and unresolved correspondence distinct; unapproved drift remains visible for the named owner."
+    }
+  ],
+  "report": {
+    "title": "Infrastructure drift reconciliation coordinator session handoff",
+    "summary": "The supplied snapshot pair derives four visible tuple-key dispositions: one converged service, one drifted database with a current independent deviation overlay, one desired-only queue, and one observed-only shadow bucket. Infrastructure outcome, remediation, risk, security, and compliance are not claimed.",
+    "output": "outputs/infrastructure-drift-reconciliation-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Snapshot binding and controlled export evidence",
+        "summary": "The current reconciliation snapshot, destination, desired snapshot, observed snapshot, and all rows are indexed and reciprocally named by exact controlled evidence with the source digest and timestamp",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exact symmetric resource universe",
+        "summary": "The tuple-key coverage index equals the resolved desired and observed union exactly: converged uses equal supplied comparable digests, drifted uses unequal digests, desired-only is missing, and observed-only is unmanaged",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Visible drift and deviation overlay",
+        "summary": "The database deviation is consumed once by its exact drifted tuple, names both complete snapshot digests, has independent scoped approver-authored evidence at approval time, and expires after this cutoff",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner handoff and unresolved correspondence",
+        "summary": "Unresolved canonical identity would produce an exact open blocker and blocked handoff without invented matches; this synthetic example has no unresolved row and leaves all change, remediation, risk, and closure decisions with the named owners",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,359 @@
+{
+  "schemaVersion": "awesomeClaws.infrastructureDriftReconciliation.v1",
+  "snapshot": {
+    "id": "reconciliation-snapshot-0907",
+    "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "asOf": "2026-09-07T17:45:00Z",
+    "workspaceRef": "controlled://infra-reconciliation/workspaces/production-0907",
+    "destinationRef": "controlled://infra-reconciliation/reviews/production-0907",
+    "evidenceRef": "evidence-reconciliation-export",
+    "principalRefs": [
+      "principal-rhea-park",
+      "principal-omar-bello"
+    ],
+    "evidenceRefs": [
+      "evidence-principal-rhea",
+      "evidence-principal-omar",
+      "evidence-reconciliation-export",
+      "evidence-desired-export",
+      "evidence-observed-export",
+      "evidence-db-deviation"
+    ],
+    "desiredResourceRefs": [
+      "desired-app",
+      "desired-db",
+      "desired-queue"
+    ],
+    "observedResourceRefs": [
+      "observed-app",
+      "observed-db",
+      "observed-shadow"
+    ],
+    "deviationRefs": [
+      "deviation-db"
+    ],
+    "dispositionRefs": [
+      "disposition-app",
+      "disposition-db",
+      "disposition-queue",
+      "disposition-shadow"
+    ],
+    "blockerRefs": []
+  },
+  "desiredSnapshot": {
+    "id": "desired-snapshot-0907",
+    "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+    "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "observedAt": "2026-09-07T17:00:00Z",
+    "evidenceRef": "evidence-desired-export"
+  },
+  "observedSnapshot": {
+    "id": "observed-snapshot-0907",
+    "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+    "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "observedAt": "2026-09-07T17:05:00Z",
+    "evidenceRef": "evidence-observed-export"
+  },
+  "principals": [
+    {
+      "id": "principal-rhea-park",
+      "snapshotRef": "reconciliation-snapshot-0907",
+      "name": "Rhea Park",
+      "scopes": [
+        "infrastructure-owner"
+      ],
+      "evidenceRefs": [
+        "evidence-principal-rhea"
+      ]
+    },
+    {
+      "id": "principal-omar-bello",
+      "snapshotRef": "reconciliation-snapshot-0907",
+      "name": "Omar Bello",
+      "scopes": [
+        "drift-deviation-approval"
+      ],
+      "evidenceRefs": [
+        "evidence-principal-omar"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-principal-rhea",
+      "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+      "sourceSnapshotRef": null,
+      "kind": "authority-roster",
+      "controlledRef": "controlled://infra-reconciliation/authority/rhea-park-0907",
+      "snapshotDigest": null,
+      "observedAt": "2026-09-07T17:10:00Z",
+      "suppliedByRef": "principal-rhea-park",
+      "subjectRefs": [
+        "principal-rhea-park"
+      ]
+    },
+    {
+      "id": "evidence-principal-omar",
+      "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+      "sourceSnapshotRef": null,
+      "kind": "authority-roster",
+      "controlledRef": "controlled://infra-reconciliation/authority/omar-bello-0907",
+      "snapshotDigest": null,
+      "observedAt": "2026-09-07T17:10:00Z",
+      "suppliedByRef": "principal-rhea-park",
+      "subjectRefs": [
+        "principal-omar-bello"
+      ]
+    },
+    {
+      "id": "evidence-reconciliation-export",
+      "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+      "sourceSnapshotRef": "reconciliation-snapshot-0907",
+      "kind": "reconciliation-snapshot-export",
+      "controlledRef": "controlled://infra-reconciliation/snapshots/production-0907.json",
+      "snapshotDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "observedAt": "2026-09-07T17:45:00Z",
+      "suppliedByRef": "principal-rhea-park",
+      "subjectRefs": [
+        "reconciliation-snapshot-0907"
+      ]
+    },
+    {
+      "id": "evidence-desired-export",
+      "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+      "sourceSnapshotRef": "desired-snapshot-0907",
+      "kind": "desired-state-export",
+      "controlledRef": "controlled://infra-reconciliation/desired/production-0907.json",
+      "snapshotDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "observedAt": "2026-09-07T17:00:00Z",
+      "suppliedByRef": "principal-rhea-park",
+      "subjectRefs": [
+        "desired-snapshot-0907",
+        "desired-app",
+        "desired-db",
+        "desired-queue"
+      ]
+    },
+    {
+      "id": "evidence-observed-export",
+      "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+      "sourceSnapshotRef": "observed-snapshot-0907",
+      "kind": "observed-state-export",
+      "controlledRef": "controlled://infra-reconciliation/observed/production-0907.json",
+      "snapshotDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "observedAt": "2026-09-07T17:05:00Z",
+      "suppliedByRef": "principal-rhea-park",
+      "subjectRefs": [
+        "observed-snapshot-0907",
+        "observed-app",
+        "observed-db",
+        "observed-shadow"
+      ]
+    },
+    {
+      "id": "evidence-db-deviation",
+      "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+      "sourceSnapshotRef": null,
+      "kind": "drift-deviation-approval",
+      "controlledRef": "controlled://infra-reconciliation/deviations/orders-db-0907",
+      "snapshotDigest": null,
+      "observedAt": "2026-09-07T17:30:00Z",
+      "suppliedByRef": "principal-omar-bello",
+      "subjectRefs": [
+        "deviation-db"
+      ]
+    }
+  ],
+  "desiredResources": [
+    {
+      "id": "desired-app",
+      "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+      "sourceSnapshotRef": "desired-snapshot-0907",
+      "environment": "production",
+      "providerScope": "aws-account-123",
+      "nativeId": "module.app.aws_ecs_service.main",
+      "identityState": "matched",
+      "canonicalResourceId": "aws://123/us-west-2/ecs/service/app",
+      "comparableDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "evidenceRefs": [
+        "evidence-desired-export"
+      ]
+    },
+    {
+      "id": "desired-db",
+      "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+      "sourceSnapshotRef": "desired-snapshot-0907",
+      "environment": "production",
+      "providerScope": "aws-account-123",
+      "nativeId": "module.db.aws_db_instance.main",
+      "identityState": "matched",
+      "canonicalResourceId": "aws://123/us-west-2/rds/db/orders",
+      "comparableDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "evidenceRefs": [
+        "evidence-desired-export"
+      ]
+    },
+    {
+      "id": "desired-queue",
+      "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+      "sourceSnapshotRef": "desired-snapshot-0907",
+      "environment": "production",
+      "providerScope": "aws-account-123",
+      "nativeId": "module.queue.aws_sqs_queue.jobs",
+      "identityState": "unmatched",
+      "canonicalResourceId": "aws://123/us-west-2/sqs/jobs",
+      "comparableDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "evidenceRefs": [
+        "evidence-desired-export"
+      ]
+    }
+  ],
+  "observedResources": [
+    {
+      "id": "observed-app",
+      "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+      "sourceSnapshotRef": "observed-snapshot-0907",
+      "environment": "production",
+      "providerScope": "aws-account-123",
+      "nativeId": "arn:aws:ecs:us-west-2:123:service/app",
+      "identityState": "matched",
+      "canonicalResourceId": "aws://123/us-west-2/ecs/service/app",
+      "comparableDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "evidenceRefs": [
+        "evidence-observed-export"
+      ]
+    },
+    {
+      "id": "observed-db",
+      "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+      "sourceSnapshotRef": "observed-snapshot-0907",
+      "environment": "production",
+      "providerScope": "aws-account-123",
+      "nativeId": "arn:aws:rds:us-west-2:123:db:orders",
+      "identityState": "matched",
+      "canonicalResourceId": "aws://123/us-west-2/rds/db/orders",
+      "comparableDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "evidenceRefs": [
+        "evidence-observed-export"
+      ]
+    },
+    {
+      "id": "observed-shadow",
+      "reconciliationSnapshotRef": "reconciliation-snapshot-0907",
+      "sourceSnapshotRef": "observed-snapshot-0907",
+      "environment": "production",
+      "providerScope": "aws-account-999",
+      "nativeId": "arn:aws:s3:::shadow-export",
+      "identityState": "unmatched",
+      "canonicalResourceId": "aws://999/global/s3/shadow-export",
+      "comparableDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "evidenceRefs": [
+        "evidence-observed-export"
+      ]
+    }
+  ],
+  "deviations": [
+    {
+      "id": "deviation-db",
+      "snapshotRef": "reconciliation-snapshot-0907",
+      "resourceKey": {
+        "environment": "production",
+        "providerScope": "aws-account-123",
+        "canonicalResourceId": "aws://123/us-west-2/rds/db/orders"
+      },
+      "desiredSnapshotDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "observedSnapshotDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "requestedByRef": "principal-rhea-park",
+      "approvedByRef": "principal-omar-bello",
+      "approvedAt": "2026-09-07T17:30:00Z",
+      "expiresAt": "2026-09-14T17:30:00Z",
+      "approvalEvidenceRefs": [
+        "evidence-db-deviation"
+      ]
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "disposition-app",
+      "snapshotRef": "reconciliation-snapshot-0907",
+      "resourceKey": {
+        "environment": "production",
+        "providerScope": "aws-account-123",
+        "canonicalResourceId": "aws://123/us-west-2/ecs/service/app"
+      },
+      "state": "converged",
+      "deviationRef": null
+    },
+    {
+      "id": "disposition-db",
+      "snapshotRef": "reconciliation-snapshot-0907",
+      "resourceKey": {
+        "environment": "production",
+        "providerScope": "aws-account-123",
+        "canonicalResourceId": "aws://123/us-west-2/rds/db/orders"
+      },
+      "state": "drifted",
+      "deviationRef": "deviation-db"
+    },
+    {
+      "id": "disposition-queue",
+      "snapshotRef": "reconciliation-snapshot-0907",
+      "resourceKey": {
+        "environment": "production",
+        "providerScope": "aws-account-123",
+        "canonicalResourceId": "aws://123/us-west-2/sqs/jobs"
+      },
+      "state": "missing",
+      "deviationRef": null
+    },
+    {
+      "id": "disposition-shadow",
+      "snapshotRef": "reconciliation-snapshot-0907",
+      "resourceKey": {
+        "environment": "production",
+        "providerScope": "aws-account-999",
+        "canonicalResourceId": "aws://999/global/s3/shadow-export"
+      },
+      "state": "unmanaged",
+      "deviationRef": null
+    }
+  ],
+  "blockers": [],
+  "handoff": {
+    "snapshotRef": "reconciliation-snapshot-0907",
+    "destinationRef": "controlled://infra-reconciliation/reviews/production-0907",
+    "state": "ready-for-owner",
+    "coveredKeys": [
+      {
+        "environment": "production",
+        "providerScope": "aws-account-123",
+        "canonicalResourceId": "aws://123/us-west-2/ecs/service/app"
+      },
+      {
+        "environment": "production",
+        "providerScope": "aws-account-123",
+        "canonicalResourceId": "aws://123/us-west-2/rds/db/orders"
+      },
+      {
+        "environment": "production",
+        "providerScope": "aws-account-123",
+        "canonicalResourceId": "aws://123/us-west-2/sqs/jobs"
+      },
+      {
+        "environment": "production",
+        "providerScope": "aws-account-999",
+        "canonicalResourceId": "aws://999/global/s3/shadow-export"
+      }
+    ],
+    "blockingRefs": [],
+    "nextOwnerRef": "principal-rhea-park",
+    "infrastructureState": "not-claimed",
+    "remediationState": "not-claimed",
+    "changeState": "not-claimed",
+    "riskAcceptanceState": "not-claimed",
+    "complianceState": "not-claimed",
+    "securityState": "not-claimed",
+    "correctnessState": "not-claimed",
+    "summary": "This artifact reconciles supplied exports only. The visible database drift has current owner-supplied deviation evidence; infrastructure outcome, remediation, risk acceptance, compliance, security, and correctness are not claimed."
+  }
+}

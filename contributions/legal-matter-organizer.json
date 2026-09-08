@@ -112,6 +112,11 @@
         "difference": "Compliance Reviewer assesses controls against a framework; it lacks matter-specific counsel and parties, conflict state, custody and holds, privilege confirmation, legal deadline authority, filing/correspondence/evidence indexes, chronology, and supplied matter-decision semantics."
       },
       {
+        "id": "infrastructure-drift-reconciliation-coordinator",
+        "overlap": "Both reconcile a bounded, source- and time-bound evidence universe into exact coverage, named-human ownership, blockers, and a destination-bound handoff without acting in authoritative systems.",
+        "difference": "Infrastructure Drift Reconciliation Coordinator compares two co-equal owner-supplied infrastructure snapshots using canonical resource identities and comparable digests. It has no already-open legal matter, counsel supervision, parties or conflicts, immutable source custody, active legal holds, privilege, legal deadline authority, filing/correspondence indexes, or supplied counsel-decision semantics."
+      },
+      {
         "id": "document-intake-analyst",
         "overlap": "Both normalize supplied documents with provenance, controlled references, minimization, review questions, and no autonomous legal judgment.",
         "difference": "Document Intake Analyst produces reviewable document summaries; it lacks exact matter/snapshot binding, named-counsel supervision, party/conflict state, append-only custody, legal holds, privilege labels, authoritative deadlines, filing/correspondence/evidence relationships, chronology, and counsel decisions."

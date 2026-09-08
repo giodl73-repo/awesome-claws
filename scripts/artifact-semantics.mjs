@@ -51417,6 +51417,782 @@ function vulnerabilityDispositionFindings(input) {
   return findings;
 }
 
+function infrastructureDriftFindings(input) {
+  const value = isRecord(input) ? input : {};
+  const findings = [];
+  const add = (code, path, message) => findings.push(finding(code, path, message));
+  const rootSnapshot = isRecord(value.snapshot) ? value.snapshot : {};
+  const desiredSnapshot = isRecord(value.desiredSnapshot) ? value.desiredSnapshot : {};
+  const observedSnapshot = isRecord(value.observedSnapshot) ? value.observedSnapshot : {};
+  const handoff = isRecord(value.handoff) ? value.handoff : {};
+
+  if (value.schemaVersion !== "awesomeClaws.infrastructureDriftReconciliation.v1") {
+    add(
+      "invalid_infrastructure_drift_schema_version",
+      "schemaVersion",
+      "Infrastructure drift reconciliation artifacts must declare awesomeClaws.infrastructureDriftReconciliation.v1.",
+    );
+  }
+
+  function ledger(name) {
+    if (!Array.isArray(value[name])) {
+      add(
+        "invalid_infrastructure_drift_ledger",
+        name,
+        `${name} must be an array of ledger rows.`,
+      );
+      return [];
+    }
+    return value[name].map((row, index) => {
+      if (isRecord(row)) return row;
+      add(
+        "invalid_infrastructure_drift_record",
+        `${name}[${index}]`,
+        `${name} contains a non-record ledger row.`,
+      );
+      return {};
+    });
+  }
+
+  const principals = ledger("principals");
+  const evidence = ledger("evidence");
+  const desiredResources = ledger("desiredResources");
+  const observedResources = ledger("observedResources");
+  const deviations = ledger("deviations");
+  const dispositions = ledger("dispositions");
+  const blockers = ledger("blockers");
+
+  function timestamp(value) {
+    const parsed = Date.parse(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function isControlledReference(value) {
+    return typeof value === "string" && /^controlled:\/\/\S+$/u.test(value);
+  }
+
+  function isDigest(value) {
+    return typeof value === "string" && /^sha256:[a-f0-9]{64}$/u.test(value);
+  }
+
+  function stringList(owner, field, path, label) {
+    const list = owner?.[field];
+    if (!Array.isArray(list) || list.some((item) => typeof item !== "string" || !item)) {
+      add(
+        "invalid_infrastructure_drift_record",
+        `${path}.${field}`,
+        `${label} must be a list of non-empty strings.`,
+      );
+      return [];
+    }
+    if (new Set(list).size !== list.length) {
+      add(
+        "duplicate_infrastructure_drift_id",
+        `${path}.${field}`,
+        `${label} must not repeat an identifier.`,
+      );
+    }
+    return list;
+  }
+
+  function tupleKey(candidate) {
+    if (
+      !isRecord(candidate) ||
+      typeof candidate.environment !== "string" ||
+      !candidate.environment ||
+      typeof candidate.providerScope !== "string" ||
+      !candidate.providerScope ||
+      typeof candidate.canonicalResourceId !== "string" ||
+      !candidate.canonicalResourceId
+    ) {
+      return null;
+    }
+    return JSON.stringify([
+      candidate.environment,
+      candidate.providerScope,
+      candidate.canonicalResourceId,
+    ]);
+  }
+
+  function sameIdSet(actual, expected, path, label) {
+    if (
+      !Array.isArray(actual) ||
+      actual.some((item) => typeof item !== "string" || !item) ||
+      new Set(actual).size !== actual.length ||
+      actual.length !== expected.size ||
+      actual.some((item) => !expected.has(item))
+    ) {
+      add(
+        "incomplete_infrastructure_drift_snapshot_index",
+        path,
+        `${label} must index every current row exactly once.`,
+      );
+      return false;
+    }
+    return true;
+  }
+
+  function sameTupleSet(actual, expected, path) {
+    if (!Array.isArray(actual)) {
+      add(
+        "incomplete_infrastructure_drift_coverage",
+        path,
+        "The covered key index must equal the resolved symmetric resource universe.",
+      );
+      return false;
+    }
+    const keys = actual.map(tupleKey);
+    if (
+      keys.some((key) => key === null) ||
+      new Set(keys).size !== keys.length ||
+      keys.length !== expected.size ||
+      keys.some((key) => !expected.has(key))
+    ) {
+      add(
+        "incomplete_infrastructure_drift_coverage",
+        path,
+        "The covered key index must equal the resolved symmetric resource universe.",
+      );
+      return false;
+    }
+    return true;
+  }
+
+  const ledgerDefinitions = [
+    ["principals", "principalRefs", principals],
+    ["evidence", "evidenceRefs", evidence],
+    ["desiredResources", "desiredResourceRefs", desiredResources],
+    ["observedResources", "observedResourceRefs", observedResources],
+    ["deviations", "deviationRefs", deviations],
+    ["dispositions", "dispositionRefs", dispositions],
+    ["blockers", "blockerRefs", blockers],
+  ];
+  const allRows = [
+    { id: rootSnapshot.id, path: "snapshot.id" },
+    { id: desiredSnapshot.id, path: "desiredSnapshot.id" },
+    { id: observedSnapshot.id, path: "observedSnapshot.id" },
+    ...ledgerDefinitions.flatMap(([field, , rows]) =>
+      rows.map((row, index) => ({ id: row.id, path: `${field}[${index}].id` })),
+    ),
+  ];
+  const allIds = new Set();
+  for (const row of allRows) {
+    if (typeof row.id !== "string" || !row.id) {
+      add(
+        "invalid_infrastructure_drift_record",
+        row.path,
+        "Every snapshot and ledger row needs a stable non-empty id.",
+      );
+      continue;
+    }
+    if (allIds.has(row.id)) {
+      add(
+        "duplicate_infrastructure_drift_id",
+        row.path,
+        `Ledger id ${JSON.stringify(row.id)} must be globally unique.`,
+      );
+      continue;
+    }
+    allIds.add(row.id);
+  }
+
+  const snapshotAsOf = timestamp(rootSnapshot.asOf);
+  if (
+    typeof rootSnapshot.id !== "string" ||
+    !isDigest(rootSnapshot.digest) ||
+    snapshotAsOf === null ||
+    !isControlledReference(rootSnapshot.workspaceRef) ||
+    !isControlledReference(rootSnapshot.destinationRef)
+  ) {
+    add(
+      "invalid_infrastructure_drift_snapshot",
+      "snapshot",
+      "The current reconciliation snapshot needs an id, digest, cutoff, controlled workspace, and controlled destination.",
+    );
+  }
+  for (const [field, indexField, rows] of ledgerDefinitions) {
+    sameIdSet(
+      rootSnapshot[indexField],
+      new Set(rows.map((row) => row.id).filter((id) => typeof id === "string")),
+      `snapshot.${indexField}`,
+      field,
+    );
+  }
+
+  const principalById = new Map(
+    principals.filter((row) => typeof row.id === "string").map((row) => [row.id, row]),
+  );
+  const evidenceById = new Map(
+    evidence.filter((row) => typeof row.id === "string").map((row) => [row.id, row]),
+  );
+  const deviationById = new Map(
+    deviations.filter((row) => typeof row.id === "string").map((row) => [row.id, row]),
+  );
+  const resourceById = new Map(
+    [...desiredResources, ...observedResources]
+      .filter((row) => typeof row.id === "string")
+      .map((row) => [row.id, row]),
+  );
+
+  const roleOnlyName =
+    /^(?:infrastructure(?: owner)?|platform(?: team)?|cloud operations|approver|deviation approver|owner|agent|claw|system|service)$/iu;
+  function namedHuman(principal) {
+    return (
+      isRecord(principal) &&
+      typeof principal.name === "string" &&
+      principal.name.trim().split(/\s+/u).length >= 2 &&
+      !roleOnlyName.test(principal.name.trim())
+    );
+  }
+  function hasScope(principal, scope) {
+    return Array.isArray(principal?.scopes) && principal.scopes.includes(scope);
+  }
+
+  function exactExportEvidence(evidenceRef, sourceSnapshot, kind, subjectRef) {
+    const row = evidenceById.get(evidenceRef);
+    return (
+      isRecord(row) &&
+      row.kind === kind &&
+      row.reconciliationSnapshotRef === rootSnapshot.id &&
+      row.sourceSnapshotRef === sourceSnapshot.id &&
+      row.snapshotDigest === sourceSnapshot.digest &&
+      row.observedAt === sourceSnapshot.observedAt &&
+      isControlledReference(row.controlledRef) &&
+      Array.isArray(row.subjectRefs) &&
+      row.subjectRefs.includes(subjectRef)
+    );
+  }
+
+  function validateExport(snapshot, kind, rows, path) {
+    const observedAt = timestamp(snapshot.observedAt);
+    if (
+      snapshot.reconciliationSnapshotRef !== rootSnapshot.id ||
+      !isDigest(snapshot.digest) ||
+      observedAt === null ||
+      (snapshotAsOf !== null && observedAt > snapshotAsOf) ||
+      !exactExportEvidence(snapshot.evidenceRef, snapshot, kind, snapshot.id)
+    ) {
+      add(
+        "invalid_infrastructure_drift_snapshot_binding",
+        path,
+        "A source snapshot must bind the current reconciliation snapshot and its reciprocal controlled export at the exact digest and timestamp.",
+      );
+    }
+    const exportEvidence = evidenceById.get(snapshot.evidenceRef);
+    sameIdSet(
+      exportEvidence?.subjectRefs,
+      new Set([snapshot.id, ...rows.map((row) => row.id).filter((id) => typeof id === "string")]),
+      `${path}.evidenceRef`,
+      `${path} controlled export subjects`,
+    );
+  }
+
+  const currentEvidence = evidenceById.get(rootSnapshot.evidenceRef);
+  if (
+    !isRecord(currentEvidence) ||
+    currentEvidence.kind !== "reconciliation-snapshot-export" ||
+    currentEvidence.reconciliationSnapshotRef !== rootSnapshot.id ||
+    currentEvidence.sourceSnapshotRef !== rootSnapshot.id ||
+    currentEvidence.snapshotDigest !== rootSnapshot.digest ||
+    currentEvidence.observedAt !== rootSnapshot.asOf ||
+    !isControlledReference(currentEvidence.controlledRef) ||
+    !Array.isArray(currentEvidence.subjectRefs) ||
+    currentEvidence.subjectRefs.length !== 1 ||
+    currentEvidence.subjectRefs[0] !== rootSnapshot.id
+  ) {
+    add(
+      "invalid_infrastructure_drift_snapshot_binding",
+      "snapshot.evidenceRef",
+      "The current reconciliation snapshot needs reciprocal controlled export evidence at its exact digest and cutoff.",
+    );
+  }
+  validateExport(
+    desiredSnapshot,
+    "desired-state-export",
+    desiredResources,
+    "desiredSnapshot",
+  );
+  validateExport(
+    observedSnapshot,
+    "observed-state-export",
+    observedResources,
+    "observedSnapshot",
+  );
+
+  for (const [index, row] of evidence.entries()) {
+    const path = `evidence[${index}]`;
+    const observedAt = timestamp(row.observedAt);
+    const subjects = stringList(row, "subjectRefs", path, "Evidence subjects");
+    if (
+      row.reconciliationSnapshotRef !== rootSnapshot.id ||
+      !isControlledReference(row.controlledRef) ||
+      observedAt === null ||
+      (snapshotAsOf !== null && observedAt > snapshotAsOf) ||
+      !principalById.has(row.suppliedByRef) ||
+      subjects.length === 0 ||
+      subjects.some((ref) => !allIds.has(ref))
+    ) {
+      add(
+        "invalid_infrastructure_drift_evidence",
+        path,
+        "Evidence needs the current reconciliation snapshot, a controlled reference, known supplier, known subjects, and a timestamp no later than the cutoff.",
+      );
+    }
+    if (
+      row.sourceSnapshotRef !== null &&
+      ![rootSnapshot.id, desiredSnapshot.id, observedSnapshot.id].includes(
+        row.sourceSnapshotRef,
+      )
+    ) {
+      add(
+        "invalid_infrastructure_drift_evidence",
+        `${path}.sourceSnapshotRef`,
+        "Evidence may bind only the current, desired, or observed snapshot supplied by this artifact.",
+      );
+    }
+  }
+
+  const authorityEvidenceConsumers = new Map();
+  for (const [index, principal] of principals.entries()) {
+    const path = `principals[${index}]`;
+    const evidenceRefs = stringList(principal, "evidenceRefs", path, "Principal evidence");
+    if (
+      principal.snapshotRef !== rootSnapshot.id ||
+      !namedHuman(principal) ||
+      !Array.isArray(principal.scopes) ||
+      principal.scopes.length === 0
+    ) {
+      add(
+        "invalid_infrastructure_drift_principal",
+        path,
+        "A principal must be a named human with scopes bound to the current reconciliation snapshot.",
+      );
+    }
+    let hasRosterEvidence = false;
+    for (const ref of evidenceRefs) {
+      const row = evidenceById.get(ref);
+      if (!row) {
+        add(
+          "invalid_infrastructure_drift_evidence",
+          `${path}.evidenceRefs`,
+          "Principal evidence must resolve.",
+        );
+        continue;
+      }
+      if (
+        row.kind === "authority-roster" &&
+        row.reconciliationSnapshotRef === rootSnapshot.id &&
+        row.sourceSnapshotRef === null &&
+        row.snapshotDigest === null &&
+        Array.isArray(row.subjectRefs) &&
+        row.subjectRefs.length === 1 &&
+        row.subjectRefs[0] === principal.id
+      ) {
+        hasRosterEvidence = true;
+        authorityEvidenceConsumers.set(
+          ref,
+          (authorityEvidenceConsumers.get(ref) ?? 0) + 1,
+        );
+      }
+    }
+    if (!hasRosterEvidence) {
+      add(
+        "invalid_infrastructure_drift_evidence",
+        `${path}.evidenceRefs`,
+        "Every named human needs reciprocal controlled authority-roster evidence.",
+      );
+    }
+  }
+  for (const [index, row] of evidence.entries()) {
+    if (
+      row.kind === "authority-roster" &&
+      authorityEvidenceConsumers.get(row.id) !== 1
+    ) {
+      add(
+        "invalid_infrastructure_drift_evidence",
+        `evidence[${index}]`,
+        "An authority-roster record must be consumed exactly once by the named principal it supports.",
+      );
+    }
+  }
+
+  const desiredByKey = new Map();
+  const observedByKey = new Map();
+  const unresolvedResources = new Map();
+  function indexResources(rows, side, sourceSnapshot, evidenceKind, target) {
+    for (const [index, row] of rows.entries()) {
+      const path = `${side}Resources[${index}]`;
+      const evidenceRefs = stringList(row, "evidenceRefs", path, "Resource evidence");
+      if (
+        row.reconciliationSnapshotRef !== rootSnapshot.id ||
+        row.sourceSnapshotRef !== sourceSnapshot.id ||
+        typeof row.nativeId !== "string" ||
+        !row.nativeId ||
+        !evidenceRefs.some((ref) =>
+          exactExportEvidence(ref, sourceSnapshot, evidenceKind, row.id),
+        )
+      ) {
+        add(
+          "invalid_infrastructure_drift_resource_binding",
+          path,
+          `Every ${side} resource needs the current reconciliation binding and reciprocal evidence from its exact source snapshot export.`,
+        );
+      }
+      if (row.identityState === "unresolved") {
+        if (row.canonicalResourceId !== null || row.comparableDigest !== null) {
+          add(
+            "invalid_infrastructure_drift_identity_state",
+            path,
+            "An unresolved identity must not carry a canonical resource id or comparable digest.",
+          );
+        }
+        if (typeof row.id === "string") unresolvedResources.set(row.id, row);
+        continue;
+      }
+      const key = tupleKey(row);
+      if (
+        !["matched", "unmatched"].includes(row.identityState) ||
+        key === null ||
+        !isDigest(row.comparableDigest)
+      ) {
+        add(
+          "invalid_infrastructure_drift_identity_state",
+          path,
+          "A resolved identity needs an owner-supplied canonical resource id, comparable digest, and matched or unmatched identity state.",
+        );
+        continue;
+      }
+      if (target.has(key)) {
+        add(
+          "duplicate_infrastructure_drift_resource_identity",
+          path,
+          `The ${side} snapshot repeats one exact owner-supplied resource tuple.`,
+        );
+        continue;
+      }
+      target.set(key, row);
+    }
+  }
+
+  indexResources(
+    desiredResources,
+    "desired",
+    desiredSnapshot,
+    "desired-state-export",
+    desiredByKey,
+  );
+  indexResources(
+    observedResources,
+    "observed",
+    observedSnapshot,
+    "observed-state-export",
+    observedByKey,
+  );
+
+  const expectedStates = new Map();
+  for (const key of new Set([...desiredByKey.keys(), ...observedByKey.keys()])) {
+    const desired = desiredByKey.get(key);
+    const observed = observedByKey.get(key);
+    if (
+      (desired && observed &&
+        (desired.identityState !== "matched" || observed.identityState !== "matched")) ||
+      ((!desired || !observed) && (desired ?? observed)?.identityState !== "unmatched")
+    ) {
+      add(
+        "invalid_infrastructure_drift_identity_state",
+        key,
+        "Two-sided tuples require owner-supplied matched state; one-sided tuples require owner-supplied unmatched state.",
+      );
+    }
+    expectedStates.set(
+      key,
+      desired && observed
+        ? desired.comparableDigest === observed.comparableDigest
+          ? "converged"
+          : "drifted"
+        : desired
+          ? "missing"
+          : "unmanaged",
+    );
+  }
+
+  const openBlockers = [];
+  const unresolvedBlockerCounts = new Map();
+  for (const [index, row] of blockers.entries()) {
+    const path = `blockers[${index}]`;
+    const targetRefs = stringList(row, "targetRefs", path, "Blocker targets");
+    const evidenceRefs = stringList(row, "evidenceRefs", path, "Blocker evidence");
+    const owner = principalById.get(row.ownerRef);
+    if (
+      row.snapshotRef !== rootSnapshot.id ||
+      row.code !== "identity-correspondence-unresolved" ||
+      !namedHuman(owner) ||
+      !hasScope(owner, "infrastructure-owner") ||
+      targetRefs.length === 0 ||
+      targetRefs.some((ref) => !unresolvedResources.has(ref)) ||
+      evidenceRefs.some((ref) => !evidenceById.has(ref))
+    ) {
+      add(
+        "invalid_infrastructure_drift_blocker",
+        path,
+        "An identity blocker needs the current snapshot, a scoped named infrastructure owner, exact unresolved resource targets, and controlled evidence.",
+      );
+    }
+    for (const targetRef of targetRefs) {
+      const resource = unresolvedResources.get(targetRef);
+      if (resource) {
+        const source =
+          resource.sourceSnapshotRef === desiredSnapshot.id
+            ? [desiredSnapshot, "desired-state-export"]
+            : resource.sourceSnapshotRef === observedSnapshot.id
+              ? [observedSnapshot, "observed-state-export"]
+              : null;
+        unresolvedBlockerCounts.set(
+          targetRef,
+          (unresolvedBlockerCounts.get(targetRef) ?? 0) + (row.status === "open" ? 1 : 0),
+        );
+        if (
+          !source ||
+          !evidenceRefs.some(
+            (ref) =>
+              Array.isArray(resource.evidenceRefs) &&
+              resource.evidenceRefs.includes(ref) &&
+              exactExportEvidence(ref, source[0], source[1], targetRef),
+          )
+        ) {
+          add(
+            "invalid_infrastructure_drift_blocker",
+            `${path}.evidenceRefs`,
+            "An identity blocker must carry the exact source export evidence for every resource it names.",
+          );
+        }
+      }
+    }
+    if (row.status === "open") openBlockers.push(row);
+  }
+  for (const [resourceId] of unresolvedResources) {
+    if (unresolvedBlockerCounts.get(resourceId) !== 1) {
+      add(
+        "unresolved_infrastructure_drift_identity",
+        resourceId,
+        "Every unresolved owner-system identity needs exactly one open exact blocker and derives no disposition.",
+      );
+    }
+  }
+
+  const dispositionByKey = new Map();
+  const deviationConsumers = new Map();
+  for (const [index, row] of dispositions.entries()) {
+    const path = `dispositions[${index}]`;
+    const key = tupleKey(row.resourceKey);
+    if (row.snapshotRef !== rootSnapshot.id || key === null) {
+      add(
+        "invalid_infrastructure_drift_disposition",
+        path,
+        "A disposition must bind the current reconciliation snapshot and one exact resource tuple.",
+      );
+      continue;
+    }
+    if (!expectedStates.has(key)) {
+      add(
+        "undeclared_infrastructure_drift_disposition",
+        path,
+        "A disposition may only name a resolved tuple in the derived symmetric resource universe.",
+      );
+      continue;
+    }
+    if (dispositionByKey.has(key)) {
+      add(
+        "duplicate_infrastructure_drift_disposition",
+        path,
+        "Each resolved resource tuple needs exactly one disposition.",
+      );
+      continue;
+    }
+    dispositionByKey.set(key, row);
+    if (row.state !== expectedStates.get(key)) {
+      add(
+        "invalid_infrastructure_drift_disposition",
+        `${path}.state`,
+        "A disposition is derived only from exact symmetric membership and owner-supplied comparable digest equality.",
+      );
+    }
+    if (row.deviationRef !== null) {
+      const deviation = deviationById.get(row.deviationRef);
+      deviationConsumers.set(
+        row.deviationRef,
+        (deviationConsumers.get(row.deviationRef) ?? 0) + 1,
+      );
+      if (
+        expectedStates.get(key) !== "drifted" ||
+        !deviation ||
+        tupleKey(deviation.resourceKey) !== key
+      ) {
+        add(
+          "invalid_infrastructure_drift_deviation",
+          `${path}.deviationRef`,
+          "Only an existing deviation may overlay an exact drifted resource tuple.",
+        );
+      }
+    }
+  }
+  for (const key of expectedStates.keys()) {
+    if (!dispositionByKey.has(key)) {
+      add(
+        "missing_infrastructure_drift_disposition",
+        key,
+        "Every resolved resource tuple needs exactly one disposition.",
+      );
+    }
+  }
+
+  const approvalEvidenceConsumers = new Map();
+  for (const [index, row] of deviations.entries()) {
+    const path = `deviations[${index}]`;
+    const key = tupleKey(row.resourceKey);
+    const requester = principalById.get(row.requestedByRef);
+    const approver = principalById.get(row.approvedByRef);
+    const approvedAt = timestamp(row.approvedAt);
+    const expiresAt = timestamp(row.expiresAt);
+    const approvalEvidenceRefs = stringList(
+      row,
+      "approvalEvidenceRefs",
+      path,
+      "Deviation approval evidence",
+    );
+    const chronologyFloor = Math.max(
+      timestamp(desiredSnapshot.observedAt) ?? Number.POSITIVE_INFINITY,
+      timestamp(observedSnapshot.observedAt) ?? Number.POSITIVE_INFINITY,
+    );
+    const hasApprovalEvidence = approvalEvidenceRefs.some((ref) => {
+      const evidence = evidenceById.get(ref);
+      const supported =
+        isRecord(evidence) &&
+        evidence.kind === "drift-deviation-approval" &&
+        evidence.reconciliationSnapshotRef === rootSnapshot.id &&
+        evidence.sourceSnapshotRef === null &&
+        evidence.snapshotDigest === null &&
+        evidence.suppliedByRef === row.approvedByRef &&
+        evidence.observedAt === row.approvedAt &&
+        isControlledReference(evidence.controlledRef) &&
+        Array.isArray(evidence.subjectRefs) &&
+        evidence.subjectRefs.length === 1 &&
+        evidence.subjectRefs[0] === row.id;
+      if (supported) {
+        approvalEvidenceConsumers.set(
+          ref,
+          (approvalEvidenceConsumers.get(ref) ?? 0) + 1,
+        );
+      }
+      return supported;
+    });
+    if (
+      row.snapshotRef !== rootSnapshot.id ||
+      key === null ||
+      expectedStates.get(key) !== "drifted" ||
+      row.desiredSnapshotDigest !== desiredSnapshot.digest ||
+      row.observedSnapshotDigest !== observedSnapshot.digest ||
+      !namedHuman(requester) ||
+      !namedHuman(approver) ||
+      row.requestedByRef === row.approvedByRef ||
+      requester?.name?.trim().toLocaleLowerCase() ===
+        approver?.name?.trim().toLocaleLowerCase() ||
+      !hasScope(approver, "drift-deviation-approval") ||
+      approvedAt === null ||
+      expiresAt === null ||
+      snapshotAsOf === null ||
+      approvedAt < chronologyFloor ||
+      approvedAt > snapshotAsOf ||
+      expiresAt <= approvedAt ||
+      expiresAt <= snapshotAsOf ||
+      !hasApprovalEvidence
+    ) {
+      add(
+        "invalid_infrastructure_drift_deviation",
+        path,
+        "A deviation must be consumed by its exact drifted tuple, bind both current source digests, and carry unexpired independent scoped approval evidence authored by the approver at approval time.",
+      );
+    }
+    if (deviationConsumers.get(row.id) !== 1) {
+      add(
+        "unconsumed_infrastructure_drift_deviation",
+        `${path}.resourceKey`,
+        "Every asserted deviation must be consumed exactly once by the exact drifted tuple it names.",
+      );
+    }
+  }
+  for (const [index, row] of evidence.entries()) {
+    if (
+      row.kind === "drift-deviation-approval" &&
+      approvalEvidenceConsumers.get(row.id) !== 1
+    ) {
+      add(
+        "invalid_infrastructure_drift_evidence",
+        `evidence[${index}]`,
+        "A deviation approval record must be consumed exactly once by its named deviation.",
+      );
+    }
+  }
+
+  sameTupleSet(handoff.coveredKeys, expectedStates, "handoff.coveredKeys");
+  const openBlockerIds = new Set(
+    openBlockers.map((row) => row.id).filter((id) => typeof id === "string"),
+  );
+  sameIdSet(
+    handoff.blockingRefs,
+    openBlockerIds,
+    "handoff.blockingRefs",
+    "Handoff blockers",
+  );
+  const nextOwner = principalById.get(handoff.nextOwnerRef);
+  if (
+    handoff.snapshotRef !== rootSnapshot.id ||
+    handoff.destinationRef !== rootSnapshot.destinationRef ||
+    !isControlledReference(handoff.destinationRef) ||
+    !namedHuman(nextOwner) ||
+    !hasScope(nextOwner, "infrastructure-owner") ||
+    ![
+      "infrastructureState",
+      "remediationState",
+      "changeState",
+      "riskAcceptanceState",
+      "complianceState",
+      "securityState",
+      "correctnessState",
+    ].every((field) => handoff[field] === "not-claimed")
+  ) {
+    add(
+      "invalid_infrastructure_drift_handoff",
+      "handoff",
+      "The handoff must bind the current snapshot and destination, name a scoped human owner, and preserve every prohibited authority state as not-claimed.",
+    );
+  }
+  const prohibitedNarrative =
+    /\b(?:the\s+)?(?:claw|agent|we|i)\s+(?:accessed|queried|connected|ran|applied|refreshed|imported|deployed|remediated|changed|mutated|created|closed|approved|accepted|gated)\b|\bterraform\b.{0,48}\b(?:plan|apply|refresh|import|executed|ran)\b|\b(?:infrastructure|configuration|estate|artifact|reconciliation|result)\s+(?:is|was)\s+(?:safe|secure|correct|compliant|remediated)\b|\b(?:remediation|risk acceptance|deviation|release|change)\s+(?:is|was)\s+(?:approved|accepted|gated)\b/iu;
+  if (
+    typeof handoff.summary !== "string" ||
+    prohibitedNarrative.test(handoff.summary)
+  ) {
+    add(
+      "prohibited_infrastructure_drift_authority_narrative",
+      "handoff.summary",
+      "The handoff cannot claim infrastructure access, remediation, approval, risk acceptance, release/change gating, compliance, security, correctness, safety, or a remediated state.",
+    );
+  }
+  const shouldBlock = findings.length > 0 || openBlockerIds.size > 0;
+  if (
+    handoff.state !== (shouldBlock ? "blocked" : "ready-for-owner")
+  ) {
+    add(
+      "invalid_infrastructure_drift_handoff",
+      "handoff.state",
+      "Any evidence, identity, totality, chronology, deviation, destination, or blocker finding prevents a ready-for-owner handoff.",
+    );
+  }
+
+  return findings;
+}
+
 const validators = {
   "accessibility-review-coordinator": accessibilityReviewFindings,
   "api-integration-engineer": apiIntegrationReadinessFindings,
@@ -51497,6 +52273,7 @@ const validators = {
   "recruiting-coordinator": recruitingFindings,
   "release-coordinator": releaseReadinessFindings,
   "records-retention-disposition-coordinator": retentionDispositionFindings,
+  "infrastructure-drift-reconciliation-coordinator": infrastructureDriftFindings,
   "restaurant-venue-scout": restaurantVenueFindings,
   "research-briefing": researchFindings,
   "sales-operations": salesOperationsFindings,

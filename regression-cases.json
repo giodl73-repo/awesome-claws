@@ -2524,6 +2524,32 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "infrastructure-drift-reconciliation-coordinator",
+      "acceptedRequest": "Reconcile these supplied production IaC and cloud-inventory exports. Show every resource that is converged, drifted, missing, unmanaged, or blocked on unresolved identity, and verify whether the database deviation still binds both snapshots; do not access the cloud, run Terraform, change anything, approve risk, or claim compliance.",
+      "requiredEvidence": [
+        "Stable reconciliation snapshot id, cutoff, approved workspace and destination, plus named human infrastructure owners and deviation approvers with exact scopes",
+        "Desired-state snapshot id, digest, timestamp, controlled export, and resource rows carrying native identifiers, owner-supplied canonical identities or unresolved identity state, and owner-supplied comparable digests",
+        "Observed-state snapshot id, digest, timestamp, controlled export, and the same resource identity and comparable-digest contract across every approved provider and account scope",
+        "Optional time-bounded deviation approvals naming one exact drifted resource and binding both complete snapshot digests, requester, independent scoped approver, approval evidence, and expiry"
+      ],
+      "authorityBoundaries": [
+        "Do not access cloud accounts, infrastructure APIs, configuration backends, state stores, provider consoles, networks, registries, or secret stores",
+        "Do not run Terraform, Pulumi, CloudFormation, Bicep, deployment tools, plans, applies, imports, refreshes, or provider-specific semantic comparison",
+        "Do not author or execute remediation, mutate infrastructure or configuration, open or close tickets, approve deviations, accept risk, or gate a release or change",
+        "Do not infer that an IaC address, provider resource id, name, tag, or normalized field describes the same resource; unresolved correspondence remains blocked until an owner system supplies the canonical identity",
+        "Do not interpret raw configuration fields as comparable or decide which defaults and computed values matter; only owner-supplied comparable digest equality may establish converged versus drifted",
+        "Do not claim compliance, security, correctness, desiredness, ownership, remediation, or that infrastructure is safe"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/infrastructure-drift-reconciliation-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

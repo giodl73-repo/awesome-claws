@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 103,
-    "coveredCount": 103,
-    "recipeCount": 277,
-    "findingCodeCount": 284
+    "validatorCount": 104,
+    "coveredCount": 104,
+    "recipeCount": 280,
+    "findingCodeCount": 296
   },
   "entries": [
     {
@@ -4313,6 +4313,62 @@
           "expectedCodes": [
             "invalid_vulnerability_snapshot_binding",
             "missing_investigation_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "infrastructure-drift-reconciliation-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-infrastructure-drift-deviation-1",
+          "operator": "replace",
+          "path": [
+            "snapshot",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_infrastructure_drift_deviation",
+            "invalid_infrastructure_drift_disposition",
+            "invalid_infrastructure_drift_evidence",
+            "invalid_infrastructure_drift_handoff",
+            "invalid_infrastructure_drift_principal",
+            "invalid_infrastructure_drift_resource_binding",
+            "invalid_infrastructure_drift_snapshot_binding",
+            "missing_infrastructure_drift_disposition",
+            "unconsumed_infrastructure_drift_deviation"
+          ]
+        },
+        {
+          "id": "semantic-incomplete-infrastructure-drift-snapshot-index-2",
+          "operator": "replace",
+          "path": [
+            "snapshot",
+            "principalRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incomplete_infrastructure_drift_snapshot_index",
+            "invalid_infrastructure_drift_handoff"
+          ]
+        },
+        {
+          "id": "semantic-incomplete-infrastructure-drift-coverage-3",
+          "operator": "replace",
+          "path": [
+            "desiredResources",
+            "0",
+            "environment"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incomplete_infrastructure_drift_coverage",
+            "invalid_infrastructure_drift_disposition",
+            "invalid_infrastructure_drift_handoff",
+            "invalid_infrastructure_drift_identity_state",
+            "missing_infrastructure_drift_disposition"
           ]
         }
       ]
