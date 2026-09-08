@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { accessEntitlementReviewFindings } from "./access-entitlement-review-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 
 export function hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) {
@@ -52194,6 +52195,7 @@ function infrastructureDriftFindings(input) {
 }
 
 const validators = {
+  "access-entitlement-review-coordinator": accessEntitlementReviewFindings,
   "accessibility-review-coordinator": accessibilityReviewFindings,
   "api-integration-engineer": apiIntegrationReadinessFindings,
   "appliance-care-coordinator": applianceCareFindings,

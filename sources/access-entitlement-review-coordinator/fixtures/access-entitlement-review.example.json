@@ -1,0 +1,769 @@
+{
+  "schemaVersion": "awesomeClaws.accessEntitlementReview.spike.v1",
+  "round": {
+    "id": "round-2026-q3",
+    "priorRoundRef": "access-review-2026-q2",
+    "snapshotRef": "snapshot-2026-q3-workforce",
+    "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+    "asOf": "2026-09-01T00:00:00Z",
+    "window": {
+      "opensAt": "2026-09-01T00:00:00Z",
+      "closesAt": "2026-09-30T00:00:00Z"
+    },
+    "cadence": {
+      "intervalDays": 90,
+      "recertificationBasis": "fresh-decision-each-round"
+    },
+    "destination": {
+      "controlledRef": "controlled://access-reviews/2026-q3/review-handoff.md",
+      "visibility": "private",
+      "approvedByRef": "principal-iris-tanaka"
+    },
+    "authorityBoundary": {
+      "rosterRef": "roster-2026-review-authority",
+      "basis": "owner-supplied-roster-not-derived"
+    },
+    "handoffOwnerRef": "principal-ruth-abara",
+    "exportEvidenceRef": "evidence-round-snapshot-export",
+    "assignmentRefs": [
+      "assignment-crm-reader-leo",
+      "assignment-payments-admin-nadia",
+      "assignment-warehouse-analyst-leo",
+      "assignment-billing-writer-service"
+    ],
+    "authorityGrantRefs": [
+      "grant-mara-crm-case-reader",
+      "grant-priya-crm-case-reader",
+      "grant-devon-payments-settlement-admin",
+      "grant-sofia-warehouse-analyst"
+    ],
+    "sourceSignalRefs": [
+      "signal-crm-inactivity",
+      "signal-payments-peer-affiliation",
+      "signal-warehouse-recommendation"
+    ],
+    "decisionRefs": [
+      "decision-crm-reader-retain",
+      "decision-payments-admin-revoke",
+      "decision-warehouse-analyst-retain"
+    ],
+    "nonDecisionRefs": [],
+    "blockerRefs": []
+  },
+  "snapshot": {
+    "id": "snapshot-2026-q3-workforce",
+    "digest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+    "asOf": "2026-09-01T00:00:00Z",
+    "coverageBasis": "owner-declared-assignment-rows-only",
+    "privilegeClassification": "supplied",
+    "sourceSystemRef": "principal-access-export-system",
+    "entitlementCatalogRefs": [
+      "entitlement://analytics-warehouse/analyst",
+      "entitlement://billing-ledger/writer",
+      "entitlement://crm-platform/case-reader",
+      "entitlement://payments-platform/settlement-admin",
+      "entitlement://payments-platform/settlement-viewer"
+    ],
+    "notCoveredAccessPaths": [
+      {
+        "id": "path-inherited-group",
+        "pathKind": "inherited-group-membership"
+      },
+      {
+        "id": "path-nested-group",
+        "pathKind": "nested-group-expansion"
+      },
+      {
+        "id": "path-effective-access",
+        "pathKind": "effective-access-computation"
+      },
+      {
+        "id": "path-standing-role",
+        "pathKind": "standing-role-assignment"
+      },
+      {
+        "id": "path-break-glass",
+        "pathKind": "break-glass-account"
+      },
+      {
+        "id": "path-external-federated",
+        "pathKind": "external-federated-access"
+      }
+    ],
+    "exportEvidenceRef": "evidence-round-snapshot-export"
+  },
+  "authorityRoster": {
+    "id": "roster-2026-review-authority",
+    "controlledRef": "controlled://access-reviews/rosters/2026-review-authority-roster@sha256-265a692a9d6f77238d6a107cf7cd9e735dc87d7cdc85228f6b7a491789e5a16f",
+    "rosterDigest": "sha256:e608f6f2082b4cc1bde57b307ec101ba9a49483a5f0ec78304fc0cd7368f9459",
+    "custodianRef": "principal-hana-bello",
+    "evidenceRef": "evidence-authority-roster-export"
+  },
+  "principals": [
+    {
+      "id": "principal-iris-tanaka",
+      "name": "Iris Tanaka",
+      "kind": "named-human",
+      "scopes": [
+        "review-authority-issuer",
+        "review-destination-approver"
+      ]
+    },
+    {
+      "id": "principal-omar-diaz",
+      "name": "Omar Diaz",
+      "kind": "named-human",
+      "scopes": [
+        "review-round-coordinator"
+      ]
+    },
+    {
+      "id": "principal-ruth-abara",
+      "name": "Ruth Abara",
+      "kind": "named-human",
+      "scopes": [
+        "review-execution-handoff-owner"
+      ]
+    },
+    {
+      "id": "principal-hana-bello",
+      "name": "Hana Bello",
+      "kind": "named-human",
+      "scopes": []
+    },
+    {
+      "id": "principal-mara-quinn",
+      "name": "Mara Quinn",
+      "kind": "named-human",
+      "scopes": []
+    },
+    {
+      "id": "principal-devon-shaw",
+      "name": "Devon Shaw",
+      "kind": "named-human",
+      "scopes": []
+    },
+    {
+      "id": "principal-sofia-hale",
+      "name": "Sofia Hale",
+      "kind": "named-human",
+      "scopes": []
+    },
+    {
+      "id": "principal-priya-raman",
+      "name": "Priya Raman",
+      "kind": "named-human",
+      "scopes": []
+    },
+    {
+      "id": "principal-leo-brandt",
+      "name": "Leo Brandt",
+      "kind": "named-human",
+      "scopes": []
+    },
+    {
+      "id": "principal-nadia-oyelaran",
+      "name": "Nadia Oyelaran",
+      "kind": "named-human",
+      "scopes": []
+    },
+    {
+      "id": "principal-access-export-system",
+      "name": "Workforce access export platform",
+      "kind": "system",
+      "scopes": [
+        "assignment-snapshot-supplier",
+        "source-signal-supplier"
+      ]
+    },
+    {
+      "id": "principal-billing-sync-service",
+      "name": "billing-sync workload identity",
+      "kind": "service-identity",
+      "scopes": []
+    },
+    {
+      "id": "principal-access-review-board",
+      "name": "Access review board",
+      "kind": "team",
+      "scopes": []
+    },
+    {
+      "id": "principal-iam-lifecycle-automation",
+      "name": "IAM lifecycle automation",
+      "kind": "system",
+      "scopes": []
+    },
+    {
+      "id": "principal-entitlement-review-agent",
+      "name": "Entitlement review agent",
+      "kind": "agent",
+      "scopes": []
+    },
+    {
+      "id": "principal-application-owner-role",
+      "name": "Application owner",
+      "kind": "role",
+      "scopes": []
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-round-snapshot-export",
+      "kind": "round-snapshot-export",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/round-snapshot-export",
+      "controlledRef": "controlled://access-reviews/2026-q3/round-snapshot-export@sha256-d18dd60ef3657cdad1ace815124b7b00688d50249d5578a2240743c04e1de74b",
+      "recordDigest": "sha256:d18dd60ef3657cdad1ace815124b7b00688d50249d5578a2240743c04e1de74b",
+      "payloadDigest": "sha256:0d8aa7ee743a1662b1ca84be8cc6481da8ed1c72da48b7c6a256acb08c875a34",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-access-export-system",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "round-2026-q3",
+        "snapshot-2026-q3-workforce",
+        "assignment-crm-reader-leo",
+        "assignment-payments-admin-nadia",
+        "assignment-warehouse-analyst-leo",
+        "assignment-billing-writer-service"
+      ]
+    },
+    {
+      "id": "evidence-authority-roster-export",
+      "kind": "authority-roster-export",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "rosters/2026-review-authority-roster",
+      "controlledRef": "controlled://access-reviews/rosters/2026-review-authority-roster@sha256-265a692a9d6f77238d6a107cf7cd9e735dc87d7cdc85228f6b7a491789e5a16f",
+      "recordDigest": "sha256:265a692a9d6f77238d6a107cf7cd9e735dc87d7cdc85228f6b7a491789e5a16f",
+      "payloadDigest": "sha256:0201d213e39ea945281ca2ae22fd975f6d22ba8946d02441659b0e33d8921807",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-hana-bello",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "roster-2026-review-authority",
+        "principal-iris-tanaka",
+        "principal-omar-diaz",
+        "principal-ruth-abara",
+        "principal-hana-bello",
+        "principal-mara-quinn",
+        "principal-devon-shaw",
+        "principal-sofia-hale",
+        "principal-priya-raman",
+        "principal-leo-brandt",
+        "principal-nadia-oyelaran",
+        "principal-access-export-system",
+        "principal-billing-sync-service",
+        "principal-access-review-board",
+        "principal-iam-lifecycle-automation",
+        "principal-entitlement-review-agent",
+        "principal-application-owner-role"
+      ]
+    },
+    {
+      "id": "evidence-assignment-crm-reader",
+      "kind": "assignment-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/assignment-crm-asg-4417",
+      "controlledRef": "controlled://access-reviews/2026-q3/assignment-crm-asg-4417@sha256-26a2bb7f0ae10e69dd8210c4c33718969fd1a18d3a1bb2635789f024061a145d",
+      "recordDigest": "sha256:26a2bb7f0ae10e69dd8210c4c33718969fd1a18d3a1bb2635789f024061a145d",
+      "payloadDigest": "sha256:4436540ba049744d33e7119d1a3d0f578f0721e9b2e25a6054117e3b4479f71b",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-access-export-system",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "assignment-crm-reader-leo"
+      ]
+    },
+    {
+      "id": "evidence-assignment-payments-admin",
+      "kind": "assignment-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/assignment-pay-asg-2210",
+      "controlledRef": "controlled://access-reviews/2026-q3/assignment-pay-asg-2210@sha256-4d51d0e5bfd2617d584068bd56937da3b86634f5b77d4d8e0581f5e3c5c4e2ea",
+      "recordDigest": "sha256:4d51d0e5bfd2617d584068bd56937da3b86634f5b77d4d8e0581f5e3c5c4e2ea",
+      "payloadDigest": "sha256:fd743b3a22f407039da8802f8fc2fc839ccc46b0bbde128bc871331f7ca991b6",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-access-export-system",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "assignment-payments-admin-nadia"
+      ]
+    },
+    {
+      "id": "evidence-assignment-warehouse-analyst",
+      "kind": "assignment-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/assignment-dwh-asg-0091",
+      "controlledRef": "controlled://access-reviews/2026-q3/assignment-dwh-asg-0091@sha256-8db2f19a706d7806e2e03c0e2ad61c864cf00c4d7fdea81089311927a970788b",
+      "recordDigest": "sha256:8db2f19a706d7806e2e03c0e2ad61c864cf00c4d7fdea81089311927a970788b",
+      "payloadDigest": "sha256:cb2fa19238471e010c20f1cd11b0e696bf1611be799d4858d80d679f37b4eddf",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-access-export-system",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "assignment-warehouse-analyst-leo"
+      ]
+    },
+    {
+      "id": "evidence-assignment-billing-writer",
+      "kind": "assignment-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/assignment-bil-asg-7734",
+      "controlledRef": "controlled://access-reviews/2026-q3/assignment-bil-asg-7734@sha256-6181c716ff438610a3cbe6132e454c8fcb6659f4e13145481c8f4214d234b1ae",
+      "recordDigest": "sha256:6181c716ff438610a3cbe6132e454c8fcb6659f4e13145481c8f4214d234b1ae",
+      "payloadDigest": "sha256:3d7c3d6882712502c782aba40500e622c5532fb67dd1e74a3f2c78da0beb599d",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-access-export-system",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "assignment-billing-writer-service"
+      ]
+    },
+    {
+      "id": "evidence-grant-mara-crm",
+      "kind": "authority-grant-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/grant-mara-crm-case-reader",
+      "controlledRef": "controlled://access-reviews/2026-q3/grant-mara-crm-case-reader@sha256-fad51ef1402fadbf3ed5bf427321fd54c037dddd30570b2950b6dcc3f2de62bf",
+      "recordDigest": "sha256:fad51ef1402fadbf3ed5bf427321fd54c037dddd30570b2950b6dcc3f2de62bf",
+      "payloadDigest": "sha256:c5891673c82493d01086cbdd790eed5f555b4ab312b9716282fe55d1fd74ce24",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-iris-tanaka",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "grant-mara-crm-case-reader",
+        "principal-mara-quinn"
+      ]
+    },
+    {
+      "id": "evidence-grant-priya-crm",
+      "kind": "authority-grant-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/grant-priya-crm-case-reader",
+      "controlledRef": "controlled://access-reviews/2026-q3/grant-priya-crm-case-reader@sha256-5ff5f82a501fc3dffe18d18701a2ef21f3e97be566458259be728a02e9ab047d",
+      "recordDigest": "sha256:5ff5f82a501fc3dffe18d18701a2ef21f3e97be566458259be728a02e9ab047d",
+      "payloadDigest": "sha256:b536d5ee07cd8f6b873d3369360f7469befa7b90b6196dbd8a5f3ae4c71b426f",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-iris-tanaka",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "grant-priya-crm-case-reader",
+        "principal-priya-raman"
+      ]
+    },
+    {
+      "id": "evidence-grant-devon-payments",
+      "kind": "authority-grant-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/grant-devon-payments-settlement-admin",
+      "controlledRef": "controlled://access-reviews/2026-q3/grant-devon-payments-settlement-admin@sha256-8956e09f71d3f86c8f7605e7268c56a49e4af1005f1da010466ac21203fe1b96",
+      "recordDigest": "sha256:8956e09f71d3f86c8f7605e7268c56a49e4af1005f1da010466ac21203fe1b96",
+      "payloadDigest": "sha256:a3f779923414e8d6508dc3c830224c5562d436b4a769868ba2ec7338491d5eb0",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-iris-tanaka",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "grant-devon-payments-settlement-admin",
+        "principal-devon-shaw"
+      ]
+    },
+    {
+      "id": "evidence-grant-sofia-warehouse",
+      "kind": "authority-grant-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/grant-sofia-warehouse-analyst",
+      "controlledRef": "controlled://access-reviews/2026-q3/grant-sofia-warehouse-analyst@sha256-a069358ee2e3774485391be8546eb14bc93b1b4158cbbd29d2db0ff1f61ac10b",
+      "recordDigest": "sha256:a069358ee2e3774485391be8546eb14bc93b1b4158cbbd29d2db0ff1f61ac10b",
+      "payloadDigest": "sha256:1043250af2eb25fb306a4a427bd1d0e178fd9424f825961e1f5809404f379e5d",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-iris-tanaka",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "grant-sofia-warehouse-analyst",
+        "principal-sofia-hale"
+      ]
+    },
+    {
+      "id": "evidence-signal-crm-inactivity",
+      "kind": "source-signal-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/signal-crm-inactivity",
+      "controlledRef": "controlled://access-reviews/2026-q3/signal-crm-inactivity@sha256-80d047ad8fb13d6d422fca12badba5fe8312d4de4abf176e85a9d5f8f2ad6670",
+      "recordDigest": "sha256:80d047ad8fb13d6d422fca12badba5fe8312d4de4abf176e85a9d5f8f2ad6670",
+      "payloadDigest": "sha256:effd6d1e504cca25f5c4410469c2699389ad4da830564733a8919265fd1bf5c3",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-access-export-system",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "signal-crm-inactivity",
+        "assignment-crm-reader-leo"
+      ]
+    },
+    {
+      "id": "evidence-signal-payments-peer",
+      "kind": "source-signal-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/signal-payments-peer-affiliation",
+      "controlledRef": "controlled://access-reviews/2026-q3/signal-payments-peer-affiliation@sha256-f5f5baafc5dc44b86c70838c16367bdfd46669e57ddbbe555996ec0f8be7f1fe",
+      "recordDigest": "sha256:f5f5baafc5dc44b86c70838c16367bdfd46669e57ddbbe555996ec0f8be7f1fe",
+      "payloadDigest": "sha256:283f78c021fd5117e78d62234f909e98ed38d2f027f351ed9f562ad29521d9d1",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-access-export-system",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "signal-payments-peer-affiliation",
+        "assignment-payments-admin-nadia"
+      ]
+    },
+    {
+      "id": "evidence-signal-warehouse-recommendation",
+      "kind": "source-signal-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/signal-warehouse-recommendation",
+      "controlledRef": "controlled://access-reviews/2026-q3/signal-warehouse-recommendation@sha256-c9773603d11bde4a16c08b9da9c7fa600c929dcb81fe6e5f6839b5bb3d35c3c8",
+      "recordDigest": "sha256:c9773603d11bde4a16c08b9da9c7fa600c929dcb81fe6e5f6839b5bb3d35c3c8",
+      "payloadDigest": "sha256:3f28d20fe9b39b33d938f713f65d08d45a555540e9149d733813493ca94dbcb0",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-access-export-system",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "signal-warehouse-recommendation",
+        "assignment-warehouse-analyst-leo"
+      ]
+    },
+    {
+      "id": "evidence-decision-crm-retain",
+      "kind": "decision-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/decision-crm-reader-retain",
+      "controlledRef": "controlled://access-reviews/2026-q3/decision-crm-reader-retain@sha256-4b84e7c1698a943b283fb848463694472646ea975d4c6eb284962d31e2e5597d",
+      "recordDigest": "sha256:4b84e7c1698a943b283fb848463694472646ea975d4c6eb284962d31e2e5597d",
+      "payloadDigest": "sha256:91cc30f0db834fa842682da1a35a5ad55d9778ef039ae6e2c71ab5dc59c130f1",
+      "observedAt": "2026-09-04T14:20:00Z",
+      "suppliedByRef": "principal-mara-quinn",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "decision-crm-reader-retain",
+        "assignment-crm-reader-leo"
+      ]
+    },
+    {
+      "id": "evidence-decision-payments-revoke",
+      "kind": "decision-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/decision-payments-admin-revoke",
+      "controlledRef": "controlled://access-reviews/2026-q3/decision-payments-admin-revoke@sha256-bca673b9a8f1dab12d52f8e62093ef6bfc380f302a04f8635b264c26a2d2303e",
+      "recordDigest": "sha256:bca673b9a8f1dab12d52f8e62093ef6bfc380f302a04f8635b264c26a2d2303e",
+      "payloadDigest": "sha256:06a9c89724050cf4636528faed06ffcca6c12543406c7ae82b31dac04889fc7a",
+      "observedAt": "2026-09-05T09:45:00Z",
+      "suppliedByRef": "principal-devon-shaw",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "decision-payments-admin-revoke",
+        "assignment-payments-admin-nadia"
+      ]
+    },
+    {
+      "id": "evidence-decision-warehouse-retain",
+      "kind": "decision-record",
+      "controlledSource": "access-reviews",
+      "controlledPurpose": "2026-q3/decision-warehouse-analyst-retain",
+      "controlledRef": "controlled://access-reviews/2026-q3/decision-warehouse-analyst-retain@sha256-0596ad07cdaf7db4a15eb8d3a061f6c2f96fd15a4483d4d691541d46d93790db",
+      "recordDigest": "sha256:0596ad07cdaf7db4a15eb8d3a061f6c2f96fd15a4483d4d691541d46d93790db",
+      "payloadDigest": "sha256:9dc77344e117acf9f7f1eb4e19620c4ce67e9bfcc2d489475f58d92599cdce0e",
+      "observedAt": "2026-09-08T11:05:00Z",
+      "suppliedByRef": "principal-sofia-hale",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "subjectRefs": [
+        "decision-warehouse-analyst-retain",
+        "assignment-warehouse-analyst-leo"
+      ]
+    }
+  ],
+  "assignments": [
+    {
+      "id": "assignment-crm-reader-leo",
+      "snapshotRef": "snapshot-2026-q3-workforce",
+      "principalRef": "principal-leo-brandt",
+      "resourceRef": "resource://crm-platform/prod",
+      "entitlementRef": "entitlement://crm-platform/case-reader",
+      "assignmentRef": "crm-asg-4417",
+      "assignmentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "inScope": true,
+      "exclusionCode": null,
+      "resolutionMode": "direct",
+      "privileged": false,
+      "grantedByRef": "principal-iris-tanaka",
+      "evidenceRefs": [
+        "evidence-assignment-crm-reader"
+      ]
+    },
+    {
+      "id": "assignment-payments-admin-nadia",
+      "snapshotRef": "snapshot-2026-q3-workforce",
+      "principalRef": "principal-nadia-oyelaran",
+      "resourceRef": "resource://payments-platform/prod",
+      "entitlementRef": "entitlement://payments-platform/settlement-admin",
+      "assignmentRef": "pay-asg-2210",
+      "assignmentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "inScope": true,
+      "exclusionCode": null,
+      "resolutionMode": "owner-expanded",
+      "privileged": true,
+      "grantedByRef": "principal-omar-diaz",
+      "evidenceRefs": [
+        "evidence-assignment-payments-admin"
+      ]
+    },
+    {
+      "id": "assignment-warehouse-analyst-leo",
+      "snapshotRef": "snapshot-2026-q3-workforce",
+      "principalRef": "principal-leo-brandt",
+      "resourceRef": "resource://analytics-warehouse/prod",
+      "entitlementRef": "entitlement://analytics-warehouse/analyst",
+      "assignmentRef": "dwh-asg-0091",
+      "assignmentDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "inScope": true,
+      "exclusionCode": null,
+      "resolutionMode": "direct",
+      "privileged": false,
+      "grantedByRef": "principal-iris-tanaka",
+      "evidenceRefs": [
+        "evidence-assignment-warehouse-analyst"
+      ]
+    },
+    {
+      "id": "assignment-billing-writer-service",
+      "snapshotRef": "snapshot-2026-q3-workforce",
+      "principalRef": "principal-billing-sync-service",
+      "resourceRef": "resource://billing-ledger/prod",
+      "entitlementRef": "entitlement://billing-ledger/writer",
+      "assignmentRef": "bil-asg-7734",
+      "assignmentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "inScope": false,
+      "exclusionCode": "non-human-identity-campaign",
+      "resolutionMode": "direct",
+      "privileged": null,
+      "grantedByRef": "principal-iris-tanaka",
+      "evidenceRefs": [
+        "evidence-assignment-billing-writer"
+      ]
+    }
+  ],
+  "authorityGrants": [
+    {
+      "id": "grant-mara-crm-case-reader",
+      "granteeRef": "principal-mara-quinn",
+      "resourceRef": "resource://crm-platform/prod",
+      "entitlementRef": "entitlement://crm-platform/case-reader",
+      "scopes": [
+        "entitlement-review-decision"
+      ],
+      "activeFrom": "2026-09-01T00:00:00Z",
+      "activeUntil": "2026-09-30T00:00:00Z",
+      "grantedByRef": "principal-iris-tanaka",
+      "evidenceRefs": [
+        "evidence-grant-mara-crm"
+      ]
+    },
+    {
+      "id": "grant-priya-crm-case-reader",
+      "granteeRef": "principal-priya-raman",
+      "resourceRef": "resource://crm-platform/prod",
+      "entitlementRef": "entitlement://crm-platform/case-reader",
+      "scopes": [
+        "entitlement-review-decision"
+      ],
+      "activeFrom": "2026-09-01T00:00:00Z",
+      "activeUntil": "2026-09-30T00:00:00Z",
+      "grantedByRef": "principal-iris-tanaka",
+      "evidenceRefs": [
+        "evidence-grant-priya-crm"
+      ]
+    },
+    {
+      "id": "grant-devon-payments-settlement-admin",
+      "granteeRef": "principal-devon-shaw",
+      "resourceRef": "resource://payments-platform/prod",
+      "entitlementRef": "entitlement://payments-platform/settlement-admin",
+      "scopes": [
+        "entitlement-review-decision",
+        "privileged-review"
+      ],
+      "activeFrom": "2026-09-01T00:00:00Z",
+      "activeUntil": "2026-09-30T00:00:00Z",
+      "grantedByRef": "principal-iris-tanaka",
+      "evidenceRefs": [
+        "evidence-grant-devon-payments"
+      ]
+    },
+    {
+      "id": "grant-sofia-warehouse-analyst",
+      "granteeRef": "principal-sofia-hale",
+      "resourceRef": "resource://analytics-warehouse/prod",
+      "entitlementRef": "entitlement://analytics-warehouse/analyst",
+      "scopes": [
+        "entitlement-review-decision"
+      ],
+      "activeFrom": "2026-09-01T00:00:00Z",
+      "activeUntil": "2026-09-30T00:00:00Z",
+      "grantedByRef": "principal-iris-tanaka",
+      "evidenceRefs": [
+        "evidence-grant-sofia-warehouse"
+      ]
+    }
+  ],
+  "sourceSignals": [
+    {
+      "id": "signal-crm-inactivity",
+      "kind": "inactivity",
+      "roundRef": "round-2026-q3",
+      "snapshotRef": "snapshot-2026-q3-workforce",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "assignmentRowRef": "assignment-crm-reader-leo",
+      "assignmentRef": "crm-asg-4417",
+      "assignmentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "suppliedByRef": "principal-access-export-system",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "recommendation": null,
+      "inactiveDays": 34,
+      "evidenceRefs": [
+        "evidence-signal-crm-inactivity"
+      ]
+    },
+    {
+      "id": "signal-payments-peer-affiliation",
+      "kind": "peer-affiliation",
+      "roundRef": "round-2026-q3",
+      "snapshotRef": "snapshot-2026-q3-workforce",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "assignmentRowRef": "assignment-payments-admin-nadia",
+      "assignmentRef": "pay-asg-2210",
+      "assignmentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "suppliedByRef": "principal-access-export-system",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "recommendation": null,
+      "inactiveDays": null,
+      "evidenceRefs": [
+        "evidence-signal-payments-peer"
+      ]
+    },
+    {
+      "id": "signal-warehouse-recommendation",
+      "kind": "recommendation",
+      "roundRef": "round-2026-q3",
+      "snapshotRef": "snapshot-2026-q3-workforce",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "assignmentRowRef": "assignment-warehouse-analyst-leo",
+      "assignmentRef": "dwh-asg-0091",
+      "assignmentDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "suppliedByRef": "principal-access-export-system",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "recommendation": "deny",
+      "inactiveDays": null,
+      "evidenceRefs": [
+        "evidence-signal-warehouse-recommendation"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-crm-reader-retain",
+      "roundRef": "round-2026-q3",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "assignmentRowRef": "assignment-crm-reader-leo",
+      "assignmentRef": "crm-asg-4417",
+      "assignmentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "state": "retain",
+      "decisionBasis": "independent-human-judgment",
+      "decisionSource": "named-human-review",
+      "decidedByRef": "principal-mara-quinn",
+      "decidedAt": "2026-09-04T14:20:00Z",
+      "authorityGrantRef": "grant-mara-crm-case-reader",
+      "privilegedReview": false,
+      "replacementRequest": null,
+      "sourceSignalRefs": [
+        "signal-crm-inactivity"
+      ],
+      "evidenceRefs": [
+        "evidence-decision-crm-retain"
+      ]
+    },
+    {
+      "id": "decision-payments-admin-revoke",
+      "roundRef": "round-2026-q3",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "assignmentRowRef": "assignment-payments-admin-nadia",
+      "assignmentRef": "pay-asg-2210",
+      "assignmentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "state": "revoke",
+      "decisionBasis": "independent-human-judgment",
+      "decisionSource": "named-human-review",
+      "decidedByRef": "principal-devon-shaw",
+      "decidedAt": "2026-09-05T09:45:00Z",
+      "authorityGrantRef": "grant-devon-payments-settlement-admin",
+      "privilegedReview": true,
+      "replacementRequest": null,
+      "sourceSignalRefs": [
+        "signal-payments-peer-affiliation"
+      ],
+      "evidenceRefs": [
+        "evidence-decision-payments-revoke"
+      ]
+    },
+    {
+      "id": "decision-warehouse-analyst-retain",
+      "roundRef": "round-2026-q3",
+      "snapshotDigest": "sha256:e8223fb0b335bb3b820d911da1abe100a1c32de34c50923f853622196f028f58",
+      "assignmentRowRef": "assignment-warehouse-analyst-leo",
+      "assignmentRef": "dwh-asg-0091",
+      "assignmentDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "state": "retain",
+      "decisionBasis": "independent-human-judgment",
+      "decisionSource": "named-human-review",
+      "decidedByRef": "principal-sofia-hale",
+      "decidedAt": "2026-09-08T11:05:00Z",
+      "authorityGrantRef": "grant-sofia-warehouse-analyst",
+      "privilegedReview": false,
+      "replacementRequest": null,
+      "sourceSignalRefs": [
+        "signal-warehouse-recommendation"
+      ],
+      "evidenceRefs": [
+        "evidence-decision-warehouse-retain"
+      ]
+    }
+  ],
+  "nonDecisions": [],
+  "blockers": [],
+  "handoff": {
+    "state": "ready-for-owner-execution",
+    "coveredAssignmentKeys": [
+      "principal-leo-brandt|resource://analytics-warehouse/prod|entitlement://analytics-warehouse/analyst|dwh-asg-0091",
+      "principal-leo-brandt|resource://crm-platform/prod|entitlement://crm-platform/case-reader|crm-asg-4417",
+      "principal-nadia-oyelaran|resource://payments-platform/prod|entitlement://payments-platform/settlement-admin|pay-asg-2210"
+    ],
+    "excludedAssignmentRefs": [
+      "assignment-billing-writer-service"
+    ],
+    "blockingRefs": [],
+    "renderedSignalRefs": [
+      "signal-crm-inactivity",
+      "signal-payments-peer-affiliation",
+      "signal-warehouse-recommendation"
+    ],
+    "signalPresentation": "source-system-signal-not-a-decision",
+    "renderedNotCoveredPathRefs": [
+      "path-break-glass",
+      "path-effective-access",
+      "path-external-federated",
+      "path-inherited-group",
+      "path-nested-group",
+      "path-standing-role"
+    ],
+    "effectiveAccessCoverage": "not-claimed",
+    "attestationClaim": "not-claimed",
+    "complianceClaim": "not-claimed",
+    "nextOwnerRef": "principal-ruth-abara"
+  }
+}

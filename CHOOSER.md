@@ -8,10 +8,11 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (104)
+### Active (105)
 
 | Claw | Detail |
 | --- | --- |
+| [Access Entitlement Review Coordinator](claws/access-entitlement-review-coordinator) | @giodl73; last verified 2026-09-07 |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [API integration engineer](claws/api-integration-engineer) | @giodl73-repo; last verified 2026-08-19 |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | @giodl73-repo; last verified 2026-08-21 |
@@ -131,10 +132,11 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (74)
+### Low setup (75)
 
 | Claw | Detail |
 | --- | --- |
+| [Access Entitlement Review Coordinator](claws/access-entitlement-review-coordinator) | no bootstrap, external dependency, or schedule |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | no bootstrap, external dependency, or schedule |
 | [API integration engineer](claws/api-integration-engineer) | no bootstrap, external dependency, or schedule |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | no bootstrap, external dependency, or schedule |
@@ -254,10 +256,11 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (82)
+### No external dependencies (83)
 
 | Claw | Detail |
 | --- | --- |
+| [Access Entitlement Review Coordinator](claws/access-entitlement-review-coordinator) | None |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | None |
 | [API integration engineer](claws/api-integration-engineer) | None |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | None |
@@ -372,10 +375,11 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (79)
+### X3 (80)
 
 | Claw | Detail |
 | --- | --- |
+| [Access Entitlement Review Coordinator](claws/access-entitlement-review-coordinator) | Reconciles one exact owner-supplied access-assignment snapshot, bound to a locale-independent recomputed assignment-manifest digest, so that every in-scope principal, resource, entitlement, and assignment key carries exactly one fresh named-human retain or revoke recertification decision or one exact non-decision, with per-row reviewer authority, a content-bound owner authority roster, controlled evidence that content-addresses both its envelope and the exact semantic payload of the row it supports, a scoped non-subject handoff recipient, and a record that carries no free-text field at all, and without reaching identity systems, inferring effective access, carrying any prior decision forward, or changing access. |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | Maintains a longitudinal appliance inventory, model-bound care calendar, warranty and recall state, lifecycle cost evidence, and explicitly approved manufacturer or authorized-servicer appointments. |
 | [Benefits and open enrollment planner](claws/benefits-open-enrollment-planner) | Organizes owner-supplied benefits packets, plan options, enrollment windows, dependent documents, payroll impact notes, coverage-change evidence, and review questions without choosing benefits, submitting elections, changing payroll, filing claims, or giving medical, legal, tax, financial, or insurance advice. |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | Coordinates a consent-bounded support plan for a person who relies on family, friends, or aides without giving medical, legal, or financial advice. |
@@ -529,10 +533,11 @@ Categories come directly from the catalog entry.
 | [Security analyst](claws/security-analyst) | X4; Assesses security questions with explicit trust boundaries and reproducible evidence. |
 | [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 
-### Governance (8)
+### Governance (9)
 
 | Claw | Detail |
 | --- | --- |
+| [Access Entitlement Review Coordinator](claws/access-entitlement-review-coordinator) | X3; Reconciles one exact owner-supplied access-assignment snapshot, bound to a locale-independent recomputed assignment-manifest digest, so that every in-scope principal, resource, entitlement, and assignment key carries exactly one fresh named-human retain or revoke recertification decision or one exact non-decision, with per-row reviewer authority, a content-bound owner authority roster, controlled evidence that content-addresses both its envelope and the exact semantic payload of the row it supports, a scoped non-subject handoff recipient, and a record that carries no free-text field at all, and without reaching identity systems, inferring effective access, carrying any prior decision forward, or changing access. |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | X4; Organizes accessibility evidence, findings, remediation ownership, and verification against an approved review scope without claiming certification. |
 | [Compliance reviewer](claws/compliance-reviewer) | X4; Evaluates controls and evidence without substituting for accountable legal judgment. |
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
@@ -633,10 +638,11 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (52)
+### Standard attention (53)
 
 | Claw | Detail |
 | --- | --- |
+| [Access Entitlement Review Coordinator](claws/access-entitlement-review-coordinator) | portable workspace artifacts only |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | portable workspace artifacts only |
 | [Benefits and open enrollment planner](claws/benefits-open-enrollment-planner) | portable workspace artifacts only |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | portable workspace artifacts only |
