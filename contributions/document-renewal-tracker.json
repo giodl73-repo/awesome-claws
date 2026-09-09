@@ -140,6 +140,11 @@
         "id": "school-coordinator",
         "overlap": "Both can track student IDs, school forms, due dates, guardian/dependent authority, privacy labels, and blocked submission, payment, messaging, or disclosure actions.",
         "difference": "School Coordinator handles assignments, forms, teacher notes, and school logistics; Document Renewal Tracker handles expiring identity, credential, permit, registration, and membership documents across authorities."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both bind source documents, fixed dates, evidence readiness, accountable owners, blockers, and durable review handoffs.",
+        "difference": "Contract Obligation Tracker covers an exact owner-confirmed portfolio of bilateral obligations with executed-version, clause, performance-evidence, and completion-authority bindings; Document Renewal Tracker remains focused on personal and small-team document renewal readiness."
       }
     ]
   }

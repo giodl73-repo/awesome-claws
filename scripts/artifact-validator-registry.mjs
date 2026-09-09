@@ -15,6 +15,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "case-continuity-coordinator": "case-checkpoint.schema.json",
   "certification-renewal-planner": "certification-renewal.schema.json",
   "conference-opportunity-scout": "conference-opportunities.schema.json",
+  "contract-obligation-tracker": "contract-obligation-tracker.schema.json",
   "change-control-operator": "change-plan.schema.json",
   "child-activity-manager": "activity-logistics.schema.json",
   "civic-data-analyst": "civic-evidence.schema.json",

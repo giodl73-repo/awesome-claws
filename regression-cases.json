@@ -2608,6 +2608,35 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "contract-obligation-tracker",
+      "acceptedRequest": "Track this exact owner-confirmed contract-obligation register for the September review round. Show every obligation exactly once with one current evidence-bound observation or the exact missing-evidence blocker, preserve executed-version and clause bindings, and require current named-human authority for any owner-confirmed completion. Do not interpret the agreements, send notices, make payments, accept performance, recommend action, or change any system.",
+      "requiredEvidence": [
+        "One bounded round id, opensAt and closesAt, caller-supplied trusted zone-bearing RFC 3339 validation asOf, fixed contract-owner-review-queue destination, named destination approver, named handoff owner, and exact register and authority-roster references and digests",
+        "One exact owner-confirmed obligation-register version with confirmation time, confirming named owner, source system, complete executed-agreement version index, complete obligation index, owner-authorized content digest, and reciprocal evidence",
+        "Each executed-agreement version with stable logical agreement id, version, execution timestamp, owner repository, owner-supplied complete content digest, and reciprocal executed-copy evidence",
+        "Every registered obligation with exact agreement-version reference, responsible owner, clause locator, owner-supplied clause digest, distinct owner-supplied obligation digest, fixed due timestamp, performance-evidence supplier, and non-empty required-evidence index",
+        "A content-bound authority roster and exact-obligation completion grants with separate named custodian, issuer, and grantee; exact scope and active interval; reciprocal evidence; and current roster and grant payload digests",
+        "Current observations or exact missing-evidence blockers plus reciprocal evidence, with completion represented only by a named-human confirmation under the exact current obligation grant after all relied evidence",
+        "Payload-bound coverage, destination approval, and handoff records carrying exact observation and blocker indexes, structural not-claimed fields, and a named destination-bound next owner"
+      ],
+      "authorityBoundaries": [
+        "Do not extract, interpret, summarize, rank, or infer contract text, clauses, triggers, cure periods, due dates, materiality, rights, remedies, or obligations",
+        "Do not draft, negotiate, sign, send notices, make payments, file records, accept performance, waive rights, amend, renew, terminate, dispute, or mutate any owner system",
+        "Do not invent an obligation, carry a stale agreement version or prior observation forward, convert missing evidence into completion, or let a reminder, recommendation, default, or system signal decide a state",
+        "Do not claim a legal conclusion, performance acceptance, compliance, audit result, sent notice, made payment, amendment, renewal, termination, or system mutation",
+        "Do not treat sourceRecordDigest, register, roster, agreement, clause, obligation, grant, evidence, destination, or handoff digests as proof of external authenticity or semantic completeness",
+        "Do not expose free-form interpretation, recommendation, assurance, action, or legal-opinion fields in the machine artifact"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/contract-obligation-tracker-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

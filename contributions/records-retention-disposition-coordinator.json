@@ -141,6 +141,11 @@
         "id": "document-renewal-tracker",
         "overlap": "Both apply date and source evidence to official records, expose conflicts and missing evidence, and prepare an owner-controlled handoff.",
         "difference": "Document Renewal Tracker coordinates renewal dates and filing preparation, not retention schedules, copy-level hold precedence, digest-bound disposition, execution certificates, or backup and replica closure."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both prove exact register coverage, bind evidence and human authority, preserve exact blockers, and hand a complete record to an approved destination.",
+        "difference": "Contract Obligation Tracker performs no eligibility determination or destructive records action and instead observes contractual performance and owner-confirmed completion without interpretation; Records Retention Disposition Coordinator governs record-copy disposition."
       }
     ]
   }

@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 106,
-    "coveredCount": 106,
-    "recipeCount": 286,
-    "findingCodeCount": 315
+    "validatorCount": 107,
+    "coveredCount": 107,
+    "recipeCount": 289,
+    "findingCodeCount": 318
   },
   "entries": [
     {
@@ -4483,6 +4483,51 @@
             "invalid_round_root",
             "invalid_scope_binding",
             "stale_export"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contract-obligation-tracker",
+      "recipes": [
+        {
+          "id": "semantic-invalid-round-digest-1",
+          "operator": "replace",
+          "path": [
+            "artifactId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_round_digest"
+          ]
+        },
+        {
+          "id": "semantic-invalid-blocker-equality-2",
+          "operator": "replace",
+          "path": [
+            "round",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_blocker_equality",
+            "invalid_destination",
+            "invalid_evidence_binding",
+            "invalid_handoff",
+            "invalid_round_digest"
+          ]
+        },
+        {
+          "id": "semantic-invalid-round-binding-3",
+          "operator": "replace",
+          "path": [
+            "round",
+            "registerRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_round_binding",
+            "invalid_round_digest"
           ]
         }
       ]

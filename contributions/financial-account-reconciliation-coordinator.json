@@ -159,6 +159,11 @@
         "id": "compliance-reviewer",
         "overlap": "Both produce evidence-bound control-support artifacts with explicit blockers and independent authority.",
         "difference": "Compliance Reviewer maps requirements to controls and findings. This proposal interprets no framework and claims no control effectiveness or compliance; it proves only the integrity of one transaction reconciliation partition."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both bind exact owner-supplied universes, recompute content roots, prove every row exactly once, enforce chronology and human authority, and separate evidence from action.",
+        "difference": "Contract Obligation Tracker has one authoritative obligation register and no amount matching; Financial Account Reconciliation Coordinator partitions two co-equal transaction exports into balanced match groups or residuals."
       }
     ]
   }

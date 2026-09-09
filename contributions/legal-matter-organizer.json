@@ -150,6 +150,11 @@
         "id": "knowledge-curator",
         "overlap": "Both maintain a durable indexed collection with source provenance, controlled destinations, review questions, and no destructive or publishing authority.",
         "difference": "Knowledge Curator organizes a general collection; it lacks matter-specific counsel, parties/conflicts, source custody and integrity, legal holds, privilege state, deadline authority, filing/correspondence/evidence semantics, legal chronology, and append-only supplied decisions."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both preserve controlled legal-domain sources, evidence custody, accountable owners, explicit blockers, and strict authority boundaries.",
+        "difference": "Contract Obligation Tracker has no legal matter, privilege, hold, filing, counsel-decision, or correspondence semantics; it observes an owner-confirmed post-execution obligation portfolio without interpretation or action."
       }
     ]
   }

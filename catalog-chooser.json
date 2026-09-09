@@ -559,6 +559,40 @@
       }
     },
     {
+      "id": "contract-obligation-tracker",
+      "name": "Contract Obligation Tracker",
+      "description": "Tracks one exact owner-confirmed obligation-register version for a bounded review round, proving every registered obligation appears exactly once and receives one current evidence-bound observation or one exact blocker, while contract owners retain all interpretation, acceptance, notice, payment, amendment, renewal, termination, dispute, and system authority.",
+      "audience": "Authorized contract operations, procurement operations, legal operations, finance operations, and accountable business owners reviewing owner-confirmed post-execution obligations from approved agreement, register, roster, grant, and performance-evidence exports in a controlled workspace.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-09"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "customer-support",
       "name": "Customer support",
       "description": "Resolves customer cases accurately while preserving context, ownership, and privacy.",
