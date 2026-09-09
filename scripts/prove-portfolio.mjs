@@ -18,6 +18,7 @@ import {
 } from "./openclaw-proof-lib.mjs";
 import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
+import { requiresPortfolioGateway } from "./portfolio-proof-policy.mjs";
 
 const { cliEntry, openClawEntry } = resolveProofConfig();
 const openClawRoot = dirname(openClawEntry);
@@ -815,13 +816,13 @@ for (const entry of entries) {
     const marker = `OPENCLAW_E2E_APPLICATION_${entry.id.replaceAll("-", "_").toUpperCase()}`;
     mockOpenAi = await startMockOpenAi(env, evidenceRoot, entry, marker);
     env = await configureMockModel(env, mockOpenAi.port);
-    if ((entry.cronJobs?.length ?? 0) > 0 || visualRuntimeProof) {
+    if (requiresPortfolioGateway(entry, { visualRuntimeProof })) {
       gateway = await startGateway(openClawEntry, env, entry.id, evidenceRoot);
       env = gateway.env;
       result.gateway = {
         mode: "local",
         port: gateway.port,
-        purpose: "canonical-cron-owner",
+        purpose: "canonical-lifecycle-owner",
         log: relative(proofRoot, gateway.logPath).replaceAll("\\", "/"),
       };
     }
