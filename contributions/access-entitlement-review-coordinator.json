@@ -155,6 +155,11 @@
         "id": "privacy-request-coordinator",
         "overlap": "Both coordinate a deadline-bound obligation with verified intake, scoped evidence, approvals, escalation queues, and a controlled private response handoff.",
         "difference": "Privacy Request Coordinator serves one data-subject request through a legal deadline to a response. This proposal has no requester and no response: it is a recurring campaign over a whole assignment population, its window governs when a fresh decision may be recorded rather than when a reply is owed, and its unit of completion is per-row coverage rather than one fulfilled request. Nothing carries between rounds, so there is no cross-round state to keep at all."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both enforce exact owner-supplied universe coverage, one current resolution per row, fresh named-human authority, exact blockers, destination-bound handoff, and no execution lane.",
+        "difference": "Contract Obligation Tracker never chooses retain or revoke; it binds fixed due state, performance evidence, and owner confirmation to executed agreement clauses, while Access Entitlement Review Coordinator recertifies access assignments for IAM execution."
       }
     ]
   }

@@ -86,7 +86,8 @@
       "vulnerability-disposition-coordinator",
       "infrastructure-drift-reconciliation-coordinator",
       "access-entitlement-review-coordinator",
-      "financial-account-reconciliation-coordinator"
+      "financial-account-reconciliation-coordinator",
+      "contract-obligation-tracker"
     ]
   },
   "visualCases": [

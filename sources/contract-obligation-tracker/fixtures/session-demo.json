@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "contract-obligation-tracker",
+  "scenario": "Track this exact owner-confirmed contract-obligation register for the September review round. Show every obligation exactly once with one current evidence-bound observation or the exact missing-evidence blocker, preserve executed-version and clause bindings, and require current named-human authority for any owner-confirmed completion. Do not interpret the agreements, send notices, make payments, accept performance, recommend action, or change any system.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Track this exact owner-confirmed contract-obligation register for the September review round. Show every obligation exactly once with one current evidence-bound observation or the exact missing-evidence blocker, preserve executed-version and clause bindings, and require current named-human authority for any owner-confirmed completion. Do not interpret the agreements, send notices, make payments, accept performance, recommend action, or change any system."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/contract-obligation-tracker-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Contract Obligation Tracker session handoff",
+    "summary": "A strict contract-obligation review artifact covering all four registered obligations exactly once: one owner-confirmed completion under a current exact-obligation grant, one evidence-complete observation awaiting owner confirmation, one not-yet-due observation sealed to the round close, and one exact missing-evidence blocker, handed to the approved contract-owner queue with every legal, acceptance, compliance, audit, notice, payment, amendment, renewal, termination, and mutation claim structurally not-claimed.",
+    "output": "outputs/contract-obligation-tracker-handoff.md",
+    "items": [
+      {
+        "title": "Exact round, executed-agreement, owner-confirmed register, obligation, principal, roster, and exact-obligation grant ledgers with recomputed internal consistency digests and explicit external trust roots",
+        "summary": "The round, register, agreement-version, obligation, roster, coverage, destination, handoff, grant, evidence-payload, and evidence-record digests recompute exactly, while every unique sourceRecordDigest remains explicitly an externally authenticated trust root rather than a derived proof",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "One complete current observation ledger binding every evidence-complete or not-yet-due obligation to its exact agreement version, clause digest, obligation digest, responsible owner, sealed due state, review round, and evidence",
+        "summary": "The exact agreement-version and obligation universes equal the owner-confirmed register indexes, and each agreement-version plus clause locator maps consistently to one clause digest while distinct obligations remain distinguishable by obligation digest",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "One exact blocker ledger for due obligations whose required performance evidence is missing, with no observation and exact set equality between required missing evidence and blocker targets",
+        "summary": "Every registered obligation appears exactly once in coverage and has exactly one current observation or one exact blocker, with due state sealed to round.closesAt and unchanged by later valid asOf values",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Coverage proof showing every owner-confirmed registered obligation exactly once with exactly one observation or blocker resolution",
+        "summary": "Every relied performance record follows agreement execution and strictly precedes its consuming observation and completion, and every owner-confirmed completion names a current authorized human under a grant scoped to that exact obligation",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Payload-bound destination approval and blocked or ready-for-owner-review handoff containing complete observation and blocker indexes plus structural not-claimed legal, acceptance, compliance, audit, notice, payment, amendment, renewal, termination, and system-mutation fields",
+        "summary": "The blocker ledger equals the unresolved due-obligation and exact missing-evidence sets, with no false, omitted, duplicated, cross-obligation, or handoff evidence accepted as performance evidence",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

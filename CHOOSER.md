@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (106)
+### Active (107)
 
 | Claw | Detail |
 | --- | --- |
@@ -27,6 +27,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Compliance reviewer](claws/compliance-reviewer) | @giodl73-repo; last verified 2026-08-19 |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | @giodl73; last verified 2026-08-29 |
 | [Content operations](claws/content-operations) | @giodl73-repo; last verified 2026-08-31 |
+| [Contract Obligation Tracker](claws/contract-obligation-tracker) | @giodl73; last verified 2026-09-09 |
 | [Customer support](claws/customer-support) | @giodl73-repo; last verified 2026-08-19 |
 | [Data analyst](claws/data-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Data governance steward](claws/data-governance-steward) | @giodl73-repo; last verified 2026-08-19 |
@@ -133,7 +134,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (76)
+### Low setup (77)
 
 | Claw | Detail |
 | --- | --- |
@@ -151,6 +152,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Compliance reviewer](claws/compliance-reviewer) | no bootstrap, external dependency, or schedule |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | no bootstrap, external dependency, or schedule |
 | [Content operations](claws/content-operations) | no bootstrap, external dependency, or schedule |
+| [Contract Obligation Tracker](claws/contract-obligation-tracker) | no bootstrap, external dependency, or schedule |
 | [Data analyst](claws/data-analyst) | no bootstrap, external dependency, or schedule |
 | [Data governance steward](claws/data-governance-steward) | no bootstrap, external dependency, or schedule |
 | [Data migration planner](claws/data-migration-planner) | no bootstrap, external dependency, or schedule |
@@ -258,7 +260,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (84)
+### No external dependencies (85)
 
 | Claw | Detail |
 | --- | --- |
@@ -276,6 +278,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Compliance reviewer](claws/compliance-reviewer) | None |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | None |
 | [Content operations](claws/content-operations) | None |
+| [Contract Obligation Tracker](claws/contract-obligation-tracker) | None |
 | [Data analyst](claws/data-analyst) | None |
 | [Data governance steward](claws/data-governance-steward) | None |
 | [Data migration planner](claws/data-migration-planner) | None |
@@ -378,7 +381,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (81)
+### X3 (82)
 
 | Claw | Detail |
 | --- | --- |
@@ -393,6 +396,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Civic data analyst](claws/civic-data-analyst) | Combines public demographic, budget, service, land-use, and mobility data into reproducible civic decision evidence. |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | Tracks conferences, calls for proposals, speaking or attendance fit, deadlines, and submission drafts without applying, publishing, booking, or contacting organizers. |
 | [Content operations](claws/content-operations) | Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it. |
+| [Contract Obligation Tracker](claws/contract-obligation-tracker) | Tracks one exact owner-confirmed obligation-register version for a bounded review round, proving every registered obligation appears exactly once and receives one current evidence-bound observation or one exact blocker, while contract owners retain all interpretation, acceptance, notice, payment, amendment, renewal, termination, dispute, and system authority. |
 | [Delegation coordinator](claws/delegation-coordinator) | Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
 | [Document intake analyst](claws/document-intake-analyst) | Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty. |
 | [Document renewal tracker](claws/document-renewal-tracker) | Tracks passports, IDs, licenses, permits, registrations, certifications, memberships, expiration windows, source freshness, required owner documents, and review questions without filing forms, paying fees, changing accounts, submitting documents, or giving legal, immigration, tax, medical, or eligibility advice. |
@@ -537,13 +541,14 @@ Categories come directly from the catalog entry.
 | [Security analyst](claws/security-analyst) | X4; Assesses security questions with explicit trust boundaries and reproducible evidence. |
 | [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 
-### Governance (10)
+### Governance (11)
 
 | Claw | Detail |
 | --- | --- |
 | [Access Entitlement Review Coordinator](claws/access-entitlement-review-coordinator) | X3; Reconciles one exact owner-supplied access-assignment snapshot, bound to a locale-independent recomputed assignment-manifest digest, so that every in-scope principal, resource, entitlement, and assignment key carries exactly one fresh named-human retain or revoke recertification decision or one exact non-decision, with per-row reviewer authority, a content-bound owner authority roster, controlled evidence that content-addresses both its envelope and the exact semantic payload of the row it supports, a scoped non-subject handoff recipient, and a record that carries no free-text field at all, and without reaching identity systems, inferring effective access, carrying any prior decision forward, or changing access. |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | X4; Organizes accessibility evidence, findings, remediation ownership, and verification against an approved review scope without claiming certification. |
 | [Compliance reviewer](claws/compliance-reviewer) | X4; Evaluates controls and evidence without substituting for accountable legal judgment. |
+| [Contract Obligation Tracker](claws/contract-obligation-tracker) | X3; Tracks one exact owner-confirmed obligation-register version for a bounded review round, proving every registered obligation appears exactly once and receives one current evidence-bound observation or one exact blocker, while contract owners retain all interpretation, acceptance, notice, payment, amendment, renewal, termination, dispute, and system authority. |
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
 | [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | X3; Reconciles one exact owner-supplied ledger transaction export against one exact owner-supplied statement transaction export for a bounded account and period, partitioning every row exactly once into an evidence-bound 1:1, 1:n, or n:1 match group or an explicit residual, without reaching financial systems, posting entries, moving money, or claiming the account or books are closed. |
 | [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | X3; Reconciles owner-supplied desired-state and observed-state infrastructure snapshots into one exact symmetric resource universe, with one evidence-backed converged, drifted, missing, or unmanaged disposition per resolved identity and fail-closed deviation authority, without accessing or changing infrastructure. |
@@ -643,7 +648,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (54)
+### Standard attention (55)
 
 | Claw | Detail |
 | --- | --- |
@@ -655,6 +660,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Child activity manager](claws/child-activity-manager) | portable workspace artifacts only |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | portable workspace artifacts only |
 | [Content operations](claws/content-operations) | portable workspace artifacts only |
+| [Contract Obligation Tracker](claws/contract-obligation-tracker) | portable workspace artifacts only |
 | [Document renewal tracker](claws/document-renewal-tracker) | portable workspace artifacts only |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | portable workspace artifacts only |
 | [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | portable workspace artifacts only |
