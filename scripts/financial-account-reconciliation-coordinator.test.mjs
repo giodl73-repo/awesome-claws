@@ -41,6 +41,13 @@ const schema = JSON.parse(
     "utf8",
   ),
 );
+const template = await readFile(
+  new URL(
+    "../sources/financial-account-reconciliation-coordinator/templates/financial-account-reconciliation.md",
+    import.meta.url,
+  ),
+  "utf8",
+);
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateSchema = ajv.compile(schema);
@@ -185,6 +192,55 @@ test("fixture is schema-valid, content-bound, and has zero semantic findings", (
     assert.equal(row.recordDigest, computeEvidenceRecordDigest(row));
     assert.equal(row.controlledRef, contentAddressedControlledRef(row));
     assert.match(row.controlledRef, new RegExp(`${row.recordDigest.slice(7)}$`, "u"));
+  }
+});
+
+test("handoff template renders the complete reviewable evidence contract", () => {
+  for (const required of [
+    "## Principals and authority",
+    "{{authorityRoster.rosterDigest}}",
+    "{{authorityGrants[].granteePrincipalDigest}}",
+    "{{authorityGrants[].issuerPrincipalDigest}}",
+    "{{authorityGrants[].authorityRosterEvidenceControlledRef}}",
+    "## Evidence ledger",
+    "{{evidence[].recordDigest}}",
+    "## Source-row ledgers",
+    "{{ledgerExport.sourceSystemRef}}",
+    "{{ledgerExport.rowRefs}}",
+    "{{ledgerExport.exportedAt}}",
+    "{{ledgerExport.evidenceRef}}",
+    "{{ledgerRows[].exportRef}}",
+    "{{ledgerRows[].minorUnits}}",
+    "{{statementRows[].exportRef}}",
+    "{{statementRows[].minorUnits}}",
+    "{{matchGroups[].decision.authorityGrantRef}}",
+    "{{matchGroups[].decision.authorityGrantPayloadDigest}}",
+    "{{matchGroups[].decision.authorityGrantEvidenceControlledRef}}",
+    "{{matchGroups[].decision.authorityRosterDigest}}",
+    "resolve",
+    "exactly one source-row ledger entry by exact `id`",
+    "fail rendering on a missing or",
+    "{{residuals[].ledgerManifestDigest}}",
+    "{{round.destination.approvedByRef}}",
+    "{{round.destination.approvedAt}}",
+    "{{round.destination.authorityRosterDigest}}",
+    "{{round.destination.authorityGrantPayloadDigest}}",
+    "{{round.destination.authorityGrantEvidenceControlledRef}}",
+    "{{handoff.destinationApprovalEvidenceControlledRef}}",
+    "{{handoff.authorityGrantPayloadDigest}}",
+    "{{handoff.authorityGrantEvidenceControlledRef}}",
+    "{{handoff.indexes.blockerRefs}}",
+  ]) {
+    assert.ok(template.includes(required), required);
+  }
+});
+
+test("principal names cannot alter the Markdown evidence tables", () => {
+  for (const name of ["Mara | owner", "Mara\nowner", "Mara `owner`"]) {
+    const candidate = mutate((value) => {
+      value.principals[1].name = name;
+    });
+    assert.equal(validateSchema(candidate), false, name);
   }
 });
 

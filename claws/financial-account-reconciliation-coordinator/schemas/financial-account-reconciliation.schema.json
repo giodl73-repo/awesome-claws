@@ -385,7 +385,8 @@
         "name": {
           "type": "string",
           "minLength": 3,
-          "maxLength": 120
+          "maxLength": 120,
+          "pattern": "^[^\\r\\n|`]+$"
         },
         "kind": {
           "enum": [
