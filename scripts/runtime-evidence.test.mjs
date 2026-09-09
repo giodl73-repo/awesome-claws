@@ -1824,6 +1824,66 @@ test("artifact validation keeps CLI diagnostics rich and runtime evidence safe",
   }
 });
 
+test("runtime evidence binds and supplies structured semantic validation options", async () => {
+  const input = await oneClawManifest("financial-account-reconciliation-coordinator");
+  const manifest = structuredClone(input.manifest);
+  manifest.mode = "live";
+  manifest.identities.harness.dirty = false;
+  const { manifestDigest: _manifestDigest, ...unsigned } = manifest;
+  manifest.manifestDigest = digest(unsigned);
+  const structuredContent = await readFile(
+    join(
+      root,
+      "claws",
+      "financial-account-reconciliation-coordinator",
+      "fixtures",
+      "financial-account-reconciliation.example.json",
+    ),
+    "utf8",
+  );
+
+  assert.deepEqual(
+    manifest.trials[0].artifacts.semanticOptions,
+    { asOf: "2026-09-02T00:00:00Z" },
+  );
+
+  const run = await runRuntimeEvidence({
+    ...input,
+    manifest,
+    outputRoot: null,
+    persist: false,
+    attemptRunner: async ({
+      contract,
+      scenario,
+      attemptRoot,
+      trial,
+    }) => ({
+      kind: "success",
+      observedOutcome: scenario.expectedOutcome,
+      response: `Synthetic ${scenario.expectedOutcome} response.`,
+      artifactPath: await writeTestArtifact({
+        contract,
+        scenario,
+        attemptRoot,
+        trial,
+        structuredContent,
+      }),
+      usage: { inputTokens: 10, outputTokens: 10 },
+      lifecycle: {
+        isolated: true,
+        durableArtifactObserved: true,
+        safeCleanup: true,
+      },
+    }),
+  });
+  const accepted = run.results.find(
+    (result) => result.scenarioType === "accepted-task",
+  );
+  assert.equal(accepted.status, "passed");
+  assert.equal(accepted.structuredArtifact.validation.schema.valid, true);
+  assert.equal(accepted.structuredArtifact.validation.semantics.valid, true);
+});
+
 test("sales operations requires both its Markdown handoff and registered pipeline review", async () => {
   const input = await oneClawManifest("sales-operations");
   const manifest = structuredClone(input.manifest);

@@ -85,7 +85,8 @@
       "records-retention-disposition-coordinator",
       "vulnerability-disposition-coordinator",
       "infrastructure-drift-reconciliation-coordinator",
-      "access-entitlement-review-coordinator"
+      "access-entitlement-review-coordinator",
+      "financial-account-reconciliation-coordinator"
     ]
   },
   "visualCases": [

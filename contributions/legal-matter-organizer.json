@@ -117,6 +117,11 @@
         "difference": "Infrastructure Drift Reconciliation Coordinator compares two co-equal owner-supplied infrastructure snapshots using canonical resource identities and comparable digests. It has no already-open legal matter, counsel supervision, parties or conflicts, immutable source custody, active legal holds, privilege, legal deadline authority, filing/correspondence indexes, or supplied counsel-decision semantics."
       },
       {
+        "id": "financial-account-reconciliation-coordinator",
+        "overlap": "Both bind a bounded owner-supplied evidence universe into exact coverage, source authority, named-human decisions, blockers, and a controlled review handoff without acting in authoritative systems.",
+        "difference": "Financial Account Reconciliation Coordinator partitions two co-equal transaction exports into exact 1:1, 1:n, or n:1 match groups and residuals using signed minor-unit arithmetic. It has no already-open legal matter, counsel supervision, parties or conflicts, immutable custody history, active legal holds, privilege, legal deadline authority, filing/correspondence/evidence indexes, chronology, or supplied counsel-decision semantics."
+      },
+      {
         "id": "document-intake-analyst",
         "overlap": "Both normalize supplied documents with provenance, controlled references, minimization, review questions, and no autonomous legal judgment.",
         "difference": "Document Intake Analyst produces reviewable document summaries; it lacks exact matter/snapshot binding, named-counsel supervision, party/conflict state, append-only custody, legal holds, privilege labels, authoritative deadlines, filing/correspondence/evidence relationships, chronology, and counsel decisions."

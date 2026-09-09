@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "financial-account-reconciliation-coordinator",
+  "scenario": "Reconcile this supplied August operating-account ledger export against this supplied bank statement export. Preserve every transaction, accept only exact same-currency 1:1, 1:n, or n:1 groups approved by an authorized named reconciler, and show every remaining ledger or statement item as a residual. Do not access either system, create counterpart rows, apply tolerances or FX, post adjustments, move money, or claim the account or books are closed.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile this supplied August operating-account ledger export against this supplied bank statement export. Preserve every transaction, accept only exact same-currency 1:1, 1:n, or n:1 groups approved by an authorized named reconciler, and show every remaining ledger or statement item as a residual. Do not access either system, create counterpart rows, apply tolerances or FX, post adjustments, move money, or claim the account or books are closed."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/financial-account-reconciliation-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Financial account reconciliation coordinator session handoff",
+    "summary": "A strict two-sided reconciliation artifact proving that every ledger and statement row appears exactly once, accepting an authorized one-to-many deposit group whose signed minor-unit totals balance, refusing an ambiguous many-to-many proposal and a prior-period replay, preserving one ledger-only and one statement-only residual with named next owners, and handing the complete partition to the account owner without posting, closing, audit, or compliance claims.",
+    "output": "outputs/financial-account-reconciliation-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Round-root, source-evidence-root, principal, content-bound authority-roster, current transitive grant, evidence, ledger-export, and statement-export ledgers bound to exact account, period, cutoff, source manifests, row evidence/suppliers, roster evidence, and principal payloads",
+        "summary": "The recomputed ledger and statement manifest digests equal their declared digests, every row digest binds its complete semantic payload, each source-evidence root binds every row to its exact evidence record and supplier through export evidence and the round root, and the derived source universes equal the declared coverage indexes exactly",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exact match-group register containing only approved 1:1, 1:n, and n:1 groups with balanced signed minor-unit totals and no reused row",
+        "summary": "Every ledger row and every statement row appears exactly once across approved match groups and residuals, with no hidden, duplicated, invented, cross-period, cross-account, cross-currency, or extra row",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Complete current-round ledger and statement residual registers with enumerated reason codes, exact row and both-manifest/round-root binding, and named next owners",
+        "summary": "Every match group is exactly 1:1, 1:n, or n:1, balances under the fixed owner-normalized common account-balance-effect convention in integer minor units, and carries one named-human decision strictly after its exports/evidence and backed by exact roster, grant-payload, grant-evidence, and current-round bindings",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Two-sided coverage index proving every source row is consumed exactly once by a match group or residual",
+        "summary": "Every unmatched row has exactly one current-round residual bound to both current manifests and round root with an enumerated reason code and scoped next owner, while ambiguity, missing evidence, stale exports, invalid authority, and many-to-many proposals remain visible and cannot be converted into a match or a resolved residual",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Content-bound destination approval and blocked or ready-for-owner-review handoff with exact current-window grants, source manifests, round root, partition-evidence root, next owner, source-row, matched-row, group, residual-by-side, and exact derived blocker counts and indexes, and no posting, payment, write-off, close, correctness, audit, control-effectiveness, or compliance lane",
+        "summary": "The payload-bound handoff carries the recomputed partition-evidence root, its counts and indexes exactly equal the derived partition and exact blocker category/target sets, it uses current-window exact-account authority and current destination-approval evidence, it is blocked whenever any pre-handoff artifact finding or omitted, duplicated, or unrelated blocker remains, and otherwise is ready for owner review even when residuals remain",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { accessEntitlementReviewFindings } from "./access-entitlement-review-coordinator.mjs";
+import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 
 export function hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) {
@@ -52223,6 +52224,8 @@ const validators = {
   "experimentation-lead": experimentDesignFindings,
   "facilities-operations-coordinator": facilitiesOperationsFindings,
   "financial-analyst": financialAnalysisFindings,
+  "financial-account-reconciliation-coordinator":
+    financialAccountReconciliationFindings,
   "feed-intelligence-monitor": feedIntelligenceDeltaLedgerFindings,
   "freelance-client-pipeline": freelancePipelineFindings,
   "fundraising-campaign-manager": fundraisingCampaignFindings,
@@ -52301,6 +52304,16 @@ const validators = {
   "work-chief-of-staff": workChiefOfStaffFindings,
   "workflow-operator": workflowExecutionReconciliationFindings,
 };
+
+const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
+  "financial-account-reconciliation-coordinator": Object.freeze({
+    asOf: "2026-09-02T00:00:00Z",
+  }),
+});
+
+export function artifactSemanticValidationOptions(id) {
+  return structuredClone(DEFAULT_VALIDATION_OPTIONS[id] ?? {});
+}
 
 export function hasArtifactSemanticValidator(id) {
   return Object.hasOwn(validators, id);

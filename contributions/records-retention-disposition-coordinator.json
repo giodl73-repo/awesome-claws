@@ -118,6 +118,11 @@
         "difference": "Legal Matter Organizer is bound to one already-active legal matter and preservation-safe counsel review; it never owns enterprise retention eligibility, disposition batches, execution certificates, or residual-copy closure."
       },
       {
+        "id": "financial-account-reconciliation-coordinator",
+        "overlap": "Both reconcile a complete bounded owner-supplied evidence universe into exact coverage, explicit residuals, exact blockers, named-human authority, and a controlled handoff without changing authoritative systems.",
+        "difference": "Financial Account Reconciliation Coordinator partitions two co-equal transaction exports into exact 1:1, 1:n, or n:1 match groups and residuals using signed minor-unit arithmetic. It has no retention schedule, record-series or copy inventory, eligibility calculation, legal-hold precedence, disposition batch, custody trail, independent execution certificate, or residual-copy closure."
+      },
+      {
         "id": "privacy-request-coordinator",
         "overlap": "Both use exact snapshots, minimized records, legal holds, exemptions or exceptions, accountable approvals, and controlled evidence.",
         "difference": "Privacy Request Coordinator coordinates one privacy-rights request and its identity, search, deadline, and response lifecycle, not enterprise record-series schedules, every-copy disposition, certificates, or residual closure."

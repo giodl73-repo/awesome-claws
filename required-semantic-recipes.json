@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 105,
-    "coveredCount": 105,
-    "recipeCount": 283,
-    "findingCodeCount": 304
+    "validatorCount": 106,
+    "coveredCount": 106,
+    "recipeCount": 286,
+    "findingCodeCount": 315
   },
   "entries": [
     {
@@ -4424,6 +4424,65 @@
             "invalid_evidence_payload_binding",
             "invalid_review_handoff",
             "invalid_round_binding"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "financial-account-reconciliation-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-incomplete-coverage-1",
+          "operator": "replace",
+          "path": [
+            "round",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incomplete_coverage",
+            "invalid_blocker",
+            "invalid_destination",
+            "invalid_grant",
+            "invalid_handoff",
+            "invalid_residual",
+            "invalid_round_root",
+            "invalid_row_binding",
+            "invalid_scope_binding",
+            "stale_decision"
+          ]
+        },
+        {
+          "id": "semantic-invalid-blocker-2",
+          "operator": "replace",
+          "path": [
+            "round",
+            "cutoffAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_blocker",
+            "invalid_chronology",
+            "invalid_handoff",
+            "invalid_round_root",
+            "invalid_scope_binding"
+          ]
+        },
+        {
+          "id": "semantic-invalid-blocker-3",
+          "operator": "replace",
+          "path": [
+            "round",
+            "cutoffAt"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_blocker",
+            "invalid_chronology",
+            "invalid_handoff",
+            "invalid_round_root",
+            "invalid_scope_binding",
+            "stale_export"
           ]
         }
       ]

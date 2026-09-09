@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (105)
+### Active (106)
 
 | Claw | Detail |
 | --- | --- |
@@ -41,6 +41,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | @giodl73-repo; last verified 2026-08-28 |
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | @giodl73-repo; last verified 2026-08-30 |
+| [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | @giodl73; last verified 2026-09-08 |
 | [Financial analyst](claws/financial-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | @giodl73; last verified 2026-08-28 |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | @giodl73-repo; last verified 2026-08-29 |
@@ -132,7 +133,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (75)
+### Low setup (76)
 
 | Claw | Detail |
 | --- | --- |
@@ -157,6 +158,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Document renewal tracker](claws/document-renewal-tracker) | no bootstrap, external dependency, or schedule |
 | [Experimentation lead](claws/experimentation-lead) | no bootstrap, external dependency, or schedule |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | no bootstrap, external dependency, or schedule |
+| [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | no bootstrap, external dependency, or schedule |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | no bootstrap, external dependency, or schedule |
 | [Games backlog manager](claws/games-backlog-manager) | no bootstrap, external dependency, or schedule |
 | [Gift and relationship manager](claws/gift-relationship-manager) | no bootstrap, external dependency, or schedule |
@@ -256,7 +258,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (83)
+### No external dependencies (84)
 
 | Claw | Detail |
 | --- | --- |
@@ -284,6 +286,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Experimentation lead](claws/experimentation-lead) | None |
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | None |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | None |
+| [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | None |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | None |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | None |
 | [Games backlog manager](claws/games-backlog-manager) | None |
@@ -375,7 +378,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (80)
+### X3 (81)
 
 | Claw | Detail |
 | --- | --- |
@@ -397,6 +400,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Executive briefing](claws/executive-briefing) | Reconciles one bounded scheduled run into a private source-timestamped executive briefing snapshot of agenda observations, decision asks, preparation needs, conflicts, weather implications, questions, and blockers. |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | Manages fantasy-team rosters, league rules, matchup evidence, waiver windows, trade ideas, injury uncertainty, and owner-review lineup decisions without submitting changes, joining contests, betting, messaging managers, or giving gambling advice. |
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | Maintains a private feed-intelligence delta and triage ledger that reconciles owner-approved recurring feed subscriptions, cursors, item identity, lineage, signals, and queues against a prior checkpoint without subscribing, notifying, publishing, or acting. |
+| [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | Reconciles one exact owner-supplied ledger transaction export against one exact owner-supplied statement transaction export for a bounded account and period, partitioning every row exactly once into an evidence-bound 1:1, 1:n, or n:1 match group or an explicit residual, without reaching financial systems, posting entries, moving money, or claiming the account or books are closed. |
 | [Financial analyst](claws/financial-analyst) | Builds transparent financial analysis without hiding assumptions or uncertainty. |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | Tracks freelance prospects, scopes, proposals, client follow-ups, and commitment gaps without sending messages, quoting binding terms, or accepting work. |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | Prepares an approval-bound nonprofit fundraising campaign, stewardship plan, audience assets, and measurement handoff without soliciting or sending. |
@@ -533,7 +537,7 @@ Categories come directly from the catalog entry.
 | [Security analyst](claws/security-analyst) | X4; Assesses security questions with explicit trust boundaries and reproducible evidence. |
 | [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 
-### Governance (9)
+### Governance (10)
 
 | Claw | Detail |
 | --- | --- |
@@ -541,6 +545,7 @@ Categories come directly from the catalog entry.
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | X4; Organizes accessibility evidence, findings, remediation ownership, and verification against an approved review scope without claiming certification. |
 | [Compliance reviewer](claws/compliance-reviewer) | X4; Evaluates controls and evidence without substituting for accountable legal judgment. |
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
+| [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | X3; Reconciles one exact owner-supplied ledger transaction export against one exact owner-supplied statement transaction export for a bounded account and period, partitioning every row exactly once into an evidence-bound 1:1, 1:n, or n:1 match group or an explicit residual, without reaching financial systems, posting entries, moving money, or claiming the account or books are closed. |
 | [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | X3; Reconciles owner-supplied desired-state and observed-state infrastructure snapshots into one exact symmetric resource universe, with one evidence-backed converged, drifted, missing, or unmanaged disposition per resolved identity and fail-closed deviation authority, without accessing or changing infrastructure. |
 | [Legal matter organizer](claws/legal-matter-organizer) | X3; Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
@@ -638,7 +643,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (53)
+### Standard attention (54)
 
 | Claw | Detail |
 | --- | --- |
@@ -652,6 +657,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Content operations](claws/content-operations) | portable workspace artifacts only |
 | [Document renewal tracker](claws/document-renewal-tracker) | portable workspace artifacts only |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | portable workspace artifacts only |
+| [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | portable workspace artifacts only |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | portable workspace artifacts only |
 | [Games backlog manager](claws/games-backlog-manager) | portable workspace artifacts only |
 | [Gift and relationship manager](claws/gift-relationship-manager) | portable workspace artifacts only |
