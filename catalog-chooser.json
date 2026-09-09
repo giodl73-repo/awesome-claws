@@ -1111,6 +1111,40 @@
       }
     },
     {
+      "id": "financial-account-reconciliation-coordinator",
+      "name": "Financial account reconciliation coordinator",
+      "description": "Reconciles one exact owner-supplied ledger transaction export against one exact owner-supplied statement transaction export for a bounded account and period, partitioning every row exactly once into an evidence-bound 1:1, 1:n, or n:1 match group or an explicit residual, without reaching financial systems, posting entries, moving money, or claiming the account or books are closed.",
+      "audience": "Authorized accounting operations, controllership support, treasury operations, and finance-system owners performing periodic account reconciliation from approved exports in a controlled workspace while ledgers, banks, payment systems, accounting policy, approvers, and posting systems remain authoritative.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-08"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "financial-analyst",
       "name": "Financial analyst",
       "description": "Builds transparent financial analysis without hiding assumptions or uncertainty.",

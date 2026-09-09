@@ -354,9 +354,10 @@ OpenClaw adapter in disposable state.
   evidence.
 - `npm run proof:experience` and `npm run screenshots` prove rendering and host
   presentation paths, not provider correctness or model quality.
-- `npm run validate:artifact -- <claw-id> <artifact.json>` runs JSON Schema
-  validation and the registered semantic reference checks for structured
-  artifact Claws.
+- `npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>]`
+  runs JSON Schema validation and the registered semantic reference checks for
+  structured artifact Claws. Supply the trusted, zone-bearing `--as-of` value
+  when the Claw contract requires caller-controlled validation time.
 
 No command in this repository is provider-live evidence by itself. A live claim
 requires an explicit credentialed provider lane, exact revisions, retained

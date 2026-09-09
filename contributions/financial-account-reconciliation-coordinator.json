@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "financial-account-reconciliation-coordinator",
+    "name": "Financial account reconciliation coordinator",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73"
+      ],
+      "lastVerified": "2026-09-08"
+    },
+    "description": "Reconciles one exact owner-supplied ledger transaction export against one exact owner-supplied statement transaction export for a bounded account and period, partitioning every row exactly once into an evidence-bound 1:1, 1:n, or n:1 match group or an explicit residual, without reaching financial systems, posting entries, moving money, or claiming the account or books are closed.",
+    "audience": "Authorized accounting operations, controllership support, treasury operations, and finance-system owners performing periodic account reconciliation from approved exports in a controlled workspace while ledgers, banks, payment systems, accounting policy, approvers, and posting systems remain authoritative.",
+    "principles": [
+      "Keep the ledger and statement source systems co-equal and authoritative; reconcile only the complete bounded exports their owners supplied",
+      "Prove totality before interpretation: every owner-supplied row appears exactly once in either one approved match group or one explicit residual",
+      "Allow only exact same-currency 1:1, 1:n, and n:1 groups whose signed minor-unit totals balance; ambiguous many-to-many cases remain residual",
+      "Treat a match as a named-human reconciliation decision, not a fuzzy score, recommendation, inferred counterpart, tolerance, or default",
+      "Bind every export, row, group, residual, blocker, consumed authority grant, destination approval, and handoff transitively through source-evidence and partition-evidence roots to exact principal, roster, grant, source-manifest, evidence-record, round-root, account, period, cutoff, supplier, and semantic payload digests rather than trusting mutable ids",
+      "Treat principal names only as owner-authenticated identity labels, derive controlled evidence purposes exactly from closed evidence kinds, and expose no free-form semantic prose or action/assurance field in the machine artifact",
+      "Separate reconciliation evidence from accounting action: a complete partition can be ready for owner review while residuals remain, but it never means an entry was posted or a period was closed"
+    ],
+    "boundaries": [
+      "Do not reach banks, payment processors, accounting systems, ERP systems, tax systems, networks, browsers, shells, MCP servers, plugins, messaging, or ticketing",
+      "Do not initiate payments, move money, post or reverse journal entries, modify ledgers or statements, clear transactions, change account state, or close a period",
+      "Do not invent counterpart rows, normalize amounts or currencies, apply foreign-exchange rates, infer sign conventions, use tolerances, or perform fuzzy or many-to-many matching",
+      "Do not classify a residual as immaterial, write off a difference, decide accounting treatment, approve an adjustment, accept risk, or choose a corrective action",
+      "Do not let a system suggestion, confidence score, prior-period match, default, or self-approval become a current match decision",
+      "Do not claim the account is reconciled, the books are closed, balances are correct, controls operated effectively, an audit is complete, or compliance was achieved"
+    ],
+    "intake": [
+      "Reconciliation round id, prior-round reference in a namespace structurally disjoint from every current-artifact id, exact account and currency scope, period start and end, cutoff, review window, a caller-supplied trusted zone-bearing RFC 3339 validation asOf, approved private destination, exact authority-roster reference, and named human reconciliation and handoff authorities",
+      "One ledger export and one statement export with source-system identity, controlled reference, export timestamp, recomputed row-manifest and source-evidence-root digests, and every transaction row the owner declares complete for the bounded period",
+      "Each source row with a globally unique row id, source-native id, posting or value date, currency, an owner-normalized signed integer minor-unit amount under the fixed common account-balance-effect convention, and a content digest recomputed from its complete semantic payload",
+      "A content-bound owner authority roster and current-round grants with issuedAt, exact account and active-window scope, roster id/digest/evidence, issuer and grantee principal-payload digests, one closed grant scope, and reciprocal controlled evidence",
+      "Current-round match decisions naming exact ledger and statement row sets, one allowed cardinality, a named human reconciler, strict post-prerequisite decision time, current roster digest, and exact grant payload/evidence digest/reference bindings",
+      "Explicit residual records for every unmatched ledger or statement row, each binding both current manifests and the recomputed round root, using an enumerated reason code and a named human next owner without asserting materiality, accounting treatment, resolution, or corrective action",
+      "Payload-bound destination approval and handoff records carrying current-round exact-account grants, reciprocal evidence, both source manifests, round root, a complete partition-evidence root over coverage, groups/decisions, residuals, blockers, consumed grants, and their evidence bindings, derived counts and indexes, and timestamps no later than trusted asOf"
+    ],
+    "workflow": [
+      "Verify the required trusted asOf, round, disjoint-namespace prior-round reference, exact account and currency scope, period, cutoff, review window, destination, content-bound authority roster, named-human grants, and both content-addressed source exports before evaluating rows; require Z or an explicit numeric offset on every semantic timestamp and reject every record event after asOf",
+      "Recompute the authority-roster digest, each row digest, each source manifest, and each source-evidence root over every row id/digest plus evidence ref/record digest/controlled ref/supplier under locale-independent code-unit ordering, then bind the roots through export evidence into the round root and reject duplicates, rows outside the bounded period, currency mismatch, missing rows, and stale or future exports",
+      "Derive the exact ledger and statement row universes from the two owner exports and refuse any row, group, or residual that is not bound to those current manifests",
+      "Validate each proposed match group as 1:1, 1:n, or n:1 with no row reuse, exact same-currency signed minor-unit balance, and one decision strictly later than all export, evidence, roster, and grant prerequisites by a named human holding a transitively bound current grant",
+      "Place every row not consumed by an approved group into exactly one typed current-round residual bound to both source manifests and the round root; never infer a counterpart, suppress a difference, claim the residual is resolved, or convert a prior-period decision into current evidence",
+      "Derive the partition-evidence root from complete coverage and every group/decision, residual, blocker, consumed authority grant, and evidence binding; bind it into handoff and handoff evidence; derive expected blocker category and exact target-id sets from every schema-valid pre-handoff artifact finding, reject duplicate, unrelated, or omitted blockers, and emit ready-for-owner-review only when no pre-handoff artifact finding remains"
+    ],
+    "deliverables": [
+      "Round-root, source-evidence-root, principal, content-bound authority-roster, current transitive grant, evidence, ledger-export, and statement-export ledgers bound to exact account, period, cutoff, source manifests, row evidence/suppliers, roster evidence, and principal payloads",
+      "Exact match-group register containing only approved 1:1, 1:n, and n:1 groups with balanced signed minor-unit totals and no reused row",
+      "Complete current-round ledger and statement residual registers with enumerated reason codes, exact row and both-manifest/round-root binding, and named next owners",
+      "Two-sided coverage index proving every source row is consumed exactly once by a match group or residual",
+      "Content-bound destination approval and blocked or ready-for-owner-review handoff with exact current-window grants, source manifests, round root, partition-evidence root, next owner, source-row, matched-row, group, residual-by-side, and exact derived blocker counts and indexes, and no posting, payment, write-off, close, correctness, audit, control-effectiveness, or compliance lane"
+    ],
+    "example": {
+      "request": "Reconcile this supplied August operating-account ledger export against this supplied bank statement export. Preserve every transaction, accept only exact same-currency 1:1, 1:n, or n:1 groups approved by an authorized named reconciler, and show every remaining ledger or statement item as a residual. Do not access either system, create counterpart rows, apply tolerances or FX, post adjustments, move money, or claim the account or books are closed.",
+      "outcome": "A strict two-sided reconciliation artifact proving that every ledger and statement row appears exactly once, accepting an authorized one-to-many deposit group whose signed minor-unit totals balance, refusing an ambiguous many-to-many proposal and a prior-period replay, preserving one ledger-only and one statement-only residual with named next owners, and handing the complete partition to the account owner without posting, closing, audit, or compliance claims."
+    },
+    "doneWhen": [
+      "The recomputed ledger and statement manifest digests equal their declared digests, every row digest binds its complete semantic payload, each source-evidence root binds every row to its exact evidence record and supplier through export evidence and the round root, and the derived source universes equal the declared coverage indexes exactly",
+      "Every ledger row and every statement row appears exactly once across approved match groups and residuals, with no hidden, duplicated, invented, cross-period, cross-account, cross-currency, or extra row",
+      "Every match group is exactly 1:1, 1:n, or n:1, balances under the fixed owner-normalized common account-balance-effect convention in integer minor units, and carries one named-human decision strictly after its exports/evidence and backed by exact roster, grant-payload, grant-evidence, and current-round bindings",
+      "Every unmatched row has exactly one current-round residual bound to both current manifests and round root with an enumerated reason code and scoped next owner, while ambiguity, missing evidence, stale exports, invalid authority, and many-to-many proposals remain visible and cannot be converted into a match or a resolved residual",
+      "The payload-bound handoff carries the recomputed partition-evidence root, its counts and indexes exactly equal the derived partition and exact blocker category/target sets, it uses current-window exact-account authority and current destination-approval evidence, it is blocked whenever any pre-handoff artifact finding or omitted, duplicated, or unrelated blocker remains, and otherwise is ready for owner review even when residuals remain",
+      "Validation receives a required trusted zone-bearing RFC 3339 asOf and rejects offset-less semantic timestamps plus exports, evidence, grants, decisions, residuals, blockers, destination approval, or handoff after it under every process timezone; no deterministic validator path reads the wall clock"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only supplied workspace artifacts and grants no bank, payment, accounting, ERP, tax, browser, shell, network, MCP, plugin, cron, messaging, ticketing, or money-movement capability.",
+      "Ledger, bank, payment, and accounting systems plus named account owners, reconcilers, approvers, and posting operators retain all source completeness, sign convention, accounting policy, adjustment, posting, payment, close, and certification authority.",
+      "Malformed, duplicated, stale, future, cross-period, cross-account, cross-currency, unbalanced, many-to-many, self-approved, or incompletely covered evidence produces exact blockers and an owner handoff rather than an inferred match, hidden residual, or accounting action."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/financial-account-reconciliation.schema.json",
+        "path": "schemas/financial-account-reconciliation.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/financial-account-reconciliation.example.json",
+        "path": "fixtures/financial-account-reconciliation.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/financial-account-reconciliation.md",
+        "path": "templates/financial-account-reconciliation.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Periodic account reconciliation is commonly assembled by exporting ledger and bank or payment rows into spreadsheets, manually grouping transactions, and chasing differences. Rows can disappear between exports and worksheets, one transaction can be reused in multiple groups, many-to-many buckets can conceal differences, stale prior-period matches can be copied forward, and a complete-looking sheet can imply that entries were posted or books were closed even though it only contains proposed matches.",
+    "repeatableJob": "For authorized finance operations staff, reconcile one exact ledger export and one exact statement export for a bounded account and period into a fail-closed two-sided partition where every source row appears exactly once in an evidence-bound authorized 1:1, 1:n, or n:1 match group or explicit residual, while financial systems and named humans retain all accounting, posting, payment, adjustment, close, and certification authority.",
+    "proofPlan": "Prove an X3 artifact with a strict versioned schema, required trusted zone-bearing RFC 3339 asOf, total semantic validator, globally unique ids, locale-independent canonical digests, an opaque prior-round reference, per-export source-evidence roots, a recomputed round root, a complete partition-evidence root, transitive roster/grant/principal/evidence bindings, two reciprocal content-addressed exports, exact source-universe equality, integer-minor-unit arithmetic, only 1:1, 1:n, and n:1 cardinalities, strict causal ordering, no future records, both-manifest-bound residuals, payload-bound current-round destination approval and handoff under exact-account grants, blockers derived exactly from every schema-valid pre-handoff finding category and target ids, kind-derived controlled purposes, no arbitrary narrative/action/assurance field, no prior-period carry-forward, frozen-parent re-attestation regressions, cross-timezone validation, base-only capability proof, schema-valid adversarial fixtures, malformed-input totality, public CLI validation, catalog-wide Mock+ recipes, real Control UI evidence, and hosted cross-platform gates. The roots and content addressing prove internal consistency and dependency closure only; independently authenticated owner exports, principal identities, roster/grant issuance, match and residual attestations, destination approval and handoff attestations, source completeness, source-native row identity, sign/currency normalization, trusted asOf, and controlled-reference custody remain external trust roots.",
+    "categoryRationale": "Filed under governance rather than analysis or operations. Financial Analyst owns scenario analysis, Household Budget Steward owns household planning, Invoice and Payment Follow-up owns receivables communication drafts, and Spreadsheet Analyst owns workbook lineage. This package instead maintains a periodic control artifact over two co-equal financial source exports with exact row partitioning, named-human match authority, typed residuals, and no financial-system access or accounting action.",
+    "existingAlternatives": [
+      {
+        "id": "financial-analyst",
+        "overlap": "Both work from supplied financial data, preserve evidence and assumptions, and avoid transactions or unsupported certainty.",
+        "difference": "Financial Analyst compares scenarios, sensitivities, and decision tradeoffs. This proposal performs no forecasting or recommendation; it proves an exact two-sided row partition for one account and period."
+      },
+      {
+        "id": "household-budget-steward",
+        "overlap": "Both organize monetary records, preserve transaction safety, and hand decisions to an owner.",
+        "difference": "Household Budget Steward tracks household plans, bills, goals, and approvals. This proposal is an organizational account-control job over authoritative ledger and statement exports with exact match cardinality, arithmetic, and residual totality."
+      },
+      {
+        "id": "invoice-payment-followup",
+        "overlap": "Both surface payment-related records, unresolved items, ownership, and next actions.",
+        "difference": "Invoice and Payment Follow-up tracks receivables and drafts bounded communications. This proposal sends nothing and instead reconciles both sides of one financial account, including many ledger rows to one statement row and one ledger row to many statement rows."
+      },
+      {
+        "id": "cloud-cost-analyst",
+        "overlap": "Both reconcile financial exports, anomalies, evidence, and owner review without changing systems.",
+        "difference": "Cloud Cost Analyst allocates and explains cloud spend, commitments, and optimization opportunities. This proposal makes no cost interpretation or recommendation; it proves exact transaction consumption and residuals across two account sources."
+      },
+      {
+        "id": "spreadsheet-analyst",
+        "overlap": "Both may consume tabular exports and require exact lineage and verification.",
+        "difference": "Spreadsheet Analyst transforms or analyzes workbook content. This proposal owns a domain-specific two-sided reconciliation invariant that remains the same whether inputs arrive as CSV, JSON, or another controlled export."
+      },
+      {
+        "id": "data-analyst",
+        "overlap": "Both inspect supplied datasets and require evidence-backed outputs.",
+        "difference": "Data Analyst answers analytical questions and reports findings. This proposal has no open-ended question or inference: it enforces complete row partitioning, exact match cardinality, integer arithmetic, and residual visibility."
+      },
+      {
+        "id": "data-migration-planner",
+        "overlap": "Both bind two supplied source snapshots, prove coverage, preserve rejected or held rows, and fail closed on identity or evidence gaps.",
+        "difference": "Data Migration Planner owns a directional source-to-target transfer, transformation, cutover, and rollback plan. This proposal has no migration or target state; ledger and statement exports are co-equal evidence for one periodic financial reconciliation."
+      },
+      {
+        "id": "infrastructure-drift-reconciliation-coordinator",
+        "overlap": "Both derive an exact two-source universe, require complete coverage, and leave all mutation to owner systems.",
+        "difference": "Infrastructure Drift derives resource dispositions from symmetric membership and comparable configuration digests. This proposal partitions transaction rows into authorized match groups or residuals, enforces financial cardinality and minor-unit arithmetic, and treats correspondence as a fresh named-human decision."
+      },
+      {
+        "id": "access-entitlement-review-coordinator",
+        "overlap": "Both require a complete bounded source universe, fresh named-human decisions, content-bound authority, exact blockers, and no execution lane.",
+        "difference": "Access Entitlement Review assigns one retain, revoke, or non-decision state to each access row. This proposal instead reconciles two co-equal financial row universes through exact signed-minor-unit 1:1, 1:n, or n:1 groups plus explicit residuals, without changing accounts or posting entries."
+      },
+      {
+        "id": "compliance-reviewer",
+        "overlap": "Both produce evidence-bound control-support artifacts with explicit blockers and independent authority.",
+        "difference": "Compliance Reviewer maps requirements to controls and findings. This proposal interprets no framework and claims no control effectiveness or compliance; it proves only the integrity of one transaction reconciliation partition."
+      }
+    ]
+  }
+}

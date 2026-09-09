@@ -37,6 +37,8 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "facilities-operations-coordinator": "facilities-issue.schema.json",
   "fantasy-sports-manager": "fantasy-roster.schema.json",
   "financial-analyst": "financial-scenario.schema.json",
+  "financial-account-reconciliation-coordinator":
+    "financial-account-reconciliation.schema.json",
   "feed-intelligence-monitor": "feed-intelligence-delta-ledger.schema.json",
   "freelance-client-pipeline": "freelance-pipeline.schema.json",
   "fundraising-campaign-manager": "campaign-claim.schema.json",
@@ -161,6 +163,7 @@ export async function validateArtifact({
   role = "completion",
   targetRoot = root,
   diagnostics = "full",
+  semanticOptions = {},
 }) {
   if (!["full", "safe"].includes(diagnostics)) {
     throw new Error(`Unknown artifact diagnostic view: ${diagnostics}.`);
@@ -265,7 +268,9 @@ export async function validateArtifact({
   }
 
   const schemaValid = registered.validate(value);
-  const semanticFindings = schemaValid ? validateArtifactSemantics(id, value) : [];
+  const semanticFindings = schemaValid
+    ? validateArtifactSemantics(id, value, semanticOptions)
+    : [];
   return {
     performed: true,
     policy: "registered-completion-schema",

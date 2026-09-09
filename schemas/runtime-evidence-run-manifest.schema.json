@@ -200,7 +200,13 @@
         "artifacts": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["handoffPath", "structuredPath", "schemaName", "digest"],
+          "required": [
+            "handoffPath",
+            "structuredPath",
+            "schemaName",
+            "semanticOptions",
+            "digest"
+          ],
           "properties": {
             "handoffPath": {
               "type": "string",
@@ -213,6 +219,16 @@
             "schemaName": {
               "type": ["string", "null"],
               "pattern": "^[A-Za-z0-9._-]+\\.schema\\.json$"
+            },
+            "semanticOptions": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "asOf": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
             },
             "digest": { "$ref": "#/$defs/digest" }
           }

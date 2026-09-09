@@ -4,9 +4,16 @@ import {
   validateArtifact,
 } from "./artifact-validator-registry.mjs";
 
-const [id, input] = process.argv.slice(2);
-if (!id || !input) {
-  throw new Error("Usage: npm run validate:artifact -- <claw-id> <artifact.json>");
+const [id, input, ...options] = process.argv.slice(2);
+if (
+  !id ||
+  !input ||
+  ![0, 2].includes(options.length) ||
+  (options.length === 2 && options[0] !== "--as-of")
+) {
+  throw new Error(
+    "Usage: npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>]",
+  );
 }
 if (!ARTIFACT_SCHEMA_NAMES[id]) {
   throw new Error(`No structured artifact validator is registered for ${id}.`);
@@ -17,6 +24,7 @@ const validation = await validateArtifact({
   scenarioType: "accepted-task",
   mode: "live",
   diagnostics: "full",
+  semanticOptions: options.length === 2 ? { asOf: options[1] } : {},
 });
 const result = {
   schemaVersion: "awesomeClaws.artifactValidation.v1",

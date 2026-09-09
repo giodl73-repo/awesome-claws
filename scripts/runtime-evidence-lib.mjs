@@ -17,6 +17,7 @@ import {
   artifactSchemaName,
   validateArtifact,
 } from "./artifact-validator-registry.mjs";
+import { artifactSemanticValidationOptions } from "./artifact-semantics.mjs";
 import { root } from "./catalog-source.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
 import {
@@ -556,7 +557,12 @@ export async function resolveArtifactContract({
       throw new Error(`${entry.id} declares an unsafe registered structured output.`);
     }
   }
-  const contract = { handoffPath, structuredPath, schemaName };
+  const contract = {
+    handoffPath,
+    structuredPath,
+    schemaName,
+    semanticOptions: artifactSemanticValidationOptions(entry.id),
+  };
   return { ...contract, digest: digest(contract) };
 }
 
@@ -1810,6 +1816,7 @@ async function observeArtifact({
   mode,
   role,
   targetRoot,
+  semanticOptions = {},
   sensitiveValues = [],
 }) {
   try {
@@ -1848,6 +1855,7 @@ async function observeArtifact({
         mode,
         role,
         targetRoot,
+        semanticOptions,
         diagnostics: "safe",
       }),
     };
@@ -2176,6 +2184,7 @@ async function liveAttempt({
         mode: "live",
         role: "handoff",
         targetRoot,
+        semanticOptions: trial.artifacts.semanticOptions,
         sensitiveValues,
       });
       structuredArtifactObservation = structuredArtifactPath
@@ -2188,6 +2197,7 @@ async function liveAttempt({
             mode: "live",
             role: "structured",
             targetRoot,
+            semanticOptions: trial.artifacts.semanticOptions,
             sensitiveValues,
           })
         : null;
@@ -2536,6 +2546,7 @@ async function resultFromAttempt({
         mode: manifest.mode,
         role: "handoff",
         targetRoot,
+        semanticOptions: trial.artifacts.semanticOptions,
         sensitiveValues,
       });
       structuredArtifactObservation = structuredPath
@@ -2548,6 +2559,7 @@ async function resultFromAttempt({
             mode: manifest.mode,
             role: "structured",
             targetRoot,
+            semanticOptions: trial.artifacts.semanticOptions,
             sensitiveValues,
           })
         : null;
