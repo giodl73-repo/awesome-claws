@@ -94,6 +94,11 @@
         "id": "experimentation-lead",
         "overlap": "Both gate an accountable decision (release recommendation versus launch/stop decision) behind controlled evidence, principal accountability, and chronology ordering across multiple evidence types.",
         "difference": "Experimentation lead grounds its decision in statistical metrics, guardrails, and exposure allocation for a live experiment, whereas quality assurance lead grounds its recommendation in deterministic pass/fail test execution against declared requirements for a specific build."
+      },
+      {
+        "id": "backup-restore-verification-coordinator",
+        "overlap": "Both preserve test evidence, failures, coverage, and owner-visible readiness handoffs.",
+        "difference": "Backup Restore Verification Coordinator has a fixed backup-resource universe, provider restore jobs, recovery objectives, isolated targets, and cleanup rather than general release testing."
       }
     ]
   }

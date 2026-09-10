@@ -160,6 +160,11 @@
         "id": "contract-obligation-tracker",
         "overlap": "Both enforce exact owner-supplied universe coverage, one current resolution per row, fresh named-human authority, exact blockers, destination-bound handoff, and no execution lane.",
         "difference": "Contract Obligation Tracker never chooses retain or revoke; it binds fixed due state, performance evidence, and owner confirmation to executed agreement clauses, while Access Entitlement Review Coordinator recertifies access assignments for IAM execution."
+      },
+      {
+        "id": "backup-restore-verification-coordinator",
+        "overlap": "Both partition an exact owner-supplied universe, require fresh separated authority, and enforce exact blocker equality.",
+        "difference": "Backup Restore Verification Coordinator records recovery-point selections and external restore, validation, and cleanup evidence without making retain or revoke access decisions."
       }
     ]
   }

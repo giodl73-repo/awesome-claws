@@ -146,6 +146,11 @@
         "id": "incident-response",
         "overlap": "Both surface infrastructure evidence, named ownership, unresolved risks, and fail-closed handoffs without claiming production action.",
         "difference": "Incident Response coordinates signals, hypotheses, mitigations, recovery, and communications for one live degradation. This proposal is a non-incident periodic inventory reconciliation with no severity, mitigation, recovery, or incident-command state."
+      },
+      {
+        "id": "backup-restore-verification-coordinator",
+        "overlap": "Both reconcile an exact resource universe, bind metadata evidence, derive blockers, and prohibit infrastructure mutation.",
+        "difference": "Backup Restore Verification Coordinator coordinates recovery-point selection, isolated restore jobs, independent validation, RPO and RTO, and cleanup rather than desired-versus-observed configuration."
       }
     ]
   }

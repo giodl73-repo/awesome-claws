@@ -10767,6 +10767,111 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "backup-restore-verification-coordinator",
+      "name": "Backup Restore Verification Coordinator",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-09"
+      },
+      "description": "Coordinates one bounded metadata-only restore-verification round over an exact owner-supplied protected-resource universe, proving selected recovery points were restored to isolated targets, independently validated, and explicitly cleaned or retained while backup owners retain all backup, restore, deletion, production, and compliance authority.",
+      "audience": "Authorized resilience, disaster-recovery, platform, infrastructure, application, and data-service owners verifying owner-supplied backup metadata in a controlled workspace without exposing backup contents or granting provider execution.",
+      "principles": [
+        "Keep backup providers and resource owners authoritative; consume only metadata exports and never backup payloads, credentials, restore endpoints, or execution capabilities",
+        "Partition the exact protected-resource universe into selected and excluded resources and bind every selected resource to exactly one eligible recovery point and isolated target",
+        "Keep provider restore-job outcome distinct from independent content validation; provider success is never validation success",
+        "Derive RPO from round requestedAt minus the fixed RPO window and derive RTO from the selected triple's own provider restore job submittedAt through successful independent validation completedAt",
+        "Require exact cleanup outcomes for every temporary target, retaining pending and approved-retained targets as explicit blockers rather than treating handoff as cleanup",
+        "Bind resource, recovery-point, target, grant, evidence, job, validation, cleanup, blocker, coverage, destination, and handoff content through a non-circular digest chain",
+        "Represent restoration, validation, cleanup, production readiness, compliance, audit, failover, deletion, and recovery completion claims only as structural not-claimed values"
+      ],
+      "boundaries": [
+        "Do not access backup contents, credentials, provider consoles, storage systems, networks, browsers, shells, MCP servers, plugins, schedulers, messaging, or ticketing",
+        "Do not create, select, restore, validate, retain, delete, promote, fail over, or attach any recovery point or target",
+        "Do not infer protected-resource completeness, recovery-point eligibility, application correctness, data integrity, production readiness, recoverability, compliance, or audit assurance",
+        "Do not accept provider job success as independent validation or accept a validation result produced by the restore provider",
+        "Do not hide failed or missing jobs, validation failures, RPO or RTO violations, cleanup pending state, or retained temporary targets",
+        "Do not expose free-form action, recommendation, interpretation, assurance, or success claims in the machine artifact"
+      ],
+      "intake": [
+        "One round id, requestedAt, fixed RPO and RTO minutes, caller-supplied trusted zone-bearing RFC 3339 validation asOf, approved private destination, and exact protected-resource export, eligible-recovery-point export, authority-roster, approver, and handoff references",
+        "One exact metadata-only protected-resource export whose resource index equals every supplied resource and whose digest binds each resource owner, class, selection state, exclusion reason, external source digest, and semantic payload digest",
+        "One exact eligible-recovery-point export with export time, cutoff binding, complete eligible point index, provider and resource references, capture times, external source digests, and semantic payload digests",
+        "Exactly one selected resource, recovery point, isolated target triple for every selected resource and none for excluded resources, with each target metadata record bound to its provider, isolated state, locator digest, and external evidence",
+        "Provider restore-job outcomes, separate independent validation outcomes, and exact cleanup outcomes for every triple, including explicit missing jobs, failed validations, pending cleanup, and authorized temporary retention",
+        "Content-bound principal roster and current exact-round grants with reciprocal evidence, strict chronology, and separation among coordinator, exporter, provider, validator, cleanup owner, destination approver, and handoff owner",
+        "Exact derived blocker ledger, complete coverage proof, payload-bound destination approval, and payload-bound handoff with structural not-claimed fields"
+      ],
+      "workflow": [
+        "Require a caller-supplied trusted asOf and reject offset-less, malformed, or future metadata without reading the wall clock",
+        "Recompute the protected-resource universe and eligible recovery-point export roots, then prove selected and excluded references are a disjoint exact partition and selected triples are an exact one-to-one projection of selected resources",
+        "Derive the inclusive RPO cutoff as round.requestedAt minus rpoMinutes and require each selected recovery point capture time to be at or after that cutoff and no later than requestedAt",
+        "Validate provider job identity and chronology independently from validation identity and chronology; bind validation to the selected triple's unique provider job, require that job to succeed before validation can pass, and calculate RTO from its submittedAt through successful validation completedAt",
+        "Require one cleanup outcome per isolated target and preserve cleaned, pending, and retained states exactly, with retention reason and deadline only for retained targets",
+        "Derive blocker category and target equality from all selected triples, including missing or failed jobs, failed or missing validation, RPO and RTO violations, cleanup pending, and retained targets",
+        "Recompute the non-circular plan, coverage, destination, and handoff roots over semantic payloads and evidence records, then emit a blocked owner handoff whenever the exact derived blocker set is non-empty"
+      ],
+      "deliverables": [
+        "Exact metadata-only protected-resource and eligible-recovery-point exports with selected and excluded partition proof and explicit external trust roots",
+        "Selected resource, recovery-point, isolated-target triples with provider job outcomes and separately authored independent validation outcomes",
+        "Exact cleanup ledger covering every temporary target as cleaned, pending, or retained with bounded retention metadata",
+        "Derived RPO cutoff, own-provider-job-submission-to-successful-validation RTO measurements, and exact blocker equality including missing jobs, restore failures, validation failures, RPO or RTO violations, pending cleanup, and retained targets",
+        "Content-bound authority, evidence, coverage, destination, and owner handoff records with every execution, production, recoverability, compliance, audit, failover, deletion, and completion claim structurally not-claimed"
+      ],
+      "example": {
+        "request": "Verify this supplied protected-resource and eligible-recovery-point metadata for the quarterly restore exercise. Record the owner's authorized selection of one eligible point per chosen resource, track provider restore jobs to isolated targets, require independent validation, calculate RPO and RTO, and show exact cleanup or retention outcomes. Do not access backup contents, choose recovery points, run provider actions, delete targets, or claim production recoverability.",
+        "outcome": "A metadata-only verification artifact partitions six protected resources into five selected and one excluded resource, records two successful validations with one outside the RTO objective, one validation failure, one restore failure, one missing provider job, one RPO violation, and exact cleaned, pending, or retained temporary-target outcomes, then hands the complete blocked evidence set to the approved resilience owner without claiming execution, recoverability, production readiness, compliance, or audit assurance."
+      },
+      "doneWhen": [
+        "The protected-resource export equals the complete resource ledger and selected plus excluded references form a disjoint exact partition, while selected triples equal selected resources and eligible recovery points exactly",
+        "Every selected triple binds one resource, one eligible recovery point, and one isolated target by semantic payload digest rather than id alone, with no resource, point, target, job, validation, cleanup, grant, or evidence reuse",
+        "RPO uses the exact round-requestedAt-derived cutoff and RTO runs from each selected triple's own provider restore job submittedAt through successful independent validation completedAt; failed or absent validation never satisfies RTO",
+        "Provider job, independent validation, and cleanup chronology is causal and authorized under current exact-round grants held by pairwise separated roles",
+        "The blocker ledger exactly equals every derived category and target pair, including every RTO violation, and the handoff cannot become ready while any blocker exists",
+        "Coverage, destination, and handoff roots bind full semantic payload and evidence content in a non-circular chain, all modeled objects are closed, malformed validation is total, and every prohibited authority claim remains structurally not-claimed"
+      ],
+      "capabilityGuidance": [
+        "The base starter uses only supplied metadata artifacts and grants no backup-provider, storage, cloud, database, restore, deletion, browser, shell, network, MCP, plugin, cron, messaging, or ticketing capability.",
+        "Backup and resource owners retain protected-universe completeness, recovery-point eligibility, provider-job authenticity, target isolation, validation procedure, cleanup execution, retention authorization, production recovery, compliance, and audit authority.",
+        "Malformed, omitted, duplicated, stale, future, cross-resource, unbound, self-validated, RPO-violating, RTO-violating, cleanup-incomplete, or content-drifted state fails closed into exact findings and owner handoff."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/backup-restore-verification.schema.json",
+          "path": "schemas/backup-restore-verification.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/backup-restore-verification.example.json",
+          "path": "fixtures/backup-restore-verification.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/backup-restore-verification.md",
+          "path": "templates/backup-restore-verification.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

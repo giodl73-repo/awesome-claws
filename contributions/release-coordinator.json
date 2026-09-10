@@ -82,6 +82,11 @@
         "id": "compliance-reviewer",
         "overlap": "Both preserve controlled evidence, exceptions, owner accountability, and independent review.",
         "difference": "Compliance Reviewer assesses framework requirements and compensating controls across a review period; Release Coordinator decides readiness for one immutable version, commit, candidate, and artifact set."
+      },
+      {
+        "id": "backup-restore-verification-coordinator",
+        "overlap": "Both aggregate independently produced evidence, enforce gates, and provide an owner-visible readiness handoff.",
+        "difference": "Backup Restore Verification Coordinator cannot gate or approve a release and derives only restore-exercise blockers from owner-supplied backup metadata."
       }
     ]
   }

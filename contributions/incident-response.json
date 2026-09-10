@@ -150,6 +150,11 @@
         "id": "customer-support",
         "overlap": "Both preserve a technical event timeline, controlled evidence, escalation ownership, communication drafts, and a bounded readiness handoff.",
         "difference": "Customer Support scopes diagnosis and resolution to one customer/account/product case and consent boundary; Incident Response scopes signals, hypotheses, mitigations, recovery and command authority across all declared services in a live incident."
+      },
+      {
+        "id": "backup-restore-verification-coordinator",
+        "overlap": "Both track operational evidence, accountable roles, timelines, blockers, and controlled handoffs.",
+        "difference": "Backup Restore Verification Coordinator records a planned metadata-only exercise and grants no live containment, remediation, communication, or production failover authority."
       }
     ]
   }

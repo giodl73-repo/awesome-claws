@@ -10,6 +10,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "accessibility-review-coordinator": "accessibility-finding.schema.json",
   "api-integration-engineer": "integration-readiness.schema.json",
   "appliance-care-coordinator": "appliance-care.schema.json",
+  "backup-restore-verification-coordinator": "backup-restore-verification.schema.json",
   "benefits-open-enrollment-planner": "benefits-enrollment.schema.json",
   "care-circle-coordinator": "care-circle.schema.json",
   "case-continuity-coordinator": "case-checkpoint.schema.json",

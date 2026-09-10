@@ -164,6 +164,11 @@
         "id": "contract-obligation-tracker",
         "overlap": "Both bind exact owner-supplied universes, recompute content roots, prove every row exactly once, enforce chronology and human authority, and separate evidence from action.",
         "difference": "Contract Obligation Tracker has one authoritative obligation register and no amount matching; Financial Account Reconciliation Coordinator partitions two co-equal transaction exports into balanced match groups or residuals."
+      },
+      {
+        "id": "backup-restore-verification-coordinator",
+        "overlap": "Both prove exact universe partitioning, content-bound evidence, current grants, exact blocker equality, and a non-action owner handoff.",
+        "difference": "Backup Restore Verification Coordinator coordinates recovery-point and isolated-target triples rather than matching financial rows or applying balance arithmetic."
       }
     ]
   }

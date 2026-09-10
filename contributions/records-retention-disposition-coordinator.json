@@ -146,6 +146,11 @@
         "id": "contract-obligation-tracker",
         "overlap": "Both prove exact register coverage, bind evidence and human authority, preserve exact blockers, and hand a complete record to an approved destination.",
         "difference": "Contract Obligation Tracker performs no eligibility determination or destructive records action and instead observes contractual performance and owner-confirmed completion without interpretation; Records Retention Disposition Coordinator governs record-copy disposition."
+      },
+      {
+        "id": "backup-restore-verification-coordinator",
+        "overlap": "Both track exact item universes, authority, retention state, evidence, blockers, and completion handoffs.",
+        "difference": "Backup Restore Verification Coordinator tracks temporary restore-target cleanup or bounded retention without applying policy to or disposing record copies."
       }
     ]
   }

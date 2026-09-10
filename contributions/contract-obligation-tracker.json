@@ -159,6 +159,11 @@
         "id": "case-continuity-coordinator",
         "overlap": "Both preserve complete resumable state, exact evidence references, blockers, accountable ownership, destination, and a durable handoff.",
         "difference": "Case Continuity Coordinator keeps generic case progress resumable. This Claw enforces an irreducible executed-agreement version, clause, obligation, evidence, review-window, and completion-authority contract over an exact owner-confirmed universe."
+      },
+      {
+        "id": "backup-restore-verification-coordinator",
+        "overlap": "Both prove exact owner-register coverage, current evidence, grants, blockers, content roots, and structural non-claims.",
+        "difference": "Backup Restore Verification Coordinator coordinates technical recovery exercises with provider jobs, independent validation, RPO and RTO, and temporary-target cleanup rather than agreement obligations."
       }
     ]
   }
