@@ -151,6 +151,11 @@
         "id": "backup-restore-verification-coordinator",
         "overlap": "Both reconcile an exact resource universe, bind metadata evidence, derive blockers, and prohibit infrastructure mutation.",
         "difference": "Backup Restore Verification Coordinator coordinates recovery-point selection, isolated restore jobs, independent validation, RPO and RTO, and cleanup rather than desired-versus-observed configuration."
+      },
+      {
+        "id": "tls-certificate-rotation-verification-coordinator",
+        "overlap": "Both reconcile an exact resource universe, bind metadata evidence by digest, derive exact blockers, and prohibit any infrastructure mutation while remaining owner-owned.",
+        "difference": "TLS Certificate Rotation Verification coordinates a time-ordered certificate rotation with issuance, deployment, endpoint validation, and retirement or overlap. This Claw compares desired and observed infrastructure configuration state."
       }
     ]
   }

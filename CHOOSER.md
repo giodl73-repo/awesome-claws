@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (108)
+### Active (109)
 
 | Claw | Detail |
 | --- | --- |
@@ -107,6 +107,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | @giodl73-repo; last verified 2026-08-21 |
 | [Subscription manager](claws/subscription-manager) | @giodl73-repo; last verified 2026-08-21 |
 | [Tax document organizer](claws/tax-document-organizer) | @giodl73-repo; last verified 2026-08-26 |
+| [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | @giodl73; last verified 2026-09-10 |
 | [Travel concierge](claws/travel-concierge) | @giodl73-repo; last verified 2026-08-29 |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | @giodl73-repo; last verified 2026-08-28 |
 | [Travel planner](claws/travel-planner) | @giodl73-repo; last verified 2026-08-30 |
@@ -135,7 +136,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (78)
+### Low setup (79)
 
 | Claw | Detail |
 | --- | --- |
@@ -210,6 +211,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | no bootstrap, external dependency, or schedule |
 | [Subscription manager](claws/subscription-manager) | no bootstrap, external dependency, or schedule |
 | [Tax document organizer](claws/tax-document-organizer) | no bootstrap, external dependency, or schedule |
+| [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | no bootstrap, external dependency, or schedule |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | no bootstrap, external dependency, or schedule |
 | [UX research synthesizer](claws/ux-research-synthesizer) | no bootstrap, external dependency, or schedule |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | no bootstrap, external dependency, or schedule |
@@ -262,7 +264,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (86)
+### No external dependencies (87)
 
 | Claw | Detail |
 | --- | --- |
@@ -345,6 +347,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | None |
 | [Subscription manager](claws/subscription-manager) | None |
 | [Tax document organizer](claws/tax-document-organizer) | None |
+| [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | None |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | None |
 | [UX research synthesizer](claws/ux-research-synthesizer) | None |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | None |
@@ -384,7 +387,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (83)
+### X3 (84)
 
 | Claw | Detail |
 | --- | --- |
@@ -460,6 +463,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | Monitors a user-supplied stock portfolio or watchlist with sourced prices, holdings, allocation drift, issuer events, and review questions without investment advice or trade execution. |
 | [Subscription manager](claws/subscription-manager) | Tracks user-supplied recurring subscriptions, renewals, price changes, usage evidence, overlap, and owner review questions without banking access, cancellation, subscription changes, negotiation, or financial advice. |
 | [Tax document organizer](claws/tax-document-organizer) | Organizes supplied tax-season documents, income forms, deduction evidence, deadlines, missing-item questions, and preparer handoff packets without preparing returns, giving tax or legal advice, filing, contacting institutions, changing accounts, or moving money. |
+| [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | Organizes owner-supplied airline, hotel, credit-card points, certificates, loyalty benefits, expiration notices, and trip goals into a private travel-rewards ledger without booking travel, transferring points, buying miles, changing accounts, paying fees, redeeming awards, or giving travel, tax, legal, or financial advice. |
 | [Travel planner](claws/travel-planner) | Builds a reviewable trip plan from current public sources without booking, paying, or retaining sensitive traveler records. |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle. |
@@ -545,7 +549,7 @@ Categories come directly from the catalog entry.
 | [Security analyst](claws/security-analyst) | X4; Assesses security questions with explicit trust boundaries and reproducible evidence. |
 | [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 
-### Governance (12)
+### Governance (13)
 
 | Claw | Detail |
 | --- | --- |
@@ -560,6 +564,7 @@ Categories come directly from the catalog entry.
 | [Legal matter organizer](claws/legal-matter-organizer) | X3; Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | X3; Reconciles an authoritative retention schedule, exact record-copy inventory, trigger and hold evidence, approved disposition batch, independently observed outcomes and certificates, and residual-copy closure into one snapshot-bound human-review handoff without interpreting policy or executing disposition. |
+| [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
 ### Operations (22)
@@ -653,7 +658,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (56)
+### Standard attention (57)
 
 | Claw | Detail |
 | --- | --- |
@@ -708,6 +713,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | portable workspace artifacts only |
 | [Subscription manager](claws/subscription-manager) | portable workspace artifacts only |
 | [Tax document organizer](claws/tax-document-organizer) | portable workspace artifacts only |
+| [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | portable workspace artifacts only |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | portable workspace artifacts only |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | portable workspace artifacts only |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | portable workspace artifacts only |

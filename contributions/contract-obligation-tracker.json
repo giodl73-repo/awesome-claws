@@ -164,6 +164,11 @@
         "id": "backup-restore-verification-coordinator",
         "overlap": "Both prove exact owner-register coverage, current evidence, grants, blockers, content roots, and structural non-claims.",
         "difference": "Backup Restore Verification Coordinator coordinates technical recovery exercises with provider jobs, independent validation, RPO and RTO, and temporary-target cleanup rather than agreement obligations."
+      },
+      {
+        "id": "tls-certificate-rotation-verification-coordinator",
+        "overlap": "Both prove exact owner-register coverage, current separated evidence and grants, blockers, non-circular content roots, and structural non-claims over a bounded round.",
+        "difference": "TLS Certificate Rotation Verification coordinates a technical rotation exercise with provider issuance, deployment, endpoint validation, and retirement or overlap. This Claw observes contractual agreement duties and their status."
       }
     ]
   }

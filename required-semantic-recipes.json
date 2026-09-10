@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 108,
-    "coveredCount": 108,
-    "recipeCount": 292,
-    "findingCodeCount": 327
+    "validatorCount": 109,
+    "coveredCount": 109,
+    "recipeCount": 295,
+    "findingCodeCount": 333
   },
   "entries": [
     {
@@ -4582,6 +4582,60 @@
             "invalid_plan_digest",
             "invalid_recovery_point_export",
             "invalid_selection_binding"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tls-certificate-rotation-verification-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-plan-digest-1",
+          "operator": "replace",
+          "path": [
+            "artifactId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_plan_digest"
+          ]
+        },
+        {
+          "id": "semantic-invalid-authority-grant-2",
+          "operator": "replace",
+          "path": [
+            "round",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_authority_grant",
+            "invalid_coverage",
+            "invalid_deployment",
+            "invalid_destination",
+            "invalid_endpoint_observation",
+            "invalid_evidence_closure",
+            "invalid_handoff",
+            "invalid_issuance",
+            "invalid_overlap",
+            "invalid_plan_digest",
+            "invalid_retirement",
+            "invalid_rotation_request"
+          ]
+        },
+        {
+          "id": "semantic-future-record-3",
+          "operator": "replace",
+          "path": [
+            "round",
+            "requestedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "future_record",
+            "invalid_blocker",
+            "invalid_plan_digest",
+            "invalid_rotation_request"
           ]
         }
       ]

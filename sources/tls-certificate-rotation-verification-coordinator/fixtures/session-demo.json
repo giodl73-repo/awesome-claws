@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "tls-certificate-rotation-verification-coordinator",
+  "scenario": "Verify this supplied predecessor TLS certificate inventory and service/listener/endpoint binding inventory for the approved rotation campaign. Record the owner's approved rotation requests, track each CA/provider issuance to a successor version, confirm successor deployment and independent endpoint fingerprint and chain observations, and show exact retirement or approved temporary overlap. Do not read private keys or certificate bodies, issue or deploy certificates, change listeners, DNS, or routes, restart, revoke, disable, or delete anything, or claim rotation completion.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Verify this supplied predecessor TLS certificate inventory and service/listener/endpoint binding inventory for the approved rotation campaign. Record the owner's approved rotation requests, track each CA/provider issuance to a successor version, confirm successor deployment and independent endpoint fingerprint and chain observations, and show exact retirement or approved temporary overlap. Do not read private keys or certificate bodies, issue or deploy certificates, change listeners, DNS, or routes, restart, revoke, disable, or delete anything, or claim rotation completion."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/tls-certificate-rotation-verification-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "TLS Certificate Rotation Verification Coordinator session handoff",
+    "summary": "A metadata-only verification artifact partitions nine predecessor certificates into eight rotate and one excluded certificate, records one clean rotation retired after validation, one fully validated certificate held in approved temporary overlap, one pending and one failed CA issuance, one missing and one failed deployment, one endpoint fingerprint mismatch, and one chain failure, then hands the complete blocked evidence set to the approved TLS owner without claiming issuance, deployment, revocation, readiness, security, compliance, audit, or rotation completion.",
+    "output": "outputs/tls-certificate-rotation-verification-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Exact metadata-only predecessor certificate and service/listener/endpoint binding inventories with rotate and exclude partition proof and explicit external trust roots",
+        "summary": "The certificate export equals the complete predecessor ledger and rotate plus exclude references form a disjoint exact partition, while rotation requests equal rotate certificates exactly and the binding export equals every supplied binding",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-approved rotation requests and separately authored CA/provider issuance outcomes yielding one successor version per issued rotation or an exact blocker",
+        "summary": "Every rotation request, issuance, deployment, endpoint observation, retirement, and overlap binds its subject by semantic payload digest rather than id alone, with unique successor and provider-operation identities and no reuse",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Successor deployment observations per binding and independent endpoint fingerprint and chain observations per deployment, with provider success never implying deployment or endpoint success",
+        "summary": "CA/provider issuance success never implies deployment or endpoint success and is never borrowable across requests; a match requires a deployed observation of the exact successor version",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exact retirement or revocation only after all bindings validate, or current approver-authored time-bounded overlap, with exact blocker equality across issuance, deployment, endpoint, and overlap categories",
+        "summary": "Retirement or revocation is admissible only after every binding of the predecessor is deployed and independently validated; otherwise the predecessor is held in a current approver-authored time-bounded overlap",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Content-bound authority, evidence, coverage, destination, and owner handoff records with every prohibited execution and assurance claim structurally not-claimed",
+        "summary": "The blocker ledger exactly equals every derived issuance, deployment, endpoint, and overlap category and subject pair, and the handoff cannot become ready while any blocker exists",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

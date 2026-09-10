@@ -4,6 +4,7 @@ import { backupRestoreVerificationFindings } from "./backup-restore-verification
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
 import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
+import { tlsCertificateRotationVerificationFindings } from "./tls-certificate-rotation-verification-coordinator.mjs";
 
 export function hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) {
   const adjacentNegation =
@@ -52297,6 +52298,8 @@ const validators = {
   "travel-concierge": travelShortlistFindings,
   "travel-planner": itineraryPlanFindings,
   "travel-loyalty-points-organizer": travelLoyaltyFindings,
+  "tls-certificate-rotation-verification-coordinator":
+    tlsCertificateRotationVerificationFindings,
   "ux-research-synthesizer": researchSynthesisFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
   "video-concept-producer": videoConceptGenerationManifestFindings,
@@ -52318,6 +52321,9 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   }),
   "financial-account-reconciliation-coordinator": Object.freeze({
     asOf: "2026-09-02T00:00:00Z",
+  }),
+  "tls-certificate-rotation-verification-coordinator": Object.freeze({
+    asOf: "2026-09-05T00:00:00Z",
   }),
 });
 

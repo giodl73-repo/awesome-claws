@@ -155,6 +155,11 @@
         "id": "backup-restore-verification-coordinator",
         "overlap": "Both track operational evidence, accountable roles, timelines, blockers, and controlled handoffs.",
         "difference": "Backup Restore Verification Coordinator records a planned metadata-only exercise and grants no live containment, remediation, communication, or production failover authority."
+      },
+      {
+        "id": "tls-certificate-rotation-verification-coordinator",
+        "overlap": "Both track operational evidence, accountable separated roles, causal timelines, blockers, and controlled owner handoffs without granting external action authority.",
+        "difference": "TLS Certificate Rotation Verification records a planned certificate rotation exercise and grants no issuance, deployment, revocation, or communication authority. This Claw coordinates a live incident with containment and communication needs."
       }
     ]
   }

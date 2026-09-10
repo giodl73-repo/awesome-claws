@@ -1,0 +1,2101 @@
+{
+  "schemaVersion": "awesomeClaws.tlsCertificateRotationVerification.v1",
+  "artifactId": "artifact-tls-certificate-rotation-2026q3",
+  "round": {
+    "id": "round-tls-2026q3",
+    "requestedAt": "2026-09-01T10:00:00Z",
+    "campaignRef": "campaign-2026q3-tls",
+    "campaignVersion": "rotation-wave-3",
+    "campaignCoordinatorRef": "principal-campaign-coordinator",
+    "certificateExportRef": "export-tls-certificates",
+    "certificateExportDigest": "sha256:dfc9a79c3315e658959ad2957ab54ba0c90ded8052f13581b5acc436af9d0d0f",
+    "bindingExportRef": "export-tls-bindings",
+    "bindingExportDigest": "sha256:d9b434dac31ac7b745142f9ceae8993bf437353aa550edeb33b4b48bb84edf82",
+    "authorityRosterRef": "roster-tls-rotation",
+    "authorityRosterDigest": "sha256:7f197c0296fa32f0e1b5b348feb2afeaf3a2d4b07ea26171f6be5d66e80f1554",
+    "destination": "tls-rotation-owner-review-queue",
+    "destinationApproverRef": "principal-destination-approver",
+    "handoffOwnerRef": "principal-handoff-recipient",
+    "planDigest": "sha256:d91ae5bd5e82e694df08aca82443864f8c707ccc562b0ebfd8e010d5c7485b2c"
+  },
+  "certificates": [
+    {
+      "id": "cert-alpha",
+      "ownerSystemRef": "principal-certificate-exporter",
+      "certificateClass": "leaf-server",
+      "rotationState": "rotate",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:ed64fba785f7eb755839484f047d649d573d37720d0d6a8c180bc459548be20d",
+      "payloadDigest": "sha256:24896c67a1fc00af2a30d75ebb8653e0c09377c70c57bbff513ea6a2256a5ce1"
+    },
+    {
+      "id": "cert-bravo",
+      "ownerSystemRef": "principal-certificate-exporter",
+      "certificateClass": "wildcard",
+      "rotationState": "rotate",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:ecc699fd15f5cc9be178252d5eae646e6559d32b1606af00251c3b72c37a67ec",
+      "payloadDigest": "sha256:b73f047d2129cf27e60c5b9817a720fd2976025cf1ac0cd65beb6842900a59c1"
+    },
+    {
+      "id": "cert-charlie",
+      "ownerSystemRef": "principal-certificate-exporter",
+      "certificateClass": "san-multi",
+      "rotationState": "rotate",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:90828094d117fbbd3ea5361d6f57a273d46c2029723bc0f45dc4a06642d49f4f",
+      "payloadDigest": "sha256:3b43aba221f0d4bd0193d5b567256acc1b1def176fd8990c38e1d1b3dd0d56a3"
+    },
+    {
+      "id": "cert-delta",
+      "ownerSystemRef": "principal-certificate-exporter",
+      "certificateClass": "client-auth",
+      "rotationState": "rotate",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:d3eabe8e6522e32549c10424c0c1bfb47ee9829291b612a3ee355a3fc17f5753",
+      "payloadDigest": "sha256:ec1cc30aacc18cc88f04cdee9d3e78acf68fd7f446a5057d2bad90193d9a0aee"
+    },
+    {
+      "id": "cert-echo",
+      "ownerSystemRef": "principal-certificate-exporter",
+      "certificateClass": "mutual-tls",
+      "rotationState": "rotate",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:7dbb58b96272924159a655e751b9c07c9df2894b020b22b3b6043fa20b87c916",
+      "payloadDigest": "sha256:2e22b7f069b715b56381c6ae1dc6fedd3f96a88e7ba20e823958e848804e2bb3"
+    },
+    {
+      "id": "cert-foxtrot",
+      "ownerSystemRef": "principal-certificate-exporter",
+      "certificateClass": "leaf-server",
+      "rotationState": "rotate",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:4acdcc6d023aea0faa83ea47f2f85792228d25e79a8fd758c7c569ae25d91430",
+      "payloadDigest": "sha256:45eb02b06dacdc9815efbfbc13fb5b8731d66e7d0de9cbb3a162827ad072c058"
+    },
+    {
+      "id": "cert-golf",
+      "ownerSystemRef": "principal-certificate-exporter",
+      "certificateClass": "intermediate",
+      "rotationState": "rotate",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:f53b761d99e15a3b2d31396aca13392b045efe66f750cf5b907b8c4f1e47c6bb",
+      "payloadDigest": "sha256:6df78209dc77de09493fe0902a4cea43088b2990f896e23c3a16409ae8f3bbdb"
+    },
+    {
+      "id": "cert-hotel",
+      "ownerSystemRef": "principal-certificate-exporter",
+      "certificateClass": "wildcard",
+      "rotationState": "rotate",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:540900be10a3a0cb4f33dbc2846f8d3039e633cfe7589c17cc2fa7df3bf1fc4c",
+      "payloadDigest": "sha256:71d6606f227e3bca302eefbc5a46d534b5e8261588f371726753510ce0010dd2"
+    },
+    {
+      "id": "cert-india",
+      "ownerSystemRef": "principal-certificate-exporter",
+      "certificateClass": "leaf-server",
+      "rotationState": "exclude",
+      "exclusionReason": "owner-approved-out-of-scope",
+      "sourceRecordDigest": "sha256:27f4ec43c8565c6e94da21587281b33a931cbd1388660367df43f39818ca929a",
+      "payloadDigest": "sha256:413fa199de0ad6ed64e43b8bcf789a155bf34ce879f0a9300b1ad0842f97b6e8"
+    }
+  ],
+  "certificateExport": {
+    "id": "export-tls-certificates",
+    "exportedAt": "2026-09-01T09:00:00Z",
+    "suppliedByRef": "principal-certificate-exporter",
+    "certificateRefs": [
+      "cert-alpha",
+      "cert-bravo",
+      "cert-charlie",
+      "cert-delta",
+      "cert-echo",
+      "cert-foxtrot",
+      "cert-golf",
+      "cert-hotel",
+      "cert-india"
+    ],
+    "evidenceRef": "evidence-certificate-export",
+    "contentDigest": "sha256:dfc9a79c3315e658959ad2957ab54ba0c90ded8052f13581b5acc436af9d0d0f"
+  },
+  "bindings": [
+    {
+      "id": "binding-alpha",
+      "certificateRef": "cert-alpha",
+      "serviceRef": "service-checkout",
+      "listenerRef": "listener-https-443",
+      "endpointLocatorDigest": "sha256:30250a2d0c8b97175d676d45c7290e8e12dae7d0049eae47c26fe8e604343918",
+      "sourceRecordDigest": "sha256:1894173d5110a9799d6711ab158c669d0d3b1f6f8be9fad6dbb72fae970e8de3",
+      "payloadDigest": "sha256:05ac8e16c3a469414084d5651c285da8ca2d03f06e43471b99c498218a1f4d3e"
+    },
+    {
+      "id": "binding-bravo",
+      "certificateRef": "cert-bravo",
+      "serviceRef": "service-portal",
+      "listenerRef": "listener-https-8443",
+      "endpointLocatorDigest": "sha256:21a25bfb9e5e421f519d4c84cd09de7996898d34158bef0ddd7649d9b5a4a45e",
+      "sourceRecordDigest": "sha256:20cc5c14b1be4fb68970d297bb10cf3bc2cfd5c55627bcfe98fb955076e85a4f",
+      "payloadDigest": "sha256:f9a8958e604f421639c207cf4d2ad413829767472bb3abaadf5f4c1290d39e8d"
+    },
+    {
+      "id": "binding-echo",
+      "certificateRef": "cert-echo",
+      "serviceRef": "service-api",
+      "listenerRef": "listener-mtls-9443",
+      "endpointLocatorDigest": "sha256:358850676977521b5fe5fecbe3e93e339e65ee284406c8e977903c93e1a7fa16",
+      "sourceRecordDigest": "sha256:e15168735e198b9611b60d6e1e8de57be84a1837429c77d1c6a0991b5a44c250",
+      "payloadDigest": "sha256:0007c1de962585442bb4c0a0d6cecc85b23c003cdac48bfa4abadc0207f85df7"
+    },
+    {
+      "id": "binding-foxtrot",
+      "certificateRef": "cert-foxtrot",
+      "serviceRef": "service-cdn",
+      "listenerRef": "listener-https-443b",
+      "endpointLocatorDigest": "sha256:371fa6cebfcf1598660fd9e8cc6508858d57e7eb6daf4245f2bc66a9b64a66fa",
+      "sourceRecordDigest": "sha256:3f9d3319621291cffe9cfa734802cb3c6172bf368d569062450f72b3524a88aa",
+      "payloadDigest": "sha256:1bc16383a55e8ae38b028cecc90aaf28bc9bd44ca3b943c0b2934d8d7761a93d"
+    },
+    {
+      "id": "binding-golf",
+      "certificateRef": "cert-golf",
+      "serviceRef": "service-registry",
+      "listenerRef": "listener-https-10443",
+      "endpointLocatorDigest": "sha256:595bfe145c3168bc033a608cd31d0a406161cd2425102539b765ea56b778ab91",
+      "sourceRecordDigest": "sha256:dc0d32df063669b635af83ea3c0db1d1a7ef4e6f4da44cc7ef281100660d3325",
+      "payloadDigest": "sha256:622c0617e7c7bdb5fae038fcbec396a05d96dc2f122f94e3da59820766402b90"
+    },
+    {
+      "id": "binding-hotel",
+      "certificateRef": "cert-hotel",
+      "serviceRef": "service-admin",
+      "listenerRef": "listener-https-7443",
+      "endpointLocatorDigest": "sha256:ca9dec30a160eff4b14c11956d0a21742d8a073ce054d074d601f466794c7719",
+      "sourceRecordDigest": "sha256:c43e4fa861f5c6ce72d7018734deb9e217451e6f62a449bdd6e61d2f544eceb6",
+      "payloadDigest": "sha256:ab664a13e67b5af22c119f848aa03b1da4434c038b885d7a7ac25b8571605f88"
+    }
+  ],
+  "bindingExport": {
+    "id": "export-tls-bindings",
+    "exportedAt": "2026-09-01T09:05:00Z",
+    "suppliedByRef": "principal-binding-exporter",
+    "bindingRefs": [
+      "binding-alpha",
+      "binding-bravo",
+      "binding-echo",
+      "binding-foxtrot",
+      "binding-golf",
+      "binding-hotel"
+    ],
+    "evidenceRef": "evidence-binding-export",
+    "contentDigest": "sha256:d9b434dac31ac7b745142f9ceae8993bf437353aa550edeb33b4b48bb84edf82"
+  },
+  "rotationRequests": [
+    {
+      "id": "request-alpha",
+      "certificateRef": "cert-alpha",
+      "certificatePayloadDigest": "sha256:24896c67a1fc00af2a30d75ebb8653e0c09377c70c57bbff513ea6a2256a5ce1",
+      "campaignRef": "campaign-2026q3-tls",
+      "approvedVersion": "rotation-wave-3",
+      "requestedByRef": "principal-rotation-approver",
+      "authorityGrantRef": "grant-rotation",
+      "requestedAt": "2026-09-01T10:30:00Z",
+      "evidenceRef": "evidence-request-alpha",
+      "payloadDigest": "sha256:27151c4bc4dccc1cfaf6438ec59f30e2e23ce8f3bf57d27562637fe4d7d0aed8"
+    },
+    {
+      "id": "request-bravo",
+      "certificateRef": "cert-bravo",
+      "certificatePayloadDigest": "sha256:b73f047d2129cf27e60c5b9817a720fd2976025cf1ac0cd65beb6842900a59c1",
+      "campaignRef": "campaign-2026q3-tls",
+      "approvedVersion": "rotation-wave-3",
+      "requestedByRef": "principal-rotation-approver",
+      "authorityGrantRef": "grant-rotation",
+      "requestedAt": "2026-09-01T10:30:00Z",
+      "evidenceRef": "evidence-request-bravo",
+      "payloadDigest": "sha256:6911a1da87d17b30056c2ae44a8ded502cede1e1cbea2bf7d38d9a4e181a7748"
+    },
+    {
+      "id": "request-charlie",
+      "certificateRef": "cert-charlie",
+      "certificatePayloadDigest": "sha256:3b43aba221f0d4bd0193d5b567256acc1b1def176fd8990c38e1d1b3dd0d56a3",
+      "campaignRef": "campaign-2026q3-tls",
+      "approvedVersion": "rotation-wave-3",
+      "requestedByRef": "principal-rotation-approver",
+      "authorityGrantRef": "grant-rotation",
+      "requestedAt": "2026-09-01T10:30:00Z",
+      "evidenceRef": "evidence-request-charlie",
+      "payloadDigest": "sha256:b033ec145b5e5fa3a51a1fc1995f61ad64fe4592974750e7a59c60977f2b1e4a"
+    },
+    {
+      "id": "request-delta",
+      "certificateRef": "cert-delta",
+      "certificatePayloadDigest": "sha256:ec1cc30aacc18cc88f04cdee9d3e78acf68fd7f446a5057d2bad90193d9a0aee",
+      "campaignRef": "campaign-2026q3-tls",
+      "approvedVersion": "rotation-wave-3",
+      "requestedByRef": "principal-rotation-approver",
+      "authorityGrantRef": "grant-rotation",
+      "requestedAt": "2026-09-01T10:30:00Z",
+      "evidenceRef": "evidence-request-delta",
+      "payloadDigest": "sha256:b5b5c8677875b369354db2f30ecd0f73c3315c6811a72c408752aba80487c269"
+    },
+    {
+      "id": "request-echo",
+      "certificateRef": "cert-echo",
+      "certificatePayloadDigest": "sha256:2e22b7f069b715b56381c6ae1dc6fedd3f96a88e7ba20e823958e848804e2bb3",
+      "campaignRef": "campaign-2026q3-tls",
+      "approvedVersion": "rotation-wave-3",
+      "requestedByRef": "principal-rotation-approver",
+      "authorityGrantRef": "grant-rotation",
+      "requestedAt": "2026-09-01T10:30:00Z",
+      "evidenceRef": "evidence-request-echo",
+      "payloadDigest": "sha256:bdd7e367194feb0056d43f1f32951a1771822eec493604cd13032517b4c1bcd5"
+    },
+    {
+      "id": "request-foxtrot",
+      "certificateRef": "cert-foxtrot",
+      "certificatePayloadDigest": "sha256:45eb02b06dacdc9815efbfbc13fb5b8731d66e7d0de9cbb3a162827ad072c058",
+      "campaignRef": "campaign-2026q3-tls",
+      "approvedVersion": "rotation-wave-3",
+      "requestedByRef": "principal-rotation-approver",
+      "authorityGrantRef": "grant-rotation",
+      "requestedAt": "2026-09-01T10:30:00Z",
+      "evidenceRef": "evidence-request-foxtrot",
+      "payloadDigest": "sha256:71b49159e761fa4b2b2683d6d9a076bb22d8ddf1400387008fa23354ad7c0b1b"
+    },
+    {
+      "id": "request-golf",
+      "certificateRef": "cert-golf",
+      "certificatePayloadDigest": "sha256:6df78209dc77de09493fe0902a4cea43088b2990f896e23c3a16409ae8f3bbdb",
+      "campaignRef": "campaign-2026q3-tls",
+      "approvedVersion": "rotation-wave-3",
+      "requestedByRef": "principal-rotation-approver",
+      "authorityGrantRef": "grant-rotation",
+      "requestedAt": "2026-09-01T10:30:00Z",
+      "evidenceRef": "evidence-request-golf",
+      "payloadDigest": "sha256:54a3c54c4cec0c6eb13877cf3dec3b877e18a98c1d9fbf68353d14bbac79c16c"
+    },
+    {
+      "id": "request-hotel",
+      "certificateRef": "cert-hotel",
+      "certificatePayloadDigest": "sha256:71d6606f227e3bca302eefbc5a46d534b5e8261588f371726753510ce0010dd2",
+      "campaignRef": "campaign-2026q3-tls",
+      "approvedVersion": "rotation-wave-3",
+      "requestedByRef": "principal-rotation-approver",
+      "authorityGrantRef": "grant-rotation",
+      "requestedAt": "2026-09-01T10:30:00Z",
+      "evidenceRef": "evidence-request-hotel",
+      "payloadDigest": "sha256:2550f59cf0753e5f4221526965b7ef6a20472352fb07b6cfcbe8a8c159ab086d"
+    }
+  ],
+  "issuances": [
+    {
+      "id": "issuance-alpha",
+      "rotationRequestRef": "request-alpha",
+      "rotationRequestPayloadDigest": "sha256:27151c4bc4dccc1cfaf6438ec59f30e2e23ce8f3bf57d27562637fe4d7d0aed8",
+      "providerRef": "principal-ca-provider",
+      "providerOperationId": "provider-operation-alpha",
+      "submittedAt": "2026-09-01T11:00:00Z",
+      "decidedAt": "2026-09-01T11:30:00Z",
+      "outcome": "issued",
+      "campaignRef": "campaign-2026q3-tls",
+      "successorLogicalId": "successor-alpha-logical",
+      "successorVersionId": "successor-alpha-version",
+      "evidenceRef": "evidence-issuance-alpha",
+      "payloadDigest": "sha256:f81e983566c8d4eb2e54b6b4ab3d1173a5564cb9a7fde75db425d53c4fa9df56"
+    },
+    {
+      "id": "issuance-bravo",
+      "rotationRequestRef": "request-bravo",
+      "rotationRequestPayloadDigest": "sha256:6911a1da87d17b30056c2ae44a8ded502cede1e1cbea2bf7d38d9a4e181a7748",
+      "providerRef": "principal-ca-provider",
+      "providerOperationId": "provider-operation-bravo",
+      "submittedAt": "2026-09-01T11:00:00Z",
+      "decidedAt": "2026-09-01T11:30:00Z",
+      "outcome": "issued",
+      "campaignRef": "campaign-2026q3-tls",
+      "successorLogicalId": "successor-bravo-logical",
+      "successorVersionId": "successor-bravo-version",
+      "evidenceRef": "evidence-issuance-bravo",
+      "payloadDigest": "sha256:de70ba41ac2697e36ac4320f437441c572ffa87771f7adc5724efdd4ca169f85"
+    },
+    {
+      "id": "issuance-charlie",
+      "rotationRequestRef": "request-charlie",
+      "rotationRequestPayloadDigest": "sha256:b033ec145b5e5fa3a51a1fc1995f61ad64fe4592974750e7a59c60977f2b1e4a",
+      "providerRef": "principal-ca-provider",
+      "providerOperationId": "provider-operation-charlie",
+      "submittedAt": "2026-09-01T11:00:00Z",
+      "decidedAt": null,
+      "outcome": "pending",
+      "campaignRef": null,
+      "successorLogicalId": null,
+      "successorVersionId": null,
+      "evidenceRef": "evidence-issuance-charlie",
+      "payloadDigest": "sha256:73220df2895301c58f6fe419cf015431923a5277835fb22d4399c9206b3d7550"
+    },
+    {
+      "id": "issuance-delta",
+      "rotationRequestRef": "request-delta",
+      "rotationRequestPayloadDigest": "sha256:b5b5c8677875b369354db2f30ecd0f73c3315c6811a72c408752aba80487c269",
+      "providerRef": "principal-ca-provider",
+      "providerOperationId": "provider-operation-delta",
+      "submittedAt": "2026-09-01T11:00:00Z",
+      "decidedAt": "2026-09-01T11:30:00Z",
+      "outcome": "failed",
+      "campaignRef": null,
+      "successorLogicalId": null,
+      "successorVersionId": null,
+      "evidenceRef": "evidence-issuance-delta",
+      "payloadDigest": "sha256:eacb15f8c5ba4c70fe46b3337c2ee9e283ea53903d80407773418141688c4622"
+    },
+    {
+      "id": "issuance-echo",
+      "rotationRequestRef": "request-echo",
+      "rotationRequestPayloadDigest": "sha256:bdd7e367194feb0056d43f1f32951a1771822eec493604cd13032517b4c1bcd5",
+      "providerRef": "principal-ca-provider",
+      "providerOperationId": "provider-operation-echo",
+      "submittedAt": "2026-09-01T11:00:00Z",
+      "decidedAt": "2026-09-01T11:30:00Z",
+      "outcome": "issued",
+      "campaignRef": "campaign-2026q3-tls",
+      "successorLogicalId": "successor-echo-logical",
+      "successorVersionId": "successor-echo-version",
+      "evidenceRef": "evidence-issuance-echo",
+      "payloadDigest": "sha256:0e6a24002d1556b4048d4b8dc817063d0788683b807e8c7abe3c4ff67218e12a"
+    },
+    {
+      "id": "issuance-foxtrot",
+      "rotationRequestRef": "request-foxtrot",
+      "rotationRequestPayloadDigest": "sha256:71b49159e761fa4b2b2683d6d9a076bb22d8ddf1400387008fa23354ad7c0b1b",
+      "providerRef": "principal-ca-provider",
+      "providerOperationId": "provider-operation-foxtrot",
+      "submittedAt": "2026-09-01T11:00:00Z",
+      "decidedAt": "2026-09-01T11:30:00Z",
+      "outcome": "issued",
+      "campaignRef": "campaign-2026q3-tls",
+      "successorLogicalId": "successor-foxtrot-logical",
+      "successorVersionId": "successor-foxtrot-version",
+      "evidenceRef": "evidence-issuance-foxtrot",
+      "payloadDigest": "sha256:50024e9194e51b52ac9ecef1e1af0f0595b0be347ffe66f627e3aba80b3c1d18"
+    },
+    {
+      "id": "issuance-golf",
+      "rotationRequestRef": "request-golf",
+      "rotationRequestPayloadDigest": "sha256:54a3c54c4cec0c6eb13877cf3dec3b877e18a98c1d9fbf68353d14bbac79c16c",
+      "providerRef": "principal-ca-provider",
+      "providerOperationId": "provider-operation-golf",
+      "submittedAt": "2026-09-01T11:00:00Z",
+      "decidedAt": "2026-09-01T11:30:00Z",
+      "outcome": "issued",
+      "campaignRef": "campaign-2026q3-tls",
+      "successorLogicalId": "successor-golf-logical",
+      "successorVersionId": "successor-golf-version",
+      "evidenceRef": "evidence-issuance-golf",
+      "payloadDigest": "sha256:11cc46a7edaaf32898f845f5c4184d52cacdd7a52b023792d831ce8b2913cbc6"
+    },
+    {
+      "id": "issuance-hotel",
+      "rotationRequestRef": "request-hotel",
+      "rotationRequestPayloadDigest": "sha256:2550f59cf0753e5f4221526965b7ef6a20472352fb07b6cfcbe8a8c159ab086d",
+      "providerRef": "principal-ca-provider",
+      "providerOperationId": "provider-operation-hotel",
+      "submittedAt": "2026-09-01T11:00:00Z",
+      "decidedAt": "2026-09-01T11:30:00Z",
+      "outcome": "issued",
+      "campaignRef": "campaign-2026q3-tls",
+      "successorLogicalId": "successor-hotel-logical",
+      "successorVersionId": "successor-hotel-version",
+      "evidenceRef": "evidence-issuance-hotel",
+      "payloadDigest": "sha256:5f061a8bfb0182048da5ccd6f36d259ba1f80191d4416115c91c6d13505ee72c"
+    }
+  ],
+  "deployments": [
+    {
+      "id": "deployment-alpha",
+      "bindingRef": "binding-alpha",
+      "bindingPayloadDigest": "sha256:05ac8e16c3a469414084d5651c285da8ca2d03f06e43471b99c498218a1f4d3e",
+      "rotationRequestRef": "request-alpha",
+      "issuanceRef": "issuance-alpha",
+      "issuancePayloadDigest": "sha256:f81e983566c8d4eb2e54b6b4ab3d1173a5564cb9a7fde75db425d53c4fa9df56",
+      "successorVersionId": "successor-alpha-version",
+      "observerRef": "principal-deployment-observer",
+      "observedAt": "2026-09-01T12:00:00Z",
+      "outcome": "deployed",
+      "evidenceRef": "evidence-deployment-alpha",
+      "payloadDigest": "sha256:38802db847e066743bdcf72466c39150c8e8b535a7f7503c6b4e7bc4c7b7bb63"
+    },
+    {
+      "id": "deployment-bravo",
+      "bindingRef": "binding-bravo",
+      "bindingPayloadDigest": "sha256:f9a8958e604f421639c207cf4d2ad413829767472bb3abaadf5f4c1290d39e8d",
+      "rotationRequestRef": "request-bravo",
+      "issuanceRef": "issuance-bravo",
+      "issuancePayloadDigest": "sha256:de70ba41ac2697e36ac4320f437441c572ffa87771f7adc5724efdd4ca169f85",
+      "successorVersionId": "successor-bravo-version",
+      "observerRef": "principal-deployment-observer",
+      "observedAt": "2026-09-01T12:00:00Z",
+      "outcome": "deployed",
+      "evidenceRef": "evidence-deployment-bravo",
+      "payloadDigest": "sha256:ea0e4f85343f88d044bf7e1038da2bc6a9ef7db6dd35aa3e04a49072f6b2a3a8"
+    },
+    {
+      "id": "deployment-foxtrot",
+      "bindingRef": "binding-foxtrot",
+      "bindingPayloadDigest": "sha256:1bc16383a55e8ae38b028cecc90aaf28bc9bd44ca3b943c0b2934d8d7761a93d",
+      "rotationRequestRef": "request-foxtrot",
+      "issuanceRef": "issuance-foxtrot",
+      "issuancePayloadDigest": "sha256:50024e9194e51b52ac9ecef1e1af0f0595b0be347ffe66f627e3aba80b3c1d18",
+      "successorVersionId": null,
+      "observerRef": "principal-deployment-observer",
+      "observedAt": "2026-09-01T12:00:00Z",
+      "outcome": "failed",
+      "evidenceRef": "evidence-deployment-foxtrot",
+      "payloadDigest": "sha256:53646965bdc7d752eaf15cb73897ac42117702fec4a1edfbe73657c0beb50424"
+    },
+    {
+      "id": "deployment-golf",
+      "bindingRef": "binding-golf",
+      "bindingPayloadDigest": "sha256:622c0617e7c7bdb5fae038fcbec396a05d96dc2f122f94e3da59820766402b90",
+      "rotationRequestRef": "request-golf",
+      "issuanceRef": "issuance-golf",
+      "issuancePayloadDigest": "sha256:11cc46a7edaaf32898f845f5c4184d52cacdd7a52b023792d831ce8b2913cbc6",
+      "successorVersionId": "successor-golf-version",
+      "observerRef": "principal-deployment-observer",
+      "observedAt": "2026-09-01T12:00:00Z",
+      "outcome": "deployed",
+      "evidenceRef": "evidence-deployment-golf",
+      "payloadDigest": "sha256:71bd810275c1981036d2c3da440742be95e1431374c5533785727158e527e085"
+    },
+    {
+      "id": "deployment-hotel",
+      "bindingRef": "binding-hotel",
+      "bindingPayloadDigest": "sha256:ab664a13e67b5af22c119f848aa03b1da4434c038b885d7a7ac25b8571605f88",
+      "rotationRequestRef": "request-hotel",
+      "issuanceRef": "issuance-hotel",
+      "issuancePayloadDigest": "sha256:5f061a8bfb0182048da5ccd6f36d259ba1f80191d4416115c91c6d13505ee72c",
+      "successorVersionId": "successor-hotel-version",
+      "observerRef": "principal-deployment-observer",
+      "observedAt": "2026-09-01T12:00:00Z",
+      "outcome": "deployed",
+      "evidenceRef": "evidence-deployment-hotel",
+      "payloadDigest": "sha256:274b18b89b55174d30ab6d4ef6c289d5252341cef8442c2adc5d2b59367e8e63"
+    }
+  ],
+  "endpointObservations": [
+    {
+      "id": "endpoint-alpha",
+      "deploymentRef": "deployment-alpha",
+      "deploymentPayloadDigest": "sha256:38802db847e066743bdcf72466c39150c8e8b535a7f7503c6b4e7bc4c7b7bb63",
+      "bindingRef": "binding-alpha",
+      "validatorRef": "principal-endpoint-validator",
+      "expectedSuccessorVersionId": "successor-alpha-version",
+      "observedAt": "2026-09-01T13:00:00Z",
+      "outcome": "match",
+      "checkCodes": [
+        "fingerprint-match",
+        "chain-valid"
+      ],
+      "evidenceRef": "evidence-endpoint-alpha",
+      "payloadDigest": "sha256:d6984a590ea6d30c6924b84bb9b8f5f6fb0f35892c8d914a2d04b8a4c5936859"
+    },
+    {
+      "id": "endpoint-bravo",
+      "deploymentRef": "deployment-bravo",
+      "deploymentPayloadDigest": "sha256:ea0e4f85343f88d044bf7e1038da2bc6a9ef7db6dd35aa3e04a49072f6b2a3a8",
+      "bindingRef": "binding-bravo",
+      "validatorRef": "principal-endpoint-validator",
+      "expectedSuccessorVersionId": "successor-bravo-version",
+      "observedAt": "2026-09-01T13:00:00Z",
+      "outcome": "match",
+      "checkCodes": [
+        "fingerprint-match",
+        "chain-valid",
+        "hostname-match"
+      ],
+      "evidenceRef": "evidence-endpoint-bravo",
+      "payloadDigest": "sha256:e1f2244345d006c4b545555d87d203ce90a2b89e897f4e5f58016a8bc6b1da87"
+    },
+    {
+      "id": "endpoint-golf",
+      "deploymentRef": "deployment-golf",
+      "deploymentPayloadDigest": "sha256:71bd810275c1981036d2c3da440742be95e1431374c5533785727158e527e085",
+      "bindingRef": "binding-golf",
+      "validatorRef": "principal-endpoint-validator",
+      "expectedSuccessorVersionId": "successor-golf-version",
+      "observedAt": "2026-09-01T13:00:00Z",
+      "outcome": "fingerprint-mismatch",
+      "checkCodes": [
+        "hostname-match",
+        "chain-valid"
+      ],
+      "evidenceRef": "evidence-endpoint-golf",
+      "payloadDigest": "sha256:8937d2a75d236db782504947574b894e2452b2091b5a48da6ba745fda2060351"
+    },
+    {
+      "id": "endpoint-hotel",
+      "deploymentRef": "deployment-hotel",
+      "deploymentPayloadDigest": "sha256:274b18b89b55174d30ab6d4ef6c289d5252341cef8442c2adc5d2b59367e8e63",
+      "bindingRef": "binding-hotel",
+      "validatorRef": "principal-endpoint-validator",
+      "expectedSuccessorVersionId": "successor-hotel-version",
+      "observedAt": "2026-09-01T13:00:00Z",
+      "outcome": "chain-failed",
+      "checkCodes": [
+        "fingerprint-match",
+        "hostname-match"
+      ],
+      "evidenceRef": "evidence-endpoint-hotel",
+      "payloadDigest": "sha256:7752007cec8aaed74748379f381cbcd65bcf404bf52688b9003efd68c42c7de6"
+    }
+  ],
+  "retirements": [
+    {
+      "id": "retirement-alpha",
+      "certificateRef": "cert-alpha",
+      "certificatePayloadDigest": "sha256:24896c67a1fc00af2a30d75ebb8653e0c09377c70c57bbff513ea6a2256a5ce1",
+      "observerRef": "principal-retirement-observer",
+      "observedAt": "2026-09-01T14:00:00Z",
+      "outcome": "retired",
+      "evidenceRef": "evidence-retirement-alpha",
+      "payloadDigest": "sha256:7e3d4df21898edddcf00d6c81bdb9b28cd62d5a3278c847088d163f0ff1f9374"
+    }
+  ],
+  "overlaps": [
+    {
+      "id": "overlap-bravo",
+      "certificateRef": "cert-bravo",
+      "certificatePayloadDigest": "sha256:b73f047d2129cf27e60c5b9817a720fd2976025cf1ac0cd65beb6842900a59c1",
+      "approvedByRef": "principal-overlap-approver",
+      "authorityGrantRef": "grant-overlap",
+      "declaredAt": "2026-09-02T09:00:00Z",
+      "overlapUntil": "2026-09-20T00:00:00Z",
+      "state": "temporary-overlap-active",
+      "evidenceRef": "evidence-overlap-bravo",
+      "payloadDigest": "sha256:d34e66d6aff09c4d3b36da4b376295cb3a3f4ca4f527db59a58d8895a5c4bfc6"
+    },
+    {
+      "id": "overlap-charlie",
+      "certificateRef": "cert-charlie",
+      "certificatePayloadDigest": "sha256:3b43aba221f0d4bd0193d5b567256acc1b1def176fd8990c38e1d1b3dd0d56a3",
+      "approvedByRef": "principal-overlap-approver",
+      "authorityGrantRef": "grant-overlap",
+      "declaredAt": "2026-09-02T09:00:00Z",
+      "overlapUntil": "2026-09-20T00:00:00Z",
+      "state": "temporary-overlap-active",
+      "evidenceRef": "evidence-overlap-charlie",
+      "payloadDigest": "sha256:51b5de8007d5dac96ed96a76868291b941dc75814322de3725cf30451f56be31"
+    },
+    {
+      "id": "overlap-delta",
+      "certificateRef": "cert-delta",
+      "certificatePayloadDigest": "sha256:ec1cc30aacc18cc88f04cdee9d3e78acf68fd7f446a5057d2bad90193d9a0aee",
+      "approvedByRef": "principal-overlap-approver",
+      "authorityGrantRef": "grant-overlap",
+      "declaredAt": "2026-09-02T09:00:00Z",
+      "overlapUntil": "2026-09-20T00:00:00Z",
+      "state": "temporary-overlap-active",
+      "evidenceRef": "evidence-overlap-delta",
+      "payloadDigest": "sha256:cda5d39f13aa8aab328ca75b0d5de0906cefa8cd27e58c821c5ce160137f2a03"
+    },
+    {
+      "id": "overlap-echo",
+      "certificateRef": "cert-echo",
+      "certificatePayloadDigest": "sha256:2e22b7f069b715b56381c6ae1dc6fedd3f96a88e7ba20e823958e848804e2bb3",
+      "approvedByRef": "principal-overlap-approver",
+      "authorityGrantRef": "grant-overlap",
+      "declaredAt": "2026-09-02T09:00:00Z",
+      "overlapUntil": "2026-09-20T00:00:00Z",
+      "state": "temporary-overlap-active",
+      "evidenceRef": "evidence-overlap-echo",
+      "payloadDigest": "sha256:23bfd233ac97f2db9adb718d234bfcb4ee9e23e4519bc687c3687aadb188b4f6"
+    },
+    {
+      "id": "overlap-foxtrot",
+      "certificateRef": "cert-foxtrot",
+      "certificatePayloadDigest": "sha256:45eb02b06dacdc9815efbfbc13fb5b8731d66e7d0de9cbb3a162827ad072c058",
+      "approvedByRef": "principal-overlap-approver",
+      "authorityGrantRef": "grant-overlap",
+      "declaredAt": "2026-09-02T09:00:00Z",
+      "overlapUntil": "2026-09-20T00:00:00Z",
+      "state": "temporary-overlap-active",
+      "evidenceRef": "evidence-overlap-foxtrot",
+      "payloadDigest": "sha256:bd02eb229a550099d0b95dd189ac48d411be5cdeaf1503f5776a28aa59cbf6dc"
+    },
+    {
+      "id": "overlap-golf",
+      "certificateRef": "cert-golf",
+      "certificatePayloadDigest": "sha256:6df78209dc77de09493fe0902a4cea43088b2990f896e23c3a16409ae8f3bbdb",
+      "approvedByRef": "principal-overlap-approver",
+      "authorityGrantRef": "grant-overlap",
+      "declaredAt": "2026-09-02T09:00:00Z",
+      "overlapUntil": "2026-09-20T00:00:00Z",
+      "state": "temporary-overlap-active",
+      "evidenceRef": "evidence-overlap-golf",
+      "payloadDigest": "sha256:c5ec6a5b0b8e5af69565452ee841fca1785f5dbd9fafed2b5f7cca3fcb74c274"
+    },
+    {
+      "id": "overlap-hotel",
+      "certificateRef": "cert-hotel",
+      "certificatePayloadDigest": "sha256:71d6606f227e3bca302eefbc5a46d534b5e8261588f371726753510ce0010dd2",
+      "approvedByRef": "principal-overlap-approver",
+      "authorityGrantRef": "grant-overlap",
+      "declaredAt": "2026-09-02T09:00:00Z",
+      "overlapUntil": "2026-09-20T00:00:00Z",
+      "state": "temporary-overlap-active",
+      "evidenceRef": "evidence-overlap-hotel",
+      "payloadDigest": "sha256:ce541f1528ef18391f9f42912a3e8413a6474ab3879104a39e2cedf452c2520a"
+    }
+  ],
+  "principals": [
+    {
+      "id": "principal-roster-custodian",
+      "name": "Priya Roster Custodian",
+      "kind": "named-human",
+      "scopes": [
+        "authority-roster-custodian"
+      ]
+    },
+    {
+      "id": "principal-grant-issuer",
+      "name": "Grant Issuer Lead",
+      "kind": "named-human",
+      "scopes": [
+        "authority-grant-issuer"
+      ]
+    },
+    {
+      "id": "principal-certificate-exporter",
+      "name": "Certificate Inventory Export Service",
+      "kind": "owner-system",
+      "scopes": [
+        "certificate-exporter"
+      ]
+    },
+    {
+      "id": "principal-binding-exporter",
+      "name": "Binding Inventory Export Service",
+      "kind": "owner-system",
+      "scopes": [
+        "binding-exporter"
+      ]
+    },
+    {
+      "id": "principal-campaign-coordinator",
+      "name": "Cam Campaign Coordinator",
+      "kind": "named-human",
+      "scopes": [
+        "campaign-coordinator"
+      ]
+    },
+    {
+      "id": "principal-rotation-approver",
+      "name": "Rhea Rotation Approver",
+      "kind": "named-human",
+      "scopes": [
+        "rotation-approver"
+      ]
+    },
+    {
+      "id": "principal-ca-provider",
+      "name": "Certificate Authority Provider Reporting System",
+      "kind": "provider-system",
+      "scopes": [
+        "ca-provider-reporter"
+      ]
+    },
+    {
+      "id": "principal-deployment-observer",
+      "name": "Dev Deployment Observer",
+      "kind": "named-human",
+      "scopes": [
+        "deployment-observer"
+      ]
+    },
+    {
+      "id": "principal-endpoint-validator",
+      "name": "Eli Independent Endpoint Validator",
+      "kind": "named-human",
+      "scopes": [
+        "endpoint-validator"
+      ]
+    },
+    {
+      "id": "principal-retirement-observer",
+      "name": "Rob Retirement Observer",
+      "kind": "named-human",
+      "scopes": [
+        "retirement-observer"
+      ]
+    },
+    {
+      "id": "principal-overlap-approver",
+      "name": "Ola Overlap Approver",
+      "kind": "named-human",
+      "scopes": [
+        "overlap-approver"
+      ]
+    },
+    {
+      "id": "principal-destination-approver",
+      "name": "Dana Destination Approver",
+      "kind": "named-human",
+      "scopes": [
+        "destination-approver"
+      ]
+    },
+    {
+      "id": "principal-handoff-recipient",
+      "name": "Hana Handoff Recipient",
+      "kind": "named-human",
+      "scopes": [
+        "handoff-recipient"
+      ]
+    }
+  ],
+  "authorityRoster": {
+    "id": "roster-tls-rotation",
+    "issuedAt": "2026-09-01T08:00:00Z",
+    "custodianRef": "principal-roster-custodian",
+    "principalRefs": [
+      "principal-roster-custodian",
+      "principal-grant-issuer",
+      "principal-certificate-exporter",
+      "principal-binding-exporter",
+      "principal-campaign-coordinator",
+      "principal-rotation-approver",
+      "principal-ca-provider",
+      "principal-deployment-observer",
+      "principal-endpoint-validator",
+      "principal-retirement-observer",
+      "principal-overlap-approver",
+      "principal-destination-approver",
+      "principal-handoff-recipient"
+    ],
+    "evidenceRef": "evidence-roster",
+    "contentDigest": "sha256:7f197c0296fa32f0e1b5b348feb2afeaf3a2d4b07ea26171f6be5d66e80f1554"
+  },
+  "authorityGrants": [
+    {
+      "id": "grant-rotation",
+      "granteeRef": "principal-rotation-approver",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "approve-rotation-requests",
+      "roundRef": "round-tls-2026q3",
+      "activeFrom": "2026-09-01T08:30:00Z",
+      "activeUntil": "2026-09-30T00:00:00Z",
+      "rosterRef": "roster-tls-rotation",
+      "rosterDigest": "sha256:7f197c0296fa32f0e1b5b348feb2afeaf3a2d4b07ea26171f6be5d66e80f1554",
+      "evidenceRef": "evidence-grant-rotation",
+      "payloadDigest": "sha256:86a03113871c20ee9e91014dd92563c8c54ce95fbb937396bcf70fb8de699377"
+    },
+    {
+      "id": "grant-issuance",
+      "granteeRef": "principal-ca-provider",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "report-issuance-outcomes",
+      "roundRef": "round-tls-2026q3",
+      "activeFrom": "2026-09-01T08:30:00Z",
+      "activeUntil": "2026-09-30T00:00:00Z",
+      "rosterRef": "roster-tls-rotation",
+      "rosterDigest": "sha256:7f197c0296fa32f0e1b5b348feb2afeaf3a2d4b07ea26171f6be5d66e80f1554",
+      "evidenceRef": "evidence-grant-issuance",
+      "payloadDigest": "sha256:34268f38ca0af0810e945aa5392f9aa64a4e157b146fa75aad079f657d44abd2"
+    },
+    {
+      "id": "grant-deployment",
+      "granteeRef": "principal-deployment-observer",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "report-deployment-observations",
+      "roundRef": "round-tls-2026q3",
+      "activeFrom": "2026-09-01T08:30:00Z",
+      "activeUntil": "2026-09-30T00:00:00Z",
+      "rosterRef": "roster-tls-rotation",
+      "rosterDigest": "sha256:7f197c0296fa32f0e1b5b348feb2afeaf3a2d4b07ea26171f6be5d66e80f1554",
+      "evidenceRef": "evidence-grant-deployment",
+      "payloadDigest": "sha256:f74143f4a0136d12735cb2cb2992e2705a6c6d613b5b23c9fed2a2f09c540c59"
+    },
+    {
+      "id": "grant-endpoint",
+      "granteeRef": "principal-endpoint-validator",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "report-endpoint-observations",
+      "roundRef": "round-tls-2026q3",
+      "activeFrom": "2026-09-01T08:30:00Z",
+      "activeUntil": "2026-09-30T00:00:00Z",
+      "rosterRef": "roster-tls-rotation",
+      "rosterDigest": "sha256:7f197c0296fa32f0e1b5b348feb2afeaf3a2d4b07ea26171f6be5d66e80f1554",
+      "evidenceRef": "evidence-grant-endpoint",
+      "payloadDigest": "sha256:fe04c5422d73073476a1e6051e5ec50f5421de09fc13b2f940c96f7a1081dba6"
+    },
+    {
+      "id": "grant-retirement",
+      "granteeRef": "principal-retirement-observer",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "report-retirement",
+      "roundRef": "round-tls-2026q3",
+      "activeFrom": "2026-09-01T08:30:00Z",
+      "activeUntil": "2026-09-30T00:00:00Z",
+      "rosterRef": "roster-tls-rotation",
+      "rosterDigest": "sha256:7f197c0296fa32f0e1b5b348feb2afeaf3a2d4b07ea26171f6be5d66e80f1554",
+      "evidenceRef": "evidence-grant-retirement",
+      "payloadDigest": "sha256:b98e4379bbb304a9bc0d0e88d2650f0761956cba4ee01a69937b51f37095668c"
+    },
+    {
+      "id": "grant-overlap",
+      "granteeRef": "principal-overlap-approver",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "approve-temporary-overlap",
+      "roundRef": "round-tls-2026q3",
+      "activeFrom": "2026-09-01T08:30:00Z",
+      "activeUntil": "2026-09-30T00:00:00Z",
+      "rosterRef": "roster-tls-rotation",
+      "rosterDigest": "sha256:7f197c0296fa32f0e1b5b348feb2afeaf3a2d4b07ea26171f6be5d66e80f1554",
+      "evidenceRef": "evidence-grant-overlap",
+      "payloadDigest": "sha256:99cd8e3c4ef4fe9e1c4a443d4330c0227b1e305397e891bbe00d83068046a48b"
+    },
+    {
+      "id": "grant-destination",
+      "granteeRef": "principal-destination-approver",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "approve-destination",
+      "roundRef": "round-tls-2026q3",
+      "activeFrom": "2026-09-01T08:30:00Z",
+      "activeUntil": "2026-09-30T00:00:00Z",
+      "rosterRef": "roster-tls-rotation",
+      "rosterDigest": "sha256:7f197c0296fa32f0e1b5b348feb2afeaf3a2d4b07ea26171f6be5d66e80f1554",
+      "evidenceRef": "evidence-grant-destination",
+      "payloadDigest": "sha256:ed362e9dcd78413c5eaae7dc83d07c9df8e4e7e125a0568fda50c882a06ab0c3"
+    },
+    {
+      "id": "grant-handoff",
+      "granteeRef": "principal-handoff-recipient",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "receive-handoff",
+      "roundRef": "round-tls-2026q3",
+      "activeFrom": "2026-09-01T08:30:00Z",
+      "activeUntil": "2026-09-30T00:00:00Z",
+      "rosterRef": "roster-tls-rotation",
+      "rosterDigest": "sha256:7f197c0296fa32f0e1b5b348feb2afeaf3a2d4b07ea26171f6be5d66e80f1554",
+      "evidenceRef": "evidence-grant-handoff",
+      "payloadDigest": "sha256:8d18d42e5f5057964b5d51b450c6a157da5d01f539254f2ef22f9699565db2f9"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-certificate-export",
+      "kind": "certificate-export",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T09:00:00Z",
+      "suppliedByRef": "principal-certificate-exporter",
+      "subjectRefs": [
+        "export-tls-certificates",
+        "cert-alpha",
+        "cert-bravo",
+        "cert-charlie",
+        "cert-delta",
+        "cert-echo",
+        "cert-foxtrot",
+        "cert-golf",
+        "cert-hotel",
+        "cert-india"
+      ],
+      "sourceRecordDigest": "sha256:db04291b485bb5f50be068e25fba4adcb64eb48104a05455fc7723f3e30094d0",
+      "payloadDigest": "sha256:7eb9a3ed9f7dcbd074956fabc71ce2d3778aba1b319941d607e13da1941a4a73",
+      "recordDigest": "sha256:513f89e830a38e9491cacfa92a8dcca7866d2a5ea7b5b2907830ae771e319231"
+    },
+    {
+      "id": "evidence-binding-export",
+      "kind": "binding-export",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T09:05:00Z",
+      "suppliedByRef": "principal-binding-exporter",
+      "subjectRefs": [
+        "export-tls-bindings",
+        "binding-alpha",
+        "binding-bravo",
+        "binding-echo",
+        "binding-foxtrot",
+        "binding-golf",
+        "binding-hotel"
+      ],
+      "sourceRecordDigest": "sha256:52dc9ca1eaa46f49197fc877821e1dc1bbbccf0d14d61e0a291b7d145edcc8e7",
+      "payloadDigest": "sha256:9abbde779f26b3ec5eef0b6c03f27ca51bd206ebebc99f7bb30da34da5cb125b",
+      "recordDigest": "sha256:7f00d8a860bed3a6bc440e196a4aab75d2979fddb6e6db48790573eb305ede39"
+    },
+    {
+      "id": "evidence-roster",
+      "kind": "authority-roster-export",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T08:00:00Z",
+      "suppliedByRef": "principal-roster-custodian",
+      "subjectRefs": [
+        "roster-tls-rotation",
+        "principal-roster-custodian",
+        "principal-grant-issuer",
+        "principal-certificate-exporter",
+        "principal-binding-exporter",
+        "principal-campaign-coordinator",
+        "principal-rotation-approver",
+        "principal-ca-provider",
+        "principal-deployment-observer",
+        "principal-endpoint-validator",
+        "principal-retirement-observer",
+        "principal-overlap-approver",
+        "principal-destination-approver",
+        "principal-handoff-recipient"
+      ],
+      "sourceRecordDigest": "sha256:d85878204fdd5dc23209e21bbb8e04f7305f1ddaf8419c9ca38aabd528ff40f3",
+      "payloadDigest": "sha256:30be1f42441c3e958198bcb88a1141c83d1f4986bb789425db58588a3f70aae4",
+      "recordDigest": "sha256:d9dd4972fa82354d976165a531f26dc7c08b41c343e04927fcbd827b5a2d8ee7"
+    },
+    {
+      "id": "evidence-grant-rotation",
+      "kind": "authority-grant-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T08:30:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-rotation",
+        "principal-rotation-approver"
+      ],
+      "sourceRecordDigest": "sha256:422f68dcb1e92280b731192e472d397d7c76f3531859aef272d21f07ad3d57c9",
+      "payloadDigest": "sha256:86a03113871c20ee9e91014dd92563c8c54ce95fbb937396bcf70fb8de699377",
+      "recordDigest": "sha256:53ad070f7def6081c56823981061ca9e9cc4fa188dc858f804aef23f7ad60976"
+    },
+    {
+      "id": "evidence-grant-issuance",
+      "kind": "authority-grant-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T08:30:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-issuance",
+        "principal-ca-provider"
+      ],
+      "sourceRecordDigest": "sha256:9cd5c01b8bf35fc813c45ef512aed43fd7d3e0b12fb782857c41edce6d4d4e0d",
+      "payloadDigest": "sha256:34268f38ca0af0810e945aa5392f9aa64a4e157b146fa75aad079f657d44abd2",
+      "recordDigest": "sha256:3c890786a38f729ae58494559ece23e982ca5d54617396e145ac2addd2cb1b28"
+    },
+    {
+      "id": "evidence-grant-deployment",
+      "kind": "authority-grant-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T08:30:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-deployment",
+        "principal-deployment-observer"
+      ],
+      "sourceRecordDigest": "sha256:03b2db5f44f9d5d287539b45cc227430f277698cb39eb0649bc80774e8c1e5de",
+      "payloadDigest": "sha256:f74143f4a0136d12735cb2cb2992e2705a6c6d613b5b23c9fed2a2f09c540c59",
+      "recordDigest": "sha256:481a6bd017931836a2fe2834cd93e5a8bee14ecaa653e1cbcd07667506bfe8ff"
+    },
+    {
+      "id": "evidence-grant-endpoint",
+      "kind": "authority-grant-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T08:30:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-endpoint",
+        "principal-endpoint-validator"
+      ],
+      "sourceRecordDigest": "sha256:2e747c155ddfa111948aba7319f469644083d55196b6fa7fbf8170c14d49ebb1",
+      "payloadDigest": "sha256:fe04c5422d73073476a1e6051e5ec50f5421de09fc13b2f940c96f7a1081dba6",
+      "recordDigest": "sha256:0eee9a0366effc10fb5ebe4ef18fa493e0a471978ebad88499719448c84a95b1"
+    },
+    {
+      "id": "evidence-grant-retirement",
+      "kind": "authority-grant-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T08:30:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-retirement",
+        "principal-retirement-observer"
+      ],
+      "sourceRecordDigest": "sha256:54c041a96057796daac06668332c5f8af7c1a247cf59692a3cfff6adac4c78e4",
+      "payloadDigest": "sha256:b98e4379bbb304a9bc0d0e88d2650f0761956cba4ee01a69937b51f37095668c",
+      "recordDigest": "sha256:a6a8c48eef5809350b017e91c18e097a9ad4684132668181b603d2da34f51144"
+    },
+    {
+      "id": "evidence-grant-overlap",
+      "kind": "authority-grant-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T08:30:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-overlap",
+        "principal-overlap-approver"
+      ],
+      "sourceRecordDigest": "sha256:e8ab1b43c2a675cfe936f7048a030e1eb0db499c538f46ca59d6c8e8288761f4",
+      "payloadDigest": "sha256:99cd8e3c4ef4fe9e1c4a443d4330c0227b1e305397e891bbe00d83068046a48b",
+      "recordDigest": "sha256:296f0965a895629fd520e0e56c645acc31f68bd483de4cee515c1461d69e3fbb"
+    },
+    {
+      "id": "evidence-grant-destination",
+      "kind": "authority-grant-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T08:30:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-destination",
+        "principal-destination-approver"
+      ],
+      "sourceRecordDigest": "sha256:5fb084ca867bb553ef086802854d44e269cee09f6479cf6a473b56465d76db77",
+      "payloadDigest": "sha256:ed362e9dcd78413c5eaae7dc83d07c9df8e4e7e125a0568fda50c882a06ab0c3",
+      "recordDigest": "sha256:500bf7ed0d6deca3df4f207881db99920613bfc8e22538ef4900cd52062c303b"
+    },
+    {
+      "id": "evidence-grant-handoff",
+      "kind": "authority-grant-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T08:30:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-handoff",
+        "principal-handoff-recipient"
+      ],
+      "sourceRecordDigest": "sha256:0ec799ab3393909a4075d231643103af9d2ed82d519c854d66806242e435e088",
+      "payloadDigest": "sha256:8d18d42e5f5057964b5d51b450c6a157da5d01f539254f2ef22f9699565db2f9",
+      "recordDigest": "sha256:c1849a5612947195653838270b4c5adc4445e3f56ed598b9e737a9eb5b159a9e"
+    },
+    {
+      "id": "evidence-request-alpha",
+      "kind": "rotation-request-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T10:30:00Z",
+      "suppliedByRef": "principal-rotation-approver",
+      "subjectRefs": [
+        "request-alpha",
+        "cert-alpha"
+      ],
+      "sourceRecordDigest": "sha256:e1f6822db460753e2627b0364675777d2629d1dee235d1adb03658e34359ca2a",
+      "payloadDigest": "sha256:27151c4bc4dccc1cfaf6438ec59f30e2e23ce8f3bf57d27562637fe4d7d0aed8",
+      "recordDigest": "sha256:dbf105d67cfe2f891b81849d8d1bd5d8a6c5ca26e91c614b5997928f7197cc46"
+    },
+    {
+      "id": "evidence-request-bravo",
+      "kind": "rotation-request-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T10:30:00Z",
+      "suppliedByRef": "principal-rotation-approver",
+      "subjectRefs": [
+        "request-bravo",
+        "cert-bravo"
+      ],
+      "sourceRecordDigest": "sha256:5df8d431e9b02fb0992fb3aa9b0e577d1859bd1add4c516130d997a192f91ec7",
+      "payloadDigest": "sha256:6911a1da87d17b30056c2ae44a8ded502cede1e1cbea2bf7d38d9a4e181a7748",
+      "recordDigest": "sha256:be7654c5bb8909741f31dba0c90b820c45fcc8f65c5088a130ca60bb6430af59"
+    },
+    {
+      "id": "evidence-request-charlie",
+      "kind": "rotation-request-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T10:30:00Z",
+      "suppliedByRef": "principal-rotation-approver",
+      "subjectRefs": [
+        "request-charlie",
+        "cert-charlie"
+      ],
+      "sourceRecordDigest": "sha256:c7dfe15207ac1918d17051226fd20ccf0d64e632c4797b425f72ab20ae737d17",
+      "payloadDigest": "sha256:b033ec145b5e5fa3a51a1fc1995f61ad64fe4592974750e7a59c60977f2b1e4a",
+      "recordDigest": "sha256:481e485c131cb02f22f522a4fd849c219f2b0746ebb522b383ca51a345c8fd4a"
+    },
+    {
+      "id": "evidence-request-delta",
+      "kind": "rotation-request-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T10:30:00Z",
+      "suppliedByRef": "principal-rotation-approver",
+      "subjectRefs": [
+        "request-delta",
+        "cert-delta"
+      ],
+      "sourceRecordDigest": "sha256:db141a4951a2821dcfd8f185a957aaa5d9bd783d93418407eee732d2b30f1e5e",
+      "payloadDigest": "sha256:b5b5c8677875b369354db2f30ecd0f73c3315c6811a72c408752aba80487c269",
+      "recordDigest": "sha256:e06ec616f6ea88e0bc35ef2fc9cfbb5832268b666861b52221f049ef59ea4963"
+    },
+    {
+      "id": "evidence-request-echo",
+      "kind": "rotation-request-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T10:30:00Z",
+      "suppliedByRef": "principal-rotation-approver",
+      "subjectRefs": [
+        "request-echo",
+        "cert-echo"
+      ],
+      "sourceRecordDigest": "sha256:63cccf65694b25934b0fbd53c48d4f760c78e319d0aba1ad4a3a8baa22c1f5fb",
+      "payloadDigest": "sha256:bdd7e367194feb0056d43f1f32951a1771822eec493604cd13032517b4c1bcd5",
+      "recordDigest": "sha256:3ba27bbe4494f1759dc04f5ab8b39930c85263a528f803ace8991348b2a5a185"
+    },
+    {
+      "id": "evidence-request-foxtrot",
+      "kind": "rotation-request-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T10:30:00Z",
+      "suppliedByRef": "principal-rotation-approver",
+      "subjectRefs": [
+        "request-foxtrot",
+        "cert-foxtrot"
+      ],
+      "sourceRecordDigest": "sha256:ff29c4ecc3ef788049847a5c97885adc11ae95f028bd4bd91cf9e774c26e501c",
+      "payloadDigest": "sha256:71b49159e761fa4b2b2683d6d9a076bb22d8ddf1400387008fa23354ad7c0b1b",
+      "recordDigest": "sha256:eb7c82f5e6440bb20ad7804a79dcf2518e7ce06a94212da5c09e06b004ac580b"
+    },
+    {
+      "id": "evidence-request-golf",
+      "kind": "rotation-request-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T10:30:00Z",
+      "suppliedByRef": "principal-rotation-approver",
+      "subjectRefs": [
+        "request-golf",
+        "cert-golf"
+      ],
+      "sourceRecordDigest": "sha256:ff77b4813cbf86e632c2960f75f6f5719f84618c43aab9b411000ca2951be231",
+      "payloadDigest": "sha256:54a3c54c4cec0c6eb13877cf3dec3b877e18a98c1d9fbf68353d14bbac79c16c",
+      "recordDigest": "sha256:334ef1a7bb35eaba0431f0f520eddc4ec24ff7da6e43d33a6746e198da91085b"
+    },
+    {
+      "id": "evidence-request-hotel",
+      "kind": "rotation-request-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T10:30:00Z",
+      "suppliedByRef": "principal-rotation-approver",
+      "subjectRefs": [
+        "request-hotel",
+        "cert-hotel"
+      ],
+      "sourceRecordDigest": "sha256:5e8dc20ce999f19dbcd171ed8f3f17198722b051677700530e2a6654d461001c",
+      "payloadDigest": "sha256:2550f59cf0753e5f4221526965b7ef6a20472352fb07b6cfcbe8a8c159ab086d",
+      "recordDigest": "sha256:e6cd950d3605a2608f78f2d85dc5b7666150e228669f94e874b98bb864e689e0"
+    },
+    {
+      "id": "evidence-issuance-alpha",
+      "kind": "issuance-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T11:30:00Z",
+      "suppliedByRef": "principal-ca-provider",
+      "subjectRefs": [
+        "issuance-alpha",
+        "request-alpha"
+      ],
+      "sourceRecordDigest": "sha256:2b487a9b037623edef30f13634c8e1acbaf62db9f1ff8148d375286e075ee7ab",
+      "payloadDigest": "sha256:f81e983566c8d4eb2e54b6b4ab3d1173a5564cb9a7fde75db425d53c4fa9df56",
+      "recordDigest": "sha256:1db61893cf59f61d7fc0d4fb2c171db48635c9c0dee52c4a1d06c314af3533a9"
+    },
+    {
+      "id": "evidence-issuance-bravo",
+      "kind": "issuance-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T11:30:00Z",
+      "suppliedByRef": "principal-ca-provider",
+      "subjectRefs": [
+        "issuance-bravo",
+        "request-bravo"
+      ],
+      "sourceRecordDigest": "sha256:62cd639facfa5070a026cb5cde51fd487b94ce3bee7e8a7d6b56ee6970ae4112",
+      "payloadDigest": "sha256:de70ba41ac2697e36ac4320f437441c572ffa87771f7adc5724efdd4ca169f85",
+      "recordDigest": "sha256:0adf54938f1da8fd084c3001f825c6582d1f7b951caba0a0f41773017f3bd9ad"
+    },
+    {
+      "id": "evidence-issuance-charlie",
+      "kind": "issuance-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T11:00:00Z",
+      "suppliedByRef": "principal-ca-provider",
+      "subjectRefs": [
+        "issuance-charlie",
+        "request-charlie"
+      ],
+      "sourceRecordDigest": "sha256:bbef998fa2a18ba557fd2fb0890f07062626595c987fe6386fb3b25cae3d3f99",
+      "payloadDigest": "sha256:73220df2895301c58f6fe419cf015431923a5277835fb22d4399c9206b3d7550",
+      "recordDigest": "sha256:d8a56f924ab5d638381837ad7253487425c1bc53015321bbf4e430580338eda2"
+    },
+    {
+      "id": "evidence-issuance-delta",
+      "kind": "issuance-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T11:30:00Z",
+      "suppliedByRef": "principal-ca-provider",
+      "subjectRefs": [
+        "issuance-delta",
+        "request-delta"
+      ],
+      "sourceRecordDigest": "sha256:b65c1dcff668f23c957526a2bbf1c94ea14f6cfaebc18e829fb9300e8af500c3",
+      "payloadDigest": "sha256:eacb15f8c5ba4c70fe46b3337c2ee9e283ea53903d80407773418141688c4622",
+      "recordDigest": "sha256:a734cf354673f0c924c4ffe4cd131e7180775d99cb040ed34dc2a925033d6e19"
+    },
+    {
+      "id": "evidence-issuance-echo",
+      "kind": "issuance-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T11:30:00Z",
+      "suppliedByRef": "principal-ca-provider",
+      "subjectRefs": [
+        "issuance-echo",
+        "request-echo"
+      ],
+      "sourceRecordDigest": "sha256:5f37e06dea6be46d96539b010aaa534636726c568c3e3f371592b44ee5acec82",
+      "payloadDigest": "sha256:0e6a24002d1556b4048d4b8dc817063d0788683b807e8c7abe3c4ff67218e12a",
+      "recordDigest": "sha256:29c3c011227fa2a020c8b362862da251d0d46941c4b232f9a6aa6c7dce7057bb"
+    },
+    {
+      "id": "evidence-issuance-foxtrot",
+      "kind": "issuance-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T11:30:00Z",
+      "suppliedByRef": "principal-ca-provider",
+      "subjectRefs": [
+        "issuance-foxtrot",
+        "request-foxtrot"
+      ],
+      "sourceRecordDigest": "sha256:0924e93d9d46b653453557e782a72012606f8289a5cf998554eb9ebbf8aed091",
+      "payloadDigest": "sha256:50024e9194e51b52ac9ecef1e1af0f0595b0be347ffe66f627e3aba80b3c1d18",
+      "recordDigest": "sha256:3f945763de522094ce77dbd9f4378f3602873185d6ba08b1f190a63bbdf03829"
+    },
+    {
+      "id": "evidence-issuance-golf",
+      "kind": "issuance-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T11:30:00Z",
+      "suppliedByRef": "principal-ca-provider",
+      "subjectRefs": [
+        "issuance-golf",
+        "request-golf"
+      ],
+      "sourceRecordDigest": "sha256:b62977cb46680694ae4104bc392dd8df638f2d4a11ed039ffa5b9c43281f2f71",
+      "payloadDigest": "sha256:11cc46a7edaaf32898f845f5c4184d52cacdd7a52b023792d831ce8b2913cbc6",
+      "recordDigest": "sha256:4da1f32bef78d0c6cde7cefa1080a2bd5484c916586d54762bc17a20e49a2de3"
+    },
+    {
+      "id": "evidence-issuance-hotel",
+      "kind": "issuance-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T11:30:00Z",
+      "suppliedByRef": "principal-ca-provider",
+      "subjectRefs": [
+        "issuance-hotel",
+        "request-hotel"
+      ],
+      "sourceRecordDigest": "sha256:2b282dbc4aab4180a93f03ae87a7b0a3464aa561006601f31232fc22b6beb5ff",
+      "payloadDigest": "sha256:5f061a8bfb0182048da5ccd6f36d259ba1f80191d4416115c91c6d13505ee72c",
+      "recordDigest": "sha256:f92a14253d4a1f42d7e50b19ea1c5e1e6695d64afd72ad1b1cb21cd527fd8c20"
+    },
+    {
+      "id": "evidence-deployment-alpha",
+      "kind": "deployment-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T12:00:00Z",
+      "suppliedByRef": "principal-deployment-observer",
+      "subjectRefs": [
+        "deployment-alpha",
+        "binding-alpha"
+      ],
+      "sourceRecordDigest": "sha256:fd379cc79fcd10d1d91360da532943c9e69384edb3dc75a22b6772ff3e448879",
+      "payloadDigest": "sha256:38802db847e066743bdcf72466c39150c8e8b535a7f7503c6b4e7bc4c7b7bb63",
+      "recordDigest": "sha256:3308ecdb2f497a722e92aa909a01a1bc9edc32eaac261d22552838654c2c3ad5"
+    },
+    {
+      "id": "evidence-deployment-bravo",
+      "kind": "deployment-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T12:00:00Z",
+      "suppliedByRef": "principal-deployment-observer",
+      "subjectRefs": [
+        "deployment-bravo",
+        "binding-bravo"
+      ],
+      "sourceRecordDigest": "sha256:e504307547467a4034a780370595192fddc01e84d4e676e23457f469e77aa306",
+      "payloadDigest": "sha256:ea0e4f85343f88d044bf7e1038da2bc6a9ef7db6dd35aa3e04a49072f6b2a3a8",
+      "recordDigest": "sha256:3cfd70c4e1c6000ff23ea4d3638aafee3aadd37dcdb273a2b16470564787de50"
+    },
+    {
+      "id": "evidence-deployment-foxtrot",
+      "kind": "deployment-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T12:00:00Z",
+      "suppliedByRef": "principal-deployment-observer",
+      "subjectRefs": [
+        "deployment-foxtrot",
+        "binding-foxtrot"
+      ],
+      "sourceRecordDigest": "sha256:90ce74e55b1ce526b27cf6368d1375bf901223e13b0238beb9d064d4a2b618bb",
+      "payloadDigest": "sha256:53646965bdc7d752eaf15cb73897ac42117702fec4a1edfbe73657c0beb50424",
+      "recordDigest": "sha256:c76817ca37b37407233e8ae1797cf80520e1389bca77fa50f262d389a894ff92"
+    },
+    {
+      "id": "evidence-deployment-golf",
+      "kind": "deployment-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T12:00:00Z",
+      "suppliedByRef": "principal-deployment-observer",
+      "subjectRefs": [
+        "deployment-golf",
+        "binding-golf"
+      ],
+      "sourceRecordDigest": "sha256:9b91d4d5fccb8eef32bee19438a0317fc2ed93dbc0bf2f070120bc8a7b937ff1",
+      "payloadDigest": "sha256:71bd810275c1981036d2c3da440742be95e1431374c5533785727158e527e085",
+      "recordDigest": "sha256:65ef087f9020f7e5f3f7864d3f3c8db16055b4cd4256cbf179cb3ab6c2525bec"
+    },
+    {
+      "id": "evidence-deployment-hotel",
+      "kind": "deployment-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T12:00:00Z",
+      "suppliedByRef": "principal-deployment-observer",
+      "subjectRefs": [
+        "deployment-hotel",
+        "binding-hotel"
+      ],
+      "sourceRecordDigest": "sha256:004673fdf93b7d828b0b5d5efb3470e57ca390b5c8c155d1b418353664d4cc9e",
+      "payloadDigest": "sha256:274b18b89b55174d30ab6d4ef6c289d5252341cef8442c2adc5d2b59367e8e63",
+      "recordDigest": "sha256:d79ed2af08348f9e5ba0da8e6cf0e34f519539ce1ece338e999d077acfc72b9a"
+    },
+    {
+      "id": "evidence-endpoint-alpha",
+      "kind": "endpoint-observation-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T13:00:00Z",
+      "suppliedByRef": "principal-endpoint-validator",
+      "subjectRefs": [
+        "endpoint-alpha",
+        "deployment-alpha"
+      ],
+      "sourceRecordDigest": "sha256:0124ca79cf5b4ea2c337dcc5f7a80b3f93d265700be83b6ffcb577b8b28f4f85",
+      "payloadDigest": "sha256:d6984a590ea6d30c6924b84bb9b8f5f6fb0f35892c8d914a2d04b8a4c5936859",
+      "recordDigest": "sha256:c3219fe634f16a761ae60edca6001a0294dbc89a408f87ed6952122b9b8e1e20"
+    },
+    {
+      "id": "evidence-endpoint-bravo",
+      "kind": "endpoint-observation-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T13:00:00Z",
+      "suppliedByRef": "principal-endpoint-validator",
+      "subjectRefs": [
+        "endpoint-bravo",
+        "deployment-bravo"
+      ],
+      "sourceRecordDigest": "sha256:1ee97afd8d405e7924343c42ae72c41f13747c7e5e0bc0780da0eaa9d7b4cb85",
+      "payloadDigest": "sha256:e1f2244345d006c4b545555d87d203ce90a2b89e897f4e5f58016a8bc6b1da87",
+      "recordDigest": "sha256:a8b8e2cec40d49d777d351e52699ededb8ea778d6af0d0e3b7475c1cca12ef89"
+    },
+    {
+      "id": "evidence-endpoint-golf",
+      "kind": "endpoint-observation-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T13:00:00Z",
+      "suppliedByRef": "principal-endpoint-validator",
+      "subjectRefs": [
+        "endpoint-golf",
+        "deployment-golf"
+      ],
+      "sourceRecordDigest": "sha256:b3735a28956afd154201ee8e2fc19a9160c2805e0a75ef6d738987d0e176df7c",
+      "payloadDigest": "sha256:8937d2a75d236db782504947574b894e2452b2091b5a48da6ba745fda2060351",
+      "recordDigest": "sha256:6482f48bcb6e14df3a7daccefd09784c387110b7f6489e57e92e986865537adf"
+    },
+    {
+      "id": "evidence-endpoint-hotel",
+      "kind": "endpoint-observation-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T13:00:00Z",
+      "suppliedByRef": "principal-endpoint-validator",
+      "subjectRefs": [
+        "endpoint-hotel",
+        "deployment-hotel"
+      ],
+      "sourceRecordDigest": "sha256:7d9ec5c4306ad9b9a1e5416aadb801434afea313b6c56950455a542e10fe53c0",
+      "payloadDigest": "sha256:7752007cec8aaed74748379f381cbcd65bcf404bf52688b9003efd68c42c7de6",
+      "recordDigest": "sha256:01de2d30692c3e1cb8081eda5fff2d3c9ef98bfbbf2e34778dfc3c36d40d6658"
+    },
+    {
+      "id": "evidence-retirement-alpha",
+      "kind": "retirement-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-01T14:00:00Z",
+      "suppliedByRef": "principal-retirement-observer",
+      "subjectRefs": [
+        "retirement-alpha",
+        "cert-alpha"
+      ],
+      "sourceRecordDigest": "sha256:5537e4a277d0c795acb270e4434b1f4604fafece55397aef9297208a9a3f833d",
+      "payloadDigest": "sha256:7e3d4df21898edddcf00d6c81bdb9b28cd62d5a3278c847088d163f0ff1f9374",
+      "recordDigest": "sha256:15d5bcef7eb118ca49836076776deb9f4f636d4d90bc5acef7274467e9aed2ad"
+    },
+    {
+      "id": "evidence-overlap-bravo",
+      "kind": "overlap-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T09:00:00Z",
+      "suppliedByRef": "principal-overlap-approver",
+      "subjectRefs": [
+        "overlap-bravo",
+        "cert-bravo"
+      ],
+      "sourceRecordDigest": "sha256:f909570d13aa01ca236b4a9f798cd6458da5c1e9d03e8c95c6980bd7cb3fcbad",
+      "payloadDigest": "sha256:d34e66d6aff09c4d3b36da4b376295cb3a3f4ca4f527db59a58d8895a5c4bfc6",
+      "recordDigest": "sha256:83c417c22d6c3368c2539ad960d7d38c13305d0f6d239e108949fac4aebe07a3"
+    },
+    {
+      "id": "evidence-overlap-charlie",
+      "kind": "overlap-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T09:00:00Z",
+      "suppliedByRef": "principal-overlap-approver",
+      "subjectRefs": [
+        "overlap-charlie",
+        "cert-charlie"
+      ],
+      "sourceRecordDigest": "sha256:a8257abdfae092ec40f164442332069b5e5f8212cbf5534a7b928d9d224f9e6f",
+      "payloadDigest": "sha256:51b5de8007d5dac96ed96a76868291b941dc75814322de3725cf30451f56be31",
+      "recordDigest": "sha256:def45e960d27875ed004e1a1934abdb3124b79bf97df06f32a1b9051a0f005b5"
+    },
+    {
+      "id": "evidence-overlap-delta",
+      "kind": "overlap-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T09:00:00Z",
+      "suppliedByRef": "principal-overlap-approver",
+      "subjectRefs": [
+        "overlap-delta",
+        "cert-delta"
+      ],
+      "sourceRecordDigest": "sha256:a83f7d2821dcdaf0e4febaa58a9b93fb091ca2e0c52f080103cffa6eb4c98bb7",
+      "payloadDigest": "sha256:cda5d39f13aa8aab328ca75b0d5de0906cefa8cd27e58c821c5ce160137f2a03",
+      "recordDigest": "sha256:a594c27b7567129cf1bfdadaa80d8abda2ad8fa13902d3662cc98199d192a7ae"
+    },
+    {
+      "id": "evidence-overlap-echo",
+      "kind": "overlap-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T09:00:00Z",
+      "suppliedByRef": "principal-overlap-approver",
+      "subjectRefs": [
+        "overlap-echo",
+        "cert-echo"
+      ],
+      "sourceRecordDigest": "sha256:6fa3edb25e3e9e0f7737f82a6af49f779488c57ee895b5b1649294e231de58ac",
+      "payloadDigest": "sha256:23bfd233ac97f2db9adb718d234bfcb4ee9e23e4519bc687c3687aadb188b4f6",
+      "recordDigest": "sha256:c2cb6bed92ff602193c9fa7bab510f6bfe95a7882c76330b6973e1a395581a8d"
+    },
+    {
+      "id": "evidence-overlap-foxtrot",
+      "kind": "overlap-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T09:00:00Z",
+      "suppliedByRef": "principal-overlap-approver",
+      "subjectRefs": [
+        "overlap-foxtrot",
+        "cert-foxtrot"
+      ],
+      "sourceRecordDigest": "sha256:e2210f181dacb8b3472759d32b00ec60fa1e8e0d7a20da70d920eacda20bd95c",
+      "payloadDigest": "sha256:bd02eb229a550099d0b95dd189ac48d411be5cdeaf1503f5776a28aa59cbf6dc",
+      "recordDigest": "sha256:01075645ecfea2f85106a576efc79b7b5106bc6417a6be1a96ec8c1aae465b27"
+    },
+    {
+      "id": "evidence-overlap-golf",
+      "kind": "overlap-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T09:00:00Z",
+      "suppliedByRef": "principal-overlap-approver",
+      "subjectRefs": [
+        "overlap-golf",
+        "cert-golf"
+      ],
+      "sourceRecordDigest": "sha256:9770884a2eb43be75053e67b72860d3fc81bb619e6045b00797cafb9bccdda86",
+      "payloadDigest": "sha256:c5ec6a5b0b8e5af69565452ee841fca1785f5dbd9fafed2b5f7cca3fcb74c274",
+      "recordDigest": "sha256:8fad397a9300da2eb1cfd4c06c2931394aa698e853f945c5fa8b96f5348c65fc"
+    },
+    {
+      "id": "evidence-overlap-hotel",
+      "kind": "overlap-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T09:00:00Z",
+      "suppliedByRef": "principal-overlap-approver",
+      "subjectRefs": [
+        "overlap-hotel",
+        "cert-hotel"
+      ],
+      "sourceRecordDigest": "sha256:bbff58dbafa7d20f69cffe61f7d2f3255d4393d4b9c6b684134359f0ac06e182",
+      "payloadDigest": "sha256:ce541f1528ef18391f9f42912a3e8413a6474ab3879104a39e2cedf452c2520a",
+      "recordDigest": "sha256:74179184d4f9045fda44c79c677309f8ca056b0a9c5d84efb810d2b5eb0304a0"
+    },
+    {
+      "id": "evidence-blocker-bravo-overlap",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-bravo-overlap",
+        "cert-bravo"
+      ],
+      "sourceRecordDigest": "sha256:a6c8e3b10b13b48a1aac7bdf747f22fb198d78bf0f6044db95d05e921b719f5d",
+      "payloadDigest": "sha256:c8fe332ed72e47fb4cdf68e120f6fc466c72ddb1f9eed2e9fd7d270f3a02bb6e",
+      "recordDigest": "sha256:20da655982b6cb998ab783cf6905546687269ba26a6bd8ed760721a8d78ef672"
+    },
+    {
+      "id": "evidence-blocker-charlie-issuance",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-charlie-issuance",
+        "cert-charlie"
+      ],
+      "sourceRecordDigest": "sha256:befad55e409211af39c875aad4e51b38837407c461d74661133e0d2889f20cb2",
+      "payloadDigest": "sha256:b7b9b5c510c6bc79ae9c21a38b1e0e138c0862d4c45c82b1bcb0ea23074cbd2e",
+      "recordDigest": "sha256:02a0623fe073ed99d13dd015166b2a19ea03032ac1f64d93c206a4329e870d46"
+    },
+    {
+      "id": "evidence-blocker-charlie-overlap",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-charlie-overlap",
+        "cert-charlie"
+      ],
+      "sourceRecordDigest": "sha256:1e734626f232ade19a8ea8acc47f771a888e02648f196336e3951b5e9fe37abb",
+      "payloadDigest": "sha256:c2d4b7d04e064a481a48ceeb7b5e40801bf81ac1c6df666f011b41123c57a356",
+      "recordDigest": "sha256:f2fea19239eec5d1e3d0df0bd76cd60f76ea3173405b098361513b3ccff765b3"
+    },
+    {
+      "id": "evidence-blocker-delta-issuance",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-delta-issuance",
+        "cert-delta"
+      ],
+      "sourceRecordDigest": "sha256:944d5f71fc21d80a564a2448540a221073b5f732e44d43875b30b903f5a05656",
+      "payloadDigest": "sha256:382643b9a3e44a54b613293910394bed6ebe4cc02988d6ef66cc3ca2dd9312da",
+      "recordDigest": "sha256:b4fa3a0422c77766b92b956d0a478f73f749886b1f7f6adb408637bdaa0c800f"
+    },
+    {
+      "id": "evidence-blocker-delta-overlap",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-delta-overlap",
+        "cert-delta"
+      ],
+      "sourceRecordDigest": "sha256:537cb04ee86a93fc263e944eb0ef261d0211746539a18450e719d3890f5e9859",
+      "payloadDigest": "sha256:33dc9dfb4f6e29f57f2d9040c06f8647bc3e94010ab9aa2de55744f210d40097",
+      "recordDigest": "sha256:441f0e661935d46418f977954744861c2c0f2120e8b16af0bb325048c205461e"
+    },
+    {
+      "id": "evidence-blocker-echo-deployment",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-echo-deployment",
+        "cert-echo",
+        "binding-echo"
+      ],
+      "sourceRecordDigest": "sha256:76e1c4f748703d1867cda39aa5e1cd77e29a04014d980d4c3357ed22562b6898",
+      "payloadDigest": "sha256:21b4968feada2b1b6b9d15bb06002a407923af098a56f77bd5e740a023d32aea",
+      "recordDigest": "sha256:608218d44c9ed09352ab9db88e02be0aaec136a663cb944845119180010654ed"
+    },
+    {
+      "id": "evidence-blocker-echo-overlap",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-echo-overlap",
+        "cert-echo"
+      ],
+      "sourceRecordDigest": "sha256:9c8ecdb1cabbd34eee32d3d0eb7f890ce9f6a11fd00710c6baf2e8671927c857",
+      "payloadDigest": "sha256:8e36d88ceff502a6d60903e5b52c7261c2ff964dd77119447d8213e7f8fccd48",
+      "recordDigest": "sha256:600e67047389c0bb1577695d5b1211602d7c6374eb78a9ffe5b35e4a9b65e135"
+    },
+    {
+      "id": "evidence-blocker-foxtrot-deployment",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-foxtrot-deployment",
+        "cert-foxtrot",
+        "binding-foxtrot"
+      ],
+      "sourceRecordDigest": "sha256:e37cb9ad7a113eb49135fd89d1ea91bf8a52e08fb1979c24a3bf705b02c78524",
+      "payloadDigest": "sha256:ab1424efcf6781501f9e1e925cbc297aad4cc378853d88fb25ad977b0be391db",
+      "recordDigest": "sha256:1c240d5e672cb6aede0e4fbd9c814a974e9dddcdea5bece0cf439b0299f39e90"
+    },
+    {
+      "id": "evidence-blocker-foxtrot-overlap",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-foxtrot-overlap",
+        "cert-foxtrot"
+      ],
+      "sourceRecordDigest": "sha256:c4717c40eafee5755d0483b031e2ccfe37ff44ecc6867835d82c3d1815359661",
+      "payloadDigest": "sha256:0c826435c9dee1f7c03355c0bee3f0aaccd1626287cc6ca71b158d2ab459f328",
+      "recordDigest": "sha256:9b55b0a6136868eda7dcdeb7a87c8044d6fba633ca6ca7025c59c6e6129812af"
+    },
+    {
+      "id": "evidence-blocker-golf-endpoint",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-golf-endpoint",
+        "cert-golf",
+        "binding-golf"
+      ],
+      "sourceRecordDigest": "sha256:177af47f0c6e55686d0c87207ff4ba1acf802c459866ed6d0e7107e4f2f49f46",
+      "payloadDigest": "sha256:d7adc451b5e4e8f991322477a9f18362b93925aaef4a3fa3d3144571175e9fec",
+      "recordDigest": "sha256:44ff6f088b9b43a0b2fff6f724abdaab224fc631918ac9025fe92341a8d82d87"
+    },
+    {
+      "id": "evidence-blocker-golf-overlap",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-golf-overlap",
+        "cert-golf"
+      ],
+      "sourceRecordDigest": "sha256:e9a8e242431232d63abcf493d183993cd5a1ed2b4ad8265d6f250ea14cabbe8e",
+      "payloadDigest": "sha256:cc8c5058f74af6dcb7acb4cf1b2fe44948d923cc5bafa650aa20c267ced279a0",
+      "recordDigest": "sha256:7463d92bca9e3c10bbb217fdbfcc5b852fe374f34a19011f269aea73653d55a9"
+    },
+    {
+      "id": "evidence-blocker-hotel-endpoint",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-hotel-endpoint",
+        "cert-hotel",
+        "binding-hotel"
+      ],
+      "sourceRecordDigest": "sha256:fe1b0adf4cec7d8c75150c1b65880f5ac56bc472c57c6bf8f34ccbefababb920",
+      "payloadDigest": "sha256:767487e93a1993c8d6b0d074045b02ced27f64edb0377794f85de0fae14e6fbf",
+      "recordDigest": "sha256:55967d5e01c51ed208a03584e20cf48f19c685fbeba772e33438f32836dfe085"
+    },
+    {
+      "id": "evidence-blocker-hotel-overlap",
+      "kind": "blocker-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-campaign-coordinator",
+      "subjectRefs": [
+        "blocker-hotel-overlap",
+        "cert-hotel"
+      ],
+      "sourceRecordDigest": "sha256:547a97c5432151dad158805f2c54f339b168fb3949bed571bd0fbb4c9245098e",
+      "payloadDigest": "sha256:2f5c747ea2111fc927c5b384826d2ca1701d1b0a394a8696d6a18eb88e005afa",
+      "recordDigest": "sha256:4dcdb27d0bb0a6ae8f2d31ed1d21a7ffc10438a63e613dbe0403b290c5f354ee"
+    },
+    {
+      "id": "evidence-destination",
+      "kind": "destination-approval-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-03T09:00:00Z",
+      "suppliedByRef": "principal-destination-approver",
+      "subjectRefs": [
+        "destination-approval-tls"
+      ],
+      "sourceRecordDigest": "sha256:926182a5cd794c08cc64e10c317778ae96b82b39fd4875a0cede78e2f9a18bd5",
+      "payloadDigest": "sha256:5d6257747f8575a0ea9f48b272e020ca6909fe0a8ff77d707b5c3525950669b9",
+      "recordDigest": "sha256:6fe8d09dc46f0305bf4f9f975533a04df6a2910af7fbc047c28b58a70be6f3eb"
+    },
+    {
+      "id": "evidence-handoff",
+      "kind": "handoff-record",
+      "roundRef": "round-tls-2026q3",
+      "observedAt": "2026-09-03T10:00:00Z",
+      "suppliedByRef": "principal-handoff-recipient",
+      "subjectRefs": [
+        "handoff-tls-2026q3"
+      ],
+      "sourceRecordDigest": "sha256:a11ca54fd0e26fca90648c20221fe84b73d080cb3d18d1ac5b7caab39460e9b5",
+      "payloadDigest": "sha256:d4d95e1e981af0ff880c50bf43eca1acdf835592aa61dfeb2233ff514f16bc91",
+      "recordDigest": "sha256:e02229571a9a78b9380aaaf259fa314c577f38907c6c9a5471c94c52f932c2ed"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "blocker-bravo-overlap",
+      "certificateRef": "cert-bravo",
+      "category": "overlap-retained",
+      "subjectRefs": [
+        "cert-bravo"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-bravo-overlap",
+      "payloadDigest": "sha256:c8fe332ed72e47fb4cdf68e120f6fc466c72ddb1f9eed2e9fd7d270f3a02bb6e"
+    },
+    {
+      "id": "blocker-charlie-issuance",
+      "certificateRef": "cert-charlie",
+      "category": "issuance-pending",
+      "subjectRefs": [
+        "cert-charlie"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-charlie-issuance",
+      "payloadDigest": "sha256:b7b9b5c510c6bc79ae9c21a38b1e0e138c0862d4c45c82b1bcb0ea23074cbd2e"
+    },
+    {
+      "id": "blocker-charlie-overlap",
+      "certificateRef": "cert-charlie",
+      "category": "overlap-retained",
+      "subjectRefs": [
+        "cert-charlie"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-charlie-overlap",
+      "payloadDigest": "sha256:c2d4b7d04e064a481a48ceeb7b5e40801bf81ac1c6df666f011b41123c57a356"
+    },
+    {
+      "id": "blocker-delta-issuance",
+      "certificateRef": "cert-delta",
+      "category": "issuance-failed",
+      "subjectRefs": [
+        "cert-delta"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-delta-issuance",
+      "payloadDigest": "sha256:382643b9a3e44a54b613293910394bed6ebe4cc02988d6ef66cc3ca2dd9312da"
+    },
+    {
+      "id": "blocker-delta-overlap",
+      "certificateRef": "cert-delta",
+      "category": "overlap-retained",
+      "subjectRefs": [
+        "cert-delta"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-delta-overlap",
+      "payloadDigest": "sha256:33dc9dfb4f6e29f57f2d9040c06f8647bc3e94010ab9aa2de55744f210d40097"
+    },
+    {
+      "id": "blocker-echo-deployment",
+      "certificateRef": "cert-echo",
+      "category": "deployment-missing",
+      "subjectRefs": [
+        "cert-echo",
+        "binding-echo"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-echo-deployment",
+      "payloadDigest": "sha256:21b4968feada2b1b6b9d15bb06002a407923af098a56f77bd5e740a023d32aea"
+    },
+    {
+      "id": "blocker-echo-overlap",
+      "certificateRef": "cert-echo",
+      "category": "overlap-retained",
+      "subjectRefs": [
+        "cert-echo"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-echo-overlap",
+      "payloadDigest": "sha256:8e36d88ceff502a6d60903e5b52c7261c2ff964dd77119447d8213e7f8fccd48"
+    },
+    {
+      "id": "blocker-foxtrot-deployment",
+      "certificateRef": "cert-foxtrot",
+      "category": "deployment-failed",
+      "subjectRefs": [
+        "cert-foxtrot",
+        "binding-foxtrot"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-foxtrot-deployment",
+      "payloadDigest": "sha256:ab1424efcf6781501f9e1e925cbc297aad4cc378853d88fb25ad977b0be391db"
+    },
+    {
+      "id": "blocker-foxtrot-overlap",
+      "certificateRef": "cert-foxtrot",
+      "category": "overlap-retained",
+      "subjectRefs": [
+        "cert-foxtrot"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-foxtrot-overlap",
+      "payloadDigest": "sha256:0c826435c9dee1f7c03355c0bee3f0aaccd1626287cc6ca71b158d2ab459f328"
+    },
+    {
+      "id": "blocker-golf-endpoint",
+      "certificateRef": "cert-golf",
+      "category": "endpoint-fingerprint-mismatch",
+      "subjectRefs": [
+        "cert-golf",
+        "binding-golf"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-golf-endpoint",
+      "payloadDigest": "sha256:d7adc451b5e4e8f991322477a9f18362b93925aaef4a3fa3d3144571175e9fec"
+    },
+    {
+      "id": "blocker-golf-overlap",
+      "certificateRef": "cert-golf",
+      "category": "overlap-retained",
+      "subjectRefs": [
+        "cert-golf"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-golf-overlap",
+      "payloadDigest": "sha256:cc8c5058f74af6dcb7acb4cf1b2fe44948d923cc5bafa650aa20c267ced279a0"
+    },
+    {
+      "id": "blocker-hotel-endpoint",
+      "certificateRef": "cert-hotel",
+      "category": "endpoint-chain-failed",
+      "subjectRefs": [
+        "cert-hotel",
+        "binding-hotel"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-hotel-endpoint",
+      "payloadDigest": "sha256:767487e93a1993c8d6b0d074045b02ced27f64edb0377794f85de0fae14e6fbf"
+    },
+    {
+      "id": "blocker-hotel-overlap",
+      "certificateRef": "cert-hotel",
+      "category": "overlap-retained",
+      "subjectRefs": [
+        "cert-hotel"
+      ],
+      "detectedAt": "2026-09-02T10:00:00Z",
+      "ownerRef": "principal-campaign-coordinator",
+      "evidenceRef": "evidence-blocker-hotel-overlap",
+      "payloadDigest": "sha256:2f5c747ea2111fc927c5b384826d2ca1701d1b0a394a8696d6a18eb88e005afa"
+    }
+  ],
+  "coverage": {
+    "roundRef": "round-tls-2026q3",
+    "planDigest": "sha256:d91ae5bd5e82e694df08aca82443864f8c707ccc562b0ebfd8e010d5c7485b2c",
+    "certificateRefs": [
+      "cert-alpha",
+      "cert-bravo",
+      "cert-charlie",
+      "cert-delta",
+      "cert-echo",
+      "cert-foxtrot",
+      "cert-golf",
+      "cert-hotel",
+      "cert-india"
+    ],
+    "rotateCertificateRefs": [
+      "cert-alpha",
+      "cert-bravo",
+      "cert-charlie",
+      "cert-delta",
+      "cert-echo",
+      "cert-foxtrot",
+      "cert-golf",
+      "cert-hotel"
+    ],
+    "excludeCertificateRefs": [
+      "cert-india"
+    ],
+    "bindingRefs": [
+      "binding-alpha",
+      "binding-bravo",
+      "binding-echo",
+      "binding-foxtrot",
+      "binding-golf",
+      "binding-hotel"
+    ],
+    "rotationRequestRefs": [
+      "request-alpha",
+      "request-bravo",
+      "request-charlie",
+      "request-delta",
+      "request-echo",
+      "request-foxtrot",
+      "request-golf",
+      "request-hotel"
+    ],
+    "issuanceRefs": [
+      "issuance-alpha",
+      "issuance-bravo",
+      "issuance-charlie",
+      "issuance-delta",
+      "issuance-echo",
+      "issuance-foxtrot",
+      "issuance-golf",
+      "issuance-hotel"
+    ],
+    "deploymentRefs": [
+      "deployment-alpha",
+      "deployment-bravo",
+      "deployment-foxtrot",
+      "deployment-golf",
+      "deployment-hotel"
+    ],
+    "endpointObservationRefs": [
+      "endpoint-alpha",
+      "endpoint-bravo",
+      "endpoint-golf",
+      "endpoint-hotel"
+    ],
+    "retirementRefs": [
+      "retirement-alpha"
+    ],
+    "overlapRefs": [
+      "overlap-bravo",
+      "overlap-charlie",
+      "overlap-delta",
+      "overlap-echo",
+      "overlap-foxtrot",
+      "overlap-golf",
+      "overlap-hotel"
+    ],
+    "blockerRefs": [
+      "blocker-bravo-overlap",
+      "blocker-charlie-issuance",
+      "blocker-charlie-overlap",
+      "blocker-delta-issuance",
+      "blocker-delta-overlap",
+      "blocker-echo-deployment",
+      "blocker-echo-overlap",
+      "blocker-foxtrot-deployment",
+      "blocker-foxtrot-overlap",
+      "blocker-golf-endpoint",
+      "blocker-golf-overlap",
+      "blocker-hotel-endpoint",
+      "blocker-hotel-overlap"
+    ],
+    "contentDigest": "sha256:6b646bd46737fd568de531f479c75bfae4f55307a364d55dbf8d623533f607eb"
+  },
+  "destinationApproval": {
+    "id": "destination-approval-tls",
+    "roundRef": "round-tls-2026q3",
+    "planDigest": "sha256:d91ae5bd5e82e694df08aca82443864f8c707ccc562b0ebfd8e010d5c7485b2c",
+    "coverageDigest": "sha256:6b646bd46737fd568de531f479c75bfae4f55307a364d55dbf8d623533f607eb",
+    "destination": "tls-rotation-owner-review-queue",
+    "approvedByRef": "principal-destination-approver",
+    "authorityGrantRef": "grant-destination",
+    "approvedAt": "2026-09-03T09:00:00Z",
+    "evidenceRef": "evidence-destination",
+    "payloadDigest": "sha256:5d6257747f8575a0ea9f48b272e020ca6909fe0a8ff77d707b5c3525950669b9"
+  },
+  "handoff": {
+    "id": "handoff-tls-2026q3",
+    "roundRef": "round-tls-2026q3",
+    "planDigest": "sha256:d91ae5bd5e82e694df08aca82443864f8c707ccc562b0ebfd8e010d5c7485b2c",
+    "coverageDigest": "sha256:6b646bd46737fd568de531f479c75bfae4f55307a364d55dbf8d623533f607eb",
+    "destinationApprovalRef": "destination-approval-tls",
+    "destinationApprovalDigest": "sha256:5d6257747f8575a0ea9f48b272e020ca6909fe0a8ff77d707b5c3525950669b9",
+    "destinationApprovalEvidenceDigest": "sha256:6fe8d09dc46f0305bf4f9f975533a04df6a2910af7fbc047c28b58a70be6f3eb",
+    "state": "blocked",
+    "nextOwnerRef": "principal-handoff-recipient",
+    "authorityGrantRef": "grant-handoff",
+    "handedOffAt": "2026-09-03T10:00:00Z",
+    "rotationRequestRefs": [
+      "request-alpha",
+      "request-bravo",
+      "request-charlie",
+      "request-delta",
+      "request-echo",
+      "request-foxtrot",
+      "request-golf",
+      "request-hotel"
+    ],
+    "issuanceRefs": [
+      "issuance-alpha",
+      "issuance-bravo",
+      "issuance-charlie",
+      "issuance-delta",
+      "issuance-echo",
+      "issuance-foxtrot",
+      "issuance-golf",
+      "issuance-hotel"
+    ],
+    "deploymentRefs": [
+      "deployment-alpha",
+      "deployment-bravo",
+      "deployment-foxtrot",
+      "deployment-golf",
+      "deployment-hotel"
+    ],
+    "endpointObservationRefs": [
+      "endpoint-alpha",
+      "endpoint-bravo",
+      "endpoint-golf",
+      "endpoint-hotel"
+    ],
+    "retirementRefs": [
+      "retirement-alpha"
+    ],
+    "overlapRefs": [
+      "overlap-bravo",
+      "overlap-charlie",
+      "overlap-delta",
+      "overlap-echo",
+      "overlap-foxtrot",
+      "overlap-golf",
+      "overlap-hotel"
+    ],
+    "blockerRefs": [
+      "blocker-bravo-overlap",
+      "blocker-charlie-issuance",
+      "blocker-charlie-overlap",
+      "blocker-delta-issuance",
+      "blocker-delta-overlap",
+      "blocker-echo-deployment",
+      "blocker-echo-overlap",
+      "blocker-foxtrot-deployment",
+      "blocker-foxtrot-overlap",
+      "blocker-golf-endpoint",
+      "blocker-golf-overlap",
+      "blocker-hotel-endpoint",
+      "blocker-hotel-overlap"
+    ],
+    "privateKeyAccessClaim": "not-claimed",
+    "certificateBodyAccessClaim": "not-claimed",
+    "issuanceExecutionClaim": "not-claimed",
+    "deploymentExecutionClaim": "not-claimed",
+    "listenerRouteChangeClaim": "not-claimed",
+    "restartClaim": "not-claimed",
+    "revocationClaim": "not-claimed",
+    "disableClaim": "not-claimed",
+    "deletionClaim": "not-claimed",
+    "externalCommunicationClaim": "not-claimed",
+    "readinessClaim": "not-claimed",
+    "identityAssuranceClaim": "not-claimed",
+    "securityAssuranceClaim": "not-claimed",
+    "complianceClaim": "not-claimed",
+    "auditClaim": "not-claimed",
+    "rotationCompletionClaim": "not-claimed",
+    "evidenceRef": "evidence-handoff",
+    "payloadDigest": "sha256:d4d95e1e981af0ff880c50bf43eca1acdf835592aa61dfeb2233ff514f16bc91"
+  }
+}

@@ -88,7 +88,8 @@
       "access-entitlement-review-coordinator",
       "financial-account-reconciliation-coordinator",
       "contract-obligation-tracker",
-      "backup-restore-verification-coordinator"
+      "backup-restore-verification-coordinator",
+      "tls-certificate-rotation-verification-coordinator"
     ]
   },
   "visualCases": [

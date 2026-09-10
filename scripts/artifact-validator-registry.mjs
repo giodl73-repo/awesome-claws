@@ -107,6 +107,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "travel-concierge": "travel-shortlist.schema.json",
   "travel-planner": "itinerary-plan.schema.json",
   "travel-loyalty-points-organizer": "travel-loyalty.schema.json",
+  "tls-certificate-rotation-verification-coordinator": "tls-certificate-rotation.schema.json",
   "ux-research-synthesizer": "research-evidence.schema.json",
   "vehicle-service-coordinator": "vehicle-service.schema.json",
   "video-concept-producer": "video-concept-generation-manifest.schema.json",

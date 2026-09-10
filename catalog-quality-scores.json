@@ -13,12 +13,12 @@
     "stewardship": 5
   },
   "summary": {
-    "entryCount": 108,
+    "entryCount": 109,
     "average": 98.8,
     "median": 100,
-    "qualifiedCount": 108,
+    "qualifiedCount": 109,
     "bands": {
-      "exemplary": 108,
+      "exemplary": 109,
       "strong": 0,
       "solid": 0,
       "needs-uplift": 0,
@@ -34,10 +34,10 @@
       "stewardship": 5
     },
     "evidenceCoverage": {
-      "contributionRecords": 97,
-      "schemas": 108,
-      "semanticValidators": 108,
-      "screenshots": 108
+      "contributionRecords": 98,
+      "schemas": 109,
+      "semanticValidators": 109,
+      "screenshots": 109
     }
   },
   "scores": [
@@ -65,7 +65,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 5,
+        "comparedAlternatives": 6,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -192,7 +192,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 101
+      "rank": 102
     },
     {
       "id": "research-briefing",
@@ -231,7 +231,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 96
+      "rank": 97
     },
     {
       "id": "financial-analyst",
@@ -344,7 +344,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 106
+      "rank": 107
     },
     {
       "id": "recruiting-coordinator",
@@ -381,7 +381,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 105
+      "rank": 106
     },
     {
       "id": "content-operations",
@@ -492,7 +492,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 104
+      "rank": 105
     },
     {
       "id": "product-manager",
@@ -531,7 +531,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 103
+      "rank": 104
     },
     {
       "id": "compliance-reviewer",
@@ -641,7 +641,7 @@
         "maintenanceAgeDays": 10
       },
       "recommendations": [],
-      "rank": 90
+      "rank": 91
     },
     {
       "id": "meeting-intelligence",
@@ -716,7 +716,7 @@
         "maintenanceAgeDays": 12
       },
       "recommendations": [],
-      "rank": 99
+      "rank": 100
     },
     {
       "id": "knowledge-gardener",
@@ -789,7 +789,7 @@
         "maintenanceAgeDays": 11
       },
       "recommendations": [],
-      "rank": 97
+      "rank": 98
     },
     {
       "id": "presentation-producer",
@@ -826,7 +826,7 @@
         "maintenanceAgeDays": 9
       },
       "recommendations": [],
-      "rank": 94
+      "rank": 95
     },
     {
       "id": "document-intake-analyst",
@@ -863,7 +863,7 @@
         "maintenanceAgeDays": 12
       },
       "recommendations": [],
-      "rank": 102
+      "rank": 103
     },
     {
       "id": "media-evidence-reviewer",
@@ -900,7 +900,7 @@
         "maintenanceAgeDays": 12
       },
       "recommendations": [],
-      "rank": 93
+      "rank": 94
     },
     {
       "id": "release-coordinator",
@@ -926,7 +926,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 5,
+        "comparedAlternatives": 6,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -976,7 +976,7 @@
         "maintenanceAgeDays": 11
       },
       "recommendations": [],
-      "rank": 91
+      "rank": 92
     },
     {
       "id": "travel-planner",
@@ -1013,7 +1013,7 @@
         "maintenanceAgeDays": 11
       },
       "recommendations": [],
-      "rank": 100
+      "rank": 101
     },
     {
       "id": "travel-concierge",
@@ -1054,7 +1054,7 @@
         "maintenanceAgeDays": 12
       },
       "recommendations": [],
-      "rank": 73
+      "rank": 74
     },
     {
       "id": "web-evidence-researcher",
@@ -1091,7 +1091,7 @@
         "maintenanceAgeDays": 11
       },
       "recommendations": [],
-      "rank": 81
+      "rank": 82
     },
     {
       "id": "website-evidence-collector",
@@ -1128,7 +1128,7 @@
         "maintenanceAgeDays": 11
       },
       "recommendations": [],
-      "rank": 82
+      "rank": 83
     },
     {
       "id": "video-concept-producer",
@@ -1165,7 +1165,7 @@
         "maintenanceAgeDays": 9
       },
       "recommendations": [],
-      "rank": 77
+      "rank": 78
     },
     {
       "id": "workflow-operator",
@@ -1202,7 +1202,7 @@
         "maintenanceAgeDays": 9
       },
       "recommendations": [],
-      "rank": 84
+      "rank": 85
     },
     {
       "id": "public-company-watcher",
@@ -1240,7 +1240,7 @@
         "maintenanceAgeDays": 11
       },
       "recommendations": [],
-      "rank": 95
+      "rank": 96
     },
     {
       "id": "research-scout",
@@ -1278,7 +1278,7 @@
         "maintenanceAgeDays": 12
       },
       "recommendations": [],
-      "rank": 98
+      "rank": 99
     },
     {
       "id": "public-safety-monitor",
@@ -1318,7 +1318,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 108
+      "rank": 109
     },
     {
       "id": "civic-data-analyst",
@@ -1357,7 +1357,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 107
+      "rank": 108
     },
     {
       "id": "event-operations-director",
@@ -1659,7 +1659,7 @@
         "maintenanceAgeDays": 22
       },
       "recommendations": [],
-      "rank": 75
+      "rank": 76
     },
     {
       "id": "experimentation-lead",
@@ -1722,7 +1722,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 6,
+        "comparedAlternatives": 7,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -1833,7 +1833,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 5,
+        "comparedAlternatives": 6,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -1918,7 +1918,7 @@
         "maintenanceAgeDays": 12
       },
       "recommendations": [],
-      "rank": 92
+      "rank": 93
     },
     {
       "id": "data-governance-steward",
@@ -1994,7 +1994,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 88
+      "rank": 89
     },
     {
       "id": "case-continuity-coordinator",
@@ -2031,7 +2031,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 87
+      "rank": 88
     },
     {
       "id": "delegation-coordinator",
@@ -2070,7 +2070,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 89
+      "rank": 90
     },
     {
       "id": "model-evaluation-adjudicator",
@@ -2105,7 +2105,7 @@
         "maintenanceAgeDays": 22
       },
       "recommendations": [],
-      "rank": 85
+      "rank": 86
     },
     {
       "id": "vehicle-service-coordinator",
@@ -2140,7 +2140,7 @@
         "maintenanceAgeDays": 21
       },
       "recommendations": [],
-      "rank": 76
+      "rank": 77
     },
     {
       "id": "home-repair-coordinator",
@@ -2389,7 +2389,7 @@
         "maintenanceAgeDays": 20
       },
       "recommendations": [],
-      "rank": 83
+      "rank": 84
     },
     {
       "id": "care-circle-coordinator",
@@ -2424,7 +2424,7 @@
         "maintenanceAgeDays": 20
       },
       "recommendations": [],
-      "rank": 86
+      "rank": 87
     },
     {
       "id": "stock-portfolio-monitor",
@@ -3159,7 +3159,7 @@
         "maintenanceAgeDays": 14
       },
       "recommendations": [],
-      "rank": 79
+      "rank": 80
     },
     {
       "id": "document-renewal-tracker",
@@ -3369,7 +3369,7 @@
         "maintenanceAgeDays": 13
       },
       "recommendations": [],
-      "rank": 80
+      "rank": 81
     },
     {
       "id": "job-application-tracker",
@@ -3439,7 +3439,7 @@
         "maintenanceAgeDays": 13
       },
       "recommendations": [],
-      "rank": 74
+      "rank": 75
     },
     {
       "id": "professional-networking-followup",
@@ -3745,7 +3745,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 11,
+        "comparedAlternatives": 12,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -3780,7 +3780,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 11,
+        "comparedAlternatives": 12,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -3789,7 +3789,7 @@
         "maintenanceAgeDays": 3
       },
       "recommendations": [],
-      "rank": 78
+      "rank": 79
     },
     {
       "id": "infrastructure-drift-reconciliation-coordinator",
@@ -3815,7 +3815,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 10,
+        "comparedAlternatives": 11,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -3850,7 +3850,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 11,
+        "comparedAlternatives": 12,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -3885,7 +3885,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 12,
+        "comparedAlternatives": 13,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -3920,7 +3920,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 11,
+        "comparedAlternatives": 12,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -3955,7 +3955,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 10,
+        "comparedAlternatives": 11,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -3965,6 +3965,41 @@
       },
       "recommendations": [],
       "rank": 5
+    },
+    {
+      "id": "tls-certificate-rotation-verification-coordinator",
+      "name": "TLS Certificate Rotation Verification Coordinator",
+      "category": "governance",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 12,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 0
+      },
+      "recommendations": [],
+      "rank": 73
     }
   ]
 }

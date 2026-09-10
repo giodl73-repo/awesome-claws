@@ -151,6 +151,11 @@
         "id": "backup-restore-verification-coordinator",
         "overlap": "Both track exact item universes, authority, retention state, evidence, blockers, and completion handoffs.",
         "difference": "Backup Restore Verification Coordinator tracks temporary restore-target cleanup or bounded retention without applying policy to or disposing record copies."
+      },
+      {
+        "id": "tls-certificate-rotation-verification-coordinator",
+        "overlap": "Both track an exact owner-supplied item universe, authority, retention or terminal state, evidence, blockers, and a completion handoff without executing changes.",
+        "difference": "TLS Certificate Rotation Verification tracks predecessor certificate retirement or approved temporary overlap after successor deployment and endpoint validation. This Claw applies supplied retention policy to record copies."
       }
     ]
   }

@@ -87,6 +87,11 @@
         "id": "backup-restore-verification-coordinator",
         "overlap": "Both aggregate independently produced evidence, enforce gates, and provide an owner-visible readiness handoff.",
         "difference": "Backup Restore Verification Coordinator cannot gate or approve a release and derives only restore-exercise blockers from owner-supplied backup metadata."
+      },
+      {
+        "id": "tls-certificate-rotation-verification-coordinator",
+        "overlap": "Both aggregate independently produced evidence, enforce gates and separation, and provide an owner-visible readiness handoff that cannot pass while blockers remain.",
+        "difference": "TLS Certificate Rotation Verification derives certificate rotation blockers from issuance, deployment, and endpoint metadata and cannot approve a release. This Claw decides software release readiness across gates."
       }
     ]
   }
