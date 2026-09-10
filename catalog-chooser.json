@@ -168,6 +168,40 @@
       }
     },
     {
+      "id": "backup-restore-verification-coordinator",
+      "name": "Backup Restore Verification Coordinator",
+      "description": "Coordinates one bounded metadata-only restore-verification round over an exact owner-supplied protected-resource universe, proving selected recovery points were restored to isolated targets, independently validated, and explicitly cleaned or retained while backup owners retain all backup, restore, deletion, production, and compliance authority.",
+      "audience": "Authorized resilience, disaster-recovery, platform, infrastructure, application, and data-service owners verifying owner-supplied backup metadata in a controlled workspace without exposing backup contents or granting provider execution.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-09"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "benefits-open-enrollment-planner",
       "name": "Benefits and open enrollment planner",
       "description": "Organizes owner-supplied benefits packets, plan options, enrollment windows, dependent documents, payroll impact notes, coverage-change evidence, and review questions without choosing benefits, submitting elections, changing payroll, filing claims, or giving medical, legal, tax, financial, or insurance advice.",

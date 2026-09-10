@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { accessEntitlementReviewFindings } from "./access-entitlement-review-coordinator.mjs";
+import { backupRestoreVerificationFindings } from "./backup-restore-verification-coordinator.mjs";
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
 import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
@@ -52201,6 +52202,7 @@ const validators = {
   "accessibility-review-coordinator": accessibilityReviewFindings,
   "api-integration-engineer": apiIntegrationReadinessFindings,
   "appliance-care-coordinator": applianceCareFindings,
+  "backup-restore-verification-coordinator": backupRestoreVerificationFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
   "care-circle-coordinator": careCircleFindings,
   "case-continuity-coordinator": caseContinuityFindings,
@@ -52308,6 +52310,9 @@ const validators = {
 };
 
 const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
+  "backup-restore-verification-coordinator": Object.freeze({
+    asOf: "2026-09-02T12:00:00Z",
+  }),
   "contract-obligation-tracker": Object.freeze({
     asOf: "2026-09-05T17:00:00Z",
   }),

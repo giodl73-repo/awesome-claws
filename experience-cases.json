@@ -87,7 +87,8 @@
       "infrastructure-drift-reconciliation-coordinator",
       "access-entitlement-review-coordinator",
       "financial-account-reconciliation-coordinator",
-      "contract-obligation-tracker"
+      "contract-obligation-tracker",
+      "backup-restore-verification-coordinator"
     ]
   },
   "visualCases": [

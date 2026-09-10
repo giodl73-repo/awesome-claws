@@ -1,0 +1,1674 @@
+{
+  "schemaVersion": "awesomeClaws.backupRestoreVerification.v1",
+  "artifactId": "artifact-quarterly-restore-verification",
+  "round": {
+    "id": "round-quarterly-restore",
+    "requestedAt": "2026-09-01T09:00:00Z",
+    "rpoMinutes": 1500,
+    "rtoMinutes": 90,
+    "protectedResourceExportRef": "export-protected-resources",
+    "protectedResourceExportDigest": "sha256:f7ccb04d41c3f4fbc4a2b0601057c5cec58c692810dc0f60515710b6ac2e683b",
+    "recoveryPointExportRef": "export-recovery-points",
+    "recoveryPointExportDigest": "sha256:fbd1d953c3d8fb6c6a7b282a7591d268648007e5e2bab0a24f8a333801ee51de",
+    "authorityRosterRef": "roster-resilience-round",
+    "authorityRosterDigest": "sha256:6a36960b64f41877b44333b7f26dfeeb91528983cd1bbd709f3bbb744ce45d26",
+    "destination": "resilience-owner-review-queue",
+    "destinationApproverRef": "principal-destination-approver",
+    "handoffOwnerRef": "principal-handoff-owner",
+    "planDigest": "sha256:0b2bce2f13f302728d9d0588a205cd11b9ecc32085c39ad3c401ccc6891b3270"
+  },
+  "resources": [
+    {
+      "id": "resource-orders-db",
+      "ownerSystemRef": "principal-resource-owner-system",
+      "resourceClass": "database",
+      "selectionState": "selected",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:3e6c7d09eb1bfcc5ff5f04ccdf9b1a041eb1c701f1f0359c65ed9d4b2c1c37d8",
+      "payloadDigest": "sha256:6c325d9346bceb67f47285718906a87b4ff9443de111e8337f90fc9abd18ff76"
+    },
+    {
+      "id": "resource-documents-store",
+      "ownerSystemRef": "principal-resource-owner-system",
+      "resourceClass": "object-store",
+      "selectionState": "selected",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:6f98a815e18fd127140650865b7db285e263457f8a2f3f666f124b660958d075",
+      "payloadDigest": "sha256:097c92de7d4135570b9a014ab6f9f7650e8bc385eafe41e7d77aec2af7b9cb9d"
+    },
+    {
+      "id": "resource-team-files",
+      "ownerSystemRef": "principal-resource-owner-system",
+      "resourceClass": "file-share",
+      "selectionState": "selected",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:55d7fe34cf6648230405fda256f75695c83779bcd69da4d9c8bdba3b76ff822d",
+      "payloadDigest": "sha256:410386e2246f634d7cfe23a48c5fb8ad23e737df24487351554c4f8164fc2a04"
+    },
+    {
+      "id": "resource-runtime-config",
+      "ownerSystemRef": "principal-resource-owner-system",
+      "resourceClass": "configuration-store",
+      "selectionState": "selected",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:bce7a21f24a92953512f238a8827978ee7bcf9044526ef155a22a28eb9190b3f",
+      "payloadDigest": "sha256:458bf6754973c6404830a18711ffab6f58baa5dd0871c563542499d636d0d5e0"
+    },
+    {
+      "id": "resource-search-catalog",
+      "ownerSystemRef": "principal-resource-owner-system",
+      "resourceClass": "search-index",
+      "selectionState": "selected",
+      "exclusionReason": null,
+      "sourceRecordDigest": "sha256:d2be2a259f1bfc876156b8de3dacdb4ebd40d9aa16710d0111ccb9beff42d5ee",
+      "payloadDigest": "sha256:c5330fba82c04573c93f94c018b9fc8127f45ae3d30afea4114b53fa2af269a9"
+    },
+    {
+      "id": "resource-event-queue",
+      "ownerSystemRef": "principal-resource-owner-system",
+      "resourceClass": "queue",
+      "selectionState": "excluded",
+      "exclusionReason": "owner-approved-out-of-scope",
+      "sourceRecordDigest": "sha256:e86e89e593ef6a8e57d751a8d289384c6e34646fb5c1ddcc67da0f7e4b1f859c",
+      "payloadDigest": "sha256:b3c495312b497aea8a09a6e7382fcbc7d327b7e3b0831b38fb8ae7d30f4d22e2"
+    }
+  ],
+  "protectedResourceExport": {
+    "id": "export-protected-resources",
+    "exportedAt": "2026-08-31T08:40:00Z",
+    "suppliedByRef": "principal-resource-owner-system",
+    "resourceRefs": [
+      "resource-orders-db",
+      "resource-documents-store",
+      "resource-team-files",
+      "resource-runtime-config",
+      "resource-search-catalog",
+      "resource-event-queue"
+    ],
+    "evidenceRef": "evidence-resource-export",
+    "contentDigest": "sha256:f7ccb04d41c3f4fbc4a2b0601057c5cec58c692810dc0f60515710b6ac2e683b"
+  },
+  "recoveryPoints": [
+    {
+      "id": "recovery-orders",
+      "resourceRef": "resource-orders-db",
+      "providerRef": "principal-restore-provider",
+      "capturedAt": "2026-08-31T08:30:00Z",
+      "eligibility": "owner-exported-eligible",
+      "sourceRecordDigest": "sha256:74f732de7d312676daea69b70fa2e0fe119818f67af7aed7d2abd8ea77d16f2c",
+      "payloadDigest": "sha256:9a6d4e206cb0ed08ac030a5ebc90547b2cb717924c5bd5c13f1f623e4d892184"
+    },
+    {
+      "id": "recovery-documents",
+      "resourceRef": "resource-documents-store",
+      "providerRef": "principal-restore-provider",
+      "capturedAt": "2026-08-31T08:20:00Z",
+      "eligibility": "owner-exported-eligible",
+      "sourceRecordDigest": "sha256:5b471a84f681c4ae86a3c4d607da695d527ea3bbeb249c4385a2e24b3fe00a13",
+      "payloadDigest": "sha256:fab37225f302100d1df37678981a295dbbad6a5ece1e4a590045b37ebc6c2fed"
+    },
+    {
+      "id": "recovery-files",
+      "resourceRef": "resource-team-files",
+      "providerRef": "principal-restore-provider",
+      "capturedAt": "2026-08-31T08:10:00Z",
+      "eligibility": "owner-exported-eligible",
+      "sourceRecordDigest": "sha256:50a6aa98e09194b0adbc13a6d67f8a4bfb648c8b44bdae3de297a11da1abf4a5",
+      "payloadDigest": "sha256:98d59bc889de3d74754ef240209a080cde982e4a14aef56e3c77c3e98737abff"
+    },
+    {
+      "id": "recovery-config",
+      "resourceRef": "resource-runtime-config",
+      "providerRef": "principal-restore-provider",
+      "capturedAt": "2026-08-31T08:00:00Z",
+      "eligibility": "owner-exported-eligible",
+      "sourceRecordDigest": "sha256:c14617dc0dcab97520168a02ca3dc944c3fa7665ef5911278047d85c3f170229",
+      "payloadDigest": "sha256:ec8fb9cba62cd6439e09c9622082d86bca0f533be2d5aee754d702782c2d2585"
+    },
+    {
+      "id": "recovery-search",
+      "resourceRef": "resource-search-catalog",
+      "providerRef": "principal-restore-provider",
+      "capturedAt": "2026-08-30T07:30:00Z",
+      "eligibility": "owner-exported-eligible",
+      "sourceRecordDigest": "sha256:4d51aa920c241bdc0c5ef0ae43f094f1f6d585a60751fac986eac7cb826c1360",
+      "payloadDigest": "sha256:fc65173551d580a525d1b8e327f67789cb0a8fcdfd8e2d80501f58522d82d577"
+    }
+  ],
+  "recoveryPointExport": {
+    "id": "export-recovery-points",
+    "exportedAt": "2026-08-31T08:45:00Z",
+    "cutoffAt": "2026-08-31T08:00:00Z",
+    "suppliedByRef": "principal-recovery-catalog",
+    "recoveryPointRefs": [
+      "recovery-orders",
+      "recovery-documents",
+      "recovery-files",
+      "recovery-config",
+      "recovery-search"
+    ],
+    "evidenceRef": "evidence-recovery-point-export",
+    "contentDigest": "sha256:fbd1d953c3d8fb6c6a7b282a7591d268648007e5e2bab0a24f8a333801ee51de"
+  },
+  "targets": [
+    {
+      "id": "target-1",
+      "providerRef": "principal-restore-provider",
+      "isolation": "isolated-temporary",
+      "locatorDigest": "sha256:ffc81edb3caa4e3a3ef44ce957b1a1da695df7d96f147bd0d56dc0641048263d",
+      "sourceRecordDigest": "sha256:b02f402aba8cace34f5b59f244ef354d11f3bb3a9bf1c75eca7f9952fae42e78",
+      "evidenceRef": "evidence-target-1",
+      "payloadDigest": "sha256:f3da83fc6aa370891a142a9f3f762aa6df05a568f0264c79697751b39638457f"
+    },
+    {
+      "id": "target-2",
+      "providerRef": "principal-restore-provider",
+      "isolation": "isolated-temporary",
+      "locatorDigest": "sha256:2f7013fb136dca252414da427d79c1a6c0c029e025cf84c2272929703c116fd2",
+      "sourceRecordDigest": "sha256:5298be1212bc973e3d7230f34887ef1ec6960f11a7b0d5b216ce839cfe742a50",
+      "evidenceRef": "evidence-target-2",
+      "payloadDigest": "sha256:231d40c58da35e8a7175e557d7a260054d90f241aefe357cfd4c83afbd36a92c"
+    },
+    {
+      "id": "target-3",
+      "providerRef": "principal-restore-provider",
+      "isolation": "isolated-temporary",
+      "locatorDigest": "sha256:74729032197a16a092a900577a4391e2b105d77098f74627d9711cc6b083fe2f",
+      "sourceRecordDigest": "sha256:805c92c17742ba4eb88ad2286e9143c7b548221de83d10c340daa40294a2c683",
+      "evidenceRef": "evidence-target-3",
+      "payloadDigest": "sha256:f0c62f06b0b992c8cbe1283688fa2b2e5632921196f72b87d1d166233c9fa65c"
+    },
+    {
+      "id": "target-4",
+      "providerRef": "principal-restore-provider",
+      "isolation": "isolated-temporary",
+      "locatorDigest": "sha256:38004e6c9dc94b477da775e36dbd547e14e451fb8713b10b113d9846f6d11095",
+      "sourceRecordDigest": "sha256:44f422ee5c63fd7d10af57d53e8011c989a14fee6df0bc23a24f241de1ed6c81",
+      "evidenceRef": "evidence-target-4",
+      "payloadDigest": "sha256:707f0197919c2ea40ca146337954b2bd9d9c5020b94e0915e7906d5e97283537"
+    },
+    {
+      "id": "target-5",
+      "providerRef": "principal-restore-provider",
+      "isolation": "isolated-temporary",
+      "locatorDigest": "sha256:305756d821305e8258747c39ba9512c44eb9510ff499a46131e79ef6bf8a7c94",
+      "sourceRecordDigest": "sha256:1354a4c7e67c09b04838971e802827d00b5b789f7cb80f68192132ba6ede5155",
+      "evidenceRef": "evidence-target-5",
+      "payloadDigest": "sha256:77eb37d73dac6904c3b1462768ef19e3597dbd65a66946b55375e9a2408a589c"
+    }
+  ],
+  "selections": [
+    {
+      "id": "selection-1",
+      "resourceRef": "resource-orders-db",
+      "resourcePayloadDigest": "sha256:6c325d9346bceb67f47285718906a87b4ff9443de111e8337f90fc9abd18ff76",
+      "recoveryPointRef": "recovery-orders",
+      "recoveryPointPayloadDigest": "sha256:9a6d4e206cb0ed08ac030a5ebc90547b2cb717924c5bd5c13f1f623e4d892184",
+      "targetRef": "target-1",
+      "targetPayloadDigest": "sha256:f3da83fc6aa370891a142a9f3f762aa6df05a568f0264c79697751b39638457f",
+      "selectedByRef": "principal-coordinator",
+      "authorityGrantRef": "grant-selection",
+      "selectedAt": "2026-09-01T09:05:00Z",
+      "evidenceRef": "evidence-selection-1",
+      "payloadDigest": "sha256:c6ea37d623ebd9778a2fb553e257c17e9975f9b1782db5ae18e8e6eae2f34cea"
+    },
+    {
+      "id": "selection-2",
+      "resourceRef": "resource-documents-store",
+      "resourcePayloadDigest": "sha256:097c92de7d4135570b9a014ab6f9f7650e8bc385eafe41e7d77aec2af7b9cb9d",
+      "recoveryPointRef": "recovery-documents",
+      "recoveryPointPayloadDigest": "sha256:fab37225f302100d1df37678981a295dbbad6a5ece1e4a590045b37ebc6c2fed",
+      "targetRef": "target-2",
+      "targetPayloadDigest": "sha256:231d40c58da35e8a7175e557d7a260054d90f241aefe357cfd4c83afbd36a92c",
+      "selectedByRef": "principal-coordinator",
+      "authorityGrantRef": "grant-selection",
+      "selectedAt": "2026-09-01T09:06:00Z",
+      "evidenceRef": "evidence-selection-2",
+      "payloadDigest": "sha256:f1a8f1a3c694db7c25ecc5c72ac17fb0ae86fb1e348550d173e74937ecfba03f"
+    },
+    {
+      "id": "selection-3",
+      "resourceRef": "resource-team-files",
+      "resourcePayloadDigest": "sha256:410386e2246f634d7cfe23a48c5fb8ad23e737df24487351554c4f8164fc2a04",
+      "recoveryPointRef": "recovery-files",
+      "recoveryPointPayloadDigest": "sha256:98d59bc889de3d74754ef240209a080cde982e4a14aef56e3c77c3e98737abff",
+      "targetRef": "target-3",
+      "targetPayloadDigest": "sha256:f0c62f06b0b992c8cbe1283688fa2b2e5632921196f72b87d1d166233c9fa65c",
+      "selectedByRef": "principal-coordinator",
+      "authorityGrantRef": "grant-selection",
+      "selectedAt": "2026-09-01T09:07:00Z",
+      "evidenceRef": "evidence-selection-3",
+      "payloadDigest": "sha256:883c6b7d6fdb7bfeca38049b7d9dedd57923c0e47c2c56c39d2e5588346e146b"
+    },
+    {
+      "id": "selection-4",
+      "resourceRef": "resource-runtime-config",
+      "resourcePayloadDigest": "sha256:458bf6754973c6404830a18711ffab6f58baa5dd0871c563542499d636d0d5e0",
+      "recoveryPointRef": "recovery-config",
+      "recoveryPointPayloadDigest": "sha256:ec8fb9cba62cd6439e09c9622082d86bca0f533be2d5aee754d702782c2d2585",
+      "targetRef": "target-4",
+      "targetPayloadDigest": "sha256:707f0197919c2ea40ca146337954b2bd9d9c5020b94e0915e7906d5e97283537",
+      "selectedByRef": "principal-coordinator",
+      "authorityGrantRef": "grant-selection",
+      "selectedAt": "2026-09-01T09:08:00Z",
+      "evidenceRef": "evidence-selection-4",
+      "payloadDigest": "sha256:cfd3e0611d731d2746000ec5ff3b6c61f868f2989ec211325e43f27f619fd772"
+    },
+    {
+      "id": "selection-5",
+      "resourceRef": "resource-search-catalog",
+      "resourcePayloadDigest": "sha256:c5330fba82c04573c93f94c018b9fc8127f45ae3d30afea4114b53fa2af269a9",
+      "recoveryPointRef": "recovery-search",
+      "recoveryPointPayloadDigest": "sha256:fc65173551d580a525d1b8e327f67789cb0a8fcdfd8e2d80501f58522d82d577",
+      "targetRef": "target-5",
+      "targetPayloadDigest": "sha256:77eb37d73dac6904c3b1462768ef19e3597dbd65a66946b55375e9a2408a589c",
+      "selectedByRef": "principal-coordinator",
+      "authorityGrantRef": "grant-selection",
+      "selectedAt": "2026-09-01T09:09:00Z",
+      "evidenceRef": "evidence-selection-5",
+      "payloadDigest": "sha256:125874d1e91340242c29bbfc885c04ea55e5f812002cf427145a28d528ab2fc8"
+    }
+  ],
+  "principals": [
+    {
+      "id": "principal-resource-owner-system",
+      "name": "Resource Owner System",
+      "kind": "owner-system",
+      "scopes": [
+        "resource-exporter"
+      ]
+    },
+    {
+      "id": "principal-recovery-catalog",
+      "name": "Recovery Catalog System",
+      "kind": "owner-system",
+      "scopes": [
+        "recovery-point-exporter"
+      ]
+    },
+    {
+      "id": "principal-restore-provider",
+      "name": "Restore Provider System",
+      "kind": "provider-system",
+      "scopes": [
+        "restore-provider"
+      ]
+    },
+    {
+      "id": "principal-coordinator",
+      "name": "Morgan Lee",
+      "kind": "named-human",
+      "scopes": [
+        "selection-coordinator"
+      ]
+    },
+    {
+      "id": "principal-validator",
+      "name": "Taylor Chen",
+      "kind": "named-human",
+      "scopes": [
+        "independent-validator"
+      ]
+    },
+    {
+      "id": "principal-cleanup-owner",
+      "name": "Jordan Patel",
+      "kind": "named-human",
+      "scopes": [
+        "cleanup-owner"
+      ]
+    },
+    {
+      "id": "principal-retention-approver",
+      "name": "Riley Kim",
+      "kind": "named-human",
+      "scopes": [
+        "retention-approver"
+      ]
+    },
+    {
+      "id": "principal-roster-custodian",
+      "name": "Cameron Diaz",
+      "kind": "named-human",
+      "scopes": [
+        "authority-roster-custodian"
+      ]
+    },
+    {
+      "id": "principal-grant-issuer",
+      "name": "Avery Brooks",
+      "kind": "named-human",
+      "scopes": [
+        "authority-grant-issuer"
+      ]
+    },
+    {
+      "id": "principal-destination-approver",
+      "name": "Casey Morgan",
+      "kind": "named-human",
+      "scopes": [
+        "destination-approver"
+      ]
+    },
+    {
+      "id": "principal-handoff-owner",
+      "name": "Quinn Parker",
+      "kind": "named-human",
+      "scopes": [
+        "handoff-recipient"
+      ]
+    }
+  ],
+  "authorityRoster": {
+    "id": "roster-resilience-round",
+    "issuedAt": "2026-08-31T08:45:00Z",
+    "custodianRef": "principal-roster-custodian",
+    "principalRefs": [
+      "principal-resource-owner-system",
+      "principal-recovery-catalog",
+      "principal-restore-provider",
+      "principal-coordinator",
+      "principal-validator",
+      "principal-cleanup-owner",
+      "principal-retention-approver",
+      "principal-roster-custodian",
+      "principal-grant-issuer",
+      "principal-destination-approver",
+      "principal-handoff-owner"
+    ],
+    "evidenceRef": "evidence-roster",
+    "contentDigest": "sha256:6a36960b64f41877b44333b7f26dfeeb91528983cd1bbd709f3bbb744ce45d26"
+  },
+  "authorityGrants": [
+    {
+      "id": "grant-selection",
+      "granteeRef": "principal-coordinator",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "select-recovery-triples",
+      "roundRef": "round-quarterly-restore",
+      "activeFrom": "2026-08-31T08:50:00Z",
+      "activeUntil": "2026-09-03T23:59:59Z",
+      "rosterRef": "roster-resilience-round",
+      "rosterDigest": "sha256:6a36960b64f41877b44333b7f26dfeeb91528983cd1bbd709f3bbb744ce45d26",
+      "evidenceRef": "evidence-grant-selection",
+      "payloadDigest": "sha256:ad26b1afbe694ea92e377ac19f35109d5240eea20b586e854cf46f7d183c01c6"
+    },
+    {
+      "id": "grant-provider-report",
+      "granteeRef": "principal-restore-provider",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "report-provider-jobs",
+      "roundRef": "round-quarterly-restore",
+      "activeFrom": "2026-08-31T08:50:00Z",
+      "activeUntil": "2026-09-03T23:59:59Z",
+      "rosterRef": "roster-resilience-round",
+      "rosterDigest": "sha256:6a36960b64f41877b44333b7f26dfeeb91528983cd1bbd709f3bbb744ce45d26",
+      "evidenceRef": "evidence-grant-provider-report",
+      "payloadDigest": "sha256:905b2a3d73845cca712616a05083c3123e04697f7b566c04da6ca971168ca447"
+    },
+    {
+      "id": "grant-validation-report",
+      "granteeRef": "principal-validator",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "report-independent-validation",
+      "roundRef": "round-quarterly-restore",
+      "activeFrom": "2026-08-31T08:50:00Z",
+      "activeUntil": "2026-09-03T23:59:59Z",
+      "rosterRef": "roster-resilience-round",
+      "rosterDigest": "sha256:6a36960b64f41877b44333b7f26dfeeb91528983cd1bbd709f3bbb744ce45d26",
+      "evidenceRef": "evidence-grant-validation-report",
+      "payloadDigest": "sha256:e5bae8997caa4de5c8bcba5064a539fcac178d43b65eda6898fbc0fd885fec25"
+    },
+    {
+      "id": "grant-cleanup-report",
+      "granteeRef": "principal-cleanup-owner",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "report-cleanup",
+      "roundRef": "round-quarterly-restore",
+      "activeFrom": "2026-08-31T08:50:00Z",
+      "activeUntil": "2026-09-03T23:59:59Z",
+      "rosterRef": "roster-resilience-round",
+      "rosterDigest": "sha256:6a36960b64f41877b44333b7f26dfeeb91528983cd1bbd709f3bbb744ce45d26",
+      "evidenceRef": "evidence-grant-cleanup-report",
+      "payloadDigest": "sha256:c7e816c5940bea93ce19cc63257765289c2b98438d23c7b9153b052c43881f80"
+    },
+    {
+      "id": "grant-retention-approval",
+      "granteeRef": "principal-retention-approver",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "approve-temporary-retention",
+      "roundRef": "round-quarterly-restore",
+      "activeFrom": "2026-08-31T08:50:00Z",
+      "activeUntil": "2026-09-03T23:59:59Z",
+      "rosterRef": "roster-resilience-round",
+      "rosterDigest": "sha256:6a36960b64f41877b44333b7f26dfeeb91528983cd1bbd709f3bbb744ce45d26",
+      "evidenceRef": "evidence-grant-retention-approval",
+      "payloadDigest": "sha256:6ae4bb8eeccae8783b82a44bd350ffa47aefb74714716c395d1d38ddbb28f41f"
+    },
+    {
+      "id": "grant-destination-approval",
+      "granteeRef": "principal-destination-approver",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "approve-destination",
+      "roundRef": "round-quarterly-restore",
+      "activeFrom": "2026-08-31T08:50:00Z",
+      "activeUntil": "2026-09-03T23:59:59Z",
+      "rosterRef": "roster-resilience-round",
+      "rosterDigest": "sha256:6a36960b64f41877b44333b7f26dfeeb91528983cd1bbd709f3bbb744ce45d26",
+      "evidenceRef": "evidence-grant-destination-approval",
+      "payloadDigest": "sha256:578784cb5c44c0a693120382f975c08e06de27b7d34fcb731a873bd02eb25acd"
+    },
+    {
+      "id": "grant-handoff",
+      "granteeRef": "principal-handoff-owner",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "receive-handoff",
+      "roundRef": "round-quarterly-restore",
+      "activeFrom": "2026-08-31T08:50:00Z",
+      "activeUntil": "2026-09-03T23:59:59Z",
+      "rosterRef": "roster-resilience-round",
+      "rosterDigest": "sha256:6a36960b64f41877b44333b7f26dfeeb91528983cd1bbd709f3bbb744ce45d26",
+      "evidenceRef": "evidence-grant-handoff",
+      "payloadDigest": "sha256:5e3105eee264a5ea515d3639c4208da45ad75514c67079ff6adfad110c5be115"
+    }
+  ],
+  "providerJobs": [
+    {
+      "id": "job-1",
+      "selectionRef": "selection-1",
+      "selectionPayloadDigest": "sha256:c6ea37d623ebd9778a2fb553e257c17e9975f9b1782db5ae18e8e6eae2f34cea",
+      "providerRef": "principal-restore-provider",
+      "providerJobRef": "provider-job-1",
+      "submittedAt": "2026-09-01T09:10:00Z",
+      "completedAt": "2026-09-01T09:35:00Z",
+      "outcome": "succeeded",
+      "evidenceRef": "evidence-job-1",
+      "payloadDigest": "sha256:a8316408b977a2f3c615b21fae3fc0641f95ab740d7cc79d007fc1c3f4c73423"
+    },
+    {
+      "id": "job-2",
+      "selectionRef": "selection-2",
+      "selectionPayloadDigest": "sha256:f1a8f1a3c694db7c25ecc5c72ac17fb0ae86fb1e348550d173e74937ecfba03f",
+      "providerRef": "principal-restore-provider",
+      "providerJobRef": "provider-job-2",
+      "submittedAt": "2026-09-01T09:11:00Z",
+      "completedAt": "2026-09-01T09:45:00Z",
+      "outcome": "succeeded",
+      "evidenceRef": "evidence-job-2",
+      "payloadDigest": "sha256:344d4ef0cc9a4f68060e318db1d6ae0f0a4b8fee1a33ae3c043f8ca857c0eb8a"
+    },
+    {
+      "id": "job-3",
+      "selectionRef": "selection-3",
+      "selectionPayloadDigest": "sha256:883c6b7d6fdb7bfeca38049b7d9dedd57923c0e47c2c56c39d2e5588346e146b",
+      "providerRef": "principal-restore-provider",
+      "providerJobRef": "provider-job-3",
+      "submittedAt": "2026-09-01T09:12:00Z",
+      "completedAt": "2026-09-01T09:30:00Z",
+      "outcome": "failed",
+      "evidenceRef": "evidence-job-3",
+      "payloadDigest": "sha256:c914d8dfbdf225306759834e3a5de6c24eb881d6c16bf5628da3945cf59b54c1"
+    },
+    {
+      "id": "job-5",
+      "selectionRef": "selection-5",
+      "selectionPayloadDigest": "sha256:125874d1e91340242c29bbfc885c04ea55e5f812002cf427145a28d528ab2fc8",
+      "providerRef": "principal-restore-provider",
+      "providerJobRef": "provider-job-5",
+      "submittedAt": "2026-09-01T09:14:00Z",
+      "completedAt": "2026-09-01T09:40:00Z",
+      "outcome": "succeeded",
+      "evidenceRef": "evidence-job-5",
+      "payloadDigest": "sha256:b3b97a1dfd623f137c939be7c0f096ab7f52cea9db6416f9c8be7503749309da"
+    }
+  ],
+  "validations": [
+    {
+      "id": "validation-1",
+      "selectionRef": "selection-1",
+      "selectionPayloadDigest": "sha256:c6ea37d623ebd9778a2fb553e257c17e9975f9b1782db5ae18e8e6eae2f34cea",
+      "providerJobRef": "job-1",
+      "providerJobPayloadDigest": "sha256:a8316408b977a2f3c615b21fae3fc0641f95ab740d7cc79d007fc1c3f4c73423",
+      "validatorRef": "principal-validator",
+      "startedAt": "2026-09-01T09:40:00Z",
+      "completedAt": "2026-09-01T10:00:00Z",
+      "outcome": "passed",
+      "checkCodes": [
+        "content-readable",
+        "integrity-check"
+      ],
+      "evidenceRef": "evidence-validation-1",
+      "payloadDigest": "sha256:ee2479d5647f474197b9f48ca21860b039462258884427b8928fddbbd9ef92ff"
+    },
+    {
+      "id": "validation-2",
+      "selectionRef": "selection-2",
+      "selectionPayloadDigest": "sha256:f1a8f1a3c694db7c25ecc5c72ac17fb0ae86fb1e348550d173e74937ecfba03f",
+      "providerJobRef": "job-2",
+      "providerJobPayloadDigest": "sha256:344d4ef0cc9a4f68060e318db1d6ae0f0a4b8fee1a33ae3c043f8ca857c0eb8a",
+      "validatorRef": "principal-validator",
+      "startedAt": "2026-09-01T09:50:00Z",
+      "completedAt": "2026-09-01T10:05:00Z",
+      "outcome": "failed",
+      "checkCodes": [
+        "content-readable",
+        "record-count-match"
+      ],
+      "evidenceRef": "evidence-validation-2",
+      "payloadDigest": "sha256:575d2cc7fce3fb6abdb91c7849a6210158c836ac2a8a80f1497c99566ecd21f6"
+    },
+    {
+      "id": "validation-3",
+      "selectionRef": "selection-3",
+      "selectionPayloadDigest": "sha256:883c6b7d6fdb7bfeca38049b7d9dedd57923c0e47c2c56c39d2e5588346e146b",
+      "providerJobRef": "job-3",
+      "providerJobPayloadDigest": "sha256:c914d8dfbdf225306759834e3a5de6c24eb881d6c16bf5628da3945cf59b54c1",
+      "validatorRef": "principal-validator",
+      "startedAt": null,
+      "completedAt": null,
+      "outcome": "not-run",
+      "checkCodes": [],
+      "evidenceRef": "evidence-validation-3",
+      "payloadDigest": "sha256:eb60ffd3d9f4c2719c619bb54aca594a94d159f468e124c092d201d5495ed5db"
+    },
+    {
+      "id": "validation-4",
+      "selectionRef": "selection-4",
+      "selectionPayloadDigest": "sha256:cfd3e0611d731d2746000ec5ff3b6c61f868f2989ec211325e43f27f619fd772",
+      "providerJobRef": null,
+      "providerJobPayloadDigest": null,
+      "validatorRef": "principal-validator",
+      "startedAt": null,
+      "completedAt": null,
+      "outcome": "not-run",
+      "checkCodes": [],
+      "evidenceRef": "evidence-validation-4",
+      "payloadDigest": "sha256:c68755ad3a783a0622f465b59bab0cc4e0ab6af60422bc32cc7efa795d755cec"
+    },
+    {
+      "id": "validation-5",
+      "selectionRef": "selection-5",
+      "selectionPayloadDigest": "sha256:125874d1e91340242c29bbfc885c04ea55e5f812002cf427145a28d528ab2fc8",
+      "providerJobRef": "job-5",
+      "providerJobPayloadDigest": "sha256:b3b97a1dfd623f137c939be7c0f096ab7f52cea9db6416f9c8be7503749309da",
+      "validatorRef": "principal-validator",
+      "startedAt": "2026-09-01T09:45:00Z",
+      "completedAt": "2026-09-01T11:00:00Z",
+      "outcome": "passed",
+      "checkCodes": [
+        "application-open",
+        "integrity-check"
+      ],
+      "evidenceRef": "evidence-validation-5",
+      "payloadDigest": "sha256:c0a7c014e9d034db625021c25529f183b41fbfc01d8dc257b3ddd015e4ea5927"
+    }
+  ],
+  "cleanups": [
+    {
+      "id": "cleanup-1",
+      "selectionRef": "selection-1",
+      "selectionPayloadDigest": "sha256:c6ea37d623ebd9778a2fb553e257c17e9975f9b1782db5ae18e8e6eae2f34cea",
+      "targetRef": "target-1",
+      "targetPayloadDigest": "sha256:f3da83fc6aa370891a142a9f3f762aa6df05a568f0264c79697751b39638457f",
+      "ownerRef": "principal-cleanup-owner",
+      "requestedAt": "2026-09-01T10:05:00Z",
+      "completedAt": "2026-09-01T10:20:00Z",
+      "outcome": "cleaned",
+      "retentionReason": null,
+      "retentionUntil": null,
+      "retentionApprovedByRef": null,
+      "retentionApprovalEvidenceRef": null,
+      "evidenceRef": "evidence-cleanup-1",
+      "payloadDigest": "sha256:fb5d98c6c443fac5f492cd3b2c9ba95e44c8a34986bd09c209c58b1db32b21a6"
+    },
+    {
+      "id": "cleanup-2",
+      "selectionRef": "selection-2",
+      "selectionPayloadDigest": "sha256:f1a8f1a3c694db7c25ecc5c72ac17fb0ae86fb1e348550d173e74937ecfba03f",
+      "targetRef": "target-2",
+      "targetPayloadDigest": "sha256:231d40c58da35e8a7175e557d7a260054d90f241aefe357cfd4c83afbd36a92c",
+      "ownerRef": "principal-cleanup-owner",
+      "requestedAt": "2026-09-01T10:10:00Z",
+      "completedAt": null,
+      "outcome": "pending",
+      "retentionReason": null,
+      "retentionUntil": null,
+      "retentionApprovedByRef": null,
+      "retentionApprovalEvidenceRef": null,
+      "evidenceRef": "evidence-cleanup-2",
+      "payloadDigest": "sha256:b443403f6195c677630c06a5f94ed06533cb986383a8e731a5dbadf109fd0a79"
+    },
+    {
+      "id": "cleanup-3",
+      "selectionRef": "selection-3",
+      "selectionPayloadDigest": "sha256:883c6b7d6fdb7bfeca38049b7d9dedd57923c0e47c2c56c39d2e5588346e146b",
+      "targetRef": "target-3",
+      "targetPayloadDigest": "sha256:f0c62f06b0b992c8cbe1283688fa2b2e5632921196f72b87d1d166233c9fa65c",
+      "ownerRef": "principal-cleanup-owner",
+      "requestedAt": "2026-09-01T09:35:00Z",
+      "completedAt": "2026-09-01T09:50:00Z",
+      "outcome": "cleaned",
+      "retentionReason": null,
+      "retentionUntil": null,
+      "retentionApprovedByRef": null,
+      "retentionApprovalEvidenceRef": null,
+      "evidenceRef": "evidence-cleanup-3",
+      "payloadDigest": "sha256:f11f193eef5effeced08dcf16261b398cf27ce872b725e46dde18454e6f3c6fd"
+    },
+    {
+      "id": "cleanup-4",
+      "selectionRef": "selection-4",
+      "selectionPayloadDigest": "sha256:cfd3e0611d731d2746000ec5ff3b6c61f868f2989ec211325e43f27f619fd772",
+      "targetRef": "target-4",
+      "targetPayloadDigest": "sha256:707f0197919c2ea40ca146337954b2bd9d9c5020b94e0915e7906d5e97283537",
+      "ownerRef": "principal-cleanup-owner",
+      "requestedAt": "2026-09-01T09:20:00Z",
+      "completedAt": null,
+      "outcome": "pending",
+      "retentionReason": null,
+      "retentionUntil": null,
+      "retentionApprovedByRef": null,
+      "retentionApprovalEvidenceRef": null,
+      "evidenceRef": "evidence-cleanup-4",
+      "payloadDigest": "sha256:f9d93530e252291d1d2f9e74571fc87ba04bcc08e0003f802380288c20539807"
+    },
+    {
+      "id": "cleanup-5",
+      "selectionRef": "selection-5",
+      "selectionPayloadDigest": "sha256:125874d1e91340242c29bbfc885c04ea55e5f812002cf427145a28d528ab2fc8",
+      "targetRef": "target-5",
+      "targetPayloadDigest": "sha256:77eb37d73dac6904c3b1462768ef19e3597dbd65a66946b55375e9a2408a589c",
+      "ownerRef": "principal-cleanup-owner",
+      "requestedAt": "2026-09-01T11:05:00Z",
+      "completedAt": null,
+      "outcome": "retained",
+      "retentionReason": "owner-approved-investigation",
+      "retentionUntil": "2026-09-08T11:05:00Z",
+      "retentionApprovedByRef": "principal-retention-approver",
+      "retentionApprovalEvidenceRef": "evidence-retention-approval-5",
+      "evidenceRef": "evidence-cleanup-5",
+      "payloadDigest": "sha256:5fcb7117684604efa271029cc1469da123d613f17f489906f2dc98bf8476338b"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-resource-export",
+      "kind": "resource-export",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:40:00Z",
+      "suppliedByRef": "principal-resource-owner-system",
+      "subjectRefs": [
+        "export-protected-resources",
+        "resource-orders-db",
+        "resource-documents-store",
+        "resource-team-files",
+        "resource-runtime-config",
+        "resource-search-catalog",
+        "resource-event-queue"
+      ],
+      "sourceRecordDigest": "sha256:d60f21dd926c07b736b8e09c8b3cf5a2da2bff115c9b338dcea6614261699be0",
+      "payloadDigest": "sha256:b88234efb8f766677c0282c08d229018bd22ac6143a47abb1437d16423148ab8",
+      "recordDigest": "sha256:455e10da8fc29e8d36895e7433b63a7cce860209ba379c4a932b320d87e2fbcd"
+    },
+    {
+      "id": "evidence-recovery-point-export",
+      "kind": "recovery-point-export",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:45:00Z",
+      "suppliedByRef": "principal-recovery-catalog",
+      "subjectRefs": [
+        "export-recovery-points",
+        "recovery-orders",
+        "recovery-documents",
+        "recovery-files",
+        "recovery-config",
+        "recovery-search"
+      ],
+      "sourceRecordDigest": "sha256:c425a515ad2a435a53bf04097eb12dfbbe526393c5a4da556ee90aa031a897e1",
+      "payloadDigest": "sha256:71c50dc06ee6ded41f148f8430169cef8a0039b54419895066b5c36fbbcad89f",
+      "recordDigest": "sha256:5b706d82a713d8ceece32488a6bf7d33d3296b5810359e5e65f151655fc56d97"
+    },
+    {
+      "id": "evidence-roster",
+      "kind": "authority-roster-export",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:45:00Z",
+      "suppliedByRef": "principal-roster-custodian",
+      "subjectRefs": [
+        "roster-resilience-round",
+        "principal-resource-owner-system",
+        "principal-recovery-catalog",
+        "principal-restore-provider",
+        "principal-coordinator",
+        "principal-validator",
+        "principal-cleanup-owner",
+        "principal-retention-approver",
+        "principal-roster-custodian",
+        "principal-grant-issuer",
+        "principal-destination-approver",
+        "principal-handoff-owner"
+      ],
+      "sourceRecordDigest": "sha256:1dfe4a0f4e3a72b9d0869409d42f6be78ce4d13d6742dcca7d9400f8881180b1",
+      "payloadDigest": "sha256:1b869520b898597209fdffbe6e4b65a43593748ea8617ae4bdbe889043ef3373",
+      "recordDigest": "sha256:08dc1bde44fe4330f707914ce7ec606eeed99e1de667fd54aba9c781f3a564b5"
+    },
+    {
+      "id": "evidence-grant-selection",
+      "kind": "authority-grant-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:50:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-selection",
+        "principal-coordinator"
+      ],
+      "sourceRecordDigest": "sha256:1d79addcb3284b3acbd868e4aed3ccc0774ed4d49e8e6c4542335c5eef80c8d4",
+      "payloadDigest": "sha256:ad26b1afbe694ea92e377ac19f35109d5240eea20b586e854cf46f7d183c01c6",
+      "recordDigest": "sha256:441c32935035238079d2fd084362a23b3f6931035d96e222972cce6f3081bbb4"
+    },
+    {
+      "id": "evidence-grant-provider-report",
+      "kind": "authority-grant-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:50:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-provider-report",
+        "principal-restore-provider"
+      ],
+      "sourceRecordDigest": "sha256:e4db1a58035ef81383fa89ccbe5e039a0f9ccd70d4301bac64ab6920f02e07f9",
+      "payloadDigest": "sha256:905b2a3d73845cca712616a05083c3123e04697f7b566c04da6ca971168ca447",
+      "recordDigest": "sha256:4c4843a0051e48f499716ba9497b3d1c08642f530b61069eedc8900f53dd961e"
+    },
+    {
+      "id": "evidence-grant-validation-report",
+      "kind": "authority-grant-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:50:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-validation-report",
+        "principal-validator"
+      ],
+      "sourceRecordDigest": "sha256:698c05de9a93e3d39eb6673256774c812a389e1247ada469fc57d778ba9e2ca7",
+      "payloadDigest": "sha256:e5bae8997caa4de5c8bcba5064a539fcac178d43b65eda6898fbc0fd885fec25",
+      "recordDigest": "sha256:31c94066e4b01f283e351728698a0c87a68ca8bcd20b5928576fba5b5a80ddfa"
+    },
+    {
+      "id": "evidence-grant-cleanup-report",
+      "kind": "authority-grant-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:50:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-cleanup-report",
+        "principal-cleanup-owner"
+      ],
+      "sourceRecordDigest": "sha256:11e35b05511f419b701fb5cacaa5169be5da2524d7b528f13a3532dfb9c75b1c",
+      "payloadDigest": "sha256:c7e816c5940bea93ce19cc63257765289c2b98438d23c7b9153b052c43881f80",
+      "recordDigest": "sha256:4f91aea8887f4feebe95e10fd8b1008afbd48e3d3698e26714f1ec6ab31a68e4"
+    },
+    {
+      "id": "evidence-grant-retention-approval",
+      "kind": "authority-grant-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:50:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-retention-approval",
+        "principal-retention-approver"
+      ],
+      "sourceRecordDigest": "sha256:9057d882bf3bcc2ada32cbfd6a70dbc23fd0206bd20e12cebfe746f9c695034d",
+      "payloadDigest": "sha256:6ae4bb8eeccae8783b82a44bd350ffa47aefb74714716c395d1d38ddbb28f41f",
+      "recordDigest": "sha256:5827f80bd06e0da38b04b320cf20edb77cb002e062f4dd0a7456a13f3ebd1af0"
+    },
+    {
+      "id": "evidence-grant-destination-approval",
+      "kind": "authority-grant-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:50:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-destination-approval",
+        "principal-destination-approver"
+      ],
+      "sourceRecordDigest": "sha256:1a300dbd792758020b7711b784d1404634a03460327ecdd33340ff31812920ca",
+      "payloadDigest": "sha256:578784cb5c44c0a693120382f975c08e06de27b7d34fcb731a873bd02eb25acd",
+      "recordDigest": "sha256:0bc8daedd27624a7a76d2c72b94898dbeb671628c275b0feb3ccab279f14792b"
+    },
+    {
+      "id": "evidence-grant-handoff",
+      "kind": "authority-grant-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:50:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-handoff",
+        "principal-handoff-owner"
+      ],
+      "sourceRecordDigest": "sha256:974bf1f41e68c7ae11bbd012311b0cdcb94f69cc3014c0f57f55814977c519c0",
+      "payloadDigest": "sha256:5e3105eee264a5ea515d3639c4208da45ad75514c67079ff6adfad110c5be115",
+      "recordDigest": "sha256:5a47b754aa1fb909a4362f8e9c9f76b58fd4e7d261d263349942993ddde1fc9a"
+    },
+    {
+      "id": "evidence-target-1",
+      "kind": "target-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:40:00Z",
+      "suppliedByRef": "principal-restore-provider",
+      "subjectRefs": [
+        "target-1"
+      ],
+      "sourceRecordDigest": "sha256:58d9b0a14ad0c1429789b730cd94ac852a991c9bbc8948adaa7ca502f9daf786",
+      "payloadDigest": "sha256:f3da83fc6aa370891a142a9f3f762aa6df05a568f0264c79697751b39638457f",
+      "recordDigest": "sha256:37163bbd703fd72584b5949161772d0c03725b34d3fd7eb2fb6441b9c242dc82"
+    },
+    {
+      "id": "evidence-target-2",
+      "kind": "target-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:40:00Z",
+      "suppliedByRef": "principal-restore-provider",
+      "subjectRefs": [
+        "target-2"
+      ],
+      "sourceRecordDigest": "sha256:6b2d0b65de252232f07bec31eb13b177300db6a6a0df57f9ced510e958ed91f5",
+      "payloadDigest": "sha256:231d40c58da35e8a7175e557d7a260054d90f241aefe357cfd4c83afbd36a92c",
+      "recordDigest": "sha256:df44aeadd08429b0d8fac0e53e0dc7bced2256752729f006db1ef3562d77fbb0"
+    },
+    {
+      "id": "evidence-target-3",
+      "kind": "target-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:40:00Z",
+      "suppliedByRef": "principal-restore-provider",
+      "subjectRefs": [
+        "target-3"
+      ],
+      "sourceRecordDigest": "sha256:4976808431eb352e2b8d6219806ac7ce1b3baaba340fdb109cc99a926fcb91be",
+      "payloadDigest": "sha256:f0c62f06b0b992c8cbe1283688fa2b2e5632921196f72b87d1d166233c9fa65c",
+      "recordDigest": "sha256:58f4fbfac2fa3b4195bac40624fd5ffb2c58181ade9ca90e48151a455249e6cf"
+    },
+    {
+      "id": "evidence-target-4",
+      "kind": "target-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:40:00Z",
+      "suppliedByRef": "principal-restore-provider",
+      "subjectRefs": [
+        "target-4"
+      ],
+      "sourceRecordDigest": "sha256:e69abbb65ac86986f918fc5b87733c0284b74a360868a54f467e0b4255ee88fd",
+      "payloadDigest": "sha256:707f0197919c2ea40ca146337954b2bd9d9c5020b94e0915e7906d5e97283537",
+      "recordDigest": "sha256:01ef3a64f56a6a736ac279dff4d9a31f77f873283d2dbdd1b8d77eb589235959"
+    },
+    {
+      "id": "evidence-target-5",
+      "kind": "target-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-08-31T08:40:00Z",
+      "suppliedByRef": "principal-restore-provider",
+      "subjectRefs": [
+        "target-5"
+      ],
+      "sourceRecordDigest": "sha256:5730daa8556e195ae9046ee71afe0f40d85efb0e255301b6618c3a06ef34b1b9",
+      "payloadDigest": "sha256:77eb37d73dac6904c3b1462768ef19e3597dbd65a66946b55375e9a2408a589c",
+      "recordDigest": "sha256:c8d5283de4d1f6ee66dbf3f9b1cfed7d436e850cdacbfc816913ae896980beba"
+    },
+    {
+      "id": "evidence-selection-1",
+      "kind": "selection-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:05:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "selection-1",
+        "resource-orders-db",
+        "recovery-orders",
+        "target-1"
+      ],
+      "sourceRecordDigest": "sha256:3514ec3b4bdf3f6d3c947f0be7aaa75088d75426ac240f6a795e8e1d07a04523",
+      "payloadDigest": "sha256:c6ea37d623ebd9778a2fb553e257c17e9975f9b1782db5ae18e8e6eae2f34cea",
+      "recordDigest": "sha256:0ea41ef27ac0ad0f9ce91792e4f8fd59fedb17bf75d1ad678d433f002c5c2028"
+    },
+    {
+      "id": "evidence-selection-2",
+      "kind": "selection-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:06:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "selection-2",
+        "resource-documents-store",
+        "recovery-documents",
+        "target-2"
+      ],
+      "sourceRecordDigest": "sha256:12789928635f40ba7cce58a37fea13220ebdb37990905f4f8bbf2861dc8e1a94",
+      "payloadDigest": "sha256:f1a8f1a3c694db7c25ecc5c72ac17fb0ae86fb1e348550d173e74937ecfba03f",
+      "recordDigest": "sha256:6f28d37af4e10f63d43e58a054723c9351cb874764b14059467b8d31a67217e0"
+    },
+    {
+      "id": "evidence-selection-3",
+      "kind": "selection-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:07:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "selection-3",
+        "resource-team-files",
+        "recovery-files",
+        "target-3"
+      ],
+      "sourceRecordDigest": "sha256:800c00a126b395ebb4d077565b97b45b8b5d2f99787b36aeebcc798e6b065f07",
+      "payloadDigest": "sha256:883c6b7d6fdb7bfeca38049b7d9dedd57923c0e47c2c56c39d2e5588346e146b",
+      "recordDigest": "sha256:cc82fcf844578d2e2ddd7afbe1501a89b1f55c52e8bf199cc9d9344858342e44"
+    },
+    {
+      "id": "evidence-selection-4",
+      "kind": "selection-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:08:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "selection-4",
+        "resource-runtime-config",
+        "recovery-config",
+        "target-4"
+      ],
+      "sourceRecordDigest": "sha256:b340d894f88cb894bfce3d6841539844e4af51169d3da543a7354c138cb58b21",
+      "payloadDigest": "sha256:cfd3e0611d731d2746000ec5ff3b6c61f868f2989ec211325e43f27f619fd772",
+      "recordDigest": "sha256:fb966e68f03e3a48bc046fdd9b01da117cdaab0d0a7f67c5a366de0a4b1c0494"
+    },
+    {
+      "id": "evidence-selection-5",
+      "kind": "selection-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:09:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "selection-5",
+        "resource-search-catalog",
+        "recovery-search",
+        "target-5"
+      ],
+      "sourceRecordDigest": "sha256:46637cd92389b01fa650815d136c734419782dacce58c4df632a79ccb0778698",
+      "payloadDigest": "sha256:125874d1e91340242c29bbfc885c04ea55e5f812002cf427145a28d528ab2fc8",
+      "recordDigest": "sha256:aed35a5bf05c650163c8859c8b0515f19e5f7c66250d8dbfe5cc05bf75ea098f"
+    },
+    {
+      "id": "evidence-job-1",
+      "kind": "provider-job-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:35:00Z",
+      "suppliedByRef": "principal-restore-provider",
+      "subjectRefs": [
+        "job-1",
+        "selection-1"
+      ],
+      "sourceRecordDigest": "sha256:b938be76b37a01ef8abc1b8ce87b1f5e3868c2b3b735eec91ad3c136f7562f94",
+      "payloadDigest": "sha256:a8316408b977a2f3c615b21fae3fc0641f95ab740d7cc79d007fc1c3f4c73423",
+      "recordDigest": "sha256:9c9b9863be08eb89ffe88d3ca8c3400ee114d9a6ce7291a4948e0bb0252e6616"
+    },
+    {
+      "id": "evidence-job-2",
+      "kind": "provider-job-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:45:00Z",
+      "suppliedByRef": "principal-restore-provider",
+      "subjectRefs": [
+        "job-2",
+        "selection-2"
+      ],
+      "sourceRecordDigest": "sha256:5c329889485ed99fb9e7e07a5c4441915f93b05f62cab7244d940352144060dc",
+      "payloadDigest": "sha256:344d4ef0cc9a4f68060e318db1d6ae0f0a4b8fee1a33ae3c043f8ca857c0eb8a",
+      "recordDigest": "sha256:a2a3a17b48555ab6484e2c90ffd7db2a2aa776b83e0cb98bd866b203258fcd44"
+    },
+    {
+      "id": "evidence-job-3",
+      "kind": "provider-job-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:30:00Z",
+      "suppliedByRef": "principal-restore-provider",
+      "subjectRefs": [
+        "job-3",
+        "selection-3"
+      ],
+      "sourceRecordDigest": "sha256:911158636165efcb47fcd7e8d3f0c6c896894c55cc13a1a0caf4ec80d06ecbd7",
+      "payloadDigest": "sha256:c914d8dfbdf225306759834e3a5de6c24eb881d6c16bf5628da3945cf59b54c1",
+      "recordDigest": "sha256:7fb788442c841759511a7632f4ce0919f5d69f4d30568cdd330bef04bd117d48"
+    },
+    {
+      "id": "evidence-job-5",
+      "kind": "provider-job-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:40:00Z",
+      "suppliedByRef": "principal-restore-provider",
+      "subjectRefs": [
+        "job-5",
+        "selection-5"
+      ],
+      "sourceRecordDigest": "sha256:d6ab0225c9aa40b18ed194873388b9c24986c286a4cbd52f510ed486e893cf63",
+      "payloadDigest": "sha256:b3b97a1dfd623f137c939be7c0f096ab7f52cea9db6416f9c8be7503749309da",
+      "recordDigest": "sha256:2f36903bf8b86b19b38267c76b4403c909fd60dc0ebd3d6f70944b8817d69cfa"
+    },
+    {
+      "id": "evidence-validation-1",
+      "kind": "validation-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T10:00:00Z",
+      "suppliedByRef": "principal-validator",
+      "subjectRefs": [
+        "validation-1",
+        "selection-1"
+      ],
+      "sourceRecordDigest": "sha256:28f0750ec311c54750e1e76275d9c90288f11f7f7042370a5cd710668513957a",
+      "payloadDigest": "sha256:ee2479d5647f474197b9f48ca21860b039462258884427b8928fddbbd9ef92ff",
+      "recordDigest": "sha256:5432ff52c6c626e2f679884900f267e47eecf1dc4ba352ad65e13f6012d17542"
+    },
+    {
+      "id": "evidence-validation-2",
+      "kind": "validation-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T10:05:00Z",
+      "suppliedByRef": "principal-validator",
+      "subjectRefs": [
+        "validation-2",
+        "selection-2"
+      ],
+      "sourceRecordDigest": "sha256:306267e7420623531a7fa82f70a9a522c0bbdf920fc99baef4d0d9cd181f4ef4",
+      "payloadDigest": "sha256:575d2cc7fce3fb6abdb91c7849a6210158c836ac2a8a80f1497c99566ecd21f6",
+      "recordDigest": "sha256:682da4ff8ab1215b8d3a5c64e18a93ef19bdda362dc3971ae9a71611d0230415"
+    },
+    {
+      "id": "evidence-validation-3",
+      "kind": "validation-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:30:00Z",
+      "suppliedByRef": "principal-validator",
+      "subjectRefs": [
+        "validation-3",
+        "selection-3"
+      ],
+      "sourceRecordDigest": "sha256:d05dea449b754a5819488d3df661615885623bb1e4a2f11101363844026465e0",
+      "payloadDigest": "sha256:eb60ffd3d9f4c2719c619bb54aca594a94d159f468e124c092d201d5495ed5db",
+      "recordDigest": "sha256:ae7f61ded714bdc58e83bc6a373d8cf42490d89c800454003d090c6ccab912d9"
+    },
+    {
+      "id": "evidence-validation-4",
+      "kind": "validation-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:08:00Z",
+      "suppliedByRef": "principal-validator",
+      "subjectRefs": [
+        "validation-4",
+        "selection-4"
+      ],
+      "sourceRecordDigest": "sha256:7757a96820fbfa91728d9902bbfa2dc010f620060c55eaae2cb94425cda3da47",
+      "payloadDigest": "sha256:c68755ad3a783a0622f465b59bab0cc4e0ab6af60422bc32cc7efa795d755cec",
+      "recordDigest": "sha256:a62acd2ea9b6d1a6d9914f3ea887331fb8a98495266400e7161118da19f532fc"
+    },
+    {
+      "id": "evidence-validation-5",
+      "kind": "validation-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:00:00Z",
+      "suppliedByRef": "principal-validator",
+      "subjectRefs": [
+        "validation-5",
+        "selection-5"
+      ],
+      "sourceRecordDigest": "sha256:e461c98be9dcde119a44771647e21fe7c2a6b19cca9d466eda8ff3db36b13765",
+      "payloadDigest": "sha256:c0a7c014e9d034db625021c25529f183b41fbfc01d8dc257b3ddd015e4ea5927",
+      "recordDigest": "sha256:31688338979d6ef9588ab448732b4e28bef1ef53e8e495a4798dfdb976e9cb66"
+    },
+    {
+      "id": "evidence-cleanup-1",
+      "kind": "cleanup-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T10:20:00Z",
+      "suppliedByRef": "principal-cleanup-owner",
+      "subjectRefs": [
+        "cleanup-1",
+        "selection-1",
+        "target-1"
+      ],
+      "sourceRecordDigest": "sha256:87addda03b9b12fbed116c77d7db934b822b524dc48c93a86e1c18406c7f34bd",
+      "payloadDigest": "sha256:fb5d98c6c443fac5f492cd3b2c9ba95e44c8a34986bd09c209c58b1db32b21a6",
+      "recordDigest": "sha256:7a171ec15c7de1a51dbd3b391995bb983e825b83711359873051d161a917d3fe"
+    },
+    {
+      "id": "evidence-cleanup-2",
+      "kind": "cleanup-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T10:10:00Z",
+      "suppliedByRef": "principal-cleanup-owner",
+      "subjectRefs": [
+        "cleanup-2",
+        "selection-2",
+        "target-2"
+      ],
+      "sourceRecordDigest": "sha256:1d8aeb27f14fc78b2a583275155a32e6310b9a2c0a650b89a8f5074979732a59",
+      "payloadDigest": "sha256:b443403f6195c677630c06a5f94ed06533cb986383a8e731a5dbadf109fd0a79",
+      "recordDigest": "sha256:51de15f02b78a9dfbcaac1cf4967e1cd0d8f03b5018644b1a05a14ee26fc3287"
+    },
+    {
+      "id": "evidence-cleanup-3",
+      "kind": "cleanup-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:50:00Z",
+      "suppliedByRef": "principal-cleanup-owner",
+      "subjectRefs": [
+        "cleanup-3",
+        "selection-3",
+        "target-3"
+      ],
+      "sourceRecordDigest": "sha256:77d24c234b3d11d2ad3436d6c47f76a4bec5d84cbb83163131a92f6eb929d36a",
+      "payloadDigest": "sha256:f11f193eef5effeced08dcf16261b398cf27ce872b725e46dde18454e6f3c6fd",
+      "recordDigest": "sha256:116b1e27ac0cfcddc44ba20be76663962092d692d37b7b422585dfa7f417bb18"
+    },
+    {
+      "id": "evidence-cleanup-4",
+      "kind": "cleanup-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T09:20:00Z",
+      "suppliedByRef": "principal-cleanup-owner",
+      "subjectRefs": [
+        "cleanup-4",
+        "selection-4",
+        "target-4"
+      ],
+      "sourceRecordDigest": "sha256:115508cf0cf9174a0ddddadca3232eea63839f641bfd2fa80986bc9073f501c5",
+      "payloadDigest": "sha256:f9d93530e252291d1d2f9e74571fc87ba04bcc08e0003f802380288c20539807",
+      "recordDigest": "sha256:8a65e4f927f76af5f1fbfeb0942c569de478325e9d2a71245a57e852f52a151c"
+    },
+    {
+      "id": "evidence-cleanup-5",
+      "kind": "cleanup-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:05:00Z",
+      "suppliedByRef": "principal-cleanup-owner",
+      "subjectRefs": [
+        "cleanup-5",
+        "selection-5",
+        "target-5"
+      ],
+      "sourceRecordDigest": "sha256:4f71d8cd7120d5b24db7ab3fed137031581dfcbd772f2a28478a14c7d5bad482",
+      "payloadDigest": "sha256:5fcb7117684604efa271029cc1469da123d613f17f489906f2dc98bf8476338b",
+      "recordDigest": "sha256:5ad85cea9de65b5d755993a53250f4c44c25932c942dd95630133dc2e1973a0d"
+    },
+    {
+      "id": "evidence-retention-approval-5",
+      "kind": "retention-approval-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:05:00Z",
+      "suppliedByRef": "principal-retention-approver",
+      "subjectRefs": [
+        "cleanup-5",
+        "selection-5",
+        "target-5"
+      ],
+      "sourceRecordDigest": "sha256:01d973961298744c11f452b312961c0e69164ea83767454d9cb257161b705095",
+      "payloadDigest": "sha256:5fcb7117684604efa271029cc1469da123d613f17f489906f2dc98bf8476338b",
+      "recordDigest": "sha256:00c24d6350bc93a9fa4f9669c53115ffabc269b049218ac201894e2dfc97aa69"
+    },
+    {
+      "id": "evidence-blocker-validation-failed",
+      "kind": "blocker-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:10:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "blocker-validation-failed",
+        "selection-2",
+        "target-2"
+      ],
+      "sourceRecordDigest": "sha256:63ffdc7563ba848671901675aab25b572e704d3be6de099d8c6b719dfb6e5a49",
+      "payloadDigest": "sha256:950f1e2daf80a9e3b92cc4c88130b3e7553446f33688a7d73811c657a5dd0060",
+      "recordDigest": "sha256:525f88a1bb215181954c9952d96d3d1aeb2014027d1f5d8ed0d53ac07145a4e5"
+    },
+    {
+      "id": "evidence-blocker-cleanup-pending-2",
+      "kind": "blocker-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:10:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "blocker-cleanup-pending-2",
+        "selection-2",
+        "target-2"
+      ],
+      "sourceRecordDigest": "sha256:e2a469c7ce0899459ee6dccdd5c555fa5995e4a16940691ac7d4b1b65142a15d",
+      "payloadDigest": "sha256:da13087c248186376ec1c4243cd9749a2fbaa38496531701819171a9ee273f6f",
+      "recordDigest": "sha256:7436c48599137b168868237385f2cf1cff862dfe5fc53229d662d44665cb0923"
+    },
+    {
+      "id": "evidence-blocker-restore-failed",
+      "kind": "blocker-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:10:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "blocker-restore-failed",
+        "selection-3",
+        "target-3"
+      ],
+      "sourceRecordDigest": "sha256:8a6df901f2ed4643b47ccb93543af4c5d5be554161d5a3573fb0669d5f47c356",
+      "payloadDigest": "sha256:abf0ba5db9bc99e3687f4105826339d171ee0d559410be93226bd5c27e1d60b7",
+      "recordDigest": "sha256:afb109a6588fa65b1189d765f7b472ae6811c21b8808e701700b95fd54ea4ea2"
+    },
+    {
+      "id": "evidence-blocker-validation-missing-3",
+      "kind": "blocker-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:10:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "blocker-validation-missing-3",
+        "selection-3",
+        "target-3"
+      ],
+      "sourceRecordDigest": "sha256:9772826fecdc790005f2eb60e080076f3c8ad00a168e066f2168451e28b31089",
+      "payloadDigest": "sha256:9db6723a25af298f4f298fa7b276fe0e86e4e313c5313f7b172be66a34d1b880",
+      "recordDigest": "sha256:da005f62d5768f86ec6b53d013d784d0ac4ade4ddb7ef65ed99d5359eab032d5"
+    },
+    {
+      "id": "evidence-blocker-job-missing",
+      "kind": "blocker-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:10:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "blocker-job-missing",
+        "selection-4",
+        "target-4"
+      ],
+      "sourceRecordDigest": "sha256:5920ed0b0a47b22dbaae8fc51324a7481d3693de943327c7093f1cd97ec7e57f",
+      "payloadDigest": "sha256:86a2f9dad206819023f98b89fed24e6280dce5f7a0b6b81f9fc5cc4c50684860",
+      "recordDigest": "sha256:9a4cd9132c189e216092fbf8067ae5655b2366c381acde48b8d2772c5e0adfa2"
+    },
+    {
+      "id": "evidence-blocker-validation-missing-4",
+      "kind": "blocker-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:10:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "blocker-validation-missing-4",
+        "selection-4",
+        "target-4"
+      ],
+      "sourceRecordDigest": "sha256:c4a6ec38bcaccc1819999cbed19e236e21587cfbc40d2596d0a045a493e802fd",
+      "payloadDigest": "sha256:c81339ef84dcdd26ae092f66da32ec2a2bfca7f77c90e23177a0b383c13613f7",
+      "recordDigest": "sha256:fd112279a77e1dac0d51fcb4226b2ce30b308db49604c9b9fd74665997c47f7e"
+    },
+    {
+      "id": "evidence-blocker-cleanup-pending-4",
+      "kind": "blocker-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:10:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "blocker-cleanup-pending-4",
+        "selection-4",
+        "target-4"
+      ],
+      "sourceRecordDigest": "sha256:bc5fc084864ad935e4902ddcc8cb90c62931b43ba9a4db92668258a35d57f960",
+      "payloadDigest": "sha256:47df09300769284c5a46c165dacfba538d284c90131952e7b1fd5d371275e60a",
+      "recordDigest": "sha256:1ab75f09f0c1230f4a9edbdf06be13a320bfbada3d612466e9c79df2ed11f78e"
+    },
+    {
+      "id": "evidence-blocker-rpo",
+      "kind": "blocker-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:10:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "blocker-rpo",
+        "selection-5",
+        "target-5"
+      ],
+      "sourceRecordDigest": "sha256:57783a64f57b1266a939bf5e15fb42aa4a07174590374f59d49abf068e16bb17",
+      "payloadDigest": "sha256:564c4bb9f13db73987225a56bdcc4e19b8151e019aa8f9637c2c6c982c45d48d",
+      "recordDigest": "sha256:8d14033beb603b424cbe194508573050295ffcec149ccb993ca87e7249dc8267"
+    },
+    {
+      "id": "evidence-blocker-rto",
+      "kind": "blocker-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:10:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "blocker-rto",
+        "selection-5",
+        "target-5"
+      ],
+      "sourceRecordDigest": "sha256:4a4f89686ed73191ab032e4369b0a0a406d24fb35d7927807100530d5db8dd2d",
+      "payloadDigest": "sha256:2736cde21f9bf6221a1f159ca390aa82b6a86e72afc3da59e7f96d08b2b79b93",
+      "recordDigest": "sha256:ef4e46088033cf638a6bb59566ba86cd56656bdc19c3ac6d3a929d301ea38582"
+    },
+    {
+      "id": "evidence-blocker-retained",
+      "kind": "blocker-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:10:00Z",
+      "suppliedByRef": "principal-coordinator",
+      "subjectRefs": [
+        "blocker-retained",
+        "selection-5",
+        "target-5"
+      ],
+      "sourceRecordDigest": "sha256:75f186e3af43b6c4194e408c62466a44667302a1af7d467cc0a3dea3b6b2e95d",
+      "payloadDigest": "sha256:fe24ba3d9cd86ca4d7036357fa3eb5ded522a8d4f8c243fb77303d6d642b2c82",
+      "recordDigest": "sha256:4c73053ae5cc54066e1acee6101a6abd996eef975c127a61a927c31ecb2d5f87"
+    },
+    {
+      "id": "evidence-destination",
+      "kind": "destination-approval-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:30:00Z",
+      "suppliedByRef": "principal-destination-approver",
+      "subjectRefs": [
+        "destination-approval"
+      ],
+      "sourceRecordDigest": "sha256:a6b5efbe3420bae16d65a1c1d337266bd66a3c3d0cc78d4b95076671d6bf4e0f",
+      "payloadDigest": "sha256:f79b9bc24e0ce44e7931ba14822ebb1767ff212af11c5f5fae6b7ce07d8bd4a7",
+      "recordDigest": "sha256:14e7726a5bad86125a2c0a3f09e0d57350f4d685b757c77c27a3c5a6560b660a"
+    },
+    {
+      "id": "evidence-handoff",
+      "kind": "handoff-record",
+      "roundRef": "round-quarterly-restore",
+      "observedAt": "2026-09-01T11:45:00Z",
+      "suppliedByRef": "principal-handoff-owner",
+      "subjectRefs": [
+        "handoff-resilience-owner"
+      ],
+      "sourceRecordDigest": "sha256:75e18cd0c9bc0f5a63235367fc49e9013356e12111176246050c6736337f065d",
+      "payloadDigest": "sha256:9d7b8b6baadb501fb417fc83278a5e60d86aa1bc7c1a8ca179a50a0d3d43588f",
+      "recordDigest": "sha256:bfcafffdb79de8eae896e2f4ee8d2dc65e7d39fb8e5fbe15743665df08dc58cf"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "blocker-validation-failed",
+      "selectionRef": "selection-2",
+      "category": "validation-failed",
+      "targetRefs": [
+        "selection-2",
+        "target-2"
+      ],
+      "detectedAt": "2026-09-01T11:10:00Z",
+      "ownerRef": "principal-coordinator",
+      "evidenceRef": "evidence-blocker-validation-failed",
+      "payloadDigest": "sha256:950f1e2daf80a9e3b92cc4c88130b3e7553446f33688a7d73811c657a5dd0060"
+    },
+    {
+      "id": "blocker-cleanup-pending-2",
+      "selectionRef": "selection-2",
+      "category": "cleanup-pending",
+      "targetRefs": [
+        "selection-2",
+        "target-2"
+      ],
+      "detectedAt": "2026-09-01T11:10:00Z",
+      "ownerRef": "principal-coordinator",
+      "evidenceRef": "evidence-blocker-cleanup-pending-2",
+      "payloadDigest": "sha256:da13087c248186376ec1c4243cd9749a2fbaa38496531701819171a9ee273f6f"
+    },
+    {
+      "id": "blocker-restore-failed",
+      "selectionRef": "selection-3",
+      "category": "restore-failed",
+      "targetRefs": [
+        "selection-3",
+        "target-3"
+      ],
+      "detectedAt": "2026-09-01T11:10:00Z",
+      "ownerRef": "principal-coordinator",
+      "evidenceRef": "evidence-blocker-restore-failed",
+      "payloadDigest": "sha256:abf0ba5db9bc99e3687f4105826339d171ee0d559410be93226bd5c27e1d60b7"
+    },
+    {
+      "id": "blocker-validation-missing-3",
+      "selectionRef": "selection-3",
+      "category": "validation-missing",
+      "targetRefs": [
+        "selection-3",
+        "target-3"
+      ],
+      "detectedAt": "2026-09-01T11:10:00Z",
+      "ownerRef": "principal-coordinator",
+      "evidenceRef": "evidence-blocker-validation-missing-3",
+      "payloadDigest": "sha256:9db6723a25af298f4f298fa7b276fe0e86e4e313c5313f7b172be66a34d1b880"
+    },
+    {
+      "id": "blocker-job-missing",
+      "selectionRef": "selection-4",
+      "category": "provider-job-missing",
+      "targetRefs": [
+        "selection-4",
+        "target-4"
+      ],
+      "detectedAt": "2026-09-01T11:10:00Z",
+      "ownerRef": "principal-coordinator",
+      "evidenceRef": "evidence-blocker-job-missing",
+      "payloadDigest": "sha256:86a2f9dad206819023f98b89fed24e6280dce5f7a0b6b81f9fc5cc4c50684860"
+    },
+    {
+      "id": "blocker-validation-missing-4",
+      "selectionRef": "selection-4",
+      "category": "validation-missing",
+      "targetRefs": [
+        "selection-4",
+        "target-4"
+      ],
+      "detectedAt": "2026-09-01T11:10:00Z",
+      "ownerRef": "principal-coordinator",
+      "evidenceRef": "evidence-blocker-validation-missing-4",
+      "payloadDigest": "sha256:c81339ef84dcdd26ae092f66da32ec2a2bfca7f77c90e23177a0b383c13613f7"
+    },
+    {
+      "id": "blocker-cleanup-pending-4",
+      "selectionRef": "selection-4",
+      "category": "cleanup-pending",
+      "targetRefs": [
+        "selection-4",
+        "target-4"
+      ],
+      "detectedAt": "2026-09-01T11:10:00Z",
+      "ownerRef": "principal-coordinator",
+      "evidenceRef": "evidence-blocker-cleanup-pending-4",
+      "payloadDigest": "sha256:47df09300769284c5a46c165dacfba538d284c90131952e7b1fd5d371275e60a"
+    },
+    {
+      "id": "blocker-rpo",
+      "selectionRef": "selection-5",
+      "category": "rpo-violation",
+      "targetRefs": [
+        "selection-5",
+        "target-5"
+      ],
+      "detectedAt": "2026-09-01T11:10:00Z",
+      "ownerRef": "principal-coordinator",
+      "evidenceRef": "evidence-blocker-rpo",
+      "payloadDigest": "sha256:564c4bb9f13db73987225a56bdcc4e19b8151e019aa8f9637c2c6c982c45d48d"
+    },
+    {
+      "id": "blocker-rto",
+      "selectionRef": "selection-5",
+      "category": "rto-violation",
+      "targetRefs": [
+        "selection-5",
+        "target-5"
+      ],
+      "detectedAt": "2026-09-01T11:10:00Z",
+      "ownerRef": "principal-coordinator",
+      "evidenceRef": "evidence-blocker-rto",
+      "payloadDigest": "sha256:2736cde21f9bf6221a1f159ca390aa82b6a86e72afc3da59e7f96d08b2b79b93"
+    },
+    {
+      "id": "blocker-retained",
+      "selectionRef": "selection-5",
+      "category": "temporary-target-retained",
+      "targetRefs": [
+        "selection-5",
+        "target-5"
+      ],
+      "detectedAt": "2026-09-01T11:10:00Z",
+      "ownerRef": "principal-coordinator",
+      "evidenceRef": "evidence-blocker-retained",
+      "payloadDigest": "sha256:fe24ba3d9cd86ca4d7036357fa3eb5ded522a8d4f8c243fb77303d6d642b2c82"
+    }
+  ],
+  "coverage": {
+    "roundRef": "round-quarterly-restore",
+    "planDigest": "sha256:0b2bce2f13f302728d9d0588a205cd11b9ecc32085c39ad3c401ccc6891b3270",
+    "resourceRefs": [
+      "resource-orders-db",
+      "resource-documents-store",
+      "resource-team-files",
+      "resource-runtime-config",
+      "resource-search-catalog",
+      "resource-event-queue"
+    ],
+    "selectedResourceRefs": [
+      "resource-orders-db",
+      "resource-documents-store",
+      "resource-team-files",
+      "resource-runtime-config",
+      "resource-search-catalog"
+    ],
+    "excludedResourceRefs": [
+      "resource-event-queue"
+    ],
+    "recoveryPointRefs": [
+      "recovery-orders",
+      "recovery-documents",
+      "recovery-files",
+      "recovery-config",
+      "recovery-search"
+    ],
+    "selectionRefs": [
+      "selection-1",
+      "selection-2",
+      "selection-3",
+      "selection-4",
+      "selection-5"
+    ],
+    "targetRefs": [
+      "target-1",
+      "target-2",
+      "target-3",
+      "target-4",
+      "target-5"
+    ],
+    "providerJobRefs": [
+      "job-1",
+      "job-2",
+      "job-3",
+      "job-5"
+    ],
+    "validationRefs": [
+      "validation-1",
+      "validation-2",
+      "validation-3",
+      "validation-4",
+      "validation-5"
+    ],
+    "cleanupRefs": [
+      "cleanup-1",
+      "cleanup-2",
+      "cleanup-3",
+      "cleanup-4",
+      "cleanup-5"
+    ],
+    "blockerRefs": [
+      "blocker-validation-failed",
+      "blocker-cleanup-pending-2",
+      "blocker-restore-failed",
+      "blocker-validation-missing-3",
+      "blocker-job-missing",
+      "blocker-validation-missing-4",
+      "blocker-cleanup-pending-4",
+      "blocker-rpo",
+      "blocker-rto",
+      "blocker-retained"
+    ],
+    "contentDigest": "sha256:8caa13bc70bd61b9e86a3bacc31d620c233e2e74d0a8fa9f38f978a959bf7a46"
+  },
+  "destinationApproval": {
+    "id": "destination-approval",
+    "roundRef": "round-quarterly-restore",
+    "planDigest": "sha256:0b2bce2f13f302728d9d0588a205cd11b9ecc32085c39ad3c401ccc6891b3270",
+    "coverageDigest": "sha256:8caa13bc70bd61b9e86a3bacc31d620c233e2e74d0a8fa9f38f978a959bf7a46",
+    "destination": "resilience-owner-review-queue",
+    "approvedByRef": "principal-destination-approver",
+    "authorityGrantRef": "grant-destination-approval",
+    "approvedAt": "2026-09-01T11:30:00Z",
+    "evidenceRef": "evidence-destination",
+    "payloadDigest": "sha256:f79b9bc24e0ce44e7931ba14822ebb1767ff212af11c5f5fae6b7ce07d8bd4a7"
+  },
+  "handoff": {
+    "id": "handoff-resilience-owner",
+    "roundRef": "round-quarterly-restore",
+    "planDigest": "sha256:0b2bce2f13f302728d9d0588a205cd11b9ecc32085c39ad3c401ccc6891b3270",
+    "coverageDigest": "sha256:8caa13bc70bd61b9e86a3bacc31d620c233e2e74d0a8fa9f38f978a959bf7a46",
+    "destinationApprovalRef": "destination-approval",
+    "destinationApprovalDigest": "sha256:f79b9bc24e0ce44e7931ba14822ebb1767ff212af11c5f5fae6b7ce07d8bd4a7",
+    "state": "blocked",
+    "nextOwnerRef": "principal-handoff-owner",
+    "authorityGrantRef": "grant-handoff",
+    "handedOffAt": "2026-09-01T11:45:00Z",
+    "selectedTripleRefs": [
+      "selection-1",
+      "selection-2",
+      "selection-3",
+      "selection-4",
+      "selection-5"
+    ],
+    "providerJobRefs": [
+      "job-1",
+      "job-2",
+      "job-3",
+      "job-5"
+    ],
+    "validationRefs": [
+      "validation-1",
+      "validation-2",
+      "validation-3",
+      "validation-4",
+      "validation-5"
+    ],
+    "cleanupRefs": [
+      "cleanup-1",
+      "cleanup-2",
+      "cleanup-3",
+      "cleanup-4",
+      "cleanup-5"
+    ],
+    "blockerRefs": [
+      "blocker-validation-failed",
+      "blocker-cleanup-pending-2",
+      "blocker-restore-failed",
+      "blocker-validation-missing-3",
+      "blocker-job-missing",
+      "blocker-validation-missing-4",
+      "blocker-cleanup-pending-4",
+      "blocker-rpo",
+      "blocker-rto",
+      "blocker-retained"
+    ],
+    "restoreExecutionClaim": "not-claimed",
+    "validationExecutionClaim": "not-claimed",
+    "cleanupExecutionClaim": "not-claimed",
+    "productionReadinessClaim": "not-claimed",
+    "recoverabilityClaim": "not-claimed",
+    "complianceClaim": "not-claimed",
+    "auditClaim": "not-claimed",
+    "failoverClaim": "not-claimed",
+    "deletionClaim": "not-claimed",
+    "verificationCompletionClaim": "not-claimed",
+    "evidenceRef": "evidence-handoff",
+    "payloadDigest": "sha256:9d7b8b6baadb501fb417fc83278a5e60d86aa1bc7c1a8ca179a50a0d3d43588f"
+  }
+}
