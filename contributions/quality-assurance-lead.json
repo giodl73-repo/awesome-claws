@@ -99,6 +99,11 @@
         "id": "backup-restore-verification-coordinator",
         "overlap": "Both preserve test evidence, failures, coverage, and owner-visible readiness handoffs.",
         "difference": "Backup Restore Verification Coordinator has a fixed backup-resource universe, provider restore jobs, recovery objectives, isolated targets, and cleanup rather than general release testing."
+      },
+      {
+        "id": "tls-certificate-rotation-verification-coordinator",
+        "overlap": "Both preserve independent test or validation evidence, failures, coverage, and a release-visible handoff, keeping provider or author claims distinct from independent proof.",
+        "difference": "TLS Certificate Rotation Verification has a fixed certificate and binding universe with CA/provider issuance, deployment, and endpoint identity. This Claw manages general test coverage and release evidence."
       }
     ]
   }

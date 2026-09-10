@@ -2666,6 +2666,35 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "tls-certificate-rotation-verification-coordinator",
+      "acceptedRequest": "Verify this supplied predecessor TLS certificate inventory and service/listener/endpoint binding inventory for the approved rotation campaign. Record the owner's approved rotation requests, track each CA/provider issuance to a successor version, confirm successor deployment and independent endpoint fingerprint and chain observations, and show exact retirement or approved temporary overlap. Do not read private keys or certificate bodies, issue or deploy certificates, change listeners, DNS, or routes, restart, revoke, disable, or delete anything, or claim rotation completion.",
+      "requiredEvidence": [
+        "One round id, requestedAt, approved campaign reference and version, caller-supplied trusted zone-bearing RFC 3339 validation asOf, approved private destination, and exact predecessor-certificate export, binding export, authority-roster, approver, and handoff references",
+        "One exact metadata-only predecessor certificate export whose certificate index equals every supplied certificate and whose digest binds each certificate owner, class, rotate or exclude state, exclusion reason, external source digest, and semantic payload digest",
+        "One exact service, listener, and endpoint binding export with complete binding index, per-binding certificate reference, unique endpoint locator, external source digests, and semantic payload digests",
+        "Exactly one owner-approved rotation request per rotate certificate and none for excluded certificates, each bound to its certificate payload, approved campaign and version, approver, grant, and request time",
+        "One CA/provider issuance outcome per request yielding one unique successor version and provider operation id or an exact blocker, one successor deployment observation per binding, and one independent endpoint fingerprint and chain observation per deployment",
+        "Exact retirement or revocation observations only after all bindings validate, or current approver-authored time-bounded overlap states, plus content-bound principal roster and current exact-round grants with reciprocal evidence, strict chronology, and separation among coordinator, exporters, approver, provider, observers, validator, overlap approver, destination approver, and handoff owner",
+        "Exact derived blocker ledger across issuance, deployment, endpoint, and overlap categories, complete coverage proof, payload-bound destination approval, and payload-bound handoff with structural not-claimed fields"
+      ],
+      "authorityBoundaries": [
+        "Do not read private keys, certificate bodies, issuance secrets, provider consoles, listeners, DNS, routes, networks, browsers, shells, MCP servers, plugins, schedulers, messaging, or ticketing",
+        "Do not issue, renew, deploy, bind, rebind, restart, retire, revoke, disable, or delete any certificate, listener, route, or endpoint",
+        "Do not infer certificate-inventory completeness, binding completeness, issuance authenticity, deployment truth, endpoint identity, readiness, security, compliance, or audit assurance",
+        "Do not accept provider issuance success as successor deployment or independent endpoint validation, or accept an endpoint observation authored by the deployment observer or provider",
+        "Do not hide pending, failed, or missing issuance, missing or failed deployment, endpoint fingerprint mismatch or chain failure, or predecessors retained in overlap",
+        "Do not expose free-form action, recommendation, interpretation, assurance, or success claims in the machine artifact"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/tls-certificate-rotation-verification-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

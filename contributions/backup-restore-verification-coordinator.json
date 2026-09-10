@@ -160,6 +160,11 @@
         "id": "access-entitlement-review-coordinator",
         "overlap": "Both partition an exact owner-supplied universe, require fresh separated authority, and enforce exact blocker equality.",
         "difference": "Access Entitlement Review records human retain or revoke decisions for assignments. This Claw records recovery-point selections and external restore, validation, and cleanup evidence without deciding access."
+      },
+      {
+        "id": "tls-certificate-rotation-verification-coordinator",
+        "overlap": "Both coordinate one bounded metadata-only verification round, partition an exact owner-supplied universe, separate provider outcome from independent validation, bind non-circular digests, derive exact blockers, and hand off without execution authority.",
+        "difference": "TLS Certificate Rotation Verification proves certificate issuance, per-binding successor deployment, independent endpoint identity, and retirement or overlap. This Claw proves recovery-point restores to isolated targets with RPO and RTO math and temporary-target cleanup."
       }
     ]
   }

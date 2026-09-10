@@ -165,6 +165,11 @@
         "id": "backup-restore-verification-coordinator",
         "overlap": "Both partition an exact owner-supplied universe, require fresh separated authority, and enforce exact blocker equality.",
         "difference": "Backup Restore Verification Coordinator records recovery-point selections and external restore, validation, and cleanup evidence without making retain or revoke access decisions."
+      },
+      {
+        "id": "tls-certificate-rotation-verification-coordinator",
+        "overlap": "Both partition an exact owner-supplied universe, require fresh separated authority under current grants, enforce exact blocker equality, and keep terminal decisions human-owned.",
+        "difference": "TLS Certificate Rotation Verification records certificate rotation requests and external issuance, deployment, endpoint, and retirement evidence. This Claw records human retain or revoke decisions for access assignments."
       }
     ]
   }

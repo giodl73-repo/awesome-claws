@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "tls-certificate-rotation-verification-coordinator",
+    "name": "TLS Certificate Rotation Verification Coordinator",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73"
+      ],
+      "lastVerified": "2026-09-10"
+    },
+    "description": "Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority.",
+    "audience": "Authorized platform, infrastructure, security-engineering, PKI, and service owners verifying owner-supplied TLS certificate rotation metadata in a controlled workspace without exposing private keys or certificate bodies or granting issuance, deployment, or revocation execution.",
+    "principles": [
+      "Keep certificate authorities and inventory owners authoritative; consume only metadata exports and never private keys, certificate bodies, issuance secrets, or endpoint credentials",
+      "Partition the exact predecessor certificate universe into rotate and exclude certificates and bind every rotate certificate to one owner-approved request, one issuance outcome, and its exact service, listener, and endpoint bindings",
+      "Keep CA/provider issuance outcome distinct from successor deployment and independent endpoint validation; provider success is never deployment or endpoint success and is never borrowable across requests",
+      "Require one successor deployment observation per binding and one independent endpoint fingerprint and chain observation per deployment, authored by a validator separated from the deployment observer and the provider",
+      "Admit a retirement or revocation observation only after every binding of the predecessor validates, otherwise hold the predecessor in a current approver-authored time-bounded overlap and raise a blocker",
+      "Bind certificate, binding, request, issuance, deployment, endpoint, retirement, overlap, grant, evidence, coverage, destination, and handoff content through a non-circular digest chain with unique successor, provider-operation, and endpoint identities",
+      "Represent private-key, certificate-body, issuance, deployment, listener-route, restart, revocation, disable, deletion, readiness, identity, security, compliance, audit, and rotation-completion claims only as structural not-claimed values"
+    ],
+    "boundaries": [
+      "Do not read private keys, certificate bodies, issuance secrets, provider consoles, listeners, DNS, routes, networks, browsers, shells, MCP servers, plugins, schedulers, messaging, or ticketing",
+      "Do not issue, renew, deploy, bind, rebind, restart, retire, revoke, disable, or delete any certificate, listener, route, or endpoint",
+      "Do not infer certificate-inventory completeness, binding completeness, issuance authenticity, deployment truth, endpoint identity, readiness, security, compliance, or audit assurance",
+      "Do not accept provider issuance success as successor deployment or independent endpoint validation, or accept an endpoint observation authored by the deployment observer or provider",
+      "Do not hide pending, failed, or missing issuance, missing or failed deployment, endpoint fingerprint mismatch or chain failure, or predecessors retained in overlap",
+      "Do not expose free-form action, recommendation, interpretation, assurance, or success claims in the machine artifact"
+    ],
+    "intake": [
+      "One round id, requestedAt, approved campaign reference and version, caller-supplied trusted zone-bearing RFC 3339 validation asOf, approved private destination, and exact predecessor-certificate export, binding export, authority-roster, approver, and handoff references",
+      "One exact metadata-only predecessor certificate export whose certificate index equals every supplied certificate and whose digest binds each certificate owner, class, rotate or exclude state, exclusion reason, external source digest, and semantic payload digest",
+      "One exact service, listener, and endpoint binding export with complete binding index, per-binding certificate reference, unique endpoint locator, external source digests, and semantic payload digests",
+      "Exactly one owner-approved rotation request per rotate certificate and none for excluded certificates, each bound to its certificate payload, approved campaign and version, approver, grant, and request time",
+      "One CA/provider issuance outcome per request yielding one unique successor version and provider operation id or an exact blocker, one successor deployment observation per binding, and one independent endpoint fingerprint and chain observation per deployment",
+      "Exact retirement or revocation observations only after all bindings validate, or current approver-authored time-bounded overlap states, plus content-bound principal roster and current exact-round grants with reciprocal evidence, strict chronology, and separation among coordinator, exporters, approver, provider, observers, validator, overlap approver, destination approver, and handoff owner",
+      "Exact derived blocker ledger across issuance, deployment, endpoint, and overlap categories, complete coverage proof, payload-bound destination approval, and payload-bound handoff with structural not-claimed fields"
+    ],
+    "workflow": [
+      "Require a caller-supplied trusted asOf and reject offset-less, malformed, or future metadata without reading the wall clock",
+      "Recompute the predecessor-certificate and binding export roots, then prove rotate and exclude references are a disjoint exact partition and rotation requests are an exact one-to-one projection of rotate certificates",
+      "Bind each issuance to its request's unique provider operation, require an issued outcome to yield one unique successor version within the approved campaign, and keep pending, failed, or missing issuance as an exact blocker",
+      "Require one successor deployment observation per binding that deploys only the issued successor version, and one independent endpoint fingerprint and chain observation per deployment authored by a separated validator",
+      "Admit a retirement or revocation observation only after every binding of the predecessor is deployed and independently validated; otherwise require a current approver-authored time-bounded overlap and a blocker",
+      "Derive blocker category and subject equality across issuance-pending, issuance-failed, issuance-missing, deployment-missing, deployment-failed, endpoint-missing, endpoint fingerprint mismatch, endpoint chain failure, and overlap retention",
+      "Recompute the non-circular plan, coverage, destination, and handoff roots over semantic payloads and evidence records, then emit a blocked owner handoff whenever the exact derived blocker set is non-empty"
+    ],
+    "deliverables": [
+      "Exact metadata-only predecessor certificate and service/listener/endpoint binding inventories with rotate and exclude partition proof and explicit external trust roots",
+      "Owner-approved rotation requests and separately authored CA/provider issuance outcomes yielding one successor version per issued rotation or an exact blocker",
+      "Successor deployment observations per binding and independent endpoint fingerprint and chain observations per deployment, with provider success never implying deployment or endpoint success",
+      "Exact retirement or revocation only after all bindings validate, or current approver-authored time-bounded overlap, with exact blocker equality across issuance, deployment, endpoint, and overlap categories",
+      "Content-bound authority, evidence, coverage, destination, and owner handoff records with every private-key, certificate-body, issuance, deployment, listener-route, restart, revocation, disable, deletion, readiness, identity, security, compliance, audit, and rotation-completion claim structurally not-claimed"
+    ],
+    "example": {
+      "request": "Verify this supplied predecessor TLS certificate inventory and service/listener/endpoint binding inventory for the approved rotation campaign. Record the owner's approved rotation requests, track each CA/provider issuance to a successor version, confirm successor deployment and independent endpoint fingerprint and chain observations, and show exact retirement or approved temporary overlap. Do not read private keys or certificate bodies, issue or deploy certificates, change listeners, DNS, or routes, restart, revoke, disable, or delete anything, or claim rotation completion.",
+      "outcome": "A metadata-only verification artifact partitions nine predecessor certificates into eight rotate and one excluded certificate, records one clean rotation retired after validation, one fully validated certificate held in approved temporary overlap, one pending and one failed CA issuance, one missing and one failed deployment, one endpoint fingerprint mismatch, and one chain failure, then hands the complete blocked evidence set to the approved TLS owner without claiming issuance, deployment, revocation, readiness, security, compliance, audit, or rotation completion."
+    },
+    "doneWhen": [
+      "The certificate export equals the complete predecessor ledger and rotate plus exclude references form a disjoint exact partition, while rotation requests equal rotate certificates exactly and the binding export equals every supplied binding",
+      "Every rotation request, issuance, deployment, endpoint observation, retirement, and overlap binds its subject by semantic payload digest rather than id alone, with no certificate, binding, request, issuance, deployment, observation, grant, or evidence reuse and unique successor and provider-operation identities",
+      "CA/provider issuance success never implies deployment or endpoint success and is never borrowable across requests; a match requires a deployed observation of the exact successor version",
+      "Retirement or revocation is admissible only after every binding of the predecessor is deployed and independently validated; otherwise the predecessor is held in a current approver-authored time-bounded overlap",
+      "The blocker ledger exactly equals every derived issuance, deployment, endpoint, and overlap category and subject pair, and the handoff cannot become ready while any blocker exists",
+      "Roles, grants, and evidence chronology are causal and authorized under current exact-round grants held by pairwise separated roles, all modeled objects are closed, malformed validation is total, and every prohibited authority claim remains structurally not-claimed"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only supplied metadata artifacts and grants no certificate-authority, key-store, load-balancer, listener, DNS, route, browser, shell, network, MCP, plugin, cron, messaging, or ticketing capability.",
+      "Certificate authorities and inventory owners retain certificate and binding completeness, issuance authenticity, deployment execution, endpoint identity, overlap authorization, retirement and revocation, readiness, security, compliance, and audit authority.",
+      "Malformed, omitted, duplicated, stale, future, cross-certificate, unbound, self-validated, provider-borrowed, deployment-incomplete, endpoint-mismatched, or content-drifted state fails closed into exact findings and owner handoff."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/tls-certificate-rotation.schema.json",
+        "path": "schemas/tls-certificate-rotation.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/tls-certificate-rotation.example.json",
+        "path": "fixtures/tls-certificate-rotation.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/tls-certificate-rotation.md",
+        "path": "templates/tls-certificate-rotation.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "TLS certificate rotations are often tracked in spreadsheets, provider consoles, and load-balancer dashboards that conflate certificate issuance, listener deployment, live endpoint identity, and predecessor retirement. Incomplete certificate or binding coverage, pending or failed issuance, undeployed successors, fingerprint or chain mismatches, self-attested endpoints, and predecessors silently left live can disappear behind a green rotation summary.",
+    "repeatableJob": "For authorized rotation operators, reconcile one exact predecessor certificate and service/listener/endpoint binding metadata export into a bounded rotation-verification round with exact rotate and exclude partition, owner-approved requests, CA/provider issuance outcomes, per-binding successor deployment, independent endpoint fingerprint and chain observation, exact retirement or approved overlap, blockers, and owner handoff while all issuance, deployment, and revocation authority remains external.",
+    "proofPlan": "Prove an X3 metadata-only artifact with a strict closed production JSON Schema, total deterministic semantic validator, caller-supplied trusted asOf, locale-independent canonical digests, exact predecessor rotate and exclude partition, binding export equality, one owner-approved request per rotate certificate, CA/provider issuance bound to each request's unique provider operation yielding one unique successor version or an exact blocker, per-binding successor deployment that deploys only the issued version, independent endpoint fingerprint and chain observation separated from the deployment observer and provider, retirement or revocation admissible only after all bindings validate with a current approver-authored time-bounded overlap otherwise, exact blocker category and subject equality across issuance, deployment, endpoint, and overlap categories, non-circular content-bound plan, coverage, destination, and handoff roots, no id-only or provider-borrowed replay, structural not-claimed claims, malformed-input totality, an accepted multi-outcome fixture, broad adversarial tests, public artifact CLI validation, required semantic recipes, catalog-wide Mock+ convergence, generated package and catalog surfaces, scorecard admission, and a real OpenClaw Control UI screenshot.",
+    "categoryRationale": "Filed under governance because the Claw proves the completeness, authority, chronology, issuance-to-endpoint evidence, and retirement or overlap state of a bounded rotation exercise. It does not operate certificate authorities, issue or deploy certificates, change listeners or routes, revoke certificates, or certify security or compliance.",
+    "existingAlternatives": [
+      {
+        "id": "backup-restore-verification-coordinator",
+        "overlap": "Both coordinate one bounded metadata-only verification round, partition an exact owner-supplied universe, separate provider outcome from independent validation, bind non-circular digests, derive exact blockers, and hand off without execution authority.",
+        "difference": "Backup Restore Verification proves recovery-point restores to isolated targets with RPO and RTO math and temporary-target cleanup. This Claw proves certificate issuance, per-binding successor deployment, independent endpoint identity, and retirement or overlap."
+      },
+      {
+        "id": "access-entitlement-review-coordinator",
+        "overlap": "Both partition an exact owner-supplied universe, require fresh separated authority under current grants, enforce exact blocker equality, and keep terminal decisions human-owned.",
+        "difference": "Access Entitlement Review records human retain or revoke decisions for access assignments. This Claw records certificate rotation requests and external issuance, deployment, endpoint, and retirement evidence without deciding access."
+      },
+      {
+        "id": "financial-account-reconciliation-coordinator",
+        "overlap": "Both reconcile an exact owner-supplied register into a bounded round, bind evidence and grants by content digest, enforce chronology, and derive exact blockers with a structural not-claimed handoff.",
+        "difference": "Financial Account Reconciliation matches ledger and statement lines and proves balances. This Claw proves TLS certificate issuance, deployment, and endpoint identity across a rotation campaign."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both prove exact owner-register coverage, current separated evidence and grants, blockers, non-circular content roots, and structural non-claims over a bounded round.",
+        "difference": "Contract Obligation Tracker observes agreement duties and their status. This Claw coordinates a technical rotation exercise with provider issuance, successor deployment, independent endpoint validation, and retirement or overlap."
+      },
+      {
+        "id": "infrastructure-drift-reconciliation-coordinator",
+        "overlap": "Both reconcile an exact resource universe, bind metadata evidence by digest, derive exact blockers, and prohibit any infrastructure mutation while remaining owner-owned.",
+        "difference": "Infrastructure Drift compares desired and observed configuration state. This Claw coordinates a time-ordered certificate rotation with issuance, deployment, endpoint validation, and predecessor retirement or overlap."
+      },
+      {
+        "id": "records-retention-disposition-coordinator",
+        "overlap": "Both track an exact owner-supplied item universe, authority, retention or terminal state, evidence, blockers, and a completion handoff without executing changes.",
+        "difference": "Records Retention applies supplied retention policy to record copies. This Claw tracks predecessor certificate retirement or approved temporary overlap after successor deployment and endpoint validation."
+      },
+      {
+        "id": "vulnerability-disposition-coordinator",
+        "overlap": "Both partition an exact finding or certificate universe, require separated authority, keep provider claims distinct from independent proof, and derive exact blockers with an owner handoff.",
+        "difference": "Vulnerability Disposition records remediate or accept decisions for scanner findings. This Claw records certificate issuance, deployment, and endpoint outcomes and proves retirement or overlap, granting no disposition authority."
+      },
+      {
+        "id": "change-control-operator",
+        "overlap": "Both require current grants, exact scope, causal chronology, separated evidence, and a boundary against execution authority over a bounded change window.",
+        "difference": "Change Control Operator governs execution of approved changes across a change window. This Claw has no mutation lane and only records external certificate issuance, deployment, endpoint, and retirement outcomes."
+      },
+      {
+        "id": "release-coordinator",
+        "overlap": "Both aggregate independently produced evidence, enforce gates and separation, and provide an owner-visible readiness handoff that cannot pass while blockers remain.",
+        "difference": "Release Coordinator decides software release readiness across gates. This Claw cannot gate or approve a release and derives only certificate rotation blockers from issuance, deployment, and endpoint metadata."
+      },
+      {
+        "id": "incident-response",
+        "overlap": "Both track operational evidence, accountable separated roles, causal timelines, blockers, and controlled owner handoffs without granting external action authority.",
+        "difference": "Incident Response coordinates a live incident with containment and communication needs. This Claw records a planned certificate rotation exercise and grants no issuance, deployment, revocation, or communication authority."
+      },
+      {
+        "id": "quality-assurance-lead",
+        "overlap": "Both preserve independent test or validation evidence, failures, coverage, and a release-visible handoff, keeping provider or author claims distinct from independent proof.",
+        "difference": "Quality Assurance Lead manages general test coverage and release evidence. This Claw has a fixed certificate and binding universe, CA/provider issuance, successor deployment, and endpoint identity contract."
+      },
+      {
+        "id": "data-migration-planner",
+        "overlap": "Both bind source and destination metadata, verify transfer-related evidence, preserve failed or blocked rows, and keep execution authority external.",
+        "difference": "Data Migration Planner plans a production data movement and cutover. This Claw verifies certificate rotation metadata in place and never promotes, deploys, or cuts over any endpoint."
+      }
+    ]
+  }
+}

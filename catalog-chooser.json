@@ -3551,6 +3551,40 @@
       }
     },
     {
+      "id": "tls-certificate-rotation-verification-coordinator",
+      "name": "TLS Certificate Rotation Verification Coordinator",
+      "description": "Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority.",
+      "audience": "Authorized platform, infrastructure, security-engineering, PKI, and service owners verifying owner-supplied TLS certificate rotation metadata in a controlled workspace without exposing private keys or certificate bodies or granting issuance, deployment, or revocation execution.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-10"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "travel-concierge",
       "name": "Travel concierge",
       "description": "Searches and compares current Expedia lodging and flight options, then prepares a traveler-controlled booking handoff without completing a transaction.",

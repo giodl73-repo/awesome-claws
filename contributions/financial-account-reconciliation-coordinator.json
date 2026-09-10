@@ -169,6 +169,11 @@
         "id": "backup-restore-verification-coordinator",
         "overlap": "Both prove exact universe partitioning, content-bound evidence, current grants, exact blocker equality, and a non-action owner handoff.",
         "difference": "Backup Restore Verification Coordinator coordinates recovery-point and isolated-target triples rather than matching financial rows or applying balance arithmetic."
+      },
+      {
+        "id": "tls-certificate-rotation-verification-coordinator",
+        "overlap": "Both reconcile an exact owner-supplied register into a bounded round, bind evidence and grants by content digest, enforce chronology, and derive exact blockers with a structural not-claimed handoff.",
+        "difference": "TLS Certificate Rotation Verification proves certificate issuance, deployment, and endpoint identity across a rotation campaign. This Claw matches ledger and statement lines and proves account balances."
       }
     ]
   }
