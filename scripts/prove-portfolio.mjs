@@ -479,7 +479,10 @@ async function stopGateway(gateway) {
     return;
   }
   if (gateway.child.exitCode !== null) {
-    if (gateway.logFd !== undefined) closeSync(gateway.logFd);
+    if (gateway.logFd !== undefined) {
+      closeSync(gateway.logFd);
+      gateway.logFd = undefined;
+    }
     return;
   }
   const signal = (name) => {
@@ -522,7 +525,10 @@ async function stopGateway(gateway) {
       throw new Error(`Child process ${gateway.child.pid ?? "unknown"} did not terminate.`);
     }
   }
-  if (gateway.logFd !== undefined) closeSync(gateway.logFd);
+  if (gateway.logFd !== undefined) {
+    closeSync(gateway.logFd);
+    gateway.logFd = undefined;
+  }
 }
 
 async function startMockOpenAi(baseEnv, evidenceRoot, entry, marker) {
@@ -914,6 +920,14 @@ for (const entry of entries) {
       await writeFile(path, content, { flag: "wx" });
       userOwnedState = { path, content };
       result.bootstrapState = "synthetic-user-owned-preferences-created";
+    }
+    if (gateway) {
+      await stopGateway(gateway);
+      gateway = undefined;
+      gateway = await startGateway(openClawEntry, env, entry.id, evidenceRoot);
+      env = gateway.env;
+      result.gateway.port = gateway.port;
+      result.gateway.restartAfterAdd = "completed";
     }
 
     const applicationTurn = visualRuntimeProof
