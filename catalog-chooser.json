@@ -3017,6 +3017,51 @@
       }
     },
     {
+      "id": "repository-compliance-program-manager",
+      "name": "Repository Compliance Program Manager",
+      "description": "Runs a recurring vendor-neutral security and compliance remediation program by reconciling approved signals and control revisions into deduplicated repository issues, accountable ownership, SLA state, exceptions, escalations, and independently verified closure without changing code, suppressing findings, approving exceptions, or accepting risk.",
+      "audience": "Security program managers, engineering compliance leads, and repository owners coordinating recurring remediation obligations across repositories and services.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "high",
+        "reasons": [
+          "1 MCP connection"
+        ]
+      },
+      "externalDependencies": [
+        {
+          "kind": "mcp",
+          "id": "issue_tracker",
+          "url": "https://api.githubcopilot.com/mcp/",
+          "auth": "oauth"
+        }
+      ],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "oauth-mcp"
+      ],
+      "boundaryAttention": {
+        "level": "heightened",
+        "reasons": [
+          "network MCP connection",
+          "full tool profile"
+        ]
+      }
+    },
+    {
       "id": "repository-operations-manager",
       "name": "Repository Operations Manager",
       "description": "Supervises an approved repository portfolio by reconciling pull requests, head-bound reviews and checks, builds, release trains, cross-repository dependencies, human approval decisions, and trusted system deadline observations without making owner decisions or performing repository mutations.",

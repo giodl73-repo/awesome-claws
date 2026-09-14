@@ -1,0 +1,1435 @@
+{
+  "schemaVersion": "awesomeClaws.repositoryComplianceProgram.v1",
+  "artifactId": "repository-compliance-checkpoint-2026-09-14",
+  "run": {
+    "id": "run-2026-09-14",
+    "programRef": "program-secure-engineering",
+    "programRevision": "program-r12",
+    "reviewPeriod": "2026-q3-week-11",
+    "asOf": "2026-09-14T19:00:00Z",
+    "controlCatalogRef": "catalog-secure-baseline",
+    "controlCatalogVersion": "2026.09",
+    "slaPolicyRef": "sla-policy-repository",
+    "slaPolicyRevision": "sla-r8",
+    "predecessorCheckpointRef": "checkpoint-2026-09-07",
+    "currentCheckpointRef": "checkpoint-2026-09-14",
+    "currentCheckpointDigest": "sha256:0185c6e2aa162d894efda6e823f0beda8e68fbd9e69ead8be8edb47c42668654",
+    "sourceSnapshotRoots": [
+      "sha256:8c3ecfcc7c520b76dc7e0e4b8faf4cb499f6b45f7bde3c5cc3c0cc42648e739a",
+      "sha256:5ab5a5693122980052b923ca5a865ed430af7b4ae8afe33382a64e832d10c2cd",
+      "sha256:161b3eb70e37f51051a8aa5e8cef3d7e54a847975d2575fd9a5d6aa530717df3",
+      "sha256:3992e35e1246af36f74160d1ea0fa1baa4908a67e1ad954556c90e11dd07ffab",
+      "sha256:f2d9eb88792e41e26ce47f868089d822b4eb7471c0c5eab3873f036d5e5de0c4",
+      "sha256:c19cad7093f0f0853a1db4a5c7bd24e5ebf78f2d948e9c0dfeca8a2c8abd0d34",
+      "sha256:fd04fe40f76cc5a6be3c306eee2666260a0b4a8050f2a3eb399854fe15e036a3"
+    ],
+    "issueDestinationRef": "destination-engineering-tracker",
+    "custodianRef": "principal-program-custodian"
+  },
+  "snapshots": [
+    {
+      "id": "snapshot-program",
+      "kind": "program",
+      "revision": "program-r12",
+      "capturedAt": "2026-09-14T17:00:00Z",
+      "sourceUri": "controlled://program/secure-engineering/r12",
+      "sourceRecordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000001",
+      "complete": true,
+      "indexRefs": [
+        "program-secure-engineering"
+      ],
+      "completenessRoot": "sha256:8c3ecfcc7c520b76dc7e0e4b8faf4cb499f6b45f7bde3c5cc3c0cc42648e739a"
+    },
+    {
+      "id": "snapshot-controls",
+      "kind": "control-catalog",
+      "revision": "2026.09",
+      "capturedAt": "2026-09-14T17:01:00Z",
+      "sourceUri": "controlled://controls/secure-baseline/2026.09",
+      "sourceRecordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000002",
+      "complete": true,
+      "indexRefs": [
+        "control-dependency-update",
+        "control-branch-protection"
+      ],
+      "completenessRoot": "sha256:5ab5a5693122980052b923ca5a865ed430af7b4ae8afe33382a64e832d10c2cd"
+    },
+    {
+      "id": "snapshot-sla",
+      "kind": "sla-policy",
+      "revision": "sla-r8",
+      "capturedAt": "2026-09-14T17:02:00Z",
+      "sourceUri": "controlled://policy/sla/repository/r8",
+      "sourceRecordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000003",
+      "complete": true,
+      "indexRefs": [
+        "sla-standard",
+        "sla-high"
+      ],
+      "completenessRoot": "sha256:161b3eb70e37f51051a8aa5e8cef3d7e54a847975d2575fd9a5d6aa530717df3"
+    },
+    {
+      "id": "snapshot-signals",
+      "kind": "signal",
+      "revision": "signal-export-447",
+      "capturedAt": "2026-09-14T17:10:00Z",
+      "sourceUri": "controlled://signals/export/447",
+      "sourceRecordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000004",
+      "complete": true,
+      "indexRefs": [
+        "signal-api-a",
+        "signal-api-b",
+        "signal-cli",
+        "signal-service",
+        "signal-web",
+        "signal-api-revision"
+      ],
+      "completenessRoot": "sha256:3992e35e1246af36f74160d1ea0fa1baa4908a67e1ad954556c90e11dd07ffab"
+    },
+    {
+      "id": "snapshot-assets",
+      "kind": "asset-owner-graph",
+      "revision": "asset-graph-r31",
+      "capturedAt": "2026-09-14T17:12:00Z",
+      "sourceUri": "controlled://assets/owner-graph/r31",
+      "sourceRecordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000005",
+      "complete": true,
+      "indexRefs": [
+        "asset-api",
+        "asset-cli",
+        "asset-web",
+        "asset-orders-service"
+      ],
+      "completenessRoot": "sha256:f2d9eb88792e41e26ce47f868089d822b4eb7471c0c5eab3873f036d5e5de0c4"
+    },
+    {
+      "id": "snapshot-issues",
+      "kind": "issue-tracker",
+      "revision": "issue-export-993",
+      "capturedAt": "2026-09-14T18:20:00Z",
+      "sourceUri": "controlled://issues/export/993",
+      "sourceRecordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000006",
+      "complete": true,
+      "indexRefs": [
+        "issue-api",
+        "issue-cli",
+        "issue-service",
+        "issue-web",
+        "issue-api-revision"
+      ],
+      "completenessRoot": "sha256:c19cad7093f0f0853a1db4a5c7bd24e5ebf78f2d948e9c0dfeca8a2c8abd0d34"
+    },
+    {
+      "id": "snapshot-predecessor",
+      "kind": "predecessor-checkpoint",
+      "revision": "checkpoint-2026-09-07",
+      "capturedAt": "2026-09-07T19:00:00Z",
+      "sourceUri": "controlled://program/checkpoints/2026-09-07",
+      "sourceRecordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000007",
+      "complete": true,
+      "indexRefs": [
+        "checkpoint-2026-09-07"
+      ],
+      "completenessRoot": "sha256:fd04fe40f76cc5a6be3c306eee2666260a0b4a8050f2a3eb399854fe15e036a3"
+    }
+  ],
+  "principals": [
+    {
+      "id": "principal-compliance-program-claw",
+      "kind": "claw",
+      "role": "program-coordinator",
+      "authorityEvidenceRef": "evidence-claw-boundary"
+    },
+    {
+      "id": "principal-program-custodian",
+      "kind": "human",
+      "role": "program-custodian",
+      "authorityEvidenceRef": "evidence-custodian-authority"
+    },
+    {
+      "id": "principal-api-owner",
+      "kind": "human",
+      "role": "asset-owner",
+      "authorityEvidenceRef": "evidence-owner-authority"
+    },
+    {
+      "id": "principal-cli-owner",
+      "kind": "human",
+      "role": "asset-owner",
+      "authorityEvidenceRef": "evidence-owner-authority"
+    },
+    {
+      "id": "principal-web-owner",
+      "kind": "human",
+      "role": "asset-owner",
+      "authorityEvidenceRef": "evidence-owner-authority"
+    },
+    {
+      "id": "principal-service-owner",
+      "kind": "human",
+      "role": "asset-owner",
+      "authorityEvidenceRef": "evidence-owner-authority"
+    },
+    {
+      "id": "principal-platform-team",
+      "kind": "human",
+      "role": "team-owner",
+      "authorityEvidenceRef": "evidence-owner-authority"
+    },
+    {
+      "id": "principal-commerce-team",
+      "kind": "human",
+      "role": "team-owner",
+      "authorityEvidenceRef": "evidence-owner-authority"
+    },
+    {
+      "id": "principal-extension-authority",
+      "kind": "human",
+      "role": "extension-authority",
+      "authorityEvidenceRef": "evidence-extension"
+    },
+    {
+      "id": "principal-exception-authority",
+      "kind": "human",
+      "role": "exception-authority",
+      "authorityEvidenceRef": "evidence-exception"
+    },
+    {
+      "id": "principal-remediation-author",
+      "kind": "human",
+      "role": "remediation-owner",
+      "authorityEvidenceRef": "evidence-remediation"
+    },
+    {
+      "id": "principal-independent-verifier",
+      "kind": "human",
+      "role": "independent-verifier",
+      "authorityEvidenceRef": "evidence-verification"
+    },
+    {
+      "id": "principal-issue-system",
+      "kind": "system",
+      "role": "issue-tracker",
+      "authorityEvidenceRef": "evidence-issue-policy"
+    },
+    {
+      "id": "principal-signal-system",
+      "kind": "system",
+      "role": "signal-source",
+      "authorityEvidenceRef": "evidence-signal-api-a"
+    }
+  ],
+  "controls": [
+    {
+      "id": "control-dependency-update",
+      "catalogRef": "catalog-secure-baseline",
+      "catalogVersion": "2026.09",
+      "controlKey": "DEPENDENCY-CURRENT",
+      "applicability": "source-assigned",
+      "slaRuleRef": "sla-standard",
+      "signalTypes": [
+        "dependency",
+        "scanner"
+      ],
+      "sourceRef": "snapshot-controls",
+      "revision": "sha256:c6e55ee299170f5230260e364da30455b77a47ec02d83e97ad2f8432a6507cb7"
+    },
+    {
+      "id": "control-branch-protection",
+      "catalogRef": "catalog-secure-baseline",
+      "catalogVersion": "2026.09",
+      "controlKey": "BRANCH-PROTECTION",
+      "applicability": "source-assigned",
+      "slaRuleRef": "sla-high",
+      "signalTypes": [
+        "configuration",
+        "policy"
+      ],
+      "sourceRef": "snapshot-controls",
+      "revision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f"
+    }
+  ],
+  "slaRules": [
+    {
+      "id": "sla-standard",
+      "revision": "sla-standard-r8",
+      "priority": "medium",
+      "durationHours": 720,
+      "nearWindowHours": 168,
+      "sourceRef": "snapshot-sla"
+    },
+    {
+      "id": "sla-high",
+      "revision": "sla-high-r8",
+      "priority": "high",
+      "durationHours": 168,
+      "nearWindowHours": 72,
+      "sourceRef": "snapshot-sla"
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-api",
+      "kind": "repository",
+      "canonicalName": "acme/api",
+      "repositoryDestinationRef": "destination-engineering-tracker",
+      "serviceRef": "service-orders",
+      "teamRef": "principal-platform-team",
+      "ownerRef": "principal-api-owner",
+      "sourceRef": "snapshot-assets",
+      "revision": "sha256:d730912e85f0ee5f31827ae703f9197ac7ae0f776ac1cd500ec15231b44ad5ff"
+    },
+    {
+      "id": "asset-cli",
+      "kind": "repository",
+      "canonicalName": "acme/cli",
+      "repositoryDestinationRef": "destination-engineering-tracker",
+      "serviceRef": "service-developer-tools",
+      "teamRef": "principal-platform-team",
+      "ownerRef": "principal-cli-owner",
+      "sourceRef": "snapshot-assets",
+      "revision": "sha256:f2377b966b168467b37c23759db573933b440496facfb96ea895b5ac8a8c62b4"
+    },
+    {
+      "id": "asset-web",
+      "kind": "repository",
+      "canonicalName": "acme/web",
+      "repositoryDestinationRef": "destination-engineering-tracker",
+      "serviceRef": "service-storefront",
+      "teamRef": "principal-commerce-team",
+      "ownerRef": "principal-web-owner",
+      "sourceRef": "snapshot-assets",
+      "revision": "sha256:0068e1a3ea1dd6f84ec6fff8246ac86858c20c34706853a671ee1ce409d453a5"
+    },
+    {
+      "id": "asset-orders-service",
+      "kind": "service",
+      "canonicalName": "orders-service",
+      "repositoryDestinationRef": "destination-engineering-tracker",
+      "serviceRef": "service-orders",
+      "teamRef": "principal-commerce-team",
+      "ownerRef": "principal-service-owner",
+      "sourceRef": "snapshot-assets",
+      "revision": "sha256:5b57aab98c45008578bd1000143b2e6f6bfdf95301bb383f4cded268ca4c4fce"
+    }
+  ],
+  "signals": [
+    {
+      "id": "signal-api-a",
+      "sourceIdentity": "scanner-a:finding-771",
+      "sourceRef": "snapshot-signals",
+      "signalType": "scanner",
+      "controlRef": "control-dependency-update",
+      "assetRef": "asset-api",
+      "findingRevision": "finding-api-r4",
+      "canonicalFindingKey": "dependency:acme-api:package-x:r4",
+      "sourceSeverity": "medium",
+      "sourceApplicability": "applicable",
+      "sourceStatus": "open",
+      "observedAt": "2026-09-14T17:05:00Z",
+      "evidenceRef": "evidence-signal-api-a",
+      "revision": "sha256:2108b316a5d76351fff2643437e9d2d5ab1ccb547b13b93c53db352e06a5b9cc"
+    },
+    {
+      "id": "signal-api-b",
+      "sourceIdentity": "inventory-b:advisory-991",
+      "sourceRef": "snapshot-signals",
+      "signalType": "dependency",
+      "controlRef": "control-dependency-update",
+      "assetRef": "asset-api",
+      "findingRevision": "finding-api-r4",
+      "canonicalFindingKey": "dependency:acme-api:package-x:r4",
+      "sourceSeverity": "medium",
+      "sourceApplicability": "applicable",
+      "sourceStatus": "open",
+      "observedAt": "2026-09-14T17:06:00Z",
+      "evidenceRef": "evidence-signal-api-b",
+      "revision": "sha256:e2c2175306e6e72c45e73fc13667f988253f4cb5d17b5eac6af89fe232aff36c"
+    },
+    {
+      "id": "signal-cli",
+      "sourceIdentity": "policy:cli:bp:301",
+      "sourceRef": "snapshot-signals",
+      "signalType": "policy",
+      "controlRef": "control-branch-protection",
+      "assetRef": "asset-cli",
+      "findingRevision": "finding-cli-r2",
+      "canonicalFindingKey": "branch-protection:acme-cli:r2",
+      "sourceSeverity": "high",
+      "sourceApplicability": "applicable",
+      "sourceStatus": "open",
+      "observedAt": "2026-09-14T17:07:00Z",
+      "evidenceRef": "evidence-signal-cli",
+      "revision": "sha256:64affdead4cc5e7e99d7ae57303f7ffdd098490b00084aa394b02c79eba2808b"
+    },
+    {
+      "id": "signal-service",
+      "sourceIdentity": "control:orders:dependency:19",
+      "sourceRef": "snapshot-signals",
+      "signalType": "dependency",
+      "controlRef": "control-dependency-update",
+      "assetRef": "asset-orders-service",
+      "findingRevision": "finding-service-r1",
+      "canonicalFindingKey": "dependency:orders-service:package-y:r1",
+      "sourceSeverity": "medium",
+      "sourceApplicability": "applicable",
+      "sourceStatus": "open",
+      "observedAt": "2026-09-14T17:08:00Z",
+      "evidenceRef": "evidence-signal-service",
+      "revision": "sha256:365bce4ed4a2619cca35f548fc1ef4ed3cd06b7a7dcbb4acf4431b9ae4cc30b8"
+    },
+    {
+      "id": "signal-web",
+      "sourceIdentity": "policy:web:bp:177",
+      "sourceRef": "snapshot-signals",
+      "signalType": "configuration",
+      "controlRef": "control-branch-protection",
+      "assetRef": "asset-web",
+      "findingRevision": "finding-web-r3",
+      "canonicalFindingKey": "branch-protection:acme-web:r3",
+      "sourceSeverity": "high",
+      "sourceApplicability": "applicable",
+      "sourceStatus": "open",
+      "observedAt": "2026-09-12T16:00:00Z",
+      "evidenceRef": "evidence-signal-web",
+      "revision": "sha256:d64f3b137458be7b5d4b76799258dcefe582aa47fea0da46a49c88cfb99b8cda"
+    },
+    {
+      "id": "signal-api-revision",
+      "sourceIdentity": "policy:api:bp:402",
+      "sourceRef": "snapshot-signals",
+      "signalType": "configuration",
+      "controlRef": "control-branch-protection",
+      "assetRef": "asset-api",
+      "findingRevision": "finding-api-bp-r2",
+      "canonicalFindingKey": "branch-protection:acme-api:r2",
+      "sourceSeverity": "high",
+      "sourceApplicability": "applicable",
+      "sourceStatus": "open",
+      "observedAt": "2026-09-14T17:09:00Z",
+      "evidenceRef": "evidence-signal-api-revision",
+      "revision": "sha256:bdf4f17043e61a417814153fda6f394b8c5282b7ee69d56498ea6266081c80be"
+    }
+  ],
+  "canonicalFindings": [
+    {
+      "id": "finding-api",
+      "canonicalFindingKey": "dependency:acme-api:package-x:r4",
+      "controlRef": "control-dependency-update",
+      "controlRevision": "sha256:c6e55ee299170f5230260e364da30455b77a47ec02d83e97ad2f8432a6507cb7",
+      "assetRef": "asset-api",
+      "assetRevision": "sha256:d730912e85f0ee5f31827ae703f9197ac7ae0f776ac1cd500ec15231b44ad5ff",
+      "findingRevision": "finding-api-r4",
+      "sourceSignalRefs": [
+        "signal-api-a",
+        "signal-api-b"
+      ],
+      "state": "open",
+      "revision": "sha256:91cd72e03ff2ac43eacb40ee71f3d0e55d2ca220d95e0e80b87608d4da7e1261"
+    },
+    {
+      "id": "finding-cli",
+      "canonicalFindingKey": "branch-protection:acme-cli:r2",
+      "controlRef": "control-branch-protection",
+      "controlRevision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f",
+      "assetRef": "asset-cli",
+      "assetRevision": "sha256:f2377b966b168467b37c23759db573933b440496facfb96ea895b5ac8a8c62b4",
+      "findingRevision": "finding-cli-r2",
+      "sourceSignalRefs": [
+        "signal-cli"
+      ],
+      "state": "open",
+      "revision": "sha256:268f49221a11e739e80abf726e6ecd9171c3be5d340cb9f019bd9e3be750f496"
+    },
+    {
+      "id": "finding-service",
+      "canonicalFindingKey": "dependency:orders-service:package-y:r1",
+      "controlRef": "control-dependency-update",
+      "controlRevision": "sha256:c6e55ee299170f5230260e364da30455b77a47ec02d83e97ad2f8432a6507cb7",
+      "assetRef": "asset-orders-service",
+      "assetRevision": "sha256:5b57aab98c45008578bd1000143b2e6f6bfdf95301bb383f4cded268ca4c4fce",
+      "findingRevision": "finding-service-r1",
+      "sourceSignalRefs": [
+        "signal-service"
+      ],
+      "state": "open",
+      "revision": "sha256:fddd847faeed4f103237483c816d79f274c87bba55e716d7940a1a5ac5391cbe"
+    },
+    {
+      "id": "finding-web",
+      "canonicalFindingKey": "branch-protection:acme-web:r3",
+      "controlRef": "control-branch-protection",
+      "controlRevision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f",
+      "assetRef": "asset-web",
+      "assetRevision": "sha256:0068e1a3ea1dd6f84ec6fff8246ac86858c20c34706853a671ee1ce409d453a5",
+      "findingRevision": "finding-web-r3",
+      "sourceSignalRefs": [
+        "signal-web"
+      ],
+      "state": "open",
+      "revision": "sha256:879108f4817ac81101a881ed5b679f0bf9b5fb5c414caba13136ed648f0fe35b"
+    },
+    {
+      "id": "finding-api-revision",
+      "canonicalFindingKey": "branch-protection:acme-api:r2",
+      "controlRef": "control-branch-protection",
+      "controlRevision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f",
+      "assetRef": "asset-api",
+      "assetRevision": "sha256:d730912e85f0ee5f31827ae703f9197ac7ae0f776ac1cd500ec15231b44ad5ff",
+      "findingRevision": "finding-api-bp-r2",
+      "sourceSignalRefs": [
+        "signal-api-revision"
+      ],
+      "state": "open",
+      "revision": "sha256:86f81e44ea2f7ace8fe8c01be14a59f25ec6e476c2c371115b659a2b80887073"
+    }
+  ],
+  "obligations": [
+    {
+      "id": "obligation-api",
+      "obligationKey": "sha256:12168b5b149bae5e35db8440f9dc00f80bfbf0e8929e714a913c870cb98fbf06",
+      "canonicalFindingRef": "finding-api",
+      "controlRef": "control-dependency-update",
+      "controlRevision": "sha256:c6e55ee299170f5230260e364da30455b77a47ec02d83e97ad2f8432a6507cb7",
+      "assetRef": "asset-api",
+      "assetRevision": "sha256:d730912e85f0ee5f31827ae703f9197ac7ae0f776ac1cd500ec15231b44ad5ff",
+      "findingRevision": "finding-api-r4",
+      "ownerRef": "principal-api-owner",
+      "teamRef": "principal-platform-team",
+      "sourcePriority": "medium",
+      "openedAt": "2026-09-01T18:00:00Z",
+      "dueAt": "2026-09-30T18:00:00Z",
+      "etaAt": "2026-09-25T18:00:00Z",
+      "slaState": "within",
+      "state": "open",
+      "issueRef": "issue-api",
+      "extensionRef": "extension-api",
+      "exceptionRef": null,
+      "remediationEvidenceRef": null,
+      "verificationRef": null,
+      "reopenOfObligationRef": null,
+      "reopenReason": null,
+      "blockerRefs": [],
+      "revision": "sha256:b61e80f460a6c3fa0776d0760cdf9ce6929cb96a46a402c0f1587c747b52cf80"
+    },
+    {
+      "id": "obligation-cli",
+      "obligationKey": "sha256:fe754fdd17c60cbd70ce9532f78fc9cc86934c5c4ed827d65b487f30cdddd6f0",
+      "canonicalFindingRef": "finding-cli",
+      "controlRef": "control-branch-protection",
+      "controlRevision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f",
+      "assetRef": "asset-cli",
+      "assetRevision": "sha256:f2377b966b168467b37c23759db573933b440496facfb96ea895b5ac8a8c62b4",
+      "findingRevision": "finding-cli-r2",
+      "ownerRef": "principal-cli-owner",
+      "teamRef": "principal-platform-team",
+      "sourcePriority": "medium",
+      "openedAt": "2026-09-11T18:00:00Z",
+      "dueAt": "2026-09-17T18:00:00Z",
+      "etaAt": null,
+      "slaState": "near",
+      "state": "open",
+      "issueRef": "issue-cli",
+      "extensionRef": null,
+      "exceptionRef": null,
+      "remediationEvidenceRef": null,
+      "verificationRef": null,
+      "reopenOfObligationRef": null,
+      "reopenReason": null,
+      "blockerRefs": [],
+      "revision": "sha256:c4f5fd828b799ed1b065cdd4e48721442caff79c637ad464c9f5e32588f1977d"
+    },
+    {
+      "id": "obligation-service",
+      "obligationKey": "sha256:70a2b63a18a6f1ad687413878c6eeae08fdd2a73edd5b171060f826079d81253",
+      "canonicalFindingRef": "finding-service",
+      "controlRef": "control-dependency-update",
+      "controlRevision": "sha256:c6e55ee299170f5230260e364da30455b77a47ec02d83e97ad2f8432a6507cb7",
+      "assetRef": "asset-orders-service",
+      "assetRevision": "sha256:5b57aab98c45008578bd1000143b2e6f6bfdf95301bb383f4cded268ca4c4fce",
+      "findingRevision": "finding-service-r1",
+      "ownerRef": "principal-service-owner",
+      "teamRef": "principal-commerce-team",
+      "sourcePriority": "medium",
+      "openedAt": "2026-08-10T18:00:00Z",
+      "dueAt": "2026-09-10T18:00:00Z",
+      "etaAt": "2026-09-28T18:00:00Z",
+      "slaState": "out",
+      "state": "exception-active",
+      "issueRef": "issue-service",
+      "extensionRef": null,
+      "exceptionRef": "exception-service",
+      "remediationEvidenceRef": null,
+      "verificationRef": null,
+      "reopenOfObligationRef": null,
+      "reopenReason": null,
+      "blockerRefs": [],
+      "revision": "sha256:783cd17fb2135d69ad0a9f9ae3b13ed3e411a27f7d646da0c519993436e58bdf"
+    },
+    {
+      "id": "obligation-web",
+      "obligationKey": "sha256:5257ce905242452283c8555b08683e70912fa39054e0e64421d0015a8f752ea6",
+      "canonicalFindingRef": "finding-web",
+      "controlRef": "control-branch-protection",
+      "controlRevision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f",
+      "assetRef": "asset-web",
+      "assetRevision": "sha256:0068e1a3ea1dd6f84ec6fff8246ac86858c20c34706853a671ee1ce409d453a5",
+      "findingRevision": "finding-web-r3",
+      "ownerRef": "principal-web-owner",
+      "teamRef": "principal-commerce-team",
+      "sourcePriority": "high",
+      "openedAt": "2026-09-06T18:00:00Z",
+      "dueAt": "2026-09-13T18:00:00Z",
+      "etaAt": "2026-09-12T18:00:00Z",
+      "slaState": "out",
+      "state": "verified",
+      "issueRef": "issue-web",
+      "extensionRef": null,
+      "exceptionRef": null,
+      "remediationEvidenceRef": "remediation-web",
+      "verificationRef": "verification-web",
+      "reopenOfObligationRef": null,
+      "reopenReason": null,
+      "blockerRefs": [],
+      "revision": "sha256:aa209083a2187a8a0299d33aef1f67da46bd9a101dfda7cf810d527414e97344"
+    },
+    {
+      "id": "obligation-api-revision",
+      "obligationKey": "sha256:b18760275c6a7f44bedb79cf03ee83f5828244da6f8c3dbf118074c0fb0119a8",
+      "canonicalFindingRef": "finding-api-revision",
+      "controlRef": "control-branch-protection",
+      "controlRevision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f",
+      "assetRef": "asset-api",
+      "assetRevision": "sha256:d730912e85f0ee5f31827ae703f9197ac7ae0f776ac1cd500ec15231b44ad5ff",
+      "findingRevision": "finding-api-bp-r2",
+      "ownerRef": "principal-api-owner",
+      "teamRef": "principal-platform-team",
+      "sourcePriority": "high",
+      "openedAt": "2026-09-14T17:09:00Z",
+      "dueAt": "2026-09-12T18:00:00Z",
+      "etaAt": "2026-09-20T18:00:00Z",
+      "slaState": "out",
+      "state": "reopened",
+      "issueRef": "issue-api-revision",
+      "extensionRef": null,
+      "exceptionRef": null,
+      "remediationEvidenceRef": null,
+      "verificationRef": null,
+      "reopenOfObligationRef": "obligation-api-protection-r1",
+      "reopenReason": "finding-revision",
+      "blockerRefs": [
+        "blocker-owner-content-conflict"
+      ],
+      "revision": "sha256:ca74fb41b981b61ffe43f2e63bb854ae31502e2d80f8b86c41cb7cf75c10023f"
+    }
+  ],
+  "issuePolicy": {
+    "id": "issue-policy-secure-engineering",
+    "programRef": "program-secure-engineering",
+    "revision": "issue-policy-r9",
+    "capability": "issue-tracker-create-update",
+    "dependencyRef": "issue_tracker",
+    "dependencyEndpoint": "https://api.githubcopilot.com/mcp/",
+    "dependencyTransport": "streamable-http",
+    "dependencyAuth": "oauth",
+    "provenanceDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000001",
+    "destinationRef": "destination-engineering-tracker",
+    "approvedRepositoryRefs": [
+      "asset-api",
+      "asset-cli",
+      "asset-web",
+      "asset-orders-service"
+    ],
+    "templateRef": "template-remediation-obligation-v4",
+    "mutableFieldAllowlist": [
+      "ownerRef",
+      "etaAt",
+      "dueAt",
+      "slaState",
+      "obligationState"
+    ],
+    "allowedLabels": [
+      "compliance-remediation",
+      "program-managed"
+    ],
+    "routeRef": "route-repository-owners",
+    "allowedOperations": [
+      "create",
+      "update"
+    ],
+    "ownerAuthoredContentPolicy": "preserve-or-block",
+    "dryRunRequired": true,
+    "conflictDetectionRequired": true,
+    "externalReceiptRequired": true,
+    "closeAllowed": false
+  },
+  "issues": [
+    {
+      "id": "issue-api",
+      "obligationRef": "obligation-api",
+      "providerIssueId": "ENG-410",
+      "url": "https://issues.example.invalid/ENG-410",
+      "destinationRef": "destination-engineering-tracker",
+      "templateRef": "template-remediation-obligation-v4",
+      "routeRef": "route-repository-owners",
+      "labels": [
+        "compliance-remediation",
+        "program-managed"
+      ],
+      "idempotencyKey": "sha256:e6d938e07036eedd97f1f0d1b9d128b4905d5e457cb715184da5e96a6f9259ac",
+      "ownerContentDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000001",
+      "revision": "sha256:3100000000000000000000000000000000000000000000000000000000000001",
+      "status": "open"
+    },
+    {
+      "id": "issue-cli",
+      "obligationRef": "obligation-cli",
+      "providerIssueId": "ENG-411",
+      "url": "https://issues.example.invalid/ENG-411",
+      "destinationRef": "destination-engineering-tracker",
+      "templateRef": "template-remediation-obligation-v4",
+      "routeRef": "route-repository-owners",
+      "labels": [
+        "compliance-remediation",
+        "program-managed"
+      ],
+      "idempotencyKey": "sha256:13783992e630fc75f229f4572b173df64744409a2a2af018fde64019cfa82d53",
+      "ownerContentDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000002",
+      "revision": "sha256:3100000000000000000000000000000000000000000000000000000000000002",
+      "status": "open"
+    },
+    {
+      "id": "issue-service",
+      "obligationRef": "obligation-service",
+      "providerIssueId": "ENG-412",
+      "url": "https://issues.example.invalid/ENG-412",
+      "destinationRef": "destination-engineering-tracker",
+      "templateRef": "template-remediation-obligation-v4",
+      "routeRef": "route-repository-owners",
+      "labels": [
+        "compliance-remediation",
+        "program-managed"
+      ],
+      "idempotencyKey": "sha256:f21bfd851180dd4672571b1f9426d5f0b2216e516a63bdcc7d8d1be2c5ac85d5",
+      "ownerContentDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000003",
+      "revision": "sha256:3100000000000000000000000000000000000000000000000000000000000003",
+      "status": "open"
+    },
+    {
+      "id": "issue-web",
+      "obligationRef": "obligation-web",
+      "providerIssueId": "ENG-413",
+      "url": "https://issues.example.invalid/ENG-413",
+      "destinationRef": "destination-engineering-tracker",
+      "templateRef": "template-remediation-obligation-v4",
+      "routeRef": "route-repository-owners",
+      "labels": [
+        "compliance-remediation",
+        "program-managed"
+      ],
+      "idempotencyKey": "sha256:e6a2556faa8065aeb65880c57943dcbc339ffb7de79fb104c4789217ebb0553f",
+      "ownerContentDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000004",
+      "revision": "sha256:3100000000000000000000000000000000000000000000000000000000000004",
+      "status": "open"
+    },
+    {
+      "id": "issue-api-revision",
+      "obligationRef": "obligation-api-revision",
+      "providerIssueId": "ENG-414",
+      "url": "https://issues.example.invalid/ENG-414",
+      "destinationRef": "destination-engineering-tracker",
+      "templateRef": "template-remediation-obligation-v4",
+      "routeRef": "route-repository-owners",
+      "labels": [
+        "compliance-remediation",
+        "program-managed"
+      ],
+      "idempotencyKey": "sha256:6f802f065925d1c35551525a3c8f4ec57dab3c8da31f43e942d6d54782b02c79",
+      "ownerContentDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000005",
+      "revision": "sha256:3100000000000000000000000000000000000000000000000000000000000005",
+      "status": "open"
+    }
+  ],
+  "issueMutations": [
+    {
+      "id": "mutation-api-update",
+      "issueRef": "issue-api",
+      "obligationRef": "obligation-api",
+      "operation": "update",
+      "idempotencyKey": "sha256:e6d938e07036eedd97f1f0d1b9d128b4905d5e457cb715184da5e96a6f9259ac",
+      "destinationRef": "destination-engineering-tracker",
+      "templateRef": "template-remediation-obligation-v4",
+      "routeRef": "route-repository-owners",
+      "labels": [
+        "compliance-remediation",
+        "program-managed"
+      ],
+      "mutableFields": [
+        "dueAt",
+        "etaAt",
+        "slaState"
+      ],
+      "proposedValues": {
+        "dueAt": "2026-09-30T18:00:00Z",
+        "etaAt": "2026-09-25T18:00:00Z",
+        "slaState": "within"
+      },
+      "expectedIssueRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000000",
+      "expectedOwnerContentDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000001",
+      "previewDigest": "sha256:781c73b1f8b61eddd57df847b5548f925df1f082aa4170e0ebfa249f627907aa",
+      "conflictState": "none",
+      "state": "applied",
+      "receiptRef": "receipt-api-update",
+      "obligationRevision": "sha256:b61e80f460a6c3fa0776d0760cdf9ce6929cb96a46a402c0f1587c747b52cf80",
+      "policyDigest": "sha256:7dbdfd16d5ce835d81fbf646461ab76b0ba8a1daee55bb7a422a9a9220f567f5"
+    },
+    {
+      "id": "mutation-cli-create",
+      "issueRef": "issue-cli",
+      "obligationRef": "obligation-cli",
+      "operation": "create",
+      "idempotencyKey": "sha256:13783992e630fc75f229f4572b173df64744409a2a2af018fde64019cfa82d53",
+      "destinationRef": "destination-engineering-tracker",
+      "templateRef": "template-remediation-obligation-v4",
+      "routeRef": "route-repository-owners",
+      "labels": [
+        "compliance-remediation",
+        "program-managed"
+      ],
+      "mutableFields": [
+        "dueAt",
+        "etaAt",
+        "obligationState",
+        "ownerRef",
+        "slaState"
+      ],
+      "proposedValues": {
+        "dueAt": "2026-09-17T18:00:00Z",
+        "etaAt": null,
+        "obligationState": "open",
+        "ownerRef": "principal-cli-owner",
+        "slaState": "near"
+      },
+      "expectedIssueRevision": null,
+      "expectedOwnerContentDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000002",
+      "previewDigest": "sha256:1ea51e5ff653f3f3ccc67705d484abf8a41cc296f6307247839734052ddcacef",
+      "conflictState": "none",
+      "state": "idempotent-replay",
+      "receiptRef": "receipt-cli-create-replay",
+      "obligationRevision": "sha256:c4f5fd828b799ed1b065cdd4e48721442caff79c637ad464c9f5e32588f1977d",
+      "policyDigest": "sha256:7dbdfd16d5ce835d81fbf646461ab76b0ba8a1daee55bb7a422a9a9220f567f5"
+    },
+    {
+      "id": "mutation-service-update",
+      "issueRef": "issue-service",
+      "obligationRef": "obligation-service",
+      "operation": "update",
+      "idempotencyKey": "sha256:f21bfd851180dd4672571b1f9426d5f0b2216e516a63bdcc7d8d1be2c5ac85d5",
+      "destinationRef": "destination-engineering-tracker",
+      "templateRef": "template-remediation-obligation-v4",
+      "routeRef": "route-repository-owners",
+      "labels": [
+        "compliance-remediation",
+        "program-managed"
+      ],
+      "mutableFields": [
+        "etaAt",
+        "obligationState",
+        "slaState"
+      ],
+      "proposedValues": {
+        "etaAt": "2026-09-28T18:00:00Z",
+        "obligationState": "exception-active",
+        "slaState": "out"
+      },
+      "expectedIssueRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000013",
+      "expectedOwnerContentDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000003",
+      "previewDigest": "sha256:671a1b03601c3b9d53e0f295dd28005f5b790513616d25119f9604e7804cae4b",
+      "conflictState": "none",
+      "state": "applied",
+      "receiptRef": "receipt-service-update",
+      "obligationRevision": "sha256:783cd17fb2135d69ad0a9f9ae3b13ed3e411a27f7d646da0c519993436e58bdf",
+      "policyDigest": "sha256:7dbdfd16d5ce835d81fbf646461ab76b0ba8a1daee55bb7a422a9a9220f567f5"
+    },
+    {
+      "id": "mutation-api-revision-update",
+      "issueRef": "issue-api-revision",
+      "obligationRef": "obligation-api-revision",
+      "operation": "update",
+      "idempotencyKey": "sha256:6f802f065925d1c35551525a3c8f4ec57dab3c8da31f43e942d6d54782b02c79",
+      "destinationRef": "destination-engineering-tracker",
+      "templateRef": "template-remediation-obligation-v4",
+      "routeRef": "route-repository-owners",
+      "labels": [
+        "compliance-remediation",
+        "program-managed"
+      ],
+      "mutableFields": [
+        "etaAt",
+        "obligationState",
+        "slaState"
+      ],
+      "proposedValues": {
+        "etaAt": "2026-09-20T18:00:00Z",
+        "obligationState": "reopened",
+        "slaState": "out"
+      },
+      "expectedIssueRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000005",
+      "expectedOwnerContentDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000099",
+      "previewDigest": "sha256:8c57882368616fe74dd74ec0b2a51ccbb46f848522ba0b4c108b79737d8680bb",
+      "conflictState": "owner-content-conflict",
+      "state": "blocked",
+      "receiptRef": null,
+      "obligationRevision": "sha256:ca74fb41b981b61ffe43f2e63bb854ae31502e2d80f8b86c41cb7cf75c10023f",
+      "policyDigest": "sha256:7dbdfd16d5ce835d81fbf646461ab76b0ba8a1daee55bb7a422a9a9220f567f5"
+    }
+  ],
+  "issueReceipts": [
+    {
+      "id": "receipt-api-update",
+      "mutationRef": "mutation-api-update",
+      "issueRef": "issue-api",
+      "operation": "update",
+      "idempotencyKey": "sha256:e6d938e07036eedd97f1f0d1b9d128b4905d5e457cb715184da5e96a6f9259ac",
+      "providerRequestId": "request-801",
+      "providerIssueId": "ENG-410",
+      "beforeRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000000",
+      "afterRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-09-14T18:10:00Z",
+      "external": true,
+      "replayed": false,
+      "priorReceiptRef": null,
+      "resultDigest": "sha256:6f2ee88fa4b6dcc925ea26d0aec7cc1b95e63262a9ad561a92e6b4eb3f0fc132"
+    },
+    {
+      "id": "receipt-cli-create-original",
+      "mutationRef": "mutation-cli-create",
+      "issueRef": "issue-cli",
+      "operation": "create",
+      "idempotencyKey": "sha256:13783992e630fc75f229f4572b173df64744409a2a2af018fde64019cfa82d53",
+      "providerRequestId": "request-802-original",
+      "providerIssueId": "ENG-411",
+      "beforeRevision": null,
+      "afterRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000002",
+      "observedAt": "2026-09-14T18:10:30Z",
+      "external": true,
+      "replayed": false,
+      "priorReceiptRef": null,
+      "resultDigest": "sha256:f44f75bc1ae4e815d719a0351cfdb031edacd34a82c06c1631dba1f06f9f0b44"
+    },
+    {
+      "id": "receipt-cli-create-replay",
+      "mutationRef": "mutation-cli-create",
+      "issueRef": "issue-cli",
+      "operation": "create",
+      "idempotencyKey": "sha256:13783992e630fc75f229f4572b173df64744409a2a2af018fde64019cfa82d53",
+      "providerRequestId": "request-802-replay",
+      "providerIssueId": "ENG-411",
+      "beforeRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000002",
+      "afterRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000002",
+      "observedAt": "2026-09-14T18:11:00Z",
+      "external": true,
+      "replayed": true,
+      "priorReceiptRef": "receipt-cli-create-original",
+      "resultDigest": "sha256:f44f75bc1ae4e815d719a0351cfdb031edacd34a82c06c1631dba1f06f9f0b44"
+    },
+    {
+      "id": "receipt-service-update",
+      "mutationRef": "mutation-service-update",
+      "issueRef": "issue-service",
+      "operation": "update",
+      "idempotencyKey": "sha256:f21bfd851180dd4672571b1f9426d5f0b2216e516a63bdcc7d8d1be2c5ac85d5",
+      "providerRequestId": "request-803",
+      "providerIssueId": "ENG-412",
+      "beforeRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000013",
+      "afterRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000003",
+      "observedAt": "2026-09-14T18:12:00Z",
+      "external": true,
+      "replayed": false,
+      "priorReceiptRef": null,
+      "resultDigest": "sha256:8a67a6fcf7c86bb8b4c291659405dad23a9e4b26243e05f1e60d2bd7d452c2f0"
+    }
+  ],
+  "extensions": [
+    {
+      "id": "extension-api",
+      "kind": "extension",
+      "obligationRef": "obligation-api",
+      "controlRef": "control-dependency-update",
+      "controlRevision": "sha256:c6e55ee299170f5230260e364da30455b77a47ec02d83e97ad2f8432a6507cb7",
+      "assetRef": "asset-api",
+      "assetRevision": "sha256:d730912e85f0ee5f31827ae703f9197ac7ae0f776ac1cd500ec15231b44ad5ff",
+      "issueRef": "issue-api",
+      "authorityRef": "principal-extension-authority",
+      "approvedAt": "2026-09-10T12:00:00Z",
+      "expiresAt": "2026-09-30T18:00:00Z",
+      "state": "active",
+      "evidenceRef": "evidence-extension",
+      "scopeDigest": "sha256:a81a47e3077e496bea0812d5cf2b0453c3e342ea01500afdb1a31e519f74b51f"
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "exception-service",
+      "kind": "exception",
+      "obligationRef": "obligation-service",
+      "controlRef": "control-dependency-update",
+      "controlRevision": "sha256:c6e55ee299170f5230260e364da30455b77a47ec02d83e97ad2f8432a6507cb7",
+      "assetRef": "asset-orders-service",
+      "assetRevision": "sha256:5b57aab98c45008578bd1000143b2e6f6bfdf95301bb383f4cded268ca4c4fce",
+      "issueRef": "issue-service",
+      "authorityRef": "principal-exception-authority",
+      "approvedAt": "2026-09-12T12:00:00Z",
+      "expiresAt": "2026-09-29T18:00:00Z",
+      "state": "active",
+      "evidenceRef": "evidence-exception",
+      "scopeDigest": "sha256:6f81abc96e12f2d29cf96fc5aa3bc358b008cc1aaa4d86170459e182889df279"
+    }
+  ],
+  "remediationEvidence": [
+    {
+      "id": "remediation-web",
+      "obligationRef": "obligation-web",
+      "controlRevision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f",
+      "assetRevision": "sha256:0068e1a3ea1dd6f84ec6fff8246ac86858c20c34706853a671ee1ce409d453a5",
+      "issueRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000004",
+      "remediationRevision": "remediation-web-commit-77",
+      "authorRef": "principal-remediation-author",
+      "authoredAt": "2026-09-13T16:00:00Z",
+      "evidenceRef": "evidence-remediation"
+    }
+  ],
+  "verifications": [
+    {
+      "id": "verification-web",
+      "obligationRef": "obligation-web",
+      "obligationRevision": "sha256:aa209083a2187a8a0299d33aef1f67da46bd9a101dfda7cf810d527414e97344",
+      "controlRevision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f",
+      "assetRevision": "sha256:0068e1a3ea1dd6f84ec6fff8246ac86858c20c34706853a671ee1ce409d453a5",
+      "issueRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000004",
+      "remediationEvidenceRef": "remediation-web",
+      "authorRef": "principal-independent-verifier",
+      "verifiedAt": "2026-09-13T17:00:00Z",
+      "outcome": "verified",
+      "evidenceRef": "evidence-verification"
+    }
+  ],
+  "nonQualifyingClosureSignals": [
+    {
+      "id": "closure-signal-merge",
+      "kind": "pull-request-merge",
+      "obligationRef": "obligation-api-revision",
+      "observedAt": "2026-09-14T16:00:00Z",
+      "evidenceRef": "evidence-nonqualifying",
+      "closureEffect": "none"
+    },
+    {
+      "id": "closure-signal-check",
+      "kind": "passing-check",
+      "obligationRef": "obligation-api-revision",
+      "observedAt": "2026-09-14T16:05:00Z",
+      "evidenceRef": "evidence-nonqualifying",
+      "closureEffect": "none"
+    },
+    {
+      "id": "closure-signal-scanner",
+      "kind": "scanner-status",
+      "obligationRef": "obligation-api",
+      "observedAt": "2026-09-14T16:10:00Z",
+      "evidenceRef": "evidence-nonqualifying",
+      "closureEffect": "none"
+    },
+    {
+      "id": "closure-signal-incident",
+      "kind": "incident-recovery",
+      "obligationRef": "obligation-service",
+      "observedAt": "2026-09-14T16:15:00Z",
+      "evidenceRef": "evidence-nonqualifying",
+      "closureEffect": "none"
+    }
+  ],
+  "escalationPolicy": {
+    "id": "escalation-policy-secure-engineering",
+    "revision": "escalation-r6",
+    "routes": {
+      "missing-eta": "route-program-owner",
+      "priority": "route-security-lead",
+      "near-sla": "route-program-owner",
+      "out-of-sla": "route-executive-owner"
+    },
+    "sourceRef": "snapshot-program"
+  },
+  "escalations": [
+    {
+      "id": "escalation-cli-missing-eta",
+      "obligationRef": "obligation-cli",
+      "category": "missing-eta",
+      "routeRef": "route-program-owner",
+      "dedupeKey": "sha256:9e4de20bef7a299d6acdfc0e1c168861e58acc26933f43d0c95763cdb98be2a5",
+      "state": "queued",
+      "approvalEffect": "none",
+      "controlRef": "control-branch-protection",
+      "controlRevision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f",
+      "assetRef": "asset-cli",
+      "assetRevision": "sha256:f2377b966b168467b37c23759db573933b440496facfb96ea895b5ac8a8c62b4",
+      "issueRef": "issue-cli",
+      "scopeDigest": "sha256:279f566b3db9121489e826c0cc0e75d28172986331abb9a5861e5d4e2fe104f0"
+    },
+    {
+      "id": "escalation-cli-near",
+      "obligationRef": "obligation-cli",
+      "category": "near-sla",
+      "routeRef": "route-program-owner",
+      "dedupeKey": "sha256:c1ca5906f77848aa0881a0e0783db0bdac65025eaf97207b2fc725188b6db3f5",
+      "state": "dispatched",
+      "approvalEffect": "none",
+      "controlRef": "control-branch-protection",
+      "controlRevision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f",
+      "assetRef": "asset-cli",
+      "assetRevision": "sha256:f2377b966b168467b37c23759db573933b440496facfb96ea895b5ac8a8c62b4",
+      "issueRef": "issue-cli",
+      "scopeDigest": "sha256:279f566b3db9121489e826c0cc0e75d28172986331abb9a5861e5d4e2fe104f0"
+    },
+    {
+      "id": "escalation-api-priority",
+      "obligationRef": "obligation-api-revision",
+      "category": "priority",
+      "routeRef": "route-security-lead",
+      "dedupeKey": "sha256:6b5015e969b1538c3b6ce682d6668d6adfd75b8ac7f8d02eb7916e2d89d7fc6f",
+      "state": "queued",
+      "approvalEffect": "none",
+      "controlRef": "control-branch-protection",
+      "controlRevision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f",
+      "assetRef": "asset-api",
+      "assetRevision": "sha256:d730912e85f0ee5f31827ae703f9197ac7ae0f776ac1cd500ec15231b44ad5ff",
+      "issueRef": "issue-api-revision",
+      "scopeDigest": "sha256:eea28a321e318765d1be3f3d5ae390e9b68bd39874444c8a110b0c8700a432c7"
+    },
+    {
+      "id": "escalation-api-out",
+      "obligationRef": "obligation-api-revision",
+      "category": "out-of-sla",
+      "routeRef": "route-executive-owner",
+      "dedupeKey": "sha256:6b163edb452699de5afdf959a45fa4bc9a2dabcd65556337ee3494e89a6f076c",
+      "state": "dispatched",
+      "approvalEffect": "none",
+      "controlRef": "control-branch-protection",
+      "controlRevision": "sha256:6e1769dba79390d97baf9db63198b18cf50813a6eee89db09b760f0dd7c63a3f",
+      "assetRef": "asset-api",
+      "assetRevision": "sha256:d730912e85f0ee5f31827ae703f9197ac7ae0f776ac1cd500ec15231b44ad5ff",
+      "issueRef": "issue-api-revision",
+      "scopeDigest": "sha256:eea28a321e318765d1be3f3d5ae390e9b68bd39874444c8a110b0c8700a432c7"
+    }
+  ],
+  "predecessor": {
+    "checkpointId": "checkpoint-2026-09-07",
+    "checkpointDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000001",
+    "createdAt": "2026-09-07T19:00:00Z",
+    "custodianRef": "principal-program-custodian",
+    "obligations": [
+      {
+        "obligationRef": "obligation-api",
+        "obligationKey": "sha256:4100000000000000000000000000000000000000000000000000000000000001",
+        "controlRef": "control-dependency-update",
+        "assetRef": "asset-api",
+        "revision": "sha256:4200000000000000000000000000000000000000000000000000000000000001",
+        "state": "open"
+      },
+      {
+        "obligationRef": "obligation-cli",
+        "obligationKey": "sha256:4100000000000000000000000000000000000000000000000000000000000002",
+        "controlRef": "control-branch-protection",
+        "assetRef": "asset-cli",
+        "revision": "sha256:4200000000000000000000000000000000000000000000000000000000000002",
+        "state": "open"
+      },
+      {
+        "obligationRef": "obligation-service",
+        "obligationKey": "sha256:4100000000000000000000000000000000000000000000000000000000000003",
+        "controlRef": "control-dependency-update",
+        "assetRef": "asset-orders-service",
+        "revision": "sha256:4200000000000000000000000000000000000000000000000000000000000003",
+        "state": "open"
+      },
+      {
+        "obligationRef": "obligation-web",
+        "obligationKey": "sha256:4100000000000000000000000000000000000000000000000000000000000004",
+        "controlRef": "control-branch-protection",
+        "assetRef": "asset-web",
+        "revision": "sha256:4200000000000000000000000000000000000000000000000000000000000004",
+        "state": "open"
+      },
+      {
+        "obligationRef": "obligation-api-protection-r1",
+        "obligationKey": "sha256:4100000000000000000000000000000000000000000000000000000000000005",
+        "controlRef": "control-branch-protection",
+        "assetRef": "asset-api",
+        "revision": "sha256:4200000000000000000000000000000000000000000000000000000000000005",
+        "state": "verified"
+      }
+    ]
+  },
+  "delta": {
+    "predecessorCheckpointRef": "checkpoint-2026-09-07",
+    "entries": [
+      {
+        "id": "delta-api",
+        "obligationRef": "obligation-api",
+        "kind": "changed",
+        "beforeRevision": "sha256:4200000000000000000000000000000000000000000000000000000000000001",
+        "afterRevision": "sha256:b61e80f460a6c3fa0776d0760cdf9ce6929cb96a46a402c0f1587c747b52cf80"
+      },
+      {
+        "id": "delta-cli",
+        "obligationRef": "obligation-cli",
+        "kind": "changed",
+        "beforeRevision": "sha256:4200000000000000000000000000000000000000000000000000000000000002",
+        "afterRevision": "sha256:c4f5fd828b799ed1b065cdd4e48721442caff79c637ad464c9f5e32588f1977d"
+      },
+      {
+        "id": "delta-service",
+        "obligationRef": "obligation-service",
+        "kind": "changed",
+        "beforeRevision": "sha256:4200000000000000000000000000000000000000000000000000000000000003",
+        "afterRevision": "sha256:783cd17fb2135d69ad0a9f9ae3b13ed3e411a27f7d646da0c519993436e58bdf"
+      },
+      {
+        "id": "delta-web",
+        "obligationRef": "obligation-web",
+        "kind": "changed",
+        "beforeRevision": "sha256:4200000000000000000000000000000000000000000000000000000000000004",
+        "afterRevision": "sha256:aa209083a2187a8a0299d33aef1f67da46bd9a101dfda7cf810d527414e97344"
+      },
+      {
+        "id": "delta-api-reopened",
+        "obligationRef": "obligation-api-revision",
+        "kind": "reopened",
+        "beforeRevision": "sha256:4200000000000000000000000000000000000000000000000000000000000005",
+        "afterRevision": "sha256:ca74fb41b981b61ffe43f2e63bb854ae31502e2d80f8b86c41cb7cf75c10023f"
+      }
+    ],
+    "unchangedRefs": []
+  },
+  "blockers": [
+    {
+      "id": "blocker-owner-content-conflict",
+      "category": "owner-content-conflict",
+      "subjectRefs": [
+        "obligation-api-revision",
+        "issue-api-revision",
+        "mutation-api-revision-update"
+      ],
+      "ownerRef": "principal-api-owner",
+      "state": "open",
+      "evidenceRefs": [
+        "evidence-issue-conflict"
+      ]
+    }
+  ],
+  "coverage": {
+    "snapshotRefs": [
+      "snapshot-program",
+      "snapshot-controls",
+      "snapshot-sla",
+      "snapshot-signals",
+      "snapshot-assets",
+      "snapshot-issues",
+      "snapshot-predecessor"
+    ],
+    "controlRefs": [
+      "control-dependency-update",
+      "control-branch-protection"
+    ],
+    "assetRefs": [
+      "asset-api",
+      "asset-cli",
+      "asset-web",
+      "asset-orders-service"
+    ],
+    "signalRefs": [
+      "signal-api-a",
+      "signal-api-b",
+      "signal-cli",
+      "signal-service",
+      "signal-web",
+      "signal-api-revision"
+    ],
+    "canonicalFindingRefs": [
+      "finding-api",
+      "finding-cli",
+      "finding-service",
+      "finding-web",
+      "finding-api-revision"
+    ],
+    "obligationRefs": [
+      "obligation-api",
+      "obligation-cli",
+      "obligation-service",
+      "obligation-web",
+      "obligation-api-revision"
+    ],
+    "issueRefs": [
+      "issue-api",
+      "issue-cli",
+      "issue-service",
+      "issue-web",
+      "issue-api-revision"
+    ]
+  },
+  "evidence": [
+    {
+      "id": "evidence-claw-boundary",
+      "kind": "authority",
+      "authorRef": "principal-program-custodian",
+      "observedAt": "2026-09-14T16:00:00Z",
+      "sourceUri": "controlled://authority/claw-boundary",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000001"
+    },
+    {
+      "id": "evidence-custodian-authority",
+      "kind": "authority",
+      "authorRef": "principal-program-custodian",
+      "observedAt": "2026-09-14T16:00:00Z",
+      "sourceUri": "controlled://authority/custodian",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000002"
+    },
+    {
+      "id": "evidence-owner-authority",
+      "kind": "authority",
+      "authorRef": "principal-program-custodian",
+      "observedAt": "2026-09-14T16:00:00Z",
+      "sourceUri": "controlled://authority/owners",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000003"
+    },
+    {
+      "id": "evidence-issue-policy",
+      "kind": "policy",
+      "authorRef": "principal-program-custodian",
+      "observedAt": "2026-09-14T16:05:00Z",
+      "sourceUri": "controlled://policy/issues/r9",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000004"
+    },
+    {
+      "id": "evidence-signal-api-a",
+      "kind": "signal",
+      "authorRef": "principal-signal-system",
+      "observedAt": "2026-09-14T17:05:00Z",
+      "sourceUri": "controlled://signals/scanner-a/771",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000005"
+    },
+    {
+      "id": "evidence-signal-api-b",
+      "kind": "signal",
+      "authorRef": "principal-signal-system",
+      "observedAt": "2026-09-14T17:06:00Z",
+      "sourceUri": "controlled://signals/inventory-b/991",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000006"
+    },
+    {
+      "id": "evidence-signal-cli",
+      "kind": "signal",
+      "authorRef": "principal-signal-system",
+      "observedAt": "2026-09-14T17:07:00Z",
+      "sourceUri": "controlled://signals/policy/301",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000007"
+    },
+    {
+      "id": "evidence-signal-service",
+      "kind": "signal",
+      "authorRef": "principal-signal-system",
+      "observedAt": "2026-09-14T17:08:00Z",
+      "sourceUri": "controlled://signals/control/19",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000008"
+    },
+    {
+      "id": "evidence-signal-web",
+      "kind": "signal",
+      "authorRef": "principal-signal-system",
+      "observedAt": "2026-09-12T16:00:00Z",
+      "sourceUri": "controlled://signals/policy/177",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000009"
+    },
+    {
+      "id": "evidence-signal-api-revision",
+      "kind": "signal",
+      "authorRef": "principal-signal-system",
+      "observedAt": "2026-09-14T17:09:00Z",
+      "sourceUri": "controlled://signals/policy/402",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000010"
+    },
+    {
+      "id": "evidence-extension",
+      "kind": "extension-approval",
+      "authorRef": "principal-extension-authority",
+      "observedAt": "2026-09-10T12:00:00Z",
+      "sourceUri": "controlled://authority/extensions/api",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000011"
+    },
+    {
+      "id": "evidence-exception",
+      "kind": "exception-approval",
+      "authorRef": "principal-exception-authority",
+      "observedAt": "2026-09-12T12:00:00Z",
+      "sourceUri": "controlled://authority/exceptions/service",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000012"
+    },
+    {
+      "id": "evidence-remediation",
+      "kind": "remediation",
+      "authorRef": "principal-remediation-author",
+      "observedAt": "2026-09-13T16:00:00Z",
+      "sourceUri": "controlled://remediation/web/77",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000013"
+    },
+    {
+      "id": "evidence-verification",
+      "kind": "verification",
+      "authorRef": "principal-independent-verifier",
+      "observedAt": "2026-09-13T17:00:00Z",
+      "sourceUri": "controlled://verification/web/88",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000014"
+    },
+    {
+      "id": "evidence-nonqualifying",
+      "kind": "nonqualifying-closure",
+      "authorRef": "principal-signal-system",
+      "observedAt": "2026-09-14T16:15:00Z",
+      "sourceUri": "controlled://observations/nonqualifying",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000015"
+    },
+    {
+      "id": "evidence-issue-conflict",
+      "kind": "issue-conflict",
+      "authorRef": "principal-issue-system",
+      "observedAt": "2026-09-14T18:13:00Z",
+      "sourceUri": "controlled://issues/ENG-414/conflict",
+      "digest": "sha256:5000000000000000000000000000000000000000000000000000000000000016"
+    }
+  ],
+  "authority": {
+    "severityAssignment": "not-claimed",
+    "applicabilityDecision": "not-claimed",
+    "codeChange": "not-claimed",
+    "settingsChange": "not-claimed",
+    "findingSuppression": "not-claimed",
+    "exceptionApproval": "not-claimed",
+    "extensionApproval": "not-claimed",
+    "riskAcceptance": "not-claimed",
+    "issueClosure": "not-claimed",
+    "remediation": "not-claimed",
+    "complianceClaim": "not-claimed",
+    "certification": "not-claimed",
+    "issueMutation": "approved-create-update-receipts-only"
+  },
+  "handoff": {
+    "destination": "private-repository-compliance-handoff",
+    "ownerRef": "principal-program-custodian",
+    "state": "blocked",
+    "published": false,
+    "checkpointDigest": "sha256:0185c6e2aa162d894efda6e823f0beda8e68fbd9e69ead8be8edb47c42668654",
+    "blockerRefs": [
+      "blocker-owner-content-conflict"
+    ],
+    "nextReviewAt": "2026-09-15T19:00:00Z"
+  }
+}

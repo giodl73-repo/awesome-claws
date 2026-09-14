@@ -2722,6 +2722,34 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "repository-compliance-program-manager",
+      "acceptedRequest": "Reconcile the current security-program signals for these repositories and services. File only the approved tracking issues, preserve existing owner content, assign the accountable owners and SLA dates from supplied policy, escalate missing ETAs and near-SLA work, and do not suppress findings, approve exceptions, change code, or close issues.",
+      "requiredEvidence": [
+        "Exact program, review-period, control-catalog, KPI, policy, and SLA revisions with trusted asOf and predecessor checkpoint",
+        "Approved repository, service, asset, team, and accountable-owner graph with canonical identities, completeness roots, and source provenance",
+        "Current and prior security, compliance, reliability, and engineering-system signals with immutable identities, revisions, subjects, timestamps, source status, and evidence digests",
+        "Approved issue-tracker destinations, templates, mutable-field allowlists, labels, routing rules, idempotency keys, and externally observed create/update receipts",
+        "Exception, extension, blocker, escalation, remediation, verification, and closure policies with eligible independent authorities and deadlines"
+      ],
+      "authorityBoundaries": [
+        "Do not scan systems, determine exploitability, assign severity, modify code or repository settings, rerun builds, merge pull requests, deploy, or perform remediation",
+        "Do not suppress or dismiss findings, approve exceptions or extensions, accept risk, claim compliance, certify controls, or speak for security, legal, audit, or repository owners",
+        "Do not create or update an issue outside the approved repository roster, issue template, field allowlist, labels, routing policy, and idempotency key",
+        "Do not overwrite owner-authored issue content, close an issue, or mark an obligation verified from a merged pull request, passing check, scanner status change, or self-authored evidence alone",
+        "Do not infer repository, service, team, person, deadline, control applicability, or ownership when the authoritative mapping is missing or conflicting"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/repository-compliance-program-manager-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [
+        "oauth-mcp"
+      ],
+      "capabilityDigest": "sha256:7232db573f4549633e8bc877abbcc3e325d93f1fc847b5818a98b50c48b731d4"
     }
   ]
 }

@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (110)
+### Active (111)
 
 | Claw | Detail |
 | --- | --- |
@@ -93,6 +93,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | @giodl73; last verified 2026-09-07 |
 | [Recruiting coordinator](claws/recruiting-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Release coordinator](claws/release-coordinator) | @giodl73-repo; last verified 2026-08-19 |
+| [Repository Compliance Program Manager](claws/repository-compliance-program-manager) | @giodl73-repo; last verified 2026-09-14 |
 | [Repository Operations Manager](claws/repository-operations-manager) | @giodl73-repo; last verified 2026-09-13 |
 | [Research briefing](claws/research-briefing) | @giodl73-repo; last verified 2026-08-19 |
 | [Research monitor](claws/research-monitor) | @giodl73-repo; last verified 2026-08-30 |
@@ -253,12 +254,13 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Website evidence collector](claws/website-evidence-collector) | 1 pinned package |
 | [Workflow operator](claws/workflow-operator) | 1 pinned package |
 
-### High setup (4)
+### High setup (5)
 
 | Claw | Detail |
 | --- | --- |
 | [Executive briefing](claws/executive-briefing) | 2 pinned packages; 1 scheduled job |
 | [Public safety monitor](claws/public-safety-monitor) | 2 pinned packages; 1 scheduled job |
+| [Repository Compliance Program Manager](claws/repository-compliance-program-manager) | 1 MCP connection |
 | [Software maintainer](claws/software-maintainer) | 1 native extension; 1 MCP connection |
 | [Travel concierge](claws/travel-concierge) | guided bootstrap; 1 native extension; 1 MCP connection; 1 scheduled job |
 
@@ -359,7 +361,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Warranty and returns manager](claws/warranty-returns-manager) | None |
 | [Work chief of staff](claws/work-chief-of-staff) | None |
 
-### External dependencies declared (22)
+### External dependencies declared (23)
 
 | Claw | Detail |
 | --- | --- |
@@ -375,6 +377,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Public company watcher](claws/public-company-watcher) | skill: @steipete/blogwatcher@1.0.0 |
 | [Public safety monitor](claws/public-safety-monitor) | skill: @dapkus/open-meteo@1.0.0; skill: @steipete/blogwatcher@1.0.0 |
 | [Release coordinator](claws/release-coordinator) | skill: @steipete/github@1.0.0; skill: @steipete/slack@1.0.0 |
+| [Repository Compliance Program Manager](claws/repository-compliance-program-manager) | mcp: issue_tracker |
 | [Research monitor](claws/research-monitor) | plugin: @openclaw/parallel-plugin@2026.7.1 |
 | [Research scout](claws/research-scout) | skill: @steipete/blogwatcher@1.0.0 |
 | [Software maintainer](claws/software-maintainer) | extension:plugin: @openclaw/diffs@2026.7.1; mcp: github |
@@ -390,7 +393,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (85)
+### X3 (86)
 
 | Claw | Detail |
 | --- | --- |
@@ -454,6 +457,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Purchase researcher](claws/purchase-researcher) | Compares owner-approved product candidates, constraints, source quality, warranty, return, shipping, availability, and fit evidence without buying, opening credit, contacting sellers, changing carts, or claiming an unsupported best choice. |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | Reconciles an authoritative retention schedule, exact record-copy inventory, trigger and hold evidence, approved disposition batch, independently observed outcomes and certificates, and residual-copy closure into one snapshot-bound human-review handoff without interpreting policy or executing disposition. |
 | [Recruiting coordinator](claws/recruiting-coordinator) | Coordinates candidate logistics with clear handoffs, consistency, and privacy. |
+| [Repository Compliance Program Manager](claws/repository-compliance-program-manager) | Runs a recurring vendor-neutral security and compliance remediation program by reconciling approved signals and control revisions into deduplicated repository issues, accountable ownership, SLA state, exceptions, escalations, and independently verified closure without changing code, suppressing findings, approving exceptions, or accepting risk. |
 | [Repository Operations Manager](claws/repository-operations-manager) | Supervises an approved repository portfolio by reconciling pull requests, head-bound reviews and checks, builds, release trains, cross-repository dependencies, human approval decisions, and trusted system deadline observations without making owner decisions or performing repository mutations. |
 | [Research monitor](claws/research-monitor) | Maintains a private topic-watch delta ledger that reconciles approved public source changes, corrections, withdrawals, contradictions, priorities, and owner review against a declared baseline without inferring consensus, causality, or autonomous decisions. |
 | [Research scout](claws/research-scout) | Maintains a private, protocol-bound scholarly evidence delta ledger that reconciles canonical public records, publication lifecycle changes, evidence quality, and contradictions against a declared baseline without inferring consensus or changing decisions. |
@@ -554,7 +558,7 @@ Categories come directly from the catalog entry.
 | [Security analyst](claws/security-analyst) | X4; Assesses security questions with explicit trust boundaries and reproducible evidence. |
 | [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 
-### Governance (13)
+### Governance (14)
 
 | Claw | Detail |
 | --- | --- |
@@ -569,6 +573,7 @@ Categories come directly from the catalog entry.
 | [Legal matter organizer](claws/legal-matter-organizer) | X3; Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action. |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | X3; Reconciles an authoritative retention schedule, exact record-copy inventory, trigger and hold evidence, approved disposition batch, independently observed outcomes and certificates, and residual-copy closure into one snapshot-bound human-review handoff without interpreting policy or executing disposition. |
+| [Repository Compliance Program Manager](claws/repository-compliance-program-manager) | X3; Runs a recurring vendor-neutral security and compliance remediation program by reconciling approved signals and control revisions into deduplicated repository issues, accountable ownership, SLA state, exceptions, escalations, and independently verified closure without changing code, suppressing findings, approving exceptions, or accepting risk. |
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
@@ -769,7 +774,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [UX research synthesizer](claws/ux-research-synthesizer) | explicit tool policy |
 | [Work chief of staff](claws/work-chief-of-staff) | explicit tool policy |
 
-### Heightened attention (14)
+### Heightened attention (15)
 
 | Claw | Detail |
 | --- | --- |
@@ -779,6 +784,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Incident response](claws/incident-response) | scheduled execution |
 | [Public company watcher](claws/public-company-watcher) | scheduled execution |
 | [Public safety monitor](claws/public-safety-monitor) | scheduled execution |
+| [Repository Compliance Program Manager](claws/repository-compliance-program-manager) | network MCP connection; full tool profile |
 | [Research monitor](claws/research-monitor) | plugin runtime; scheduled execution |
 | [Research scout](claws/research-scout) | scheduled execution |
 | [Software maintainer](claws/software-maintainer) | native extension; network MCP connection; full tool profile |

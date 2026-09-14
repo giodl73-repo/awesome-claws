@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Repository compliance handoff",
+  "output": "outputs/repository-compliance-program-manager-handoff.md",
+  "sections": [
+    "request",
+    "findings",
+    "issues",
+    "owners",
+    "blocked_actions"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": ["string"]
+  },
+  "fallback": "Render the same private handoff as Markdown."
+}

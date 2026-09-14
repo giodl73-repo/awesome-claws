@@ -90,7 +90,8 @@
       "contract-obligation-tracker",
       "backup-restore-verification-coordinator",
       "tls-certificate-rotation-verification-coordinator",
-      "repository-operations-manager"
+      "repository-operations-manager",
+      "repository-compliance-program-manager"
     ]
   },
   "visualCases": [
