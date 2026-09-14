@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Repository Operations Manager session report",
+  "output": "outputs/repository-operations-manager-handoff.md",
+  "structuredArtifact": "outputs/repository-operations.json",
+  "schema": "schemas/repository-operations.schema.json",
+  "template": "templates/repository-operations.md",
+  "sections": [
+    "run_roster_and_checkpoint_lineage",
+    "exact_checkpoint_delta",
+    "pr_head_bound_status_matrix",
+    "build_and_artifact_provenance",
+    "dependency_and_release_ordering",
+    "approval_escalations_and_dispatch_receipts",
+    "independently_authored_responses",
+    "blockers_and_readiness",
+    "authority_boundary_and_next_owner"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Validate outputs/repository-operations.json, then render the exact same checkpoint and authority state as outputs/repository-operations-manager-handoff.md."
+}

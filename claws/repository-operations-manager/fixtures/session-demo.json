@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "repository-operations-manager",
+  "scenario": "Supervise these twelve repositories for the weekly release train. Reconcile open PRs, required reviews, CI and release state, identify cross-repository blockers, and escalate only the approvals named in our supplied routing policy. Do not merge, rerun, publish, deploy, waive, or approve anything.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Supervise these twelve repositories for the weekly release train. Reconcile open PRs, required reviews, CI and release state, identify cross-repository blockers, and escalate only the approvals named in our supplied routing policy. Do not merge, rerun, publish, deploy, waive, or approve anything."
+    },
+    {
+      "role": "agent",
+      "text": "I validated the approved roster revision, predecessor lineage, source snapshot roots, and caller-supplied as-of before reconciling any repository state."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced a schema-valid outputs/repository-operations.json and rendered outputs/repository-operations-manager-handoff.md with the exact delta, PR-head matrix, release blockers, dispatch receipts, independently authored human decisions and trusted system deadline observations, and non-authority claims."
+    }
+  ],
+  "report": {
+    "title": "Repository Operations Manager session handoff",
+    "summary": "A checkpointed portfolio ledger binds each PR to its current head, checks, reviews, build and release-train state; exposes one stale review, one failed build, one cross-repository ordering conflict, and three exact human approval requests; records one approval and one rejection as eligible human decisions plus one trusted system no-response observation; and leaves every repository mutation and terminal decision to its accountable owner.",
+    "output": "outputs/repository-operations-manager-handoff.md",
+    "structuredArtifact": "outputs/repository-operations.json",
+    "schema": "schemas/repository-operations.schema.json",
+    "items": [
+      {
+        "title": "Exact repository portfolio and checkpoint delta ledger",
+        "summary": "The roster revision, predecessor checkpoint or first-run declaration, source snapshot roots, and current checkpoint form one complete custodian-bound lineage",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Head-bound pull-request, review, check, build, artifact, and release-train status matrix",
+        "summary": "Every approved repository and every in-scope pull request has one current or explicitly missing head-bound state, and a head change invalidates evidence for the prior revision",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Cross-repository dependency and sequencing blocker register",
+        "summary": "Every controlled evidence row is consumed by its exact semantic record or explicit coverage role, and every review, required check, build, artifact, release, dependency, blocker, escalation receipt, human decision, and deadline observation resolves through exact repository, revision, chronology, snapshot, provenance, and exact authority records in the current portfolio checkpoint",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Human approval and escalation queue with route authorization, typed human decisions, trusted system deadline observations, evidence revision, recipient, deadline, deduplication, and dispatch receipt",
+        "summary": "The delta exactly partitions repository, pull-request, review, check, build, and release-train revisions with transition kinds matched to entity type and state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner action queue and private portfolio handoff",
+        "summary": "Every escalation is route-authorized, idempotent, addressed to an eligible human, time-bounded, revision-bound, and dispatch-receipted; human decisions require exact recipient authority, while deadline observations require an approved trusted system with exact category scope",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

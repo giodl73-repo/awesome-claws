@@ -3017,6 +3017,40 @@
       }
     },
     {
+      "id": "repository-operations-manager",
+      "name": "Repository Operations Manager",
+      "description": "Supervises an approved repository portfolio by reconciling pull requests, head-bound reviews and checks, builds, release trains, cross-repository dependencies, human approval decisions, and trusted system deadline observations without making owner decisions or performing repository mutations.",
+      "audience": "Engineering managers, staff engineers, release owners, and maintainers supervising recurring delivery across multiple repositories.",
+      "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-13"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "research-briefing",
       "name": "Research briefing",
       "description": "Synthesizes supplied sources into concise, source-grounded briefs for time-sensitive decisions.",

@@ -1,0 +1,1715 @@
+{
+  "schemaVersion": "awesomeClaws.repositoryOperations.v1",
+  "artifactId": "repository-operations-weekly-2026-09-13",
+  "run": {
+    "id": "run-weekly-2026-09-13",
+    "asOf": "2026-09-13T17:00:00Z",
+    "windowStart": "2026-09-06T17:00:00Z",
+    "rosterRef": "roster-platform",
+    "rosterRevision": "roster-r7",
+    "rosterCompletenessRoot": "sha256:67cab19db8ee8dc450778ed23f4d687807bfb7a9a668d15aecc8b63bb5d0f33d",
+    "escalationPolicyRevision": "escalation-policy-r3",
+    "predecessorCheckpointRef": "checkpoint-weekly-2026-09-06",
+    "firstRun": false,
+    "sourceSnapshotRoots": [
+      "sha256:1000000000000000000000000000000000000000000000000000000000000001",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000002",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000003",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000004",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000005",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000006",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000007",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000008",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000009",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000010",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000011",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000012",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000013",
+      "sha256:1000000000000000000000000000000000000000000000000000000000000014"
+    ],
+    "snapshotSetRoot": "sha256:1c3b38b650c4183510a3525096e2b4ee3a2213007657a783a07ae1c0893fa890",
+    "currentCheckpointId": "checkpoint-weekly-2026-09-13",
+    "currentCheckpointDigest": "sha256:3a5c3918012e1fc105f15bcd5afe89881cf4497ed645dc7ca2e510a2c7430b8b",
+    "custodianRef": "principal-portfolio-custodian",
+    "destination": "private-repository-operations-handoff"
+  },
+  "roster": {
+    "id": "roster-platform",
+    "revision": "roster-r7",
+    "capturedAt": "2026-09-13T15:00:00Z",
+    "custodianRef": "principal-portfolio-custodian",
+    "repositoryRefs": [
+      "repo-api",
+      "repo-cli",
+      "repo-sdk"
+    ],
+    "completenessRoot": "sha256:67cab19db8ee8dc450778ed23f4d687807bfb7a9a668d15aecc8b63bb5d0f33d",
+    "evidenceRef": "evidence-roster"
+  },
+  "predecessor": {
+    "checkpointId": "checkpoint-weekly-2026-09-06",
+    "rosterRevision": "roster-r7",
+    "custodianRef": "principal-portfolio-custodian",
+    "createdAt": "2026-09-06T16:45:00Z",
+    "checkpointDigest": "sha256:2185383968d850f6b9039bc1a6acc3ec82b3a43697e3d744db86d2bbe0b9a395",
+    "sourceSnapshotRootRefs": [
+      "sha256:1000000000000000000000000000000000000000000000000000000000000001"
+    ],
+    "entities": [
+      {
+        "entityRef": "repo-api",
+        "entityType": "repository",
+        "revision": "sha256:5d403631ba07a136d7373416bc0eca27527bf5e30f1b70b52d41f9fc73ff4ec5",
+        "state": "current"
+      },
+      {
+        "entityRef": "repo-sdk",
+        "entityType": "repository",
+        "revision": "sha256:d057e46748804113f0a1e5ee03fa5eb46e771d7802174888a1f1c114ab97c26e",
+        "state": "current"
+      },
+      {
+        "entityRef": "repo-cli",
+        "entityType": "repository",
+        "revision": "sha256:7a64225ac94840c50031a6c1d2b45a88833fafc4b1fd2af18e602eebdc492d21",
+        "state": "current"
+      },
+      {
+        "entityRef": "pr-api-41",
+        "entityType": "pull-request",
+        "revision": "sha256:9985757185ed91c1a10b3c6d7536fce6a5f547dd58ba2bb6bde7137cb498335c",
+        "state": "open"
+      },
+      {
+        "entityRef": "pr-sdk-18",
+        "entityType": "pull-request",
+        "revision": "sha256:a421ef9879d6b3b68501c4f315a5318776dc922b112d240cc44de0acfe40350d",
+        "state": "open"
+      },
+      {
+        "entityRef": "pr-cli-9",
+        "entityType": "pull-request",
+        "revision": "sha256:039802d04661e35136c109c9a6d6d2f110db2ef36eedc2608b6e618249bd8e42",
+        "state": "open"
+      },
+      {
+        "entityRef": "review-api-old",
+        "entityType": "review",
+        "revision": "sha256:980f6b576177c04767fb198f0b603080715fc95cf0d6a0a85b7fe0e9f8cd5b75",
+        "state": "approved"
+      },
+      {
+        "entityRef": "review-sdk-current",
+        "entityType": "review",
+        "revision": "sha256:c05751a2a111c44cdd4f7b146a6ad6f64871fc3f911456d17f60f6d104e65f22",
+        "state": "approved"
+      },
+      {
+        "entityRef": "review-cli-current",
+        "entityType": "review",
+        "revision": "sha256:4d3ae5c3224d52f7846690071d4bec89d171ba2f48f01af9c69ece4f8b5438a8",
+        "state": "approved"
+      },
+      {
+        "entityRef": "check-api-old",
+        "entityType": "check",
+        "revision": "sha256:afa97f202019cb070c9b0648acde5e5a52738d9838ea7764bb1700d205f4ab7c",
+        "state": "passed"
+      },
+      {
+        "entityRef": "check-sdk-current",
+        "entityType": "check",
+        "revision": "sha256:5000000000000000000000000000000000000000000000000000000000000001",
+        "state": "pending"
+      },
+      {
+        "entityRef": "check-cli-current",
+        "entityType": "check",
+        "revision": "sha256:2d711eaed0574a3482e1682523674c93a9eccfe072e855e4230774059424c8a5",
+        "state": "passed"
+      },
+      {
+        "entityRef": "build-api-old",
+        "entityType": "build",
+        "revision": "sha256:31cc577e120031a8b85607d5145271fe998204e3d7120e536f8d3a09d2509cb3",
+        "state": "superseded"
+      },
+      {
+        "entityRef": "build-sdk",
+        "entityType": "build",
+        "revision": "sha256:f4e8ab6019d509506e87361254fa6f26419c3833e732f91240b3d9eee1eec44d",
+        "state": "succeeded"
+      },
+      {
+        "entityRef": "build-cli",
+        "entityType": "build",
+        "revision": "sha256:868214ebbd3611fa5f261683de5994d8b4b5350a0129f8f580606c3f2c37ed79",
+        "state": "succeeded"
+      },
+      {
+        "entityRef": "train-weekly",
+        "entityType": "release-train",
+        "revision": "sha256:a67269fa24c212ec91abee377d41286171f3e7062a57aa3f493634f3cb24b853",
+        "state": "planned"
+      }
+    ]
+  },
+  "snapshots": [
+    {
+      "id": "snapshot-predecessor",
+      "kind": "predecessor-checkpoint",
+      "repositoryRef": null,
+      "capturedAt": "2026-09-06T16:45:00Z",
+      "sourceUri": "controlled://portfolio/checkpoints/2026-09-06",
+      "sourceRecordDigest": "sha256:2185383968d850f6b9039bc1a6acc3ec82b3a43697e3d744db86d2bbe0b9a395",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000001"
+    },
+    {
+      "id": "snapshot-repo-api",
+      "kind": "repository",
+      "repositoryRef": "repo-api",
+      "capturedAt": "2026-09-13T15:10:00Z",
+      "sourceUri": "controlled://github/acme/api/snapshot/701",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000002",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000002"
+    },
+    {
+      "id": "snapshot-repo-sdk",
+      "kind": "repository",
+      "repositoryRef": "repo-sdk",
+      "capturedAt": "2026-09-13T15:11:00Z",
+      "sourceUri": "controlled://github/acme/sdk/snapshot/702",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000003",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000003"
+    },
+    {
+      "id": "snapshot-repo-cli",
+      "kind": "repository",
+      "repositoryRef": "repo-cli",
+      "capturedAt": "2026-09-13T15:12:00Z",
+      "sourceUri": "controlled://github/acme/cli/snapshot/703",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000004",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000004"
+    },
+    {
+      "id": "snapshot-prs",
+      "kind": "pull-request",
+      "repositoryRef": null,
+      "capturedAt": "2026-09-13T15:20:00Z",
+      "sourceUri": "controlled://github/portfolio/pulls/801",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000005",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000005"
+    },
+    {
+      "id": "snapshot-reviews",
+      "kind": "review",
+      "repositoryRef": null,
+      "capturedAt": "2026-09-13T15:25:00Z",
+      "sourceUri": "controlled://github/portfolio/reviews/802",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000006",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000006"
+    },
+    {
+      "id": "snapshot-checks",
+      "kind": "check-suite",
+      "repositoryRef": null,
+      "capturedAt": "2026-09-13T15:30:00Z",
+      "sourceUri": "controlled://github/portfolio/checks/803",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000007",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000007"
+    },
+    {
+      "id": "snapshot-build-api",
+      "kind": "workflow-run",
+      "repositoryRef": "repo-api",
+      "capturedAt": "2026-09-13T15:35:00Z",
+      "sourceUri": "controlled://ci/acme/api/runs/804",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000008",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000008"
+    },
+    {
+      "id": "snapshot-build-sdk",
+      "kind": "workflow-run",
+      "repositoryRef": "repo-sdk",
+      "capturedAt": "2026-09-13T15:36:00Z",
+      "sourceUri": "controlled://ci/acme/sdk/runs/805",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000009",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000009"
+    },
+    {
+      "id": "snapshot-build-cli",
+      "kind": "workflow-run",
+      "repositoryRef": "repo-cli",
+      "capturedAt": "2026-09-13T15:37:00Z",
+      "sourceUri": "controlled://ci/acme/cli/runs/806",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000010",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000010"
+    },
+    {
+      "id": "snapshot-artifact-api",
+      "kind": "artifact",
+      "repositoryRef": "repo-api",
+      "capturedAt": "2026-09-13T15:40:00Z",
+      "sourceUri": "controlled://ci/acme/api/artifacts/807",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000011",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000011"
+    },
+    {
+      "id": "snapshot-artifact-sdk",
+      "kind": "artifact",
+      "repositoryRef": "repo-sdk",
+      "capturedAt": "2026-09-13T15:41:00Z",
+      "sourceUri": "controlled://ci/acme/sdk/artifacts/808",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000012",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000012"
+    },
+    {
+      "id": "snapshot-artifact-cli",
+      "kind": "artifact",
+      "repositoryRef": "repo-cli",
+      "capturedAt": "2026-09-13T15:42:00Z",
+      "sourceUri": "controlled://ci/acme/cli/artifacts/809",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000013",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000013"
+    },
+    {
+      "id": "snapshot-release",
+      "kind": "release",
+      "repositoryRef": null,
+      "capturedAt": "2026-09-13T15:45:00Z",
+      "sourceUri": "controlled://release/train-weekly/revision/8",
+      "sourceRecordDigest": "sha256:2000000000000000000000000000000000000000000000000000000000000014",
+      "completenessRoot": "sha256:1000000000000000000000000000000000000000000000000000000000000014"
+    }
+  ],
+  "repositories": [
+    {
+      "id": "repo-api",
+      "canonicalName": "acme/api",
+      "defaultBranch": "main",
+      "ownerRef": "principal-api-owner",
+      "policyRevision": "policy-r12",
+      "requiredCheckContexts": [
+        "required-ci"
+      ],
+      "requiredApprovalCount": 1,
+      "eligibleReviewerRefs": [
+        "principal-reviewer"
+      ],
+      "rosterRevision": "roster-r7",
+      "snapshotRefs": [
+        "snapshot-repo-api"
+      ],
+      "state": "current"
+    },
+    {
+      "id": "repo-sdk",
+      "canonicalName": "acme/sdk",
+      "defaultBranch": "main",
+      "ownerRef": "principal-sdk-owner",
+      "policyRevision": "policy-r9",
+      "requiredCheckContexts": [
+        "required-ci"
+      ],
+      "requiredApprovalCount": 1,
+      "eligibleReviewerRefs": [
+        "principal-reviewer"
+      ],
+      "rosterRevision": "roster-r7",
+      "snapshotRefs": [
+        "snapshot-repo-sdk"
+      ],
+      "state": "current"
+    },
+    {
+      "id": "repo-cli",
+      "canonicalName": "acme/cli",
+      "defaultBranch": "main",
+      "ownerRef": "principal-cli-owner",
+      "policyRevision": "policy-r4",
+      "requiredCheckContexts": [
+        "required-ci"
+      ],
+      "requiredApprovalCount": 1,
+      "eligibleReviewerRefs": [
+        "principal-reviewer"
+      ],
+      "rosterRevision": "roster-r7",
+      "snapshotRefs": [
+        "snapshot-repo-cli"
+      ],
+      "state": "current"
+    }
+  ],
+  "pullRequests": [
+    {
+      "id": "pr-api-41",
+      "repositoryRef": "repo-api",
+      "number": 41,
+      "previousHeadSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "currentHeadSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "state": "open",
+      "snapshotRef": "snapshot-prs",
+      "evidenceRevision": "sha256:790f0d8c31fb062bdf692e2d46967ffc49fba35e436b445cf1aa291230b8c548",
+      "sourceEvidenceRef": "evidence-pr-api-41",
+      "sourceEvidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000031",
+      "reviewRefs": [
+        "review-api-old",
+        "review-api-current"
+      ],
+      "checkRefs": [
+        "check-api-old",
+        "check-api-current"
+      ],
+      "buildRefs": [
+        "build-api-old",
+        "build-api-new"
+      ],
+      "artifactRefs": [
+        "artifact-api-missing",
+        "artifact-api-failed"
+      ],
+      "releaseTrainRefs": [
+        "train-weekly"
+      ],
+      "blockerRefs": [
+        "blocker-api-review",
+        "blocker-api-build",
+        "blocker-api-artifact-missing",
+        "blocker-api-artifact-failed",
+        "blocker-release-partial",
+        "blocker-train-partial"
+      ],
+      "readiness": "blocked"
+    },
+    {
+      "id": "pr-sdk-18",
+      "repositoryRef": "repo-sdk",
+      "number": 18,
+      "previousHeadSha": null,
+      "currentHeadSha": "cccccccccccccccccccccccccccccccccccccccc",
+      "state": "open",
+      "snapshotRef": "snapshot-prs",
+      "evidenceRevision": "sha256:a90ce0e1e270e3ca3b9250845cdae3c8335b392f41df42ad83b764cfc8334027",
+      "sourceEvidenceRef": "evidence-pr-sdk-18",
+      "sourceEvidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000032",
+      "reviewRefs": [
+        "review-sdk-current"
+      ],
+      "checkRefs": [
+        "check-sdk-current"
+      ],
+      "buildRefs": [
+        "build-sdk"
+      ],
+      "artifactRefs": [
+        "artifact-sdk"
+      ],
+      "releaseTrainRefs": [
+        "train-weekly"
+      ],
+      "blockerRefs": [
+        "blocker-train-partial"
+      ],
+      "readiness": "blocked"
+    },
+    {
+      "id": "pr-cli-9",
+      "repositoryRef": "repo-cli",
+      "number": 9,
+      "previousHeadSha": null,
+      "currentHeadSha": "dddddddddddddddddddddddddddddddddddddddd",
+      "state": "merged",
+      "snapshotRef": "snapshot-prs",
+      "evidenceRevision": "sha256:c48ebc4fd016b388731c91f9b5350bcb69056089c967d4036f88e1f8dce8f451",
+      "sourceEvidenceRef": "evidence-pr-cli-9",
+      "sourceEvidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000033",
+      "reviewRefs": [
+        "review-cli-current"
+      ],
+      "checkRefs": [
+        "check-cli-current"
+      ],
+      "buildRefs": [
+        "build-cli"
+      ],
+      "artifactRefs": [
+        "artifact-cli"
+      ],
+      "releaseTrainRefs": [
+        "train-weekly"
+      ],
+      "blockerRefs": [
+        "blocker-train-partial",
+        "blocker-cli-rollback"
+      ],
+      "readiness": "blocked"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "review-api-old",
+      "pullRequestRef": "pr-api-41",
+      "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "authorRef": "principal-reviewer",
+      "state": "stale",
+      "submittedAt": "2026-09-10T10:00:00Z",
+      "snapshotRef": "snapshot-reviews",
+      "evidenceRef": "evidence-review-api-old",
+      "evidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000019"
+    },
+    {
+      "id": "review-api-current",
+      "pullRequestRef": "pr-api-41",
+      "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "authorRef": "principal-reviewer",
+      "state": "changes-requested",
+      "submittedAt": "2026-09-13T14:00:00Z",
+      "snapshotRef": "snapshot-reviews",
+      "evidenceRef": "evidence-api-review",
+      "evidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000014"
+    },
+    {
+      "id": "review-sdk-current",
+      "pullRequestRef": "pr-sdk-18",
+      "headSha": "cccccccccccccccccccccccccccccccccccccccc",
+      "authorRef": "principal-reviewer",
+      "state": "approved",
+      "submittedAt": "2026-09-12T13:00:00Z",
+      "snapshotRef": "snapshot-reviews",
+      "evidenceRef": "evidence-review-sdk-current",
+      "evidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000020"
+    },
+    {
+      "id": "review-cli-current",
+      "pullRequestRef": "pr-cli-9",
+      "headSha": "dddddddddddddddddddddddddddddddddddddddd",
+      "authorRef": "principal-reviewer",
+      "state": "approved",
+      "submittedAt": "2026-09-11T13:00:00Z",
+      "snapshotRef": "snapshot-reviews",
+      "evidenceRef": "evidence-review-cli-current",
+      "evidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000021"
+    }
+  ],
+  "checks": [
+    {
+      "id": "check-api-old",
+      "pullRequestRef": "pr-api-41",
+      "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "context": "required-ci",
+      "required": true,
+      "state": "superseded",
+      "startedAt": "2026-09-10T10:15:00Z",
+      "completedAt": "2026-09-10T10:30:00Z",
+      "snapshotRef": "snapshot-checks",
+      "evidenceRef": "evidence-check-api-old",
+      "evidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000025"
+    },
+    {
+      "id": "check-api-current",
+      "pullRequestRef": "pr-api-41",
+      "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "context": "required-ci",
+      "required": true,
+      "state": "passed",
+      "startedAt": "2026-09-13T14:15:00Z",
+      "completedAt": "2026-09-13T14:30:00Z",
+      "snapshotRef": "snapshot-checks",
+      "evidenceRef": "evidence-check-api-current",
+      "evidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000026"
+    },
+    {
+      "id": "check-sdk-current",
+      "pullRequestRef": "pr-sdk-18",
+      "headSha": "cccccccccccccccccccccccccccccccccccccccc",
+      "context": "required-ci",
+      "required": true,
+      "state": "passed",
+      "startedAt": "2026-09-12T13:45:00Z",
+      "completedAt": "2026-09-12T14:00:00Z",
+      "snapshotRef": "snapshot-checks",
+      "evidenceRef": "evidence-check-sdk-current",
+      "evidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000027"
+    },
+    {
+      "id": "check-cli-current",
+      "pullRequestRef": "pr-cli-9",
+      "headSha": "dddddddddddddddddddddddddddddddddddddddd",
+      "context": "required-ci",
+      "required": true,
+      "state": "passed",
+      "startedAt": "2026-09-11T13:45:00Z",
+      "completedAt": "2026-09-11T14:00:00Z",
+      "snapshotRef": "snapshot-checks",
+      "evidenceRef": "evidence-check-cli-current",
+      "evidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000028"
+    }
+  ],
+  "builds": [
+    {
+      "id": "build-api-old",
+      "repositoryRef": "repo-api",
+      "pullRequestRef": "pr-api-41",
+      "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "runId": "run-api-410",
+      "state": "superseded",
+      "artifactRefs": [],
+      "snapshotRef": "snapshot-build-api",
+      "evidenceRef": "evidence-build-api-old",
+      "evidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000022"
+    },
+    {
+      "id": "build-api-new",
+      "repositoryRef": "repo-api",
+      "pullRequestRef": "pr-api-41",
+      "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "runId": "run-api-411",
+      "state": "failed",
+      "artifactRefs": [
+        "artifact-api-missing",
+        "artifact-api-failed"
+      ],
+      "snapshotRef": "snapshot-build-api",
+      "evidenceRef": "evidence-api-build",
+      "evidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000015"
+    },
+    {
+      "id": "build-sdk",
+      "repositoryRef": "repo-sdk",
+      "pullRequestRef": "pr-sdk-18",
+      "headSha": "cccccccccccccccccccccccccccccccccccccccc",
+      "runId": "run-sdk-180",
+      "state": "succeeded",
+      "artifactRefs": [
+        "artifact-sdk"
+      ],
+      "snapshotRef": "snapshot-build-sdk",
+      "evidenceRef": "evidence-build-sdk",
+      "evidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000023"
+    },
+    {
+      "id": "build-cli",
+      "repositoryRef": "repo-cli",
+      "pullRequestRef": "pr-cli-9",
+      "headSha": "dddddddddddddddddddddddddddddddddddddddd",
+      "runId": "run-cli-90",
+      "state": "succeeded",
+      "artifactRefs": [
+        "artifact-cli"
+      ],
+      "snapshotRef": "snapshot-build-cli",
+      "evidenceRef": "evidence-build-cli",
+      "evidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000024"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "artifact-api-missing",
+      "buildRef": "build-api-new",
+      "repositoryRef": "repo-api",
+      "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "digest": "sha256:3000000000000000000000000000000000000000000000000000000000000003",
+      "provenanceEvidenceRef": "evidence-artifact-api-missing",
+      "snapshotRef": "snapshot-artifact-api",
+      "state": "missing"
+    },
+    {
+      "id": "artifact-api-failed",
+      "buildRef": "build-api-new",
+      "repositoryRef": "repo-api",
+      "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "digest": "sha256:3000000000000000000000000000000000000000000000000000000000000004",
+      "provenanceEvidenceRef": "evidence-artifact-api-failed",
+      "snapshotRef": "snapshot-artifact-api",
+      "state": "failed"
+    },
+    {
+      "id": "artifact-sdk",
+      "buildRef": "build-sdk",
+      "repositoryRef": "repo-sdk",
+      "headSha": "cccccccccccccccccccccccccccccccccccccccc",
+      "digest": "sha256:3000000000000000000000000000000000000000000000000000000000000001",
+      "provenanceEvidenceRef": "evidence-artifact-sdk",
+      "snapshotRef": "snapshot-artifact-sdk",
+      "state": "verified"
+    },
+    {
+      "id": "artifact-cli",
+      "buildRef": "build-cli",
+      "repositoryRef": "repo-cli",
+      "headSha": "dddddddddddddddddddddddddddddddddddddddd",
+      "digest": "sha256:3000000000000000000000000000000000000000000000000000000000000002",
+      "provenanceEvidenceRef": "evidence-artifact-cli",
+      "snapshotRef": "snapshot-artifact-cli",
+      "state": "verified"
+    }
+  ],
+  "releaseTrains": [
+    {
+      "id": "train-weekly",
+      "revision": "train-r8",
+      "repositoryRefs": [
+        "repo-api",
+        "repo-sdk",
+        "repo-cli"
+      ],
+      "entries": [
+        {
+          "repositoryRef": "repo-api",
+          "targetHeadSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "order": 1,
+          "state": "partial",
+          "artifactRefs": []
+        },
+        {
+          "repositoryRef": "repo-sdk",
+          "targetHeadSha": "cccccccccccccccccccccccccccccccccccccccc",
+          "order": 2,
+          "state": "released",
+          "artifactRefs": [
+            "artifact-sdk"
+          ]
+        },
+        {
+          "repositoryRef": "repo-cli",
+          "targetHeadSha": "dddddddddddddddddddddddddddddddddddddddd",
+          "order": 3,
+          "state": "rolled-back",
+          "artifactRefs": [
+            "artifact-cli"
+          ]
+        }
+      ],
+      "state": "partial",
+      "snapshotRef": "snapshot-release",
+      "releaseEvidenceRef": "evidence-release",
+      "releaseEvidenceDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000016"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "dependency-api-before-sdk",
+      "upstreamRepositoryRef": "repo-api",
+      "downstreamRepositoryRef": "repo-sdk",
+      "releaseTrainRef": "train-weekly",
+      "requirement": "API must release before the SDK consumer.",
+      "state": "blocked",
+      "evidenceRef": "evidence-dependency",
+      "evidenceRevision": "sha256:dcdd9013e17ebdb882e73f558deffc53c00ba76821bc314449b0c9f38985a599"
+    }
+  ],
+  "principals": [
+    {
+      "id": "principal-portfolio-custodian",
+      "name": "Morgan Lee",
+      "kind": "human",
+      "scopes": [
+        "portfolio-custodian"
+      ]
+    },
+    {
+      "id": "principal-api-owner",
+      "name": "Avery Chen",
+      "kind": "human",
+      "scopes": [
+        "repository-owner"
+      ]
+    },
+    {
+      "id": "principal-sdk-owner",
+      "name": "Sam Rivera",
+      "kind": "human",
+      "scopes": [
+        "repository-owner"
+      ]
+    },
+    {
+      "id": "principal-cli-owner",
+      "name": "Jordan Patel",
+      "kind": "human",
+      "scopes": [
+        "repository-owner"
+      ]
+    },
+    {
+      "id": "principal-reviewer",
+      "name": "Taylor Brooks",
+      "kind": "human",
+      "scopes": [
+        "independent-review-author"
+      ]
+    },
+    {
+      "id": "principal-release-approver",
+      "name": "Riley Kim",
+      "kind": "human",
+      "scopes": [
+        "eligible-approver",
+        "decision-authority:merge-approval",
+        "decision-authority:release-approval"
+      ]
+    },
+    {
+      "id": "principal-risk-approver",
+      "name": "Casey Singh",
+      "kind": "human",
+      "scopes": [
+        "eligible-approver",
+        "decision-authority:risk-decision"
+      ]
+    },
+    {
+      "id": "principal-source-system",
+      "name": "Repository evidence collector",
+      "kind": "system",
+      "scopes": [
+        "evidence-author"
+      ]
+    },
+    {
+      "id": "principal-approval-observer",
+      "name": "Trusted deadline observation system",
+      "kind": "system",
+      "scopes": [
+        "trusted-deadline-observer:risk-decision"
+      ]
+    },
+    {
+      "id": "principal-repository-operations-claw",
+      "name": "Repository Operations Manager",
+      "kind": "claw",
+      "scopes": [
+        "read-only-reconciliation",
+        "dispatch-receipt-reconciliation"
+      ]
+    }
+  ],
+  "escalationPolicy": {
+    "id": "policy-escalation",
+    "revision": "escalation-policy-r3",
+    "custodianRef": "principal-portfolio-custodian",
+    "routes": [
+      {
+        "id": "route-merge",
+        "policyRevision": "escalation-policy-r3",
+        "destination": "controlled://teams/repository-approvals",
+        "allowedCategory": "merge-approval",
+        "recipientRefs": [
+          "principal-release-approver"
+        ],
+        "authorizedByRef": "principal-portfolio-custodian",
+        "authorizationEvidenceRef": "evidence-route-merge",
+        "templateRevision": "approval-template-r3",
+        "deadlineHours": 48
+      },
+      {
+        "id": "route-release",
+        "policyRevision": "escalation-policy-r3",
+        "destination": "controlled://teams/release-approvals",
+        "allowedCategory": "release-approval",
+        "recipientRefs": [
+          "principal-release-approver"
+        ],
+        "authorizedByRef": "principal-portfolio-custodian",
+        "authorizationEvidenceRef": "evidence-route-release",
+        "templateRevision": "approval-template-r3",
+        "deadlineHours": 48
+      },
+      {
+        "id": "route-risk",
+        "policyRevision": "escalation-policy-r3",
+        "destination": "controlled://teams/risk-decisions",
+        "allowedCategory": "risk-decision",
+        "recipientRefs": [
+          "principal-risk-approver"
+        ],
+        "authorizedByRef": "principal-portfolio-custodian",
+        "authorizationEvidenceRef": "evidence-route-risk",
+        "templateRevision": "approval-template-r3",
+        "deadlineHours": 24
+      }
+    ]
+  },
+  "escalations": [
+    {
+      "id": "escalation-api-merge",
+      "category": "merge-approval",
+      "targetRef": "pr-api-41",
+      "targetRevision": "sha256:790f0d8c31fb062bdf692e2d46967ffc49fba35e436b445cf1aa291230b8c548",
+      "evidenceRef": "evidence-api-review",
+      "evidenceRevision": "sha256:cef19af3652148a2f4256b1405b7e98504c68c7569f2e63a4b98473328bc73cb",
+      "recipientRef": "principal-release-approver",
+      "routeRef": "route-merge",
+      "deadline": "2026-09-14T16:00:00Z",
+      "dedupeKey": "sha256:bfbe815523842f038a8230ff961544c6ca8038771303eb966984f6dabc5923e7",
+      "state": "approved",
+      "dispatch": {
+        "providerMessageId": "teams-message-901",
+        "dispatchedAt": "2026-09-13T16:00:00Z",
+        "destination": "controlled://teams/repository-approvals",
+        "templateRevision": "approval-template-r3",
+        "receiptEvidenceRef": "evidence-dispatch-merge"
+      },
+      "responseRef": "response-api-approved"
+    },
+    {
+      "id": "escalation-train-release",
+      "category": "release-approval",
+      "targetRef": "train-weekly",
+      "targetRevision": "sha256:fe2cfa1afa355889444f1b3fd8a34cbcce7aee02bf14cd9fed8e20e88d5f11ae",
+      "evidenceRef": "evidence-release",
+      "evidenceRevision": "sha256:fe2cfa1afa355889444f1b3fd8a34cbcce7aee02bf14cd9fed8e20e88d5f11ae",
+      "recipientRef": "principal-release-approver",
+      "routeRef": "route-release",
+      "deadline": "2026-09-14T16:05:00Z",
+      "dedupeKey": "sha256:dc4a583509f27a600e281e5d312aa2c7937d19e591e40e0e53d104feb84941ae",
+      "state": "rejected",
+      "dispatch": {
+        "providerMessageId": "teams-message-902",
+        "dispatchedAt": "2026-09-13T16:05:00Z",
+        "destination": "controlled://teams/release-approvals",
+        "templateRevision": "approval-template-r3",
+        "receiptEvidenceRef": "evidence-dispatch-release"
+      },
+      "responseRef": "response-release-rejected"
+    },
+    {
+      "id": "escalation-dependency-risk",
+      "category": "risk-decision",
+      "targetRef": "dependency-api-before-sdk",
+      "targetRevision": "sha256:dcdd9013e17ebdb882e73f558deffc53c00ba76821bc314449b0c9f38985a599",
+      "evidenceRef": "evidence-dependency",
+      "evidenceRevision": "sha256:dcdd9013e17ebdb882e73f558deffc53c00ba76821bc314449b0c9f38985a599",
+      "recipientRef": "principal-risk-approver",
+      "routeRef": "route-risk",
+      "deadline": "2026-09-13T16:10:00Z",
+      "dedupeKey": "sha256:76e704ef16f43a4cfeed18e6cdb10354796528fad3a1392fec5e931311b78d26",
+      "state": "no-response",
+      "dispatch": {
+        "providerMessageId": "teams-message-903",
+        "dispatchedAt": "2026-09-13T16:10:00Z",
+        "destination": "controlled://teams/risk-decisions",
+        "templateRevision": "approval-template-r3",
+        "receiptEvidenceRef": "evidence-dispatch-risk"
+      },
+      "responseRef": "response-risk-no-response"
+    }
+  ],
+  "responses": [
+    {
+      "id": "response-api-approved",
+      "kind": "human-decision",
+      "requestRef": "escalation-api-merge",
+      "requestDedupeKey": "sha256:bfbe815523842f038a8230ff961544c6ca8038771303eb966984f6dabc5923e7",
+      "targetRef": "pr-api-41",
+      "targetRevision": "sha256:790f0d8c31fb062bdf692e2d46967ffc49fba35e436b445cf1aa291230b8c548",
+      "evidenceRevision": "sha256:cef19af3652148a2f4256b1405b7e98504c68c7569f2e63a4b98473328bc73cb",
+      "authorRef": "principal-release-approver",
+      "outcome": "approved",
+      "authoredAt": "2026-09-13T16:20:00Z",
+      "evidenceRef": "evidence-response-approved"
+    },
+    {
+      "id": "response-release-rejected",
+      "kind": "human-decision",
+      "requestRef": "escalation-train-release",
+      "requestDedupeKey": "sha256:dc4a583509f27a600e281e5d312aa2c7937d19e591e40e0e53d104feb84941ae",
+      "targetRef": "train-weekly",
+      "targetRevision": "sha256:fe2cfa1afa355889444f1b3fd8a34cbcce7aee02bf14cd9fed8e20e88d5f11ae",
+      "evidenceRevision": "sha256:fe2cfa1afa355889444f1b3fd8a34cbcce7aee02bf14cd9fed8e20e88d5f11ae",
+      "authorRef": "principal-release-approver",
+      "outcome": "rejected",
+      "authoredAt": "2026-09-13T16:25:00Z",
+      "evidenceRef": "evidence-response-rejected"
+    },
+    {
+      "id": "response-risk-no-response",
+      "kind": "deadline-observation",
+      "requestRef": "escalation-dependency-risk",
+      "requestDedupeKey": "sha256:76e704ef16f43a4cfeed18e6cdb10354796528fad3a1392fec5e931311b78d26",
+      "targetRef": "dependency-api-before-sdk",
+      "targetRevision": "sha256:dcdd9013e17ebdb882e73f558deffc53c00ba76821bc314449b0c9f38985a599",
+      "evidenceRevision": "sha256:dcdd9013e17ebdb882e73f558deffc53c00ba76821bc314449b0c9f38985a599",
+      "authorRef": "principal-approval-observer",
+      "outcome": "no-response",
+      "authoredAt": "2026-09-13T16:30:00Z",
+      "evidenceRef": "evidence-response-no-response"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-roster",
+      "kind": "roster",
+      "sourceRef": "controlled://portfolio/roster/r7",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-09-13T15:00:00Z",
+      "authorRef": "principal-portfolio-custodian",
+      "subjectRefs": [
+        "repo-api",
+        "repo-sdk",
+        "repo-cli"
+      ],
+      "revision": "roster-r7",
+      "digest": "sha256:67cab19db8ee8dc450778ed23f4d687807bfb7a9a668d15aecc8b63bb5d0f33d"
+    },
+    {
+      "id": "evidence-pr-api-41",
+      "kind": "pull-request",
+      "sourceRef": "controlled://github/acme/api/pulls/41",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000031",
+      "observedAt": "2026-09-13T15:19:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "pr-api-41",
+        "repo-api"
+      ],
+      "revision": "sha256:790f0d8c31fb062bdf692e2d46967ffc49fba35e436b445cf1aa291230b8c548"
+    },
+    {
+      "id": "evidence-pr-sdk-18",
+      "kind": "pull-request",
+      "sourceRef": "controlled://github/acme/sdk/pulls/18",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000032",
+      "observedAt": "2026-09-13T15:19:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "pr-sdk-18",
+        "repo-sdk"
+      ],
+      "revision": "sha256:a90ce0e1e270e3ca3b9250845cdae3c8335b392f41df42ad83b764cfc8334027"
+    },
+    {
+      "id": "evidence-pr-cli-9",
+      "kind": "pull-request",
+      "sourceRef": "controlled://github/acme/cli/pulls/9",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000033",
+      "observedAt": "2026-09-13T15:19:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "pr-cli-9",
+        "repo-cli"
+      ],
+      "revision": "sha256:c48ebc4fd016b388731c91f9b5350bcb69056089c967d4036f88e1f8dce8f451"
+    },
+    {
+      "id": "evidence-artifact-api-missing",
+      "kind": "artifact-provenance",
+      "sourceRef": "controlled://ci/artifacts/api/411/missing",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000017",
+      "observedAt": "2026-09-13T14:41:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "artifact-api-missing",
+        "build-api-new"
+      ],
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "digest": "sha256:3000000000000000000000000000000000000000000000000000000000000003"
+    },
+    {
+      "id": "evidence-artifact-api-failed",
+      "kind": "artifact-provenance",
+      "sourceRef": "controlled://ci/artifacts/api/411/failed",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000018",
+      "observedAt": "2026-09-13T14:42:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "artifact-api-failed",
+        "build-api-new"
+      ],
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "digest": "sha256:3000000000000000000000000000000000000000000000000000000000000004"
+    },
+    {
+      "id": "evidence-artifact-sdk",
+      "kind": "artifact-provenance",
+      "sourceRef": "controlled://ci/artifacts/sdk/180",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000002",
+      "observedAt": "2026-09-12T14:10:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "artifact-sdk",
+        "build-sdk"
+      ],
+      "revision": "cccccccccccccccccccccccccccccccccccccccc",
+      "digest": "sha256:3000000000000000000000000000000000000000000000000000000000000001"
+    },
+    {
+      "id": "evidence-artifact-cli",
+      "kind": "artifact-provenance",
+      "sourceRef": "controlled://ci/artifacts/cli/90",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000003",
+      "observedAt": "2026-09-11T14:10:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "artifact-cli",
+        "build-cli"
+      ],
+      "revision": "dddddddddddddddddddddddddddddddddddddddd",
+      "digest": "sha256:3000000000000000000000000000000000000000000000000000000000000002"
+    },
+    {
+      "id": "evidence-dependency",
+      "kind": "dependency",
+      "sourceRef": "controlled://release/train-weekly/dependencies/r8",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000004",
+      "observedAt": "2026-09-13T15:45:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "dependency-api-before-sdk",
+        "train-weekly",
+        "repo-api",
+        "repo-sdk"
+      ],
+      "revision": "sha256:dcdd9013e17ebdb882e73f558deffc53c00ba76821bc314449b0c9f38985a599"
+    },
+    {
+      "id": "evidence-route-merge",
+      "kind": "escalation-route-authorization",
+      "sourceRef": "controlled://policy/escalations/merge/r7",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000005",
+      "observedAt": "2026-09-06T17:00:00Z",
+      "authorRef": "principal-portfolio-custodian",
+      "subjectRefs": [
+        "route-merge",
+        "principal-portfolio-custodian",
+        "principal-release-approver"
+      ],
+      "revision": "sha256:14490d96f621ef44407c4970f9a7016dc111579df890727b8bbc16d25cd5762c"
+    },
+    {
+      "id": "evidence-route-release",
+      "kind": "escalation-route-authorization",
+      "sourceRef": "controlled://policy/escalations/release/r7",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000006",
+      "observedAt": "2026-09-06T17:00:00Z",
+      "authorRef": "principal-portfolio-custodian",
+      "subjectRefs": [
+        "route-release",
+        "principal-portfolio-custodian",
+        "principal-release-approver"
+      ],
+      "revision": "sha256:f17fa7cbcb16a3701db46160eee3215de8aa8978c0ec611bc8416876095d51f4"
+    },
+    {
+      "id": "evidence-route-risk",
+      "kind": "escalation-route-authorization",
+      "sourceRef": "controlled://policy/escalations/risk/r7",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000007",
+      "observedAt": "2026-09-06T17:00:00Z",
+      "authorRef": "principal-portfolio-custodian",
+      "subjectRefs": [
+        "route-risk",
+        "principal-portfolio-custodian",
+        "principal-risk-approver"
+      ],
+      "revision": "sha256:fe1e111f10abd126d84f2ceb9184f8a00ea9ae6a5a3f0a62cf041dd13853490d"
+    },
+    {
+      "id": "evidence-dispatch-merge",
+      "kind": "escalation-dispatch-receipt",
+      "sourceRef": "controlled://teams/messages/901",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000008",
+      "observedAt": "2026-09-13T16:00:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "escalation-api-merge",
+        "route-merge"
+      ],
+      "revision": "sha256:f0bd99cd5491f6c499b55895657b26634898a1033951c1f4d55c8318ffdf3ab6"
+    },
+    {
+      "id": "evidence-dispatch-release",
+      "kind": "escalation-dispatch-receipt",
+      "sourceRef": "controlled://teams/messages/902",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000009",
+      "observedAt": "2026-09-13T16:05:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "escalation-train-release",
+        "route-release"
+      ],
+      "revision": "sha256:ae35a4aa0ad3f38df119829d5427ff2730910130ea2f1de9bccd40b0e4ece792"
+    },
+    {
+      "id": "evidence-dispatch-risk",
+      "kind": "escalation-dispatch-receipt",
+      "sourceRef": "controlled://teams/messages/903",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000010",
+      "observedAt": "2026-09-13T16:10:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "escalation-dependency-risk",
+        "route-risk"
+      ],
+      "revision": "sha256:c2910fb410b3be6ca82902541556b4d75c3fbd24e469b40cbcaf733f3aa0c883"
+    },
+    {
+      "id": "evidence-response-approved",
+      "kind": "decision-response",
+      "sourceRef": "controlled://teams/messages/901/replies/1",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000011",
+      "observedAt": "2026-09-13T16:20:00Z",
+      "authorRef": "principal-release-approver",
+      "subjectRefs": [
+        "response-api-approved",
+        "escalation-api-merge"
+      ],
+      "revision": "sha256:6732d38eb8480fb15a1d42fd024b7903d05ad2a4a651f95d77d0648ccf5c49bd"
+    },
+    {
+      "id": "evidence-response-rejected",
+      "kind": "decision-response",
+      "sourceRef": "controlled://teams/messages/902/replies/1",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000012",
+      "observedAt": "2026-09-13T16:25:00Z",
+      "authorRef": "principal-release-approver",
+      "subjectRefs": [
+        "response-release-rejected",
+        "escalation-train-release"
+      ],
+      "revision": "sha256:52ca23d32eedc206b3673f5666234a2d6ef85c34f92372a3b67475a8ef417d09"
+    },
+    {
+      "id": "evidence-response-no-response",
+      "kind": "deadline-observation",
+      "sourceRef": "controlled://teams/messages/903/status/expired",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000013",
+      "observedAt": "2026-09-13T16:30:00Z",
+      "authorRef": "principal-approval-observer",
+      "subjectRefs": [
+        "response-risk-no-response",
+        "escalation-dependency-risk"
+      ],
+      "revision": "sha256:5329416b705e00bfd08b71b39cfd0b36df1f91b48756b1382f4408bf06181ca0"
+    },
+    {
+      "id": "evidence-api-review",
+      "kind": "review",
+      "sourceRef": "controlled://github/acme/api/reviews/41",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000014",
+      "observedAt": "2026-09-13T14:00:00Z",
+      "authorRef": "principal-reviewer",
+      "subjectRefs": [
+        "review-api-current",
+        "pr-api-41"
+      ],
+      "revision": "sha256:cef19af3652148a2f4256b1405b7e98504c68c7569f2e63a4b98473328bc73cb"
+    },
+    {
+      "id": "evidence-review-api-old",
+      "kind": "review",
+      "sourceRef": "controlled://github/acme/api/reviews/40",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000019",
+      "observedAt": "2026-09-10T10:00:00Z",
+      "authorRef": "principal-reviewer",
+      "subjectRefs": [
+        "review-api-old",
+        "pr-api-41"
+      ],
+      "revision": "sha256:b4f654748c930db1d35b2481311cce4a63725dc721d4d55d25e49ce0dc55573a"
+    },
+    {
+      "id": "evidence-review-sdk-current",
+      "kind": "review",
+      "sourceRef": "controlled://github/acme/sdk/reviews/18",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000020",
+      "observedAt": "2026-09-12T13:00:00Z",
+      "authorRef": "principal-reviewer",
+      "subjectRefs": [
+        "review-sdk-current",
+        "pr-sdk-18"
+      ],
+      "revision": "sha256:c05751a2a111c44cdd4f7b146a6ad6f64871fc3f911456d17f60f6d104e65f22"
+    },
+    {
+      "id": "evidence-review-cli-current",
+      "kind": "review",
+      "sourceRef": "controlled://github/acme/cli/reviews/9",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000021",
+      "observedAt": "2026-09-11T13:00:00Z",
+      "authorRef": "principal-reviewer",
+      "subjectRefs": [
+        "review-cli-current",
+        "pr-cli-9"
+      ],
+      "revision": "sha256:4d3ae5c3224d52f7846690071d4bec89d171ba2f48f01af9c69ece4f8b5438a8"
+    },
+    {
+      "id": "evidence-check-api-old",
+      "kind": "check",
+      "sourceRef": "controlled://github/acme/api/checks/410",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000025",
+      "observedAt": "2026-09-10T10:30:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "check-api-old",
+        "pr-api-41"
+      ],
+      "revision": "sha256:4eed1faf2056740de6c6da9b61046a1f852c85492e73a6cfa804f4abdb0eeab3"
+    },
+    {
+      "id": "evidence-check-api-current",
+      "kind": "check",
+      "sourceRef": "controlled://github/acme/api/checks/411",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000026",
+      "observedAt": "2026-09-13T14:30:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "check-api-current",
+        "pr-api-41"
+      ],
+      "revision": "sha256:8ece7ccd65bd5fa16d80d1dec4f98ae4bb191d67b960911a222b2cab1b82eecd"
+    },
+    {
+      "id": "evidence-check-sdk-current",
+      "kind": "check",
+      "sourceRef": "controlled://github/acme/sdk/checks/180",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000027",
+      "observedAt": "2026-09-12T14:00:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "check-sdk-current",
+        "pr-sdk-18"
+      ],
+      "revision": "sha256:560ebf03371c8844bbe6f1b69536d181853339137381548692957eaa3f73a080"
+    },
+    {
+      "id": "evidence-check-cli-current",
+      "kind": "check",
+      "sourceRef": "controlled://github/acme/cli/checks/90",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000028",
+      "observedAt": "2026-09-11T14:00:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "check-cli-current",
+        "pr-cli-9"
+      ],
+      "revision": "sha256:2d711eaed0574a3482e1682523674c93a9eccfe072e855e4230774059424c8a5"
+    },
+    {
+      "id": "evidence-api-build",
+      "kind": "build",
+      "sourceRef": "controlled://ci/acme/api/runs/411",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000015",
+      "observedAt": "2026-09-13T14:40:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "build-api-new",
+        "pr-api-41"
+      ],
+      "revision": "sha256:6d3e90c89060dd0a01676a55090b01624667f459f8753e8d692900f9e5a70d22"
+    },
+    {
+      "id": "evidence-build-api-old",
+      "kind": "build",
+      "sourceRef": "controlled://ci/acme/api/runs/410",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000022",
+      "observedAt": "2026-09-10T10:40:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "build-api-old",
+        "pr-api-41"
+      ],
+      "revision": "sha256:31cc577e120031a8b85607d5145271fe998204e3d7120e536f8d3a09d2509cb3"
+    },
+    {
+      "id": "evidence-build-sdk",
+      "kind": "build",
+      "sourceRef": "controlled://ci/acme/sdk/runs/180",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000023",
+      "observedAt": "2026-09-12T14:05:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "build-sdk",
+        "pr-sdk-18"
+      ],
+      "revision": "sha256:f4e8ab6019d509506e87361254fa6f26419c3833e732f91240b3d9eee1eec44d"
+    },
+    {
+      "id": "evidence-build-cli",
+      "kind": "build",
+      "sourceRef": "controlled://ci/acme/cli/runs/90",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000024",
+      "observedAt": "2026-09-11T14:05:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "build-cli",
+        "pr-cli-9"
+      ],
+      "revision": "sha256:868214ebbd3611fa5f261683de5994d8b4b5350a0129f8f580606c3f2c37ed79"
+    },
+    {
+      "id": "evidence-release",
+      "kind": "release",
+      "sourceRef": "controlled://release/train-weekly/revision/8",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000016",
+      "observedAt": "2026-09-13T15:45:00Z",
+      "authorRef": "principal-source-system",
+      "subjectRefs": [
+        "train-weekly",
+        "repo-api",
+        "repo-sdk",
+        "repo-cli"
+      ],
+      "revision": "sha256:fe2cfa1afa355889444f1b3fd8a34cbcce7aee02bf14cd9fed8e20e88d5f11ae"
+    },
+    {
+      "id": "evidence-blocker-sdk-check-resolved",
+      "kind": "blocker",
+      "sourceRef": "controlled://github/acme/sdk/blockers/check-evidence/resolution",
+      "sourceRecordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000034",
+      "observedAt": "2026-09-13T14:10:00Z",
+      "authorRef": "principal-sdk-owner",
+      "subjectRefs": [
+        "blocker-sdk-check-resolved",
+        "pr-sdk-18",
+        "check-sdk-current",
+        "evidence-check-sdk-current"
+      ],
+      "revision": "sha256:9744cb1150cfc7c53d0937cda016b72149a22017c09b87756cfb9fd00bf97346"
+    }
+  ],
+  "delta": {
+    "predecessorCheckpointRef": "checkpoint-weekly-2026-09-06",
+    "currentCheckpointRef": "checkpoint-weekly-2026-09-13",
+    "entries": [
+      {
+        "id": "delta-pr-api",
+        "entityRef": "pr-api-41",
+        "kind": "updated",
+        "beforeRevision": "sha256:9985757185ed91c1a10b3c6d7536fce6a5f547dd58ba2bb6bde7137cb498335c",
+        "afterRevision": "sha256:790f0d8c31fb062bdf692e2d46967ffc49fba35e436b445cf1aa291230b8c548"
+      },
+      {
+        "id": "delta-pr-cli",
+        "entityRef": "pr-cli-9",
+        "kind": "merged",
+        "beforeRevision": "sha256:039802d04661e35136c109c9a6d6d2f110db2ef36eedc2608b6e618249bd8e42",
+        "afterRevision": "sha256:c48ebc4fd016b388731c91f9b5350bcb69056089c967d4036f88e1f8dce8f451"
+      },
+      {
+        "id": "delta-pr-sdk",
+        "entityRef": "pr-sdk-18",
+        "kind": "updated",
+        "beforeRevision": "sha256:a421ef9879d6b3b68501c4f315a5318776dc922b112d240cc44de0acfe40350d",
+        "afterRevision": "sha256:a90ce0e1e270e3ca3b9250845cdae3c8335b392f41df42ad83b764cfc8334027"
+      },
+      {
+        "id": "delta-review-api-old",
+        "entityRef": "review-api-old",
+        "kind": "review-changed",
+        "beforeRevision": "sha256:980f6b576177c04767fb198f0b603080715fc95cf0d6a0a85b7fe0e9f8cd5b75",
+        "afterRevision": "sha256:b4f654748c930db1d35b2481311cce4a63725dc721d4d55d25e49ce0dc55573a"
+      },
+      {
+        "id": "delta-review-api-current",
+        "entityRef": "review-api-current",
+        "kind": "opened",
+        "beforeRevision": null,
+        "afterRevision": "sha256:cef19af3652148a2f4256b1405b7e98504c68c7569f2e63a4b98473328bc73cb"
+      },
+      {
+        "id": "delta-check-api-old",
+        "entityRef": "check-api-old",
+        "kind": "check-changed",
+        "beforeRevision": "sha256:afa97f202019cb070c9b0648acde5e5a52738d9838ea7764bb1700d205f4ab7c",
+        "afterRevision": "sha256:4eed1faf2056740de6c6da9b61046a1f852c85492e73a6cfa804f4abdb0eeab3"
+      },
+      {
+        "id": "delta-check-api-current",
+        "entityRef": "check-api-current",
+        "kind": "opened",
+        "beforeRevision": null,
+        "afterRevision": "sha256:8ece7ccd65bd5fa16d80d1dec4f98ae4bb191d67b960911a222b2cab1b82eecd"
+      },
+      {
+        "id": "delta-check-sdk-current",
+        "entityRef": "check-sdk-current",
+        "kind": "check-changed",
+        "beforeRevision": "sha256:5000000000000000000000000000000000000000000000000000000000000001",
+        "afterRevision": "sha256:560ebf03371c8844bbe6f1b69536d181853339137381548692957eaa3f73a080"
+      },
+      {
+        "id": "delta-build-api-new",
+        "entityRef": "build-api-new",
+        "kind": "opened",
+        "beforeRevision": null,
+        "afterRevision": "sha256:6d3e90c89060dd0a01676a55090b01624667f459f8753e8d692900f9e5a70d22"
+      },
+      {
+        "id": "delta-train-weekly",
+        "entityRef": "train-weekly",
+        "kind": "release-changed",
+        "beforeRevision": "sha256:a67269fa24c212ec91abee377d41286171f3e7062a57aa3f493634f3cb24b853",
+        "afterRevision": "sha256:fe2cfa1afa355889444f1b3fd8a34cbcce7aee02bf14cd9fed8e20e88d5f11ae"
+      }
+    ],
+    "unchangedRefs": [
+      "repo-api",
+      "repo-sdk",
+      "repo-cli",
+      "review-sdk-current",
+      "review-cli-current",
+      "check-cli-current",
+      "build-api-old",
+      "build-sdk",
+      "build-cli"
+    ],
+    "supersededRefs": [
+      "sha256:bcb787025d416b0fef83d7956fb0c64ea01ca98dd3486e1220c7b6a440ad3c59",
+      "sha256:c2c028f83f8c5309de3a5effaa65752f24ee556804cfacd8f437802c5a836cd5",
+      "sha256:392a37023b62555ec01ffaa9feb2993c92a97413ad443262b36e710a12b928d4",
+      "sha256:7d2fe6e4c5463a5d060b9f97ed4258374e908b2364f67609e4bcdc5666d580ba",
+      "sha256:c8ba5924806185107d17766156487c1a1d6a3e707f205275fbf4644e73349c72",
+      "sha256:79e79ff56e00f5666a16a3e90daa2a4f33737f68bbcbff70965342a7d6b78666",
+      "sha256:2d2e87da146ccb2dd6bce3b1566a5c70cfa5b3f27138176b4dde06b36c1bfd57"
+    ]
+  },
+  "blockers": [
+    {
+      "id": "blocker-api-review",
+      "category": "changes-requested-review",
+      "subjectRefs": [
+        "pr-api-41",
+        "review-api-current"
+      ],
+      "ownerRef": "principal-api-owner",
+      "evidenceRefs": [
+        "evidence-api-review"
+      ],
+      "state": "open",
+      "resolutionEvidenceRef": null
+    },
+    {
+      "id": "blocker-api-build",
+      "category": "failed-build",
+      "subjectRefs": [
+        "pr-api-41",
+        "build-api-new"
+      ],
+      "ownerRef": "principal-api-owner",
+      "evidenceRefs": [
+        "evidence-api-build"
+      ],
+      "state": "open",
+      "resolutionEvidenceRef": null
+    },
+    {
+      "id": "blocker-api-artifact-missing",
+      "category": "missing-artifact",
+      "subjectRefs": [
+        "pr-api-41",
+        "artifact-api-missing"
+      ],
+      "ownerRef": "principal-api-owner",
+      "evidenceRefs": [
+        "evidence-artifact-api-missing"
+      ],
+      "state": "open",
+      "resolutionEvidenceRef": null
+    },
+    {
+      "id": "blocker-api-artifact-failed",
+      "category": "failed-artifact",
+      "subjectRefs": [
+        "pr-api-41",
+        "artifact-api-failed"
+      ],
+      "ownerRef": "principal-api-owner",
+      "evidenceRefs": [
+        "evidence-artifact-api-failed"
+      ],
+      "state": "open",
+      "resolutionEvidenceRef": null
+    },
+    {
+      "id": "blocker-dependency",
+      "category": "cross-repository-ordering",
+      "subjectRefs": [
+        "dependency-api-before-sdk",
+        "repo-sdk",
+        "train-weekly"
+      ],
+      "ownerRef": "principal-portfolio-custodian",
+      "evidenceRefs": [
+        "evidence-dependency"
+      ],
+      "state": "open",
+      "resolutionEvidenceRef": null
+    },
+    {
+      "id": "blocker-release-partial",
+      "category": "partial-release",
+      "subjectRefs": [
+        "train-weekly",
+        "repo-api"
+      ],
+      "ownerRef": "principal-api-owner",
+      "evidenceRefs": [
+        "evidence-release"
+      ],
+      "state": "open",
+      "resolutionEvidenceRef": null
+    },
+    {
+      "id": "blocker-train-partial",
+      "category": "partial-release",
+      "subjectRefs": [
+        "train-weekly"
+      ],
+      "ownerRef": "principal-portfolio-custodian",
+      "evidenceRefs": [
+        "evidence-release"
+      ],
+      "state": "open",
+      "resolutionEvidenceRef": null
+    },
+    {
+      "id": "blocker-cli-rollback",
+      "category": "rolled-back-release",
+      "subjectRefs": [
+        "train-weekly",
+        "repo-cli"
+      ],
+      "ownerRef": "principal-cli-owner",
+      "evidenceRefs": [
+        "evidence-release"
+      ],
+      "state": "open",
+      "resolutionEvidenceRef": null
+    },
+    {
+      "id": "blocker-approval-rejected",
+      "category": "approval-rejected",
+      "subjectRefs": [
+        "escalation-train-release",
+        "train-weekly",
+        "response-release-rejected"
+      ],
+      "ownerRef": "principal-release-approver",
+      "evidenceRefs": [
+        "evidence-response-rejected"
+      ],
+      "state": "open",
+      "resolutionEvidenceRef": null
+    },
+    {
+      "id": "blocker-approval-no-response",
+      "category": "approval-no-response",
+      "subjectRefs": [
+        "escalation-dependency-risk",
+        "dependency-api-before-sdk",
+        "response-risk-no-response"
+      ],
+      "ownerRef": "principal-risk-approver",
+      "evidenceRefs": [
+        "evidence-response-no-response"
+      ],
+      "state": "open",
+      "resolutionEvidenceRef": null
+    },
+    {
+      "id": "blocker-sdk-check-resolved",
+      "category": "missing-evidence",
+      "subjectRefs": [
+        "pr-sdk-18",
+        "check-sdk-current"
+      ],
+      "ownerRef": "principal-sdk-owner",
+      "evidenceRefs": [
+        "evidence-check-sdk-current"
+      ],
+      "state": "resolved",
+      "resolutionEvidenceRef": "evidence-blocker-sdk-check-resolved",
+      "missingEvidenceHistory": {
+        "checkpointRef": "checkpoint-weekly-2026-09-06",
+        "subjectRef": "check-sdk-current",
+        "priorRevision": "sha256:5000000000000000000000000000000000000000000000000000000000000001",
+        "priorState": "pending",
+        "closureEvidenceRef": "evidence-check-sdk-current"
+      }
+    }
+  ],
+  "readiness": {
+    "portfolioState": "blocked",
+    "repositoryStates": [
+      {
+        "subjectRef": "repo-api",
+        "state": "blocked",
+        "blockerRefs": [
+          "blocker-api-review",
+          "blocker-api-build",
+          "blocker-api-artifact-missing",
+          "blocker-api-artifact-failed",
+          "blocker-release-partial",
+          "blocker-train-partial"
+        ]
+      },
+      {
+        "subjectRef": "repo-sdk",
+        "state": "blocked",
+        "blockerRefs": [
+          "blocker-dependency",
+          "blocker-approval-no-response",
+          "blocker-train-partial"
+        ]
+      },
+      {
+        "subjectRef": "repo-cli",
+        "state": "blocked",
+        "blockerRefs": [
+          "blocker-cli-rollback",
+          "blocker-train-partial"
+        ]
+      }
+    ],
+    "releaseTrainStates": [
+      {
+        "subjectRef": "train-weekly",
+        "state": "blocked",
+        "blockerRefs": [
+          "blocker-api-review",
+          "blocker-api-build",
+          "blocker-api-artifact-missing",
+          "blocker-api-artifact-failed",
+          "blocker-dependency",
+          "blocker-release-partial",
+          "blocker-train-partial",
+          "blocker-cli-rollback",
+          "blocker-approval-rejected",
+          "blocker-approval-no-response"
+        ]
+      }
+    ],
+    "blockerRefs": [
+      "blocker-api-review",
+      "blocker-api-build",
+      "blocker-api-artifact-missing",
+      "blocker-api-artifact-failed",
+      "blocker-dependency",
+      "blocker-release-partial",
+      "blocker-train-partial",
+      "blocker-cli-rollback",
+      "blocker-approval-rejected",
+      "blocker-approval-no-response"
+    ]
+  },
+  "handoff": {
+    "id": "handoff-weekly-2026-09-13",
+    "state": "blocked",
+    "nextOwnerRef": "principal-portfolio-custodian",
+    "checkpointRef": "checkpoint-weekly-2026-09-13",
+    "checkpointDigest": "sha256:3a5c3918012e1fc105f15bcd5afe89881cf4497ed645dc7ca2e510a2c7430b8b",
+    "summary": "The portfolio remains blocked by stale review evidence, a failed build, dependency ordering, a partial train, a rolled-back entry, a rejection, and a no-response observation. The three approval requests are represented only by policy authorization, dispatch receipts, and independently authored response evidence.",
+    "codeChangeClaim": "not-claimed",
+    "branchChangeClaim": "not-claimed",
+    "mergeClaim": "not-claimed",
+    "buildActionClaim": "not-claimed",
+    "releaseClaim": "not-claimed",
+    "settingsClaim": "not-claimed",
+    "riskAcceptanceClaim": "not-claimed",
+    "approvalClaim": "not-claimed",
+    "externalCommunicationClaim": "dispatch-receipts-only"
+  }
+}

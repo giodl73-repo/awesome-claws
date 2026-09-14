@@ -2695,6 +2695,33 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "repository-operations-manager",
+      "acceptedRequest": "Supervise these twelve repositories for the weekly release train. Reconcile open PRs, required reviews, CI and release state, identify cross-repository blockers, and escalate only the approvals named in our supplied routing policy. Do not merge, rerun, publish, deploy, waive, or approve anything.",
+      "requiredEvidence": [
+        "Exact approved repository roster with roster id and revision, canonical repository identities, default branches, owner teams, repository policies, completeness root, and accountable custodian",
+        "Exact predecessor portfolio checkpoint with checkpoint id, roster revision, source snapshot roots, creation time, and custodian, or an explicit first-run declaration",
+        "Current pull-request, review, check-result, check-suite, workflow-run, artifact, deployment, tag, and release snapshots with immutable ids, revisions, digests, timestamps, source provenance, and completeness roots",
+        "Cross-repository dependency and release-train definitions with required ordering, compatibility, and owner policy",
+        "Response-authority matrix naming each decision category's eligible human responder and each deadline category's approved trusted system observer, with exact scopes, separation from this Claw, escalation routes, deadlines, expiry, and reminder/idempotency policy",
+        "Caller-supplied trusted asOf, bounded review window, private destination, and run identity"
+      ],
+      "authorityBoundaries": [
+        "Do not author code, change branches, merge or close pull requests, rerun or cancel builds, dismiss reviews, modify protections or settings, tag, publish, deploy, or delete anything",
+        "Do not infer approval from silence, role, prior approval, a passing check, or a message reaction",
+        "Do not mark a pull request, build, repository, or release ready when required evidence is missing, stale, superseded, failed, or bound to another head revision",
+        "Do not contact or notify anyone outside an owner-approved escalation route, audience, category, and idempotency policy",
+        "Do not accept risk, waive checks, approve changes, commit delivery dates, or speak for repository, security, release, or engineering owners"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/repository-operations-manager-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

@@ -89,7 +89,8 @@
       "financial-account-reconciliation-coordinator",
       "contract-obligation-tracker",
       "backup-restore-verification-coordinator",
-      "tls-certificate-rotation-verification-coordinator"
+      "tls-certificate-rotation-verification-coordinator",
+      "repository-operations-manager"
     ]
   },
   "visualCases": [
