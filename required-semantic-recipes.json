@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 109,
-    "coveredCount": 109,
-    "recipeCount": 295,
-    "findingCodeCount": 333
+    "validatorCount": 110,
+    "coveredCount": 110,
+    "recipeCount": 298,
+    "findingCodeCount": 352
   },
   "entries": [
     {
@@ -4636,6 +4636,67 @@
             "invalid_blocker",
             "invalid_plan_digest",
             "invalid_rotation_request"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repository-operations-manager",
+      "recipes": [
+        {
+          "id": "semantic-invalid-checkpoint-digest-1",
+          "operator": "replace",
+          "path": [
+            "artifactId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_checkpoint_digest"
+          ]
+        },
+        {
+          "id": "semantic-invalid-checkpoint-digest-2",
+          "operator": "replace",
+          "path": [
+            "run",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_checkpoint_digest",
+            "invalid_validation_context"
+          ]
+        },
+        {
+          "id": "semantic-invalid-blocker-3",
+          "operator": "replace",
+          "path": [
+            "run",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_blocker",
+            "invalid_build_artifact_provenance",
+            "invalid_check_chronology",
+            "invalid_checkpoint_digest",
+            "invalid_cross_repository_dependency",
+            "invalid_escalation_dispatch",
+            "invalid_escalation_route",
+            "invalid_escalation_state",
+            "invalid_evidence_binding",
+            "invalid_evidence_record",
+            "invalid_head_bound_build",
+            "invalid_head_bound_check",
+            "invalid_head_bound_review",
+            "invalid_independent_response",
+            "invalid_release_entry",
+            "invalid_release_snapshot",
+            "invalid_review_window",
+            "invalid_roster_completeness",
+            "invalid_source_snapshot",
+            "invalid_validation_context",
+            "missing_required_blocker"
           ]
         }
       ]

@@ -4,6 +4,7 @@ import { backupRestoreVerificationFindings } from "./backup-restore-verification
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
 import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
+import { repositoryOperationsFindings } from "./repository-operations-manager.mjs";
 import { tlsCertificateRotationVerificationFindings } from "./tls-certificate-rotation-verification-coordinator.mjs";
 
 export function hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) {
@@ -52282,6 +52283,7 @@ const validators = {
   "quality-assurance-lead": qualityAssuranceReleaseFindings,
   "recruiting-coordinator": recruitingFindings,
   "release-coordinator": releaseReadinessFindings,
+  "repository-operations-manager": repositoryOperationsFindings,
   "records-retention-disposition-coordinator": retentionDispositionFindings,
   "infrastructure-drift-reconciliation-coordinator": infrastructureDriftFindings,
   "restaurant-venue-scout": restaurantVenueFindings,
@@ -52324,6 +52326,9 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   }),
   "tls-certificate-rotation-verification-coordinator": Object.freeze({
     asOf: "2026-09-05T00:00:00Z",
+  }),
+  "repository-operations-manager": Object.freeze({
+    asOf: "2026-09-13T17:00:00Z",
   }),
 });
 
