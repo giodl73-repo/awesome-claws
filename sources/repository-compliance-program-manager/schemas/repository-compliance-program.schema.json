@@ -1,0 +1,878 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/repository-compliance-program.schema.json",
+  "title": "Repository Compliance Program Manager checkpoint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactId",
+    "run",
+    "snapshots",
+    "principals",
+    "controls",
+    "slaRules",
+    "assets",
+    "signals",
+    "canonicalFindings",
+    "obligations",
+    "issuePolicy",
+    "issues",
+    "issueMutations",
+    "issueReceipts",
+    "extensions",
+    "exceptions",
+    "remediationEvidence",
+    "verifications",
+    "nonQualifyingClosureSignals",
+    "escalationPolicy",
+    "escalations",
+    "predecessor",
+    "delta",
+    "blockers",
+    "coverage",
+    "evidence",
+    "authority",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "awesomeClaws.repositoryComplianceProgram.v1"},
+    "artifactId": {"$ref": "#/$defs/id"},
+    "run": {"$ref": "#/$defs/run"},
+    "snapshots": {"type": "array", "minItems": 7, "items": {"$ref": "#/$defs/snapshot"}},
+    "principals": {"type": "array", "minItems": 8, "items": {"$ref": "#/$defs/principal"}},
+    "controls": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/control"}},
+    "slaRules": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/slaRule"}},
+    "assets": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/asset"}},
+    "signals": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/signal"}},
+    "canonicalFindings": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/canonicalFinding"}},
+    "obligations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/obligation"}},
+    "issuePolicy": {"$ref": "#/$defs/issuePolicy"},
+    "issues": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/issue"}},
+    "issueMutations": {"type": "array", "items": {"$ref": "#/$defs/issueMutation"}},
+    "issueReceipts": {"type": "array", "items": {"$ref": "#/$defs/issueReceipt"}},
+    "extensions": {"type": "array", "items": {"$ref": "#/$defs/scopedAuthority"}},
+    "exceptions": {"type": "array", "items": {"$ref": "#/$defs/scopedAuthority"}},
+    "remediationEvidence": {"type": "array", "items": {"$ref": "#/$defs/remediation"}},
+    "verifications": {"type": "array", "items": {"$ref": "#/$defs/verification"}},
+    "nonQualifyingClosureSignals": {"type": "array", "items": {"$ref": "#/$defs/nonQualifying"}},
+    "escalationPolicy": {"$ref": "#/$defs/escalationPolicy"},
+    "escalations": {"type": "array", "items": {"$ref": "#/$defs/escalation"}},
+    "predecessor": {"$ref": "#/$defs/predecessor"},
+    "delta": {"$ref": "#/$defs/delta"},
+    "blockers": {"type": "array", "items": {"$ref": "#/$defs/blocker"}},
+    "coverage": {"$ref": "#/$defs/coverage"},
+    "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
+    "authority": {"$ref": "#/$defs/authority"},
+    "handoff": {"$ref": "#/$defs/handoff"}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"},
+    "idList": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "nonEmptyString": {"type": "string", "minLength": 1},
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "nullableId": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/id"}]},
+    "nullableDigest": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/digest"}]},
+    "nullableTimestamp": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/timestamp"}]},
+    "nullableString": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/nonEmptyString"}]},
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "programRef",
+        "programRevision",
+        "reviewPeriod",
+        "asOf",
+        "controlCatalogRef",
+        "controlCatalogVersion",
+        "slaPolicyRef",
+        "slaPolicyRevision",
+        "predecessorCheckpointRef",
+        "currentCheckpointRef",
+        "currentCheckpointDigest",
+        "sourceSnapshotRoots",
+        "issueDestinationRef",
+        "custodianRef"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "programRef": {"$ref": "#/$defs/id"},
+        "programRevision": {"$ref": "#/$defs/nonEmptyString"},
+        "reviewPeriod": {"$ref": "#/$defs/nonEmptyString"},
+        "asOf": {"$ref": "#/$defs/timestamp"},
+        "controlCatalogRef": {"$ref": "#/$defs/id"},
+        "controlCatalogVersion": {"$ref": "#/$defs/nonEmptyString"},
+        "slaPolicyRef": {"$ref": "#/$defs/id"},
+        "slaPolicyRevision": {"$ref": "#/$defs/nonEmptyString"},
+        "predecessorCheckpointRef": {"$ref": "#/$defs/id"},
+        "currentCheckpointRef": {"$ref": "#/$defs/id"},
+        "currentCheckpointDigest": {"$ref": "#/$defs/digest"},
+        "sourceSnapshotRoots": {
+          "type": "array",
+          "minItems": 7,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/digest"}
+        },
+        "issueDestinationRef": {"$ref": "#/$defs/id"},
+        "custodianRef": {"$ref": "#/$defs/id"}
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "revision",
+        "capturedAt",
+        "sourceUri",
+        "sourceRecordDigest",
+        "complete",
+        "indexRefs",
+        "completenessRoot"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {
+          "enum": [
+            "program",
+            "control-catalog",
+            "sla-policy",
+            "signal",
+            "asset-owner-graph",
+            "issue-tracker",
+            "predecessor-checkpoint"
+          ]
+        },
+        "revision": {"$ref": "#/$defs/nonEmptyString"},
+        "capturedAt": {"$ref": "#/$defs/timestamp"},
+        "sourceUri": {"type": "string", "pattern": "^controlled://.+"},
+        "sourceRecordDigest": {"$ref": "#/$defs/digest"},
+        "complete": {"const": true},
+        "indexRefs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "completenessRoot": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "role", "authorityEvidenceRef"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["human", "system", "claw"]},
+        "role": {"$ref": "#/$defs/nonEmptyString"},
+        "authorityEvidenceRef": {"$ref": "#/$defs/id"}
+      }
+    },
+    "control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "catalogRef",
+        "catalogVersion",
+        "controlKey",
+        "applicability",
+        "slaRuleRef",
+        "signalTypes",
+        "sourceRef",
+        "revision"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "catalogRef": {"$ref": "#/$defs/id"},
+        "catalogVersion": {"$ref": "#/$defs/nonEmptyString"},
+        "controlKey": {"$ref": "#/$defs/nonEmptyString"},
+        "applicability": {"const": "source-assigned"},
+        "slaRuleRef": {"$ref": "#/$defs/id"},
+        "signalTypes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonEmptyString"}},
+        "sourceRef": {"$ref": "#/$defs/id"},
+        "revision": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "slaRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "revision", "priority", "durationHours", "nearWindowHours", "sourceRef"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "revision": {"$ref": "#/$defs/nonEmptyString"},
+        "priority": {"enum": ["low", "medium", "high", "critical"]},
+        "durationHours": {"type": "integer", "minimum": 1},
+        "nearWindowHours": {"type": "integer", "minimum": 1},
+        "sourceRef": {"$ref": "#/$defs/id"}
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "canonicalName",
+        "repositoryDestinationRef",
+        "serviceRef",
+        "teamRef",
+        "ownerRef",
+        "sourceRef",
+        "revision"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["repository", "service"]},
+        "canonicalName": {"$ref": "#/$defs/nonEmptyString"},
+        "repositoryDestinationRef": {"$ref": "#/$defs/id"},
+        "serviceRef": {"$ref": "#/$defs/id"},
+        "teamRef": {"$ref": "#/$defs/id"},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "sourceRef": {"$ref": "#/$defs/id"},
+        "revision": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "sourceIdentity",
+        "sourceRef",
+        "signalType",
+        "controlRef",
+        "assetRef",
+        "findingRevision",
+        "canonicalFindingKey",
+        "sourceSeverity",
+        "sourceApplicability",
+        "sourceStatus",
+        "observedAt",
+        "evidenceRef",
+        "revision"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "sourceIdentity": {"$ref": "#/$defs/nonEmptyString"},
+        "sourceRef": {"$ref": "#/$defs/id"},
+        "signalType": {"$ref": "#/$defs/nonEmptyString"},
+        "controlRef": {"$ref": "#/$defs/id"},
+        "assetRef": {"$ref": "#/$defs/id"},
+        "findingRevision": {"$ref": "#/$defs/nonEmptyString"},
+        "canonicalFindingKey": {"$ref": "#/$defs/nonEmptyString"},
+        "sourceSeverity": {"$ref": "#/$defs/nonEmptyString"},
+        "sourceApplicability": {"$ref": "#/$defs/nonEmptyString"},
+        "sourceStatus": {"$ref": "#/$defs/nonEmptyString"},
+        "observedAt": {"$ref": "#/$defs/timestamp"},
+        "evidenceRef": {"$ref": "#/$defs/id"},
+        "revision": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "canonicalFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "canonicalFindingKey",
+        "controlRef",
+        "controlRevision",
+        "assetRef",
+        "assetRevision",
+        "findingRevision",
+        "sourceSignalRefs",
+        "state",
+        "revision"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "canonicalFindingKey": {"$ref": "#/$defs/nonEmptyString"},
+        "controlRef": {"$ref": "#/$defs/id"},
+        "controlRevision": {"$ref": "#/$defs/digest"},
+        "assetRef": {"$ref": "#/$defs/id"},
+        "assetRevision": {"$ref": "#/$defs/digest"},
+        "findingRevision": {"$ref": "#/$defs/nonEmptyString"},
+        "sourceSignalRefs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "state": {"enum": ["open", "superseded"]},
+        "revision": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "obligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "obligationKey",
+        "canonicalFindingRef",
+        "controlRef",
+        "controlRevision",
+        "assetRef",
+        "assetRevision",
+        "findingRevision",
+        "ownerRef",
+        "teamRef",
+        "sourcePriority",
+        "openedAt",
+        "dueAt",
+        "etaAt",
+        "slaState",
+        "state",
+        "issueRef",
+        "extensionRef",
+        "exceptionRef",
+        "remediationEvidenceRef",
+        "verificationRef",
+        "reopenOfObligationRef",
+        "reopenReason",
+        "blockerRefs",
+        "revision"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "obligationKey": {"$ref": "#/$defs/digest"},
+        "canonicalFindingRef": {"$ref": "#/$defs/id"},
+        "controlRef": {"$ref": "#/$defs/id"},
+        "controlRevision": {"$ref": "#/$defs/digest"},
+        "assetRef": {"$ref": "#/$defs/id"},
+        "assetRevision": {"$ref": "#/$defs/digest"},
+        "findingRevision": {"$ref": "#/$defs/nonEmptyString"},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "teamRef": {"$ref": "#/$defs/id"},
+        "sourcePriority": {"enum": ["low", "medium", "high", "critical"]},
+        "openedAt": {"$ref": "#/$defs/timestamp"},
+        "dueAt": {"$ref": "#/$defs/timestamp"},
+        "etaAt": {"$ref": "#/$defs/nullableTimestamp"},
+        "slaState": {"enum": ["within", "near", "out"]},
+        "state": {"enum": ["open", "blocked", "exception-active", "verified", "reopened"]},
+        "issueRef": {"$ref": "#/$defs/id"},
+        "extensionRef": {"$ref": "#/$defs/nullableId"},
+        "exceptionRef": {"$ref": "#/$defs/nullableId"},
+        "remediationEvidenceRef": {"$ref": "#/$defs/nullableId"},
+        "verificationRef": {"$ref": "#/$defs/nullableId"},
+        "reopenOfObligationRef": {"$ref": "#/$defs/nullableId"},
+        "reopenReason": {
+          "oneOf": [
+            {"type": "null"},
+            {"enum": ["control-revision", "asset-revision", "finding-revision"]}
+          ]
+        },
+        "blockerRefs": {"$ref": "#/$defs/idList"},
+        "revision": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "issuePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "programRef",
+        "revision",
+        "capability",
+        "dependencyRef",
+        "dependencyEndpoint",
+        "dependencyTransport",
+        "dependencyAuth",
+        "provenanceDigest",
+        "destinationRef",
+        "approvedRepositoryRefs",
+        "templateRef",
+        "mutableFieldAllowlist",
+        "allowedLabels",
+        "routeRef",
+        "allowedOperations",
+        "ownerAuthoredContentPolicy",
+        "dryRunRequired",
+        "conflictDetectionRequired",
+        "externalReceiptRequired",
+        "closeAllowed"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "programRef": {"$ref": "#/$defs/id"},
+        "revision": {"$ref": "#/$defs/nonEmptyString"},
+        "capability": {"const": "issue-tracker-create-update"},
+        "dependencyRef": {"const": "issue_tracker"},
+        "dependencyEndpoint": {"type": "string", "format": "uri", "pattern": "^https://"},
+        "dependencyTransport": {"const": "streamable-http"},
+        "dependencyAuth": {"const": "oauth"},
+        "provenanceDigest": {"$ref": "#/$defs/digest"},
+        "destinationRef": {"$ref": "#/$defs/id"},
+        "approvedRepositoryRefs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "templateRef": {"$ref": "#/$defs/id"},
+        "mutableFieldAllowlist": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["ownerRef", "etaAt", "dueAt", "slaState", "obligationState"]}
+        },
+        "allowedLabels": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonEmptyString"}},
+        "routeRef": {"$ref": "#/$defs/id"},
+        "allowedOperations": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {"enum": ["create", "update"]}
+        },
+        "ownerAuthoredContentPolicy": {"const": "preserve-or-block"},
+        "dryRunRequired": {"const": true},
+        "conflictDetectionRequired": {"const": true},
+        "externalReceiptRequired": {"const": true},
+        "closeAllowed": {"const": false}
+      }
+    },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "obligationRef",
+        "providerIssueId",
+        "url",
+        "destinationRef",
+        "templateRef",
+        "routeRef",
+        "labels",
+        "idempotencyKey",
+        "ownerContentDigest",
+        "revision",
+        "status"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "obligationRef": {"$ref": "#/$defs/id"},
+        "providerIssueId": {"$ref": "#/$defs/nonEmptyString"},
+        "url": {"type": "string", "format": "uri"},
+        "destinationRef": {"$ref": "#/$defs/id"},
+        "templateRef": {"$ref": "#/$defs/id"},
+        "routeRef": {"$ref": "#/$defs/id"},
+        "labels": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonEmptyString"}},
+        "idempotencyKey": {"$ref": "#/$defs/digest"},
+        "ownerContentDigest": {"$ref": "#/$defs/digest"},
+        "revision": {"$ref": "#/$defs/digest"},
+        "status": {"const": "open"}
+      }
+    },
+    "proposedValues": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "etaAt": {"$ref": "#/$defs/nullableTimestamp"},
+        "dueAt": {"$ref": "#/$defs/timestamp"},
+        "slaState": {"enum": ["within", "near", "out"]},
+        "obligationState": {"enum": ["open", "blocked", "exception-active", "verified", "reopened"]}
+      },
+      "minProperties": 1
+    },
+    "issueMutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "issueRef",
+        "obligationRef",
+        "obligationRevision",
+        "policyDigest",
+        "operation",
+        "idempotencyKey",
+        "destinationRef",
+        "templateRef",
+        "routeRef",
+        "labels",
+        "mutableFields",
+        "proposedValues",
+        "expectedIssueRevision",
+        "expectedOwnerContentDigest",
+        "previewDigest",
+        "conflictState",
+        "state",
+        "receiptRef"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "issueRef": {"$ref": "#/$defs/id"},
+        "obligationRef": {"$ref": "#/$defs/id"},
+        "obligationRevision": {"$ref": "#/$defs/digest"},
+        "policyDigest": {"$ref": "#/$defs/digest"},
+        "operation": {"enum": ["create", "update"]},
+        "idempotencyKey": {"$ref": "#/$defs/digest"},
+        "destinationRef": {"$ref": "#/$defs/id"},
+        "templateRef": {"$ref": "#/$defs/id"},
+        "routeRef": {"$ref": "#/$defs/id"},
+        "labels": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonEmptyString"}},
+        "mutableFields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["ownerRef", "etaAt", "dueAt", "slaState", "obligationState"]}
+        },
+        "proposedValues": {"$ref": "#/$defs/proposedValues"},
+        "expectedIssueRevision": {"$ref": "#/$defs/nullableDigest"},
+        "expectedOwnerContentDigest": {"$ref": "#/$defs/digest"},
+        "previewDigest": {"$ref": "#/$defs/digest"},
+        "conflictState": {"enum": ["none", "owner-content-conflict"]},
+        "state": {"enum": ["applied", "idempotent-replay", "blocked"]},
+        "receiptRef": {"$ref": "#/$defs/nullableId"}
+      }
+    },
+    "issueReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "mutationRef",
+        "issueRef",
+        "operation",
+        "idempotencyKey",
+        "providerRequestId",
+        "providerIssueId",
+        "beforeRevision",
+        "afterRevision",
+        "observedAt",
+        "external",
+        "replayed",
+        "priorReceiptRef",
+        "resultDigest"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "mutationRef": {"$ref": "#/$defs/id"},
+        "issueRef": {"$ref": "#/$defs/id"},
+        "operation": {"enum": ["create", "update"]},
+        "idempotencyKey": {"$ref": "#/$defs/digest"},
+        "providerRequestId": {"$ref": "#/$defs/nonEmptyString"},
+        "providerIssueId": {"$ref": "#/$defs/nonEmptyString"},
+        "beforeRevision": {"$ref": "#/$defs/nullableDigest"},
+        "afterRevision": {"$ref": "#/$defs/digest"},
+        "observedAt": {"$ref": "#/$defs/timestamp"},
+        "external": {"const": true},
+        "replayed": {"type": "boolean"},
+        "priorReceiptRef": {"$ref": "#/$defs/nullableId"},
+        "resultDigest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "scopedAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "obligationRef",
+        "controlRef",
+        "controlRevision",
+        "assetRef",
+        "assetRevision",
+        "issueRef",
+        "scopeDigest",
+        "authorityRef",
+        "approvedAt",
+        "expiresAt",
+        "state",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["extension", "exception"]},
+        "obligationRef": {"$ref": "#/$defs/id"},
+        "controlRef": {"$ref": "#/$defs/id"},
+        "controlRevision": {"$ref": "#/$defs/digest"},
+        "assetRef": {"$ref": "#/$defs/id"},
+        "assetRevision": {"$ref": "#/$defs/digest"},
+        "issueRef": {"$ref": "#/$defs/id"},
+        "scopeDigest": {"$ref": "#/$defs/digest"},
+        "authorityRef": {"$ref": "#/$defs/id"},
+        "approvedAt": {"$ref": "#/$defs/timestamp"},
+        "expiresAt": {"$ref": "#/$defs/timestamp"},
+        "state": {"const": "active"},
+        "evidenceRef": {"$ref": "#/$defs/id"}
+      }
+    },
+    "remediation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "obligationRef",
+        "controlRevision",
+        "assetRevision",
+        "issueRevision",
+        "remediationRevision",
+        "authorRef",
+        "authoredAt",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "obligationRef": {"$ref": "#/$defs/id"},
+        "controlRevision": {"$ref": "#/$defs/digest"},
+        "assetRevision": {"$ref": "#/$defs/digest"},
+        "issueRevision": {"$ref": "#/$defs/digest"},
+        "remediationRevision": {"$ref": "#/$defs/nonEmptyString"},
+        "authorRef": {"$ref": "#/$defs/id"},
+        "authoredAt": {"$ref": "#/$defs/timestamp"},
+        "evidenceRef": {"$ref": "#/$defs/id"}
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "obligationRef",
+        "obligationRevision",
+        "controlRevision",
+        "assetRevision",
+        "issueRevision",
+        "remediationEvidenceRef",
+        "authorRef",
+        "verifiedAt",
+        "outcome",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "obligationRef": {"$ref": "#/$defs/id"},
+        "obligationRevision": {"$ref": "#/$defs/digest"},
+        "controlRevision": {"$ref": "#/$defs/digest"},
+        "assetRevision": {"$ref": "#/$defs/digest"},
+        "issueRevision": {"$ref": "#/$defs/digest"},
+        "remediationEvidenceRef": {"$ref": "#/$defs/id"},
+        "authorRef": {"$ref": "#/$defs/id"},
+        "verifiedAt": {"$ref": "#/$defs/timestamp"},
+        "outcome": {"const": "verified"},
+        "evidenceRef": {"$ref": "#/$defs/id"}
+      }
+    },
+    "nonQualifying": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "obligationRef", "observedAt", "evidenceRef", "closureEffect"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["pull-request-merge", "passing-check", "scanner-status", "incident-recovery"]},
+        "obligationRef": {"$ref": "#/$defs/id"},
+        "observedAt": {"$ref": "#/$defs/timestamp"},
+        "evidenceRef": {"$ref": "#/$defs/id"},
+        "closureEffect": {"const": "none"}
+      }
+    },
+    "escalationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "revision", "routes", "sourceRef"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "revision": {"$ref": "#/$defs/nonEmptyString"},
+        "routes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["missing-eta", "priority", "near-sla", "out-of-sla"],
+          "properties": {
+            "missing-eta": {"$ref": "#/$defs/id"},
+            "priority": {"$ref": "#/$defs/id"},
+            "near-sla": {"$ref": "#/$defs/id"},
+            "out-of-sla": {"$ref": "#/$defs/id"}
+          }
+        },
+        "sourceRef": {"$ref": "#/$defs/id"}
+      }
+    },
+    "escalation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "obligationRef",
+        "controlRef",
+        "controlRevision",
+        "assetRef",
+        "assetRevision",
+        "issueRef",
+        "scopeDigest",
+        "category",
+        "routeRef",
+        "dedupeKey",
+        "state",
+        "approvalEffect"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "obligationRef": {"$ref": "#/$defs/id"},
+        "controlRef": {"$ref": "#/$defs/id"},
+        "controlRevision": {"$ref": "#/$defs/digest"},
+        "assetRef": {"$ref": "#/$defs/id"},
+        "assetRevision": {"$ref": "#/$defs/digest"},
+        "issueRef": {"$ref": "#/$defs/id"},
+        "scopeDigest": {"$ref": "#/$defs/digest"},
+        "category": {"enum": ["missing-eta", "priority", "near-sla", "out-of-sla"]},
+        "routeRef": {"$ref": "#/$defs/id"},
+        "dedupeKey": {"$ref": "#/$defs/digest"},
+        "state": {"enum": ["queued", "dispatched"]},
+        "approvalEffect": {"const": "none"}
+      }
+    },
+    "predecessorObligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["obligationRef", "obligationKey", "controlRef", "assetRef", "revision", "state"],
+      "properties": {
+        "obligationRef": {"$ref": "#/$defs/id"},
+        "obligationKey": {"$ref": "#/$defs/digest"},
+        "controlRef": {"$ref": "#/$defs/id"},
+        "assetRef": {"$ref": "#/$defs/id"},
+        "revision": {"$ref": "#/$defs/digest"},
+        "state": {"enum": ["open", "blocked", "exception-active", "verified", "reopened"]}
+      }
+    },
+    "predecessor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpointId", "checkpointDigest", "createdAt", "custodianRef", "obligations"],
+      "properties": {
+        "checkpointId": {"$ref": "#/$defs/id"},
+        "checkpointDigest": {"$ref": "#/$defs/digest"},
+        "createdAt": {"$ref": "#/$defs/timestamp"},
+        "custodianRef": {"$ref": "#/$defs/id"},
+        "obligations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/predecessorObligation"}}
+      }
+    },
+    "deltaEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "obligationRef", "kind", "beforeRevision", "afterRevision"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "obligationRef": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["opened", "changed", "verified", "reopened"]},
+        "beforeRevision": {"$ref": "#/$defs/nullableDigest"},
+        "afterRevision": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "delta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["predecessorCheckpointRef", "entries", "unchangedRefs"],
+      "properties": {
+        "predecessorCheckpointRef": {"$ref": "#/$defs/id"},
+        "entries": {"type": "array", "items": {"$ref": "#/$defs/deltaEntry"}},
+        "unchangedRefs": {"$ref": "#/$defs/idList"}
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "category", "subjectRefs", "ownerRef", "state", "evidenceRefs"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "category": {
+          "enum": [
+            "missing-owner",
+            "ambiguous-owner",
+            "owner-content-conflict",
+            "missing-evidence",
+            "unapproved-destination",
+            "expired-authority"
+          ]
+        },
+        "subjectRefs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "state": {"enum": ["open", "resolved"]},
+        "evidenceRefs": {"$ref": "#/$defs/idList"}
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshotRefs",
+        "controlRefs",
+        "assetRefs",
+        "signalRefs",
+        "canonicalFindingRefs",
+        "obligationRefs",
+        "issueRefs"
+      ],
+      "properties": {
+        "snapshotRefs": {"$ref": "#/$defs/idList"},
+        "controlRefs": {"$ref": "#/$defs/idList"},
+        "assetRefs": {"$ref": "#/$defs/idList"},
+        "signalRefs": {"$ref": "#/$defs/idList"},
+        "canonicalFindingRefs": {"$ref": "#/$defs/idList"},
+        "obligationRefs": {"$ref": "#/$defs/idList"},
+        "issueRefs": {"$ref": "#/$defs/idList"}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "authorRef", "observedAt", "sourceUri", "digest"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"$ref": "#/$defs/nonEmptyString"},
+        "authorRef": {"$ref": "#/$defs/id"},
+        "observedAt": {"$ref": "#/$defs/timestamp"},
+        "sourceUri": {"type": "string", "pattern": "^controlled://.+"},
+        "digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "severityAssignment",
+        "applicabilityDecision",
+        "codeChange",
+        "settingsChange",
+        "findingSuppression",
+        "exceptionApproval",
+        "extensionApproval",
+        "riskAcceptance",
+        "issueClosure",
+        "remediation",
+        "complianceClaim",
+        "certification",
+        "issueMutation"
+      ],
+      "properties": {
+        "severityAssignment": {"const": "not-claimed"},
+        "applicabilityDecision": {"const": "not-claimed"},
+        "codeChange": {"const": "not-claimed"},
+        "settingsChange": {"const": "not-claimed"},
+        "findingSuppression": {"const": "not-claimed"},
+        "exceptionApproval": {"const": "not-claimed"},
+        "extensionApproval": {"const": "not-claimed"},
+        "riskAcceptance": {"const": "not-claimed"},
+        "issueClosure": {"const": "not-claimed"},
+        "remediation": {"const": "not-claimed"},
+        "complianceClaim": {"const": "not-claimed"},
+        "certification": {"const": "not-claimed"},
+        "issueMutation": {"const": "approved-create-update-receipts-only"}
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "destination",
+        "ownerRef",
+        "state",
+        "published",
+        "checkpointDigest",
+        "blockerRefs",
+        "nextReviewAt"
+      ],
+      "properties": {
+        "destination": {"const": "private-repository-compliance-handoff"},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "state": {"enum": ["blocked", "ready-for-owner-review"]},
+        "published": {"const": false},
+        "checkpointDigest": {"$ref": "#/$defs/digest"},
+        "blockerRefs": {"$ref": "#/$defs/idList"},
+        "nextReviewAt": {"$ref": "#/$defs/timestamp"}
+      }
+    }
+  }
+}

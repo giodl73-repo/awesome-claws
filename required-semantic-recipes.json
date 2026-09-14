@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 110,
-    "coveredCount": 110,
-    "recipeCount": 298,
-    "findingCodeCount": 352
+    "validatorCount": 111,
+    "coveredCount": 111,
+    "recipeCount": 301,
+    "findingCodeCount": 356
   },
   "entries": [
     {
@@ -4697,6 +4697,49 @@
             "invalid_source_snapshot",
             "invalid_validation_context",
             "missing_required_blocker"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repository-compliance-program-manager",
+      "recipes": [
+        {
+          "id": "semantic-invalid-private-handoff-1",
+          "operator": "replace",
+          "path": [
+            "artifactId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_private_handoff"
+          ]
+        },
+        {
+          "id": "semantic-invalid-issue-policy-2",
+          "operator": "replace",
+          "path": [
+            "run",
+            "programRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_issue_policy",
+            "invalid_private_handoff",
+            "invalid_snapshot"
+          ]
+        },
+        {
+          "id": "semantic-invalid-as-of-3",
+          "operator": "replace",
+          "path": [
+            "run",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_as_of",
+            "invalid_private_handoff"
           ]
         }
       ]

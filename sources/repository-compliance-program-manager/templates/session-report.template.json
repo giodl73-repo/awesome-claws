@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Repository Compliance Program Manager checkpoint",
+  "output": "outputs/repository-compliance-program-manager-handoff.md",
+  "structuredOutput": "outputs/repository-compliance-program.json",
+  "sections": [
+    "exact_checkpoint",
+    "universe_and_predecessor_delta",
+    "obligation_and_issue_ledger",
+    "sla_blockers_and_escalation",
+    "remediation_verification_and_reopen",
+    "capability_and_receipts",
+    "structural_authority",
+    "private_next_owner_handoff"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": ["string"]
+  },
+  "fallback": "Render the same exact checkpoint and private owner handoff as Markdown when richer artifact presentation is unavailable."
+}

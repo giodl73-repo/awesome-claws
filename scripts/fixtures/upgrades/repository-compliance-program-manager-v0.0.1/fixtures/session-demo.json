@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "repository-compliance-program-manager",
+  "scenario": "Reconcile supplied findings into owner-tracked repository work.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Prepare the repository remediation issue list."
+    },
+    {
+      "role": "agent",
+      "text": "I prepared a private owner handoff without closing issues or performing remediation."
+    }
+  ],
+  "report": {
+    "title": "Repository compliance handoff",
+    "summary": "Supplied findings and issue state are separated for owner review.",
+    "output": "outputs/repository-compliance-program-manager-handoff.md",
+    "items": [
+      {
+        "title": "Owner handoff",
+        "summary": "Issue actions remain approval-bound.",
+        "tags": ["private"]
+      }
+    ]
+  }
+}
