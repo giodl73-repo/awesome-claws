@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Partner business manager session report",
+  "output": "outputs/partner-business-plan-review.html",
+  "sections": [
+    "request",
+    "known_facts",
+    "assumptions",
+    "evidence",
+    "decisions_or_recommendations",
+    "blocked_actions",
+    "next_owner"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the equivalent evidence, coverage, chronology, decision-right, gap, and authority-boundary sections at outputs/partner-business-plan-review.md when widgets are unavailable."
+}

@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (112)
+### Active (113)
 
 | Claw | Detail |
 | --- | --- |
@@ -77,6 +77,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | @giodl73; last verified 2026-08-29 |
 | [Music organizer](claws/music-organizer) | @giodl73-repo; last verified 2026-08-22 |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | @giodl73-repo; last verified 2026-08-27 |
+| [Partner business manager](claws/partner-business-manager) | @giodl73; last verified 2026-09-14 |
 | [Personal archive curator](claws/personal-archive-curator) | @giodl73-repo; last verified 2026-08-22 |
 | [Pet care coordinator](claws/pet-care-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | @giodl73-repo; last verified 2026-08-21 |
@@ -139,7 +140,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (81)
+### Low setup (82)
 
 | Claw | Detail |
 | --- | --- |
@@ -193,6 +194,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | no bootstrap, external dependency, or schedule |
 | [Music organizer](claws/music-organizer) | no bootstrap, external dependency, or schedule |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | no bootstrap, external dependency, or schedule |
+| [Partner business manager](claws/partner-business-manager) | no bootstrap, external dependency, or schedule |
 | [Personal archive curator](claws/personal-archive-curator) | no bootstrap, external dependency, or schedule |
 | [Pet care coordinator](claws/pet-care-coordinator) | no bootstrap, external dependency, or schedule |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | no bootstrap, external dependency, or schedule |
@@ -270,7 +272,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (89)
+### No external dependencies (90)
 
 | Claw | Detail |
 | --- | --- |
@@ -331,6 +333,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | None |
 | [Music organizer](claws/music-organizer) | None |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | None |
+| [Partner business manager](claws/partner-business-manager) | None |
 | [Personal archive curator](claws/personal-archive-curator) | None |
 | [Pet care coordinator](claws/pet-care-coordinator) | None |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | None |
@@ -487,7 +490,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Work chief of staff](claws/work-chief-of-staff) | Coordinates a multi-leader operating portfolio across specialist-Claw artifacts, shared resources, decision forums, and explicitly authorized commitments without becoming the executive or functional decision-maker. |
 | [Workflow operator](claws/workflow-operator) | Reconciles one exact bounded Lobster run against its reviewed workflow, typed input, exposed tool envelopes, human approval gate, independently observed effects, retry lineage, and private resume-or-abort handoff without duplicating Lobster state or claiming transactionality. |
 
-### X4 (19)
+### X4 (20)
 
 | Claw | Detail |
 | --- | --- |
@@ -502,6 +505,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | Turns approved site observations into a prioritized maintenance queue, owner handoff, and private operating view without dispatching work. |
 | [Incident response](claws/incident-response) | Coordinates evidence-bound Technical DRI and Incident Manager loops through service recovery, owner-controlled closure, and durable compliance follow-up. |
 | [Localization program manager](claws/localization-program-manager) | Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations. |
+| [Partner business manager](claws/partner-business-manager) | Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority. |
 | [Product manager](claws/product-manager) | Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [Project manager](claws/project-manager) | Keeps projects aligned through milestones, dependencies, decisions, and accountable execution. |
 | [Quality assurance lead](claws/quality-assurance-lead) | Turns requirements and risk into a traceable test strategy, execution ledger, defect assessment, and release recommendation. |
@@ -582,7 +586,7 @@ Categories come directly from the catalog entry.
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
-### Operations (22)
+### Operations (23)
 
 | Claw | Detail |
 | --- | --- |
@@ -599,6 +603,7 @@ Categories come directly from the catalog entry.
 | [Household steward](claws/household-steward) | X3; Coordinates a multi-person household's priorities, responsibilities, specialist-Claw handoffs, shared constraints, and explicitly authorized external actions without becoming the household decision-maker. |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | X5; Builds a constraint-led production plan and exception handoff from approved demand, capacity, material, quality, and maintenance evidence. |
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | X3; Coordinates a household move across dates, inventory, services, documents, vendors, and dependencies without booking, paying, contacting parties, or changing addresses or accounts. |
+| [Partner business manager](claws/partner-business-manager) | X4; Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority. |
 | [Pet care coordinator](claws/pet-care-coordinator) | X3; Coordinates evidence-bound routine pet care, symptom triage, medication-safe handoffs, and explicitly approved veterinary appointments. |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | X3; Coordinates evidence-bound ornamental pond and waterfall planning, installation readiness, recirculating-system care, aquatic-habitat monitoring, and explicitly approved specialist appointments. |
 | [Procurement evaluator](claws/procurement-evaluator) | X5; Builds a traceable vendor evaluation from approved requirements, evidence, risks, and accountable purchasing decisions. |
@@ -736,7 +741,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Wardrobe organizer](claws/wardrobe-organizer) | portable workspace artifacts only |
 | [Warranty and returns manager](claws/warranty-returns-manager) | portable workspace artifacts only |
 
-### Guarded attention (39)
+### Guarded attention (40)
 
 | Claw | Detail |
 | --- | --- |
@@ -765,6 +770,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | guided local setup; explicit tool policy; persistent dashboard |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | pinned skill |
 | [Meeting intelligence](claws/meeting-intelligence) | pinned skill; explicit tool policy |
+| [Partner business manager](claws/partner-business-manager) | explicit tool policy |
 | [Presentation producer](claws/presentation-producer) | pinned skill |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | explicit tool policy; persistent dashboard |
 | [Procurement evaluator](claws/procurement-evaluator) | guided local setup; explicit tool policy; persistent dashboard |

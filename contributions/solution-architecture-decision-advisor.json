@@ -153,6 +153,11 @@
         "id": "project-manager",
         "overlap": "Both reconcile constraints, dependencies, risks, owners, and decision readiness for a bounded revision.",
         "difference": "Project Manager manages delivery scope, milestones, dependencies, and project state; this Claw evaluates technical architecture alternatives, cross-option requirement coverage, comparable specialist evidence, experiments, ADR revisions, and superseding owner decisions."
+      },
+      {
+        "id": "partner-business-manager",
+        "overlap": "Both bind one exact approved revision to attributable evidence, dependencies, risks, chronology, explicit decision rights, and an accountable owner handoff.",
+        "difference": "Partner Business Manager reconciles one partner's joint-business-plan revision across program, co-sell, commitment, eligibility, action, and QBR domains. Solution Architecture Decision Advisor compares technical architecture options against one workload-requirement universe and preserves experiments, ADR supersession, and residual-risk continuity without exercising partner-program or commercial authority."
       }
     ]
   }

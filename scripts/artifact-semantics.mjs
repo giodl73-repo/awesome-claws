@@ -4,6 +4,7 @@ import { backupRestoreVerificationFindings } from "./backup-restore-verification
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
 import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
+import { partnerBusinessPlanFindings } from "./partner-business-manager.mjs";
 import { repositoryOperationsFindings } from "./repository-operations-manager.mjs";
 import { repositoryComplianceProgramFindings } from "./repository-compliance-program-manager.mjs";
 import { solutionArchitectureDecisionFindings } from "./solution-architecture-decision-advisor.mjs";
@@ -53270,6 +53271,7 @@ const validators = {
   "music-organizer": musicOrganizerFindings,
   "neighborhood-operations-watcher": neighborhoodOperationsFindings,
   "personal-archive-curator": personalArchiveFindings,
+  "partner-business-manager": partnerBusinessPlanFindings,
   "pet-care-coordinator": petCareFindings,
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
   "professional-networking-followup": professionalNetworkingFindings,
@@ -53329,6 +53331,9 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   }),
   "financial-account-reconciliation-coordinator": Object.freeze({
     asOf: "2026-09-02T00:00:00Z",
+  }),
+  "partner-business-manager": Object.freeze({
+    asOf: "2026-09-14T19:00:00Z",
   }),
   "tls-certificate-rotation-verification-coordinator": Object.freeze({
     asOf: "2026-09-05T00:00:00Z",

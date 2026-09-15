@@ -2778,6 +2778,31 @@
         "visual"
       ],
       "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
+    },
+    {
+      "id": "partner-business-manager",
+      "acceptedRequest": "Reconcile Contoso Cloud Services' FY27 joint business plan JBP-CCS-2027 revision 4 for the Q1 through Q2 review using the supplied partner-center exports, co-sell references, commitment evidence, action log, risk register, and QBR minutes. Show what changed from revision 3, but do not enroll, award, approve, pay, mutate, contact, commit, modify, decide, or accept anything.",
+      "requiredEvidence": [
+        "Exact partner, joint-business-plan, revision, coverage period, predecessor revision, accountable owners, decision-right matrix, and approved evidence scope",
+        "Attributable capability and designation evidence, solution-play records, co-sell opportunity references, commitments, benefit and incentive eligibility evidence, dependencies, risks, actions, and QBR decisions",
+        "Source identities, versions, timestamps, freshness rules, authors or issuing authorities, confidentiality scopes, conflicts, gaps, and escalation paths"
+      ],
+      "authorityBoundaries": [
+        "Do not enroll a partner, award a capability or designation, approve or pay an incentive, or determine official benefit eligibility",
+        "Do not create or change revenue commitments, mutate co-sell opportunities, contact customers, or represent pipeline as committed revenue",
+        "Do not modify an agreement, accept a risk, make a QBR decision, or substitute for an authorized partner, program, sales, finance, legal, customer, or risk owner"
+      ],
+      "experience": {
+        "target": 4,
+        "primary": "inline-widget",
+        "output": "outputs/partner-business-plan-review.html",
+        "fallback": "outputs/partner-business-plan-review.md",
+        "asset": "assets/partner-business-plan-review.html"
+      },
+      "capabilityClasses": [
+        "visual"
+      ],
+      "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
     }
   ]
 }
