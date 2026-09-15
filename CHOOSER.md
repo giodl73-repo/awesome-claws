@@ -56,7 +56,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Home repair coordinator](claws/home-repair-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Household budget steward](claws/household-budget-steward) | @giodl73-repo; last verified 2026-08-27 |
 | [Household steward](claws/household-steward) | @giodl73-repo; last verified 2026-08-21 |
-| [Incident response](claws/incident-response) | @giodl73-repo; last verified 2026-08-19 |
+| [Incident response](claws/incident-response) | @giodl73-repo; last verified 2026-09-14 |
 | [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | @giodl73; last verified 2026-09-07 |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | @giodl73-repo; last verified 2026-08-25 |
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | @giodl73; last verified 2026-08-29 |
@@ -497,7 +497,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Data migration planner](claws/data-migration-planner) | Plans a controlled data migration through mappings, validation, cutover, rollback, and accountable reconciliation without moving production data. |
 | [Experimentation lead](claws/experimentation-lead) | Designs and reviews bounded product experiments with explicit hypotheses, guardrails, exposure rules, evidence, and decision ownership. |
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | Turns approved site observations into a prioritized maintenance queue, owner handoff, and private operating view without dispatching work. |
-| [Incident response](claws/incident-response) | Coordinates incidents with one rule: ground ownership and recovery decisions in evidence. |
+| [Incident response](claws/incident-response) | Coordinates evidence-bound Technical DRI and Incident Manager loops through service recovery, owner-controlled closure, and durable compliance follow-up. |
 | [Localization program manager](claws/localization-program-manager) | Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations. |
 | [Product manager](claws/product-manager) | Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [Project manager](claws/project-manager) | Keeps projects aligned through milestones, dependencies, decisions, and accountable execution. |
@@ -551,7 +551,7 @@ Categories come directly from the catalog entry.
 | [API integration engineer](claws/api-integration-engineer) | X5; Designs and verifies bounded API integrations from explicit contracts, fixtures, failure modes, and deployment authority. |
 | [Change control operator](claws/change-control-operator) | X3; Prepares and executes bounded workspace changes only after an accountable owner approves the exact plan digest. |
 | [Data migration planner](claws/data-migration-planner) | X4; Plans a controlled data migration through mappings, validation, cutover, rollback, and accountable reconciliation without moving production data. |
-| [Incident response](claws/incident-response) | X4; Coordinates incidents with one rule: ground ownership and recovery decisions in evidence. |
+| [Incident response](claws/incident-response) | X4; Coordinates evidence-bound Technical DRI and Incident Manager loops through service recovery, owner-controlled closure, and durable compliance follow-up. |
 | [Quality assurance lead](claws/quality-assurance-lead) | X4; Turns requirements and risk into a traceable test strategy, execution ledger, defect assessment, and release recommendation. |
 | [Release coordinator](claws/release-coordinator) | X4; Coordinates a repository release from verified GitHub state to an approval-bound communication handoff. |
 | [Repository Operations Manager](claws/repository-operations-manager) | X3; Supervises an approved repository portfolio by reconciling pull requests, head-bound reviews and checks, builds, release trains, cross-repository dependencies, human approval decisions, and trusted system deadline observations without making owner decisions or performing repository mutations. |

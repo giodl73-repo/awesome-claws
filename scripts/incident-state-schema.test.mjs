@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -25,6 +26,172 @@ const validateSchema = ajv.compile(schema);
 const clone = () => structuredClone(fixture);
 const findings = (value) => validateArtifactSemantics("incident-response", value);
 const isValid = (value) => validateSchema(value) && findings(value).length === 0;
+const canonicalJson = (value) => {
+  if (Array.isArray(value)) {
+    return `[${value.map(canonicalJson).join(",")}]`;
+  }
+  if (value && typeof value === "object") {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+};
+const digest = (value) =>
+  `sha256:${createHash("sha256").update(canonicalJson(value)).digest("hex")}`;
+const sorted = (items) => [...items].sort();
+const sealServiceRecovery = (value) => {
+  const row = value.serviceRecovery;
+  row.revision = digest({
+    id: row.id,
+    state: row.state,
+    technicalDriId: row.technicalDriId,
+    timelineSnapshotRef: row.timelineSnapshotRef,
+    recoveryCheckRefs: sorted(row.recoveryCheckRefs),
+    evaluatedAt: row.evaluatedAt,
+  });
+};
+const sealIncidentRecovery = (value) => {
+  const row = value.incidentRecoveryRecommendation;
+  row.revision = digest({
+    id: row.id,
+    state: row.state,
+    serviceRecoveryRef: row.serviceRecoveryRef,
+    technicalDriId: row.technicalDriId,
+    incidentManagerId: row.incidentManagerId,
+    recommendedAt: row.recommendedAt,
+    rationale: row.rationale,
+  });
+};
+const sealClosure = (value) => {
+  const row = value.closure;
+  row.revision = digest({
+    id: row.id,
+    incidentRef: row.incidentRef,
+    incidentRecoveryRecommendationRef:
+      row.incidentRecoveryRecommendationRef,
+    state: row.state,
+    incidentManagerId: row.incidentManagerId,
+    authorityOwnerId: row.authorityOwnerId,
+    closedAt: row.closedAt,
+  });
+};
+const activeFixture = () => {
+  const value = clone();
+  value.signals[0].state = "monitoring";
+  delete value.signals[0].resolvedAt;
+  value.serviceRecovery.state = "criteria-unmet";
+  sealServiceRecovery(value);
+  value.incidentRecoveryRecommendation.state = "not-ready";
+  value.incidentRecoveryRecommendation.rationale =
+    "A high-risk signal remains under observation.";
+  sealIncidentRecovery(value);
+  const recoveryDecision = value.decisions.find(
+    (item) =>
+      item.id === value.incidentRecoveryRecommendation.decisionRef,
+  );
+  recoveryDecision.subjectRevision =
+    value.incidentRecoveryRecommendation.revision;
+  value.recommendation = {
+    state: "blocked",
+    reviewerId: null,
+    reviewedAt: null,
+    rationale: "Incident recovery is not ready while the signal remains active.",
+  };
+  value.handoff.state = "blocked";
+  value.handoff.summary =
+    "The incident remains active; recovery, closure, communication, risk, and compliance actions stay owner-controlled.";
+  return value;
+};
+const closedFixture = () => {
+  const value = clone();
+  value.incident.status = "resolved";
+  value.updateCadence.asOf = "2026-09-05T11:07:00Z";
+  value.evidence.push({
+    id: "evidence-owner-closure",
+    kind: "owner-closure",
+    incidentRef: value.incident.id,
+    serviceRef: "service-checkout-api",
+    closureRef: value.closure.id,
+    approvedById: value.closure.authorityOwnerId,
+    environment: value.incident.environment,
+    deploymentOrBuild: "checkout-api@2026.08.16.4",
+    timelineSnapshotRef: value.incident.timelineSnapshotRef,
+    outcome: "closed",
+    sourceRef: "controlled://incident-evidence/INC-2048/owner-closure",
+    assertedAt: "2026-09-05T11:05:00Z",
+  });
+  const recoveryEvidenceRefs = [
+    "evidence-rollback-execution",
+    "evidence-checkout-recovery",
+    "evidence-payment-recovery",
+  ];
+  value.decisions.push({
+    id: "decision-closure-recommendation",
+    incidentRef: value.incident.id,
+    timelineSnapshotRef: value.incident.timelineSnapshotRef,
+    decisionMakerId: value.roleAssignments.incidentManager.principalId,
+    recordedById: value.roleAssignments.incidentManager.principalId,
+    authorityScope: "incident-closure-recommendation",
+    decisionType: "closure-recommendation",
+    subjectRef: value.incidentRecoveryRecommendation.id,
+    subjectRevision: value.incidentRecoveryRecommendation.revision,
+    inputEvidenceRefs: recoveryEvidenceRefs,
+    decidedAt: "2026-09-05T11:04:00Z",
+    supersedesDecisionId: null,
+  });
+  value.closure.state = "closed-by-owner";
+  value.closure.recommendationDecisionRef =
+    "decision-closure-recommendation";
+  value.closure.evidenceRef = "evidence-owner-closure";
+  value.closure.closedAt = "2026-09-05T11:06:00Z";
+  sealClosure(value);
+  value.decisions.push({
+    id: "decision-owner-closure",
+    incidentRef: value.incident.id,
+    timelineSnapshotRef: value.incident.timelineSnapshotRef,
+    decisionMakerId: value.closure.authorityOwnerId,
+    recordedById: value.roleAssignments.incidentManager.principalId,
+    authorityScope: "incident-declaration-closure",
+    decisionType: "owner-closure",
+    subjectRef: value.closure.id,
+    subjectRevision: value.closure.revision,
+    inputEvidenceRefs: [value.closure.evidenceRef],
+    decidedAt: value.closure.closedAt,
+    supersedesDecisionId: null,
+  });
+  value.closure.closureDecisionRef = "decision-owner-closure";
+  value.recommendation = {
+    state: "closed-by-owner",
+    reviewerId: value.closure.authorityOwnerId,
+    reviewedAt: value.closure.closedAt,
+    rationale:
+      "The external incident authority closed the incident after recovery and closure evidence; compliance work remains separate.",
+  };
+  value.handoff.summary =
+    "Owner closure is externally evidenced; compliance issue, remediation, verification, risk, and closure states remain unchanged.";
+  return value;
+};
+const v1Fixture = () => {
+  const value = clone();
+  value.schemaVersion = "awesomeClaws.incidentResponse.v1";
+  for (const field of [
+    "roleAssignments",
+    "updateCadence",
+    "updates",
+    "decisions",
+    "serviceRecovery",
+    "incidentRecoveryRecommendation",
+    "closure",
+    "complianceHandoffs",
+    "authority",
+  ]) {
+    delete value[field];
+  }
+  value.recommendation.state = "ready-for-incident-command-review";
+  return value;
+};
 const legacy = {
   incidentId: "INC-2048",
   severity: "SEV-1",
@@ -89,18 +256,22 @@ test("incident response validator is total over malformed arrays and records", (
     "signals",
     "evidence",
     "hypotheses",
+    "updates",
+    "decisions",
     "timelineEvents",
     "actions",
     "recoveryChecks",
     "communications",
     "followUps",
+    "complianceHandoffs",
   ]) {
     const malformed = clone();
     malformed[field].push(null);
-    assert.equal(validateSchema(malformed), true);
+    assert.equal(validateSchema(malformed), false);
     assert.doesNotThrow(() => findings(malformed));
     assert.ok(findings(malformed).some((item) => item.code === "invalid_array_record"));
     malformed[field] = {};
+    assert.equal(validateSchema(malformed), false);
     assert.doesNotThrow(() => findings(malformed));
     assert.ok(
       findings(malformed).some(
@@ -112,7 +283,7 @@ test("incident response validator is total over malformed arrays and records", (
 
 test("incident exact marker and every legacy-only hybrid field fail closed", () => {
   const wrong = clone();
-  wrong.schemaVersion = "awesomeClaws.incidentResponse.v2";
+  wrong.schemaVersion = "awesomeClaws.incidentResponse.v3";
   assert.equal(validateSchema(wrong), false);
   assert.ok(findings(wrong).some((item) => item.code === "invalid_schema_version"));
 
@@ -284,25 +455,16 @@ test("incident recovery covers every service and rejects self-verification", () 
   );
 });
 
-test("incident unresolved high-risk signals and sent communications block readiness", () => {
-  const unresolved = clone();
-  unresolved.signals[0].state = "monitoring";
-  assert.ok(
-    findings(unresolved).some(
-      (item) => item.code === "unresolved_high_risk_signal",
-    ),
-  );
-  assert.ok(
-    findings(unresolved).some(
-      (item) => item.code === "premature_incident_readiness",
-    ),
-  );
+test("incident active high-risk state is valid when recovery and handoff stay blocked", () => {
+  const unresolved = activeFixture();
+  assert.equal(validateSchema(unresolved), true, JSON.stringify(validateSchema.errors));
+  assert.deepEqual(findings(unresolved), []);
   for (const resolvedAt of [undefined, "not-a-date", "2099-01-01T00:00:00Z"]) {
     const invalidResolution = clone();
     invalidResolution.signals[0].resolvedAt = resolvedAt;
     assert.ok(
       findings(invalidResolution).some(
-        (item) => item.code === "unresolved_high_risk_signal",
+        (item) => item.code === "invalid_high_risk_resolution",
       ),
       String(resolvedAt),
     );
@@ -314,11 +476,15 @@ test("incident unresolved high-risk signals and sent communications block readin
   );
   const unapprovedDraft = clone();
   unapprovedDraft.communications[0].state = "draft";
-  delete unapprovedDraft.communications[0].approvedById;
+  unapprovedDraft.communications[0].approvedById = null;
+  unapprovedDraft.communications[0].approvalDecisionRef = null;
+  unapprovedDraft.decisions = unapprovedDraft.decisions.filter(
+    (item) => item.decisionType !== "communication-approval",
+  );
   assert.equal(isValid(unapprovedDraft), true);
 });
 
-test("incident-command review is independent and occurs after all evidence", () => {
+test("incident-manager review is scoped and occurs after all evidence", () => {
   const self = clone();
   self.recommendation.reviewerId = self.ownerId;
   assert.ok(
@@ -329,6 +495,406 @@ test("incident-command review is independent and occurs after all evidence", () 
   assert.ok(
     findings(early).some((item) => item.code === "premature_incident_readiness"),
   );
+});
+
+test("incident v2 requires distinct named Technical DRI and Incident Manager loops", () => {
+  const samePrincipal = clone();
+  samePrincipal.roleAssignments.incidentManager.principalId =
+    samePrincipal.roleAssignments.technicalDri.principalId;
+  assert.ok(
+    findings(samePrincipal).some(
+      (item) => item.code === "invalid_incident_role_separation",
+    ),
+  );
+
+  const missingScope = clone();
+  missingScope.principals
+    .find(
+      (item) =>
+        item.id === missingScope.roleAssignments.technicalDri.principalId,
+    )
+    .scopes = ["technical-investigation"];
+  assert.ok(
+    findings(missingScope).some(
+      (item) => item.code === "invalid_incident_role_separation",
+    ),
+  );
+
+  for (const [role, name] of [
+    ["technicalDri", "Technical DRI"],
+    ["incidentManager", "Incident Manager"],
+  ]) {
+    const bareRole = clone();
+    const principalId = bareRole.roleAssignments[role].principalId;
+    bareRole.principals.find((item) => item.id === principalId).name = name;
+    assert.ok(
+      findings(bareRole).some(
+        (item) => item.code === "invalid_incident_role_separation",
+      ),
+      role,
+    );
+  }
+});
+
+test("incident v2 rejects authority crossover and inexact independent approvals", () => {
+  const wrongTechnicalOwner = clone();
+  wrongTechnicalOwner.hypotheses[0].ownerId =
+    wrongTechnicalOwner.roleAssignments.incidentManager.principalId;
+  assert.ok(
+    findings(wrongTechnicalOwner).some(
+      (item) => item.code === "unsupported_hypothesis",
+    ),
+  );
+
+  const selfApprovedAction = clone();
+  const decision = selfApprovedAction.decisions.find(
+    (item) => item.id === selfApprovedAction.actions[0].approvalDecisionRef,
+  );
+  decision.decisionMakerId = selfApprovedAction.actions[0].ownerId;
+  assert.ok(
+    findings(selfApprovedAction).some(
+      (item) =>
+        item.code === "invalid_decision_chronology" ||
+        item.code === "unsupported_incident_action",
+    ),
+  );
+
+  const wrongActionRevision = clone();
+  wrongActionRevision.decisions.find(
+    (item) => item.id === wrongActionRevision.actions[0].approvalDecisionRef,
+  ).subjectRevision = "action-checkout-rollback-r0";
+  assert.ok(
+    findings(wrongActionRevision).some(
+      (item) => item.code === "unsupported_incident_action",
+    ),
+  );
+
+  const unapprovedOutcome = clone();
+  unapprovedOutcome.evidence.find(
+    (item) => item.id === unapprovedOutcome.actions[0].approvalEvidenceRef,
+  ).outcome = "requested";
+  assert.ok(
+    findings(unapprovedOutcome).some(
+      (item) =>
+        item.code === "unsupported_incident_action" ||
+        item.code === "invalid_decision_chronology",
+    ),
+  );
+
+  const selfApprovedCommunication = clone();
+  const communication = selfApprovedCommunication.communications[0];
+  communication.approvedById = communication.ownerId;
+  assert.ok(
+    findings(selfApprovedCommunication).some(
+      (item) => item.code === "unsupported_communication_draft",
+    ),
+  );
+
+  const leastPrivilege = clone();
+  const authority = leastPrivilege.principals.find(
+    (item) => item.id === leastPrivilege.closure.authorityOwnerId,
+  );
+  authority.scopes = authority.scopes.filter(
+    (scope) => scope !== "incident-command-review",
+  );
+  assert.equal(isValid(leastPrivilege), true);
+
+  const missingActionApprovalScope = clone();
+  missingActionApprovalScope.principals.find(
+    (item) => item.id === missingActionApprovalScope.closure.authorityOwnerId,
+  ).scopes = ["independent-communication-approval"];
+  assert.ok(
+    findings(missingActionApprovalScope).some(
+      (item) =>
+        item.code === "unsupported_incident_action" ||
+        item.code === "invalid_decision_chronology",
+    ),
+  );
+
+  const missingCommunicationApprovalScope = clone();
+  missingCommunicationApprovalScope.principals.find(
+    (item) =>
+      item.id === missingCommunicationApprovalScope.closure.authorityOwnerId,
+  ).scopes = ["independent-action-approval"];
+  assert.ok(
+    findings(missingCommunicationApprovalScope).some(
+      (item) =>
+        item.code === "unsupported_communication_draft" ||
+        item.code === "invalid_decision_chronology",
+    ),
+  );
+
+  const mutatedAuthority = clone();
+  mutatedAuthority.authority.riskAcceptance = "accepted";
+  assert.ok(
+    findings(mutatedAuthority).some(
+      (item) => item.code === "invalid_incident_authority",
+    ),
+  );
+});
+
+test("incident cadence rejects gaps, interval drift, future state, and invalid chronology", () => {
+  const outOfOrder = clone();
+  outOfOrder.updates[1].sequence = 3;
+  assert.ok(
+    findings(outOfOrder).some(
+      (item) => item.code === "invalid_incident_update_sequence",
+    ),
+  );
+
+  const missingOccurrence = clone();
+  missingOccurrence.updates.splice(3, 1);
+  assert.ok(
+    findings(missingOccurrence).some(
+      (item) =>
+        item.code === "invalid_update_cadence" ||
+        item.code === "invalid_incident_update_sequence",
+    ),
+  );
+
+  const intervalDrift = clone();
+  intervalDrift.updateCadence.intervalMinutes = 20;
+  assert.ok(
+    findings(intervalDrift).some(
+      (item) =>
+        item.code === "invalid_update_cadence" ||
+        item.code === "invalid_incident_update_sequence",
+    ),
+  );
+
+  const futureAsOf = clone();
+  futureAsOf.updateCadence.asOf = "2099-01-01T00:00:00Z";
+  assert.ok(
+    findings(futureAsOf).some(
+      (item) => item.code === "invalid_update_cadence",
+    ),
+  );
+
+  const preEvidence = clone();
+  preEvidence.updates[0].observedThrough = "2026-09-05T10:14:59Z";
+  assert.ok(
+    findings(preEvidence).some(
+      (item) => item.code === "invalid_incident_update_sequence",
+    ),
+  );
+
+  const futureObservation = clone();
+  futureObservation.updates[3].observedThrough =
+    "2026-09-05T11:06:00Z";
+  assert.ok(
+    findings(futureObservation).some(
+      (item) => item.code === "invalid_incident_update_sequence",
+    ),
+  );
+
+  const issuedBeforeDue = clone();
+  issuedBeforeDue.updates[3].issuedAt = "2026-09-05T10:59:59Z";
+  assert.ok(
+    findings(issuedBeforeDue).some(
+      (item) => item.code === "invalid_incident_update_sequence",
+    ),
+  );
+});
+
+test("incident decisions reject cross-snapshot, pre-evidence, and invalid supersession", () => {
+  const crossSnapshot = clone();
+  crossSnapshot.decisions[0].timelineSnapshotRef = "snapshot-other";
+  assert.ok(
+    findings(crossSnapshot).some(
+      (item) => item.code === "invalid_decision_chronology",
+    ),
+  );
+
+  const wrongSeveritySubject = clone();
+  wrongSeveritySubject.decisions.find(
+    (item) => item.decisionType === "severity-state",
+  ).subjectRevision = "snapshot-other";
+  assert.ok(
+    findings(wrongSeveritySubject).some(
+      (item) => item.code === "invalid_decision_chronology",
+    ),
+  );
+
+  const wrongCadenceRevision = clone();
+  wrongCadenceRevision.decisions.find(
+    (item) => item.decisionType === "cadence",
+  ).subjectRevision = `sha256:${"0".repeat(64)}`;
+  assert.ok(
+    findings(wrongCadenceRevision).some(
+      (item) => item.code === "invalid_decision_chronology",
+    ),
+  );
+
+  const wrongRecorder = clone();
+  wrongRecorder.decisions[0].recordedById =
+    wrongRecorder.roleAssignments.technicalDri.principalId;
+  assert.ok(
+    findings(wrongRecorder).some(
+      (item) => item.code === "invalid_decision_chronology",
+    ),
+  );
+
+  const preEvidence = clone();
+  preEvidence.decisions.find(
+    (item) => item.decisionType === "action-approval",
+  ).decidedAt = "2026-09-05T10:19:59Z";
+  assert.ok(
+    findings(preEvidence).some(
+      (item) => item.code === "invalid_decision_chronology",
+    ),
+  );
+
+  const futureSupersession = clone();
+  futureSupersession.decisions.find(
+    (item) => item.decisionType === "action-approval",
+  ).supersedesDecisionId = futureSupersession.decisions.find(
+    (item) => item.decisionType === "communication-approval",
+  ).id;
+  assert.ok(
+    findings(futureSupersession).some(
+      (item) => item.code === "invalid_decision_chronology",
+    ),
+  );
+
+  const incompleteRecoveryInputs = clone();
+  incompleteRecoveryInputs.decisions
+    .find(
+      (item) =>
+        item.decisionType === "incident-recovery-recommendation",
+    )
+    .inputEvidenceRefs.pop();
+  assert.ok(
+    findings(incompleteRecoveryInputs).some(
+      (item) => item.code === "invalid_decision_chronology",
+    ),
+  );
+
+  const wrongCommunicationEvidence = clone();
+  wrongCommunicationEvidence.decisions.find(
+    (item) => item.decisionType === "communication-approval",
+  ).inputEvidenceRefs = ["evidence-checkout-alert"];
+  assert.ok(
+    findings(wrongCommunicationEvidence).some(
+      (item) => item.code === "invalid_decision_chronology",
+    ),
+  );
+});
+
+test("incident service recovery, incident recommendation, and closure remain separate", () => {
+  const active = activeFixture();
+  assert.equal(isValid(active), true);
+
+  const closed = closedFixture();
+  assert.equal(validateSchema(closed), true, JSON.stringify(validateSchema.errors));
+  assert.deepEqual(findings(closed), []);
+  assert.equal(closed.complianceHandoffs[0].issueMutationState, "not-requested");
+  assert.equal(closed.complianceHandoffs[0].remediationState, "not-claimed");
+  assert.equal(closed.complianceHandoffs[0].verificationState, "not-claimed");
+  assert.equal(closed.complianceHandoffs[0].closureState, "not-claimed");
+
+  const prematureClosure = clone();
+  prematureClosure.closure.state = "closed-by-owner";
+  prematureClosure.closure.closedAt = "2026-09-05T11:04:00Z";
+  assert.ok(
+    findings(prematureClosure).some(
+      (item) => item.code === "invalid_recovery_closure_separation",
+    ),
+  );
+
+  const incompleteServiceRecovery = clone();
+  incompleteServiceRecovery.serviceRecovery.recoveryCheckRefs.pop();
+  assert.ok(
+    findings(incompleteServiceRecovery).some(
+      (item) => item.code === "invalid_recovery_closure_separation",
+    ),
+  );
+
+  const missingOwnerClosureEvidence = closedFixture();
+  missingOwnerClosureEvidence.evidence =
+    missingOwnerClosureEvidence.evidence.filter(
+      (item) => item.id !== missingOwnerClosureEvidence.closure.evidenceRef,
+    );
+  assert.ok(
+    findings(missingOwnerClosureEvidence).some(
+      (item) =>
+        item.code === "invalid_decision_chronology" ||
+        item.code === "invalid_recovery_closure_separation",
+    ),
+  );
+
+  const wrongClosureSubject = closedFixture();
+  wrongClosureSubject.decisions.find(
+    (item) => item.decisionType === "owner-closure",
+  ).subjectRevision = `sha256:${"0".repeat(64)}`;
+  assert.ok(
+    findings(wrongClosureSubject).some(
+      (item) => item.code === "invalid_decision_chronology",
+    ),
+  );
+
+  const claimedComplianceClosure = clone();
+  claimedComplianceClosure.complianceHandoffs[0].closureState = "closed";
+  assert.ok(
+    findings(claimedComplianceClosure).some(
+      (item) => item.code === "invalid_compliance_handoff",
+    ),
+  );
+});
+
+test("incident compliance handoff preserves exact deterministic obligation identity", () => {
+  const driftedKey = clone();
+  driftedKey.followUps[0].identityKey = `sha256:${"0".repeat(64)}`;
+  assert.ok(
+    findings(driftedKey).some(
+      (item) => item.code === "invalid_incident_follow_up",
+    ),
+  );
+
+  const mismatchedHandoff = clone();
+  mismatchedHandoff.complianceHandoffs[0].controlRefs = [
+    "control-unrelated",
+  ];
+  assert.ok(
+    findings(mismatchedHandoff).some(
+      (item) => item.code === "invalid_compliance_handoff",
+    ),
+  );
+
+  const duplicate = clone();
+  duplicate.complianceHandoffs.push({
+    ...structuredClone(duplicate.complianceHandoffs[0]),
+    id: "compliance-handoff-timeout-control-duplicate",
+  });
+  assert.ok(
+    findings(duplicate).some(
+      (item) => item.code === "invalid_compliance_handoff",
+    ),
+  );
+
+  const duplicateSemanticObligation = clone();
+  const duplicateFollowUp = structuredClone(
+    duplicateSemanticObligation.followUps[0],
+  );
+  duplicateFollowUp.id = "follow-up-timeout-control-copy";
+  duplicateFollowUp.complianceHandoffRef =
+    "compliance-handoff-timeout-control-copy";
+  duplicateSemanticObligation.followUps.push(duplicateFollowUp);
+  duplicateSemanticObligation.complianceHandoffs.push({
+    ...structuredClone(duplicateSemanticObligation.complianceHandoffs[0]),
+    id: "compliance-handoff-timeout-control-copy",
+    followUpRef: duplicateFollowUp.id,
+  });
+  assert.ok(
+    findings(duplicateSemanticObligation).some(
+      (item) => item.code === "invalid_incident_follow_up",
+    ),
+  );
+});
+
+test("incident response preserves explicit enriched v1 compatibility", () => {
+  const prior = v1Fixture();
+  assert.equal(validateSchema(prior), true, JSON.stringify(validateSchema.errors));
+  assert.deepEqual(findings(prior), []);
 });
 
 test("incident response rejects the bare role identity but accepts a named human with the title", () => {

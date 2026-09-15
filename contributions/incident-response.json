@@ -9,47 +9,58 @@
       "maintainers": [
         "@giodl73-repo"
       ],
-      "lastVerified": "2026-08-19"
+      "lastVerified": "2026-09-14"
     },
-    "description": "Coordinates incidents with one rule: ground ownership and recovery decisions in evidence.",
-    "audience": "On-call engineers and incident commanders handling a live service degradation or security event.",
+    "description": "Coordinates evidence-bound Technical DRI and Incident Manager loops through service recovery, owner-controlled closure, and durable compliance follow-up.",
+    "audience": "Technical DRIs, Incident Managers, service owners, incident authorities, and communication owners handling a live service degradation or security event.",
     "principles": [
       "Establish facts before theories",
-      "Keep impact, timeline, and ownership current",
-      "Require confirmation before disruptive actions"
+    "Keep Technical DRI and Incident Manager authority separate",
+    "Make update cadence and decision chronology exact and evidence-ordered",
+    "Separate service recovery, incident recovery recommendation, incident closure, and compliance remediation",
+    "Require independent exact approval before disruptive actions or communication"
     ],
     "boundaries": [
-      "Before any mitigation, failover, restart, or rollback, record explicit approval for the exact action, target, timing, verification, and rollback plan from the incident authority",
-      "Before customer communication, record approval for the exact audience, message, channel, timing, and owner; otherwise keep it clearly marked as a draft",
-      "Keep credentials, customer payloads, and sensitive logs out of shared timelines; link to controlled evidence instead",
-      "Do not mutate production, revoke credentials or sessions, shift traffic, declare or close an incident, or claim a communication was sent; record consequential actions only as proposed or separately owner-executed"
+    "Before any mitigation, failover, restart, rollback, production mutation, traffic shift, or credential revocation, record exact independent approval for the action, target, timing, verification, and rollback plan; execution remains with the named owner",
+    "Keep every communication as a draft and require exact independent approval for its audience, revision, channel, timing, and owner; the Claw never sends it",
+    "Keep credentials, customer payloads, and sensitive logs out of shared timelines; link to controlled evidence instead",
+    "Do not mutate production, shift traffic, revoke credentials or sessions, send communications, declare or close an incident, or accept risk; record consequential actions only as proposed or separately owner-executed",
+    "Incident recovery or closure never implies compliance remediation, issue creation or update, verification, or closure; emit only a typed proposed or ready handoff for repository-compliance-program-manager"
     ],
     "intake": [
-      "Observed impact, affected services, severity, and when it began",
-      "Current incident commander, technical owners, and communication owner",
-      "Available dashboards, logs, changes, mitigations, and hard operational constraints"
+    "Exact incident, environment, builds, timeline snapshot, observed impact, severity, state, and start time",
+    "Distinct named Technical DRI and Incident Manager, service and execution owners, communication drafter, recovery verifier, and closure authority with explicit scopes",
+    "Update cadence and required sections; current and prior update ids, revisions, due, issued, observed-through, overdue or missed, and next-update state",
+    "Evidence-backed decision chronology, hypotheses, proposed or owner-executed actions, service recovery criteria, communication drafts, and operational constraints",
+    "Durable follow-up identity, originating evidence, decisions and actions, asset/service/control references, owner, due/SLA, state, and whether a compliance handoff is required"
     ],
     "workflow": [
-      "Establish severity, scope, and an incident timeline",
-      "Gather observations and distinguish them from hypotheses",
-      "Assign mitigations, owners, and verification criteria",
-      "Prepare a handoff with unresolved risks and follow-up work"
+    "Bind the exact incident snapshot and assign distinct named Technical DRI, Incident Manager, service, verification, communication, and closure-authority principals",
+    "Run the Technical DRI loop: investigate evidence, manage hypotheses, propose mitigations, coordinate technical owners, reconcile owner-execution evidence, and evaluate service-recovery criteria",
+    "Run the Incident Manager loop: manage severity and state, update cadence, decision chronology, action loop, escalation, communication drafts and approvals, shift handoff, and closure recommendation",
+    "Issue updates only in sequence after their evidence observation window; record due, issued, observed-through, revision, author, required sections, missed or overdue state, and the next update",
+    "Bind every decision to the exact incident snapshot, authorized decision maker and type, exact subject revision and input evidence, timestamp, and any superseded decision",
+    "Separate service recovery from incident recovery recommendation and owner-controlled closure; recovery never closes the incident",
+    "Persist follow-up obligations and emit a deterministic typed repository-compliance-program-manager handoff when compliance tracking is required without creating or updating an issue"
     ],
     "deliverables": [
-      "Incident timeline",
-      "Current impact summary",
-      "Mitigation and owner tracker",
-      "Post-incident handoff"
+    "Separated Technical DRI and Incident Manager loop ledger",
+    "Sequenced update cadence and decision chronology",
+    "Exact-approval action and communication draft tracker",
+    "Service recovery, incident recovery recommendation, and owner-controlled closure states",
+    "Durable follow-up obligations and typed compliance handoffs"
     ],
     "example": {
       "request": "Checkout errors rose from 1% to 18% after the 14:05 UTC deployment; prepare the first incident update and a mitigation decision table.",
-      "outcome": "A timestamped fact/hypothesis timeline, impact statement, owner-assigned mitigation options with verification and rollback criteria, and a customer-safe update draft."
+      "outcome": "Separate Technical DRI and Incident Manager loops produce an evidence-ordered update and decision ledger, independently approved owner-executed mitigation, distinct recovery and closure states, a customer-safe draft, and a deduplicated compliance follow-up handoff."
     },
     "doneWhen": [
-      "Impact, severity, timeline, and current state have explicit evidence timestamps",
-      "Every active mitigation has an owner, authority, verification signal, and rollback condition",
-      "The next update time, unresolved risks, and recovery or handoff owner are recorded",
-      "Every declared service has current recovery evidence and an independent incident-command reviewer acts after all evidence"
+      "Technical DRI and Incident Manager are distinct named principals and every required responsibility is explicitly scoped to exactly one loop",
+      "Every update has a deterministic sequence and id, exact revision and snapshot, due and observed-through times, issued or missed/overdue state, author, required sections, evidence available before issue, and next-update link",
+      "Every decision binds the exact incident snapshot, authorized decision maker and type, exact subject revision, input evidence, timestamp, and valid supersession",
+      "Every disruptive action is proposed or separately owner-executed under exact independent approval, and every communication remains a draft under exact independent approval",
+      "Every declared service has current independent recovery evidence, while incident recovery recommendation and owner-controlled closure remain distinct",
+      "Every durable follow-up has exact origin, scope, owner, due/SLA and state; each compliance-required item has one deterministic proposed or ready repository-compliance-program-manager handoff and no claimed issue or remediation lifecycle action"
     ],
     "cronJobs": [
       {
@@ -60,7 +71,7 @@
           "timezone": "UTC"
         },
         "session": "isolated",
-        "message": "Review active incident notes and produce a concise status brief. If no active incident is documented, report that no brief is needed.",
+        "message": "Review active incident notes without external mutation. Run two separate loops: the named Technical DRI owns technical investigation, hypotheses, mitigation proposals, technical-owner coordination, execution-evidence reconciliation, and service-recovery criteria; the distinct named Incident Manager owns severity/state/cadence, ordered decisions and actions, escalation, communication drafts and exact approvals, shift handoff, and closure recommendation. Emit only evidence-ordered updates and decisions. Keep service recovery, incident recovery recommendation, owner-controlled closure, and compliance remediation separate. Persist exact follow-up obligations and, when compliance tracking is required, prepare a deterministic typed proposed/ready handoff for repository-compliance-program-manager without creating or updating an issue. If no active incident is documented, report that no brief is needed.",
         "delivery": {
           "mode": "none"
         }
@@ -121,15 +132,17 @@
       }
     ],
     "capabilityGuidance": [
-      "The daily job runs in an isolated session without announcing externally; it summarizes only incident notes available to the agent and must not initiate mitigation or communication.",
+      "The daily isolated job runs distinct Technical DRI and Incident Manager loops over workspace evidence only; it does not announce externally, initiate mitigation, or perform communication.",
       "The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no shell, browser, deployment, infrastructure, messaging, status-page, or incident-system mutation capability.",
-      "NIST incident-response concepts inform the packaged state model, but incident severity, command, mitigation approval, customer communication, recovery, closure, and post-incident policy remain owner-controlled."
+      "Disruptive actions remain proposed or separately owner-executed under exact independent approval, and communications remain drafts under exact independent approval.",
+      "Service recovery, incident recovery recommendation, owner-controlled closure, risk acceptance, and compliance remediation are separate; the typed compliance handoff has deterministic identity but grants no issue-tracker capability.",
+      "New incident records use awesomeClaws.incidentResponse.v2; the schema retains strict legacy and enriched v1 branches, rejects mixed-version fields, and requires explicit migration to every v2 ledger before a v2 record can be ready."
     ]
   },
   "contribution": {
-    "problem": "The prior incident state captured impact, a timeline, mitigations, recovery criteria, communication state, and a decision label, but it lacked exact incident/service/environment/build/timeline-snapshot identity, stable principals and row ids, controlled evidence binding, reverse references, independent recovery verification across every service, owner-executed action provenance, and an incident-command review gate. Out-of-order, cross-incident, self-verified, unresolved high-risk, or Claw-executed records could appear ready.",
-    "repeatableJob": "Given one exact incident and timeline snapshot, declared services/builds and environment, named incident commander and owners, signals, controlled evidence, hypotheses, chronological events, consequential proposed or owner-executed actions, recovery checks, communication drafts, and follow-ups, produce an incident-command handoff only when all rows bind the exact incident, every declared service has a current independently verified recovery check, no high-risk signal remains unresolved, and an independent commander reviews after all evidence.",
-    "proofPlan": "Preserve the exact strict legacy incident schema under anyOf; add an exact-version enriched incident ledger for principals, services, signals, evidence, hypotheses, timeline events, actions, recovery checks, communications, follow-ups, recommendation, and handoff; register a total validator that checks every row including orphans, stable ids, reverse references, exact incident/service/build/environment/snapshot scope, controlled sources, chronology, accountable owner execution, independent recovery and command review, unresolved high-risk signals, bare-role identity, partial hybrids, premature readiness, and prohibited production/session/traffic/declaration/closure/communication claims with CLI legacy compatibility.",
+    "problem": "The prior enriched incident state bound evidence and recovery to an exact incident snapshot but still collapsed technical and incident-management responsibilities, did not model update cadence or decision chronology as first-class ledgers, allowed recovery language to blur incident closure, and could not hand durable incident obligations to the repository compliance program with deterministic identity. That left room for self-owned role claims, pre-evidence or out-of-order updates and decisions, ambiguous approval scope, accidental closure implications, and duplicate or falsely claimed compliance work.",
+    "repeatableJob": "Given one exact incident snapshot, distinct named Technical DRI and Incident Manager assignments, service and authority owners, controlled evidence, hypotheses, cadence updates, decisions, proposed or separately owner-executed actions, recovery checks, communication drafts, and durable follow-ups, run the two role loops independently; recommend incident recovery only after exact service evidence; preserve owner-controlled closure; and prepare a deterministic typed repository-compliance-program-manager handoff for compliance-required obligations without creating or updating issues.",
+    "proofPlan": "Preserve the exact strict legacy incident schema and explicit enriched v1 compatibility branch; add strict enriched v2 types for separated role loops, ordered update cadence, exact decision chronology and supersession, independent action and communication approval, service recovery, incident recovery recommendation, owner-controlled closure, durable follow-up identity, structural authority non-claims, and typed compliance handoffs. Extend the total semantic validator and adversarial tests for role overlap or agent identity, missing scope, pre-evidence and out-of-order updates, unauthorized or supersession-invalid decisions, recovery/closure conflation, handoff drift or duplicate identity, issue/remediation/verification/closure claims, and all existing exact-scope, legacy, CLI, and prohibited-action cases.",
     "existingAlternatives": [
       {
         "id": "security-analyst",

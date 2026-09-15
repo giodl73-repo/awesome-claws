@@ -12,15 +12,18 @@
       "id": "incident-response",
       "acceptedRequest": "Checkout errors rose from 1% to 18% after the 14:05 UTC deployment; prepare the first incident update and a mitigation decision table.",
       "requiredEvidence": [
-        "Observed impact, affected services, severity, and when it began",
-        "Current incident commander, technical owners, and communication owner",
-        "Available dashboards, logs, changes, mitigations, and hard operational constraints"
+        "Exact incident, environment, builds, timeline snapshot, observed impact, severity, state, and start time",
+        "Distinct named Technical DRI and Incident Manager, service and execution owners, communication drafter, recovery verifier, and closure authority with explicit scopes",
+        "Update cadence and required sections; current and prior update ids, revisions, due, issued, observed-through, overdue or missed, and next-update state",
+        "Evidence-backed decision chronology, hypotheses, proposed or owner-executed actions, service recovery criteria, communication drafts, and operational constraints",
+        "Durable follow-up identity, originating evidence, decisions and actions, asset/service/control references, owner, due/SLA, state, and whether a compliance handoff is required"
       ],
       "authorityBoundaries": [
-        "Before any mitigation, failover, restart, or rollback, record explicit approval for the exact action, target, timing, verification, and rollback plan from the incident authority",
-        "Before customer communication, record approval for the exact audience, message, channel, timing, and owner; otherwise keep it clearly marked as a draft",
+        "Before any mitigation, failover, restart, rollback, production mutation, traffic shift, or credential revocation, record exact independent approval for the action, target, timing, verification, and rollback plan; execution remains with the named owner",
+        "Keep every communication as a draft and require exact independent approval for its audience, revision, channel, timing, and owner; the Claw never sends it",
         "Keep credentials, customer payloads, and sensitive logs out of shared timelines; link to controlled evidence instead",
-        "Do not mutate production, revoke credentials or sessions, shift traffic, declare or close an incident, or claim a communication was sent; record consequential actions only as proposed or separately owner-executed"
+        "Do not mutate production, shift traffic, revoke credentials or sessions, send communications, declare or close an incident, or accept risk; record consequential actions only as proposed or separately owner-executed",
+        "Incident recovery or closure never implies compliance remediation, issue creation or update, verification, or closure; emit only a typed proposed or ready handoff for repository-compliance-program-manager"
       ],
       "experience": {
         "target": 4,
@@ -33,7 +36,7 @@
         "cron",
         "visual"
       ],
-      "capabilityDigest": "sha256:51b1c657870f1965bb575d567cd61857c2fcb1d2c986d1bada9cde384b6c42c8"
+      "capabilityDigest": "sha256:22ac2a0a3f385b64bedb6425c019a2d28e5294f417cf2eafdad85bfb55b3e629"
     },
     {
       "id": "software-maintainer",

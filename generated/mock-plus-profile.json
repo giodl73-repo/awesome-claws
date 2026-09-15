@@ -12,7 +12,7 @@
   "profiles": [
     {
       "name": "vertical",
-      "canonicalDigest": "sha256:4286526591c6e8bc2af9d5b6fdea459de961c5241c3c6a2b2f688f05b806c4d0",
+      "canonicalDigest": "sha256:c823bf22b145461f8e88a57cc853fa5d13b12fd7e3491d31b97b4a50d11f20d9",
       "clawCount": 3,
       "caseCount": 53,
       "controlsPassed": 21,
@@ -26,12 +26,12 @@
     },
     {
       "name": "schema-portfolio",
-      "canonicalDigest": "sha256:5e756a3a1a7362bc23e9c658be3202e0966c93cfbf11a650518d6df7bd1015af",
+      "canonicalDigest": "sha256:fea63dd9e07ecc5a9f10a88b3d22e39f5b1253ecdee197c7aa9f1e890483965f",
       "clawCount": 111,
-      "caseCount": 33430,
+      "caseCount": 34196,
       "controlsPassed": 777,
       "controlsFailed": 0,
-      "mutantsKilled": 32653,
+      "mutantsKilled": 33419,
       "mutantsSurvived": 0,
       "unsupportedOracles": 0,
       "invalidRecipes": 0,
@@ -40,7 +40,7 @@
     },
     {
       "name": "semantic-portfolio",
-      "canonicalDigest": "sha256:f1c4210a27a4a624c4ebd4d17504027e8084168a4f1294f4db39b4d015412204",
+      "canonicalDigest": "sha256:74ca4e2e1ce1d6375fa0838873a1b32bd2b12160311dc511a47471bdd8d6bac1",
       "clawCount": 111,
       "caseCount": 1744,
       "controlsPassed": 777,
@@ -54,7 +54,7 @@
     },
     {
       "name": "lifecycle-portfolio",
-      "canonicalDigest": "sha256:58a40bb9051798d8e15992b1e90b96dffe0a3f0c0b272d6ed9771f7bf1080257",
+      "canonicalDigest": "sha256:f26309f3b94bc8b83e1696cd594702875034ee484915828d3bf4e0d0381e712a",
       "clawCount": 111,
       "caseCount": 2072,
       "controlsPassed": 777,
@@ -69,11 +69,11 @@
   ],
   "totals": {
     "profileCount": 4,
-    "caseCount": 37299,
+    "caseCount": 38065,
     "controlsPassed": 2352,
-    "mutantsKilled": 34947,
+    "mutantsKilled": 35713,
     "mutantsSurvived": 0,
     "safetyBlockers": 0
   },
-  "profileDigest": "sha256:bc068de7be68ef1a46b68f1cd7b201cffd805cd338b9941c0eff81c7ad48a487"
+  "profileDigest": "sha256:72c4db1b34529152d0ec6086ef42e03851a65464a1552adcf6c0d99ee4f2cef4"
 }

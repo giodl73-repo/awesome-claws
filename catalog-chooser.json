@@ -1646,15 +1646,15 @@
     {
       "id": "incident-response",
       "name": "Incident response",
-      "description": "Coordinates incidents with one rule: ground ownership and recovery decisions in evidence.",
-      "audience": "On-call engineers and incident commanders handling a live service degradation or security event.",
+      "description": "Coordinates evidence-bound Technical DRI and Incident Manager loops through service recovery, owner-controlled closure, and durable compliance follow-up.",
+      "audience": "Technical DRIs, Incident Managers, service owners, incident authorities, and communication owners handling a live service degradation or security event.",
       "category": "engineering",
       "maintenance": {
         "status": "active",
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-09-14"
       },
       "setup": {
         "level": "medium",
