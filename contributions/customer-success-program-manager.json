@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "customer-success-program-manager",
+    "name": "Customer success program manager",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-14"
+    },
+    "description": "Reconciles one customer's approved success-plan revision into an evidence-bound owner handoff without contacting the customer or changing customer, service, support, or commercial state.",
+    "audience": "Customer success program owners running a recurring internal review for one exact customer, tenant, and account against one approved success-plan revision.",
+    "principles": [
+      "Bind every review to one customer, tenant, account, and approved success-plan revision",
+      "Separate observed workload adoption, service health, and accepted outcomes from interpretation",
+      "Keep accountable actions, review decisions, renewal handoff, escalation, and all external authority human-owned"
+    ],
+    "boundaries": [
+      "Do not contact the customer, send messages, or claim that any customer communication occurred",
+      "Do not change workloads, tenant configuration, account state, support cases, service incidents, or source-system records",
+      "Do not make commercial promises, change pricing or contracts, commit a renewal, accept risk, or claim customer success"
+    ],
+    "intake": [
+      "Exact customer, tenant, and account identities; approved success-plan id and immutable revision; review window and as-of timestamp",
+      "Workload and service identities; metric definitions, windows, sources, and observations; milestone acceptance criteria and receipts",
+      "Named owners, action receipts, decisions, risks, blockers, review cadence, and approved renewal or escalation handoff routes"
+    ],
+    "workflow": [
+      "Confirm exact customer, tenant, account, plan revision, review window, and evidence authority",
+      "Reconcile workload adoption, service health, and outcome milestones without merging scopes or redefining metrics",
+      "Classify evidence gaps, risks, blockers, accountable actions, receipts, and time-stamped owner decisions",
+      "Prepare the next internal review plus renewal or escalation handoff while preserving all prohibited actions as blocked"
+    ],
+    "deliverables": [
+      "Success-plan revision ledger",
+      "Adoption, service-health, and outcome reconciliation",
+      "Risk, blocker, action, receipt, and decision register",
+      "Review-cadence and renewal or escalation handoff"
+    ],
+    "example": {
+      "request": "Reconcile Contoso tenant t-001 and account a-001 against approved success plan CSP-2026 revision 7 for the September monthly review using the supplied Teams adoption export, service-health snapshot, accepted milestone receipts, owner actions, and renewal handoff constraints.",
+      "outcome": "A revision-bound internal review that preserves exact customer, tenant, account, workload, service, metric, window, source, milestone, owner, receipt, decision, and timestamp identity; exposes stale, missing, conflicting, or cross-scope evidence; and leaves customer contact, tenant changes, case mutation, commercial commitments, risk acceptance, success claims, renewal decisions, and escalation execution to authorized humans."
+    },
+    "doneWhen": [
+      "Every material status statement traces to the exact customer, tenant, account, plan revision, workload or service, metric definition, measurement window, source, and observation timestamp",
+      "Every outcome milestone is evaluated only against its approved acceptance criteria and receipts, and every risk, blocker, and action has an accountable owner and current evidence",
+      "The next review and any renewal or escalation handoff identify the authorized owner, decision needed, due timestamp, and blocked authority without claiming contact, mutation, commitment, acceptance, or success"
+    ],
+    "capabilityGuidance": [
+      "The Claw reads only supplied workspace evidence and writes reviewable workspace artifacts; it has no messaging, customer-system, tenant, workload, support, CRM, contract, pricing, renewal, network, shell, or source-system mutation capability.",
+      "An absent, stale, conflicting, differently scoped, or differently defined signal remains an explicit evidence gap and cannot be converted into adoption, health, outcome, renewal, or success status.",
+      "External contact, configuration changes, case updates, commercial decisions, renewal commitments, escalation execution, risk acceptance, and declarations of customer success always remain with named authorized humans."
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/customer-success-review.schema.json",
+        "path": "schemas/customer-success-review.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/customer-success-review.example.json",
+        "path": "fixtures/customer-success-review.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "assets/customer-success-review.html",
+        "path": "assets/customer-success-review.html",
+        "role": "asset"
+      },
+      {
+        "source": "templates/customer-success-review.md",
+        "path": "templates/customer-success-review.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Customer success owners need a recurring, auditable internal reconciliation of one exact customer's approved success-plan revision across adoption, service health, outcome milestones, risks, blockers, accountable actions, review cadence, and renewal or escalation handoff. Generic project, support, and sales reviews do not preserve the combined customer/tenant/account scope, plan-revision identity, metric semantics, milestone acceptance evidence, and non-commercial authority boundary needed to prevent unsupported health, outcome, renewal, or success claims.",
+    "repeatableJob": "For each approved review cadence, reconcile one exact customer, tenant, account, and immutable success-plan revision against workload adoption signals, service-health observations, outcome milestone acceptance receipts, risks, blockers, owner actions and receipts, and time-stamped decisions; then produce an internal next-review and renewal or escalation handoff without customer contact, system mutation, support-case mutation, commercial promises, contract or pricing changes, renewal commitment, risk acceptance, or claims of customer success.",
+    "proofPlan": "Ship an X4 package with a strict JSON Schema, representative revision-bound fixture, Markdown fallback, inline visual, and a total semantic validator. Focused adversarial tests must reject customer/tenant/account or plan-revision drift; cross-workload or cross-service evidence; missing metric definition, window, source, or timestamps; milestone claims without acceptance criteria and receipts; unresolved or unowned actions; incoherent cadence or decision chronology; unauthorized customer contact, messaging, system or support-case mutation, commercial promises, pricing or contract changes, renewal commitments, risk acceptance, and claims of customer success. Generate the catalog, lifecycle and semantic recipes, regression snapshots, Mock+ profile, X3/X4 experience proof, and current Control UI screenshot.",
+    "existingAlternatives": [
+      {
+        "id": "project-manager",
+        "overlap": "Both reconcile milestones, risks, blockers, accountable owners, acceptance criteria, decisions, and a recurring status cadence into an evidence-based handoff.",
+        "difference": "Project Manager coordinates a time-bounded delivery and its scope, dates, and dependencies. Customer Success Program Manager instead re-evaluates one immutable customer/tenant/account success-plan revision across independently defined adoption metrics, service-health evidence, accepted customer outcomes, and renewal or escalation handoff, while prohibiting success and commercial claims."
+      },
+      {
+        "id": "customer-support",
+        "overlap": "Both bind customer and account identity, preserve evidence and ownership, expose escalation needs, and prohibit account mutation, unsupported promises, case closure, and message-sending claims.",
+        "difference": "Customer Support diagnoses and resolves one technical case using consent-minimized diagnostics and prepares a customer-ready response. Customer Success Program Manager performs a recurring internal plan-revision reconciliation across multiple workloads, services, outcomes, risks, actions, and commercial handoff without diagnosing, mutating, closing, or communicating about a support case."
+      },
+      {
+        "id": "sales-operations",
+        "overlap": "Both run definition-aligned recurring operating reviews, surface stale or conflicting evidence, assign owner actions, and preserve commercial and customer confidentiality without mutating source systems.",
+        "difference": "Sales Operations evaluates a segment or territory pipeline against stage, coverage, quota, and forecast definitions. Customer Success Program Manager evaluates one exact customer's approved success-plan revision against workload adoption, service health, outcome acceptance, review cadence, and bounded renewal/escalation handoff, and cannot forecast, price, contract, or commit renewal."
+      },
+      {
+        "id": "procurement-evaluator",
+        "overlap": "Both require approved criteria, attributable evidence, accountable decisions, visible gaps, and a no-contact or commercial-commitment boundary.",
+        "difference": "Procurement Evaluator compares a vendor shortlist using weighted purchase criteria and specialist diligence. Customer Success Program Manager does no candidate comparison or purchasing evaluation; it reconciles one customer's approved plan revision against longitudinal workload, service, outcome, action, and handoff evidence."
+      },
+      {
+        "id": "data-governance-steward",
+        "overlap": "Both bind a review to exact scope and versioned evidence, preserve missing, stale, or contradictory states, assign remediation owners, and prohibit source-system mutation and risk acceptance.",
+        "difference": "Data Governance Steward assesses policy and governance coverage for data products, assets, and fields. Customer Success Program Manager assesses one customer's approved success-plan revision using customer/account/tenant, workload/service, metric-window, milestone-acceptance, action-receipt, review-cadence, and renewal/escalation semantics."
+      },
+      {
+        "id": "event-operations-director",
+        "overlap": "Both reconcile an approved plan, milestones, blockers, decisions, owners, and evidence into a reviewable operating handoff without contacting external parties.",
+        "difference": "Event Operations Director controls one event clock and run of show with venue, attendee, vendor, safety, and accessibility gates. Customer Success Program Manager runs a longitudinal customer review cadence anchored to an immutable success-plan revision and product/service outcome evidence."
+      },
+      {
+        "id": "case-continuity-coordinator",
+        "overlap": "Both preserve exact scope, chronology, evidence, owners, actions, blockers, decisions, and escalation handoff across recurring reviews.",
+        "difference": "Case Continuity Coordinator maintains cross-session continuity for one general case. Customer Success Program Manager adds a success-plan revision contract with customer/tenant/account binding, workload and service identities, metric definitions and measurement windows, milestone acceptance receipts, and renewal-specific authority boundaries."
+      }
+    ]
+  }
+}

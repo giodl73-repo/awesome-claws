@@ -1,0 +1,41 @@
+<style>
+.csr{--ink:#132238;--muted:#5d6b7e;--line:#d8e0e8;--navy:#183b5b;--blue:#1976a8;--sky:#eaf5fb;--green:#247153;--green-bg:#e8f5ef;--amber:#8a5a00;--amber-bg:#fff3d6;--red:#a9362c;--red-bg:#fdecea;font:15px/1.45 "Segoe UI",system-ui,sans-serif;color:var(--ink);background:#f5f8fb;border:1px solid var(--line);border-radius:12px;overflow:hidden}.csr *{box-sizing:border-box}.csr header{padding:22px 24px;background:linear-gradient(125deg,#173a59,#1e6685);color:#fff}.csr h1{font-size:25px;line-height:1.2;margin:0}.csr header p{margin:7px 0 0;color:#d9eef7}.csr .scope{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}.csr .scope span{padding:5px 9px;border:1px solid rgba(255,255,255,.32);border-radius:999px;background:rgba(255,255,255,.1);font:12px ui-monospace,monospace}.csr main{padding:20px}.csr .state{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:14px 16px;border-left:5px solid #d28a00;background:var(--amber-bg);border-radius:7px;margin-bottom:16px}.csr .state strong{display:block;font-size:17px}.csr .state span{color:var(--amber);font-weight:700}.csr .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.csr .card,.csr .panel{background:#fff;border:1px solid var(--line);border-radius:8px}.csr .card{padding:15px}.csr .label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}.csr .value{display:block;font-size:25px;font-weight:750;margin:5px 0 2px}.csr .sub{color:var(--muted);font-size:13px}.csr .below{color:var(--red)}.csr .healthy{color:var(--green)}.csr .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-top:14px}.csr .panel{padding:17px}.csr h2{font-size:17px;margin:0 0 12px}.csr .lane{padding:12px 0;border-top:1px solid var(--line)}.csr .lane:first-of-type{border-top:0;padding-top:0}.csr .lane-head{display:flex;justify-content:space-between;gap:12px}.csr .lane strong{font-size:14px}.csr .badge{font-size:11px;font-weight:700;padding:3px 7px;border-radius:999px;white-space:nowrap}.csr .badge.warn{color:var(--red);background:var(--red-bg)}.csr .badge.ok{color:var(--green);background:var(--green-bg)}.csr .lane p{margin:5px 0 0;color:var(--muted);font-size:13px}.csr .owner{display:grid;grid-template-columns:1fr auto;gap:8px;padding:9px 0;border-top:1px solid var(--line)}.csr .owner:first-of-type{border-top:0}.csr .owner span{color:var(--muted);font-size:13px}.csr .authority{margin-top:14px;padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:8px}.csr .authority strong{color:var(--navy)}.csr .authority p{margin:5px 0 0;color:var(--muted)}@media(max-width:760px){.csr header,.csr main{padding:16px}.csr .metrics{grid-template-columns:1fr 1fr}.csr .grid{grid-template-columns:1fr}.csr .state{align-items:flex-start;flex-direction:column}.csr h1{font-size:21px}}@media(max-width:420px){.csr .metrics{grid-template-columns:1fr}.csr .scope span{max-width:100%;overflow-wrap:anywhere}}
+</style>
+<section class="csr" aria-labelledby="csr-title">
+  <header>
+    <h1 id="csr-title">Contoso success-plan review</h1>
+    <p>Monthly internal reconciliation as of 14 Sep 2026, 19:00 UTC</p>
+    <div class="scope" aria-label="Exact review scope">
+      <span>customer-contoso</span><span>tenant-contoso-prod</span><span>account-contoso-enterprise</span><span>plan-contoso-2026 / rev 7</span>
+    </div>
+  </header>
+  <main>
+    <section class="state" aria-label="Review state">
+      <div><strong>Blocked for owner review</strong><span>[validated handoff summary]</span></div>
+      <div class="label">Next review · 14 Oct</div>
+    </section>
+    <section class="metrics" aria-label="Review measures">
+      <article class="card"><span class="label">Teams adoption</span><strong class="value below">68%</strong><span class="sub">Target ≥ 75% · Aug window</span></article>
+      <article class="card"><span class="label">Service health</span><strong class="value healthy">Healthy</strong><span class="sub">Teams service · Aug window</span></article>
+      <article class="card"><span class="label">Milestones</span><strong class="value">1 / 2</strong><span class="sub">Accepted with owner receipt</span></article>
+      <article class="card"><span class="label">Actions</span><strong class="value">1 / 2</strong><span class="sub">One remeasurement remains open</span></article>
+    </section>
+    <section class="grid">
+      <article class="panel">
+        <h2>Evidence reconciliation</h2>
+        <div class="lane"><div class="lane-head"><strong>Monthly active enabled-user rate</strong><span class="badge warn">below target</span></div><p>0.68 from controlled adoption export · exact metric definition · 1–31 Aug · observed 2 Sep</p></div>
+        <div class="lane"><div class="lane-head"><strong>Teams service health</strong><span class="badge ok">healthy</span></div><p>Controlled service-health snapshot · 1–31 Aug · observed 1 Sep · no incident reference</p></div>
+        <div class="lane"><div class="lane-head"><strong>Teams rollout milestone</strong><span class="badge ok">accepted</span></div><p>Teams workload / Teams service · criterion evidence, receipt, and accountable owner decision recorded 30 Aug</p></div>
+        <div class="lane"><div class="lane-head"><strong>Active-user target milestone</strong><span class="badge warn">at risk</span></div><p>Teams workload / Teams service · exact observation and source cited; acceptance remains open because 0.68 is below the immutable 0.75 target</p></div>
+      </article>
+      <aside class="panel">
+        <h2>Accountable handoff</h2>
+        <div class="owner"><div><strong>Review owner</strong><br><span>Customer success program owner</span></div><span>18 Sep</span></div>
+        <div class="owner"><div><strong>Adoption action</strong><br><span>Product adoption owner</span></div><span>2 Oct</span></div>
+        <div class="owner"><div><strong>Renewal context</strong><br><span>Commercial renewal owner</span></div><span>review</span></div>
+        <div class="owner"><div><strong>Escalation route</strong><br><span>Success-plan approver</span></div><span>review</span></div>
+      </aside>
+    </section>
+    <section class="authority"><strong>Authority remains blocked</strong><p>No customer contact or messaging, tenant/workload/account/service change, support-case mutation, commercial promise, pricing or contract change, renewal commitment, risk acceptance, or claim of customer success.</p></section>
+  </main>
+</section>

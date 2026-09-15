@@ -4,6 +4,7 @@ import { backupRestoreVerificationFindings } from "./backup-restore-verification
 import { businessContinuityProgramFindings } from "./business-continuity-program-manager.mjs";
 import { commercialDealDeskFindings } from "./commercial-deal-desk-coordinator.mjs";
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
+import { customerSuccessReviewFindings } from "./customer-success-program-manager.mjs";
 import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 import { learningProgramFindings } from "./learning-program-manager.mjs";
@@ -53231,6 +53232,7 @@ const validators = {
   "data-migration-planner": dataMigrationReadinessFindings,
   "content-operations": publicationReadinessRecordFindings,
   "customer-support": customerSupportCaseFindings,
+  "customer-success-program-manager": customerSuccessReviewFindings,
   "data-analyst": dataAnalysisFindings,
   "data-governance-steward": dataGovernanceAssessmentFindings,
   "delegation-coordinator": delegationFindings,
