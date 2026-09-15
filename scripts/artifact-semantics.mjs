@@ -6,6 +6,7 @@ import { financialAccountReconciliationFindings } from "./financial-account-reco
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 import { repositoryOperationsFindings } from "./repository-operations-manager.mjs";
 import { repositoryComplianceProgramFindings } from "./repository-compliance-program-manager.mjs";
+import { solutionArchitectureDecisionFindings } from "./solution-architecture-decision-advisor.mjs";
 import { tlsCertificateRotationVerificationFindings } from "./tls-certificate-rotation-verification-coordinator.mjs";
 
 export function hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) {
@@ -53296,6 +53297,7 @@ const validators = {
   "school-coordinator": schoolCoordinatorFindings,
   "security-analyst": securityAssessmentFindings,
   "software-maintainer": changeDeliveryRecordFindings,
+  "solution-architecture-decision-advisor": solutionArchitectureDecisionFindings,
   "sports-team-watcher": sportsTeamWatchFindings,
   "spreadsheet-analyst": spreadsheetChangeFindings,
   "stock-portfolio-monitor": stockPortfolioFindings,

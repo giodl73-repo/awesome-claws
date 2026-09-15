@@ -318,6 +318,14 @@
       "asset": "assets/research-brief.html",
       "fallback": "outputs/research-brief.md",
       "output": "outputs/research-brief.html"
+    },
+    {
+      "id": "solution-architecture-decision-advisor",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/architecture-decision-board.html",
+      "fallback": "outputs/architecture-decision.md",
+      "output": "outputs/architecture-decision-board.html"
     }
   ]
 }
