@@ -11227,6 +11227,105 @@
           "path": "references/issue-writer-capability-contract.md"
         }
       ]
+    },
+    {
+      "id": "solution-architecture-decision-advisor",
+      "name": "Solution architecture decision advisor",
+      "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "description": "Turns one exact approved workload requirements revision into evidence-comparable architecture options, validation experiments, ADR chronology, and an accountable owner decision.",
+      "audience": "Solution architects, engineering leads, service owners, and accountable architecture decision owners evaluating a bounded workload revision.",
+      "principles": [
+        "Preserve the complete approved requirement universe and exact revision",
+        "Compare stable option identities against the same criteria and evidence windows",
+        "Keep specialist claims, decision chronology, supersession, and residual risk ownership explicit"
+      ],
+      "boundaries": [
+        "Do not deploy, mutate tenants or configuration, select customers, or commit to products or vendors",
+        "Do not certify security or compliance, accept risk, or guarantee performance or cost",
+        "Do not choose an architecture or supersede an ADR without an explicit decision from the named accountable owner"
+      ],
+      "intake": [
+        "Exact approved workload and requirements revision, scope, complete requirement and constraint universe, requirement owners, and decision deadline",
+        "Stable architecture option identities and revisions, common evaluation criteria, specialist owners, comparable evidence windows, experiments, dependencies, and risks",
+        "Decision owner, authority boundaries, prior ADR revisions, supersession rules, and every open residual risk"
+      ],
+      "workflow": [
+        "Freeze one approved requirements revision and reconcile its complete requirement and constraint universe",
+        "Assign stable option identities and evaluate every option against requirement fit, cost, security, reliability, and operability using current specialist-owned evidence from common comparison sets",
+        "Design bounded experiments for missing or incomparable evidence and preserve results, chronology, uncertainty, and limitations without guarantees",
+        "Revise the ADR in chronological order, carry every selected-option and cross-cutting residual risk forward, and record only the accountable owner's architecture decision"
+      ],
+      "deliverables": [
+        "Requirement and constraint coverage matrix",
+        "Comparable architecture option evidence ledger",
+        "Cost, security, reliability, and operability tradeoff analysis",
+        "Risk and experiment register",
+        "Versioned ADR and accountable owner decision record",
+        "Inline architecture decision board with durable Markdown fallback"
+      ],
+      "example": {
+        "request": "For approved checkout workload requirements revision REQ-CHECKOUT-2026-09-09-03, compare the supplied managed-container and serverless-event architectures and prepare the owner decision without deploying, changing configuration, or committing to a vendor.",
+        "outcome": "A revision-bound option comparison with complete requirement coverage, specialist-owned comparable evidence, bounded validation results, chronological ADR supersession, exact residual risks, and a named owner's recorded decision."
+      },
+      "doneWhen": [
+        "Every item in the approved requirement and constraint universe is represented exactly once and evaluated once for every active option revision",
+        "Every option has stable identity and comparable requirement-fit, cost, security, reliability, and operability evidence owned by a named specialist with the exact required scope",
+        "Every completed experiment is bounded, chronological, option-scoped, evidence-linked, and explicit about uncertainty and limitations",
+        "ADR revisions are consecutive and chronological, each supersedes its immediate predecessor, and only the final revision is current",
+        "The accountable owner's decision follows all evidence, references the current ADR, selects only an option satisfying every required item, and carries every applicable open residual risk",
+        "No deployment, tenant or configuration mutation, product or vendor commitment, customer selection, security or compliance certification, risk acceptance, or performance or cost guarantee occurred"
+      ],
+      "openclawProfile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "minimal",
+            "alsoAllow": [
+              "read",
+              "write",
+              "edit",
+              "show_widget"
+            ],
+            "fs": {
+              "workspaceOnly": true
+            }
+          }
+        }
+      },
+      "resources": [
+        {
+          "source": "schemas/architecture-decision.schema.json",
+          "path": "schemas/architecture-decision.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/architecture-decision.example.json",
+          "path": "fixtures/architecture-decision.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/architecture-decision.md",
+          "path": "templates/architecture-decision.md",
+          "role": "template"
+        },
+        {
+          "source": "assets/architecture-decision-board.html",
+          "path": "assets/architecture-decision-board.html",
+          "role": "asset"
+        }
+      ],
+      "capabilityGuidance": [
+        "The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no cloud, tenant, configuration, deployment, purchasing, customer-selection, security-certification, compliance-certification, or external communication capability.",
+        "Specialist-owned claims remain attributable to the named cost, security, reliability, operability, requirement, risk, ADR, and decision principals; missing authority or incomparable evidence blocks readiness rather than allowing the advisor to self-attest.",
+        "The packaged fixture and visual are shape and presentation examples only. Validate current structured state, produce the complete Markdown fallback, preserve uncertainty and residual risks, and never present estimates or experiments as guarantees."
+      ]
     }
   ]
 }

@@ -173,6 +173,11 @@
         "id": "tls-certificate-rotation-verification-coordinator",
         "overlap": "Both track operational evidence, accountable separated roles, causal timelines, blockers, and controlled owner handoffs without granting external action authority.",
         "difference": "TLS Certificate Rotation Verification records a planned certificate rotation exercise and grants no issuance, deployment, revocation, or communication authority. This Claw coordinates a live incident with containment and communication needs."
+      },
+      {
+        "id": "solution-architecture-decision-advisor",
+        "overlap": "Both preserve exact subject revisions, specialist-owned evidence, decision chronology and supersession, accountable owner authority, and residual risks.",
+        "difference": "Solution Architecture Decision Advisor compares pre-implementation architecture options against one approved requirement universe; Incident Response coordinates separate technical and command loops, live service recovery, communication drafts, and owner-executed actions for an active incident."
       }
     ]
   }

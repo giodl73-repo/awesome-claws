@@ -1,0 +1,45 @@
+<style>
+.oc-surface{padding:24px;background:#f4f7fb;color:#10233f;font:15px/1.45 "Segoe UI",Inter,Arial,sans-serif}.oc-top{display:flex;justify-content:space-between;gap:18px;margin-bottom:18px}.oc-title h1{margin:0;font-size:28px}.oc-title p{margin:6px 0 0;color:#52637d}.oc-state{border:1px solid #8cb9b2;background:#e3f3ef;color:#125c52;border-radius:10px;padding:12px 16px;min-width:290px;font-weight:800}.oc-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.oc-card,.oc-panel{background:#fff;border:1px solid #d4deeb;border-radius:10px;box-shadow:0 1px 2px rgba(18,38,67,.05)}.oc-card{padding:16px}.oc-card span,.oc-label,small{color:#6a7890;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}.oc-card strong{display:block;margin-top:6px;font-size:27px}.oc-card p,.oc-panel p{margin:7px 0 0;color:#53647d}.oc-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}.oc-panel{padding:19px}.oc-panel h2{margin:0 0 12px;font-size:19px}.oc-option{border:1px solid #d7e2ee;border-left:5px solid #2c6e9e;border-radius:8px;padding:13px 14px;margin-top:10px}.oc-option.selected{border-left-color:#1d8876;background:#f4fbf9}.oc-option header{display:flex;justify-content:space-between;gap:12px}.oc-option strong{font-size:16px}.oc-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.oc-chips span{border:1px solid #c9d8e7;background:#f5f8fc;color:#435873;border-radius:999px;padding:3px 9px;font-size:12px}.oc-list{display:grid;gap:9px}.oc-item{border-bottom:1px solid #e1e7ef;padding:0 0 9px}.oc-item:last-child{border:0}.oc-bottom{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.oc-risk{color:#9a4d17;font-weight:800}@media(max-width:760px){.oc-surface{padding:14px}.oc-top,.oc-grid,.oc-bottom{display:block}.oc-state,.oc-panel{margin-top:12px;min-width:0}.oc-metrics{grid-template-columns:1fr 1fr}}
+</style>
+<main class="oc-surface" aria-labelledby="architecture-title">
+  <section class="oc-top">
+    <div class="oc-title">
+      <h1 id="architecture-title">Checkout architecture decision</h1>
+      <p>Exact requirement revision <strong>REQ-CHECKOUT-2026-09-09-03</strong> · evidence window closed 14 Sep 2026</p>
+    </div>
+    <div class="oc-state">Owner decision recorded · ADR-002 current</div>
+  </section>
+  <section class="oc-metrics">
+    <article class="oc-card"><span>Requirements</span><strong>5 / 5</strong><p>declared and covered per option</p></article>
+    <article class="oc-card"><span>Options</span><strong>2</strong><p>stable ids and revisions</p></article>
+    <article class="oc-card"><span>Tradeoff cells</span><strong>10 / 10</strong><p>same five comparison dimensions</p></article>
+    <article class="oc-card"><span>Residual risks</span><strong>2</strong><p>carried into the owner decision</p></article>
+  </section>
+  <section class="oc-grid">
+    <section class="oc-panel">
+      <h2>Comparable architecture options</h2>
+      <article class="oc-option selected">
+        <header><strong>Managed containers</strong><small>opt-managed-containers · r2</small></header>
+        <p>Selected by Morgan Lee after specialist review and two bounded experiments.</p>
+        <div class="oc-chips"><span>requirement fit: favorable</span><span>cost: mixed</span><span>security: favorable</span><span>reliability: favorable</span><span>operability: mixed</span></div>
+      </article>
+      <article class="oc-option">
+        <header><strong>Serverless events</strong><small>opt-serverless-events · r1</small></header>
+        <p>Viable alternative with lower idle cost, but partial portability and team-operability fit.</p>
+        <div class="oc-chips"><span>requirement fit: mixed</span><span>cost: favorable</span><span>security: mixed</span><span>reliability: mixed</span><span>operability: unfavorable</span></div>
+      </article>
+    </section>
+    <aside class="oc-panel">
+      <h2>Decision chronology</h2>
+      <div class="oc-list">
+        <div class="oc-item"><small>09 Sep · requirements</small><p>Priya Shah approved revision 03 and attested the five-item universe.</p></div>
+        <div class="oc-item"><small>14 Sep · evidence</small><p>FinOps, security, reliability, and operations owners completed comparable assessments.</p></div>
+        <div class="oc-item"><small>14 Sep · decision</small><p>Morgan Lee selected managed containers; ADR-002 superseded ADR-001.</p></div>
+      </div>
+    </aside>
+  </section>
+  <section class="oc-bottom">
+    <section class="oc-panel"><h2>Residual risk continuity</h2><p class="oc-risk">Platform-team ramp-up · managed-egress dependency</p><p>Both remain open, named, evidence-linked, and owner-controlled. No risk was accepted by the advisor.</p></section>
+    <section class="oc-panel"><h2>Authority boundary</h2><p>No deployment, tenant/config mutation, vendor commitment, customer selection, certification, risk acceptance, or performance/cost guarantee. Full fallback: <strong>outputs/architecture-decision.md</strong>.</p></section>
+  </section>
+</main>
