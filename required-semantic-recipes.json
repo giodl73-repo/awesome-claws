@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 112,
-    "coveredCount": 112,
-    "recipeCount": 304,
-    "findingCodeCount": 363
+    "validatorCount": 113,
+    "coveredCount": 113,
+    "recipeCount": 307,
+    "findingCodeCount": 368
   },
   "entries": [
     {
@@ -4789,6 +4789,50 @@
             "invalid_architecture_chronology",
             "invalid_requirement_universe",
             "premature_owner_decision"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "partner-business-manager",
+      "recipes": [
+        {
+          "id": "semantic-invalid-authority-evidence-1",
+          "operator": "replace",
+          "path": [
+            "identity",
+            "partnerId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_authority_evidence",
+            "invalid_predecessor_manifest",
+            "mixed_plan_identity"
+          ]
+        },
+        {
+          "id": "semantic-invalid-revision-lineage-2",
+          "operator": "replace",
+          "path": [
+            "identity",
+            "planRevision"
+          ],
+          "replacement": 5,
+          "expectedCodes": [
+            "invalid_revision_lineage",
+            "mixed_plan_identity"
+          ]
+        },
+        {
+          "id": "semantic-invalid-validation-time-3",
+          "operator": "replace",
+          "path": [
+            "identity",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_validation_time"
           ]
         }
       ]

@@ -138,6 +138,11 @@
         "id": "project-manager",
         "overlap": "Both coordinate milestones, owners, dependencies, risks, deadlines, and scope changes.",
         "difference": "Project Manager governs a bounded project plan. Household Steward is a persistent consumer operating layer over specialist Claw artifacts, recurring household obligations, member-specific privacy and authority, shared budgets, absence coverage, and provider actions."
+      },
+      {
+        "id": "partner-business-manager",
+        "overlap": "Both reconcile scoped evidence, dependencies, risks, owner actions, decisions, period coverage, and independent principal authority.",
+        "difference": "Partner Business Manager binds one commercial partner's exact joint-business-plan revision to partner-program and co-sell evidence. Household Steward coordinates a longitudinal private household portfolio across people, properties, care domains, providers, budgets, privacy scopes, and recurring specialist-Claw artifacts."
       }
     ]
   }

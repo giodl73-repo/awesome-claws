@@ -74,6 +74,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "music-organizer": "music-library.schema.json",
   "neighborhood-operations-watcher": "neighborhood-operations.schema.json",
   "personal-archive-curator": "archive-index.schema.json",
+  "partner-business-manager": "partner-business-plan.schema.json",
   "pet-care-coordinator": "pet-care.schema.json",
   "pond-water-feature-coordinator": "pond-system.schema.json",
   "presentation-producer": "presentation-evidence-manifest.schema.json",

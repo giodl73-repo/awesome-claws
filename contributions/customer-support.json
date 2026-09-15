@@ -73,6 +73,11 @@
         "id": "knowledge-curator",
         "overlap": "Both turn evidence and findings into reusable, attributable operational knowledge without claiming external mutation.",
         "difference": "Knowledge Curator organizes durable knowledge collections and source provenance, while Customer Support manages one active customer issue, consent, diagnosis, communication draft, escalation, and case-owner resolution."
+      },
+      {
+        "id": "partner-business-manager",
+        "overlap": "Both bind one scoped operating record to controlled evidence, named principals, unresolved escalations, and a human-owned handoff without exercising external authority.",
+        "difference": "Partner Business Manager reconciles a multi-domain partner-plan revision and its business authority boundaries; Customer Support proves one consent-scoped technical diagnosis and reserves account, refund, closure, and customer-message actions for the case owner."
       }
     ]
   }
