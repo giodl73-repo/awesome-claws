@@ -326,6 +326,14 @@
       "asset": "assets/architecture-decision-board.html",
       "fallback": "outputs/architecture-decision.md",
       "output": "outputs/architecture-decision-board.html"
+    },
+    {
+      "id": "partner-business-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/partner-business-plan-review.html",
+      "fallback": "outputs/partner-business-plan-review.md",
+      "output": "outputs/partner-business-plan-review.html"
     }
   ]
 }
