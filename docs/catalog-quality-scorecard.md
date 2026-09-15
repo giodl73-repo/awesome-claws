@@ -1,6 +1,6 @@
 # Catalog quality scorecard
 
-This report scores all 111 maintained Claws as of 2026-09-14. It uses only repository-observable evidence and does not claim live-model quality or real-world outcomes. See [the rubric](catalog-quality-rubric.md) for interpretation and point rules.
+This report scores all 111 maintained Claws as of 2026-09-15. It uses only repository-observable evidence and does not claim live-model quality or real-world outcomes. See [the rubric](catalog-quality-rubric.md) for interpretation and point rules.
 
 ## Portfolio result
 

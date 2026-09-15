@@ -1,4 +1,65 @@
 <style>
-.oc-surface{padding:24px;background:#f6f8fb;color:#172033;font:16px/1.45 "Segoe UI",Arial,sans-serif}.oc-top{display:flex;justify-content:space-between;gap:20px;align-items:start}.oc-top h1{margin:0;font-size:28px}.oc-top p{margin:6px 0;color:#5d6b82}.oc-state{padding:10px 14px;border-radius:8px;background:#fde7e9;border:1px solid #cf222e;font-weight:700}.oc-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}.oc-card,.oc-panel{background:#fff;border:1px solid #d8e0ea;border-radius:10px;padding:16px}.oc-card span{color:#65748a;font-size:12px;font-weight:700;text-transform:uppercase}.oc-card strong{display:block;font-size:26px;margin-top:6px}.oc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.oc-panel h2{margin:0 0 12px}.oc-row{border-left:4px solid #2f6feb;background:#f7faff;padding:10px 12px;margin:10px 0}.oc-row.hypothesis{border-color:#d29922}.oc-row.blocked{border-color:#cf222e}.oc-row strong{display:block}.oc-row small{color:#617086}.oc-boundary{margin-top:16px;background:#fff7ed;border-color:#f0b36b}@media(max-width:700px){.oc-surface{padding:14px}.oc-top,.oc-grid{display:block}.oc-state{margin-top:12px}.oc-metrics{grid-template-columns:1fr 1fr}.oc-panel{margin-top:12px}}
+.oc-surface{padding:18px;background:#f4f7fb;color:#172033;font:14px/1.35 "Segoe UI",Arial,sans-serif}.oc-top{display:flex;justify-content:space-between;gap:16px;align-items:start}.oc-top h1{margin:0;font-size:26px}.oc-top p{margin:4px 0;color:#5d6b82}.oc-state{padding:8px 12px;border-radius:9px;background:#fff4ce;border:1px solid #d29922;font-weight:700}.oc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.oc-panel{background:#fff;border:1px solid #d8e0ea;border-radius:11px;padding:11px}.oc-panel h2{margin:0 0 6px;font-size:17px}.oc-role{border-top:4px solid #2f6feb}.oc-role.im{border-top-color:#8250df}.oc-role strong{font-size:16px}.oc-role ul{margin:5px 0 0;padding-left:18px;color:#4d5d73;font-size:13px}.oc-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px}.oc-step{background:#fff;border:1px solid #d8e0ea;border-radius:9px;padding:8px}.oc-step span{display:block;color:#65748a;font-size:10px;font-weight:700;text-transform:uppercase}.oc-step strong{display:block;margin-top:3px}.oc-missed{border-color:#cf222e;background:#fff7f7}.oc-table{grid-column:1/-1}.oc-row{display:grid;grid-template-columns:1.1fr 1fr 1.3fr .8fr;gap:7px;border-top:1px solid #e6ebf1;padding:6px 0;font-size:13px}.oc-row:first-of-type{border-top:0}.oc-row small{color:#65748a}.oc-boundary{grid-column:1/-1;background:#fff7ed;border-color:#f0b36b}.oc-ready{color:#116329;font-weight:700}.oc-open{color:#9a6700;font-weight:700}@media(max-width:600px){.oc-surface{padding:14px}.oc-top,.oc-grid{display:block}.oc-state{margin-top:12px}.oc-panel{margin-top:12px}.oc-strip{grid-template-columns:1fr 1fr}.oc-row{grid-template-columns:1fr}}
 </style>
-<main class="oc-surface" aria-labelledby="incident-title"><section class="oc-top"><div><h1 id="incident-title">INC-2048 recovery readiness</h1><p>Checkout partial outage - incident command view</p></div><div class="oc-state">SEV-1 - mitigating</div></section><section class="oc-metrics"><article class="oc-card"><span>Customer impact</span><strong>18%</strong><p>checkout error rate</p></article><article class="oc-card"><span>Mitigations</span><strong>2</strong><p>both explicitly approved</p></article><article class="oc-card"><span>Recovery criteria</span><strong>1 / 3</strong><p>one blocked</p></article><article class="oc-card"><span>Communication</span><strong>Draft</strong><p>not approved or sent</p></article></section><section class="oc-grid"><article class="oc-panel"><h2>Evidence timeline</h2><div class="oc-row"><strong>14:07 - alert threshold crossed</strong><small>observation; checkout error dashboard</small></div><div class="oc-row hypothesis"><strong>14:12 - deployment hypothesis</strong><small>timeout-handling change remains under investigation</small></div><div class="oc-row"><strong>14:18 - bounded rollback approved</strong><small>checkout-api only; incident commander approval recorded</small></div></article><article class="oc-panel"><h2>Recovery decision queue</h2><div class="oc-row blocked"><strong>Checkout errors below 2%</strong><small>unmet; owner: Checkout lead</small></div><div class="oc-row"><strong>Payment authorization stable</strong><small>met; owner: Payments lead</small></div><div class="oc-row blocked"><strong>Rollback state verified</strong><small>blocked; owner: Release engineer</small></div></article></section><section class="oc-panel oc-boundary"><h2>Incident authority boundary</h2><p>This view records evidence, approved actions, recovery criteria, and draft communications. It does not restart, fail over, roll back, deploy, change configuration, close the incident, or publish a customer update.</p><p>The complete fallback remains in <strong>outputs/incident-readiness.md</strong>.</p></section></main>
+<main class="oc-surface" aria-labelledby="incident-title">
+  <section class="oc-top">
+    <div>
+      <h1 id="incident-title">INC-2048 response control</h1>
+      <p>Checkout platform - exact snapshot 11:15Z - recovery is not closure</p>
+    </div>
+    <div class="oc-state">SEV-1 - recovering</div>
+  </section>
+  <section class="oc-grid">
+    <article class="oc-panel oc-role">
+      <h2>Technical DRI loop</h2>
+      <strong>Alex Rivera</strong>
+      <ul>
+        <li>Investigation and hypotheses</li>
+        <li>Mitigation proposals / owner coordination</li>
+        <li>Execution evidence / recovery criteria</li>
+      </ul>
+    </article>
+    <article class="oc-panel oc-role im">
+      <h2>Incident Manager loop</h2>
+      <strong>Riley Chen</strong>
+      <ul>
+        <li>Severity, state, cadence, decisions</li>
+        <li>Actions, escalation, draft approvals</li>
+        <li>Shift handoff / closure recommendation</li>
+      </ul>
+    </article>
+  </section>
+  <section class="oc-strip" aria-label="Update cadence">
+    <article class="oc-step"><span>Update 0001</span><strong>Issued 10:17</strong><small>observed through 10:16</small></article>
+    <article class="oc-step oc-missed"><span>Update 0002</span><strong>Missed</strong><small>due 10:30</small></article>
+    <article class="oc-step"><span>Update 0003</span><strong>Issued 10:58</strong><small>revision r3</small></article>
+    <article class="oc-step"><span>Update 0004</span><strong>Issued 11:03</strong><small>due 11:00</small></article>
+    <article class="oc-step"><span>Next update</span><strong>0005 at 11:15</strong><small>scheduled</small></article>
+  </section>
+  <section class="oc-grid">
+    <article class="oc-panel oc-table">
+      <h2>Evidence-bound decision chronology</h2>
+      <div class="oc-row"><strong>10:06 severity/state</strong><span>Incident Manager</span><small>alert + payment evidence</small><span>state r1</span></div>
+      <div class="oc-row"><strong>10:20 rollback approval</strong><span>Casey Nguyen</span><small>independent-action-approval</small><span>approved</span></div>
+      <div class="oc-row"><strong>10:56 communication approval</strong><span>Casey Nguyen</span><small>independent-communication-approval</small><span>draft only</span></div>
+      <div class="oc-row"><strong>11:00 recovery recommendation</strong><span>Incident Manager</span><small>service checks + execution evidence</small><span>reviewed</span></div>
+    </article>
+    <article class="oc-panel">
+      <h2>Recovery states</h2>
+      <p><span class="oc-ready">Service recovery: criteria met</span><br><small>independent checks for 2 / 2 services</small></p>
+      <p><span class="oc-ready">Incident recovery: recommended</span><br><small>owner review still required</small></p>
+      <p><span class="oc-open">Incident closure: open</span><br><small>Casey Nguyen retains closure authority</small></p>
+    </article>
+    <article class="oc-panel">
+      <h2>Durable compliance follow-up</h2>
+      <p><strong>Timeout regression control</strong><br><small>owner Priya Desai - due Sep 12 - SLA 168h</small></p>
+      <p><span class="oc-ready">Typed handoff ready</span><br><small>repository-compliance-program-manager<br>dedup key 53b056...753d9a</small></p>
+      <p><small>No issue created or updated. No remediation, verification, or compliance closure claimed.</small></p>
+    </article>
+    <article class="oc-panel oc-boundary">
+      <h2>Authority boundary</h2>
+      <p>The Claw does not mutate production, shift traffic, revoke credentials, send communications, declare or close incidents, accept risk, or perform compliance lifecycle actions. Disruptive owner execution and every communication draft require exact independent approval.</p>
+      <p>The complete fallback remains in <strong>outputs/incident-response-handoff.md</strong>.</p>
+    </article>
+  </section>
+</main>

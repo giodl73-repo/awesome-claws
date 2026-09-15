@@ -5,7 +5,7 @@
     "validatorCount": 111,
     "coveredCount": 111,
     "recipeCount": 301,
-    "findingCodeCount": 356
+    "findingCodeCount": 359
   },
   "entries": [
     {
@@ -22,8 +22,12 @@
           "expectedCodes": [
             "cross_scope_evidence",
             "incomplete_recovery_coverage",
+            "invalid_decision_chronology",
             "invalid_incident_chronology",
             "invalid_incident_follow_up",
+            "invalid_incident_update_sequence",
+            "invalid_recovery_closure_separation",
+            "invalid_update_cadence",
             "premature_incident_readiness",
             "premature_ready_state",
             "unsupported_communication_draft",
@@ -34,27 +38,6 @@
         },
         {
           "id": "semantic-cross-scope-evidence-2",
-          "operator": "remove",
-          "path": [
-            "incident",
-            "id"
-          ],
-          "expectedCodes": [
-            "cross_scope_evidence",
-            "incomplete_recovery_coverage",
-            "invalid_incident_chronology",
-            "invalid_incident_follow_up",
-            "invalid_incident_scope",
-            "premature_incident_readiness",
-            "premature_ready_state",
-            "unsupported_communication_draft",
-            "unsupported_incident_action",
-            "unsupported_incident_signal",
-            "unsupported_recovery_check"
-          ]
-        },
-        {
-          "id": "semantic-cross-scope-evidence-3",
           "operator": "replace",
           "path": [
             "incident",
@@ -65,9 +48,28 @@
             "cross_scope_evidence",
             "cross_scope_service",
             "incomplete_recovery_coverage",
+            "invalid_recovery_closure_separation",
             "premature_incident_readiness",
             "premature_ready_state",
             "unsupported_recovery_check"
+          ]
+        },
+        {
+          "id": "semantic-invalid-decision-chronology-3",
+          "operator": "replace",
+          "path": [
+            "incident",
+            "startedAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_decision_chronology",
+            "invalid_incident_chronology",
+            "invalid_incident_scope",
+            "invalid_incident_update_sequence",
+            "invalid_recovery_closure_separation",
+            "premature_incident_readiness",
+            "premature_ready_state"
           ]
         }
       ]
