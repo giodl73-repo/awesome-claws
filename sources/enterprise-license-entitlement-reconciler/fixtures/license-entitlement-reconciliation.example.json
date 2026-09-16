@@ -20,7 +20,7 @@
     "skuMappingDigest": "sha256:8d530ca444d7ee436ccb89744a718802d19469ebb4f4b935948738192de2456e",
     "authorityRosterRef": "roster-license-review",
     "authorityRosterVersion": "v3",
-    "authorityRosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+    "authorityRosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
     "destination": "controlled://license-governance/northwind/ea-204/2026-08",
     "rightRefs": [
       "right-productivity-suite",
@@ -80,7 +80,7 @@
       "evidence-decisions-field",
       "evidence-decisions-analytics"
     ],
-    "roundDigest": "sha256:bcba9dc1330ef60a97e7a64f19168917dbd8ae3605b5ca3178d081fbbfc0f6b0",
+    "roundDigest": "sha256:a6ec721c2ec4911fb02a865bfa97870e8ca0bb3062b1f32efc53e057588a2272",
     "predecessorRoundDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
   },
   "rightsManifest": {
@@ -349,6 +349,7 @@
       "id": "principal-avery-rights",
       "name": "Avery Rights",
       "kind": "named-human",
+      "humanIdentityRef": "controlled://northwind/people/avery-rights",
       "scopes": [
         "rights-source-owner"
       ]
@@ -357,6 +358,7 @@
       "id": "principal-morgan-mapping",
       "name": "Morgan Mapping",
       "kind": "named-human",
+      "humanIdentityRef": "controlled://northwind/people/morgan-mapping",
       "scopes": [
         "sku-mapping-source-owner"
       ]
@@ -365,6 +367,7 @@
       "id": "principal-casey-assignments",
       "name": "Casey Assignments",
       "kind": "named-human",
+      "humanIdentityRef": "controlled://northwind/people/casey-assignments",
       "scopes": [
         "assignment-source-owner"
       ]
@@ -373,6 +376,7 @@
       "id": "principal-riley-metering",
       "name": "Riley Metering",
       "kind": "named-human",
+      "humanIdentityRef": "controlled://northwind/people/riley-metering",
       "scopes": [
         "consumption-source-owner"
       ]
@@ -381,6 +385,7 @@
       "id": "principal-quinn-custodian",
       "name": "Quinn Custodian",
       "kind": "named-human",
+      "humanIdentityRef": "controlled://northwind/people/quinn-custodian",
       "scopes": [
         "authority-roster-custodian"
       ]
@@ -389,6 +394,7 @@
       "id": "principal-jordan-authority",
       "name": "Jordan Authority",
       "kind": "named-human",
+      "humanIdentityRef": "controlled://northwind/people/jordan-authority",
       "scopes": [
         "authority-grant-issuer"
       ]
@@ -397,6 +403,7 @@
       "id": "principal-taylor-reviewer",
       "name": "Taylor Reviewer",
       "kind": "named-human",
+      "humanIdentityRef": "controlled://northwind/people/taylor-reviewer",
       "scopes": [
         "position-reconciler",
         "exception-reviewer"
@@ -406,6 +413,7 @@
       "id": "principal-dana-approver",
       "name": "Dana Approver",
       "kind": "named-human",
+      "humanIdentityRef": "controlled://northwind/people/dana-approver",
       "scopes": [
         "destination-approver"
       ]
@@ -414,6 +422,7 @@
       "id": "principal-harper-owner",
       "name": "Harper Owner",
       "kind": "named-human",
+      "humanIdentityRef": "controlled://northwind/people/harper-owner",
       "scopes": [
         "handoff-owner"
       ]
@@ -435,7 +444,7 @@
       "principal-dana-approver",
       "principal-harper-owner"
     ],
-    "contentDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+    "contentDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
     "evidenceRef": "evidence-roster"
   },
   "authorityGrants": [
@@ -450,8 +459,8 @@
       "activeFrom": "2026-07-14T17:00:00Z",
       "activeUntil": "2026-09-03T18:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
-      "payloadDigest": "sha256:29640fb9f41194466b4071d49b6cbc6951aa7e40699300c8ad95267ccbfe1de3",
+      "rosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      "payloadDigest": "sha256:4ecbe8766ba18e957bcb07473cea3b80bc8b4147670a8c5b5006900cefa8ddda",
       "evidenceRef": "evidence-grants",
       "issuedAt": "2026-07-14T17:00:00Z"
     },
@@ -466,8 +475,8 @@
       "activeFrom": "2026-07-14T17:00:00Z",
       "activeUntil": "2026-09-03T18:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
-      "payloadDigest": "sha256:57b24afa0a8fff6c54bd7850da4e6886a198c341a5c9b0e76af7d7f59e2ab5ea",
+      "rosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      "payloadDigest": "sha256:5ff858c87ac55dcb01b610ddb71063aedafe5610184c6d505d30bbb15d484192",
       "evidenceRef": "evidence-grants",
       "issuedAt": "2026-07-14T17:00:00Z"
     },
@@ -482,8 +491,8 @@
       "activeFrom": "2026-07-14T17:00:00Z",
       "activeUntil": "2026-09-03T18:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
-      "payloadDigest": "sha256:295d780b93982220bcb1ea4630e2d020efc5450a43fdf9260bd16a78f003cbce",
+      "rosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      "payloadDigest": "sha256:f84982b6e72b670c33b37383d19e28729d862390316275579519435716fcaf8e",
       "evidenceRef": "evidence-grants",
       "issuedAt": "2026-07-14T17:00:00Z"
     },
@@ -498,8 +507,8 @@
       "activeFrom": "2026-07-14T17:00:00Z",
       "activeUntil": "2026-09-03T18:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
-      "payloadDigest": "sha256:9cc9bef7ea9b0542e6d5fd74026b5d7da15b0c2ba0d8e2b94167d1b5f58a8c65",
+      "rosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      "payloadDigest": "sha256:e8caba2e36ef09c5ca0ecd44b75e252dbcf5fab5ec72859445417c32940d16ac",
       "evidenceRef": "evidence-grants",
       "issuedAt": "2026-07-14T17:00:00Z"
     },
@@ -514,8 +523,8 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
-      "payloadDigest": "sha256:04b98e08ebd9a2290cd0459fbe959ca732d7f4ba7b615f55689611cd8547b5f4",
+      "rosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      "payloadDigest": "sha256:262c950bc2263ab11bb37a8e02079890f530b1255e437904f1a696a772bcf66d",
       "evidenceRef": "evidence-grants",
       "issuedAt": "2026-07-14T17:00:00Z"
     },
@@ -530,8 +539,8 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
-      "payloadDigest": "sha256:b9d9525407a6d20dc87bcaddcaf57f9b36c04ab47a6c3b70acec8a5f0f096c75",
+      "rosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      "payloadDigest": "sha256:0185becd99ae068b7c7e9941cd7f52ee219f719e0e42b07a231acec527333bf5",
       "evidenceRef": "evidence-grants",
       "issuedAt": "2026-07-14T17:00:00Z"
     },
@@ -546,8 +555,8 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
-      "payloadDigest": "sha256:5b864ef1f17ccfe26e28ca7025c224d03c5c354b5ba7e97b83065b0323e1fa07",
+      "rosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      "payloadDigest": "sha256:9e421ea49e7f805c2acf72e7f1c3fa1e6134bb4af974612d040cf1fd6c3f02fa",
       "evidenceRef": "evidence-grants",
       "issuedAt": "2026-07-14T17:00:00Z"
     },
@@ -562,8 +571,8 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
-      "payloadDigest": "sha256:bd871fc41cab21ea4f541687c08dd35f85c348631131a33df51835d1b0dd577f",
+      "rosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      "payloadDigest": "sha256:1a6349ca06cce0c2b7a15fffcd9672e91ab41a145091586a5bedb75270ffc179",
       "evidenceRef": "evidence-grants",
       "issuedAt": "2026-07-14T17:00:00Z"
     },
@@ -578,8 +587,8 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
-      "payloadDigest": "sha256:3a70b251688028355d470e10a5033f705c983b60c24af4d2f419d3ba20c9429b",
+      "rosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      "payloadDigest": "sha256:d88b11e60e1243f704cabca9a0a26f862465b49467044d46b4a911fa103033aa",
       "evidenceRef": "evidence-grants",
       "issuedAt": "2026-07-14T17:00:00Z"
     },
@@ -595,8 +604,8 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
-      "payloadDigest": "sha256:8c3d22a77055a75a393a395bcbfe4a011c19319c1730d4154619f51091de7843",
+      "rosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      "payloadDigest": "sha256:3aef6ed7e3150e6b79e10f2c27387d00e8456cb1642a8782ac9bf8c44a5e4fb7",
       "evidenceRef": "evidence-grants"
     },
     {
@@ -611,8 +620,8 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
-      "payloadDigest": "sha256:d0f4118428f564eed5e2b7db14ab14c927a6a0ecda1fd702cbf0e7db2ac5309c",
+      "rosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      "payloadDigest": "sha256:96252d9cbac65f9d36ccdfd6f672ff1d87da8de8514eed333645d6bec7105c0a",
       "evidenceRef": "evidence-grants"
     },
     {
@@ -627,8 +636,8 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
-      "payloadDigest": "sha256:89ce04a8d0dc259c481573ea9047edc1061a8dfcf274efaa0aac2d1ff26b339a",
+      "rosterDigest": "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      "payloadDigest": "sha256:d0b0d0e1bf67ca3aafa2c5f98e61f3633f0f40dbd558f5f14e97b452a62e8cc5",
       "evidenceRef": "evidence-grants"
     }
   ],
@@ -875,9 +884,9 @@
         "principal-harper-owner"
       ],
       "sourceRecordDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
-      "payloadDigest": "sha256:f1656339a7fe956b53e7003d4f1970580081ec59f59eae6dabf2bb1e9c9bb246",
-      "recordDigest": "sha256:4e9f4af9297e27b3cc4c02636c7b79e942a513c61c48c50b2311cab399889901",
-      "controlledRef": "controlled://license-reconciliation/evidence-roster@sha256-4e9f4af9297e27b3cc4c02636c7b79e942a513c61c48c50b2311cab399889901"
+      "payloadDigest": "sha256:358a3fd26b54ae2245e8187f8cef8df4d15be0d63a80e87b817cdb9534e728f4",
+      "recordDigest": "sha256:e55a5dc786b67df6968813927893ad90056eb03c4b5a4fb3e2d834ec14263684",
+      "controlledRef": "controlled://license-reconciliation/evidence-roster@sha256-e55a5dc786b67df6968813927893ad90056eb03c4b5a4fb3e2d834ec14263684"
     },
     {
       "id": "evidence-grants",
@@ -900,9 +909,9 @@
         "grant-reconcile-analytics"
       ],
       "sourceRecordDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
-      "payloadDigest": "sha256:afcec350ec6b9505811206a099b224d0a9866b7c1e76468c8abcbc4d822aae43",
-      "recordDigest": "sha256:c716b661d1d7bb8127726af4d21dbbcebe5aaa4ef7c48b8b9e902cd1d4f91bad",
-      "controlledRef": "controlled://license-reconciliation/evidence-grants@sha256-c716b661d1d7bb8127726af4d21dbbcebe5aaa4ef7c48b8b9e902cd1d4f91bad"
+      "payloadDigest": "sha256:63ca32e2367a62530fc33c4bc7d0ef9ca0f407bf163625457ee9de099d70b006",
+      "recordDigest": "sha256:05c4729c924fff0a1b94e65e85f04c94c5fac9e7a9d36b96f29caeefa19decd0",
+      "controlledRef": "controlled://license-reconciliation/evidence-grants@sha256-05c4729c924fff0a1b94e65e85f04c94c5fac9e7a9d36b96f29caeefa19decd0"
     },
     {
       "id": "evidence-positions",
@@ -960,9 +969,9 @@
         "destination-approval"
       ],
       "sourceRecordDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "payloadDigest": "sha256:b0bee1f3ca2ffc3e21a0f81738c5890bead39ad9c6efca57541bc8ac6a0b0c14",
-      "recordDigest": "sha256:b39de08d69ec1d82cd0510d93b24e603b81bda109d1f9bdd65c008dc356d1cc1",
-      "controlledRef": "controlled://license-reconciliation/evidence-destination@sha256-b39de08d69ec1d82cd0510d93b24e603b81bda109d1f9bdd65c008dc356d1cc1"
+      "payloadDigest": "sha256:493cafdf576ab3bcc790734e9c0e001a5279be50e01f5a2344d9cd80b6772e53",
+      "recordDigest": "sha256:9aa166cf854848ccf89c37385e3f8ed58ba85ad7514751a5cf045b9d0d7806c8",
+      "controlledRef": "controlled://license-reconciliation/evidence-destination@sha256-9aa166cf854848ccf89c37385e3f8ed58ba85ad7514751a5cf045b9d0d7806c8"
     },
     {
       "id": "evidence-handoff",
@@ -974,9 +983,9 @@
         "handoff-owner-review"
       ],
       "sourceRecordDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-      "payloadDigest": "sha256:edc259003911f71c26ebb6d56441e11ea499ab0383edcf8b0a7bada5d0b240e0",
-      "recordDigest": "sha256:e52aac81f9e87321ad02f9eb56666a6a2fa812ccc9922c5a2a0f8c619c151183",
-      "controlledRef": "controlled://license-reconciliation/evidence-handoff@sha256-e52aac81f9e87321ad02f9eb56666a6a2fa812ccc9922c5a2a0f8c619c151183"
+      "payloadDigest": "sha256:f389c99c2c7c92e1a790dd901e7d4cbe63f2b780bd4ac1211e12ef195abaa1b9",
+      "recordDigest": "sha256:e03cbf0abbca4c8b33b15115e4abdc20830ee8656c2c60f0c2627abaaacbc333",
+      "controlledRef": "controlled://license-reconciliation/evidence-handoff@sha256-e03cbf0abbca4c8b33b15115e4abdc20830ee8656c2c60f0c2627abaaacbc333"
     },
     {
       "id": "evidence-decisions-field",
@@ -1058,27 +1067,27 @@
       "evidence-decisions-field",
       "evidence-decisions-analytics"
     ],
-    "contentDigest": "sha256:03fbb400fbc91023dd5a9353d7069095bb6fbefe107cc815fbc3a218b0ce88f3"
+    "contentDigest": "sha256:b320f8fef10a9d59170468eba009d031141d99a0120900093472dfbd6364739a"
   },
   "destinationApproval": {
     "id": "destination-approval",
     "roundRef": "round-2026-08-r2",
-    "roundDigest": "sha256:bcba9dc1330ef60a97e7a64f19168917dbd8ae3605b5ca3178d081fbbfc0f6b0",
-    "coverageDigest": "sha256:03fbb400fbc91023dd5a9353d7069095bb6fbefe107cc815fbc3a218b0ce88f3",
+    "roundDigest": "sha256:a6ec721c2ec4911fb02a865bfa97870e8ca0bb3062b1f32efc53e057588a2272",
+    "coverageDigest": "sha256:b320f8fef10a9d59170468eba009d031141d99a0120900093472dfbd6364739a",
     "destination": "controlled://license-governance/northwind/ea-204/2026-08",
     "approvedByRef": "principal-dana-approver",
     "approvedAt": "2026-09-03T16:00:00Z",
     "authorityGrantRef": "grant-destination-approver",
     "evidenceRef": "evidence-destination",
-    "payloadDigest": "sha256:2de864ab70ef6c5c8c7713ee78c4cddaa7088f4949575cc4031fa1e4726511fa"
+    "payloadDigest": "sha256:fb10646dae9e611842e21cc1816614b669ae32f83d48b5f581d37f13248e3218"
   },
   "handoff": {
     "id": "handoff-owner-review",
     "roundRef": "round-2026-08-r2",
-    "roundDigest": "sha256:bcba9dc1330ef60a97e7a64f19168917dbd8ae3605b5ca3178d081fbbfc0f6b0",
-    "coverageDigest": "sha256:03fbb400fbc91023dd5a9353d7069095bb6fbefe107cc815fbc3a218b0ce88f3",
+    "roundDigest": "sha256:a6ec721c2ec4911fb02a865bfa97870e8ca0bb3062b1f32efc53e057588a2272",
+    "coverageDigest": "sha256:b320f8fef10a9d59170468eba009d031141d99a0120900093472dfbd6364739a",
     "destinationApprovalRef": "destination-approval",
-    "destinationApprovalDigest": "sha256:2de864ab70ef6c5c8c7713ee78c4cddaa7088f4949575cc4031fa1e4726511fa",
+    "destinationApprovalDigest": "sha256:fb10646dae9e611842e21cc1816614b669ae32f83d48b5f581d37f13248e3218",
     "destination": "controlled://license-governance/northwind/ea-204/2026-08",
     "state": "ready-for-owner-review",
     "nextOwnerRef": "principal-harper-owner",
@@ -1110,6 +1119,6 @@
     "effectiveAccessInferred": "not-performed",
     "effectiveUsageInferred": "not-performed",
     "evidenceRef": "evidence-handoff",
-    "payloadDigest": "sha256:e6350342527b5039a11392481e8d82fb580dbadb489b2b428ab4c8cefc36a0d9"
+    "payloadDigest": "sha256:36a95505af1d4220d498b22a82caa1d6906a06a5a79600977c66a4635fbf09af"
   }
 }

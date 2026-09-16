@@ -1322,13 +1322,14 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
   for (const [index, principal] of principals.entries()) {
     if (
       principal.kind !== "named-human" ||
+      typeof principal.humanIdentityRef !== "string" ||
       strings(principal.scopes).length === 0 ||
       strings(principal.scopes).some((scope) => !ROLE_SCOPES.includes(scope))
     ) {
       add(
         "invalid_human_authority",
         `principals[${index}]`,
-        "Every authority principal must be a named human with closed typed scopes.",
+        "Every authority principal must be a named human with a stable identity reference and closed typed scopes.",
       );
     }
   }
@@ -1475,15 +1476,25 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
     ...records(artifact.exceptions).map((row) => row.ownerRef),
     ...records(artifact.decisions).map((row) => row.reviewedByRef),
   ].filter((ref) => typeof ref === "string");
-  const protectedRoleSet = new Set(protectedRoleRefs);
+  const humanIdentityFor = (principalRef) =>
+    principalsById.get(principalRef)?.humanIdentityRef;
+  const protectedRoleIdentities = protectedRoleRefs
+    .map(humanIdentityFor)
+    .filter((ref) => typeof ref === "string");
+  const reviewRoleIdentities = reviewRoleRefs
+    .map(humanIdentityFor)
+    .filter((ref) => typeof ref === "string");
+  const protectedRoleSet = new Set(protectedRoleIdentities);
   if (
-    protectedRoleSet.size !== protectedRoleRefs.length ||
-    reviewRoleRefs.some((ref) => protectedRoleSet.has(ref))
+    protectedRoleIdentities.length !== protectedRoleRefs.length ||
+    reviewRoleIdentities.length !== reviewRoleRefs.length ||
+    protectedRoleSet.size !== protectedRoleIdentities.length ||
+    reviewRoleIdentities.some((ref) => protectedRoleSet.has(ref))
   ) {
     add(
       "invalid_role_separation",
       "principals",
-      "Source owners, roster custodian, grant issuer, destination approver, and handoff owner must be distinct from each other and from actual position reconcilers and exception reviewers.",
+      "Source owners, roster custodian, grant issuer, destination approver, and handoff owner must have distinct stable human identities from each other and from actual position reconcilers and exception reviewers.",
     );
   }
 

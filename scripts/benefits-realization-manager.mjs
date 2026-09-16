@@ -231,6 +231,11 @@ function time(value) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function decodeCanonicalBase64(value) {
+  const decoded = Buffer.from(value, "base64");
+  return decoded.toString("base64") === value ? decoded : null;
+}
+
 function latestTimestamp(records, select) {
   let latest = Number.NEGATIVE_INFINITY;
   for (const record of records) {
@@ -537,7 +542,17 @@ function sourceBytesFindings(value, options, findings) {
       );
       continue;
     }
-    const sourceBytes = Buffer.from(source.bytesBase64, "base64");
+    const sourceBytes = decodeCanonicalBase64(source.bytesBase64);
+    if (sourceBytes === null) {
+      findings.push(
+        finding(
+          "invalid-source-bytes",
+          `sourceBundle.sources[${index}].bytesBase64`,
+          "Supplied source bytes must use canonical Base64 encoding.",
+        ),
+      );
+      continue;
+    }
     totalSourceBytes += sourceBytes.length;
     if (
       sourceBytes.length >

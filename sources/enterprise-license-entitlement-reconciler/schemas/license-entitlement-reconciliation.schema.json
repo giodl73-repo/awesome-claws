@@ -1031,6 +1031,7 @@
         "id",
         "name",
         "kind",
+        "humanIdentityRef",
         "scopes"
       ],
       "properties": {
@@ -1044,6 +1045,9 @@
         },
         "kind": {
           "const": "named-human"
+        },
+        "humanIdentityRef": {
+          "$ref": "#/$defs/controlledRef"
         },
         "scopes": {
           "type": "array",

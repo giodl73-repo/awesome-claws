@@ -100,9 +100,11 @@ ledger when the validated artifact has no blockers.
 ## Human authority and reciprocal evidence
 
 Render `principals`, `authorityRoster`, and `authorityGrants` with every exact
-scope, target, interval, digest, and evidence reference. Render every `evidence`
-row with `subjectRefs`, `sourceRecordDigest`, `payloadDigest`, `recordDigest`,
-and `controlledRef`. All authority principals are named humans.
+stable human identity reference, scope, target, interval, digest, and evidence
+reference. Render every `evidence` row with `subjectRefs`,
+`sourceRecordDigest`, `payloadDigest`, `recordDigest`, and `controlledRef`. All
+authority principals are named humans, and role separation follows their stable
+human identities rather than their principal aliases.
 
 ## Coverage, destination, and handoff
 

@@ -449,6 +449,7 @@ test("position reconciliation requires its exact target-bound current-round gran
       id: "principal-alex-reviewer",
       name: "Alex Reviewer",
       kind: "named-human",
+      humanIdentityRef: "controlled://northwind/people/alex-reviewer",
       scopes: ["position-reconciler"],
     });
     const position = value.positions[0];
@@ -497,6 +498,27 @@ test("position reconcilers remain separated from source and control roles", () =
   candidateTrustRoot.authorityRoster.digest =
     candidate.authorityRoster.contentDigest;
   assertSchemaValid(candidate, "source owner as position reconciler");
+  assert.ok(
+    codes(candidate, {
+      asOf: AS_OF,
+      licenseTrustRoot: candidateTrustRoot,
+    }).has("invalid_role_separation"),
+  );
+});
+
+test("role separation follows stable human identity across principal aliases", () => {
+  const candidate = resealed((value) => {
+    const sourceOwner = value.principals.find(
+      (row) => row.id === "principal-avery-rights",
+    );
+    value.principals.find(
+      (row) => row.id === "principal-taylor-reviewer",
+    ).humanIdentityRef = sourceOwner.humanIdentityRef;
+  });
+  const candidateTrustRoot = structuredClone(trustRoot);
+  candidateTrustRoot.authorityRoster.digest =
+    candidate.authorityRoster.contentDigest;
+  assertSchemaValid(candidate, "aliased source owner and position reconciler");
   assert.ok(
     codes(candidate, {
       asOf: AS_OF,
@@ -732,6 +754,7 @@ test("evidence partitions remain valid across multiple authorized reviewers", ()
       id: "principal-alex-reviewer",
       name: "Alex Reviewer",
       kind: "named-human",
+      humanIdentityRef: "controlled://northwind/people/alex-reviewer",
       scopes: ["position-reconciler", "exception-reviewer"],
     });
     value.positions.find(

@@ -384,6 +384,21 @@ test("signed source digests are verified against the injected source bytes", () 
   );
 });
 
+test("malformed or non-canonical Base64 source bytes are rejected", () => {
+  const malformedBundle = structuredClone(sourceBundle);
+  malformedBundle.sources[0].bytesBase64 += "!!!!not-base64";
+  const result = evaluateBenefitsRealizationSlice(fixture, {
+    trustStore,
+    sourceBundle: malformedBundle,
+  });
+  assert.equal(result.status, "invalid-contract");
+  assert.ok(
+    result.contractFindings.some(
+      (item) => item.code === "invalid-source-bytes",
+    ),
+  );
+});
+
 test("aggregate source cap counts every supplied record once including unreferenced extras", () => {
   const bytesBase64 = Buffer.alloc(
     BENEFITS_REALIZATION_LIMITS.maxSourceBytesPerRecord,
