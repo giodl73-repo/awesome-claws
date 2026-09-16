@@ -135,6 +135,7 @@ function validOwner(ownerRef, principals, value) {
   const owner = principals.get(ownerRef);
   return (
     owner &&
+    owner.kind === "human" &&
     typeof owner.name === "string" &&
     owner.name.trim().length > 0 &&
     !AGENT_PATTERN.test(owner.name.trim()) &&

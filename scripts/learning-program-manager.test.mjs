@@ -784,6 +784,22 @@ const semanticCases = [
     "invalid_refresh_review",
   ],
   [
+    "refresh reviewer must be human",
+    (value) => {
+      value.principals.find((row) => row.id === value.refreshReviews[0].reviewerRef).kind =
+        "team";
+    },
+    "invalid_owner",
+  ],
+  [
+    "refresh next owner must be human",
+    (value) => {
+      value.principals.find((row) => row.id === value.refreshReviews[0].nextOwnerRef).kind =
+        "team";
+    },
+    "invalid_owner",
+  ],
+  [
     "coverage cannot omit a release",
     (value) => {
       value.coverage.curriculumReleaseRefs = [];

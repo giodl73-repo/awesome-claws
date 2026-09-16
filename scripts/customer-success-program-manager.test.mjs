@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { generateKeyPairSync, sign } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
@@ -172,7 +175,7 @@ test("approved metric evidence binds exact plan approval provenance", () => {
   assertHas(unsignedApprovalSource, "invalid_plan_approval");
 });
 
-test("approved-plan trust roots are caller configurable", () => {
+test("approved-plan trust roots are caller configurable through code and CLI", async () => {
   const value = clone();
   const secondMetric = {
     ...structuredClone(value.metricDefinitions[0]),
@@ -202,18 +205,49 @@ test("approved-plan trust roots are caller configurable", () => {
     privateKey,
   ).toString("base64");
   const publicKeyDer = publicKey.export({ type: "spki", format: "der" }).toString("base64");
+  const approvedPlanPublicKeys = { "customer-plan-authority": publicKeyDer };
+  const approvedPlanMetricDigests = {
+    "plan-contoso-2026@7#metric-teams-active-user-rate":
+      value.metricDefinitions[0].definitionDigest,
+    "plan-contoso-2026@7#metric-teams-weekly-active-user-rate":
+      secondMetric.definitionDigest,
+  };
   assert.deepEqual(
     validateArtifactSemantics("customer-success-program-manager", value, {
-      approvedPlanPublicKeys: { "customer-plan-authority": publicKeyDer },
-      approvedPlanMetricDigests: {
-        "plan-contoso-2026@7#metric-teams-active-user-rate":
-          value.metricDefinitions[0].definitionDigest,
-        "plan-contoso-2026@7#metric-teams-weekly-active-user-rate":
-          secondMetric.definitionDigest,
-      },
+      approvedPlanPublicKeys,
+      approvedPlanMetricDigests,
     }),
     [],
   );
+
+  const directory = await mkdtemp(join(tmpdir(), "customer-success-trust-"));
+  try {
+    const artifactPath = join(directory, "artifact.json");
+    const publicKeysPath = join(directory, "public-keys.json");
+    const metricDigestsPath = join(directory, "metric-digests.json");
+    await Promise.all([
+      writeFile(artifactPath, JSON.stringify(value)),
+      writeFile(publicKeysPath, JSON.stringify(approvedPlanPublicKeys)),
+      writeFile(metricDigestsPath, JSON.stringify(approvedPlanMetricDigests)),
+    ]);
+    const result = spawnSync(
+      process.execPath,
+      [
+        "scripts/validate-artifact.mjs",
+        "customer-success-program-manager",
+        artifactPath,
+        "--approved-plan-public-keys",
+        publicKeysPath,
+        "--approved-plan-metric-digests",
+        metricDigestsPath,
+      ],
+      { cwd: new URL("..", import.meta.url), encoding: "utf8" },
+    );
+    assert.equal(result.status, 0, result.stderr || result.stdout);
+    assert.equal(JSON.parse(result.stdout).valid, true);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
 });
 
 test("caller-pinned plan revision digest rejects a fully resigned lower target", () => {

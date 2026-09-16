@@ -167,6 +167,14 @@ function requireReference(index, ref, path, code, findings) {
   return target;
 }
 
+function requireHumanReference(index, ref, path, code, findings) {
+  const target = requireReference(index, ref, path, code, findings);
+  if (target && target.kind !== "human") {
+    findings.push(finding(code, path, "Authority reference must identify a human principal."));
+  }
+  return target;
+}
+
 function requireReleaseTime(release, eventAt, path, findings) {
   if (!isBefore(release?.releasedAt, eventAt)) {
     findings.push(
@@ -1104,14 +1112,14 @@ export function learningProgramFindings(value, options = {}) {
         ),
       );
     }
-    requireReference(
+    requireHumanReference(
       principals,
       review.reviewerRef,
       `${path}/reviewerRef`,
       "invalid_owner",
       findings,
     );
-    requireReference(
+    requireHumanReference(
       principals,
       review.nextOwnerRef,
       `${path}/nextOwnerRef`,

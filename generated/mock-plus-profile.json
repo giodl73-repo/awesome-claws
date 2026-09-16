@@ -12,7 +12,7 @@
   "profiles": [
     {
       "name": "vertical",
-      "canonicalDigest": "sha256:3003471909cbc410637d00e08365cb6c1ad9c774abf1fa0bec63c13436cc6804",
+      "canonicalDigest": "sha256:91bd0796cd1ac473f7f0562771a1d7ecb3b7975d96810e4aaacdffe8e43e8566",
       "clawCount": 3,
       "caseCount": 53,
       "controlsPassed": 21,
@@ -26,12 +26,12 @@
     },
     {
       "name": "schema-portfolio",
-      "canonicalDigest": "sha256:85f34797f3a8dadf03c5349d9d2ee4a06ffd41e117fb9f9eb386478febf7ea09",
+      "canonicalDigest": "sha256:09a68de81d620802bf9d763588e7b7d2f838b72c70049a9546fe6cec8404d89c",
       "clawCount": 119,
-      "caseCount": 40159,
+      "caseCount": 40161,
       "controlsPassed": 833,
       "controlsFailed": 0,
-      "mutantsKilled": 39326,
+      "mutantsKilled": 39328,
       "mutantsSurvived": 0,
       "unsupportedOracles": 0,
       "invalidRecipes": 0,
@@ -40,7 +40,7 @@
     },
     {
       "name": "semantic-portfolio",
-      "canonicalDigest": "sha256:995ba64ae90d8739d4ee583320ee6fd145d8082df752b633634ecdefcaf8c5dd",
+      "canonicalDigest": "sha256:09b4901ce44c92d22ae2c4407ff8012a0398e22761ed1822208e114c70624c66",
       "clawCount": 119,
       "caseCount": 1872,
       "controlsPassed": 833,
@@ -54,7 +54,7 @@
     },
     {
       "name": "lifecycle-portfolio",
-      "canonicalDigest": "sha256:bf768bb0aed2ad11df1d639a4a5ec20c17e709cad98d716fc5f209eda15da4ac",
+      "canonicalDigest": "sha256:5f19b8d6c0412e909c8c246b788c889d698686818d96456931bdb2c6dac5ed6e",
       "clawCount": 119,
       "caseCount": 2225,
       "controlsPassed": 833,
@@ -69,11 +69,11 @@
   ],
   "totals": {
     "profileCount": 4,
-    "caseCount": 44309,
+    "caseCount": 44311,
     "controlsPassed": 2520,
-    "mutantsKilled": 41789,
+    "mutantsKilled": 41791,
     "mutantsSurvived": 0,
     "safetyBlockers": 0
   },
-  "profileDigest": "sha256:5855946e7382d4efd7182bcea949911a3a9029807611405ead0188e919f9a2a8"
+  "profileDigest": "sha256:bc57dcd318e1e8f0d5919e7c67b0f6a64e18caf6d998a7104f8baa26ec6d6e79"
 }

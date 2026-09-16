@@ -488,9 +488,10 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "name", "role"],
+        "required": ["id", "kind", "name", "role"],
         "properties": {
           "id": { "$ref": "#/$defs/id" },
+          "kind": { "const": "human" },
           "name": { "$ref": "#/$defs/nonEmpty" },
           "role": { "$ref": "#/$defs/nonEmpty" }
         }

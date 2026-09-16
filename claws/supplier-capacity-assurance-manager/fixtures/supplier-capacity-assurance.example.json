@@ -13,10 +13,10 @@
     "evidenceRef": "evidence-plan-r4"
   },
   "principals": [
-    { "id": "owner-plan", "name": "Dana Ortiz", "role": "Demand plan owner" },
-    { "id": "owner-supply", "name": "Morgan Lee", "role": "Supply assurance owner" },
-    { "id": "owner-quality", "name": "Priya Shah", "role": "Supplier quality owner" },
-    { "id": "owner-logistics", "name": "Chris Nolan", "role": "Inbound logistics owner" }
+    { "id": "owner-plan", "kind": "human", "name": "Dana Ortiz", "role": "Demand plan owner" },
+    { "id": "owner-supply", "kind": "human", "name": "Morgan Lee", "role": "Supply assurance owner" },
+    { "id": "owner-quality", "kind": "human", "name": "Priya Shah", "role": "Supplier quality owner" },
+    { "id": "owner-logistics", "kind": "human", "name": "Chris Nolan", "role": "Inbound logistics owner" }
   ],
   "suppliers": [
     { "id": "supplier-alpha", "name": "Alpha Components" },

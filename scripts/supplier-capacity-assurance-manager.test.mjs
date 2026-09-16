@@ -426,6 +426,11 @@ test("validator keeps scarce-supply allocation and recovery work unapproved", ()
 });
 
 test("validator requires accountable action and checkpoint owners", () => {
+  const nonHumanOwner = clone();
+  nonHumanOwner.principals[1].kind = "team";
+  assert.equal(validateSchema(nonHumanOwner), false);
+  assertFinding(nonHumanOwner, "agent_owned_authority");
+
   const agentOwner = clone();
   agentOwner.principals[1].name = "assistant";
   assertFinding(agentOwner, "agent_owned_authority");
