@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.testSourceBundle.v1",
+  "sources": [
+    {
+      "sourceRef": "controlled://city/benefits/allocation/permit-q2/finance-owner",
+      "sourceVersion": "2026-03-20.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9iZW5lZml0cy9hbGxvY2F0aW9uL3Blcm1pdC1xMi9maW5hbmNlLW93bmVyIiwic291cmNlVmVyc2lvbiI6IjIwMjYtMDMtMjAuMSIsInN1cHBsaWVkQnlSZWYiOiJwcmluY2lwYWwtZmluYW5jZS1vd25lci1tYXJhIn0="
+    },
+    {
+      "sourceRef": "controlled://city/benefits/allocation/permit-q2/metric-owner",
+      "sourceVersion": "2026-03-20.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9iZW5lZml0cy9hbGxvY2F0aW9uL3Blcm1pdC1xMi9tZXRyaWMtb3duZXIiLCJzb3VyY2VWZXJzaW9uIjoiMjAyNi0wMy0yMC4xIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1tZXRyaWMtb3duZXItbHV6In0="
+    },
+    {
+      "sourceRef": "controlled://city/benefits/attribution/intake/q2-2026",
+      "sourceVersion": "2026-07-05.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9iZW5lZml0cy9hdHRyaWJ1dGlvbi9pbnRha2UvcTItMjAyNiIsInNvdXJjZVZlcnNpb24iOiIyMDI2LTA3LTA1LjEiLCJzdXBwbGllZEJ5UmVmIjoicHJpbmNpcGFsLW1ldHJpYy1vd25lci1sdXoifQ=="
+    },
+    {
+      "sourceRef": "controlled://city/benefits/attribution/resolution/q2-2026",
+      "sourceVersion": "2026-07-05.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9iZW5lZml0cy9hdHRyaWJ1dGlvbi9yZXNvbHV0aW9uL3EyLTIwMjYiLCJzb3VyY2VWZXJzaW9uIjoiMjAyNi0wNy0wNS4xIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1tZXRyaWMtb3duZXItbHV6In0="
+    },
+    {
+      "sourceRef": "controlled://city/benefits/attribution/triage/q2-2026",
+      "sourceVersion": "2026-07-05.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9iZW5lZml0cy9hdHRyaWJ1dGlvbi90cmlhZ2UvcTItMjAyNiIsInNvdXJjZVZlcnNpb24iOiIyMDI2LTA3LTA1LjEiLCJzdXBwbGllZEJ5UmVmIjoicHJpbmNpcGFsLW1ldHJpYy1vd25lci1sdXoifQ=="
+    },
+    {
+      "sourceRef": "controlled://city/benefits/disbenefits/accessibility-remediation/q2-2026",
+      "sourceVersion": "2026-07-04.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9iZW5lZml0cy9kaXNiZW5lZml0cy9hY2Nlc3NpYmlsaXR5LXJlbWVkaWF0aW9uL3EyLTIwMjYiLCJzb3VyY2VWZXJzaW9uIjoiMjAyNi0wNy0wNC4xIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1iZW5lZml0LW93bmVyLWltYW4ifQ=="
+    },
+    {
+      "sourceRef": "controlled://city/benefits/profiles/intake-automation",
+      "sourceVersion": "2026-03-20.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9iZW5lZml0cy9wcm9maWxlcy9pbnRha2UtYXV0b21hdGlvbiIsInNvdXJjZVZlcnNpb24iOiIyMDI2LTAzLTIwLjEiLCJzdXBwbGllZEJ5UmVmIjoicHJpbmNpcGFsLWJlbmVmaXQtb3duZXItaW1hbiJ9"
+    },
+    {
+      "sourceRef": "controlled://city/benefits/profiles/knowledge-assisted-resolution",
+      "sourceVersion": "2026-03-20.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9iZW5lZml0cy9wcm9maWxlcy9rbm93bGVkZ2UtYXNzaXN0ZWQtcmVzb2x1dGlvbiIsInNvdXJjZVZlcnNpb24iOiIyMDI2LTAzLTIwLjEiLCJzdXBwbGllZEJ5UmVmIjoicHJpbmNpcGFsLWJlbmVmaXQtb3duZXIta2FpIn0="
+    },
+    {
+      "sourceRef": "controlled://city/benefits/profiles/triage-standardization",
+      "sourceVersion": "2026-03-20.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9iZW5lZml0cy9wcm9maWxlcy90cmlhZ2Utc3RhbmRhcmRpemF0aW9uIiwic291cmNlVmVyc2lvbiI6IjIwMjYtMDMtMjAuMSIsInN1cHBsaWVkQnlSZWYiOiJwcmluY2lwYWwtYmVuZWZpdC1vd25lci1qbyJ9"
+    },
+    {
+      "sourceRef": "controlled://city/finance/benefits-reconciliation/permit-q2-2026",
+      "sourceVersion": "2026-07-07.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9maW5hbmNlL2JlbmVmaXRzLXJlY29uY2lsaWF0aW9uL3Blcm1pdC1xMi0yMDI2Iiwic291cmNlVmVyc2lvbiI6IjIwMjYtMDctMDcuMSIsInN1cHBsaWVkQnlSZWYiOiJwcmluY2lwYWwtZmluYW5jZS1vd25lci1tYXJhIn0="
+    },
+    {
+      "sourceRef": "controlled://city/finance/permit-processing-cost/baseline",
+      "sourceVersion": "2026-03-31.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9maW5hbmNlL3Blcm1pdC1wcm9jZXNzaW5nLWNvc3QvYmFzZWxpbmUiLCJzb3VyY2VWZXJzaW9uIjoiMjAyNi0wMy0zMS4xIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1tZXRyaWMtb3duZXItbHV6In0="
+    },
+    {
+      "sourceRef": "controlled://city/finance/permit-processing-cost/q2-2026",
+      "sourceVersion": "2026-07-03.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9maW5hbmNlL3Blcm1pdC1wcm9jZXNzaW5nLWNvc3QvcTItMjAyNiIsInNvdXJjZVZlcnNpb24iOiIyMDI2LTA3LTAzLjEiLCJzdXBwbGllZEJ5UmVmIjoicHJpbmNpcGFsLW1ldHJpYy1vd25lci1sdXoifQ=="
+    },
+    {
+      "sourceRef": "controlled://city/finance/permit-processing-cost/target",
+      "sourceVersion": "2026-03-15.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9maW5hbmNlL3Blcm1pdC1wcm9jZXNzaW5nLWNvc3QvdGFyZ2V0Iiwic291cmNlVmVyc2lvbiI6IjIwMjYtMDMtMTUuMSIsInN1cHBsaWVkQnlSZWYiOiJwcmluY2lwYWwtbWV0cmljLW93bmVyLWx1eiJ9"
+    }
+  ]
+}

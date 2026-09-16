@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "awesomeClaws.benefitsRealizationSliceResult.v2",
+  "ledgerId": "ledger-support-modernization-q3",
+  "period": {
+    "start": "2026-07-01",
+    "end": "2026-09-30",
+    "cutoffAt": "2026-10-07T17:00:00Z"
+  },
+  "status": "blocked",
+  "sharedKpi": {
+    "id": "kpi-support-cost-avoidance",
+    "ownerRef": "principal-metric-owner-dan",
+    "direction": "increase",
+    "baselineMinor": 2000000,
+    "targetMinor": 17000000,
+    "observedMinor": 14000000,
+    "targetDeltaMinor": 15000000,
+    "observedDeltaMinor": 12000000,
+    "unit": "USD"
+  },
+  "allocationRule": {
+    "id": "allocation-shared-support-kpi",
+    "method": "fixed-basis-points-largest-remainder",
+    "residualRule": "largest-remainder-then-benefit-id",
+    "allocations": [
+      {
+        "benefitRef": "benefit-self-service-deflection",
+        "basisPoints": 5000
+      },
+      {
+        "benefitRef": "benefit-routing-efficiency",
+        "basisPoints": 3000
+      },
+      {
+        "benefitRef": "benefit-knowledge-reuse",
+        "basisPoints": 2000
+      }
+    ]
+  },
+  "benefitResults": [
+    {
+      "id": "benefit-self-service-deflection",
+      "kind": "benefit",
+      "ownerRef": "principal-benefit-owner-ava",
+      "baselineMinor": 1000000,
+      "targetDeltaMinor": 7500000,
+      "recognizedDeltaMinor": null,
+      "attributionState": "supported"
+    },
+    {
+      "id": "benefit-routing-efficiency",
+      "kind": "benefit",
+      "ownerRef": "principal-benefit-owner-ben",
+      "baselineMinor": 600000,
+      "targetDeltaMinor": 4500000,
+      "recognizedDeltaMinor": null,
+      "attributionState": "unsupported"
+    },
+    {
+      "id": "benefit-knowledge-reuse",
+      "kind": "benefit",
+      "ownerRef": "principal-benefit-owner-cora",
+      "baselineMinor": 400000,
+      "targetDeltaMinor": 3000000,
+      "recognizedDeltaMinor": null,
+      "attributionState": "supported"
+    },
+    {
+      "id": "disbenefit-transition-rework",
+      "kind": "disbenefit",
+      "ownerRef": "principal-benefit-owner-ava",
+      "baselineMinor": 0,
+      "targetDeltaMinor": 2000000,
+      "recognizedDeltaMinor": 1500000,
+      "attributionState": "direct-observation"
+    }
+  ],
+  "finance": {
+    "ownerRef": "principal-finance-owner-erin",
+    "grossBenefitMinor": null,
+    "disbenefitMinor": 1500000,
+    "netRealizedMinor": null,
+    "currency": "USD",
+    "minorUnitScale": 100
+  },
+  "evidenceProof": {
+    "subjectCount": 10,
+    "evidenceCount": 11,
+    "internalRecordDigestsVerified": 10,
+    "internalEvidenceDigestsVerified": 11,
+    "reciprocalBindingsVerified": 11,
+    "sourceRecordsAnchored": 11,
+    "sourceBytesVerified": 11,
+    "sourceAuthoritySignatureVerified": true
+  },
+  "blockers": [
+    {
+      "code": "unsupported-attribution",
+      "targetRefs": [
+        "benefit-routing-efficiency",
+        "attribution-routing-efficiency"
+      ],
+      "ownerRef": "principal-benefit-owner-ben",
+      "metricRef": "kpi-support-cost-avoidance",
+      "allocationRuleRef": "allocation-shared-support-kpi",
+      "evidenceRefs": [],
+      "reason": "The benefit remains unrecognized because its allocation lacks owner-anchored reciprocal attribution evidence."
+    }
+  ],
+  "schemaFindings": [],
+  "contractFindings": []
+}

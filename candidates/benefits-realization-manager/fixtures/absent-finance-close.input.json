@@ -1,0 +1,539 @@
+{
+  "schemaVersion": "awesomeClaws.benefitsRealizationSliceInput.v2",
+  "request": {
+    "ledgerId": "ledger-support-modernization-q3",
+    "periodStart": "2026-07-01",
+    "periodEnd": "2026-09-30",
+    "cutoffAt": "2026-10-07T17:00:00Z",
+    "currency": "USD",
+    "minorUnitScale": 100
+  },
+  "principals": [
+    {
+      "id": "principal-benefit-owner-ava",
+      "name": "Ava Morgan",
+      "kind": "human",
+      "role": "benefit-owner",
+      "humanIdentityRef": "controlled://identity/people/ava-morgan",
+      "authoritySourceRef": "controlled://governance/benefit-owners/ava-morgan",
+      "authorityObservedAt": "2026-06-18T15:00:00Z"
+    },
+    {
+      "id": "principal-benefit-owner-ben",
+      "name": "Ben Ortiz",
+      "kind": "human",
+      "role": "benefit-owner",
+      "humanIdentityRef": "controlled://identity/people/ben-ortiz",
+      "authoritySourceRef": "controlled://governance/benefit-owners/ben-ortiz",
+      "authorityObservedAt": "2026-06-18T15:01:00Z"
+    },
+    {
+      "id": "principal-benefit-owner-cora",
+      "name": "Cora Singh",
+      "kind": "human",
+      "role": "benefit-owner",
+      "humanIdentityRef": "controlled://identity/people/cora-singh",
+      "authoritySourceRef": "controlled://governance/benefit-owners/cora-singh",
+      "authorityObservedAt": "2026-06-18T15:02:00Z"
+    },
+    {
+      "id": "principal-metric-owner-dan",
+      "name": "Dan Wu",
+      "kind": "human",
+      "role": "metric-owner",
+      "humanIdentityRef": "controlled://identity/people/dan-wu",
+      "authoritySourceRef": "controlled://governance/metric-owners/dan-wu",
+      "authorityObservedAt": "2026-06-18T15:03:00Z"
+    },
+    {
+      "id": "principal-finance-owner-erin",
+      "name": "Erin Cole",
+      "kind": "human",
+      "role": "finance-owner",
+      "humanIdentityRef": "controlled://identity/people/erin-cole",
+      "authoritySourceRef": "controlled://governance/finance-owners/erin-cole",
+      "authorityObservedAt": "2026-06-18T15:04:00Z"
+    }
+  ],
+  "kpis": [
+    {
+      "id": "kpi-support-cost-avoidance",
+      "name": "Verified annualized support cost avoidance",
+      "unit": "USD",
+      "direction": "increase",
+      "ownerRef": "principal-metric-owner-dan",
+      "baseline": {
+        "valueMinor": 2000000,
+        "asOf": "2026-06-30T23:59:59Z"
+      },
+      "target": {
+        "valueMinor": 17000000,
+        "approvedAt": "2026-06-20T16:00:00Z",
+        "dueAt": "2026-09-30T23:59:59Z"
+      },
+      "observed": {
+        "valueMinor": 14000000,
+        "windowStart": "2026-07-01",
+        "windowEnd": "2026-09-30",
+        "observedAt": "2026-10-03T15:00:00Z"
+      },
+      "evidenceRefs": [
+        "evidence-kpi-support-baseline",
+        "evidence-kpi-support-target",
+        "evidence-kpi-support-observation"
+      ],
+      "recordDigest": "sha256:565323f32e607c0e32e6f917614d9c7fd0ff431f333bca63a74eba3ee43bcdff"
+    }
+  ],
+  "benefits": [
+    {
+      "id": "benefit-self-service-deflection",
+      "name": "Self-service deflection value",
+      "kind": "benefit",
+      "ownerRef": "principal-benefit-owner-ava",
+      "profileApprovedAt": "2026-06-25T15:00:00Z",
+      "metricRef": "kpi-support-cost-avoidance",
+      "allocationRuleRef": "allocation-shared-support-kpi",
+      "attributionRef": "attribution-self-service-deflection",
+      "directMeasure": null,
+      "evidenceRefs": [
+        "evidence-benefit-self-service"
+      ],
+      "recordDigest": "sha256:99b2bde19cb929a65f1e75d5c5fb2f3377318eec8b0be0638a621ffb41aaa47c"
+    },
+    {
+      "id": "benefit-routing-efficiency",
+      "name": "Routing efficiency value",
+      "kind": "benefit",
+      "ownerRef": "principal-benefit-owner-ben",
+      "profileApprovedAt": "2026-06-25T15:01:00Z",
+      "metricRef": "kpi-support-cost-avoidance",
+      "allocationRuleRef": "allocation-shared-support-kpi",
+      "attributionRef": "attribution-routing-efficiency",
+      "directMeasure": null,
+      "evidenceRefs": [
+        "evidence-benefit-routing"
+      ],
+      "recordDigest": "sha256:ced4eb804c6847a530fa4f2a4df9583b34e3fbebbaf5326ce0102031d73e029a"
+    },
+    {
+      "id": "benefit-knowledge-reuse",
+      "name": "Knowledge reuse value",
+      "kind": "benefit",
+      "ownerRef": "principal-benefit-owner-cora",
+      "profileApprovedAt": "2026-06-25T15:02:00Z",
+      "metricRef": "kpi-support-cost-avoidance",
+      "allocationRuleRef": "allocation-shared-support-kpi",
+      "attributionRef": "attribution-knowledge-reuse",
+      "directMeasure": null,
+      "evidenceRefs": [
+        "evidence-benefit-knowledge"
+      ],
+      "recordDigest": "sha256:7fe1c14eaee34b8afeb5b86d3cc3ee890edc4f133833bd349ea0082092430e08"
+    },
+    {
+      "id": "disbenefit-transition-rework",
+      "name": "Transition rework cost",
+      "kind": "disbenefit",
+      "ownerRef": "principal-benefit-owner-ava",
+      "profileApprovedAt": "2026-06-25T15:03:00Z",
+      "metricRef": null,
+      "allocationRuleRef": null,
+      "attributionRef": null,
+      "directMeasure": {
+        "baselineMinor": 0,
+        "targetMinor": 2000000,
+        "observedMinor": 1500000,
+        "observedAt": "2026-10-04T14:00:00Z"
+      },
+      "evidenceRefs": [
+        "evidence-disbenefit-rework"
+      ],
+      "recordDigest": "sha256:84c0b6ee12b2ce4fc55ca1d70562afa45109c8b26c0da5313afefdae709595a5"
+    }
+  ],
+  "allocationRules": [
+    {
+      "id": "allocation-shared-support-kpi",
+      "metricRef": "kpi-support-cost-avoidance",
+      "method": "fixed-basis-points-largest-remainder",
+      "effectivePeriodStart": "2026-07-01",
+      "effectivePeriodEnd": "2026-09-30",
+      "allocations": [
+        {
+          "benefitRef": "benefit-self-service-deflection",
+          "basisPoints": 5000
+        },
+        {
+          "benefitRef": "benefit-routing-efficiency",
+          "basisPoints": 3000
+        },
+        {
+          "benefitRef": "benefit-knowledge-reuse",
+          "basisPoints": 2000
+        }
+      ],
+      "approvedByRefs": [
+        "principal-metric-owner-dan",
+        "principal-finance-owner-erin"
+      ],
+      "approvedAt": "2026-06-25T16:00:00Z",
+      "evidenceRefs": [
+        "evidence-allocation-metric-approval",
+        "evidence-allocation-finance-approval"
+      ],
+      "recordDigest": "sha256:b7809283173931e12f19b8c04efd222801d86e41aaecbebe2c6ba5ec3e3c5d70"
+    }
+  ],
+  "attributions": [
+    {
+      "id": "attribution-self-service-deflection",
+      "benefitRef": "benefit-self-service-deflection",
+      "metricRef": "kpi-support-cost-avoidance",
+      "allocationRuleRef": "allocation-shared-support-kpi",
+      "method": "allocated-directional-kpi-delta",
+      "status": "supported",
+      "assessedAt": "2026-10-05T15:00:00Z",
+      "causalClaim": false,
+      "evidenceRefs": [
+        "evidence-attribution-self-service"
+      ],
+      "recordDigest": "sha256:9335f94619168605b03cfec1662a18c1e6ef6198b3403bfbd370b9b8096aa38f"
+    },
+    {
+      "id": "attribution-routing-efficiency",
+      "benefitRef": "benefit-routing-efficiency",
+      "metricRef": "kpi-support-cost-avoidance",
+      "allocationRuleRef": "allocation-shared-support-kpi",
+      "method": "allocated-directional-kpi-delta",
+      "status": "supported",
+      "assessedAt": "2026-10-05T15:01:00Z",
+      "causalClaim": false,
+      "evidenceRefs": [
+        "evidence-attribution-routing"
+      ],
+      "recordDigest": "sha256:ae5cc899d6d60b541484570498a3bb1d0e46ec596ba2b18a46682f78242c6cde"
+    },
+    {
+      "id": "attribution-knowledge-reuse",
+      "benefitRef": "benefit-knowledge-reuse",
+      "metricRef": "kpi-support-cost-avoidance",
+      "allocationRuleRef": "allocation-shared-support-kpi",
+      "method": "allocated-directional-kpi-delta",
+      "status": "supported",
+      "assessedAt": "2026-10-05T15:02:00Z",
+      "causalClaim": false,
+      "evidenceRefs": [
+        "evidence-attribution-knowledge"
+      ],
+      "recordDigest": "sha256:cdd0977b09bef345bf76302473a5155d3c7e960fbe008cb7ffd420fa4ab32f0c"
+    }
+  ],
+  "financeReview": {
+    "id": "finance-review-support-modernization-q3",
+    "ownerRef": "principal-finance-owner-erin",
+    "reviewedAt": null,
+    "evidenceRefs": [],
+    "recordDigest": "sha256:dc80ecc0b8fb9731f28612d8ba6450a560b52ac856d2f067d04378ce2e3efb4a"
+  },
+  "evidence": [
+    {
+      "id": "evidence-kpi-support-baseline",
+      "kind": "metric-baseline",
+      "subjectType": "kpi",
+      "subjectRef": "kpi-support-cost-avoidance",
+      "subjectRecordDigest": "sha256:565323f32e607c0e32e6f917614d9c7fd0ff431f333bca63a74eba3ee43bcdff",
+      "sourceRef": "controlled://metrics/support-cost-avoidance/baseline",
+      "sourceVersion": "2026-06-30.1",
+      "sourceContentDigest": "sha256:73c0194e71ac35239a5a6b2e22bf2a1b92b76d935a7992c98897a1e3e705984d",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-06-30T23:59:59Z",
+      "suppliedByRef": "principal-metric-owner-dan",
+      "bindingDigest": "sha256:b94bf210674c47da2bf4651e3ce0685848ddd48e2963df9e7c50191f1ff99404"
+    },
+    {
+      "id": "evidence-kpi-support-target",
+      "kind": "metric-target-approval",
+      "subjectType": "kpi",
+      "subjectRef": "kpi-support-cost-avoidance",
+      "subjectRecordDigest": "sha256:565323f32e607c0e32e6f917614d9c7fd0ff431f333bca63a74eba3ee43bcdff",
+      "sourceRef": "controlled://metrics/support-cost-avoidance/target",
+      "sourceVersion": "2026-06-20.1",
+      "sourceContentDigest": "sha256:c99f15140f56e5ba30294e5d129c61b5d6e4c429f837728333c137402aa46159",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-06-20T16:00:00Z",
+      "suppliedByRef": "principal-metric-owner-dan",
+      "bindingDigest": "sha256:e69613ba57983a0ae58db69fe1cacc0add0a70fcd5316b7f9e9fee14b063893d"
+    },
+    {
+      "id": "evidence-kpi-support-observation",
+      "kind": "metric-observation",
+      "subjectType": "kpi",
+      "subjectRef": "kpi-support-cost-avoidance",
+      "subjectRecordDigest": "sha256:565323f32e607c0e32e6f917614d9c7fd0ff431f333bca63a74eba3ee43bcdff",
+      "sourceRef": "controlled://metrics/support-cost-avoidance/q3-2026",
+      "sourceVersion": "2026-10-03.1",
+      "sourceContentDigest": "sha256:0e7912343b440aa7c2a7f46067c82e0f86d6e81a29618fbee661270f89aace62",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-10-03T15:00:00Z",
+      "suppliedByRef": "principal-metric-owner-dan",
+      "bindingDigest": "sha256:b4b3d71314d7dd62bba0956e3a836d06a2389bcf887ab824fc1a0670919a1da8"
+    },
+    {
+      "id": "evidence-benefit-self-service",
+      "kind": "benefit-profile",
+      "subjectType": "benefit",
+      "subjectRef": "benefit-self-service-deflection",
+      "subjectRecordDigest": "sha256:99b2bde19cb929a65f1e75d5c5fb2f3377318eec8b0be0638a621ffb41aaa47c",
+      "sourceRef": "controlled://benefits/profiles/self-service-deflection",
+      "sourceVersion": "2026-06-25.1",
+      "sourceContentDigest": "sha256:25e6d6583dfd24c27282a8665934ce839c63cdf0d34778ab0a19bcde8df58dad",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-06-25T15:00:00Z",
+      "suppliedByRef": "principal-benefit-owner-ava",
+      "bindingDigest": "sha256:e6712dc90f9be97dcf60fd2510c2d8289263f3890c107db7b92e6fce56b26633"
+    },
+    {
+      "id": "evidence-benefit-routing",
+      "kind": "benefit-profile",
+      "subjectType": "benefit",
+      "subjectRef": "benefit-routing-efficiency",
+      "subjectRecordDigest": "sha256:ced4eb804c6847a530fa4f2a4df9583b34e3fbebbaf5326ce0102031d73e029a",
+      "sourceRef": "controlled://benefits/profiles/routing-efficiency",
+      "sourceVersion": "2026-06-25.1",
+      "sourceContentDigest": "sha256:0b28fd45920f9afadab3834880083ba4c987dea5c543b3e3bb0bf74c8ed30fdf",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-06-25T15:01:00Z",
+      "suppliedByRef": "principal-benefit-owner-ben",
+      "bindingDigest": "sha256:f4ff6192aa06b8878eb165798d80e519bf48ed5c21778b8196783a547591a7ad"
+    },
+    {
+      "id": "evidence-benefit-knowledge",
+      "kind": "benefit-profile",
+      "subjectType": "benefit",
+      "subjectRef": "benefit-knowledge-reuse",
+      "subjectRecordDigest": "sha256:7fe1c14eaee34b8afeb5b86d3cc3ee890edc4f133833bd349ea0082092430e08",
+      "sourceRef": "controlled://benefits/profiles/knowledge-reuse",
+      "sourceVersion": "2026-06-25.1",
+      "sourceContentDigest": "sha256:24a7649f0a92b7b4bdfe52179425f90762c1c2b002c6fae156b8843b18b21d99",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-06-25T15:02:00Z",
+      "suppliedByRef": "principal-benefit-owner-cora",
+      "bindingDigest": "sha256:418adcc0c93f5ebf3cb40d2d42a84b0ec201b2a3c4a34fd8d89f52dcf40ef58b"
+    },
+    {
+      "id": "evidence-disbenefit-rework",
+      "kind": "disbenefit-observation",
+      "subjectType": "benefit",
+      "subjectRef": "disbenefit-transition-rework",
+      "subjectRecordDigest": "sha256:84c0b6ee12b2ce4fc55ca1d70562afa45109c8b26c0da5313afefdae709595a5",
+      "sourceRef": "controlled://benefits/disbenefits/transition-rework/q3-2026",
+      "sourceVersion": "2026-10-04.1",
+      "sourceContentDigest": "sha256:eb0d180a94cc40634e9c3ed418f1d47d28985ed5d420741d213a38febdba9c1b",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-10-04T14:00:00Z",
+      "suppliedByRef": "principal-benefit-owner-ava",
+      "bindingDigest": "sha256:00c1fb81026f526d54b8f6ec319e1a9c612c31e6f40db93fb310ffc8244c919b"
+    },
+    {
+      "id": "evidence-allocation-metric-approval",
+      "kind": "allocation-approval",
+      "subjectType": "allocation-rule",
+      "subjectRef": "allocation-shared-support-kpi",
+      "subjectRecordDigest": "sha256:b7809283173931e12f19b8c04efd222801d86e41aaecbebe2c6ba5ec3e3c5d70",
+      "sourceRef": "controlled://benefits/allocation-approvals/support-q3-2026/metric-owner",
+      "sourceVersion": "2026-06-25.1",
+      "sourceContentDigest": "sha256:ea71d97a0fe4051a0ea07c015600ff5e6d69976db79100c7847bcf54d8658723",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-06-25T16:00:00Z",
+      "suppliedByRef": "principal-metric-owner-dan",
+      "bindingDigest": "sha256:7e9c54b82d642d617ecfd163cdaa76e02a0b5066a84e7ffe9840cb037d8b4572"
+    },
+    {
+      "id": "evidence-allocation-finance-approval",
+      "kind": "allocation-approval",
+      "subjectType": "allocation-rule",
+      "subjectRef": "allocation-shared-support-kpi",
+      "subjectRecordDigest": "sha256:b7809283173931e12f19b8c04efd222801d86e41aaecbebe2c6ba5ec3e3c5d70",
+      "sourceRef": "controlled://benefits/allocation-approvals/support-q3-2026/finance-owner",
+      "sourceVersion": "2026-06-25.1",
+      "sourceContentDigest": "sha256:67564863ea7ca518a35200dadcbc8f2adc81f6cfa9a4f8edc9c6c3e93d8fafca",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-06-25T16:00:00Z",
+      "suppliedByRef": "principal-finance-owner-erin",
+      "bindingDigest": "sha256:c6cec508d5edbd07e60993b9fc88109e420cdbe85fd1789b97d97c57ade23458"
+    },
+    {
+      "id": "evidence-attribution-self-service",
+      "kind": "attribution-support",
+      "subjectType": "attribution",
+      "subjectRef": "attribution-self-service-deflection",
+      "subjectRecordDigest": "sha256:9335f94619168605b03cfec1662a18c1e6ef6198b3403bfbd370b9b8096aa38f",
+      "sourceRef": "controlled://benefits/attribution/self-service/q3-2026",
+      "sourceVersion": "2026-10-05.1",
+      "sourceContentDigest": "sha256:87546be4614b29e9b9a55d40a5fa57837178a1c3ec06b1c2ec964b171048c5f2",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-10-05T15:00:00Z",
+      "suppliedByRef": "principal-metric-owner-dan",
+      "bindingDigest": "sha256:8fb5b36aa7554e678b09dc62bf94d9a378489b2cce07115dbb0ed369d40599b2"
+    },
+    {
+      "id": "evidence-attribution-routing",
+      "kind": "attribution-support",
+      "subjectType": "attribution",
+      "subjectRef": "attribution-routing-efficiency",
+      "subjectRecordDigest": "sha256:ae5cc899d6d60b541484570498a3bb1d0e46ec596ba2b18a46682f78242c6cde",
+      "sourceRef": "controlled://benefits/attribution/routing/q3-2026",
+      "sourceVersion": "2026-10-05.1",
+      "sourceContentDigest": "sha256:71d0fd2164ced3886cff61040e316660e7a00a042c680b80b191939930310b0a",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-10-05T15:01:00Z",
+      "suppliedByRef": "principal-metric-owner-dan",
+      "bindingDigest": "sha256:7d5f16da108b5b8fd3469348b1dbee113856a65af16f29a5f2105c8d9f4f468e"
+    },
+    {
+      "id": "evidence-attribution-knowledge",
+      "kind": "attribution-support",
+      "subjectType": "attribution",
+      "subjectRef": "attribution-knowledge-reuse",
+      "subjectRecordDigest": "sha256:cdd0977b09bef345bf76302473a5155d3c7e960fbe008cb7ffd420fa4ab32f0c",
+      "sourceRef": "controlled://benefits/attribution/knowledge/q3-2026",
+      "sourceVersion": "2026-10-05.1",
+      "sourceContentDigest": "sha256:3d05e59a3e63bd0f4d857a0da14b1bfe25472cc4994adfd915b381fbcbfcb0fa",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-10-05T15:02:00Z",
+      "suppliedByRef": "principal-metric-owner-dan",
+      "bindingDigest": "sha256:2d38fe8490622c3c07e22c33b56a044a4fad7182d0123179692c735d3dd5c915"
+    }
+  ],
+  "sourceAuthority": {
+    "id": "source-authority-support-q3",
+    "ownerRef": "principal-finance-owner-erin",
+    "manifestVersion": "support-q3-v3-no-finance-close",
+    "issuedAt": "2026-10-06T16:00:00Z",
+    "records": [
+      {
+        "evidenceRef": "evidence-kpi-support-baseline",
+        "subjectType": "kpi",
+        "subjectRef": "kpi-support-cost-avoidance",
+        "subjectRecordDigest": "sha256:565323f32e607c0e32e6f917614d9c7fd0ff431f333bca63a74eba3ee43bcdff",
+        "sourceRef": "controlled://metrics/support-cost-avoidance/baseline",
+        "sourceVersion": "2026-06-30.1",
+        "sourceContentDigest": "sha256:73c0194e71ac35239a5a6b2e22bf2a1b92b76d935a7992c98897a1e3e705984d",
+        "suppliedByRef": "principal-metric-owner-dan"
+      },
+      {
+        "evidenceRef": "evidence-kpi-support-target",
+        "subjectType": "kpi",
+        "subjectRef": "kpi-support-cost-avoidance",
+        "subjectRecordDigest": "sha256:565323f32e607c0e32e6f917614d9c7fd0ff431f333bca63a74eba3ee43bcdff",
+        "sourceRef": "controlled://metrics/support-cost-avoidance/target",
+        "sourceVersion": "2026-06-20.1",
+        "sourceContentDigest": "sha256:c99f15140f56e5ba30294e5d129c61b5d6e4c429f837728333c137402aa46159",
+        "suppliedByRef": "principal-metric-owner-dan"
+      },
+      {
+        "evidenceRef": "evidence-kpi-support-observation",
+        "subjectType": "kpi",
+        "subjectRef": "kpi-support-cost-avoidance",
+        "subjectRecordDigest": "sha256:565323f32e607c0e32e6f917614d9c7fd0ff431f333bca63a74eba3ee43bcdff",
+        "sourceRef": "controlled://metrics/support-cost-avoidance/q3-2026",
+        "sourceVersion": "2026-10-03.1",
+        "sourceContentDigest": "sha256:0e7912343b440aa7c2a7f46067c82e0f86d6e81a29618fbee661270f89aace62",
+        "suppliedByRef": "principal-metric-owner-dan"
+      },
+      {
+        "evidenceRef": "evidence-benefit-self-service",
+        "subjectType": "benefit",
+        "subjectRef": "benefit-self-service-deflection",
+        "subjectRecordDigest": "sha256:99b2bde19cb929a65f1e75d5c5fb2f3377318eec8b0be0638a621ffb41aaa47c",
+        "sourceRef": "controlled://benefits/profiles/self-service-deflection",
+        "sourceVersion": "2026-06-25.1",
+        "sourceContentDigest": "sha256:25e6d6583dfd24c27282a8665934ce839c63cdf0d34778ab0a19bcde8df58dad",
+        "suppliedByRef": "principal-benefit-owner-ava"
+      },
+      {
+        "evidenceRef": "evidence-benefit-routing",
+        "subjectType": "benefit",
+        "subjectRef": "benefit-routing-efficiency",
+        "subjectRecordDigest": "sha256:ced4eb804c6847a530fa4f2a4df9583b34e3fbebbaf5326ce0102031d73e029a",
+        "sourceRef": "controlled://benefits/profiles/routing-efficiency",
+        "sourceVersion": "2026-06-25.1",
+        "sourceContentDigest": "sha256:0b28fd45920f9afadab3834880083ba4c987dea5c543b3e3bb0bf74c8ed30fdf",
+        "suppliedByRef": "principal-benefit-owner-ben"
+      },
+      {
+        "evidenceRef": "evidence-benefit-knowledge",
+        "subjectType": "benefit",
+        "subjectRef": "benefit-knowledge-reuse",
+        "subjectRecordDigest": "sha256:7fe1c14eaee34b8afeb5b86d3cc3ee890edc4f133833bd349ea0082092430e08",
+        "sourceRef": "controlled://benefits/profiles/knowledge-reuse",
+        "sourceVersion": "2026-06-25.1",
+        "sourceContentDigest": "sha256:24a7649f0a92b7b4bdfe52179425f90762c1c2b002c6fae156b8843b18b21d99",
+        "suppliedByRef": "principal-benefit-owner-cora"
+      },
+      {
+        "evidenceRef": "evidence-disbenefit-rework",
+        "subjectType": "benefit",
+        "subjectRef": "disbenefit-transition-rework",
+        "subjectRecordDigest": "sha256:84c0b6ee12b2ce4fc55ca1d70562afa45109c8b26c0da5313afefdae709595a5",
+        "sourceRef": "controlled://benefits/disbenefits/transition-rework/q3-2026",
+        "sourceVersion": "2026-10-04.1",
+        "sourceContentDigest": "sha256:eb0d180a94cc40634e9c3ed418f1d47d28985ed5d420741d213a38febdba9c1b",
+        "suppliedByRef": "principal-benefit-owner-ava"
+      },
+      {
+        "evidenceRef": "evidence-allocation-metric-approval",
+        "subjectType": "allocation-rule",
+        "subjectRef": "allocation-shared-support-kpi",
+        "subjectRecordDigest": "sha256:b7809283173931e12f19b8c04efd222801d86e41aaecbebe2c6ba5ec3e3c5d70",
+        "sourceRef": "controlled://benefits/allocation-approvals/support-q3-2026/metric-owner",
+        "sourceVersion": "2026-06-25.1",
+        "sourceContentDigest": "sha256:ea71d97a0fe4051a0ea07c015600ff5e6d69976db79100c7847bcf54d8658723",
+        "suppliedByRef": "principal-metric-owner-dan"
+      },
+      {
+        "evidenceRef": "evidence-allocation-finance-approval",
+        "subjectType": "allocation-rule",
+        "subjectRef": "allocation-shared-support-kpi",
+        "subjectRecordDigest": "sha256:b7809283173931e12f19b8c04efd222801d86e41aaecbebe2c6ba5ec3e3c5d70",
+        "sourceRef": "controlled://benefits/allocation-approvals/support-q3-2026/finance-owner",
+        "sourceVersion": "2026-06-25.1",
+        "sourceContentDigest": "sha256:67564863ea7ca518a35200dadcbc8f2adc81f6cfa9a4f8edc9c6c3e93d8fafca",
+        "suppliedByRef": "principal-finance-owner-erin"
+      },
+      {
+        "evidenceRef": "evidence-attribution-self-service",
+        "subjectType": "attribution",
+        "subjectRef": "attribution-self-service-deflection",
+        "subjectRecordDigest": "sha256:9335f94619168605b03cfec1662a18c1e6ef6198b3403bfbd370b9b8096aa38f",
+        "sourceRef": "controlled://benefits/attribution/self-service/q3-2026",
+        "sourceVersion": "2026-10-05.1",
+        "sourceContentDigest": "sha256:87546be4614b29e9b9a55d40a5fa57837178a1c3ec06b1c2ec964b171048c5f2",
+        "suppliedByRef": "principal-metric-owner-dan"
+      },
+      {
+        "evidenceRef": "evidence-attribution-routing",
+        "subjectType": "attribution",
+        "subjectRef": "attribution-routing-efficiency",
+        "subjectRecordDigest": "sha256:ae5cc899d6d60b541484570498a3bb1d0e46ec596ba2b18a46682f78242c6cde",
+        "sourceRef": "controlled://benefits/attribution/routing/q3-2026",
+        "sourceVersion": "2026-10-05.1",
+        "sourceContentDigest": "sha256:71d0fd2164ced3886cff61040e316660e7a00a042c680b80b191939930310b0a",
+        "suppliedByRef": "principal-metric-owner-dan"
+      },
+      {
+        "evidenceRef": "evidence-attribution-knowledge",
+        "subjectType": "attribution",
+        "subjectRef": "attribution-knowledge-reuse",
+        "subjectRecordDigest": "sha256:cdd0977b09bef345bf76302473a5155d3c7e960fbe008cb7ffd420fa4ab32f0c",
+        "sourceRef": "controlled://benefits/attribution/knowledge/q3-2026",
+        "sourceVersion": "2026-10-05.1",
+        "sourceContentDigest": "sha256:3d05e59a3e63bd0f4d857a0da14b1bfe25472cc4994adfd915b381fbcbfcb0fa",
+        "suppliedByRef": "principal-metric-owner-dan"
+      }
+    ],
+    "signingKeyId": "benefits-authority-fixture-2026",
+    "signature": "mulVQoTNEhqGuON7bC8j/+Vfr/sv6pNyC8rxT9XMSEJtrqIfOxZJ1p6EhNxHQtzknQwpWkvLorj6uQE3u2f0Ag=="
+  }
+}
