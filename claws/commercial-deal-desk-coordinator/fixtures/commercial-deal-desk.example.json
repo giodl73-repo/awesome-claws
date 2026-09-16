@@ -1,0 +1,1222 @@
+{
+  "schemaVersion": "awesomeClaws.commercialDealDesk.v1",
+  "artifactId": "artifact-deal-desk-2048-r7",
+  "review": {
+    "id": "review-opp-2048-r7",
+    "opportunityId": "opp-2048",
+    "opportunityDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "quoteId": "quote-2048",
+    "quoteRevision": "r7",
+    "quoteDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "quoteIssuedAt": "2026-09-10T10:00:00Z",
+    "validUntil": "2026-09-30T23:59:59Z",
+    "currency": "USD",
+    "inputRefs": [
+      "input-opportunity",
+      "input-quote",
+      "input-product-catalog",
+      "input-product-configuration",
+      "input-price-book",
+      "input-discount-policy",
+      "input-margin-policy",
+      "input-approval-matrix",
+      "input-approval-history",
+      "input-licensing-rules",
+      "input-legal-baseline",
+      "input-dependency-register"
+    ],
+    "inputSnapshotDigest": "sha256:7455a551edc357c79853306e942596a6fd14389255957d98f3d8de2e22e373cd",
+    "sellerRef": "principal-seller",
+    "quoteOwnerRef": "principal-quote-owner",
+    "destination": "order-readiness-review-queue",
+    "destinationApproverRef": "principal-destination-approver",
+    "nextOwnerRef": "principal-order-owner"
+  },
+  "inputs": [
+    {
+      "id": "input-opportunity",
+      "kind": "opportunity-snapshot",
+      "version": "v12",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "effectiveFrom": "2026-09-10T09:00:00Z",
+      "validUntil": "2026-09-30T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-input-opportunity"
+    },
+    {
+      "id": "input-quote",
+      "kind": "quote-revision",
+      "version": "v7",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "effectiveFrom": "2026-09-10T10:00:00Z",
+      "validUntil": "2026-09-30T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-input-quote"
+    },
+    {
+      "id": "input-product-catalog",
+      "kind": "product-catalog",
+      "version": "v31",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "digest": "sha256:3131313131313131313131313131313131313131313131313131313131313131",
+      "effectiveFrom": "2026-09-01T00:00:00Z",
+      "validUntil": "2026-12-31T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-input-product-catalog"
+    },
+    {
+      "id": "input-product-configuration",
+      "kind": "product-configuration",
+      "version": "v18",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "digest": "sha256:1818181818181818181818181818181818181818181818181818181818181818",
+      "effectiveFrom": "2026-09-01T00:00:00Z",
+      "validUntil": "2026-12-31T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-input-product-configuration"
+    },
+    {
+      "id": "input-price-book",
+      "kind": "price-book",
+      "version": "v44",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "effectiveFrom": "2026-09-01T00:00:00Z",
+      "validUntil": "2026-09-30T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-input-price-book"
+    },
+    {
+      "id": "input-discount-policy",
+      "kind": "discount-policy",
+      "version": "v9",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "effectiveFrom": "2026-09-01T00:00:00Z",
+      "validUntil": "2026-12-31T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-input-discount-policy"
+    },
+    {
+      "id": "input-margin-policy",
+      "kind": "margin-policy",
+      "version": "v6",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "effectiveFrom": "2026-09-01T00:00:00Z",
+      "validUntil": "2026-12-31T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-input-margin-policy"
+    },
+    {
+      "id": "input-approval-matrix",
+      "kind": "approval-matrix",
+      "version": "v15",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "digest": "sha256:1515151515151515151515151515151515151515151515151515151515151515",
+      "effectiveFrom": "2026-09-01T00:00:00Z",
+      "validUntil": "2026-12-31T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-input-approval-matrix"
+    },
+    {
+      "id": "input-approval-history",
+      "kind": "approval-history",
+      "version": "v7",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "digest": "sha256:b875391ca9bb97f439ab139b867fdf34d060b124140812c9d9d3cf6cd21fe401",
+      "effectiveFrom": "2026-09-10T11:20:00Z",
+      "validUntil": "2026-09-30T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-input-approval-history"
+    },
+    {
+      "id": "input-licensing-rules",
+      "kind": "licensing-rules",
+      "version": "v22",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "effectiveFrom": "2026-09-01T00:00:00Z",
+      "validUntil": "2026-12-31T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-input-licensing-rules"
+    },
+    {
+      "id": "input-legal-baseline",
+      "kind": "legal-baseline",
+      "version": "v27",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "digest": "sha256:2727272727272727272727272727272727272727272727272727272727272727",
+      "effectiveFrom": "2026-09-01T00:00:00Z",
+      "validUntil": "2026-12-31T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-input-legal-baseline"
+    },
+    {
+      "id": "input-dependency-register",
+      "kind": "dependency-register",
+      "version": "v11",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "digest": "sha256:abababababababababababababababababababababababababababababababab",
+      "effectiveFrom": "2026-09-01T00:00:00Z",
+      "validUntil": "2026-12-31T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-input-dependency-register"
+    }
+  ],
+  "history": {
+    "inputRef": "input-approval-history",
+    "approvalRefs": [
+      "approval-pricing-r6",
+      "approval-pricing-r7",
+      "approval-legal-r7",
+      "approval-licensing-r7"
+    ],
+    "conflictRefs": [
+      "conflict-pricing-cross-revision"
+    ],
+    "supersessionEdges": [
+      {
+        "priorApprovalRef": "approval-pricing-r6",
+        "currentApprovalRef": "approval-pricing-r7"
+      }
+    ],
+    "conflictEdges": [
+      {
+        "conflictRef": "conflict-pricing-cross-revision",
+        "subjectRefs": [
+          "approval-pricing-r6"
+        ],
+        "resolvedByApprovalRef": "approval-pricing-r7"
+      }
+    ],
+    "evidenceRef": "evidence-input-approval-history",
+    "contentDigest": "sha256:b875391ca9bb97f439ab139b867fdf34d060b124140812c9d9d3cf6cd21fe401"
+  },
+  "principals": [
+    {
+      "id": "principal-seller",
+      "name": "Jordan Seller",
+      "kind": "named-human",
+      "roles": [
+        "seller"
+      ]
+    },
+    {
+      "id": "principal-quote-owner",
+      "name": "Avery Quoteowner",
+      "kind": "named-human",
+      "roles": [
+        "quote-owner"
+      ]
+    },
+    {
+      "id": "principal-source-system",
+      "name": "Commercial Source System",
+      "kind": "owner-system",
+      "roles": [
+        "source-custodian"
+      ]
+    },
+    {
+      "id": "principal-pricing-approver",
+      "name": "Parker Pricing",
+      "kind": "named-human",
+      "roles": [
+        "pricing-approver"
+      ]
+    },
+    {
+      "id": "principal-legal-approver",
+      "name": "Casey Legal",
+      "kind": "named-human",
+      "roles": [
+        "legal-approver"
+      ]
+    },
+    {
+      "id": "principal-licensing-approver",
+      "name": "Riley Licensing",
+      "kind": "named-human",
+      "roles": [
+        "licensing-approver"
+      ]
+    },
+    {
+      "id": "principal-destination-approver",
+      "name": "Dana Destination",
+      "kind": "named-human",
+      "roles": [
+        "destination-approver"
+      ]
+    },
+    {
+      "id": "principal-order-owner",
+      "name": "Morgan Orderowner",
+      "kind": "named-human",
+      "roles": [
+        "order-readiness-recipient"
+      ]
+    }
+  ],
+  "products": [
+    {
+      "id": "product-platform",
+      "sku": "PLATFORM-BASE",
+      "catalogInputRef": "input-product-catalog",
+      "configurationInputRef": "input-product-configuration",
+      "priceBookInputRef": "input-price-book",
+      "approved": true,
+      "currency": "USD",
+      "listUnitAmount": 10000,
+      "unitCostAmount": 4000,
+      "maxDiscountBps": 2500,
+      "minMarginBps": 5000,
+      "requiredDependencySkus": [],
+      "licensingRuleRefs": [
+        "input-licensing-rules"
+      ],
+      "payloadDigest": "sha256:8d173f3976d70064b89db47d1496af00647307336ff2147bcaae1e963a6baf74",
+      "evidenceRef": "evidence-product-platform"
+    },
+    {
+      "id": "product-support",
+      "sku": "SUPPORT-PREM",
+      "catalogInputRef": "input-product-catalog",
+      "configurationInputRef": "input-product-configuration",
+      "priceBookInputRef": "input-price-book",
+      "approved": true,
+      "currency": "USD",
+      "listUnitAmount": 20000,
+      "unitCostAmount": 8400,
+      "maxDiscountBps": 2000,
+      "minMarginBps": 4500,
+      "requiredDependencySkus": [
+        "PLATFORM-BASE"
+      ],
+      "licensingRuleRefs": [
+        "input-licensing-rules"
+      ],
+      "payloadDigest": "sha256:aaae80cd8572051feabf3fdb9e41f0181c7b088d16da217931dd1c5fe6de010f",
+      "evidenceRef": "evidence-product-support"
+    }
+  ],
+  "lines": [
+    {
+      "id": "line-platform",
+      "productRef": "product-platform",
+      "sku": "PLATFORM-BASE",
+      "quantity": 100,
+      "termMonths": 12,
+      "currency": "USD",
+      "listUnitAmount": 10000,
+      "netUnitAmount": 8000,
+      "unitCostAmount": 4000,
+      "extendedListAmount": 1000000,
+      "extendedNetAmount": 800000,
+      "extendedCostAmount": 400000,
+      "discountBps": 2000,
+      "marginBps": 5000,
+      "dependencySkus": [],
+      "licensingRuleRefs": [
+        "input-licensing-rules"
+      ],
+      "licensingDeviation": false,
+      "legalDeviation": false,
+      "payloadDigest": "sha256:320320094d91e10e63114b85ed2b26603855dfec32e8beea6a14df32f1ec90f0"
+    },
+    {
+      "id": "line-support",
+      "productRef": "product-support",
+      "sku": "SUPPORT-PREM",
+      "quantity": 100,
+      "termMonths": 12,
+      "currency": "USD",
+      "listUnitAmount": 20000,
+      "netUnitAmount": 14000,
+      "unitCostAmount": 8400,
+      "extendedListAmount": 2000000,
+      "extendedNetAmount": 1400000,
+      "extendedCostAmount": 840000,
+      "discountBps": 3000,
+      "marginBps": 4000,
+      "dependencySkus": [
+        "PLATFORM-BASE"
+      ],
+      "licensingRuleRefs": [
+        "input-licensing-rules"
+      ],
+      "licensingDeviation": true,
+      "legalDeviation": true,
+      "payloadDigest": "sha256:20ceb02d2a9525eb4e7de0d21fc1989cb125b4a1da9d436a5a50c468298edad2"
+    }
+  ],
+  "findings": [
+    {
+      "id": "finding-platform-configuration",
+      "lineRef": "line-platform",
+      "domain": "configuration",
+      "ruleInputRef": "input-product-configuration",
+      "status": "conforms",
+      "exceptionRef": null,
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-platform-pricing",
+      "lineRef": "line-platform",
+      "domain": "pricing",
+      "ruleInputRef": "input-price-book",
+      "status": "conforms",
+      "exceptionRef": null,
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-platform-discount",
+      "lineRef": "line-platform",
+      "domain": "discount",
+      "ruleInputRef": "input-discount-policy",
+      "status": "conforms",
+      "exceptionRef": null,
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-platform-margin",
+      "lineRef": "line-platform",
+      "domain": "margin",
+      "ruleInputRef": "input-margin-policy",
+      "status": "conforms",
+      "exceptionRef": null,
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-platform-licensing",
+      "lineRef": "line-platform",
+      "domain": "licensing",
+      "ruleInputRef": "input-licensing-rules",
+      "status": "conforms",
+      "exceptionRef": null,
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-platform-legal",
+      "lineRef": "line-platform",
+      "domain": "legal",
+      "ruleInputRef": "input-legal-baseline",
+      "status": "conforms",
+      "exceptionRef": null,
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-platform-dependency",
+      "lineRef": "line-platform",
+      "domain": "dependency",
+      "ruleInputRef": "input-dependency-register",
+      "status": "conforms",
+      "exceptionRef": null,
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-platform-validity",
+      "lineRef": "line-platform",
+      "domain": "validity",
+      "ruleInputRef": "input-quote",
+      "status": "conforms",
+      "exceptionRef": null,
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-support-configuration",
+      "lineRef": "line-support",
+      "domain": "configuration",
+      "ruleInputRef": "input-product-configuration",
+      "status": "conforms",
+      "exceptionRef": null,
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-support-pricing",
+      "lineRef": "line-support",
+      "domain": "pricing",
+      "ruleInputRef": "input-price-book",
+      "status": "conforms",
+      "exceptionRef": null,
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-support-discount",
+      "lineRef": "line-support",
+      "domain": "discount",
+      "ruleInputRef": "input-discount-policy",
+      "status": "exception",
+      "exceptionRef": "exception-discount",
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-support-margin",
+      "lineRef": "line-support",
+      "domain": "margin",
+      "ruleInputRef": "input-margin-policy",
+      "status": "exception",
+      "exceptionRef": "exception-margin",
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-support-licensing",
+      "lineRef": "line-support",
+      "domain": "licensing",
+      "ruleInputRef": "input-licensing-rules",
+      "status": "exception",
+      "exceptionRef": "exception-licensing",
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-support-legal",
+      "lineRef": "line-support",
+      "domain": "legal",
+      "ruleInputRef": "input-legal-baseline",
+      "status": "exception",
+      "exceptionRef": "exception-legal",
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-support-dependency",
+      "lineRef": "line-support",
+      "domain": "dependency",
+      "ruleInputRef": "input-dependency-register",
+      "status": "conforms",
+      "exceptionRef": null,
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    },
+    {
+      "id": "finding-support-validity",
+      "lineRef": "line-support",
+      "domain": "validity",
+      "ruleInputRef": "input-quote",
+      "status": "conforms",
+      "exceptionRef": null,
+      "evidenceRefs": [
+        "evidence-findings"
+      ]
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "exception-discount",
+      "findingRef": "finding-support-discount",
+      "lineRef": "line-support",
+      "domain": "discount",
+      "approvalDomain": "pricing",
+      "raisedAt": "2026-09-10T10:30:00Z",
+      "currentApprovalRef": "approval-pricing-r7",
+      "evidenceRef": "evidence-exceptions"
+    },
+    {
+      "id": "exception-margin",
+      "findingRef": "finding-support-margin",
+      "lineRef": "line-support",
+      "domain": "margin",
+      "approvalDomain": "pricing",
+      "raisedAt": "2026-09-10T10:31:00Z",
+      "currentApprovalRef": "approval-pricing-r7",
+      "evidenceRef": "evidence-exceptions"
+    },
+    {
+      "id": "exception-licensing",
+      "findingRef": "finding-support-licensing",
+      "lineRef": "line-support",
+      "domain": "licensing",
+      "approvalDomain": "licensing",
+      "raisedAt": "2026-09-10T10:32:00Z",
+      "currentApprovalRef": "approval-licensing-r7",
+      "evidenceRef": "evidence-exceptions"
+    },
+    {
+      "id": "exception-legal",
+      "findingRef": "finding-support-legal",
+      "lineRef": "line-support",
+      "domain": "legal",
+      "approvalDomain": "legal",
+      "raisedAt": "2026-09-10T10:33:00Z",
+      "currentApprovalRef": "approval-legal-r7",
+      "evidenceRef": "evidence-exceptions"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "approval-pricing-r6",
+      "domain": "pricing",
+      "status": "superseded",
+      "decision": "approved",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r6",
+      "quoteDigest": "sha256:0606060606060606060606060606060606060606060606060606060606060606",
+      "exceptionRefs": [],
+      "approverRef": "principal-pricing-approver",
+      "decidedAt": "2026-09-10T10:10:00Z",
+      "validFrom": "2026-09-10T10:10:00Z",
+      "validUntil": "2026-09-30T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-approval-pricing-r6"
+    },
+    {
+      "id": "approval-pricing-r7",
+      "domain": "pricing",
+      "status": "current",
+      "decision": "approved",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "quoteDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "exceptionRefs": [
+        "exception-discount",
+        "exception-margin"
+      ],
+      "approverRef": "principal-pricing-approver",
+      "decidedAt": "2026-09-10T11:00:00Z",
+      "validFrom": "2026-09-10T11:00:00Z",
+      "validUntil": "2026-09-30T23:59:59Z",
+      "supersedesRef": "approval-pricing-r6",
+      "evidenceRef": "evidence-approval-pricing-r7"
+    },
+    {
+      "id": "approval-legal-r7",
+      "domain": "legal",
+      "status": "current",
+      "decision": "approved",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "quoteDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "exceptionRefs": [
+        "exception-legal"
+      ],
+      "approverRef": "principal-legal-approver",
+      "decidedAt": "2026-09-10T11:05:00Z",
+      "validFrom": "2026-09-10T11:05:00Z",
+      "validUntil": "2026-09-30T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-approval-legal-r7"
+    },
+    {
+      "id": "approval-licensing-r7",
+      "domain": "licensing",
+      "status": "current",
+      "decision": "approved",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "quoteDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "exceptionRefs": [
+        "exception-licensing"
+      ],
+      "approverRef": "principal-licensing-approver",
+      "decidedAt": "2026-09-10T11:10:00Z",
+      "validFrom": "2026-09-10T11:10:00Z",
+      "validUntil": "2026-09-30T23:59:59Z",
+      "supersedesRef": null,
+      "evidenceRef": "evidence-approval-licensing-r7"
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-pricing-cross-revision",
+      "kind": "cross-revision-approval",
+      "subjectRefs": [
+        "approval-pricing-r6"
+      ],
+      "detectedAt": "2026-09-10T10:40:00Z",
+      "status": "resolved",
+      "resolvedByApprovalRef": "approval-pricing-r7",
+      "evidenceRef": "evidence-conflict-pricing"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-input-opportunity",
+      "kind": "source-export",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T09:00:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "input-opportunity"
+      ],
+      "sourceRecordDigest": "sha256:a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1"
+    },
+    {
+      "id": "evidence-input-quote",
+      "kind": "source-export",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T10:00:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "input-quote"
+      ],
+      "sourceRecordDigest": "sha256:a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2"
+    },
+    {
+      "id": "evidence-input-product-catalog",
+      "kind": "source-export",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T09:30:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "input-product-catalog"
+      ],
+      "sourceRecordDigest": "sha256:a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3"
+    },
+    {
+      "id": "evidence-input-product-configuration",
+      "kind": "source-export",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T09:31:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "input-product-configuration"
+      ],
+      "sourceRecordDigest": "sha256:a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4"
+    },
+    {
+      "id": "evidence-input-price-book",
+      "kind": "source-export",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T09:32:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "input-price-book"
+      ],
+      "sourceRecordDigest": "sha256:a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5"
+    },
+    {
+      "id": "evidence-input-discount-policy",
+      "kind": "source-export",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T09:33:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "input-discount-policy"
+      ],
+      "sourceRecordDigest": "sha256:a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6"
+    },
+    {
+      "id": "evidence-input-margin-policy",
+      "kind": "source-export",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T09:34:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "input-margin-policy"
+      ],
+      "sourceRecordDigest": "sha256:a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
+    },
+    {
+      "id": "evidence-input-approval-matrix",
+      "kind": "source-export",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T09:35:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "input-approval-matrix"
+      ],
+      "sourceRecordDigest": "sha256:a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8"
+    },
+    {
+      "id": "evidence-input-licensing-rules",
+      "kind": "source-export",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T09:36:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "input-licensing-rules"
+      ],
+      "sourceRecordDigest": "sha256:a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9"
+    },
+    {
+      "id": "evidence-input-approval-history",
+      "kind": "source-export",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T11:20:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "input-approval-history",
+        "approval-pricing-r6",
+        "approval-pricing-r7",
+        "approval-legal-r7",
+        "approval-licensing-r7",
+        "conflict-pricing-cross-revision"
+      ],
+      "sourceRecordDigest": "sha256:b875391ca9bb97f439ab139b867fdf34d060b124140812c9d9d3cf6cd21fe401",
+      "payloadDigest": "sha256:b875391ca9bb97f439ab139b867fdf34d060b124140812c9d9d3cf6cd21fe401"
+    },
+    {
+      "id": "evidence-input-legal-baseline",
+      "kind": "source-export",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T09:37:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "input-legal-baseline"
+      ],
+      "sourceRecordDigest": "sha256:b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0"
+    },
+    {
+      "id": "evidence-input-dependency-register",
+      "kind": "source-export",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T09:38:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "input-dependency-register"
+      ],
+      "sourceRecordDigest": "sha256:b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1"
+    },
+    {
+      "id": "evidence-product-platform",
+      "kind": "product-record",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T10:00:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "product-platform"
+      ],
+      "sourceRecordDigest": "sha256:adadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadad",
+      "payloadDigest": "sha256:8d173f3976d70064b89db47d1496af00647307336ff2147bcaae1e963a6baf74"
+    },
+    {
+      "id": "evidence-product-support",
+      "kind": "product-record",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T10:00:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "product-support"
+      ],
+      "sourceRecordDigest": "sha256:aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae",
+      "payloadDigest": "sha256:aaae80cd8572051feabf3fdb9e41f0181c7b088d16da217931dd1c5fe6de010f"
+    },
+    {
+      "id": "evidence-line-platform",
+      "kind": "quote-line-record",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T10:01:00Z",
+      "suppliedByRef": "principal-quote-owner",
+      "subjectRefs": [
+        "line-platform"
+      ],
+      "sourceRecordDigest": "sha256:b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+      "payloadDigest": "sha256:320320094d91e10e63114b85ed2b26603855dfec32e8beea6a14df32f1ec90f0"
+    },
+    {
+      "id": "evidence-line-support",
+      "kind": "quote-line-record",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T10:02:00Z",
+      "suppliedByRef": "principal-quote-owner",
+      "subjectRefs": [
+        "line-support"
+      ],
+      "sourceRecordDigest": "sha256:b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3",
+      "payloadDigest": "sha256:20ceb02d2a9525eb4e7de0d21fc1989cb125b4a1da9d436a5a50c468298edad2"
+    },
+    {
+      "id": "evidence-findings",
+      "kind": "finding-record",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T10:20:00Z",
+      "suppliedByRef": "principal-source-system",
+      "subjectRefs": [
+        "finding-platform-configuration",
+        "finding-platform-pricing",
+        "finding-platform-discount",
+        "finding-platform-margin",
+        "finding-platform-licensing",
+        "finding-platform-legal",
+        "finding-platform-dependency",
+        "finding-platform-validity",
+        "finding-support-configuration",
+        "finding-support-pricing",
+        "finding-support-discount",
+        "finding-support-margin",
+        "finding-support-licensing",
+        "finding-support-legal",
+        "finding-support-dependency",
+        "finding-support-validity",
+        "line-platform",
+        "line-support"
+      ],
+      "sourceRecordDigest": "sha256:b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4"
+    },
+    {
+      "id": "evidence-exceptions",
+      "kind": "exception-record",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T10:34:00Z",
+      "suppliedByRef": "principal-quote-owner",
+      "subjectRefs": [
+        "exception-discount",
+        "exception-margin",
+        "exception-licensing",
+        "exception-legal",
+        "finding-support-discount",
+        "finding-support-margin",
+        "finding-support-licensing",
+        "finding-support-legal",
+        "line-support"
+      ],
+      "sourceRecordDigest": "sha256:b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5"
+    },
+    {
+      "id": "evidence-approval-pricing-r6",
+      "kind": "approval-record",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T10:10:00Z",
+      "suppliedByRef": "principal-pricing-approver",
+      "subjectRefs": [
+        "approval-pricing-r6"
+      ],
+      "sourceRecordDigest": "sha256:b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6"
+    },
+    {
+      "id": "evidence-conflict-pricing",
+      "kind": "conflict-record",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T10:40:00Z",
+      "suppliedByRef": "principal-quote-owner",
+      "subjectRefs": [
+        "conflict-pricing-cross-revision",
+        "approval-pricing-r6"
+      ],
+      "sourceRecordDigest": "sha256:b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7"
+    },
+    {
+      "id": "evidence-approval-pricing-r7",
+      "kind": "approval-record",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T11:00:00Z",
+      "suppliedByRef": "principal-pricing-approver",
+      "subjectRefs": [
+        "approval-pricing-r7",
+        "exception-discount",
+        "exception-margin"
+      ],
+      "sourceRecordDigest": "sha256:b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8"
+    },
+    {
+      "id": "evidence-approval-legal-r7",
+      "kind": "approval-record",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T11:05:00Z",
+      "suppliedByRef": "principal-legal-approver",
+      "subjectRefs": [
+        "approval-legal-r7",
+        "exception-legal"
+      ],
+      "sourceRecordDigest": "sha256:b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9"
+    },
+    {
+      "id": "evidence-approval-licensing-r7",
+      "kind": "approval-record",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T11:10:00Z",
+      "suppliedByRef": "principal-licensing-approver",
+      "subjectRefs": [
+        "approval-licensing-r7",
+        "exception-licensing"
+      ],
+      "sourceRecordDigest": "sha256:c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0"
+    },
+    {
+      "id": "evidence-handoff",
+      "kind": "handoff-record",
+      "opportunityId": "opp-2048",
+      "quoteId": "quote-2048",
+      "quoteRevision": "r7",
+      "observedAt": "2026-09-10T11:30:00Z",
+      "suppliedByRef": "principal-destination-approver",
+      "subjectRefs": [
+        "handoff-order-review"
+      ],
+      "sourceRecordDigest": "sha256:c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1"
+    }
+  ],
+  "coverage": {
+    "reviewRef": "review-opp-2048-r7",
+    "inputSnapshotDigest": "sha256:7455a551edc357c79853306e942596a6fd14389255957d98f3d8de2e22e373cd",
+    "historyDigest": "sha256:b875391ca9bb97f439ab139b867fdf34d060b124140812c9d9d3cf6cd21fe401",
+    "productPayloadDigests": [
+      {
+        "ref": "product-platform",
+        "digest": "sha256:8d173f3976d70064b89db47d1496af00647307336ff2147bcaae1e963a6baf74",
+        "sourceRecordDigest": "sha256:adadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadad"
+      },
+      {
+        "ref": "product-support",
+        "digest": "sha256:aaae80cd8572051feabf3fdb9e41f0181c7b088d16da217931dd1c5fe6de010f",
+        "sourceRecordDigest": "sha256:aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae"
+      }
+    ],
+    "linePayloadDigests": [
+      {
+        "ref": "line-platform",
+        "digest": "sha256:320320094d91e10e63114b85ed2b26603855dfec32e8beea6a14df32f1ec90f0",
+        "sourceRecordDigest": "sha256:b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2"
+      },
+      {
+        "ref": "line-support",
+        "digest": "sha256:20ceb02d2a9525eb4e7de0d21fc1989cb125b4a1da9d436a5a50c468298edad2",
+        "sourceRecordDigest": "sha256:b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3"
+      }
+    ],
+    "payloadRootDigest": "sha256:ca99a8426f1e0dc898ffee56421f8880fade87a74cfd6a09c3803b8706758beb",
+    "inputRefs": [
+      "input-opportunity",
+      "input-quote",
+      "input-product-catalog",
+      "input-product-configuration",
+      "input-price-book",
+      "input-discount-policy",
+      "input-margin-policy",
+      "input-approval-matrix",
+      "input-approval-history",
+      "input-licensing-rules",
+      "input-legal-baseline",
+      "input-dependency-register"
+    ],
+    "lineRefs": [
+      "line-platform",
+      "line-support"
+    ],
+    "findingRefs": [
+      "finding-platform-configuration",
+      "finding-platform-pricing",
+      "finding-platform-discount",
+      "finding-platform-margin",
+      "finding-platform-licensing",
+      "finding-platform-legal",
+      "finding-platform-dependency",
+      "finding-platform-validity",
+      "finding-support-configuration",
+      "finding-support-pricing",
+      "finding-support-discount",
+      "finding-support-margin",
+      "finding-support-licensing",
+      "finding-support-legal",
+      "finding-support-dependency",
+      "finding-support-validity"
+    ],
+    "exceptionRefs": [
+      "exception-discount",
+      "exception-margin",
+      "exception-licensing",
+      "exception-legal"
+    ],
+    "currentApprovalRefs": [
+      "approval-pricing-r7",
+      "approval-legal-r7",
+      "approval-licensing-r7"
+    ],
+    "conflictRefs": [
+      "conflict-pricing-cross-revision"
+    ],
+    "blockerRefs": [],
+    "contentDigest": "sha256:a0603cd9abbf35c7671d2f678c5b8079771e7859b0de4bedfaf4862c8ff23f0f",
+    "historyEvidenceRef": "evidence-input-approval-history",
+    "historySourceRecordDigest": "sha256:b875391ca9bb97f439ab139b867fdf34d060b124140812c9d9d3cf6cd21fe401"
+  },
+  "blockers": [],
+  "handoff": {
+    "id": "handoff-order-review",
+    "reviewRef": "review-opp-2048-r7",
+    "opportunityId": "opp-2048",
+    "opportunityDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "quoteId": "quote-2048",
+    "quoteRevision": "r7",
+    "quoteDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "inputSnapshotDigest": "sha256:7455a551edc357c79853306e942596a6fd14389255957d98f3d8de2e22e373cd",
+    "historyDigest": "sha256:b875391ca9bb97f439ab139b867fdf34d060b124140812c9d9d3cf6cd21fe401",
+    "productPayloadDigests": [
+      {
+        "ref": "product-platform",
+        "digest": "sha256:8d173f3976d70064b89db47d1496af00647307336ff2147bcaae1e963a6baf74",
+        "sourceRecordDigest": "sha256:adadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadad"
+      },
+      {
+        "ref": "product-support",
+        "digest": "sha256:aaae80cd8572051feabf3fdb9e41f0181c7b088d16da217931dd1c5fe6de010f",
+        "sourceRecordDigest": "sha256:aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae"
+      }
+    ],
+    "linePayloadDigests": [
+      {
+        "ref": "line-platform",
+        "digest": "sha256:320320094d91e10e63114b85ed2b26603855dfec32e8beea6a14df32f1ec90f0",
+        "sourceRecordDigest": "sha256:b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2"
+      },
+      {
+        "ref": "line-support",
+        "digest": "sha256:20ceb02d2a9525eb4e7de0d21fc1989cb125b4a1da9d436a5a50c468298edad2",
+        "sourceRecordDigest": "sha256:b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3"
+      }
+    ],
+    "payloadRootDigest": "sha256:ca99a8426f1e0dc898ffee56421f8880fade87a74cfd6a09c3803b8706758beb",
+    "coverageDigest": "sha256:a0603cd9abbf35c7671d2f678c5b8079771e7859b0de4bedfaf4862c8ff23f0f",
+    "state": "ready-for-order-review",
+    "destination": "order-readiness-review-queue",
+    "approvedByRef": "principal-destination-approver",
+    "nextOwnerRef": "principal-order-owner",
+    "handedOffAt": "2026-09-10T11:30:00Z",
+    "lineRefs": [
+      "line-platform",
+      "line-support"
+    ],
+    "findingRefs": [
+      "finding-platform-configuration",
+      "finding-platform-pricing",
+      "finding-platform-discount",
+      "finding-platform-margin",
+      "finding-platform-licensing",
+      "finding-platform-legal",
+      "finding-platform-dependency",
+      "finding-platform-validity",
+      "finding-support-configuration",
+      "finding-support-pricing",
+      "finding-support-discount",
+      "finding-support-margin",
+      "finding-support-licensing",
+      "finding-support-legal",
+      "finding-support-dependency",
+      "finding-support-validity"
+    ],
+    "exceptionRefs": [
+      "exception-discount",
+      "exception-margin",
+      "exception-licensing",
+      "exception-legal"
+    ],
+    "approvalRefs": [
+      "approval-pricing-r7",
+      "approval-legal-r7",
+      "approval-licensing-r7"
+    ],
+    "conflictRefs": [
+      "conflict-pricing-cross-revision"
+    ],
+    "blockerRefs": [],
+    "negotiationClaim": "not-claimed",
+    "customerCommunicationClaim": "not-claimed",
+    "discountApprovalClaim": "not-claimed",
+    "termApprovalClaim": "not-claimed",
+    "legalConclusionClaim": "not-claimed",
+    "signatureClaim": "not-claimed",
+    "bookingClaim": "not-claimed",
+    "invoicingClaim": "not-claimed",
+    "contractModificationClaim": "not-claimed",
+    "revenueClaim": "not-claimed",
+    "evidenceRef": "evidence-handoff",
+    "contentDigest": "sha256:6d1c1a39dbe52616267be804fe205132e2191ebe2430d69f30810a25fff00e26",
+    "historyEvidenceRef": "evidence-input-approval-history",
+    "historySourceRecordDigest": "sha256:b875391ca9bb97f439ab139b867fdf34d060b124140812c9d9d3cf6cd21fe401"
+  }
+}

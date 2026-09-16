@@ -1,0 +1,835 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/commercial-deal-desk.v1.json",
+  "title": "Commercial Deal Desk Coordinator artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactId",
+    "review",
+    "inputs",
+    "history",
+    "principals",
+    "products",
+    "lines",
+    "findings",
+    "exceptions",
+    "approvals",
+    "conflicts",
+    "evidence",
+    "coverage",
+    "blockers",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.commercialDealDesk.v1" },
+    "artifactId": { "$ref": "#/$defs/id" },
+    "review": { "$ref": "#/$defs/review" },
+    "inputs": {
+      "type": "array",
+      "minItems": 12,
+      "items": { "$ref": "#/$defs/input" }
+    },
+    "history": { "$ref": "#/$defs/history" },
+    "principals": {
+      "type": "array",
+      "minItems": 8,
+      "items": { "$ref": "#/$defs/principal" }
+    },
+    "products": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/product" }
+    },
+    "lines": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/line" }
+    },
+    "findings": {
+      "type": "array",
+      "minItems": 8,
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "exceptions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/exception" }
+    },
+    "approvals": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "$ref": "#/$defs/approval" }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/conflict" }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/evidence" }
+    },
+    "coverage": { "$ref": "#/$defs/coverage" },
+    "blockers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/blocker" }
+    },
+    "handoff": { "$ref": "#/$defs/handoff" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+      "maxLength": 96
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "idList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "nonEmptyIdList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "opportunityId",
+        "opportunityDigest",
+        "quoteId",
+        "quoteRevision",
+        "quoteDigest",
+        "quoteIssuedAt",
+        "validUntil",
+        "currency",
+        "inputRefs",
+        "inputSnapshotDigest",
+        "sellerRef",
+        "quoteOwnerRef",
+        "destination",
+        "destinationApproverRef",
+        "nextOwnerRef"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "opportunityId": { "$ref": "#/$defs/id" },
+        "opportunityDigest": { "$ref": "#/$defs/digest" },
+        "quoteId": { "$ref": "#/$defs/id" },
+        "quoteRevision": {
+          "type": "string",
+          "pattern": "^r[1-9][0-9]*$"
+        },
+        "quoteDigest": { "$ref": "#/$defs/digest" },
+        "quoteIssuedAt": { "$ref": "#/$defs/timestamp" },
+        "validUntil": { "$ref": "#/$defs/timestamp" },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "inputRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "inputSnapshotDigest": { "$ref": "#/$defs/digest" },
+        "sellerRef": { "$ref": "#/$defs/id" },
+        "quoteOwnerRef": { "$ref": "#/$defs/id" },
+        "destination": { "const": "order-readiness-review-queue" },
+        "destinationApproverRef": { "$ref": "#/$defs/id" },
+        "nextOwnerRef": { "$ref": "#/$defs/id" }
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "version",
+        "opportunityId",
+        "quoteId",
+        "quoteRevision",
+        "digest",
+        "effectiveFrom",
+        "validUntil",
+        "supersedesRef",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": [
+            "opportunity-snapshot",
+            "quote-revision",
+            "product-catalog",
+            "product-configuration",
+            "price-book",
+            "discount-policy",
+            "margin-policy",
+            "approval-matrix",
+            "approval-history",
+            "licensing-rules",
+            "legal-baseline",
+            "dependency-register"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^v[1-9][0-9]*$"
+        },
+        "opportunityId": { "$ref": "#/$defs/id" },
+        "quoteId": { "$ref": "#/$defs/id" },
+        "quoteRevision": {
+          "type": "string",
+          "pattern": "^r[1-9][0-9]*$"
+        },
+        "digest": { "$ref": "#/$defs/digest" },
+        "effectiveFrom": { "$ref": "#/$defs/timestamp" },
+        "validUntil": {
+          "anyOf": [
+            { "$ref": "#/$defs/timestamp" },
+            { "type": "null" }
+          ]
+        },
+        "supersedesRef": {
+          "anyOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ]
+        },
+        "evidenceRef": { "$ref": "#/$defs/id" }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "kind", "roles"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 80
+        },
+        "kind": {
+          "enum": ["named-human", "owner-system"]
+        },
+        "roles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "seller",
+              "quote-owner",
+              "source-custodian",
+              "pricing-approver",
+              "legal-approver",
+              "licensing-approver",
+              "destination-approver",
+              "order-readiness-recipient"
+            ]
+          }
+        }
+      }
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "sku",
+        "catalogInputRef",
+        "configurationInputRef",
+        "priceBookInputRef",
+        "approved",
+        "currency",
+        "listUnitAmount",
+        "unitCostAmount",
+        "maxDiscountBps",
+        "minMarginBps",
+        "requiredDependencySkus",
+        "licensingRuleRefs",
+        "payloadDigest",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "sku": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9-]{2,31}$"
+        },
+        "catalogInputRef": { "$ref": "#/$defs/id" },
+        "configurationInputRef": { "$ref": "#/$defs/id" },
+        "priceBookInputRef": { "$ref": "#/$defs/id" },
+        "approved": { "type": "boolean" },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "listUnitAmount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "unitCostAmount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxDiscountBps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "minMarginBps": {
+          "type": "integer",
+          "minimum": -10000,
+          "maximum": 10000
+        },
+        "requiredDependencySkus": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z0-9][A-Z0-9-]{2,31}$"
+          }
+        },
+        "licensingRuleRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "payloadDigest": { "$ref": "#/$defs/digest" },
+        "evidenceRef": { "$ref": "#/$defs/id" }
+      }
+    },
+    "line": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "productRef",
+        "sku",
+        "quantity",
+        "termMonths",
+        "currency",
+        "listUnitAmount",
+        "netUnitAmount",
+        "unitCostAmount",
+        "extendedListAmount",
+        "extendedNetAmount",
+        "extendedCostAmount",
+        "discountBps",
+        "marginBps",
+        "dependencySkus",
+        "licensingRuleRefs",
+        "licensingDeviation",
+        "legalDeviation",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "productRef": { "$ref": "#/$defs/id" },
+        "sku": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9-]{2,31}$"
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "termMonths": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 120
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "listUnitAmount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "netUnitAmount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "unitCostAmount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "extendedListAmount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "extendedNetAmount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "extendedCostAmount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "discountBps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "marginBps": {
+          "type": "integer",
+          "minimum": -10000,
+          "maximum": 10000
+        },
+        "dependencySkus": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z0-9][A-Z0-9-]{2,31}$"
+          }
+        },
+        "licensingRuleRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "licensingDeviation": { "type": "boolean" },
+        "legalDeviation": { "type": "boolean" },
+        "payloadDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "lineRef",
+        "domain",
+        "ruleInputRef",
+        "status",
+        "exceptionRef",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "lineRef": { "$ref": "#/$defs/id" },
+        "domain": {
+          "enum": [
+            "configuration",
+            "pricing",
+            "discount",
+            "margin",
+            "licensing",
+            "legal",
+            "dependency",
+            "validity"
+          ]
+        },
+        "ruleInputRef": { "$ref": "#/$defs/id" },
+        "status": {
+          "enum": ["conforms", "exception", "blocked"]
+        },
+        "exceptionRef": {
+          "anyOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ]
+        },
+        "evidenceRefs": { "$ref": "#/$defs/nonEmptyIdList" }
+      }
+    },
+    "exception": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "findingRef",
+        "lineRef",
+        "domain",
+        "approvalDomain",
+        "raisedAt",
+        "currentApprovalRef",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "findingRef": { "$ref": "#/$defs/id" },
+        "lineRef": { "$ref": "#/$defs/id" },
+        "domain": {
+          "enum": ["pricing", "discount", "margin", "licensing", "legal"]
+        },
+        "approvalDomain": {
+          "enum": ["pricing", "legal", "licensing"]
+        },
+        "raisedAt": { "$ref": "#/$defs/timestamp" },
+        "currentApprovalRef": { "$ref": "#/$defs/id" },
+        "evidenceRef": { "$ref": "#/$defs/id" }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "domain",
+        "status",
+        "decision",
+        "opportunityId",
+        "quoteId",
+        "quoteRevision",
+        "quoteDigest",
+        "exceptionRefs",
+        "approverRef",
+        "decidedAt",
+        "validFrom",
+        "validUntil",
+        "supersedesRef",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "domain": {
+          "enum": ["pricing", "legal", "licensing"]
+        },
+        "status": {
+          "enum": ["current", "superseded", "revoked", "rejected"]
+        },
+        "decision": {
+          "enum": ["approved", "rejected"]
+        },
+        "opportunityId": { "$ref": "#/$defs/id" },
+        "quoteId": { "$ref": "#/$defs/id" },
+        "quoteRevision": {
+          "type": "string",
+          "pattern": "^r[1-9][0-9]*$"
+        },
+        "quoteDigest": { "$ref": "#/$defs/digest" },
+        "exceptionRefs": { "$ref": "#/$defs/idList" },
+        "approverRef": { "$ref": "#/$defs/id" },
+        "decidedAt": { "$ref": "#/$defs/timestamp" },
+        "validFrom": { "$ref": "#/$defs/timestamp" },
+        "validUntil": { "$ref": "#/$defs/timestamp" },
+        "supersedesRef": {
+          "anyOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ]
+        },
+        "evidenceRef": { "$ref": "#/$defs/id" }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "subjectRefs",
+        "detectedAt",
+        "status",
+        "resolvedByApprovalRef",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": [
+            "cross-revision-approval",
+            "scope-conflict",
+            "decision-conflict",
+            "role-conflict"
+          ]
+        },
+        "subjectRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "detectedAt": { "$ref": "#/$defs/timestamp" },
+        "status": {
+          "enum": ["open", "resolved"]
+        },
+        "resolvedByApprovalRef": {
+          "anyOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ]
+        },
+        "evidenceRef": { "$ref": "#/$defs/id" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "opportunityId",
+        "quoteId",
+        "quoteRevision",
+        "observedAt",
+        "suppliedByRef",
+        "subjectRefs",
+        "sourceRecordDigest"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": [
+            "source-export",
+            "product-record",
+            "quote-line-record",
+            "finding-record",
+            "exception-record",
+            "approval-record",
+            "conflict-record",
+            "blocker-record",
+            "destination-approval",
+            "handoff-record"
+          ]
+        },
+        "opportunityId": { "$ref": "#/$defs/id" },
+        "quoteId": { "$ref": "#/$defs/id" },
+        "quoteRevision": {
+          "type": "string",
+          "pattern": "^r[1-9][0-9]*$"
+        },
+        "observedAt": { "$ref": "#/$defs/timestamp" },
+        "suppliedByRef": { "$ref": "#/$defs/id" },
+        "subjectRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "sourceRecordDigest": { "$ref": "#/$defs/digest" },
+        "payloadDigest": {
+          "anyOf": [
+            { "$ref": "#/$defs/digest" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewRef",
+        "inputSnapshotDigest",
+        "historyDigest",
+        "historyEvidenceRef",
+        "historySourceRecordDigest",
+        "productPayloadDigests",
+        "linePayloadDigests",
+        "payloadRootDigest",
+        "inputRefs",
+        "lineRefs",
+        "findingRefs",
+        "exceptionRefs",
+        "currentApprovalRefs",
+        "conflictRefs",
+        "blockerRefs",
+        "contentDigest"
+      ],
+      "properties": {
+        "reviewRef": { "$ref": "#/$defs/id" },
+        "inputSnapshotDigest": { "$ref": "#/$defs/digest" },
+        "historyDigest": { "$ref": "#/$defs/digest" },
+        "historyEvidenceRef": { "$ref": "#/$defs/id" },
+        "historySourceRecordDigest": { "$ref": "#/$defs/digest" },
+        "productPayloadDigests": { "$ref": "#/$defs/payloadDigestMap" },
+        "linePayloadDigests": { "$ref": "#/$defs/payloadDigestMap" },
+        "payloadRootDigest": { "$ref": "#/$defs/digest" },
+        "inputRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "lineRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "findingRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "exceptionRefs": { "$ref": "#/$defs/idList" },
+        "currentApprovalRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "conflictRefs": { "$ref": "#/$defs/idList" },
+        "blockerRefs": { "$ref": "#/$defs/idList" },
+        "contentDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "code", "subjectRefs", "ownerRef", "detectedAt", "evidenceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "code": {
+          "enum": [
+            "missing-input",
+            "invalid-configuration",
+            "invalid-pricing",
+            "threshold-exception-unapproved",
+            "licensing-exception-unapproved",
+            "legal-exception-unapproved",
+            "dependency-unresolved",
+            "quote-expired",
+            "approval-conflict",
+            "coverage-incomplete"
+          ]
+        },
+        "subjectRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "ownerRef": { "$ref": "#/$defs/id" },
+        "detectedAt": { "$ref": "#/$defs/timestamp" },
+        "evidenceRefs": { "$ref": "#/$defs/nonEmptyIdList" }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "reviewRef",
+        "opportunityId",
+        "opportunityDigest",
+        "quoteId",
+        "quoteRevision",
+        "quoteDigest",
+        "inputSnapshotDigest",
+        "historyDigest",
+        "historyEvidenceRef",
+        "historySourceRecordDigest",
+        "productPayloadDigests",
+        "linePayloadDigests",
+        "payloadRootDigest",
+        "coverageDigest",
+        "state",
+        "destination",
+        "approvedByRef",
+        "nextOwnerRef",
+        "handedOffAt",
+        "lineRefs",
+        "findingRefs",
+        "exceptionRefs",
+        "approvalRefs",
+        "conflictRefs",
+        "blockerRefs",
+        "negotiationClaim",
+        "customerCommunicationClaim",
+        "discountApprovalClaim",
+        "termApprovalClaim",
+        "legalConclusionClaim",
+        "signatureClaim",
+        "bookingClaim",
+        "invoicingClaim",
+        "contractModificationClaim",
+        "revenueClaim",
+        "evidenceRef",
+        "contentDigest"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "reviewRef": { "$ref": "#/$defs/id" },
+        "opportunityId": { "$ref": "#/$defs/id" },
+        "opportunityDigest": { "$ref": "#/$defs/digest" },
+        "quoteId": { "$ref": "#/$defs/id" },
+        "quoteRevision": {
+          "type": "string",
+          "pattern": "^r[1-9][0-9]*$"
+        },
+        "quoteDigest": { "$ref": "#/$defs/digest" },
+        "inputSnapshotDigest": { "$ref": "#/$defs/digest" },
+        "historyDigest": { "$ref": "#/$defs/digest" },
+        "historyEvidenceRef": { "$ref": "#/$defs/id" },
+        "historySourceRecordDigest": { "$ref": "#/$defs/digest" },
+        "productPayloadDigests": { "$ref": "#/$defs/payloadDigestMap" },
+        "linePayloadDigests": { "$ref": "#/$defs/payloadDigestMap" },
+        "payloadRootDigest": { "$ref": "#/$defs/digest" },
+        "coverageDigest": { "$ref": "#/$defs/digest" },
+        "state": {
+          "enum": ["blocked", "ready-for-order-review"]
+        },
+        "destination": { "const": "order-readiness-review-queue" },
+        "approvedByRef": { "$ref": "#/$defs/id" },
+        "nextOwnerRef": { "$ref": "#/$defs/id" },
+        "handedOffAt": { "$ref": "#/$defs/timestamp" },
+        "lineRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "findingRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "exceptionRefs": { "$ref": "#/$defs/idList" },
+        "approvalRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "conflictRefs": { "$ref": "#/$defs/idList" },
+        "blockerRefs": { "$ref": "#/$defs/idList" },
+        "negotiationClaim": { "const": "not-claimed" },
+        "customerCommunicationClaim": { "const": "not-claimed" },
+        "discountApprovalClaim": { "const": "not-claimed" },
+        "termApprovalClaim": { "const": "not-claimed" },
+        "legalConclusionClaim": { "const": "not-claimed" },
+        "signatureClaim": { "const": "not-claimed" },
+        "bookingClaim": { "const": "not-claimed" },
+        "invoicingClaim": { "const": "not-claimed" },
+        "contractModificationClaim": { "const": "not-claimed" },
+        "revenueClaim": { "const": "not-claimed" },
+        "evidenceRef": { "$ref": "#/$defs/id" },
+        "contentDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "payloadDigestMap": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ref", "digest", "sourceRecordDigest"],
+        "properties": {
+          "ref": { "$ref": "#/$defs/id" },
+          "digest": { "$ref": "#/$defs/digest" },
+          "sourceRecordDigest": { "$ref": "#/$defs/digest" }
+        }
+      }
+    },
+    "history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inputRef",
+        "approvalRefs",
+        "conflictRefs",
+        "supersessionEdges",
+        "conflictEdges",
+        "evidenceRef",
+        "contentDigest"
+      ],
+      "properties": {
+        "inputRef": { "$ref": "#/$defs/id" },
+        "approvalRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "conflictRefs": { "$ref": "#/$defs/idList" },
+        "supersessionEdges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["priorApprovalRef", "currentApprovalRef"],
+            "properties": {
+              "priorApprovalRef": { "$ref": "#/$defs/id" },
+              "currentApprovalRef": { "$ref": "#/$defs/id" }
+            }
+          }
+        },
+        "conflictEdges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["conflictRef", "subjectRefs", "resolvedByApprovalRef"],
+            "properties": {
+              "conflictRef": { "$ref": "#/$defs/id" },
+              "subjectRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+              "resolvedByApprovalRef": {
+                "anyOf": [
+                  { "$ref": "#/$defs/id" },
+                  { "type": "null" }
+                ]
+              }
+            }
+          }
+        },
+        "evidenceRef": { "$ref": "#/$defs/id" },
+        "contentDigest": { "$ref": "#/$defs/digest" }
+      }
+    }
+  }
+}

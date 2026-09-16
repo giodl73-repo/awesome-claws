@@ -264,6 +264,14 @@
       "output": "outputs/control-assessment.html"
     },
     {
+      "id": "commercial-deal-desk-coordinator",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/deal-readiness.html",
+      "fallback": "outputs/commercial-deal-desk.md",
+      "output": "outputs/deal-readiness.html"
+    },
+    {
       "id": "security-analyst",
       "target": 4,
       "primary": "inline-widget",

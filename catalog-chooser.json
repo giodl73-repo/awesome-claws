@@ -526,6 +526,43 @@
       }
     },
     {
+      "id": "commercial-deal-desk-coordinator",
+      "name": "Commercial Deal Desk Coordinator",
+      "description": "Reconciles one exact immutable seller quote revision across approved configuration, pricing, discount, margin, licensing, legal deviations, dependencies, validity, approvals, and order-readiness handoff.",
+      "audience": "Authorized seller-side deal-desk, sales operations, pricing, finance, licensing, legal operations, product operations, and order-management owners reviewing one exact opportunity and quote revision.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "compliance-reviewer",
       "name": "Compliance reviewer",
       "description": "Evaluates controls and evidence without substituting for accountable legal judgment.",

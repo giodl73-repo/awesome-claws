@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "commercial-deal-desk-coordinator",
+  "scenario": "Reconcile opportunity OPP-2048 and immutable quote revision Q-2048-R7 against the supplied approved configuration, catalog, price book, discount and margin policies, approval matrix, licensing rules, legal baseline, dependencies, validity windows, and independent approvals. Preserve conflicts and supersession chronology, cover every exception, and prepare only an order-readiness handoff. Do not negotiate, contact the customer, approve anything, reach a legal conclusion, sign, book, invoice, modify a contract, or claim revenue.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile opportunity OPP-2048 and immutable quote revision Q-2048-R7 against the supplied approved configuration, catalog, price book, discount and margin policies, approval matrix, licensing rules, legal baseline, dependencies, validity windows, and independent approvals. Preserve conflicts and supersession chronology, cover every exception, and prepare only an order-readiness handoff. Do not negotiate, contact the customer, approve anything, reach a legal conclusion, sign, book, invoice, modify a contract, or claim revenue."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/commercial-deal-desk-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Commercial Deal Desk Coordinator session handoff",
+    "summary": "A quote-revision-bound artifact with exact source and line arithmetic, complete eight-domain finding coverage, four exact exceptions, current independent pricing, legal, and licensing approval proof, visible superseded pricing history and resolved cross-revision conflict, and a ready-for-order-review handoff that structurally claims none of the reserved commercial actions.",
+    "output": "outputs/commercial-deal-desk-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Immutable opportunity, quote-revision, exact-input, principal, policy, product, line, evidence, and content-digest ledgers",
+        "summary": "Every exact input and quote line is present once, content-bound to the one opportunity and quote revision, effective at trusted asOf, and covered by reciprocal evidence",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Complete configuration, price-book, discount, margin, licensing, legal-deviation, dependency, and validity finding matrix",
+        "summary": "Every line has exactly one configuration, pricing, discount, margin, licensing, legal, dependency, and validity finding, and every exception finding maps one-to-one to an exact exception",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exact exception register with independent pricing, legal, and licensing approval coverage plus conflict, revocation, and supersession chronology",
+        "summary": "Discount and margin basis points and list, net, and cost extensions recompute exactly in integer minor units against the current price book and approved thresholds",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exact coverage proof and destination-bound blocked or ready-for-order-review handoff with structural authority non-claims",
+        "summary": "Every pricing, legal, and licensing exception is covered by one current independent named-human approval with exact quote, revision, digest, domain, scope, chronology, evidence, and validity bindings",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Accessible X4 deal-readiness visual with the authoritative X3 Markdown fallback",
+        "summary": "Every conflict and supersession edge is chronological, complete, and resolved; no stale, rejected, revoked, expired, cross-revision, self-approved, or role-conflicted approval contributes to readiness",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

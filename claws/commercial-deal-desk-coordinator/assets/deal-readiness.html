@@ -1,0 +1,33 @@
+<style>
+.dd{padding:24px;background:#f5f8fc;color:#132238;font:15px/1.45 "Segoe UI",Arial,sans-serif}.dd-head{display:flex;justify-content:space-between;gap:24px;align-items:start}.dd h1{margin:0;font-size:28px}.dd-sub{color:#5b6b80;margin:6px 0}.dd-state{background:#dff4e8;border:1px solid #79bd96;color:#135b34;border-radius:8px;padding:12px 16px;font-weight:800}.dd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}.dd-card,.dd-panel{background:#fff;border:1px solid #d6e0ec;border-radius:9px;box-shadow:0 1px 2px #14243a0d}.dd-card{padding:16px}.dd-label{color:#617187;text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:.05em}.dd-value{display:block;font-size:28px;margin-top:7px}.dd-main{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.dd-panel{padding:18px}.dd-panel h2{margin:0 0 12px;font-size:18px}.dd-row{display:grid;grid-template-columns:1fr auto;gap:12px;padding:11px 0;border-top:1px solid #e3e9f1}.dd-row:first-of-type{border-top:0}.dd-pass{color:#17663c;font-weight:800}.dd-ex{color:#845000;font-weight:800}.dd-chip{display:inline-block;padding:3px 9px;border:1px solid #c8d7e8;border-radius:999px;background:#f7faff;margin:2px;font-size:12px}.dd-note{margin-top:16px;padding:14px 16px;border-left:4px solid #4d76a8;background:#edf4fb}.dd-boundary{margin-top:16px;background:#fff7e6;border:1px solid #e6c77f;border-radius:8px;padding:14px}.dd-boundary strong{display:block;margin-bottom:5px}@media(max-width:760px){.dd{padding:14px}.dd-head,.dd-main{display:block}.dd-state{margin-top:12px}.dd-grid{grid-template-columns:1fr 1fr}}
+</style>
+<main class="dd" aria-labelledby="deal-title">
+  <section class="dd-head">
+    <div><h1 id="deal-title">Quote Q-2048 · revision R7</h1><p class="dd-sub">Exact seller-side reconciliation for opportunity OPP-2048</p></div>
+    <div class="dd-state">Ready for order review</div>
+  </section>
+  <section class="dd-grid" aria-label="Deal readiness metrics">
+    <article class="dd-card"><span class="dd-label">Immutable inputs</span><strong class="dd-value">12 / 12</strong><span>including authenticated history</span></article>
+    <article class="dd-card"><span class="dd-label">Domain findings</span><strong class="dd-value">16 / 16</strong><span>8 domains × 2 lines</span></article>
+    <article class="dd-card"><span class="dd-label">Exceptions</span><strong class="dd-value">4 / 4</strong><span>current approvals bound</span></article>
+    <article class="dd-card"><span class="dd-label">Open blockers</span><strong class="dd-value">0</strong><span>at 2026-09-14</span></article>
+  </section>
+  <section class="dd-main">
+    <article class="dd-panel">
+      <h2>Reconciliation lanes</h2>
+      <div class="dd-row"><span>Configuration &amp; product catalog</span><span class="dd-pass">2 conform</span></div>
+      <div class="dd-row"><span>Price book &amp; arithmetic</span><span class="dd-pass">2 conform</span></div>
+      <div class="dd-row"><span>Discount &amp; margin thresholds</span><span class="dd-ex">2 approved exceptions</span></div>
+      <div class="dd-row"><span>Licensing &amp; legal deviations</span><span class="dd-ex">2 approved exceptions</span></div>
+      <div class="dd-row"><span>Dependencies &amp; validity</span><span class="dd-pass">4 conform</span></div>
+    </article>
+    <aside class="dd-panel">
+      <h2>Independent current approvals</h2>
+      <p><span class="dd-chip">Pricing · Parker Pricing</span></p>
+      <p><span class="dd-chip">Legal · Casey Legal</span></p>
+      <p><span class="dd-chip">Licensing · Riley Licensing</span></p>
+      <div class="dd-note"><strong>Chronology and payloads sealed</strong><br>R6 pricing approval is superseded by the later R7 approval. The authenticated history index and exact product/line payload root are carried into the handoff seal.</div>
+    </aside>
+  </section>
+  <section class="dd-boundary"><strong>Internal handoff only</strong>No negotiation, customer communication, discount or term approval, legal conclusion, signature, booking, invoicing, contract modification, or revenue claim. The complete fallback is saved to <code>outputs/commercial-deal-desk.md</code>.</section>
+</main>
