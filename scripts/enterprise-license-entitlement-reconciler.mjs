@@ -1743,7 +1743,15 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
   ];
   for (const [path, consumer] of evidenceConsumers) {
     const evidenceRow = evidenceById.get(consumer.evidenceRef);
-    if (!evidenceRow || !strings(evidenceRow.subjectRefs).includes(consumer.id)) {
+    const hasMissingEvidenceBlocker = blockers.some(
+      (blocker) =>
+        blocker.code === "missing-evidence" &&
+        blocker.targetRef === consumer.id,
+    );
+    if (
+      (!evidenceRow || !strings(evidenceRow.subjectRefs).includes(consumer.id)) &&
+      !hasMissingEvidenceBlocker
+    ) {
       add(
         "invalid_evidence_reciprocity",
         `${path}.evidenceRef`,

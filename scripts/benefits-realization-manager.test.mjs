@@ -66,7 +66,7 @@ const proof = await readFile(
   ),
   "utf8",
 );
-const evaluate = (value, options = {}) => {
+const sourceBundleFor = (value) => {
   const sourceCandidates =
     value?.request?.ledgerId === "ledger-municipal-permit-q2"
       ? municipalSourceBundle
@@ -76,17 +76,19 @@ const evaluate = (value, options = {}) => {
       (record) => `${record.sourceRef}\0${record.sourceVersion}`,
     ) ?? [],
   );
-  const defaultSourceBundle = {
+  return {
     ...sourceCandidates,
     sources: sourceCandidates.sources.filter((record) =>
       referenced.has(`${record.sourceRef}\0${record.sourceVersion}`),
     ),
   };
+};
 
+const evaluate = (value, options = {}) => {
   return evaluateBenefitsRealizationSlice(value, {
     asOf: value?.request?.cutoffAt,
     trustStore,
-    sourceBundle: defaultSourceBundle,
+    sourceBundle: sourceBundleFor(value),
     ...options,
   });
 };
@@ -514,6 +516,14 @@ test("unsupported attribution returns one blocker and derives no aggregate reali
   assert.equal(result.blockers[0].code, "unsupported-attribution");
   assert.equal(result.finance.grossBenefitMinor, null);
   assert.equal(result.finance.netRealizedMinor, null);
+  assert.deepEqual(
+    benefitsRealizationFindings(unsupportedFixture, {
+      asOf: unsupportedFixture.request.cutoffAt,
+      trustStore,
+      sourceBundle: sourceBundleFor(unsupportedFixture),
+    }),
+    [],
+  );
 });
 
 test("unsupported attribution blocks even when non-supporting evidence remains", () => {

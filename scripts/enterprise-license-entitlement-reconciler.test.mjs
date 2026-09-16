@@ -639,6 +639,30 @@ test("unsupported blockers cannot manufacture a valid blocked handoff", () => {
   assert.ok(codes(candidate).has("invalid_blocker"));
 });
 
+test("an exact missing-evidence blocker preserves a valid blocked handoff", () => {
+  const candidate = resealed((value) => {
+    const right = value.rights[0];
+    right.evidenceRef = "evidence-right-missing";
+    addBlocker(value, {
+      id: "blocker-right-missing-evidence",
+      code: "missing-evidence",
+      targetRef: right.id,
+    });
+  });
+  const candidateTrustRoot = structuredClone(trustRoot);
+  candidateTrustRoot.rightsManifest.digest =
+    candidate.rightsManifest.contentDigest;
+  assertSchemaValid(candidate, "blocked right with exact missing evidence");
+  assert.equal(candidate.handoff.state, "blocked");
+  assert.deepEqual(
+    findings(candidate, {
+      asOf: AS_OF,
+      licenseTrustRoot: candidateTrustRoot,
+    }),
+    [],
+  );
+});
+
 test("exact blockers preserve valid unmapped and out-of-period source rows", () => {
   const unmapped = resealed((value) => {
     const row = structuredClone(value.assignments[0]);

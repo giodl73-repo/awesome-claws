@@ -1755,13 +1755,6 @@ export function benefitsRealizationFindings(value, options = {}) {
   return [
     ...result.schemaFindings,
     ...result.contractFindings,
-    ...result.blockers.map((blocker) =>
-      finding(
-        blocker.code,
-        blocker.targetRefs.join(","),
-        blocker.reason,
-      ),
-    ),
   ];
 }
 
