@@ -74,14 +74,12 @@
     },
     "assignments": {
       "type": "array",
-      "minItems": 1,
       "items": {
         "$ref": "#/$defs/assignment"
       }
     },
     "consumption": {
       "type": "array",
-      "minItems": 1,
       "items": {
         "$ref": "#/$defs/consumption"
       }
@@ -202,6 +200,7 @@
       "required": [
         "id",
         "predecessorRoundRef",
+        "predecessorRoundDigest",
         "organizationRef",
         "agreementRef",
         "licenseProgramRef",
@@ -239,6 +238,9 @@
         },
         "predecessorRoundRef": {
           "$ref": "#/$defs/id"
+        },
+        "predecessorRoundDigest": {
+          "$ref": "#/$defs/digest"
         },
         "organizationRef": {
           "$ref": "#/$defs/id"
@@ -307,10 +309,10 @@
           "$ref": "#/$defs/nonEmptyIdList"
         },
         "assignmentRefs": {
-          "$ref": "#/$defs/nonEmptyIdList"
+          "$ref": "#/$defs/idList"
         },
         "consumptionRefs": {
-          "$ref": "#/$defs/nonEmptyIdList"
+          "$ref": "#/$defs/idList"
         },
         "positionRefs": {
           "$ref": "#/$defs/nonEmptyIdList"
@@ -640,7 +642,7 @@
           "$ref": "#/$defs/id"
         },
         "rowRefs": {
-          "$ref": "#/$defs/nonEmptyIdList"
+          "$ref": "#/$defs/idList"
         },
         "contentDigest": {
           "$ref": "#/$defs/digest"
@@ -1055,6 +1057,7 @@
               "consumption-source-owner",
               "authority-roster-custodian",
               "authority-grant-issuer",
+              "position-reconciler",
               "exception-reviewer",
               "destination-approver",
               "handoff-owner"
@@ -1110,6 +1113,7 @@
         "scope",
         "targetType",
         "targetRef",
+        "issuedAt",
         "activeFrom",
         "activeUntil",
         "rosterRef",
@@ -1136,6 +1140,7 @@
             "sku-mapping-source-owner",
             "assignment-source-owner",
             "consumption-source-owner",
+            "position-reconciler",
             "exception-reviewer",
             "destination-approver",
             "handoff-owner"
@@ -1146,6 +1151,7 @@
             "rights-manifest",
             "sku-mapping-register",
             "source-export",
+            "position",
             "exception",
             "destination"
           ]
@@ -1154,6 +1160,9 @@
           "type": "string",
           "minLength": 3,
           "maxLength": 200
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
         },
         "activeFrom": {
           "$ref": "#/$defs/timestamp"
@@ -1192,6 +1201,7 @@
         "consumptionRefs",
         "exceptionRefs",
         "reconciledByRef",
+        "authorityGrantRef",
         "reconciledAt",
         "evidenceRef"
       ],
@@ -1239,6 +1249,9 @@
           "$ref": "#/$defs/idList"
         },
         "reconciledByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
           "$ref": "#/$defs/id"
         },
         "reconciledAt": {
@@ -1518,10 +1531,10 @@
           "$ref": "#/$defs/nonEmptyIdList"
         },
         "assignmentRefs": {
-          "$ref": "#/$defs/nonEmptyIdList"
+          "$ref": "#/$defs/idList"
         },
         "consumptionRefs": {
-          "$ref": "#/$defs/nonEmptyIdList"
+          "$ref": "#/$defs/idList"
         },
         "positionRefs": {
           "$ref": "#/$defs/nonEmptyIdList"

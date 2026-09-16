@@ -119,15 +119,25 @@ function addBlocker(value, { id, code, targetRef, detectedAt = "2026-09-02T13:00
   });
 }
 
-function splitReviewerEvidence(value, ledger, targetId, evidenceId, sourceDigit) {
+function splitReviewerEvidence(
+  value,
+  ledger,
+  targetId,
+  evidenceId,
+  sourceDigit,
+  producerRef = "principal-alex-reviewer",
+) {
   const target = value[ledger].find((row) => row.id === targetId);
   const original = value.evidence.find((row) => row.id === target.evidenceRef);
   const partition = structuredClone(original);
   partition.id = evidenceId;
-  partition.suppliedByRef = "principal-alex-reviewer";
+  partition.suppliedByRef = producerRef;
   partition.sourceRecordDigest = `sha256:${sourceDigit.repeat(64)}`;
   target.evidenceRef = evidenceId;
   value.evidence.push(partition);
+  if (!value[ledger].some((row) => row.evidenceRef === original.id)) {
+    value.evidence = value.evidence.filter((row) => row.id !== original.id);
+  }
 }
 
 test("accepted artifact is strict, fully sealed, and semantically clean", () => {
@@ -137,12 +147,18 @@ test("accepted artifact is strict, fully sealed, and semantically clean", () => 
   assert.equal(fixture.skuMappingRegister.contentDigest, computeSkuMappingDigest(fixture));
   assert.equal(fixture.authorityRoster.contentDigest, computeAuthorityRosterDigest(fixture));
   assert.equal(fixture.round.roundDigest, computeRoundDigest(fixture));
-  assert.equal(fixture.coverage.contentDigest, computeCoverageDigest(fixture.coverage));
+  assert.equal(
+    fixture.coverage.contentDigest,
+    computeCoverageDigest(fixture.coverage, fixture),
+  );
   assert.equal(
     fixture.destinationApproval.payloadDigest,
     computeDestinationApprovalDigest(fixture.destinationApproval),
   );
-  assert.equal(fixture.handoff.payloadDigest, computeHandoffDigest(fixture.handoff));
+  assert.equal(
+    fixture.handoff.payloadDigest,
+    computeHandoffDigest(fixture.handoff, fixture),
+  );
   for (const row of [...fixture.assignments, ...fixture.consumption]) {
     assert.equal(row.rowDigest, computeRowDigest(row));
   }
@@ -208,6 +224,19 @@ test("caller-controlled time is mandatory and wall clock is never consulted", ()
       asOf: "2026-09-03T18:00:00",
       licenseTrustRoot: trustRoot,
     }).has("invalid_validation_context"),
+  );
+  assert.ok(
+    codes(fixture, {
+      asOf: "2026-09-31T18:00:00Z",
+      licenseTrustRoot: trustRoot,
+    }).has("invalid_validation_context"),
+  );
+  assert.deepEqual(
+    findings(fixture, {
+      asOf: "2026-09-03T18:00:00.123456Z",
+      licenseTrustRoot: trustRoot,
+    }),
+    [],
   );
   assert.ok(
     codes(fixture, {
@@ -303,6 +332,16 @@ test("owner resealing cannot replace the external rights and SKU trust root", ()
   assert.ok(codes(candidate).has("invalid_trust_root"));
 });
 
+test("public trust roots commit to immutable source-evidence anchors", () => {
+  const candidate = resealed((value) => {
+    value.evidence.find(
+      (row) => row.id === "evidence-rights",
+    ).sourceRecordDigest = `sha256:${"d".repeat(64)}`;
+  });
+  assertSchemaValid(candidate, "substituted rights source evidence");
+  assert.ok(codes(candidate).has("invalid_trust_root"));
+});
+
 test("mapping, pool arithmetic, closed coverage, and fresh decisions fail closed", () => {
   const mapping = clone();
   mapping.assignments[0].mappingRef = "mapping-not-owner-supplied";
@@ -331,19 +370,16 @@ test("decision authority is bound to the exact referenced grant", () => {
 });
 
 test("decision evidence requires the exact authorized producer and bounded chronology", () => {
-  const acceptedEvidence = fixture.evidence.find(
-    (row) => row.id === "evidence-decisions",
-  );
-  assert.ok(
-    Date.parse(acceptedEvidence.observedAt) >
-      Math.max(...fixture.positions.map((row) => Date.parse(row.reconciledAt))),
-  );
-  assert.ok(
-    fixture.decisions.every(
-      (decision) =>
-        Date.parse(acceptedEvidence.observedAt) <= Date.parse(decision.reviewedAt),
-    ),
-  );
+  for (const decision of fixture.decisions) {
+    const acceptedEvidence = fixture.evidence.find(
+      (row) => row.id === decision.evidenceRef,
+    );
+    assert.ok(
+      Date.parse(acceptedEvidence.observedAt) >
+        Math.max(...fixture.positions.map((row) => Date.parse(row.reconciledAt))),
+    );
+    assert.equal(acceptedEvidence.observedAt, decision.reviewedAt);
+  }
 
   const reassignedProducer = resealed((value) => {
     value.evidence.find(
@@ -368,6 +404,20 @@ test("decision evidence requires the exact authorized producer and bounded chron
   });
   assertSchemaValid(afterDecisionEvidence, "post-decision evidence");
   assert.ok(codes(afterDecisionEvidence).has("invalid_decision_evidence"));
+
+  const beforeExceptionEvidence = resealed((value) => {
+    for (const exception of value.exceptions) {
+      exception.detectedAt = "2026-09-02T13:00:00Z";
+    }
+    value.evidence.find(
+      (row) => row.id === "evidence-exceptions",
+    ).observedAt = "2026-09-02T13:00:00Z";
+    value.evidence.find(
+      (row) => row.id === "evidence-decisions",
+    ).observedAt = "2026-09-02T12:30:00Z";
+  });
+  assertSchemaValid(beforeExceptionEvidence, "decision evidence before exception");
+  assert.ok(codes(beforeExceptionEvidence).has("invalid_decision_evidence"));
 });
 
 test("every evidence class is bound to its modeled producer", () => {
@@ -391,6 +441,151 @@ test("reconciliation occurs only after complete source exports exist", () => {
   });
   assertSchemaValid(candidate, "reconciliation before consumption export");
   assert.ok(codes(candidate).has("invalid_reconciliation_chronology"));
+});
+
+test("position reconciliation requires its exact target-bound current-round grant", () => {
+  const candidate = resealed((value) => {
+    value.principals.push({
+      id: "principal-alex-reviewer",
+      name: "Alex Reviewer",
+      kind: "named-human",
+      scopes: ["position-reconciler"],
+    });
+    const position = value.positions[0];
+    position.reconciledByRef = "principal-alex-reviewer";
+    splitReviewerEvidence(
+      value,
+      "positions",
+      position.id,
+      "evidence-position-alex-no-grant",
+      "d",
+    );
+  });
+  const candidateTrustRoot = structuredClone(trustRoot);
+  candidateTrustRoot.authorityRoster.digest =
+    candidate.authorityRoster.contentDigest;
+  assertSchemaValid(candidate, "second reconciler without exact grant");
+  const result = codes(candidate, {
+    asOf: AS_OF,
+    licenseTrustRoot: candidateTrustRoot,
+  });
+  assert.ok(result.has("invalid_reconciliation_authority"));
+  assert.ok(result.has("invalid_handoff"));
+});
+
+test("position reconcilers remain separated from source and control roles", () => {
+  const candidate = resealed((value) => {
+    const sourceOwner = value.principals.find(
+      (row) => row.id === "principal-avery-rights",
+    );
+    sourceOwner.scopes.push("position-reconciler");
+    const position = value.positions[0];
+    position.reconciledByRef = sourceOwner.id;
+    value.authorityGrants.find(
+      (row) => row.id === position.authorityGrantRef,
+    ).granteeRef = sourceOwner.id;
+    splitReviewerEvidence(
+      value,
+      "positions",
+      position.id,
+      "evidence-position-source-owner",
+      "c",
+      sourceOwner.id,
+    );
+  });
+  const candidateTrustRoot = structuredClone(trustRoot);
+  candidateTrustRoot.authorityRoster.digest =
+    candidate.authorityRoster.contentDigest;
+  assertSchemaValid(candidate, "source owner as position reconciler");
+  assert.ok(
+    codes(candidate, {
+      asOf: AS_OF,
+      licenseTrustRoot: candidateTrustRoot,
+    }).has("invalid_role_separation"),
+  );
+});
+
+test("every entitlement pool resolves to a declared purchased right", () => {
+  const candidate = resealed((value) => {
+    value.pools[0].rightRef = "right-not-declared";
+    value.positions[0].rightRef = "right-not-declared";
+  });
+  const candidateTrustRoot = structuredClone(trustRoot);
+  candidateTrustRoot.rightsManifest.digest =
+    candidate.rightsManifest.contentDigest;
+  assertSchemaValid(candidate, "pool with dangling right");
+  assert.ok(
+    codes(candidate, {
+      asOf: AS_OF,
+      licenseTrustRoot: candidateTrustRoot,
+    }).has("invalid_pool_binding"),
+  );
+});
+
+test("authority roster custodian requires its dedicated human scope", () => {
+  const candidate = resealed((value) => {
+    value.principals.find(
+      (row) => row.id === value.authorityRoster.custodianRef,
+    ).scopes = ["position-reconciler"];
+  });
+  const candidateTrustRoot = structuredClone(trustRoot);
+  candidateTrustRoot.authorityRoster.digest =
+    candidate.authorityRoster.contentDigest;
+  assertSchemaValid(candidate, "custodian without custodian scope");
+  assert.ok(
+    codes(candidate, {
+      asOf: AS_OF,
+      licenseTrustRoot: candidateTrustRoot,
+    }).has("invalid_roster_custodian"),
+  );
+});
+
+test("authority grants are closed over exact target ledgers and scope pairs", () => {
+  const candidate = resealed((value) => {
+    const grant = structuredClone(
+      value.authorityGrants.find(
+        (row) => row.id === "grant-reconcile-hq",
+      ),
+    );
+    grant.id = "grant-phantom-position";
+    grant.targetRef = "position-not-declared";
+    value.authorityGrants.push(grant);
+  });
+  assertSchemaValid(candidate, "grant targeting a phantom position");
+  assert.ok(codes(candidate).has("invalid_authority_grant"));
+});
+
+test("predecessor lineage cannot alias a current artifact identity", () => {
+  const candidate = resealed((value) => {
+    value.round.predecessorRoundRef = value.rights[0].id;
+  });
+  assertSchemaValid(candidate, "predecessor aliases current right");
+  assert.ok(codes(candidate).has("invalid_predecessor_lineage"));
+
+  const fabricated = resealed((value) => {
+    value.round.predecessorRoundRef = "round-fabricated";
+    value.round.predecessorRoundDigest = `sha256:${"d".repeat(64)}`;
+  });
+  assertSchemaValid(fabricated, "fabricated predecessor lineage");
+  assert.ok(codes(fabricated).has("invalid_trust_root"));
+});
+
+test("source export evidence cannot predate its supplied export", () => {
+  for (const evidenceId of [
+    "evidence-assignments",
+    "evidence-consumption",
+  ]) {
+    const candidate = resealed((value) => {
+      value.evidence.find(
+        (row) => row.id === evidenceId,
+      ).observedAt = "2020-01-01T00:00:00Z";
+    });
+    assertSchemaValid(candidate, `${evidenceId} pre-export evidence`);
+    assert.ok(
+      codes(candidate).has("invalid_evidence_chronology"),
+      evidenceId,
+    );
+  }
 });
 
 test("every purchased right covers the complete fixed period", () => {
@@ -444,6 +639,27 @@ test("exact blockers preserve valid unmapped and out-of-period source rows", () 
   assert.deepEqual(findings(unmapped), []);
   assert.equal(unmapped.handoff.state, "blocked");
 
+  const mislabeledMappedSku = resealed((value) => {
+    const row = structuredClone(value.assignments[0]);
+    row.id = "assignment-mislabeled-unmapped";
+    row.mappingState = "unmapped";
+    row.mappingRef = null;
+    row.rightRef = null;
+    row.poolRef = null;
+    row.sourceUnits = 1;
+    row.normalizedUnits = null;
+    value.assignments.push(row);
+    addBlocker(value, {
+      id: "blocker-mislabeled-unmapped",
+      code: "unmapped-sku",
+      targetRef: row.id,
+    });
+  });
+  assertSchemaValid(mislabeledMappedSku, "mapped SKU mislabeled as unmapped");
+  const mislabeledCodes = codes(mislabeledMappedSku);
+  assert.ok(mislabeledCodes.has("invalid_mapping_resolution"));
+  assert.ok(mislabeledCodes.has("invalid_blocker"));
+
   const outOfPeriod = resealed((value) => {
     const row = structuredClone(value.consumption[0]);
     row.id = "consumption-out-of-period";
@@ -462,6 +678,52 @@ test("exact blockers preserve valid unmapped and out-of-period source rows", () 
   assertSchemaValid(outOfPeriod, "blocked out-of-period consumption");
   assert.deepEqual(findings(outOfPeriod), []);
   assert.equal(outOfPeriod.handoff.state, "blocked");
+
+  const postCutoff = resealed((value) => {
+    const row = structuredClone(value.assignments[0]);
+    row.id = "assignment-post-cutoff";
+    row.sourceUnits = 1;
+    row.normalizedUnits = 1;
+    row.observedAt = "2026-09-01T00:30:00Z";
+    row.periodState = "out-of-period";
+    value.assignments.push(row);
+    addBlocker(value, {
+      id: "blocker-post-cutoff-assignment",
+      code: "out-of-period",
+      targetRef: row.id,
+    });
+  });
+  assertSchemaValid(postCutoff, "blocked post-cutoff assignment");
+  assert.deepEqual(findings(postCutoff), []);
+  assert.equal(postCutoff.handoff.state, "blocked");
+});
+
+test("complete assignment and consumption exports may contain zero rows", () => {
+  const candidate = resealed((value) => {
+    value.assignments = [];
+    value.consumption = [];
+    for (const position of value.positions) {
+      position.assignedUnits = 0;
+      position.consumedUnits = 0;
+      position.assignmentDeltaUnits = position.entitledUnits;
+      position.consumptionDeltaUnits = position.entitledUnits;
+      position.state = "available-rights";
+      position.assignmentRefs = [];
+      position.consumptionRefs = [];
+      const exception = value.exceptions.find(
+        (row) => row.positionRef === position.id,
+      );
+      exception.code = "available-rights";
+      exception.assignmentDeltaUnits = position.entitledUnits;
+      exception.consumptionDeltaUnits = position.entitledUnits;
+    }
+  });
+  assertSchemaValid(candidate, "complete zero-row source exports");
+  assert.deepEqual(findings(candidate), []);
+  assert.deepEqual(candidate.round.assignmentRefs, []);
+  assert.deepEqual(candidate.round.consumptionRefs, []);
+  assert.deepEqual(candidate.coverage.assignmentRefs, []);
+  assert.deepEqual(candidate.coverage.consumptionRefs, []);
 });
 
 test("evidence partitions remain valid across multiple authorized reviewers", () => {
@@ -470,7 +732,7 @@ test("evidence partitions remain valid across multiple authorized reviewers", ()
       id: "principal-alex-reviewer",
       name: "Alex Reviewer",
       kind: "named-human",
-      scopes: ["exception-reviewer"],
+      scopes: ["position-reconciler", "exception-reviewer"],
     });
     value.positions.find(
       (row) => row.id === "position-analytics",
@@ -484,26 +746,29 @@ test("evidence partitions remain valid across multiple authorized reviewers", ()
     value.authorityGrants.find(
       (row) => row.id === "grant-review-analytics",
     ).granteeRef = "principal-alex-reviewer";
+    value.authorityGrants.find(
+      (row) => row.id === "grant-reconcile-analytics",
+    ).granteeRef = "principal-alex-reviewer";
     splitReviewerEvidence(
       value,
       "positions",
       "position-analytics",
       "evidence-positions-alex",
-      "d",
+      "c",
     );
     splitReviewerEvidence(
       value,
       "exceptions",
       "exception-analytics",
       "evidence-exceptions-alex",
-      "e",
+      "f",
     );
     splitReviewerEvidence(
       value,
       "decisions",
       "decision-analytics",
       "evidence-decisions-alex",
-      "f",
+      "0",
     );
   });
   assertSchemaValid(candidate, "multiple reviewer evidence partitions");
@@ -537,15 +802,100 @@ test("approval and handoff are strictly ordered after consumed reconciliation st
   });
   assertSchemaValid(concurrentHandoff, "handoff concurrent with approval");
   assert.ok(codes(concurrentHandoff).has("invalid_handoff_chronology"));
+
+  const afterWindow = resealed((value) => {
+    value.authorityGrants.find(
+      (row) => row.id === "grant-destination-approver",
+    ).activeUntil = "2026-09-03T18:00:00Z";
+    value.authorityGrants.find(
+      (row) => row.id === "grant-handoff-owner",
+    ).activeUntil = "2026-09-03T18:00:00Z";
+    value.destinationApproval.approvedAt = "2026-09-03T17:30:00Z";
+    value.evidence.find(
+      (row) => row.id === "evidence-destination",
+    ).observedAt = "2026-09-03T17:30:00Z";
+    value.handoff.handedOffAt = "2026-09-03T17:45:00Z";
+    value.evidence.find(
+      (row) => row.id === "evidence-handoff",
+    ).observedAt = "2026-09-03T17:45:00Z";
+  });
+  assertSchemaValid(afterWindow, "approval and handoff after round close");
+  const afterWindowCodes = codes(afterWindow);
+  assert.ok(afterWindowCodes.has("invalid_approval_chronology"));
+  assert.ok(afterWindowCodes.has("invalid_handoff_chronology"));
+});
+
+test("material reconciliation changes require fresh approval and handoff roots", () => {
+  const staleApproval = structuredClone(fixture.destinationApproval);
+  const staleHandoff = structuredClone(fixture.handoff);
+  const staleApprovalEvidence = structuredClone(
+    fixture.evidence.find((row) => row.id === fixture.destinationApproval.evidenceRef),
+  );
+  const staleHandoffEvidence = structuredClone(
+    fixture.evidence.find((row) => row.id === fixture.handoff.evidenceRef),
+  );
+  const candidate = resealed((value) => {
+    value.assignments[0].sourceUnits = 69;
+    value.assignments[0].normalizedUnits = 69;
+    value.positions[0].assignedUnits = 69;
+    value.positions[0].assignmentDeltaUnits = 11;
+    value.exceptions[0].assignmentDeltaUnits = 11;
+  });
+  candidate.destinationApproval = staleApproval;
+  candidate.handoff = staleHandoff;
+  candidate.evidence = candidate.evidence.map((row) => {
+    if (row.id === staleApprovalEvidence.id) return staleApprovalEvidence;
+    if (row.id === staleHandoffEvidence.id) return staleHandoffEvidence;
+    return row;
+  });
+  assertSchemaValid(candidate, "material change with stale approval roots");
+  const result = codes(candidate);
+  assert.ok(result.has("invalid_destination_approval"));
+  assert.ok(result.has("invalid_handoff"));
+});
+
+test("terminal evidence substitutions invalidate approval or handoff roots", () => {
+  const destinationSubstitution = clone();
+  const destinationEvidence = destinationSubstitution.evidence.find(
+    (row) => row.id === destinationSubstitution.destinationApproval.evidenceRef,
+  );
+  destinationEvidence.sourceRecordDigest = `sha256:${"d".repeat(64)}`;
+  destinationEvidence.recordDigest =
+    computeEvidenceRecordDigest(destinationEvidence);
+  destinationEvidence.controlledRef =
+    contentAddressedEvidenceRef(destinationEvidence);
+  assertSchemaValid(
+    destinationSubstitution,
+    "substituted destination approval evidence",
+  );
+  const destinationCodes = codes(destinationSubstitution);
+  assert.ok(destinationCodes.has("invalid_coverage"));
+  assert.ok(destinationCodes.has("invalid_destination_approval"));
+
+  const handoffSubstitution = clone();
+  const handoffEvidence = handoffSubstitution.evidence.find(
+    (row) => row.id === handoffSubstitution.handoff.evidenceRef,
+  );
+  handoffEvidence.sourceRecordDigest = `sha256:${"d".repeat(64)}`;
+  handoffEvidence.recordDigest = computeEvidenceRecordDigest(handoffEvidence);
+  handoffEvidence.controlledRef = contentAddressedEvidenceRef(handoffEvidence);
+  assertSchemaValid(handoffSubstitution, "substituted handoff evidence");
+  assert.ok(codes(handoffSubstitution).has("invalid_handoff"));
 });
 
 test("pending human decisions are schema-valid, covered, and block readiness", () => {
   const candidate = resealed((value) => {
     const exception = value.exceptions[0];
+    const removedDecision = value.decisions.find(
+      (decision) => decision.exceptionRef === exception.id,
+    );
     exception.resolutionState = "pending-human-decision";
     exception.decisionRef = null;
     value.decisions = value.decisions.filter(
       (decision) => decision.exceptionRef !== exception.id,
+    );
+    value.evidence = value.evidence.filter(
+      (row) => row.id !== removedDecision.evidenceRef,
     );
   });
   assertSchemaValid(candidate, "pending decision artifact");
@@ -589,6 +939,7 @@ test("X3 and X4 surfaces preserve the same trust, coverage, time, and authority 
   for (const required of [
     "caller-supplied `asOf`",
     "`licenseTrustRoot`",
+    "{{round.predecessorRoundDigest}}",
     "{{rightsManifest.contentDigest}}",
     "{{skuMappingRegister.contentDigest}}",
     "{{assignments[].mappingRef}}",
@@ -597,10 +948,16 @@ test("X3 and X4 surfaces preserve the same trust, coverage, time, and authority 
     "{{consumption[].normalizedUnits}}",
     "{{positions[].assignmentDeltaUnits}}",
     "{{positions[].reconciledByRef}}",
+    "{{positions[].authorityGrantRef}}",
     "{{exceptions[].resolutionState}}",
     "{{exceptions[].decisionRef}}",
     "{{decisions[].authorityGrantRef}}",
     "{{decisions[].predecessorDecisionRef}}",
+    "{{blockers[].code}}",
+    "{{blockers[].targetRef}}",
+    "{{blockers[].ownerRef}}",
+    "{{blockers[].detectedAt}}",
+    "{{blockers[].evidenceRef}}",
     "{{handoff.trueUpSubmitted}}",
     "{{handoff.complianceDeclared}}",
     "{{handoff.effectiveAccessInferred}}",

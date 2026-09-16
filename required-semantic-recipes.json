@@ -5172,6 +5172,7 @@
             "invalid_evidence_binding",
             "invalid_handoff",
             "invalid_human_decision",
+            "invalid_reconciliation_authority",
             "invalid_round_digest",
             "invalid_source_authority"
           ]
@@ -5181,14 +5182,12 @@
           "operator": "replace",
           "path": [
             "round",
-            "organizationRef"
+            "predecessorRoundRef"
           ],
           "replacement": "mock-plus-missing",
           "expectedCodes": [
             "invalid_handoff",
-            "invalid_round_binding",
             "invalid_round_digest",
-            "invalid_source_export",
             "invalid_trust_root"
           ]
         }

@@ -246,6 +246,7 @@
                     "organizationRef",
                     "agreementRef",
                     "licenseProgramRef",
+                    "predecessorRound",
                     "rightsManifest",
                     "skuMappingRegister",
                     "authorityRoster"
@@ -265,6 +266,23 @@
                     "licenseProgramRef": {
                       "type": "string",
                       "minLength": 1
+                    },
+                    "predecessorRound": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "id",
+                        "digest"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "digest": {
+                          "$ref": "#/$defs/digest"
+                        }
+                      }
                     },
                     "rightsManifest": {
                       "$ref": "#/$defs/versionedTrustRoot"

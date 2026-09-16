@@ -11,7 +11,7 @@ performed.
 | Field | Value |
 | --- | --- |
 | Artifact / round | `{{artifactId}}` / `{{round.id}}` |
-| Predecessor | `{{round.predecessorRoundRef}}` |
+| Predecessor | `{{round.predecessorRoundRef}}` / `{{round.predecessorRoundDigest}}` |
 | Organization | `{{round.organizationRef}}` |
 | Agreement / program | `{{round.agreementRef}}` / `{{round.licenseProgramRef}}` |
 | Fixed period | `{{round.periodStartsAt}}` through `{{round.periodEndsAt}}` |
@@ -67,9 +67,9 @@ interpretation.
 
 ## Reconciled positions
 
-| Pool | Entitled | Assigned | Consumed | Assignment delta | Consumption delta | State | Reconciled by / at | Exceptions |
+| Pool | Entitled | Assigned | Consumed | Assignment delta | Consumption delta | State | Reconciled by / grant / at | Exceptions |
 | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |
-| `{{positions[].poolRef}}` | `{{positions[].entitledUnits}}` | `{{positions[].assignedUnits}}` | `{{positions[].consumedUnits}}` | `{{positions[].assignmentDeltaUnits}}` | `{{positions[].consumptionDeltaUnits}}` | `{{positions[].state}}` | `{{positions[].reconciledByRef}}` / `{{positions[].reconciledAt}}` | `{{positions[].exceptionRefs}}` |
+| `{{positions[].poolRef}}` | `{{positions[].entitledUnits}}` | `{{positions[].assignedUnits}}` | `{{positions[].consumedUnits}}` | `{{positions[].assignmentDeltaUnits}}` | `{{positions[].consumptionDeltaUnits}}` | `{{positions[].state}}` | `{{positions[].reconciledByRef}}` / `{{positions[].authorityGrantRef}}` / `{{positions[].reconciledAt}}` | `{{positions[].exceptionRefs}}` |
 
 ## Exceptions and fresh human decisions
 
@@ -87,6 +87,15 @@ never reusable decisions.
 An exception with `pending-human-decision` must carry a `null` decision
 reference and keeps the handoff blocked. A reviewed exception must carry exactly
 one fresh reciprocal decision.
+
+## Exact blockers
+
+| Blocker | Code | Target | Named owner | Detected at | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| `{{blockers[].id}}` | `{{blockers[].code}}` | `{{blockers[].targetRef}}` | `{{blockers[].ownerRef}}` | `{{blockers[].detectedAt}}` | `{{blockers[].evidenceRef}}` |
+
+Every blocker must correspond to a real unresolved defect. Render an empty
+ledger when the validated artifact has no blockers.
 
 ## Human authority and reciprocal evidence
 

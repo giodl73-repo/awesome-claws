@@ -6,10 +6,11 @@ agreement, program, period, cutoff, round, and predecessor.
 
 The rights manifest and SKU mapping are external public trust roots. The Claw
 recomputes their internal digests but never interprets agreement text or invents
-a mapping. Validate the example with both caller-controlled inputs:
+a mapping. From the Awesome Claws repository root, validate the generated
+example with both caller-controlled inputs:
 
 ```bash
-npm run validate:artifact -- enterprise-license-entitlement-reconciler fixtures/license-entitlement-reconciliation.example.json --as-of 2026-09-03T18:00:00Z --license-trust-root fixtures/license-trust-root.example.json
+npm run validate:artifact -- enterprise-license-entitlement-reconciler claws/enterprise-license-entitlement-reconciler/fixtures/license-entitlement-reconciliation.example.json --as-of 2026-09-03T18:00:00Z --license-trust-root claws/enterprise-license-entitlement-reconciler/fixtures/license-trust-root.example.json
 ```
 
 The machine artifact is authoritative. The Markdown and inline visual are

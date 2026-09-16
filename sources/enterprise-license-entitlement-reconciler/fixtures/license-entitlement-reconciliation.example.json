@@ -14,13 +14,13 @@
     "closesAt": "2026-09-03T17:00:00Z",
     "rightsManifestRef": "rights-manifest-ea-204",
     "rightsManifestVersion": "v4",
-    "rightsManifestDigest": "sha256:f6d703fcb03f24a6ab58568c090e8379099120cf27776ef2efdf53d0c47257cf",
+    "rightsManifestDigest": "sha256:b9d37f4debc7b0ea965f202061629108585f61581c329f75bba72806d9614b2a",
     "skuMappingRegisterRef": "sku-mapping-ea-204",
     "skuMappingVersion": "v7",
-    "skuMappingDigest": "sha256:8f0cb38d7fa9d16ca75c8af51c07c0d81e556dc35b4d51db943110d48d55ac6c",
+    "skuMappingDigest": "sha256:8d530ca444d7ee436ccb89744a718802d19469ebb4f4b935948738192de2456e",
     "authorityRosterRef": "roster-license-review",
     "authorityRosterVersion": "v3",
-    "authorityRosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+    "authorityRosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
     "destination": "controlled://license-governance/northwind/ea-204/2026-08",
     "rightRefs": [
       "right-productivity-suite",
@@ -76,9 +76,12 @@
       "evidence-exceptions",
       "evidence-decisions",
       "evidence-destination",
-      "evidence-handoff"
+      "evidence-handoff",
+      "evidence-decisions-field",
+      "evidence-decisions-analytics"
     ],
-    "roundDigest": "sha256:14d1e5ac6c2a00ad4a0e0077711d54e32b1f5ef65de3f7388f9e78f4cd7e77ca"
+    "roundDigest": "sha256:bcba9dc1330ef60a97e7a64f19168917dbd8ae3605b5ca3178d081fbbfc0f6b0",
+    "predecessorRoundDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
   },
   "rightsManifest": {
     "id": "rights-manifest-ea-204",
@@ -99,7 +102,7 @@
       "pool-productivity-field",
       "pool-analytics"
     ],
-    "contentDigest": "sha256:f6d703fcb03f24a6ab58568c090e8379099120cf27776ef2efdf53d0c47257cf",
+    "contentDigest": "sha256:b9d37f4debc7b0ea965f202061629108585f61581c329f75bba72806d9614b2a",
     "evidenceRef": "evidence-rights"
   },
   "skuMappingRegister": {
@@ -114,7 +117,7 @@
       "mapping-productivity-suite",
       "mapping-analytics-pro"
     ],
-    "contentDigest": "sha256:8f0cb38d7fa9d16ca75c8af51c07c0d81e556dc35b4d51db943110d48d55ac6c",
+    "contentDigest": "sha256:8d530ca444d7ee436ccb89744a718802d19469ebb4f4b935948738192de2456e",
     "evidenceRef": "evidence-mapping"
   },
   "rights": [
@@ -395,6 +398,7 @@
       "name": "Taylor Reviewer",
       "kind": "named-human",
       "scopes": [
+        "position-reconciler",
         "exception-reviewer"
       ]
     },
@@ -431,7 +435,7 @@
       "principal-dana-approver",
       "principal-harper-owner"
     ],
-    "contentDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+    "contentDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
     "evidenceRef": "evidence-roster"
   },
   "authorityGrants": [
@@ -443,12 +447,13 @@
       "scope": "rights-source-owner",
       "targetType": "rights-manifest",
       "targetRef": "rights-manifest-ea-204",
-      "activeFrom": "2026-07-01T00:00:00Z",
+      "activeFrom": "2026-07-14T17:00:00Z",
       "activeUntil": "2026-09-03T18:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
-      "payloadDigest": "sha256:57cbba174cd84164a5219dd955a5cb221dcbfcc3133ee54e05f219f4ab564129",
-      "evidenceRef": "evidence-grants"
+      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+      "payloadDigest": "sha256:29640fb9f41194466b4071d49b6cbc6951aa7e40699300c8ad95267ccbfe1de3",
+      "evidenceRef": "evidence-grants",
+      "issuedAt": "2026-07-14T17:00:00Z"
     },
     {
       "id": "grant-mapping-owner",
@@ -458,12 +463,13 @@
       "scope": "sku-mapping-source-owner",
       "targetType": "sku-mapping-register",
       "targetRef": "sku-mapping-ea-204",
-      "activeFrom": "2026-07-01T00:00:00Z",
+      "activeFrom": "2026-07-14T17:00:00Z",
       "activeUntil": "2026-09-03T18:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
-      "payloadDigest": "sha256:5a4a7508aa5b91f17a64f6e81178029705f8323cbd9c01d197533ecbac314dab",
-      "evidenceRef": "evidence-grants"
+      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+      "payloadDigest": "sha256:57b24afa0a8fff6c54bd7850da4e6886a198c341a5c9b0e76af7d7f59e2ab5ea",
+      "evidenceRef": "evidence-grants",
+      "issuedAt": "2026-07-14T17:00:00Z"
     },
     {
       "id": "grant-assignment-owner",
@@ -473,12 +479,13 @@
       "scope": "assignment-source-owner",
       "targetType": "source-export",
       "targetRef": "export-assignments-2026-08",
-      "activeFrom": "2026-07-01T00:00:00Z",
+      "activeFrom": "2026-07-14T17:00:00Z",
       "activeUntil": "2026-09-03T18:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
-      "payloadDigest": "sha256:3fef8ff7b2df2673f3b06fa753ccb7ad42c00254c69e71acf638a0203af7fcc6",
-      "evidenceRef": "evidence-grants"
+      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+      "payloadDigest": "sha256:295d780b93982220bcb1ea4630e2d020efc5450a43fdf9260bd16a78f003cbce",
+      "evidenceRef": "evidence-grants",
+      "issuedAt": "2026-07-14T17:00:00Z"
     },
     {
       "id": "grant-consumption-owner",
@@ -488,12 +495,13 @@
       "scope": "consumption-source-owner",
       "targetType": "source-export",
       "targetRef": "export-consumption-2026-08",
-      "activeFrom": "2026-07-01T00:00:00Z",
+      "activeFrom": "2026-07-14T17:00:00Z",
       "activeUntil": "2026-09-03T18:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
-      "payloadDigest": "sha256:7bf3a15a53a7d55028c00b108bd232b301950547778e8aa91d5b83879f1a9de5",
-      "evidenceRef": "evidence-grants"
+      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+      "payloadDigest": "sha256:9cc9bef7ea9b0542e6d5fd74026b5d7da15b0c2ba0d8e2b94167d1b5f58a8c65",
+      "evidenceRef": "evidence-grants",
+      "issuedAt": "2026-07-14T17:00:00Z"
     },
     {
       "id": "grant-review-hq",
@@ -506,9 +514,10 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
-      "payloadDigest": "sha256:cdcd8bb39bb8752764f9882059cfcef785118f752881312763a39ba7ba9ab2aa",
-      "evidenceRef": "evidence-grants"
+      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+      "payloadDigest": "sha256:04b98e08ebd9a2290cd0459fbe959ca732d7f4ba7b615f55689611cd8547b5f4",
+      "evidenceRef": "evidence-grants",
+      "issuedAt": "2026-07-14T17:00:00Z"
     },
     {
       "id": "grant-review-field",
@@ -521,9 +530,10 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
-      "payloadDigest": "sha256:d359daec6b27e98bd51d735684f6296df8a977d0cd5f24d406ceea90ce96e9c5",
-      "evidenceRef": "evidence-grants"
+      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+      "payloadDigest": "sha256:b9d9525407a6d20dc87bcaddcaf57f9b36c04ab47a6c3b70acec8a5f0f096c75",
+      "evidenceRef": "evidence-grants",
+      "issuedAt": "2026-07-14T17:00:00Z"
     },
     {
       "id": "grant-review-analytics",
@@ -536,9 +546,10 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
-      "payloadDigest": "sha256:f1040902e80cd2c29eb1e0dfa33739e9fa63b44c97e48133ef996379f92123e0",
-      "evidenceRef": "evidence-grants"
+      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+      "payloadDigest": "sha256:5b864ef1f17ccfe26e28ca7025c224d03c5c354b5ba7e97b83065b0323e1fa07",
+      "evidenceRef": "evidence-grants",
+      "issuedAt": "2026-07-14T17:00:00Z"
     },
     {
       "id": "grant-destination-approver",
@@ -551,9 +562,10 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
-      "payloadDigest": "sha256:11f79e6da13e97d7415447c6066c9dab22fd18c9798d131bc2fda1934886b23e",
-      "evidenceRef": "evidence-grants"
+      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+      "payloadDigest": "sha256:bd871fc41cab21ea4f541687c08dd35f85c348631131a33df51835d1b0dd577f",
+      "evidenceRef": "evidence-grants",
+      "issuedAt": "2026-07-14T17:00:00Z"
     },
     {
       "id": "grant-handoff-owner",
@@ -566,8 +578,57 @@
       "activeFrom": "2026-09-01T12:00:00Z",
       "activeUntil": "2026-09-03T17:00:00Z",
       "rosterRef": "roster-license-review",
-      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
-      "payloadDigest": "sha256:7dd8b9b14c543dc2b5f2e42f55b5c338c7a83356dbce810c67e85d3e6e940045",
+      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+      "payloadDigest": "sha256:3a70b251688028355d470e10a5033f705c983b60c24af4d2f419d3ba20c9429b",
+      "evidenceRef": "evidence-grants",
+      "issuedAt": "2026-07-14T17:00:00Z"
+    },
+    {
+      "id": "grant-reconcile-hq",
+      "roundRef": "round-2026-08-r2",
+      "granteeRef": "principal-taylor-reviewer",
+      "issuedByRef": "principal-jordan-authority",
+      "scope": "position-reconciler",
+      "targetType": "position",
+      "targetRef": "position-productivity-hq",
+      "issuedAt": "2026-07-14T17:00:00Z",
+      "activeFrom": "2026-09-01T12:00:00Z",
+      "activeUntil": "2026-09-03T17:00:00Z",
+      "rosterRef": "roster-license-review",
+      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+      "payloadDigest": "sha256:8c3d22a77055a75a393a395bcbfe4a011c19319c1730d4154619f51091de7843",
+      "evidenceRef": "evidence-grants"
+    },
+    {
+      "id": "grant-reconcile-field",
+      "roundRef": "round-2026-08-r2",
+      "granteeRef": "principal-taylor-reviewer",
+      "issuedByRef": "principal-jordan-authority",
+      "scope": "position-reconciler",
+      "targetType": "position",
+      "targetRef": "position-productivity-field",
+      "issuedAt": "2026-07-14T17:00:00Z",
+      "activeFrom": "2026-09-01T12:00:00Z",
+      "activeUntil": "2026-09-03T17:00:00Z",
+      "rosterRef": "roster-license-review",
+      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+      "payloadDigest": "sha256:d0f4118428f564eed5e2b7db14ab14c927a6a0ecda1fd702cbf0e7db2ac5309c",
+      "evidenceRef": "evidence-grants"
+    },
+    {
+      "id": "grant-reconcile-analytics",
+      "roundRef": "round-2026-08-r2",
+      "granteeRef": "principal-taylor-reviewer",
+      "issuedByRef": "principal-jordan-authority",
+      "scope": "position-reconciler",
+      "targetType": "position",
+      "targetRef": "position-analytics",
+      "issuedAt": "2026-07-14T17:00:00Z",
+      "activeFrom": "2026-09-01T12:00:00Z",
+      "activeUntil": "2026-09-03T17:00:00Z",
+      "rosterRef": "roster-license-review",
+      "rosterDigest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0",
+      "payloadDigest": "sha256:89ce04a8d0dc259c481573ea9047edc1061a8dfcf274efaa0aac2d1ff26b339a",
       "evidenceRef": "evidence-grants"
     }
   ],
@@ -593,7 +654,8 @@
       ],
       "reconciledByRef": "principal-taylor-reviewer",
       "reconciledAt": "2026-09-02T12:00:00Z",
-      "evidenceRef": "evidence-positions"
+      "evidenceRef": "evidence-positions",
+      "authorityGrantRef": "grant-reconcile-hq"
     },
     {
       "id": "position-productivity-field",
@@ -616,7 +678,8 @@
       ],
       "reconciledByRef": "principal-taylor-reviewer",
       "reconciledAt": "2026-09-02T12:00:00Z",
-      "evidenceRef": "evidence-positions"
+      "evidenceRef": "evidence-positions",
+      "authorityGrantRef": "grant-reconcile-field"
     },
     {
       "id": "position-analytics",
@@ -639,7 +702,8 @@
       ],
       "reconciledByRef": "principal-taylor-reviewer",
       "reconciledAt": "2026-09-02T12:00:00Z",
-      "evidenceRef": "evidence-positions"
+      "evidenceRef": "evidence-positions",
+      "authorityGrantRef": "grant-reconcile-analytics"
     }
   ],
   "exceptions": [
@@ -707,7 +771,7 @@
       "reviewedAt": "2026-09-02T15:05:00Z",
       "authorityGrantRef": "grant-review-field",
       "predecessorDecisionRef": null,
-      "evidenceRef": "evidence-decisions"
+      "evidenceRef": "evidence-decisions-field"
     },
     {
       "id": "decision-analytics",
@@ -718,7 +782,7 @@
       "reviewedAt": "2026-09-02T15:10:00Z",
       "authorityGrantRef": "grant-review-analytics",
       "predecessorDecisionRef": null,
-      "evidenceRef": "evidence-decisions"
+      "evidenceRef": "evidence-decisions-analytics"
     }
   ],
   "blockers": [],
@@ -738,9 +802,9 @@
         "pool-analytics"
       ],
       "sourceRecordDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
-      "payloadDigest": "sha256:2362574164dee6c8bbc3eccc768099762167ae9597562ee29b31498920d18fab",
-      "recordDigest": "sha256:662fe81e3f8489144c0b1bc73751e4f3186f07da03d1554e05a3708b514f02eb",
-      "controlledRef": "controlled://license-reconciliation/evidence-rights@sha256-662fe81e3f8489144c0b1bc73751e4f3186f07da03d1554e05a3708b514f02eb"
+      "payloadDigest": "sha256:81c9a60dc48e33a82b2402cc1900d862210493b8911a96cef912225e21a41186",
+      "recordDigest": "sha256:7d17ada789d11d441b79fb498a8a0af96b6c17a846132978fc816c8d99d4276d",
+      "controlledRef": "controlled://license-reconciliation/evidence-rights@sha256-7d17ada789d11d441b79fb498a8a0af96b6c17a846132978fc816c8d99d4276d"
     },
     {
       "id": "evidence-mapping",
@@ -754,9 +818,9 @@
         "mapping-analytics-pro"
       ],
       "sourceRecordDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
-      "payloadDigest": "sha256:e8aea356a6bbbdbd6147bcb9ac1a7b28e747a9083bee9cc0c0255bbf1329ae20",
-      "recordDigest": "sha256:ccb8e4214dc848acd137221277ad01d5245828bd30760e16e9faf88730a44b3c",
-      "controlledRef": "controlled://license-reconciliation/evidence-mapping@sha256-ccb8e4214dc848acd137221277ad01d5245828bd30760e16e9faf88730a44b3c"
+      "payloadDigest": "sha256:8a5b4d8f0f77884ed6649d3b3c30180ff6a633660f5a93a1a3d515688df0d326",
+      "recordDigest": "sha256:fcdb4c35f9b3d6b1854ed667221c7a05c9e3c21179d53609a510c06c13fde16a",
+      "controlledRef": "controlled://license-reconciliation/evidence-mapping@sha256-fcdb4c35f9b3d6b1854ed667221c7a05c9e3c21179d53609a510c06c13fde16a"
     },
     {
       "id": "evidence-assignments",
@@ -811,15 +875,15 @@
         "principal-harper-owner"
       ],
       "sourceRecordDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
-      "payloadDigest": "sha256:7f3c9eb20505f31da8674f63efb76774796f57c9ab4b71e01cfb995d6313badd",
-      "recordDigest": "sha256:c9e9fbfafc383d7f729042496e6ca865714c1fc75b45c1f3e53d968a46116fde",
-      "controlledRef": "controlled://license-reconciliation/evidence-roster@sha256-c9e9fbfafc383d7f729042496e6ca865714c1fc75b45c1f3e53d968a46116fde"
+      "payloadDigest": "sha256:f1656339a7fe956b53e7003d4f1970580081ec59f59eae6dabf2bb1e9c9bb246",
+      "recordDigest": "sha256:4e9f4af9297e27b3cc4c02636c7b79e942a513c61c48c50b2311cab399889901",
+      "controlledRef": "controlled://license-reconciliation/evidence-roster@sha256-4e9f4af9297e27b3cc4c02636c7b79e942a513c61c48c50b2311cab399889901"
     },
     {
       "id": "evidence-grants",
       "kind": "authority-grant-record",
       "roundRef": "round-2026-08-r2",
-      "observedAt": "2026-07-01T00:00:00Z",
+      "observedAt": "2026-07-14T17:00:00Z",
       "suppliedByRef": "principal-jordan-authority",
       "subjectRefs": [
         "grant-rights-owner",
@@ -830,12 +894,15 @@
         "grant-review-field",
         "grant-review-analytics",
         "grant-destination-approver",
-        "grant-handoff-owner"
+        "grant-handoff-owner",
+        "grant-reconcile-hq",
+        "grant-reconcile-field",
+        "grant-reconcile-analytics"
       ],
       "sourceRecordDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
-      "payloadDigest": "sha256:3dd3727df545d9bc3de41711de788bd422dac486c02c1096fefbb712e5e17f7b",
-      "recordDigest": "sha256:9864ae7cc2fbd9133c711dba3954b9ff5237838ef3ebf4cb0ae123ec324ec7e1",
-      "controlledRef": "controlled://license-reconciliation/evidence-grants@sha256-9864ae7cc2fbd9133c711dba3954b9ff5237838ef3ebf4cb0ae123ec324ec7e1"
+      "payloadDigest": "sha256:afcec350ec6b9505811206a099b224d0a9866b7c1e76468c8abcbc4d822aae43",
+      "recordDigest": "sha256:c716b661d1d7bb8127726af4d21dbbcebe5aaa4ef7c48b8b9e902cd1d4f91bad",
+      "controlledRef": "controlled://license-reconciliation/evidence-grants@sha256-c716b661d1d7bb8127726af4d21dbbcebe5aaa4ef7c48b8b9e902cd1d4f91bad"
     },
     {
       "id": "evidence-positions",
@@ -849,9 +916,9 @@
         "position-analytics"
       ],
       "sourceRecordDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
-      "payloadDigest": "sha256:0f8bdcf8d1c7eee5c6d1e3a92f51c0378a7eac3c12532b93b45bb8dbbf7841a1",
-      "recordDigest": "sha256:43f6c2db9395cdb13733eea476a252ce939fab0b96697036488ea55314b5620a",
-      "controlledRef": "controlled://license-reconciliation/evidence-positions@sha256-43f6c2db9395cdb13733eea476a252ce939fab0b96697036488ea55314b5620a"
+      "payloadDigest": "sha256:90139ceaba67412d86b3a671bff0f79eab0a2d36e0ef40463e8bc8764f0ba2ac",
+      "recordDigest": "sha256:18e202a07b2ccb3418e719b275529b999f13eb33edbb457615e0cc2e7eeef973",
+      "controlledRef": "controlled://license-reconciliation/evidence-positions@sha256-18e202a07b2ccb3418e719b275529b999f13eb33edbb457615e0cc2e7eeef973"
     },
     {
       "id": "evidence-exceptions",
@@ -873,17 +940,15 @@
       "id": "evidence-decisions",
       "kind": "decision-record",
       "roundRef": "round-2026-08-r2",
-      "observedAt": "2026-09-02T14:59:00Z",
+      "observedAt": "2026-09-02T15:00:00Z",
       "suppliedByRef": "principal-taylor-reviewer",
       "subjectRefs": [
-        "decision-productivity-hq",
-        "decision-productivity-field",
-        "decision-analytics"
+        "decision-productivity-hq"
       ],
       "sourceRecordDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
-      "payloadDigest": "sha256:51a99ba827542ce084f53dcfcd815dc4598d82f2386c8ad8a0aed0e8051bafc0",
-      "recordDigest": "sha256:9244d4d8851007f8bd9733a3ac66d634166c7a86c9bba421353c7e9eacf466b0",
-      "controlledRef": "controlled://license-reconciliation/evidence-decisions@sha256-9244d4d8851007f8bd9733a3ac66d634166c7a86c9bba421353c7e9eacf466b0"
+      "payloadDigest": "sha256:2e120b075562dec25999aee5fa37ca8c21ecfabab01029f38608be603aebbf87",
+      "recordDigest": "sha256:05a72cfbe0a938a6b80b125d0a89d650bb1e395f7938b7c837b1db153e859641",
+      "controlledRef": "controlled://license-reconciliation/evidence-decisions@sha256-05a72cfbe0a938a6b80b125d0a89d650bb1e395f7938b7c837b1db153e859641"
     },
     {
       "id": "evidence-destination",
@@ -895,9 +960,9 @@
         "destination-approval"
       ],
       "sourceRecordDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "payloadDigest": "sha256:439e27d72424f4961fe096934f1e54e94253984849824d21fb2a4ffa3aba3c2a",
-      "recordDigest": "sha256:afa5dcdd8efb361689f8577a5ec0f46f77fb87c0b87668b1f77c9068416342b1",
-      "controlledRef": "controlled://license-reconciliation/evidence-destination@sha256-afa5dcdd8efb361689f8577a5ec0f46f77fb87c0b87668b1f77c9068416342b1"
+      "payloadDigest": "sha256:b0bee1f3ca2ffc3e21a0f81738c5890bead39ad9c6efca57541bc8ac6a0b0c14",
+      "recordDigest": "sha256:b39de08d69ec1d82cd0510d93b24e603b81bda109d1f9bdd65c008dc356d1cc1",
+      "controlledRef": "controlled://license-reconciliation/evidence-destination@sha256-b39de08d69ec1d82cd0510d93b24e603b81bda109d1f9bdd65c008dc356d1cc1"
     },
     {
       "id": "evidence-handoff",
@@ -909,9 +974,37 @@
         "handoff-owner-review"
       ],
       "sourceRecordDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-      "payloadDigest": "sha256:399cbd34e31e2312fbf39aebea26faf127098e5d4792ba852e2756a0717b9653",
-      "recordDigest": "sha256:b6078d50bb21cfab6e52fc113c557a759339c3fa3aef9e6fa18c04acb753e1e2",
-      "controlledRef": "controlled://license-reconciliation/evidence-handoff@sha256-b6078d50bb21cfab6e52fc113c557a759339c3fa3aef9e6fa18c04acb753e1e2"
+      "payloadDigest": "sha256:edc259003911f71c26ebb6d56441e11ea499ab0383edcf8b0a7bada5d0b240e0",
+      "recordDigest": "sha256:e52aac81f9e87321ad02f9eb56666a6a2fa812ccc9922c5a2a0f8c619c151183",
+      "controlledRef": "controlled://license-reconciliation/evidence-handoff@sha256-e52aac81f9e87321ad02f9eb56666a6a2fa812ccc9922c5a2a0f8c619c151183"
+    },
+    {
+      "id": "evidence-decisions-field",
+      "kind": "decision-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-09-02T15:05:00Z",
+      "suppliedByRef": "principal-taylor-reviewer",
+      "subjectRefs": [
+        "decision-productivity-field"
+      ],
+      "sourceRecordDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "payloadDigest": "sha256:6f52578742f74cdd7de3fb48c7bb59f9bb79e557fe2cc9e6333ff8b75c78e16f",
+      "recordDigest": "sha256:dcdc664dbf01c9ae48ca82de2a09f2f3fe394d53f81cd9b4c41db9a999bc58b8",
+      "controlledRef": "controlled://license-reconciliation/evidence-decisions-field@sha256-dcdc664dbf01c9ae48ca82de2a09f2f3fe394d53f81cd9b4c41db9a999bc58b8"
+    },
+    {
+      "id": "evidence-decisions-analytics",
+      "kind": "decision-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-09-02T15:10:00Z",
+      "suppliedByRef": "principal-taylor-reviewer",
+      "subjectRefs": [
+        "decision-analytics"
+      ],
+      "sourceRecordDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "payloadDigest": "sha256:df9ede5897d7bad35c07bb0261d3d9e6063c194442836d04ddb3b85ac1d7f8f8",
+      "recordDigest": "sha256:149fcd6f5184e1f251ddcc9b697b5f09e40d44be1efa0dbb2b00067d162e887f",
+      "controlledRef": "controlled://license-reconciliation/evidence-decisions-analytics@sha256-149fcd6f5184e1f251ddcc9b697b5f09e40d44be1efa0dbb2b00067d162e887f"
     }
   ],
   "coverage": {
@@ -961,29 +1054,31 @@
       "evidence-exceptions",
       "evidence-decisions",
       "evidence-destination",
-      "evidence-handoff"
+      "evidence-handoff",
+      "evidence-decisions-field",
+      "evidence-decisions-analytics"
     ],
-    "contentDigest": "sha256:b13a81daef503f45be02de658f81d18d67d9453a73a0944f3e92d7c2b1036d73"
+    "contentDigest": "sha256:03fbb400fbc91023dd5a9353d7069095bb6fbefe107cc815fbc3a218b0ce88f3"
   },
   "destinationApproval": {
     "id": "destination-approval",
     "roundRef": "round-2026-08-r2",
-    "roundDigest": "sha256:14d1e5ac6c2a00ad4a0e0077711d54e32b1f5ef65de3f7388f9e78f4cd7e77ca",
-    "coverageDigest": "sha256:b13a81daef503f45be02de658f81d18d67d9453a73a0944f3e92d7c2b1036d73",
+    "roundDigest": "sha256:bcba9dc1330ef60a97e7a64f19168917dbd8ae3605b5ca3178d081fbbfc0f6b0",
+    "coverageDigest": "sha256:03fbb400fbc91023dd5a9353d7069095bb6fbefe107cc815fbc3a218b0ce88f3",
     "destination": "controlled://license-governance/northwind/ea-204/2026-08",
     "approvedByRef": "principal-dana-approver",
     "approvedAt": "2026-09-03T16:00:00Z",
     "authorityGrantRef": "grant-destination-approver",
     "evidenceRef": "evidence-destination",
-    "payloadDigest": "sha256:25cf75d83385335f44d126bd5d73abd7a8914749fbd6f0cde5f7e872667e1002"
+    "payloadDigest": "sha256:2de864ab70ef6c5c8c7713ee78c4cddaa7088f4949575cc4031fa1e4726511fa"
   },
   "handoff": {
     "id": "handoff-owner-review",
     "roundRef": "round-2026-08-r2",
-    "roundDigest": "sha256:14d1e5ac6c2a00ad4a0e0077711d54e32b1f5ef65de3f7388f9e78f4cd7e77ca",
-    "coverageDigest": "sha256:b13a81daef503f45be02de658f81d18d67d9453a73a0944f3e92d7c2b1036d73",
+    "roundDigest": "sha256:bcba9dc1330ef60a97e7a64f19168917dbd8ae3605b5ca3178d081fbbfc0f6b0",
+    "coverageDigest": "sha256:03fbb400fbc91023dd5a9353d7069095bb6fbefe107cc815fbc3a218b0ce88f3",
     "destinationApprovalRef": "destination-approval",
-    "destinationApprovalDigest": "sha256:25cf75d83385335f44d126bd5d73abd7a8914749fbd6f0cde5f7e872667e1002",
+    "destinationApprovalDigest": "sha256:2de864ab70ef6c5c8c7713ee78c4cddaa7088f4949575cc4031fa1e4726511fa",
     "destination": "controlled://license-governance/northwind/ea-204/2026-08",
     "state": "ready-for-owner-review",
     "nextOwnerRef": "principal-harper-owner",
@@ -1015,6 +1110,6 @@
     "effectiveAccessInferred": "not-performed",
     "effectiveUsageInferred": "not-performed",
     "evidenceRef": "evidence-handoff",
-    "payloadDigest": "sha256:a0a67efd7f628866455336bcb36a12cbfb5db62db18e0cad6d815905bd8d25a2"
+    "payloadDigest": "sha256:e6350342527b5039a11392481e8d82fb580dbadb489b2b428ab4c8cefc36a0d9"
   }
 }

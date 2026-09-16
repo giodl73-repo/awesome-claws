@@ -6,7 +6,7 @@ export const ENTERPRISE_LICENSE_TRUST_ROOT_SCHEMA_VERSION =
   "awesomeClaws.enterpriseLicenseTrustRoot.v1";
 
 const TIMESTAMP_PATTERN =
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/u;
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|[+-](\d{2}):(\d{2}))$/u;
 const MAX_SAFE_BIGINT = BigInt(Number.MAX_SAFE_INTEGER);
 const HANDOFF_DISCLAIMERS = {
   purchasePerformed: "not-performed",
@@ -26,6 +26,7 @@ const ROLE_SCOPES = [
   "consumption-source-owner",
   "authority-roster-custodian",
   "authority-grant-issuer",
+  "position-reconciler",
   "exception-reviewer",
   "destination-approver",
   "handoff-owner",
@@ -169,7 +170,58 @@ function sortedRecords(values) {
 }
 
 function timestamp(value) {
-  if (typeof value !== "string" || !TIMESTAMP_PATTERN.test(value)) return null;
+  if (typeof value !== "string") return null;
+  const match = TIMESTAMP_PATTERN.exec(value);
+  if (!match) return null;
+  const [
+    ,
+    yearText,
+    monthText,
+    dayText,
+    hourText,
+    minuteText,
+    secondText,
+    offsetHourText,
+    offsetMinuteText,
+  ] = match;
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+  const second = Number(secondText);
+  const offsetHour = offsetHourText === undefined ? 0 : Number(offsetHourText);
+  const offsetMinute =
+    offsetMinuteText === undefined ? 0 : Number(offsetMinuteText);
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysInMonth = [
+    31,
+    leapYear ? 29 : 28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31,
+  ];
+  if (
+    year < 1 ||
+    month < 1 ||
+    month > 12 ||
+    day < 1 ||
+    day > daysInMonth[month - 1] ||
+    hour > 23 ||
+    minute > 59 ||
+    second > 59 ||
+    offsetHour > 23 ||
+    offsetMinute > 59
+  ) {
+    return null;
+  }
   const milliseconds = Date.parse(value);
   return Number.isFinite(milliseconds) ? milliseconds : null;
 }
@@ -193,28 +245,60 @@ function mapById(values) {
   return new Map(records(values).map((row) => [row.id, row]));
 }
 
+function sourceEvidenceAnchors(value, evidenceRefs) {
+  const evidenceById = mapById(object(value).evidence);
+  return [...new Set(strings(evidenceRefs))]
+    .sort(compareUtf16CodeUnits)
+    .map((ref) => {
+      const row = object(evidenceById.get(ref));
+      return {
+        id: row.id ?? ref,
+        kind: row.kind ?? null,
+        observedAt: row.observedAt ?? null,
+        suppliedByRef: row.suppliedByRef ?? null,
+        subjectRefs: sorted(row.subjectRefs),
+        sourceRecordDigest: row.sourceRecordDigest ?? null,
+      };
+    });
+}
+
 export function computeRightsManifestDigest(value) {
   const artifact = object(value);
+  const rights = sortedRecords(artifact.rights);
+  const pools = sortedRecords(artifact.pools);
   return digest({
-    manifest: omit(artifact.rightsManifest, ["contentDigest", "evidenceRef"]),
-    rights: sortedRecords(artifact.rights).map((row) => omit(row, ["evidenceRef"])),
-    pools: sortedRecords(artifact.pools).map((row) => omit(row, ["evidenceRef"])),
+    manifest: omit(artifact.rightsManifest, ["contentDigest"]),
+    rights,
+    pools,
+    sourceEvidence: sourceEvidenceAnchors(artifact, [
+      object(artifact.rightsManifest).evidenceRef,
+      ...rights.map((row) => row.evidenceRef),
+      ...pools.map((row) => row.evidenceRef),
+    ]),
   });
 }
 
 export function computeSkuMappingDigest(value) {
   const artifact = object(value);
+  const mappings = sortedRecords(artifact.skuMappings);
   return digest({
-    register: omit(artifact.skuMappingRegister, ["contentDigest", "evidenceRef"]),
-    mappings: sortedRecords(artifact.skuMappings).map((row) => omit(row, ["evidenceRef"])),
+    register: omit(artifact.skuMappingRegister, ["contentDigest"]),
+    mappings,
+    sourceEvidence: sourceEvidenceAnchors(artifact, [
+      object(artifact.skuMappingRegister).evidenceRef,
+      ...mappings.map((row) => row.evidenceRef),
+    ]),
   });
 }
 
 export function computeAuthorityRosterDigest(value) {
   const artifact = object(value);
   return digest({
-    roster: omit(artifact.authorityRoster, ["contentDigest", "evidenceRef"]),
+    roster: omit(artifact.authorityRoster, ["contentDigest"]),
     principals: sortedRecords(artifact.principals),
+    sourceEvidence: sourceEvidenceAnchors(artifact, [
+      object(artifact.authorityRoster).evidenceRef,
+    ]),
   });
 }
 
@@ -241,16 +325,43 @@ export function computeRoundDigest(value) {
   });
 }
 
-export function computeCoverageDigest(coverage) {
-  return digest(omit(coverage, ["contentDigest"]));
+export function computeCoverageDigest(coverage, value) {
+  const artifact = object(value);
+  const evidenceRefs = records(artifact.evidence)
+    .filter((row) => row.kind !== "handoff-record")
+    .map((row) => row.id);
+  return digest({
+    coverage: omit(coverage, ["contentDigest"]),
+    trustRoots: {
+      rightsManifestDigest: object(artifact.rightsManifest).contentDigest ?? null,
+      skuMappingDigest: object(artifact.skuMappingRegister).contentDigest ?? null,
+      authorityRosterDigest: object(artifact.authorityRoster).contentDigest ?? null,
+    },
+    sourceExports: sortedRecords(artifact.sourceExports),
+    assignments: sortedRecords(artifact.assignments),
+    consumption: sortedRecords(artifact.consumption),
+    authorityGrants: sortedRecords(artifact.authorityGrants),
+    positions: sortedRecords(artifact.positions),
+    exceptions: sortedRecords(artifact.exceptions),
+    decisions: sortedRecords(artifact.decisions),
+    blockers: sortedRecords(artifact.blockers),
+    evidenceAnchors: sourceEvidenceAnchors(artifact, evidenceRefs),
+  });
 }
 
 export function computeDestinationApprovalDigest(approval) {
   return digest(omit(approval, ["payloadDigest", "evidenceRef"]));
 }
 
-export function computeHandoffDigest(handoff) {
-  return digest(omit(handoff, ["payloadDigest", "evidenceRef"]));
+export function computeHandoffDigest(handoff, value) {
+  const artifact = object(value);
+  return digest({
+    handoff: omit(handoff, ["payloadDigest"]),
+    terminalEvidence: sourceEvidenceAnchors(artifact, [
+      object(artifact.destinationApproval).evidenceRef,
+      object(handoff).evidenceRef,
+    ]),
+  });
 }
 
 function rowsNamedBySubjects(value, ledger, subjectRefs) {
@@ -448,6 +559,120 @@ function expectedEvidenceProducers(kind, value, evidence) {
   }
 }
 
+function evidenceChronologyMatches(kind, value, evidence) {
+  const artifact = object(value);
+  const row = object(evidence);
+  const observedAt = timestamp(row.observedAt);
+  if (observedAt === null) return false;
+  const allAt = (values) =>
+    values.length > 0 &&
+    values.every((value) => timestamp(value) === observedAt);
+  switch (kind) {
+    case "rights-manifest-record":
+      return (
+        object(artifact.rightsManifest).evidenceRef === row.id &&
+        timestamp(object(artifact.rightsManifest).confirmedAt) === observedAt
+      );
+    case "sku-mapping-record":
+      return (
+        object(artifact.skuMappingRegister).evidenceRef === row.id &&
+        timestamp(object(artifact.skuMappingRegister).confirmedAt) === observedAt
+      );
+    case "assignment-export-record":
+    case "consumption-export-record": {
+      const expectedKind =
+        kind === "assignment-export-record"
+          ? "assignment-export"
+          : "consumption-export";
+      const ledger =
+        kind === "assignment-export-record" ? "assignments" : "consumption";
+      const exports = evidenceBoundRows(artifact, "sourceExports", row).filter(
+        (sourceExport) => sourceExport.kind === expectedKind,
+      );
+      const governedRows = evidenceBoundRows(artifact, ledger, row);
+      return (
+        exports.length > 0 &&
+        exports.every((sourceExport) => {
+          const suppliedAt = timestamp(sourceExport.suppliedAt);
+          const cutoffAt = timestamp(sourceExport.cutoffAt);
+          const rows = governedRows.filter(
+            (governedRow) => governedRow.exportRef === sourceExport.id,
+          );
+          return (
+            suppliedAt === observedAt &&
+            cutoffAt !== null &&
+            cutoffAt < suppliedAt &&
+            rows.every((governedRow) => {
+              const rowObservedAt = timestamp(governedRow.observedAt);
+              return (
+                rowObservedAt !== null &&
+                (governedRow.periodState === "out-of-period" ||
+                  rowObservedAt <= cutoffAt) &&
+                rowObservedAt < suppliedAt
+              );
+            })
+          );
+        })
+      );
+    }
+    case "authority-roster-record":
+      return (
+        object(artifact.authorityRoster).evidenceRef === row.id &&
+        timestamp(object(artifact.authorityRoster).issuedAt) === observedAt
+      );
+    case "authority-grant-record": {
+      const grants = evidenceBoundRows(artifact, "authorityGrants", row);
+      const rosterIssuedAt = timestamp(object(artifact.authorityRoster).issuedAt);
+      return (
+        rosterIssuedAt !== null &&
+        allAt(grants.map((grant) => grant.issuedAt)) &&
+        grants.every((grant) => {
+          const issuedAt = timestamp(grant.issuedAt);
+          const activeFrom = timestamp(grant.activeFrom);
+          return (
+            issuedAt !== null &&
+            activeFrom !== null &&
+            rosterIssuedAt <= issuedAt &&
+            issuedAt <= activeFrom
+          );
+        })
+      );
+    }
+    case "position-record":
+      return allAt(
+        evidenceBoundRows(artifact, "positions", row).map(
+          (position) => position.reconciledAt,
+        ),
+      );
+    case "exception-record":
+      return allAt(
+        evidenceBoundRows(artifact, "exceptions", row).map(
+          (exception) => exception.detectedAt,
+        ),
+      );
+    case "decision-record":
+      return evidenceBoundRows(artifact, "decisions", row).length > 0;
+    case "blocker-record":
+      return allAt(
+        evidenceBoundRows(artifact, "blockers", row).map(
+          (blocker) => blocker.detectedAt,
+        ),
+      );
+    case "destination-approval-record":
+      return (
+        object(artifact.destinationApproval).evidenceRef === row.id &&
+        timestamp(object(artifact.destinationApproval).approvedAt) === observedAt
+      );
+    case "handoff-record":
+      return (
+        object(artifact.handoff).evidenceRef === row.id &&
+        timestamp(object(artifact.handoff).handedOffAt) === observedAt
+      );
+    default:
+      return false;
+  }
+}
+
 function setEvidenceSubjects(value) {
   for (const row of records(value.evidence)) {
     row.subjectRefs = expectedEvidenceSubjects(row.kind, value, row);
@@ -466,6 +691,7 @@ export function resealEnterpriseLicenseEntitlement(value) {
   artifact.rightsManifest.poolRefs = ids(artifact.pools);
   artifact.skuMappingRegister.mappingRefs = ids(artifact.skuMappings);
   artifact.authorityRoster.principalRefs = ids(artifact.principals);
+  setEvidenceSubjects(artifact);
   for (const row of [...records(artifact.assignments), ...records(artifact.consumption)]) {
     row.rowDigest = computeRowDigest(row);
   }
@@ -513,7 +739,7 @@ export function resealEnterpriseLicenseEntitlement(value) {
   artifact.coverage.decisionRefs = ids(artifact.decisions);
   artifact.coverage.blockerRefs = ids(artifact.blockers);
   artifact.coverage.evidenceRefs = ids(artifact.evidence);
-  artifact.coverage.contentDigest = computeCoverageDigest(artifact.coverage);
+  artifact.coverage.contentDigest = computeCoverageDigest(artifact.coverage, artifact);
   artifact.destinationApproval.roundRef = round.id;
   artifact.destinationApproval.roundDigest = round.roundDigest;
   artifact.destinationApproval.coverageDigest = artifact.coverage.contentDigest;
@@ -536,8 +762,7 @@ export function resealEnterpriseLicenseEntitlement(value) {
     records(artifact.exceptions).every((row) => row.resolutionState === "reviewed")
       ? "ready-for-owner-review"
       : "blocked";
-  artifact.handoff.payloadDigest = computeHandoffDigest(artifact.handoff);
-  setEvidenceSubjects(artifact);
+  artifact.handoff.payloadDigest = computeHandoffDigest(artifact.handoff, artifact);
   for (const row of records(artifact.evidence)) {
     row.roundRef = round.id;
     const payloadDigest = computeEvidencePayloadDigest(row.kind, artifact, row);
@@ -586,11 +811,14 @@ function trustRootMatches(value, trustRoot) {
   const rights = object(root.rightsManifest);
   const mapping = object(root.skuMappingRegister);
   const roster = object(root.authorityRoster);
+  const predecessor = object(root.predecessorRound);
   return (
     root.schemaVersion === ENTERPRISE_LICENSE_TRUST_ROOT_SCHEMA_VERSION &&
     root.organizationRef === round.organizationRef &&
     root.agreementRef === round.agreementRef &&
     root.licenseProgramRef === round.licenseProgramRef &&
+    predecessor.id === round.predecessorRoundRef &&
+    predecessor.digest === round.predecessorRoundDigest &&
     rights.id === round.rightsManifestRef &&
     rights.version === round.rightsManifestVersion &&
     rights.digest === round.rightsManifestDigest &&
@@ -685,6 +913,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
         "observedAt",
         "activeFrom",
         "activeUntil",
+        "issuedAt",
         "reconciledAt",
         "detectedAt",
         "reviewedAt",
@@ -755,6 +984,13 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
       globalIds.set(row.id, path);
     }
   }
+  if (globalIds.has(round.predecessorRoundRef)) {
+    add(
+      "invalid_predecessor_lineage",
+      "round.predecessorRoundRef",
+      "The predecessor round reference must remain outside the current artifact identity space.",
+    );
+  }
 
   const indexContracts = [
     ["rightRefs", "rights"],
@@ -807,6 +1043,15 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
   const rightsById = mapById(rights);
   const poolsById = mapById(pools);
   const mappingsById = mapById(mappings);
+  for (const [index, pool] of pools.entries()) {
+    if (!rightsById.has(pool.rightRef)) {
+      add(
+        "invalid_pool_binding",
+        `pools[${index}].rightRef`,
+        "Every entitlement pool must resolve to exactly one declared purchased right.",
+      );
+    }
+  }
   if (
     !sameExactSet(rightsManifest.rightRefs, ids(rights)) ||
     !sameExactSet(rightsManifest.poolRefs, ids(pools)) ||
@@ -944,6 +1189,11 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
   ]) {
     for (const [index, row] of rows.entries()) {
       const mapping = mappingsById.get(row.mappingRef);
+      const canonicalMappings = mappings.filter(
+        (candidate) => candidate.sourceSku === row.sourceSku,
+      );
+      const canonicalMapping =
+        canonicalMappings.length === 1 ? canonicalMappings[0] : undefined;
       const sourceExport = exportsById.get(row.exportRef);
       const mappingConflict =
         mapping &&
@@ -953,6 +1203,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
           poolsById.get(row.poolRef)?.rightRef !== row.rightRef);
       const mappingValid =
         mapping &&
+        canonicalMapping?.id === mapping.id &&
         sourceExport &&
         sourceExport.kind === expectedKind &&
         !mappingConflict;
@@ -995,7 +1246,8 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
         }
       } else if (
         row.mappingState === "unmapped" &&
-        (mapping ||
+        (canonicalMappings.length !== 0 ||
+          mapping ||
           row.mappingRef !== null ||
           row.rightRef !== null ||
           row.poolRef !== null ||
@@ -1010,6 +1262,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
       } else if (
         row.mappingState === "conflict" &&
         (!mapping ||
+          canonicalMapping?.id !== mapping.id ||
           !mappingConflict ||
           row.normalizedUnits !== null ||
           blockerCount("mapping-conflict") !== 1)
@@ -1044,6 +1297,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
 
   const principals = records(artifact.principals);
   const principalsById = mapById(principals);
+  const rosterCustodian = principalsById.get(roster.custodianRef);
   if (
     !sameExactSet(roster.principalRefs, ids(principals)) ||
     roster.contentDigest !== computeAuthorityRosterDigest(artifact)
@@ -1052,6 +1306,17 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
       "invalid_authority_roster",
       "authorityRoster",
       "The authority roster must bind every named-human principal and exact scope.",
+    );
+  }
+  if (
+    !rosterCustodian ||
+    rosterCustodian.kind !== "named-human" ||
+    !strings(rosterCustodian.scopes).includes("authority-roster-custodian")
+  ) {
+    add(
+      "invalid_roster_custodian",
+      "authorityRoster.custodianRef",
+      "The authority roster custodian must be a named human holding the dedicated custodian scope.",
     );
   }
   for (const [index, principal] of principals.entries()) {
@@ -1072,6 +1337,37 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
   for (const [index, grant] of grants.entries()) {
     const grantee = principalsById.get(grant.granteeRef);
     const issuer = principalsById.get(grant.issuedByRef);
+    const targetValid =
+      (grant.scope === "rights-source-owner" &&
+        grant.targetType === "rights-manifest" &&
+        grant.targetRef === rightsManifest.id) ||
+      (grant.scope === "sku-mapping-source-owner" &&
+        grant.targetType === "sku-mapping-register" &&
+        grant.targetRef === mappingRegister.id) ||
+      (grant.scope === "assignment-source-owner" &&
+        grant.targetType === "source-export" &&
+        records(artifact.sourceExports).some(
+          (row) =>
+            row.id === grant.targetRef && row.kind === "assignment-export",
+        )) ||
+      (grant.scope === "consumption-source-owner" &&
+        grant.targetType === "source-export" &&
+        records(artifact.sourceExports).some(
+          (row) =>
+            row.id === grant.targetRef && row.kind === "consumption-export",
+        )) ||
+      (grant.scope === "position-reconciler" &&
+        grant.targetType === "position" &&
+        records(artifact.positions).some((row) => row.id === grant.targetRef)) ||
+      (grant.scope === "exception-reviewer" &&
+        grant.targetType === "exception" &&
+        records(artifact.exceptions).some((row) => row.id === grant.targetRef)) ||
+      (grant.scope === "destination-approver" &&
+        grant.targetType === "destination" &&
+        grant.targetRef === round.destination) ||
+      (grant.scope === "handoff-owner" &&
+        grant.targetType === "destination" &&
+        grant.targetRef === round.destination);
     if (
       grant.roundRef !== round.id ||
       grant.rosterRef !== roster.id ||
@@ -1082,8 +1378,12 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
       !issuer ||
       !strings(issuer.scopes).includes("authority-grant-issuer") ||
       grant.granteeRef === grant.issuedByRef ||
+      !targetValid ||
+      timestamp(grant.issuedAt) === null ||
       timestamp(grant.activeFrom) === null ||
       timestamp(grant.activeUntil) === null ||
+      timestamp(roster.issuedAt) > timestamp(grant.issuedAt) ||
+      timestamp(grant.issuedAt) > timestamp(grant.activeFrom) ||
       timestamp(grant.activeFrom) > timestamp(grant.activeUntil) ||
       grant.payloadDigest !== computeAuthorityGrantDigest(grant)
     ) {
@@ -1106,6 +1406,8 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
       grant.roundRef === round.id &&
       grant.rosterRef === roster.id &&
       grant.rosterDigest === roster.contentDigest &&
+      timestamp(grant.issuedAt) !== null &&
+      timestamp(grant.issuedAt) <= instant &&
       instant !== null &&
       timestamp(grant.activeFrom) !== null &&
       timestamp(grant.activeUntil) !== null &&
@@ -1157,7 +1459,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
       );
     }
   }
-  const roleRefs = [
+  const protectedRoleRefs = [
     rightsManifest.confirmedByRef,
     mappingRegister.confirmedByRef,
     ...exports.map((row) => row.suppliedByRef),
@@ -1165,17 +1467,23 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
     ...principals
       .filter((row) => strings(row.scopes).includes("authority-grant-issuer"))
       .map((row) => row.id),
-    ...principals
-      .filter((row) => strings(row.scopes).includes("exception-reviewer"))
-      .map((row) => row.id),
     approval.approvedByRef,
     handoff.nextOwnerRef,
   ].filter((ref) => typeof ref === "string");
-  if (new Set(roleRefs).size !== roleRefs.length) {
+  const reviewRoleRefs = [
+    ...records(artifact.positions).map((row) => row.reconciledByRef),
+    ...records(artifact.exceptions).map((row) => row.ownerRef),
+    ...records(artifact.decisions).map((row) => row.reviewedByRef),
+  ].filter((ref) => typeof ref === "string");
+  const protectedRoleSet = new Set(protectedRoleRefs);
+  if (
+    protectedRoleSet.size !== protectedRoleRefs.length ||
+    reviewRoleRefs.some((ref) => protectedRoleSet.has(ref))
+  ) {
     add(
       "invalid_role_separation",
       "principals",
-      "Source owners, roster custodian, grant issuer, destination approver, and handoff owner must be distinct named humans.",
+      "Source owners, roster custodian, grant issuer, destination approver, and handoff owner must be distinct from each other and from actual position reconcilers and exception reviewers.",
     );
   }
 
@@ -1211,6 +1519,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
   for (const [index, position] of positions.entries()) {
     const pool = poolsById.get(position.poolRef);
     const reconciler = principalsById.get(position.reconciledByRef);
+    const reconciliationGrant = grantsById.get(position.authorityGrantRef);
     const poolAssignments = assignments.filter(
       (row) =>
         row.mappingState === "mapped" &&
@@ -1267,7 +1576,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
     if (
       !reconciler ||
       reconciler.kind !== "named-human" ||
-      !strings(reconciler.scopes).includes("exception-reviewer") ||
+      !strings(reconciler.scopes).includes("position-reconciler") ||
       !strictlyAfter(position.reconciledAt, reconciliationPrerequisites) ||
       reconciledAt === null ||
       reconciledAt < opensAt ||
@@ -1277,6 +1586,22 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
         "invalid_reconciliation_chronology",
         `positions[${index}].reconciledAt`,
         "Each position must be reconciled by its named human after canonical source exports exist and within the review window.",
+      );
+    }
+    if (
+      !grantAuthorizes(
+        reconciliationGrant,
+        position.reconciledByRef,
+        "position-reconciler",
+        "position",
+        position.id,
+        position.reconciledAt,
+      )
+    ) {
+      add(
+        "invalid_reconciliation_authority",
+        `positions[${index}].authorityGrantRef`,
+        "Each position must reference an exact current-round grant authorizing its named reconciler for that position at reconciliation time.",
       );
     }
   }
@@ -1371,13 +1696,14 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
       evidenceAt === null ||
       reconciledAt === null ||
       evidenceAt <= reconciledAt ||
+      evidenceAt < timestamp(exception?.detectedAt) ||
       decisionAt === null ||
-      evidenceAt > decisionAt
+      evidenceAt !== decisionAt
     ) {
       add(
         "invalid_decision_evidence",
         `decisions[${index}].evidenceRef`,
-        "Decision evidence must come from the exact authorized reviewer after reconciliation and no later than that decision.",
+        "Decision evidence must come from the exact authorized reviewer at the decision instant after reconciliation.",
       );
     }
   }
@@ -1451,6 +1777,13 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
         "Each evidence kind must be supplied by the exact modeled source owner, reviewer, approver, or handoff owner.",
       );
     }
+    if (!evidenceChronologyMatches(row.kind, artifact, row)) {
+      add(
+        "invalid_evidence_chronology",
+        `evidence[${index}].observedAt`,
+        "Evidence time must bind exactly to its governed export or event and follow the required source chronology.",
+      );
+    }
     if (sourceDigests.has(row.sourceRecordDigest) || controlledRefs.has(row.controlledRef)) {
       add(
         "duplicate_evidence_identity",
@@ -1483,6 +1816,11 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
     const owner = principalsById.get(blocker.ownerRef);
     const blockerEvidence = evidenceById.get(blocker.evidenceRef);
     const mapping = mappingsById.get(target?.mappingRef);
+    const canonicalMappings = mappings.filter(
+      (candidate) => candidate.sourceSku === target?.sourceSku,
+    );
+    const canonicalMapping =
+      canonicalMappings.length === 1 ? canonicalMappings[0] : undefined;
     const targetLedger = assignments.includes(target)
       ? "assignments"
       : consumption.includes(target)
@@ -1506,6 +1844,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
         target &&
         targetLedger !== null &&
         target.mappingState === "unmapped" &&
+        canonicalMappings.length === 0 &&
         !mapping &&
         target.mappingRef === null &&
         target.rightRef === null &&
@@ -1516,6 +1855,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
         targetLedger !== null &&
         target.mappingState === "conflict" &&
         mapping &&
+        canonicalMapping?.id === mapping.id &&
         target.normalizedUnits === null &&
         (mapping.sourceSku !== target.sourceSku ||
           mapping.rightRef !== target.rightRef ||
@@ -1573,7 +1913,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
   ];
   if (
     coverageContracts.some(([field, ledger]) => !sameExactSet(coverage[field], ids(artifact[ledger]))) ||
-    coverage.contentDigest !== computeCoverageDigest(coverage)
+    coverage.contentDigest !== computeCoverageDigest(coverage, artifact)
   ) {
     add(
       "invalid_coverage",
@@ -1586,6 +1926,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
     approval.roundRef !== round.id ||
     approval.roundDigest !== round.roundDigest ||
     approval.coverageDigest !== coverage.contentDigest ||
+    approval.coverageDigest !== computeCoverageDigest(coverage, artifact) ||
     approval.destination !== round.destination ||
     approval.payloadDigest !== computeDestinationApprovalDigest(approval) ||
     !grantAuthorizes(
@@ -1620,6 +1961,8 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
   ];
   if (
     !strictlyAfter(approval.approvedAt, approvalPrerequisites) ||
+    timestamp(approval.approvedAt) < opensAt ||
+    timestamp(approval.approvedAt) > closesAt ||
     !approvalEvidence ||
     approvalEvidence.kind !== "destination-approval-record" ||
     approvalEvidence.suppliedByRef !== approval.approvedByRef ||
@@ -1645,6 +1988,8 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
   ];
   if (
     !strictlyAfter(handoff.handedOffAt, handoffPrerequisites) ||
+    timestamp(handoff.handedOffAt) < opensAt ||
+    timestamp(handoff.handedOffAt) > closesAt ||
     !handoffEvidence ||
     handoffEvidence.kind !== "handoff-record" ||
     handoffEvidence.suppliedByRef !== handoff.nextOwnerRef ||
@@ -1664,6 +2009,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
     handoff.roundRef !== round.id ||
     handoff.roundDigest !== round.roundDigest ||
     handoff.coverageDigest !== coverage.contentDigest ||
+    handoff.coverageDigest !== computeCoverageDigest(coverage, artifact) ||
     handoff.destinationApprovalRef !== approval.id ||
     handoff.destinationApprovalDigest !== approval.payloadDigest ||
     handoff.destination !== round.destination ||
@@ -1681,7 +2027,7 @@ export function enterpriseLicenseEntitlementFindings(value, options = {}) {
     !sameExactSet(handoff.decisionRefs, ids(decisions)) ||
     !sameExactSet(handoff.blockerRefs, ids(blockers)) ||
     Object.entries(HANDOFF_DISCLAIMERS).some(([field, expected]) => handoff[field] !== expected) ||
-    handoff.payloadDigest !== computeHandoffDigest(handoff)
+    handoff.payloadDigest !== computeHandoffDigest(handoff, artifact)
   ) {
     add(
       "invalid_handoff",

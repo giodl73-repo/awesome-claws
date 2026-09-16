@@ -3,19 +3,23 @@
   "organizationRef": "organization-northwind",
   "agreementRef": "agreement-ea-204",
   "licenseProgramRef": "license-program-2026",
+  "predecessorRound": {
+    "id": "round-2026-07-r1",
+    "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
   "rightsManifest": {
     "id": "rights-manifest-ea-204",
     "version": "v4",
-    "digest": "sha256:f6d703fcb03f24a6ab58568c090e8379099120cf27776ef2efdf53d0c47257cf"
+    "digest": "sha256:b9d37f4debc7b0ea965f202061629108585f61581c329f75bba72806d9614b2a"
   },
   "skuMappingRegister": {
     "id": "sku-mapping-ea-204",
     "version": "v7",
-    "digest": "sha256:8f0cb38d7fa9d16ca75c8af51c07c0d81e556dc35b4d51db943110d48d55ac6c"
+    "digest": "sha256:8d530ca444d7ee436ccb89744a718802d19469ebb4f4b935948738192de2456e"
   },
   "authorityRoster": {
     "id": "roster-license-review",
     "version": "v3",
-    "digest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9"
+    "digest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0"
   }
 }
