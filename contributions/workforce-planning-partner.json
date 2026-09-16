@@ -128,6 +128,11 @@
         "difference": "Manufacturing Operations Planner models production demand, lines, material, quality, and maintenance. Workforce Planning Partner models funded organizational role demand, aggregate hiring and attrition, capability and succession coverage, location constraints, and workforce-specific privacy boundaries."
       },
       {
+        "id": "learning-program-manager",
+        "overlap": "Both use approved aggregate capability evidence, preserve workforce privacy and human decision rights, reconcile versioned plans, and assign owned actions for unresolved capability gaps.",
+        "difference": "Learning Program Manager starts from an approved aggregate capability-gap revision and governs curriculum releases, voluntary cohort assignments, delivery evidence, aggregate learning effectiveness, and refresh decisions. Workforce Planning Partner instead reconciles organizational work demand, funded positions, people supply, hiring and attrition scenarios, succession coverage, and location constraints without assigning training or administering learning."
+      },
+      {
         "id": "household-steward",
         "overlap": "Both bind evidence, constraints, privacy, owner actions, and decisions in a durable cross-domain handoff.",
         "difference": "Household Steward coordinates consumer household operations and shared personal resources. Workforce Planning Partner has an organization-plan revision, funded-position ledger, workforce scenarios, role capability taxonomy, succession coverage, and manager decision checkpoints."

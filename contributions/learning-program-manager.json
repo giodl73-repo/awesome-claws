@@ -122,6 +122,11 @@
         "difference": "Localization Program Manager governs locale coverage and release readiness for product surfaces; Learning Program Manager governs approved aggregate capability gaps, curricula, cohort rosters, voluntary assignment receipts, learning evidence, cohort-only effectiveness, and refresh decisions."
       },
       {
+        "id": "workforce-planning-partner",
+        "overlap": "Both start from approved aggregate capability or capacity evidence, preserve privacy and decision rights, reconcile versioned plans, and hand unresolved gaps to accountable owners.",
+        "difference": "Workforce Planning Partner reconciles demand, funded positions, people supply, movement scenarios, and plan approvals without making employment decisions. Learning Program Manager consumes an already approved aggregate capability-gap revision and governs curriculum releases, voluntary cohort assignments, delivery evidence, aggregate learning effectiveness, and refresh decisions without changing workforce plans."
+      },
+      {
         "id": "delegation-coordinator",
         "overlap": "Both bind assignments, accountable owners, receipts, completion evidence, blockers, review chronology, and handoff.",
         "difference": "Delegation Coordinator governs one explicitly approved work delegation through acceptance and acknowledgment; Learning Program Manager governs versioned curricula and roster-bound cohorts through aggregate learning-effectiveness review while prohibiting mandatory assignment and individual performance inference."

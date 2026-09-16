@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (113)
+### Active (119)
 
 | Claw | Detail |
 | --- | --- |
@@ -18,6 +18,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Appliance care coordinator](claws/appliance-care-coordinator) | @giodl73-repo; last verified 2026-08-21 |
 | [Backup Restore Verification Coordinator](claws/backup-restore-verification-coordinator) | @giodl73; last verified 2026-09-09 |
 | [Benefits and open enrollment planner](claws/benefits-open-enrollment-planner) | @giodl73-repo; last verified 2026-08-28 |
+| [Business Continuity Program Manager](claws/business-continuity-program-manager) | @giodl73; last verified 2026-09-14 |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | @giodl73-repo; last verified 2026-08-21 |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Certification renewal planner](claws/certification-renewal-planner) | @giodl73; last verified 2026-08-28 |
@@ -25,10 +26,12 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Child activity manager](claws/child-activity-manager) | @giodl73-repo; last verified 2026-08-27 |
 | [Civic data analyst](claws/civic-data-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | @giodl73-repo; last verified 2026-08-19 |
+| [Commercial Deal Desk Coordinator](claws/commercial-deal-desk-coordinator) | @giodl73; last verified 2026-09-14 |
 | [Compliance reviewer](claws/compliance-reviewer) | @giodl73-repo; last verified 2026-08-19 |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | @giodl73; last verified 2026-08-29 |
 | [Content operations](claws/content-operations) | @giodl73-repo; last verified 2026-08-31 |
 | [Contract Obligation Tracker](claws/contract-obligation-tracker) | @giodl73; last verified 2026-09-09 |
+| [Customer success program manager](claws/customer-success-program-manager) | @giodl73-repo; last verified 2026-09-14 |
 | [Customer support](claws/customer-support) | @giodl73-repo; last verified 2026-08-19 |
 | [Data analyst](claws/data-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Data governance steward](claws/data-governance-steward) | @giodl73-repo; last verified 2026-08-19 |
@@ -63,6 +66,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Job application tracker](claws/job-application-tracker) | @giodl73-repo; last verified 2026-08-28 |
 | [Knowledge curator](claws/knowledge-curator) | @giodl73-repo; last verified 2026-08-31 |
 | [Knowledge gardener](claws/knowledge-gardener) | @giodl73-repo; last verified 2026-08-31 |
+| [Learning program manager](claws/learning-program-manager) | @giodl73; last verified 2026-09-14 |
 | [Legal matter organizer](claws/legal-matter-organizer) | @giodl73; last verified 2026-09-06 |
 | [Life timeline keeper](claws/life-timeline-keeper) | @giodl73-repo; last verified 2026-08-27 |
 | [Local events watcher](claws/local-events-watcher) | @giodl73-repo; last verified 2026-08-23 |
@@ -110,6 +114,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | @giodl73-repo; last verified 2026-08-29 |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | @giodl73-repo; last verified 2026-08-21 |
 | [Subscription manager](claws/subscription-manager) | @giodl73-repo; last verified 2026-08-21 |
+| [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | @giodl73-repo; last verified 2026-09-14 |
 | [Tax document organizer](claws/tax-document-organizer) | @giodl73-repo; last verified 2026-08-26 |
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | @giodl73; last verified 2026-09-10 |
 | [Travel concierge](claws/travel-concierge) | @giodl73-repo; last verified 2026-08-29 |
@@ -125,6 +130,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Website evidence collector](claws/website-evidence-collector) | @giodl73-repo; last verified 2026-08-30 |
 | [Work chief of staff](claws/work-chief-of-staff) | @giodl73-repo; last verified 2026-08-21 |
 | [Workflow operator](claws/workflow-operator) | @giodl73-repo; last verified 2026-09-01 |
+| [Workforce planning partner](claws/workforce-planning-partner) | @giodl73-repo; last verified 2026-09-14 |
 
 ### Needs Help (0)
 
@@ -140,7 +146,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (82)
+### Low setup (87)
 
 | Claw | Detail |
 | --- | --- |
@@ -156,10 +162,12 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Change control operator](claws/change-control-operator) | no bootstrap, external dependency, or schedule |
 | [Child activity manager](claws/child-activity-manager) | no bootstrap, external dependency, or schedule |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | no bootstrap, external dependency, or schedule |
+| [Commercial Deal Desk Coordinator](claws/commercial-deal-desk-coordinator) | no bootstrap, external dependency, or schedule |
 | [Compliance reviewer](claws/compliance-reviewer) | no bootstrap, external dependency, or schedule |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | no bootstrap, external dependency, or schedule |
 | [Content operations](claws/content-operations) | no bootstrap, external dependency, or schedule |
 | [Contract Obligation Tracker](claws/contract-obligation-tracker) | no bootstrap, external dependency, or schedule |
+| [Customer success program manager](claws/customer-success-program-manager) | no bootstrap, external dependency, or schedule |
 | [Data analyst](claws/data-analyst) | no bootstrap, external dependency, or schedule |
 | [Data governance steward](claws/data-governance-steward) | no bootstrap, external dependency, or schedule |
 | [Data migration planner](claws/data-migration-planner) | no bootstrap, external dependency, or schedule |
@@ -183,6 +191,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Job application tracker](claws/job-application-tracker) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
 | [Knowledge gardener](claws/knowledge-gardener) | no bootstrap, external dependency, or schedule |
+| [Learning program manager](claws/learning-program-manager) | no bootstrap, external dependency, or schedule |
 | [Legal matter organizer](claws/legal-matter-organizer) | no bootstrap, external dependency, or schedule |
 | [Life timeline keeper](claws/life-timeline-keeper) | no bootstrap, external dependency, or schedule |
 | [Local events watcher](claws/local-events-watcher) | no bootstrap, external dependency, or schedule |
@@ -217,6 +226,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Sports team watcher](claws/sports-team-watcher) | no bootstrap, external dependency, or schedule |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | no bootstrap, external dependency, or schedule |
 | [Subscription manager](claws/subscription-manager) | no bootstrap, external dependency, or schedule |
+| [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | no bootstrap, external dependency, or schedule |
 | [Tax document organizer](claws/tax-document-organizer) | no bootstrap, external dependency, or schedule |
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | no bootstrap, external dependency, or schedule |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | no bootstrap, external dependency, or schedule |
@@ -226,11 +236,13 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Wardrobe organizer](claws/wardrobe-organizer) | no bootstrap, external dependency, or schedule |
 | [Warranty and returns manager](claws/warranty-returns-manager) | no bootstrap, external dependency, or schedule |
 | [Work chief of staff](claws/work-chief-of-staff) | no bootstrap, external dependency, or schedule |
+| [Workforce planning partner](claws/workforce-planning-partner) | no bootstrap, external dependency, or schedule |
 
-### Medium setup (26)
+### Medium setup (27)
 
 | Claw | Detail |
 | --- | --- |
+| [Business Continuity Program Manager](claws/business-continuity-program-manager) | 1 scheduled job |
 | [Civic data analyst](claws/civic-data-analyst) | 1 pinned package |
 | [Customer support](claws/customer-support) | 1 pinned package |
 | [Document intake analyst](claws/document-intake-analyst) | 1 pinned package |
@@ -272,7 +284,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (90)
+### No external dependencies (96)
 
 | Claw | Detail |
 | --- | --- |
@@ -282,16 +294,19 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Appliance care coordinator](claws/appliance-care-coordinator) | None |
 | [Backup Restore Verification Coordinator](claws/backup-restore-verification-coordinator) | None |
 | [Benefits and open enrollment planner](claws/benefits-open-enrollment-planner) | None |
+| [Business Continuity Program Manager](claws/business-continuity-program-manager) | None |
 | [Care Circle Coordinator](claws/care-circle-coordinator) | None |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | None |
 | [Certification renewal planner](claws/certification-renewal-planner) | None |
 | [Change control operator](claws/change-control-operator) | None |
 | [Child activity manager](claws/child-activity-manager) | None |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | None |
+| [Commercial Deal Desk Coordinator](claws/commercial-deal-desk-coordinator) | None |
 | [Compliance reviewer](claws/compliance-reviewer) | None |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | None |
 | [Content operations](claws/content-operations) | None |
 | [Contract Obligation Tracker](claws/contract-obligation-tracker) | None |
+| [Customer success program manager](claws/customer-success-program-manager) | None |
 | [Data analyst](claws/data-analyst) | None |
 | [Data governance steward](claws/data-governance-steward) | None |
 | [Data migration planner](claws/data-migration-planner) | None |
@@ -321,6 +336,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Job application tracker](claws/job-application-tracker) | None |
 | [Knowledge curator](claws/knowledge-curator) | None |
 | [Knowledge gardener](claws/knowledge-gardener) | None |
+| [Learning program manager](claws/learning-program-manager) | None |
 | [Legal matter organizer](claws/legal-matter-organizer) | None |
 | [Life timeline keeper](claws/life-timeline-keeper) | None |
 | [Local events watcher](claws/local-events-watcher) | None |
@@ -357,6 +373,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Sports team watcher](claws/sports-team-watcher) | None |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | None |
 | [Subscription manager](claws/subscription-manager) | None |
+| [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | None |
 | [Tax document organizer](claws/tax-document-organizer) | None |
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | None |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | None |
@@ -366,6 +383,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Wardrobe organizer](claws/wardrobe-organizer) | None |
 | [Warranty and returns manager](claws/warranty-returns-manager) | None |
 | [Work chief of staff](claws/work-chief-of-staff) | None |
+| [Workforce planning partner](claws/workforce-planning-partner) | None |
 
 ### External dependencies declared (23)
 
@@ -490,13 +508,16 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Work chief of staff](claws/work-chief-of-staff) | Coordinates a multi-leader operating portfolio across specialist-Claw artifacts, shared resources, decision forums, and explicitly authorized commitments without becoming the executive or functional decision-maker. |
 | [Workflow operator](claws/workflow-operator) | Reconciles one exact bounded Lobster run against its reviewed workflow, typed input, exposed tool envelopes, human approval gate, independently observed effects, retry lineage, and private resume-or-abort handoff without duplicating Lobster state or claiming transactionality. |
 
-### X4 (20)
+### X4 (26)
 
 | Claw | Detail |
 | --- | --- |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | Organizes accessibility evidence, findings, remediation ownership, and verification against an approved review scope without claiming certification. |
+| [Business Continuity Program Manager](claws/business-continuity-program-manager) | Maintains one exact owner-supplied critical-process universe through recurring business-impact analysis, owner-approved recovery requirements, dependency mapping, continuity-plan revisions, exercises, findings, corrective actions, exceptions, and independent recertification without declaring disasters, invoking plans, executing recovery, accepting risk, or certifying readiness. |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | Reconciles approved cloud billing exports into allocation, anomaly, commitment, and optimization evidence without changing cloud resources. |
+| [Commercial Deal Desk Coordinator](claws/commercial-deal-desk-coordinator) | Reconciles one exact immutable seller quote revision across approved configuration, pricing, discount, margin, licensing, legal deviations, dependencies, validity, approvals, and order-readiness handoff. |
 | [Compliance reviewer](claws/compliance-reviewer) | Evaluates controls and evidence without substituting for accountable legal judgment. |
+| [Customer success program manager](claws/customer-success-program-manager) | Reconciles one customer's approved success-plan revision into an evidence-bound owner handoff without contacting the customer or changing customer, service, support, or commercial state. |
 | [Customer support](claws/customer-support) | Resolves customer cases accurately while preserving context, ownership, and privacy. |
 | [Data analyst](claws/data-analyst) | Turns data questions into reproducible analyses with explicit assumptions and limitations. |
 | [Data governance steward](claws/data-governance-steward) | Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
@@ -504,6 +525,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Experimentation lead](claws/experimentation-lead) | Designs and reviews bounded product experiments with explicit hypotheses, guardrails, exposure rules, evidence, and decision ownership. |
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | Turns approved site observations into a prioritized maintenance queue, owner handoff, and private operating view without dispatching work. |
 | [Incident response](claws/incident-response) | Coordinates evidence-bound Technical DRI and Incident Manager loops through service recovery, owner-controlled closure, and durable compliance follow-up. |
+| [Learning program manager](claws/learning-program-manager) | Converts an approved aggregate capability-gap revision into evidence-bound curriculum releases, cohort assignments, delivery readiness, completion and assessment evidence, effectiveness review, refresh decisions, and owner handoff. |
 | [Localization program manager](claws/localization-program-manager) | Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations. |
 | [Partner business manager](claws/partner-business-manager) | Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority. |
 | [Product manager](claws/product-manager) | Frames product decisions around user evidence, outcomes, constraints, and learning. |
@@ -513,7 +535,9 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Research briefing](claws/research-briefing) | Synthesizes supplied sources into concise, source-grounded briefs for time-sensitive decisions. |
 | [Security analyst](claws/security-analyst) | Assesses security questions with explicit trust boundaries and reproducible evidence. |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | Turns one exact approved workload requirements revision into evidence-comparable architecture options, validation experiments, ADR chronology, and an accountable owner decision. |
+| [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | Reconciles an exact approved demand-plan revision against supplier commits, qualified capacity, inventory, quality, and inbound logistics evidence to prepare shortage and recovery decisions. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
+| [Workforce planning partner](claws/workforce-planning-partner) | Reconciles an exact approved organization-plan revision against funded role demand and aggregate workforce scenarios without making personnel or headcount decisions. |
 
 ### X5 (7)
 
@@ -567,13 +591,14 @@ Categories come directly from the catalog entry.
 | [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | X4; Turns one exact approved workload requirements revision into evidence-comparable architecture options, validation experiments, ADR chronology, and an accountable owner decision. |
 
-### Governance (14)
+### Governance (15)
 
 | Claw | Detail |
 | --- | --- |
 | [Access Entitlement Review Coordinator](claws/access-entitlement-review-coordinator) | X3; Reconciles one exact owner-supplied access-assignment snapshot, bound to a locale-independent recomputed assignment-manifest digest, so that every in-scope principal, resource, entitlement, and assignment key carries exactly one fresh named-human retain or revoke recertification decision or one exact non-decision, with per-row reviewer authority, a content-bound owner authority roster, controlled evidence that content-addresses both its envelope and the exact semantic payload of the row it supports, a scoped non-subject handoff recipient, and a record that carries no free-text field at all, and without reaching identity systems, inferring effective access, carrying any prior decision forward, or changing access. |
 | [Accessibility review coordinator](claws/accessibility-review-coordinator) | X4; Organizes accessibility evidence, findings, remediation ownership, and verification against an approved review scope without claiming certification. |
 | [Backup Restore Verification Coordinator](claws/backup-restore-verification-coordinator) | X3; Coordinates one bounded metadata-only restore-verification round over an exact owner-supplied protected-resource universe, proving selected recovery points were restored to isolated targets, independently validated, and explicitly cleaned or retained while backup owners retain all backup, restore, deletion, production, and compliance authority. |
+| [Business Continuity Program Manager](claws/business-continuity-program-manager) | X4; Maintains one exact owner-supplied critical-process universe through recurring business-impact analysis, owner-approved recovery requirements, dependency mapping, continuity-plan revisions, exercises, findings, corrective actions, exceptions, and independent recertification without declaring disasters, invoking plans, executing recovery, accepting risk, or certifying readiness. |
 | [Compliance reviewer](claws/compliance-reviewer) | X4; Evaluates controls and evidence without substituting for accountable legal judgment. |
 | [Contract Obligation Tracker](claws/contract-obligation-tracker) | X3; Tracks one exact owner-confirmed obligation-register version for a bounded review round, proving every registered obligation appears exactly once and receives one current evidence-bound observation or one exact blocker, while contract owners retain all interpretation, acceptance, notice, payment, amendment, renewal, termination, dispute, and system authority. |
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
@@ -586,13 +611,15 @@ Categories come directly from the catalog entry.
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
-### Operations (23)
+### Operations (27)
 
 | Claw | Detail |
 | --- | --- |
 | [Appliance care coordinator](claws/appliance-care-coordinator) | X3; Maintains a longitudinal appliance inventory, model-bound care calendar, warranty and recall state, lifecycle cost evidence, and explicitly approved manufacturer or authorized-servicer appointments. |
 | [Case continuity coordinator](claws/case-continuity-coordinator) | X3; Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions. |
+| [Commercial Deal Desk Coordinator](claws/commercial-deal-desk-coordinator) | X4; Reconciles one exact immutable seller quote revision across approved configuration, pricing, discount, margin, licensing, legal deviations, dependencies, validity, approvals, and order-readiness handoff. |
 | [Content operations](claws/content-operations) | X3; Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it. |
+| [Customer success program manager](claws/customer-success-program-manager) | X4; Reconciles one customer's approved success-plan revision into an evidence-bound owner handoff without contacting the customer or changing customer, service, support, or commercial state. |
 | [Customer support](claws/customer-support) | X4; Resolves customer cases accurately while preserving context, ownership, and privacy. |
 | [Event operations director](claws/event-operations-director) | X5; Turns an approved event plan into a controlled run of show, readiness view, decision queue, and accountable handoff. |
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | X4; Turns approved site observations into a prioritized maintenance queue, owner handoff, and private operating view without dispatching work. |
@@ -610,9 +637,11 @@ Categories come directly from the catalog entry.
 | [Public safety monitor](claws/public-safety-monitor) | X3; Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services. |
 | [Recruiting coordinator](claws/recruiting-coordinator) | X3; Coordinates candidate logistics with clear handoffs, consistency, and privacy. |
 | [Sales operations](claws/sales-operations) | X3; Improves pipeline decisions through clean definitions, evidence, and accountable follow-up. |
+| [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | X4; Reconciles an exact approved demand-plan revision against supplier commits, qualified capacity, inventory, quality, and inbound logistics evidence to prepare shortage and recovery decisions. |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | X3; Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle. |
 | [Work chief of staff](claws/work-chief-of-staff) | X3; Coordinates a multi-leader operating portfolio across specialist-Claw artifacts, shared resources, decision forums, and explicitly authorized commitments without becoming the executive or functional decision-maker. |
 | [Workflow operator](claws/workflow-operator) | X3; Reconciles one exact bounded Lobster run against its reviewed workflow, typed input, exposed tool envelopes, human approval gate, independently observed effects, retry lineage, and private resume-or-abort handoff without duplicating Lobster state or claiming transactionality. |
+| [Workforce planning partner](claws/workforce-planning-partner) | X4; Reconciles an exact approved organization-plan revision against funded role demand and aggregate workforce scenarios without making personnel or headcount decisions. |
 
 ### Product (3)
 
@@ -622,7 +651,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (47)
+### Productivity (48)
 
 | Claw | Detail |
 | --- | --- |
@@ -647,6 +676,7 @@ Categories come directly from the catalog entry.
 | [Job application tracker](claws/job-application-tracker) | X3; Organizes owner-supplied job postings, application materials, recruiter notes, interview schedules, follow-up drafts, status evidence, and offer questions into a private job-search pipeline without applying to jobs, fabricating credentials, contacting employers, changing accounts, accepting offers, negotiating commitments, or giving legal, immigration, tax, financial, or career advice. |
 | [Knowledge curator](claws/knowledge-curator) | X3; Maintains one bounded, durable, normalized, source-linked collection index of topics, claims, human-owned decisions, duplicates, disputes, gaps, freshness, retention, and review state without owning or mutating source systems. |
 | [Knowledge gardener](claws/knowledge-gardener) | X3; Maintains a private, digest-bound, exact-version change plan from one operator-supplied, versioned, secret-free read-only Notion observation export and authorization/scope receipt, without Notion, network, or source-mutation access. |
+| [Learning program manager](claws/learning-program-manager) | X4; Converts an approved aggregate capability-gap revision into evidence-bound curriculum releases, cohort assignments, delivery readiness, completion and assessment evidence, effectiveness review, refresh decisions, and owner handoff. |
 | [Life timeline keeper](claws/life-timeline-keeper) | X3; Maintains an owner-reviewed timeline of important trips, moves, milestones, family events, achievements, and document or media pointers without posting publicly, identifying faces, making legal claims, or disclosing sensitive memories. |
 | [Local events watcher](claws/local-events-watcher) | X3; Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
 | [Localization program manager](claws/localization-program-manager) | X4; Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations. |
@@ -741,7 +771,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Wardrobe organizer](claws/wardrobe-organizer) | portable workspace artifacts only |
 | [Warranty and returns manager](claws/warranty-returns-manager) | portable workspace artifacts only |
 
-### Guarded attention (40)
+### Guarded attention (45)
 
 | Claw | Detail |
 | --- | --- |
@@ -750,7 +780,9 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Change control operator](claws/change-control-operator) | explicit tool policy |
 | [Civic data analyst](claws/civic-data-analyst) | pinned skill |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | explicit tool policy |
+| [Commercial Deal Desk Coordinator](claws/commercial-deal-desk-coordinator) | explicit tool policy |
 | [Compliance reviewer](claws/compliance-reviewer) | explicit tool policy |
+| [Customer success program manager](claws/customer-success-program-manager) | explicit tool policy |
 | [Customer support](claws/customer-support) | pinned skill; explicit tool policy |
 | [Data analyst](claws/data-analyst) | explicit tool policy |
 | [Data governance steward](claws/data-governance-steward) | explicit tool policy |
@@ -766,6 +798,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Grant portfolio manager](claws/grant-portfolio-manager) | guided local setup; explicit tool policy; persistent dashboard |
 | [Household steward](claws/household-steward) | explicit tool policy |
 | [Knowledge gardener](claws/knowledge-gardener) | explicit tool policy |
+| [Learning program manager](claws/learning-program-manager) | explicit tool policy |
 | [Localization program manager](claws/localization-program-manager) | explicit tool policy |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | guided local setup; explicit tool policy; persistent dashboard |
 | [Media evidence reviewer](claws/media-evidence-reviewer) | pinned skill |
@@ -782,15 +815,18 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Security analyst](claws/security-analyst) | explicit tool policy |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | explicit tool policy |
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | pinned skill |
+| [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | explicit tool policy |
 | [Travel planner](claws/travel-planner) | pinned skill |
 | [UX research synthesizer](claws/ux-research-synthesizer) | explicit tool policy |
 | [Work chief of staff](claws/work-chief-of-staff) | explicit tool policy |
+| [Workforce planning partner](claws/workforce-planning-partner) | explicit tool policy |
 
-### Heightened attention (15)
+### Heightened attention (16)
 
 | Claw | Detail |
 | --- | --- |
 | [API integration engineer](claws/api-integration-engineer) | full tool profile |
+| [Business Continuity Program Manager](claws/business-continuity-program-manager) | scheduled execution |
 | [Executive briefing](claws/executive-briefing) | scheduled execution |
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | scheduled execution |
 | [Incident response](claws/incident-response) | scheduled execution |

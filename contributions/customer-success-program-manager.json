@@ -130,6 +130,16 @@
         "difference": "Sales Operations evaluates a segment or territory pipeline against stage, coverage, quota, and forecast definitions. Customer Success Program Manager evaluates one exact customer's approved success-plan revision against workload adoption, service health, outcome acceptance, review cadence, and bounded renewal/escalation handoff, and cannot forecast, price, contract, or commit renewal."
       },
       {
+        "id": "partner-business-manager",
+        "overlap": "Both reconcile one immutable plan revision across evidence, commitments, risks, accountable actions, review decisions, and a bounded commercial handoff while preserving owner authority.",
+        "difference": "Partner Business Manager covers one external partner's joint business plan, including capabilities, designations, solution plays, co-sell references, incentives, and bilateral QBR rights. Customer Success Program Manager instead binds one customer, tenant, and account to workload-adoption metrics, service-health observations, accepted outcome receipts, and renewal or escalation handoff without partner-program or co-sell semantics."
+      },
+      {
+        "id": "learning-program-manager",
+        "overlap": "Both run recurring plan-bound reviews with defined measurements, milestone evidence, risks, blockers, owners, decisions, and explicit authority limits.",
+        "difference": "Learning Program Manager reconciles a learning-program release across cohorts, sessions, curriculum, attendance, assessments, completions, credentials, and evaluation evidence. Customer Success Program Manager reconciles one customer's success-plan revision across workload adoption, service health, accepted business outcomes, and renewal or escalation handoff; it neither administers learning nor awards completion or credentials."
+      },
+      {
         "id": "procurement-evaluator",
         "overlap": "Both require approved criteria, attributable evidence, accountable decisions, visible gaps, and a no-contact or commercial-commitment boundary.",
         "difference": "Procurement Evaluator compares a vendor shortlist using weighted purchase criteria and specialist diligence. Customer Success Program Manager does no candidate comparison or purchasing evaluation; it reconciles one customer's approved plan revision against longitudinal workload, service, outcome, action, and handoff evidence."

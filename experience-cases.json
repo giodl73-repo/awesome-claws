@@ -358,6 +358,30 @@
       "asset": "assets/partner-business-plan-review.html",
       "fallback": "outputs/partner-business-plan-review.md",
       "output": "outputs/partner-business-plan-review.html"
+    },
+    {
+      "id": "business-continuity-program-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/business-continuity-program.html",
+      "fallback": "outputs/business-continuity-program-manager-handoff.md",
+      "output": "outputs/business-continuity-program.html"
+    },
+    {
+      "id": "learning-program-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/learning-program-review.html",
+      "fallback": "outputs/learning-program-release.md",
+      "output": "outputs/learning-program-review.html"
+    },
+    {
+      "id": "customer-success-program-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/customer-success-review.html",
+      "fallback": "outputs/customer-success-review.md",
+      "output": "outputs/customer-success-review.html"
     }
   ]
 }

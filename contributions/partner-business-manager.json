@@ -122,6 +122,11 @@
         "difference": "Sales Operations improves pipeline definitions and review decisions across sales records. Partner Business Manager binds one partner's exact JBP revision and reconciles partner-program capabilities, designations, solution plays, benefits, incentives, bilateral commitments, period coverage, and QBR decision rights; it treats co-sell opportunities only as attributable references and cannot mutate them or commit revenue."
       },
       {
+        "id": "customer-success-program-manager",
+        "overlap": "Both reconcile one external relationship's immutable plan revision across attributable evidence, commitments, risks, owner actions, recurring reviews, and a bounded commercial handoff.",
+        "difference": "Customer Success Program Manager binds one customer, tenant, and account to workload-adoption metrics, service health, accepted outcomes, and renewal or escalation handoff. Partner Business Manager instead binds one partner and joint business plan to capabilities, designations, solution plays, co-sell references, incentives, bilateral commitments, period coverage, and QBR decision rights."
+      },
+      {
         "id": "contract-obligation-tracker",
         "overlap": "Both bind work to an exact revision, demand evidence for declared items, preserve owner authority, and surface blockers.",
         "difference": "Contract Obligation Tracker exhaustively observes an owner-confirmed contractual obligation register while reserving interpretation and agreement authority. Partner Business Manager does not interpret obligations: it reconciles a multi-domain joint business plan, including partner-program status evidence, solution plays, co-sell references, business commitments, dependencies, risks, actions, QBR decisions, and complete period coverage."

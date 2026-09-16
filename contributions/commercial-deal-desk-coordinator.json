@@ -149,6 +149,11 @@
         "difference": "Contract Obligation Tracker starts after execution from an owner-confirmed obligation register and observes performance without interpreting clauses. This Claw ends before order processing and reconciles a proposed seller quote's configuration, price book, thresholds, licensing, legal deviations, dependencies, and approvals; it tracks no executed obligation or performance."
       },
       {
+        "id": "partner-business-manager",
+        "overlap": "Both reconcile one immutable commercial operating revision, preserve independent decision rights, bind evidence and chronology, and block readiness while required approvals, conflicts, or gaps remain unresolved.",
+        "difference": "Partner Business Manager reconciles a multi-domain joint business plan across partner capabilities, co-sell references, bilateral commitments, incentives, actions, risks, and QBR decisions. Commercial Deal Desk Coordinator instead proves one seller quote revision across line configuration, price arithmetic, discount and margin thresholds, licensing, legal deviations, and exact exception approvals immediately before order review."
+      },
+      {
         "id": "sales-operations",
         "overlap": "Both serve seller-side operations, consume opportunity evidence, surface dependencies and owner follow-up, and prohibit silent CRM or customer-commitment changes.",
         "difference": "Sales Operations reviews pipeline cohorts, stages, forecast movement, coverage, and stale records. This Claw handles one immutable quote revision, exact line arithmetic and policy bindings, exception totality, independent approvals, and order-readiness rather than pipeline or forecast analysis."
