@@ -27,11 +27,13 @@ import {
   controlledChildEnv,
   digest,
   extractFinalAssistantResponse,
+  extractModelTransportDiagnostic,
   inferAssistantOutcome,
   inspectLiveConfig,
   preflightBudgets,
   redactFailureExcerpt,
   renderRuntimeEvidenceReport,
+  runOpenClawJson,
   runRuntimeEvidence,
   safeEvidence,
   sanitizeModelSettings,
@@ -262,6 +264,111 @@ test("process diagnostics preserve the final error within their bound", () => {
   assert.equal(diagnostic.length, 1000);
   assert.match(diagnostic, /^transport start/u);
   assert.match(diagnostic, /final provider error$/u);
+});
+
+test("model transport diagnostics retain only allowlisted stream facts", () => {
+  const diagnostic = extractModelTransportDiagnostic(`
+    [responses] start provider=github-copilot api=openai-responses model=gpt-5.6-sol apiKey=present
+    [model-fetch] start provider=github-copilot api=openai-responses model=gpt-5.6-sol method=POST url=https://example.invalid timeoutMs=30000
+    [model-fetch] response provider=github-copilot api=openai-responses model=gpt-5.6-sol status=200 elapsedMs=45 contentType=text/event-stream; charset=utf-8
+    [responses] first_event provider=github-copilot api=openai-responses model=gpt-5.6-sol elapsedMs=50 headersToEventMs=5 type=response.created
+    raw prompt and credential ghp_${"x".repeat(36)}
+    [responses] stream_done provider=github-copilot api=openai-responses model=gpt-5.6-sol elapsedMs=120 events=7 types=response.created:1,response.completed:1
+    [responses] completed provider=github-copilot api=openai-responses model=gpt-5.6-sol transport=sse elapsedMs=121
+  `);
+  assert.deepEqual(diagnostic, {
+    requestStarted: true,
+    responseStatus: 200,
+    responseContentType: "sse",
+    firstEventType: "response.created",
+    streamEventCount: 7,
+    streamCompleted: true,
+    fetchFailed: false,
+  });
+  assert.doesNotMatch(JSON.stringify(diagnostic), /raw prompt|ghp_/u);
+  assert.equal(extractModelTransportDiagnostic("ordinary lifecycle failure"), null);
+
+  const finalRequest = extractModelTransportDiagnostic(`
+    [responses] start provider=github-copilot
+    [model-fetch] start provider=github-copilot
+    [model-fetch] response status=200 contentType=text/event-stream
+    [responses] first_event type=response.created
+    [responses] stream_done events=7
+    [responses] completed
+    [responses] start provider=github-copilot
+    [model-fetch] start provider=github-copilot
+    [model-fetch] response status=503 contentType=application/json
+    [responses] first_event type=response.invalid/value
+    [model-fetch] error
+  `);
+  assert.deepEqual(finalRequest, {
+    requestStarted: true,
+    responseStatus: 503,
+    responseContentType: "json",
+    firstEventType: null,
+    streamEventCount: null,
+    streamCompleted: false,
+    fetchFailed: true,
+  });
+});
+
+test("model transport diagnostics survive timeout and output-limit failures", async () => {
+  await mkdir(join(root, ".tmp"), { recursive: true });
+  const proofRoot = await mkdtemp(join(root, ".tmp", "transport-failure-test-"));
+  try {
+    const fakeEntry = join(proofRoot, "openclaw.mjs");
+    await writeFile(
+      fakeEntry,
+      `process.stdout.write([
+        "[responses] start provider=github-copilot",
+        "[model-fetch] start provider=github-copilot",
+        "[model-fetch] response status=200 contentType=text/event-stream",
+        "[responses] first_event type=response.created",
+      ].join("\\n") + "\\n");
+      if (process.argv[2] === "timeout") {
+        setInterval(() => {}, 1000);
+      } else {
+        setTimeout(() => process.stdout.write("x".repeat(17 * 1024 * 1024)), 100);
+      }\n`,
+    );
+    const assertDiagnostic = (error, code) => {
+      assert.equal(error.code, code);
+      assert.deepEqual(error.transportDiagnostic, {
+        requestStarted: true,
+        responseStatus: 200,
+        responseContentType: "sse",
+        firstEventType: "response.created",
+        streamEventCount: null,
+        streamCompleted: false,
+        fetchFailed: false,
+      });
+      return true;
+    };
+    await assert.rejects(
+      runOpenClawJson(
+        fakeEntry,
+        ["timeout"],
+        process.env,
+        proofRoot,
+        5_000,
+        "synthetic transport",
+      ),
+      (error) => assertDiagnostic(error, "infrastructure-timeout"),
+    );
+    await assert.rejects(
+      runOpenClawJson(
+        fakeEntry,
+        ["output-limit"],
+        process.env,
+        proofRoot,
+        10_000,
+        "synthetic transport",
+      ),
+      (error) => assertDiagnostic(error, "openclaw-output-limit"),
+    );
+  } finally {
+    await rm(proofRoot, { recursive: true, force: true });
+  }
 });
 
 test("credential-shaped excerpts are redacted without treating digests as secrets", () => {
@@ -1052,6 +1159,15 @@ test("deterministic model failures do not retry", async () => {
 
 test("harness and cleanup-unsafe infrastructure stay distinct", async () => {
   const noCapability = await oneClawManifest("sales-operations");
+  const transportDiagnostic = {
+    requestStarted: true,
+    responseStatus: 200,
+    responseContentType: "sse",
+    firstEventType: "response.created",
+    streamEventCount: 1,
+    streamCompleted: false,
+    fetchFailed: false,
+  };
   const harnessRun = await runRuntimeEvidence({
     ...noCapability,
     outputRoot: null,
@@ -1059,6 +1175,7 @@ test("harness and cleanup-unsafe infrastructure stay distinct", async () => {
     attemptRunner: async () => {
       throw Object.assign(new Error("synthetic harness defect"), {
         code: "synthetic-harness",
+        transportDiagnostic,
       });
     },
   });
@@ -1066,6 +1183,8 @@ test("harness and cleanup-unsafe infrastructure stay distinct", async () => {
     harnessRun.results.map((result) => result.classification),
     ["harness-failure", "skipped-claw-halted", "skipped-claw-halted"],
   );
+  assert.deepEqual(harnessRun.results[0].failure.transportDiagnostic, transportDiagnostic);
+  await validateTrialResult(harnessRun.results[0], noCapability.manifest);
 
   const infrastructureRun = await runRuntimeEvidence({
     ...noCapability,
@@ -2150,6 +2269,9 @@ test("controlled child environment strips inherited OpenClaw state and isolates 
   assert.equal(env.UNRELATED_SECRET, undefined);
   assert.equal(env.APPDATA, join(attemptRoot, "appdata", "roaming"));
   assert.equal(env.OPENCLAW_STATE_DIR, join(attemptRoot, "state"));
+  assert.equal(env.OPENCLAW_DEBUG_MODEL_TRANSPORT, "1");
+  assert.equal(env.OPENCLAW_DEBUG_MODEL_PAYLOAD, "off");
+  assert.equal(env.OPENCLAW_DEBUG_SSE, "events");
   assert.deepEqual(
     [...sensitiveValues].sort(),
     ["SOAK_SECRET_TEST_ONLY", "provider-secret"].sort(),

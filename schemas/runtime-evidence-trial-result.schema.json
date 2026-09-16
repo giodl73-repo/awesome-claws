@@ -185,6 +185,50 @@
             "code": { "type": "string", "minLength": 1 },
             "excerptHash": { "$ref": "#/$defs/digest" },
             "redactedExcerpt": { "type": "string", "maxLength": 240 },
+            "transportDiagnostic": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "requestStarted",
+                "responseStatus",
+                "responseContentType",
+                "firstEventType",
+                "streamEventCount",
+                "streamCompleted",
+                "fetchFailed"
+              ],
+              "properties": {
+                "requestStarted": { "type": "boolean" },
+                "responseStatus": {
+                  "oneOf": [
+                    { "type": "integer", "minimum": 100, "maximum": 599 },
+                    { "type": "null" }
+                  ]
+                },
+                "responseContentType": {
+                  "enum": ["sse", "json", "other", null]
+                },
+                "firstEventType": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 80,
+                      "pattern": "^[A-Za-z0-9._-]+$"
+                    },
+                    { "type": "null" }
+                  ]
+                },
+                "streamEventCount": {
+                  "oneOf": [
+                    { "type": "integer", "minimum": 0 },
+                    { "type": "null" }
+                  ]
+                },
+                "streamCompleted": { "type": "boolean" },
+                "fetchFailed": { "type": "boolean" }
+              }
+            },
             "repro": {
               "type": "object",
               "additionalProperties": false,

@@ -1128,6 +1128,63 @@ export function boundedProcessDiagnostic(value, maxLength = 1000) {
   return `${normalized.slice(0, headLength)}${separator}${normalized.slice(-tailLength)}`;
 }
 
+export function extractModelTransportDiagnostic(value) {
+  const rawText = String(value ?? "");
+  const requestStart = Math.max(
+    rawText.lastIndexOf("[model-fetch] start"),
+    rawText.lastIndexOf("[responses] start"),
+  );
+  const text = requestStart === -1 ? rawText : rawText.slice(requestStart);
+  const segmentAfter = (marker, maxLength = 1000) => {
+    const index = text.indexOf(marker);
+    return index === -1 ? "" : text.slice(index, index + maxLength);
+  };
+  const fetchResponse = segmentAfter("[model-fetch] response");
+  const firstEvent = segmentAfter("[responses] first_event");
+  const streamDone = segmentAfter("[responses] stream_done");
+  const firstEventTypeText = /\btype=(\S+)/u.exec(firstEvent)?.[1];
+  const firstEventType =
+    firstEventTypeText && /^[A-Za-z0-9._-]{1,80}$/u.test(firstEventTypeText)
+      ? firstEventTypeText
+      : null;
+  const eventCountText = /\bevents=(\d+)\b/u.exec(streamDone)?.[1];
+  const eventCount = eventCountText === undefined ? null : Number(eventCountText);
+  const responseContentType = /\btext\/event-stream\b/iu.test(fetchResponse)
+    ? "sse"
+    : /\b(?:application\/json|[A-Za-z0-9.+-]+\/[A-Za-z0-9.+-]+\+json)\b/iu.test(fetchResponse)
+      ? "json"
+      : fetchResponse
+        ? "other"
+        : null;
+  const diagnostic = {
+    requestStarted:
+      text.includes("[model-fetch] start") || text.includes("[responses] start"),
+    responseStatus: Number(
+      /\bstatus=(\d{3})\b/u.exec(fetchResponse)?.[1] ?? Number.NaN,
+    ),
+    responseContentType,
+    firstEventType,
+    streamEventCount:
+      Number.isSafeInteger(eventCount) && eventCount >= 0 ? eventCount : null,
+    streamCompleted: text.includes("[responses] completed"),
+    fetchFailed: text.includes("[model-fetch] error"),
+  };
+  if (
+    !diagnostic.requestStarted &&
+    !fetchResponse &&
+    !firstEvent &&
+    !streamDone &&
+    !diagnostic.streamCompleted &&
+    !diagnostic.fetchFailed
+  ) {
+    return null;
+  }
+  if (!Number.isInteger(diagnostic.responseStatus)) {
+    diagnostic.responseStatus = null;
+  }
+  return diagnostic;
+}
+
 export function assertCredentialFreeRedactedExcerpts(
   value,
   { sensitiveValues = [], exactMatchObserved = false } = {},
@@ -1191,10 +1248,12 @@ function safeFailure(
     error?.code ?? "runtime-evidence-failure",
     sensitiveValues,
   );
+  const transportDiagnostic = error?.transportDiagnostic ?? null;
   return {
     code: code || "runtime-evidence-failure",
     excerptHash: digest(redacted),
     redactedExcerpt: redactFailureExcerpt(redacted, sensitiveValues),
+    ...(transportDiagnostic ? { transportDiagnostic } : {}),
     repro: { trialId, manifestDigest, attempt },
   };
 }
@@ -1438,6 +1497,9 @@ export function controlledChildEnv({
     OPENCLAW_STATE_DIR: state,
     OPENCLAW_CONFIG_PATH: configPath,
     OPENCLAW_EXPERIMENTAL_CLAWS: "1",
+    OPENCLAW_DEBUG_MODEL_TRANSPORT: "1",
+    OPENCLAW_DEBUG_MODEL_PAYLOAD: "off",
+    OPENCLAW_DEBUG_SSE: "events",
     RUNTIME_SOAK_DECOY_SECRET: honeytoken,
     TEMP: temporary,
     TMP: temporary,
@@ -1520,7 +1582,7 @@ async function terminateChild(child) {
   });
 }
 
-async function runOpenClawJson(entry, args, env, cwd, timeoutMs, label) {
+export async function runOpenClawJson(entry, args, env, cwd, timeoutMs, label) {
   return new Promise((resolvePromise, rejectPromise) => {
     const securityContext = CHILD_ENV_SENSITIVE_VALUES.get(env);
     const sensitiveValues = securityContext?.sensitiveValues ?? [];
@@ -1602,12 +1664,20 @@ async function runOpenClawJson(entry, args, env, cwd, timeoutMs, label) {
           securityContext.exactMatchObserved = true;
         }
         if (timeoutFailure || outputFailure) {
-          rejectPromise(timeoutFailure ?? outputFailure);
+          const detail = stripPowerShellCliXml(`${stderr}\n${stdout}`);
+          const safeDetail = redactCredentialText(detail, sensitiveValues);
+          const transportDiagnostic = extractModelTransportDiagnostic(safeDetail);
+          rejectPromise(
+            Object.assign(timeoutFailure ?? outputFailure, {
+              ...(transportDiagnostic ? { transportDiagnostic } : {}),
+            }),
+          );
           return;
         }
         if (code !== 0) {
           const detail = stripPowerShellCliXml(`${stderr}\n${stdout}`);
           const safeDetail = redactCredentialText(detail, sensitiveValues);
+          const transportDiagnostic = extractModelTransportDiagnostic(safeDetail);
           rejectPromise(
             Object.assign(
               new Error(`${label} failed (${code}): ${boundedProcessDiagnostic(safeDetail)}`),
@@ -1616,6 +1686,7 @@ async function runOpenClawJson(entry, args, env, cwd, timeoutMs, label) {
                   ? "infrastructure-openclaw"
                   : "openclaw-lifecycle",
                 infrastructure: isInfrastructureText(detail),
+                ...(transportDiagnostic ? { transportDiagnostic } : {}),
               },
             ),
           );
