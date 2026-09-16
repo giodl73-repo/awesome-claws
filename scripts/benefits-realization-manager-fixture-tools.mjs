@@ -20,9 +20,14 @@ function subjectEntries(value) {
 
 export function resealInternalFixture(input) {
   const value = structuredClone(input);
-  for (const [, record] of subjectEntries(value)) {
+  const entries = subjectEntries(value);
+  for (const [subjectType, record] of entries) {
+    if (subjectType === "predecessor-ledger") continue;
     record.recordDigest = computeInternalRecordDigest(record);
   }
+  value.predecessor.recordDigest = computeInternalRecordDigest(
+    value.predecessor,
+  );
   const subjects = new Map(
     subjectEntries(value).map(([subjectType, record]) => [
       `${subjectType}:${record.id}`,

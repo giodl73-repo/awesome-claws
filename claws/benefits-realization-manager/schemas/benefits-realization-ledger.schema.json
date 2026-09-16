@@ -250,7 +250,7 @@
     },
     "principals": {
       "type": "array",
-      "minItems": 5,
+      "minItems": 3,
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -403,8 +403,8 @@
     },
     "benefits": {
       "type": "array",
-      "minItems": 4,
-      "maxItems": 4,
+      "minItems": 1,
+      "maxItems": 16,
       "allOf": [
         {
           "contains": {
@@ -418,23 +418,7 @@
               "kind"
             ]
           },
-          "minContains": 3,
-          "maxContains": 3
-        },
-        {
-          "contains": {
-            "type": "object",
-            "properties": {
-              "kind": {
-                "const": "disbenefit"
-              }
-            },
-            "required": [
-              "kind"
-            ]
-          },
-          "minContains": 1,
-          "maxContains": 1
+          "minContains": 1
         }
       ],
       "items": {
@@ -632,8 +616,8 @@
           },
           "allocations": {
             "type": "array",
-            "minItems": 3,
-            "maxItems": 3,
+            "minItems": 1,
+            "maxItems": 16,
             "items": {
               "type": "object",
               "additionalProperties": false,
@@ -682,8 +666,8 @@
     },
     "attributions": {
       "type": "array",
-      "minItems": 3,
-      "maxItems": 3,
+      "minItems": 1,
+      "maxItems": 16,
       "items": {
         "type": "object",
         "additionalProperties": false,

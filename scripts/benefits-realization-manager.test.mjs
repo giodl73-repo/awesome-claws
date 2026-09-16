@@ -12,6 +12,7 @@ import {
   allocateMinorUnits,
   BENEFITS_REALIZATION_LIMITS,
   benefitsRealizationFindings,
+  benefitsRealizationSchemaFindings,
   BENEFITS_REALIZATION_EXAMPLE_VALIDATION_OPTIONS,
   sourceAuthoritySigningPayload,
   evaluateBenefitsRealizationSlice,
@@ -651,14 +652,49 @@ test("evidence cardinality and input/source byte limits fail structurally withou
   );
 });
 
-test("cardinality conditionals reject four benefits and no disbenefit without throwing", () => {
+test("variable benefit universes support two benefits and no disbenefit", () => {
   const value = structuredClone(fixture);
-  value.benefits[3].kind = "benefit";
-  assert.doesNotThrow(() => evaluate(value));
-  const result = evaluate(value);
-  assert.equal(result.status, "invalid-schema");
-  assert.ok(
-    result.schemaFindings.some((item) => item.keyword === "contains"),
+  const removedIds = new Set([
+    "benefit-knowledge-reuse",
+    "disbenefit-transition-rework",
+    "attribution-knowledge-reuse",
+  ]);
+  value.benefits = value.benefits.filter(
+    (record) => !removedIds.has(record.id),
+  );
+  value.attributions = value.attributions.filter(
+    (record) => !removedIds.has(record.id),
+  );
+  value.allocationRules[0].allocations =
+    value.allocationRules[0].allocations.filter(
+      (record) => record.benefitRef !== "benefit-knowledge-reuse",
+    );
+  value.allocationRules[0].allocations[0].basisPoints += 2000;
+  const retiredTransition = value.predecessor.transitions.find(
+    (record) =>
+      record.currentBenefitRef === "disbenefit-transition-rework",
+  );
+  retiredTransition.currentBenefitRef = null;
+  retiredTransition.disposition = "retired";
+  value.evidence = value.evidence.filter(
+    (record) => !removedIds.has(record.subjectRef),
+  );
+  const reduced = resignAdversarial(value);
+  assert.deepEqual(benefitsRealizationSchemaFindings(reduced.value), []);
+  const result = evaluateBenefitsRealizationSlice(
+    reduced.value,
+    reduced.options,
+  );
+  assert.equal(
+    result.status,
+    "ready-for-owner-review",
+    JSON.stringify(result.contractFindings),
+  );
+  assert.equal(result.benefitResults.length, 2);
+  assert.equal(result.finance.disbenefitMinor, 0);
+  assert.equal(
+    result.finance.netRealizedMinor,
+    result.finance.grossBenefitMinor,
   );
 });
 

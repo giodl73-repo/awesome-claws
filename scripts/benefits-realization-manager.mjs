@@ -886,22 +886,21 @@ export function evaluateBenefitsRealizationSlice(input, options = {}) {
   }
 
   if (
-    positiveBenefits.length !== 3 ||
-    disbenefits.length !== 1 ||
-    attributions.length !== 3
+    positiveBenefits.length === 0 ||
+    attributions.length !== positiveBenefits.length
   ) {
     findings.push(
       finding(
         "invalid-falsification-scope",
         "$",
-        "This slice requires exactly three benefits, one disbenefit, one shared KPI, one allocation rule, and three attributions.",
+        "The ledger requires at least one benefit, optional disbenefits, one shared KPI, one allocation rule, and exactly one attribution per benefit.",
       ),
     );
   }
 
   const benefitOwnerRefs = positiveBenefits.map((record) => record.ownerRef);
   if (
-    new Set(benefitOwnerRefs).size !== 3 ||
+    new Set(benefitOwnerRefs).size !== benefitOwnerRefs.length ||
     benefitOwnerRefs.some(
       (ownerRef) => principalById.get(ownerRef)?.role !== "benefit-owner",
     )
@@ -910,7 +909,7 @@ export function evaluateBenefitsRealizationSlice(input, options = {}) {
       finding(
         "benefits-not-separately-owned",
         "benefits",
-        "The candidate claims separately owned benefits, so each of the three benefits must have a different typed benefit owner.",
+        "The candidate claims separately owned benefits, so each benefit must have a different typed benefit owner.",
       ),
     );
   }
@@ -1392,10 +1391,13 @@ export function evaluateBenefitsRealizationSlice(input, options = {}) {
   const allAttributionsSupported = attributions.every(
     (record) => record.status === "supported",
   );
-  const disbenefit = disbenefits[0];
-  const disbenefitMinorBigInt =
-    BigInt(disbenefit.directMeasure.observedMinor) -
-    BigInt(disbenefit.directMeasure.baselineMinor);
+  const disbenefitMinorBigInt = disbenefits.reduce(
+    (total, disbenefit) =>
+      total +
+      BigInt(disbenefit.directMeasure.observedMinor) -
+      BigInt(disbenefit.directMeasure.baselineMinor),
+    0n,
+  );
   const disbenefitMinor = supportedNumber(disbenefitMinorBigInt);
   const latestAttribution = latestTimestamp(
     attributions,
@@ -1479,15 +1481,18 @@ export function evaluateBenefitsRealizationSlice(input, options = {}) {
 
   if (
     financeReview.reviewedAt !== null &&
-    (time(disbenefit.directMeasure.observedAt) >=
-      time(financeReview.reviewedAt) ||
+    (disbenefits.some(
+      (disbenefit) =>
+        time(disbenefit.directMeasure.observedAt) >=
+        time(financeReview.reviewedAt),
+    ) ||
       time(value.sourceAuthority.issuedAt) < time(financeReview.reviewedAt))
   ) {
     findings.push(
       finding(
         "invalid-close-chronology",
         "financeReview.reviewedAt",
-        "The disbenefit observation must predate finance close, and the signed manifest must be issued at or after that close.",
+        "Every disbenefit observation must predate finance close, and the signed manifest must be issued at or after that close.",
       ),
     );
   }
@@ -1593,7 +1598,9 @@ export function evaluateBenefitsRealizationSlice(input, options = {}) {
           targetDeltaMinor:
             benefit.directMeasure.targetMinor -
             benefit.directMeasure.baselineMinor,
-          recognizedDeltaMinor: disbenefitMinor,
+          recognizedDeltaMinor:
+            benefit.directMeasure.observedMinor -
+            benefit.directMeasure.baselineMinor,
           attributionState: "direct-observation",
         };
       }
