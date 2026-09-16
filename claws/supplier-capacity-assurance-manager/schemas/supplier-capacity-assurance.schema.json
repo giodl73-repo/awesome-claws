@@ -1,0 +1,500 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/supplier-capacity-assurance.schema.json",
+  "title": "Supplier capacity assurance",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "asOf",
+    "plan",
+    "principals",
+    "suppliers",
+    "sites",
+    "parts",
+    "timeBuckets",
+    "demand",
+    "commits",
+    "capacity",
+    "inventorySnapshots",
+    "qualityDispositions",
+    "shipments",
+    "receipts",
+    "logisticsConstraints",
+    "allocationPolicies",
+    "evidence",
+    "supplyPositions",
+    "reconciliations",
+    "allocationProposals",
+    "recoveryActions",
+    "reviewCheckpoints",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.supplierCapacityAssurance.v1"
+    },
+    "asOf": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "status",
+        "approvedAt",
+        "ownerRef",
+        "horizonStart",
+        "horizonEnd",
+        "inventoryMaxAgeDays",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "revision": { "$ref": "#/$defs/nonEmpty" },
+        "status": { "const": "approved" },
+        "approvedAt": { "type": "string", "format": "date-time" },
+        "ownerRef": { "$ref": "#/$defs/id" },
+        "horizonStart": { "type": "string", "format": "date" },
+        "horizonEnd": { "type": "string", "format": "date" },
+        "inventoryMaxAgeDays": { "type": "integer", "minimum": 1, "maximum": 31 },
+        "evidenceRef": { "$ref": "#/$defs/id" }
+      }
+    },
+    "principals": { "$ref": "#/$defs/principals" },
+    "suppliers": { "$ref": "#/$defs/namedEntities" },
+    "sites": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "supplierRef", "name", "qualifiedPartRefs"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "supplierRef": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/nonEmpty" },
+          "qualifiedPartRefs": { "$ref": "#/$defs/idList" }
+        }
+      }
+    },
+    "parts": { "$ref": "#/$defs/namedEntities" },
+    "timeBuckets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "start", "end"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "start": { "type": "string", "format": "date" },
+          "end": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "demand": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "planRef", "planRevision", "partRef", "bucketRef", "bucketDigest", "quantity", "priority", "evidenceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "planRef": { "$ref": "#/$defs/id" },
+          "planRevision": { "$ref": "#/$defs/nonEmpty" },
+          "partRef": { "$ref": "#/$defs/id" },
+          "bucketRef": { "$ref": "#/$defs/id" },
+          "bucketDigest": { "$ref": "#/$defs/digest" },
+          "quantity": { "$ref": "#/$defs/quantity" },
+          "priority": { "type": "integer", "minimum": 1 },
+          "evidenceRef": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "commits": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "revision", "supplierRef", "siteRef", "partRef", "bucketRef", "bucketDigest", "quantity", "committedAt", "evidenceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "revision": { "$ref": "#/$defs/nonEmpty" },
+          "supplierRef": { "$ref": "#/$defs/id" },
+          "siteRef": { "$ref": "#/$defs/id" },
+          "partRef": { "$ref": "#/$defs/id" },
+          "bucketRef": { "$ref": "#/$defs/id" },
+          "bucketDigest": { "$ref": "#/$defs/digest" },
+          "quantity": { "$ref": "#/$defs/quantity" },
+          "committedAt": { "type": "string", "format": "date-time" },
+          "evidenceRef": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "capacity": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "supplierRef", "siteRef", "partRef", "bucketRef", "bucketDigest", "quantity", "yieldRate", "qualified", "validThrough", "evidenceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "supplierRef": { "$ref": "#/$defs/id" },
+          "siteRef": { "$ref": "#/$defs/id" },
+          "partRef": { "$ref": "#/$defs/id" },
+          "bucketRef": { "$ref": "#/$defs/id" },
+          "bucketDigest": { "$ref": "#/$defs/digest" },
+          "quantity": { "$ref": "#/$defs/quantity" },
+          "yieldRate": { "type": "number", "minimum": 0, "maximum": 1 },
+          "qualified": { "type": "boolean" },
+          "validThrough": { "type": "string", "format": "date" },
+          "evidenceRef": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "inventorySnapshots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "supplierRef", "siteRef", "partRef", "bucketRef", "bucketDigest", "asOf", "transactionCutoffAt", "quantity", "status", "qualityDispositionRef", "evidenceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "supplierRef": { "$ref": "#/$defs/id" },
+          "siteRef": { "$ref": "#/$defs/id" },
+          "partRef": { "$ref": "#/$defs/id" },
+          "bucketRef": { "$ref": "#/$defs/id" },
+          "bucketDigest": { "$ref": "#/$defs/digest" },
+          "asOf": { "type": "string", "format": "date-time" },
+          "transactionCutoffAt": { "type": "string", "format": "date-time" },
+          "quantity": { "$ref": "#/$defs/quantity" },
+          "status": { "enum": ["usable", "held", "rejected"] },
+          "qualityDispositionRef": { "$ref": "#/$defs/id" },
+          "evidenceRef": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "qualityDispositions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "supplierRef", "siteRef", "partRef", "status", "heldQuantity", "decidedByRef", "decidedAt", "evidenceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "supplierRef": { "$ref": "#/$defs/id" },
+          "siteRef": { "$ref": "#/$defs/id" },
+          "partRef": { "$ref": "#/$defs/id" },
+          "status": { "enum": ["released", "partial-hold", "held", "rejected"] },
+          "heldQuantity": { "$ref": "#/$defs/quantity" },
+          "decidedByRef": { "$ref": "#/$defs/id" },
+          "decidedAt": { "type": "string", "format": "date-time" },
+          "evidenceRef": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "shipments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "supplierRef", "siteRef", "partRef", "bucketRef", "bucketDigest", "quantity", "status", "departedAt", "eta", "deliveredAt", "receiptRef", "evidenceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "supplierRef": { "$ref": "#/$defs/id" },
+          "siteRef": { "$ref": "#/$defs/id" },
+          "partRef": { "$ref": "#/$defs/id" },
+          "bucketRef": { "$ref": "#/$defs/id" },
+          "bucketDigest": { "$ref": "#/$defs/digest" },
+          "quantity": { "$ref": "#/$defs/quantity" },
+          "status": { "enum": ["planned", "in-transit", "delivered", "cancelled"] },
+          "departedAt": { "type": ["string", "null"], "format": "date-time" },
+          "eta": { "type": "string", "format": "date-time" },
+          "deliveredAt": { "type": ["string", "null"], "format": "date-time" },
+          "receiptRef": { "type": ["string", "null"], "pattern": "^[a-z][a-z0-9-]*$" },
+          "evidenceRef": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "receipts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "shipmentRef", "supplierRef", "siteRef", "partRef", "bucketRef", "bucketDigest", "receivedAt", "quantity", "status", "evidenceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "shipmentRef": { "$ref": "#/$defs/id" },
+          "supplierRef": { "$ref": "#/$defs/id" },
+          "siteRef": { "$ref": "#/$defs/id" },
+          "partRef": { "$ref": "#/$defs/id" },
+          "bucketRef": { "$ref": "#/$defs/id" },
+          "bucketDigest": { "$ref": "#/$defs/digest" },
+          "receivedAt": { "type": "string", "format": "date-time" },
+          "quantity": { "$ref": "#/$defs/quantity" },
+          "status": { "enum": ["accepted", "held", "rejected"] },
+          "evidenceRef": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "logisticsConstraints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "supplierRef", "siteRef", "partRef", "bucketRef", "bucketDigest", "leadTimeDays", "maxReceivableQuantity", "status", "ownerRef", "evidenceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "supplierRef": { "$ref": "#/$defs/id" },
+          "siteRef": { "$ref": "#/$defs/id" },
+          "partRef": { "$ref": "#/$defs/id" },
+          "bucketRef": { "$ref": "#/$defs/id" },
+          "bucketDigest": { "$ref": "#/$defs/digest" },
+          "leadTimeDays": { "type": "integer", "minimum": 0 },
+          "maxReceivableQuantity": { "$ref": "#/$defs/quantity" },
+          "status": { "enum": ["clear", "constrained", "blocked"] },
+          "ownerRef": { "$ref": "#/$defs/id" },
+          "evidenceRef": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "allocationPolicies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "revision", "planRef", "planRevision", "partRef", "bucketRef", "bucketDigest", "rule", "allowPartial", "effectiveAt", "ownerRef", "evidenceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "revision": { "$ref": "#/$defs/nonEmpty" },
+          "planRef": { "$ref": "#/$defs/id" },
+          "planRevision": { "$ref": "#/$defs/nonEmpty" },
+          "partRef": { "$ref": "#/$defs/id" },
+          "bucketRef": { "$ref": "#/$defs/id" },
+          "bucketDigest": { "$ref": "#/$defs/digest" },
+          "rule": { "const": "priority-ascending" },
+          "allowPartial": { "type": "boolean" },
+          "effectiveAt": { "type": "string", "format": "date-time" },
+          "ownerRef": { "$ref": "#/$defs/id" },
+          "evidenceRef": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "subjectType", "subjectRef", "sourceRef", "observedAt", "payloadDigest", "summary"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "subjectType": {
+            "enum": ["plan", "demand", "commit", "capacity", "inventory", "quality-disposition", "shipment", "receipt", "logistics-constraint", "allocation-policy", "recovery-action"]
+          },
+          "subjectRef": { "$ref": "#/$defs/id" },
+          "sourceRef": { "type": "string", "pattern": "^controlled://[^?#\\s]+\\?sha256=[a-f0-9]{64}$" },
+          "observedAt": { "type": "string", "format": "date-time" },
+          "payloadDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+          "summary": { "$ref": "#/$defs/nonEmpty" }
+        }
+      }
+    },
+    "supplyPositions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "supplierRef", "siteRef", "partRef", "bucketRef", "bucketDigest", "commitRef", "capacityRef", "inventorySnapshotRef", "shipmentRefs", "logisticsConstraintRef", "eligibleCommitQuantity", "eligibleInventoryQuantity", "eligibleReceiptQuantity", "eligibleSupplyQuantity"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "supplierRef": { "$ref": "#/$defs/id" },
+          "siteRef": { "$ref": "#/$defs/id" },
+          "partRef": { "$ref": "#/$defs/id" },
+          "bucketRef": { "$ref": "#/$defs/id" },
+          "bucketDigest": { "$ref": "#/$defs/digest" },
+          "commitRef": { "$ref": "#/$defs/id" },
+          "capacityRef": { "$ref": "#/$defs/id" },
+          "inventorySnapshotRef": { "$ref": "#/$defs/id" },
+          "shipmentRefs": { "$ref": "#/$defs/idList" },
+          "logisticsConstraintRef": { "$ref": "#/$defs/id" },
+          "eligibleCommitQuantity": { "$ref": "#/$defs/quantity" },
+          "eligibleInventoryQuantity": { "$ref": "#/$defs/quantity" },
+          "eligibleReceiptQuantity": { "$ref": "#/$defs/quantity" },
+          "eligibleSupplyQuantity": { "$ref": "#/$defs/quantity" }
+        }
+      }
+    },
+    "reconciliations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "planRef", "planRevision", "partRef", "bucketRef", "bucketDigest", "demandRefs", "supplyPositionRefs", "approvedDemandQuantity", "eligibleSupplyQuantity", "allocatedQuantity", "shortageQuantity", "explanation"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "planRef": { "$ref": "#/$defs/id" },
+          "planRevision": { "$ref": "#/$defs/nonEmpty" },
+          "partRef": { "$ref": "#/$defs/id" },
+          "bucketRef": { "$ref": "#/$defs/id" },
+          "bucketDigest": { "$ref": "#/$defs/digest" },
+          "demandRefs": { "$ref": "#/$defs/idList" },
+          "supplyPositionRefs": { "$ref": "#/$defs/idList" },
+          "approvedDemandQuantity": { "$ref": "#/$defs/quantity" },
+          "eligibleSupplyQuantity": { "$ref": "#/$defs/quantity" },
+          "allocatedQuantity": { "$ref": "#/$defs/quantity" },
+          "shortageQuantity": { "$ref": "#/$defs/quantity" },
+          "explanation": { "$ref": "#/$defs/nonEmpty" }
+        }
+      }
+    },
+    "allocationProposals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reconciliationRef", "state", "policyRef", "allocations", "approvedByRef", "approvedAt"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "reconciliationRef": { "$ref": "#/$defs/id" },
+          "state": { "const": "proposed" },
+          "policyRef": { "$ref": "#/$defs/id" },
+          "allocations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["demandRef", "allocatedQuantity", "shortageQuantity", "rationale"],
+              "properties": {
+                "demandRef": { "$ref": "#/$defs/id" },
+                "allocatedQuantity": { "$ref": "#/$defs/quantity" },
+                "shortageQuantity": { "$ref": "#/$defs/quantity" },
+                "rationale": { "$ref": "#/$defs/nonEmpty" }
+              }
+            }
+          },
+          "approvedByRef": { "type": "null" },
+          "approvedAt": { "type": "null" }
+        }
+      }
+    },
+    "recoveryActions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reconciliationRef", "kind", "state", "description", "ownerRef", "dueAt", "checkpointRef", "evidenceRefs"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "reconciliationRef": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["supplier-capacity-review", "alternate-logistics-review", "inventory-revalidation", "quality-disposition-request", "expedite-review"] },
+          "state": { "enum": ["proposed", "blocked", "in-review"] },
+          "description": { "$ref": "#/$defs/nonEmpty" },
+          "ownerRef": { "$ref": "#/$defs/id" },
+          "dueAt": { "type": "string", "format": "date-time" },
+          "checkpointRef": { "$ref": "#/$defs/id" },
+          "evidenceRefs": { "$ref": "#/$defs/idList" }
+        }
+      }
+    },
+    "reviewCheckpoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "scheduledAt", "state", "ownerRef", "actionRefs", "decisionNeeded"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "scheduledAt": { "type": "string", "format": "date-time" },
+          "state": { "enum": ["pending", "in-review", "blocked"] },
+          "ownerRef": { "$ref": "#/$defs/id" },
+          "actionRefs": { "$ref": "#/$defs/idList" },
+          "decisionNeeded": { "$ref": "#/$defs/nonEmpty" }
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "ownerRef", "reconciliationRefs", "allocationProposalRefs", "unresolvedActionRefs", "reviewCheckpointRefs", "summary", "prohibitedActions"],
+      "properties": {
+        "state": { "enum": ["blocked", "ready-for-owner-review"] },
+        "ownerRef": { "$ref": "#/$defs/id" },
+        "reconciliationRefs": { "$ref": "#/$defs/idList" },
+        "allocationProposalRefs": { "$ref": "#/$defs/idList" },
+        "unresolvedActionRefs": { "$ref": "#/$defs/idList" },
+        "reviewCheckpointRefs": { "$ref": "#/$defs/idList" },
+        "summary": { "$ref": "#/$defs/nonEmpty" },
+        "prohibitedActions": { "$ref": "#/$defs/idList" }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "nonEmpty": {
+      "type": "string",
+      "minLength": 1
+    },
+    "quantity": {
+      "type": "number",
+      "minimum": 0
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "idList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/id" },
+      "uniqueItems": true
+    },
+    "namedEntities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/nonEmpty" }
+        }
+      }
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "role"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/nonEmpty" },
+          "role": { "$ref": "#/$defs/nonEmpty" }
+        }
+      }
+    }
+  }
+}

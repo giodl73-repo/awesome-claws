@@ -110,6 +110,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "spreadsheet-analyst": "spreadsheet-change.schema.json",
   "stock-portfolio-monitor": "stock-portfolio.schema.json",
   "subscription-manager": "subscription-ledger.schema.json",
+  "supplier-capacity-assurance-manager": "supplier-capacity-assurance.schema.json",
   "tax-document-organizer": "tax-document.schema.json",
   "travel-concierge": "travel-shortlist.schema.json",
   "travel-planner": "itinerary-plan.schema.json",

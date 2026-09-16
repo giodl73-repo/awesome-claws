@@ -184,6 +184,14 @@
       "output": "outputs/facilities-queue.html"
     },
     {
+      "id": "supplier-capacity-assurance-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/supplier-capacity-assurance.html",
+      "fallback": "outputs/supplier-capacity-review.md",
+      "output": "outputs/supplier-capacity-assurance.html"
+    },
+    {
       "id": "ux-research-synthesizer",
       "target": 4,
       "primary": "inline-widget",

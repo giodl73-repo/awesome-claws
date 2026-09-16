@@ -1,0 +1,427 @@
+{
+  "schemaVersion": "awesomeClaws.supplierCapacityAssurance.v1",
+  "asOf": "2026-09-14T18:00:00Z",
+  "plan": {
+    "id": "demand-plan-controller-c17",
+    "revision": "DP-2026-W38-R4",
+    "status": "approved",
+    "approvedAt": "2026-09-14T12:00:00Z",
+    "ownerRef": "owner-plan",
+    "horizonStart": "2026-09-14",
+    "horizonEnd": "2026-09-20",
+    "inventoryMaxAgeDays": 7,
+    "evidenceRef": "evidence-plan-r4"
+  },
+  "principals": [
+    { "id": "owner-plan", "name": "Dana Ortiz", "role": "Demand plan owner" },
+    { "id": "owner-supply", "name": "Morgan Lee", "role": "Supply assurance owner" },
+    { "id": "owner-quality", "name": "Priya Shah", "role": "Supplier quality owner" },
+    { "id": "owner-logistics", "name": "Chris Nolan", "role": "Inbound logistics owner" }
+  ],
+  "suppliers": [
+    { "id": "supplier-alpha", "name": "Alpha Components" },
+    { "id": "supplier-beta", "name": "Beta Controls" }
+  ],
+  "sites": [
+    {
+      "id": "site-alpha-austin",
+      "supplierRef": "supplier-alpha",
+      "name": "Alpha Austin",
+      "qualifiedPartRefs": ["part-controller-c17"]
+    },
+    {
+      "id": "site-beta-monterrey",
+      "supplierRef": "supplier-beta",
+      "name": "Beta Monterrey",
+      "qualifiedPartRefs": ["part-controller-c17"]
+    }
+  ],
+  "parts": [
+    { "id": "part-controller-c17", "name": "Controller C-17" }
+  ],
+  "timeBuckets": [
+    { "id": "bucket-2026-w38", "start": "2026-09-14", "end": "2026-09-20" }
+  ],
+  "demand": [
+    {
+      "id": "demand-c17-w38-a",
+      "planRef": "demand-plan-controller-c17",
+      "planRevision": "DP-2026-W38-R4",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "quantity": 900,
+      "priority": 1,
+      "evidenceRef": "evidence-demand-a"
+    },
+    {
+      "id": "demand-c17-w38-b",
+      "planRef": "demand-plan-controller-c17",
+      "planRevision": "DP-2026-W38-R4",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "quantity": 600,
+      "priority": 2,
+      "evidenceRef": "evidence-demand-b"
+    }
+  ],
+  "commits": [
+    {
+      "id": "commit-alpha-c17-w38",
+      "revision": "ALPHA-C7",
+      "supplierRef": "supplier-alpha",
+      "siteRef": "site-alpha-austin",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "quantity": 600,
+      "committedAt": "2026-09-08T15:00:00Z",
+      "evidenceRef": "evidence-commit-alpha-c7"
+    },
+    {
+      "id": "commit-beta-c17-w38",
+      "revision": "BETA-C12",
+      "supplierRef": "supplier-beta",
+      "siteRef": "site-beta-monterrey",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "quantity": 500,
+      "committedAt": "2026-09-10T14:00:00Z",
+      "evidenceRef": "evidence-commit-beta-c12"
+    }
+  ],
+  "capacity": [
+    {
+      "id": "capacity-alpha-c17-w38",
+      "supplierRef": "supplier-alpha",
+      "siteRef": "site-alpha-austin",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "quantity": 700,
+      "yieldRate": 0.95,
+      "qualified": true,
+      "validThrough": "2026-09-30",
+      "evidenceRef": "evidence-capacity-alpha"
+    },
+    {
+      "id": "capacity-beta-c17-w38",
+      "supplierRef": "supplier-beta",
+      "siteRef": "site-beta-monterrey",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "quantity": 500,
+      "yieldRate": 0.8,
+      "qualified": true,
+      "validThrough": "2026-09-30",
+      "evidenceRef": "evidence-capacity-beta"
+    }
+  ],
+  "inventorySnapshots": [
+    {
+      "id": "inventory-alpha-c17",
+      "supplierRef": "supplier-alpha",
+      "siteRef": "site-alpha-austin",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "asOf": "2026-09-12T18:00:00Z",
+      "transactionCutoffAt": "2026-09-12T18:00:00Z",
+      "quantity": 100,
+      "status": "usable",
+      "qualityDispositionRef": "quality-alpha-release",
+      "evidenceRef": "evidence-inventory-alpha"
+    },
+    {
+      "id": "inventory-beta-c17",
+      "supplierRef": "supplier-beta",
+      "siteRef": "site-beta-monterrey",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "asOf": "2026-09-13T16:00:00Z",
+      "transactionCutoffAt": "2026-09-13T16:00:00Z",
+      "quantity": 100,
+      "status": "held",
+      "qualityDispositionRef": "quality-beta-hold",
+      "evidenceRef": "evidence-inventory-beta"
+    }
+  ],
+  "qualityDispositions": [
+    {
+      "id": "quality-alpha-release",
+      "supplierRef": "supplier-alpha",
+      "siteRef": "site-alpha-austin",
+      "partRef": "part-controller-c17",
+      "status": "released",
+      "heldQuantity": 0,
+      "decidedByRef": "owner-quality",
+      "decidedAt": "2026-09-13T17:00:00Z",
+      "evidenceRef": "evidence-quality-alpha-release"
+    },
+    {
+      "id": "quality-beta-hold",
+      "supplierRef": "supplier-beta",
+      "siteRef": "site-beta-monterrey",
+      "partRef": "part-controller-c17",
+      "status": "held",
+      "heldQuantity": 100,
+      "decidedByRef": "owner-quality",
+      "decidedAt": "2026-09-13T15:00:00Z",
+      "evidenceRef": "evidence-quality-beta-hold"
+    }
+  ],
+  "shipments": [
+    {
+      "id": "shipment-alpha-c17-0913",
+      "supplierRef": "supplier-alpha",
+      "siteRef": "site-alpha-austin",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "quantity": 100,
+      "status": "delivered",
+      "departedAt": "2026-09-11T10:00:00Z",
+      "eta": "2026-09-13T14:00:00Z",
+      "deliveredAt": "2026-09-13T14:00:00Z",
+      "receiptRef": "receipt-alpha-c17-0913",
+      "evidenceRef": "evidence-shipment-alpha"
+    },
+    {
+      "id": "shipment-beta-c17-0918",
+      "supplierRef": "supplier-beta",
+      "siteRef": "site-beta-monterrey",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "quantity": 200,
+      "status": "planned",
+      "departedAt": null,
+      "eta": "2026-09-18T20:00:00Z",
+      "deliveredAt": null,
+      "receiptRef": null,
+      "evidenceRef": "evidence-shipment-beta-plan"
+    }
+  ],
+  "receipts": [
+    {
+      "id": "receipt-alpha-c17-0913",
+      "shipmentRef": "shipment-alpha-c17-0913",
+      "supplierRef": "supplier-alpha",
+      "siteRef": "site-alpha-austin",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "receivedAt": "2026-09-13T14:25:00Z",
+      "quantity": 100,
+      "status": "accepted",
+      "evidenceRef": "evidence-receipt-alpha"
+    }
+  ],
+  "logisticsConstraints": [
+    {
+      "id": "logistics-alpha-c17-w38",
+      "supplierRef": "supplier-alpha",
+      "siteRef": "site-alpha-austin",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "leadTimeDays": 5,
+      "maxReceivableQuantity": 650,
+      "status": "clear",
+      "ownerRef": "owner-logistics",
+      "evidenceRef": "evidence-logistics-alpha"
+    },
+    {
+      "id": "logistics-beta-c17-w38",
+      "supplierRef": "supplier-beta",
+      "siteRef": "site-beta-monterrey",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "leadTimeDays": 7,
+      "maxReceivableQuantity": 450,
+      "status": "constrained",
+      "ownerRef": "owner-logistics",
+      "evidenceRef": "evidence-logistics-beta"
+    }
+  ],
+  "allocationPolicies": [
+    {
+      "id": "policy-c17-priority",
+      "revision": "ALLOC-C17-2026-R2",
+      "planRef": "demand-plan-controller-c17",
+      "planRevision": "DP-2026-W38-R4",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "rule": "priority-ascending",
+      "allowPartial": true,
+      "effectiveAt": "2026-09-14T09:00:00Z",
+      "ownerRef": "owner-plan",
+      "evidenceRef": "evidence-allocation-policy"
+    }
+  ],
+  "evidence": [
+    { "id": "evidence-plan-r4", "subjectType": "plan", "subjectRef": "demand-plan-controller-c17", "sourceRef": "controlled://planning/dp-2026-w38-r4/approval?sha256=c9e66af4e10afdaf98883ef3559e1dc86da5237bfbcc8b0235a558b339cd0358", "observedAt": "2026-09-14T12:00:00Z", "payloadDigest": "sha256:c9e66af4e10afdaf98883ef3559e1dc86da5237bfbcc8b0235a558b339cd0358", "summary": "Demand plan revision R4 approved by the plan owner." },
+    { "id": "evidence-demand-a", "subjectType": "demand", "subjectRef": "demand-c17-w38-a", "sourceRef": "controlled://planning/dp-2026-w38-r4/demand-a?sha256=236aa72a8a42c3e5f75431adbf3ecbcb389d5eb1395c8ded629267e407ebea61", "observedAt": "2026-09-14T12:00:00Z", "payloadDigest": "sha256:236aa72a8a42c3e5f75431adbf3ecbcb389d5eb1395c8ded629267e407ebea61", "summary": "Approved priority-one C-17 demand line." },
+    { "id": "evidence-demand-b", "subjectType": "demand", "subjectRef": "demand-c17-w38-b", "sourceRef": "controlled://planning/dp-2026-w38-r4/demand-b?sha256=e431d62a97d4db2edfff2603448bf958eb1962013f774ab2624131f827ab7576", "observedAt": "2026-09-14T12:00:00Z", "payloadDigest": "sha256:e431d62a97d4db2edfff2603448bf958eb1962013f774ab2624131f827ab7576", "summary": "Approved priority-two C-17 demand line." },
+    { "id": "evidence-commit-alpha-c7", "subjectType": "commit", "subjectRef": "commit-alpha-c17-w38", "sourceRef": "controlled://supplier-commit/alpha/c7?sha256=34deb2e7ff62c9eb423ce7221130e0d05d20e3242335032ef2e17f38dbca15ae", "observedAt": "2026-09-08T15:00:00Z", "payloadDigest": "sha256:34deb2e7ff62c9eb423ce7221130e0d05d20e3242335032ef2e17f38dbca15ae", "summary": "Alpha commit revision C7." },
+    { "id": "evidence-commit-beta-c12", "subjectType": "commit", "subjectRef": "commit-beta-c17-w38", "sourceRef": "controlled://supplier-commit/beta/c12?sha256=c97e144da59516ff5295d7e5c1fcd5fd165d42ae514321b1db881310daa2db96", "observedAt": "2026-09-10T14:00:00Z", "payloadDigest": "sha256:c97e144da59516ff5295d7e5c1fcd5fd165d42ae514321b1db881310daa2db96", "summary": "Beta commit revision C12." },
+    { "id": "evidence-capacity-alpha", "subjectType": "capacity", "subjectRef": "capacity-alpha-c17-w38", "sourceRef": "controlled://qualification/alpha-austin/c17?sha256=3679b599b49e1ef1410c6244624d71c5c5caa284be7fc4c4e4d1cba829ea98b6", "observedAt": "2026-09-12T09:00:00Z", "payloadDigest": "sha256:3679b599b49e1ef1410c6244624d71c5c5caa284be7fc4c4e4d1cba829ea98b6", "summary": "Alpha Austin capacity and C-17 qualification." },
+    { "id": "evidence-capacity-beta", "subjectType": "capacity", "subjectRef": "capacity-beta-c17-w38", "sourceRef": "controlled://qualification/beta-monterrey/c17?sha256=a9bdc44ba9e73cab5839071844305a89410a99835fd874b23dfbcd304d3c06f6", "observedAt": "2026-09-12T11:00:00Z", "payloadDigest": "sha256:a9bdc44ba9e73cab5839071844305a89410a99835fd874b23dfbcd304d3c06f6", "summary": "Beta Monterrey capacity, qualification, and validated yield." },
+    { "id": "evidence-inventory-alpha", "subjectType": "inventory", "subjectRef": "inventory-alpha-c17", "sourceRef": "controlled://inventory/alpha-austin/c17/2026-09-12?sha256=2ba13b0594eac7be98e7f3828424152dc990d9740beb68e3272c98369c986584", "observedAt": "2026-09-12T18:00:00Z", "payloadDigest": "sha256:2ba13b0594eac7be98e7f3828424152dc990d9740beb68e3272c98369c986584", "summary": "Alpha C-17 inventory snapshot before the separately counted accepted receipt." },
+    { "id": "evidence-inventory-beta", "subjectType": "inventory", "subjectRef": "inventory-beta-c17", "sourceRef": "controlled://inventory/beta-monterrey/c17/2026-09-13?sha256=f9bd603527eba5e53a424994f3c52a0a57c59cddce3de29e6519ccb9905dae7d", "observedAt": "2026-09-13T16:00:00Z", "payloadDigest": "sha256:f9bd603527eba5e53a424994f3c52a0a57c59cddce3de29e6519ccb9905dae7d", "summary": "Beta C-17 inventory snapshot, all on quality hold." },
+    { "id": "evidence-quality-alpha-release", "subjectType": "quality-disposition", "subjectRef": "quality-alpha-release", "sourceRef": "controlled://quality/alpha/c17/release-0913?sha256=02298884a665884ba26992b941b13f9670a8ab654d15dd2c259b09c516eb9c5b", "observedAt": "2026-09-13T17:00:00Z", "payloadDigest": "sha256:02298884a665884ba26992b941b13f9670a8ab654d15dd2c259b09c516eb9c5b", "summary": "Quality release for Alpha inventory." },
+    { "id": "evidence-quality-beta-hold", "subjectType": "quality-disposition", "subjectRef": "quality-beta-hold", "sourceRef": "controlled://quality/beta/c17/hold-0913?sha256=a729291be4e4ae761bdf079df9872c944eb92ca065fc0abe383dccbac746a920", "observedAt": "2026-09-13T15:00:00Z", "payloadDigest": "sha256:a729291be4e4ae761bdf079df9872c944eb92ca065fc0abe383dccbac746a920", "summary": "Quality hold for all 100 Beta inventory units." },
+    { "id": "evidence-shipment-alpha", "subjectType": "shipment", "subjectRef": "shipment-alpha-c17-0913", "sourceRef": "controlled://logistics/alpha/shipment-0913?sha256=f4f213a01ec9a985827d4cfe076ed41da172d1bdf01b04441122569720686840", "observedAt": "2026-09-13T14:00:00Z", "payloadDigest": "sha256:f4f213a01ec9a985827d4cfe076ed41da172d1bdf01b04441122569720686840", "summary": "Alpha shipment delivered to receiving." },
+    { "id": "evidence-shipment-beta-plan", "subjectType": "shipment", "subjectRef": "shipment-beta-c17-0918", "sourceRef": "controlled://logistics/beta/shipment-plan-0918?sha256=5f73704a31c8bbbc0cdb56d33e2f2abdac9b1d05d016583d5385273cbd35c017", "observedAt": "2026-09-14T10:00:00Z", "payloadDigest": "sha256:5f73704a31c8bbbc0cdb56d33e2f2abdac9b1d05d016583d5385273cbd35c017", "summary": "Beta shipment is planned only and has no receipt." },
+    { "id": "evidence-receipt-alpha", "subjectType": "receipt", "subjectRef": "receipt-alpha-c17-0913", "sourceRef": "controlled://receiving/alpha/c17/receipt-0913?sha256=1b2e393c4cf021fd1d1d17a4ab8334b97589d1875ccbbcad045b73896d27569a", "observedAt": "2026-09-13T14:25:00Z", "payloadDigest": "sha256:1b2e393c4cf021fd1d1d17a4ab8334b97589d1875ccbbcad045b73896d27569a", "summary": "Receiving accepted 100 Alpha C-17 units." },
+    { "id": "evidence-logistics-alpha", "subjectType": "logistics-constraint", "subjectRef": "logistics-alpha-c17-w38", "sourceRef": "controlled://logistics/alpha/c17/w38?sha256=7b23c60d30693f0d6077c0d40b14e4bd34bfe6763796943525f7f07d40ab1c10", "observedAt": "2026-09-13T12:00:00Z", "payloadDigest": "sha256:7b23c60d30693f0d6077c0d40b14e4bd34bfe6763796943525f7f07d40ab1c10", "summary": "Alpha lead time and receipt capacity." },
+    { "id": "evidence-logistics-beta", "subjectType": "logistics-constraint", "subjectRef": "logistics-beta-c17-w38", "sourceRef": "controlled://logistics/beta/c17/w38?sha256=92d225859df38b4f38da860b9a57d781fc19df199eaf0a7eed7390bfdbfdd492", "observedAt": "2026-09-13T12:00:00Z", "payloadDigest": "sha256:92d225859df38b4f38da860b9a57d781fc19df199eaf0a7eed7390bfdbfdd492", "summary": "Beta lead time and constrained receipt capacity." },
+    { "id": "evidence-allocation-policy", "subjectType": "allocation-policy", "subjectRef": "policy-c17-priority", "sourceRef": "controlled://policy/scarce-supply/c17/2026?sha256=8b3cd534c87a660714e0df9b11c9ae33e367b8b98c9f09d764dd51d712031c7e", "observedAt": "2026-09-14T09:00:00Z", "payloadDigest": "sha256:8b3cd534c87a660714e0df9b11c9ae33e367b8b98c9f09d764dd51d712031c7e", "summary": "Approved priority policy used only to draft an allocation proposal." },
+    { "id": "evidence-recovery-inputs", "subjectType": "recovery-action", "subjectRef": "action-beta-capacity-review", "sourceRef": "controlled://supply-assurance/c17/recovery-inputs?sha256=8ddeb8d0c7fe27fd8255e51d47f8dd826be3dc336ca6595b3083bd0705f6bebb", "observedAt": "2026-09-14T17:00:00Z", "payloadDigest": "sha256:8ddeb8d0c7fe27fd8255e51d47f8dd826be3dc336ca6595b3083bd0705f6bebb", "summary": "Evidence package for owner review of Beta capacity recovery." }
+  ],
+  "supplyPositions": [
+    {
+      "id": "supply-alpha-c17-w38",
+      "supplierRef": "supplier-alpha",
+      "siteRef": "site-alpha-austin",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "commitRef": "commit-alpha-c17-w38",
+      "capacityRef": "capacity-alpha-c17-w38",
+      "inventorySnapshotRef": "inventory-alpha-c17",
+      "shipmentRefs": ["shipment-alpha-c17-0913"],
+      "logisticsConstraintRef": "logistics-alpha-c17-w38",
+      "eligibleCommitQuantity": 600,
+      "eligibleInventoryQuantity": 100,
+      "eligibleReceiptQuantity": 100,
+      "eligibleSupplyQuantity": 800
+    },
+    {
+      "id": "supply-beta-c17-w38",
+      "supplierRef": "supplier-beta",
+      "siteRef": "site-beta-monterrey",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "commitRef": "commit-beta-c17-w38",
+      "capacityRef": "capacity-beta-c17-w38",
+      "inventorySnapshotRef": "inventory-beta-c17",
+      "shipmentRefs": ["shipment-beta-c17-0918"],
+      "logisticsConstraintRef": "logistics-beta-c17-w38",
+      "eligibleCommitQuantity": 400,
+      "eligibleInventoryQuantity": 0,
+      "eligibleReceiptQuantity": 0,
+      "eligibleSupplyQuantity": 400
+    }
+  ],
+  "reconciliations": [
+    {
+      "id": "reconciliation-c17-w38",
+      "planRef": "demand-plan-controller-c17",
+      "planRevision": "DP-2026-W38-R4",
+      "partRef": "part-controller-c17",
+      "bucketRef": "bucket-2026-w38",
+      "bucketDigest": "sha256:6e9674f555e40337103698b4a237206c2cd2c805ae1e539ec854007d6b12a2a3",
+      "demandRefs": ["demand-c17-w38-a", "demand-c17-w38-b"],
+      "supplyPositionRefs": ["supply-alpha-c17-w38", "supply-beta-c17-w38"],
+      "approvedDemandQuantity": 1500,
+      "eligibleSupplyQuantity": 1200,
+      "allocatedQuantity": 1200,
+      "shortageQuantity": 300,
+      "explanation": "Alpha contributes 800 eligible units. Beta contributes 400 qualified-yield units; 100 held inventory units and a planned unreceived shipment contribute zero."
+    }
+  ],
+  "allocationProposals": [
+    {
+      "id": "allocation-c17-w38",
+      "reconciliationRef": "reconciliation-c17-w38",
+      "state": "proposed",
+      "policyRef": "policy-c17-priority",
+      "allocations": [
+        { "demandRef": "demand-c17-w38-a", "allocatedQuantity": 900, "shortageQuantity": 0, "rationale": "Draft fully covers the priority-one demand before assigning residual supply; owner approval remains required." },
+        { "demandRef": "demand-c17-w38-b", "allocatedQuantity": 300, "shortageQuantity": 300, "rationale": "Residual eligible supply is applied to priority two as a proposal only." }
+      ],
+      "approvedByRef": null,
+      "approvedAt": null
+    }
+  ],
+  "recoveryActions": [
+    {
+      "id": "action-beta-capacity-review",
+      "reconciliationRef": "reconciliation-c17-w38",
+      "kind": "supplier-capacity-review",
+      "state": "proposed",
+      "description": "Supply owner reviews whether Beta can present newly qualified capacity evidence; no supplier contact is performed by this Claw.",
+      "ownerRef": "owner-supply",
+      "dueAt": "2026-09-16T15:00:00Z",
+      "checkpointRef": "checkpoint-recovery-review",
+      "evidenceRefs": ["evidence-recovery-inputs"]
+    },
+    {
+      "id": "action-beta-quality-disposition",
+      "reconciliationRef": "reconciliation-c17-w38",
+      "kind": "quality-disposition-request",
+      "state": "blocked",
+      "description": "Quality owner reviews the existing hold and records any disposition independently; no waiver is proposed or granted.",
+      "ownerRef": "owner-quality",
+      "dueAt": "2026-09-16T15:00:00Z",
+      "checkpointRef": "checkpoint-recovery-review",
+      "evidenceRefs": ["evidence-quality-beta-hold"]
+    },
+    {
+      "id": "action-logistics-options-review",
+      "reconciliationRef": "reconciliation-c17-w38",
+      "kind": "alternate-logistics-review",
+      "state": "in-review",
+      "description": "Logistics owner reviews feasible alternatives without committing an expedite.",
+      "ownerRef": "owner-logistics",
+      "dueAt": "2026-09-18T15:00:00Z",
+      "checkpointRef": "checkpoint-allocation-decision",
+      "evidenceRefs": ["evidence-logistics-beta"]
+    }
+  ],
+  "reviewCheckpoints": [
+    {
+      "id": "checkpoint-recovery-review",
+      "scheduledAt": "2026-09-16T16:00:00Z",
+      "state": "pending",
+      "ownerRef": "owner-supply",
+      "actionRefs": ["action-beta-capacity-review", "action-beta-quality-disposition"],
+      "decisionNeeded": "Review new capacity and quality-disposition evidence and decide whether the reconciliation must be revised."
+    },
+    {
+      "id": "checkpoint-allocation-decision",
+      "scheduledAt": "2026-09-18T16:00:00Z",
+      "state": "pending",
+      "ownerRef": "owner-plan",
+      "actionRefs": ["action-logistics-options-review"],
+      "decisionNeeded": "Accountable owners decide allocation, demand-plan, sourcing, or commercial actions outside this Claw."
+    }
+  ],
+  "handoff": {
+    "state": "blocked",
+    "ownerRef": "owner-plan",
+    "reconciliationRefs": ["reconciliation-c17-w38"],
+    "allocationProposalRefs": ["allocation-c17-w38"],
+    "unresolvedActionRefs": ["action-beta-capacity-review", "action-beta-quality-disposition", "action-logistics-options-review"],
+    "reviewCheckpointRefs": ["checkpoint-recovery-review", "checkpoint-allocation-decision"],
+    "summary": "Demand-plan revision DP-2026-W38-R4 has a 300-unit C-17 shortage in W38. The allocation remains proposed and all recovery, quality, logistics, and commercial decisions remain with named owners.",
+    "prohibitedActions": [
+      "create-or-change-purchase-order",
+      "change-forecast-of-record",
+      "contact-supplier",
+      "allocate-scarce-supply",
+      "grant-quality-waiver",
+      "commit-expedite",
+      "make-payment",
+      "make-sourcing-decision"
+    ]
+  }
+}
