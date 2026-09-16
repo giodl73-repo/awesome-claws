@@ -2,6 +2,10 @@ import { createHash } from "node:crypto";
 import { accessEntitlementReviewFindings } from "./access-entitlement-review-coordinator.mjs";
 import { backupRestoreVerificationFindings } from "./backup-restore-verification-coordinator.mjs";
 import { businessContinuityProgramFindings } from "./business-continuity-program-manager.mjs";
+import {
+  benefitsRealizationFindings,
+  BENEFITS_REALIZATION_EXAMPLE_PROFILE_OPTIONS,
+} from "./benefits-realization-manager.mjs";
 import { commercialDealDeskFindings } from "./commercial-deal-desk-coordinator.mjs";
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
 import { customerSuccessReviewFindings } from "./customer-success-program-manager.mjs";
@@ -53217,6 +53221,7 @@ const validators = {
   "appliance-care-coordinator": applianceCareFindings,
   "backup-restore-verification-coordinator": backupRestoreVerificationFindings,
   "business-continuity-program-manager": businessContinuityProgramFindings,
+  "benefits-realization-manager": benefitsRealizationFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
   "care-circle-coordinator": careCircleFindings,
   "case-continuity-coordinator": caseContinuityFindings,
@@ -53338,6 +53343,8 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   "backup-restore-verification-coordinator": Object.freeze({
     asOf: "2026-09-02T12:00:00Z",
   }),
+  "benefits-realization-manager":
+    BENEFITS_REALIZATION_EXAMPLE_PROFILE_OPTIONS,
   "business-continuity-program-manager": Object.freeze({
     asOf: "2026-09-14T19:00:00Z",
   }),

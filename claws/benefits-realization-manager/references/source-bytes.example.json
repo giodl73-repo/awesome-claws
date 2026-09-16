@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "awesomeClaws.exampleSourceBundle.v1",
+  "sources": [
+    {
+      "sourceRef": "controlled://metrics/support-cost-avoidance/baseline",
+      "sourceVersion": "2026-06-30.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vbWV0cmljcy9zdXBwb3J0LWNvc3QtYXZvaWRhbmNlL2Jhc2VsaW5lIiwic291cmNlVmVyc2lvbiI6IjIwMjYtMDYtMzAuMSIsInN1cHBsaWVkQnlSZWYiOiJwcmluY2lwYWwtbWV0cmljLW93bmVyLWRhbiIsInN1YmplY3RSZWYiOiJrcGktc3VwcG9ydC1jb3N0LWF2b2lkYW5jZSJ9"
+    },
+    {
+      "sourceRef": "controlled://metrics/support-cost-avoidance/target",
+      "sourceVersion": "2026-06-20.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vbWV0cmljcy9zdXBwb3J0LWNvc3QtYXZvaWRhbmNlL3RhcmdldCIsInNvdXJjZVZlcnNpb24iOiIyMDI2LTA2LTIwLjEiLCJzdXBwbGllZEJ5UmVmIjoicHJpbmNpcGFsLW1ldHJpYy1vd25lci1kYW4iLCJzdWJqZWN0UmVmIjoia3BpLXN1cHBvcnQtY29zdC1hdm9pZGFuY2UifQ=="
+    },
+    {
+      "sourceRef": "controlled://metrics/support-cost-avoidance/q3-2026",
+      "sourceVersion": "2026-10-03.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vbWV0cmljcy9zdXBwb3J0LWNvc3QtYXZvaWRhbmNlL3EzLTIwMjYiLCJzb3VyY2VWZXJzaW9uIjoiMjAyNi0xMC0wMy4xIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1tZXRyaWMtb3duZXItZGFuIiwic3ViamVjdFJlZiI6ImtwaS1zdXBwb3J0LWNvc3QtYXZvaWRhbmNlIn0="
+    },
+    {
+      "sourceRef": "controlled://benefits/profiles/self-service-deflection",
+      "sourceVersion": "2026-06-25.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvcHJvZmlsZXMvc2VsZi1zZXJ2aWNlLWRlZmxlY3Rpb24iLCJzb3VyY2VWZXJzaW9uIjoiMjAyNi0wNi0yNS4xIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1iZW5lZml0LW93bmVyLWF2YSIsInN1YmplY3RSZWYiOiJiZW5lZml0LXNlbGYtc2VydmljZS1kZWZsZWN0aW9uIn0="
+    },
+    {
+      "sourceRef": "controlled://benefits/profiles/routing-efficiency",
+      "sourceVersion": "2026-06-25.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvcHJvZmlsZXMvcm91dGluZy1lZmZpY2llbmN5Iiwic291cmNlVmVyc2lvbiI6IjIwMjYtMDYtMjUuMSIsInN1cHBsaWVkQnlSZWYiOiJwcmluY2lwYWwtYmVuZWZpdC1vd25lci1iZW4iLCJzdWJqZWN0UmVmIjoiYmVuZWZpdC1yb3V0aW5nLWVmZmljaWVuY3kifQ=="
+    },
+    {
+      "sourceRef": "controlled://benefits/profiles/knowledge-reuse",
+      "sourceVersion": "2026-06-25.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvcHJvZmlsZXMva25vd2xlZGdlLXJldXNlIiwic291cmNlVmVyc2lvbiI6IjIwMjYtMDYtMjUuMSIsInN1cHBsaWVkQnlSZWYiOiJwcmluY2lwYWwtYmVuZWZpdC1vd25lci1jb3JhIiwic3ViamVjdFJlZiI6ImJlbmVmaXQta25vd2xlZGdlLXJldXNlIn0="
+    },
+    {
+      "sourceRef": "controlled://benefits/disbenefits/transition-rework/q3-2026",
+      "sourceVersion": "2026-10-04.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvZGlzYmVuZWZpdHMvdHJhbnNpdGlvbi1yZXdvcmsvcTMtMjAyNiIsInNvdXJjZVZlcnNpb24iOiIyMDI2LTEwLTA0LjEiLCJzdXBwbGllZEJ5UmVmIjoicHJpbmNpcGFsLWJlbmVmaXQtb3duZXItYXZhIiwic3ViamVjdFJlZiI6ImRpc2JlbmVmaXQtdHJhbnNpdGlvbi1yZXdvcmsifQ=="
+    },
+    {
+      "sourceRef": "controlled://benefits/allocation-approvals/support-q3-2026/metric-owner",
+      "sourceVersion": "2026-06-25.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvYWxsb2NhdGlvbi1hcHByb3ZhbHMvc3VwcG9ydC1xMy0yMDI2L21ldHJpYy1vd25lciIsInNvdXJjZVZlcnNpb24iOiIyMDI2LTA2LTI1LjEiLCJzdXBwbGllZEJ5UmVmIjoicHJpbmNpcGFsLW1ldHJpYy1vd25lci1kYW4iLCJzdWJqZWN0UmVmIjoiYWxsb2NhdGlvbi1zaGFyZWQtc3VwcG9ydC1rcGkifQ=="
+    },
+    {
+      "sourceRef": "controlled://benefits/allocation-approvals/support-q3-2026/finance-owner",
+      "sourceVersion": "2026-06-25.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvYWxsb2NhdGlvbi1hcHByb3ZhbHMvc3VwcG9ydC1xMy0yMDI2L2ZpbmFuY2Utb3duZXIiLCJzb3VyY2VWZXJzaW9uIjoiMjAyNi0wNi0yNS4xIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1maW5hbmNlLW93bmVyLWVyaW4iLCJzdWJqZWN0UmVmIjoiYWxsb2NhdGlvbi1zaGFyZWQtc3VwcG9ydC1rcGkifQ=="
+    },
+    {
+      "sourceRef": "controlled://benefits/attribution/self-service/q3-2026",
+      "sourceVersion": "2026-10-05.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvYXR0cmlidXRpb24vc2VsZi1zZXJ2aWNlL3EzLTIwMjYiLCJzb3VyY2VWZXJzaW9uIjoiMjAyNi0xMC0wNS4xIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1tZXRyaWMtb3duZXItZGFuIiwic3ViamVjdFJlZiI6ImF0dHJpYnV0aW9uLXNlbGYtc2VydmljZS1kZWZsZWN0aW9uIn0="
+    },
+    {
+      "sourceRef": "controlled://benefits/attribution/routing/q3-2026",
+      "sourceVersion": "2026-10-05.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvYXR0cmlidXRpb24vcm91dGluZy9xMy0yMDI2Iiwic291cmNlVmVyc2lvbiI6IjIwMjYtMTAtMDUuMSIsInN1cHBsaWVkQnlSZWYiOiJwcmluY2lwYWwtbWV0cmljLW93bmVyLWRhbiIsInN1YmplY3RSZWYiOiJhdHRyaWJ1dGlvbi1yb3V0aW5nLWVmZmljaWVuY3kifQ=="
+    },
+    {
+      "sourceRef": "controlled://benefits/attribution/knowledge/q3-2026",
+      "sourceVersion": "2026-10-05.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvYXR0cmlidXRpb24va25vd2xlZGdlL3EzLTIwMjYiLCJzb3VyY2VWZXJzaW9uIjoiMjAyNi0xMC0wNS4xIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1tZXRyaWMtb3duZXItZGFuIiwic3ViamVjdFJlZiI6ImF0dHJpYnV0aW9uLWtub3dsZWRnZS1yZXVzZSJ9"
+    },
+    {
+      "sourceRef": "controlled://finance/benefits-reconciliation/support-q3-2026",
+      "sourceVersion": "2026-10-06.1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vZmluYW5jZS9iZW5lZml0cy1yZWNvbmNpbGlhdGlvbi9zdXBwb3J0LXEzLTIwMjYiLCJzb3VyY2VWZXJzaW9uIjoiMjAyNi0xMC0wNi4xIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1maW5hbmNlLW93bmVyLWVyaW4iLCJzdWJqZWN0UmVmIjoiZmluYW5jZS1yZXZpZXctc3VwcG9ydC1tb2Rlcm5pemF0aW9uLXEzIn0="
+    },
+    {
+      "sourceRef": "controlled://benefits/lifecycle/transition-self-service",
+      "sourceVersion": "v1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvbGlmZWN5Y2xlL3RyYW5zaXRpb24tc2VsZi1zZXJ2aWNlIiwic291cmNlVmVyc2lvbiI6InYxIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1iZW5lZml0LW93bmVyLWF2YSIsInN1YmplY3RSZWYiOiJ0cmFuc2l0aW9uLXNlbGYtc2VydmljZSJ9"
+    },
+    {
+      "sourceRef": "controlled://benefits/lifecycle/transition-manual-routing",
+      "sourceVersion": "v1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvbGlmZWN5Y2xlL3RyYW5zaXRpb24tbWFudWFsLXJvdXRpbmciLCJzb3VyY2VWZXJzaW9uIjoidjEiLCJzdXBwbGllZEJ5UmVmIjoicHJpbmNpcGFsLWJlbmVmaXQtb3duZXItYmVuIiwic3ViamVjdFJlZiI6InRyYW5zaXRpb24tbWFudWFsLXJvdXRpbmcifQ=="
+    },
+    {
+      "sourceRef": "controlled://benefits/lifecycle/transition-transition-rework",
+      "sourceVersion": "v1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvbGlmZWN5Y2xlL3RyYW5zaXRpb24tdHJhbnNpdGlvbi1yZXdvcmsiLCJzb3VyY2VWZXJzaW9uIjoidjEiLCJzdXBwbGllZEJ5UmVmIjoicHJpbmNpcGFsLWJlbmVmaXQtb3duZXItYXZhIiwic3ViamVjdFJlZiI6InRyYW5zaXRpb24tdHJhbnNpdGlvbi1yZXdvcmsifQ=="
+    },
+    {
+      "sourceRef": "controlled://benefits/lifecycle/transition-legacy-training",
+      "sourceVersion": "v1",
+      "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vYmVuZWZpdHMvbGlmZWN5Y2xlL3RyYW5zaXRpb24tbGVnYWN5LXRyYWluaW5nIiwic291cmNlVmVyc2lvbiI6InYxIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1iZW5lZml0LW93bmVyLWF2YSIsInN1YmplY3RSZWYiOiJ0cmFuc2l0aW9uLWxlZ2FjeS10cmFpbmluZyJ9"
+    }
+  ]
+}

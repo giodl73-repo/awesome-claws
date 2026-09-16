@@ -1,0 +1,748 @@
+{
+  "schemaVersion": "awesomeClaws.benefitsRealizationLedger.v1",
+  "request": {
+    "ledgerId": "ledger-municipal-permit-q2",
+    "periodStart": "2026-04-01",
+    "periodEnd": "2026-06-30",
+    "cutoffAt": "2026-07-10T17:00:00Z",
+    "currency": "USD",
+    "minorUnitScale": 100
+  },
+  "principals": [
+    {
+      "id": "principal-benefit-owner-iman",
+      "name": "Iman Reed",
+      "kind": "human",
+      "role": "benefit-owner",
+      "humanIdentityRef": "controlled://identity/people/iman-reed",
+      "authoritySourceRef": "controlled://city/benefit-owners/iman-reed",
+      "authorityObservedAt": "2026-03-10T14:00:00Z"
+    },
+    {
+      "id": "principal-benefit-owner-jo",
+      "name": "Jo Alvarez",
+      "kind": "human",
+      "role": "benefit-owner",
+      "humanIdentityRef": "controlled://identity/people/jo-alvarez",
+      "authoritySourceRef": "controlled://city/benefit-owners/jo-alvarez",
+      "authorityObservedAt": "2026-03-10T14:01:00Z"
+    },
+    {
+      "id": "principal-benefit-owner-kai",
+      "name": "Kai Brooks",
+      "kind": "human",
+      "role": "benefit-owner",
+      "humanIdentityRef": "controlled://identity/people/kai-brooks",
+      "authoritySourceRef": "controlled://city/benefit-owners/kai-brooks",
+      "authorityObservedAt": "2026-03-10T14:02:00Z"
+    },
+    {
+      "id": "principal-metric-owner-luz",
+      "name": "Luz Patel",
+      "kind": "human",
+      "role": "metric-owner",
+      "humanIdentityRef": "controlled://identity/people/luz-patel",
+      "authoritySourceRef": "controlled://city/metric-owners/luz-patel",
+      "authorityObservedAt": "2026-03-10T14:03:00Z"
+    },
+    {
+      "id": "principal-finance-owner-mara",
+      "name": "Mara Chen",
+      "kind": "human",
+      "role": "finance-owner",
+      "humanIdentityRef": "controlled://identity/people/mara-chen",
+      "authoritySourceRef": "controlled://city/finance-owners/mara-chen",
+      "authorityObservedAt": "2026-03-10T14:04:00Z"
+    }
+  ],
+  "kpis": [
+    {
+      "id": "kpi-quarterly-permit-processing-cost",
+      "name": "Quarterly permit processing cost",
+      "unit": "USD",
+      "direction": "decrease",
+      "ownerRef": "principal-metric-owner-luz",
+      "baseline": {
+        "valueMinor": 8000003,
+        "asOf": "2026-03-31T23:59:59Z"
+      },
+      "target": {
+        "valueMinor": 6500001,
+        "approvedAt": "2026-03-15T16:00:00Z",
+        "dueAt": "2026-06-30T23:59:59Z"
+      },
+      "observed": {
+        "valueMinor": 6800001,
+        "windowStart": "2026-04-01",
+        "windowEnd": "2026-06-30",
+        "observedAt": "2026-07-03T15:00:00Z"
+      },
+      "evidenceRefs": [
+        "evidence-permit-cost-baseline",
+        "evidence-permit-cost-target",
+        "evidence-permit-cost-observation"
+      ],
+      "recordDigest": "sha256:eabe2e8aea549eae276eb14a59fa8c14f8ffeec96cd5195c822fbc755fa82ee8"
+    }
+  ],
+  "benefits": [
+    {
+      "id": "benefit-intake-automation",
+      "name": "Automated intake value",
+      "kind": "benefit",
+      "ownerRef": "principal-benefit-owner-iman",
+      "profileApprovedAt": "2026-03-20T15:00:00Z",
+      "metricRef": "kpi-quarterly-permit-processing-cost",
+      "allocationRuleRef": "allocation-permit-cost",
+      "attributionRef": "attribution-intake-automation",
+      "directMeasure": null,
+      "evidenceRefs": [
+        "evidence-benefit-intake"
+      ],
+      "recordDigest": "sha256:3170ad1dca605048d6c76943ff3fcdbcce25d7f73100bc4dd8c5ab031446f517",
+      "lifecycle": {
+        "state": "active",
+        "origin": "continued",
+        "predecessorBenefitRef": "prior-benefit-intake"
+      }
+    },
+    {
+      "id": "benefit-triage-standardization",
+      "name": "Standardized triage value",
+      "kind": "benefit",
+      "ownerRef": "principal-benefit-owner-jo",
+      "profileApprovedAt": "2026-03-20T15:01:00Z",
+      "metricRef": "kpi-quarterly-permit-processing-cost",
+      "allocationRuleRef": "allocation-permit-cost",
+      "attributionRef": "attribution-triage-standardization",
+      "directMeasure": null,
+      "evidenceRefs": [
+        "evidence-benefit-triage"
+      ],
+      "recordDigest": "sha256:5f32e5e1fb7655665ef768a0aaf53e3a3f9e1fc052eb74e3a36fac1aed784bdf",
+      "lifecycle": {
+        "state": "active",
+        "origin": "superseding",
+        "predecessorBenefitRef": "prior-benefit-manual-triage"
+      }
+    },
+    {
+      "id": "benefit-knowledge-assisted-resolution",
+      "name": "Knowledge-assisted resolution value",
+      "kind": "benefit",
+      "ownerRef": "principal-benefit-owner-kai",
+      "profileApprovedAt": "2026-03-20T15:02:00Z",
+      "metricRef": "kpi-quarterly-permit-processing-cost",
+      "allocationRuleRef": "allocation-permit-cost",
+      "attributionRef": "attribution-knowledge-assisted-resolution",
+      "directMeasure": null,
+      "evidenceRefs": [
+        "evidence-benefit-resolution"
+      ],
+      "recordDigest": "sha256:8c9308734ca34537cfca4b8293a8ee9e884b514d941bfeb15f5ed77b2e39c92a",
+      "lifecycle": {
+        "state": "active",
+        "origin": "new",
+        "predecessorBenefitRef": null
+      }
+    },
+    {
+      "id": "disbenefit-accessibility-remediation",
+      "name": "Accessibility remediation overhead",
+      "kind": "disbenefit",
+      "ownerRef": "principal-benefit-owner-iman",
+      "profileApprovedAt": "2026-03-20T15:03:00Z",
+      "metricRef": null,
+      "allocationRuleRef": null,
+      "attributionRef": null,
+      "directMeasure": {
+        "baselineMinor": 0,
+        "targetMinor": 150000,
+        "observedMinor": 125001,
+        "observedAt": "2026-07-04T14:00:00Z"
+      },
+      "evidenceRefs": [
+        "evidence-disbenefit-accessibility"
+      ],
+      "recordDigest": "sha256:82a0a756cb84bb97785a49d1090fa02ad9d2bed15844870e2acc91723f1edefa",
+      "lifecycle": {
+        "state": "active",
+        "origin": "continued",
+        "predecessorBenefitRef": "prior-disbenefit-accessibility"
+      }
+    }
+  ],
+  "allocationRules": [
+    {
+      "id": "allocation-permit-cost",
+      "metricRef": "kpi-quarterly-permit-processing-cost",
+      "method": "fixed-basis-points-largest-remainder",
+      "effectivePeriodStart": "2026-04-01",
+      "effectivePeriodEnd": "2026-06-30",
+      "allocations": [
+        {
+          "benefitRef": "benefit-intake-automation",
+          "basisPoints": 3334
+        },
+        {
+          "benefitRef": "benefit-triage-standardization",
+          "basisPoints": 3333
+        },
+        {
+          "benefitRef": "benefit-knowledge-assisted-resolution",
+          "basisPoints": 3333
+        }
+      ],
+      "approvedByRefs": [
+        "principal-metric-owner-luz",
+        "principal-finance-owner-mara"
+      ],
+      "approvedAt": "2026-03-20T16:00:00Z",
+      "evidenceRefs": [
+        "evidence-allocation-metric-permit",
+        "evidence-allocation-finance-permit"
+      ],
+      "recordDigest": "sha256:5d47ad10b8725b1148c5af4b78162e517c16225453b983e64c03dab104581ce1"
+    }
+  ],
+  "attributions": [
+    {
+      "id": "attribution-intake-automation",
+      "benefitRef": "benefit-intake-automation",
+      "metricRef": "kpi-quarterly-permit-processing-cost",
+      "allocationRuleRef": "allocation-permit-cost",
+      "method": "allocated-directional-kpi-delta",
+      "status": "supported",
+      "assessedAt": "2026-07-05T15:00:00Z",
+      "causalClaim": false,
+      "evidenceRefs": [
+        "evidence-attribution-intake"
+      ],
+      "recordDigest": "sha256:46f8772af83daa1898c362f34cdd6afb28b3d5c06b0a6015d2c807f0f3598974"
+    },
+    {
+      "id": "attribution-triage-standardization",
+      "benefitRef": "benefit-triage-standardization",
+      "metricRef": "kpi-quarterly-permit-processing-cost",
+      "allocationRuleRef": "allocation-permit-cost",
+      "method": "allocated-directional-kpi-delta",
+      "status": "supported",
+      "assessedAt": "2026-07-05T15:01:00Z",
+      "causalClaim": false,
+      "evidenceRefs": [
+        "evidence-attribution-triage"
+      ],
+      "recordDigest": "sha256:f01d962665b4071f7327ac3850b7d88d2dc7e52e82a2fe6bb25558b1f7765bdc"
+    },
+    {
+      "id": "attribution-knowledge-assisted-resolution",
+      "benefitRef": "benefit-knowledge-assisted-resolution",
+      "metricRef": "kpi-quarterly-permit-processing-cost",
+      "allocationRuleRef": "allocation-permit-cost",
+      "method": "allocated-directional-kpi-delta",
+      "status": "supported",
+      "assessedAt": "2026-07-05T15:02:00Z",
+      "causalClaim": false,
+      "evidenceRefs": [
+        "evidence-attribution-resolution"
+      ],
+      "recordDigest": "sha256:5d80bfa063fcb56f3a46797d3416ea9b32991feb899fdcdc50989dcf968e3a5e"
+    }
+  ],
+  "financeReview": {
+    "id": "finance-review-municipal-permit-q2",
+    "ownerRef": "principal-finance-owner-mara",
+    "reviewedAt": "2026-07-07T16:00:00Z",
+    "evidenceRefs": [
+      "evidence-finance-permit"
+    ],
+    "recordDigest": "sha256:0578b81fa4c09c01262661f52931c091d39d14622b6f56e81b1a43747904cd57"
+  },
+  "evidence": [
+    {
+      "id": "evidence-permit-cost-baseline",
+      "kind": "metric-baseline",
+      "subjectType": "kpi",
+      "subjectRef": "kpi-quarterly-permit-processing-cost",
+      "subjectRecordDigest": "sha256:eabe2e8aea549eae276eb14a59fa8c14f8ffeec96cd5195c822fbc755fa82ee8",
+      "sourceRef": "controlled://city/finance/permit-processing-cost/baseline",
+      "sourceVersion": "2026-03-31.1",
+      "sourceContentDigest": "sha256:e3e9a73e8505cf367df9608e538eb42dab08ae98b296e98c2233bc810b078688",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-03-31T23:59:59Z",
+      "suppliedByRef": "principal-metric-owner-luz",
+      "bindingDigest": "sha256:9e21e0dd0f088413b01458ebdca4d2072869894c179be2b801ecfcaaa3350811"
+    },
+    {
+      "id": "evidence-permit-cost-target",
+      "kind": "metric-target-approval",
+      "subjectType": "kpi",
+      "subjectRef": "kpi-quarterly-permit-processing-cost",
+      "subjectRecordDigest": "sha256:eabe2e8aea549eae276eb14a59fa8c14f8ffeec96cd5195c822fbc755fa82ee8",
+      "sourceRef": "controlled://city/finance/permit-processing-cost/target",
+      "sourceVersion": "2026-03-15.1",
+      "sourceContentDigest": "sha256:1415e31a405a13331ddcd40bbe17dc58ebd2d16575c794697fc34673391b045d",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-03-15T16:00:00Z",
+      "suppliedByRef": "principal-metric-owner-luz",
+      "bindingDigest": "sha256:d8aff4312db84138a0df4492933e158cb8ab65061cebeb08b078eb2db261348a"
+    },
+    {
+      "id": "evidence-permit-cost-observation",
+      "kind": "metric-observation",
+      "subjectType": "kpi",
+      "subjectRef": "kpi-quarterly-permit-processing-cost",
+      "subjectRecordDigest": "sha256:eabe2e8aea549eae276eb14a59fa8c14f8ffeec96cd5195c822fbc755fa82ee8",
+      "sourceRef": "controlled://city/finance/permit-processing-cost/q2-2026",
+      "sourceVersion": "2026-07-03.1",
+      "sourceContentDigest": "sha256:91f7298be0da37cd0799d63f21a5312452b513b16175cb612de76bc462e0def9",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-07-03T15:00:00Z",
+      "suppliedByRef": "principal-metric-owner-luz",
+      "bindingDigest": "sha256:6e9bfce27dfbb737f1bd476e072b97103159d54b1b7673562f9d5d70e36d6eda"
+    },
+    {
+      "id": "evidence-benefit-intake",
+      "kind": "benefit-profile",
+      "subjectType": "benefit",
+      "subjectRef": "benefit-intake-automation",
+      "subjectRecordDigest": "sha256:3170ad1dca605048d6c76943ff3fcdbcce25d7f73100bc4dd8c5ab031446f517",
+      "sourceRef": "controlled://city/benefits/profiles/intake-automation",
+      "sourceVersion": "2026-03-20.1",
+      "sourceContentDigest": "sha256:41294f3b0e225da8a384871159f58cb343349895198ca3d6c6f16a7105b032d2",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-03-20T15:00:00Z",
+      "suppliedByRef": "principal-benefit-owner-iman",
+      "bindingDigest": "sha256:79e989fbc783394b48bbc31fe0c212c3245740040ff7ae346125b04ece21e703"
+    },
+    {
+      "id": "evidence-benefit-triage",
+      "kind": "benefit-profile",
+      "subjectType": "benefit",
+      "subjectRef": "benefit-triage-standardization",
+      "subjectRecordDigest": "sha256:5f32e5e1fb7655665ef768a0aaf53e3a3f9e1fc052eb74e3a36fac1aed784bdf",
+      "sourceRef": "controlled://city/benefits/profiles/triage-standardization",
+      "sourceVersion": "2026-03-20.1",
+      "sourceContentDigest": "sha256:3ea5245ce702c8a70c00661755e371ad136b4eefb32d65b1ae439645151a7c32",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-03-20T15:01:00Z",
+      "suppliedByRef": "principal-benefit-owner-jo",
+      "bindingDigest": "sha256:10b8f89e2807233ecbaae488bf0988181092e1754abbb10951a0d2bfc9cb2e0d"
+    },
+    {
+      "id": "evidence-benefit-resolution",
+      "kind": "benefit-profile",
+      "subjectType": "benefit",
+      "subjectRef": "benefit-knowledge-assisted-resolution",
+      "subjectRecordDigest": "sha256:8c9308734ca34537cfca4b8293a8ee9e884b514d941bfeb15f5ed77b2e39c92a",
+      "sourceRef": "controlled://city/benefits/profiles/knowledge-assisted-resolution",
+      "sourceVersion": "2026-03-20.1",
+      "sourceContentDigest": "sha256:da6410daa0814ce8ba8d7f23b86a6df1a79a138a71bcbdb72e1234525880f818",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-03-20T15:02:00Z",
+      "suppliedByRef": "principal-benefit-owner-kai",
+      "bindingDigest": "sha256:f231d8ab775c0adb051eb13e8043d9ba3b6c649addc21113eb1dfeecfbfbe8af"
+    },
+    {
+      "id": "evidence-disbenefit-accessibility",
+      "kind": "disbenefit-observation",
+      "subjectType": "benefit",
+      "subjectRef": "disbenefit-accessibility-remediation",
+      "subjectRecordDigest": "sha256:82a0a756cb84bb97785a49d1090fa02ad9d2bed15844870e2acc91723f1edefa",
+      "sourceRef": "controlled://city/benefits/disbenefits/accessibility-remediation/q2-2026",
+      "sourceVersion": "2026-07-04.1",
+      "sourceContentDigest": "sha256:551c7eff69bb47b939e4eff042c90c9de924881f342c6d5595c36e54070e82b4",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-07-04T14:00:00Z",
+      "suppliedByRef": "principal-benefit-owner-iman",
+      "bindingDigest": "sha256:3519c8d2d785398a032ef4c25743dbf8a4172ee2726c67d82a0d147539550a7c"
+    },
+    {
+      "id": "evidence-allocation-metric-permit",
+      "kind": "allocation-approval",
+      "subjectType": "allocation-rule",
+      "subjectRef": "allocation-permit-cost",
+      "subjectRecordDigest": "sha256:5d47ad10b8725b1148c5af4b78162e517c16225453b983e64c03dab104581ce1",
+      "sourceRef": "controlled://city/benefits/allocation/permit-q2/metric-owner",
+      "sourceVersion": "2026-03-20.1",
+      "sourceContentDigest": "sha256:7e8be39fe0806ad64c2bfe1a736700f1744d3559436945628bb8a8995e5a67af",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-03-20T16:00:00Z",
+      "suppliedByRef": "principal-metric-owner-luz",
+      "bindingDigest": "sha256:57b2602a21091a474750ae33646e98a557cc1b78615365a7472b9861103e65d6"
+    },
+    {
+      "id": "evidence-allocation-finance-permit",
+      "kind": "allocation-approval",
+      "subjectType": "allocation-rule",
+      "subjectRef": "allocation-permit-cost",
+      "subjectRecordDigest": "sha256:5d47ad10b8725b1148c5af4b78162e517c16225453b983e64c03dab104581ce1",
+      "sourceRef": "controlled://city/benefits/allocation/permit-q2/finance-owner",
+      "sourceVersion": "2026-03-20.1",
+      "sourceContentDigest": "sha256:7a6e12845bec30dd2f2916e451218fd1544260f6d0d8821137b22c3b8ea3656b",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-03-20T16:00:00Z",
+      "suppliedByRef": "principal-finance-owner-mara",
+      "bindingDigest": "sha256:cc8999b06d6cffc85505f348780aa95033a31c34aaba39cddfed7625e8166231"
+    },
+    {
+      "id": "evidence-attribution-intake",
+      "kind": "attribution-support",
+      "subjectType": "attribution",
+      "subjectRef": "attribution-intake-automation",
+      "subjectRecordDigest": "sha256:46f8772af83daa1898c362f34cdd6afb28b3d5c06b0a6015d2c807f0f3598974",
+      "sourceRef": "controlled://city/benefits/attribution/intake/q2-2026",
+      "sourceVersion": "2026-07-05.1",
+      "sourceContentDigest": "sha256:8220beaac8970efed30e84991a225f69420e82732c00c94abc8431ab227224e9",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-07-05T15:00:00Z",
+      "suppliedByRef": "principal-metric-owner-luz",
+      "bindingDigest": "sha256:bf5ca7fda8e82db38bb50d80a270a54c3f7c9aaaf9ba841273a563787b932b62"
+    },
+    {
+      "id": "evidence-attribution-triage",
+      "kind": "attribution-support",
+      "subjectType": "attribution",
+      "subjectRef": "attribution-triage-standardization",
+      "subjectRecordDigest": "sha256:f01d962665b4071f7327ac3850b7d88d2dc7e52e82a2fe6bb25558b1f7765bdc",
+      "sourceRef": "controlled://city/benefits/attribution/triage/q2-2026",
+      "sourceVersion": "2026-07-05.1",
+      "sourceContentDigest": "sha256:10fd646688122e7a6bb0c71d92af6a804c7c46f559bed281006af679afb30766",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-07-05T15:01:00Z",
+      "suppliedByRef": "principal-metric-owner-luz",
+      "bindingDigest": "sha256:e7ff666e02012d3603a638275ad2bcde6b39e4afca246df698c972e6f6a6fc52"
+    },
+    {
+      "id": "evidence-attribution-resolution",
+      "kind": "attribution-support",
+      "subjectType": "attribution",
+      "subjectRef": "attribution-knowledge-assisted-resolution",
+      "subjectRecordDigest": "sha256:5d80bfa063fcb56f3a46797d3416ea9b32991feb899fdcdc50989dcf968e3a5e",
+      "sourceRef": "controlled://city/benefits/attribution/resolution/q2-2026",
+      "sourceVersion": "2026-07-05.1",
+      "sourceContentDigest": "sha256:a83a7f2ab34d2c1ce8c07836cbe267dfe1c153281795ea1cb0dacedfa8ba68bc",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-07-05T15:02:00Z",
+      "suppliedByRef": "principal-metric-owner-luz",
+      "bindingDigest": "sha256:864500617f9595a50cf0c55329fc6585d28f10549ebd9f96d43d01971a08e48f"
+    },
+    {
+      "id": "evidence-finance-permit",
+      "kind": "finance-reconciliation",
+      "subjectType": "finance-review",
+      "subjectRef": "finance-review-municipal-permit-q2",
+      "subjectRecordDigest": "sha256:0578b81fa4c09c01262661f52931c091d39d14622b6f56e81b1a43747904cd57",
+      "sourceRef": "controlled://city/finance/benefits-reconciliation/permit-q2-2026",
+      "sourceVersion": "2026-07-07.1",
+      "sourceContentDigest": "sha256:9a86e625ea2f8017d449550098e32eb7447e6f0e24254c4cb649d718cc61d9f6",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-07-07T16:00:00Z",
+      "suppliedByRef": "principal-finance-owner-mara",
+      "bindingDigest": "sha256:4a75a5e5cf348c9825075ac12266241877f2d229aab5e5db413e2b4367013cd4"
+    },
+    {
+      "id": "evidence-lifecycle-intake",
+      "kind": "lifecycle-decision",
+      "subjectType": "predecessor-transition",
+      "subjectRef": "transition-intake",
+      "subjectRecordDigest": "sha256:d031c95c1d7ecc3c8ebfd6ad5a850dd418e41ebe81f5f02a5c0e4e593c0ae5c7",
+      "sourceRef": "controlled://city/benefits/lifecycle/transition-intake",
+      "sourceVersion": "v1",
+      "sourceContentDigest": "sha256:2ee3c40892eeb9a531a5aecc448594921860e443d5994894d57bbf13c8e34d8d",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-03-19T14:00:00Z",
+      "suppliedByRef": "principal-benefit-owner-iman",
+      "bindingDigest": "sha256:807f21064a2b33d39219f6eab805cc4c0366321ee6856a2ac847bf94e8ce923d"
+    },
+    {
+      "id": "evidence-lifecycle-triage",
+      "kind": "lifecycle-decision",
+      "subjectType": "predecessor-transition",
+      "subjectRef": "transition-manual-triage",
+      "subjectRecordDigest": "sha256:8d24a07f687c1f600c53df80c4e47f655d88043ddcffa2bf5856744bdb246d73",
+      "sourceRef": "controlled://city/benefits/lifecycle/transition-manual-triage",
+      "sourceVersion": "v1",
+      "sourceContentDigest": "sha256:98c7de64ad49a9178a7f09010f7430dce4b2d6409ff646cce5435ef821a221d8",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-03-19T14:01:00Z",
+      "suppliedByRef": "principal-benefit-owner-jo",
+      "bindingDigest": "sha256:bedfc52285798c7dc02ea7e43f0263969140df81bce6eb0733dc981472e85eab"
+    },
+    {
+      "id": "evidence-lifecycle-accessibility",
+      "kind": "lifecycle-decision",
+      "subjectType": "predecessor-transition",
+      "subjectRef": "transition-accessibility",
+      "subjectRecordDigest": "sha256:4b002b27d37810a34c00235ec8a303f69d22020f634a6a1baf8966cddea64b44",
+      "sourceRef": "controlled://city/benefits/lifecycle/transition-accessibility",
+      "sourceVersion": "v1",
+      "sourceContentDigest": "sha256:94c233773d048f4dbc6def84a2bcaa161ebe98d8a91b5581a1f9f561f1bfd6f0",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-03-19T14:02:00Z",
+      "suppliedByRef": "principal-benefit-owner-iman",
+      "bindingDigest": "sha256:f9686cf49a1db831d22b863b7ab89fca908f4edf67662185e3caad1f9cc428d4"
+    },
+    {
+      "id": "evidence-lifecycle-paper-index",
+      "kind": "lifecycle-decision",
+      "subjectType": "predecessor-transition",
+      "subjectRef": "transition-paper-index",
+      "subjectRecordDigest": "sha256:bcbb0536309701ac5bc0402f9b7124a18afe7070325f1a42a575413cd299db5e",
+      "sourceRef": "controlled://city/benefits/lifecycle/transition-paper-index",
+      "sourceVersion": "v1",
+      "sourceContentDigest": "sha256:a9c6741edf0381c4f411efa57a41b19f90093ec81f909043ee87c6237a5fba29",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-03-19T14:03:00Z",
+      "suppliedByRef": "principal-benefit-owner-iman",
+      "bindingDigest": "sha256:b0cbc299261e48c1b1ced8627fdba6eb2304aa458688048479bc8c69770f2b22"
+    }
+  ],
+  "sourceAuthority": {
+    "id": "source-authority-permit-q2",
+    "ownerRef": "principal-finance-owner-mara",
+    "manifestVersion": "permit-q2-v1",
+    "issuedAt": "2026-07-07T16:00:00Z",
+    "records": [
+      {
+        "evidenceRef": "evidence-permit-cost-baseline",
+        "subjectType": "kpi",
+        "subjectRef": "kpi-quarterly-permit-processing-cost",
+        "subjectRecordDigest": "sha256:eabe2e8aea549eae276eb14a59fa8c14f8ffeec96cd5195c822fbc755fa82ee8",
+        "sourceRef": "controlled://city/finance/permit-processing-cost/baseline",
+        "sourceVersion": "2026-03-31.1",
+        "sourceContentDigest": "sha256:e3e9a73e8505cf367df9608e538eb42dab08ae98b296e98c2233bc810b078688",
+        "suppliedByRef": "principal-metric-owner-luz"
+      },
+      {
+        "evidenceRef": "evidence-permit-cost-target",
+        "subjectType": "kpi",
+        "subjectRef": "kpi-quarterly-permit-processing-cost",
+        "subjectRecordDigest": "sha256:eabe2e8aea549eae276eb14a59fa8c14f8ffeec96cd5195c822fbc755fa82ee8",
+        "sourceRef": "controlled://city/finance/permit-processing-cost/target",
+        "sourceVersion": "2026-03-15.1",
+        "sourceContentDigest": "sha256:1415e31a405a13331ddcd40bbe17dc58ebd2d16575c794697fc34673391b045d",
+        "suppliedByRef": "principal-metric-owner-luz"
+      },
+      {
+        "evidenceRef": "evidence-permit-cost-observation",
+        "subjectType": "kpi",
+        "subjectRef": "kpi-quarterly-permit-processing-cost",
+        "subjectRecordDigest": "sha256:eabe2e8aea549eae276eb14a59fa8c14f8ffeec96cd5195c822fbc755fa82ee8",
+        "sourceRef": "controlled://city/finance/permit-processing-cost/q2-2026",
+        "sourceVersion": "2026-07-03.1",
+        "sourceContentDigest": "sha256:91f7298be0da37cd0799d63f21a5312452b513b16175cb612de76bc462e0def9",
+        "suppliedByRef": "principal-metric-owner-luz"
+      },
+      {
+        "evidenceRef": "evidence-benefit-intake",
+        "subjectType": "benefit",
+        "subjectRef": "benefit-intake-automation",
+        "subjectRecordDigest": "sha256:3170ad1dca605048d6c76943ff3fcdbcce25d7f73100bc4dd8c5ab031446f517",
+        "sourceRef": "controlled://city/benefits/profiles/intake-automation",
+        "sourceVersion": "2026-03-20.1",
+        "sourceContentDigest": "sha256:41294f3b0e225da8a384871159f58cb343349895198ca3d6c6f16a7105b032d2",
+        "suppliedByRef": "principal-benefit-owner-iman"
+      },
+      {
+        "evidenceRef": "evidence-benefit-triage",
+        "subjectType": "benefit",
+        "subjectRef": "benefit-triage-standardization",
+        "subjectRecordDigest": "sha256:5f32e5e1fb7655665ef768a0aaf53e3a3f9e1fc052eb74e3a36fac1aed784bdf",
+        "sourceRef": "controlled://city/benefits/profiles/triage-standardization",
+        "sourceVersion": "2026-03-20.1",
+        "sourceContentDigest": "sha256:3ea5245ce702c8a70c00661755e371ad136b4eefb32d65b1ae439645151a7c32",
+        "suppliedByRef": "principal-benefit-owner-jo"
+      },
+      {
+        "evidenceRef": "evidence-benefit-resolution",
+        "subjectType": "benefit",
+        "subjectRef": "benefit-knowledge-assisted-resolution",
+        "subjectRecordDigest": "sha256:8c9308734ca34537cfca4b8293a8ee9e884b514d941bfeb15f5ed77b2e39c92a",
+        "sourceRef": "controlled://city/benefits/profiles/knowledge-assisted-resolution",
+        "sourceVersion": "2026-03-20.1",
+        "sourceContentDigest": "sha256:da6410daa0814ce8ba8d7f23b86a6df1a79a138a71bcbdb72e1234525880f818",
+        "suppliedByRef": "principal-benefit-owner-kai"
+      },
+      {
+        "evidenceRef": "evidence-disbenefit-accessibility",
+        "subjectType": "benefit",
+        "subjectRef": "disbenefit-accessibility-remediation",
+        "subjectRecordDigest": "sha256:82a0a756cb84bb97785a49d1090fa02ad9d2bed15844870e2acc91723f1edefa",
+        "sourceRef": "controlled://city/benefits/disbenefits/accessibility-remediation/q2-2026",
+        "sourceVersion": "2026-07-04.1",
+        "sourceContentDigest": "sha256:551c7eff69bb47b939e4eff042c90c9de924881f342c6d5595c36e54070e82b4",
+        "suppliedByRef": "principal-benefit-owner-iman"
+      },
+      {
+        "evidenceRef": "evidence-allocation-metric-permit",
+        "subjectType": "allocation-rule",
+        "subjectRef": "allocation-permit-cost",
+        "subjectRecordDigest": "sha256:5d47ad10b8725b1148c5af4b78162e517c16225453b983e64c03dab104581ce1",
+        "sourceRef": "controlled://city/benefits/allocation/permit-q2/metric-owner",
+        "sourceVersion": "2026-03-20.1",
+        "sourceContentDigest": "sha256:7e8be39fe0806ad64c2bfe1a736700f1744d3559436945628bb8a8995e5a67af",
+        "suppliedByRef": "principal-metric-owner-luz"
+      },
+      {
+        "evidenceRef": "evidence-allocation-finance-permit",
+        "subjectType": "allocation-rule",
+        "subjectRef": "allocation-permit-cost",
+        "subjectRecordDigest": "sha256:5d47ad10b8725b1148c5af4b78162e517c16225453b983e64c03dab104581ce1",
+        "sourceRef": "controlled://city/benefits/allocation/permit-q2/finance-owner",
+        "sourceVersion": "2026-03-20.1",
+        "sourceContentDigest": "sha256:7a6e12845bec30dd2f2916e451218fd1544260f6d0d8821137b22c3b8ea3656b",
+        "suppliedByRef": "principal-finance-owner-mara"
+      },
+      {
+        "evidenceRef": "evidence-attribution-intake",
+        "subjectType": "attribution",
+        "subjectRef": "attribution-intake-automation",
+        "subjectRecordDigest": "sha256:46f8772af83daa1898c362f34cdd6afb28b3d5c06b0a6015d2c807f0f3598974",
+        "sourceRef": "controlled://city/benefits/attribution/intake/q2-2026",
+        "sourceVersion": "2026-07-05.1",
+        "sourceContentDigest": "sha256:8220beaac8970efed30e84991a225f69420e82732c00c94abc8431ab227224e9",
+        "suppliedByRef": "principal-metric-owner-luz"
+      },
+      {
+        "evidenceRef": "evidence-attribution-triage",
+        "subjectType": "attribution",
+        "subjectRef": "attribution-triage-standardization",
+        "subjectRecordDigest": "sha256:f01d962665b4071f7327ac3850b7d88d2dc7e52e82a2fe6bb25558b1f7765bdc",
+        "sourceRef": "controlled://city/benefits/attribution/triage/q2-2026",
+        "sourceVersion": "2026-07-05.1",
+        "sourceContentDigest": "sha256:10fd646688122e7a6bb0c71d92af6a804c7c46f559bed281006af679afb30766",
+        "suppliedByRef": "principal-metric-owner-luz"
+      },
+      {
+        "evidenceRef": "evidence-attribution-resolution",
+        "subjectType": "attribution",
+        "subjectRef": "attribution-knowledge-assisted-resolution",
+        "subjectRecordDigest": "sha256:5d80bfa063fcb56f3a46797d3416ea9b32991feb899fdcdc50989dcf968e3a5e",
+        "sourceRef": "controlled://city/benefits/attribution/resolution/q2-2026",
+        "sourceVersion": "2026-07-05.1",
+        "sourceContentDigest": "sha256:a83a7f2ab34d2c1ce8c07836cbe267dfe1c153281795ea1cb0dacedfa8ba68bc",
+        "suppliedByRef": "principal-metric-owner-luz"
+      },
+      {
+        "evidenceRef": "evidence-finance-permit",
+        "subjectType": "finance-review",
+        "subjectRef": "finance-review-municipal-permit-q2",
+        "subjectRecordDigest": "sha256:0578b81fa4c09c01262661f52931c091d39d14622b6f56e81b1a43747904cd57",
+        "sourceRef": "controlled://city/finance/benefits-reconciliation/permit-q2-2026",
+        "sourceVersion": "2026-07-07.1",
+        "sourceContentDigest": "sha256:9a86e625ea2f8017d449550098e32eb7447e6f0e24254c4cb649d718cc61d9f6",
+        "suppliedByRef": "principal-finance-owner-mara"
+      },
+      {
+        "evidenceRef": "evidence-lifecycle-intake",
+        "subjectType": "predecessor-transition",
+        "subjectRef": "transition-intake",
+        "subjectRecordDigest": "sha256:d031c95c1d7ecc3c8ebfd6ad5a850dd418e41ebe81f5f02a5c0e4e593c0ae5c7",
+        "sourceRef": "controlled://city/benefits/lifecycle/transition-intake",
+        "sourceVersion": "v1",
+        "sourceContentDigest": "sha256:2ee3c40892eeb9a531a5aecc448594921860e443d5994894d57bbf13c8e34d8d",
+        "suppliedByRef": "principal-benefit-owner-iman"
+      },
+      {
+        "evidenceRef": "evidence-lifecycle-triage",
+        "subjectType": "predecessor-transition",
+        "subjectRef": "transition-manual-triage",
+        "subjectRecordDigest": "sha256:8d24a07f687c1f600c53df80c4e47f655d88043ddcffa2bf5856744bdb246d73",
+        "sourceRef": "controlled://city/benefits/lifecycle/transition-manual-triage",
+        "sourceVersion": "v1",
+        "sourceContentDigest": "sha256:98c7de64ad49a9178a7f09010f7430dce4b2d6409ff646cce5435ef821a221d8",
+        "suppliedByRef": "principal-benefit-owner-jo"
+      },
+      {
+        "evidenceRef": "evidence-lifecycle-accessibility",
+        "subjectType": "predecessor-transition",
+        "subjectRef": "transition-accessibility",
+        "subjectRecordDigest": "sha256:4b002b27d37810a34c00235ec8a303f69d22020f634a6a1baf8966cddea64b44",
+        "sourceRef": "controlled://city/benefits/lifecycle/transition-accessibility",
+        "sourceVersion": "v1",
+        "sourceContentDigest": "sha256:94c233773d048f4dbc6def84a2bcaa161ebe98d8a91b5581a1f9f561f1bfd6f0",
+        "suppliedByRef": "principal-benefit-owner-iman"
+      },
+      {
+        "evidenceRef": "evidence-lifecycle-paper-index",
+        "subjectType": "predecessor-transition",
+        "subjectRef": "transition-paper-index",
+        "subjectRecordDigest": "sha256:bcbb0536309701ac5bc0402f9b7124a18afe7070325f1a42a575413cd299db5e",
+        "sourceRef": "controlled://city/benefits/lifecycle/transition-paper-index",
+        "sourceVersion": "v1",
+        "sourceContentDigest": "sha256:a9c6741edf0381c4f411efa57a41b19f90093ec81f909043ee87c6237a5fba29",
+        "suppliedByRef": "principal-benefit-owner-iman"
+      }
+    ],
+    "signingKeyId": "benefits-authority-fixture-2026",
+    "signature": "ccSVT1/eqFEXFMTss6ey6B4Ld5lkyKfrVFN+9pqStbX5OboSIRlHsa6BKme3gWW/fbbz84Ie8glK3aXgcJZjAQ=="
+  },
+  "plan": {
+    "id": "plan-municipal-permit",
+    "revision": 2,
+    "predecessorRevision": 1,
+    "ownerRef": "principal-benefit-owner-iman",
+    "approvedAt": "2026-03-19T16:00:00Z",
+    "state": "owner-approved"
+  },
+  "predecessor": {
+    "state": "linked",
+    "ledgerRef": "controlled://city/benefits/permit/revision-1",
+    "ledgerContentDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+    "revision": 1,
+    "periodEnd": "2026-03-15",
+    "observedAt": "2026-03-16T12:00:00Z",
+    "benefitCount": 4,
+    "transitions": [
+      {
+        "id": "transition-intake",
+        "predecessorBenefitRef": "prior-benefit-intake",
+        "currentBenefitRef": "benefit-intake-automation",
+        "disposition": "continued",
+        "decidedByRef": "principal-benefit-owner-iman",
+        "decidedAt": "2026-03-19T14:00:00Z",
+        "evidenceRefs": [
+          "evidence-lifecycle-intake"
+        ],
+        "recordDigest": "sha256:d031c95c1d7ecc3c8ebfd6ad5a850dd418e41ebe81f5f02a5c0e4e593c0ae5c7"
+      },
+      {
+        "id": "transition-manual-triage",
+        "predecessorBenefitRef": "prior-benefit-manual-triage",
+        "currentBenefitRef": "benefit-triage-standardization",
+        "disposition": "superseded",
+        "decidedByRef": "principal-benefit-owner-jo",
+        "decidedAt": "2026-03-19T14:01:00Z",
+        "evidenceRefs": [
+          "evidence-lifecycle-triage"
+        ],
+        "recordDigest": "sha256:8d24a07f687c1f600c53df80c4e47f655d88043ddcffa2bf5856744bdb246d73"
+      },
+      {
+        "id": "transition-accessibility",
+        "predecessorBenefitRef": "prior-disbenefit-accessibility",
+        "currentBenefitRef": "disbenefit-accessibility-remediation",
+        "disposition": "continued",
+        "decidedByRef": "principal-benefit-owner-iman",
+        "decidedAt": "2026-03-19T14:02:00Z",
+        "evidenceRefs": [
+          "evidence-lifecycle-accessibility"
+        ],
+        "recordDigest": "sha256:4b002b27d37810a34c00235ec8a303f69d22020f634a6a1baf8966cddea64b44"
+      },
+      {
+        "id": "transition-paper-index",
+        "predecessorBenefitRef": "prior-benefit-paper-index",
+        "currentBenefitRef": null,
+        "disposition": "retired",
+        "decidedByRef": "principal-benefit-owner-iman",
+        "decidedAt": "2026-03-19T14:03:00Z",
+        "evidenceRefs": [
+          "evidence-lifecycle-paper-index"
+        ],
+        "recordDigest": "sha256:bcbb0536309701ac5bc0402f9b7124a18afe7070325f1a42a575413cd299db5e"
+      }
+    ]
+  }
+}

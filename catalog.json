@@ -12127,6 +12127,159 @@
           "role": "asset"
         }
       ]
+    },
+    {
+      "id": "benefits-realization-manager",
+      "name": "Benefits realization manager",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-16"
+      },
+      "description": "Closes one owner-approved benefits-plan revision against exact KPI observations, allocation rules, disbenefits, and source evidence without claiming causality or exercising benefit, metric, finance, or source-system authority.",
+      "audience": "Benefits owners, transformation offices, finance partners, portfolio teams, and accountable metric owners reviewing a bounded realization period.",
+      "principles": [
+        "Preserve each benefit and disbenefit identity, owner, baseline, target, period, and lifecycle state",
+        "Allocate each shared KPI delta exactly once with integer minor-unit arithmetic and an explicit residual rule",
+        "Withhold unsupported attribution and aggregate realization while keeping benefit, metric, finance, and source authority separate"
+      ],
+      "boundaries": [
+        "Do not claim that an initiative caused a KPI movement; allocation is a bounded no-double-count accounting convention, not causal proof",
+        "Do not approve benefits, redefine metrics, alter allocation, certify finance, mutate source systems, sign trust envelopes, retire benefits, or publish results for an owner"
+      ],
+      "intake": [
+        "Exact benefits plan id and revision, predecessor revision or first-plan declaration, caller-controlled period and cutoff, currency, minor-unit scale, and complete benefit/disbenefit universe",
+        "Named benefit, metric, finance, and trust owners with stable identities, authority evidence, KPI baseline/target/observation records, allocation approvals, lifecycle decisions, and finance-close evidence",
+        "Injected owner-and-key-scoped public trust, signed semantic envelope, exact source bytes or controlled receipts, source versions and digests, prior-period realized state, and supersession or retirement evidence"
+      ],
+      "workflow": [
+        "Validate the complete plan-revision identity, predecessor chain, caller period/cutoff, owner roster, injected trust, source bytes, and bounded evidence universe before interpreting results",
+        "Recompute direction-aware KPI deltas in integer minor units and allocate each shared KPI exactly once across its declared benefits using the approved deterministic residual rule",
+        "Reconcile direct disbenefits, unsupported attribution, predecessor supersession or retirement, and exact finance-close chronology without converting allocation into causality",
+        "Produce an X4 benefits ledger and equivalent Markdown handoff that withholds aggregate values unless every in-scope attribution and finance gate closes"
+      ],
+      "deliverables": [
+        "Plan, revision, predecessor, period, cutoff, owner, and trust identity block",
+        "Closed benefit and disbenefit universe with lifecycle and predecessor reconciliation",
+        "Shared-KPI baseline, target, observation, allocation, attribution, and residual ledger",
+        "Derived gross, disbenefit, and net realization with unsupported-attribution blockers",
+        "X4 benefits realization visual with equivalent Markdown handoff"
+      ],
+      "example": {
+        "request": "Reconcile benefits plan support-modernization revision 2 for Q3 from the supplied owner-approved benefit profiles, KPI records, allocation approvals, disbenefit observations, predecessor ledger, source bytes, and public trust store. Show realized and blocked value without claiming causality or changing any source or owner decision.",
+        "outcome": "A revision-bound X4 benefit ledger that accounts for every benefit, disbenefit, KPI share, predecessor state, source record, owner decision, unsupported attribution, and finance gate exactly once."
+      },
+      "doneWhen": [
+        "Every in-scope benefit and disbenefit appears exactly once with stable identity, owner, lifecycle, baseline, target, period, evidence, and predecessor disposition",
+        "Every shared KPI delta is direction-aware, allocated exactly once in integer minor units, and reconciles under a deterministic residual rule without double counting",
+        "Unsupported attribution or an invalid finance close withholds aggregate realization, and no output claims causality, approval, certification, publication, or source mutation"
+      ],
+      "capabilityGuidance": [
+        "The base X4 starter reads only supplied workspace artifacts and an explicitly injected public trust/source bundle; it has no embedded production key, network, finance-system, portfolio-system, messaging, shell, or source mutation authority.",
+        "Future read integrations must preserve caller-controlled time, exact source bytes or independently verifiable receipts, owner-scoped public trust, complete coverage, and the same no-causality and no-write boundaries."
+      ],
+      "openclawProfile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "minimal",
+            "alsoAllow": [
+              "read",
+              "write",
+              "edit",
+              "show_widget"
+            ],
+            "fs": {
+              "workspaceOnly": true
+            }
+          }
+        }
+      },
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/benefits-realization-ledger.schema.json",
+          "path": "schemas/benefits-realization-ledger.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/benefits-realization-ledger.example.json",
+          "path": "fixtures/benefits-realization-ledger.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/benefits-realization-ledger-decrease.example.json",
+          "path": "fixtures/benefits-realization-ledger-decrease.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/benefits-realization-adversarial.example.json",
+          "path": "fixtures/benefits-realization-adversarial.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/benefits-realization-result.example.json",
+          "path": "fixtures/benefits-realization-result.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/benefits-realization-result-decrease.example.json",
+          "path": "fixtures/benefits-realization-result-decrease.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/benefits-realization-result-blocked.example.json",
+          "path": "fixtures/benefits-realization-result-blocked.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "references/trust-roots.example.json",
+          "path": "references/trust-roots.example.json",
+          "role": "reference"
+        },
+        {
+          "source": "references/source-bytes.example.json",
+          "path": "references/source-bytes.example.json",
+          "role": "reference"
+        },
+        {
+          "source": "references/source-bytes-municipal.example.json",
+          "path": "references/source-bytes-municipal.example.json",
+          "role": "reference"
+        },
+        {
+          "source": "references/source-bytes-adversarial.example.json",
+          "path": "references/source-bytes-adversarial.example.json",
+          "role": "reference"
+        },
+        {
+          "source": "templates/benefits-realization-ledger.md",
+          "path": "templates/benefits-realization-ledger.md",
+          "role": "template"
+        },
+        {
+          "source": "assets/benefits-realization-review.html",
+          "path": "assets/benefits-realization-review.html",
+          "role": "asset"
+        }
+      ]
     }
   ]
 }

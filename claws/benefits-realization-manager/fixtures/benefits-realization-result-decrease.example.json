@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "awesomeClaws.benefitsRealizationResult.v1",
+  "ledgerId": "ledger-municipal-permit-q2",
+  "plan": {
+    "id": "plan-municipal-permit",
+    "revision": 2,
+    "predecessorRevision": 1,
+    "ownerRef": "principal-benefit-owner-iman",
+    "state": "owner-approved"
+  },
+  "predecessor": {
+    "state": "linked",
+    "revision": 1,
+    "benefitCount": 4,
+    "continued": 2,
+    "superseded": 1,
+    "retired": 1
+  },
+  "period": {
+    "start": "2026-04-01",
+    "end": "2026-06-30",
+    "cutoffAt": "2026-07-10T17:00:00Z"
+  },
+  "status": "ready-for-owner-review",
+  "sharedKpi": {
+    "id": "kpi-quarterly-permit-processing-cost",
+    "ownerRef": "principal-metric-owner-luz",
+    "direction": "decrease",
+    "baselineMinor": 8000003,
+    "targetMinor": 6500001,
+    "observedMinor": 6800001,
+    "targetDeltaMinor": 1500002,
+    "observedDeltaMinor": 1200002,
+    "unit": "USD"
+  },
+  "allocationRule": {
+    "id": "allocation-permit-cost",
+    "method": "fixed-basis-points-largest-remainder",
+    "residualRule": "largest-remainder-then-benefit-id",
+    "allocations": [
+      {
+        "benefitRef": "benefit-intake-automation",
+        "basisPoints": 3334
+      },
+      {
+        "benefitRef": "benefit-triage-standardization",
+        "basisPoints": 3333
+      },
+      {
+        "benefitRef": "benefit-knowledge-assisted-resolution",
+        "basisPoints": 3333
+      }
+    ]
+  },
+  "benefitResults": [
+    {
+      "id": "benefit-intake-automation",
+      "kind": "benefit",
+      "ownerRef": "principal-benefit-owner-iman",
+      "baselineMinor": 2667201,
+      "targetDeltaMinor": 500101,
+      "recognizedDeltaMinor": 400081,
+      "attributionState": "supported"
+    },
+    {
+      "id": "benefit-triage-standardization",
+      "kind": "benefit",
+      "ownerRef": "principal-benefit-owner-jo",
+      "baselineMinor": 2666401,
+      "targetDeltaMinor": 499950,
+      "recognizedDeltaMinor": 399960,
+      "attributionState": "supported"
+    },
+    {
+      "id": "benefit-knowledge-assisted-resolution",
+      "kind": "benefit",
+      "ownerRef": "principal-benefit-owner-kai",
+      "baselineMinor": 2666401,
+      "targetDeltaMinor": 499951,
+      "recognizedDeltaMinor": 399961,
+      "attributionState": "supported"
+    },
+    {
+      "id": "disbenefit-accessibility-remediation",
+      "kind": "disbenefit",
+      "ownerRef": "principal-benefit-owner-iman",
+      "baselineMinor": 0,
+      "targetDeltaMinor": 150000,
+      "recognizedDeltaMinor": 125001,
+      "attributionState": "direct-observation"
+    }
+  ],
+  "finance": {
+    "ownerRef": "principal-finance-owner-mara",
+    "grossBenefitMinor": 1200002,
+    "disbenefitMinor": 125001,
+    "netRealizedMinor": 1075001,
+    "currency": "USD",
+    "minorUnitScale": 100
+  },
+  "evidenceProof": {
+    "subjectCount": 14,
+    "evidenceCount": 17,
+    "internalRecordDigestsVerified": 14,
+    "internalEvidenceDigestsVerified": 17,
+    "reciprocalBindingsVerified": 17,
+    "sourceRecordsAnchored": 17,
+    "sourceBytesVerified": 17,
+    "sourceAuthoritySignatureVerified": true
+  },
+  "blockers": [],
+  "schemaFindings": [],
+  "contractFindings": []
+}

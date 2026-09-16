@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 119,
-    "coveredCount": 119,
-    "recipeCount": 325,
-    "findingCodeCount": 421
+    "validatorCount": 120,
+    "coveredCount": 120,
+    "recipeCount": 328,
+    "findingCodeCount": 431
   },
   "entries": [
     {
@@ -5139,6 +5139,56 @@
             "plan_scope_mismatch",
             "scenario_projection_mismatch",
             "unbound_plan_approval"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "benefits-realization-manager",
+      "recipes": [
+        {
+          "id": "semantic-invalid-source-authority-1",
+          "operator": "replace",
+          "path": [
+            "request",
+            "ledgerId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid-source-authority"
+          ]
+        },
+        {
+          "id": "semantic-invalid-source-authority-2",
+          "operator": "replace",
+          "path": [
+            "request",
+            "cutoffAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid-source-authority",
+            "invalid-validation-context"
+          ]
+        },
+        {
+          "id": "semantic-invalid-attribution-binding-3",
+          "operator": "replace",
+          "path": [
+            "request",
+            "cutoffAt"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid-attribution-binding",
+            "invalid-caller-window",
+            "invalid-disbenefit-profile",
+            "invalid-evidence-authority-or-chronology",
+            "invalid-finance-close",
+            "invalid-owner-authority",
+            "invalid-plan-lineage",
+            "invalid-shared-kpi-chronology",
+            "invalid-source-authority"
           ]
         }
       ]
