@@ -38,17 +38,18 @@ const visual = await readFile(
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateSchema = ajv.compile(schema);
+const AS_OF = fixture.asOf;
 
 function clone() {
   return structuredClone(fixture);
 }
 
-function findings(value) {
-  return validateArtifactSemantics(id, value);
+function findings(value, options = { asOf: AS_OF }) {
+  return validateArtifactSemantics(id, value, options);
 }
 
-function assertFinding(value, code) {
-  const result = findings(value);
+function assertFinding(value, code, options = { asOf: AS_OF }) {
+  const result = findings(value, options);
   assert.ok(result.some((item) => item.code === code), JSON.stringify(result, null, 2));
 }
 
@@ -94,6 +95,15 @@ test("supplier capacity fixture is strict-schema valid and semantically clean", 
   assert.deepEqual(findings(fixture), []);
   assert.equal(hasArtifactSemanticValidator(id), true);
   assert.equal(artifactSchemaName(id), "supplier-capacity-assurance.schema.json");
+});
+
+test("validator requires a trusted caller asOf that bounds the artifact clock", () => {
+  assertFinding(fixture, "invalid_validation_context", {});
+  const beforeArtifact = findings(fixture, {
+    asOf: "2026-09-14T17:59:59Z",
+  });
+  assert.ok(beforeArtifact.some((item) => item.code === "invalid_as_of"));
+  assert.deepEqual(findings(fixture, { asOf: "2026-09-14T20:00:00+02:00" }), []);
 });
 
 test("X3 fallback and X4 visual expose the exact review and authority contract", () => {

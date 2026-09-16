@@ -53344,6 +53344,9 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   "commercial-deal-desk-coordinator": Object.freeze({
     asOf: "2026-09-14T12:00:00Z",
   }),
+  "customer-success-program-manager": Object.freeze({
+    asOf: "2026-09-14T19:00:00Z",
+  }),
   "contract-obligation-tracker": Object.freeze({
     asOf: "2026-09-05T17:00:00Z",
   }),
@@ -53356,6 +53359,9 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   "partner-business-manager": Object.freeze({
     asOf: "2026-09-14T19:00:00Z",
   }),
+  "supplier-capacity-assurance-manager": Object.freeze({
+    asOf: "2026-09-14T18:00:00Z",
+  }),
   "tls-certificate-rotation-verification-coordinator": Object.freeze({
     asOf: "2026-09-05T00:00:00Z",
   }),
@@ -53364,6 +53370,9 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   }),
   "repository-compliance-program-manager": Object.freeze({
     asOf: "2026-09-14T19:00:00Z",
+  }),
+  "workforce-planning-partner": Object.freeze({
+    asOf: "2026-09-14T17:00:00Z",
   }),
 });
 

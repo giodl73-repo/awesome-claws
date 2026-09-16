@@ -3,6 +3,8 @@ import { hasUnnegatedNarrativeMatch } from "./narrative-safety.mjs";
 
 const ROLE_PATTERN = /\bsupplier capacity assurance manager\b/iu;
 const AGENT_PATTERN = /^(?:the\s+)?(?:agent|assistant|bot|claw|system|model|ai)$/iu;
+const TIMESTAMP_PATTERN =
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/u;
 const REQUIRED_PROHIBITED_ACTIONS = Object.freeze([
   "create-or-change-purchase-order",
   "change-forecast-of-record",
@@ -56,6 +58,11 @@ function equal(left, right) {
 function timestamp(value) {
   if (typeof value !== "string" || value.trim().length === 0) return NaN;
   return Date.parse(value);
+}
+
+function trustedTimestamp(value) {
+  if (typeof value !== "string" || !TIMESTAMP_PATTERN.test(value)) return NaN;
+  return timestamp(value);
 }
 
 function recordList(value, path, label, findings) {
@@ -143,7 +150,7 @@ function validOwner(ownerRef, principals, value) {
   );
 }
 
-export function supplierCapacityAssuranceFindings(value) {
+export function supplierCapacityAssuranceFindings(value, options = {}) {
   const findings = [];
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return [finding("invalid_artifact", "", "Supplier capacity assurance must be an object.")];
@@ -180,9 +187,25 @@ export function supplierCapacityAssuranceFindings(value) {
     };
   }
 
+  const trustedAsOf = trustedTimestamp(options.asOf);
+  if (!Number.isFinite(trustedAsOf)) {
+    findings.push(
+      finding(
+        "invalid_validation_context",
+        "",
+        "A caller-supplied exact RFC 3339 asOf is required.",
+      ),
+    );
+  }
   const asOf = timestamp(value.asOf);
-  if (!Number.isFinite(asOf)) {
-    findings.push(finding("invalid_as_of", "asOf", "The artifact as-of timestamp must be parseable."));
+  if (!Number.isFinite(asOf) || !Number.isFinite(trustedAsOf) || asOf > trustedAsOf) {
+    findings.push(
+      finding(
+        "invalid_as_of",
+        "asOf",
+        "The artifact as-of timestamp must be parseable and no later than caller-supplied asOf.",
+      ),
+    );
   }
 
   const plan = value.plan && typeof value.plan === "object" ? value.plan : {};

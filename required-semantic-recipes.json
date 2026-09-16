@@ -5,7 +5,7 @@
     "validatorCount": 119,
     "coveredCount": 119,
     "recipeCount": 325,
-    "findingCodeCount": 422
+    "findingCodeCount": 421
   },
   "entries": [
     {
@@ -4409,13 +4409,14 @@
       "id": "supplier-capacity-assurance-manager",
       "recipes": [
         {
-          "id": "semantic-invalid-eligible-inventory-1",
+          "id": "semantic-invalid-as-of-1",
           "operator": "replace",
           "path": [
             "asOf"
           ],
           "replacement": "2099-12-31T23:59:59Z",
           "expectedCodes": [
+            "invalid_as_of",
             "invalid_eligible_inventory",
             "invalid_eligible_supply",
             "stale_inventory_snapshot"
@@ -5097,7 +5098,18 @@
       "id": "workforce-planning-partner",
       "recipes": [
         {
-          "id": "semantic-invalid-authority-attestation-1",
+          "id": "semantic-invalid-as-of-1",
+          "operator": "replace",
+          "path": [
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_as_of"
+          ]
+        },
+        {
+          "id": "semantic-invalid-authority-attestation-2",
           "operator": "replace",
           "path": [
             "asOf"
@@ -5109,7 +5121,7 @@
           ]
         },
         {
-          "id": "semantic-dangling-reference-2",
+          "id": "semantic-dangling-reference-3",
           "operator": "replace",
           "path": [
             "plan",
@@ -5127,19 +5139,6 @@
             "plan_scope_mismatch",
             "scenario_projection_mismatch",
             "unbound_plan_approval"
-          ]
-        },
-        {
-          "id": "semantic-authority-roster-mismatch-3",
-          "operator": "replace",
-          "path": [
-            "plan",
-            "authorityRosterRef"
-          ],
-          "replacement": "mock-plus-missing",
-          "expectedCodes": [
-            "authority_roster_mismatch",
-            "evidence_payload_digest_mismatch"
           ]
         }
       ]

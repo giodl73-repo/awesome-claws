@@ -282,7 +282,7 @@ function humanWithScope(principalById, rosterRefs, ref, scope) {
   );
 }
 
-export function workforcePlanningFindings(value) {
+export function workforcePlanningFindings(value, options = {}) {
   const findings = [];
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return [finding("invalid_artifact", "$", "Workforce reconciliation must be an object.")];
@@ -486,7 +486,32 @@ export function workforcePlanningFindings(value) {
   }
 
   const inventory = recordInventory(value);
+  const trustedAsOf =
+    typeof options.asOf === "string" &&
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/u.test(
+      options.asOf,
+    )
+      ? Date.parse(options.asOf)
+      : Number.NaN;
+  if (!Number.isFinite(trustedAsOf)) {
+    findings.push(
+      finding(
+        "invalid_validation_context",
+        "$",
+        "A caller-supplied exact RFC 3339 asOf is required.",
+      ),
+    );
+  }
   const asOf = Date.parse(value.asOf);
+  if (!Number.isFinite(asOf) || !Number.isFinite(trustedAsOf) || asOf > trustedAsOf) {
+    findings.push(
+      finding(
+        "invalid_as_of",
+        "asOf",
+        "The artifact as-of timestamp must be valid and no later than caller-supplied asOf.",
+      ),
+    );
+  }
   for (const [index, evidence] of collections.evidence.entries()) {
     const path = `evidence[${index}]`;
     if (

@@ -189,7 +189,7 @@ test("semantic portfolio covers every registered owner-defined validator", async
   assert.equal(run.coverage.semantics.applicableClawCount, 119);
   assert.equal(run.coverage.semantics.caseCount, 325);
   assert.equal(run.coverage.semantics.killedCount, 325);
-  assert.equal(run.coverage.semantics.findingCodeCount, 422);
+  assert.equal(run.coverage.semantics.findingCodeCount, 421);
   assert.equal(Object.keys(run.coverage.semantics.perClaw).length, 119);
   for (const coverage of Object.values(run.coverage.semantics.perClaw)) {
     assert.equal(coverage.applicable, coverage.killed);

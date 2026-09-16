@@ -34,6 +34,7 @@ const schema = JSON.parse(
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateSchema = ajv.compile(schema);
+const AS_OF = fixture.asOf;
 
 function mutate(change) {
   const candidate = structuredClone(fixture);
@@ -48,14 +49,26 @@ function resealed(change) {
   });
 }
 
-function codes(candidate) {
-  return new Set(workforcePlanningFindings(candidate).map((item) => item.code));
+function codes(candidate, options = { asOf: AS_OF }) {
+  return new Set(workforcePlanningFindings(candidate, options).map((item) => item.code));
 }
 
 test("workforce fixture is schema-valid and semantically reconciled", () => {
   assert.equal(validateSchema(fixture), true, JSON.stringify(validateSchema.errors));
-  assert.deepEqual(workforcePlanningFindings(fixture), []);
-  assert.deepEqual(validateArtifactSemantics("workforce-planning-partner", fixture), []);
+  assert.deepEqual(workforcePlanningFindings(fixture, { asOf: AS_OF }), []);
+  assert.deepEqual(
+    validateArtifactSemantics("workforce-planning-partner", fixture, { asOf: AS_OF }),
+    [],
+  );
+});
+
+test("validator requires a trusted caller asOf that bounds the artifact clock", () => {
+  assert.ok(codes(fixture, {}).has("invalid_validation_context"));
+  assert.ok(codes(fixture, { asOf: "2026-09-14T16:59:59Z" }).has("invalid_as_of"));
+  assert.deepEqual(
+    workforcePlanningFindings(fixture, { asOf: "2026-09-14T19:00:00+02:00" }),
+    [],
+  );
 });
 
 test("schema excludes individual workforce records and decision approvals", () => {
@@ -178,7 +191,7 @@ test("fully unfunded demand reconciles through exact zero references and remains
   });
 
   assert.equal(validateSchema(unfunded), true, JSON.stringify(validateSchema.errors));
-  assert.deepEqual(workforcePlanningFindings(unfunded), []);
+  assert.deepEqual(workforcePlanningFindings(unfunded, { asOf: AS_OF }), []);
   const reconciliation = unfunded.reconciliations.find(
     (row) => row.id === "reconciliation-platform-engineer-q1",
   );
@@ -227,7 +240,7 @@ test("an entirely unfunded plan reconciles every demand to zero and remains bloc
   });
 
   assert.equal(validateSchema(unfunded), true, JSON.stringify(validateSchema.errors));
-  assert.deepEqual(workforcePlanningFindings(unfunded), []);
+  assert.deepEqual(workforcePlanningFindings(unfunded, { asOf: AS_OF }), []);
   assert.deepEqual(unfunded.funding, []);
   assert.deepEqual(unfunded.fundedPositions, []);
   for (const reconciliation of unfunded.reconciliations) {

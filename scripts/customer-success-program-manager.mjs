@@ -39,6 +39,8 @@ const APPROVED_PLAN_METRIC_DIGESTS = new Map([
     "sha256:3adc2bc9d90fc36272dcc8090d17c404239c5b9efe21ad7461a2e2686326b344",
   ],
 ]);
+const TIMESTAMP_PATTERN =
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/u;
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -838,6 +840,18 @@ export function customerSuccessReviewFindings(value, options = {}) {
     requireRef(workload.serviceRef, services, `workloads[${index}].serviceRef`, "Service", findings);
   }
 
+  const trustedAsOf = TIMESTAMP_PATTERN.test(options.asOf ?? "")
+    ? timestamp(options.asOf)
+    : null;
+  if (trustedAsOf === null) {
+    findings.push(
+      finding(
+        "invalid_validation_context",
+        "$",
+        "A caller-supplied exact RFC 3339 asOf is required.",
+      ),
+    );
+  }
   const asOf = timestamp(review.asOf);
   const periodStart = timestamp(review.periodStart);
   const periodEnd = timestamp(review.periodEnd);
@@ -849,7 +863,9 @@ export function customerSuccessReviewFindings(value, options = {}) {
     approvedAt === null ||
     periodStart > periodEnd ||
     periodEnd > asOf ||
-    approvedAt > asOf
+    approvedAt > asOf ||
+    trustedAsOf === null ||
+    asOf > trustedAsOf
   ) {
     findings.push(
       finding(

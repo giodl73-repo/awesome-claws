@@ -27,22 +27,23 @@ const schema = JSON.parse(
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateSchema = ajv.compile(schema);
+const AS_OF = fixture.review.asOf;
 
 function clone() {
   return structuredClone(fixture);
 }
 
-function findings(value) {
-  return validateArtifactSemantics("customer-success-program-manager", value);
+function findings(value, options = { asOf: AS_OF }) {
+  return validateArtifactSemantics("customer-success-program-manager", value, options);
 }
 
-function assertHas(value, code) {
-  const result = findings(value);
+function assertHas(value, code, options = { asOf: AS_OF }) {
+  const result = findings(value, options);
   assert.ok(result.some((item) => item.code === code), JSON.stringify(result, null, 2));
 }
 
-function assertNotHas(value, code) {
-  const result = findings(value);
+function assertNotHas(value, code, options = { asOf: AS_OF }) {
+  const result = findings(value, options);
   assert.equal(
     result.some((item) => item.code === code),
     false,
@@ -54,6 +55,15 @@ test("customer success fixture is strict-schema valid and semantically clean", (
   assert.equal(hasArtifactSemanticValidator("customer-success-program-manager"), true);
   assert.equal(validateSchema(fixture), true, ajv.errorsText(validateSchema.errors));
   assert.deepEqual(findings(fixture), []);
+});
+
+test("review requires a trusted caller asOf that bounds its embedded clock", () => {
+  assertHas(fixture, "invalid_validation_context", {});
+  assertHas(fixture, "invalid_review_chronology", { asOf: "2026-09-14T18:59:59Z" });
+  assert.deepEqual(
+    findings(fixture, { asOf: "2026-09-14T21:00:00+02:00" }),
+    [],
+  );
 });
 
 test("strict schema rejects undeclared fields and incomplete evidence records", () => {
@@ -214,6 +224,7 @@ test("approved-plan trust roots are caller configurable through code and CLI", a
   };
   assert.deepEqual(
     validateArtifactSemantics("customer-success-program-manager", value, {
+      asOf: AS_OF,
       approvedPlanPublicKeys,
       approvedPlanMetricDigests,
     }),
@@ -236,6 +247,8 @@ test("approved-plan trust roots are caller configurable through code and CLI", a
         "scripts/validate-artifact.mjs",
         "customer-success-program-manager",
         artifactPath,
+        "--as-of",
+        AS_OF,
         "--approved-plan-public-keys",
         publicKeysPath,
         "--approved-plan-metric-digests",
@@ -274,6 +287,7 @@ test("caller-pinned plan revision digest rejects a fully resigned lower target",
   ).toString("base64");
   const publicKeyDer = publicKey.export({ type: "spki", format: "der" }).toString("base64");
   const result = validateArtifactSemantics("customer-success-program-manager", value, {
+    asOf: AS_OF,
     approvedPlanPublicKeys: { "customer-plan-authority": publicKeyDer },
     approvedPlanMetricDigests: {
       "plan-contoso-2026@7#metric-teams-active-user-rate": originalDigest,
