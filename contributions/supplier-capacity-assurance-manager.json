@@ -71,6 +71,11 @@
     },
     "resources": [
       {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
         "source": "schemas/supplier-capacity-assurance.schema.json",
         "path": "schemas/supplier-capacity-assurance.schema.json",
         "role": "schema"

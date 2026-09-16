@@ -11,6 +11,8 @@ workspace:
     AGENTS.md:
       source: workspace/AGENTS.md
   files:
+    - source: fixtures/session-demo.json
+      path: fixtures/session-demo.json
     - source: schemas/supplier-capacity-assurance.schema.json
       path: schemas/supplier-capacity-assurance.schema.json
     - source: fixtures/supplier-capacity-assurance.example.json
