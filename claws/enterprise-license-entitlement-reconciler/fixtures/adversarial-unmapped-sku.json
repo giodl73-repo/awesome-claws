@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "awesomeClaws.adversarialMutation.v1",
+  "baseFixture": "fixtures/license-entitlement-reconciliation.example.json",
+  "mutation": {
+    "operator": "replace",
+    "path": [
+      "assignments",
+      0,
+      "mappingRef"
+    ],
+    "value": "mapping-not-owner-supplied"
+  },
+  "expectedFindingCodes": [
+    "invalid_evidence_binding",
+    "invalid_mapping_binding",
+    "invalid_row_digest",
+    "invalid_source_export"
+  ]
+}

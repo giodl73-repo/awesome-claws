@@ -120,6 +120,16 @@
   },
   "$defs": {
     "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "versionedTrustRoot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "digest"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "pattern": "^v[1-9][0-9]*$" },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
     "namedIdentity": {
       "type": "object",
       "additionalProperties": false,
@@ -227,6 +237,63 @@
                 "asOf": {
                   "type": "string",
                   "format": "date-time"
+                },
+                "licenseTrustRoot": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "schemaVersion",
+                    "organizationRef",
+                    "agreementRef",
+                    "licenseProgramRef",
+                    "predecessorRound",
+                    "rightsManifest",
+                    "skuMappingRegister",
+                    "authorityRoster"
+                  ],
+                  "properties": {
+                    "schemaVersion": {
+                      "const": "awesomeClaws.enterpriseLicenseTrustRoot.v1"
+                    },
+                    "organizationRef": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "agreementRef": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "licenseProgramRef": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "predecessorRound": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "id",
+                        "digest"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "digest": {
+                          "$ref": "#/$defs/digest"
+                        }
+                      }
+                    },
+                    "rightsManifest": {
+                      "$ref": "#/$defs/versionedTrustRoot"
+                    },
+                    "skuMappingRegister": {
+                      "$ref": "#/$defs/versionedTrustRoot"
+                    },
+                    "authorityRoster": {
+                      "$ref": "#/$defs/versionedTrustRoot"
+                    }
+                  }
                 }
               }
             },

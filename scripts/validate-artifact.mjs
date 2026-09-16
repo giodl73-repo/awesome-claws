@@ -8,7 +8,7 @@ import {
 const [id, input, ...args] = process.argv.slice(2);
 const semanticOptions = {};
 const usage =
-  "Usage: npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>] [--trust-keys <keys.json>] [--approved-plan-public-keys <keys.json>] [--approved-plan-metric-digests <digests.json>]";
+  "Usage: npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>] [--license-trust-root <trust-root.json>] [--trust-keys <keys.json>] [--approved-plan-public-keys <keys.json>] [--approved-plan-metric-digests <digests.json>]";
 for (let index = 0; index < args.length; index += 2) {
   const flag = args[index];
   const argument = args[index + 1];
@@ -16,6 +16,7 @@ for (let index = 0; index < args.length; index += 2) {
     !argument ||
     ![
       "--as-of",
+      "--license-trust-root",
       "--trust-keys",
       "--approved-plan-public-keys",
       "--approved-plan-metric-digests",
@@ -44,7 +45,9 @@ for (let index = 0; index < args.length; index += 2) {
     ) {
       throw new Error(`${flag} must reference a JSON object.`);
     }
-    if (flag === "--approved-plan-public-keys") {
+    if (flag === "--license-trust-root") {
+      semanticOptions.licenseTrustRoot = trustConfiguration;
+    } else if (flag === "--approved-plan-public-keys") {
       semanticOptions.approvedPlanPublicKeys = trustConfiguration;
     } else {
       semanticOptions.approvedPlanMetricDigests = trustConfiguration;

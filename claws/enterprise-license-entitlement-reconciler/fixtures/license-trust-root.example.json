@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "awesomeClaws.enterpriseLicenseTrustRoot.v1",
+  "organizationRef": "organization-northwind",
+  "agreementRef": "agreement-ea-204",
+  "licenseProgramRef": "license-program-2026",
+  "predecessorRound": {
+    "id": "round-2026-07-r1",
+    "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "rightsManifest": {
+    "id": "rights-manifest-ea-204",
+    "version": "v4",
+    "digest": "sha256:b9d37f4debc7b0ea965f202061629108585f61581c329f75bba72806d9614b2a"
+  },
+  "skuMappingRegister": {
+    "id": "sku-mapping-ea-204",
+    "version": "v7",
+    "digest": "sha256:8d530ca444d7ee436ccb89744a718802d19469ebb4f4b935948738192de2456e"
+  },
+  "authorityRoster": {
+    "id": "roster-license-review",
+    "version": "v3",
+    "digest": "sha256:4ad5ec8cecad16d4869f5ef147b35f725fdde780343d4baa1cb7f0b3f3e0dfd0"
+  }
+}

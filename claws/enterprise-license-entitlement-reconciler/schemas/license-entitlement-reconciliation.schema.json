@@ -1,0 +1,1723 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/license-entitlement-reconciliation.schema.json",
+  "title": "Enterprise license entitlement reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactId",
+    "round",
+    "rightsManifest",
+    "skuMappingRegister",
+    "rights",
+    "pools",
+    "skuMappings",
+    "sourceExports",
+    "assignments",
+    "consumption",
+    "principals",
+    "authorityRoster",
+    "authorityGrants",
+    "positions",
+    "exceptions",
+    "decisions",
+    "blockers",
+    "evidence",
+    "coverage",
+    "destinationApproval",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.enterpriseLicenseEntitlementReconciliation.v1"
+    },
+    "artifactId": {
+      "$ref": "#/$defs/id"
+    },
+    "round": {
+      "$ref": "#/$defs/round"
+    },
+    "rightsManifest": {
+      "$ref": "#/$defs/rightsManifest"
+    },
+    "skuMappingRegister": {
+      "$ref": "#/$defs/skuMappingRegister"
+    },
+    "rights": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/right"
+      }
+    },
+    "pools": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/pool"
+      }
+    },
+    "skuMappings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/skuMapping"
+      }
+    },
+    "sourceExports": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "$ref": "#/$defs/sourceExport"
+      }
+    },
+    "assignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assignment"
+      }
+    },
+    "consumption": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/consumption"
+      }
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "authorityRoster": {
+      "$ref": "#/$defs/authorityRoster"
+    },
+    "authorityGrants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/authorityGrant"
+      }
+    },
+    "positions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/position"
+      }
+    },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/exception"
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blocker"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "destinationApproval": {
+      "$ref": "#/$defs/destinationApproval"
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+      "maxLength": 120
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v[1-9][0-9]*$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "quantity": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "delta": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "idList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "nonEmptyIdList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "controlledRef": {
+      "type": "string",
+      "pattern": "^controlled://[a-z0-9][a-z0-9-]{2,60}/[a-z0-9][a-z0-9._/-]*$"
+    },
+    "contentAddressedRef": {
+      "type": "string",
+      "pattern": "^controlled://[a-z0-9][a-z0-9-]{2,60}/[a-z0-9][a-z0-9._/-]*@sha256-[0-9a-f]{64}$"
+    },
+    "round": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "predecessorRoundRef",
+        "predecessorRoundDigest",
+        "organizationRef",
+        "agreementRef",
+        "licenseProgramRef",
+        "periodStartsAt",
+        "periodEndsAt",
+        "cutoffAt",
+        "opensAt",
+        "closesAt",
+        "rightsManifestRef",
+        "rightsManifestVersion",
+        "rightsManifestDigest",
+        "skuMappingRegisterRef",
+        "skuMappingVersion",
+        "skuMappingDigest",
+        "authorityRosterRef",
+        "authorityRosterVersion",
+        "authorityRosterDigest",
+        "destination",
+        "rightRefs",
+        "poolRefs",
+        "skuMappingRefs",
+        "sourceExportRefs",
+        "assignmentRefs",
+        "consumptionRefs",
+        "positionRefs",
+        "exceptionRefs",
+        "decisionRefs",
+        "blockerRefs",
+        "evidenceRefs",
+        "roundDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "predecessorRoundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "predecessorRoundDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "organizationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "agreementRef": {
+          "$ref": "#/$defs/id"
+        },
+        "licenseProgramRef": {
+          "$ref": "#/$defs/id"
+        },
+        "periodStartsAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "periodEndsAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "cutoffAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "opensAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "closesAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "rightsManifestRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rightsManifestVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "rightsManifestDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "skuMappingRegisterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "skuMappingVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "skuMappingDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "authorityRosterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityRosterVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "authorityRosterDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destination": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "rightRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "poolRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "skuMappingRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "sourceExportRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "assignmentRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "consumptionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "positionRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "exceptionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "decisionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "roundDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "rightsManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "organizationRef",
+        "agreementRef",
+        "licenseProgramRef",
+        "effectiveFrom",
+        "effectiveUntil",
+        "confirmedAt",
+        "confirmedByRef",
+        "rightRefs",
+        "poolRefs",
+        "contentDigest",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "organizationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "agreementRef": {
+          "$ref": "#/$defs/id"
+        },
+        "licenseProgramRef": {
+          "$ref": "#/$defs/id"
+        },
+        "effectiveFrom": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "effectiveUntil": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "confirmedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "confirmedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rightRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "poolRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "skuMappingRegister": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "organizationRef",
+        "agreementRef",
+        "licenseProgramRef",
+        "confirmedAt",
+        "confirmedByRef",
+        "mappingRefs",
+        "contentDigest",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "organizationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "agreementRef": {
+          "$ref": "#/$defs/id"
+        },
+        "licenseProgramRef": {
+          "$ref": "#/$defs/id"
+        },
+        "confirmedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "confirmedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "mappingRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "right": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "manifestRef",
+        "metric",
+        "normalizedUnit",
+        "purchasedUnits",
+        "effectiveFrom",
+        "effectiveUntil",
+        "poolRefs",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "manifestRef": {
+          "$ref": "#/$defs/id"
+        },
+        "metric": {
+          "enum": [
+            "assigned-user",
+            "active-user",
+            "device",
+            "processor-core",
+            "consumed-unit"
+          ]
+        },
+        "normalizedUnit": {
+          "const": "license-unit"
+        },
+        "purchasedUnits": {
+          "$ref": "#/$defs/quantity"
+        },
+        "effectiveFrom": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "effectiveUntil": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "poolRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "pool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "rightRef",
+        "entitledUnits",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "rightRef": {
+          "$ref": "#/$defs/id"
+        },
+        "entitledUnits": {
+          "$ref": "#/$defs/quantity"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "skuMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "mappingRegisterRef",
+        "sourceSku",
+        "rightRef",
+        "poolRefs",
+        "metric",
+        "sourceUnit",
+        "normalizedUnit",
+        "conversionNumerator",
+        "conversionDenominator",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "mappingRegisterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceSku": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9._-]{1,63}$"
+        },
+        "rightRef": {
+          "$ref": "#/$defs/id"
+        },
+        "poolRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "metric": {
+          "enum": [
+            "assigned-user",
+            "active-user",
+            "device",
+            "processor-core",
+            "consumed-unit"
+          ]
+        },
+        "sourceUnit": {
+          "enum": [
+            "seat",
+            "user",
+            "device",
+            "core",
+            "unit"
+          ]
+        },
+        "normalizedUnit": {
+          "const": "license-unit"
+        },
+        "conversionNumerator": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "conversionDenominator": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "sourceExport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "version",
+        "organizationRef",
+        "agreementRef",
+        "licenseProgramRef",
+        "periodStartsAt",
+        "periodEndsAt",
+        "cutoffAt",
+        "suppliedAt",
+        "suppliedByRef",
+        "rowRefs",
+        "contentDigest",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "assignment-export",
+            "consumption-export"
+          ]
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "organizationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "agreementRef": {
+          "$ref": "#/$defs/id"
+        },
+        "licenseProgramRef": {
+          "$ref": "#/$defs/id"
+        },
+        "periodStartsAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "periodEndsAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "cutoffAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rowRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "exportRef",
+        "sourceSku",
+        "mappingState",
+        "periodState",
+        "mappingRef",
+        "rightRef",
+        "poolRef",
+        "sourceUnits",
+        "normalizedUnits",
+        "observedAt",
+        "rowDigest",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "exportRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceSku": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9._-]{1,63}$"
+        },
+        "mappingState": {
+          "enum": [
+            "mapped",
+            "unmapped",
+            "conflict"
+          ]
+        },
+        "periodState": {
+          "enum": [
+            "in-period",
+            "out-of-period"
+          ]
+        },
+        "mappingRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rightRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "poolRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUnits": {
+          "$ref": "#/$defs/quantity"
+        },
+        "normalizedUnits": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "rowDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mappingState": {
+                "const": "mapped"
+              }
+            },
+            "required": [
+              "mappingState"
+            ]
+          },
+          "then": {
+            "properties": {
+              "mappingRef": {
+                "$ref": "#/$defs/id"
+              },
+              "rightRef": {
+                "$ref": "#/$defs/id"
+              },
+              "poolRef": {
+                "$ref": "#/$defs/id"
+              },
+              "normalizedUnits": {
+                "$ref": "#/$defs/quantity"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mappingState": {
+                "const": "unmapped"
+              }
+            },
+            "required": [
+              "mappingState"
+            ]
+          },
+          "then": {
+            "properties": {
+              "mappingRef": {
+                "type": "null"
+              },
+              "rightRef": {
+                "type": "null"
+              },
+              "poolRef": {
+                "type": "null"
+              },
+              "normalizedUnits": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mappingState": {
+                "const": "conflict"
+              }
+            },
+            "required": [
+              "mappingState"
+            ]
+          },
+          "then": {
+            "properties": {
+              "mappingRef": {
+                "$ref": "#/$defs/id"
+              },
+              "rightRef": {
+                "$ref": "#/$defs/id"
+              },
+              "poolRef": {
+                "$ref": "#/$defs/id"
+              },
+              "normalizedUnits": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "consumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "exportRef",
+        "sourceSku",
+        "mappingState",
+        "periodState",
+        "mappingRef",
+        "rightRef",
+        "poolRef",
+        "sourceUnits",
+        "normalizedUnits",
+        "periodStartsAt",
+        "periodEndsAt",
+        "observedAt",
+        "rowDigest",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "exportRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceSku": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9._-]{1,63}$"
+        },
+        "mappingState": {
+          "enum": [
+            "mapped",
+            "unmapped",
+            "conflict"
+          ]
+        },
+        "periodState": {
+          "enum": [
+            "in-period",
+            "out-of-period"
+          ]
+        },
+        "mappingRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rightRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "poolRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUnits": {
+          "$ref": "#/$defs/quantity"
+        },
+        "normalizedUnits": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "periodStartsAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "periodEndsAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "rowDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mappingState": {
+                "const": "mapped"
+              }
+            },
+            "required": [
+              "mappingState"
+            ]
+          },
+          "then": {
+            "properties": {
+              "mappingRef": {
+                "$ref": "#/$defs/id"
+              },
+              "rightRef": {
+                "$ref": "#/$defs/id"
+              },
+              "poolRef": {
+                "$ref": "#/$defs/id"
+              },
+              "normalizedUnits": {
+                "$ref": "#/$defs/quantity"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mappingState": {
+                "const": "unmapped"
+              }
+            },
+            "required": [
+              "mappingState"
+            ]
+          },
+          "then": {
+            "properties": {
+              "mappingRef": {
+                "type": "null"
+              },
+              "rightRef": {
+                "type": "null"
+              },
+              "poolRef": {
+                "type": "null"
+              },
+              "normalizedUnits": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mappingState": {
+                "const": "conflict"
+              }
+            },
+            "required": [
+              "mappingState"
+            ]
+          },
+          "then": {
+            "properties": {
+              "mappingRef": {
+                "$ref": "#/$defs/id"
+              },
+              "rightRef": {
+                "$ref": "#/$defs/id"
+              },
+              "poolRef": {
+                "$ref": "#/$defs/id"
+              },
+              "normalizedUnits": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "scopes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Za-z]*(?: [A-Z][A-Za-z]*){1,3}$",
+          "maxLength": 80
+        },
+        "kind": {
+          "const": "named-human"
+        },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "rights-source-owner",
+              "sku-mapping-source-owner",
+              "assignment-source-owner",
+              "consumption-source-owner",
+              "authority-roster-custodian",
+              "authority-grant-issuer",
+              "position-reconciler",
+              "exception-reviewer",
+              "destination-approver",
+              "handoff-owner"
+            ]
+          }
+        }
+      }
+    },
+    "authorityRoster": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "issuedAt",
+        "custodianRef",
+        "principalRefs",
+        "contentDigest",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "custodianRef": {
+          "$ref": "#/$defs/id"
+        },
+        "principalRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "authorityGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "roundRef",
+        "granteeRef",
+        "issuedByRef",
+        "scope",
+        "targetType",
+        "targetRef",
+        "issuedAt",
+        "activeFrom",
+        "activeUntil",
+        "rosterRef",
+        "rosterDigest",
+        "payloadDigest",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "granteeRef": {
+          "$ref": "#/$defs/id"
+        },
+        "issuedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "scope": {
+          "enum": [
+            "rights-source-owner",
+            "sku-mapping-source-owner",
+            "assignment-source-owner",
+            "consumption-source-owner",
+            "position-reconciler",
+            "exception-reviewer",
+            "destination-approver",
+            "handoff-owner"
+          ]
+        },
+        "targetType": {
+          "enum": [
+            "rights-manifest",
+            "sku-mapping-register",
+            "source-export",
+            "position",
+            "exception",
+            "destination"
+          ]
+        },
+        "targetRef": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "activeFrom": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "activeUntil": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "rosterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rosterDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "rightRef",
+        "poolRef",
+        "entitledUnits",
+        "assignedUnits",
+        "consumedUnits",
+        "assignmentDeltaUnits",
+        "consumptionDeltaUnits",
+        "state",
+        "assignmentRefs",
+        "consumptionRefs",
+        "exceptionRefs",
+        "reconciledByRef",
+        "authorityGrantRef",
+        "reconciledAt",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "rightRef": {
+          "$ref": "#/$defs/id"
+        },
+        "poolRef": {
+          "$ref": "#/$defs/id"
+        },
+        "entitledUnits": {
+          "$ref": "#/$defs/quantity"
+        },
+        "assignedUnits": {
+          "$ref": "#/$defs/quantity"
+        },
+        "consumedUnits": {
+          "$ref": "#/$defs/quantity"
+        },
+        "assignmentDeltaUnits": {
+          "$ref": "#/$defs/delta"
+        },
+        "consumptionDeltaUnits": {
+          "$ref": "#/$defs/delta"
+        },
+        "state": {
+          "enum": [
+            "balanced",
+            "available-rights",
+            "assignment-overage",
+            "consumption-overage",
+            "combined-overage"
+          ]
+        },
+        "assignmentRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "consumptionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "exceptionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "reconciledByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "reconciledAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "exception": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "positionRef",
+        "rightRef",
+        "poolRef",
+        "code",
+        "assignmentDeltaUnits",
+        "consumptionDeltaUnits",
+        "ownerRef",
+        "detectedAt",
+        "resolutionState",
+        "decisionRef",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "positionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rightRef": {
+          "$ref": "#/$defs/id"
+        },
+        "poolRef": {
+          "$ref": "#/$defs/id"
+        },
+        "code": {
+          "enum": [
+            "available-rights",
+            "assignment-overage",
+            "consumption-overage",
+            "combined-overage"
+          ]
+        },
+        "assignmentDeltaUnits": {
+          "$ref": "#/$defs/delta"
+        },
+        "consumptionDeltaUnits": {
+          "$ref": "#/$defs/delta"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "detectedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "resolutionState": {
+          "enum": [
+            "reviewed",
+            "pending-human-decision"
+          ]
+        },
+        "decisionRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "resolutionState": {
+                "const": "reviewed"
+              }
+            },
+            "required": [
+              "resolutionState"
+            ]
+          },
+          "then": {
+            "properties": {
+              "decisionRef": {
+                "$ref": "#/$defs/id"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "decisionRef": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "roundRef",
+        "exceptionRef",
+        "disposition",
+        "reviewedByRef",
+        "reviewedAt",
+        "authorityGrantRef",
+        "predecessorDecisionRef",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "exceptionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "disposition": {
+          "enum": [
+            "acknowledged-for-owner-review",
+            "source-correction-required",
+            "mapping-owner-review-required"
+          ]
+        },
+        "reviewedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "reviewedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "predecessorDecisionRef": {
+          "type": "null"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "code",
+        "targetRef",
+        "ownerRef",
+        "detectedAt",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "code": {
+          "enum": [
+            "missing-evidence",
+            "unmapped-sku",
+            "mapping-conflict",
+            "out-of-period",
+            "authority-missing"
+          ]
+        },
+        "targetRef": {
+          "$ref": "#/$defs/id"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "detectedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "roundRef",
+        "observedAt",
+        "suppliedByRef",
+        "subjectRefs",
+        "sourceRecordDigest",
+        "payloadDigest",
+        "recordDigest",
+        "controlledRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "rights-manifest-record",
+            "sku-mapping-record",
+            "assignment-export-record",
+            "consumption-export-record",
+            "authority-roster-record",
+            "authority-grant-record",
+            "position-record",
+            "exception-record",
+            "decision-record",
+            "blocker-record",
+            "destination-approval-record",
+            "handoff-record"
+          ]
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "subjectRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "sourceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "controlledRef": {
+          "$ref": "#/$defs/contentAddressedRef"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rightRefs",
+        "poolRefs",
+        "assignmentRefs",
+        "consumptionRefs",
+        "positionRefs",
+        "exceptionRefs",
+        "decisionRefs",
+        "blockerRefs",
+        "evidenceRefs",
+        "contentDigest"
+      ],
+      "properties": {
+        "rightRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "poolRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "assignmentRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "consumptionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "positionRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "exceptionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "decisionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "destinationApproval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "roundRef",
+        "roundDigest",
+        "coverageDigest",
+        "destination",
+        "approvedByRef",
+        "approvedAt",
+        "authorityGrantRef",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "roundDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "coverageDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destination": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "roundRef",
+        "roundDigest",
+        "coverageDigest",
+        "destinationApprovalRef",
+        "destinationApprovalDigest",
+        "destination",
+        "state",
+        "nextOwnerRef",
+        "authorityGrantRef",
+        "handedOffAt",
+        "positionRefs",
+        "exceptionRefs",
+        "decisionRefs",
+        "blockerRefs",
+        "purchasePerformed",
+        "assignmentPerformed",
+        "revocationPerformed",
+        "renewalPerformed",
+        "accountMutationPerformed",
+        "trueUpSubmitted",
+        "complianceDeclared",
+        "effectiveAccessInferred",
+        "effectiveUsageInferred",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "roundDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "coverageDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destinationApprovalRef": {
+          "$ref": "#/$defs/id"
+        },
+        "destinationApprovalDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destination": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "state": {
+          "enum": [
+            "ready-for-owner-review",
+            "blocked"
+          ]
+        },
+        "nextOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "handedOffAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "positionRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "exceptionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "decisionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "purchasePerformed": {
+          "const": "not-performed"
+        },
+        "assignmentPerformed": {
+          "const": "not-performed"
+        },
+        "revocationPerformed": {
+          "const": "not-performed"
+        },
+        "renewalPerformed": {
+          "const": "not-performed"
+        },
+        "accountMutationPerformed": {
+          "const": "not-performed"
+        },
+        "trueUpSubmitted": {
+          "const": "not-performed"
+        },
+        "complianceDeclared": {
+          "const": "not-claimed"
+        },
+        "effectiveAccessInferred": {
+          "const": "not-performed"
+        },
+        "effectiveUsageInferred": {
+          "const": "not-performed"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    }
+  }
+}

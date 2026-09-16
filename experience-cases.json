@@ -96,6 +96,14 @@
   },
   "visualCases": [
     {
+      "id": "enterprise-license-entitlement-reconciler",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/license-position-review.html",
+      "fallback": "outputs/license-position-review.md",
+      "output": "outputs/license-position-review.html"
+    },
+    {
       "id": "workforce-planning-partner",
       "target": 4,
       "primary": "inline-widget",

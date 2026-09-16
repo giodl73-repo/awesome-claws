@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "enterprise-license-entitlement-reconciler",
+    "name": "Enterprise License Entitlement Reconciler",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73"
+      ],
+      "lastVerified": "2026-09-15"
+    },
+    "description": "Reconciles one organization's versioned owner-supplied license rights and SKU mapping against assigned entitlements and measured consumption for one agreement, license program, fixed period, cutoff, and review round without interpreting contracts or changing licenses or accounts.",
+    "audience": "Authorized software-asset, licensing-operations, procurement-operations, finance-operations, and business owners preparing a bounded license-position review from approved exports.",
+    "principles": [
+      "Treat the owner-supplied canonical rights and SKU mapping version as the public trust root; never extract rights from contract prose or invent product, metric, conversion, bundle, downgrade, upgrade, or substitution mappings",
+      "Bind one organization, agreement, license program, predecessor round, reconciliation round, fixed measurement period, and caller-supplied cutoff before evaluating any row",
+      "Prove closed coverage across every declared right, entitlement pool, assignment, consumption record, exception, and human decision",
+      "Keep source ownership, review, and approval as typed named-human authority with exact current-round scope",
+      "Use only caller-supplied zone-bearing timestamps and deterministic canonical digests, preserving reciprocal evidence lineage from source rows through the final handoff"
+    ],
+    "boundaries": [
+      "Do not interpret contract prose, infer license terms, invent SKU mappings, infer effective access or usage, or declare legal, contractual, audit, or license compliance",
+      "Do not purchase, assign, revoke, reallocate, renew, terminate, or modify licenses, subscriptions, entitlements, accounts, groups, roles, agreements, purchase orders, or source systems",
+      "Do not submit a true-up, order, renewal, claim, attestation, report, or vendor communication, and do not recommend a purchase, removal, or account action",
+      "Do not use wall-clock time, implicit current time, stale predecessor decisions, source-system recommendations, or defaults to settle a reconciliation state",
+      "Do not hide duplicate, omitted, unmapped, out-of-period, conflicting, or unsupported rows; fail closed into typed exceptions and named-human decisions"
+    ],
+    "intake": [
+      "One organization, agreement, license program, exact caller-trusted predecessor-round reference and digest, reconciliation-round id, fixed period start and end, caller-supplied cutoff and validation asOf, approved private destination, and versioned owner authority roster",
+      "One owner-supplied canonical rights manifest and SKU mapping version with immutable digest, agreement and program binding, metric and conversion definitions, complete right and pool indexes, named source owner, and reciprocal evidence",
+      "Complete entitlement-pool and assignment exports plus complete measured-consumption exports, each fixed to the same organization, agreement, program, period, cutoff, source owner, source revision, source digest, and reciprocal evidence",
+      "Typed named-human source owners, reviewers, approvers, and handoff owner with exact current-round grants, active intervals, separation rules, and reciprocal authority evidence",
+      "Exact exceptions and fresh human decisions bound to one affected right, pool, assignment, or consumption record, with deterministic coverage and destination handoff records"
+    ],
+    "workflow": [
+      "Validate caller-supplied temporal context, organization and program scope, predecessor continuity, the canonical rights and SKU mapping trust root, typed authority, and reciprocal evidence before reconciliation",
+      "Recompute locale-independent digests and prove exact equality among declared right, pool, assignment, consumption, exception, decision, evidence, and coverage indexes",
+      "Resolve SKU and metric identities only through the owner-supplied mapping, allocate each assignment and consumption record exactly once to its declared pool and right, and preserve unmapped or conflicting rows as blockers",
+      "Calculate purchased, assigned, consumed, available, unassigned, and overage quantities in fixed integer units using only mapped owner-supplied arithmetic and the fixed period and cutoff",
+      "Require one exact exception or fresh named-human reviewed decision for every non-balanced position, carry predecessor references only as lineage, and produce a blocked or ready-for-owner-review handoff without recommending or executing action"
+    ],
+    "deliverables": [
+      "Version-bound organization, agreement, program, round, predecessor, rights-manifest, SKU-mapping, principal, authority, and evidence ledgers",
+      "Closed right, entitlement-pool, assignment, and measured-consumption reconciliation with deterministic integer-unit arithmetic",
+      "Exact unmapped, conflicting, incomplete, out-of-period, under-assigned, over-assigned, under-consumed, and over-consumed exception ledger",
+      "Fresh named-human decision ledger with exact scope, authority, chronology, and reciprocal evidence",
+      "Accessible license-position review with complete Markdown fallback and a destination-bound blocked or ready-for-owner-review handoff carrying structural not-performed and not-claimed fields"
+    ],
+    "example": {
+      "request": "Reconcile organization Northwind's owner-supplied Enterprise Agreement EA-204 license-program LP-2026 rights manifest v4 and SKU mapping v7 against the complete assignment and measured-consumption exports for 2026-08, using cutoff 2026-09-01T00:00:00Z, validation asOf 2026-09-03T18:00:00Z, reconciliation round round-2026-08-r2, and predecessor round-2026-07-r1. Preserve every right, pool, assignment, consumption record, exception, and fresh human decision exactly once. Do not interpret agreement text, infer access or usage, purchase, assign, revoke, renew, mutate accounts, submit a true-up, recommend action, or declare compliance.",
+      "outcome": "A deterministic rights-to-pool-to-assignment-and-consumption reconciliation for one fixed organization, agreement, program, period, cutoff, and round, with exact coverage, mapped integer arithmetic, reciprocal evidence, typed named-human authority, explicit exceptions and decisions, and an owner-review handoff that performs no licensing or account action and makes no compliance claim."
+    },
+    "doneWhen": [
+      "The organization, agreement, license program, predecessor, round, period, cutoff, rights manifest, SKU mapping, authority roster, and destination bindings are exact and every internal digest recomputes deterministically",
+      "Every declared right, pool, assignment, consumption record, exception, decision, and evidence record appears exactly once in its closed index with reciprocal lineage and no duplicate or dangling identity",
+      "Every in-period mapped assignment and consumption record resolves only through the canonical owner-supplied SKU mapping to one declared right and pool with exact integer arithmetic, while unmapped, conflicting, or out-of-period rows remain excluded from position arithmetic under one exact blocker",
+      "Every non-balanced or blocked position has one exact exception and either one fresh authorized named-human decision or an explicit pending-decision state, while predecessor decisions remain lineage only",
+      "The visual and Markdown views agree, the handoff is blocked whenever evidence, mapping, authority, chronology, coverage, arithmetic, exception, or decision validity fails, and no purchase, assignment, revocation, renewal, account mutation, true-up submission, recommendation, effective-access inference, effective-usage inference, or compliance claim occurred"
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "capabilityGuidance": [
+      "The profile grants only workspace-limited file authoring and inline visual presentation; it has no licensing portal, directory, identity, procurement, billing, vendor, messaging, network, shell, plugin, MCP, scheduler, or source-system authority.",
+      "Treat the owner-supplied versioned rights manifest and SKU mapping as external trust roots whose authenticity and semantic correctness must be independently verified by their named human source owners.",
+      "Render the packaged accessible review only from a schema-valid, semantically clean artifact and preserve the complete Markdown review as the authoritative fallback."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "references/license-reconciliation-contract.md",
+        "path": "references/license-reconciliation-contract.md",
+        "role": "reference"
+      },
+      {
+        "source": "schemas/license-entitlement-reconciliation.schema.json",
+        "path": "schemas/license-entitlement-reconciliation.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/license-entitlement-reconciliation.example.json",
+        "path": "fixtures/license-entitlement-reconciliation.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/license-trust-root.example.json",
+        "path": "fixtures/license-trust-root.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/adversarial-trust-root-drift.json",
+        "path": "fixtures/adversarial-trust-root-drift.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/adversarial-unapproved-authority.json",
+        "path": "fixtures/adversarial-unapproved-authority.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/adversarial-unmapped-sku.json",
+        "path": "fixtures/adversarial-unmapped-sku.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/license-entitlement-review.md",
+        "path": "templates/license-entitlement-review.md",
+        "role": "template"
+      },
+      {
+        "source": "assets/license-position-review.html",
+        "path": "assets/license-position-review.html",
+        "role": "asset"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Enterprise license positions are commonly assembled from contract summaries, reseller reports, assignment exports, usage meters, and spreadsheets whose SKU names, metric conversions, cutoffs, and owner decisions drift. This can silently omit rights or usage, double-count pools, infer mappings from prose, reuse prior-round decisions, and present a purchasing recommendation or compliance conclusion without a closed evidence and authority record.",
+    "repeatableJob": "For one organization, agreement and license program, reconcile a versioned owner-supplied canonical rights and SKU mapping trust root against complete assignment and measured-consumption exports for one fixed period, cutoff, round, and predecessor; prove closed coverage and deterministic quantities; and hand exact exceptions and fresh authorized human decisions to the owner without interpreting terms or taking licensing, account, purchasing, renewal, true-up, or compliance action.",
+    "proofPlan": "Prove an X3/X4 package with a strict JSON Schema, accepted and schema-valid adversarial fixtures, a total deterministic semantic validator and stable finding codes, caller-supplied zone-bearing time only, canonical UTF-16-ordered digests, owner-supplied rights/SKU trust-root configuration through the public artifact CLI, exact identity and set closure across rights, pools, assignments, consumption, exceptions, decisions, authority, evidence, and handoff, fixed integer-unit arithmetic, reciprocal evidence lineage, typed named-human authority, predecessor non-replay, structural prohibited-action fields, synchronized accessible visual and Markdown fallback, required semantic recipes, Mock+ convergence, focused tests, generated registries, and repository contribution/proof checks.",
+    "categoryRationale": "Filed under governance because the package proves a bounded evidence, authority, and decision record over owner-defined license rights. It neither performs asset administration nor recommends commercial action; licensing, procurement, identity, finance, and contract owners retain all source semantics and execution authority.",
+    "existingAlternatives": [
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both bind one agreement-scoped round to owner-supplied canonical records, prove closed coverage and reciprocal evidence, require current named-human authority, and prohibit contractual interpretation or action.",
+        "difference": "Contract Obligation Tracker observes owner-confirmed obligations by executed-version and clause identity. This Claw never models clause text or obligation completion; it uses an independently versioned rights/SKU trust root to perform exact quantity reconciliation across purchased rights, entitlement pools, assignments, measured consumption, exceptions, and licensing decisions."
+      },
+      {
+        "id": "commercial-deal-desk-coordinator",
+        "overlap": "Both preserve approved SKU, licensing, pricing or quantity evidence, human approvals, immutable revisions, and no-order or no-contract-action boundaries.",
+        "difference": "Commercial Deal Desk checks one seller quote before booking against pricing, configuration, legal, and approval policy. This Claw starts from an existing agreement and license program, has no quote or recommendation, and reconciles purchased rights against operational assignment and consumption ledgers for a fixed completed period."
+      },
+      {
+        "id": "financial-account-reconciliation-coordinator",
+        "overlap": "Both reconcile exact owner-supplied source universes, use deterministic digests and integer arithmetic, prove total coverage, preserve predecessor lineage, and fail closed into exceptions and human decisions.",
+        "difference": "Financial Account Reconciliation partitions two co-equal monetary transaction exports into matches and residuals. This Claw has an asymmetric owner-defined rights/SKU trust root and a rights-to-pool-to-assignment-and-consumption topology with licensing metrics, mapping closure, and explicit prohibitions on effective-access, effective-usage, true-up, and compliance inference."
+      },
+      {
+        "id": "access-entitlement-review-coordinator",
+        "overlap": "Both cover assignment rows exactly once, bind a predecessor and fixed cutoff, require fresh scoped named-human decisions, preserve source signals without letting them decide, and forbid access mutation or compliance claims.",
+        "difference": "Access Entitlement Review records retain or revoke recertification decisions for identity assignments and intentionally refuses effective-access computation. This Claw makes no retain or revoke decision; it reconciles owner-mapped commercial license rights and pools against assignments plus measured consumption, with quantity arithmetic and true-up boundaries while still refusing to infer effective access or effective usage."
+      },
+      {
+        "id": "infrastructure-drift-reconciliation-coordinator",
+        "overlap": "Both compare immutable owner-supplied universes, require owner-defined canonical identity, compute deterministic dispositions, and preserve unresolved mappings as blockers without mutating source systems.",
+        "difference": "Infrastructure Drift compares desired and observed resource digests. This Claw reconciles a versioned commercial-rights and SKU metric model through entitlement pools into two different operational ledgers, assignments and measured consumption, and requires licensing-specific exceptions and fresh human decisions without producing remediation."
+      },
+      {
+        "id": "supplier-capacity-assurance-manager",
+        "overlap": "Both reconcile approved quantities against multiple source ledgers for a bounded period, expose exact shortage or overage arithmetic, preserve human checkpoints, and prohibit purchasing actions.",
+        "difference": "Supplier Capacity Assurance models physical parts, sites, yield, inventory, shipments, receipts, and recovery scenarios. This Claw models intangible license rights, SKU mappings, entitlement pools, assignments, and measured consumption, produces no allocation or recovery proposal, and treats the canonical rights mapping as an external trust root."
+      },
+      {
+        "id": "workforce-planning-partner",
+        "overlap": "Both reconcile versioned demand or rights against assigned or consumed capacity, use fixed periods and owner authority, and reserve consequential decisions for accountable humans.",
+        "difference": "Workforce Planning models funded positions, aggregate people scenarios, capability, succession, and location constraints. This Claw has no workforce or scenario model; it closes a licensing evidence graph from purchased rights through pools, assignments, measured consumption, exceptions, and decisions."
+      },
+      {
+        "id": "procurement-evaluator",
+        "overlap": "Both use approved supplier and commercial evidence, keep specialist ownership explicit, surface unresolved gaps, and prohibit purchasing and vendor contact.",
+        "difference": "Procurement Evaluator compares a pre-selection vendor shortlist against weighted criteria. This Claw performs no vendor comparison, scoring, ranking, or recommendation and instead reconciles post-purchase license rights against assignment and consumption evidence for one organization and agreement program."
+      }
+    ]
+  }
+}

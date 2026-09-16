@@ -35,6 +35,8 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "delegation-coordinator": "delegation-ledger.schema.json",
   "document-intake-analyst": "document-intake.schema.json",
   "document-renewal-tracker": "document-renewal.schema.json",
+  "enterprise-license-entitlement-reconciler":
+    "license-entitlement-reconciliation.schema.json",
   "event-operations-director": "run-of-show.schema.json",
   "executive-assistant": "executive-commitment-ledger.schema.json",
   "executive-briefing": "executive-briefing-snapshot.schema.json",
