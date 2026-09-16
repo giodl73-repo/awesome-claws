@@ -686,9 +686,49 @@ test("proof rendering refuses invalid results without throwing", () => {
   );
 });
 
+test("caller validation time must be zone-bearing and calendar-valid", () => {
+  for (const asOf of [
+    "2026-10-07T17:00:00",
+    "2026-09-31T17:00:00Z",
+    "2026-10-07T24:00:00Z",
+    "2026-10-07T17:00:00+24:00",
+  ]) {
+    assert.ok(
+      evaluate(fixture, { asOf }).contractFindings.some(
+        (item) => item.code === "invalid-validation-context",
+      ),
+      asOf,
+    );
+  }
+});
+
+test("residual allocation uses locale-independent benefit id ordering", () => {
+  const originalLocaleCompare = String.prototype.localeCompare;
+  String.prototype.localeCompare = () => {
+    throw new Error("localeCompare must not decide residual allocation");
+  };
+  try {
+    assert.deepEqual(
+      [...allocateMinorUnits(1, [
+        { benefitRef: "z", basisPoints: 5000 },
+        { benefitRef: "aa", basisPoints: 5000 },
+      ])],
+      [
+        ["z", 0],
+        ["aa", 1],
+      ],
+    );
+  } finally {
+    String.prototype.localeCompare = originalLocaleCompare;
+  }
+});
+
 test("CLI accepts valid input and emits structured schema failure for invalid input", async () => {
   const modulePath = fileURLToPath(
     new URL("./benefits-realization-manager.mjs", import.meta.url),
+  );
+  const publicValidatorPath = fileURLToPath(
+    new URL("./validate-artifact.mjs", import.meta.url),
   );
   const validInputPath = fileURLToPath(
     new URL(
@@ -781,6 +821,30 @@ test("CLI accepts valid input and emits structured schema failure for invalid in
       accepted,
     );
     assert.equal(await readFile(validProofPath, "utf8"), proof);
+
+    const publicValidation = spawnSync(
+      process.execPath,
+      [
+        publicValidatorPath,
+        "benefits-realization-manager",
+        validInputPath,
+        "--as-of",
+        fixture.request.cutoffAt,
+        "--trust-store",
+        trustStorePath,
+        "--source-bundle",
+        sourceBundlePath,
+      ],
+      { encoding: "utf8" },
+    );
+    assert.equal(publicValidation.status, 0, publicValidation.stderr);
+    assert.deepEqual(JSON.parse(publicValidation.stdout), {
+      schemaVersion: "awesomeClaws.artifactValidation.v1",
+      id: "benefits-realization-manager",
+      valid: true,
+      schemaErrors: [],
+      semanticFindings: [],
+    });
 
     const untrustedRun = spawnSync(
       process.execPath,

@@ -26,6 +26,8 @@ const schema = JSON.parse(
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateInputSchema = ajv.compile(schema);
+const TIMESTAMP_PATTERN =
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|[+-](\d{2}):(\d{2}))$/u;
 
 export const BENEFITS_REALIZATION_LIMITS = Object.freeze({
   maxInputBytes: 1024 * 1024,
@@ -38,6 +40,12 @@ export const BENEFITS_REALIZATION_LIMITS = Object.freeze({
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function compareUtf16CodeUnits(left, right) {
+  if (left < right) return -1;
+  if (left > right) return 1;
+  return 0;
 }
 
 function canonicalJson(value) {
@@ -120,7 +128,8 @@ export function benefitsRealizationSchemaFindings(input) {
       message: error.message ?? "Schema validation failed.",
     }))
     .sort((left, right) =>
-      `${left.path}\0${left.keyword}\0${left.message}`.localeCompare(
+      compareUtf16CodeUnits(
+        `${left.path}\0${left.keyword}\0${left.message}`,
         `${right.path}\0${right.keyword}\0${right.message}`,
       ),
     );
@@ -166,6 +175,58 @@ function sameSet(left, right) {
 }
 
 function time(value) {
+  if (typeof value !== "string") return null;
+  const match = TIMESTAMP_PATTERN.exec(value);
+  if (!match) return null;
+  const [
+    ,
+    yearText,
+    monthText,
+    dayText,
+    hourText,
+    minuteText,
+    secondText,
+    offsetHourText,
+    offsetMinuteText,
+  ] = match;
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+  const second = Number(secondText);
+  const offsetHour = offsetHourText === undefined ? 0 : Number(offsetHourText);
+  const offsetMinute =
+    offsetMinuteText === undefined ? 0 : Number(offsetMinuteText);
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysInMonth = [
+    31,
+    leapYear ? 29 : 28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31,
+  ];
+  if (
+    year < 1 ||
+    month < 1 ||
+    month > 12 ||
+    day < 1 ||
+    day > daysInMonth[month - 1] ||
+    hour > 23 ||
+    minute > 59 ||
+    second > 59 ||
+    offsetHour > 23 ||
+    offsetMinute > 59
+  ) {
+    return null;
+  }
   const parsed = Date.parse(value);
   return Number.isFinite(parsed) ? parsed : null;
 }
@@ -222,7 +283,7 @@ export function allocateMinorUnits(totalMinor, allocations) {
   for (const row of [...apportioned].sort(
     (left, right) =>
       Number(right.remainder - left.remainder) ||
-      left.benefitRef.localeCompare(right.benefitRef),
+      compareUtf16CodeUnits(left.benefitRef, right.benefitRef),
   )) {
     if (residual === 0n) break;
     row.amount += 1n;
