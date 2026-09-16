@@ -236,6 +236,44 @@
       }
     },
     {
+      "id": "business-continuity-program-manager",
+      "name": "Business Continuity Program Manager",
+      "description": "Maintains one exact owner-supplied critical-process universe through recurring business-impact analysis, owner-approved recovery requirements, dependency mapping, continuity-plan revisions, exercises, findings, corrective actions, exceptions, and independent recertification without declaring disasters, invoking plans, executing recovery, accepting risk, or certifying readiness.",
+      "audience": "Business continuity program managers, resilience governance leads, critical-process owners, dependency owners, exercise coordinators, and independent recertifiers maintaining an evidence-bound continuity program.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "medium",
+        "reasons": [
+          "1 scheduled job"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "cron",
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "heightened",
+        "reasons": [
+          "scheduled execution"
+        ]
+      }
+    },
+    {
       "id": "care-circle-coordinator",
       "name": "Care Circle Coordinator",
       "description": "Coordinates a consent-bounded support plan for a person who relies on family, friends, or aides without giving medical, legal, or financial advice.",
@@ -488,6 +526,43 @@
       }
     },
     {
+      "id": "commercial-deal-desk-coordinator",
+      "name": "Commercial Deal Desk Coordinator",
+      "description": "Reconciles one exact immutable seller quote revision across approved configuration, pricing, discount, margin, licensing, legal deviations, dependencies, validity, approvals, and order-readiness handoff.",
+      "audience": "Authorized seller-side deal-desk, sales operations, pricing, finance, licensing, legal operations, product operations, and order-management owners reviewing one exact opportunity and quote revision.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "compliance-reviewer",
       "name": "Compliance reviewer",
       "description": "Evaluates controls and evidence without substituting for accountable legal judgment.",
@@ -623,6 +698,43 @@
         "level": "standard",
         "reasons": [
           "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "customer-success-program-manager",
+      "name": "Customer success program manager",
+      "description": "Reconciles one customer's approved success-plan revision into an evidence-bound owner handoff without contacting the customer or changing customer, service, support, or commercial state.",
+      "audience": "Customer success program owners running a recurring internal review for one exact customer, tenant, and account against one approved success-plan revision.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
         ]
       }
     },
@@ -1886,6 +1998,43 @@
       }
     },
     {
+      "id": "learning-program-manager",
+      "name": "Learning program manager",
+      "description": "Converts an approved aggregate capability-gap revision into evidence-bound curriculum releases, cohort assignments, delivery readiness, completion and assessment evidence, effectiveness review, refresh decisions, and owner handoff.",
+      "audience": "Learning program owners coordinating approved workforce learning programs without making individual employment or credential decisions.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "legal-matter-organizer",
       "name": "Legal matter organizer",
       "description": "Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action.",
@@ -2397,6 +2546,43 @@
         "level": "standard",
         "reasons": [
           "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "partner-business-manager",
+      "name": "Partner business manager",
+      "description": "Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority.",
+      "audience": "Partner business managers, alliance leads, co-sell leads, and accountable program owners reviewing one partner's exact joint-business-plan revision for a declared period.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
         ]
       }
     },
@@ -3633,6 +3819,43 @@
       }
     },
     {
+      "id": "supplier-capacity-assurance-manager",
+      "name": "Supplier capacity assurance manager",
+      "description": "Reconciles an exact approved demand-plan revision against supplier commits, qualified capacity, inventory, quality, and inbound logistics evidence to prepare shortage and recovery decisions.",
+      "audience": "Supply assurance, planning, procurement, quality, logistics, and operations owners reviewing constrained external supply for a bounded part and time-bucket horizon.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "tax-document-organizer",
       "name": "Tax document organizer",
       "description": "Organizes supplied tax-season documents, income forms, deduction evidence, deadlines, missing-item questions, and preparer handoff packets without preparing returns, giving tax or legal advice, filing, contacting institutions, changing accounts, or moving money.",
@@ -4219,6 +4442,43 @@
         "level": "heightened",
         "reasons": [
           "plugin runtime"
+        ]
+      }
+    },
+    {
+      "id": "workforce-planning-partner",
+      "name": "Workforce planning partner",
+      "description": "Reconciles an exact approved organization-plan revision against funded role demand and aggregate workforce scenarios without making personnel or headcount decisions.",
+      "audience": "Workforce planners, finance partners, HR partners, and organization leaders preparing an evidence-bound workforce plan decision.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
         ]
       }
     }

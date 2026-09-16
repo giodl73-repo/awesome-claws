@@ -1,0 +1,1124 @@
+{
+  "schemaVersion": "awesomeClaws.businessContinuityProgram.v1",
+  "artifactId": "continuity-program-q3",
+  "program": {
+    "id": "continuity-program",
+    "cycleId": "cycle-2026-q3",
+    "requestedAt": "2026-09-01T09:00:00Z",
+    "programManagerRef": "principal-program-manager",
+    "currentRegisterRef": "register-q3",
+    "currentRegisterRevision": "sha256:1bdeb1fc3d35719b98b73e745195520f09d6e654c6c93f376e8850a432de571f",
+    "predecessorRegisterRef": "register-q2",
+    "predecessorRegisterRevision": "sha256:6bcbf326091725b6e30650738b03deaf67f273daee6f47eae114495ef130ad70",
+    "handoffOwnerRef": "principal-handoff-owner",
+    "destination": "continuity-owner-review",
+    "programDigest": "sha256:93c2f51f9cab43185a583954aa9a08a1cd8b45c7dc4c6ab3d76800bc1b7bf887"
+  },
+  "principals": [
+    {
+      "id": "principal-program-manager",
+      "name": "Morgan Program Manager",
+      "role": "program-manager",
+      "scopes": [
+        "cycle-2026-q3"
+      ]
+    },
+    {
+      "id": "principal-register-owner",
+      "name": "Riley Register Owner",
+      "role": "register-owner",
+      "scopes": [
+        "register-q2",
+        "register-q3"
+      ]
+    },
+    {
+      "id": "principal-checkout-owner",
+      "name": "Casey Checkout Owner",
+      "role": "process-owner",
+      "scopes": [
+        "process-checkout",
+        "process-lineage-checkout",
+        "bia-checkout",
+        "plan-checkout-v2",
+        "plan-checkout-v3"
+      ]
+    },
+    {
+      "id": "principal-payroll-owner",
+      "name": "Parker Payroll Owner",
+      "role": "process-owner",
+      "scopes": [
+        "process-payroll",
+        "process-payroll-old",
+        "process-lineage-payroll",
+        "bia-payroll",
+        "plan-payroll-v3",
+        "plan-payroll-v4"
+      ]
+    },
+    {
+      "id": "principal-dependency-owner",
+      "name": "Devon Dependency Owner",
+      "role": "dependency-owner",
+      "scopes": [
+        "dependency-checkout-service",
+        "dependency-checkout-vendor",
+        "dependency-checkout-site",
+        "dependency-payroll-service",
+        "dependency-payroll-vendor",
+        "dependency-payroll-site"
+      ]
+    },
+    {
+      "id": "principal-invocation-authority",
+      "name": "Avery Invocation Authority",
+      "role": "plan-invocation-authority",
+      "scopes": [
+        "plan-checkout-v3",
+        "plan-payroll-v4"
+      ]
+    },
+    {
+      "id": "principal-scope-approver",
+      "name": "Skyler Exercise Authority",
+      "role": "exercise-scope-approver",
+      "scopes": [
+        "exercise-q3"
+      ]
+    },
+    {
+      "id": "principal-evaluator",
+      "name": "Quinn Independent Evaluator",
+      "role": "exercise-evaluator",
+      "scopes": [
+        "exercise-q3"
+      ]
+    },
+    {
+      "id": "principal-remediation-owner",
+      "name": "Reese Remediation Owner",
+      "role": "remediation-owner",
+      "scopes": [
+        "action-checkout",
+        "action-payroll",
+        "finding-checkout",
+        "finding-payroll"
+      ]
+    },
+    {
+      "id": "principal-verifier",
+      "name": "Emerson Remediation Verifier",
+      "role": "remediation-verifier",
+      "scopes": [
+        "action-checkout"
+      ]
+    },
+    {
+      "id": "principal-exception-approver",
+      "name": "Finley Risk Authority",
+      "role": "exception-approver",
+      "scopes": [
+        "exception-checkout",
+        "exception-payroll"
+      ]
+    },
+    {
+      "id": "principal-exception-revoker",
+      "name": "Sage Exception Revoker",
+      "role": "exception-revoker",
+      "scopes": [
+        "exception-checkout"
+      ]
+    },
+    {
+      "id": "principal-recertifier",
+      "name": "Hayden Independent Recertifier",
+      "role": "independent-recertifier",
+      "scopes": [
+        "process-checkout",
+        "process-payroll"
+      ]
+    },
+    {
+      "id": "principal-handoff-owner",
+      "name": "Rowan Continuity Owner",
+      "role": "handoff-owner",
+      "scopes": [
+        "continuity-owner-review"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-register-q2",
+      "kind": "register",
+      "observedAt": "2026-07-01T09:00:00Z",
+      "suppliedByRef": "principal-register-owner",
+      "subjectRefs": [
+        "register-q2"
+      ],
+      "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadDigest": "sha256:0150958eff2fe18774ef69688c6f74868f230943ab0c1f5a5578f0d1f0a4f92f"
+    },
+    {
+      "id": "evidence-register-q3",
+      "kind": "register",
+      "observedAt": "2026-09-01T09:00:00Z",
+      "suppliedByRef": "principal-register-owner",
+      "subjectRefs": [
+        "register-q3"
+      ],
+      "sourceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "payloadDigest": "sha256:47c3c534170bf497b7776100307c6f15c3d7559d9b2e5fba18dd7d821f3d628d"
+    },
+    {
+      "id": "evidence-processes",
+      "kind": "process",
+      "observedAt": "2026-09-01T10:00:00Z",
+      "suppliedByRef": "principal-register-owner",
+      "subjectRefs": [
+        "process-checkout",
+        "process-payroll"
+      ],
+      "sourceDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "payloadDigest": "sha256:938e224351e4a74d25e9d0076c4cf32cce61d3c63ad9c3fa7c3a9abba9304822"
+    },
+    {
+      "id": "evidence-bia-checkout",
+      "kind": "bia-approval",
+      "observedAt": "2026-09-02T09:00:00Z",
+      "suppliedByRef": "principal-checkout-owner",
+      "subjectRefs": [
+        "bia-checkout"
+      ],
+      "sourceDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "payloadDigest": "sha256:108ddd72fe9c30d6e2e87717a90c17ae371d2f150d4abe4d4eeebcc450d7c90a"
+    },
+    {
+      "id": "evidence-bia-payroll",
+      "kind": "bia-approval",
+      "observedAt": "2026-09-02T10:00:00Z",
+      "suppliedByRef": "principal-payroll-owner",
+      "subjectRefs": [
+        "bia-payroll"
+      ],
+      "sourceDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "payloadDigest": "sha256:0a263ba284ab6c43c76f27bd0af4ed689a29432c20046859078babc89dd1734a"
+    },
+    {
+      "id": "evidence-dependencies",
+      "kind": "dependency-attestation",
+      "observedAt": "2026-09-03T12:00:00Z",
+      "suppliedByRef": "principal-dependency-owner",
+      "subjectRefs": [
+        "dependency-checkout-service",
+        "dependency-checkout-vendor",
+        "dependency-checkout-site",
+        "dependency-payroll-service",
+        "dependency-payroll-vendor",
+        "dependency-payroll-site"
+      ],
+      "sourceDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "payloadDigest": "sha256:f1ed9e6e831a6b2f036997b109fcfb5bffbd9a9dbde479eed977011e6d126d1e"
+    },
+    {
+      "id": "evidence-plan-checkout",
+      "kind": "plan-approval",
+      "observedAt": "2026-09-05T09:00:00Z",
+      "suppliedByRef": "principal-checkout-owner",
+      "subjectRefs": [
+        "plan-checkout-v3"
+      ],
+      "sourceDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "payloadDigest": "sha256:6381402058cb526b4c52306293d776b75001fc483a8c60794ec75e523dae0aed"
+    },
+    {
+      "id": "evidence-plan-payroll",
+      "kind": "plan-approval",
+      "observedAt": "2026-09-05T10:00:00Z",
+      "suppliedByRef": "principal-payroll-owner",
+      "subjectRefs": [
+        "plan-payroll-v4"
+      ],
+      "sourceDigest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "payloadDigest": "sha256:76e7b0e879cebe116e72d850e81030a683c220f0953a86cac2859211531cd44c"
+    },
+    {
+      "id": "evidence-exercise-charter",
+      "kind": "exercise-charter",
+      "observedAt": "2026-09-06T09:00:00Z",
+      "suppliedByRef": "principal-scope-approver",
+      "subjectRefs": [
+        "exercise-q3"
+      ],
+      "sourceDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "payloadDigest": "sha256:a1729358f7bb970196a62f8cd20da1251f435c9741624394ff1d8a06779eff92"
+    },
+    {
+      "id": "evidence-exercise-result",
+      "kind": "exercise-result",
+      "observedAt": "2026-09-10T17:00:00Z",
+      "suppliedByRef": "principal-evaluator",
+      "subjectRefs": [
+        "exercise-q3",
+        "finding-checkout",
+        "finding-payroll"
+      ],
+      "sourceDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "payloadDigest": "sha256:26bca21cf4785f1f746f9c0311417457561c259ce2a24673860e571c3f0543ae"
+    },
+    {
+      "id": "evidence-findings",
+      "kind": "finding",
+      "observedAt": "2026-09-10T17:30:00Z",
+      "suppliedByRef": "principal-evaluator",
+      "subjectRefs": [
+        "finding-checkout",
+        "finding-payroll"
+      ],
+      "sourceDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "payloadDigest": "sha256:1b0a66a6018940b0bd8004b6f7549c2ea463d84f0b0efe9c8ae13c7788dd3535"
+    },
+    {
+      "id": "evidence-actions",
+      "kind": "corrective-action",
+      "observedAt": "2026-09-11T09:00:00Z",
+      "suppliedByRef": "principal-remediation-owner",
+      "subjectRefs": [
+        "action-checkout",
+        "action-payroll"
+      ],
+      "sourceDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "payloadDigest": "sha256:41f11b177be2b8123347d9d19ee6f3b4ff450c0626126720317326ef5ba0f920"
+    },
+    {
+      "id": "evidence-receipt-checkout",
+      "kind": "remediation-receipt",
+      "observedAt": "2026-09-12T09:00:00Z",
+      "suppliedByRef": "principal-verifier",
+      "subjectRefs": [
+        "receipt-checkout",
+        "action-checkout"
+      ],
+      "sourceDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "payloadDigest": "sha256:9ab755242ced597683cdc9888e888b840ddb6675dbeec0bbe9a8daf1735560dc"
+    },
+    {
+      "id": "evidence-exception-payroll",
+      "kind": "exception-approval",
+      "observedAt": "2026-09-11T12:00:00Z",
+      "suppliedByRef": "principal-exception-approver",
+      "subjectRefs": [
+        "exception-payroll"
+      ],
+      "sourceDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "payloadDigest": "sha256:0776c476649408dc527d36734cd70b504d3150dcc99fda3dd64db8f4bb62e375"
+    },
+    {
+      "id": "evidence-recertifications",
+      "kind": "recertification",
+      "observedAt": "2026-09-13T12:00:00Z",
+      "suppliedByRef": "principal-recertifier",
+      "subjectRefs": [
+        "recertification-checkout",
+        "recertification-payroll"
+      ],
+      "sourceDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "payloadDigest": "sha256:fe6942f12afdf211fdc646370e6aa34acbb65e5154b2a2dd358bfaa0facdd6e6"
+    },
+    {
+      "id": "evidence-blockers",
+      "kind": "blocker",
+      "observedAt": "2026-09-14T18:00:00Z",
+      "suppliedByRef": "principal-program-manager",
+      "subjectRefs": [
+        "blocker-open-finding",
+        "blocker-active-exception"
+      ],
+      "sourceDigest": "sha256:1010101010101010101010101010101010101010101010101010101010101010",
+      "payloadDigest": "sha256:39b6e69ecb9fcfad4f81f7e36a3170da3235e52cab8a25e6fe147f9d023a33bf"
+    },
+    {
+      "id": "evidence-plan-checkout-v2",
+      "kind": "plan-predecessor",
+      "observedAt": "2026-06-15T10:00:00Z",
+      "suppliedByRef": "principal-checkout-owner",
+      "subjectRefs": [
+        "plan-checkout-v2"
+      ],
+      "sourceDigest": "sha256:2828282828282828282828282828282828282828282828282828282828282828",
+      "payloadDigest": "sha256:7bf092ab98c9361df38728d68bbb4794e6a84424862238f8ed76e1d648ca583b"
+    },
+    {
+      "id": "evidence-plan-payroll-v3",
+      "kind": "plan-predecessor",
+      "observedAt": "2026-06-16T10:00:00Z",
+      "suppliedByRef": "principal-payroll-owner",
+      "subjectRefs": [
+        "plan-payroll-v3"
+      ],
+      "sourceDigest": "sha256:2929292929292929292929292929292929292929292929292929292929292929",
+      "payloadDigest": "sha256:ac5eeb78f672326698f306a30f79a269f5d91b32a6e7140bfb6c3361e360917a"
+    },
+    {
+      "id": "evidence-exception-checkout",
+      "kind": "exception-approval",
+      "observedAt": "2026-09-11T11:00:00Z",
+      "suppliedByRef": "principal-exception-approver",
+      "subjectRefs": [
+        "exception-checkout"
+      ],
+      "sourceDigest": "sha256:3030303030303030303030303030303030303030303030303030303030303030",
+      "payloadDigest": "sha256:e290819c0d3466f6df3aba4df865634889b32e1d35bc4020b5b407365302d6ed"
+    },
+    {
+      "id": "evidence-revocation-checkout",
+      "kind": "exception-revocation",
+      "observedAt": "2026-09-12T12:30:00Z",
+      "suppliedByRef": "principal-exception-revoker",
+      "subjectRefs": [
+        "exception-checkout"
+      ],
+      "sourceDigest": "sha256:3131313131313131313131313131313131313131313131313131313131313131",
+      "payloadDigest": "sha256:d7a243302806b1c66badc31883d86b2bba36665c07b3cb71de34a69e33999929"
+    }
+  ],
+  "registers": [
+    {
+      "id": "register-q2",
+      "issuedAt": "2026-07-01T09:00:00Z",
+      "suppliedByRef": "principal-register-owner",
+      "predecessorRef": null,
+      "predecessorRevision": null,
+      "processRefs": [
+        "process-checkout",
+        "process-payroll-old",
+        "process-branch-deposit-old"
+      ],
+      "retiredProcessRefs": [],
+      "evidenceRef": "evidence-register-q2",
+      "revision": "sha256:6bcbf326091725b6e30650738b03deaf67f273daee6f47eae114495ef130ad70",
+      "processRevisions": [
+        "sha256:3232323232323232323232323232323232323232323232323232323232323232",
+        "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "sha256:3434343434343434343434343434343434343434343434343434343434343434"
+      ],
+      "processStableKeys": [
+        "process-lineage-checkout",
+        "process-lineage-payroll",
+        "process-lineage-branch-deposit"
+      ],
+      "processVersions": [
+        "v2",
+        "v3",
+        "v1"
+      ],
+      "processOwnerRefs": [
+        "principal-checkout-owner",
+        "principal-payroll-owner",
+        "principal-register-owner"
+      ],
+      "retiredProcessRevisions": [],
+      "evidenceSourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "evidencePayloadDigest": "sha256:0150958eff2fe18774ef69688c6f74868f230943ab0c1f5a5578f0d1f0a4f92f"
+    },
+    {
+      "id": "register-q3",
+      "issuedAt": "2026-09-01T09:00:00Z",
+      "suppliedByRef": "principal-register-owner",
+      "predecessorRef": "register-q2",
+      "predecessorRevision": "sha256:6bcbf326091725b6e30650738b03deaf67f273daee6f47eae114495ef130ad70",
+      "processRefs": [
+        "process-checkout",
+        "process-payroll"
+      ],
+      "retiredProcessRefs": [
+        "process-branch-deposit-old"
+      ],
+      "evidenceRef": "evidence-register-q3",
+      "revision": "sha256:1bdeb1fc3d35719b98b73e745195520f09d6e654c6c93f376e8850a432de571f",
+      "processRevisions": [
+        "sha256:dbf8bc9c0d4fa09306176a45a52e9d8eefaec3ee37b16c599902c5b27e6e9ad3",
+        "sha256:2ed9baa91a719eb71a87461c40660955d167583e180550321601c3ff327e9fad"
+      ],
+      "processStableKeys": [
+        "process-lineage-checkout",
+        "process-lineage-payroll"
+      ],
+      "processVersions": [
+        "v3",
+        "v4"
+      ],
+      "processOwnerRefs": [
+        "principal-checkout-owner",
+        "principal-payroll-owner"
+      ],
+      "retiredProcessRevisions": [
+        "sha256:3434343434343434343434343434343434343434343434343434343434343434"
+      ],
+      "evidenceSourceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "evidencePayloadDigest": "sha256:47c3c534170bf497b7776100307c6f15c3d7559d9b2e5fba18dd7d821f3d628d"
+    }
+  ],
+  "processes": [
+    {
+      "id": "process-checkout",
+      "stableKey": "process-lineage-checkout",
+      "version": "v3",
+      "name": "Digital checkout",
+      "changeKind": "retained",
+      "predecessorProcessRef": "process-checkout",
+      "registerRef": "register-q3",
+      "ownerRef": "principal-checkout-owner",
+      "criticality": "tier-0",
+      "sourceRevision": "sha256:1212121212121212121212121212121212121212121212121212121212121212",
+      "dependencyRefs": [
+        "dependency-checkout-service",
+        "dependency-checkout-vendor",
+        "dependency-checkout-site"
+      ],
+      "evidenceRef": "evidence-processes",
+      "revision": "sha256:dbf8bc9c0d4fa09306176a45a52e9d8eefaec3ee37b16c599902c5b27e6e9ad3",
+      "predecessorProcessRevision": "sha256:3232323232323232323232323232323232323232323232323232323232323232",
+      "evidenceSourceDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "evidencePayloadDigest": "sha256:938e224351e4a74d25e9d0076c4cf32cce61d3c63ad9c3fa7c3a9abba9304822"
+    },
+    {
+      "id": "process-payroll",
+      "stableKey": "process-lineage-payroll",
+      "version": "v4",
+      "name": "Payroll execution",
+      "changeKind": "revised",
+      "predecessorProcessRef": "process-payroll-old",
+      "registerRef": "register-q3",
+      "ownerRef": "principal-payroll-owner",
+      "criticality": "tier-1",
+      "sourceRevision": "sha256:1313131313131313131313131313131313131313131313131313131313131313",
+      "dependencyRefs": [
+        "dependency-payroll-service",
+        "dependency-payroll-vendor",
+        "dependency-payroll-site"
+      ],
+      "evidenceRef": "evidence-processes",
+      "revision": "sha256:2ed9baa91a719eb71a87461c40660955d167583e180550321601c3ff327e9fad",
+      "predecessorProcessRevision": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "evidenceSourceDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "evidencePayloadDigest": "sha256:938e224351e4a74d25e9d0076c4cf32cce61d3c63ad9c3fa7c3a9abba9304822"
+    }
+  ],
+  "businessImpactAnalyses": [
+    {
+      "id": "bia-checkout",
+      "processRef": "process-checkout",
+      "processRevision": "sha256:dbf8bc9c0d4fa09306176a45a52e9d8eefaec3ee37b16c599902c5b27e6e9ad3",
+      "impactTier": "catastrophic",
+      "rtoMinutes": 60,
+      "rpoMinutes": 15,
+      "approvedByRef": "principal-checkout-owner",
+      "approvedAt": "2026-09-02T09:00:00Z",
+      "evidenceRef": "evidence-bia-checkout",
+      "revision": "sha256:10c646cd24b473890cbcfe59026bad590e98ba35315b8580430199bfdd7bcba8",
+      "evidenceSourceDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "evidencePayloadDigest": "sha256:108ddd72fe9c30d6e2e87717a90c17ae371d2f150d4abe4d4eeebcc450d7c90a"
+    },
+    {
+      "id": "bia-payroll",
+      "processRef": "process-payroll",
+      "processRevision": "sha256:2ed9baa91a719eb71a87461c40660955d167583e180550321601c3ff327e9fad",
+      "impactTier": "major",
+      "rtoMinutes": 240,
+      "rpoMinutes": 1440,
+      "approvedByRef": "principal-payroll-owner",
+      "approvedAt": "2026-09-02T10:00:00Z",
+      "evidenceRef": "evidence-bia-payroll",
+      "revision": "sha256:66b9f2250c0ee59a98a2bcb5272e18fe67ef3d3d424fb0ca090b1059cfc84076",
+      "evidenceSourceDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "evidencePayloadDigest": "sha256:0a263ba284ab6c43c76f27bd0af4ed689a29432c20046859078babc89dd1734a"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "dependency-checkout-service",
+      "processRef": "process-checkout",
+      "processRevision": "sha256:dbf8bc9c0d4fa09306176a45a52e9d8eefaec3ee37b16c599902c5b27e6e9ad3",
+      "kind": "service",
+      "name": "Payment authorization",
+      "ownerRef": "principal-dependency-owner",
+      "sourceRevision": "sha256:1414141414141414141414141414141414141414141414141414141414141414",
+      "attestedAt": "2026-09-03T09:00:00Z",
+      "evidenceRef": "evidence-dependencies",
+      "revision": "sha256:73b2a630da07c261f3c3d1a459a53f50fbc08d129a8a1b9525d4872673137758",
+      "evidenceSourceDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "evidencePayloadDigest": "sha256:f1ed9e6e831a6b2f036997b109fcfb5bffbd9a9dbde479eed977011e6d126d1e"
+    },
+    {
+      "id": "dependency-checkout-vendor",
+      "processRef": "process-checkout",
+      "processRevision": "sha256:dbf8bc9c0d4fa09306176a45a52e9d8eefaec3ee37b16c599902c5b27e6e9ad3",
+      "kind": "vendor",
+      "name": "Payment processor",
+      "ownerRef": "principal-dependency-owner",
+      "sourceRevision": "sha256:1515151515151515151515151515151515151515151515151515151515151515",
+      "attestedAt": "2026-09-03T09:30:00Z",
+      "evidenceRef": "evidence-dependencies",
+      "revision": "sha256:64a829c0c30efa39bb32bc7ca47b3faafe431a7b88a8570d60996951b91f5e9b",
+      "evidenceSourceDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "evidencePayloadDigest": "sha256:f1ed9e6e831a6b2f036997b109fcfb5bffbd9a9dbde479eed977011e6d126d1e"
+    },
+    {
+      "id": "dependency-checkout-site",
+      "processRef": "process-checkout",
+      "processRevision": "sha256:dbf8bc9c0d4fa09306176a45a52e9d8eefaec3ee37b16c599902c5b27e6e9ad3",
+      "kind": "site",
+      "name": "East region",
+      "ownerRef": "principal-dependency-owner",
+      "sourceRevision": "sha256:1616161616161616161616161616161616161616161616161616161616161616",
+      "attestedAt": "2026-09-03T10:00:00Z",
+      "evidenceRef": "evidence-dependencies",
+      "revision": "sha256:c6d5ab648b638d5b1e3b94d970f64f24871a3dcf70749b2088a024d07b65dfdb",
+      "evidenceSourceDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "evidencePayloadDigest": "sha256:f1ed9e6e831a6b2f036997b109fcfb5bffbd9a9dbde479eed977011e6d126d1e"
+    },
+    {
+      "id": "dependency-payroll-service",
+      "processRef": "process-payroll",
+      "processRevision": "sha256:2ed9baa91a719eb71a87461c40660955d167583e180550321601c3ff327e9fad",
+      "kind": "service",
+      "name": "HR information service",
+      "ownerRef": "principal-dependency-owner",
+      "sourceRevision": "sha256:1717171717171717171717171717171717171717171717171717171717171717",
+      "attestedAt": "2026-09-03T10:30:00Z",
+      "evidenceRef": "evidence-dependencies",
+      "revision": "sha256:4a69f33dbcb8e7418b12c85dfb3b06d597513af8f1943b1d032eb39e7d71354f",
+      "evidenceSourceDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "evidencePayloadDigest": "sha256:f1ed9e6e831a6b2f036997b109fcfb5bffbd9a9dbde479eed977011e6d126d1e"
+    },
+    {
+      "id": "dependency-payroll-vendor",
+      "processRef": "process-payroll",
+      "processRevision": "sha256:2ed9baa91a719eb71a87461c40660955d167583e180550321601c3ff327e9fad",
+      "kind": "vendor",
+      "name": "Payroll processor",
+      "ownerRef": "principal-dependency-owner",
+      "sourceRevision": "sha256:1818181818181818181818181818181818181818181818181818181818181818",
+      "attestedAt": "2026-09-03T11:00:00Z",
+      "evidenceRef": "evidence-dependencies",
+      "revision": "sha256:ae0f0ef6a191061338532c246e55c0e96fa906f87e8ba529d95677b0637fdcf1",
+      "evidenceSourceDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "evidencePayloadDigest": "sha256:f1ed9e6e831a6b2f036997b109fcfb5bffbd9a9dbde479eed977011e6d126d1e"
+    },
+    {
+      "id": "dependency-payroll-site",
+      "processRef": "process-payroll",
+      "processRevision": "sha256:2ed9baa91a719eb71a87461c40660955d167583e180550321601c3ff327e9fad",
+      "kind": "site",
+      "name": "Headquarters",
+      "ownerRef": "principal-dependency-owner",
+      "sourceRevision": "sha256:1919191919191919191919191919191919191919191919191919191919191919",
+      "attestedAt": "2026-09-03T11:30:00Z",
+      "evidenceRef": "evidence-dependencies",
+      "revision": "sha256:0659ac6e1963a75eb54d589e1c9089aaad5080d37448fd7df3a807c3334849d8",
+      "evidenceSourceDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "evidencePayloadDigest": "sha256:f1ed9e6e831a6b2f036997b109fcfb5bffbd9a9dbde479eed977011e6d126d1e"
+    }
+  ],
+  "plans": [
+    {
+      "id": "plan-checkout-v3",
+      "version": "v3",
+      "predecessorRef": "plan-checkout-v2",
+      "predecessorRevision": "sha256:b552283519f39b9f8a46a2149ad0900c48a901ebfd8a81227b61dc4bc262a2b9",
+      "processRefs": [
+        "process-checkout"
+      ],
+      "processRevisions": [
+        "sha256:dbf8bc9c0d4fa09306176a45a52e9d8eefaec3ee37b16c599902c5b27e6e9ad3"
+      ],
+      "processStableKeys": [
+        "process-lineage-checkout"
+      ],
+      "processVersions": [
+        "v3"
+      ],
+      "biaRefs": [
+        "bia-checkout"
+      ],
+      "biaRevisions": [
+        "sha256:10c646cd24b473890cbcfe59026bad590e98ba35315b8580430199bfdd7bcba8"
+      ],
+      "dependencyRefs": [
+        "dependency-checkout-service",
+        "dependency-checkout-vendor",
+        "dependency-checkout-site"
+      ],
+      "dependencyRevisions": [
+        "sha256:73b2a630da07c261f3c3d1a459a53f50fbc08d129a8a1b9525d4872673137758",
+        "sha256:64a829c0c30efa39bb32bc7ca47b3faafe431a7b88a8570d60996951b91f5e9b",
+        "sha256:c6d5ab648b638d5b1e3b94d970f64f24871a3dcf70749b2088a024d07b65dfdb"
+      ],
+      "strategyCodes": [
+        "alternate-provider",
+        "data-recovery"
+      ],
+      "approvedByRef": "principal-checkout-owner",
+      "approvedAt": "2026-09-05T09:00:00Z",
+      "invocationAuthorityRef": "principal-invocation-authority",
+      "evidenceRef": "evidence-plan-checkout",
+      "revision": "sha256:735c8ba5ab4d5b0e32079687259a17269cd9a4159f911a9e41213ab4d337ecfc",
+      "evidenceSourceDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "evidencePayloadDigest": "sha256:6381402058cb526b4c52306293d776b75001fc483a8c60794ec75e523dae0aed"
+    },
+    {
+      "id": "plan-payroll-v4",
+      "version": "v4",
+      "predecessorRef": "plan-payroll-v3",
+      "predecessorRevision": "sha256:4690cdc318f1251f384379759f73c091f4d6e3e843fd2f920c2bfed590da96c1",
+      "processRefs": [
+        "process-payroll"
+      ],
+      "processRevisions": [
+        "sha256:2ed9baa91a719eb71a87461c40660955d167583e180550321601c3ff327e9fad"
+      ],
+      "processStableKeys": [
+        "process-lineage-payroll"
+      ],
+      "processVersions": [
+        "v4"
+      ],
+      "biaRefs": [
+        "bia-payroll"
+      ],
+      "biaRevisions": [
+        "sha256:66b9f2250c0ee59a98a2bcb5272e18fe67ef3d3d424fb0ca090b1059cfc84076"
+      ],
+      "dependencyRefs": [
+        "dependency-payroll-service",
+        "dependency-payroll-vendor",
+        "dependency-payroll-site"
+      ],
+      "dependencyRevisions": [
+        "sha256:4a69f33dbcb8e7418b12c85dfb3b06d597513af8f1943b1d032eb39e7d71354f",
+        "sha256:ae0f0ef6a191061338532c246e55c0e96fa906f87e8ba529d95677b0637fdcf1",
+        "sha256:0659ac6e1963a75eb54d589e1c9089aaad5080d37448fd7df3a807c3334849d8"
+      ],
+      "strategyCodes": [
+        "manual-workaround",
+        "alternate-site"
+      ],
+      "approvedByRef": "principal-payroll-owner",
+      "approvedAt": "2026-09-05T10:00:00Z",
+      "invocationAuthorityRef": "principal-invocation-authority",
+      "evidenceRef": "evidence-plan-payroll",
+      "revision": "sha256:bab9f555021bc214a9dd7519df18ab257c119e33d88cd470523b102d123b7379",
+      "evidenceSourceDigest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "evidencePayloadDigest": "sha256:76e7b0e879cebe116e72d850e81030a683c220f0953a86cac2859211531cd44c"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "exercise-q3",
+      "performedAt": "2026-09-10T16:00:00Z",
+      "scopeApprovedByRef": "principal-scope-approver",
+      "scopeProcessRefs": [
+        "process-checkout",
+        "process-payroll"
+      ],
+      "scopeProcessRevisions": [
+        "sha256:dbf8bc9c0d4fa09306176a45a52e9d8eefaec3ee37b16c599902c5b27e6e9ad3",
+        "sha256:2ed9baa91a719eb71a87461c40660955d167583e180550321601c3ff327e9fad"
+      ],
+      "planRefs": [
+        "plan-checkout-v3",
+        "plan-payroll-v4"
+      ],
+      "planRevisions": [
+        "sha256:735c8ba5ab4d5b0e32079687259a17269cd9a4159f911a9e41213ab4d337ecfc",
+        "sha256:bab9f555021bc214a9dd7519df18ab257c119e33d88cd470523b102d123b7379"
+      ],
+      "injects": [
+        {
+          "id": "inject-service-loss",
+          "sequence": 1,
+          "kind": "service-loss",
+          "descriptionDigest": "sha256:2020202020202020202020202020202020202020202020202020202020202020"
+        },
+        {
+          "id": "inject-vendor-loss",
+          "sequence": 2,
+          "kind": "vendor-loss",
+          "descriptionDigest": "sha256:2121212121212121212121212121212121212121212121212121212121212121"
+        },
+        {
+          "id": "inject-site-loss",
+          "sequence": 3,
+          "kind": "site-loss",
+          "descriptionDigest": "sha256:2323232323232323232323232323232323232323232323232323232323232323"
+        }
+      ],
+      "result": "completed-with-findings",
+      "evaluatorRef": "principal-evaluator",
+      "evidenceRefs": [
+        "evidence-exercise-charter",
+        "evidence-exercise-result"
+      ],
+      "revision": "sha256:2e8874c17a711a7d964c7a749b89e81c3bc74a955f2af7779e798e052a3e9c3f",
+      "findingRefs": [
+        "finding-checkout",
+        "finding-payroll"
+      ],
+      "evidenceSourceDigests": [
+        "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "evidencePayloadDigests": [
+        "sha256:a1729358f7bb970196a62f8cd20da1251f435c9741624394ff1d8a06779eff92",
+        "sha256:26bca21cf4785f1f746f9c0311417457561c259ce2a24673860e571c3f0543ae"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "finding-checkout",
+      "stableKey": "sha256:ed85a1ec72ce8745ff6c0a9cbb0e0460c63795bd597d0c1bc66379d9a97ee49f",
+      "exerciseRef": "exercise-q3",
+      "processRef": "process-checkout",
+      "category": "dependency-gap",
+      "severity": "medium",
+      "identifiedAt": "2026-09-10T17:10:00Z",
+      "ownerRef": "principal-remediation-owner",
+      "state": "verified-closed",
+      "evidenceRef": "evidence-findings",
+      "revision": "sha256:91a2c839d1927dcb77f89c84034632b1b0c5e99e121a25ce996699e351e7e632",
+      "evidenceSourceDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "evidencePayloadDigest": "sha256:1b0a66a6018940b0bd8004b6f7549c2ea463d84f0b0efe9c8ae13c7788dd3535"
+    },
+    {
+      "id": "finding-payroll",
+      "stableKey": "sha256:594c719f2ce10dee676fdff09eafcb6578b8c9c8e086b9f18212f111b3873a7b",
+      "exerciseRef": "exercise-q3",
+      "processRef": "process-payroll",
+      "category": "communication-gap",
+      "severity": "high",
+      "identifiedAt": "2026-09-10T17:20:00Z",
+      "ownerRef": "principal-remediation-owner",
+      "state": "in-remediation",
+      "evidenceRef": "evidence-findings",
+      "revision": "sha256:52a06b99b4897e12e1c29eb2eb553f07c60bbc8b4480d3c3cbd07f3f6c6707a5",
+      "evidenceSourceDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "evidencePayloadDigest": "sha256:1b0a66a6018940b0bd8004b6f7549c2ea463d84f0b0efe9c8ae13c7788dd3535"
+    }
+  ],
+  "correctiveActions": [
+    {
+      "id": "action-checkout",
+      "findingRef": "finding-checkout",
+      "findingRevision": "sha256:91a2c839d1927dcb77f89c84034632b1b0c5e99e121a25ce996699e351e7e632",
+      "ownerRef": "principal-remediation-owner",
+      "dueAt": "2026-09-30T17:00:00Z",
+      "status": "verified",
+      "receiptRef": "receipt-checkout",
+      "receiptRevision": "sha256:9ab755242ced597683cdc9888e888b840ddb6675dbeec0bbe9a8daf1735560dc",
+      "verifiedByRef": "principal-verifier",
+      "verifiedAt": "2026-09-12T09:00:00Z",
+      "evidenceRef": "evidence-receipt-checkout",
+      "revision": "sha256:b74b267584e3147fc8c34db1479572865b026fc0628141790f4fd28ae049c0c9",
+      "evidenceSourceDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "evidencePayloadDigest": "sha256:9ab755242ced597683cdc9888e888b840ddb6675dbeec0bbe9a8daf1735560dc"
+    },
+    {
+      "id": "action-payroll",
+      "findingRef": "finding-payroll",
+      "findingRevision": "sha256:52a06b99b4897e12e1c29eb2eb553f07c60bbc8b4480d3c3cbd07f3f6c6707a5",
+      "ownerRef": "principal-remediation-owner",
+      "dueAt": "2026-09-30T17:00:00Z",
+      "status": "in-progress",
+      "receiptRef": null,
+      "receiptRevision": null,
+      "verifiedByRef": null,
+      "verifiedAt": null,
+      "evidenceRef": "evidence-actions",
+      "revision": "sha256:e35d3205a902b8e1f0c2f5324deaa2c3ab47f80874383633e0bd5e7df1390173",
+      "evidenceSourceDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "evidencePayloadDigest": "sha256:41f11b177be2b8123347d9d19ee6f3b4ff450c0626126720317326ef5ba0f920"
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "exception-checkout",
+      "findingRef": "finding-checkout",
+      "processRef": "process-checkout",
+      "scopeDigest": "sha256:6f949c7a48a2b9c1c8fead84c9063a37deadf371ac1ba8b99d5a01fd62c8381c",
+      "approvedByRef": "principal-exception-approver",
+      "approvedAt": "2026-09-11T10:00:00Z",
+      "expiresAt": "2026-10-15T23:59:59Z",
+      "status": "revoked",
+      "evidenceRef": "evidence-exception-checkout",
+      "evidenceSourceDigest": "sha256:3030303030303030303030303030303030303030303030303030303030303030",
+      "evidencePayloadDigest": "sha256:e290819c0d3466f6df3aba4df865634889b32e1d35bc4020b5b407365302d6ed",
+      "revokedByRef": "principal-exception-revoker",
+      "revokedAt": "2026-09-12T12:00:00Z",
+      "revocationEvidenceRef": "evidence-revocation-checkout",
+      "revocationEvidenceSourceDigest": "sha256:3131313131313131313131313131313131313131313131313131313131313131",
+      "revocationEvidencePayloadDigest": "sha256:d7a243302806b1c66badc31883d86b2bba36665c07b3cb71de34a69e33999929",
+      "revision": "sha256:4c2e730925051be8fc157b009b974a13b8b7c30e96c8fc731b09d5b57a7be8e1"
+    },
+    {
+      "id": "exception-payroll",
+      "findingRef": "finding-payroll",
+      "processRef": "process-payroll",
+      "scopeDigest": "sha256:1d8aadbacc7b7e64277f57bf3d317451a6206153fa803079f3012d1c3875c116",
+      "approvedByRef": "principal-exception-approver",
+      "approvedAt": "2026-09-11T12:00:00Z",
+      "expiresAt": "2026-10-31T23:59:59Z",
+      "status": "active",
+      "evidenceRef": "evidence-exception-payroll",
+      "revision": "sha256:f8852b2931bccb4ed0b7adb59f85ed72e02c83fddf0a1fd6452f32c26bc4cd60",
+      "evidenceSourceDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "evidencePayloadDigest": "sha256:0776c476649408dc527d36734cd70b504d3150dcc99fda3dd64db8f4bb62e375",
+      "revokedByRef": null,
+      "revokedAt": null,
+      "revocationEvidenceRef": null,
+      "revocationEvidenceSourceDigest": null,
+      "revocationEvidencePayloadDigest": null
+    }
+  ],
+  "recertifications": [
+    {
+      "id": "recertification-checkout",
+      "processRef": "process-checkout",
+      "processRevision": "sha256:dbf8bc9c0d4fa09306176a45a52e9d8eefaec3ee37b16c599902c5b27e6e9ad3",
+      "biaRevision": "sha256:10c646cd24b473890cbcfe59026bad590e98ba35315b8580430199bfdd7bcba8",
+      "dependencyRevisions": [
+        "sha256:73b2a630da07c261f3c3d1a459a53f50fbc08d129a8a1b9525d4872673137758",
+        "sha256:64a829c0c30efa39bb32bc7ca47b3faafe431a7b88a8570d60996951b91f5e9b",
+        "sha256:c6d5ab648b638d5b1e3b94d970f64f24871a3dcf70749b2088a024d07b65dfdb"
+      ],
+      "planRevision": "sha256:735c8ba5ab4d5b0e32079687259a17269cd9a4159f911a9e41213ab4d337ecfc",
+      "exerciseRevisions": [
+        "sha256:2e8874c17a711a7d964c7a749b89e81c3bc74a955f2af7779e798e052a3e9c3f"
+      ],
+      "findingRevisions": [
+        "sha256:91a2c839d1927dcb77f89c84034632b1b0c5e99e121a25ce996699e351e7e632"
+      ],
+      "actionRevisions": [
+        "sha256:b74b267584e3147fc8c34db1479572865b026fc0628141790f4fd28ae049c0c9"
+      ],
+      "exceptionRevisions": [
+        "sha256:4c2e730925051be8fc157b009b974a13b8b7c30e96c8fc731b09d5b57a7be8e1"
+      ],
+      "recertifiedByRef": "principal-recertifier",
+      "recertifiedAt": "2026-09-13T09:00:00Z",
+      "decision": "evidence-current",
+      "evidenceRef": "evidence-recertifications",
+      "revision": "sha256:dbe676ab2e9a44853cc55ad83529344cfdcc8b9c91e08077589fc2a4c14f9eef",
+      "evidenceSourceDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "evidencePayloadDigest": "sha256:fe6942f12afdf211fdc646370e6aa34acbb65e5154b2a2dd358bfaa0facdd6e6"
+    },
+    {
+      "id": "recertification-payroll",
+      "processRef": "process-payroll",
+      "processRevision": "sha256:2ed9baa91a719eb71a87461c40660955d167583e180550321601c3ff327e9fad",
+      "biaRevision": "sha256:66b9f2250c0ee59a98a2bcb5272e18fe67ef3d3d424fb0ca090b1059cfc84076",
+      "dependencyRevisions": [
+        "sha256:4a69f33dbcb8e7418b12c85dfb3b06d597513af8f1943b1d032eb39e7d71354f",
+        "sha256:ae0f0ef6a191061338532c246e55c0e96fa906f87e8ba529d95677b0637fdcf1",
+        "sha256:0659ac6e1963a75eb54d589e1c9089aaad5080d37448fd7df3a807c3334849d8"
+      ],
+      "planRevision": "sha256:bab9f555021bc214a9dd7519df18ab257c119e33d88cd470523b102d123b7379",
+      "exerciseRevisions": [
+        "sha256:2e8874c17a711a7d964c7a749b89e81c3bc74a955f2af7779e798e052a3e9c3f"
+      ],
+      "findingRevisions": [
+        "sha256:52a06b99b4897e12e1c29eb2eb553f07c60bbc8b4480d3c3cbd07f3f6c6707a5"
+      ],
+      "actionRevisions": [
+        "sha256:e35d3205a902b8e1f0c2f5324deaa2c3ab47f80874383633e0bd5e7df1390173"
+      ],
+      "exceptionRevisions": [
+        "sha256:f8852b2931bccb4ed0b7adb59f85ed72e02c83fddf0a1fd6452f32c26bc4cd60"
+      ],
+      "recertifiedByRef": "principal-recertifier",
+      "recertifiedAt": "2026-09-13T10:00:00Z",
+      "decision": "recertification-blocked",
+      "evidenceRef": "evidence-recertifications",
+      "revision": "sha256:cde1ba80509837660c4c588854e9f9da4fdc25efc369d42867e6a88f4fe0c624",
+      "evidenceSourceDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "evidencePayloadDigest": "sha256:fe6942f12afdf211fdc646370e6aa34acbb65e5154b2a2dd358bfaa0facdd6e6"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "blocker-open-finding",
+      "category": "exercise-finding-open",
+      "targetRefs": [
+        "finding-payroll"
+      ],
+      "ownerRef": "principal-remediation-owner",
+      "evidenceRef": "evidence-blockers",
+      "evidenceSourceDigest": "sha256:1010101010101010101010101010101010101010101010101010101010101010",
+      "evidencePayloadDigest": "sha256:39b6e69ecb9fcfad4f81f7e36a3170da3235e52cab8a25e6fe147f9d023a33bf",
+      "revision": "sha256:02b402ee7c0dc24969ad85352c7242437fa73149ecea743ad9be93d94a0a5876"
+    },
+    {
+      "id": "blocker-active-exception",
+      "category": "exception-active",
+      "targetRefs": [
+        "exception-payroll"
+      ],
+      "ownerRef": "principal-exception-approver",
+      "evidenceRef": "evidence-blockers",
+      "evidenceSourceDigest": "sha256:1010101010101010101010101010101010101010101010101010101010101010",
+      "evidencePayloadDigest": "sha256:39b6e69ecb9fcfad4f81f7e36a3170da3235e52cab8a25e6fe147f9d023a33bf",
+      "revision": "sha256:d0681597cf44aa6f427cca43e36f3322a23defd6c852255a1e30aa8aff90abe9"
+    }
+  ],
+  "coverage": {
+    "registerRef": "register-q3",
+    "registerRevision": "sha256:1bdeb1fc3d35719b98b73e745195520f09d6e654c6c93f376e8850a432de571f",
+    "processRefs": [
+      "process-checkout",
+      "process-payroll"
+    ],
+    "biaRefs": [
+      "bia-checkout",
+      "bia-payroll"
+    ],
+    "dependencyRefs": [
+      "dependency-checkout-service",
+      "dependency-checkout-vendor",
+      "dependency-checkout-site",
+      "dependency-payroll-service",
+      "dependency-payroll-vendor",
+      "dependency-payroll-site"
+    ],
+    "planRefs": [
+      "plan-checkout-v3",
+      "plan-payroll-v4"
+    ],
+    "exerciseRefs": [
+      "exercise-q3"
+    ],
+    "findingRefs": [
+      "finding-checkout",
+      "finding-payroll"
+    ],
+    "correctiveActionRefs": [
+      "action-checkout",
+      "action-payroll"
+    ],
+    "exceptionRefs": [
+      "exception-checkout",
+      "exception-payroll"
+    ],
+    "recertificationRefs": [
+      "recertification-checkout",
+      "recertification-payroll"
+    ],
+    "blockerRefs": [
+      "blocker-open-finding",
+      "blocker-active-exception"
+    ],
+    "contentDigest": "sha256:287d82506f7369af62a193cfb9185df4ab1a7328963ef6c5112dfa52a83b49b2",
+    "planPredecessorRefs": [
+      "plan-checkout-v2",
+      "plan-payroll-v3"
+    ],
+    "blockerRevisions": [
+      "sha256:02b402ee7c0dc24969ad85352c7242437fa73149ecea743ad9be93d94a0a5876",
+      "sha256:d0681597cf44aa6f427cca43e36f3322a23defd6c852255a1e30aa8aff90abe9"
+    ]
+  },
+  "handoff": {
+    "destination": "continuity-owner-review",
+    "ownerRef": "principal-handoff-owner",
+    "coverageDigest": "sha256:287d82506f7369af62a193cfb9185df4ab1a7328963ef6c5112dfa52a83b49b2",
+    "blockerRefs": [
+      "blocker-open-finding",
+      "blocker-active-exception"
+    ],
+    "state": "blocked",
+    "summary": "The exact quarterly process universe is reconciled; the payroll exercise finding and its active exception remain explicit owner-review blockers.",
+    "disasterDeclarationClaim": "not-claimed",
+    "planInvocationClaim": "not-claimed",
+    "productionFailoverClaim": "not-claimed",
+    "trafficShiftClaim": "not-claimed",
+    "vendorContactClaim": "not-claimed",
+    "riskAcceptanceClaim": "not-claimed",
+    "exceptionApprovalClaim": "not-claimed",
+    "readinessCertificationClaim": "not-claimed",
+    "complianceCertificationClaim": "not-claimed",
+    "continuityCertificationClaim": "not-claimed",
+    "payloadDigest": "sha256:cbd34555084c0977a533724fffef05cbe5230ccf0d48e9a12b35cfd0cb85f2ba"
+  },
+  "planPredecessors": [
+    {
+      "id": "plan-checkout-v2",
+      "version": "v2",
+      "processRefs": [
+        "process-checkout"
+      ],
+      "processRevisions": [
+        "sha256:3232323232323232323232323232323232323232323232323232323232323232"
+      ],
+      "processStableKeys": [
+        "process-lineage-checkout"
+      ],
+      "processVersions": [
+        "v2"
+      ],
+      "biaRevisions": [
+        "sha256:3535353535353535353535353535353535353535353535353535353535353535"
+      ],
+      "dependencyRevisions": [
+        "sha256:3636363636363636363636363636363636363636363636363636363636363636",
+        "sha256:3737373737373737373737373737373737373737373737373737373737373737",
+        "sha256:3838383838383838383838383838383838383838383838383838383838383838"
+      ],
+      "strategyCodes": [
+        "alternate-provider",
+        "data-recovery"
+      ],
+      "approvedByRef": "principal-checkout-owner",
+      "approvedAt": "2026-06-15T09:00:00Z",
+      "evidenceRef": "evidence-plan-checkout-v2",
+      "evidenceSourceDigest": "sha256:2828282828282828282828282828282828282828282828282828282828282828",
+      "evidencePayloadDigest": "sha256:7bf092ab98c9361df38728d68bbb4794e6a84424862238f8ed76e1d648ca583b",
+      "revision": "sha256:b552283519f39b9f8a46a2149ad0900c48a901ebfd8a81227b61dc4bc262a2b9"
+    },
+    {
+      "id": "plan-payroll-v3",
+      "version": "v3",
+      "processRefs": [
+        "process-payroll-old"
+      ],
+      "processRevisions": [
+        "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+      ],
+      "processStableKeys": [
+        "process-lineage-payroll"
+      ],
+      "processVersions": [
+        "v3"
+      ],
+      "biaRevisions": [
+        "sha256:3939393939393939393939393939393939393939393939393939393939393939"
+      ],
+      "dependencyRevisions": [
+        "sha256:4040404040404040404040404040404040404040404040404040404040404040",
+        "sha256:4141414141414141414141414141414141414141414141414141414141414141",
+        "sha256:4242424242424242424242424242424242424242424242424242424242424242"
+      ],
+      "strategyCodes": [
+        "manual-workaround",
+        "alternate-site"
+      ],
+      "approvedByRef": "principal-payroll-owner",
+      "approvedAt": "2026-06-16T09:00:00Z",
+      "evidenceRef": "evidence-plan-payroll-v3",
+      "evidenceSourceDigest": "sha256:2929292929292929292929292929292929292929292929292929292929292929",
+      "evidencePayloadDigest": "sha256:ac5eeb78f672326698f306a30f79a269f5d91b32a6e7140bfb6c3361e360917a",
+      "revision": "sha256:4690cdc318f1251f384379759f73c091f4d6e3e843fd2f920c2bfed590da96c1"
+    }
+  ]
+}

@@ -1,0 +1,1612 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/business-continuity-program.schema.json",
+  "title": "Business Continuity Program",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactId",
+    "program",
+    "principals",
+    "evidence",
+    "registers",
+    "processes",
+    "businessImpactAnalyses",
+    "dependencies",
+    "planPredecessors",
+    "plans",
+    "exercises",
+    "findings",
+    "correctiveActions",
+    "exceptions",
+    "recertifications",
+    "blockers",
+    "coverage",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.businessContinuityProgram.v1"
+    },
+    "artifactId": {
+      "$ref": "#/$defs/id"
+    },
+    "program": {
+      "$ref": "#/$defs/program"
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "registers": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "$ref": "#/$defs/register"
+      }
+    },
+    "processes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/process"
+      }
+    },
+    "businessImpactAnalyses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/bia"
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/dependency"
+      }
+    },
+    "planPredecessors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/planPredecessor"
+      }
+    },
+    "plans": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/plan"
+      }
+    },
+    "exercises": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/exercise"
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "correctiveActions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/correctiveAction"
+      }
+    },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/exception"
+      }
+    },
+    "recertifications": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/recertification"
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blocker"
+      }
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "idArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "digestArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/digest"
+      }
+    },
+    "program": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "cycleId",
+        "requestedAt",
+        "programManagerRef",
+        "currentRegisterRef",
+        "currentRegisterRevision",
+        "predecessorRegisterRef",
+        "predecessorRegisterRevision",
+        "handoffOwnerRef",
+        "destination",
+        "programDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "cycleId": {
+          "$ref": "#/$defs/id"
+        },
+        "requestedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "programManagerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "currentRegisterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "currentRegisterRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "predecessorRegisterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "predecessorRegisterRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "handoffOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "destination": {
+          "const": "continuity-owner-review"
+        },
+        "programDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "role",
+        "scopes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "role": {
+          "enum": [
+            "program-manager",
+            "register-owner",
+            "process-owner",
+            "dependency-owner",
+            "plan-invocation-authority",
+            "exercise-scope-approver",
+            "exercise-evaluator",
+            "remediation-owner",
+            "remediation-verifier",
+            "exception-approver",
+            "exception-revoker",
+            "independent-recertifier",
+            "handoff-owner"
+          ]
+        },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "observedAt",
+        "suppliedByRef",
+        "subjectRefs",
+        "sourceDigest",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "register",
+            "process",
+            "bia-approval",
+            "dependency-attestation",
+            "plan-predecessor",
+            "plan-approval",
+            "exercise-charter",
+            "exercise-result",
+            "finding",
+            "corrective-action",
+            "remediation-receipt",
+            "exception-approval",
+            "exception-revocation",
+            "recertification",
+            "blocker"
+          ]
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "subjectRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "sourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "register": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "issuedAt",
+        "suppliedByRef",
+        "predecessorRef",
+        "predecessorRevision",
+        "processRefs",
+        "processRevisions",
+        "processStableKeys",
+        "processVersions",
+        "processOwnerRefs",
+        "retiredProcessRefs",
+        "retiredProcessRevisions",
+        "evidenceRef",
+        "evidenceSourceDigest",
+        "evidencePayloadDigest",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "predecessorRef": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+        },
+        "predecessorRevision": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "processRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "processRevisions": {
+          "$ref": "#/$defs/digestArray"
+        },
+        "processStableKeys": {
+          "$ref": "#/$defs/idArray"
+        },
+        "processVersions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^v[1-9][0-9]*$"
+          }
+        },
+        "processOwnerRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "retiredProcessRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "retiredProcessRevisions": {
+          "$ref": "#/$defs/digestArray"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceSourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidencePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "stableKey",
+        "version",
+        "name",
+        "changeKind",
+        "predecessorProcessRef",
+        "predecessorProcessRevision",
+        "registerRef",
+        "ownerRef",
+        "criticality",
+        "sourceRevision",
+        "dependencyRefs",
+        "evidenceRef",
+        "evidenceSourceDigest",
+        "evidencePayloadDigest",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "stableKey": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^v[1-9][0-9]*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "changeKind": {
+          "enum": [
+            "added",
+            "retained",
+            "revised"
+          ]
+        },
+        "predecessorProcessRef": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+        },
+        "predecessorProcessRevision": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "registerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "criticality": {
+          "enum": [
+            "tier-0",
+            "tier-1",
+            "tier-2"
+          ]
+        },
+        "sourceRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "dependencyRefs": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/idArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceSourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidencePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "bia": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "processRef",
+        "processRevision",
+        "impactTier",
+        "rtoMinutes",
+        "rpoMinutes",
+        "approvedByRef",
+        "approvedAt",
+        "evidenceRef",
+        "evidenceSourceDigest",
+        "evidencePayloadDigest",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "processRef": {
+          "$ref": "#/$defs/id"
+        },
+        "processRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "impactTier": {
+          "enum": [
+            "catastrophic",
+            "major",
+            "moderate"
+          ]
+        },
+        "rtoMinutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 525600
+        },
+        "rpoMinutes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 525600
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceSourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidencePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "processRef",
+        "processRevision",
+        "kind",
+        "name",
+        "ownerRef",
+        "sourceRevision",
+        "attestedAt",
+        "evidenceRef",
+        "evidenceSourceDigest",
+        "evidencePayloadDigest",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "processRef": {
+          "$ref": "#/$defs/id"
+        },
+        "processRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "kind": {
+          "enum": [
+            "service",
+            "vendor",
+            "site",
+            "facility",
+            "people",
+            "data",
+            "upstream-process",
+            "downstream-process"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "attestedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceSourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidencePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "planPredecessor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "processRefs",
+        "processRevisions",
+        "processStableKeys",
+        "processVersions",
+        "biaRevisions",
+        "dependencyRevisions",
+        "strategyCodes",
+        "approvedByRef",
+        "approvedAt",
+        "evidenceRef",
+        "evidenceSourceDigest",
+        "evidencePayloadDigest",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^v[1-9][0-9]*$"
+        },
+        "processRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "processRevisions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/digest"
+          }
+        },
+        "processStableKeys": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "processVersions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^v[1-9][0-9]*$"
+          }
+        },
+        "biaRevisions": {
+          "$ref": "#/$defs/digestArray"
+        },
+        "dependencyRevisions": {
+          "$ref": "#/$defs/digestArray"
+        },
+        "strategyCodes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "manual-workaround",
+              "alternate-site",
+              "alternate-provider",
+              "remote-operation",
+              "data-recovery",
+              "staff-reallocation"
+            ]
+          }
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceSourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidencePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "predecessorRef",
+        "predecessorRevision",
+        "processRefs",
+        "processRevisions",
+        "processStableKeys",
+        "processVersions",
+        "biaRefs",
+        "biaRevisions",
+        "dependencyRefs",
+        "dependencyRevisions",
+        "strategyCodes",
+        "approvedByRef",
+        "approvedAt",
+        "invocationAuthorityRef",
+        "evidenceRef",
+        "evidenceSourceDigest",
+        "evidencePayloadDigest",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^v[1-9][0-9]*$"
+        },
+        "predecessorRef": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+        },
+        "predecessorRevision": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "processRefs": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/idArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "processRevisions": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/digestArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "processStableKeys": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/idArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "processVersions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^v[1-9][0-9]*$"
+          }
+        },
+        "biaRefs": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/idArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "biaRevisions": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/digestArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "dependencyRefs": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/idArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "dependencyRevisions": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/digestArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "strategyCodes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "manual-workaround",
+              "alternate-site",
+              "alternate-provider",
+              "remote-operation",
+              "data-recovery",
+              "staff-reallocation"
+            ]
+          }
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "invocationAuthorityRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceSourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidencePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "inject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "sequence",
+        "kind",
+        "descriptionDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "kind": {
+          "enum": [
+            "service-loss",
+            "vendor-loss",
+            "site-loss",
+            "staff-loss",
+            "data-loss",
+            "communications-loss"
+          ]
+        },
+        "descriptionDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "exercise": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "performedAt",
+        "scopeApprovedByRef",
+        "scopeProcessRefs",
+        "scopeProcessRevisions",
+        "planRefs",
+        "planRevisions",
+        "findingRefs",
+        "injects",
+        "result",
+        "evaluatorRef",
+        "evidenceRefs",
+        "evidenceSourceDigests",
+        "evidencePayloadDigests",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "performedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "scopeApprovedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "scopeProcessRefs": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/idArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "scopeProcessRevisions": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/digestArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "planRefs": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/idArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "planRevisions": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/digestArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "findingRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "injects": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/inject"
+          }
+        },
+        "result": {
+          "enum": [
+            "completed-no-findings",
+            "completed-with-findings",
+            "cancelled",
+            "incomplete"
+          ]
+        },
+        "evaluatorRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRefs": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/idArray"
+            },
+            {
+              "minItems": 2,
+              "type": "array"
+            }
+          ]
+        },
+        "evidenceSourceDigests": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/digest"
+          }
+        },
+        "evidencePayloadDigests": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/digest"
+          }
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "stableKey",
+        "exerciseRef",
+        "processRef",
+        "category",
+        "severity",
+        "identifiedAt",
+        "ownerRef",
+        "state",
+        "evidenceRef",
+        "evidenceSourceDigest",
+        "evidencePayloadDigest",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "stableKey": {
+          "$ref": "#/$defs/digest"
+        },
+        "exerciseRef": {
+          "$ref": "#/$defs/id"
+        },
+        "processRef": {
+          "$ref": "#/$defs/id"
+        },
+        "category": {
+          "enum": [
+            "strategy-gap",
+            "dependency-gap",
+            "role-gap",
+            "communication-gap",
+            "evidence-gap",
+            "recovery-objective-gap"
+          ]
+        },
+        "severity": {
+          "enum": [
+            "critical",
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "identifiedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "open",
+            "in-remediation",
+            "verified-closed"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceSourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidencePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "correctiveAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "findingRef",
+        "findingRevision",
+        "ownerRef",
+        "dueAt",
+        "status",
+        "receiptRef",
+        "receiptRevision",
+        "verifiedByRef",
+        "verifiedAt",
+        "evidenceRef",
+        "evidenceSourceDigest",
+        "evidencePayloadDigest",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "findingRef": {
+          "$ref": "#/$defs/id"
+        },
+        "findingRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "dueAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "in-progress",
+            "receipt-supplied",
+            "verified"
+          ]
+        },
+        "receiptRef": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+        },
+        "receiptRevision": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "verifiedByRef": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+        },
+        "verifiedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceSourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidencePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "exception": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "findingRef",
+        "processRef",
+        "scopeDigest",
+        "approvedByRef",
+        "approvedAt",
+        "expiresAt",
+        "status",
+        "evidenceRef",
+        "evidenceSourceDigest",
+        "evidencePayloadDigest",
+        "revokedByRef",
+        "revokedAt",
+        "revocationEvidenceRef",
+        "revocationEvidenceSourceDigest",
+        "revocationEvidencePayloadDigest",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "findingRef": {
+          "$ref": "#/$defs/id"
+        },
+        "processRef": {
+          "$ref": "#/$defs/id"
+        },
+        "scopeDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "expired",
+            "revoked"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceSourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidencePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "revokedByRef": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+        },
+        "revokedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "revocationEvidenceRef": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+        },
+        "revocationEvidenceSourceDigest": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "revocationEvidencePayloadDigest": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "recertification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "processRef",
+        "processRevision",
+        "biaRevision",
+        "dependencyRevisions",
+        "planRevision",
+        "exerciseRevisions",
+        "findingRevisions",
+        "actionRevisions",
+        "exceptionRevisions",
+        "recertifiedByRef",
+        "recertifiedAt",
+        "decision",
+        "evidenceRef",
+        "evidenceSourceDigest",
+        "evidencePayloadDigest",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "processRef": {
+          "$ref": "#/$defs/id"
+        },
+        "processRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "biaRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "dependencyRevisions": {
+          "$ref": "#/$defs/digestArray"
+        },
+        "planRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "exerciseRevisions": {
+          "$ref": "#/$defs/digestArray"
+        },
+        "findingRevisions": {
+          "$ref": "#/$defs/digestArray"
+        },
+        "actionRevisions": {
+          "$ref": "#/$defs/digestArray"
+        },
+        "exceptionRevisions": {
+          "$ref": "#/$defs/digestArray"
+        },
+        "recertifiedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "recertifiedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "decision": {
+          "enum": [
+            "evidence-current",
+            "recertification-blocked"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceSourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidencePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "category",
+        "targetRefs",
+        "ownerRef",
+        "evidenceRef",
+        "evidenceSourceDigest",
+        "evidencePayloadDigest",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "category": {
+          "enum": [
+            "missing-bia",
+            "dependency-gap",
+            "missing-plan",
+            "exercise-missing",
+            "exercise-incomplete",
+            "exercise-finding-open",
+            "corrective-action-missing",
+            "corrective-action-overdue",
+            "exception-active",
+            "exception-expired",
+            "exception-revocation-invalid",
+            "recertification-missing"
+          ]
+        },
+        "targetRefs": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/idArray"
+            },
+            {
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceSourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidencePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registerRef",
+        "registerRevision",
+        "processRefs",
+        "biaRefs",
+        "dependencyRefs",
+        "planPredecessorRefs",
+        "planRefs",
+        "exerciseRefs",
+        "findingRefs",
+        "correctiveActionRefs",
+        "exceptionRefs",
+        "recertificationRefs",
+        "blockerRefs",
+        "blockerRevisions",
+        "contentDigest"
+      ],
+      "properties": {
+        "registerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "registerRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "processRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "biaRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "dependencyRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "planPredecessorRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "planRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "exerciseRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "findingRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "correctiveActionRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "exceptionRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "recertificationRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "blockerRevisions": {
+          "$ref": "#/$defs/digestArray"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "destination",
+        "ownerRef",
+        "coverageDigest",
+        "blockerRefs",
+        "state",
+        "summary",
+        "disasterDeclarationClaim",
+        "planInvocationClaim",
+        "productionFailoverClaim",
+        "trafficShiftClaim",
+        "vendorContactClaim",
+        "riskAcceptanceClaim",
+        "exceptionApprovalClaim",
+        "readinessCertificationClaim",
+        "complianceCertificationClaim",
+        "continuityCertificationClaim",
+        "payloadDigest"
+      ],
+      "properties": {
+        "destination": {
+          "const": "continuity-owner-review"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "coverageDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/idArray"
+        },
+        "state": {
+          "enum": [
+            "blocked",
+            "owner-review"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "disasterDeclarationClaim": {
+          "const": "not-claimed"
+        },
+        "planInvocationClaim": {
+          "const": "not-claimed"
+        },
+        "productionFailoverClaim": {
+          "const": "not-claimed"
+        },
+        "trafficShiftClaim": {
+          "const": "not-claimed"
+        },
+        "vendorContactClaim": {
+          "const": "not-claimed"
+        },
+        "riskAcceptanceClaim": {
+          "const": "not-claimed"
+        },
+        "exceptionApprovalClaim": {
+          "const": "not-claimed"
+        },
+        "readinessCertificationClaim": {
+          "const": "not-claimed"
+        },
+        "complianceCertificationClaim": {
+          "const": "not-claimed"
+        },
+        "continuityCertificationClaim": {
+          "const": "not-claimed"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    }
+  }
+}

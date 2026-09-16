@@ -1,0 +1,35 @@
+<style>
+.wp{padding:24px;background:#f5f8fc;color:#10243e;font:15px/1.45 "Segoe UI",Inter,Arial,sans-serif}.wp *{box-sizing:border-box}.wp-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.wp h1{margin:0;font-size:28px}.wp h2{margin:0 0 12px;font-size:18px}.wp-sub{margin:6px 0 0;color:#5c6f87}.wp-state{padding:11px 14px;border:1px solid #e3a53b;background:#fff5df;border-radius:8px;font-weight:700;color:#774d00}.wp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.wp-card,.wp-panel{background:#fff;border:1px solid #d7e0eb;border-radius:9px;box-shadow:0 1px 3px rgba(15,35,60,.05)}.wp-card{padding:15px}.wp-label{font-size:11px;color:#66778c;font-weight:800;letter-spacing:.04em}.wp-value{display:block;margin-top:5px;font-size:25px}.wp-card p,.wp-panel p{margin:6px 0 0;color:#586b82}.wp-main{display:grid;grid-template-columns:1.35fr .85fr;gap:14px}.wp-panel{padding:17px}.wp-row{display:grid;grid-template-columns:1.3fr .7fr .7fr .7fr;gap:10px;padding:11px 0;border-top:1px solid #e4eaf1;align-items:center}.wp-row:first-of-type{border-top:0}.wp-role{font-weight:700}.wp-gap{color:#a33b20;font-weight:800}.wp-ok{color:#177245;font-weight:800}.wp-chip{display:inline-block;padding:3px 8px;border-radius:999px;background:#eaf2fb;color:#315777;font-size:12px;margin:3px 4px 0 0}.wp-alert{border-left:4px solid #d08313;padding:9px 11px;background:#fff8ea;margin-top:9px}.wp-owner{font-weight:700;color:#315777}.wp-foot{margin-top:14px;padding:14px 16px;background:#10243e;color:#fff;border-radius:9px}.wp-foot strong{color:#ffd891}@media(max-width:760px){.wp-head,.wp-main{display:block}.wp-state,.wp-panel{margin-top:12px}.wp-grid{grid-template-columns:1fr 1fr}.wp-row{grid-template-columns:1fr 1fr}}
+</style>
+<main class="wp" aria-labelledby="workforce-title">
+  <section class="wp-head">
+    <div>
+      <h1 id="workforce-title">Workforce plan review</h1>
+      <p class="wp-sub">Platform · OP-2027 revision 4 · 2027 Q1 · approved-role-level evidence</p>
+    </div>
+    <div class="wp-state">Blocked · manager decisions required</div>
+  </section>
+  <section class="wp-grid" aria-label="Plan metrics">
+    <article class="wp-card"><span class="wp-label">APPROVED DEMAND</span><strong class="wp-value">18.0 FTE</strong><p>Exact approved revision</p></article>
+    <article class="wp-card"><span class="wp-label">FUNDED POSITIONS</span><strong class="wp-value">16.0 FTE</strong><p>Role-level funded pools</p></article>
+    <article class="wp-card"><span class="wp-label">BASELINE GAP</span><strong class="wp-value">2.0 FTE</strong><p>Not headcount approval</p></article>
+    <article class="wp-card"><span class="wp-label">DECISION CHECKPOINTS</span><strong class="wp-value">2</strong><p>Named human owners</p></article>
+  </section>
+  <section class="wp-main">
+    <section class="wp-panel">
+      <h2>Demand, funding, and modeled scenarios</h2>
+      <div class="wp-row"><span class="wp-role">Platform engineer</span><span>12 demand</span><span>10 funded</span><span class="wp-gap">2.0 gap</span></div>
+      <div class="wp-row"><span class="wp-role">Site reliability engineer</span><span>6 demand</span><span>6 funded</span><span class="wp-ok">reconciled</span></div>
+      <div class="wp-alert"><strong>Approved-assumption scenario:</strong> projected gaps are 1.9 FTE platform engineering and 0.6 FTE reliability engineering. These are aggregate modeled outputs, not approved actions.</div>
+      <p><span class="wp-chip">plan revision bound</span><span class="wp-chip">funding evidence bound</span><span class="wp-chip">scenario assumptions preserved</span></p>
+    </section>
+    <aside class="wp-panel">
+      <h2>Constraints and checkpoints</h2>
+      <div class="wp-alert"><strong>Capabilities:</strong> 1.0 distributed-systems and 2.0 reliability-engineering FTE gaps.</div>
+      <div class="wp-alert"><strong>Succession:</strong> 1 of 3 critical SRE role slots lacks aggregate coverage.</div>
+      <div class="wp-alert"><strong>Location:</strong> Canada platform demand exceeds funded positions by 2.0 FTE.</div>
+      <p class="wp-owner">Owners: Platform manager, HR partner, Finance partner</p>
+    </aside>
+  </section>
+  <section class="wp-foot"><strong>Authority remains human-owned.</strong> Typed principals, exact scopes, 12 structured not-performed attestations, and content-addressed evidence bind this review to OP-2027 revision 4. No hiring, termination, candidate evaluation, individual performance inference, promotion, compensation, reorganization, sensitive-trait inference, HR-system mutation, employee communication, or headcount approval occurred. Review the same evidence in <code>outputs/workforce-plan-handoff.md</code>.</section>
+</main>

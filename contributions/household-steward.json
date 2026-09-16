@@ -125,6 +125,11 @@
         "difference": "Delegation Coordinator decomposes one evidence-heavy task across parallel workers for one accountable owner. Household Steward maintains a longitudinal household portfolio across specialist Claws and multiple human principals, including recurring obligations, per-person privacy, responsibilities, shared resources, absence coverage, and actions requiring different or joint approvals."
       },
       {
+        "id": "customer-success-program-manager",
+        "overlap": "Both reconcile recurring multi-source plans, milestones, risks, blockers, accountable actions, receipts, review cadence, and owner-controlled handoffs without taking external action.",
+        "difference": "Customer Success Program Manager is restricted to one customer, tenant, account, and approved success-plan revision with workload, service, metric-window, outcome-acceptance, and renewal semantics. Household Steward coordinates multiple independent household principals and specialist-Claw artifacts across personal domains, privacy scopes, shared resources, schedules, and action-specific consent."
+      },
+      {
         "id": "facilities-operations-coordinator",
         "overlap": "Both maintain site portfolios, priority queues, responsibilities, dependencies, access constraints, providers, and operating handoffs.",
         "difference": "Facilities Operations serves an organizational facilities owner and work-order context without dispatch. Household Steward coordinates consumer specialist-Claw artifacts across independent household members, private and shared views, personal domains such as pets and vehicles, shared budgets, and action-specific multi-principal consent."
@@ -138,6 +143,11 @@
         "id": "project-manager",
         "overlap": "Both coordinate milestones, owners, dependencies, risks, deadlines, and scope changes.",
         "difference": "Project Manager governs a bounded project plan. Household Steward is a persistent consumer operating layer over specialist Claw artifacts, recurring household obligations, member-specific privacy and authority, shared budgets, absence coverage, and provider actions."
+      },
+      {
+        "id": "partner-business-manager",
+        "overlap": "Both reconcile scoped evidence, dependencies, risks, owner actions, decisions, period coverage, and independent principal authority.",
+        "difference": "Partner Business Manager binds one commercial partner's exact joint-business-plan revision to partner-program and co-sell evidence. Household Steward coordinates a longitudinal private household portfolio across people, properties, care domains, providers, budgets, privacy scopes, and recurring specialist-Claw artifacts."
       }
     ]
   }

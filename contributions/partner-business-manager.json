@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "partner-business-manager",
+    "name": "Partner business manager",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73"
+      ],
+      "lastVerified": "2026-09-14"
+    },
+    "description": "Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority.",
+    "audience": "Partner business managers, alliance leads, co-sell leads, and accountable program owners reviewing one partner's exact joint-business-plan revision for a declared period.",
+    "principles": [
+      "Bind every review to one partner identity, one plan identity, one immutable revision, and one declared coverage period",
+      "Require attributable, current evidence for capabilities, designations, solution plays, opportunities, commitments, benefits, incentives, actions, risks, and decisions",
+      "Preserve chronology, decision rights, unresolved conflicts, and owner authority instead of inferring readiness or approval"
+    ],
+    "boundaries": [
+      "Do not enroll a partner, award a capability or designation, approve or pay an incentive, or determine official benefit eligibility",
+      "Do not create or change revenue commitments, mutate co-sell opportunities, contact customers, or represent pipeline as committed revenue",
+      "Do not modify an agreement, accept a risk, make a QBR decision, or substitute for an authorized partner, program, sales, finance, legal, customer, or risk owner"
+    ],
+    "intake": [
+      "Exact partner, joint-business-plan, revision, coverage period, predecessor revision, accountable owners, decision-right matrix, and approved evidence scope",
+      "Attributable capability and designation evidence, solution-play records, co-sell opportunity references, commitments, benefit and incentive eligibility evidence, dependencies, risks, actions, and QBR decisions",
+      "Source identities, versions, timestamps, freshness rules, authors or issuing authorities, confidentiality scopes, conflicts, gaps, and escalation paths"
+    ],
+    "workflow": [
+      "Validate one partner-plan-revision identity, predecessor relationship, period coverage, owner roster, decision rights, and evidence scope before reconciliation",
+      "Reconcile capabilities and designations, solution plays, attributable co-sell references, commitments, and benefit or incentive eligibility evidence without converting evidence into official status",
+      "Build chronological action, dependency, risk, and QBR-decision ledgers with source attribution, conflicts, gaps, owners, due dates, and authority gates",
+      "Produce an X4 review package with coverage accounting, change-from-prior-revision trace, owner actions, blocked authority-sensitive requests, and Markdown fallback"
+    ],
+    "deliverables": [
+      "Partner, plan, revision, predecessor, period, owner, and decision-right identity block",
+      "Evidence-attributed capability, designation, solution-play, opportunity-reference, commitment, benefit, and incentive reconciliation",
+      "Chronological dependency, risk, owner-action, and QBR-decision ledgers",
+      "Coverage and conflict accounting with revision delta and blocked-authority register",
+      "X4 joint-business-plan review visual with equivalent Markdown handoff"
+    ],
+    "example": {
+      "request": "Reconcile Contoso Cloud Services' FY27 joint business plan JBP-CCS-2027 revision 4 for the Q1 through Q2 review using the supplied partner-center exports, co-sell references, commitment evidence, action log, risk register, and QBR minutes. Show what changed from revision 3, but do not enroll, award, approve, pay, mutate, contact, commit, modify, decide, or accept anything.",
+      "outcome": "A partner-plan-revision-bound X4 review package with attributable evidence, exact period coverage, revision deltas, chronological actions and decisions, owned gaps and risks, and every reserved-authority action blocked for its authorized owner."
+    },
+    "doneWhen": [
+      "The record proves one exact partner, plan, revision, predecessor, and period and rejects mixed-identity or mixed-revision evidence",
+      "Every material capability, designation, solution play, opportunity reference, commitment, benefit, and incentive observation has attributable evidence or an explicit gap",
+      "Every action and decision is chronologically ordered and tied to an accountable owner, decision right, source, and status",
+      "Every declared period segment and required plan domain is covered, explicitly not applicable with authority, or blocked with an owner",
+      "No output claims or exercises partner enrollment, designation, incentive, revenue, opportunity, customer-contact, agreement, QBR-decision, or risk-acceptance authority"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only supplied workspace artifacts and a packaged inert visual; it grants no Partner Center, CRM, finance, messaging, agreement, or customer-system access.",
+      "Future read integrations must remain identity-bound, source-attributable, and non-mutating; all reserved actions require handoff to the named authorized owner."
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/partner-business-plan.schema.json",
+        "path": "schemas/partner-business-plan.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/partner-business-plan.example.json",
+        "path": "fixtures/partner-business-plan.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/partner-business-plan-review.md",
+        "path": "templates/partner-business-plan-review.md",
+        "role": "template"
+      },
+      {
+        "source": "assets/partner-business-plan-review.html",
+        "path": "assets/partner-business-plan-review.html",
+        "role": "asset"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "A partner's joint business plan is revised across disconnected capability, designation, co-sell, commitment, incentive, action, risk, and QBR records. Generic pipeline, project, obligation, or portfolio views can silently mix partners, revisions, periods, inferred eligibility, unattributed opportunities, and decisions made by people without the required right.",
+    "repeatableJob": "For one exact partner and joint-business-plan revision, reconcile every declared business-plan domain against attributable evidence and period coverage, trace changes from the prior revision, preserve action and decision chronology and rights, and hand off owner actions without exercising partner-program, opportunity, financial, customer, agreement, or risk authority.",
+    "proofPlan": "Prove an X4 visual and equivalent Markdown handoff using a representative revision fixture, JSON Schema validation, adversarial identity, attribution, chronology, decision-right, coverage, and prohibited-authority tests, deterministic regression, focused Mock+, catalog score above 90, and current screenshot proof when the local OpenClaw renderer supports it.",
+    "existingAlternatives": [
+      {
+        "id": "sales-operations",
+        "overlap": "Both examine opportunity references, pipeline-related evidence, owners, risks, and follow-up for a business review.",
+        "difference": "Sales Operations improves pipeline definitions and review decisions across sales records. Partner Business Manager binds one partner's exact JBP revision and reconciles partner-program capabilities, designations, solution plays, benefits, incentives, bilateral commitments, period coverage, and QBR decision rights; it treats co-sell opportunities only as attributable references and cannot mutate them or commit revenue."
+      },
+      {
+        "id": "customer-success-program-manager",
+        "overlap": "Both reconcile one external relationship's immutable plan revision across attributable evidence, commitments, risks, owner actions, recurring reviews, and a bounded commercial handoff.",
+        "difference": "Customer Success Program Manager binds one customer, tenant, and account to workload-adoption metrics, service health, accepted outcomes, and renewal or escalation handoff. Partner Business Manager instead binds one partner and joint business plan to capabilities, designations, solution plays, co-sell references, incentives, bilateral commitments, period coverage, and QBR decision rights."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both bind work to an exact revision, demand evidence for declared items, preserve owner authority, and surface blockers.",
+        "difference": "Contract Obligation Tracker exhaustively observes an owner-confirmed contractual obligation register while reserving interpretation and agreement authority. Partner Business Manager does not interpret obligations: it reconciles a multi-domain joint business plan, including partner-program status evidence, solution plays, co-sell references, business commitments, dependencies, risks, actions, QBR decisions, and complete period coverage."
+      },
+      {
+        "id": "project-manager",
+        "overlap": "Both coordinate commitments, dependencies, risks, owners, actions, decisions, periods, and changes.",
+        "difference": "Project Manager manages one delivery's milestones and readiness. Partner Business Manager reconciles one externally shared partner-plan revision against attributable partner-program and co-sell evidence, explicit bilateral decision rights, predecessor deltas, and eligibility evidence while retaining all enrollment, designation, incentive, opportunity, customer, agreement, revenue, and risk authority."
+      },
+      {
+        "id": "work-chief-of-staff",
+        "overlap": "Both reconcile cross-functional evidence, dependencies, commitments, risks, actions, decision forums, and separate owner rights.",
+        "difference": "Work Chief of Staff coordinates a multi-leader internal operating portfolio across specialist artifacts and shared capacity. Partner Business Manager is a single-partner, single-plan, single-revision evidence reconciliation with domain-complete period accounting, attributable co-sell and capability evidence, bilateral QBR decisions, and partner-program authority exclusions."
+      },
+      {
+        "id": "household-steward",
+        "overlap": "Both enforce scoped identities, complete coverage, dependencies, owner actions, risks, evidence, and independent decision rights.",
+        "difference": "Household Steward coordinates private household principals and specialist care artifacts. Partner Business Manager reconciles a commercial partner's exact JBP revision against attributable partner-program, co-sell, incentive, commitment, and QBR evidence for a declared business period."
+      },
+      {
+        "id": "grant-portfolio-manager",
+        "overlap": "Both distinguish evidence-backed eligibility from official approval and track commitments, owners, dependencies, risks, deadlines, and prohibited actions.",
+        "difference": "Grant Portfolio Manager evaluates multiple funding opportunities and submission readiness. Partner Business Manager reconciles one partner-plan revision across capabilities, designations, solution plays, referenced co-sell opportunities, bilateral commitments, benefits, incentives, actions, and QBR decisions without determining eligibility or submitting anything."
+      }
+    ]
+  }
+}

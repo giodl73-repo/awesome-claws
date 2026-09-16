@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Learning program manager session report",
+  "output": "outputs/learning-program-release.md",
+  "structuredOutput": "outputs/learning-program-release.json",
+  "sections": [
+    "bound_program_revision",
+    "curriculum_releases",
+    "audiences_cohorts_and_assignment_receipts",
+    "delivery_readiness",
+    "completion_and_assessment_identity",
+    "aggregate_effectiveness_review",
+    "refresh_decisions_and_chronology",
+    "exact_blockers_and_owner_handoff"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the complete identity-bound learning release ledger as Markdown when the inline review is unavailable; never omit privacy, blockers, chronology, evidence, or authority non-claims."
+}

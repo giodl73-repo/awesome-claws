@@ -1,13 +1,20 @@
 import { createHash } from "node:crypto";
 import { accessEntitlementReviewFindings } from "./access-entitlement-review-coordinator.mjs";
 import { backupRestoreVerificationFindings } from "./backup-restore-verification-coordinator.mjs";
+import { businessContinuityProgramFindings } from "./business-continuity-program-manager.mjs";
+import { commercialDealDeskFindings } from "./commercial-deal-desk-coordinator.mjs";
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
+import { customerSuccessReviewFindings } from "./customer-success-program-manager.mjs";
 import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
+import { learningProgramFindings } from "./learning-program-manager.mjs";
+import { partnerBusinessPlanFindings } from "./partner-business-manager.mjs";
 import { repositoryOperationsFindings } from "./repository-operations-manager.mjs";
 import { repositoryComplianceProgramFindings } from "./repository-compliance-program-manager.mjs";
 import { solutionArchitectureDecisionFindings } from "./solution-architecture-decision-advisor.mjs";
+import { supplierCapacityAssuranceFindings } from "./supplier-capacity-assurance-manager.mjs";
 import { tlsCertificateRotationVerificationFindings } from "./tls-certificate-rotation-verification-coordinator.mjs";
+import { workforcePlanningFindings } from "./workforce-planning-partner.mjs";
 
 export function hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) {
   const adjacentNegation =
@@ -53209,6 +53216,7 @@ const validators = {
   "api-integration-engineer": apiIntegrationReadinessFindings,
   "appliance-care-coordinator": applianceCareFindings,
   "backup-restore-verification-coordinator": backupRestoreVerificationFindings,
+  "business-continuity-program-manager": businessContinuityProgramFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
   "care-circle-coordinator": careCircleFindings,
   "case-continuity-coordinator": caseContinuityFindings,
@@ -53219,10 +53227,12 @@ const validators = {
   "child-activity-manager": childActivityFindings,
   "civic-data-analyst": civicDataFindings,
   "cloud-cost-analyst": cloudCostAnalysisFindings,
+  "commercial-deal-desk-coordinator": commercialDealDeskFindings,
   "compliance-reviewer": complianceAssessmentFindings,
   "data-migration-planner": dataMigrationReadinessFindings,
   "content-operations": publicationReadinessRecordFindings,
   "customer-support": customerSupportCaseFindings,
+  "customer-success-program-manager": customerSuccessReviewFindings,
   "data-analyst": dataAnalysisFindings,
   "data-governance-steward": dataGovernanceAssessmentFindings,
   "delegation-coordinator": delegationFindings,
@@ -53256,6 +53266,7 @@ const validators = {
   "knowledge-curator": knowledgeCollectionIndexFindings,
   "knowledge-gardener": knowledgeSpaceChangePlanFindings,
   "legal-matter-organizer": legalMatterFindings,
+  "learning-program-manager": learningProgramFindings,
   "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
   "localization-program-manager": localizationReadinessFindings,
@@ -53270,6 +53281,7 @@ const validators = {
   "music-organizer": musicOrganizerFindings,
   "neighborhood-operations-watcher": neighborhoodOperationsFindings,
   "personal-archive-curator": personalArchiveFindings,
+  "partner-business-manager": partnerBusinessPlanFindings,
   "pet-care-coordinator": petCareFindings,
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
   "professional-networking-followup": professionalNetworkingFindings,
@@ -53302,6 +53314,7 @@ const validators = {
   "spreadsheet-analyst": spreadsheetChangeFindings,
   "stock-portfolio-monitor": stockPortfolioFindings,
   "subscription-manager": subscriptionManagerFindings,
+  "supplier-capacity-assurance-manager": supplierCapacityAssuranceFindings,
   "tax-document-organizer": taxDocumentFindings,
   "travel-concierge": travelShortlistFindings,
   "travel-planner": itineraryPlanFindings,
@@ -53318,17 +53331,36 @@ const validators = {
   "website-evidence-collector": websiteCaptureEvidenceLedgerFindings,
   "work-chief-of-staff": workChiefOfStaffFindings,
   "workflow-operator": workflowExecutionReconciliationFindings,
+  "workforce-planning-partner": workforcePlanningFindings,
 };
 
 const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   "backup-restore-verification-coordinator": Object.freeze({
     asOf: "2026-09-02T12:00:00Z",
   }),
+  "business-continuity-program-manager": Object.freeze({
+    asOf: "2026-09-14T19:00:00Z",
+  }),
+  "commercial-deal-desk-coordinator": Object.freeze({
+    asOf: "2026-09-14T12:00:00Z",
+  }),
+  "customer-success-program-manager": Object.freeze({
+    asOf: "2026-09-14T19:00:00Z",
+  }),
   "contract-obligation-tracker": Object.freeze({
     asOf: "2026-09-05T17:00:00Z",
   }),
   "financial-account-reconciliation-coordinator": Object.freeze({
     asOf: "2026-09-02T00:00:00Z",
+  }),
+  "learning-program-manager": Object.freeze({
+    asOf: "2026-09-14T20:00:00Z",
+  }),
+  "partner-business-manager": Object.freeze({
+    asOf: "2026-09-14T19:00:00Z",
+  }),
+  "supplier-capacity-assurance-manager": Object.freeze({
+    asOf: "2026-09-14T18:00:00Z",
   }),
   "tls-certificate-rotation-verification-coordinator": Object.freeze({
     asOf: "2026-09-05T00:00:00Z",
@@ -53338,6 +53370,9 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   }),
   "repository-compliance-program-manager": Object.freeze({
     asOf: "2026-09-14T19:00:00Z",
+  }),
+  "workforce-planning-partner": Object.freeze({
+    asOf: "2026-09-14T17:00:00Z",
   }),
 });
 

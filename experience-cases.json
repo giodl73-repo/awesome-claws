@@ -96,6 +96,14 @@
   },
   "visualCases": [
     {
+      "id": "workforce-planning-partner",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/workforce-plan-review.html",
+      "fallback": "outputs/workforce-plan-handoff.md",
+      "output": "outputs/workforce-plan-review.html"
+    },
+    {
       "id": "travel-concierge",
       "target": 5,
       "primary": "dashboard",
@@ -184,6 +192,14 @@
       "output": "outputs/facilities-queue.html"
     },
     {
+      "id": "supplier-capacity-assurance-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/supplier-capacity-assurance.html",
+      "fallback": "outputs/supplier-capacity-review.md",
+      "output": "outputs/supplier-capacity-assurance.html"
+    },
+    {
       "id": "ux-research-synthesizer",
       "target": 4,
       "primary": "inline-widget",
@@ -264,6 +280,14 @@
       "output": "outputs/control-assessment.html"
     },
     {
+      "id": "commercial-deal-desk-coordinator",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/deal-readiness.html",
+      "fallback": "outputs/commercial-deal-desk.md",
+      "output": "outputs/deal-readiness.html"
+    },
+    {
       "id": "security-analyst",
       "target": 4,
       "primary": "inline-widget",
@@ -326,6 +350,38 @@
       "asset": "assets/architecture-decision-board.html",
       "fallback": "outputs/architecture-decision.md",
       "output": "outputs/architecture-decision-board.html"
+    },
+    {
+      "id": "partner-business-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/partner-business-plan-review.html",
+      "fallback": "outputs/partner-business-plan-review.md",
+      "output": "outputs/partner-business-plan-review.html"
+    },
+    {
+      "id": "business-continuity-program-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/business-continuity-program.html",
+      "fallback": "outputs/business-continuity-program-manager-handoff.md",
+      "output": "outputs/business-continuity-program.html"
+    },
+    {
+      "id": "learning-program-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/learning-program-review.html",
+      "fallback": "outputs/learning-program-release.md",
+      "output": "outputs/learning-program-review.html"
+    },
+    {
+      "id": "customer-success-program-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/customer-success-review.html",
+      "fallback": "outputs/customer-success-review.md",
+      "output": "outputs/customer-success-review.html"
     }
   ]
 }

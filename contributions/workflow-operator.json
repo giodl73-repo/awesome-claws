@@ -153,6 +153,11 @@
         "id": "case-continuity-coordinator",
         "overlap": "Both preserve a durable resume point, exact completed and pending work, blockers, next owner, and safeguards against repeating completed actions.",
         "difference": "Case Continuity Coordinator checkpoints an agent case and source lineage across sessions. Workflow Operator binds a single typed Lobster workflow run to approval gates and independently evidenced external effects."
+      },
+      {
+        "id": "commercial-deal-desk-coordinator",
+        "overlap": "Both bind one exact versioned input set, preserve approval chronology and blockers, reject stale authority, reconcile complete evidence coverage, and produce a bounded handoff without claiming downstream action.",
+        "difference": "Commercial Deal Desk Coordinator is a non-executing seller-side quote reconciliation across product, pricing, margin, licensing, legal, and order-readiness records. Workflow Operator instead observes one arbitrary typed Lobster run, pause and resume envelopes, ordered step effects, retry lineage, compensation evidence, and partial execution state; it neither evaluates a quote nor requires commercial-domain approvals."
       }
     ]
   }

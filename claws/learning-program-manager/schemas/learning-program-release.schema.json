@@ -1,0 +1,1095 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/learning-program-release.schema.json",
+  "title": "Learning Program Manager release and evidence ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactId",
+    "program",
+    "skillTaxonomy",
+    "gapRevision",
+    "curriculumReleases",
+    "cohorts",
+    "assignments",
+    "assignmentReceipts",
+    "deliveryChecks",
+    "completionRecords",
+    "assessmentRecords",
+    "effectivenessMeasures",
+    "refreshReviews",
+    "principals",
+    "evidence",
+    "blockers",
+    "coverage",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.learningProgramRelease.v1"
+    },
+    "artifactId": {
+      "$ref": "#/$defs/id"
+    },
+    "program": {
+      "$ref": "#/$defs/program"
+    },
+    "skillTaxonomy": {
+      "$ref": "#/$defs/skillTaxonomy"
+    },
+    "gapRevision": {
+      "$ref": "#/$defs/gapRevision"
+    },
+    "curriculumReleases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/curriculumRelease"
+      }
+    },
+    "cohorts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/cohort"
+      }
+    },
+    "assignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assignment"
+      }
+    },
+    "assignmentReceipts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assignmentReceipt"
+      }
+    },
+    "deliveryChecks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/deliveryCheck"
+      }
+    },
+    "completionRecords": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/completionRecord"
+      }
+    },
+    "assessmentRecords": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assessmentRecord"
+      }
+    },
+    "effectivenessMeasures": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/effectivenessMeasure"
+      }
+    },
+    "refreshReviews": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/refreshReview"
+      }
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blocker"
+      }
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "privacyClass": {
+      "enum": [
+        "internal",
+        "confidential",
+        "restricted"
+      ]
+    },
+    "idList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "uniqueItems": true
+    },
+    "nonEmptyIdList": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "uniqueItems": true
+    },
+    "program": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "asOf",
+        "ownerRef",
+        "privacyClass",
+        "gapRevisionRef",
+        "skillTaxonomyRef",
+        "curriculumReleaseRef",
+        "reviewWindowStart",
+        "reviewWindowEnd"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "asOf": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        },
+        "gapRevisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "skillTaxonomyRef": {
+          "$ref": "#/$defs/id"
+        },
+        "curriculumReleaseRef": {
+          "$ref": "#/$defs/id"
+        },
+        "reviewWindowStart": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "reviewWindowEnd": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "skillTaxonomy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "effectiveAt",
+        "skillRefs",
+        "sourceDigest",
+        "privacyClass",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "effectiveAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "skillRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "sourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "gapRevision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "status",
+        "aggregateOnly",
+        "approvedAt",
+        "approvedByRef",
+        "taxonomyRef",
+        "taxonomyVersion",
+        "skillGapRefs",
+        "sourceDigest",
+        "privacyClass",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "status": {
+          "const": "approved"
+        },
+        "aggregateOnly": {
+          "const": true
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "taxonomyRef": {
+          "$ref": "#/$defs/id"
+        },
+        "taxonomyVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "skillGapRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "sourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "curriculumRelease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "curriculumId",
+        "version",
+        "gapRevisionRef",
+        "gapRevisionVersion",
+        "taxonomyRef",
+        "taxonomyVersion",
+        "skillRefs",
+        "state",
+        "releasedAt",
+        "retiredAt",
+        "predecessorReleaseRef",
+        "ownerRef",
+        "privacyClass",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "curriculumId": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "gapRevisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "gapRevisionVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "taxonomyRef": {
+          "$ref": "#/$defs/id"
+        },
+        "taxonomyVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "skillRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "state": {
+          "enum": [
+            "planned",
+            "current",
+            "historical",
+            "retired"
+          ]
+        },
+        "releasedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retiredAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "predecessorReleaseRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "cohort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "audienceId",
+        "curriculumReleaseRef",
+        "assignmentMode",
+        "ownerRef",
+        "rosterRevision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "audienceId": {
+          "$ref": "#/$defs/id"
+        },
+        "curriculumReleaseRef": {
+          "$ref": "#/$defs/id"
+        },
+        "assignmentMode": {
+          "const": "voluntary-owner-approved"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rosterRevision": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "version",
+            "effectiveAt",
+            "memberCount",
+            "sourceDigest",
+            "privacyClass",
+            "evidenceRef"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "version": {
+              "$ref": "#/$defs/version"
+            },
+            "effectiveAt": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "memberCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sourceDigest": {
+              "$ref": "#/$defs/digest"
+            },
+            "privacyClass": {
+              "$ref": "#/$defs/privacyClass"
+            },
+            "evidenceRef": {
+              "$ref": "#/$defs/id"
+            }
+          }
+        }
+      }
+    },
+    "assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "cohortRef",
+        "rosterRevisionRef",
+        "rosterRevisionVersion",
+        "learnerRef",
+        "assignedAt",
+        "receiptRef",
+        "state",
+        "mandatory",
+        "privacyClass",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "cohortRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rosterRevisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rosterRevisionVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "learnerRef": {
+          "type": "string",
+          "pattern": "^learner-[0-9a-f]{16}$"
+        },
+        "assignedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "receiptRef": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "offered",
+            "accepted",
+            "declined"
+          ]
+        },
+        "mandatory": {
+          "const": false
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "assignmentReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "assignmentRef",
+        "learnerRef",
+        "recordedAt",
+        "state",
+        "evidenceRef",
+        "privacyClass"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "assignmentRef": {
+          "$ref": "#/$defs/id"
+        },
+        "learnerRef": {
+          "type": "string",
+          "pattern": "^learner-[0-9a-f]{16}$"
+        },
+        "recordedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "state": {
+          "enum": [
+            "offered",
+            "accepted",
+            "declined"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        }
+      }
+    },
+    "deliveryCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "releaseRef",
+        "cohortRef",
+        "requirementId",
+        "state",
+        "observedAt",
+        "ownerRef",
+        "evidenceRef",
+        "privacyClass"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "releaseRef": {
+          "$ref": "#/$defs/id"
+        },
+        "cohortRef": {
+          "$ref": "#/$defs/id"
+        },
+        "requirementId": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "ready",
+            "blocked",
+            "missing"
+          ]
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        }
+      }
+    },
+    "completionRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "assignmentRef",
+        "learnerRef",
+        "curriculumReleaseRef",
+        "completedAt",
+        "state",
+        "evidenceRef",
+        "privacyClass"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "assignmentRef": {
+          "$ref": "#/$defs/id"
+        },
+        "learnerRef": {
+          "type": "string",
+          "pattern": "^learner-[0-9a-f]{16}$"
+        },
+        "curriculumReleaseRef": {
+          "$ref": "#/$defs/id"
+        },
+        "completedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "state": {
+          "enum": [
+            "reported",
+            "verified",
+            "withdrawn"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        }
+      }
+    },
+    "assessmentRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "completionRef",
+        "learnerRef",
+        "instrumentId",
+        "instrumentVersion",
+        "assessedAt",
+        "state",
+        "evidenceRef",
+        "privacyClass"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "completionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "learnerRef": {
+          "type": "string",
+          "pattern": "^learner-[0-9a-f]{16}$"
+        },
+        "instrumentId": {
+          "$ref": "#/$defs/id"
+        },
+        "instrumentVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "assessedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "state": {
+          "enum": [
+            "submitted",
+            "verified",
+            "invalid"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        }
+      }
+    },
+    "effectivenessMeasure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "cohortRef",
+        "releaseRef",
+        "metricId",
+        "aggregationLevel",
+        "minimumGroupSize",
+        "denominator",
+        "numerator",
+        "targetRate",
+        "observedRate",
+        "observedAt",
+        "privacyClass",
+        "evidenceRefs",
+        "refreshReviewRef",
+        "conclusion"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "cohortRef": {
+          "$ref": "#/$defs/id"
+        },
+        "releaseRef": {
+          "$ref": "#/$defs/id"
+        },
+        "metricId": {
+          "$ref": "#/$defs/id"
+        },
+        "aggregationLevel": {
+          "const": "cohort"
+        },
+        "minimumGroupSize": {
+          "type": "integer",
+          "minimum": 5
+        },
+        "denominator": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "numerator": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "targetRate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "observedRate": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "refreshReviewRef": {
+          "$ref": "#/$defs/id"
+        },
+        "conclusion": {
+          "enum": [
+            "supports-target",
+            "does-not-support-target",
+            "no-conclusion"
+          ]
+        }
+      }
+    },
+    "refreshReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "releaseRef",
+        "reviewedAt",
+        "reviewerRef",
+        "revision",
+        "predecessorReviewRef",
+        "measureRefs",
+        "decision",
+        "rationaleEvidenceRefs",
+        "nextOwnerRef",
+        "effectiveAt",
+        "privacyClass"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "releaseRef": {
+          "$ref": "#/$defs/id"
+        },
+        "reviewedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "reviewerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "predecessorReviewRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "measureRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "decision": {
+          "enum": [
+            "retain",
+            "revise",
+            "retire",
+            "defer"
+          ]
+        },
+        "rationaleEvidenceRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "nextOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "effectiveAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "role"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "team"
+          ]
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "subjectRefs",
+        "observedAt",
+        "suppliedByRef",
+        "sourceDigest",
+        "privacyClass"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "approval-record",
+            "taxonomy-export",
+            "gap-export",
+            "curriculum-release-record",
+            "roster-export",
+            "assignment-record",
+            "assignment-receipt",
+            "delivery-observation",
+            "completion-record",
+            "assessment-record",
+            "aggregate-measure",
+            "refresh-decision",
+            "blocker-observation"
+          ]
+        },
+        "subjectRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "category",
+        "subjectRefs",
+        "evidenceRefs",
+        "ownerRef",
+        "openedAt",
+        "privacyClass"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "category": {
+          "enum": [
+            "delivery-not-ready",
+            "missing-assignment-receipt",
+            "accepted-assignment-incomplete",
+            "invalid-assessment",
+            "insufficient-aggregate",
+            "unsupported-effectiveness-conclusion",
+            "missing-refresh-review"
+          ]
+        },
+        "subjectRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "openedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "curriculumReleaseRefs",
+        "cohortRefs",
+        "assignmentRefs",
+        "assignmentReceiptRefs",
+        "deliveryCheckRefs",
+        "completionRecordRefs",
+        "assessmentRecordRefs",
+        "effectivenessMeasureRefs",
+        "refreshReviewRefs"
+      ],
+      "properties": {
+        "curriculumReleaseRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "cohortRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "assignmentRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "assignmentReceiptRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "deliveryCheckRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "completionRecordRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "assessmentRecordRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "effectivenessMeasureRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "refreshReviewRefs": {
+          "$ref": "#/$defs/idList"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "ownerRef",
+        "preparedAt",
+        "blockerRefs",
+        "artifactDigest",
+        "authorityClaims",
+        "privacyClass"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "blocked",
+            "ready-for-owner"
+          ]
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "preparedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "artifactDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "privacyClass": {
+          "$ref": "#/$defs/privacyClass"
+        },
+        "authorityClaims": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "individualPerformanceInference",
+            "sensitiveTraitInference",
+            "mandatoryAssignment",
+            "hrRecordMutation",
+            "credentialAwardOrRevocation",
+            "promotionOrCompensationDecision",
+            "externalContact",
+            "effectivenessBeyondEvidence"
+          ],
+          "properties": {
+            "individualPerformanceInference": {
+              "const": false
+            },
+            "sensitiveTraitInference": {
+              "const": false
+            },
+            "mandatoryAssignment": {
+              "const": false
+            },
+            "hrRecordMutation": {
+              "const": false
+            },
+            "credentialAwardOrRevocation": {
+              "const": false
+            },
+            "promotionOrCompensationDecision": {
+              "const": false
+            },
+            "externalContact": {
+              "const": false
+            },
+            "effectivenessBeyondEvidence": {
+              "const": false
+            }
+          }
+        }
+      }
+    }
+  }
+}

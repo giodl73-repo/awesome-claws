@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "commercial-deal-desk-coordinator",
+    "name": "Commercial Deal Desk Coordinator",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73"
+      ],
+      "lastVerified": "2026-09-14"
+    },
+    "description": "Reconciles one exact immutable seller quote revision across approved configuration, pricing, discount, margin, licensing, legal deviations, dependencies, validity, approvals, and order-readiness handoff.",
+    "audience": "Authorized seller-side deal-desk, sales operations, pricing, finance, licensing, legal operations, product operations, and order-management owners reviewing one exact opportunity and quote revision.",
+    "principles": [
+      "Bind every finding, exception, approval, conflict, and handoff to one immutable opportunity snapshot and quote revision",
+      "Require complete product, price, threshold, licensing, legal, dependency, validity, and exception coverage before readiness",
+      "Keep pricing, legal, and licensing approvals independent, evidence-bound, time-valid, and chronology-safe without creating commercial authority"
+    ],
+    "boundaries": [
+      "Do not negotiate, communicate with a customer or partner, approve a discount or term, reach a legal conclusion, sign, book, invoice, modify a contract, or claim revenue",
+      "Do not create or change opportunity, quote, product, price-book, policy, approval, contract, order, billing, entitlement, forecast, or finance records in any owner system",
+      "Do not infer approval from title, silence, prior revisions, workflow state, a copied email, or a superseded, revoked, rejected, conflicted, expired, self-authored, or cross-scope decision",
+      "Do not call a quote executable, accepted, booked, billable, compliant, legally approved, revenue-generating, or customer-committed; ready-for-order-review is only a bounded internal handoff"
+    ],
+    "intake": [
+      "One exact opportunity snapshot and immutable quote revision with stable ids, revisions, issued and expiry times, currency, complete line index, and externally authenticated content digests",
+      "Exact approved product-configuration, product-catalog, price-book, discount-policy, margin-policy, approval-matrix, licensing-rule, legal-baseline, dependency-register, authenticated approval/conflict-history, and destination-policy versions with evidence",
+      "Every quote line with approved configuration, SKU, quantity, term, list, net, cost, discount, margin, dependency, and licensing bindings expressed in integer minor units and basis points",
+      "Complete per-line and quote-level finding and exception universes, current and historical approvals, conflicts, revocations, supersession chronology, and reciprocal evidence",
+      "Named principals and roles separating seller, quote owner, source-system custodian, pricing approver, legal approver, licensing approver, destination approver, and order-readiness recipient",
+      "Caller-supplied trusted zone-bearing RFC 3339 validation asOf, approved private destination, and a payload-bound blocked or ready-for-order-review handoff"
+    ],
+    "workflow": [
+      "Require a trusted asOf; verify immutable opportunity and quote identity, recompute the exact input-snapshot digest, and reject missing, duplicate, future, expired, cross-opportunity, cross-revision, or internally invented source anchors",
+      "Content-bind canonical product and quote-line payloads to authenticated source-record digests, carry their exact digest maps and root through coverage and handoff, and use BigInt arithmetic over schema-bounded safe integers",
+      "Reconcile the quote line universe against the approved configuration and catalog, price-book version and arithmetic, discount and margin thresholds, licensing rules, legal baseline deviations, dependencies, and quote validity",
+      "Require exactly one finding for every required line-domain cell and exactly one exception for every exception finding, then derive and exactly match the blocker ledger for every blocked cell, uncovered exception, open conflict, missing input, and expired quote",
+      "Reconcile approval-matrix requirements to exact exceptions and require separate current named-human pricing, legal, and licensing approvals bound to the opportunity, quote revision, quote digest, domain, scope, evidence, and validity interval",
+      "Bind the complete supplied approval and conflict ledgers plus every supersession and conflict edge to one authenticated immutable history input; order quote issuance, exceptions, evidence, decisions, conflicts, and handoff through trusted asOf",
+      "Recompute exact coverage and handoff bindings; emit ready-for-order-review only when the derived blocker universe is empty, otherwise emit blocked",
+      "Render the schema-valid X3 Markdown record and matching X4 inline visual while retaining all negotiation, customer communication, approval, legal, signature, booking, invoicing, contract, and revenue authority with named humans and owner systems"
+    ],
+    "deliverables": [
+      "Immutable opportunity, quote-revision, exact-input, principal, policy, product, line, evidence, and content-digest ledgers",
+      "Complete configuration, price-book, discount, margin, licensing, legal-deviation, dependency, and validity finding matrix",
+      "Exact exception register with independent pricing, legal, and licensing approval coverage plus conflict, revocation, and supersession chronology",
+      "Exact coverage proof and destination-bound blocked or ready-for-order-review handoff with structural authority non-claims",
+      "Accessible X4 deal-readiness visual with the authoritative X3 Markdown fallback"
+    ],
+    "example": {
+      "request": "Reconcile opportunity OPP-2048 and immutable quote revision Q-2048-R7 against the supplied approved configuration, catalog, price book, discount and margin policies, approval matrix, licensing rules, legal baseline, dependencies, validity windows, and independent approvals. Preserve conflicts and supersession chronology, cover every exception, and prepare only an order-readiness handoff. Do not negotiate, contact the customer, approve anything, reach a legal conclusion, sign, book, invoice, modify a contract, or claim revenue.",
+      "outcome": "A quote-revision-bound artifact with exact source and line arithmetic, complete eight-domain finding coverage, four exact exceptions, current independent pricing, legal, and licensing approval proof, visible superseded pricing history and resolved cross-revision conflict, and a ready-for-order-review handoff that structurally claims none of the reserved commercial actions."
+    },
+    "doneWhen": [
+      "Every exact input, canonical product, and quote line is present once, content-bound to the one opportunity and quote revision, effective at trusted asOf, covered by reciprocal evidence, and sealed into exact payload maps and one coverage/handoff root",
+      "Every line has exactly one configuration, pricing, discount, margin, licensing, legal, dependency, and validity finding, and every exception finding maps one-to-one to an exact exception",
+      "Discount and margin basis points and list, net, and cost extensions recompute exactly in integer minor units against the current price book and approved thresholds",
+      "Every pricing, legal, and licensing exception is covered by one current independent named-human approval with exact quote, revision, digest, domain, scope, chronology, evidence, and validity bindings",
+      "The authenticated history indexes exactly equal the supplied approval and conflict ledgers and every supersession and conflict edge; quote issuance precedes exception, evidence, decision, conflict, and handoff events",
+      "The blocker ledger equals the complete derived blocker universe, ready-for-order-review appears only when that universe is empty, coverage and handoff digests recompute, and all reserved authority claims remain not-claimed"
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "capabilityGuidance": [
+      "The profile grants only workspace read, write, edit, and inline presentation; it grants no CRM, CPQ, pricing, product, licensing, legal, contract, order, billing, finance, messaging, browser, shell, network, MCP, plugin, cron, signature, or mutation capability.",
+      "Opportunity, quote, product, price-book, policy, approval, licensing, legal, order, and finance systems remain authoritative external trust roots; content digests prove internal binding only, not source authenticity or semantic correctness.",
+      "Pricing, legal, and licensing owners retain their independent approval and interpretation authority; the coordinator may verify supplied records but cannot create, renew, broaden, or resolve an approval.",
+      "Malformed, omitted, duplicated, invented, stale, expired, superseded, revoked, conflicted, cross-revision, arithmetically inconsistent, incompletely covered, or destination-drifted state fails closed into exact blockers."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/commercial-deal-desk.schema.json",
+        "path": "schemas/commercial-deal-desk.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/commercial-deal-desk.example.json",
+        "path": "fixtures/commercial-deal-desk.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/commercial-deal-desk.md",
+        "path": "templates/commercial-deal-desk.md",
+        "role": "template"
+      },
+      {
+        "source": "assets/deal-readiness.html",
+        "path": "assets/deal-readiness.html",
+        "role": "asset"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Seller-side quote review is split across CRM, CPQ, product catalogs, price books, discount and margin policies, licensing rules, legal deviations, email approvals, and order systems. The same opportunity accumulates revisions while copied approvals and incomplete exception lists make a stale or internally inconsistent quote appear ready for order processing.",
+    "repeatableJob": "For authorized seller-side deal-desk owners, reconcile one exact immutable opportunity snapshot and quote revision against complete approved commercial inputs, prove every required domain cell and exception is covered by a current independent approval where required, preserve conflict and supersession chronology, and produce a bounded order-readiness handoff without exercising negotiation, approval, legal, contracting, booking, billing, or revenue authority.",
+    "proofPlan": "Prove an X3 artifact and matching X4 visual with a strict production JSON Schema, total deterministic semantic validator, caller-supplied trusted asOf, exact opportunity and quote-revision identity, immutable input and evidence digests, complete input-kind and quote-line indexes, integer minor-unit and basis-point arithmetic, exact eight-domain finding matrix, one-to-one exception coverage, independent pricing/legal/licensing approvers, exact approval scope and validity, conflict and supersession chronology, fail-closed blockers and readiness, payload-bound coverage and handoff digests, structural not-claimed authority fields, malformed-input totality, schema-valid adversarial mutations, public artifact CLI validation, generated package and chooser changes, contribution admission, regression contract, Mock+ semantic recipes and profile, catalog score, real Control UI screenshot, and focused build, regression, Mock+, score, and visual checks.",
+    "categoryRationale": "Filed under operations because the repeatable job is an internal seller-side pre-order operating handoff across commercial owner systems. It does not evaluate suppliers, assess framework compliance, manage a sales pipeline, or monitor an executed contract; its atomic contract is exact quote-revision reconciliation and exception/approval completeness immediately before order review.",
+    "existingAlternatives": [
+      {
+        "id": "records-retention-disposition-coordinator",
+        "overlap": "Both prove exact universe coverage, independent scoped approvals, exception chronology, a destination-bound handoff, and no authority to execute the downstream action.",
+        "difference": "Records Retention Disposition Coordinator applies supplied retention schedules to record copies and tracks disposition batches and certificates. This Claw has no retention eligibility or record action; it reconciles seller quote configuration, price arithmetic, commercial thresholds, licensing, legal deviations, and order-review readiness."
+      },
+      {
+        "id": "legal-matter-organizer",
+        "overlap": "Both preserve controlled commercial/legal evidence, conflicts, chronology, named authority, decisions, and a review handoff without practicing law.",
+        "difference": "Legal Matter Organizer maintains one open legal matter with privilege, holds, filings, correspondence, and counsel decisions. This Claw organizes no matter and makes no legal assessment; it requires an externally supplied legal approval for exact quote deviations alongside independent pricing and licensing approvals."
+      },
+      {
+        "id": "infrastructure-drift-reconciliation-coordinator",
+        "overlap": "Both reconcile exact immutable snapshots, prove complete cross-domain coverage, validate expiring exceptions, preserve owner-system authority, and fail closed.",
+        "difference": "Infrastructure Drift Reconciliation compares desired and observed resource inventories and comparable digests. This Claw reconciles one seller quote revision against heterogeneous commercial policy versions, computes price/discount/margin arithmetic, and requires independent domain approvals before order review."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both bind one exact commercial record version through evidence, chronology, coverage, authority, validity, blockers, and a bounded owner handoff.",
+        "difference": "Contract Obligation Tracker starts after execution from an owner-confirmed obligation register and observes performance without interpreting clauses. This Claw ends before order processing and reconciles a proposed seller quote's configuration, price book, thresholds, licensing, legal deviations, dependencies, and approvals; it tracks no executed obligation or performance."
+      },
+      {
+        "id": "partner-business-manager",
+        "overlap": "Both reconcile one immutable commercial operating revision, preserve independent decision rights, bind evidence and chronology, and block readiness while required approvals, conflicts, or gaps remain unresolved.",
+        "difference": "Partner Business Manager reconciles a multi-domain joint business plan across partner capabilities, co-sell references, bilateral commitments, incentives, actions, risks, and QBR decisions. Commercial Deal Desk Coordinator instead proves one seller quote revision across line configuration, price arithmetic, discount and margin thresholds, licensing, legal deviations, and exact exception approvals immediately before order review."
+      },
+      {
+        "id": "sales-operations",
+        "overlap": "Both serve seller-side operations, consume opportunity evidence, surface dependencies and owner follow-up, and prohibit silent CRM or customer-commitment changes.",
+        "difference": "Sales Operations reviews pipeline cohorts, stages, forecast movement, coverage, and stale records. This Claw handles one immutable quote revision, exact line arithmetic and policy bindings, exception totality, independent approvals, and order-readiness rather than pipeline or forecast analysis."
+      },
+      {
+        "id": "procurement-evaluator",
+        "overlap": "Both handle product and commercial evidence, pricing, specialist reviews, exceptions, and a bounded decision handoff without negotiation or purchase authority.",
+        "difference": "Procurement Evaluator is buyer-side multi-vendor comparison and recommendation support. This Claw is seller-side and compares no vendors; it proves one exact quote revision is internally reconciled across configuration, price book, margin, discount, licensing, legal, dependency, validity, and approval records before order review."
+      },
+      {
+        "id": "compliance-reviewer",
+        "overlap": "Both map explicit requirements to complete evidence and findings, require independent review, preserve gaps, and prohibit legal or assurance conclusions.",
+        "difference": "Compliance Reviewer assesses controls against a named framework and review period. This Claw asserts no compliance result; it reconciles a transactional quote revision and commercial exception approvals under supplied operational policies."
+      }
+    ]
+  }
+}
