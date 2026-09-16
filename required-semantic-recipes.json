@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 119,
-    "coveredCount": 119,
-    "recipeCount": 325,
-    "findingCodeCount": 421
+    "validatorCount": 120,
+    "coveredCount": 120,
+    "recipeCount": 328,
+    "findingCodeCount": 425
   },
   "entries": [
     {
@@ -5139,6 +5139,57 @@
             "plan_scope_mismatch",
             "scenario_projection_mismatch",
             "unbound_plan_approval"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "enterprise-license-entitlement-reconciler",
+      "recipes": [
+        {
+          "id": "semantic-invalid-handoff-1",
+          "operator": "replace",
+          "path": [
+            "artifactId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_handoff",
+            "invalid_round_digest"
+          ]
+        },
+        {
+          "id": "semantic-invalid-authority-grant-2",
+          "operator": "replace",
+          "path": [
+            "round",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_authority_grant",
+            "invalid_destination_approval",
+            "invalid_evidence_binding",
+            "invalid_handoff",
+            "invalid_human_decision",
+            "invalid_round_digest",
+            "invalid_source_authority"
+          ]
+        },
+        {
+          "id": "semantic-invalid-handoff-3",
+          "operator": "replace",
+          "path": [
+            "round",
+            "organizationRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_handoff",
+            "invalid_round_binding",
+            "invalid_round_digest",
+            "invalid_source_export",
+            "invalid_trust_root"
           ]
         }
       ]

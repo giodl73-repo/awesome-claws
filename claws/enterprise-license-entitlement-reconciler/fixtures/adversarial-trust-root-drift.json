@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "awesomeClaws.adversarialMutation.v1",
+  "baseFixture": "fixtures/license-entitlement-reconciliation.example.json",
+  "mutation": {
+    "operator": "replace",
+    "path": [
+      "round",
+      "rightsManifestDigest"
+    ],
+    "value": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  },
+  "expectedFindingCodes": [
+    "invalid_handoff",
+    "invalid_round_binding",
+    "invalid_round_digest",
+    "invalid_trust_root"
+  ]
+}

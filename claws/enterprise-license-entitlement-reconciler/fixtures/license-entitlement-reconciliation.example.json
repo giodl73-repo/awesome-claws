@@ -1,0 +1,1020 @@
+{
+  "schemaVersion": "awesomeClaws.enterpriseLicenseEntitlementReconciliation.v1",
+  "artifactId": "artifact-northwind-2026-08",
+  "round": {
+    "id": "round-2026-08-r2",
+    "predecessorRoundRef": "round-2026-07-r1",
+    "organizationRef": "organization-northwind",
+    "agreementRef": "agreement-ea-204",
+    "licenseProgramRef": "license-program-2026",
+    "periodStartsAt": "2026-08-01T00:00:00Z",
+    "periodEndsAt": "2026-09-01T00:00:00Z",
+    "cutoffAt": "2026-09-01T00:00:00Z",
+    "opensAt": "2026-09-01T12:00:00Z",
+    "closesAt": "2026-09-03T17:00:00Z",
+    "rightsManifestRef": "rights-manifest-ea-204",
+    "rightsManifestVersion": "v4",
+    "rightsManifestDigest": "sha256:f6d703fcb03f24a6ab58568c090e8379099120cf27776ef2efdf53d0c47257cf",
+    "skuMappingRegisterRef": "sku-mapping-ea-204",
+    "skuMappingVersion": "v7",
+    "skuMappingDigest": "sha256:8f0cb38d7fa9d16ca75c8af51c07c0d81e556dc35b4d51db943110d48d55ac6c",
+    "authorityRosterRef": "roster-license-review",
+    "authorityRosterVersion": "v3",
+    "authorityRosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+    "destination": "controlled://license-governance/northwind/ea-204/2026-08",
+    "rightRefs": [
+      "right-productivity-suite",
+      "right-analytics-pro"
+    ],
+    "poolRefs": [
+      "pool-productivity-hq",
+      "pool-productivity-field",
+      "pool-analytics"
+    ],
+    "skuMappingRefs": [
+      "mapping-productivity-suite",
+      "mapping-analytics-pro"
+    ],
+    "sourceExportRefs": [
+      "export-assignments-2026-08",
+      "export-consumption-2026-08"
+    ],
+    "assignmentRefs": [
+      "assignment-productivity-hq",
+      "assignment-productivity-field",
+      "assignment-analytics"
+    ],
+    "consumptionRefs": [
+      "consumption-productivity-hq",
+      "consumption-productivity-field",
+      "consumption-analytics"
+    ],
+    "positionRefs": [
+      "position-productivity-hq",
+      "position-productivity-field",
+      "position-analytics"
+    ],
+    "exceptionRefs": [
+      "exception-productivity-hq",
+      "exception-productivity-field",
+      "exception-analytics"
+    ],
+    "decisionRefs": [
+      "decision-productivity-hq",
+      "decision-productivity-field",
+      "decision-analytics"
+    ],
+    "blockerRefs": [],
+    "evidenceRefs": [
+      "evidence-rights",
+      "evidence-mapping",
+      "evidence-assignments",
+      "evidence-consumption",
+      "evidence-roster",
+      "evidence-grants",
+      "evidence-positions",
+      "evidence-exceptions",
+      "evidence-decisions",
+      "evidence-destination",
+      "evidence-handoff"
+    ],
+    "roundDigest": "sha256:14d1e5ac6c2a00ad4a0e0077711d54e32b1f5ef65de3f7388f9e78f4cd7e77ca"
+  },
+  "rightsManifest": {
+    "id": "rights-manifest-ea-204",
+    "version": "v4",
+    "organizationRef": "organization-northwind",
+    "agreementRef": "agreement-ea-204",
+    "licenseProgramRef": "license-program-2026",
+    "effectiveFrom": "2026-01-01T00:00:00Z",
+    "effectiveUntil": "2027-01-01T00:00:00Z",
+    "confirmedAt": "2026-07-15T16:00:00Z",
+    "confirmedByRef": "principal-avery-rights",
+    "rightRefs": [
+      "right-productivity-suite",
+      "right-analytics-pro"
+    ],
+    "poolRefs": [
+      "pool-productivity-hq",
+      "pool-productivity-field",
+      "pool-analytics"
+    ],
+    "contentDigest": "sha256:f6d703fcb03f24a6ab58568c090e8379099120cf27776ef2efdf53d0c47257cf",
+    "evidenceRef": "evidence-rights"
+  },
+  "skuMappingRegister": {
+    "id": "sku-mapping-ea-204",
+    "version": "v7",
+    "organizationRef": "organization-northwind",
+    "agreementRef": "agreement-ea-204",
+    "licenseProgramRef": "license-program-2026",
+    "confirmedAt": "2026-07-16T16:00:00Z",
+    "confirmedByRef": "principal-morgan-mapping",
+    "mappingRefs": [
+      "mapping-productivity-suite",
+      "mapping-analytics-pro"
+    ],
+    "contentDigest": "sha256:8f0cb38d7fa9d16ca75c8af51c07c0d81e556dc35b4d51db943110d48d55ac6c",
+    "evidenceRef": "evidence-mapping"
+  },
+  "rights": [
+    {
+      "id": "right-productivity-suite",
+      "manifestRef": "rights-manifest-ea-204",
+      "metric": "assigned-user",
+      "normalizedUnit": "license-unit",
+      "purchasedUnits": 120,
+      "effectiveFrom": "2026-01-01T00:00:00Z",
+      "effectiveUntil": "2027-01-01T00:00:00Z",
+      "poolRefs": [
+        "pool-productivity-hq",
+        "pool-productivity-field"
+      ],
+      "evidenceRef": "evidence-rights"
+    },
+    {
+      "id": "right-analytics-pro",
+      "manifestRef": "rights-manifest-ea-204",
+      "metric": "assigned-user",
+      "normalizedUnit": "license-unit",
+      "purchasedUnits": 60,
+      "effectiveFrom": "2026-01-01T00:00:00Z",
+      "effectiveUntil": "2027-01-01T00:00:00Z",
+      "poolRefs": [
+        "pool-analytics"
+      ],
+      "evidenceRef": "evidence-rights"
+    }
+  ],
+  "pools": [
+    {
+      "id": "pool-productivity-hq",
+      "rightRef": "right-productivity-suite",
+      "entitledUnits": 80,
+      "evidenceRef": "evidence-rights"
+    },
+    {
+      "id": "pool-productivity-field",
+      "rightRef": "right-productivity-suite",
+      "entitledUnits": 40,
+      "evidenceRef": "evidence-rights"
+    },
+    {
+      "id": "pool-analytics",
+      "rightRef": "right-analytics-pro",
+      "entitledUnits": 60,
+      "evidenceRef": "evidence-rights"
+    }
+  ],
+  "skuMappings": [
+    {
+      "id": "mapping-productivity-suite",
+      "mappingRegisterRef": "sku-mapping-ea-204",
+      "sourceSku": "M365_E5",
+      "rightRef": "right-productivity-suite",
+      "poolRefs": [
+        "pool-productivity-hq",
+        "pool-productivity-field"
+      ],
+      "metric": "assigned-user",
+      "sourceUnit": "user",
+      "normalizedUnit": "license-unit",
+      "conversionNumerator": 1,
+      "conversionDenominator": 1,
+      "evidenceRef": "evidence-mapping"
+    },
+    {
+      "id": "mapping-analytics-pro",
+      "mappingRegisterRef": "sku-mapping-ea-204",
+      "sourceSku": "PBI_PRO",
+      "rightRef": "right-analytics-pro",
+      "poolRefs": [
+        "pool-analytics"
+      ],
+      "metric": "assigned-user",
+      "sourceUnit": "user",
+      "normalizedUnit": "license-unit",
+      "conversionNumerator": 1,
+      "conversionDenominator": 1,
+      "evidenceRef": "evidence-mapping"
+    }
+  ],
+  "sourceExports": [
+    {
+      "id": "export-assignments-2026-08",
+      "kind": "assignment-export",
+      "version": "v5",
+      "organizationRef": "organization-northwind",
+      "agreementRef": "agreement-ea-204",
+      "licenseProgramRef": "license-program-2026",
+      "periodStartsAt": "2026-08-01T00:00:00Z",
+      "periodEndsAt": "2026-09-01T00:00:00Z",
+      "cutoffAt": "2026-09-01T00:00:00Z",
+      "suppliedAt": "2026-09-01T01:00:00Z",
+      "suppliedByRef": "principal-casey-assignments",
+      "rowRefs": [
+        "assignment-productivity-hq",
+        "assignment-productivity-field",
+        "assignment-analytics"
+      ],
+      "contentDigest": "sha256:d6c307dae1d12dad41b6c2bf91abd0d8117c969c6c11fecced911fea7f38e9e6",
+      "evidenceRef": "evidence-assignments"
+    },
+    {
+      "id": "export-consumption-2026-08",
+      "kind": "consumption-export",
+      "version": "v6",
+      "organizationRef": "organization-northwind",
+      "agreementRef": "agreement-ea-204",
+      "licenseProgramRef": "license-program-2026",
+      "periodStartsAt": "2026-08-01T00:00:00Z",
+      "periodEndsAt": "2026-09-01T00:00:00Z",
+      "cutoffAt": "2026-09-01T00:00:00Z",
+      "suppliedAt": "2026-09-01T01:30:00Z",
+      "suppliedByRef": "principal-riley-metering",
+      "rowRefs": [
+        "consumption-productivity-hq",
+        "consumption-productivity-field",
+        "consumption-analytics"
+      ],
+      "contentDigest": "sha256:da7bbdf0c30edfdf07fdb65e92238da746aa4ff5ac2877273775965e15af7abe",
+      "evidenceRef": "evidence-consumption"
+    }
+  ],
+  "assignments": [
+    {
+      "id": "assignment-productivity-hq",
+      "exportRef": "export-assignments-2026-08",
+      "sourceSku": "M365_E5",
+      "mappingState": "mapped",
+      "periodState": "in-period",
+      "mappingRef": "mapping-productivity-suite",
+      "rightRef": "right-productivity-suite",
+      "poolRef": "pool-productivity-hq",
+      "sourceUnits": 70,
+      "normalizedUnits": 70,
+      "observedAt": "2026-09-01T00:00:00Z",
+      "rowDigest": "sha256:de23eed9a0cf22636d09238f6d8997042a9e51f9e7aa6e4fd060249b47c28bd2",
+      "evidenceRef": "evidence-assignments"
+    },
+    {
+      "id": "assignment-productivity-field",
+      "exportRef": "export-assignments-2026-08",
+      "sourceSku": "M365_E5",
+      "mappingState": "mapped",
+      "periodState": "in-period",
+      "mappingRef": "mapping-productivity-suite",
+      "rightRef": "right-productivity-suite",
+      "poolRef": "pool-productivity-field",
+      "sourceUnits": 45,
+      "normalizedUnits": 45,
+      "observedAt": "2026-09-01T00:00:00Z",
+      "rowDigest": "sha256:bd95943ad94a0fdb05f06dfd999ec0a74736d366a18da0717d3d0771250d9dcc",
+      "evidenceRef": "evidence-assignments"
+    },
+    {
+      "id": "assignment-analytics",
+      "exportRef": "export-assignments-2026-08",
+      "sourceSku": "PBI_PRO",
+      "mappingState": "mapped",
+      "periodState": "in-period",
+      "mappingRef": "mapping-analytics-pro",
+      "rightRef": "right-analytics-pro",
+      "poolRef": "pool-analytics",
+      "sourceUnits": 50,
+      "normalizedUnits": 50,
+      "observedAt": "2026-09-01T00:00:00Z",
+      "rowDigest": "sha256:ce216f0257cf1886349e6e195f49429b3a3dc1bc4e9a7ab4a43c7c9fe3bf8efb",
+      "evidenceRef": "evidence-assignments"
+    }
+  ],
+  "consumption": [
+    {
+      "id": "consumption-productivity-hq",
+      "exportRef": "export-consumption-2026-08",
+      "sourceSku": "M365_E5",
+      "mappingState": "mapped",
+      "periodState": "in-period",
+      "mappingRef": "mapping-productivity-suite",
+      "rightRef": "right-productivity-suite",
+      "poolRef": "pool-productivity-hq",
+      "sourceUnits": 68,
+      "normalizedUnits": 68,
+      "periodStartsAt": "2026-08-01T00:00:00Z",
+      "periodEndsAt": "2026-09-01T00:00:00Z",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "rowDigest": "sha256:9359dd5c940ea92a4baa85700c1aad13a5477a7dd878ab41ac6c431c1e2c7459",
+      "evidenceRef": "evidence-consumption"
+    },
+    {
+      "id": "consumption-productivity-field",
+      "exportRef": "export-consumption-2026-08",
+      "sourceSku": "M365_E5",
+      "mappingState": "mapped",
+      "periodState": "in-period",
+      "mappingRef": "mapping-productivity-suite",
+      "rightRef": "right-productivity-suite",
+      "poolRef": "pool-productivity-field",
+      "sourceUnits": 41,
+      "normalizedUnits": 41,
+      "periodStartsAt": "2026-08-01T00:00:00Z",
+      "periodEndsAt": "2026-09-01T00:00:00Z",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "rowDigest": "sha256:4627ff350ed85a09831038dc7917762b9d19a11a8fef7d9c1ce64cc032ae57ee",
+      "evidenceRef": "evidence-consumption"
+    },
+    {
+      "id": "consumption-analytics",
+      "exportRef": "export-consumption-2026-08",
+      "sourceSku": "PBI_PRO",
+      "mappingState": "mapped",
+      "periodState": "in-period",
+      "mappingRef": "mapping-analytics-pro",
+      "rightRef": "right-analytics-pro",
+      "poolRef": "pool-analytics",
+      "sourceUnits": 63,
+      "normalizedUnits": 63,
+      "periodStartsAt": "2026-08-01T00:00:00Z",
+      "periodEndsAt": "2026-09-01T00:00:00Z",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "rowDigest": "sha256:692300bfe421fd73819d0412ab2466c55cbeee460d2e6f910c07213abec40819",
+      "evidenceRef": "evidence-consumption"
+    }
+  ],
+  "principals": [
+    {
+      "id": "principal-avery-rights",
+      "name": "Avery Rights",
+      "kind": "named-human",
+      "scopes": [
+        "rights-source-owner"
+      ]
+    },
+    {
+      "id": "principal-morgan-mapping",
+      "name": "Morgan Mapping",
+      "kind": "named-human",
+      "scopes": [
+        "sku-mapping-source-owner"
+      ]
+    },
+    {
+      "id": "principal-casey-assignments",
+      "name": "Casey Assignments",
+      "kind": "named-human",
+      "scopes": [
+        "assignment-source-owner"
+      ]
+    },
+    {
+      "id": "principal-riley-metering",
+      "name": "Riley Metering",
+      "kind": "named-human",
+      "scopes": [
+        "consumption-source-owner"
+      ]
+    },
+    {
+      "id": "principal-quinn-custodian",
+      "name": "Quinn Custodian",
+      "kind": "named-human",
+      "scopes": [
+        "authority-roster-custodian"
+      ]
+    },
+    {
+      "id": "principal-jordan-authority",
+      "name": "Jordan Authority",
+      "kind": "named-human",
+      "scopes": [
+        "authority-grant-issuer"
+      ]
+    },
+    {
+      "id": "principal-taylor-reviewer",
+      "name": "Taylor Reviewer",
+      "kind": "named-human",
+      "scopes": [
+        "exception-reviewer"
+      ]
+    },
+    {
+      "id": "principal-dana-approver",
+      "name": "Dana Approver",
+      "kind": "named-human",
+      "scopes": [
+        "destination-approver"
+      ]
+    },
+    {
+      "id": "principal-harper-owner",
+      "name": "Harper Owner",
+      "kind": "named-human",
+      "scopes": [
+        "handoff-owner"
+      ]
+    }
+  ],
+  "authorityRoster": {
+    "id": "roster-license-review",
+    "version": "v3",
+    "issuedAt": "2026-07-14T16:00:00Z",
+    "custodianRef": "principal-quinn-custodian",
+    "principalRefs": [
+      "principal-avery-rights",
+      "principal-morgan-mapping",
+      "principal-casey-assignments",
+      "principal-riley-metering",
+      "principal-quinn-custodian",
+      "principal-jordan-authority",
+      "principal-taylor-reviewer",
+      "principal-dana-approver",
+      "principal-harper-owner"
+    ],
+    "contentDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+    "evidenceRef": "evidence-roster"
+  },
+  "authorityGrants": [
+    {
+      "id": "grant-rights-owner",
+      "roundRef": "round-2026-08-r2",
+      "granteeRef": "principal-avery-rights",
+      "issuedByRef": "principal-jordan-authority",
+      "scope": "rights-source-owner",
+      "targetType": "rights-manifest",
+      "targetRef": "rights-manifest-ea-204",
+      "activeFrom": "2026-07-01T00:00:00Z",
+      "activeUntil": "2026-09-03T18:00:00Z",
+      "rosterRef": "roster-license-review",
+      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+      "payloadDigest": "sha256:57cbba174cd84164a5219dd955a5cb221dcbfcc3133ee54e05f219f4ab564129",
+      "evidenceRef": "evidence-grants"
+    },
+    {
+      "id": "grant-mapping-owner",
+      "roundRef": "round-2026-08-r2",
+      "granteeRef": "principal-morgan-mapping",
+      "issuedByRef": "principal-jordan-authority",
+      "scope": "sku-mapping-source-owner",
+      "targetType": "sku-mapping-register",
+      "targetRef": "sku-mapping-ea-204",
+      "activeFrom": "2026-07-01T00:00:00Z",
+      "activeUntil": "2026-09-03T18:00:00Z",
+      "rosterRef": "roster-license-review",
+      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+      "payloadDigest": "sha256:5a4a7508aa5b91f17a64f6e81178029705f8323cbd9c01d197533ecbac314dab",
+      "evidenceRef": "evidence-grants"
+    },
+    {
+      "id": "grant-assignment-owner",
+      "roundRef": "round-2026-08-r2",
+      "granteeRef": "principal-casey-assignments",
+      "issuedByRef": "principal-jordan-authority",
+      "scope": "assignment-source-owner",
+      "targetType": "source-export",
+      "targetRef": "export-assignments-2026-08",
+      "activeFrom": "2026-07-01T00:00:00Z",
+      "activeUntil": "2026-09-03T18:00:00Z",
+      "rosterRef": "roster-license-review",
+      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+      "payloadDigest": "sha256:3fef8ff7b2df2673f3b06fa753ccb7ad42c00254c69e71acf638a0203af7fcc6",
+      "evidenceRef": "evidence-grants"
+    },
+    {
+      "id": "grant-consumption-owner",
+      "roundRef": "round-2026-08-r2",
+      "granteeRef": "principal-riley-metering",
+      "issuedByRef": "principal-jordan-authority",
+      "scope": "consumption-source-owner",
+      "targetType": "source-export",
+      "targetRef": "export-consumption-2026-08",
+      "activeFrom": "2026-07-01T00:00:00Z",
+      "activeUntil": "2026-09-03T18:00:00Z",
+      "rosterRef": "roster-license-review",
+      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+      "payloadDigest": "sha256:7bf3a15a53a7d55028c00b108bd232b301950547778e8aa91d5b83879f1a9de5",
+      "evidenceRef": "evidence-grants"
+    },
+    {
+      "id": "grant-review-hq",
+      "roundRef": "round-2026-08-r2",
+      "granteeRef": "principal-taylor-reviewer",
+      "issuedByRef": "principal-jordan-authority",
+      "scope": "exception-reviewer",
+      "targetType": "exception",
+      "targetRef": "exception-productivity-hq",
+      "activeFrom": "2026-09-01T12:00:00Z",
+      "activeUntil": "2026-09-03T17:00:00Z",
+      "rosterRef": "roster-license-review",
+      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+      "payloadDigest": "sha256:cdcd8bb39bb8752764f9882059cfcef785118f752881312763a39ba7ba9ab2aa",
+      "evidenceRef": "evidence-grants"
+    },
+    {
+      "id": "grant-review-field",
+      "roundRef": "round-2026-08-r2",
+      "granteeRef": "principal-taylor-reviewer",
+      "issuedByRef": "principal-jordan-authority",
+      "scope": "exception-reviewer",
+      "targetType": "exception",
+      "targetRef": "exception-productivity-field",
+      "activeFrom": "2026-09-01T12:00:00Z",
+      "activeUntil": "2026-09-03T17:00:00Z",
+      "rosterRef": "roster-license-review",
+      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+      "payloadDigest": "sha256:d359daec6b27e98bd51d735684f6296df8a977d0cd5f24d406ceea90ce96e9c5",
+      "evidenceRef": "evidence-grants"
+    },
+    {
+      "id": "grant-review-analytics",
+      "roundRef": "round-2026-08-r2",
+      "granteeRef": "principal-taylor-reviewer",
+      "issuedByRef": "principal-jordan-authority",
+      "scope": "exception-reviewer",
+      "targetType": "exception",
+      "targetRef": "exception-analytics",
+      "activeFrom": "2026-09-01T12:00:00Z",
+      "activeUntil": "2026-09-03T17:00:00Z",
+      "rosterRef": "roster-license-review",
+      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+      "payloadDigest": "sha256:f1040902e80cd2c29eb1e0dfa33739e9fa63b44c97e48133ef996379f92123e0",
+      "evidenceRef": "evidence-grants"
+    },
+    {
+      "id": "grant-destination-approver",
+      "roundRef": "round-2026-08-r2",
+      "granteeRef": "principal-dana-approver",
+      "issuedByRef": "principal-jordan-authority",
+      "scope": "destination-approver",
+      "targetType": "destination",
+      "targetRef": "controlled://license-governance/northwind/ea-204/2026-08",
+      "activeFrom": "2026-09-01T12:00:00Z",
+      "activeUntil": "2026-09-03T17:00:00Z",
+      "rosterRef": "roster-license-review",
+      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+      "payloadDigest": "sha256:11f79e6da13e97d7415447c6066c9dab22fd18c9798d131bc2fda1934886b23e",
+      "evidenceRef": "evidence-grants"
+    },
+    {
+      "id": "grant-handoff-owner",
+      "roundRef": "round-2026-08-r2",
+      "granteeRef": "principal-harper-owner",
+      "issuedByRef": "principal-jordan-authority",
+      "scope": "handoff-owner",
+      "targetType": "destination",
+      "targetRef": "controlled://license-governance/northwind/ea-204/2026-08",
+      "activeFrom": "2026-09-01T12:00:00Z",
+      "activeUntil": "2026-09-03T17:00:00Z",
+      "rosterRef": "roster-license-review",
+      "rosterDigest": "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+      "payloadDigest": "sha256:7dd8b9b14c543dc2b5f2e42f55b5c338c7a83356dbce810c67e85d3e6e940045",
+      "evidenceRef": "evidence-grants"
+    }
+  ],
+  "positions": [
+    {
+      "id": "position-productivity-hq",
+      "rightRef": "right-productivity-suite",
+      "poolRef": "pool-productivity-hq",
+      "entitledUnits": 80,
+      "assignedUnits": 70,
+      "consumedUnits": 68,
+      "assignmentDeltaUnits": 10,
+      "consumptionDeltaUnits": 12,
+      "state": "available-rights",
+      "assignmentRefs": [
+        "assignment-productivity-hq"
+      ],
+      "consumptionRefs": [
+        "consumption-productivity-hq"
+      ],
+      "exceptionRefs": [
+        "exception-productivity-hq"
+      ],
+      "reconciledByRef": "principal-taylor-reviewer",
+      "reconciledAt": "2026-09-02T12:00:00Z",
+      "evidenceRef": "evidence-positions"
+    },
+    {
+      "id": "position-productivity-field",
+      "rightRef": "right-productivity-suite",
+      "poolRef": "pool-productivity-field",
+      "entitledUnits": 40,
+      "assignedUnits": 45,
+      "consumedUnits": 41,
+      "assignmentDeltaUnits": -5,
+      "consumptionDeltaUnits": -1,
+      "state": "combined-overage",
+      "assignmentRefs": [
+        "assignment-productivity-field"
+      ],
+      "consumptionRefs": [
+        "consumption-productivity-field"
+      ],
+      "exceptionRefs": [
+        "exception-productivity-field"
+      ],
+      "reconciledByRef": "principal-taylor-reviewer",
+      "reconciledAt": "2026-09-02T12:00:00Z",
+      "evidenceRef": "evidence-positions"
+    },
+    {
+      "id": "position-analytics",
+      "rightRef": "right-analytics-pro",
+      "poolRef": "pool-analytics",
+      "entitledUnits": 60,
+      "assignedUnits": 50,
+      "consumedUnits": 63,
+      "assignmentDeltaUnits": 10,
+      "consumptionDeltaUnits": -3,
+      "state": "consumption-overage",
+      "assignmentRefs": [
+        "assignment-analytics"
+      ],
+      "consumptionRefs": [
+        "consumption-analytics"
+      ],
+      "exceptionRefs": [
+        "exception-analytics"
+      ],
+      "reconciledByRef": "principal-taylor-reviewer",
+      "reconciledAt": "2026-09-02T12:00:00Z",
+      "evidenceRef": "evidence-positions"
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "exception-productivity-hq",
+      "positionRef": "position-productivity-hq",
+      "rightRef": "right-productivity-suite",
+      "poolRef": "pool-productivity-hq",
+      "code": "available-rights",
+      "assignmentDeltaUnits": 10,
+      "consumptionDeltaUnits": 12,
+      "ownerRef": "principal-taylor-reviewer",
+      "detectedAt": "2026-09-02T12:00:00Z",
+      "resolutionState": "reviewed",
+      "decisionRef": "decision-productivity-hq",
+      "evidenceRef": "evidence-exceptions"
+    },
+    {
+      "id": "exception-productivity-field",
+      "positionRef": "position-productivity-field",
+      "rightRef": "right-productivity-suite",
+      "poolRef": "pool-productivity-field",
+      "code": "combined-overage",
+      "assignmentDeltaUnits": -5,
+      "consumptionDeltaUnits": -1,
+      "ownerRef": "principal-taylor-reviewer",
+      "detectedAt": "2026-09-02T12:00:00Z",
+      "resolutionState": "reviewed",
+      "decisionRef": "decision-productivity-field",
+      "evidenceRef": "evidence-exceptions"
+    },
+    {
+      "id": "exception-analytics",
+      "positionRef": "position-analytics",
+      "rightRef": "right-analytics-pro",
+      "poolRef": "pool-analytics",
+      "code": "consumption-overage",
+      "assignmentDeltaUnits": 10,
+      "consumptionDeltaUnits": -3,
+      "ownerRef": "principal-taylor-reviewer",
+      "detectedAt": "2026-09-02T12:00:00Z",
+      "resolutionState": "reviewed",
+      "decisionRef": "decision-analytics",
+      "evidenceRef": "evidence-exceptions"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-productivity-hq",
+      "roundRef": "round-2026-08-r2",
+      "exceptionRef": "exception-productivity-hq",
+      "disposition": "acknowledged-for-owner-review",
+      "reviewedByRef": "principal-taylor-reviewer",
+      "reviewedAt": "2026-09-02T15:00:00Z",
+      "authorityGrantRef": "grant-review-hq",
+      "predecessorDecisionRef": null,
+      "evidenceRef": "evidence-decisions"
+    },
+    {
+      "id": "decision-productivity-field",
+      "roundRef": "round-2026-08-r2",
+      "exceptionRef": "exception-productivity-field",
+      "disposition": "acknowledged-for-owner-review",
+      "reviewedByRef": "principal-taylor-reviewer",
+      "reviewedAt": "2026-09-02T15:05:00Z",
+      "authorityGrantRef": "grant-review-field",
+      "predecessorDecisionRef": null,
+      "evidenceRef": "evidence-decisions"
+    },
+    {
+      "id": "decision-analytics",
+      "roundRef": "round-2026-08-r2",
+      "exceptionRef": "exception-analytics",
+      "disposition": "acknowledged-for-owner-review",
+      "reviewedByRef": "principal-taylor-reviewer",
+      "reviewedAt": "2026-09-02T15:10:00Z",
+      "authorityGrantRef": "grant-review-analytics",
+      "predecessorDecisionRef": null,
+      "evidenceRef": "evidence-decisions"
+    }
+  ],
+  "blockers": [],
+  "evidence": [
+    {
+      "id": "evidence-rights",
+      "kind": "rights-manifest-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-07-15T16:00:00Z",
+      "suppliedByRef": "principal-avery-rights",
+      "subjectRefs": [
+        "rights-manifest-ea-204",
+        "right-productivity-suite",
+        "right-analytics-pro",
+        "pool-productivity-hq",
+        "pool-productivity-field",
+        "pool-analytics"
+      ],
+      "sourceRecordDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadDigest": "sha256:2362574164dee6c8bbc3eccc768099762167ae9597562ee29b31498920d18fab",
+      "recordDigest": "sha256:662fe81e3f8489144c0b1bc73751e4f3186f07da03d1554e05a3708b514f02eb",
+      "controlledRef": "controlled://license-reconciliation/evidence-rights@sha256-662fe81e3f8489144c0b1bc73751e4f3186f07da03d1554e05a3708b514f02eb"
+    },
+    {
+      "id": "evidence-mapping",
+      "kind": "sku-mapping-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-07-16T16:00:00Z",
+      "suppliedByRef": "principal-morgan-mapping",
+      "subjectRefs": [
+        "sku-mapping-ea-204",
+        "mapping-productivity-suite",
+        "mapping-analytics-pro"
+      ],
+      "sourceRecordDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "payloadDigest": "sha256:e8aea356a6bbbdbd6147bcb9ac1a7b28e747a9083bee9cc0c0255bbf1329ae20",
+      "recordDigest": "sha256:ccb8e4214dc848acd137221277ad01d5245828bd30760e16e9faf88730a44b3c",
+      "controlledRef": "controlled://license-reconciliation/evidence-mapping@sha256-ccb8e4214dc848acd137221277ad01d5245828bd30760e16e9faf88730a44b3c"
+    },
+    {
+      "id": "evidence-assignments",
+      "kind": "assignment-export-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-09-01T01:00:00Z",
+      "suppliedByRef": "principal-casey-assignments",
+      "subjectRefs": [
+        "export-assignments-2026-08",
+        "assignment-productivity-hq",
+        "assignment-productivity-field",
+        "assignment-analytics"
+      ],
+      "sourceRecordDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "payloadDigest": "sha256:bee2fcfdc3576dbe5ae2dd59dadfcacc0961aa931b6331a515f328743f4c71ff",
+      "recordDigest": "sha256:9694cab20782ff3ec2d29c689b34f12560056722a27fcd767f028c940168a576",
+      "controlledRef": "controlled://license-reconciliation/evidence-assignments@sha256-9694cab20782ff3ec2d29c689b34f12560056722a27fcd767f028c940168a576"
+    },
+    {
+      "id": "evidence-consumption",
+      "kind": "consumption-export-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-09-01T01:30:00Z",
+      "suppliedByRef": "principal-riley-metering",
+      "subjectRefs": [
+        "export-consumption-2026-08",
+        "consumption-productivity-hq",
+        "consumption-productivity-field",
+        "consumption-analytics"
+      ],
+      "sourceRecordDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "payloadDigest": "sha256:1fc98fa6db6b67ac8dbb517c91e3cdc015e860b0fb21fefb733b0dc38faaae30",
+      "recordDigest": "sha256:c830dbdc80d3cffc460652a4bd5db3195c962a8ce60a5f61dc974c3421f20aa2",
+      "controlledRef": "controlled://license-reconciliation/evidence-consumption@sha256-c830dbdc80d3cffc460652a4bd5db3195c962a8ce60a5f61dc974c3421f20aa2"
+    },
+    {
+      "id": "evidence-roster",
+      "kind": "authority-roster-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-07-14T16:00:00Z",
+      "suppliedByRef": "principal-quinn-custodian",
+      "subjectRefs": [
+        "roster-license-review",
+        "principal-avery-rights",
+        "principal-morgan-mapping",
+        "principal-casey-assignments",
+        "principal-riley-metering",
+        "principal-quinn-custodian",
+        "principal-jordan-authority",
+        "principal-taylor-reviewer",
+        "principal-dana-approver",
+        "principal-harper-owner"
+      ],
+      "sourceRecordDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "payloadDigest": "sha256:7f3c9eb20505f31da8674f63efb76774796f57c9ab4b71e01cfb995d6313badd",
+      "recordDigest": "sha256:c9e9fbfafc383d7f729042496e6ca865714c1fc75b45c1f3e53d968a46116fde",
+      "controlledRef": "controlled://license-reconciliation/evidence-roster@sha256-c9e9fbfafc383d7f729042496e6ca865714c1fc75b45c1f3e53d968a46116fde"
+    },
+    {
+      "id": "evidence-grants",
+      "kind": "authority-grant-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-07-01T00:00:00Z",
+      "suppliedByRef": "principal-jordan-authority",
+      "subjectRefs": [
+        "grant-rights-owner",
+        "grant-mapping-owner",
+        "grant-assignment-owner",
+        "grant-consumption-owner",
+        "grant-review-hq",
+        "grant-review-field",
+        "grant-review-analytics",
+        "grant-destination-approver",
+        "grant-handoff-owner"
+      ],
+      "sourceRecordDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "payloadDigest": "sha256:3dd3727df545d9bc3de41711de788bd422dac486c02c1096fefbb712e5e17f7b",
+      "recordDigest": "sha256:9864ae7cc2fbd9133c711dba3954b9ff5237838ef3ebf4cb0ae123ec324ec7e1",
+      "controlledRef": "controlled://license-reconciliation/evidence-grants@sha256-9864ae7cc2fbd9133c711dba3954b9ff5237838ef3ebf4cb0ae123ec324ec7e1"
+    },
+    {
+      "id": "evidence-positions",
+      "kind": "position-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-09-02T12:00:00Z",
+      "suppliedByRef": "principal-taylor-reviewer",
+      "subjectRefs": [
+        "position-productivity-hq",
+        "position-productivity-field",
+        "position-analytics"
+      ],
+      "sourceRecordDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "payloadDigest": "sha256:0f8bdcf8d1c7eee5c6d1e3a92f51c0378a7eac3c12532b93b45bb8dbbf7841a1",
+      "recordDigest": "sha256:43f6c2db9395cdb13733eea476a252ce939fab0b96697036488ea55314b5620a",
+      "controlledRef": "controlled://license-reconciliation/evidence-positions@sha256-43f6c2db9395cdb13733eea476a252ce939fab0b96697036488ea55314b5620a"
+    },
+    {
+      "id": "evidence-exceptions",
+      "kind": "exception-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-09-02T12:00:00Z",
+      "suppliedByRef": "principal-taylor-reviewer",
+      "subjectRefs": [
+        "exception-productivity-hq",
+        "exception-productivity-field",
+        "exception-analytics"
+      ],
+      "sourceRecordDigest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "payloadDigest": "sha256:306f45814b7c69f441ad05f42f71b3df8702e7f99059715f8ae4c32b7765e107",
+      "recordDigest": "sha256:fd36a3dccfa78ec6e531105f576c82ce150a8530f06909a2db3bf8d1112ad560",
+      "controlledRef": "controlled://license-reconciliation/evidence-exceptions@sha256-fd36a3dccfa78ec6e531105f576c82ce150a8530f06909a2db3bf8d1112ad560"
+    },
+    {
+      "id": "evidence-decisions",
+      "kind": "decision-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-09-02T14:59:00Z",
+      "suppliedByRef": "principal-taylor-reviewer",
+      "subjectRefs": [
+        "decision-productivity-hq",
+        "decision-productivity-field",
+        "decision-analytics"
+      ],
+      "sourceRecordDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "payloadDigest": "sha256:51a99ba827542ce084f53dcfcd815dc4598d82f2386c8ad8a0aed0e8051bafc0",
+      "recordDigest": "sha256:9244d4d8851007f8bd9733a3ac66d634166c7a86c9bba421353c7e9eacf466b0",
+      "controlledRef": "controlled://license-reconciliation/evidence-decisions@sha256-9244d4d8851007f8bd9733a3ac66d634166c7a86c9bba421353c7e9eacf466b0"
+    },
+    {
+      "id": "evidence-destination",
+      "kind": "destination-approval-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-09-03T16:00:00Z",
+      "suppliedByRef": "principal-dana-approver",
+      "subjectRefs": [
+        "destination-approval"
+      ],
+      "sourceRecordDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "payloadDigest": "sha256:439e27d72424f4961fe096934f1e54e94253984849824d21fb2a4ffa3aba3c2a",
+      "recordDigest": "sha256:afa5dcdd8efb361689f8577a5ec0f46f77fb87c0b87668b1f77c9068416342b1",
+      "controlledRef": "controlled://license-reconciliation/evidence-destination@sha256-afa5dcdd8efb361689f8577a5ec0f46f77fb87c0b87668b1f77c9068416342b1"
+    },
+    {
+      "id": "evidence-handoff",
+      "kind": "handoff-record",
+      "roundRef": "round-2026-08-r2",
+      "observedAt": "2026-09-03T17:00:00Z",
+      "suppliedByRef": "principal-harper-owner",
+      "subjectRefs": [
+        "handoff-owner-review"
+      ],
+      "sourceRecordDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "payloadDigest": "sha256:399cbd34e31e2312fbf39aebea26faf127098e5d4792ba852e2756a0717b9653",
+      "recordDigest": "sha256:b6078d50bb21cfab6e52fc113c557a759339c3fa3aef9e6fa18c04acb753e1e2",
+      "controlledRef": "controlled://license-reconciliation/evidence-handoff@sha256-b6078d50bb21cfab6e52fc113c557a759339c3fa3aef9e6fa18c04acb753e1e2"
+    }
+  ],
+  "coverage": {
+    "rightRefs": [
+      "right-productivity-suite",
+      "right-analytics-pro"
+    ],
+    "poolRefs": [
+      "pool-productivity-hq",
+      "pool-productivity-field",
+      "pool-analytics"
+    ],
+    "assignmentRefs": [
+      "assignment-productivity-hq",
+      "assignment-productivity-field",
+      "assignment-analytics"
+    ],
+    "consumptionRefs": [
+      "consumption-productivity-hq",
+      "consumption-productivity-field",
+      "consumption-analytics"
+    ],
+    "positionRefs": [
+      "position-productivity-hq",
+      "position-productivity-field",
+      "position-analytics"
+    ],
+    "exceptionRefs": [
+      "exception-productivity-hq",
+      "exception-productivity-field",
+      "exception-analytics"
+    ],
+    "decisionRefs": [
+      "decision-productivity-hq",
+      "decision-productivity-field",
+      "decision-analytics"
+    ],
+    "blockerRefs": [],
+    "evidenceRefs": [
+      "evidence-rights",
+      "evidence-mapping",
+      "evidence-assignments",
+      "evidence-consumption",
+      "evidence-roster",
+      "evidence-grants",
+      "evidence-positions",
+      "evidence-exceptions",
+      "evidence-decisions",
+      "evidence-destination",
+      "evidence-handoff"
+    ],
+    "contentDigest": "sha256:b13a81daef503f45be02de658f81d18d67d9453a73a0944f3e92d7c2b1036d73"
+  },
+  "destinationApproval": {
+    "id": "destination-approval",
+    "roundRef": "round-2026-08-r2",
+    "roundDigest": "sha256:14d1e5ac6c2a00ad4a0e0077711d54e32b1f5ef65de3f7388f9e78f4cd7e77ca",
+    "coverageDigest": "sha256:b13a81daef503f45be02de658f81d18d67d9453a73a0944f3e92d7c2b1036d73",
+    "destination": "controlled://license-governance/northwind/ea-204/2026-08",
+    "approvedByRef": "principal-dana-approver",
+    "approvedAt": "2026-09-03T16:00:00Z",
+    "authorityGrantRef": "grant-destination-approver",
+    "evidenceRef": "evidence-destination",
+    "payloadDigest": "sha256:25cf75d83385335f44d126bd5d73abd7a8914749fbd6f0cde5f7e872667e1002"
+  },
+  "handoff": {
+    "id": "handoff-owner-review",
+    "roundRef": "round-2026-08-r2",
+    "roundDigest": "sha256:14d1e5ac6c2a00ad4a0e0077711d54e32b1f5ef65de3f7388f9e78f4cd7e77ca",
+    "coverageDigest": "sha256:b13a81daef503f45be02de658f81d18d67d9453a73a0944f3e92d7c2b1036d73",
+    "destinationApprovalRef": "destination-approval",
+    "destinationApprovalDigest": "sha256:25cf75d83385335f44d126bd5d73abd7a8914749fbd6f0cde5f7e872667e1002",
+    "destination": "controlled://license-governance/northwind/ea-204/2026-08",
+    "state": "ready-for-owner-review",
+    "nextOwnerRef": "principal-harper-owner",
+    "authorityGrantRef": "grant-handoff-owner",
+    "handedOffAt": "2026-09-03T17:00:00Z",
+    "positionRefs": [
+      "position-productivity-hq",
+      "position-productivity-field",
+      "position-analytics"
+    ],
+    "exceptionRefs": [
+      "exception-productivity-hq",
+      "exception-productivity-field",
+      "exception-analytics"
+    ],
+    "decisionRefs": [
+      "decision-productivity-hq",
+      "decision-productivity-field",
+      "decision-analytics"
+    ],
+    "blockerRefs": [],
+    "purchasePerformed": "not-performed",
+    "assignmentPerformed": "not-performed",
+    "revocationPerformed": "not-performed",
+    "renewalPerformed": "not-performed",
+    "accountMutationPerformed": "not-performed",
+    "trueUpSubmitted": "not-performed",
+    "complianceDeclared": "not-claimed",
+    "effectiveAccessInferred": "not-performed",
+    "effectiveUsageInferred": "not-performed",
+    "evidenceRef": "evidence-handoff",
+    "payloadDigest": "sha256:a0a67efd7f628866455336bcb36a12cbfb5db62db18e0cad6d815905bd8d25a2"
+  }
+}

@@ -5,6 +5,7 @@ import { businessContinuityProgramFindings } from "./business-continuity-program
 import { commercialDealDeskFindings } from "./commercial-deal-desk-coordinator.mjs";
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
 import { customerSuccessReviewFindings } from "./customer-success-program-manager.mjs";
+import { enterpriseLicenseEntitlementFindings } from "./enterprise-license-entitlement-reconciler.mjs";
 import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 import { learningProgramFindings } from "./learning-program-manager.mjs";
@@ -53238,6 +53239,7 @@ const validators = {
   "delegation-coordinator": delegationFindings,
   "document-renewal-tracker": documentRenewalFindings,
   "document-intake-analyst": documentIntakeFindings,
+  "enterprise-license-entitlement-reconciler": enterpriseLicenseEntitlementFindings,
   "event-operations-director": eventOperationsFindings,
   "executive-assistant": executiveCommitmentLedgerFindings,
   "executive-briefing": executiveBriefingSnapshotFindings,
@@ -53349,6 +53351,30 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   }),
   "contract-obligation-tracker": Object.freeze({
     asOf: "2026-09-05T17:00:00Z",
+  }),
+  "enterprise-license-entitlement-reconciler": Object.freeze({
+    asOf: "2026-09-03T18:00:00Z",
+    licenseTrustRoot: Object.freeze({
+      schemaVersion: "awesomeClaws.enterpriseLicenseTrustRoot.v1",
+      organizationRef: "organization-northwind",
+      agreementRef: "agreement-ea-204",
+      licenseProgramRef: "license-program-2026",
+      rightsManifest: Object.freeze({
+        id: "rights-manifest-ea-204",
+        version: "v4",
+        digest: "sha256:f6d703fcb03f24a6ab58568c090e8379099120cf27776ef2efdf53d0c47257cf",
+      }),
+      skuMappingRegister: Object.freeze({
+        id: "sku-mapping-ea-204",
+        version: "v7",
+        digest: "sha256:8f0cb38d7fa9d16ca75c8af51c07c0d81e556dc35b4d51db943110d48d55ac6c",
+      }),
+      authorityRoster: Object.freeze({
+        id: "roster-license-review",
+        version: "v3",
+        digest: "sha256:e0d7b07d05b7e7a654dbeb8b494380e7c96bfa8be38558f36566878fc525c0f9",
+      }),
+    }),
   }),
   "financial-account-reconciliation-coordinator": Object.freeze({
     asOf: "2026-09-02T00:00:00Z",

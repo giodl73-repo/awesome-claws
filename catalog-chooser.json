@@ -1009,6 +1009,43 @@
       }
     },
     {
+      "id": "enterprise-license-entitlement-reconciler",
+      "name": "Enterprise License Entitlement Reconciler",
+      "description": "Reconciles one organization's versioned owner-supplied license rights and SKU mapping against assigned entitlements and measured consumption for one agreement, license program, fixed period, cutoff, and review round without interpreting contracts or changing licenses or accounts.",
+      "audience": "Authorized software-asset, licensing-operations, procurement-operations, finance-operations, and business owners preparing a bounded license-position review from approved exports.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-15"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "event-operations-director",
       "name": "Event operations director",
       "description": "Turns an approved event plan into a controlled run of show, readiness view, decision queue, and accountable handoff.",

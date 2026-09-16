@@ -12127,6 +12127,150 @@
           "role": "asset"
         }
       ]
+    },
+    {
+      "id": "enterprise-license-entitlement-reconciler",
+      "name": "Enterprise License Entitlement Reconciler",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-15"
+      },
+      "description": "Reconciles one organization's versioned owner-supplied license rights and SKU mapping against assigned entitlements and measured consumption for one agreement, license program, fixed period, cutoff, and review round without interpreting contracts or changing licenses or accounts.",
+      "audience": "Authorized software-asset, licensing-operations, procurement-operations, finance-operations, and business owners preparing a bounded license-position review from approved exports.",
+      "principles": [
+        "Treat the owner-supplied canonical rights and SKU mapping version as the public trust root; never extract rights from contract prose or invent product, metric, conversion, bundle, downgrade, upgrade, or substitution mappings",
+        "Bind one organization, agreement, license program, predecessor round, reconciliation round, fixed measurement period, and caller-supplied cutoff before evaluating any row",
+        "Prove closed coverage across every declared right, entitlement pool, assignment, consumption record, exception, and human decision",
+        "Keep source ownership, review, and approval as typed named-human authority with exact current-round scope",
+        "Use only caller-supplied zone-bearing timestamps and deterministic canonical digests, preserving reciprocal evidence lineage from source rows through the final handoff"
+      ],
+      "boundaries": [
+        "Do not interpret contract prose, infer license terms, invent SKU mappings, infer effective access or usage, or declare legal, contractual, audit, or license compliance",
+        "Do not purchase, assign, revoke, reallocate, renew, terminate, or modify licenses, subscriptions, entitlements, accounts, groups, roles, agreements, purchase orders, or source systems",
+        "Do not submit a true-up, order, renewal, claim, attestation, report, or vendor communication, and do not recommend a purchase, removal, or account action",
+        "Do not use wall-clock time, implicit current time, stale predecessor decisions, source-system recommendations, or defaults to settle a reconciliation state",
+        "Do not hide duplicate, omitted, unmapped, out-of-period, conflicting, or unsupported rows; fail closed into typed exceptions and named-human decisions"
+      ],
+      "intake": [
+        "One organization, agreement, license program, exact predecessor-round reference, reconciliation-round id, fixed period start and end, caller-supplied cutoff and validation asOf, approved private destination, and versioned owner authority roster",
+        "One owner-supplied canonical rights manifest and SKU mapping version with immutable digest, agreement and program binding, metric and conversion definitions, complete right and pool indexes, named source owner, and reciprocal evidence",
+        "Complete entitlement-pool and assignment exports plus complete measured-consumption exports, each fixed to the same organization, agreement, program, period, cutoff, source owner, source revision, source digest, and reciprocal evidence",
+        "Typed named-human source owners, reviewers, approvers, and handoff owner with exact current-round grants, active intervals, separation rules, and reciprocal authority evidence",
+        "Exact exceptions and fresh human decisions bound to one affected right, pool, assignment, or consumption record, with deterministic coverage and destination handoff records"
+      ],
+      "workflow": [
+        "Validate caller-supplied temporal context, organization and program scope, predecessor continuity, the canonical rights and SKU mapping trust root, typed authority, and reciprocal evidence before reconciliation",
+        "Recompute locale-independent digests and prove exact equality among declared right, pool, assignment, consumption, exception, decision, evidence, and coverage indexes",
+        "Resolve SKU and metric identities only through the owner-supplied mapping, allocate each assignment and consumption record exactly once to its declared pool and right, and preserve unmapped or conflicting rows as blockers",
+        "Calculate purchased, assigned, consumed, available, unassigned, and overage quantities in fixed integer units using only mapped owner-supplied arithmetic and the fixed period and cutoff",
+        "Require one exact exception or fresh named-human reviewed decision for every non-balanced position, carry predecessor references only as lineage, and produce a blocked or ready-for-owner-review handoff without recommending or executing action"
+      ],
+      "deliverables": [
+        "Version-bound organization, agreement, program, round, predecessor, rights-manifest, SKU-mapping, principal, authority, and evidence ledgers",
+        "Closed right, entitlement-pool, assignment, and measured-consumption reconciliation with deterministic integer-unit arithmetic",
+        "Exact unmapped, conflicting, incomplete, out-of-period, under-assigned, over-assigned, under-consumed, and over-consumed exception ledger",
+        "Fresh named-human decision ledger with exact scope, authority, chronology, and reciprocal evidence",
+        "Accessible license-position review with complete Markdown fallback and a destination-bound blocked or ready-for-owner-review handoff carrying structural not-performed and not-claimed fields"
+      ],
+      "example": {
+        "request": "Reconcile organization Northwind's owner-supplied Enterprise Agreement EA-204 license-program LP-2026 rights manifest v4 and SKU mapping v7 against the complete assignment and measured-consumption exports for 2026-08, using cutoff 2026-09-01T00:00:00Z, validation asOf 2026-09-03T18:00:00Z, reconciliation round round-2026-08-r2, and predecessor round-2026-07-r1. Preserve every right, pool, assignment, consumption record, exception, and fresh human decision exactly once. Do not interpret agreement text, infer access or usage, purchase, assign, revoke, renew, mutate accounts, submit a true-up, recommend action, or declare compliance.",
+        "outcome": "A deterministic rights-to-pool-to-assignment-and-consumption reconciliation for one fixed organization, agreement, program, period, cutoff, and round, with exact coverage, mapped integer arithmetic, reciprocal evidence, typed named-human authority, explicit exceptions and decisions, and an owner-review handoff that performs no licensing or account action and makes no compliance claim."
+      },
+      "doneWhen": [
+        "The organization, agreement, license program, predecessor, round, period, cutoff, rights manifest, SKU mapping, authority roster, and destination bindings are exact and every internal digest recomputes deterministically",
+        "Every declared right, pool, assignment, consumption record, exception, decision, and evidence record appears exactly once in its closed index with reciprocal lineage and no duplicate or dangling identity",
+        "Every in-period mapped assignment and consumption record resolves only through the canonical owner-supplied SKU mapping to one declared right and pool with exact integer arithmetic, while unmapped, conflicting, or out-of-period rows remain excluded from position arithmetic under one exact blocker",
+        "Every non-balanced or blocked position has one exact exception and either one fresh authorized named-human decision or an explicit pending-decision state, while predecessor decisions remain lineage only",
+        "The visual and Markdown views agree, the handoff is blocked whenever evidence, mapping, authority, chronology, coverage, arithmetic, exception, or decision validity fails, and no purchase, assignment, revocation, renewal, account mutation, true-up submission, recommendation, effective-access inference, effective-usage inference, or compliance claim occurred"
+      ],
+      "openclawProfile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "minimal",
+            "alsoAllow": [
+              "read",
+              "write",
+              "edit",
+              "show_widget"
+            ],
+            "fs": {
+              "workspaceOnly": true
+            }
+          }
+        }
+      },
+      "capabilityGuidance": [
+        "The profile grants only workspace-limited file authoring and inline visual presentation; it has no licensing portal, directory, identity, procurement, billing, vendor, messaging, network, shell, plugin, MCP, scheduler, or source-system authority.",
+        "Treat the owner-supplied versioned rights manifest and SKU mapping as external trust roots whose authenticity and semantic correctness must be independently verified by their named human source owners.",
+        "Render the packaged accessible review only from a schema-valid, semantically clean artifact and preserve the complete Markdown review as the authoritative fallback."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "references/license-reconciliation-contract.md",
+          "path": "references/license-reconciliation-contract.md",
+          "role": "reference"
+        },
+        {
+          "source": "schemas/license-entitlement-reconciliation.schema.json",
+          "path": "schemas/license-entitlement-reconciliation.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/license-entitlement-reconciliation.example.json",
+          "path": "fixtures/license-entitlement-reconciliation.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/license-trust-root.example.json",
+          "path": "fixtures/license-trust-root.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/adversarial-trust-root-drift.json",
+          "path": "fixtures/adversarial-trust-root-drift.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/adversarial-unapproved-authority.json",
+          "path": "fixtures/adversarial-unapproved-authority.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/adversarial-unmapped-sku.json",
+          "path": "fixtures/adversarial-unmapped-sku.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/license-entitlement-review.md",
+          "path": "templates/license-entitlement-review.md",
+          "role": "template"
+        },
+        {
+          "source": "assets/license-position-review.html",
+          "path": "assets/license-position-review.html",
+          "role": "asset"
+        }
+      ]
     }
   ]
 }
