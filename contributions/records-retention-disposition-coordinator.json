@@ -153,6 +153,11 @@
         "difference": "Backup Restore Verification Coordinator tracks temporary restore-target cleanup or bounded retention without applying policy to or disposing record copies."
       },
       {
+        "id": "business-continuity-program-manager",
+        "overlap": "Both reconcile an exact owner-supplied universe, bind revisions and evidence, preserve exceptions and blockers, track externally executed corrective outcomes, and reserve approval and certification authority.",
+        "difference": "Business Continuity Program Manager governs critical processes, BIAs, recovery requirements, dependencies, continuity plans, exercises, findings, actions, exceptions, and recertification. Records Retention Disposition Coordinator applies retention schedules and legal-hold precedence to every record copy through approved disposition batches, execution certificates, and residual-copy closure."
+      },
+      {
         "id": "tls-certificate-rotation-verification-coordinator",
         "overlap": "Both track an exact owner-supplied item universe, authority, retention or terminal state, evidence, blockers, and a completion handoff without executing changes.",
         "difference": "TLS Certificate Rotation Verification tracks predecessor certificate retirement or approved temporary overlap after successor deployment and endpoint validation. This Claw applies supplied retention policy to record copies."

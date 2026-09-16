@@ -170,6 +170,11 @@
         "difference": "Backup Restore Verification Coordinator records a planned metadata-only exercise and grants no live containment, remediation, communication, or production failover authority."
       },
       {
+        "id": "business-continuity-program-manager",
+        "overlap": "Both preserve exact service and recovery evidence, accountable roles, findings, actions, blockers, and owner-controlled authority.",
+        "difference": "Business Continuity Program Manager runs a recurring pre-incident governance cycle over critical processes, BIAs, dependencies, plans, exercises, exceptions, and recertification. Incident Response coordinates the time-ordered technical and command loops of one live incident, including mitigation proposals, communications, service recovery, and owner-controlled closure."
+      },
+      {
         "id": "tls-certificate-rotation-verification-coordinator",
         "overlap": "Both track operational evidence, accountable separated roles, causal timelines, blockers, and controlled owner handoffs without granting external action authority.",
         "difference": "TLS Certificate Rotation Verification records a planned certificate rotation exercise and grants no issuance, deployment, revocation, or communication authority. This Claw coordinates a live incident with containment and communication needs."

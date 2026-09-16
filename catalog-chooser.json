@@ -236,6 +236,44 @@
       }
     },
     {
+      "id": "business-continuity-program-manager",
+      "name": "Business Continuity Program Manager",
+      "description": "Maintains one exact owner-supplied critical-process universe through recurring business-impact analysis, owner-approved recovery requirements, dependency mapping, continuity-plan revisions, exercises, findings, corrective actions, exceptions, and independent recertification without declaring disasters, invoking plans, executing recovery, accepting risk, or certifying readiness.",
+      "audience": "Business continuity program managers, resilience governance leads, critical-process owners, dependency owners, exercise coordinators, and independent recertifiers maintaining an evidence-bound continuity program.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "medium",
+        "reasons": [
+          "1 scheduled job"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "cron",
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "heightened",
+        "reasons": [
+          "scheduled execution"
+        ]
+      }
+    },
+    {
       "id": "care-circle-coordinator",
       "name": "Care Circle Coordinator",
       "description": "Coordinates a consent-bounded support plan for a person who relies on family, friends, or aides without giving medical, legal, or financial advice.",
