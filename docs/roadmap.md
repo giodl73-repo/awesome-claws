@@ -1,6 +1,6 @@
 # Awesome Claws roadmap
 
-Awesome Claws has 103 maintained starter Claws. The catalog now covers a broad
+Awesome Claws has 119 maintained starter Claws. The catalog now covers a broad
 personal-agent lane, a work-operations lane, and several capstone examples that
 show how Claws compose into larger managed workflows.
 
@@ -39,15 +39,15 @@ read specialist artifacts, surface conflicts, and prepare owner decisions.
 ## Quality Uplift
 
 The [catalog quality scorecard](catalog-quality-scorecard.md) is now the primary
-post-100 prioritization tool. The current baseline has 103 of 103 Claws passing
+post-100 prioritization tool. The current baseline has 119 of 119 Claws passing
 the non-negotiable package, regression, resource, and Experience gates. The
 highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 92 of 103 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 103 of 103 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 103 of 103 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 108 of 119 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 119 of 119 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 119 of 119 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
