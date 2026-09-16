@@ -123,6 +123,20 @@ function round(value, places = 6) {
   return Math.round((value + Number.EPSILON) * factor) / factor;
 }
 
+const USD_ACCOUNTING_SCALE = 1_000_000;
+
+function usdMicros(value, direction) {
+  const scaled = value * USD_ACCOUNTING_SCALE;
+  if (!Number.isSafeInteger(Math.trunc(scaled))) {
+    throw new Error("USD budget values exceed safe microdollar accounting bounds.");
+  }
+  const tolerance =
+    Number.EPSILON * Math.max(1, Math.abs(scaled)) * 8;
+  return direction === "up"
+    ? Math.ceil(scaled - tolerance)
+    : Math.floor(scaled + tolerance);
+}
+
 function exactObject(value, keys) {
   return (
     isPlainObject(value) &&
@@ -648,18 +662,9 @@ async function assertRegressionRegistryConsistency({
 }
 
 function costEstimate(trialCount, limits, pricing) {
-  const maximumAttempts = limits.infrastructureRetries + 1;
   return round(
-    (trialCount *
-      maximumAttempts *
-      limits.maxInputTokensPerTrial *
-      pricing.inputUsdPerMillion) /
-      1_000_000 +
-      (trialCount *
-        maximumAttempts *
-        limits.maxOutputTokensPerTrial *
-        pricing.outputUsdPerMillion) /
-        1_000_000,
+    (trialCount * maxTrialCostMicros(limits, pricing)) /
+      USD_ACCOUNTING_SCALE,
   );
 }
 
@@ -727,7 +732,9 @@ export function preflightBudgets({
     tokenBudgetCoversSelectedWorstCase:
       limits.maxTotalTokens >= selectedEstimateTokens,
     usdBudgetCoversSelectedWorstCase:
-      limits.maxUsd === null || limits.maxUsd >= selectedEstimateUsd,
+      limits.maxUsd === null ||
+      usdMicros(limits.maxUsd, "down") >=
+        selectedTrialCount * maxTrialCostMicros(limits, pricing),
     fullBaselineEstimateUsd,
     fullSevenDayEstimateUsd,
   };
@@ -2951,29 +2958,37 @@ async function boundedMap(items, concurrency, worker) {
   return results;
 }
 
-function maxTrialCost(limits, pricing) {
-      return (
-        ((limits.infrastructureRetries + 1) *
-          limits.maxInputTokensPerTrial *
-          pricing.inputUsdPerMillion) /
-          1_000_000 +
-          ((limits.infrastructureRetries + 1) *
-            limits.maxOutputTokensPerTrial *
-            pricing.outputUsdPerMillion) /
-            1_000_000
-      );
-  }
+function maxTrialCostMicros(limits, pricing) {
+  return usdMicros(
+    ((limits.infrastructureRetries + 1) *
+      limits.maxInputTokensPerTrial *
+      pricing.inputUsdPerMillion) /
+      1_000_000 +
+      ((limits.infrastructureRetries + 1) *
+        limits.maxOutputTokensPerTrial *
+        pricing.outputUsdPerMillion) /
+        1_000_000,
+    "up",
+  );
+}
 
-  function createBudgetController(manifest) {
+function createBudgetController(manifest) {
       const reservationTokens =
         (manifest.limits.infrastructureRetries + 1) *
         (manifest.limits.maxInputTokensPerTrial +
           manifest.limits.maxOutputTokensPerTrial);
-      const reservationUsd = maxTrialCost(manifest.limits, manifest.costPreflight);
+      const reservationUsdMicros = maxTrialCostMicros(
+        manifest.limits,
+        manifest.costPreflight,
+      );
+      const maxUsdMicros =
+        manifest.limits.maxUsd === null
+          ? null
+          : usdMicros(manifest.limits.maxUsd, "down");
       let accountedTokens = 0;
-      let accountedUsd = 0;
+      let accountedUsdMicros = 0;
       let reservedTokens = 0;
-      let reservedUsd = 0;
+      let reservedUsdMicros = 0;
       let observedInputTokens = 0;
       let observedOutputTokens = 0;
       let observedCostUsd = 0;
@@ -2985,10 +3000,10 @@ function maxTrialCost(limits, pricing) {
         waiters = [];
         pending.forEach((resolvePromise) => resolvePromise());
       }
-      function capExceeded(tokens, usd) {
+      function capExceeded(tokens, usdMicrosValue) {
         return (
           tokens > manifest.limits.maxTotalTokens ||
-          (manifest.limits.maxUsd !== null && usd > manifest.limits.maxUsd)
+          (maxUsdMicros !== null && usdMicrosValue > maxUsdMicros)
         );
       }
       return {
@@ -2997,7 +3012,7 @@ function maxTrialCost(limits, pricing) {
             if (
               capExceeded(
                 accountedTokens + reservationTokens,
-                accountedUsd + reservationUsd,
+                accountedUsdMicros + reservationUsdMicros,
               )
             ) {
               skippedTrials += 1;
@@ -3006,24 +3021,27 @@ function maxTrialCost(limits, pricing) {
             if (
               !capExceeded(
                 accountedTokens + reservedTokens + reservationTokens,
-                accountedUsd + reservedUsd + reservationUsd,
+                accountedUsdMicros + reservedUsdMicros + reservationUsdMicros,
               )
             ) {
               reservedTokens += reservationTokens;
-              reservedUsd += reservationUsd;
-              return { tokens: reservationTokens, usd: reservationUsd };
+              reservedUsdMicros += reservationUsdMicros;
+              return {
+                tokens: reservationTokens,
+                usdMicros: reservationUsdMicros,
+              };
             }
             await new Promise((resolvePromise) => waiters.push(resolvePromise));
           }
         },
         settle(reservation, result) {
           reservedTokens -= reservation.tokens;
-          reservedUsd -= reservation.usd;
+          reservedUsdMicros -= reservation.usdMicros;
           const usageObserved = result.metrics.usageObserved;
           const actualTokens = usageObserved
             ? result.metrics.inputTokens + result.metrics.outputTokens
             : reservation.tokens;
-          const actualUsd =
+          const observedActualUsd =
             usageObserved
               ? (result.metrics.inputTokens *
                   manifest.costPreflight.inputUsdPerMillion) /
@@ -3031,13 +3049,17 @@ function maxTrialCost(limits, pricing) {
                 (result.metrics.outputTokens *
                   manifest.costPreflight.outputUsdPerMillion) /
                   1_000_000
-              : reservation.usd;
+              : null;
+          const actualUsdMicros =
+            observedActualUsd === null
+              ? reservation.usdMicros
+              : usdMicros(observedActualUsd, "up");
           accountedTokens += actualTokens;
-          accountedUsd += actualUsd;
+          accountedUsdMicros += actualUsdMicros;
           if (usageObserved) {
             observedInputTokens += result.metrics.inputTokens;
             observedOutputTokens += result.metrics.outputTokens;
-            observedCostUsd += actualUsd;
+            observedCostUsd += observedActualUsd;
           } else {
             missingUsageTrials += 1;
           }
@@ -3052,13 +3074,15 @@ function maxTrialCost(limits, pricing) {
             observedTotalTokens: observedInputTokens + observedOutputTokens,
             observedCostUsd: round(observedCostUsd),
             accountedTokens,
-            accountedUsd: round(accountedUsd),
+            accountedUsd: round(
+              accountedUsdMicros / USD_ACCOUNTING_SCALE,
+            ),
             missingUsageTrials,
             skippedTrials,
             tokenCapExhausted: accountedTokens >= manifest.limits.maxTotalTokens,
             usdCapExhausted:
-              manifest.limits.maxUsd !== null &&
-              accountedUsd >= manifest.limits.maxUsd,
+              maxUsdMicros !== null &&
+              accountedUsdMicros >= maxUsdMicros,
           };
         },
       };

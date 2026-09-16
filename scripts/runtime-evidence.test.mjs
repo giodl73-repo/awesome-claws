@@ -1433,6 +1433,130 @@ test("live budget preflight requires a positive USD cap and reports plan coverag
   assert.equal(valid.tokenBudgetCoversSelectedWorstCase, false);
 });
 
+test("an exact decimal USD cap funds its rounded trial reservation", async () => {
+  const input = await oneClawManifest("sales-operations", {
+    scenarioTypes: ["accepted-task"],
+    limits: {
+      concurrency: 1,
+      infrastructureRetries: 0,
+      maxInputTokensPerTrial: 4_000,
+      maxOutputTokensPerTrial: 1_000,
+      maxTotalTokens: 5_000,
+      maxUsd: 0.036,
+    },
+    pricing: {
+      inputUsdPerMillion: 4,
+      outputUsdPerMillion: 20,
+    },
+  });
+  let calls = 0;
+  const run = await runRuntimeEvidence({
+    ...input,
+    outputRoot: null,
+    persist: false,
+    attemptRunner: async ({ contract, scenario, attemptRoot, trial }) => {
+      calls += 1;
+      return {
+        kind: "success",
+        observedOutcome: scenario.expectedOutcome,
+        response: `MOCK EVIDENCE ONLY: ${scenario.expectedOutcome}`,
+        providerRecord: { adapter: "exact-usd-cap-test" },
+        artifactPath: await writeTestArtifact({
+          contract,
+          scenario,
+          attemptRoot,
+          trial,
+        }),
+        lifecycle: {
+          isolated: true,
+          durableArtifactObserved: true,
+          safeCleanup: true,
+        },
+      };
+    },
+  });
+
+  assert.equal(calls, 1);
+  assert.equal(run.results[0].status, "passed");
+  assert.equal(run.report.budget.accountedUsd, 0.036);
+  assert.equal(run.report.budget.skippedTrials, 0);
+});
+
+test("USD reservations round upward without cumulative exact-cap drift", async () => {
+  const input = await oneClawManifest("sales-operations", {
+    limits: {
+      concurrency: 1,
+      infrastructureRetries: 0,
+      maxInputTokensPerTrial: 4_000,
+      maxOutputTokensPerTrial: 1_000,
+      maxTotalTokens: 15_000,
+      maxUsd: 0.108,
+    },
+    pricing: {
+      inputUsdPerMillion: 4,
+      outputUsdPerMillion: 20,
+    },
+  });
+  let calls = 0;
+  const run = await runRuntimeEvidence({
+    ...input,
+    outputRoot: null,
+    persist: false,
+    attemptRunner: async ({ contract, scenario, attemptRoot, trial }) => {
+      calls += 1;
+      return {
+        kind: "success",
+        observedOutcome: scenario.expectedOutcome,
+        response: `MOCK EVIDENCE ONLY: ${scenario.expectedOutcome}`,
+        providerRecord: { adapter: "cumulative-exact-usd-cap-test" },
+        artifactPath: await writeTestArtifact({
+          contract,
+          scenario,
+          attemptRoot,
+          trial,
+        }),
+        lifecycle: {
+          isolated: true,
+          durableArtifactObserved: true,
+          safeCleanup: true,
+        },
+      };
+    },
+  });
+
+  assert.equal(calls, 3);
+  assert.equal(run.report.budget.accountedUsd, 0.108);
+  assert.equal(run.report.budget.skippedTrials, 0);
+
+  const subMicro = await oneClawManifest("sales-operations", {
+    scenarioTypes: ["accepted-task"],
+    limits: {
+      concurrency: 1,
+      infrastructureRetries: 0,
+      maxInputTokensPerTrial: 1,
+      maxOutputTokensPerTrial: 1,
+      maxTotalTokens: 2,
+      maxUsd: 0.0000004,
+    },
+    pricing: {
+      inputUsdPerMillion: 0.2,
+      outputUsdPerMillion: 0.2,
+    },
+  });
+  let subMicroCalls = 0;
+  const subMicroRun = await runRuntimeEvidence({
+    ...subMicro,
+    outputRoot: null,
+    persist: false,
+    attemptRunner: async () => {
+      subMicroCalls += 1;
+      throw new Error("sub-microdollar reservation must not dispatch");
+    },
+  });
+  assert.equal(subMicroCalls, 0);
+  assert.equal(subMicroRun.results[0].classification, "skipped-budget-exhausted");
+});
+
 test("missing usage remains a pass but loses efficiency and observability points", async () => {
   const input = await oneClawManifest("sales-operations");
   const run = await runRuntimeEvidence({
