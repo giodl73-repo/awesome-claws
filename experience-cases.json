@@ -390,6 +390,14 @@
       "asset": "assets/customer-success-review.html",
       "fallback": "outputs/customer-success-review.md",
       "output": "outputs/customer-success-review.html"
+    },
+    {
+      "id": "benefits-realization-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/benefits-realization-review.html",
+      "fallback": "outputs/benefits-realization-ledger.md",
+      "output": "outputs/benefits-realization-review.html"
     }
   ]
 }

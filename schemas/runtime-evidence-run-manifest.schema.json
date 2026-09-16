@@ -294,6 +294,14 @@
                       "$ref": "#/$defs/versionedTrustRoot"
                     }
                   }
+                },
+                "fixtureTrustProfile": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                },
+                "fixtureSourceProfile": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
                 }
               }
             },

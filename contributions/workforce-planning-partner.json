@@ -133,6 +133,11 @@
         "difference": "Learning Program Manager starts from an approved aggregate capability-gap revision and governs curriculum releases, voluntary cohort assignments, delivery evidence, aggregate learning effectiveness, and refresh decisions. Workforce Planning Partner instead reconciles organizational work demand, funded positions, people supply, hiring and attrition scenarios, succession coverage, and location constraints without assigning training or administering learning."
       },
       {
+        "id": "benefits-realization-manager",
+        "overlap": "Both reconcile an exact owner-approved plan revision against baselines, targets, evidence, aggregate values, finance constraints, accountable owners, predecessor state, and human decision checkpoints.",
+        "difference": "Benefits Realization Manager allocates observed shared-KPI deltas across a closed benefit and disbenefit universe and derives realized finance totals. Workforce Planning Partner instead reconciles funded role demand, position supply, aggregate hiring and attrition scenarios, capability and succession coverage, and location constraints without claiming realized business benefits."
+      },
+      {
         "id": "household-steward",
         "overlap": "Both bind evidence, constraints, privacy, owner actions, and decisions in a durable cross-domain handoff.",
         "difference": "Household Steward coordinates consumer household operations and shared personal resources. Workforce Planning Partner has an organization-plan revision, funded-position ledger, workforce scenarios, role capability taxonomy, succession coverage, and manager decision checkpoints."

@@ -2990,6 +2990,30 @@
         "visual"
       ],
       "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
+    },
+    {
+      "id": "benefits-realization-manager",
+      "acceptedRequest": "Reconcile benefits plan support-modernization revision 2 for Q3 from the supplied owner-approved benefit profiles, KPI records, allocation approvals, disbenefit observations, predecessor ledger, source bytes, and public trust store. Show realized and blocked value without claiming causality or changing any source or owner decision.",
+      "requiredEvidence": [
+        "Exact benefits plan id and revision, predecessor revision or first-plan declaration, caller-controlled period and cutoff, currency, minor-unit scale, and complete benefit/disbenefit universe",
+        "Named benefit, metric, finance, and trust owners with stable identities, authority evidence, KPI baseline/target/observation records, allocation approvals, lifecycle decisions, and finance-close evidence",
+        "Injected owner-and-key-scoped public trust, signed semantic envelope, exact source bytes or controlled receipts, source versions and digests, prior-period realized state, and supersession or retirement evidence"
+      ],
+      "authorityBoundaries": [
+        "Do not claim that an initiative caused a KPI movement; allocation is a bounded no-double-count accounting convention, not causal proof",
+        "Do not approve benefits, redefine metrics, alter allocation, certify finance, mutate source systems, sign trust envelopes, retire benefits, or publish results for an owner"
+      ],
+      "experience": {
+        "target": 4,
+        "primary": "inline-widget",
+        "output": "outputs/benefits-realization-review.html",
+        "fallback": "outputs/benefits-realization-ledger.md",
+        "asset": "assets/benefits-realization-review.html"
+      },
+      "capabilityClasses": [
+        "visual"
+      ],
+      "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
     }
   ]
 }
