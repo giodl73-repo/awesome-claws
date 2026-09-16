@@ -1,0 +1,434 @@
+{
+  "schemaVersion": "awesomeClaws.learningProgramRelease.v1",
+  "artifactId": "learning-program-fy27-cloud-reliability",
+  "program": {
+    "id": "program-cloud-reliability",
+    "asOf": "2026-09-14T20:00:00Z",
+    "ownerRef": "principal-program-owner",
+    "privacyClass": "confidential",
+    "gapRevisionRef": "gap-cloud-reliability",
+    "skillTaxonomyRef": "taxonomy-engineering",
+    "curriculumReleaseRef": "release-cloud-reliability-v4",
+    "reviewWindowStart": "2026-07-01T00:00:00Z",
+    "reviewWindowEnd": "2026-09-30T23:59:59Z"
+  },
+  "skillTaxonomy": {
+    "id": "taxonomy-engineering",
+    "version": "2026.3",
+    "effectiveAt": "2026-06-15T00:00:00Z",
+    "skillRefs": [
+      "skill-incident-diagnosis",
+      "skill-reliability-design"
+    ],
+    "sourceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "privacyClass": "confidential",
+    "evidenceRef": "evidence-taxonomy"
+  },
+  "gapRevision": {
+    "id": "gap-cloud-reliability",
+    "version": "fy27-r2",
+    "status": "approved",
+    "aggregateOnly": true,
+    "approvedAt": "2026-06-20T16:00:00Z",
+    "approvedByRef": "principal-capability-owner",
+    "taxonomyRef": "taxonomy-engineering",
+    "taxonomyVersion": "2026.3",
+    "skillGapRefs": [
+      "skill-incident-diagnosis",
+      "skill-reliability-design"
+    ],
+    "sourceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "privacyClass": "confidential",
+    "evidenceRef": "evidence-gap"
+  },
+  "curriculumReleases": [
+    {
+      "id": "release-cloud-reliability-v4",
+      "curriculumId": "curriculum-cloud-reliability",
+      "version": "4.0.0",
+      "gapRevisionRef": "gap-cloud-reliability",
+      "gapRevisionVersion": "fy27-r2",
+      "taxonomyRef": "taxonomy-engineering",
+      "taxonomyVersion": "2026.3",
+      "skillRefs": [
+        "skill-incident-diagnosis",
+        "skill-reliability-design"
+      ],
+      "state": "current",
+      "releasedAt": "2026-07-01T15:00:00Z",
+      "retiredAt": null,
+      "predecessorReleaseRef": null,
+      "ownerRef": "principal-curriculum-owner",
+      "privacyClass": "confidential",
+      "evidenceRef": "evidence-release"
+    }
+  ],
+  "cohorts": [
+    {
+      "id": "cohort-platform-fy27q1",
+      "audienceId": "audience-platform-engineers",
+      "curriculumReleaseRef": "release-cloud-reliability-v4",
+      "assignmentMode": "voluntary-owner-approved",
+      "ownerRef": "principal-delivery-owner",
+      "rosterRevision": {
+        "id": "roster-platform-fy27q1-r3",
+        "version": "3",
+        "effectiveAt": "2026-07-02T12:00:00Z",
+        "memberCount": 12,
+        "sourceDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "privacyClass": "confidential",
+        "evidenceRef": "evidence-roster"
+      }
+    }
+  ],
+  "assignments": [
+    {
+      "id": "assignment-01",
+      "cohortRef": "cohort-platform-fy27q1",
+      "rosterRevisionRef": "roster-platform-fy27q1-r3",
+      "rosterRevisionVersion": "3",
+      "learnerRef": "learner-a1b2c3d4e5f60718",
+      "assignedAt": "2026-07-03T15:00:00Z",
+      "receiptRef": "receipt-assignment-01",
+      "state": "accepted",
+      "mandatory": false,
+      "privacyClass": "confidential",
+      "evidenceRef": "evidence-assignment-01"
+    },
+    {
+      "id": "assignment-02",
+      "cohortRef": "cohort-platform-fy27q1",
+      "rosterRevisionRef": "roster-platform-fy27q1-r3",
+      "rosterRevisionVersion": "3",
+      "learnerRef": "learner-1234567890abcdef",
+      "assignedAt": "2026-07-03T15:05:00Z",
+      "receiptRef": "receipt-assignment-02",
+      "state": "declined",
+      "mandatory": false,
+      "privacyClass": "confidential",
+      "evidenceRef": "evidence-assignment-02"
+    }
+  ],
+  "assignmentReceipts": [
+    {
+      "id": "receipt-assignment-01",
+      "assignmentRef": "assignment-01",
+      "learnerRef": "learner-a1b2c3d4e5f60718",
+      "recordedAt": "2026-07-03T16:00:00Z",
+      "state": "accepted",
+      "evidenceRef": "evidence-receipt-01",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "receipt-assignment-02",
+      "assignmentRef": "assignment-02",
+      "learnerRef": "learner-1234567890abcdef",
+      "recordedAt": "2026-07-03T16:05:00Z",
+      "state": "declined",
+      "evidenceRef": "evidence-receipt-02",
+      "privacyClass": "confidential"
+    }
+  ],
+  "deliveryChecks": [
+    {
+      "id": "delivery-check-facilitator",
+      "releaseRef": "release-cloud-reliability-v4",
+      "cohortRef": "cohort-platform-fy27q1",
+      "requirementId": "requirement-facilitator",
+      "state": "ready",
+      "observedAt": "2026-07-05T17:00:00Z",
+      "ownerRef": "principal-delivery-owner",
+      "evidenceRef": "evidence-delivery",
+      "privacyClass": "confidential"
+    }
+  ],
+  "completionRecords": [
+    {
+      "id": "completion-01",
+      "assignmentRef": "assignment-01",
+      "learnerRef": "learner-a1b2c3d4e5f60718",
+      "curriculumReleaseRef": "release-cloud-reliability-v4",
+      "completedAt": "2026-08-15T18:00:00Z",
+      "state": "verified",
+      "evidenceRef": "evidence-completion-01",
+      "privacyClass": "confidential"
+    }
+  ],
+  "assessmentRecords": [
+    {
+      "id": "assessment-01",
+      "completionRef": "completion-01",
+      "learnerRef": "learner-a1b2c3d4e5f60718",
+      "instrumentId": "instrument-scenario-check",
+      "instrumentVersion": "2.1",
+      "assessedAt": "2026-08-16T18:00:00Z",
+      "state": "verified",
+      "evidenceRef": "evidence-assessment-01",
+      "privacyClass": "confidential"
+    }
+  ],
+  "effectivenessMeasures": [
+    {
+      "id": "measure-scenario-application",
+      "cohortRef": "cohort-platform-fy27q1",
+      "releaseRef": "release-cloud-reliability-v4",
+      "metricId": "metric-scenario-application",
+      "aggregationLevel": "cohort",
+      "minimumGroupSize": 5,
+      "denominator": 10,
+      "numerator": 8,
+      "targetRate": 0.75,
+      "observedRate": 0.8,
+      "observedAt": "2026-09-01T18:00:00Z",
+      "privacyClass": "confidential",
+      "evidenceRefs": [
+        "evidence-measure"
+      ],
+      "refreshReviewRef": "refresh-review-fy27q1",
+      "conclusion": "supports-target"
+    }
+  ],
+  "refreshReviews": [
+    {
+      "id": "refresh-review-fy27q1",
+      "releaseRef": "release-cloud-reliability-v4",
+      "reviewedAt": "2026-09-10T18:00:00Z",
+      "reviewerRef": "principal-program-owner",
+      "revision": 1,
+      "predecessorReviewRef": null,
+      "measureRefs": [
+        "measure-scenario-application"
+      ],
+      "decision": "revise",
+      "rationaleEvidenceRefs": [
+        "evidence-refresh"
+      ],
+      "nextOwnerRef": "principal-curriculum-owner",
+      "effectiveAt": "2026-09-10T18:00:00Z",
+      "privacyClass": "confidential"
+    }
+  ],
+  "principals": [
+    {
+      "id": "principal-program-owner",
+      "kind": "human",
+      "role": "Learning program owner"
+    },
+    {
+      "id": "principal-capability-owner",
+      "kind": "human",
+      "role": "Capability portfolio owner"
+    },
+    {
+      "id": "principal-curriculum-owner",
+      "kind": "human",
+      "role": "Curriculum owner"
+    },
+    {
+      "id": "principal-delivery-owner",
+      "kind": "human",
+      "role": "Learning delivery owner"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-taxonomy",
+      "kind": "taxonomy-export",
+      "subjectRefs": [
+        "taxonomy-engineering"
+      ],
+      "observedAt": "2026-06-15T00:00:00Z",
+      "suppliedByRef": "principal-capability-owner",
+      "sourceDigest": "sha256:4111111111111111111111111111111111111111111111111111111111111111",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "evidence-gap",
+      "kind": "gap-export",
+      "subjectRefs": [
+        "gap-cloud-reliability"
+      ],
+      "observedAt": "2026-06-20T16:00:00Z",
+      "suppliedByRef": "principal-capability-owner",
+      "sourceDigest": "sha256:4222222222222222222222222222222222222222222222222222222222222222",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "evidence-release",
+      "kind": "curriculum-release-record",
+      "subjectRefs": [
+        "release-cloud-reliability-v4"
+      ],
+      "observedAt": "2026-07-01T15:00:00Z",
+      "suppliedByRef": "principal-curriculum-owner",
+      "sourceDigest": "sha256:4333333333333333333333333333333333333333333333333333333333333333",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "evidence-roster",
+      "kind": "roster-export",
+      "subjectRefs": [
+        "roster-platform-fy27q1-r3"
+      ],
+      "observedAt": "2026-07-02T12:00:00Z",
+      "suppliedByRef": "principal-delivery-owner",
+      "sourceDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "evidence-assignment-01",
+      "kind": "assignment-record",
+      "subjectRefs": [
+        "assignment-01"
+      ],
+      "observedAt": "2026-07-03T15:00:00Z",
+      "suppliedByRef": "principal-delivery-owner",
+      "sourceDigest": "sha256:4511111111111111111111111111111111111111111111111111111111111111",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "evidence-assignment-02",
+      "kind": "assignment-record",
+      "subjectRefs": [
+        "assignment-02"
+      ],
+      "observedAt": "2026-07-03T15:05:00Z",
+      "suppliedByRef": "principal-delivery-owner",
+      "sourceDigest": "sha256:4522222222222222222222222222222222222222222222222222222222222222",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "evidence-receipt-01",
+      "kind": "assignment-receipt",
+      "subjectRefs": [
+        "receipt-assignment-01",
+        "assignment-01"
+      ],
+      "observedAt": "2026-07-03T16:00:00Z",
+      "suppliedByRef": "principal-delivery-owner",
+      "sourceDigest": "sha256:4555555555555555555555555555555555555555555555555555555555555555",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "evidence-receipt-02",
+      "kind": "assignment-receipt",
+      "subjectRefs": [
+        "receipt-assignment-02",
+        "assignment-02"
+      ],
+      "observedAt": "2026-07-03T16:05:00Z",
+      "suppliedByRef": "principal-delivery-owner",
+      "sourceDigest": "sha256:4666666666666666666666666666666666666666666666666666666666666666",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "evidence-delivery",
+      "kind": "delivery-observation",
+      "subjectRefs": [
+        "delivery-check-facilitator"
+      ],
+      "observedAt": "2026-07-05T17:00:00Z",
+      "suppliedByRef": "principal-delivery-owner",
+      "sourceDigest": "sha256:4777777777777777777777777777777777777777777777777777777777777777",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "evidence-completion-01",
+      "kind": "completion-record",
+      "subjectRefs": [
+        "completion-01",
+        "assignment-01"
+      ],
+      "observedAt": "2026-08-15T18:00:00Z",
+      "suppliedByRef": "principal-delivery-owner",
+      "sourceDigest": "sha256:4888888888888888888888888888888888888888888888888888888888888888",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "evidence-assessment-01",
+      "kind": "assessment-record",
+      "subjectRefs": [
+        "assessment-01",
+        "completion-01"
+      ],
+      "observedAt": "2026-08-16T18:00:00Z",
+      "suppliedByRef": "principal-delivery-owner",
+      "sourceDigest": "sha256:4999999999999999999999999999999999999999999999999999999999999999",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "evidence-measure",
+      "kind": "aggregate-measure",
+      "subjectRefs": [
+        "measure-scenario-application",
+        "cohort-platform-fy27q1"
+      ],
+      "observedAt": "2026-09-01T18:00:00Z",
+      "suppliedByRef": "principal-program-owner",
+      "sourceDigest": "sha256:4aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "privacyClass": "confidential"
+    },
+    {
+      "id": "evidence-refresh",
+      "kind": "refresh-decision",
+      "subjectRefs": [
+        "refresh-review-fy27q1",
+        "measure-scenario-application"
+      ],
+      "observedAt": "2026-09-10T18:00:00Z",
+      "suppliedByRef": "principal-program-owner",
+      "sourceDigest": "sha256:4bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "privacyClass": "confidential"
+    }
+  ],
+  "blockers": [],
+  "coverage": {
+    "curriculumReleaseRefs": [
+      "release-cloud-reliability-v4"
+    ],
+    "cohortRefs": [
+      "cohort-platform-fy27q1"
+    ],
+    "assignmentRefs": [
+      "assignment-01",
+      "assignment-02"
+    ],
+    "assignmentReceiptRefs": [
+      "receipt-assignment-01",
+      "receipt-assignment-02"
+    ],
+    "deliveryCheckRefs": [
+      "delivery-check-facilitator"
+    ],
+    "completionRecordRefs": [
+      "completion-01"
+    ],
+    "assessmentRecordRefs": [
+      "assessment-01"
+    ],
+    "effectivenessMeasureRefs": [
+      "measure-scenario-application"
+    ],
+    "refreshReviewRefs": [
+      "refresh-review-fy27q1"
+    ]
+  },
+  "handoff": {
+    "state": "ready-for-owner",
+    "ownerRef": "principal-program-owner",
+    "preparedAt": "2026-09-14T20:00:00Z",
+    "blockerRefs": [],
+    "artifactDigest": "sha256:6fa125689e2e13bbcdcc4fb41be5a44bc65aff7bf055e676473c9bc633c06ed1",
+    "privacyClass": "confidential",
+    "authorityClaims": {
+      "individualPerformanceInference": false,
+      "sensitiveTraitInference": false,
+      "mandatoryAssignment": false,
+      "hrRecordMutation": false,
+      "credentialAwardOrRevocation": false,
+      "promotionOrCompensationDecision": false,
+      "externalContact": false,
+      "effectivenessBeyondEvidence": false
+    }
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "learning-program-manager",
+    "name": "Learning program manager",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73"
+      ],
+      "lastVerified": "2026-09-14"
+    },
+    "description": "Converts an approved aggregate capability-gap revision into evidence-bound curriculum releases, cohort assignments, delivery readiness, completion and assessment evidence, effectiveness review, refresh decisions, and owner handoff.",
+    "audience": "Learning program owners coordinating approved workforce learning programs without making individual employment or credential decisions.",
+    "principles": [
+      "Bind every release and assignment to the approved aggregate capability-gap revision and exact skill taxonomy version",
+      "Keep curriculum versions, cohort roster revisions, receipts, completion and assessment identities, aggregate measures, privacy class, and review chronology explicit",
+      "Report effectiveness only at the evidence-supported aggregate level and leave consequential decisions with named owners"
+    ],
+    "boundaries": [
+      "Do not infer individual performance, aptitude, intent, or sensitive traits",
+      "Do not mandate assignments, mutate HR records, award or revoke credentials, or make promotion or compensation decisions",
+      "Do not contact external parties or claim learning effectiveness beyond the recorded evidence"
+    ],
+    "intake": [
+      "Approved aggregate capability-gap revision, skill taxonomy version, program owner, audience, privacy class, and review horizon",
+      "Curriculum versions, release requirements, cohort roster revisions, assignment policy, delivery prerequisites, and accountable owners",
+      "Assignment receipts, completion records, assessment evidence, aggregate effectiveness measures, refresh criteria, and review chronology"
+    ],
+    "workflow": [
+      "Validate the approved aggregate capability-gap revision, taxonomy binding, privacy class, owners, and decision authority",
+      "Plan versioned curriculum releases and bind audience and cohort assignments to exact roster revisions",
+      "Reconcile delivery readiness, assignment receipts, completion and assessment identities, exceptions, and evidence gaps",
+      "Evaluate only approved aggregate effectiveness measures against declared criteria and preserve unsupported or privacy-blocked findings",
+      "Record human-owned refresh decisions and prepare a complete owner handoff without external action or HR mutation"
+    ],
+    "deliverables": [
+      "Versioned learning program release ledger",
+      "Audience and cohort assignment register",
+      "Delivery readiness and evidence register",
+      "Aggregate effectiveness and refresh review",
+      "Owner handoff"
+    ],
+    "example": {
+      "request": "Turn the approved FY27 cloud reliability capability-gap revision into the next curriculum release and cohort plan, then track delivery evidence and prepare the quarterly refresh review.",
+      "outcome": "A revision-bound learning program package with versioned curriculum, cohort roster bindings, assignment receipts, completion and assessment identities, aggregate effectiveness evidence, privacy-aware blockers, human-owned refresh decisions, and no individual performance inference."
+    },
+    "doneWhen": [
+      "Every curriculum release and cohort assignment binds to exact approved gap, taxonomy, curriculum, and roster revisions",
+      "Every readiness, completion, assessment, and aggregate effectiveness claim has current evidence or a visible blocker",
+      "Every refresh decision and next action names its human owner and chronology without prohibited individual or employment claims"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses supplied local evidence and grants no LMS, HRIS, credential, messaging, or external contact authority.",
+      "Write outputs/learning-program-release.json, validate it against schemas/learning-program-release.schema.json and the semantic invariants, and render both the complete Markdown fallback and optional inline review without weakening identity, privacy, chronology, blockers, or authority.",
+      "When identity, privacy, or effectiveness evidence is missing or incompatible, preserve a blocked state rather than inferring or broadening access."
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/learning-program-release.schema.json",
+        "path": "schemas/learning-program-release.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/learning-program-release.example.json",
+        "path": "fixtures/learning-program-release.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/learning-program-release.md",
+        "path": "templates/learning-program-release.md",
+        "role": "template"
+      },
+      {
+        "source": "assets/learning-program-review.html",
+        "path": "assets/learning-program-review.html",
+        "role": "asset"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Learning owners need a durable way to turn an already approved aggregate capability-gap revision into governed curriculum releases, cohort delivery, evidence review, and refresh handoff without converting learning records into individual employment judgments.",
+    "repeatableJob": "Reconcile approved aggregate gaps, versioned curriculum, roster-bound assignments, delivery readiness, completion and assessment evidence, aggregate effectiveness measures, refresh decisions, and owner chronology into one privacy-aware learning program handoff.",
+    "proofPlan": "Prove X3 and X4 artifacts with a strict schema, accepted and adversarial fixtures, semantic validation, deterministic regression, Mock+, score, and current visual evidence.",
+    "existingAlternatives": [
+      {
+        "id": "localization-program-manager",
+        "overlap": "Both coordinate versioned releases, audience readiness, evidence, exceptions, owners, and reviewable handoffs.",
+        "difference": "Localization Program Manager governs locale coverage and release readiness for product surfaces; Learning Program Manager governs approved aggregate capability gaps, curricula, cohort rosters, voluntary assignment receipts, learning evidence, cohort-only effectiveness, and refresh decisions."
+      },
+      {
+        "id": "delegation-coordinator",
+        "overlap": "Both bind assignments, accountable owners, receipts, completion evidence, blockers, review chronology, and handoff.",
+        "difference": "Delegation Coordinator governs one explicitly approved work delegation through acceptance and acknowledgment; Learning Program Manager governs versioned curricula and roster-bound cohorts through aggregate learning-effectiveness review while prohibiting mandatory assignment and individual performance inference."
+      },
+      {
+        "id": "knowledge-curator",
+        "overlap": "Both preserve versioned source identity, privacy handling, evidence chronology, unresolved gaps, and owner handoff.",
+        "difference": "Knowledge Curator normalizes a bounded cross-source knowledge index; Learning Program Manager owns the lifecycle from an approved aggregate capability-gap revision through versioned curriculum release, roster-bound cohort assignment, delivery proof, aggregate effectiveness review, and human-owned refresh decisions."
+      },
+      {
+        "id": "knowledge-gardener",
+        "overlap": "Both preserve versioned evidence, audience and privacy controls, owner approvals, blockers, and future maintenance decisions.",
+        "difference": "Knowledge Gardener prepares reversible changes to a shared knowledge space; Learning Program Manager owns no knowledge-space mutation and instead reconciles curriculum releases, cohort assignments, completion and assessment identity, aggregate measures, and learning-program refresh."
+      },
+      {
+        "id": "meeting-intelligence",
+        "overlap": "Both preserve dated evidence, identity, privacy classes, human-owned decisions, unresolved blockers, and reviewable chronology.",
+        "difference": "Meeting Intelligence extracts consent-bound observations, decisions, and actions from one meeting; Learning Program Manager does not process meeting speech and instead binds an approved aggregate capability-gap revision to curriculum, cohorts, delivery, aggregate measures, and refresh decisions."
+      },
+      {
+        "id": "certification-renewal-planner",
+        "overlap": "Both handle learning-adjacent evidence, requirements, deadlines, completion artifacts, privacy, and owner-controlled decisions.",
+        "difference": "Certification Renewal Planner organizes one person's issuer-defined credential renewal readiness; Learning Program Manager manages aggregate organizational learning releases and cohorts and explicitly cannot award, revoke, or claim credentials."
+      },
+      {
+        "id": "project-manager",
+        "overlap": "Both coordinate versioned work, owners, dependencies, readiness, evidence, risks, decisions, and handoff.",
+        "difference": "Project Manager plans generic delivery milestones; Learning Program Manager has a specialized governed data contract linking approved aggregate capability gaps, skill taxonomy, curriculum versions, cohort roster revisions, assignment receipts, completion and assessment identities, privacy classes, aggregate effectiveness measures, and refresh chronology."
+      },
+      {
+        "id": "recruiting-coordinator",
+        "overlap": "Both coordinate cohorts of people, schedules, evidence collection, privacy-sensitive records, and human-owned decisions.",
+        "difference": "Recruiting Coordinator organizes candidate interview loops and feedback without ranking; Learning Program Manager coordinates approved aggregate learning programs without candidate processing, individual performance inference, mandatory assignment, or employment decisions."
+      }
+    ]
+  }
+}
