@@ -260,6 +260,20 @@
   },
   "evidence": [
     {
+      "id": "evidence-predecessor-ledger",
+      "kind": "predecessor-ledger",
+      "subjectType": "predecessor-ledger",
+      "subjectRef": "predecessor-plan-municipal-permit-revision-1",
+      "subjectRecordDigest": "sha256:94c689b2c532e0e103b05f538447bd279e0db9c133f0d1aff14c5f8126cf2c67",
+      "sourceRef": "controlled://city/benefits/permit/revision-1",
+      "sourceVersion": "v1",
+      "sourceContentDigest": "sha256:e8b19b764d5ac4f3c605566e2f93759bb9982a0910ee20d329d5ced29747c9b9",
+      "sourceAuthorityRef": "source-authority-permit-q2",
+      "observedAt": "2026-03-16T12:00:00Z",
+      "suppliedByRef": "principal-benefit-owner-iman",
+      "bindingDigest": "sha256:176fbe4e24298ceb9d678c99ecedd27b17a5464f30fd00b05c72bf7b698cc430"
+    },
+    {
       "id": "evidence-permit-cost-baseline",
       "kind": "metric-baseline",
       "subjectType": "kpi",
@@ -505,6 +519,16 @@
     "issuedAt": "2026-07-07T16:00:00Z",
     "records": [
       {
+        "evidenceRef": "evidence-predecessor-ledger",
+        "subjectType": "predecessor-ledger",
+        "subjectRef": "predecessor-plan-municipal-permit-revision-1",
+        "subjectRecordDigest": "sha256:94c689b2c532e0e103b05f538447bd279e0db9c133f0d1aff14c5f8126cf2c67",
+        "sourceRef": "controlled://city/benefits/permit/revision-1",
+        "sourceVersion": "v1",
+        "sourceContentDigest": "sha256:e8b19b764d5ac4f3c605566e2f93759bb9982a0910ee20d329d5ced29747c9b9",
+        "suppliedByRef": "principal-benefit-owner-iman"
+      },
+      {
         "evidenceRef": "evidence-permit-cost-baseline",
         "subjectType": "kpi",
         "subjectRef": "kpi-quarterly-permit-processing-cost",
@@ -676,7 +700,7 @@
       }
     ],
     "signingKeyId": "benefits-authority-fixture-2026",
-    "signature": "ccSVT1/eqFEXFMTss6ey6B4Ld5lkyKfrVFN+9pqStbX5OboSIRlHsa6BKme3gWW/fbbz84Ie8glK3aXgcJZjAQ=="
+    "signature": "DdcKx+d3IQoOYg7ZXaoxa7M00pmyBqvxBsx0/Vqi2CwIsWsP2hovIQ03Mbf5dn0MpdmmNokOd9hW2mrfNe0GDg=="
   },
   "plan": {
     "id": "plan-municipal-permit",
@@ -689,7 +713,7 @@
   "predecessor": {
     "state": "linked",
     "ledgerRef": "controlled://city/benefits/permit/revision-1",
-    "ledgerContentDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+    "ledgerContentDigest": "sha256:e8b19b764d5ac4f3c605566e2f93759bb9982a0910ee20d329d5ced29747c9b9",
     "revision": 1,
     "periodEnd": "2026-03-15",
     "observedAt": "2026-03-16T12:00:00Z",
@@ -743,6 +767,12 @@
         ],
         "recordDigest": "sha256:bcbb0536309701ac5bc0402f9b7124a18afe7070325f1a42a575413cd299db5e"
       }
-    ]
+    ],
+    "id": "predecessor-plan-municipal-permit-revision-1",
+    "ledgerSourceVersion": "v1",
+    "evidenceRefs": [
+      "evidence-predecessor-ledger"
+    ],
+    "recordDigest": "sha256:94c689b2c532e0e103b05f538447bd279e0db9c133f0d1aff14c5f8126cf2c67"
   }
 }

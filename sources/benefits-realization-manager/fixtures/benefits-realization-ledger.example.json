@@ -260,6 +260,20 @@
   },
   "evidence": [
     {
+      "id": "evidence-predecessor-ledger",
+      "kind": "predecessor-ledger",
+      "subjectType": "predecessor-ledger",
+      "subjectRef": "predecessor-plan-support-modernization-revision-1",
+      "subjectRecordDigest": "sha256:483046f1fa724c69fb992d430a978fc70227dee3aa8a095fc033bfff0c2e1c4a",
+      "sourceRef": "controlled://benefits/ledgers/support-modernization/revision-1",
+      "sourceVersion": "v1",
+      "sourceContentDigest": "sha256:97749b4a81d61a35316753b440a89aa574a5eab52dc4e768e3bcc7628bb5e047",
+      "sourceAuthorityRef": "source-authority-support-q3",
+      "observedAt": "2026-06-16T12:00:00Z",
+      "suppliedByRef": "principal-benefit-owner-ava",
+      "bindingDigest": "sha256:9a797a75c960f94baf6da7713ae8240fe561da7534d6035a92e10078fe8de04b"
+    },
+    {
       "id": "evidence-kpi-support-baseline",
       "kind": "metric-baseline",
       "subjectType": "kpi",
@@ -505,6 +519,16 @@
     "issuedAt": "2026-10-06T16:00:00Z",
     "records": [
       {
+        "evidenceRef": "evidence-predecessor-ledger",
+        "subjectType": "predecessor-ledger",
+        "subjectRef": "predecessor-plan-support-modernization-revision-1",
+        "subjectRecordDigest": "sha256:483046f1fa724c69fb992d430a978fc70227dee3aa8a095fc033bfff0c2e1c4a",
+        "sourceRef": "controlled://benefits/ledgers/support-modernization/revision-1",
+        "sourceVersion": "v1",
+        "sourceContentDigest": "sha256:97749b4a81d61a35316753b440a89aa574a5eab52dc4e768e3bcc7628bb5e047",
+        "suppliedByRef": "principal-benefit-owner-ava"
+      },
+      {
         "evidenceRef": "evidence-kpi-support-baseline",
         "subjectType": "kpi",
         "subjectRef": "kpi-support-cost-avoidance",
@@ -676,7 +700,7 @@
       }
     ],
     "signingKeyId": "benefits-authority-fixture-2026",
-    "signature": "do/EsysH6gKEiIZW20n3lKT4S5vNLFsXn0Qn4qeu+/zuQ5e8ykOCXViseGYEq8SdXW73xQ6OQjFG2KbAPX5SBA=="
+    "signature": "jZLN1U4TfSjEYXUG6D0BA/Iamj4kMA0cYDMEPJKL4/sMOnHFR94tmE2sbo67Hvgpp9sSZo/Hrj1Xf8xVL0dOCg=="
   },
   "plan": {
     "id": "plan-support-modernization",
@@ -689,7 +713,7 @@
   "predecessor": {
     "state": "linked",
     "ledgerRef": "controlled://benefits/ledgers/support-modernization/revision-1",
-    "ledgerContentDigest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+    "ledgerContentDigest": "sha256:97749b4a81d61a35316753b440a89aa574a5eab52dc4e768e3bcc7628bb5e047",
     "revision": 1,
     "periodEnd": "2026-06-15",
     "observedAt": "2026-06-16T12:00:00Z",
@@ -743,6 +767,12 @@
         ],
         "recordDigest": "sha256:e55eadcd6d338eb77c2a13656c85cfe386fc82b59c3f3c44afe93d0d74bdb1e7"
       }
-    ]
+    ],
+    "id": "predecessor-plan-support-modernization-revision-1",
+    "ledgerSourceVersion": "v1",
+    "evidenceRefs": [
+      "evidence-predecessor-ledger"
+    ],
+    "recordDigest": "sha256:483046f1fa724c69fb992d430a978fc70227dee3aa8a095fc033bfff0c2e1c4a"
   }
 }

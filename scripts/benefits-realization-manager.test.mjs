@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import {
+  createHash,
+  generateKeyPairSync,
+  sign,
+} from "node:crypto";
 import { readFile, rm, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
@@ -9,11 +13,15 @@ import {
   BENEFITS_REALIZATION_LIMITS,
   benefitsRealizationFindings,
   BENEFITS_REALIZATION_EXAMPLE_VALIDATION_OPTIONS,
+  sourceAuthoritySigningPayload,
   evaluateBenefitsRealizationSlice,
   formatMinorUnits,
   renderBenefitsRealizationProof,
 } from "./benefits-realization-manager.mjs";
-import { resealInternalFixture } from "./benefits-realization-manager-fixture-tools.mjs";
+import {
+  buildSourceAuthorityRecords,
+  resealInternalFixture,
+} from "./benefits-realization-manager-fixture-tools.mjs";
 import {
   artifactSemanticValidationOptions,
   hasArtifactSemanticValidator,
@@ -74,6 +82,7 @@ const evaluate = (value, options = {}) => {
       referenced.has(`${record.sourceRef}\0${record.sourceVersion}`),
     ),
   };
+
   return evaluateBenefitsRealizationSlice(value, {
     asOf: value?.request?.cutoffAt,
     trustStore,
@@ -81,6 +90,46 @@ const evaluate = (value, options = {}) => {
     ...options,
   });
 };
+
+function resignAdversarial(value, suppliedSources = sourceBundle.sources) {
+  const { publicKey, privateKey } = generateKeyPairSync("ed25519");
+  const signingKeyId = "adversarial-predecessor-key";
+  value.sourceAuthority.signingKeyId = signingKeyId;
+  value = resealInternalFixture(value);
+  value.sourceAuthority.records = buildSourceAuthorityRecords(value);
+  value.sourceAuthority.signature = sign(
+    null,
+    Buffer.from(sourceAuthoritySigningPayload(value)),
+    privateKey,
+  ).toString("base64");
+  const referenced = new Set(
+    value.evidence.map(
+      (record) => `${record.sourceRef}\0${record.sourceVersion}`,
+    ),
+  );
+  return {
+    value,
+    options: {
+      asOf: value.request.cutoffAt,
+      trustStore: {
+        authorities: {
+          [value.sourceAuthority.ownerRef]: {
+            [signingKeyId]: {
+              publicKeyDerBase64: publicKey
+                .export({ type: "spki", format: "der" })
+                .toString("base64"),
+            },
+          },
+        },
+      },
+      sourceBundle: {
+        sources: suppliedSources.filter((record) =>
+          referenced.has(`${record.sourceRef}\0${record.sourceVersion}`),
+        ),
+      },
+    },
+  };
+}
 const absentFinanceCloseFixture = (() => {
   const value = structuredClone(fixture);
   value.financeReview.reviewedAt = null;
@@ -166,6 +215,106 @@ test("current benefit lineage cannot omit or invent predecessor transitions", ()
   assert.ok(
     retirementResult.contractFindings.some(
       (item) => item.code === "invalid-predecessor-transition",
+    ),
+  );
+});
+
+test("verified predecessor bytes reject removed identities after current-envelope re-signing", () => {
+  const value = structuredClone(fixture);
+  const removed = value.predecessor.transitions.shift();
+  value.predecessor.benefitCount = value.predecessor.transitions.length;
+  value.evidence = value.evidence.filter(
+    (record) => !removed.evidenceRefs.includes(record.id),
+  );
+  value.benefits.find(
+    (record) => record.id === removed.currentBenefitRef,
+  ).lifecycle = {
+    state: "active",
+    origin: "new",
+    predecessorBenefitRef: null,
+  };
+  const adversarial = resignAdversarial(value);
+  const result = evaluateBenefitsRealizationSlice(
+    adversarial.value,
+    adversarial.options,
+  );
+  assert.ok(
+    result.contractFindings.some(
+      (item) => item.code === "invalid-predecessor-coverage",
+    ),
+  );
+});
+
+test("verified predecessor bytes reject renamed identities after current-envelope re-signing", () => {
+  const value = structuredClone(fixture);
+  const transition = value.predecessor.transitions[0];
+  transition.predecessorBenefitRef = "prior-benefit-renamed";
+  value.benefits.find(
+    (record) => record.id === transition.currentBenefitRef,
+  ).lifecycle.predecessorBenefitRef = transition.predecessorBenefitRef;
+  const adversarial = resignAdversarial(value);
+  const result = evaluateBenefitsRealizationSlice(
+    adversarial.value,
+    adversarial.options,
+  );
+  assert.ok(
+    result.contractFindings.some(
+      (item) => item.code === "invalid-predecessor-coverage",
+    ),
+  );
+});
+
+test("verified predecessor bytes reject invented identities after current-envelope re-signing", () => {
+  const value = structuredClone(fixture);
+  const transition = {
+    id: "transition-invented",
+    predecessorBenefitRef: "prior-benefit-invented",
+    currentBenefitRef: null,
+    disposition: "retired",
+    decidedByRef: value.plan.ownerRef,
+    decidedAt: value.predecessor.transitions.at(-1).decidedAt,
+    evidenceRefs: ["evidence-lifecycle-invented"],
+    recordDigest: `sha256:${"0".repeat(64)}`,
+  };
+  value.predecessor.transitions.push(transition);
+  value.predecessor.benefitCount = value.predecessor.transitions.length;
+  const sourceBytes = Buffer.from(
+    JSON.stringify({
+      sourceRef: "controlled://benefits/lifecycle/transition-invented",
+      sourceVersion: "v1",
+      suppliedByRef: value.plan.ownerRef,
+      subjectRef: transition.id,
+    }),
+  );
+  value.evidence.push({
+    id: transition.evidenceRefs[0],
+    kind: "lifecycle-decision",
+    subjectType: "predecessor-transition",
+    subjectRef: transition.id,
+    subjectRecordDigest: `sha256:${"0".repeat(64)}`,
+    sourceRef: "controlled://benefits/lifecycle/transition-invented",
+    sourceVersion: "v1",
+    sourceContentDigest: `sha256:${createHash("sha256").update(sourceBytes).digest("hex")}`,
+    sourceAuthorityRef: value.sourceAuthority.id,
+    observedAt: transition.decidedAt,
+    suppliedByRef: value.plan.ownerRef,
+    bindingDigest: `sha256:${"0".repeat(64)}`,
+  });
+  const adversarial = resignAdversarial(value, [
+    ...sourceBundle.sources,
+    {
+      sourceRef: "controlled://benefits/lifecycle/transition-invented",
+      sourceVersion: "v1",
+      bytesBase64: sourceBytes.toString("base64"),
+    },
+  ]);
+  const result = evaluateBenefitsRealizationSlice(
+    adversarial.value,
+    adversarial.options,
+  );
+  assert.ok(
+    result.contractFindings.some(
+      (item) => item.code === "invalid-predecessor-coverage",
     ),
   );
 });

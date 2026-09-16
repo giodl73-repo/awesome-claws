@@ -2,6 +2,11 @@
   "schemaVersion": "awesomeClaws.exampleSourceBundle.v1",
   "sources": [
     {
+      "sourceRef": "controlled://benefits/ledgers/support-modernization/revision-1",
+      "sourceVersion": "v1",
+      "bytesBase64": "eyJzY2hlbWFWZXJzaW9uIjoiYXdlc29tZUNsYXdzLnByZWRlY2Vzc29yQmVuZWZpdFVuaXZlcnNlLnYxIiwicGxhbklkIjoicGxhbi1zdXBwb3J0LW1vZGVybml6YXRpb24iLCJyZXZpc2lvbiI6MSwicGVyaW9kRW5kIjoiMjAyNi0wNi0xNSIsImJlbmVmaXRzIjpbeyJpZCI6InByaW9yLWJlbmVmaXQtc2VsZi1zZXJ2aWNlIiwia2luZCI6ImJlbmVmaXQifSx7ImlkIjoicHJpb3ItYmVuZWZpdC1tYW51YWwtcm91dGluZyIsImtpbmQiOiJiZW5lZml0In0seyJpZCI6InByaW9yLWRpc2JlbmVmaXQtdHJhbnNpdGlvbi1yZXdvcmsiLCJraW5kIjoiZGlzYmVuZWZpdCJ9LHsiaWQiOiJwcmlvci1iZW5lZml0LWxlZ2FjeS10cmFpbmluZyIsImtpbmQiOiJiZW5lZml0In1dfQ=="
+    },
+    {
       "sourceRef": "controlled://metrics/support-cost-avoidance/baseline",
       "sourceVersion": "2026-06-30.1",
       "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vbWV0cmljcy9zdXBwb3J0LWNvc3QtYXZvaWRhbmNlL2Jhc2VsaW5lIiwic291cmNlVmVyc2lvbiI6IjIwMjYtMDYtMzAuMSIsInN1cHBsaWVkQnlSZWYiOiJwcmluY2lwYWwtbWV0cmljLW93bmVyLWRhbiIsInN1YmplY3RSZWYiOiJrcGktc3VwcG9ydC1jb3N0LWF2b2lkYW5jZSJ9"

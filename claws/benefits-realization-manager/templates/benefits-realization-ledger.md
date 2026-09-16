@@ -34,11 +34,11 @@
 
 ## Evidence proof
 
-- Internal record consistency: 14/14
-- Internal evidence consistency: 17/17
-- Reciprocal bindings: 17/17
-- Signed source-manifest anchors: 17/17
-- Source bytes verified: 17/17
+- Internal record consistency: 15/15
+- Internal evidence consistency: 18/18
+- Reciprocal bindings: 18/18
+- Signed source-manifest anchors: 18/18
+- Source bytes verified: 18/18
 - Source-authority signature: verified
 
 Allocation recognizes a direction-aware share of an observed KPI delta; it does not claim that a benefit caused the KPI movement.

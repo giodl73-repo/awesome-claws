@@ -5,6 +5,7 @@ import {
 
 function subjectEntries(value) {
   return [
+    ["predecessor-ledger", value.predecessor],
     ...value.predecessor.transitions.map((record) => [
       "predecessor-transition",
       record,

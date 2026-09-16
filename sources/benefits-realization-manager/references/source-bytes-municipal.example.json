@@ -2,6 +2,11 @@
   "schemaVersion": "awesomeClaws.exampleSourceBundle.v1",
   "sources": [
     {
+      "sourceRef": "controlled://city/benefits/permit/revision-1",
+      "sourceVersion": "v1",
+      "bytesBase64": "eyJzY2hlbWFWZXJzaW9uIjoiYXdlc29tZUNsYXdzLnByZWRlY2Vzc29yQmVuZWZpdFVuaXZlcnNlLnYxIiwicGxhbklkIjoicGxhbi1tdW5pY2lwYWwtcGVybWl0IiwicmV2aXNpb24iOjEsInBlcmlvZEVuZCI6IjIwMjYtMDMtMTUiLCJiZW5lZml0cyI6W3siaWQiOiJwcmlvci1iZW5lZml0LWludGFrZSIsImtpbmQiOiJiZW5lZml0In0seyJpZCI6InByaW9yLWJlbmVmaXQtbWFudWFsLXRyaWFnZSIsImtpbmQiOiJiZW5lZml0In0seyJpZCI6InByaW9yLWRpc2JlbmVmaXQtYWNjZXNzaWJpbGl0eSIsImtpbmQiOiJkaXNiZW5lZml0In0seyJpZCI6InByaW9yLWJlbmVmaXQtcGFwZXItaW5kZXgiLCJraW5kIjoiYmVuZWZpdCJ9XX0="
+    },
+    {
       "sourceRef": "controlled://city/finance/permit-processing-cost/baseline",
       "sourceVersion": "2026-03-31.1",
       "bytesBase64": "eyJzb3VyY2VSZWYiOiJjb250cm9sbGVkOi8vY2l0eS9maW5hbmNlL3Blcm1pdC1wcm9jZXNzaW5nLWNvc3QvYmFzZWxpbmUiLCJzb3VyY2VWZXJzaW9uIjoiMjAyNi0wMy0zMS4xIiwic3VwcGxpZWRCeVJlZiI6InByaW5jaXBhbC1tZXRyaWMtb3duZXItbHV6Iiwic3ViamVjdFJlZiI6ImtwaS1xdWFydGVybHktcGVybWl0LXByb2Nlc3NpbmctY29zdCJ9"

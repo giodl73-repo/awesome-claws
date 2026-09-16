@@ -67,16 +67,23 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
+        "id",
         "state",
         "ledgerRef",
+        "ledgerSourceVersion",
         "ledgerContentDigest",
         "revision",
         "periodEnd",
         "observedAt",
         "benefitCount",
-        "transitions"
+        "transitions",
+        "evidenceRefs",
+        "recordDigest"
       ],
       "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
         "state": {
           "enum": [
             "linked",
@@ -100,6 +107,16 @@
             },
             {
               "$ref": "#/$defs/digest"
+            }
+          ]
+        },
+        "ledgerSourceVersion": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/text"
             }
           ]
         },
@@ -187,6 +204,12 @@
               }
             }
           }
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
         }
       }
     },
@@ -776,6 +799,7 @@
           "kind": {
             "enum": [
               "metric-baseline",
+              "predecessor-ledger",
               "metric-target-approval",
               "metric-observation",
               "benefit-profile",
@@ -789,6 +813,7 @@
           "subjectType": {
             "enum": [
               "kpi",
+              "predecessor-ledger",
               "benefit",
               "allocation-rule",
               "attribution",
@@ -875,6 +900,7 @@
               "subjectType": {
                 "enum": [
                   "kpi",
+                  "predecessor-ledger",
                   "benefit",
                   "allocation-rule",
                   "attribution",

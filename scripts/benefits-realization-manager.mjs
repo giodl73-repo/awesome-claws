@@ -74,6 +74,7 @@ export function sourceAuthoritySigningPayload(value) {
 
 function subjectEntries(value) {
   return [
+    ["predecessor-ledger", value.predecessor],
     ...value.predecessor.transitions.map((record) => [
       "predecessor-transition",
       record,
@@ -254,6 +255,7 @@ function evidenceExpectation(
   subject,
   metricOwnerRef,
   financeOwnerRef,
+  planOwnerRef,
 ) {
   const record = subject.record;
   if (subject.subjectType === "kpi") {
@@ -266,6 +268,13 @@ function evidenceExpectation(
       kinds: Object.keys(eventTimes),
       suppliers: [record.ownerRef],
       observedAt: eventTimes[evidence.kind],
+    };
+  }
+  if (subject.subjectType === "predecessor-ledger") {
+    return {
+      kinds: ["predecessor-ledger"],
+      suppliers: [planOwnerRef],
+      observedAt: record.observedAt,
     };
   }
   if (subject.subjectType === "benefit") {
@@ -395,7 +404,7 @@ function sourceBytesFindings(value, options, findings) {
         `The source bundle exceeds ${BENEFITS_REALIZATION_LIMITS.maxSourceBundleFileBytes} bytes.`,
       ),
     );
-    return new Set();
+    return { verified: new Set(), bytesByEvidence: new Map() };
   }
   const sourceRows = Array.isArray(options?.sourceBundle?.sources)
     ? options.sourceBundle.sources
@@ -408,7 +417,7 @@ function sourceBytesFindings(value, options, findings) {
         `The source bundle may contain at most ${BENEFITS_REALIZATION_LIMITS.maxSourceRecords} records.`,
       ),
     );
-    return new Set();
+    return { verified: new Set(), bytesByEvidence: new Map() };
   }
   const referencedSourceKeys = new Set(
     value.evidence.map(
@@ -497,6 +506,7 @@ function sourceBytesFindings(value, options, findings) {
   }
 
   const verified = new Set();
+  const bytesByEvidence = new Map();
   for (const [index, evidence] of value.evidence.entries()) {
     const prepared = sources.get(
       `${evidence.sourceRef}\0${evidence.sourceVersion}`,
@@ -523,8 +533,9 @@ function sourceBytesFindings(value, options, findings) {
       continue;
     }
     verified.add(evidence.id);
+    bytesByEvidence.set(evidence.id, prepared.sourceBytes);
   }
-  return verified;
+  return { verified, bytesByEvidence };
 }
 
 function groupIntegerDigits(digits) {
@@ -1069,7 +1080,116 @@ export function evaluateBenefitsRealizationSlice(input, options = {}) {
     options,
     findings,
   );
-  const sourceBytesVerified = sourceBytesFindings(value, options, findings);
+  const {
+    verified: sourceBytesVerified,
+    bytesByEvidence: sourceBytesByEvidence,
+  } = sourceBytesFindings(value, options, findings);
+  if (linkedPredecessor) {
+    const predecessorEvidence =
+      predecessor.evidenceRefs.length === 1
+        ? evidenceById.get(predecessor.evidenceRefs[0])
+        : null;
+    const predecessorBytes = predecessorEvidence
+      ? sourceBytesByEvidence.get(predecessorEvidence.id)
+      : null;
+    if (
+      predecessor.evidenceRefs.length !== 1 ||
+      predecessorEvidence?.kind !== "predecessor-ledger" ||
+      predecessorEvidence.subjectType !== "predecessor-ledger" ||
+      predecessorEvidence.subjectRef !== predecessor.id ||
+      predecessorEvidence.sourceRef !== predecessor.ledgerRef ||
+      predecessorEvidence.sourceVersion !== predecessor.ledgerSourceVersion ||
+      predecessorEvidence.sourceContentDigest !==
+        predecessor.ledgerContentDigest ||
+      !predecessorBytes
+    ) {
+      findings.push(
+        finding(
+          "invalid-predecessor-source",
+          "predecessor",
+          "A linked predecessor requires exactly one reciprocal source record whose verified bytes bind the exact ledger reference, version, and content digest.",
+        ),
+      );
+    } else {
+      let predecessorContent;
+      try {
+        predecessorContent = JSON.parse(predecessorBytes.toString("utf8"));
+      } catch (error) {
+        findings.push(
+          finding(
+            "invalid-predecessor-content",
+            "predecessor.ledgerContentDigest",
+            `Verified predecessor bytes are not valid JSON: ${error.message}`,
+          ),
+        );
+      }
+      if (!isRecord(predecessorContent)) {
+        findings.push(
+          finding(
+            "invalid-predecessor-content",
+            "predecessor.ledgerContentDigest",
+            "Verified predecessor bytes must contain one JSON object.",
+          ),
+        );
+      } else {
+        const predecessorBenefitIds = Array.isArray(
+          predecessorContent.benefits,
+        )
+          ? predecessorContent.benefits.map((record) => record?.id)
+          : [];
+        const transitionBenefitIds = predecessor.transitions.map(
+          (record) => record.predecessorBenefitRef,
+        );
+        const exactTopLevel =
+          Object.keys(predecessorContent).toSorted().join("\0") ===
+            [
+              "benefits",
+              "periodEnd",
+              "planId",
+              "revision",
+              "schemaVersion",
+            ].join("\0");
+        const exactBenefitRows =
+          Array.isArray(predecessorContent.benefits) &&
+          predecessorContent.benefits.every(
+            (record) =>
+              isRecord(record) &&
+              Object.keys(record).toSorted().join("\0") === "id\0kind" &&
+              typeof record.id === "string" &&
+              ["benefit", "disbenefit"].includes(record.kind),
+          );
+        if (
+          !exactTopLevel ||
+          !exactBenefitRows ||
+          predecessorContent.schemaVersion !==
+            "awesomeClaws.predecessorBenefitUniverse.v1" ||
+          predecessorContent.planId !== plan.id ||
+          predecessorContent.revision !== predecessor.revision ||
+          predecessorContent.periodEnd !== predecessor.periodEnd ||
+          predecessorBenefitIds.length !==
+            new Set(predecessorBenefitIds).size ||
+          predecessorBenefitIds.length !== predecessor.benefitCount ||
+          !sameSet(predecessorBenefitIds, transitionBenefitIds)
+        ) {
+          findings.push(
+            finding(
+              "invalid-predecessor-coverage",
+              "predecessor.transitions",
+              "Transitions must exactly cover the unique benefit identities parsed from the verified predecessor-ledger bytes; caller counts or renamed identities are not authoritative.",
+            ),
+          );
+        }
+      }
+    }
+  } else if (predecessor.evidenceRefs.length !== 0) {
+    findings.push(
+      finding(
+        "invalid-predecessor-source",
+        "predecessor.evidenceRefs",
+        "A first plan cannot carry predecessor-ledger evidence.",
+      ),
+    );
+  }
   const manifestByEvidence = new Map(
     value.sourceAuthority.records.map((record) => [
       record.evidenceRef,
@@ -1104,6 +1224,7 @@ export function evaluateBenefitsRealizationSlice(input, options = {}) {
           subject,
           metricOwnerRef,
           financeOwnerRef,
+          plan.ownerRef,
         )
       : null;
     const manifestRecord = manifestByEvidence.get(record.id);

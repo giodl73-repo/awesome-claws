@@ -99,13 +99,13 @@
     "minorUnitScale": 100
   },
   "evidenceProof": {
-    "subjectCount": 14,
-    "evidenceCount": 16,
-    "internalRecordDigestsVerified": 14,
-    "internalEvidenceDigestsVerified": 16,
-    "reciprocalBindingsVerified": 16,
-    "sourceRecordsAnchored": 16,
-    "sourceBytesVerified": 16,
+    "subjectCount": 15,
+    "evidenceCount": 17,
+    "internalRecordDigestsVerified": 15,
+    "internalEvidenceDigestsVerified": 17,
+    "reciprocalBindingsVerified": 17,
+    "sourceRecordsAnchored": 17,
+    "sourceBytesVerified": 17,
     "sourceAuthoritySignatureVerified": true
   },
   "blockers": [
