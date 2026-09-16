@@ -124,6 +124,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "website-evidence-collector": "website-capture-evidence-ledger.schema.json",
   "vulnerability-disposition-coordinator": "vulnerability-disposition.schema.json",
   "work-chief-of-staff": "operating-portfolio.schema.json",
+  "workforce-planning-partner": "workforce-plan-reconciliation.schema.json",
   "workflow-operator": "workflow-execution-reconciliation.schema.json",
 });
 

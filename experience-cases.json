@@ -96,6 +96,14 @@
   },
   "visualCases": [
     {
+      "id": "workforce-planning-partner",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/workforce-plan-review.html",
+      "fallback": "outputs/workforce-plan-handoff.md",
+      "output": "outputs/workforce-plan-review.html"
+    },
+    {
       "id": "travel-concierge",
       "target": 5,
       "primary": "dashboard",
