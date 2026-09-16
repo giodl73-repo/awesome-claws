@@ -13,12 +13,12 @@
     "stewardship": 5
   },
   "summary": {
-    "entryCount": 120,
+    "entryCount": 121,
     "average": 98.9,
     "median": 100,
-    "qualifiedCount": 120,
+    "qualifiedCount": 121,
     "bands": {
-      "exemplary": 120,
+      "exemplary": 121,
       "strong": 0,
       "solid": 0,
       "needs-uplift": 0,
@@ -34,10 +34,10 @@
       "stewardship": 5
     },
     "evidenceCoverage": {
-      "contributionRecords": 109,
-      "schemas": 120,
-      "semanticValidators": 120,
-      "screenshots": 120
+      "contributionRecords": 110,
+      "schemas": 121,
+      "semanticValidators": 121,
+      "screenshots": 121
     }
   },
   "scores": [
@@ -327,7 +327,7 @@
         "maintenanceAgeDays": 26
       },
       "recommendations": [],
-      "rank": 98
+      "rank": 99
     },
     {
       "id": "case-continuity-coordinator",
@@ -364,7 +364,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 99
+      "rank": 100
     },
     {
       "id": "certification-renewal-planner",
@@ -438,7 +438,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 100
+      "rank": 101
     },
     {
       "id": "child-activity-manager",
@@ -512,7 +512,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 119
+      "rank": 120
     },
     {
       "id": "cloud-cost-analyst",
@@ -842,7 +842,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 113
+      "rank": 114
     },
     {
       "id": "data-governance-steward",
@@ -955,7 +955,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 101
+      "rank": 102
     },
     {
       "id": "document-intake-analyst",
@@ -992,7 +992,7 @@
         "maintenanceAgeDays": 18
       },
       "recommendations": [],
-      "rank": 114
+      "rank": 115
     },
     {
       "id": "document-renewal-tracker",
@@ -1140,7 +1140,7 @@
         "maintenanceAgeDays": 16
       },
       "recommendations": [],
-      "rank": 102
+      "rank": 103
     },
     {
       "id": "experimentation-lead",
@@ -1288,7 +1288,7 @@
         "maintenanceAgeDays": 17
       },
       "recommendations": [],
-      "rank": 103
+      "rank": 104
     },
     {
       "id": "financial-account-reconciliation-coordinator",
@@ -1433,7 +1433,7 @@
         "maintenanceAgeDays": 18
       },
       "recommendations": [],
-      "rank": 104
+      "rank": 105
     },
     {
       "id": "games-backlog-manager",
@@ -2290,7 +2290,7 @@
         "maintenanceAgeDays": 18
       },
       "recommendations": [],
-      "rank": 105
+      "rank": 106
     },
     {
       "id": "medical-appointment-prep",
@@ -2398,7 +2398,7 @@
         "maintenanceAgeDays": 28
       },
       "recommendations": [],
-      "rank": 97
+      "rank": 98
     },
     {
       "id": "movie-streaming-organizer",
@@ -2564,7 +2564,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 7,
+        "comparedAlternatives": 8,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -2717,7 +2717,7 @@
         "maintenanceAgeDays": 15
       },
       "recommendations": [],
-      "rank": 106
+      "rank": 107
     },
     {
       "id": "privacy-request-coordinator",
@@ -2831,7 +2831,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 115
+      "rank": 116
     },
     {
       "id": "professional-networking-followup",
@@ -2905,7 +2905,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 116
+      "rank": 117
     },
     {
       "id": "public-company-watcher",
@@ -2943,7 +2943,7 @@
         "maintenanceAgeDays": 17
       },
       "recommendations": [],
-      "rank": 107
+      "rank": 108
     },
     {
       "id": "public-safety-monitor",
@@ -2983,7 +2983,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 120
+      "rank": 121
     },
     {
       "id": "purchase-researcher",
@@ -3127,7 +3127,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 117
+      "rank": 118
     },
     {
       "id": "release-coordinator",
@@ -3276,7 +3276,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 108
+      "rank": 109
     },
     {
       "id": "research-monitor",
@@ -3314,7 +3314,7 @@
         "maintenanceAgeDays": 17
       },
       "recommendations": [],
-      "rank": 109
+      "rank": 110
     },
     {
       "id": "research-scout",
@@ -3352,7 +3352,7 @@
         "maintenanceAgeDays": 18
       },
       "recommendations": [],
-      "rank": 110
+      "rank": 111
     },
     {
       "id": "restaurant-venue-scout",
@@ -3459,7 +3459,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 118
+      "rank": 119
     },
     {
       "id": "school-coordinator",
@@ -3679,7 +3679,7 @@
         "maintenanceAgeDays": 18
       },
       "recommendations": [],
-      "rank": 111
+      "rank": 112
     },
     {
       "id": "stock-portfolio-monitor",
@@ -3969,7 +3969,7 @@
         "maintenanceAgeDays": 17
       },
       "recommendations": [],
-      "rank": 112
+      "rank": 113
     },
     {
       "id": "ux-research-synthesizer",
@@ -4357,7 +4357,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 8,
+        "comparedAlternatives": 9,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,
@@ -4406,6 +4406,43 @@
       },
       "recommendations": [],
       "rank": 21
+    },
+    {
+      "id": "benefits-realization-manager",
+      "name": "Benefits realization manager",
+      "category": "operations",
+      "total": 99,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 19,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 6,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 0
+      },
+      "recommendations": [],
+      "rank": 97
     }
   ]
 }

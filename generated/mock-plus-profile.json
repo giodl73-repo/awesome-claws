@@ -12,7 +12,7 @@
   "profiles": [
     {
       "name": "vertical",
-      "canonicalDigest": "sha256:5d12dd19dddf150ed91a3377a1619c4254bd7ab5a5476eda0c3fc657dc06ea65",
+      "canonicalDigest": "sha256:471c8c3196cc0861698e5ae2d85c5b3b2dbdc8d8ad04945f62dcca3e9ead04fd",
       "clawCount": 3,
       "caseCount": 53,
       "controlsPassed": 21,
@@ -26,12 +26,12 @@
     },
     {
       "name": "schema-portfolio",
-      "canonicalDigest": "sha256:45de234f7021c170f4b97ccbd9c443cd8ba524fc542889cc33feea6d4b456e04",
-      "clawCount": 119,
-      "caseCount": 40161,
-      "controlsPassed": 833,
+      "canonicalDigest": "sha256:b01cbb93d028c4b018c9d9b5e76442255cd39f47b26fb7bea14127b72c9add51",
+      "clawCount": 121,
+      "caseCount": 41684,
+      "controlsPassed": 847,
       "controlsFailed": 0,
-      "mutantsKilled": 39328,
+      "mutantsKilled": 40837,
       "mutantsSurvived": 0,
       "unsupportedOracles": 0,
       "invalidRecipes": 0,
@@ -40,12 +40,12 @@
     },
     {
       "name": "semantic-portfolio",
-      "canonicalDigest": "sha256:1c4c2ca5c3a30c969e661a7764fcf7687ae13aa7ea9f4bfa88a385d2c0bba76e",
-      "clawCount": 119,
-      "caseCount": 1872,
-      "controlsPassed": 833,
+      "canonicalDigest": "sha256:ad9782c33db8fc0ae5434a0d7d195fcd00fb5e70be8a1fa9db2b9c03f4e2df15",
+      "clawCount": 121,
+      "caseCount": 1904,
+      "controlsPassed": 847,
       "controlsFailed": 0,
-      "mutantsKilled": 1039,
+      "mutantsKilled": 1057,
       "mutantsSurvived": 0,
       "unsupportedOracles": 0,
       "invalidRecipes": 0,
@@ -54,12 +54,12 @@
     },
     {
       "name": "lifecycle-portfolio",
-      "canonicalDigest": "sha256:b2f603df4eb311d242aa1b4514b1977e5b9e934378e2dd6bff3d8b4614790838",
-      "clawCount": 119,
-      "caseCount": 2225,
-      "controlsPassed": 833,
+      "canonicalDigest": "sha256:4d6eceea3a9aaff1987ad89f677830881ca85a05aa32b23c623b18e8ca81ed9f",
+      "clawCount": 121,
+      "caseCount": 2263,
+      "controlsPassed": 847,
       "controlsFailed": 0,
-      "mutantsKilled": 1392,
+      "mutantsKilled": 1416,
       "mutantsSurvived": 0,
       "unsupportedOracles": 0,
       "invalidRecipes": 0,
@@ -69,11 +69,11 @@
   ],
   "totals": {
     "profileCount": 4,
-    "caseCount": 44311,
-    "controlsPassed": 2520,
-    "mutantsKilled": 41791,
+    "caseCount": 45904,
+    "controlsPassed": 2562,
+    "mutantsKilled": 43342,
     "mutantsSurvived": 0,
     "safetyBlockers": 0
   },
-  "profileDigest": "sha256:428ef3ad192ea413030c7bf50022e5583e976c788c71631be011dc86be419657"
+  "profileDigest": "sha256:2eab94311ea7d82ea5e91c22e1271759ff63bd5ce27484918c6a4777c107ebf3"
 }
