@@ -111,6 +111,10 @@
       "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
       "maxLength": 120
     },
+    "opaqueOwnerRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@#-]{0,199}$"
+    },
     "timestamp": {
       "type": "string",
       "format": "date-time",
@@ -235,6 +239,8 @@
       "required": [
         "id",
         "purchaseOrderId",
+        "currency",
+        "revisionRef",
         "scope",
         "granteeRef",
         "issuedByRef",
@@ -247,6 +253,12 @@
           "$ref": "#/$defs/id"
         },
         "purchaseOrderId": {
+          "$ref": "#/$defs/id"
+        },
+        "currency": {
+          "$ref": "#/$defs/currency"
+        },
+        "revisionRef": {
           "$ref": "#/$defs/id"
         },
         "scope": {
@@ -281,6 +293,9 @@
         "id",
         "version",
         "purchaseOrderId",
+        "currency",
+        "revisionRef",
+        "approvedPayloadDigest",
         "approvedByRef",
         "authorityGrantRef",
         "approvedAt",
@@ -301,6 +316,15 @@
         },
         "purchaseOrderId": {
           "$ref": "#/$defs/id"
+        },
+        "currency": {
+          "$ref": "#/$defs/currency"
+        },
+        "revisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedPayloadDigest": {
+          "$ref": "#/$defs/digest"
         },
         "approvedByRef": {
           "$ref": "#/$defs/id"
@@ -340,6 +364,9 @@
         "revisionNumber",
         "supersedesRevisionRef",
         "amendmentRef",
+        "amendmentPayloadDigest",
+        "lineManifestDigest",
+        "approvedPayloadDigest",
         "approvedByRef",
         "authorityGrantRef",
         "approvedAt",
@@ -363,6 +390,15 @@
         },
         "amendmentRef": {
           "$ref": "#/$defs/id"
+        },
+        "amendmentPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "lineManifestDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "approvedPayloadDigest": {
+          "$ref": "#/$defs/digest"
         },
         "approvedByRef": {
           "$ref": "#/$defs/id"
@@ -389,6 +425,7 @@
         "purchaseOrderId",
         "fromRevisionRef",
         "toRevisionRef",
+        "approvedPayloadDigest",
         "approvedByRef",
         "authorityGrantRef",
         "approvedAt",
@@ -407,6 +444,9 @@
         },
         "toRevisionRef": {
           "$ref": "#/$defs/id"
+        },
+        "approvedPayloadDigest": {
+          "$ref": "#/$defs/digest"
         },
         "approvedByRef": {
           "$ref": "#/$defs/id"
@@ -461,6 +501,8 @@
         "side",
         "purchaseOrderId",
         "currentRevisionRef",
+        "sourceSystemRef",
+        "exportRef",
         "generatedAt",
         "lineRefs",
         "lineManifestDigest"
@@ -482,6 +524,12 @@
         "currentRevisionRef": {
           "$ref": "#/$defs/id"
         },
+        "sourceSystemRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "exportRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
         "generatedAt": {
           "$ref": "#/$defs/timestamp"
         },
@@ -499,10 +547,14 @@
       "required": [
         "id",
         "manifestRef",
+        "sourceSystemRef",
+        "exportRef",
+        "sourceNativeLineId",
         "revisionRef",
         "purchaseOrderId",
         "lineNumber",
         "itemRef",
+        "unitOfMeasure",
         "quantity",
         "unitMinorUnits",
         "extendedMinorUnits",
@@ -514,6 +566,15 @@
         },
         "manifestRef": {
           "$ref": "#/$defs/id"
+        },
+        "sourceSystemRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "exportRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "sourceNativeLineId": {
+          "$ref": "#/$defs/opaqueOwnerRef"
         },
         "revisionRef": {
           "$ref": "#/$defs/id"
@@ -528,6 +589,9 @@
         },
         "itemRef": {
           "$ref": "#/$defs/id"
+        },
+        "unitOfMeasure": {
+          "$ref": "#/$defs/opaqueOwnerRef"
         },
         "quantity": {
           "$ref": "#/$defs/positiveIntegerString"
@@ -549,10 +613,15 @@
       "required": [
         "id",
         "manifestRef",
+        "sourceSystemRef",
+        "exportRef",
+        "sourceNativeLineId",
         "poLineRef",
         "purchaseOrderRevisionRef",
         "receiptId",
         "kind",
+        "reversesLineRef",
+        "unitOfMeasure",
         "quantity",
         "recordedAt",
         "currency"
@@ -563,6 +632,15 @@
         },
         "manifestRef": {
           "$ref": "#/$defs/id"
+        },
+        "sourceSystemRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "exportRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "sourceNativeLineId": {
+          "$ref": "#/$defs/opaqueOwnerRef"
         },
         "poLineRef": {
           "$ref": "#/$defs/id"
@@ -578,6 +656,19 @@
             "receipt",
             "return"
           ]
+        },
+        "reversesLineRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unitOfMeasure": {
+          "$ref": "#/$defs/opaqueOwnerRef"
         },
         "quantity": {
           "$ref": "#/$defs/integerString"
@@ -596,10 +687,15 @@
       "required": [
         "id",
         "manifestRef",
+        "sourceSystemRef",
+        "exportRef",
+        "sourceNativeLineId",
         "poLineRef",
         "purchaseOrderRevisionRef",
         "invoiceId",
         "kind",
+        "reversesLineRef",
+        "unitOfMeasure",
         "quantity",
         "unitMinorUnits",
         "lineMinorUnits",
@@ -612,6 +708,15 @@
         },
         "manifestRef": {
           "$ref": "#/$defs/id"
+        },
+        "sourceSystemRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "exportRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "sourceNativeLineId": {
+          "$ref": "#/$defs/opaqueOwnerRef"
         },
         "poLineRef": {
           "$ref": "#/$defs/id"
@@ -627,6 +732,19 @@
             "invoice",
             "credit"
           ]
+        },
+        "reversesLineRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unitOfMeasure": {
+          "$ref": "#/$defs/opaqueOwnerRef"
         },
         "quantity": {
           "$ref": "#/$defs/integerString"
@@ -652,7 +770,14 @@
         "id",
         "approvedByRef",
         "authorityGrantRef",
-        "approvedAt"
+        "approvedAt",
+        "policyRef",
+        "policyVersion",
+        "policyPayloadDigest",
+        "groupPayloadDigest",
+        "purchaseOrderManifestDigest",
+        "receiptManifestDigest",
+        "invoiceManifestDigest"
       ],
       "properties": {
         "id": {
@@ -666,6 +791,28 @@
         },
         "approvedAt": {
           "$ref": "#/$defs/timestamp"
+        },
+        "policyRef": {
+          "$ref": "#/$defs/id"
+        },
+        "policyVersion": {
+          "type": "string",
+          "pattern": "^v[1-9][0-9]*$"
+        },
+        "policyPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "groupPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "purchaseOrderManifestDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "receiptManifestDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "invoiceManifestDigest": {
+          "$ref": "#/$defs/digest"
         }
       }
     },
@@ -825,6 +972,7 @@
         "preparedByRef",
         "authorityGrantRef",
         "nextOwnerRef",
+        "partitionRootDigest",
         "generatedAt",
         "groupRefs",
         "residualRefs",
@@ -848,6 +996,9 @@
         },
         "nextOwnerRef": {
           "$ref": "#/$defs/id"
+        },
+        "partitionRootDigest": {
+          "$ref": "#/$defs/digest"
         },
         "generatedAt": {
           "$ref": "#/$defs/timestamp"

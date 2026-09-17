@@ -12,7 +12,7 @@ Coordinator
 Admission status: **needs human** until maintainers accept the proposal and
 representative owner evidence
 
-Confidence: **0.89**
+Confidence: **0.92**
 
 ## Frame
 
@@ -60,6 +60,12 @@ supplier communication, exception disposition, and every mutation.
 - Exactly one PO line and one or more receipt and invoice lines per accepted
   group.
 - Signed integer quantities and signed integer minor-unit arithmetic.
+- Immutable owner source identities preserve the exact
+  `{sourceSystemRef, exportRef, sourceNativeLineId}` triple without normalizing
+  opaque owner identifiers.
+- Returns and credits must identify an earlier exact source line with matching
+  PO line, revision, currency, unit, and source system before they may
+  participate in a group.
 - Exact equality only. There is no tolerance, fuzzy matching, allocation,
   currency conversion, tax, freight, discount, or accounting-treatment lane.
 - Side-specific residuals preserve every unmatched source line.
@@ -151,7 +157,7 @@ The role review used three repository roles from different tension clusters.
 | Lens | Finding | Revision made |
 | --- | --- | --- |
 | `claws-repo-steward` (cluster H, boundary purity) | A candidate must not leak into authoritative catalog, contribution, generated package, chooser, screenshot, or regression surfaces before admission. | Keep every file under `candidates/procure-to-pay-three-way-match-exception-reconciler/`; add no registry wiring. |
-| `power-user` (cluster B, operational control) | A third artifact that merely documents two worksheets would add ceremony. It needs one command, exact failures, and a named deletion target. | Add `verify.mjs`, four deterministic failure fixtures, and the three-worksheet deletion gate. Keep only three line digests rather than a generalized evidence-root framework. |
+| `power-user` (cluster B, operational control) | A third artifact that merely documents two worksheets would add ceremony. It needs one command, exact failures, and a named deletion target. | Add `verify.mjs`, four deterministic failure fixtures, and the three-worksheet deletion gate. Keep three exact line manifests and one complete partition root rather than a generalized evidence framework. |
 | `ciso` (cluster A, security/correctness) | An accepted result must not turn model or system inference into financial authority. Source identity, policy approval, amendment approval, matching, and handoff need fail-closed human bindings. | Require independently issued typed grants to named humans; structurally set posting, payment, supplier contact, accounting, tax, and source mutation to `not-claimed`. |
 
 No role found a reason to add external capabilities. The remaining trust roots
@@ -175,6 +181,8 @@ source authenticity, completeness, or semantic correctness.
 - one typed PO-side residual;
 - four independently issued human authority grants;
 - one caller-controlled cutoff; and
+- exact policy, amendment, revision, group-decision, three-manifest, and complete
+  partition-root bindings;
 - structural non-claims for every prohibited action or interpretation.
 
 All 3 PO, 4 receipt, and 4 invoice lines are consumed exactly once.
@@ -187,6 +195,17 @@ All 3 PO, 4 receipt, and 4 invoice lines are consumed exactly once.
 - an unapproved matching-policy actor;
 - a stale invoice line bound to the superseded PO revision; and
 - a one-minor-unit invoice drift.
+
+Additional adversarial regressions prove:
+
+- policy, prior-amendment, PO quantity, currency-scoped grant, group-policy, and
+  partition-root replay cannot pass after only derived digests are resealed;
+- two internal rows cannot split one immutable owner source identity;
+- a return or credit before its referenced source line cannot enter a match;
+- an invalid reversal can be preserved only as a side-specific residual;
+- exact net-zero reversal pairs cannot be hidden as residuals; and
+- a blocked empty partition cannot predate any manifest or prerequisite even
+  when there are no group or residual timestamps.
 
 Findings have the stable shape:
 

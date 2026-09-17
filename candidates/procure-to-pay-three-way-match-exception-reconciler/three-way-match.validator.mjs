@@ -18,10 +18,14 @@ const LINE_FIELDS = Object.freeze({
   "purchase-order": [
     "id",
     "manifestRef",
+    "sourceSystemRef",
+    "exportRef",
+    "sourceNativeLineId",
     "revisionRef",
     "purchaseOrderId",
     "lineNumber",
     "itemRef",
+    "unitOfMeasure",
     "quantity",
     "unitMinorUnits",
     "extendedMinorUnits",
@@ -30,10 +34,15 @@ const LINE_FIELDS = Object.freeze({
   receipt: [
     "id",
     "manifestRef",
+    "sourceSystemRef",
+    "exportRef",
+    "sourceNativeLineId",
     "poLineRef",
     "purchaseOrderRevisionRef",
     "receiptId",
     "kind",
+    "reversesLineRef",
+    "unitOfMeasure",
     "quantity",
     "recordedAt",
     "currency",
@@ -41,10 +50,15 @@ const LINE_FIELDS = Object.freeze({
   invoice: [
     "id",
     "manifestRef",
+    "sourceSystemRef",
+    "exportRef",
+    "sourceNativeLineId",
     "poLineRef",
     "purchaseOrderRevisionRef",
     "invoiceId",
     "kind",
+    "reversesLineRef",
+    "unitOfMeasure",
     "quantity",
     "unitMinorUnits",
     "lineMinorUnits",
@@ -52,6 +66,32 @@ const LINE_FIELDS = Object.freeze({
     "currency",
   ],
 });
+
+const POLICY_PAYLOAD_FIELDS = [
+  "id",
+  "version",
+  "purchaseOrderId",
+  "currency",
+  "revisionRef",
+  "groupShape",
+  "quantityRule",
+  "amountRule",
+  "unitPriceRule",
+  "correspondenceRule",
+  "taxRule",
+];
+
+const REVISION_PAYLOAD_FIELDS = [
+  "id",
+  "purchaseOrderId",
+  "revisionNumber",
+  "supersedesRevisionRef",
+  "amendmentRef",
+  "amendmentPayloadDigest",
+  "currency",
+  "manifestRef",
+  "lineManifestDigest",
+];
 
 const REQUIRED_ROLE_BY_SCOPE = Object.freeze({
   "matching-policy-approval": "matching-policy-owner",
@@ -128,6 +168,192 @@ export function computeLineManifestDigest(side, lines) {
   return sha256(canonicalJson({ side, lines: payload }));
 }
 
+export function computeMatchingPolicyPayloadDigest(policy) {
+  return sha256(canonicalJson(project(POLICY_PAYLOAD_FIELDS, policy)));
+}
+
+export function computeAmendmentPayloadDigest(amendment) {
+  const value = object(amendment);
+  const changes = records(value.changes)
+    .map((change) => project(["lineRef", "field", "from", "to"], change))
+    .sort((left, right) => compareUtf16CodeUnits(left.lineRef, right.lineRef));
+  return sha256(
+    canonicalJson({
+      ...project(
+        ["id", "purchaseOrderId", "fromRevisionRef", "toRevisionRef", "reasonCode"],
+        value,
+      ),
+      changes,
+    }),
+  );
+}
+
+export function computePurchaseOrderRevisionPayloadDigest(revision) {
+  return sha256(canonicalJson(project(REVISION_PAYLOAD_FIELDS, revision)));
+}
+
+export function computeMatchGroupPayloadDigest(group) {
+  const value = object(group);
+  return sha256(
+    canonicalJson({
+      id: value.id ?? null,
+      policyRef: value.policyRef ?? null,
+      poLineRefs: strings(value.poLineRefs).sort(compareUtf16CodeUnits),
+      receiptLineRefs: strings(value.receiptLineRefs).sort(compareUtf16CodeUnits),
+      invoiceLineRefs: strings(value.invoiceLineRefs).sort(compareUtf16CodeUnits),
+      totals: project(
+        [
+          "purchaseOrderQuantity",
+          "receiptQuantity",
+          "invoiceQuantity",
+          "purchaseOrderMinorUnits",
+          "invoiceMinorUnits",
+        ],
+        value.totals,
+      ),
+    }),
+  );
+}
+
+export function computePartitionRootDigest(candidate) {
+  const value = object(candidate);
+  const review = object(value.review);
+  const policy = object(value.matchingPolicy);
+  const revision = object(value.purchaseOrderRevision);
+  const amendment = object(value.amendment);
+  const coverage = object(value.coverage);
+  const sortRows = (rows) =>
+    records(rows).toSorted((left, right) => compareUtf16CodeUnits(left.id, right.id));
+  return sha256(
+    canonicalJson({
+      schemaVersion: value.schemaVersion ?? null,
+      candidateId: value.candidateId ?? null,
+      review: project(
+        [
+          "id",
+          "purchaseOrderId",
+          "currency",
+          "cutoffAt",
+          "currentRevisionRef",
+          "amendmentRef",
+          "matchingPolicyRef",
+          "destination",
+          "nextOwnerRef",
+        ],
+        review,
+      ),
+      principals: sortRows(value.principals).map((row) =>
+        project(["id", "name", "kind", "roles"], {
+          ...row,
+          roles: strings(row.roles).sort(compareUtf16CodeUnits),
+        }),
+      ),
+      authorityGrants: sortRows(value.authorityGrants).map((row) =>
+        project(
+          [
+            "id",
+            "purchaseOrderId",
+            "currency",
+            "revisionRef",
+            "scope",
+            "granteeRef",
+            "issuedByRef",
+            "issuedAt",
+            "activeFrom",
+            "activeUntil",
+          ],
+          row,
+        ),
+      ),
+      matchingPolicy: project(
+        ["id", "version", "approvedPayloadDigest", "approvedByRef", "authorityGrantRef", "approvedAt"],
+        policy,
+      ),
+      purchaseOrderRevision: project(
+        [
+          ...REVISION_PAYLOAD_FIELDS,
+          "approvedPayloadDigest",
+          "approvedByRef",
+          "authorityGrantRef",
+          "approvedAt",
+        ],
+        revision,
+      ),
+      amendment: {
+        ...project(
+          [
+            "id",
+            "purchaseOrderId",
+            "fromRevisionRef",
+            "toRevisionRef",
+            "approvedPayloadDigest",
+            "approvedByRef",
+            "authorityGrantRef",
+            "approvedAt",
+            "reasonCode",
+          ],
+          amendment,
+        ),
+        changes: records(amendment.changes)
+          .map((change) => project(["lineRef", "field", "from", "to"], change))
+          .sort((left, right) => compareUtf16CodeUnits(left.lineRef, right.lineRef)),
+      },
+      manifests: sortRows(value.manifests).map((row) => ({
+        ...project(
+          [
+            "id",
+            "side",
+            "purchaseOrderId",
+            "currentRevisionRef",
+            "sourceSystemRef",
+            "exportRef",
+            "generatedAt",
+            "lineManifestDigest",
+          ],
+          row,
+        ),
+        lineRefs: strings(row.lineRefs).sort(compareUtf16CodeUnits),
+      })),
+      matchGroups: sortRows(value.matchGroups).map((group) => ({
+        groupPayloadDigest: computeMatchGroupPayloadDigest(group),
+        decision: project(
+          [
+            "id",
+            "approvedByRef",
+            "authorityGrantRef",
+            "approvedAt",
+            "policyRef",
+            "policyVersion",
+            "policyPayloadDigest",
+            "groupPayloadDigest",
+            "purchaseOrderManifestDigest",
+            "receiptManifestDigest",
+            "invoiceManifestDigest",
+          ],
+          group.decision,
+        ),
+      })),
+      residuals: sortRows(value.residuals).map((row) =>
+        project(
+          ["id", "side", "lineRef", "poLineRef", "reasonCode", "ownerRef", "recordedAt"],
+          row,
+        ),
+      ),
+      coverage: {
+        id: coverage.id ?? null,
+        purchaseOrderLineRefs: strings(coverage.purchaseOrderLineRefs).sort(
+          compareUtf16CodeUnits,
+        ),
+        receiptLineRefs: strings(coverage.receiptLineRefs).sort(compareUtf16CodeUnits),
+        invoiceLineRefs: strings(coverage.invoiceLineRefs).sort(compareUtf16CodeUnits),
+        groupRefs: strings(coverage.groupRefs).sort(compareUtf16CodeUnits),
+        residualRefs: strings(coverage.residualRefs).sort(compareUtf16CodeUnits),
+      },
+      authorityClaims: object(value.authorityClaims),
+    }),
+  );
+}
+
 function integer(value) {
   return typeof value === "string" && INTEGER.test(value) ? BigInt(value) : null;
 }
@@ -178,6 +404,7 @@ function addConsumption(counts, ref) {
 }
 
 function maximumTimestamp(values) {
+  if (!Array.isArray(values) || values.length === 0) return null;
   const parsed = values.map(timestamp);
   return parsed.some((value) => value === null) ? null : Math.max(...parsed);
 }
@@ -285,6 +512,8 @@ export function validateThreeWayMatch(candidate, context = {}) {
       grant?.scope === scope &&
       grant.granteeRef === actorRef &&
       grant.purchaseOrderId === review.purchaseOrderId &&
+      grant.currency === review.currency &&
+      grant.revisionRef === review.currentRevisionRef &&
       issuer?.kind === "named-human" &&
       strings(issuer.roles).includes("authority-issuer") &&
       issuer.id !== actorRef &&
@@ -312,6 +541,8 @@ export function validateThreeWayMatch(candidate, context = {}) {
     const issuer = principalById.get(grant.issuedByRef);
     if (
       grant.purchaseOrderId !== review.purchaseOrderId ||
+      grant.currency !== review.currency ||
+      grant.revisionRef !== review.currentRevisionRef ||
       !REQUIRED_ROLE_BY_SCOPE[grant.scope] ||
       grantee?.kind !== "named-human" ||
       !strings(grantee.roles).includes(REQUIRED_ROLE_BY_SCOPE[grant.scope]) ||
@@ -322,7 +553,7 @@ export function validateThreeWayMatch(candidate, context = {}) {
       add(
         "invalid_authority_grant",
         `/authorityGrants/${index}`,
-        "Every authority grant must be purchase-order scoped, typed, and independently issued to a named human with the required role.",
+        "Every authority grant must be scoped to the exact purchase order, currency, and current revision, typed, and independently issued to a named human with the required role.",
         [grant.id],
       );
     }
@@ -335,6 +566,8 @@ export function validateThreeWayMatch(candidate, context = {}) {
     revision.purchaseOrderId !== review.purchaseOrderId ||
     amendment.purchaseOrderId !== review.purchaseOrderId ||
     policy.purchaseOrderId !== review.purchaseOrderId ||
+    policy.currency !== review.currency ||
+    policy.revisionRef !== review.currentRevisionRef ||
     revision.currency !== review.currency
   ) {
     add(
@@ -352,6 +585,14 @@ export function validateThreeWayMatch(candidate, context = {}) {
     policy.approvedAt,
     "/matchingPolicy",
   );
+  if (policy.approvedPayloadDigest !== computeMatchingPolicyPayloadDigest(policy)) {
+    add(
+      "invalid_policy_approval_digest",
+      "/matchingPolicy/approvedPayloadDigest",
+      "The matching-policy approval must bind the exact immutable policy payload.",
+      [policy.id],
+    );
+  }
   if (timestamp(policy.approvedAt) === null || timestamp(policy.approvedAt) > artifactCutoff) {
     add(
       "invalid_matching_policy",
@@ -375,6 +616,25 @@ export function validateThreeWayMatch(candidate, context = {}) {
     revision.approvedAt,
     "/purchaseOrderRevision",
   );
+  if (amendment.approvedPayloadDigest !== computeAmendmentPayloadDigest(amendment)) {
+    add(
+      "invalid_amendment_approval_digest",
+      "/amendment/approvedPayloadDigest",
+      "The amendment approval must bind the exact immutable amendment payload.",
+      [amendment.id],
+    );
+  }
+  if (
+    revision.amendmentPayloadDigest !== amendment.approvedPayloadDigest ||
+    revision.approvedPayloadDigest !== computePurchaseOrderRevisionPayloadDigest(revision)
+  ) {
+    add(
+      "invalid_revision_approval_digest",
+      "/purchaseOrderRevision/approvedPayloadDigest",
+      "The PO revision approval must bind the exact current line manifest and approved amendment payload.",
+      [revision.id, amendment.id],
+    );
+  }
   if (
     amendment.toRevisionRef !== revision.id ||
     amendment.fromRevisionRef !== revision.supersedesRevisionRef ||
@@ -457,6 +717,43 @@ export function validateThreeWayMatch(candidate, context = {}) {
         [manifest?.id, ...lines.map((line) => line.id)],
       );
     }
+    const sourceIdentityCounts = new Map();
+    for (const [index, line] of lines.entries()) {
+      const identity = [line.sourceSystemRef, line.exportRef, line.sourceNativeLineId];
+      if (
+        identity.some((part) => typeof part !== "string" || part.length === 0) ||
+        line.sourceSystemRef !== manifest?.sourceSystemRef ||
+        line.exportRef !== manifest?.exportRef
+      ) {
+        add(
+          "invalid_source_line_identity",
+          `/${side}Lines/${index}`,
+          "Every source line must preserve its exact owner source system, export, and opaque native line identity from the containing manifest.",
+          [line.id],
+        );
+      }
+      const identityKey = canonicalJson(identity);
+      sourceIdentityCounts.set(identityKey, (sourceIdentityCounts.get(identityKey) ?? 0) + 1);
+    }
+    for (const [identityKey, count] of sourceIdentityCounts) {
+      if (count > 1) {
+        add(
+          "duplicate_source_line_identity",
+          `/${side}Lines`,
+          "One immutable owner source line identity cannot be split across multiple candidate rows.",
+          lines
+            .filter(
+              (line) =>
+                canonicalJson([
+                  line.sourceSystemRef,
+                  line.exportRef,
+                  line.sourceNativeLineId,
+                ]) === identityKey,
+            )
+            .map((line) => line.id),
+        );
+      }
+    }
     const generatedAt = timestamp(manifest?.generatedAt);
     if (
       generatedAt === null ||
@@ -473,7 +770,11 @@ export function validateThreeWayMatch(candidate, context = {}) {
       );
     }
   }
-  if (revision.manifestRef !== manifestBySide.get("purchase-order")?.id) {
+  if (
+    revision.manifestRef !== manifestBySide.get("purchase-order")?.id ||
+    revision.lineManifestDigest !==
+      manifestBySide.get("purchase-order")?.lineManifestDigest
+  ) {
     add(
       "invalid_purchase_order_revision",
       "/purchaseOrderRevision/manifestRef",
@@ -525,12 +826,15 @@ export function validateThreeWayMatch(candidate, context = {}) {
     lineNumbers.add(line.lineNumber);
   }
 
+  const receiptReversalValid = new Map();
   for (const [index, line] of receiptLines.entries()) {
     const quantity = integer(line.quantity);
+    const poLine = poLineById.get(line.poLineRef);
     if (
       line.purchaseOrderRevisionRef !== revision.id ||
       line.currency !== review.currency ||
-      !poLineById.has(line.poLineRef)
+      !poLine ||
+      line.unitOfMeasure !== poLine.unitOfMeasure
     ) {
       add(
         "invalid_source_revision",
@@ -561,16 +865,52 @@ export function validateThreeWayMatch(candidate, context = {}) {
         [line.id],
       );
     }
+    const reversed = receiptLineById.get(line.reversesLineRef);
+    const reversedQuantity = integer(object(reversed).quantity);
+    const reversalValid =
+      line.kind === "receipt"
+        ? line.reversesLineRef === null
+        : reversed?.kind === "receipt" &&
+          reversed.id !== line.id &&
+          reversed.poLineRef === line.poLineRef &&
+          reversed.purchaseOrderRevisionRef === line.purchaseOrderRevisionRef &&
+          reversed.currency === line.currency &&
+          reversed.unitOfMeasure === line.unitOfMeasure &&
+          reversed.sourceSystemRef === line.sourceSystemRef &&
+          reversedQuantity !== null &&
+          quantity !== null &&
+          -quantity <= reversedQuantity &&
+          timestamp(reversed.recordedAt) !== null &&
+          recordedAt !== null &&
+          timestamp(reversed.recordedAt) < recordedAt;
+    receiptReversalValid.set(line.id, reversalValid);
+  }
+  for (const source of receiptLines.filter((line) => line.kind === "receipt")) {
+    const sourceQuantity = integer(source.quantity);
+    const reversals = receiptLines.filter(
+      (line) => line.kind === "return" && line.reversesLineRef === source.id,
+    );
+    const reversalQuantities = reversals.map((line) => integer(line.quantity));
+    if (
+      sourceQuantity === null ||
+      reversalQuantities.some((quantity) => quantity === null) ||
+      reversalQuantities.reduce((sum, quantity) => sum - quantity, 0n) > sourceQuantity
+    ) {
+      for (const reversal of reversals) receiptReversalValid.set(reversal.id, false);
+    }
   }
 
+  const invoiceReversalValid = new Map();
   for (const [index, line] of invoiceLines.entries()) {
     const quantity = integer(line.quantity);
     const unit = integer(line.unitMinorUnits);
     const amount = integer(line.lineMinorUnits);
+    const poLine = poLineById.get(line.poLineRef);
     if (
       line.purchaseOrderRevisionRef !== revision.id ||
       line.currency !== review.currency ||
-      !poLineById.has(line.poLineRef)
+      !poLine ||
+      line.unitOfMeasure !== poLine.unitOfMeasure
     ) {
       add(
         "invalid_source_revision",
@@ -604,6 +944,40 @@ export function validateThreeWayMatch(candidate, context = {}) {
         "Invoice-side lines after the caller-controlled cutoff are outside this review.",
         [line.id],
       );
+    }
+    const reversed = invoiceLineById.get(line.reversesLineRef);
+    const reversedQuantity = integer(object(reversed).quantity);
+    const reversalValid =
+      line.kind === "invoice"
+        ? line.reversesLineRef === null
+        : reversed?.kind === "invoice" &&
+          reversed.id !== line.id &&
+          reversed.poLineRef === line.poLineRef &&
+          reversed.purchaseOrderRevisionRef === line.purchaseOrderRevisionRef &&
+          reversed.currency === line.currency &&
+          reversed.unitOfMeasure === line.unitOfMeasure &&
+          reversed.unitMinorUnits === line.unitMinorUnits &&
+          reversed.sourceSystemRef === line.sourceSystemRef &&
+          reversedQuantity !== null &&
+          quantity !== null &&
+          -quantity <= reversedQuantity &&
+          timestamp(reversed.recordedAt) !== null &&
+          recordedAt !== null &&
+          timestamp(reversed.recordedAt) < recordedAt;
+    invoiceReversalValid.set(line.id, reversalValid);
+  }
+  for (const source of invoiceLines.filter((line) => line.kind === "invoice")) {
+    const sourceQuantity = integer(source.quantity);
+    const reversals = invoiceLines.filter(
+      (line) => line.kind === "credit" && line.reversesLineRef === source.id,
+    );
+    const reversalQuantities = reversals.map((line) => integer(line.quantity));
+    if (
+      sourceQuantity === null ||
+      reversalQuantities.some((quantity) => quantity === null) ||
+      reversalQuantities.reduce((sum, quantity) => sum - quantity, 0n) > sourceQuantity
+    ) {
+      for (const reversal of reversals) invoiceReversalValid.set(reversal.id, false);
     }
   }
 
@@ -659,6 +1033,23 @@ export function validateThreeWayMatch(candidate, context = {}) {
         [group.id, poLine.id, ...receiptRefs, ...invoiceRefs],
       );
     }
+    if (
+      selectedReceipts.some((line) => !receiptReversalValid.get(line.id)) ||
+      selectedInvoices.some((line) => !invoiceReversalValid.get(line.id)) ||
+      selectedReceipts.some(
+        (line) => line.kind === "return" && !receiptRefs.includes(line.reversesLineRef),
+      ) ||
+      selectedInvoices.some(
+        (line) => line.kind === "credit" && !invoiceRefs.includes(line.reversesLineRef),
+      )
+    ) {
+      add(
+        "invalid_reversal",
+        path,
+        "Every grouped return or credit must reference an earlier exact source line with matching PO, revision, currency, unit, and source system.",
+        [group.id, ...receiptRefs, ...invoiceRefs],
+      );
+    }
 
     const poQuantity = integer(poLine.quantity);
     const poAmount = integer(poLine.extendedMinorUnits);
@@ -687,7 +1078,12 @@ export function validateThreeWayMatch(candidate, context = {}) {
       const invoiceAmount = invoiceAmounts.reduce((sum, item) => sum + item, 0n);
       const declared = object(group.totals);
       if (
-        selectedInvoices.some((line) => integer(line.unitMinorUnits) !== poUnit) ||
+        selectedReceipts.some((line) => line.unitOfMeasure !== poLine.unitOfMeasure) ||
+        selectedInvoices.some(
+          (line) =>
+            integer(line.unitMinorUnits) !== poUnit ||
+            line.unitOfMeasure !== poLine.unitOfMeasure,
+        ) ||
         receiptQuantity !== poQuantity ||
         invoiceQuantity !== poQuantity ||
         invoiceAmount !== poAmount ||
@@ -714,6 +1110,23 @@ export function validateThreeWayMatch(candidate, context = {}) {
       decision.approvedAt,
       `${path}/decision`,
     );
+    if (
+      decision.policyRef !== policy.id ||
+      decision.policyVersion !== policy.version ||
+      decision.policyPayloadDigest !== policy.approvedPayloadDigest ||
+      decision.groupPayloadDigest !== computeMatchGroupPayloadDigest(group) ||
+      decision.purchaseOrderManifestDigest !==
+        manifestBySide.get("purchase-order")?.lineManifestDigest ||
+      decision.receiptManifestDigest !== manifestBySide.get("receipt")?.lineManifestDigest ||
+      decision.invoiceManifestDigest !== manifestBySide.get("invoice")?.lineManifestDigest
+    ) {
+      add(
+        "invalid_match_decision_binding",
+        `${path}/decision`,
+        "Every match decision must bind the exact policy revision and payload, group payload, and all three source manifest digests.",
+        [group.id, decision.id, policy.id],
+      );
+    }
     const decidedAt = timestamp(decision.approvedAt);
     if (
       decidedAt === null ||
@@ -759,7 +1172,17 @@ export function validateThreeWayMatch(candidate, context = {}) {
         ...invoiceQuantities,
         ...invoiceAmounts,
       ].every((item) => item !== null) &&
-      relatedInvoices.every((item) => integer(item.unitMinorUnits) === poUnit) &&
+      relatedReceipts.every(
+        (item) =>
+          item.unitOfMeasure === object(poLine).unitOfMeasure &&
+          receiptReversalValid.get(item.id),
+      ) &&
+      relatedInvoices.every(
+        (item) =>
+          integer(item.unitMinorUnits) === poUnit &&
+          item.unitOfMeasure === object(poLine).unitOfMeasure &&
+          invoiceReversalValid.get(item.id),
+      ) &&
       receiptQuantities.reduce((sum, item) => sum + item, 0n) === poQuantity &&
       invoiceQuantities.reduce((sum, item) => sum + item, 0n) === poQuantity &&
       invoiceAmounts.reduce((sum, item) => sum + item, 0n) === poAmount;
@@ -831,6 +1254,15 @@ export function validateThreeWayMatch(candidate, context = {}) {
     }
   }
 
+  const expectedPartitionRootDigest = computePartitionRootDigest(value);
+  if (result.partitionRootDigest !== expectedPartitionRootDigest) {
+    add(
+      "invalid_partition_root",
+      "/result/partitionRootDigest",
+      "The handoff must bind the complete partition, including authority, policy, amendment, current revision, all manifests, decisions, residuals, coverage, and non-claims.",
+      [result.id],
+    );
+  }
   validateAuthority(
     result.preparedByRef,
     result.authorityGrantRef,
@@ -838,16 +1270,22 @@ export function validateThreeWayMatch(candidate, context = {}) {
     result.generatedAt,
     "/result",
   );
-  const latestDecision = maximumTimestamp([
+  const latestPrerequisite = maximumTimestamp([
+    review.cutoffAt,
+    policy.approvedAt,
+    amendment.approvedAt,
+    revision.approvedAt,
+    ...grants.flatMap((grant) => [grant.issuedAt, grant.activeFrom]),
+    ...manifests.map((manifest) => manifest.generatedAt),
     ...groups.map((group) => object(group.decision).approvedAt),
     ...residuals.map((residual) => residual.recordedAt),
   ]);
   const generatedAt = timestamp(result.generatedAt);
   if (
     generatedAt === null ||
-    latestDecision === null ||
+    latestPrerequisite === null ||
     asOf === null ||
-    generatedAt <= latestDecision ||
+    generatedAt <= latestPrerequisite ||
     generatedAt > asOf ||
     result.nextOwnerRef !== review.nextOwnerRef ||
     principalById.get(result.nextOwnerRef)?.kind !== "named-human" ||
@@ -864,7 +1302,7 @@ export function validateThreeWayMatch(candidate, context = {}) {
     add(
       "invalid_result",
       "/result",
-      "The result must follow all decisions, precede asOf, bind the review's typed next owner, and carry the exact group and residual indexes.",
+      "The result must follow every policy, amendment, grant, manifest, decision, and residual prerequisite, precede asOf, bind the review's typed next owner, and carry the exact group and residual indexes.",
       [result.id],
     );
   }

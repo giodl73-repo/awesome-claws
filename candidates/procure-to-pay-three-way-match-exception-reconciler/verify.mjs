@@ -34,6 +34,13 @@ const proof = {
     state: acceptedFixture.result.state,
     findingCount: acceptedFindings.length,
     exactManifestCount: acceptedFixture.manifests.length,
+    sourceIdentityCount:
+      acceptedFixture.purchaseOrderLines.length +
+      acceptedFixture.receiptLines.length +
+      acceptedFixture.invoiceLines.length,
+    approvedPayloadDigestCount: 3,
+    decisionBindingCount: acceptedFixture.matchGroups.length,
+    partitionRootDigest: acceptedFixture.result.partitionRootDigest,
     groupCount: acceptedFixture.matchGroups.length,
     residualCount: acceptedFixture.residuals.length,
     proved: acceptedFindings.length === 0,
