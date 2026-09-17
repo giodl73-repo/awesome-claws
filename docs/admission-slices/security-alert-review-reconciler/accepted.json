@@ -2,7 +2,7 @@
   "schemaVersion": "awesomeClaws.securityAlertReviewCandidate.v1",
   "artifactId": "security-alert-review-2026-09-16",
   "asOf": "2026-09-16T23:30:00Z",
-  "evidenceRoot": "sha256:8e7dd908422e89c50b07362349d5353f089db242e35edb6d4771b600304cbbe9",
+  "evidenceRoot": "sha256:aae87ad73783965f1b07a7b80e557f48727d73cfd69aefb8dd9ac7a0b99d6b38",
   "snapshot": {
     "id": "snapshot-owner-alerts-2026-09-16",
     "revision": "export-42",
@@ -145,9 +145,9 @@
     ]
   },
   "detectorPolicy": {
-    "id": "detector-policy-security-alerts",
+    "id": "detector-policy-security-alerts-2026-09-16-2",
     "revision": "policy-2026-09-16-2",
-    "effectiveAt": "2026-09-15T16:00:00Z",
+    "effectiveAt": "2026-09-16T17:00:00Z",
     "suppliedByRef": "principal-alert-owner-morgan",
     "trustInputRefs": [
       "trust-github-code-scanning",
@@ -192,7 +192,7 @@
         ]
       }
     ],
-    "revisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+    "revisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
     "evidenceRef": "evidence-detector-policy"
   },
   "publicTrustInputs": [
@@ -336,9 +336,9 @@
       "issuedAt": "2026-09-15T16:20:00Z",
       "validFrom": "2026-09-15T17:00:00Z",
       "validUntil": "2026-09-16T18:00:00Z",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:e52571ac57f3ccd280489e5cb0523c6689349fa1bd178d0a62f81c7a40ca5a54",
       "evidenceRef": "evidence-grant-riley-prior-false-positive",
-      "grantDigest": "sha256:25c4af1629b097548c7f3cca946e0cfbc0e08332a6cfad54ebf2b265126843e2"
+      "grantDigest": "sha256:66ff0b712c14bb77608aecd8cfa662ae4cc7830fd1e61a9c5274894124ba170e"
     },
     {
       "id": "grant-riley-false-positive",
@@ -352,9 +352,9 @@
       "issuedAt": "2026-09-16T17:20:00Z",
       "validFrom": "2026-09-16T18:00:00Z",
       "validUntil": "2026-09-17T18:00:00Z",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
       "evidenceRef": "evidence-grant-riley-false-positive",
-      "grantDigest": "sha256:eaf96b26c38722783395660cb6beb97cb3ba39ad44dd3832384190057ed29f5c"
+      "grantDigest": "sha256:7e30715f189c2a684a89b8b5645c4319ceac749241623825665ca941be0aa0c1"
     },
     {
       "id": "grant-riley-duplicate",
@@ -368,9 +368,9 @@
       "issuedAt": "2026-09-16T17:21:00Z",
       "validFrom": "2026-09-16T18:00:00Z",
       "validUntil": "2026-09-17T18:00:00Z",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
       "evidenceRef": "evidence-grant-riley-duplicate",
-      "grantDigest": "sha256:995f061115fd40b88f0b495884346184366f79372ab41b0496ea4a01fc3d21ac"
+      "grantDigest": "sha256:36347ca254b9e02385695ade6ea6a3979c7ba6a981ecf886836a359d70613246"
     },
     {
       "id": "grant-morgan-declare-duplicate",
@@ -384,9 +384,9 @@
       "issuedAt": "2026-09-16T17:22:00Z",
       "validFrom": "2026-09-16T18:00:00Z",
       "validUntil": "2026-09-17T18:00:00Z",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
       "evidenceRef": "evidence-grant-morgan-declare-duplicate",
-      "grantDigest": "sha256:bb5dde7ca224cc8b3ff8498b53b452326936e449775cf954069bedc787b3ed10"
+      "grantDigest": "sha256:4808a8c281d0e86534a064c4b2e43cdd3f927feeae36de557ed99573918d5a4c"
     },
     {
       "id": "grant-sam-incident-review",
@@ -400,9 +400,9 @@
       "issuedAt": "2026-09-16T17:23:00Z",
       "validFrom": "2026-09-16T18:00:00Z",
       "validUntil": "2026-09-17T18:00:00Z",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
       "evidenceRef": "evidence-grant-sam-incident-review",
-      "grantDigest": "sha256:05912884cd55100ab37354e8eea3738a4d95be1a58daad8aa3342cd2812b9f4d"
+      "grantDigest": "sha256:97b52e28d38a4707abe4211f6cbe73e86089db98536c0cd9bff6e48e2e7512a0"
     }
   ],
   "evidence": [
@@ -442,13 +442,13 @@
       "id": "evidence-detector-policy",
       "kind": "detector-policy-revision",
       "authorRef": "principal-alert-owner-morgan",
-      "observedAt": "2026-09-15T16:00:00Z",
+      "observedAt": "2026-09-16T17:00:00Z",
       "controlledUri": "controlled://security-alert-review/policy/policy-2026-09-16-2.json",
       "contentDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
       "subjectRefs": [
-        "detector-policy-security-alerts"
+        "detector-policy-security-alerts-2026-09-16-2"
       ],
-      "subjectDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce"
+      "subjectDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37"
     },
     {
       "id": "evidence-grant-riley-prior-false-positive",
@@ -460,7 +460,7 @@
       "subjectRefs": [
         "grant-riley-prior-false-positive"
       ],
-      "subjectDigest": "sha256:25c4af1629b097548c7f3cca946e0cfbc0e08332a6cfad54ebf2b265126843e2"
+      "subjectDigest": "sha256:66ff0b712c14bb77608aecd8cfa662ae4cc7830fd1e61a9c5274894124ba170e"
     },
     {
       "id": "evidence-grant-riley-false-positive",
@@ -472,7 +472,7 @@
       "subjectRefs": [
         "grant-riley-false-positive"
       ],
-      "subjectDigest": "sha256:eaf96b26c38722783395660cb6beb97cb3ba39ad44dd3832384190057ed29f5c"
+      "subjectDigest": "sha256:7e30715f189c2a684a89b8b5645c4319ceac749241623825665ca941be0aa0c1"
     },
     {
       "id": "evidence-grant-riley-duplicate",
@@ -484,7 +484,7 @@
       "subjectRefs": [
         "grant-riley-duplicate"
       ],
-      "subjectDigest": "sha256:995f061115fd40b88f0b495884346184366f79372ab41b0496ea4a01fc3d21ac"
+      "subjectDigest": "sha256:36347ca254b9e02385695ade6ea6a3979c7ba6a981ecf886836a359d70613246"
     },
     {
       "id": "evidence-grant-morgan-declare-duplicate",
@@ -496,7 +496,7 @@
       "subjectRefs": [
         "grant-morgan-declare-duplicate"
       ],
-      "subjectDigest": "sha256:bb5dde7ca224cc8b3ff8498b53b452326936e449775cf954069bedc787b3ed10"
+      "subjectDigest": "sha256:4808a8c281d0e86534a064c4b2e43cdd3f927feeae36de557ed99573918d5a4c"
     },
     {
       "id": "evidence-grant-sam-incident-review",
@@ -508,7 +508,7 @@
       "subjectRefs": [
         "grant-sam-incident-review"
       ],
-      "subjectDigest": "sha256:05912884cd55100ab37354e8eea3738a4d95be1a58daad8aa3342cd2812b9f4d"
+      "subjectDigest": "sha256:97b52e28d38a4707abe4211f6cbe73e86089db98536c0cd9bff6e48e2e7512a0"
     },
     {
       "id": "evidence-duplicate-group",
@@ -532,7 +532,7 @@
       "subjectRefs": [
         "review-code-101"
       ],
-      "subjectDigest": "sha256:91fdc6e924790abca25b605ba07666b6b5e192673e55f7d964c3131c2824e239"
+      "subjectDigest": "sha256:e244f0114c8ae07903c084537c5169df43a78b0c6abc52704658b900bda16ea9"
     },
     {
       "id": "evidence-disposition-code-102",
@@ -544,7 +544,7 @@
       "subjectRefs": [
         "review-code-102"
       ],
-      "subjectDigest": "sha256:72c1042cee54a6eb96124c5f92bdb02d94cf0cf47dfdd47f78464186362232c1"
+      "subjectDigest": "sha256:20709b0a3d5f0f36712fd8051d0046f87681617ef41274f692e64c8af862b2c0"
     },
     {
       "id": "evidence-self-suppression-attempt",
@@ -568,7 +568,7 @@
       "subjectRefs": [
         "prior-decision-code-106"
       ],
-      "subjectDigest": "sha256:7f5e367178b63374b5aa8da5131a9dcdb1dbf4dca03a26c95a32bbb6d9555479"
+      "subjectDigest": "sha256:eb9ab4c6dc8bcb21a7f103aa63f81c39788b9a3eb1ae727e15d99db9a9c06e3f"
     },
     {
       "id": "evidence-disposition-code-107",
@@ -580,7 +580,7 @@
       "subjectRefs": [
         "review-code-107"
       ],
-      "subjectDigest": "sha256:869ade29cbf6b7f0885d0d7dce88b728ee3a4d4c2283954c76308570da07e390"
+      "subjectDigest": "sha256:a07f09e2c7f515651a40e5d3c1104197bad192879b659ff89810e5f9b82b247a"
     },
     {
       "id": "evidence-escalation-code-107",
@@ -593,6 +593,18 @@
         "incident-escalation-code-107"
       ],
       "subjectDigest": "sha256:a519583d3e37626f0792a213a27a8ad3aea47ab09421d2f9a10d791e5ea23cad"
+    },
+    {
+      "id": "evidence-detector-policy-2026-09-15-1",
+      "kind": "detector-policy-revision",
+      "authorRef": "principal-alert-owner-morgan",
+      "observedAt": "2026-09-15T16:00:00Z",
+      "controlledUri": "controlled://security-alert-review/policy/policy-2026-09-15-1.json",
+      "contentDigest": "sha256:4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a",
+      "subjectRefs": [
+        "detector-policy-security-alerts-2026-09-15-1"
+      ],
+      "subjectDigest": "sha256:e52571ac57f3ccd280489e5cb0523c6689349fa1bd178d0a62f81c7a40ca5a54"
     }
   ],
   "duplicateGroups": [
@@ -631,14 +643,14 @@
       "revision": "analysis-1",
       "detectorRef": "detector-codeql",
       "alertKey": "[\"github/code-scanning\",\"106\",\"analysis-1\"]",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:e52571ac57f3ccd280489e5cb0523c6689349fa1bd178d0a62f81c7a40ca5a54",
       "outcome": "false-positive",
       "decidedByRef": "principal-security-analyst-riley",
       "decidedAt": "2026-09-15T18:00:00Z",
       "grantRef": "grant-riley-prior-false-positive",
       "evidenceRef": "evidence-prior-decision-code-106",
       "invalidatedByAlertKey": "[\"github/code-scanning\",\"106\",\"analysis-2\"]",
-      "decisionDigest": "sha256:7f5e367178b63374b5aa8da5131a9dcdb1dbf4dca03a26c95a32bbb6d9555479"
+      "decisionDigest": "sha256:eb9ab4c6dc8bcb21a7f103aa63f81c39788b9a3eb1ae727e15d99db9a9c06e3f"
     }
   ],
   "reviewRecords": [
@@ -646,7 +658,7 @@
       "id": "review-code-101",
       "alertKey": "[\"github/code-scanning\",\"101\",\"analysis-3\"]",
       "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
       "kind": "human-disposition",
       "disposition": "false-positive",
       "nonDecision": null,
@@ -656,13 +668,13 @@
       "evidenceRef": "evidence-disposition-code-101",
       "duplicateGroupRef": null,
       "incidentEscalationRef": null,
-      "recordDigest": "sha256:91fdc6e924790abca25b605ba07666b6b5e192673e55f7d964c3131c2824e239"
+      "recordDigest": "sha256:e244f0114c8ae07903c084537c5169df43a78b0c6abc52704658b900bda16ea9"
     },
     {
       "id": "review-code-102",
       "alertKey": "[\"github/code-scanning\",\"102\",\"analysis-5\"]",
       "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
       "kind": "human-disposition",
       "disposition": "duplicate",
       "nonDecision": null,
@@ -672,13 +684,13 @@
       "evidenceRef": "evidence-disposition-code-102",
       "duplicateGroupRef": "duplicate-group-codeql-pair",
       "incidentEscalationRef": null,
-      "recordDigest": "sha256:72c1042cee54a6eb96124c5f92bdb02d94cf0cf47dfdd47f78464186362232c1"
+      "recordDigest": "sha256:20709b0a3d5f0f36712fd8051d0046f87681617ef41274f692e64c8af862b2c0"
     },
     {
       "id": "review-secret-77",
       "alertKey": "[\"github/secret-scanning\",\"77\",\"occurrence-1\"]",
       "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
       "kind": "non-decision",
       "disposition": null,
       "nonDecision": "source-muted-or-suppressed",
@@ -688,13 +700,13 @@
       "evidenceRef": null,
       "duplicateGroupRef": null,
       "incidentEscalationRef": null,
-      "recordDigest": "sha256:8ac948e2ed931bd71ce57460c6f96541276424bdbb2bbffef87771db4b7cdd26"
+      "recordDigest": "sha256:ea8a14c3de9a706d08d9dc54664f2b7b7a556fb2c13c72e9e524267e8b47de27"
     },
     {
       "id": "review-dependabot-55",
       "alertKey": "[\"github/dependabot\",\"55\",\"advisory-4\"]",
       "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
       "kind": "non-decision",
       "disposition": null,
       "nonDecision": "source-muted-or-suppressed",
@@ -704,13 +716,13 @@
       "evidenceRef": null,
       "duplicateGroupRef": null,
       "incidentEscalationRef": null,
-      "recordDigest": "sha256:ffa46f64a2d29f21523a3841e211c7748f1a38c333ceb061b6162e4494b307fa"
+      "recordDigest": "sha256:2cc4c9b1219ff6eabb77734298b89d0a50542d8b8228d26f1554609ca167d5d8"
     },
     {
       "id": "review-code-104",
       "alertKey": "[\"github/code-scanning\",\"104\",\"analysis-1\"]",
       "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
       "kind": "non-decision",
       "disposition": null,
       "nonDecision": "unknown-asset-identity",
@@ -720,13 +732,13 @@
       "evidenceRef": null,
       "duplicateGroupRef": null,
       "incidentEscalationRef": null,
-      "recordDigest": "sha256:cd8c852239a3ace08b7cdfa18167976586c1760f702eedda1d054bf14939a412"
+      "recordDigest": "sha256:4691dd9a51bee70b7c2f1edad7c0feb377d7ee67fa5d652d02c15ee433d00694"
     },
     {
       "id": "review-code-105",
       "alertKey": "[\"github/code-scanning\",\"105\",\"analysis-1\"]",
       "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
       "kind": "non-decision",
       "disposition": null,
       "nonDecision": "self-suppression-attempt",
@@ -736,13 +748,13 @@
       "evidenceRef": null,
       "duplicateGroupRef": null,
       "incidentEscalationRef": null,
-      "recordDigest": "sha256:b83f4288333489a27efc3ad1f0f7ff842a5fc6f56f27f693dc7a7fc22616bd72"
+      "recordDigest": "sha256:6cd90dda3dd4e0020217071960e865fb1b4a1afb83ee9c1a4751da1ac582be8b"
     },
     {
       "id": "review-code-106",
       "alertKey": "[\"github/code-scanning\",\"106\",\"analysis-2\"]",
       "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
       "kind": "non-decision",
       "disposition": null,
       "nonDecision": "revision-invalidated-prior-decision",
@@ -752,13 +764,13 @@
       "evidenceRef": null,
       "duplicateGroupRef": null,
       "incidentEscalationRef": null,
-      "recordDigest": "sha256:6e86d5af5aa4870f440434c52c2c064cba4ec4d7d380ca14b9f608fd066a89ea"
+      "recordDigest": "sha256:6db75883830f048d06a1e4a9d2c6a3385827024e91424a407da657ff48cbcf74"
     },
     {
       "id": "review-code-107",
       "alertKey": "[\"github/code-scanning\",\"107\",\"analysis-1\"]",
       "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
-      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "policyRevisionDigest": "sha256:917e2dcccebaaf87bd97d4d11850e84e286ab7ec0b58a9e53debc911dbfdbd37",
       "kind": "human-disposition",
       "disposition": "incident-review-escalation",
       "nonDecision": null,
@@ -768,7 +780,7 @@
       "evidenceRef": "evidence-disposition-code-107",
       "duplicateGroupRef": null,
       "incidentEscalationRef": "incident-escalation-code-107",
-      "recordDigest": "sha256:869ade29cbf6b7f0885d0d7dce88b728ee3a4d4c2283954c76308570da07e390"
+      "recordDigest": "sha256:a07f09e2c7f515651a40e5d3c1104197bad192879b659ff89810e5f9b82b247a"
     }
   ],
   "incidentEscalations": [
@@ -856,5 +868,114 @@
     "incidentEscalationRefs": [
       "incident-escalation-code-107"
     ]
+  },
+  "historicalDetectorPolicies": [
+    {
+      "id": "detector-policy-security-alerts-2026-09-15-1",
+      "revision": "policy-2026-09-15-1",
+      "effectiveAt": "2026-09-15T16:00:00Z",
+      "suppliedByRef": "principal-alert-owner-morgan",
+      "trustInputRefs": [
+        "trust-github-code-scanning",
+        "trust-github-secret-scanning",
+        "trust-github-dependabot"
+      ],
+      "trustInputDigests": [
+        "sha256:c1b5f31d5e580fecd0ce982088a58e7bed5ca23732a6eb182e300bcf1f4eb4e3",
+        "sha256:1cab07f6025e5e9488e23ab99c013eadb16c6b8b921e5c90e34b9f3d052509fb",
+        "sha256:ee98947147b352bd94fb7238cc8292b70cc0abf07a6b3c40cc620e3b51f5c14e"
+      ],
+      "detectorRules": [
+        {
+          "id": "detector-codeql",
+          "source": "github/code-scanning",
+          "category": "code-analysis",
+          "reviewRequired": true,
+          "allowedDispositionKinds": [
+            "false-positive",
+            "duplicate",
+            "incident-review-escalation"
+          ]
+        },
+        {
+          "id": "detector-secret-default",
+          "source": "github/secret-scanning",
+          "category": "secret-exposure",
+          "reviewRequired": true,
+          "allowedDispositionKinds": [
+            "false-positive",
+            "incident-review-escalation"
+          ]
+        },
+        {
+          "id": "detector-dependabot-npm",
+          "source": "github/dependabot",
+          "category": "vulnerability",
+          "reviewRequired": true,
+          "allowedDispositionKinds": [
+            "false-positive",
+            "incident-review-escalation"
+          ]
+        }
+      ],
+      "revisionDigest": "sha256:e52571ac57f3ccd280489e5cb0523c6689349fa1bd178d0a62f81c7a40ca5a54",
+      "evidenceRef": "evidence-detector-policy-2026-09-15-1"
+    }
+  ],
+  "sourceAuthority": {
+    "id": "source-authority-security-alerts",
+    "ownerRef": "principal-alert-owner-morgan",
+    "manifestVersion": "v1",
+    "issuedAt": "2026-09-16T19:05:00Z",
+    "snapshotRef": "snapshot-owner-alerts-2026-09-16",
+    "snapshotRevision": "export-42",
+    "snapshotCompletenessRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
+    "normalizedAlertKeys": [
+      "[\"github/code-scanning\",\"101\",\"analysis-3\"]",
+      "[\"github/code-scanning\",\"102\",\"analysis-5\"]",
+      "[\"github/code-scanning\",\"104\",\"analysis-1\"]",
+      "[\"github/code-scanning\",\"105\",\"analysis-1\"]",
+      "[\"github/code-scanning\",\"106\",\"analysis-2\"]",
+      "[\"github/code-scanning\",\"107\",\"analysis-1\"]",
+      "[\"github/dependabot\",\"55\",\"advisory-4\"]",
+      "[\"github/secret-scanning\",\"77\",\"occurrence-1\"]"
+    ],
+    "normalizedAlertUniverseDigest": "sha256:67ac941bbfa71d0b864b32b5127c5871d5211648964e05b07c507b45d8eb5469",
+    "records": [
+      {
+        "source": "github/code-scanning",
+        "sourceVersion": "export-42",
+        "sourceContentDigest": "sha256:b6fccf35cec1c0326d2889caa451f8bc4dea024990b1f40c6d3fe083725b09bf",
+        "normalizedAlertKeys": [
+          "[\"github/code-scanning\",\"101\",\"analysis-3\"]",
+          "[\"github/code-scanning\",\"102\",\"analysis-5\"]",
+          "[\"github/code-scanning\",\"104\",\"analysis-1\"]",
+          "[\"github/code-scanning\",\"105\",\"analysis-1\"]",
+          "[\"github/code-scanning\",\"106\",\"analysis-2\"]",
+          "[\"github/code-scanning\",\"107\",\"analysis-1\"]"
+        ],
+        "normalizedAlertDigest": "sha256:3700df24f81f9b670c12efd494fe58dfc160e0a9812e7b7f0d0373aa5d090a89"
+      },
+      {
+        "source": "github/dependabot",
+        "sourceVersion": "export-42",
+        "sourceContentDigest": "sha256:804eff0cbb63c37df8a49d6acb53fdfb84dae905c5cbd095684531510c73c868",
+        "normalizedAlertKeys": [
+          "[\"github/dependabot\",\"55\",\"advisory-4\"]"
+        ],
+        "normalizedAlertDigest": "sha256:d79c647474be24781bbf3465cdf9def5b9fde28476c35877ee0ff52bc93ace75"
+      },
+      {
+        "source": "github/secret-scanning",
+        "sourceVersion": "export-42",
+        "sourceContentDigest": "sha256:086a14a8330c350981b13e22c78ceb70f7b41cd4f452d89b165ae4d6beb50e4a",
+        "normalizedAlertKeys": [
+          "[\"github/secret-scanning\",\"77\",\"occurrence-1\"]"
+        ],
+        "normalizedAlertDigest": "sha256:e5e6ca04e501c10272bb138f516884b176a80b9f7a4c46b5660456106268d177"
+      }
+    ],
+    "signingKeyId": "security-alert-owner-key-1",
+    "signature": "gaFfbO7Ic85Li04pzPDx4eePl4kvrldOLhDRqJ44DucmR3Q5ayskFIqYj1vklQl/DV/eEmsEVQkq5Qt1gTN7AQ=="
   }
 }

@@ -35,13 +35,17 @@ mutation and remediation tracking.
 The missing capability is a private, source-neutral reconciliation record that:
 
 - preserves every owner-supplied alert, including non-vulnerability alerts;
+- authenticates the complete normalized alert universe against owner-signed
+  source identity, source version, byte digests, and snapshot root;
 - keys review strictly by `(source, nativeAlertId, revision)`;
 - requires exactly one current human disposition or one exact non-decision for
   every key;
 - binds every human action to a named person in an owner-controlled roster
-  pinned by a caller trust root, typed grant, current policy revision, snapshot
-  completeness root, time window, and caller-pinned controlled-evidence root;
-- carries public detector-contract inputs as context with no authority effect;
+  pinned by a caller trust root, typed grant, the policy revision effective when
+  the action occurred, snapshot completeness root, time window, and
+  caller-pinned controlled-evidence root;
+- carries independently supplied, safe-domain public detector-contract inputs
+  as context with no authority effect;
   and
 - invalidates rather than replays a prior decision when an alert revision
   changes.
@@ -80,8 +84,9 @@ only validates and renders supplied evidence.
 V1 has no SIEM query, correlation or severity inference, source suppression or
 closure, containment, incident declaration, ticket mutation, risk acceptance,
 or security claim. It does not discover alerts, assets, duplicates, grants,
-detector policy, or public trust material. Source-muted and source-suppressed
-states are input facts, never approvals.
+detector policy, or public trust material. It does not fetch source or public
+URLs. Source-muted and source-suppressed states are input facts, never
+approvals.
 
 ### Falsifiers
 
@@ -89,7 +94,8 @@ Reject this candidate if any inspected contract can consume the proof snapshot
 without translation and preserve all eight native keys, exact revision
 invalidation, typed human grants, public trust context, and the full no-authority
 boundary. Also reject it if owners cannot supply complete snapshots, stable
-native revisions, a detector-policy revision, or evidence-backed typed grants.
+native revisions, immutable detector-policy history, owner-signed source
+manifests and exact bytes, or evidence-backed typed grants.
 
 ## Audit
 
@@ -112,6 +118,7 @@ existing Claw remains authoritative for its existing job.
 | --- | --- | --- |
 | Vulnerability revision triples | Adapt | Exact revision-bound coverage and invalidation, generalized only to owner-native alert keys. |
 | Repository compliance snapshots | Adapt | Complete source index, content root, caller `asOf`, typed findings, and fail-closed identity checks. |
+| Benefits signed-source authority | Reuse | External owner trust, exact source bytes, a signed manifest, and the rule that fixture resealing cannot rewrite authority. |
 | Security Analyst authority checks | Reuse | Named humans and evidence chronology; no threat or severity assessment. |
 | Incident Response handoff | Reuse | `requested-owner-review` escalation with `incidentRef: null` and declaration effect `none`. |
 | Compliance Reviewer non-claims | Reuse | Explicitly impossible compliance, assurance, waiver, and risk implications. |
@@ -136,14 +143,15 @@ Findings were applied from four repository roles in distinct tension clusters:
 | Compliance (`.craft/roles/claws/compliance.md`, cluster C) | Evidence must say what was reviewed, when, under which policy revision, and with complete coverage; public material must not masquerade as authority. | Snapshot and policy digests, an out-of-band principal-roster digest, exact coverage, controlled evidence, caller time, and public trust records with `authorityEffect: context-only` are mandatory. No compliance claim exists. |
 | Claws repo steward (`.craft/roles/claws/claws-repo-steward.md`, cluster H) | An unaccepted candidate must not leak into public or generated registry surfaces. | Every file is isolated below `docs/admission-slices/`; a test asserts that the candidate id is absent from `catalog.json`. |
 | Lorant reviewer (`.craft/roles/claws/lorant-reviewer.md`, cluster L) | Security-sensitive keys, time, grants, and failure branches need exact negative proof rather than convention. | The validator recomputes canonical tuple keys and all record digests, requires caller-supplied time, sorts findings deterministically, and tests missing/duplicate coverage, stale replay, grant misuse, self-suppression, source suppression, trust loss, incident declaration, and authority overclaim. |
+| Independent implementation review | Source authenticity, immutable historical policy, URL safety, total parsing, and resource bounds were incomplete. | The candidate now verifies owner-signed source manifests and bytes, keeps prior decisions on historical policy digests, requires independently supplied approved-domain public trust, short-circuits schema-invalid/deep input, and caps bytes, strings, collections, and source work. |
 
 These reviews removed free-form decision rationale, automatic duplicate
 correlation, default time, and any incident/ticket side effect from V1.
 
 ## Slice
 
-The accepted fixture contains one complete eight-alert owner export and one
-detector-policy revision:
+The accepted fixture contains one complete eight-alert owner export, one current
+detector-policy revision, and one immutable historical policy revision:
 
 | Evidence state | Count |
 | --- | ---: |
@@ -166,10 +174,15 @@ Files:
 - `security-alert-review.schema.json`: strict candidate schema and explicit
   authority non-claims.
 - `validate.mjs`: total semantic validator, caller-pinned principal roster,
-  controlled-evidence root, digest helpers, deterministic findings, resealing
-  helper, and standalone proof CLI.
-- `accepted.json`: the complete owner snapshot, detector policy, trust inputs,
-  typed grants, decisions, non-decisions, and handoff.
+  controlled-evidence root, signed-source verification, bounded parsing, digest
+  helpers, deterministic findings, non-authoritative resealing helper, and
+  standalone proof CLI.
+- `accepted.json`: the complete owner snapshot, current and historical detector
+  policies, signed source manifest, typed grants, decisions, non-decisions, and
+  handoff.
+- `owner-trust.json`: independently supplied owner signing-key trust.
+- `source-bytes.json`: bounded bytes for each exact source identity and version.
+- `public-trust.json`: independently supplied public detector-contract records.
 - `adversarial-cases.json`: exact expected findings for the bounded failure
   matrix.
 - `validate.test.mjs`: schema, semantics, authority, totality, determinism, CLI,
@@ -183,6 +196,7 @@ Files:
 ```powershell
 node --test `
   scripts\security-alert-review-reconciler.test.mjs `
+  scripts\benefits-realization-manager.test.mjs `
   scripts\vulnerability-disposition-coordinator.test.mjs `
   scripts\threat-assessment-schema.test.mjs `
   scripts\incident-state-schema.test.mjs `
@@ -193,15 +207,19 @@ node docs\admission-slices\security-alert-review-reconciler\validate.mjs `
   docs\admission-slices\security-alert-review-reconciler\accepted.json `
   --as-of 2026-09-16T23:30:00Z `
   --principal-roster-digest sha256:5fb91701b972bf4d591c567f6f1f44ec8ac4565e83f8bffd74982e5a5069f8c5 `
-  --evidence-root sha256:8e7dd908422e89c50b07362349d5353f089db242e35edb6d4771b600304cbbe9
+  --evidence-root sha256:aae87ad73783965f1b07a7b80e557f48727d73cfd69aefb8dd9ac7a0b99d6b38 `
+  --owner-trust docs\admission-slices\security-alert-review-reconciler\owner-trust.json `
+  --source-bundle docs\admission-slices\security-alert-review-reconciler\source-bytes.json `
+  --public-trust docs\admission-slices\security-alert-review-reconciler\public-trust.json
 ```
 
-The focused candidate-and-analogue command passes **138 of 138 tests** across
-the candidate and the five nearest contract analogues. The discovered candidate
-suite contributes 17 top-level tests, including exact table-driven findings for
-all twenty-one structured failure cases. `npm run check` executes that suite
-through the bridge without publishing the candidate. The standalone validator
-returns exactly:
+The focused candidate-and-analogue command passes **184 of 184 tests** across
+the candidate, the five nearest contract analogues, and the Benefits
+signed-source precedent. The discovered candidate suite contributes 24
+top-level tests, including exact table-driven findings for all twenty-one
+structured failure cases and direct probes for the five independent-review
+blockers. `npm run check` executes that suite through the bridge without
+publishing the candidate. The standalone validator returns exactly:
 
 ```json
 {
@@ -219,8 +237,9 @@ Delete the parallel private alert-review spreadsheet or review deck that copies
 native alert ids, detector state, duplicate annotations, reviewers, and stale
 decisions. The deletion gate is an owner exporter that can supply the complete
 snapshot, detector-policy revision, public trust inputs, and typed grant
-evidence accepted by this validator, with both the principal-roster digest and
-controlled-evidence root supplied from outside the artifact. Keep detector
-systems, SIEM workflows, incident
-records, repository issues, remediation records, and risk decisions; they are
-owner systems, not workaround code.
+evidence accepted by this validator, with owner-signed source bytes, immutable
+policy history, independently supplied public trust, and both the
+principal-roster digest and controlled-evidence root supplied from outside the
+artifact. Keep detector systems, SIEM workflows, incident records, repository
+issues, remediation records, and risk decisions; they are owner systems, not
+workaround code.

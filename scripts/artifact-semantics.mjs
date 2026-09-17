@@ -80,7 +80,7 @@ function hasUnsafePublicHost(hostname) {
   return match !== null && Number(match[1]) >= 16 && Number(match[1]) <= 31;
 }
 
-function isCredentialFreePublicHttpsReference(reference) {
+export function isCredentialFreePublicHttpsReference(reference) {
   const unsafeQueryKeys =
     /^(?:access[_-]?token|api[_-]?key|auth|code|credential|key|password|secret|token)$/iu;
   const unsafeQuery =

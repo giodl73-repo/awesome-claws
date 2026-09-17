@@ -1,0 +1,37 @@
+{
+  "records": [
+    {
+      "id": "trust-github-code-scanning",
+      "kind": "public-detector-contract",
+      "publisher": "GitHub",
+      "source": "github/code-scanning",
+      "uri": "https://docs.github.com/en/rest/code-scanning/code-scanning",
+      "retrievedAt": "2026-09-15T15:00:00Z",
+      "contentDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "authorityEffect": "context-only",
+      "recordDigest": "sha256:c1b5f31d5e580fecd0ce982088a58e7bed5ca23732a6eb182e300bcf1f4eb4e3"
+    },
+    {
+      "id": "trust-github-secret-scanning",
+      "kind": "public-detector-contract",
+      "publisher": "GitHub",
+      "source": "github/secret-scanning",
+      "uri": "https://docs.github.com/en/rest/secret-scanning/secret-scanning",
+      "retrievedAt": "2026-09-15T15:00:00Z",
+      "contentDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "authorityEffect": "context-only",
+      "recordDigest": "sha256:1cab07f6025e5e9488e23ab99c013eadb16c6b8b921e5c90e34b9f3d052509fb"
+    },
+    {
+      "id": "trust-github-dependabot",
+      "kind": "public-detector-contract",
+      "publisher": "GitHub",
+      "source": "github/dependabot",
+      "uri": "https://docs.github.com/en/rest/dependabot/alerts",
+      "retrievedAt": "2026-09-15T15:00:00Z",
+      "contentDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "authorityEffect": "context-only",
+      "recordDigest": "sha256:ee98947147b352bd94fb7238cc8292b70cc0abf07a6b3c40cc620e3b51f5c14e"
+    }
+  ]
+}

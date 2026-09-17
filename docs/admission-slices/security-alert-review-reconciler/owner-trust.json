@@ -1,0 +1,9 @@
+{
+  "authorities": {
+    "principal-alert-owner-morgan": {
+      "security-alert-owner-key-1": {
+        "publicKeyDerBase64": "MCowBQYDK2VwAyEAwNeJycWygcJikqvm5Iesj1xcQEg6tE2EBpRfOq0hZXc="
+      }
+    }
+  }
+}

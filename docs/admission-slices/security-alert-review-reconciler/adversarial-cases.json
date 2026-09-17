@@ -8,8 +8,7 @@
   {
     "name": "duplicate-review-record",
     "expectedCodes": [
-      "duplicate_review_record",
-      "invalid_coverage"
+      "schema_unique_items"
     ]
   },
   {
@@ -36,19 +35,22 @@
     "name": "missing-public-trust",
     "expectedCodes": [
       "invalid_detector_rule",
+      "invalid_detector_rule",
+      "invalid_public_trust_bundle",
+      "invalid_public_trust_coverage",
       "invalid_public_trust_coverage"
     ]
   },
   {
     "name": "incident-declaration",
     "expectedCodes": [
-      "invalid_incident_escalation"
+      "schema_type"
     ]
   },
   {
     "name": "severity-inference",
     "expectedCodes": [
-      "invalid_authority_claim"
+      "schema_const"
     ]
   },
   {
@@ -114,6 +116,7 @@
   {
     "name": "late-public-trust",
     "expectedCodes": [
+      "invalid_public_trust_bundle",
       "invalid_public_trust_input"
     ]
   },

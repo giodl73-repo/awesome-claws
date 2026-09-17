@@ -1,11 +1,22 @@
-import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import {
+  createHash,
+  createPublicKey,
+  verify as verifySignature,
+} from "node:crypto";
+import { readFileSync } from "node:fs";
+import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import Ajv2020 from "ajv/dist/2020.js";
+import addFormats from "ajv-formats";
+
+import { isCredentialFreePublicHttpsReference } from "../../../scripts/artifact-semantics.mjs";
 
 const SCHEMA_VERSION = "awesomeClaws.securityAlertReviewCandidate.v1";
+const SOURCE_SCHEMA_VERSION = "awesomeClaws.securityAlertSource.v1";
 const DIGEST = /^sha256:[0-9a-f]{64}$/u;
 const CONTROLLED_URI = /^controlled:\/\/[^/?#]+\/[^?#]+$/u;
+const BASE64 = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/u;
 const ZONED_TIMESTAMP =
   /^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:\.[0-9]+)?(?:Z|[+-]([0-9]{2}):([0-9]{2}))$/u;
 const BARE_HUMAN_ROLE =
@@ -29,6 +40,28 @@ const AUTHORITY = Object.freeze({
   riskAcceptance: "not-claimed",
   securityClaim: "not-claimed",
 });
+const APPROVED_PUBLIC_TRUST_DOMAINS = Object.freeze({
+  "github/code-scanning": Object.freeze(["docs.github.com"]),
+  "github/secret-scanning": Object.freeze(["docs.github.com"]),
+  "github/dependabot": Object.freeze(["docs.github.com"]),
+});
+export const SECURITY_ALERT_REVIEW_LIMITS = Object.freeze({
+  maxInputBytes: 1024 * 1024,
+  maxAuxiliaryBytes: 2 * 1024 * 1024,
+  maxDepth: 32,
+  maxNodes: 8192,
+  maxArrayItems: 256,
+  maxObjectProperties: 128,
+  maxSourceRecords: 16,
+  maxSourceBytesPerRecord: 256 * 1024,
+  maxSourceBytesTotal: 1024 * 1024,
+});
+const schema = JSON.parse(
+  readFileSync(new URL("./security-alert-review.schema.json", import.meta.url), "utf8"),
+);
+const ajv = new Ajv2020({ allErrors: true, strict: true });
+addFormats(ajv);
+const validateInputSchema = ajv.compile(schema);
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -71,8 +104,40 @@ function digest(value) {
   return `sha256:${createHash("sha256").update(canonicalJson(value)).digest("hex")}`;
 }
 
+function byteDigest(value) {
+  return `sha256:${createHash("sha256").update(value).digest("hex")}`;
+}
+
 export function alertKey(alert) {
   return canonicalJson([alert?.source, alert?.nativeAlertId, alert?.revision]);
+}
+
+export function normalizedAlert(alert) {
+  return {
+    id: alert?.id,
+    source: alert?.source,
+    nativeAlertId: alert?.nativeAlertId,
+    revision: alert?.revision,
+    supersedesRevision: alert?.supersedesRevision,
+    detectorRef: alert?.detectorRef,
+    sourceState: alert?.sourceState,
+    sourceSeverity: alert?.sourceSeverity,
+    assetIdentityState: alert?.assetIdentityState,
+    assetRef: alert?.assetRef,
+    ownerRef: alert?.ownerRef,
+    observedAt: alert?.observedAt,
+    evidenceRef: alert?.evidenceRef,
+  };
+}
+
+function normalizedAlerts(alerts) {
+  return rows(alerts)
+    .map(normalizedAlert)
+    .sort((left, right) => compare(alertKey(left), alertKey(right)));
+}
+
+export function computeNormalizedAlertUniverseDigest(alerts) {
+  return digest(normalizedAlerts(alerts));
 }
 
 export function computeSnapshotRoot(snapshot) {
@@ -82,24 +147,26 @@ export function computeSnapshotRoot(snapshot) {
     capturedAt: snapshot?.capturedAt,
     suppliedByRef: snapshot?.suppliedByRef,
     complete: snapshot?.complete,
-    alerts: rows(snapshot?.alerts)
-      .map((alert) => ({
-        id: alert.id,
-        source: alert.source,
-        nativeAlertId: alert.nativeAlertId,
-        revision: alert.revision,
-        supersedesRevision: alert.supersedesRevision,
-        detectorRef: alert.detectorRef,
-        sourceState: alert.sourceState,
-        sourceSeverity: alert.sourceSeverity,
-        assetIdentityState: alert.assetIdentityState,
-        assetRef: alert.assetRef,
-        ownerRef: alert.ownerRef,
-        observedAt: alert.observedAt,
-        evidenceRef: alert.evidenceRef,
-      }))
-      .sort((left, right) => compare(alertKey(left), alertKey(right))),
+    alerts: normalizedAlerts(snapshot?.alerts),
   });
+}
+
+export function sourceAuthoritySigningPayload(value) {
+  const { signature: _signature, ...authority } = value?.sourceAuthority ?? {};
+  return canonicalJson(authority);
+}
+
+function decodeCanonicalBase64(value) {
+  if (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    value.length % 4 !== 0 ||
+    !BASE64.test(value)
+  ) {
+    return null;
+  }
+  const decoded = Buffer.from(value, "base64");
+  return decoded.toString("base64") === value ? decoded : null;
 }
 
 export function computePolicyDigest(policy) {
@@ -387,6 +454,235 @@ function evidenceSupports(
   );
 }
 
+function approvedPublicTrustReference(record) {
+  try {
+    const reference = new URL(record.uri);
+    const hostname = reference.hostname.toLowerCase();
+    const approvedDomains = APPROVED_PUBLIC_TRUST_DOMAINS[record.source] ?? [];
+    return (
+      isCredentialFreePublicHttpsReference(reference) &&
+      approvedDomains.some(
+        (domain) =>
+          hostname === domain || hostname.endsWith(`.${domain}`),
+      )
+    );
+  } catch {
+    return false;
+  }
+}
+
+function sourceTrustEntry(options, ownerRef, signingKeyId) {
+  const entry =
+    options?.ownerTrust?.authorities?.[ownerRef]?.[signingKeyId];
+  return typeof entry?.publicKeyDerBase64 === "string" &&
+    entry.publicKeyDerBase64.length <= 4096
+    ? entry
+    : null;
+}
+
+function sourceAuthorityFindings(
+  value,
+  options,
+  principals,
+  asOf,
+  snapshotRoot,
+) {
+  const findings = [];
+  const add = (code, path, refs = []) =>
+    findings.push(finding(code, path, refs));
+  const authority = value.sourceAuthority;
+  const owner = principals.get(authority.ownerRef);
+  const trusted = sourceTrustEntry(
+    options,
+    authority.ownerRef,
+    authority.signingKeyId,
+  );
+  if (!trusted) add("missing_owner_trust", "sourceAuthority");
+  let signatureValid = false;
+  if (trusted) {
+    try {
+      signatureValid = verifySignature(
+        null,
+        Buffer.from(sourceAuthoritySigningPayload(value)),
+        createPublicKey({
+          key: Buffer.from(trusted.publicKeyDerBase64, "base64"),
+          format: "der",
+          type: "spki",
+        }),
+        Buffer.from(authority.signature, "base64"),
+      );
+    } catch {
+      add("invalid_owner_trust_key", "sourceAuthority.signingKeyId");
+    }
+  }
+  const alerts = normalizedAlerts(value.snapshot.alerts);
+  const alertKeys = alerts.map(alertKey);
+  if (
+    !isNamedHuman(owner) ||
+    !values(owner?.scopes).includes("own-alert-snapshot") ||
+    alerts.some((alert) => alert.ownerRef !== authority.ownerRef) ||
+    authority.snapshotRef !== value.snapshot.id ||
+    authority.snapshotRevision !== value.snapshot.revision ||
+    authority.snapshotCompletenessRoot !== snapshotRoot ||
+    !sameSet(authority.normalizedAlertKeys, alertKeys) ||
+    authority.normalizedAlertUniverseDigest !==
+      computeNormalizedAlertUniverseDigest(alerts) ||
+    timestamp(authority.issuedAt) < timestamp(value.snapshot.capturedAt) ||
+    timestamp(authority.issuedAt) > asOf ||
+    !signatureValid
+  ) {
+    add("invalid_source_authority", "sourceAuthority");
+  }
+
+  const expectedBySource = new Map();
+  for (const alert of alerts) {
+    const existing = expectedBySource.get(alert.source) ?? [];
+    existing.push(alert);
+    expectedBySource.set(alert.source, existing);
+  }
+  const manifestRecords = new Map();
+  for (const record of rows(authority.records)) {
+    if (manifestRecords.has(record.source)) {
+      add("duplicate_source_manifest_record", "sourceAuthority.records", [
+        record.source,
+      ]);
+    }
+    manifestRecords.set(record.source, record);
+    const expectedAlerts = expectedBySource.get(record.source) ?? [];
+    if (
+      expectedAlerts.length === 0 ||
+      !sameSet(record.normalizedAlertKeys, expectedAlerts.map(alertKey)) ||
+      record.normalizedAlertDigest !==
+        computeNormalizedAlertUniverseDigest(expectedAlerts)
+    ) {
+      add("invalid_source_manifest_record", "sourceAuthority.records", [
+        record.source,
+      ]);
+    }
+  }
+  if (!sameSet([...manifestRecords.keys()], [...expectedBySource.keys()])) {
+    add("invalid_source_manifest_coverage", "sourceAuthority.records");
+  }
+
+  const sourceInput = options?.sourceBundle?.sources;
+  if (!Array.isArray(sourceInput)) {
+    return [
+      ...findings,
+      finding("invalid_source_bundle", "sourceBundle.sources"),
+    ];
+  }
+  if (sourceInput.length > SECURITY_ALERT_REVIEW_LIMITS.maxSourceRecords) {
+    return [
+      ...findings,
+      finding("source_record_limit_exceeded", "sourceBundle.sources"),
+    ];
+  }
+  if (sourceInput.some((record) => !isRecord(record))) {
+    return [
+      ...findings,
+      finding("invalid_source_record", "sourceBundle.sources"),
+    ];
+  }
+  const sourceRows = sourceInput;
+  const sourceBundles = new Map();
+  let totalSourceBytes = 0;
+  for (const [index, source] of sourceRows.entries()) {
+    const key = `${source.source}\0${source.sourceVersion}`;
+    if (sourceBundles.has(key)) {
+      add("duplicate_source_record", `sourceBundle.sources.${index}`, [key]);
+      continue;
+    }
+    const maximumBase64Length =
+      Math.ceil(SECURITY_ALERT_REVIEW_LIMITS.maxSourceBytesPerRecord / 3) *
+        4 +
+      4;
+    if (
+      typeof source.source !== "string" ||
+      source.source.length > 512 ||
+      typeof source.sourceVersion !== "string" ||
+      source.sourceVersion.length > 512 ||
+      typeof source.bytesBase64 !== "string" ||
+      source.bytesBase64.length > maximumBase64Length
+    ) {
+      add("invalid_source_record", `sourceBundle.sources.${index}`);
+      continue;
+    }
+    const sourceBytes = decodeCanonicalBase64(source.bytesBase64);
+    if (
+      sourceBytes === null ||
+      sourceBytes.length >
+        SECURITY_ALERT_REVIEW_LIMITS.maxSourceBytesPerRecord
+    ) {
+      add("invalid_source_bytes", `sourceBundle.sources.${index}.bytesBase64`);
+      continue;
+    }
+    totalSourceBytes += sourceBytes.length;
+    sourceBundles.set(key, { source, sourceBytes });
+  }
+  if (totalSourceBytes > SECURITY_ALERT_REVIEW_LIMITS.maxSourceBytesTotal) {
+    add("source_total_too_large", "sourceBundle.sources");
+    return findings;
+  }
+
+  const usedSourceKeys = new Set();
+  for (const [sourceName, manifest] of manifestRecords) {
+    const sourceKey = `${sourceName}\0${manifest.sourceVersion}`;
+    const supplied = sourceBundles.get(sourceKey);
+    usedSourceKeys.add(sourceKey);
+    if (!supplied) {
+      add("missing_source_bytes", "sourceBundle.sources", [sourceKey]);
+      continue;
+    }
+    if (byteDigest(supplied.sourceBytes) !== manifest.sourceContentDigest) {
+      add("source_content_digest_mismatch", "sourceAuthority.records", [
+        sourceName,
+      ]);
+      continue;
+    }
+    let parsed;
+    try {
+      parsed = JSON.parse(supplied.sourceBytes.toString("utf8"));
+    } catch {
+      add("invalid_source_content", "sourceBundle.sources", [sourceKey]);
+      continue;
+    }
+    const sourceGuard = inputGuardFindings(parsed, {
+      inputByteLength: supplied.sourceBytes.length,
+    });
+    const expectedAlerts = expectedBySource.get(sourceName) ?? [];
+    const parsedAlerts = Array.isArray(parsed?.alerts) ? parsed.alerts : [];
+    const exactShape =
+      isRecord(parsed) &&
+      Object.keys(parsed).sort(compare).join("\0") ===
+        ["alerts", "schemaVersion", "source", "sourceVersion"].join("\0");
+    const exactAlertShape =
+      parsedAlerts.length === expectedAlerts.length &&
+      parsedAlerts.every(
+        (alert) =>
+          isRecord(alert) &&
+          canonicalJson(alert) === canonicalJson(normalizedAlert(alert)),
+      );
+    if (
+      sourceGuard.length > 0 ||
+      !exactShape ||
+      !exactAlertShape ||
+      parsed.schemaVersion !== SOURCE_SCHEMA_VERSION ||
+      parsed.source !== sourceName ||
+      parsed.sourceVersion !== manifest.sourceVersion ||
+      canonicalJson(normalizedAlerts(parsed.alerts)) !==
+        canonicalJson(expectedAlerts)
+    ) {
+      add("invalid_source_content", "sourceBundle.sources", [sourceKey]);
+    }
+  }
+  for (const key of sourceBundles.keys()) {
+    if (!usedSourceKeys.has(key)) {
+      add("unreferenced_source_record", "sourceBundle.sources", [key]);
+    }
+  }
+  return findings.sort(findingOrder);
+}
+
 function finding(code, path, refs = []) {
   return { code, path, refs: sorted(refs) };
 }
@@ -399,7 +695,104 @@ function findingOrder(left, right) {
   );
 }
 
+function normalizedSchemaPath(error) {
+  if (error.keyword === "required") {
+    return `${error.instancePath}/${error.params.missingProperty}` || "$";
+  }
+  if (error.keyword === "additionalProperties") {
+    return `${error.instancePath}/${error.params.additionalProperty}` || "$";
+  }
+  return error.instancePath || "$";
+}
+
+function schemaCode(keyword) {
+  return `schema_${keyword.replace(/[A-Z]/gu, (letter) => `_${letter.toLowerCase()}`)}`;
+}
+
+function inputGuardFindings(value, options) {
+  const maximumBytes =
+    options.maximumBytes ?? SECURITY_ALERT_REVIEW_LIMITS.maxInputBytes;
+  if (
+    Number.isSafeInteger(options.inputByteLength) &&
+    options.inputByteLength > maximumBytes
+  ) {
+    return [finding("input_too_large", "$")];
+  }
+  const stack = [{ node: value, depth: 0 }];
+  const seen = new WeakSet();
+  let nodes = 0;
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+    if (node === null || typeof node !== "object") continue;
+    if (seen.has(node)) return [finding("input_not_json_compatible", "$")];
+    seen.add(node);
+    nodes += 1;
+    if (depth > SECURITY_ALERT_REVIEW_LIMITS.maxDepth) {
+      return [finding("input_too_deep", "$")];
+    }
+    if (nodes > SECURITY_ALERT_REVIEW_LIMITS.maxNodes) {
+      return [finding("input_too_complex", "$")];
+    }
+    const children = Array.isArray(node) ? node : Object.values(node);
+    const limit = Array.isArray(node)
+      ? SECURITY_ALERT_REVIEW_LIMITS.maxArrayItems
+      : SECURITY_ALERT_REVIEW_LIMITS.maxObjectProperties;
+    if (children.length > limit) {
+      return [finding("input_too_complex", "$")];
+    }
+    for (const child of children) stack.push({ node: child, depth: depth + 1 });
+  }
+  if (!Number.isSafeInteger(options.inputByteLength)) {
+    try {
+      if (
+        Buffer.byteLength(JSON.stringify(value)) > maximumBytes
+      ) {
+        return [finding("input_too_large", "$")];
+      }
+    } catch {
+      return [finding("input_not_json_compatible", "$")];
+    }
+  }
+  return [];
+}
+
+export function securityAlertReviewSchemaFindings(value) {
+  if (validateInputSchema(value)) return [];
+  return (validateInputSchema.errors ?? [])
+    .map((error) =>
+      finding(schemaCode(error.keyword), normalizedSchemaPath(error), [
+        error.keyword,
+      ]),
+    )
+    .sort(findingOrder);
+}
+
 export function securityAlertReviewFindings(value, options = {}) {
+  try {
+    const guardFindings = inputGuardFindings(value, options);
+    if (guardFindings.length > 0) return guardFindings;
+    for (const [name, auxiliary] of [
+      ["ownerTrust", options.ownerTrust],
+      ["sourceBundle", options.sourceBundle],
+      ["publicTrustBundle", options.publicTrustBundle],
+    ]) {
+      if (auxiliary === undefined) continue;
+      const auxiliaryGuard = inputGuardFindings(auxiliary, {
+        maximumBytes: SECURITY_ALERT_REVIEW_LIMITS.maxAuxiliaryBytes,
+      });
+      if (auxiliaryGuard.length > 0) {
+        return [finding("invalid_auxiliary_input", name)];
+      }
+    }
+    const schemaFindings = securityAlertReviewSchemaFindings(value);
+    if (schemaFindings.length > 0) return schemaFindings;
+    return securityAlertReviewSemanticFindings(value, options);
+  } catch {
+    return [finding("validation_error", "$")];
+  }
+}
+
+function securityAlertReviewSemanticFindings(value, options = {}) {
   if (!isRecord(value)) {
     return [finding("invalid_artifact", "$")];
   }
@@ -436,11 +829,24 @@ export function securityAlertReviewFindings(value, options = {}) {
   if (!uniqueIds(value.detectorPolicy?.detectorRules)) {
     add("invalid_identity_set", "detectorPolicy.detectorRules");
   }
+  if (!uniqueIds(value.historicalDetectorPolicies)) {
+    add("invalid_identity_set", "historicalDetectorPolicies");
+  }
+  for (const policy of value.historicalDetectorPolicies) {
+    if (!uniqueIds(policy.detectorRules)) {
+      add(
+        "invalid_identity_set",
+        `historicalDetectorPolicies.${policy.id}.detectorRules`,
+      );
+    }
+  }
   const identityCounts = new Map();
   for (const id of [
     value.artifactId,
     value.snapshot?.id,
+    value.sourceAuthority?.id,
     value.detectorPolicy?.id,
+    ...value.historicalDetectorPolicies.map((policy) => policy.id),
     value.principalRoster?.id,
     ...collectionNames.flatMap((name) => rows(value[name]).map((row) => row.id)),
     ...rows(value.snapshot?.alerts).map((row) => row.id),
@@ -465,6 +871,7 @@ export function securityAlertReviewFindings(value, options = {}) {
   const priorDecisions = byId(value.priorDecisions);
   const reviewRecords = byId(value.reviewRecords);
   const escalations = byId(value.incidentEscalations);
+  const policies = [...value.historicalDetectorPolicies, value.detectorPolicy];
 
   for (const principal of principals.values()) {
     const identityShape =
@@ -532,6 +939,11 @@ export function securityAlertReviewFindings(value, options = {}) {
     timestamp(value.principalRoster.capturedAt) === null ||
     timestamp(value.principalRoster.capturedAt) >
       timestamp(value.detectorPolicy?.effectiveAt) ||
+    policies.some(
+      (policy) =>
+        timestamp(value.principalRoster.capturedAt) >
+        timestamp(policy.effectiveAt),
+    ) ||
     timestamp(value.principalRoster.capturedAt) >
       timestamp(value.snapshot?.capturedAt) ||
     [...alerts.values()].some(
@@ -550,73 +962,136 @@ export function securityAlertReviewFindings(value, options = {}) {
     add("invalid_principal_roster_trust", "principalRoster");
   }
 
-  const policyDigest = computePolicyDigest(value.detectorPolicy);
-  const policySupplier = principals.get(value.detectorPolicy?.suppliedByRef);
-  const policyEvidence = evidence.get(value.detectorPolicy?.evidenceRef);
-  if (
-    !isRecord(value.detectorPolicy) ||
-    value.detectorPolicy.revisionDigest !== policyDigest ||
-    !isNamedHuman(policySupplier) ||
-    !values(policySupplier?.scopes).includes("supply-detector-policy") ||
-    timestamp(value.detectorPolicy.effectiveAt) === null ||
-    asOf === null ||
-    timestamp(value.detectorPolicy.effectiveAt) > asOf ||
-    !evidenceSupports(policyEvidence, {
-      kind: "detector-policy-revision",
-      authorRef: value.detectorPolicy.suppliedByRef,
-      observedAt: value.detectorPolicy.effectiveAt,
-      subjectRef: value.detectorPolicy.id,
-      subjectDigest: policyDigest,
-    })
-  ) {
-    add("invalid_detector_policy", "detectorPolicy");
+  const policyByDigest = new Map();
+  for (const policy of policies) {
+    const policyDigest = computePolicyDigest(policy);
+    const supplier = principals.get(policy.suppliedByRef);
+    const policyEvidence = evidence.get(policy.evidenceRef);
+    const valid =
+      policy.revisionDigest === policyDigest &&
+      !policyByDigest.has(policyDigest) &&
+      isNamedHuman(supplier) &&
+      values(supplier?.scopes).includes("supply-detector-policy") &&
+      timestamp(policy.effectiveAt) !== null &&
+      timestamp(policy.effectiveAt) <= asOf &&
+      evidenceSupports(policyEvidence, {
+        kind: "detector-policy-revision",
+        authorRef: policy.suppliedByRef,
+        observedAt: policy.effectiveAt,
+        subjectRef: policy.id,
+        subjectDigest: policyDigest,
+      });
+    if (!valid) {
+      add(
+        policy === value.detectorPolicy
+          ? "invalid_detector_policy"
+          : "invalid_historical_detector_policy",
+        policy === value.detectorPolicy
+          ? "detectorPolicy"
+          : `historicalDetectorPolicies.${policy.id}`,
+        [policy.id],
+      );
+    }
+    policyByDigest.set(policy.revisionDigest, policy);
   }
-
-  const trustSources = new Map();
-  const policySources = new Set(
-    [...detectorRules.values()].map((rule) => rule.source),
-  );
+  const policyAt = (instant) => {
+    const at = timestamp(instant);
+    if (at === null) return null;
+    const applicable = policies
+      .map((policy) => ({ policy, effectiveAt: timestamp(policy.effectiveAt) }))
+      .filter((item) => item.effectiveAt !== null && item.effectiveAt <= at);
+    if (applicable.length === 0) return null;
+    const latestTime = Math.max(...applicable.map((item) => item.effectiveAt));
+    const latest = applicable.filter((item) => item.effectiveAt === latestTime);
+    return latest.length === 1 ? latest[0].policy : null;
+  };
+  if (
+    policyAt(value.asOf) !== value.detectorPolicy ||
+    new Set(policies.map((policy) => policy.revision)).size !==
+      policies.length ||
+    new Set(policies.map((policy) => policy.effectiveAt)).size !==
+      policies.length ||
+    value.historicalDetectorPolicies.some(
+      (policy) =>
+        timestamp(policy.effectiveAt) >=
+        timestamp(value.detectorPolicy.effectiveAt),
+    )
+  ) {
+    add("invalid_policy_history", "historicalDetectorPolicies");
+  }
+  const policyDigest = value.detectorPolicy.revisionDigest;
+  const suppliedTrustRows = options?.publicTrustBundle?.records;
+  const suppliedTrustShapeValid =
+    Array.isArray(suppliedTrustRows) &&
+    suppliedTrustRows.length <= 16 &&
+    uniqueIds(suppliedTrustRows) &&
+    suppliedTrustRows.length === trustInputs.size;
+  const suppliedTrust =
+    suppliedTrustShapeValid
+      ? byId(suppliedTrustRows)
+      : new Map();
+  if (
+    !suppliedTrustShapeValid ||
+    suppliedTrust.size !== trustInputs.size ||
+    [...trustInputs.values()].some(
+      (record) =>
+        canonicalJson(suppliedTrust.get(record.id)) !== canonicalJson(record),
+    )
+  ) {
+    add("invalid_public_trust_bundle", "publicTrustInputs");
+  }
   for (const trust of trustInputs.values()) {
+    const referencingPolicies = policies.filter((policy) =>
+      values(policy.trustInputRefs).includes(trust.id),
+    );
     const valid =
       trust.kind === "public-detector-contract" &&
-      typeof trust.uri === "string" &&
-      trust.uri.startsWith("https://") &&
+      approvedPublicTrustReference(trust) &&
       timestamp(trust.retrievedAt) !== null &&
       asOf !== null &&
       timestamp(trust.retrievedAt) <= asOf &&
-      timestamp(trust.retrievedAt) <=
-        timestamp(value.detectorPolicy?.effectiveAt) &&
-      policySources.has(trust.source) &&
+      referencingPolicies.length > 0 &&
+      referencingPolicies.every(
+        (policy) =>
+          timestamp(trust.retrievedAt) <= timestamp(policy.effectiveAt) &&
+          rows(policy.detectorRules).some(
+            (rule) => rule.source === trust.source,
+          ),
+      ) &&
       DIGEST.test(trust.contentDigest ?? "") &&
       trust.authorityEffect === "context-only" &&
       trust.recordDigest === computePublicTrustDigest(trust);
     if (!valid) {
       add("invalid_public_trust_input", `publicTrustInputs.${trust.id}`, [trust.id]);
     }
-    const existing = trustSources.get(trust.source) ?? [];
-    existing.push(trust.id);
-    trustSources.set(trust.source, existing);
   }
-  const policyTrustRefs = values(value.detectorPolicy?.trustInputRefs);
-  if (!sameSet(policyTrustRefs, [...trustInputs.keys()])) {
-    add("invalid_public_trust_coverage", "detectorPolicy.trustInputRefs");
-  }
-  if (
-    !sameSet(
-      value.detectorPolicy?.trustInputDigests,
-      [...trustInputs.values()].map((record) => record.recordDigest),
-    )
-  ) {
-    add("invalid_public_trust_coverage", "detectorPolicy.trustInputDigests");
-  }
-  for (const rule of detectorRules.values()) {
+  for (const policy of policies) {
+    const policyTrust = values(policy.trustInputRefs)
+      .map((ref) => trustInputs.get(ref))
+      .filter(Boolean);
     if (
-      rule.reviewRequired !== true ||
-      !Array.isArray(rule.allowedDispositionKinds) ||
-      rule.allowedDispositionKinds.length === 0 ||
-      (trustSources.get(rule.source)?.length ?? 0) !== 1
+      policyTrust.length !== values(policy.trustInputRefs).length ||
+      !sameSet(
+        policy.trustInputDigests,
+        policyTrust.map((record) => record.recordDigest),
+      )
     ) {
-      add("invalid_detector_rule", `detectorPolicy.detectorRules.${rule.id}`, [rule.id]);
+      add("invalid_public_trust_coverage", `${policy.id}.trustInputs`, [
+        policy.id,
+      ]);
+    }
+    for (const rule of rows(policy.detectorRules)) {
+      if (
+        rule.reviewRequired !== true ||
+        !Array.isArray(rule.allowedDispositionKinds) ||
+        rule.allowedDispositionKinds.length === 0 ||
+        policyTrust.filter((record) => record.source === rule.source).length !==
+          1
+      ) {
+        add("invalid_detector_rule", `${policy.id}.detectorRules.${rule.id}`, [
+          rule.id,
+        ]);
+      }
     }
   }
 
@@ -689,14 +1164,27 @@ export function securityAlertReviewFindings(value, options = {}) {
       add("unused_detector_rule", "detectorPolicy.detectorRules", [detectorRef]);
     }
   }
+  findings.push(
+    ...sourceAuthorityFindings(
+      value,
+      options,
+      principals,
+      asOf,
+      snapshotRoot,
+    ),
+  );
 
   for (const grant of grants.values()) {
     const issuer = principals.get(grant.issuedByRef);
     const grantee = principals.get(grant.granteeRef);
     const grantEvidence = evidence.get(grant.evidenceRef);
+    const grantPolicy = policyByDigest.get(grant.policyRevisionDigest);
+    const grantRules = byId(grantPolicy?.detectorRules);
     const detectorScopeValid =
       values(grant.detectorRefs).length > 0 &&
-      values(grant.detectorRefs).every((ref) => detectorRules.get(ref)?.source === grant.source);
+      values(grant.detectorRefs).every(
+        (ref) => grantRules.get(ref)?.source === grant.source,
+      );
     const granteeScopeValid =
       grant.type === "declare-duplicate-group"
         ? values(grantee?.scopes).includes("own-alert-snapshot")
@@ -708,13 +1196,13 @@ export function securityAlertReviewFindings(value, options = {}) {
       !values(issuer.scopes).includes("issue-alert-review-grant") ||
       !granteeScopeValid ||
       !detectorScopeValid ||
+      grantPolicy !== policyAt(grant.issuedAt) ||
       timestamp(grant.issuedAt) === null ||
       timestamp(grant.validFrom) === null ||
       timestamp(grant.validUntil) === null ||
-      timestamp(grant.issuedAt) < timestamp(value.detectorPolicy?.effectiveAt) ||
+      timestamp(grant.issuedAt) < timestamp(grantPolicy?.effectiveAt) ||
       timestamp(grant.issuedAt) > timestamp(grant.validFrom) ||
       timestamp(grant.validFrom) >= timestamp(grant.validUntil) ||
-      grant.policyRevisionDigest !== policyDigest ||
       grant.grantDigest !== computeGrantDigest(grant) ||
       !evidenceSupports(grantEvidence, {
         kind: "authority-grant",
@@ -809,7 +1297,8 @@ export function securityAlertReviewFindings(value, options = {}) {
     const current = alertsByKey.get(prior.invalidatedByAlertKey);
     const priorEvidence = evidence.get(prior.evidenceRef);
     const priorGrant = grants.get(prior.grantRef);
-    const priorRule = detectorRules.get(prior.detectorRef);
+    const priorPolicy = policyByDigest.get(prior.policyRevisionDigest);
+    const priorRule = byId(priorPolicy?.detectorRules).get(prior.detectorRef);
     const existing = priorByInvalidatingKey.get(prior.invalidatedByAlertKey) ?? [];
     existing.push(prior);
     priorByInvalidatingKey.set(prior.invalidatedByAlertKey, existing);
@@ -821,7 +1310,7 @@ export function securityAlertReviewFindings(value, options = {}) {
       current.nativeAlertId !== prior.nativeAlertId ||
       current.supersedesRevision !== prior.revision ||
       current.detectorRef !== prior.detectorRef ||
-      prior.policyRevisionDigest !== policyDigest ||
+      priorPolicy !== policyAt(prior.decidedAt) ||
       !values(priorRule?.allowedDispositionKinds).includes(prior.outcome) ||
       !isNamedHuman(principals.get(prior.decidedByRef)) ||
       sameHuman(
@@ -834,7 +1323,7 @@ export function securityAlertReviewFindings(value, options = {}) {
         prior.decidedByRef,
         DISPOSITION_GRANT[prior.outcome],
         prior,
-        policyDigest,
+        prior.policyRevisionDigest,
         prior.decidedAt,
       ) ||
       timestamp(prior.decidedAt) === null ||
@@ -1055,6 +1544,7 @@ export function securityAlertReviewFindings(value, options = {}) {
     [
       value.snapshot?.evidenceRef,
       value.detectorPolicy?.evidenceRef,
+      ...value.historicalDetectorPolicies.map((policy) => policy.evidenceRef),
       value.principalRoster?.evidenceRef,
       ...[...alerts.values()].map((row) => row.evidenceRef),
       ...[...grants.values()].map((row) => row.evidenceRef),
@@ -1141,9 +1631,6 @@ function currentRevisionWasInvalidated(alert, priors) {
 
 export function resealSecurityAlertReview(value) {
   const output = structuredClone(value);
-  for (const trust of rows(output.publicTrustInputs)) {
-    trust.recordDigest = computePublicTrustDigest(trust);
-  }
   output.principalRoster.principalRefs = rows(output.principals).map(
     (principal) => principal.id,
   );
@@ -1151,15 +1638,10 @@ export function resealSecurityAlertReview(value) {
     output.principalRoster,
     output.principals,
   );
-  output.detectorPolicy.trustInputDigests = rows(output.publicTrustInputs).map(
-    (record) => record.recordDigest,
-  );
-  output.detectorPolicy.revisionDigest = computePolicyDigest(output.detectorPolicy);
   output.snapshot.alertRefs = rows(output.snapshot.alerts).map((alert) => alert.id);
   output.snapshot.completenessRoot = computeSnapshotRoot(output.snapshot);
 
   for (const grant of rows(output.grants)) {
-    grant.policyRevisionDigest = output.detectorPolicy.revisionDigest;
     grant.grantDigest = computeGrantDigest(grant);
   }
   for (const group of rows(output.duplicateGroups)) {
@@ -1170,7 +1652,6 @@ export function resealSecurityAlertReview(value) {
   }
   for (const prior of rows(output.priorDecisions)) {
     prior.alertKey = alertKey(prior);
-    prior.policyRevisionDigest = output.detectorPolicy.revisionDigest;
     prior.decisionDigest = computePriorDecisionDigest(prior);
   }
   for (const escalation of rows(output.incidentEscalations)) {
@@ -1178,13 +1659,15 @@ export function resealSecurityAlertReview(value) {
   }
   for (const record of rows(output.reviewRecords)) {
     record.snapshotRoot = output.snapshot.completenessRoot;
-    record.policyRevisionDigest = output.detectorPolicy.revisionDigest;
     record.recordDigest = computeReviewRecordDigest(record);
   }
 
   const subjects = new Map();
   subjects.set(output.snapshot.id, output.snapshot.completenessRoot);
   subjects.set(output.detectorPolicy.id, output.detectorPolicy.revisionDigest);
+  for (const policy of rows(output.historicalDetectorPolicies)) {
+    subjects.set(policy.id, policy.revisionDigest);
+  }
   subjects.set(output.principalRoster.id, output.principalRoster.digest);
   for (const grant of rows(output.grants)) subjects.set(grant.id, grant.grantDigest);
   for (const group of rows(output.duplicateGroups)) subjects.set(group.id, group.groupDigest);
@@ -1204,7 +1687,6 @@ export function resealSecurityAlertReview(value) {
     const subject = values(row.subjectRefs).find((ref) => subjects.has(ref));
     if (subject) row.subjectDigest = subjects.get(subject);
   }
-  output.evidenceRoot = computeEvidenceRoot(output.evidence);
 
   const records = rows(output.reviewRecords);
   const humanRecords = records.filter((record) => record.kind === "human-disposition");
@@ -1227,50 +1709,120 @@ export function resealSecurityAlertReview(value) {
   return output;
 }
 
+export function parseBoundedJsonText(text, label, maximumBytes) {
+  const byteLength = Buffer.byteLength(text);
+  if (byteLength > maximumBytes) {
+    return {
+      value: undefined,
+      byteLength,
+      finding: finding(`${label}_too_large`, label),
+    };
+  }
+  try {
+    return {
+      value: JSON.parse(text),
+      byteLength,
+      finding: null,
+    };
+  } catch {
+    return {
+      value: undefined,
+      byteLength,
+      finding: finding(`invalid_${label}_json`, label),
+    };
+  }
+}
+
+async function readBoundedJson(path, label, maximumBytes) {
+  const resolvedPath = resolve(path);
+  try {
+    const fileStats = await stat(resolvedPath);
+    if (fileStats.size > maximumBytes) {
+      return {
+        value: undefined,
+        byteLength: fileStats.size,
+        finding: finding(`${label}_too_large`, label),
+      };
+    }
+    const text = await readFile(resolvedPath, "utf8");
+    return parseBoundedJsonText(text, label, maximumBytes);
+  } catch {
+    return {
+      value: undefined,
+      byteLength: undefined,
+      finding: finding(`${label}_file_unavailable`, label),
+    };
+  }
+}
+
 async function runCli() {
-  const args = process.argv.slice(2);
-  const inputPath = args.find((arg) => !arg.startsWith("--"));
-  const asOfIndex = args.indexOf("--as-of");
-  const asOf = asOfIndex >= 0 ? args[asOfIndex + 1] : undefined;
-  const rosterIndex = args.indexOf("--principal-roster-digest");
-  const principalRosterDigest = rosterIndex >= 0 ? args[rosterIndex + 1] : undefined;
-  const evidenceIndex = args.indexOf("--evidence-root");
-  const evidenceRoot = evidenceIndex >= 0 ? args[evidenceIndex + 1] : undefined;
-  if (!inputPath || !asOf || !principalRosterDigest || !evidenceRoot) {
+  const [inputPath, ...args] = process.argv.slice(2);
+  const optionValue = (name) => {
+    const index = args.indexOf(name);
+    return index >= 0 ? args[index + 1] : undefined;
+  };
+  const asOf = optionValue("--as-of");
+  const principalRosterDigest = optionValue("--principal-roster-digest");
+  const evidenceRoot = optionValue("--evidence-root");
+  const ownerTrustPath = optionValue("--owner-trust");
+  const sourceBundlePath = optionValue("--source-bundle");
+  const publicTrustPath = optionValue("--public-trust");
+  if (
+    !inputPath ||
+    !asOf ||
+    !principalRosterDigest ||
+    !evidenceRoot ||
+    !ownerTrustPath ||
+    !sourceBundlePath ||
+    !publicTrustPath
+  ) {
     process.stderr.write(
-      "usage: node validate.mjs <artifact.json> --as-of <timestamp> --principal-roster-digest <sha256:digest> --evidence-root <sha256:digest>\n",
+      "usage: node validate.mjs <artifact.json> --as-of <timestamp> --principal-roster-digest <sha256:digest> --evidence-root <sha256:digest> --owner-trust <trust.json> --source-bundle <sources.json> --public-trust <trust.json>\n",
     );
     process.exitCode = 2;
     return;
   }
 
-  const [{ default: Ajv2020 }, { default: addFormats }] = await Promise.all([
-    import("ajv/dist/2020.js"),
-    import("ajv-formats"),
+  const [input, ownerTrust, sourceBundle, publicTrustBundle] = await Promise.all([
+    readBoundedJson(
+      inputPath,
+      "input",
+      SECURITY_ALERT_REVIEW_LIMITS.maxInputBytes,
+    ),
+    readBoundedJson(
+      ownerTrustPath,
+      "owner_trust",
+      SECURITY_ALERT_REVIEW_LIMITS.maxAuxiliaryBytes,
+    ),
+    readBoundedJson(
+      sourceBundlePath,
+      "source_bundle",
+      SECURITY_ALERT_REVIEW_LIMITS.maxAuxiliaryBytes,
+    ),
+    readBoundedJson(
+      publicTrustPath,
+      "public_trust",
+      SECURITY_ALERT_REVIEW_LIMITS.maxAuxiliaryBytes,
+    ),
   ]);
-  const [schemaText, inputText] = await Promise.all([
-    readFile(new URL("./security-alert-review.schema.json", import.meta.url), "utf8"),
-    readFile(resolve(inputPath), "utf8"),
-  ]);
-  const schema = JSON.parse(schemaText);
-  const input = JSON.parse(inputText);
-  const ajv = new Ajv2020({ allErrors: true, strict: true });
-  addFormats(ajv);
-  const validateSchema = ajv.compile(schema);
-  const schemaValid = validateSchema(input);
-  const semanticFindings = securityAlertReviewFindings(input, {
-    asOf,
-    principalRosterDigest,
-    evidenceRoot,
-  });
-  const schemaFindings = schemaValid
-    ? []
-    : (validateSchema.errors ?? []).map((error) =>
-        finding("schema_validation_error", error.instancePath || "$", [
-          error.keyword,
-        ]),
-      );
-  const findings = [...schemaFindings, ...semanticFindings].sort(findingOrder);
+  const readFindings = [
+    input.finding,
+    ownerTrust.finding,
+    sourceBundle.finding,
+    publicTrustBundle.finding,
+  ].filter(Boolean);
+  const findings =
+    readFindings.length > 0
+      ? readFindings.sort(findingOrder)
+      : securityAlertReviewFindings(input.value, {
+          asOf,
+          principalRosterDigest,
+          evidenceRoot,
+          ownerTrust: ownerTrust.value,
+          sourceBundle: sourceBundle.value,
+          publicTrustBundle: publicTrustBundle.value,
+          inputByteLength: input.byteLength,
+        });
   process.stdout.write(`${JSON.stringify({ valid: findings.length === 0, findings }, null, 2)}\n`);
   if (findings.length > 0) process.exitCode = 1;
 }

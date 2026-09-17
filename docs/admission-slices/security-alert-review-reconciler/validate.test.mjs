@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
@@ -9,32 +10,119 @@ import addFormats from "ajv-formats";
 
 import {
   alertKey,
+  canonicalJson,
   computeEvidenceRoot,
+  computeNormalizedAlertUniverseDigest,
+  computePolicyDigest,
   computePriorDecisionDigest,
+  computePublicTrustDigest,
+  normalizedAlert,
+  parseBoundedJsonText,
   resealSecurityAlertReview,
+  SECURITY_ALERT_REVIEW_LIMITS,
   securityAlertReviewFindings,
 } from "./validate.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..", "..", "..");
 const AS_OF = "2026-09-16T23:30:00Z";
+const fixturePath = resolve(here, "accepted.json");
+const validatorPath = resolve(here, "validate.mjs");
+const ownerTrustPath = resolve(here, "owner-trust.json");
+const sourceBundlePath = resolve(here, "source-bytes.json");
+const publicTrustPath = resolve(here, "public-trust.json");
 
 async function json(relative) {
   return JSON.parse(await readFile(new URL(relative, import.meta.url), "utf8"));
 }
 
-const [accepted, schema, adversarialCases, catalog] = await Promise.all([
+const [
+  accepted,
+  schema,
+  adversarialCases,
+  catalog,
+  ownerTrust,
+  sourceBundle,
+  publicTrustBundle,
+] = await Promise.all([
   json("./accepted.json"),
   json("./security-alert-review.schema.json"),
   json("./adversarial-cases.json"),
   json("../../../catalog.json"),
+  json("./owner-trust.json"),
+  json("./source-bytes.json"),
+  json("./public-trust.json"),
 ]);
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateSchema = ajv.compile(schema);
+const validateAlertKey = ajv.compile(schema.$defs.alertKey);
 
 function clone() {
   return structuredClone(accepted);
+}
+
+function resealWithTrustedEvidence(value) {
+  const resealed = resealSecurityAlertReview(value);
+  resealed.evidenceRoot = computeEvidenceRoot(resealed.evidence);
+  return resealed;
+}
+
+function rebuildUnsignedSource(value) {
+  let resealed = resealSecurityAlertReview(value);
+  const snapshotEvidence = resealed.evidence.find(
+    (row) => row.id === resealed.snapshot.evidenceRef,
+  );
+  snapshotEvidence.subjectRefs = [
+    resealed.snapshot.id,
+    ...resealed.snapshot.alerts.map((alert) => alert.id),
+  ];
+  resealed = resealSecurityAlertReview(resealed);
+  const sources = [];
+  const records = [];
+  for (const source of [
+    ...new Set(resealed.snapshot.alerts.map((alert) => alert.source)),
+  ].sort()) {
+    const alerts = resealed.snapshot.alerts
+      .filter((alert) => alert.source === source)
+      .map(normalizedAlert)
+      .sort((left, right) => alertKey(left).localeCompare(alertKey(right)));
+    const sourceVersion = resealed.snapshot.revision;
+    const sourceBytes = Buffer.from(
+      canonicalJson({
+        schemaVersion: "awesomeClaws.securityAlertSource.v1",
+        source,
+        sourceVersion,
+        alerts,
+      }),
+    );
+    sources.push({
+      source,
+      sourceVersion,
+      bytesBase64: sourceBytes.toString("base64"),
+    });
+    records.push({
+      source,
+      sourceVersion,
+      sourceContentDigest: `sha256:${createHash("sha256")
+        .update(sourceBytes)
+        .digest("hex")}`,
+      normalizedAlertKeys: alerts.map(alertKey),
+      normalizedAlertDigest: computeNormalizedAlertUniverseDigest(alerts),
+    });
+  }
+  resealed.sourceAuthority.snapshotRef = resealed.snapshot.id;
+  resealed.sourceAuthority.snapshotRevision = resealed.snapshot.revision;
+  resealed.sourceAuthority.snapshotCompletenessRoot =
+    resealed.snapshot.completenessRoot;
+  resealed.sourceAuthority.normalizedAlertKeys = resealed.snapshot.alerts
+    .map(alertKey)
+    .sort();
+  resealed.sourceAuthority.normalizedAlertUniverseDigest =
+    computeNormalizedAlertUniverseDigest(resealed.snapshot.alerts);
+  resealed.sourceAuthority.records = records;
+  resealed.evidenceRoot = computeEvidenceRoot(resealed.evidence);
+  return { value: resealed, sourceBundle: { sources } };
 }
 
 function findings(
@@ -42,12 +130,36 @@ function findings(
   asOf = AS_OF,
   principalRosterDigest = accepted.principalRoster.digest,
   evidenceRoot = value?.evidenceRoot,
+  overrides = {},
 ) {
   return securityAlertReviewFindings(value, {
     asOf,
     principalRosterDigest,
     evidenceRoot,
+    ownerTrust,
+    sourceBundle,
+    publicTrustBundle,
+    ...overrides,
   });
+}
+
+function cliArguments(inputPath) {
+  return [
+    validatorPath,
+    inputPath,
+    "--as-of",
+    AS_OF,
+    "--principal-roster-digest",
+    accepted.principalRoster.digest,
+    "--evidence-root",
+    accepted.evidenceRoot,
+    "--owner-trust",
+    ownerTrustPath,
+    "--source-bundle",
+    sourceBundlePath,
+    "--public-trust",
+    publicTrustPath,
+  ];
 }
 
 function mutate(name) {
@@ -221,11 +333,13 @@ function mutate(name) {
     default:
       throw new Error(`Unknown adversarial case: ${name}`);
   }
-  const resealed = resealSecurityAlertReview(value);
+  const resealed = resealWithTrustedEvidence(value);
   if (name === "substituted-controlled-evidence") {
     resealed.evidence.find(
       (row) => row.id === "evidence-disposition-code-101",
     ).contentDigest = `sha256:${"0".repeat(64)}`;
+  } else {
+    resealed.evidenceRoot = computeEvidenceRoot(resealed.evidence);
   }
   if (name === "cross-collection-identity-collision") {
     const grant = resealed.grants.find((row) => row.id === "review-code-101");
@@ -257,6 +371,96 @@ test("one complete snapshot covers every exact source native id revision key onc
       key,
     );
   }
+});
+
+test("owner-signed source bytes reject coherent omission and digest substitution", () => {
+  assert.equal(
+    accepted.sourceAuthority.snapshotCompletenessRoot,
+    accepted.snapshot.completenessRoot,
+  );
+  assert.deepEqual(
+    new Set(accepted.sourceAuthority.normalizedAlertKeys),
+    new Set(accepted.snapshot.alerts.map(alertKey)),
+  );
+  assert.equal(
+    accepted.sourceAuthority.normalizedAlertUniverseDigest,
+    computeNormalizedAlertUniverseDigest(accepted.snapshot.alerts),
+  );
+  assert.deepEqual(
+    new Set(
+      accepted.sourceAuthority.records.map(
+        (record) => `${record.source}\0${record.sourceVersion}`,
+      ),
+    ),
+    new Set(
+      sourceBundle.sources.map(
+        (record) => `${record.source}\0${record.sourceVersion}`,
+      ),
+    ),
+  );
+
+  const omitted = clone();
+  omitted.snapshot.alerts = omitted.snapshot.alerts.filter(
+    (alert) => alert.id !== "alert-code-104-r1",
+  );
+  omitted.reviewRecords = omitted.reviewRecords.filter(
+    (record) => record.id !== "review-code-104",
+  );
+  const omittedSource = rebuildUnsignedSource(omitted);
+  assert.equal(
+    omittedSource.value.sourceAuthority.signature,
+    accepted.sourceAuthority.signature,
+  );
+  assert.deepEqual(
+    findings(
+      omittedSource.value,
+      AS_OF,
+      omittedSource.value.principalRoster.digest,
+      omittedSource.value.evidenceRoot,
+      { sourceBundle: omittedSource.sourceBundle },
+    ).map((row) => row.code),
+    ["invalid_source_authority"],
+  );
+
+  const substituted = clone();
+  substituted.snapshot.alerts.find(
+    (alert) => alert.id === "alert-code-101-r3",
+  ).sourceSeverity = "changed-owner-value";
+  const substitutedSource = rebuildUnsignedSource(substituted);
+  assert.equal(
+    substitutedSource.value.sourceAuthority.signature,
+    accepted.sourceAuthority.signature,
+  );
+  assert.deepEqual(
+    findings(
+      substitutedSource.value,
+      AS_OF,
+      substitutedSource.value.principalRoster.digest,
+      substitutedSource.value.evidenceRoot,
+      { sourceBundle: substitutedSource.sourceBundle },
+    ).map((row) => row.code),
+    ["invalid_source_authority"],
+  );
+
+  const changedBytes = structuredClone(sourceBundle);
+  changedBytes.sources[0].bytesBase64 = Buffer.from(
+    "arbitrary replacement bytes",
+  ).toString("base64");
+  assert.deepEqual(
+    findings(accepted, AS_OF, accepted.principalRoster.digest, accepted.evidenceRoot, {
+      sourceBundle: changedBytes,
+    }).map((row) => row.code),
+    ["source_content_digest_mismatch"],
+  );
+
+  const malformedBundle = structuredClone(sourceBundle);
+  malformedBundle.sources.push(null);
+  assert.deepEqual(
+    findings(accepted, AS_OF, accepted.principalRoster.digest, accepted.evidenceRoot, {
+      sourceBundle: malformedBundle,
+    }).map((row) => row.code),
+    ["invalid_source_record"],
+  );
 });
 
 test("fixture preserves heterogeneous and adverse owner states without converting them to approval", () => {
@@ -350,7 +554,7 @@ test("public trust is context-only, grants are typed, and time must come from th
 
   const normalizedCalendarDate = clone();
   normalizedCalendarDate.asOf = "2026-10-01T00:00:00Z";
-  const resealedCalendarDate = resealSecurityAlertReview(normalizedCalendarDate);
+  const resealedCalendarDate = resealWithTrustedEvidence(normalizedCalendarDate);
   assert.deepEqual(
     securityAlertReviewFindings(resealedCalendarDate, {
       asOf: "2026-09-31T00:00:00Z",
@@ -361,12 +565,103 @@ test("public trust is context-only, grants are typed, and time must come from th
   );
 });
 
+test("public trust is independently supplied and restricted to safe approved URLs", () => {
+  const changedBundle = structuredClone(publicTrustBundle);
+  changedBundle.records[0].uri =
+    "https://docs.github.com/en/rest/code-scanning/changed";
+  assert.deepEqual(
+    findings(accepted, AS_OF, accepted.principalRoster.digest, accepted.evidenceRoot, {
+      publicTrustBundle: changedBundle,
+    }).map((row) => row.code),
+    ["invalid_public_trust_bundle"],
+  );
+  const duplicateBundle = structuredClone(publicTrustBundle);
+  duplicateBundle.records.push(structuredClone(duplicateBundle.records[0]));
+  assert.deepEqual(
+    findings(accepted, AS_OF, accepted.principalRoster.digest, accepted.evidenceRoot, {
+      publicTrustBundle: duplicateBundle,
+    }).map((row) => row.code),
+    ["invalid_public_trust_bundle"],
+  );
+
+  for (const uri of [
+    "https://user:password@docs.github.com/en/rest/code-scanning",
+    "https://docs.github.com/en/rest/code-scanning#credential",
+    "https://docs.github.com/en/rest/code-scanning?access_token=secret",
+    "https://127.0.0.1/code-scanning",
+    "https://10.0.0.1/code-scanning",
+    "https://169.254.169.254/code-scanning",
+    "https://unapproved.example/code-scanning",
+  ]) {
+    const unsafe = clone();
+    unsafe.publicTrustInputs[0].uri = uri;
+    assert.deepEqual(
+      findings(unsafe).map((row) => row.code),
+      ["invalid_public_trust_bundle", "invalid_public_trust_input"],
+      uri,
+    );
+  }
+});
+
+test("public trust refreshes are scoped to the policy revision that references them", () => {
+  const refreshed = clone();
+  const priorPolicyDigest =
+    refreshed.historicalDetectorPolicies[0].revisionDigest;
+  const previous = refreshed.publicTrustInputs.find(
+    (record) => record.id === "trust-github-code-scanning",
+  );
+  const current = {
+    ...structuredClone(previous),
+    id: "trust-github-code-scanning-2026-09-16",
+    retrievedAt: "2026-09-16T16:00:00Z",
+    contentDigest: `sha256:${"4b".repeat(32)}`,
+  };
+  current.recordDigest = computePublicTrustDigest(current);
+  refreshed.publicTrustInputs.push(current);
+  refreshed.detectorPolicy.trustInputRefs =
+    refreshed.detectorPolicy.trustInputRefs.map((ref) =>
+      ref === previous.id ? current.id : ref,
+    );
+  refreshed.detectorPolicy.trustInputDigests =
+    refreshed.detectorPolicy.trustInputRefs.map(
+      (ref) =>
+        refreshed.publicTrustInputs.find((record) => record.id === ref)
+          .recordDigest,
+    );
+  refreshed.detectorPolicy.revisionDigest = computePolicyDigest(
+    refreshed.detectorPolicy,
+  );
+  for (const grant of refreshed.grants) {
+    if (grant.id !== "grant-riley-prior-false-positive") {
+      grant.policyRevisionDigest = refreshed.detectorPolicy.revisionDigest;
+    }
+  }
+  for (const record of refreshed.reviewRecords) {
+    record.policyRevisionDigest = refreshed.detectorPolicy.revisionDigest;
+  }
+  const resealed = resealWithTrustedEvidence(refreshed);
+  assert.equal(
+    resealed.historicalDetectorPolicies[0].revisionDigest,
+    priorPolicyDigest,
+  );
+  assert.deepEqual(
+    findings(
+      resealed,
+      AS_OF,
+      resealed.principalRoster.digest,
+      resealed.evidenceRoot,
+      { publicTrustBundle: { records: resealed.publicTrustInputs } },
+    ),
+    [],
+  );
+});
+
 test("principal authority is pinned out of band and cannot be relabeled as a team", () => {
   const fabricated = clone();
   fabricated.principals.find(
     (principal) => principal.id === "principal-security-analyst-riley",
   ).name = "Riley Changed";
-  const resealedFabrication = resealSecurityAlertReview(fabricated);
+  const resealedFabrication = resealWithTrustedEvidence(fabricated);
   assert.ok(
     findings(resealedFabrication).some(
       (row) => row.code === "invalid_principal_roster_trust",
@@ -377,7 +672,7 @@ test("principal authority is pinned out of band and cannot be relabeled as a tea
   team.principals.find(
     (principal) => principal.id === "principal-security-analyst-riley",
   ).name = "Security Operations Team";
-  const resealedTeam = resealSecurityAlertReview(team);
+  const resealedTeam = resealWithTrustedEvidence(team);
   assert.ok(
     findings(resealedTeam).some((row) => row.code === "bare_role_principal"),
   );
@@ -388,7 +683,7 @@ test("trusted roster scopes still constrain snapshot supply and alert ownership"
   unscopedSupplier.principals.find(
     (principal) => principal.id === unscopedSupplier.snapshot.suppliedByRef,
   ).scopes = ["export-only"];
-  const resealedSupplier = resealSecurityAlertReview(unscopedSupplier);
+  const resealedSupplier = resealWithTrustedEvidence(unscopedSupplier);
   assert.deepEqual(
     findings(
       resealedSupplier,
@@ -402,12 +697,17 @@ test("trusted roster scopes still constrain snapshot supply and alert ownership"
   unscopedOwner.snapshot.alerts.find(
     (alert) => alert.id === "alert-code-104-r1",
   ).ownerRef = "principal-security-analyst-riley";
-  const resealedOwner = resealSecurityAlertReview(unscopedOwner);
+  const resealedOwner = resealWithTrustedEvidence(unscopedOwner);
   assert.deepEqual(
     findings(resealedOwner, AS_OF, resealedOwner.principalRoster.digest).map(
       (row) => row.code,
     ),
-    ["invalid_alert"],
+    [
+      "invalid_alert",
+      "invalid_source_authority",
+      "invalid_source_content",
+      "invalid_source_manifest_record",
+    ],
   );
 });
 
@@ -417,7 +717,7 @@ test("trusted roster chronology and reviewer scopes cannot authorize retroactive
   futureRoster.evidence.find(
     (row) => row.id === "evidence-principal-roster",
   ).observedAt = "2026-09-16T23:00:00Z";
-  const resealedFutureRoster = resealSecurityAlertReview(futureRoster);
+  const resealedFutureRoster = resealWithTrustedEvidence(futureRoster);
   assert.deepEqual(
     findings(
       resealedFutureRoster,
@@ -431,7 +731,7 @@ test("trusted roster chronology and reviewer scopes cannot authorize retroactive
   unscopedReviewer.principals.find(
     (principal) => principal.id === "principal-security-analyst-riley",
   ).scopes = [];
-  const resealedReviewer = resealSecurityAlertReview(unscopedReviewer);
+  const resealedReviewer = resealWithTrustedEvidence(unscopedReviewer);
   const codes = findings(
     resealedReviewer,
     AS_OF,
@@ -450,14 +750,14 @@ test("trusted roster chronology and reviewer scopes cannot authorize retroactive
   postSnapshotRoster.evidence.find(
     (row) => row.id === "evidence-principal-roster",
   ).observedAt = postSnapshotRoster.principalRoster.capturedAt;
-  const resealedPostSnapshot = resealSecurityAlertReview(postSnapshotRoster);
+  const resealedPostSnapshot = resealWithTrustedEvidence(postSnapshotRoster);
   assert.deepEqual(
     findings(
       resealedPostSnapshot,
       AS_OF,
       resealedPostSnapshot.principalRoster.digest,
     ).map((row) => row.code),
-    ["invalid_principal_roster_trust"],
+    ["invalid_principal_roster_trust", "invalid_source_authority"],
   );
 });
 
@@ -475,7 +775,7 @@ test("historical dispositions preserve current owner separation", () => {
   selfOwned.evidence.find(
     (row) => row.id === "evidence-prior-decision-code-106",
   ).authorRef = owner.id;
-  const resealed = resealSecurityAlertReview(selfOwned);
+  const resealed = resealWithTrustedEvidence(selfOwned);
   assert.deepEqual(
     findings(resealed, AS_OF, resealed.principalRoster.digest).map(
       (row) => row.code,
@@ -499,12 +799,123 @@ test("historical dispositions preserve current owner separation", () => {
   );
 });
 
+test("prior grants and decisions bind immutable historical policy revisions", () => {
+  const historicalPolicy = accepted.historicalDetectorPolicies[0];
+  const priorGrant = accepted.grants.find(
+    (grant) => grant.id === "grant-riley-prior-false-positive",
+  );
+  const priorDecision = accepted.priorDecisions[0];
+  assert.notEqual(
+    historicalPolicy.revisionDigest,
+    accepted.detectorPolicy.revisionDigest,
+  );
+  assert.equal(priorGrant.policyRevisionDigest, historicalPolicy.revisionDigest);
+  assert.equal(
+    priorDecision.policyRevisionDigest,
+    historicalPolicy.revisionDigest,
+  );
+  assert.ok(
+    accepted.reviewRecords.every(
+      (record) =>
+        record.policyRevisionDigest === accepted.detectorPolicy.revisionDigest,
+    ),
+  );
+
+  const rewrittenHistory = clone();
+  const originalHistoricalDigest =
+    rewrittenHistory.historicalDetectorPolicies[0].revisionDigest;
+  const originalGrantPolicyDigest = rewrittenHistory.grants.find(
+    (grant) => grant.id === "grant-riley-prior-false-positive",
+  ).policyRevisionDigest;
+  const originalDecisionPolicyDigest =
+    rewrittenHistory.priorDecisions[0].policyRevisionDigest;
+  rewrittenHistory.historicalDetectorPolicies[0].detectorRules[0]
+    .allowedDispositionKinds = ["incident-review-escalation"];
+  const internallyResealed = resealSecurityAlertReview(rewrittenHistory);
+  assert.equal(
+    internallyResealed.historicalDetectorPolicies[0].revisionDigest,
+    originalHistoricalDigest,
+  );
+  assert.equal(
+    internallyResealed.grants.find(
+      (grant) => grant.id === "grant-riley-prior-false-positive",
+    ).policyRevisionDigest,
+    originalGrantPolicyDigest,
+  );
+  assert.equal(
+    internallyResealed.priorDecisions[0].policyRevisionDigest,
+    originalDecisionPolicyDigest,
+  );
+  assert.ok(
+    findings(internallyResealed).some(
+      (row) => row.code === "invalid_historical_detector_policy",
+    ),
+  );
+
+  const reboundToCurrent = clone();
+  reboundToCurrent.grants.find(
+    (grant) => grant.id === "grant-riley-prior-false-positive",
+  ).policyRevisionDigest = reboundToCurrent.detectorPolicy.revisionDigest;
+  reboundToCurrent.priorDecisions[0].policyRevisionDigest =
+    reboundToCurrent.detectorPolicy.revisionDigest;
+  const resealedCurrent = resealWithTrustedEvidence(reboundToCurrent);
+  assert.deepEqual(
+    findings(resealedCurrent).map((row) => row.code),
+    ["invalid_grant", "invalid_prior_decision"],
+  );
+
+  const retroactiveRoster = clone();
+  retroactiveRoster.principalRoster.capturedAt = "2026-09-15T16:10:00Z";
+  retroactiveRoster.evidence.find(
+    (row) => row.id === "evidence-principal-roster",
+  ).observedAt = retroactiveRoster.principalRoster.capturedAt;
+  const resealedRoster = resealWithTrustedEvidence(retroactiveRoster);
+  assert.deepEqual(
+    findings(
+      resealedRoster,
+      AS_OF,
+      resealedRoster.principalRoster.digest,
+    ).map((row) => row.code),
+    ["invalid_principal_roster_trust"],
+  );
+
+  const simultaneous = clone();
+  const simultaneousPolicy = structuredClone(simultaneous.detectorPolicy);
+  simultaneousPolicy.id = "detector-policy-security-alerts-simultaneous";
+  simultaneousPolicy.revision = "policy-simultaneous";
+  simultaneousPolicy.evidenceRef = "evidence-detector-policy-simultaneous";
+  simultaneousPolicy.revisionDigest = computePolicyDigest(simultaneousPolicy);
+  const simultaneousEvidence = structuredClone(
+    simultaneous.evidence.find(
+      (row) => row.id === simultaneous.detectorPolicy.evidenceRef,
+    ),
+  );
+  simultaneousEvidence.id = simultaneousPolicy.evidenceRef;
+  simultaneousEvidence.controlledUri =
+    "controlled://security-alert-review/policy/policy-simultaneous.json";
+  simultaneousEvidence.subjectRefs = [simultaneousPolicy.id];
+  simultaneousEvidence.subjectDigest = simultaneousPolicy.revisionDigest;
+  simultaneous.historicalDetectorPolicies.push(simultaneousPolicy);
+  simultaneous.evidence.push(simultaneousEvidence);
+  const resealedSimultaneous = resealWithTrustedEvidence(simultaneous);
+  assert.deepEqual(
+    findings(resealedSimultaneous).map((row) => row.code),
+    [
+      "invalid_grant",
+      "invalid_grant",
+      "invalid_grant",
+      "invalid_grant",
+      "invalid_policy_history",
+    ],
+  );
+});
+
 test("stable human identities cannot alias around separation", () => {
   const alias = clone();
   alias.principals.find(
     (principal) => principal.id === "principal-security-analyst-riley",
   ).directoryObjectRef = "directory://people/morgan-patel";
-  const resealed = resealSecurityAlertReview(alias);
+  const resealed = resealWithTrustedEvidence(alias);
   const codes = findings(
     resealed,
     AS_OF,
@@ -520,7 +931,7 @@ test("an alert revision cannot supersede itself", () => {
   cyclic.snapshot.alerts.find(
     (alert) => alert.id === "alert-code-106-r2",
   ).supersedesRevision = "analysis-2";
-  const resealed = resealSecurityAlertReview(cyclic);
+  const resealed = resealWithTrustedEvidence(cyclic);
   assert.ok(findings(resealed).some((row) => row.code === "invalid_alert"));
 });
 
@@ -540,7 +951,7 @@ test("repeated self-suppression attempts remain one exact non-decision", () => {
   evidence.subjectRefs = [attempt.id];
   repeated.suppressionAttempts.push(attempt);
   repeated.evidence.push(evidence);
-  const resealed = resealSecurityAlertReview(repeated);
+  const resealed = resealWithTrustedEvidence(repeated);
   assert.deepEqual(findings(resealed), []);
   assert.equal(
     resealed.reviewRecords.filter(
@@ -605,8 +1016,92 @@ test("semantic validator is total over malformed direct inputs", () => {
     const malformed = clone();
     malformed[field] = {};
     assert.doesNotThrow(() => findings(malformed), field);
-    assert.ok(findings(malformed).some((row) => row.code === "invalid_identity_set"));
+    assert.deepEqual(
+      findings(malformed).map((row) => row.code),
+      ["schema_type"],
+      field,
+    );
   }
+});
+
+test("schema-invalid and deeply nested inputs short-circuit semantic work", () => {
+  const schemaInvalid = clone();
+  delete schemaInvalid.sourceAuthority;
+  assert.deepEqual(
+    findings(schemaInvalid).map((row) => row.code),
+    ["schema_required"],
+  );
+
+  const deep = {};
+  let cursor = deep;
+  for (
+    let depth = 0;
+    depth <= SECURITY_ALERT_REVIEW_LIMITS.maxDepth;
+    depth += 1
+  ) {
+    cursor.child = {};
+    cursor = cursor.child;
+  }
+  assert.deepEqual(
+    securityAlertReviewFindings(deep).map((row) => row.code),
+    ["input_too_deep"],
+  );
+
+  const cyclic = {};
+  cyclic.self = cyclic;
+  assert.deepEqual(
+    securityAlertReviewFindings(cyclic).map((row) => row.code),
+    ["input_not_json_compatible"],
+  );
+});
+
+test("schema cardinality string and byte limits bound validation work", () => {
+  const maximumComponentKey = alertKey({
+    source: "s".repeat(512),
+    nativeAlertId: "n".repeat(512),
+    revision: "r".repeat(512),
+  });
+  assert.ok(maximumComponentKey.length > 512);
+  assert.equal(validateAlertKey(maximumComponentKey), true);
+
+  const tooManyTrustInputs = clone();
+  tooManyTrustInputs.publicTrustInputs = Array.from(
+    { length: 17 },
+    (_, index) => ({
+      ...structuredClone(accepted.publicTrustInputs[0]),
+      id: `trust-bounded-${index}`,
+    }),
+  );
+  assert.deepEqual(
+    findings(tooManyTrustInputs).map((row) => row.code),
+    ["schema_max_items"],
+  );
+
+  const overlongId = clone();
+  overlongId.artifactId = "a".repeat(129);
+  assert.deepEqual(
+    findings(overlongId).map((row) => row.code),
+    ["schema_max_length"],
+  );
+
+  assert.deepEqual(
+    findings(
+      accepted,
+      AS_OF,
+      accepted.principalRoster.digest,
+      accepted.evidenceRoot,
+      { inputByteLength: SECURITY_ALERT_REVIEW_LIMITS.maxInputBytes + 1 },
+    ).map((row) => row.code),
+    ["input_too_large"],
+  );
+  assert.deepEqual(
+    parseBoundedJsonText('{"larger":true}', "input", 8).finding,
+    {
+      code: "input_too_large",
+      path: "input",
+      refs: [],
+    },
+  );
 });
 
 test("schema rejects unknown fields and every prohibited authority claim", () => {
@@ -615,10 +1110,93 @@ test("schema rejects unknown fields and every prohibited authority claim", () =>
     const invalid = clone();
     invalid.authority[field] = "performed";
     assert.equal(validateSchema(invalid), false, field);
-    assert.ok(
-      findings(invalid).some((row) => row.code === "invalid_authority_claim"),
+    assert.deepEqual(
+      findings(invalid).map((row) => row.code),
+      ["schema_const"],
       field,
     );
+  }
+});
+
+test("CLI returns structured parse and pre-read size failures", async () => {
+  const malformedPath = resolve(
+    root,
+    ".tmp",
+    `security-alert-review-malformed-${process.pid}.json`,
+  );
+  const oversizedPath = resolve(
+    root,
+    ".tmp",
+    `security-alert-review-oversized-${process.pid}.json`,
+  );
+  const schemaInvalidPath = resolve(
+    root,
+    ".tmp",
+    `security-alert-review-schema-invalid-${process.pid}.json`,
+  );
+  try {
+    await writeFile(malformedPath, "{\"broken\":");
+    const malformed = spawnSync(
+      process.execPath,
+      cliArguments(malformedPath),
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(malformed.status, 1, malformed.stderr || malformed.stdout);
+    assert.deepEqual(JSON.parse(malformed.stdout), {
+      valid: false,
+      findings: [
+        {
+          code: "invalid_input_json",
+          path: "input",
+          refs: [],
+        },
+      ],
+    });
+
+    await writeFile(
+      oversizedPath,
+      "x".repeat(SECURITY_ALERT_REVIEW_LIMITS.maxInputBytes + 1),
+    );
+    const oversized = spawnSync(
+      process.execPath,
+      cliArguments(oversizedPath),
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(oversized.status, 1, oversized.stderr || oversized.stdout);
+    assert.deepEqual(JSON.parse(oversized.stdout), {
+      valid: false,
+      findings: [
+        {
+          code: "input_too_large",
+          path: "input",
+          refs: [],
+        },
+      ],
+    });
+
+    const schemaInvalid = clone();
+    delete schemaInvalid.sourceAuthority;
+    await writeFile(schemaInvalidPath, JSON.stringify(schemaInvalid));
+    const invalidSchema = spawnSync(
+      process.execPath,
+      cliArguments(schemaInvalidPath),
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(
+      invalidSchema.status,
+      1,
+      invalidSchema.stderr || invalidSchema.stdout,
+    );
+    assert.deepEqual(
+      JSON.parse(invalidSchema.stdout).findings.map((row) => row.code),
+      ["schema_required"],
+    );
+  } finally {
+    await Promise.all([
+      rm(malformedPath, { force: true }),
+      rm(oversizedPath, { force: true }),
+      rm(schemaInvalidPath, { force: true }),
+    ]);
   }
 });
 
@@ -630,8 +1208,6 @@ test("candidate remains outside every public registry surface", () => {
 });
 
 test("candidate CLI validates only with explicit caller-controlled time", () => {
-  const fixturePath = resolve(here, "accepted.json");
-  const validatorPath = resolve(here, "validate.mjs");
   const acceptedResult = spawnSync(
     process.execPath,
     [validatorPath, fixturePath, "--as-of", AS_OF],
@@ -642,16 +1218,7 @@ test("candidate CLI validates only with explicit caller-controlled time", () => 
   );
   const acceptedWithTrust = spawnSync(
     process.execPath,
-    [
-      validatorPath,
-      fixturePath,
-      "--as-of",
-      AS_OF,
-      "--principal-roster-digest",
-      accepted.principalRoster.digest,
-      "--evidence-root",
-      accepted.evidenceRoot,
-    ],
+    cliArguments(fixturePath),
     { cwd: root, encoding: "utf8" },
   );
   assert.equal(acceptedResult.status, 2, acceptedResult.stderr || acceptedResult.stdout);
