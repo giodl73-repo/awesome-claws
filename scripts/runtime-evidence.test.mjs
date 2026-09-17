@@ -30,6 +30,7 @@ import {
   extractModelTransportDiagnostic,
   inferAssistantOutcome,
   inspectLiveConfig,
+  isRetryableMonitorCleanupFailure,
   preflightBudgets,
   redactFailureExcerpt,
   renderRuntimeEvidenceReport,
@@ -38,6 +39,7 @@ import {
   safeEvidence,
   sanitizeModelSettings,
   scoreClawResults,
+  startOpenClawGateway,
   stripPowerShellCliXml,
   validateOpenClawCliSurface,
   validateManifest,
@@ -2272,6 +2274,10 @@ test("controlled child environment strips inherited OpenClaw state and isolates 
   assert.equal(env.OPENCLAW_DEBUG_MODEL_TRANSPORT, "1");
   assert.equal(env.OPENCLAW_DEBUG_MODEL_PAYLOAD, "off");
   assert.equal(env.OPENCLAW_DEBUG_SSE, "events");
+  assert.equal(
+    env.NODE_COMPILE_CACHE,
+    join(attemptRoot, "temp", "node-compile-cache"),
+  );
   assert.deepEqual(
     [...sensitiveValues].sort(),
     ["SOAK_SECRET_TEST_ONLY", "provider-secret"].sort(),
@@ -2287,6 +2293,7 @@ test("safe config identity binds declared provider/model without persisting cred
       configPath,
       JSON.stringify({
         agent: { provider: "example-provider", model: "example-model" },
+        plugins: { enabled: false },
         credential: "raw-secret-must-not-persist",
       }),
     );
@@ -2304,9 +2311,61 @@ test("safe config identity binds declared provider/model without persisting cred
       }),
       /different provider\/model/u,
     );
+    await writeFile(
+      configPath,
+      JSON.stringify({
+        agent: { provider: "example-provider", model: "example-model" },
+      }),
+    );
+    await assert.rejects(
+      inspectLiveConfig(configPath, {
+        provider: "example-provider",
+        model: "example-model",
+      }),
+      /must disable plugin discovery/u,
+    );
   } finally {
     await rm(testRoot, { recursive: true, force: true });
   }
+});
+
+test("isolated Gateway helper waits for readiness and stops the child", async () => {
+  await mkdir(join(root, ".tmp"), { recursive: true });
+  const proofRoot = await mkdtemp(join(root, ".tmp", "gateway-helper-test-"));
+  try {
+    const fakeEntry = join(proofRoot, "openclaw.mjs");
+    await writeFile(
+      fakeEntry,
+      [
+        'if (process.argv[2] !== "gateway") process.exit(2);',
+        'console.error("[gateway] ready");',
+        "setInterval(() => {}, 1000);",
+      ].join("\n"),
+    );
+    const gateway = startOpenClawGateway(fakeEntry, process.env, proofRoot);
+    await gateway.ready(2_000);
+    await gateway.stop();
+    assert.ok(gateway.child.exitCode !== null || gateway.child.signalCode !== null);
+  } finally {
+    await rm(proofRoot, { recursive: true, force: true });
+  }
+});
+
+test("only monitor convergence failures receive a cleanup recovery pass", () => {
+  assert.equal(
+    isRetryableMonitorCleanupFailure(
+      new Error('{"error":{"code":"monitor_cleanup_failed"}}'),
+    ),
+    true,
+  );
+  assert.equal(
+    isRetryableMonitorCleanupFailure(new Error("gateway authentication failed")),
+    false,
+  );
+  assert.equal(
+    isRetryableMonitorCleanupFailure(new Error("artifact validation failed")),
+    false,
+  );
 });
 
 test("CLI surface preflight rejects a build without the public Claws lifecycle", async () => {

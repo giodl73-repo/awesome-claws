@@ -207,10 +207,23 @@ graceful termination followed by process-tree escalation. Model, safety,
 artifact, harness, and cleanup failures do not retry.
 
 Live execution rejects a dirty harness. The supplied OpenClaw config is parsed
-only for preflight, credential-valued fields are stripped before its digest is
-computed, and only that safe digest plus a provider/model structural-match
-status is persisted. The declared provider/model must match whenever the config
-contains a recognizable pair; raw config is never written to evidence.
+only for preflight and must set `plugins.enabled` to `false`. Credential-valued
+fields are stripped before its digest is computed, and only that safe digest
+plus a provider/model structural-match status is persisted. The declared
+provider/model must match whenever the config contains a recognizable pair; raw
+config is never written to evidence.
+
+Each live trial reserves a loopback-only Gateway port and an ephemeral synthetic
+Gateway token inside its isolated child environment. The Gateway starts after
+the Claw is installed, overlaps the model turn, and must report ready before
+cleanup. This supports the public OpenClaw removal contract's monitor drainage
+without sharing state or credentials across trials. The harness stops the
+Gateway after removal. When OpenClaw returns the documented
+`monitor_cleanup_failed` convergence fence, the harness performs one fresh
+preview-and-apply recovery pass inside the same cleanup deadline. No other
+cleanup failure is retried. Startup, drainage, convergence, or shutdown failures
+remain cleanup infrastructure failures and cannot become passing-shaped
+results.
 
 Drift classification compares semantic signatures (outcome, gates, required
 artifact validation, cleanup, and cap state), not response or artifact bytes,
