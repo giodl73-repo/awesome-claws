@@ -288,6 +288,10 @@ test("model transport diagnostics retain only allowlisted stream facts", () => {
     responseContentType: "sse",
     firstEventType: "response.created",
     streamEventCount: 7,
+    streamEventTypes: [
+      { type: "response.created", count: 1 },
+      { type: "response.completed", count: 1 },
+    ],
     streamCompleted: true,
     fetchFailed: false,
   });
@@ -313,6 +317,7 @@ test("model transport diagnostics retain only allowlisted stream facts", () => {
     responseContentType: "json",
     firstEventType: null,
     streamEventCount: null,
+    streamEventTypes: null,
     streamCompleted: false,
     fetchFailed: true,
   });
@@ -345,6 +350,7 @@ test("model transport diagnostics survive timeout and output-limit failures", as
         responseContentType: "sse",
         firstEventType: "response.created",
         streamEventCount: null,
+        streamEventTypes: null,
         streamCompleted: false,
         fetchFailed: false,
       });
@@ -1171,6 +1177,7 @@ test("harness and cleanup-unsafe infrastructure stay distinct", async () => {
     responseContentType: "sse",
     firstEventType: "response.created",
     streamEventCount: 1,
+    streamEventTypes: [{ type: "response.created", count: 1 }],
     streamCompleted: false,
     fetchFailed: false,
   };
