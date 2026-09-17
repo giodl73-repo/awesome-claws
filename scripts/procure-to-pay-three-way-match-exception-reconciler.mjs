@@ -17,7 +17,7 @@ addFormats(ajv);
 const validateSchema = ajv.compile(schema);
 
 const OFFSET_TIMESTAMP =
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/u;
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/u;
 const INTEGER = /^-?(?:0|[1-9][0-9]*)$/u;
 
 const LINE_FIELDS = Object.freeze({
@@ -365,9 +365,23 @@ function integer(value) {
 }
 
 function timestamp(value) {
-  if (typeof value !== "string" || !OFFSET_TIMESTAMP.test(value)) return null;
+  if (typeof value !== "string") return null;
+  const match = OFFSET_TIMESTAMP.exec(value);
+  if (!match) return null;
+  const [, year, month, day, hour, minute, second] = match;
   const parsed = Date.parse(value);
-  return Number.isFinite(parsed) ? parsed : null;
+  if (!Number.isFinite(parsed)) return null;
+  const probe = new Date(
+    Date.UTC(+year, +month - 1, +day, +hour, +minute, +second),
+  );
+  return probe.getUTCFullYear() === +year &&
+    probe.getUTCMonth() === +month - 1 &&
+    probe.getUTCDate() === +day &&
+    +hour <= 23 &&
+    +minute <= 59 &&
+    +second <= 59
+    ? parsed
+    : null;
 }
 
 function sameExactSet(actual, expected) {
@@ -381,6 +395,10 @@ function sameExactSet(actual, expected) {
   const left = [...actual].sort(compareUtf16CodeUnits);
   const right = [...expected].sort(compareUtf16CodeUnits);
   return left.length === right.length && left.every((item, index) => item === right[index]);
+}
+
+function hasExactKeys(value, expected) {
+  return isRecord(value) && sameExactSet(Object.keys(value), expected);
 }
 
 function finding(code, path, message, targetRefs = []) {
@@ -479,7 +497,56 @@ export function validateThreeWayMatch(candidate, context = {}) {
   const trustMatchingPolicy = object(ownerTrustPolicy.matchingPolicy);
   const trustAuthority = object(ownerTrustPolicy.authority);
   const trustValidation = object(ownerTrustPolicy.validation);
+  const sourceTrustRoots = records(ownerTrustPolicy.sourceTrustRoots);
   if (
+    !hasExactKeys(ownerTrustPolicy, [
+      "schemaVersion",
+      "scope",
+      "sourceTrustRoots",
+      "matchingPolicy",
+      "authority",
+      "validation",
+      "reservedAuthority",
+    ]) ||
+    !hasExactKeys(trustScope, [
+      "purchaseOrderId",
+      "currency",
+      "currentRevisionRef",
+    ]) ||
+    !Array.isArray(ownerTrustPolicy.sourceTrustRoots) ||
+    ownerTrustPolicy.sourceTrustRoots.length !== 3 ||
+    sourceTrustRoots.length !== 3 ||
+    sourceTrustRoots.some(
+      (root) =>
+        !hasExactKeys(root, [
+          "side",
+          "sourceSystemRef",
+          "exportRef",
+          "owner",
+        ]),
+    ) ||
+    !hasExactKeys(trustMatchingPolicy, [
+      "version",
+      "groupShape",
+      "quantityRule",
+      "amountRule",
+      "unitPriceRule",
+      "correspondenceRule",
+      "taxRule",
+      "tolerancesPermitted",
+    ]) ||
+    !hasExactKeys(trustAuthority, [
+      "requiredGrantScopes",
+      "grantTarget",
+      "namedHumanRequired",
+      "independentIssuerRequired",
+    ]) ||
+    !hasExactKeys(trustValidation, [
+      "callerSuppliesCutoffAt",
+      "callerSuppliesAsOf",
+      "zoneBearingRfc3339Required",
+      "wallClockFallbackPermitted",
+    ]) ||
     ownerTrustPolicy.schemaVersion !==
       "awesomeClaws.procureToPayOwnerTrustPolicy.v1" ||
     trustScope.purchaseOrderId !== review.purchaseOrderId ||
@@ -811,7 +878,6 @@ export function validateThreeWayMatch(candidate, context = {}) {
         );
       }
     }
-    const sourceTrustRoots = records(ownerTrustPolicy.sourceTrustRoots);
     for (const side of Object.keys(linesBySide)) {
       const manifest = manifestBySide.get(side);
       const roots = sourceTrustRoots.filter((root) => root.side === side);
@@ -912,19 +978,24 @@ export function validateThreeWayMatch(candidate, context = {}) {
   }
 
   const receiptReversalValid = new Map();
+  const revisionApprovedAt = timestamp(revision.approvedAt);
   for (const [index, line] of receiptLines.entries()) {
     const quantity = integer(line.quantity);
     const poLine = poLineById.get(line.poLineRef);
+    const recordedAt = timestamp(line.recordedAt);
     if (
       line.purchaseOrderRevisionRef !== revision.id ||
       line.currency !== review.currency ||
       !poLine ||
-      line.unitOfMeasure !== poLine.unitOfMeasure
+      line.unitOfMeasure !== poLine.unitOfMeasure ||
+      (recordedAt !== null &&
+        revisionApprovedAt !== null &&
+        recordedAt < revisionApprovedAt)
     ) {
       add(
         "invalid_source_revision",
         `/receiptLines/${index}`,
-        "Every receipt or return line must bind one current PO line, revision, and currency.",
+        "Every receipt or return line must bind one current PO line, revision, and currency without predating revision approval.",
         [line.id, line.poLineRef],
       );
     }
@@ -941,7 +1012,6 @@ export function validateThreeWayMatch(candidate, context = {}) {
         [line.id],
       );
     }
-    const recordedAt = timestamp(line.recordedAt);
     if (recordedAt === null || artifactCutoff === null || recordedAt > artifactCutoff) {
       add(
         "record_after_cutoff",
@@ -991,16 +1061,20 @@ export function validateThreeWayMatch(candidate, context = {}) {
     const unit = integer(line.unitMinorUnits);
     const amount = integer(line.lineMinorUnits);
     const poLine = poLineById.get(line.poLineRef);
+    const recordedAt = timestamp(line.recordedAt);
     if (
       line.purchaseOrderRevisionRef !== revision.id ||
       line.currency !== review.currency ||
       !poLine ||
-      line.unitOfMeasure !== poLine.unitOfMeasure
+      line.unitOfMeasure !== poLine.unitOfMeasure ||
+      (recordedAt !== null &&
+        revisionApprovedAt !== null &&
+        recordedAt < revisionApprovedAt)
     ) {
       add(
         "invalid_source_revision",
         `/invoiceLines/${index}`,
-        "Every invoice or credit line must bind one current PO line, revision, and currency.",
+        "Every invoice or credit line must bind one current PO line, revision, and currency without predating revision approval.",
         [line.id, line.poLineRef],
       );
     }
@@ -1021,7 +1095,6 @@ export function validateThreeWayMatch(candidate, context = {}) {
         [line.id],
       );
     }
-    const recordedAt = timestamp(line.recordedAt);
     if (recordedAt === null || artifactCutoff === null || recordedAt > artifactCutoff) {
       add(
         "record_after_cutoff",

@@ -627,6 +627,18 @@ test("caller controls cutoff and validation never consults wall-clock time", () 
   const afterCutoff = structuredClone(acceptedFixture);
   afterCutoff.invoiceLines[0].recordedAt = "2026-09-16T00:00:00Z";
   assert.ok(codes(afterCutoff).includes("record_after_cutoff"));
+  for (const invalidTime of [
+    "2026-09-31T12:00:00Z",
+    "2026-09-16T24:00:00Z",
+  ]) {
+    assert.ok(
+      codes(acceptedFixture, {
+        ...context,
+        asOf: invalidTime,
+      }).includes("invalid_validation_context"),
+      invalidTime,
+    );
+  }
   assert.deepEqual(validateThreeWayMatch(acceptedFixture, context), []);
 });
 
@@ -645,6 +657,51 @@ test("public owner trust policy is required and target-bound", () => {
       ownerTrustPolicy: drifted,
     }).includes("invalid_owner_trust_policy"),
   );
+  for (const mutate of [
+    (policy) => {
+      policy.allowFuzzyMatching = true;
+    },
+    (policy) => {
+      policy.matchingPolicy.allowFuzzyMatching = true;
+    },
+    (policy) => {
+      policy.authority.agentMayApprove = true;
+    },
+    (policy) => {
+      policy.sourceTrustRoots[0].agentMayMutate = true;
+    },
+  ]) {
+    const extended = structuredClone(ownerTrustPolicy);
+    mutate(extended);
+    assert.ok(
+      codes(acceptedFixture, {
+        ...context,
+        ownerTrustPolicy: extended,
+      }).includes("invalid_owner_trust_policy"),
+    );
+  }
+});
+
+test("current-revision source rows cannot predate revision approval", () => {
+  for (const side of ["receipt", "invoice"]) {
+    const candidate = structuredClone(acceptedFixture);
+    const lines =
+      side === "receipt" ? candidate.receiptLines : candidate.invoiceLines;
+    lines[0].recordedAt = "2026-09-02T15:59:59Z";
+    refreshManifest(candidate, side);
+    bindDecisionsToCurrentPayloads(candidate);
+    refreshPartitionRoot(candidate);
+
+    const findings = validateThreeWayMatch(candidate, context);
+    assert.ok(
+      findings.some(
+        (finding) =>
+          finding.code === "invalid_source_revision" &&
+          finding.path === `/${side}Lines/0`,
+      ),
+      side,
+    );
+  }
 });
 
 test("integer quantity and minor-unit arithmetic rejects drift without tolerances", () => {
