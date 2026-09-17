@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 119,
-    "coveredCount": 119,
-    "recipeCount": 325,
-    "findingCodeCount": 421
+    "validatorCount": 121,
+    "coveredCount": 121,
+    "recipeCount": 331,
+    "findingCodeCount": 435
   },
   "entries": [
     {
@@ -5139,6 +5139,106 @@
             "plan_scope_mismatch",
             "scenario_projection_mismatch",
             "unbound_plan_approval"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "enterprise-license-entitlement-reconciler",
+      "recipes": [
+        {
+          "id": "semantic-invalid-handoff-1",
+          "operator": "replace",
+          "path": [
+            "artifactId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_handoff",
+            "invalid_round_digest"
+          ]
+        },
+        {
+          "id": "semantic-invalid-authority-grant-2",
+          "operator": "replace",
+          "path": [
+            "round",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_authority_grant",
+            "invalid_destination_approval",
+            "invalid_evidence_binding",
+            "invalid_handoff",
+            "invalid_human_decision",
+            "invalid_reconciliation_authority",
+            "invalid_round_digest",
+            "invalid_source_authority"
+          ]
+        },
+        {
+          "id": "semantic-invalid-handoff-3",
+          "operator": "replace",
+          "path": [
+            "round",
+            "predecessorRoundRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_handoff",
+            "invalid_round_digest",
+            "invalid_trust_root"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "benefits-realization-manager",
+      "recipes": [
+        {
+          "id": "semantic-invalid-source-authority-1",
+          "operator": "replace",
+          "path": [
+            "request",
+            "ledgerId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid-source-authority"
+          ]
+        },
+        {
+          "id": "semantic-invalid-source-authority-2",
+          "operator": "replace",
+          "path": [
+            "request",
+            "cutoffAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid-source-authority",
+            "invalid-validation-context"
+          ]
+        },
+        {
+          "id": "semantic-invalid-attribution-binding-3",
+          "operator": "replace",
+          "path": [
+            "request",
+            "cutoffAt"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid-attribution-binding",
+            "invalid-caller-window",
+            "invalid-disbenefit-profile",
+            "invalid-evidence-authority-or-chronology",
+            "invalid-finance-close",
+            "invalid-owner-authority",
+            "invalid-plan-lineage",
+            "invalid-shared-kpi-chronology",
+            "invalid-source-authority"
           ]
         }
       ]

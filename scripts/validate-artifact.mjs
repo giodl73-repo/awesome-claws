@@ -8,7 +8,7 @@ import {
 const [id, input, ...args] = process.argv.slice(2);
 const semanticOptions = {};
 const usage =
-  "Usage: npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>] [--trust-keys <keys.json>] [--approved-plan-public-keys <keys.json>] [--approved-plan-metric-digests <digests.json>]";
+  "Usage: npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>] [--license-trust-root <trust-root.json>] [--trust-store <trust.json>] [--source-bundle <sources.json>] [--trust-keys <keys.json>] [--approved-plan-public-keys <keys.json>] [--approved-plan-metric-digests <digests.json>]";
 for (let index = 0; index < args.length; index += 2) {
   const flag = args[index];
   const argument = args[index + 1];
@@ -16,6 +16,9 @@ for (let index = 0; index < args.length; index += 2) {
     !argument ||
     ![
       "--as-of",
+      "--license-trust-root",
+      "--trust-store",
+      "--source-bundle",
       "--trust-keys",
       "--approved-plan-public-keys",
       "--approved-plan-metric-digests",
@@ -26,17 +29,15 @@ for (let index = 0; index < args.length; index += 2) {
   if (flag === "--as-of") {
     semanticOptions.asOf = argument;
   } else if (flag === "--trust-keys") {
-    const trustConfiguration = JSON.parse(
-      await readFile(resolve(argument), "utf8"),
-    );
+    const content = await readFile(resolve(argument));
+    const trustConfiguration = JSON.parse(content.toString("utf8"));
     if (!Array.isArray(trustConfiguration)) {
       throw new Error("--trust-keys must reference a JSON array.");
     }
     semanticOptions.trustedGovernanceKeys = trustConfiguration;
   } else {
-    const trustConfiguration = JSON.parse(
-      await readFile(resolve(argument), "utf8"),
-    );
+    const content = await readFile(resolve(argument));
+    const trustConfiguration = JSON.parse(content.toString("utf8"));
     if (
       !trustConfiguration ||
       typeof trustConfiguration !== "object" ||
@@ -44,7 +45,14 @@ for (let index = 0; index < args.length; index += 2) {
     ) {
       throw new Error(`${flag} must reference a JSON object.`);
     }
-    if (flag === "--approved-plan-public-keys") {
+    if (flag === "--license-trust-root") {
+      semanticOptions.licenseTrustRoot = trustConfiguration;
+    } else if (flag === "--trust-store") {
+      semanticOptions.trustStore = trustConfiguration;
+    } else if (flag === "--source-bundle") {
+      semanticOptions.sourceBundle = trustConfiguration;
+      semanticOptions.sourceBundleByteLength = content.length;
+    } else if (flag === "--approved-plan-public-keys") {
       semanticOptions.approvedPlanPublicKeys = trustConfiguration;
     } else {
       semanticOptions.approvedPlanMetricDigests = trustConfiguration;

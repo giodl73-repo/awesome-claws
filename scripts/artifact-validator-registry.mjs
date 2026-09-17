@@ -13,6 +13,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "backup-restore-verification-coordinator": "backup-restore-verification.schema.json",
   "business-continuity-program-manager": "business-continuity-program.schema.json",
   "benefits-open-enrollment-planner": "benefits-enrollment.schema.json",
+  "benefits-realization-manager": "benefits-realization-ledger.schema.json",
   "care-circle-coordinator": "care-circle.schema.json",
   "case-continuity-coordinator": "case-checkpoint.schema.json",
   "certification-renewal-planner": "certification-renewal.schema.json",
@@ -35,6 +36,8 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "delegation-coordinator": "delegation-ledger.schema.json",
   "document-intake-analyst": "document-intake.schema.json",
   "document-renewal-tracker": "document-renewal.schema.json",
+  "enterprise-license-entitlement-reconciler":
+    "license-entitlement-reconciliation.schema.json",
   "event-operations-director": "run-of-show.schema.json",
   "executive-assistant": "executive-commitment-ledger.schema.json",
   "executive-briefing": "executive-briefing-snapshot.schema.json",

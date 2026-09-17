@@ -1,0 +1,979 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/benefits-realization-ledger.schema.json",
+  "title": "Benefits realization plan revision ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "plan",
+    "predecessor",
+    "request",
+    "principals",
+    "kpis",
+    "benefits",
+    "allocationRules",
+    "attributions",
+    "financeReview",
+    "evidence",
+    "sourceAuthority"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.benefitsRealizationLedger.v1"
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "predecessorRevision",
+        "ownerRef",
+        "approvedAt",
+        "state"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "predecessorRevision": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 1
+            }
+          ]
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "state": {
+          "const": "owner-approved"
+        }
+      }
+    },
+    "predecessor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "state",
+        "ledgerRef",
+        "ledgerSourceVersion",
+        "ledgerContentDigest",
+        "revision",
+        "periodEnd",
+        "observedAt",
+        "benefitCount",
+        "transitions",
+        "evidenceRefs",
+        "recordDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "linked",
+            "first-plan"
+          ]
+        },
+        "ledgerRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/controlledRef"
+            }
+          ]
+        },
+        "ledgerContentDigest": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/digest"
+            }
+          ]
+        },
+        "ledgerSourceVersion": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/text"
+            }
+          ]
+        },
+        "revision": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 1
+            }
+          ]
+        },
+        "periodEnd": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "format": "date"
+            }
+          ]
+        },
+        "observedAt": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/timestamp"
+            }
+          ]
+        },
+        "benefitCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 64
+        },
+        "transitions": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "predecessorBenefitRef",
+              "currentBenefitRef",
+              "disposition",
+              "decidedByRef",
+              "decidedAt",
+              "evidenceRefs",
+              "recordDigest"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "predecessorBenefitRef": {
+                "$ref": "#/$defs/id"
+              },
+              "currentBenefitRef": {
+                "$ref": "#/$defs/nullableId"
+              },
+              "disposition": {
+                "enum": [
+                  "continued",
+                  "superseded",
+                  "retired"
+                ]
+              },
+              "decidedByRef": {
+                "$ref": "#/$defs/id"
+              },
+              "decidedAt": {
+                "$ref": "#/$defs/timestamp"
+              },
+              "evidenceRefs": {
+                "$ref": "#/$defs/nonEmptyIdList"
+              },
+              "recordDigest": {
+                "$ref": "#/$defs/digest"
+              }
+            }
+          }
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ledgerId",
+        "periodStart",
+        "periodEnd",
+        "cutoffAt",
+        "currency",
+        "minorUnitScale"
+      ],
+      "properties": {
+        "ledgerId": {
+          "$ref": "#/$defs/id"
+        },
+        "periodStart": {
+          "type": "string",
+          "format": "date"
+        },
+        "periodEnd": {
+          "type": "string",
+          "format": "date"
+        },
+        "cutoffAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "minorUnitScale": {
+          "const": 100
+        }
+      }
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "role",
+          "humanIdentityRef",
+          "authoritySourceRef",
+          "authorityObservedAt"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "name": {
+            "$ref": "#/$defs/text"
+          },
+          "kind": {
+            "const": "human"
+          },
+          "role": {
+            "enum": [
+              "benefit-owner",
+              "metric-owner",
+              "finance-owner"
+            ]
+          },
+          "humanIdentityRef": {
+            "$ref": "#/$defs/controlledRef"
+          },
+          "authoritySourceRef": {
+            "$ref": "#/$defs/controlledRef"
+          },
+          "authorityObservedAt": {
+            "$ref": "#/$defs/timestamp"
+          }
+        }
+      }
+    },
+    "kpis": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "unit",
+          "direction",
+          "ownerRef",
+          "baseline",
+          "target",
+          "observed",
+          "evidenceRefs",
+          "recordDigest"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "name": {
+            "$ref": "#/$defs/text"
+          },
+          "unit": {
+            "$ref": "#/$defs/text"
+          },
+          "direction": {
+            "enum": [
+              "increase",
+              "decrease"
+            ]
+          },
+          "ownerRef": {
+            "$ref": "#/$defs/id"
+          },
+          "baseline": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "valueMinor",
+              "asOf"
+            ],
+            "properties": {
+              "valueMinor": {
+                "$ref": "#/$defs/minorUnits"
+              },
+              "asOf": {
+                "$ref": "#/$defs/timestamp"
+              }
+            }
+          },
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "valueMinor",
+              "approvedAt",
+              "dueAt"
+            ],
+            "properties": {
+              "valueMinor": {
+                "$ref": "#/$defs/minorUnits"
+              },
+              "approvedAt": {
+                "$ref": "#/$defs/timestamp"
+              },
+              "dueAt": {
+                "$ref": "#/$defs/timestamp"
+              }
+            }
+          },
+          "observed": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "valueMinor",
+              "windowStart",
+              "windowEnd",
+              "observedAt"
+            ],
+            "properties": {
+              "valueMinor": {
+                "$ref": "#/$defs/minorUnits"
+              },
+              "windowStart": {
+                "type": "string",
+                "format": "date"
+              },
+              "windowEnd": {
+                "type": "string",
+                "format": "date"
+              },
+              "observedAt": {
+                "$ref": "#/$defs/timestamp"
+              }
+            }
+          },
+          "evidenceRefs": {
+            "$ref": "#/$defs/nonEmptyIdList"
+          },
+          "recordDigest": {
+            "$ref": "#/$defs/digest"
+          }
+        }
+      }
+    },
+    "benefits": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "benefit"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "minContains": 1
+        }
+      ],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "ownerRef",
+          "profileApprovedAt",
+          "lifecycle",
+          "metricRef",
+          "allocationRuleRef",
+          "attributionRef",
+          "directMeasure",
+          "evidenceRefs",
+          "recordDigest"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "name": {
+            "$ref": "#/$defs/text"
+          },
+          "kind": {
+            "enum": [
+              "benefit",
+              "disbenefit"
+            ]
+          },
+          "ownerRef": {
+            "$ref": "#/$defs/id"
+          },
+          "profileApprovedAt": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "lifecycle": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "state",
+              "origin",
+              "predecessorBenefitRef"
+            ],
+            "properties": {
+              "state": {
+                "const": "active"
+              },
+              "origin": {
+                "enum": [
+                  "new",
+                  "continued",
+                  "superseding"
+                ]
+              },
+              "predecessorBenefitRef": {
+                "$ref": "#/$defs/nullableId"
+              }
+            }
+          },
+          "metricRef": {
+            "$ref": "#/$defs/nullableId"
+          },
+          "allocationRuleRef": {
+            "$ref": "#/$defs/nullableId"
+          },
+          "attributionRef": {
+            "$ref": "#/$defs/nullableId"
+          },
+          "directMeasure": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "baselineMinor",
+                  "targetMinor",
+                  "observedMinor",
+                  "observedAt"
+                ],
+                "properties": {
+                  "baselineMinor": {
+                    "$ref": "#/$defs/minorUnits"
+                  },
+                  "targetMinor": {
+                    "$ref": "#/$defs/minorUnits"
+                  },
+                  "observedMinor": {
+                    "$ref": "#/$defs/minorUnits"
+                  },
+                  "observedAt": {
+                    "$ref": "#/$defs/timestamp"
+                  }
+                }
+              }
+            ]
+          },
+          "evidenceRefs": {
+            "$ref": "#/$defs/nonEmptyIdList"
+          },
+          "recordDigest": {
+            "$ref": "#/$defs/digest"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "benefit"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "properties": {
+                "metricRef": {
+                  "$ref": "#/$defs/id"
+                },
+                "allocationRuleRef": {
+                  "$ref": "#/$defs/id"
+                },
+                "attributionRef": {
+                  "$ref": "#/$defs/id"
+                },
+                "directMeasure": {
+                  "type": "null"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "metricRef": {
+                  "type": "null"
+                },
+                "allocationRuleRef": {
+                  "type": "null"
+                },
+                "attributionRef": {
+                  "type": "null"
+                },
+                "directMeasure": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "allocationRules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "metricRef",
+          "method",
+          "effectivePeriodStart",
+          "effectivePeriodEnd",
+          "allocations",
+          "approvedByRefs",
+          "approvedAt",
+          "evidenceRefs",
+          "recordDigest"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "metricRef": {
+            "$ref": "#/$defs/id"
+          },
+          "method": {
+            "const": "fixed-basis-points-largest-remainder"
+          },
+          "effectivePeriodStart": {
+            "type": "string",
+            "format": "date"
+          },
+          "effectivePeriodEnd": {
+            "type": "string",
+            "format": "date"
+          },
+          "allocations": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 16,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "benefitRef",
+                "basisPoints"
+              ],
+              "properties": {
+                "benefitRef": {
+                  "$ref": "#/$defs/id"
+                },
+                "basisPoints": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10000
+                }
+              }
+            }
+          },
+          "approvedByRefs": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/id"
+            }
+          },
+          "approvedAt": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/id"
+            }
+          },
+          "recordDigest": {
+            "$ref": "#/$defs/digest"
+          }
+        }
+      }
+    },
+    "attributions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "benefitRef",
+          "metricRef",
+          "allocationRuleRef",
+          "method",
+          "status",
+          "assessedAt",
+          "causalClaim",
+          "evidenceRefs",
+          "recordDigest"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "benefitRef": {
+            "$ref": "#/$defs/id"
+          },
+          "metricRef": {
+            "$ref": "#/$defs/id"
+          },
+          "allocationRuleRef": {
+            "$ref": "#/$defs/id"
+          },
+          "method": {
+            "const": "allocated-directional-kpi-delta"
+          },
+          "status": {
+            "enum": [
+              "supported",
+              "unsupported"
+            ]
+          },
+          "assessedAt": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "causalClaim": {
+            "const": false
+          },
+          "evidenceRefs": {
+            "$ref": "#/$defs/idList"
+          },
+          "recordDigest": {
+            "$ref": "#/$defs/digest"
+          }
+        }
+      }
+    },
+    "financeReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ownerRef",
+        "reviewedAt",
+        "evidenceRefs",
+        "recordDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "reviewedAt": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/timestamp"
+            }
+          ]
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "subjectType",
+          "subjectRef",
+          "subjectRecordDigest",
+          "sourceRef",
+          "sourceVersion",
+          "sourceContentDigest",
+          "sourceAuthorityRef",
+          "observedAt",
+          "suppliedByRef",
+          "bindingDigest"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "kind": {
+            "enum": [
+              "metric-baseline",
+              "predecessor-ledger",
+              "metric-target-approval",
+              "metric-observation",
+              "benefit-profile",
+              "disbenefit-observation",
+              "allocation-approval",
+              "attribution-support",
+              "lifecycle-decision",
+              "finance-reconciliation"
+            ]
+          },
+          "subjectType": {
+            "enum": [
+              "kpi",
+              "predecessor-ledger",
+              "benefit",
+              "allocation-rule",
+              "attribution",
+              "predecessor-transition",
+              "finance-review"
+            ]
+          },
+          "subjectRef": {
+            "$ref": "#/$defs/id"
+          },
+          "subjectRecordDigest": {
+            "$ref": "#/$defs/digest"
+          },
+          "sourceRef": {
+            "$ref": "#/$defs/controlledRef"
+          },
+          "sourceVersion": {
+            "$ref": "#/$defs/text"
+          },
+          "sourceContentDigest": {
+            "$ref": "#/$defs/digest"
+          },
+          "sourceAuthorityRef": {
+            "$ref": "#/$defs/id"
+          },
+          "observedAt": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "suppliedByRef": {
+            "$ref": "#/$defs/id"
+          },
+          "bindingDigest": {
+            "$ref": "#/$defs/digest"
+          }
+        }
+      }
+    },
+    "sourceAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ownerRef",
+        "manifestVersion",
+        "issuedAt",
+        "records",
+        "signingKeyId",
+        "signature"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "manifestVersion": {
+          "$ref": "#/$defs/text"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "records": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "evidenceRef",
+              "subjectType",
+              "subjectRef",
+              "subjectRecordDigest",
+              "sourceRef",
+              "sourceVersion",
+              "sourceContentDigest",
+              "suppliedByRef"
+            ],
+            "properties": {
+              "evidenceRef": {
+                "$ref": "#/$defs/id"
+              },
+              "subjectType": {
+                "enum": [
+                  "kpi",
+                  "predecessor-ledger",
+                  "benefit",
+                  "allocation-rule",
+                  "attribution",
+                  "predecessor-transition",
+                  "finance-review"
+                ]
+              },
+              "subjectRef": {
+                "$ref": "#/$defs/id"
+              },
+              "subjectRecordDigest": {
+                "$ref": "#/$defs/digest"
+              },
+              "sourceRef": {
+                "$ref": "#/$defs/controlledRef"
+              },
+              "sourceVersion": {
+                "$ref": "#/$defs/text"
+              },
+              "sourceContentDigest": {
+                "$ref": "#/$defs/digest"
+              },
+              "suppliedByRef": {
+                "$ref": "#/$defs/id"
+              }
+            }
+          }
+        },
+        "signingKeyId": {
+          "$ref": "#/$defs/id"
+        },
+        "signature": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/]{86}==$"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "nullableId": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/id"
+        }
+      ]
+    },
+    "idList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "nonEmptyIdList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "controlledRef": {
+      "type": "string",
+      "pattern": "^controlled://.+"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "minorUnits": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    }
+  }
+}

@@ -1,0 +1,43 @@
+<style>
+.elr{padding:24px;background:#f4f7fb;color:#14233b;font:15px/1.45 "Segoe UI",Arial,sans-serif}.elr *{box-sizing:border-box}.elr header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.elr h1{font-size:27px;margin:0}.elr h2{font-size:18px;margin:0 0 12px}.elr .sub{color:#596a82;margin:6px 0 0}.elr .state{background:#e8f5ee;border:1px solid #68a984;color:#17643b;border-radius:8px;padding:10px 14px;font-weight:800}.elr .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.elr article,.elr section{background:#fff;border:1px solid #d5deea;border-radius:9px}.elr article{padding:15px}.elr small{display:block;color:#64748b;font-weight:800;letter-spacing:.04em}.elr strong{display:block;font-size:26px;margin-top:5px}.elr .grid{display:grid;grid-template-columns:1.35fr .65fr;gap:14px}.elr section{padding:17px}.elr table{width:100%;border-collapse:collapse}.elr th,.elr td{text-align:left;border-bottom:1px solid #e5eaf1;padding:9px 7px}.elr th{font-size:11px;color:#65748a;text-transform:uppercase}.elr .over{color:#a6352b;font-weight:800}.elr .available{color:#315f8b;font-weight:800}.elr .chip{display:inline-block;border-radius:999px;padding:3px 9px;background:#e7effa;color:#285987;font-size:12px;font-weight:700}.elr ul{margin:0;padding-left:20px}.elr li+li{margin-top:9px}.elr footer{margin-top:14px;padding:15px;background:#14233b;color:#fff;border-radius:9px}.elr footer strong{display:inline;color:#ffd78a;font-size:15px}@media(max-width:760px){.elr{padding:14px}.elr header,.elr .grid{display:block}.elr .state,.elr section+section{margin-top:12px}.elr .metrics{grid-template-columns:1fr 1fr}.elr table,.elr tbody,.elr tr,.elr td{display:block;width:100%}.elr thead{display:none}.elr tr{padding:8px 0;border-bottom:1px solid #d5deea}.elr td{border:0;padding:4px 0}}
+</style>
+<main class="elr" aria-labelledby="elr-title">
+  <header>
+    <div>
+      <h1 id="elr-title">Enterprise license position review</h1>
+      <p class="sub">Northwind · EA-204 · LP-2026 · 1–31 Aug 2026 · cutoff 1 Sep 2026 00:00 UTC</p>
+    </div>
+    <div class="state">Ready for owner review</div>
+  </header>
+  <div class="metrics" aria-label="Reconciliation totals">
+    <article><small>PURCHASED RIGHTS</small><strong>180</strong><span>owner-mapped units</span></article>
+    <article><small>ASSIGNED</small><strong>165</strong><span>complete export</span></article>
+    <article><small>MEASURED</small><strong>172</strong><span>fixed period</span></article>
+    <article><small>EXCEPTIONS</small><strong>3</strong><span>3 human decisions</span></article>
+  </div>
+  <div class="grid">
+    <section aria-labelledby="positions-title">
+      <h2 id="positions-title">Rights, assignments, and consumption by pool</h2>
+      <table>
+        <thead><tr><th>Pool</th><th>Entitled</th><th>Assigned</th><th>Consumed</th><th>Position</th></tr></thead>
+        <tbody>
+          <tr><td>Productivity · HQ</td><td>80</td><td>70</td><td>68</td><td class="available">10 / 12 available</td></tr>
+          <tr><td>Productivity · Field</td><td>40</td><td>45</td><td>41</td><td class="over">5 / 1 over</td></tr>
+          <tr><td>Analytics</td><td>60</td><td>50</td><td>63</td><td class="over">3 consumption over</td></tr>
+        </tbody>
+      </table>
+      <p class="sub">All quantities use the owner-supplied v7 SKU mapping at an exact 1:1 integer conversion. No effective access or effective usage was inferred.</p>
+    </section>
+    <section aria-labelledby="authority-title">
+      <h2 id="authority-title">Trust and authority</h2>
+      <ul>
+        <li><span class="chip">Rights v4</span> named source owner</li>
+        <li><span class="chip">SKU mapping v7</span> separate named source owner</li>
+        <li><span class="chip">Round r2</span> predecessor is lineage only</li>
+        <li><span class="chip">3 decisions</span> fresh exact-exception grants</li>
+        <li><span class="chip">11 records</span> reciprocal evidence lineage</li>
+      </ul>
+    </section>
+  </div>
+  <footer><strong>Authority boundary:</strong> no purchase, assignment, revocation, renewal, account mutation, true-up submission, effective-access inference, effective-usage inference, recommendation, or compliance declaration. Review the same evidence in <code>outputs/license-position-review.md</code>.</footer>
+</main>

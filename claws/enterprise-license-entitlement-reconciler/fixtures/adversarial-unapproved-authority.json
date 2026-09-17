@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "awesomeClaws.adversarialMutation.v1",
+  "baseFixture": "fixtures/license-entitlement-reconciliation.example.json",
+  "mutation": {
+    "operator": "replace",
+    "path": [
+      "decisions",
+      0,
+      "reviewedByRef"
+    ],
+    "value": "principal-dana-approver"
+  },
+  "expectedFindingCodes": [
+    "invalid_evidence_binding",
+    "invalid_human_decision"
+  ]
+}

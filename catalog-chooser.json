@@ -236,6 +236,43 @@
       }
     },
     {
+      "id": "benefits-realization-manager",
+      "name": "Benefits realization manager",
+      "description": "Closes one owner-approved benefits-plan revision against exact KPI observations, allocation rules, disbenefits, and source evidence without claiming causality or exercising benefit, metric, finance, or source-system authority.",
+      "audience": "Benefits owners, transformation offices, finance partners, portfolio teams, and accountable metric owners reviewing a bounded realization period.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-16"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "business-continuity-program-manager",
       "name": "Business Continuity Program Manager",
       "description": "Maintains one exact owner-supplied critical-process universe through recurring business-impact analysis, owner-approved recovery requirements, dependency mapping, continuity-plan revisions, exercises, findings, corrective actions, exceptions, and independent recertification without declaring disasters, invoking plans, executing recovery, accepting risk, or certifying readiness.",
@@ -1005,6 +1042,43 @@
         "level": "standard",
         "reasons": [
           "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "enterprise-license-entitlement-reconciler",
+      "name": "Enterprise License Entitlement Reconciler",
+      "description": "Reconciles one organization's versioned owner-supplied license rights and SKU mapping against assigned entitlements and measured consumption for one agreement, license program, fixed period, cutoff, and review round without interpreting contracts or changing licenses or accounts.",
+      "audience": "Authorized software-asset, licensing-operations, procurement-operations, finance-operations, and business owners preparing a bounded license-position review from approved exports.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-15"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
         ]
       }
     },
