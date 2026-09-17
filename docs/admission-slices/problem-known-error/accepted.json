@@ -96,7 +96,7 @@
       "kind": "incident-membership-declaration",
       "trust": "controlled-owner",
       "subjectRef": "membership-inc-001",
-      "subjectRevision": "sha256:821f08fa18f20dc14f05ebef0bc26b3948634b2a7b8c7d135721566824b30369",
+      "subjectRevision": "sha256:6c8aafb789dd2c83b464e68c96a8d16a45bc80a2a63c62524f4abe0bdb2c6001",
       "producedByRef": "principal-problem-owner",
       "sourceRef": "controlled://problem/checkout-timeout/memberships/inc-001",
       "recordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000001",
@@ -107,7 +107,7 @@
       "kind": "incident-membership-declaration",
       "trust": "controlled-owner",
       "subjectRef": "membership-inc-002",
-      "subjectRevision": "sha256:555cef86f8a820641e6e813aae28ee708649515ad30fc8c969edb0648aba1e3a",
+      "subjectRevision": "sha256:f72800697bb2bdd13c40e2d89cdec396bb2ea3a338da1b9529236d71f3b54042",
       "producedByRef": "principal-problem-owner",
       "sourceRef": "controlled://problem/checkout-timeout/memberships/inc-002",
       "recordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000002",
@@ -118,11 +118,11 @@
       "kind": "incident-membership-declaration",
       "trust": "controlled-owner",
       "subjectRef": "membership-inc-003",
-      "subjectRevision": "sha256:b47af3fc887e4d92af64440f04dcab43b9b624e5f6311fb2ebe09755c94f9843",
+      "subjectRevision": "sha256:032722f73a47ca7097ed80c070e97797a895dfe264dde8a02c7012ecb0fc76cb",
       "producedByRef": "principal-problem-owner",
       "sourceRef": "controlled://problem/checkout-timeout/memberships/inc-003",
       "recordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000003",
-      "observedAt": "2026-08-13T09:03:00Z"
+      "observedAt": "2026-08-18T14:32:00Z"
     },
     {
       "id": "evidence-incident-inc-001",
@@ -155,7 +155,18 @@
       "producedByRef": "principal-public-status",
       "sourceRef": "https://status.contoso.example/incidents/inc-003",
       "recordDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000003",
-      "observedAt": "2026-08-12T14:30:00Z"
+      "observedAt": "2026-08-18T14:30:00Z"
+    },
+    {
+      "id": "evidence-incident-manifest-signature",
+      "kind": "incident-membership-manifest-signature",
+      "trust": "controlled-owner",
+      "subjectRef": "incident-manifest-checkout-timeout-r1",
+      "subjectRevision": "sha256:e0ea498fe57ea1ad80f8749ea298d89d4b4762f2c2840e90cd06d2e4319b102a",
+      "producedByRef": "principal-problem-owner",
+      "sourceRef": "controlled://problem/checkout-timeout/incident-manifest/r1",
+      "recordDigest": "sha256:1500000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-08-18T14:33:00Z"
     },
     {
       "id": "evidence-hypothesis-route-cache",
@@ -232,7 +243,7 @@
       "producedByRef": "principal-change-owner",
       "sourceRef": "controlled://changes/chg-4821/execution/receipt",
       "recordDigest": "sha256:7100000000000000000000000000000000000000000000000000000000000001",
-      "observedAt": "2026-08-01T18:20:00Z"
+      "observedAt": "2026-08-17T10:00:00Z"
     },
     {
       "id": "evidence-change-verification",
@@ -243,40 +254,40 @@
       "producedByRef": "principal-test-owner",
       "sourceRef": "controlled://qa/changes/chg-4821/verification",
       "recordDigest": "sha256:7100000000000000000000000000000000000000000000000000000000000002",
-      "observedAt": "2026-08-01T18:45:00Z"
+      "observedAt": "2026-08-17T10:05:00Z"
     },
     {
       "id": "evidence-problem-change-link",
       "kind": "problem-change-link",
       "trust": "controlled-owner",
       "subjectRef": "change-receipt-chg-4821",
-      "subjectRevision": "sha256:63b732e0e7a62a2db76eb8001525370a34c52a64ab966b2c58929ff997b824c6",
+      "subjectRevision": "sha256:7df27a16f540fea86452cc77a30d3eb6fd674b2d01295bc08dcb5e054b84a451",
       "producedByRef": "principal-problem-owner",
       "sourceRef": "controlled://problem/checkout-timeout/change-links/chg-4821",
       "recordDigest": "sha256:7200000000000000000000000000000000000000000000000000000000000001",
-      "observedAt": "2026-08-13T09:10:00Z"
+      "observedAt": "2026-08-17T10:10:00Z"
     },
     {
       "id": "evidence-recurrence-inc-003",
       "kind": "recurrence-observation",
       "trust": "controlled-owner",
       "subjectRef": "recurrence-after-chg-4821",
-      "subjectRevision": "sha256:ed433b7e8dff4fe953be2c01a2e00bb7fd3e1d93831004f184ac203b18e06c0e",
+      "subjectRevision": "sha256:147236dbd32dce165808f85cf8ed81742432551a23b1cb28350e0b6132b4c3dd",
       "producedByRef": "principal-incident-system",
       "sourceRef": "controlled://incidents/inc-003/recurrence-observation",
       "recordDigest": "sha256:8000000000000000000000000000000000000000000000000000000000000001",
-      "observedAt": "2026-08-12T14:10:00Z"
+      "observedAt": "2026-08-18T14:35:00Z"
     }
   ],
   "incidentMemberships": [
     {
       "id": "membership-inc-001",
-      "revision": "sha256:821f08fa18f20dc14f05ebef0bc26b3948634b2a7b8c7d135721566824b30369",
+      "revision": "sha256:6c8aafb789dd2c83b464e68c96a8d16a45bc80a2a63c62524f4abe0bdb2c6001",
       "problemRevision": "sha256:cd6002664d57089dc18c8c88f65c4cc654643bf626d8deabc9816f6472b3b37b",
       "incidentRef": "incident-inc-001",
       "incidentRevision": "sha256:2000000000000000000000000000000000000000000000000000000000000001",
       "followUpRef": "follow-up-inc-001-timeout",
-      "followUpIdentityKey": "sha256:2200000000000000000000000000000000000000000000000000000000000001",
+      "followUpIdentityKey": "sha256:4b7c9bd464af25197ca45f3bc4ccc8c48f9e31d5dd0e2a4eaa826e8d5774d2e8",
       "declaredByRef": "principal-problem-owner",
       "declarationEvidenceRef": "evidence-membership-inc-001",
       "incidentRecordEvidenceRef": "evidence-incident-inc-001",
@@ -285,12 +296,12 @@
     },
     {
       "id": "membership-inc-002",
-      "revision": "sha256:555cef86f8a820641e6e813aae28ee708649515ad30fc8c969edb0648aba1e3a",
+      "revision": "sha256:f72800697bb2bdd13c40e2d89cdec396bb2ea3a338da1b9529236d71f3b54042",
       "problemRevision": "sha256:cd6002664d57089dc18c8c88f65c4cc654643bf626d8deabc9816f6472b3b37b",
       "incidentRef": "incident-inc-002",
       "incidentRevision": "sha256:2000000000000000000000000000000000000000000000000000000000000002",
       "followUpRef": "follow-up-inc-002-timeout",
-      "followUpIdentityKey": "sha256:2200000000000000000000000000000000000000000000000000000000000002",
+      "followUpIdentityKey": "sha256:c2f45e91b9ef77629b94dede7ac7132465e6d28d7505133d92aaf61ce2a58574",
       "declaredByRef": "principal-problem-owner",
       "declarationEvidenceRef": "evidence-membership-inc-002",
       "incidentRecordEvidenceRef": "evidence-incident-inc-002",
@@ -299,19 +310,33 @@
     },
     {
       "id": "membership-inc-003",
-      "revision": "sha256:b47af3fc887e4d92af64440f04dcab43b9b624e5f6311fb2ebe09755c94f9843",
+      "revision": "sha256:032722f73a47ca7097ed80c070e97797a895dfe264dde8a02c7012ecb0fc76cb",
       "problemRevision": "sha256:cd6002664d57089dc18c8c88f65c4cc654643bf626d8deabc9816f6472b3b37b",
       "incidentRef": "incident-inc-003",
       "incidentRevision": "sha256:2000000000000000000000000000000000000000000000000000000000000003",
       "followUpRef": "follow-up-inc-003-timeout",
-      "followUpIdentityKey": "sha256:2200000000000000000000000000000000000000000000000000000000000003",
+      "followUpIdentityKey": "sha256:df48ce2d1f659e0ae57aa0c8fa2906bec49163cdd507b1295748d38c2f779de1",
       "declaredByRef": "principal-problem-owner",
       "declarationEvidenceRef": "evidence-membership-inc-003",
       "incidentRecordEvidenceRef": "evidence-public-status-inc-003",
-      "declaredAt": "2026-08-13T09:03:00Z",
+      "declaredAt": "2026-08-18T14:32:00Z",
       "state": "declared-by-owner"
     }
   ],
+  "incidentManifest": {
+    "id": "incident-manifest-checkout-timeout-r1",
+    "revision": "sha256:e0ea498fe57ea1ad80f8749ea298d89d4b4762f2c2840e90cd06d2e4319b102a",
+    "problemRevision": "sha256:cd6002664d57089dc18c8c88f65c4cc654643bf626d8deabc9816f6472b3b37b",
+    "membershipRevisionRefs": [
+      "sha256:032722f73a47ca7097ed80c070e97797a895dfe264dde8a02c7012ecb0fc76cb",
+      "sha256:6c8aafb789dd2c83b464e68c96a8d16a45bc80a2a63c62524f4abe0bdb2c6001",
+      "sha256:f72800697bb2bdd13c40e2d89cdec396bb2ea3a338da1b9529236d71f3b54042"
+    ],
+    "signedByRef": "principal-problem-owner",
+    "signatureEvidenceRef": "evidence-incident-manifest-signature",
+    "signedAt": "2026-08-18T14:33:00Z",
+    "state": "owner-signed"
+  },
   "hypotheses": [
     {
       "id": "hypothesis-route-cache-r2",
@@ -424,15 +449,15 @@
   "changeReceipts": [
     {
       "id": "change-receipt-chg-4821",
-      "revision": "sha256:63b732e0e7a62a2db76eb8001525370a34c52a64ab966b2c58929ff997b824c6",
+      "revision": "sha256:7df27a16f540fea86452cc77a30d3eb6fd674b2d01295bc08dcb5e054b84a451",
       "problemRevision": "sha256:cd6002664d57089dc18c8c88f65c4cc654643bf626d8deabc9816f6472b3b37b",
       "changePlanRef": "change-plan-chg-4821",
       "planDigest": "sha256:7000000000000000000000000000000000000000000000000000000000000001",
       "executionReceiptRef": "evidence-change-execution",
       "linkEvidenceRef": "evidence-problem-change-link",
       "executedByRef": "principal-change-owner",
-      "executedAt": "2026-08-01T18:20:00Z",
-      "linkedAt": "2026-08-13T09:10:00Z",
+      "executedAt": "2026-08-17T10:00:00Z",
+      "linkedAt": "2026-08-17T10:10:00Z",
       "state": "owner-executed",
       "targetRefs": [
         "service-route-cache"
@@ -445,15 +470,15 @@
   "recurrences": [
     {
       "id": "recurrence-after-chg-4821",
-      "revision": "sha256:ed433b7e8dff4fe953be2c01a2e00bb7fd3e1d93831004f184ac203b18e06c0e",
+      "revision": "sha256:147236dbd32dce165808f85cf8ed81742432551a23b1cb28350e0b6132b4c3dd",
       "problemRevision": "sha256:cd6002664d57089dc18c8c88f65c4cc654643bf626d8deabc9816f6472b3b37b",
       "incidentMembershipRef": "membership-inc-003",
-      "incidentMembershipRevisionRef": "sha256:b47af3fc887e4d92af64440f04dcab43b9b624e5f6311fb2ebe09755c94f9843",
+      "incidentMembershipRevisionRef": "sha256:032722f73a47ca7097ed80c070e97797a895dfe264dde8a02c7012ecb0fc76cb",
       "changeReceiptRef": "change-receipt-chg-4821",
-      "changeReceiptRevisionRef": "sha256:63b732e0e7a62a2db76eb8001525370a34c52a64ab966b2c58929ff997b824c6",
+      "changeReceiptRevisionRef": "sha256:7df27a16f540fea86452cc77a30d3eb6fd674b2d01295bc08dcb5e054b84a451",
       "evidenceRef": "evidence-recurrence-inc-003",
       "observedByRef": "principal-incident-system",
-      "observedAt": "2026-08-12T14:10:00Z",
+      "observedAt": "2026-08-18T14:35:00Z",
       "state": "observed-after-change"
     }
   ],
@@ -477,6 +502,7 @@
       "evidence-hypothesis-route-cache",
       "evidence-incident-inc-001",
       "evidence-incident-inc-002",
+      "evidence-incident-manifest-signature",
       "evidence-known-error-declaration",
       "evidence-membership-inc-001",
       "evidence-membership-inc-002",
@@ -493,6 +519,7 @@
       "membership-inc-002",
       "membership-inc-003"
     ],
+    "incidentManifestRevisionRef": "sha256:e0ea498fe57ea1ad80f8749ea298d89d4b4762f2c2840e90cd06d2e4319b102a",
     "hypothesisRevisionRefs": [
       "sha256:7d6ffd9e2fa54b2ae8c99ce2633c8f90edda91e94836b806042a445c7507c7be",
       "sha256:bc35276ae29c15a00b1e8cd9b0eb257904348a5e45c43b916e8ee12ead2b4c34"

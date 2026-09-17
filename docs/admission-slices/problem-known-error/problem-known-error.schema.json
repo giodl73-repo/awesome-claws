@@ -10,6 +10,7 @@
     "principals",
     "evidence",
     "incidentMemberships",
+    "incidentManifest",
     "hypotheses",
     "tests",
     "workarounds",
@@ -37,7 +38,8 @@
     },
     "evidence": {
       "type": "array",
-      "minItems": 16,
+      "minItems": 17,
+      "maxItems": 64,
       "uniqueItems": true,
       "items": {
         "$ref": "#/$defs/evidence"
@@ -51,6 +53,9 @@
       "items": {
         "$ref": "#/$defs/incidentMembership"
       }
+    },
+    "incidentManifest": {
+      "$ref": "#/$defs/incidentManifest"
     },
     "hypotheses": {
       "type": "array",
@@ -115,6 +120,7 @@
   "$defs": {
     "id": {
       "type": "string",
+      "maxLength": 128,
       "pattern": "^[a-z0-9][a-z0-9._:-]*$"
     },
     "digest": {
@@ -127,11 +133,13 @@
     },
     "nonEmptyString": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "maxLength": 4096
     },
     "idList": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 256,
       "uniqueItems": true,
       "items": {
         "$ref": "#/$defs/id"
@@ -140,6 +148,7 @@
     "digestList": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 256,
       "uniqueItems": true,
       "items": {
         "$ref": "#/$defs/digest"
@@ -248,6 +257,7 @@
         "kind": {
           "enum": [
             "incident-membership-declaration",
+            "incident-membership-manifest-signature",
             "incident-record",
             "public-observation",
             "hypothesis-observation",
@@ -340,6 +350,46 @@
         },
         "state": {
           "const": "declared-by-owner"
+        }
+      }
+    },
+    "incidentManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "problemRevision",
+        "membershipRevisionRefs",
+        "signedByRef",
+        "signatureEvidenceRef",
+        "signedAt",
+        "state"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "problemRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "membershipRevisionRefs": {
+          "$ref": "#/$defs/digestList"
+        },
+        "signedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "signatureEvidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "signedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "state": {
+          "const": "owner-signed"
         }
       }
     },
@@ -705,6 +755,7 @@
         "principalRefs",
         "evidenceRefs",
         "incidentMembershipRefs",
+        "incidentManifestRevisionRef",
         "hypothesisRevisionRefs",
         "hypothesisDispositionRevisionRefs",
         "testRefs",
@@ -726,6 +777,9 @@
         },
         "incidentMembershipRefs": {
           "$ref": "#/$defs/idList"
+        },
+        "incidentManifestRevisionRef": {
+          "$ref": "#/$defs/digest"
         },
         "hypothesisRevisionRefs": {
           "$ref": "#/$defs/digestList"

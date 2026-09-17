@@ -2,112 +2,129 @@
   "schemaVersion": "awesomeClaws.problemKnownErrorPublicTrust.v1",
   "id": "public-trust-status-2026-09-16",
   "publisher": "Contoso public service status",
+  "issuer": {
+    "id": "issuer-awesome-claws-proof",
+    "displayName": "Awesome Claws proof trust issuer",
+    "keyRef": "https://awesome-claws.example/keys/problem-proof-v1"
+  },
   "authorityGrants": [
     {
       "principalRef": "principal-problem-owner",
-      "principalRecordDigest": "sha256:5aa162394b7caca8c67fab06ae9e02b4ddd799ffc27b59bb19e569dfccfbc37c"
+      "principalRecordDigest": "sha256:5aa162394b7caca8c67fab06ae9e02b4ddd799ffc27b59bb19e569dfccfbc37c",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": ["incident-membership-declarer", "problem-closure-authority", "problem-owner"],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:46bbbe64d5f8826b09304a45a7b9a736d3dce165e7c531c5b4c157b0611a0ba1"
     },
     {
       "principalRef": "principal-investigator",
-      "principalRecordDigest": "sha256:513784d93cf7b4d35d6bb61ddcb11ab407dd329fca33d23d7df1e288a5ad5294"
+      "principalRecordDigest": "sha256:513784d93cf7b4d35d6bb61ddcb11ab407dd329fca33d23d7df1e288a5ad5294",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": ["hypothesis-owner"],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:dbabdc4f3ddcea77b8e7c88870a554bfa77126abe4f22e1da71d27e4b8595a5e"
     },
     {
       "principalRef": "principal-test-owner",
-      "principalRecordDigest": "sha256:57d876aed7f866235aacd7f3141ec9ec7e3b9d50bd87da31745e708152524fb4"
+      "principalRecordDigest": "sha256:57d876aed7f866235aacd7f3141ec9ec7e3b9d50bd87da31745e708152524fb4",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": ["test-executor"],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:b5e3683262045c5e2a2ca06ad37fec67793cdb97514c997e585745be5f1569e1"
     },
     {
       "principalRef": "principal-workaround-owner",
-      "principalRecordDigest": "sha256:4fdfa51e8072a4aff47f7db8359a2f4a8835afc0b6f2342f5c98c512c45d2488"
+      "principalRecordDigest": "sha256:4fdfa51e8072a4aff47f7db8359a2f4a8835afc0b6f2342f5c98c512c45d2488",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": ["workaround-approver"],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:2e82db60af61744b8b1385ade4bd7d56c241db7710b3cc566d528d77d489c316"
     },
     {
       "principalRef": "principal-known-error-owner",
-      "principalRecordDigest": "sha256:fb6aaf307d62475d9092d7d3299c4e7b8e0d9bc69b09b4ac78664a1a436b7721"
+      "principalRecordDigest": "sha256:fb6aaf307d62475d9092d7d3299c4e7b8e0d9bc69b09b4ac78664a1a436b7721",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": ["known-error-authority", "root-cause-declarer"],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:f003dcca187da515c77a167efce00cdcfb9fb8f94be568a2afe08777dc1f2f0b"
     },
     {
       "principalRef": "principal-change-owner",
-      "principalRecordDigest": "sha256:d6e00a3ab8e50933256d6e77bb4d7e64476ddcdb7eed5ac708012411b657053f"
+      "principalRecordDigest": "sha256:d6e00a3ab8e50933256d6e77bb4d7e64476ddcdb7eed5ac708012411b657053f",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": ["change-executor"],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:d0d6d6483066fa5d821d6b0a315d1cc893c41ae0f516369ec5af87d5214f7676"
     },
     {
       "principalRef": "principal-incident-system",
-      "principalRecordDigest": "sha256:c29fb19ecda794e55deb9031c56e6fb41ab85e5670bf0dad93fa4bcde1d59e4b"
+      "principalRecordDigest": "sha256:c29fb19ecda794e55deb9031c56e6fb41ab85e5670bf0dad93fa4bcde1d59e4b",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": ["incident-record-authority"],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:8e59b3ef153ec936b164944490c05953589eb3cc6a0e030d2650ef66f343988f"
     },
     {
       "principalRef": "principal-public-status",
-      "principalRecordDigest": "sha256:84bb55f65257c5e17a2c6c3eb391632bbdfb1b77e2ced9cbda9e907fd8d724c4"
+      "principalRecordDigest": "sha256:84bb55f65257c5e17a2c6c3eb391632bbdfb1b77e2ced9cbda9e907fd8d724c4",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": ["incident-record-authority", "public-source"],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:20533cdae804a76d6568085677cb13e4356f68925d6235dd708281d9477a8b37"
     }
   ],
   "evidenceRecords": [
-    {
-      "evidenceRef": "evidence-membership-inc-001",
-      "evidenceRecordDigest": "sha256:4864906f9978118d8c466e3acc805b8194f82d4e37527baf73ec87aa4f074284"
-    },
-    {
-      "evidenceRef": "evidence-membership-inc-002",
-      "evidenceRecordDigest": "sha256:45bd942f1c9169881532a5074822d0c7084d6243238c90773a3066a190429d52"
-    },
-    {
-      "evidenceRef": "evidence-membership-inc-003",
-      "evidenceRecordDigest": "sha256:1b7fac7ec85ad6485c726032d87f5fc97a291d6af72a8f8f7ed0c09ff1c42898"
-    },
-    {
-      "evidenceRef": "evidence-incident-inc-001",
-      "evidenceRecordDigest": "sha256:23be7eb29ceb577da75eef9e2bd067e8fc6d9abb02bc23dbe6413264ef89ed6c"
-    },
-    {
-      "evidenceRef": "evidence-incident-inc-002",
-      "evidenceRecordDigest": "sha256:ccfadf8b7742a68398dd957b34a05e79e1aa1bbffeb54e05d353e48236aedeb2"
-    },
-    {
-      "evidenceRef": "evidence-public-status-inc-003",
-      "evidenceRecordDigest": "sha256:1b2b20989e268c11e8cba9a9f1e55834c867888bae424647690d193ce3862897"
-    },
-    {
-      "evidenceRef": "evidence-hypothesis-route-cache",
-      "evidenceRecordDigest": "sha256:3732375baf54c2847dfdb991d5441bc1d90754075224e4d2dfe357099283306f"
-    },
-    {
-      "evidenceRef": "evidence-hypothesis-database",
-      "evidenceRecordDigest": "sha256:e882822d497ea659b4b9275c8c1ed6f307971fb0c8b94ee94b39a7cc85a947ce"
-    },
-    {
-      "evidenceRef": "evidence-test-route-cache",
-      "evidenceRecordDigest": "sha256:b8333f34847b80280ec38c501e012f1a19781195efab051ca613522f8cd76ed5"
-    },
-    {
-      "evidenceRef": "evidence-test-database",
-      "evidenceRecordDigest": "sha256:97ee9546f2c2678ec002287984038d94ac41e2cab6a99c4a01c43be0f2aa0dc4"
-    },
-    {
-      "evidenceRef": "evidence-workaround-approval",
-      "evidenceRecordDigest": "sha256:5d4e88885fda8e014a2af381dcc5508963ae9714f6a6dee649e7c71c045f4fb6"
-    },
-    {
-      "evidenceRef": "evidence-known-error-declaration",
-      "evidenceRecordDigest": "sha256:54d54bb782d1cddfbb189b4edd83e2728213ecf77297f8741476bd3b34e0e921"
-    },
-    {
-      "evidenceRef": "evidence-change-execution",
-      "evidenceRecordDigest": "sha256:944ac032dabe79daa3f200e395863f55aa4aab5ac82d7017407a4ff847f14baa"
-    },
-    {
-      "evidenceRef": "evidence-change-verification",
-      "evidenceRecordDigest": "sha256:0275149c76f00c4723ceed52bc9b9e501cd08f96acf70a5aa16a2f4d12fedcd0"
-    },
-    {
-      "evidenceRef": "evidence-problem-change-link",
-      "evidenceRecordDigest": "sha256:bc466586c8565a707b45c209bc4812ac2308054c934e7d756a5e9eb91221a278"
-    },
-    {
-      "evidenceRef": "evidence-recurrence-inc-003",
-      "evidenceRecordDigest": "sha256:7357912d523b3474301be0616abcb9c64477f7562310d80cb33f7290f24e5afa"
-    }
+    {"evidenceRef": "evidence-membership-inc-001", "evidenceRecordDigest": "sha256:457d54a995c382f2c51f2aef5c3aa465b936efd9c47de715976f1c7be9347a86"},
+    {"evidenceRef": "evidence-membership-inc-002", "evidenceRecordDigest": "sha256:b21a441abea19a93460a0b3652564617f30bebac0347750f009706b4b2901470"},
+    {"evidenceRef": "evidence-membership-inc-003", "evidenceRecordDigest": "sha256:9b0997f3f45fda972c7e8ac4e14d4a4e45f4bfa01c9d0974bcb457c27918748e"},
+    {"evidenceRef": "evidence-incident-inc-001", "evidenceRecordDigest": "sha256:23be7eb29ceb577da75eef9e2bd067e8fc6d9abb02bc23dbe6413264ef89ed6c"},
+    {"evidenceRef": "evidence-incident-inc-002", "evidenceRecordDigest": "sha256:ccfadf8b7742a68398dd957b34a05e79e1aa1bbffeb54e05d353e48236aedeb2"},
+    {"evidenceRef": "evidence-public-status-inc-003", "evidenceRecordDigest": "sha256:bae9164ad51e15a4b1025ecb49462b846b3903d28fc39cf52934eb1a46a83deb"},
+    {"evidenceRef": "evidence-incident-manifest-signature", "evidenceRecordDigest": "sha256:30940499c8f82f07f49fae6d0bed2cb03e2f983313f16a7db3675599a27e4ce0"},
+    {"evidenceRef": "evidence-hypothesis-route-cache", "evidenceRecordDigest": "sha256:3732375baf54c2847dfdb991d5441bc1d90754075224e4d2dfe357099283306f"},
+    {"evidenceRef": "evidence-hypothesis-database", "evidenceRecordDigest": "sha256:e882822d497ea659b4b9275c8c1ed6f307971fb0c8b94ee94b39a7cc85a947ce"},
+    {"evidenceRef": "evidence-test-route-cache", "evidenceRecordDigest": "sha256:b8333f34847b80280ec38c501e012f1a19781195efab051ca613522f8cd76ed5"},
+    {"evidenceRef": "evidence-test-database", "evidenceRecordDigest": "sha256:97ee9546f2c2678ec002287984038d94ac41e2cab6a99c4a01c43be0f2aa0dc4"},
+    {"evidenceRef": "evidence-workaround-approval", "evidenceRecordDigest": "sha256:5d4e88885fda8e014a2af381dcc5508963ae9714f6a6dee649e7c71c045f4fb6"},
+    {"evidenceRef": "evidence-known-error-declaration", "evidenceRecordDigest": "sha256:54d54bb782d1cddfbb189b4edd83e2728213ecf77297f8741476bd3b34e0e921"},
+    {"evidenceRef": "evidence-change-execution", "evidenceRecordDigest": "sha256:8b29c53f89e3a98e4af8da9e3548160b12a7a52c5cff839571adc7bf318017b4"},
+    {"evidenceRef": "evidence-change-verification", "evidenceRecordDigest": "sha256:8323d35cba95c86c835a0e8160783f1f1c6a01f8353cfde0f53bea4a662bc553"},
+    {"evidenceRef": "evidence-problem-change-link", "evidenceRecordDigest": "sha256:e05ec09a29b2644063e0b54fbb9e42f174ea92465da4184339a23380d22dfb5a"},
+    {"evidenceRef": "evidence-recurrence-inc-003", "evidenceRecordDigest": "sha256:d04e665606ca77625eaa774fc098fa5be2b057d216aee4ddad4506b71fb89848"}
+  ],
+  "sourceRecords": [
+    {"evidenceRef": "evidence-membership-inc-001", "sourceRef": "controlled://problem/checkout-timeout/memberships/inc-001", "sourceBytesDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000001", "observedAt": "2026-08-13T09:01:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:741e31bdc6f849d67d46acef2a71ce32a63693a99e2eb5e8bd5d157143e451bc"},
+    {"evidenceRef": "evidence-membership-inc-002", "sourceRef": "controlled://problem/checkout-timeout/memberships/inc-002", "sourceBytesDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000002", "observedAt": "2026-08-13T09:02:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:7b52b668f104d2fced2b4c56cc99aa382dcd7cf8fff5733bdd40b2e4e7d39b27"},
+    {"evidenceRef": "evidence-membership-inc-003", "sourceRef": "controlled://problem/checkout-timeout/memberships/inc-003", "sourceBytesDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000003", "observedAt": "2026-08-18T14:32:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:b1cdb3554f897dab8078f55e04e59a7a3c41476b50ef1963749daeb4967d9db1"},
+    {"evidenceRef": "evidence-incident-inc-001", "sourceRef": "controlled://incidents/inc-001/revision/4", "sourceBytesDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000001", "observedAt": "2026-06-10T12:20:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:8ba10f4fcdfa63e66954aef4b6b99ff6995163ddb0f8ac819a5007cf98ef2d2b"},
+    {"evidenceRef": "evidence-incident-inc-002", "sourceRef": "controlled://incidents/inc-002/revision/3", "sourceBytesDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000002", "observedAt": "2026-07-15T16:40:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:bbba46f25751b7047410cc13c51c7c6c9e6fc7c0ffdc205aa906fd6eb0a68f69"},
+    {"evidenceRef": "evidence-public-status-inc-003", "sourceRef": "https://status.contoso.example/incidents/inc-003", "sourceBytesDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000003", "observedAt": "2026-08-18T14:30:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:db77b359931c1df6b3e8a2ff116ec46da4346b9beb0a7f4964a9ccbea7755538"},
+    {"evidenceRef": "evidence-incident-manifest-signature", "sourceRef": "controlled://problem/checkout-timeout/incident-manifest/r1", "sourceBytesDigest": "sha256:1500000000000000000000000000000000000000000000000000000000000001", "observedAt": "2026-08-18T14:33:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:4b08a8a0a7d1d7afaaa6a1b6e8f6478dd419f04a663523d844534b6ac9ee3346"},
+    {"evidenceRef": "evidence-hypothesis-route-cache", "sourceRef": "controlled://problem/checkout-timeout/hypotheses/route-cache-r2", "sourceBytesDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000001", "observedAt": "2026-08-14T11:10:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:5d8e9a29859754da21c23a3d7a920466a4d1ee35c7cc3aa4fd357ff9ae27fbfd"},
+    {"evidenceRef": "evidence-hypothesis-database", "sourceRef": "controlled://problem/checkout-timeout/hypotheses/database-r1", "sourceBytesDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000002", "observedAt": "2026-08-14T13:10:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:26b6f98fee7a5fbead4bab050dcaeb41e794dbeb5ea8ed54ea5713c4be588579"},
+    {"evidenceRef": "evidence-test-route-cache", "sourceRef": "controlled://qa/problem-checkout-timeout/runs/route-cache-reproduction", "sourceBytesDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000001", "observedAt": "2026-08-14T11:05:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:1afba7c111c854d2410c24615d4ad5cdd6f29dc08b87fb079f73b20369875c4f"},
+    {"evidenceRef": "evidence-test-database", "sourceRef": "controlled://qa/problem-checkout-timeout/runs/database-load-replay", "sourceBytesDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000002", "observedAt": "2026-08-14T13:05:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:169f446d36274c10a016582015f8614fd92a241b38f08a2a8126ab5a77123f59"},
+    {"evidenceRef": "evidence-workaround-approval", "sourceRef": "controlled://service-owner/approvals/workaround-route-cache-refresh-r1", "sourceBytesDigest": "sha256:5000000000000000000000000000000000000000000000000000000000000001", "observedAt": "2026-08-15T09:00:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:9f1caade134d7fe52350d363f9b02b9a6b43d2379d7d8fbf36674188130960d1"},
+    {"evidenceRef": "evidence-known-error-declaration", "sourceRef": "controlled://problem-owner/known-errors/checkout-timeout-r1", "sourceBytesDigest": "sha256:6000000000000000000000000000000000000000000000000000000000000001", "observedAt": "2026-08-16T15:00:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:8263ee44a0fe8f5fb63d49c70fd084a4f2a561d1c18571f39d82ecfc9a2ca194"},
+    {"evidenceRef": "evidence-change-execution", "sourceRef": "controlled://changes/chg-4821/execution/receipt", "sourceBytesDigest": "sha256:7100000000000000000000000000000000000000000000000000000000000001", "observedAt": "2026-08-17T10:00:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:0c85db4826d0aaf52d3255bc4c0bac8f162724ab49e06060f0c681377356c569"},
+    {"evidenceRef": "evidence-change-verification", "sourceRef": "controlled://qa/changes/chg-4821/verification", "sourceBytesDigest": "sha256:7100000000000000000000000000000000000000000000000000000000000002", "observedAt": "2026-08-17T10:05:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:4aabbf68a3d429bbc6a317e8b9e2f0aa2943a10b0a15db93ed3f42fb8a206ab1"},
+    {"evidenceRef": "evidence-problem-change-link", "sourceRef": "controlled://problem/checkout-timeout/change-links/chg-4821", "sourceBytesDigest": "sha256:7200000000000000000000000000000000000000000000000000000000000001", "observedAt": "2026-08-17T10:10:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:dd28493541be500cbeb7f91472321e936edb991873d64d305ab0013a6ec86b38"},
+    {"evidenceRef": "evidence-recurrence-inc-003", "sourceRef": "controlled://incidents/inc-003/recurrence-observation", "sourceBytesDigest": "sha256:8000000000000000000000000000000000000000000000000000000000000001", "observedAt": "2026-08-18T14:35:00Z", "issuerRef": "issuer-awesome-claws-proof", "attestationDigest": "sha256:e9b769a7a0029257ddf87756984e0f79eaec332cc4d5cb95dae202727490f736"}
   ],
   "records": [
     {
       "evidenceRef": "evidence-public-status-inc-003",
       "sourceRef": "https://status.contoso.example/incidents/inc-003",
       "recordDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000003",
-      "publishedAt": "2026-08-12T14:30:00Z"
+      "publishedAt": "2026-08-18T14:30:00Z"
     }
   ]
 }

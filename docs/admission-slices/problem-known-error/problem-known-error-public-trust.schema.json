@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/problem-known-error-public-trust.schema.json",
+  "title": "Caller-owned trust for the problem and known-error candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "publisher",
+    "issuer",
+    "authorityGrants",
+    "evidenceRecords",
+    "sourceRecords",
+    "records"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.problemKnownErrorPublicTrust.v1"
+    },
+    "id": {
+      "$ref": "#/$defs/id"
+    },
+    "publisher": {
+      "$ref": "#/$defs/nonEmptyString"
+    },
+    "issuer": {
+      "$ref": "#/$defs/issuer"
+    },
+    "authorityGrants": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/authorityGrant"
+      }
+    },
+    "evidenceRecords": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "$ref": "#/$defs/evidenceRecord"
+      }
+    },
+    "sourceRecords": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "$ref": "#/$defs/sourceRecord"
+      }
+    },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "$ref": "#/$defs/publicRecord"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "displayName", "keyRef"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "displayName": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "keyRef": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 4096
+        }
+      }
+    },
+    "authorityGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "principalRef",
+        "principalRecordDigest",
+        "issuerRef",
+        "scopes",
+        "validFrom",
+        "expiresAt",
+        "grantDigest"
+      ],
+      "properties": {
+        "principalRef": {
+          "$ref": "#/$defs/id"
+        },
+        "principalRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "issuerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "validFrom": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "grantDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "evidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceRef", "evidenceRecordDigest"],
+      "properties": {
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "sourceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceRef",
+        "sourceRef",
+        "sourceBytesDigest",
+        "observedAt",
+        "issuerRef",
+        "attestationDigest"
+      ],
+      "properties": {
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceRef": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 4096
+        },
+        "sourceBytesDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "issuerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "attestationDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "publicRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceRef",
+        "sourceRef",
+        "recordDigest",
+        "publishedAt"
+      ],
+      "properties": {
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceRef": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 4096
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "publishedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    }
+  }
+}

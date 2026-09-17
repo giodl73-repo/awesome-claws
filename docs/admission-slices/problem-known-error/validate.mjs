@@ -1,9 +1,59 @@
 import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import Ajv2020 from "ajv/dist/2020.js";
+import addFormats from "ajv-formats";
 
 export const PROBLEM_KNOWN_ERROR_SCHEMA_VERSION =
   "awesomeClaws.problemKnownErrorCandidate.v1";
 export const PUBLIC_TRUST_SCHEMA_VERSION =
   "awesomeClaws.problemKnownErrorPublicTrust.v1";
+
+const ajv = new Ajv2020({ allErrors: true, strict: true });
+addFormats(ajv);
+const validateCandidateSchema = ajv.compile(
+  JSON.parse(
+    readFileSync(
+      new URL("./problem-known-error.schema.json", import.meta.url),
+      "utf8",
+    ),
+  ),
+);
+const validatePublicTrustSchema = ajv.compile(
+  JSON.parse(
+    readFileSync(
+      new URL("./problem-known-error-public-trust.schema.json", import.meta.url),
+      "utf8",
+    ),
+  ),
+);
+const MAX_ARTIFACT_BYTES = 256 * 1024;
+const MAX_DEPTH = 16;
+const MAX_STRING_LENGTH = 4096;
+const MAX_COLLECTION_LENGTH = 256;
+const MAX_OBJECT_PROPERTIES = 64;
+const MAX_NODE_COUNT = 4096;
+const NON_HUMAN_ID =
+  /(?:^|[-_.:])(?:agent|automated|automation|bot|claw|package|service-account|system)(?:$|[-_.:])|(?:agent|bot|claw|package|system)$/iu;
+const NON_HUMAN_DISPLAY_NAME =
+  /^(?:agent|bot|claw|package|system)\b|(?:agent|bot|claw|package|system)$|\b(?:automated|automation|chatbot|service account)\b/iu;
+const GOVERNED_ACTION =
+  "(?:accept|acceptance|accepted|accepts|approve|approval|approved|approves|authorization|authorize|authorized|authorizes|closure|close|closed|closes|correlation|declaration|declare|declared|declares|deploy|deployed|deployment|deploys|execute|executed|executes|execution|inference|mutate|mutated|mutates|mutation|publication|publish|published|publishes)";
+const GOVERNED_OBJECT =
+  "(?:workarounds?|known[ -]?errors?|production|changes?|incidents?|problems?|tickets?|risks?)";
+const PROHIBITED_ACTION = new RegExp(
+  `\\b(?:${GOVERNED_ACTION})\\b[^.!?;]*?\\b(?:${GOVERNED_OBJECT})\\b|\\b(?:${GOVERNED_OBJECT})\\b[^.!?;]*?\\b(?:${GOVERNED_ACTION})\\b|\\b(?:correlate|correlated|correlates)\\b[^.!?;]*?\\bincidents?\\b|\\b(?:infer|inferred|infers|declare|declared|declares)\\b[^.!?;]*?\\broot cause\\b`,
+  "iu",
+);
+const NEGATED_PROHIBITED_ACTION = new RegExp(
+  `\\b(?:(?:(?:did|does|do|can|could|must|will|would|should|has|have|had|was|were|is|are)\\s+(?:not|never)|cannot|can't|never)\\s+(?:(?:actually|directly|ever|immediately|intentionally)\\s+)?|no\\s+)(?:${GOVERNED_ACTION}|correlate|correlated|correlates|infer|inferred|infers|declare|declared|declares)(?:\\s+(?:and|or)\\s+(?:(?:actually|directly|ever|immediately|intentionally)\\s+)?(?:${GOVERNED_ACTION}|correlate|correlated|correlates|infer|inferred|infers|declare|declared|declares))*\\b`,
+  "giu",
+);
+const CLAW_ACTOR =
+  /\b(?:agent|assistant|automation|bot|chatbot|claw|coordinator|package|system|we|i)\b/iu;
+const OWNER_ACTOR =
+  /\b(?:problem|service|known-error|change|incident|risk|ticket)\s+owner\b/iu;
+const NAMED_HUMAN_SUBJECT =
+  /^(?!(?:A|An|He|I|It|She|That|The|They|This|We|You)\b)[A-Z][\p{L}'-]*(?:\s+[A-Z][\p{L}'-]*){0,3}\b/u;
 
 const EXPECTED_AUTHORITY = {
   incidentCorrelation: "owner-declared-only",
@@ -43,12 +93,21 @@ function time(value) {
     return null;
   }
   const match =
-    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(Z|[+-]\d{2}:\d{2})$/u.exec(
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?(Z|[+-]\d{2}:\d{2})$/u.exec(
       value,
     );
   if (!match) return null;
-  const [, yearText, monthText, dayText, hourText, minuteText, secondText, zone] =
-    match;
+  const [
+    ,
+    yearText,
+    monthText,
+    dayText,
+    hourText,
+    minuteText,
+    secondText,
+    ,
+    zone,
+  ] = match;
   const [year, month, day, hour, minute, second] = [
     yearText,
     monthText,
@@ -94,9 +153,139 @@ function mapById(values) {
   return new Map(records(values).map((row) => [row.id, row]));
 }
 
-function hasScope(principal, scope) {
+function indexedBy(rows, field) {
+  const map = new Map();
+  const duplicates = new Set();
+  for (const row of records(rows)) {
+    const key = row[field];
+    if (map.has(key)) duplicates.add(key);
+    map.set(key, row);
+  }
+  return { map, duplicates };
+}
+
+function boundedInputFindings(value, rootPath) {
+  const findings = [];
+  const stack = [{ value, depth: 0, path: rootPath, ancestors: new Set() }];
+  let nodeCount = 0;
+  while (stack.length > 0) {
+    const current = stack.pop();
+    nodeCount += 1;
+    if (nodeCount > MAX_NODE_COUNT) {
+      findings.push({
+        code: "invalid_cardinality",
+        path: current.path,
+        message: `Input exceeds ${MAX_NODE_COUNT} total values.`,
+      });
+      break;
+    }
+    if (current.depth > MAX_DEPTH) {
+      findings.push({
+        code: "invalid_depth",
+        path: current.path,
+        message: `Input exceeds maximum depth ${MAX_DEPTH}.`,
+      });
+      continue;
+    }
+    if (typeof current.value === "string") {
+      if (current.value.length > MAX_STRING_LENGTH) {
+        findings.push({
+          code: "invalid_string_length",
+          path: current.path,
+          message: `String exceeds ${MAX_STRING_LENGTH} characters.`,
+        });
+      }
+      continue;
+    }
+    if (current.value === null) continue;
+    if (typeof current.value !== "object") {
+      if (
+        !["boolean", "number"].includes(typeof current.value) ||
+        (typeof current.value === "number" &&
+          !Number.isFinite(current.value))
+      ) {
+        findings.push({
+          code: "invalid_structure",
+          path: current.path,
+          message: "Input may contain only JSON-compatible values.",
+        });
+      }
+      continue;
+    }
+    if (current.ancestors.has(current.value)) {
+      findings.push({
+        code: "invalid_structure",
+        path: current.path,
+        message: "Input must not contain cyclic references.",
+      });
+      continue;
+    }
+    const childAncestors = new Set(current.ancestors);
+    childAncestors.add(current.value);
+    if (Array.isArray(current.value)) {
+      if (current.value.length > MAX_COLLECTION_LENGTH) {
+        findings.push({
+          code: "invalid_collection_size",
+          path: current.path,
+          message: `Array exceeds ${MAX_COLLECTION_LENGTH} entries.`,
+        });
+        continue;
+      }
+      current.value.forEach((child, index) =>
+        stack.push({
+          value: child,
+          depth: current.depth + 1,
+          path: `${current.path}[${index}]`,
+          ancestors: childAncestors,
+        }),
+      );
+      continue;
+    }
+    const entries = Object.entries(current.value);
+    if (entries.length > MAX_OBJECT_PROPERTIES) {
+      findings.push({
+        code: "invalid_cardinality",
+        path: current.path,
+        message: `Object exceeds ${MAX_OBJECT_PROPERTIES} properties.`,
+      });
+      continue;
+    }
+    for (const [key, child] of entries) {
+      stack.push({
+        value: child,
+        depth: current.depth + 1,
+        path: `${current.path}.${key}`,
+        ancestors: childAncestors,
+      });
+    }
+  }
+  if (findings.length === 0) {
+    const serialized = JSON.stringify(value);
+    if (
+      typeof serialized === "string" &&
+      Buffer.byteLength(serialized, "utf8") > MAX_ARTIFACT_BYTES
+    ) {
+      findings.push({
+        code: "invalid_byte_size",
+        path: rootPath,
+        message: `Input exceeds ${MAX_ARTIFACT_BYTES} UTF-8 bytes.`,
+      });
+    }
+  }
+  return findings;
+}
+
+function isNamedHuman(principal) {
   return (
     principal?.kind === "named-human" &&
+    !NON_HUMAN_ID.test(principal.id ?? "") &&
+    !NON_HUMAN_DISPLAY_NAME.test(principal.displayName ?? "")
+  );
+}
+
+function hasScope(principal, scope) {
+  return (
+    isNamedHuman(principal) &&
     Array.isArray(principal.scopes) &&
     principal.scopes.includes(scope)
   );
@@ -123,6 +312,30 @@ function evidenceMatches(evidence, expected) {
   );
 }
 
+function hasProhibitedNarrativeClaim(text) {
+  if (typeof text !== "string") return false;
+  let actorInContext = false;
+  for (const sentence of text.split(/(?<=[.!?;])\s+/u)) {
+    for (const clause of sentence.split(
+      /\b(?:and|but|however)\b|,\s*(?:then\s+)?/iu,
+    )) {
+      if (CLAW_ACTOR.test(clause)) {
+        actorInContext = true;
+      } else if (
+        OWNER_ACTOR.test(clause) ||
+        NAMED_HUMAN_SUBJECT.test(clause.trim())
+      ) {
+        actorInContext = false;
+      }
+      const positiveText = clause.replace(NEGATED_PROHIBITED_ACTION, "");
+      if (actorInContext && PROHIBITED_ACTION.test(positiveText)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 export function canonicalJson(value) {
   if (Array.isArray(value)) {
     return `[${value.map(canonicalJson).join(",")}]`;
@@ -138,6 +351,29 @@ export function canonicalJson(value) {
 
 function digest(value) {
   return `sha256:${createHash("sha256").update(canonicalJson(value)).digest("hex")}`;
+}
+
+export function computeAuthorityGrantDigest(grant) {
+  const row = object(grant);
+  return digest({
+    principalRef: row.principalRef,
+    principalRecordDigest: row.principalRecordDigest,
+    issuerRef: row.issuerRef,
+    scopes: sorted(Array.isArray(row.scopes) ? row.scopes : []),
+    validFrom: row.validFrom,
+    expiresAt: row.expiresAt,
+  });
+}
+
+export function computeSourceAttestationDigest(record) {
+  const row = object(record);
+  return digest({
+    evidenceRef: row.evidenceRef,
+    sourceRef: row.sourceRef,
+    sourceBytesDigest: row.sourceBytesDigest,
+    observedAt: row.observedAt,
+    issuerRef: row.issuerRef,
+  });
 }
 
 export function computeProblemRevision(problem) {
@@ -196,6 +432,23 @@ export function computeIncidentMembershipRevision(membership) {
     declarationEvidenceRef: row.declarationEvidenceRef,
     incidentRecordEvidenceRef: row.incidentRecordEvidenceRef,
     declaredAt: row.declaredAt,
+    state: row.state,
+  });
+}
+
+export function computeIncidentManifestRevision(manifest) {
+  const row = object(manifest);
+  return digest({
+    id: row.id,
+    problemRevision: row.problemRevision,
+    membershipRevisionRefs: sorted(
+      Array.isArray(row.membershipRevisionRefs)
+        ? row.membershipRevisionRefs
+        : [],
+    ),
+    signedByRef: row.signedByRef,
+    signatureEvidenceRef: row.signatureEvidenceRef,
+    signedAt: row.signedAt,
     state: row.state,
   });
 }
@@ -292,154 +545,41 @@ export function computeRecurrenceRevision(recurrence) {
   });
 }
 
-function updateEvidenceRevision(value, kind, subjectRef, subjectRevision) {
-  for (const row of records(value.evidence)) {
-    if (row.kind === kind && row.subjectRef === subjectRef) {
-      row.subjectRevision = subjectRevision;
-    }
-  }
-}
-
 export function resealProblemKnownErrorArtifact(value) {
   const artifact = structuredClone(value);
   const problem = object(artifact.problem);
   problem.revision = computeProblemRevision(problem);
 
   for (const membership of records(artifact.incidentMemberships)) {
-    membership.problemRevision = problem.revision;
     membership.revision = computeIncidentMembershipRevision(membership);
-    updateEvidenceRevision(
-      artifact,
-      "incident-membership-declaration",
-      membership.id,
-      membership.revision,
-    );
+  }
+  const incidentManifest = object(artifact.incidentManifest);
+  if (Object.keys(incidentManifest).length > 0) {
+    incidentManifest.revision =
+      computeIncidentManifestRevision(incidentManifest);
   }
 
   for (const hypothesis of records(artifact.hypotheses)) {
-    hypothesis.problemRevision = problem.revision;
     hypothesis.revision = computeHypothesisRevision(hypothesis);
-  }
-
-  const hypothesisById = mapById(artifact.hypotheses);
-  for (const test of records(artifact.tests)) {
-    const hypothesis = hypothesisById.get(test.hypothesisRef);
-    test.problemRevision = problem.revision;
-    test.hypothesisRevisionRef = hypothesis?.revision;
-    test.revision = computeTestRevision(test);
-    updateEvidenceRevision(artifact, "test-result", test.id, test.revision);
-  }
-  const testById = mapById(artifact.tests);
-  for (const hypothesis of records(artifact.hypotheses)) {
-    hypothesis.testRevisionRefs = sorted(
-      hypothesis.testRefs.map((ref) => testById.get(ref)?.revision),
-    );
     hypothesis.dispositionRevision =
       computeHypothesisDispositionRevision(hypothesis);
-    updateEvidenceRevision(
-      artifact,
-      "hypothesis-observation",
-      hypothesis.id,
-      hypothesis.dispositionRevision,
-    );
   }
 
-  const workaround = records(artifact.workarounds)[0];
-  if (workaround) {
-    const hypothesis = hypothesisById.get(workaround.hypothesisRef);
-    workaround.problemRevision = problem.revision;
-    workaround.hypothesisDispositionRevisionRef =
-      hypothesis?.dispositionRevision;
+  for (const test of records(artifact.tests)) {
+    test.revision = computeTestRevision(test);
+  }
+  for (const workaround of records(artifact.workarounds)) {
     workaround.revision = computeWorkaroundRevision(workaround);
-    updateEvidenceRevision(
-      artifact,
-      "workaround-approval",
-      workaround.id,
-      workaround.revision,
-    );
   }
-
-  const knownError = records(artifact.knownErrors)[0];
-  if (knownError) {
-    const hypothesis = hypothesisById.get(knownError.causeHypothesisRef);
-    knownError.problemRevision = problem.revision;
-    knownError.causeHypothesisDispositionRevisionRef =
-      hypothesis?.dispositionRevision;
-    knownError.workaroundRevisionRef = workaround?.revision;
+  for (const knownError of records(artifact.knownErrors)) {
     knownError.revision = computeKnownErrorRevision(knownError);
-    updateEvidenceRevision(
-      artifact,
-      "known-error-declaration",
-      knownError.id,
-      knownError.revision,
-    );
   }
-
   for (const change of records(artifact.changeReceipts)) {
-    change.problemRevision = problem.revision;
     change.revision = computeChangeReceiptRevision(change);
-    updateEvidenceRevision(
-      artifact,
-      "change-execution-receipt",
-      change.id,
-      change.planDigest,
-    );
-    updateEvidenceRevision(artifact, "change-verification", change.id, change.planDigest);
-    updateEvidenceRevision(
-      artifact,
-      "problem-change-link",
-      change.id,
-      change.revision,
-    );
   }
-  const changeById = mapById(artifact.changeReceipts);
-  const membershipById = mapById(artifact.incidentMemberships);
   for (const recurrence of records(artifact.recurrences)) {
-    recurrence.problemRevision = problem.revision;
-    recurrence.incidentMembershipRevisionRef = membershipById.get(
-      recurrence.incidentMembershipRef,
-    )?.revision;
-    recurrence.changeReceiptRevisionRef = changeById.get(
-      recurrence.changeReceiptRef,
-    )?.revision;
     recurrence.revision = computeRecurrenceRevision(recurrence);
-    const recurrenceEvidence = records(artifact.evidence).find(
-      (row) => row.id === recurrence.evidenceRef,
-    );
-    if (recurrenceEvidence) {
-      recurrenceEvidence.subjectRef = recurrence.id;
-      recurrenceEvidence.subjectRevision = recurrence.revision;
-    }
   }
-
-  const coverage = object(artifact.coverage);
-  coverage.principalRefs = sorted(records(artifact.principals).map((row) => row.id));
-  coverage.evidenceRefs = sorted(records(artifact.evidence).map((row) => row.id));
-  coverage.incidentMembershipRefs = sorted(
-    records(artifact.incidentMemberships).map((row) => row.id),
-  );
-  coverage.hypothesisRevisionRefs = sorted(
-    records(artifact.hypotheses).map((row) => row.revision),
-  );
-  coverage.hypothesisDispositionRevisionRefs = sorted(
-    records(artifact.hypotheses).map((row) => row.dispositionRevision),
-  );
-  coverage.testRefs = sorted(records(artifact.tests).map((row) => row.id));
-  coverage.workaroundRevisionRefs = sorted(
-    records(artifact.workarounds).map((row) => row.revision),
-  );
-  coverage.knownErrorRevisionRefs = sorted(
-    records(artifact.knownErrors).map((row) => row.revision),
-  );
-  coverage.changeReceiptRefs = sorted(
-    records(artifact.changeReceipts).map((row) => row.id),
-  );
-  coverage.recurrenceRefs = sorted(records(artifact.recurrences).map((row) => row.id));
-  coverage.publicTrustEvidenceRefs = sorted(
-    records(artifact.evidence)
-      .filter((row) => row.trust === "public")
-      .map((row) => row.id),
-  );
   return artifact;
 }
 
@@ -454,14 +594,47 @@ export function problemKnownErrorFindings(value, options = {}) {
     ];
   }
 
+  const boundedFindings = [
+    ...boundedInputFindings(value, "$"),
+    ...(options.publicTrustInput === undefined
+      ? []
+      : boundedInputFindings(
+          options.publicTrustInput,
+          "$context.publicTrustInput",
+        )),
+  ];
+  if (boundedFindings.length > 0) {
+    return boundedFindings.sort(
+      (left, right) =>
+        left.path.localeCompare(right.path) ||
+        left.code.localeCompare(right.code) ||
+        left.message.localeCompare(right.message),
+    );
+  }
+
   const findings = [];
   const add = (code, path, message) => findings.push({ code, path, message });
   const cutoff = time(options.cutoff);
   const trust = object(options.publicTrustInput);
+  if (!validateCandidateSchema(value)) {
+    add(
+      "invalid_schema",
+      "$",
+      `Artifact schema validation failed: ${ajv.errorsText(validateCandidateSchema.errors)}`,
+    );
+  }
+  if (!validatePublicTrustSchema(trust)) {
+    add(
+      "invalid_public_trust_schema",
+      "$context.publicTrustInput",
+      `Public trust schema validation failed: ${ajv.errorsText(validatePublicTrustSchema.errors)}`,
+    );
+  }
   const problem = object(value.problem);
   const principals = records(value.principals);
   const evidence = records(value.evidence);
   const memberships = records(value.incidentMemberships);
+  const incidentManifest = object(value.incidentManifest);
   const hypotheses = records(value.hypotheses);
   const tests = records(value.tests);
   const workarounds = records(value.workarounds);
@@ -504,7 +677,8 @@ export function problemKnownErrorFindings(value, options = {}) {
     !Array.isArray(trust.records) ||
     !Array.isArray(trust.authorityGrants) ||
     !Array.isArray(trust.evidenceRecords) ||
-    ["records", "authorityGrants", "evidenceRecords"].some(
+    !Array.isArray(trust.sourceRecords) ||
+    ["records", "authorityGrants", "evidenceRecords", "sourceRecords"].some(
       (field) => records(trust[field]).length !== trust[field].length,
     )
   ) {
@@ -543,9 +717,14 @@ export function problemKnownErrorFindings(value, options = {}) {
     if (
       !["named-human", "external-system", "claw"].includes(principal.kind) ||
       !Array.isArray(principal.scopes) ||
-      principal.scopes.length === 0
+      principal.scopes.length === 0 ||
+      (principal.kind === "named-human" && !isNamedHuman(principal))
     ) {
-      add("invalid_typed_authority", `principals[${index}]`, "Every principal needs a typed kind and scope.");
+      add(
+        "invalid_typed_authority",
+        `principals[${index}]`,
+        "Every principal needs a typed kind and scope, and human authority cannot use an agent or package identity.",
+      );
     }
 
     if (
@@ -561,32 +740,105 @@ export function problemKnownErrorFindings(value, options = {}) {
   }
   if (
     Array.isArray(trust.authorityGrants) &&
-    Array.isArray(trust.evidenceRecords)
+    Array.isArray(trust.evidenceRecords) &&
+    Array.isArray(trust.sourceRecords)
   ) {
     const authorityPrincipals = principals.filter((row) => row.kind !== "claw");
     const authorityGrants = records(trust.authorityGrants);
     const trustedEvidence = records(trust.evidenceRecords);
+    const sourceRecords = records(trust.sourceRecords);
+    const authorityIndex = indexedBy(authorityGrants, "principalRef");
+    const trustedEvidenceIndex = indexedBy(trustedEvidence, "evidenceRef");
+    const sourceIndex = indexedBy(sourceRecords, "evidenceRef");
+    const trustIssuer = object(trust.issuer);
+    const governedUses = [
+      { principalRef: problem.declaredByRef, at: problem.declaredAt },
+      ...memberships.map((row) => ({
+        principalRef: row.declaredByRef,
+        at: row.declaredAt,
+      })),
+      {
+        principalRef: incidentManifest.signedByRef,
+        at: incidentManifest.signedAt,
+      },
+      ...hypotheses.flatMap((row) => [
+        { principalRef: row.ownerRef, at: row.proposedAt },
+        { principalRef: row.ownerRef, at: row.revisedAt },
+      ]),
+      ...tests.map((row) => ({
+        principalRef: row.executedByRef,
+        at: row.executedAt,
+      })),
+      ...workarounds.map((row) => ({
+        principalRef: row.approvedByRef,
+        at: row.approvedAt,
+      })),
+      ...knownErrors.map((row) => ({
+        principalRef: row.declaredByRef,
+        at: row.declaredAt,
+      })),
+      ...changes.map((row) => ({
+        principalRef: row.executedByRef,
+        at: row.executedAt,
+      })),
+      ...recurrences.map((row) => ({
+        principalRef: row.observedByRef,
+        at: row.observedAt,
+      })),
+      ...evidence.map((row) => ({
+        principalRef: row.producedByRef,
+        at: row.observedAt,
+      })),
+    ];
     const authorityMatches =
       authorityPrincipals.length === authorityGrants.length &&
+      authorityIndex.duplicates.size === 0 &&
       authorityPrincipals.every((principal) => {
-        const grant = authorityGrants.find(
-          (row) => row.principalRef === principal.id,
+        const grant = authorityIndex.map.get(principal.id);
+        const firstUse = Math.min(
+          ...governedUses
+            .filter((use) => use.principalRef === principal.id)
+            .map((use) => time(use.at))
+            .filter((value) => value !== null),
         );
-        return grant?.principalRecordDigest === digest(principal);
+        return (
+          grant?.principalRecordDigest === digest(principal) &&
+          grant?.issuerRef === trustIssuer.id &&
+          exactSet(grant?.scopes, principal.scopes) &&
+          grant?.grantDigest === computeAuthorityGrantDigest(grant) &&
+          time(grant?.validFrom) !== null &&
+          time(grant?.validFrom) <= firstUse &&
+          time(grant?.expiresAt) !== null &&
+          cutoff !== null &&
+          time(grant?.expiresAt) > cutoff
+        );
       });
     const evidenceMatchesTrust =
       evidence.length === trustedEvidence.length &&
+      trustedEvidenceIndex.duplicates.size === 0 &&
       evidence.every((row) => {
-        const trusted = trustedEvidence.find(
-          (record) => record.evidenceRef === row.id,
-        );
+        const trusted = trustedEvidenceIndex.map.get(row.id);
         return trusted?.evidenceRecordDigest === digest(row);
       });
-    if (!authorityMatches || !evidenceMatchesTrust) {
+    const sourceBytesMatch =
+      evidence.length === sourceRecords.length &&
+      sourceIndex.duplicates.size === 0 &&
+      evidence.every((row) => {
+        const source = sourceIndex.map.get(row.id);
+        return (
+          source?.sourceRef === row.sourceRef &&
+          source?.sourceBytesDigest === row.recordDigest &&
+          source?.observedAt === row.observedAt &&
+          source?.issuerRef === trustIssuer.id &&
+          source?.attestationDigest ===
+            computeSourceAttestationDigest(source)
+        );
+      });
+    if (!authorityMatches || !evidenceMatchesTrust || !sourceBytesMatch) {
       add(
         "invalid_caller_trust_input",
         "$context.publicTrustInput",
-        "Caller trust must bind every external principal, scope, and evidence record exactly; the Claw cannot attest its own owners or records.",
+        "Caller trust must use unique issuer-scoped grants and bind every evidence record and source byte digest exactly.",
       );
     }
   }
@@ -633,11 +885,13 @@ export function problemKnownErrorFindings(value, options = {}) {
   if (cutoff !== null && Array.isArray(trust.records)) {
     const publicEvidence = evidence.filter((row) => row.trust === "public");
     const trustRecords = records(trust.records);
+    const trustRecordIndex = indexedBy(trustRecords, "evidenceRef");
     const matches =
       publicEvidence.length === 1 &&
       trustRecords.length === publicEvidence.length &&
+      trustRecordIndex.duplicates.size === 0 &&
       publicEvidence.every((row) => {
-        const trusted = trustRecords.find((record) => record.evidenceRef === row.id);
+        const trusted = trustRecordIndex.map.get(row.id);
         return (
           trusted?.sourceRef === row.sourceRef &&
           trusted?.recordDigest === row.recordDigest &&
@@ -653,6 +907,48 @@ export function problemKnownErrorFindings(value, options = {}) {
         "Exactly one public evidence record must match the caller-owned trust input byte identity and publication time.",
       );
     }
+  }
+
+  const incidentManifestEvidence = evidenceById.get(
+    incidentManifest.signatureEvidenceRef,
+  );
+  const latestMembershipDeclaration = Math.max(
+    ...memberships.map(
+      (membership) =>
+        time(membership.declaredAt) ?? Number.POSITIVE_INFINITY,
+    ),
+  );
+  if (
+    incidentManifest.problemRevision !== problem.revision ||
+    incidentManifest.revision !==
+      computeIncidentManifestRevision(incidentManifest) ||
+    incidentManifest.state !== "owner-signed" ||
+    incidentManifest.signedByRef !== problem.declaredByRef ||
+    !hasScope(
+      principalById.get(incidentManifest.signedByRef),
+      "incident-membership-declarer",
+    ) ||
+    !exactSet(
+      incidentManifest.membershipRevisionRefs,
+      memberships.map((row) => row.revision),
+    ) ||
+    !evidenceMatches(incidentManifestEvidence, {
+      kind: "incident-membership-manifest-signature",
+      subjectRef: incidentManifest.id,
+      subjectRevision: incidentManifest.revision,
+      producedByRef: incidentManifest.signedByRef,
+    }) ||
+    time(incidentManifest.signedAt) === null ||
+    time(incidentManifestEvidence?.observedAt) !==
+      time(incidentManifest.signedAt) ||
+    time(incidentManifest.signedAt) <= latestMembershipDeclaration ||
+    (cutoff !== null && time(incidentManifest.signedAt) > cutoff)
+  ) {
+    add(
+      "invalid_incident_manifest",
+      "incidentManifest",
+      "The complete incident universe requires one later independently trusted owner signature over every membership revision.",
+    );
   }
 
   if (
@@ -855,7 +1151,7 @@ export function problemKnownErrorFindings(value, options = {}) {
     }) ||
     time(workaround?.approvedAt) === null ||
     time(workaroundApproval?.observedAt) !== time(workaround?.approvedAt) ||
-    time(workaround?.approvedAt) < latestWorkaroundInput ||
+    time(workaround?.approvedAt) <= latestWorkaroundInput ||
     time(workaround?.expiresAt) === null ||
     (cutoff !== null &&
       (time(workaround.approvedAt) > cutoff || time(workaround.expiresAt) <= cutoff))
@@ -955,6 +1251,7 @@ export function problemKnownErrorFindings(value, options = {}) {
     }) ||
     time(change?.executedAt) === null ||
     time(executionReceipt?.observedAt) !== time(change?.executedAt) ||
+    time(change?.executedAt) <= time(knownError?.declaredAt) ||
     time(change?.linkedAt) === null ||
     time(linkEvidence?.observedAt) !== time(change?.linkedAt) ||
     time(change?.linkedAt) <= time(change?.executedAt) ||
@@ -976,6 +1273,16 @@ export function problemKnownErrorFindings(value, options = {}) {
   const recurrenceEvidence = evidenceById.get(recurrence?.evidenceRef);
   const recurrenceIncidentEvidence = evidenceById.get(
     recurrenceMembership?.incidentRecordEvidenceRef,
+  );
+  const changeFinalizedAt = Math.max(
+    time(recurrenceChange?.linkedAt) ?? Number.POSITIVE_INFINITY,
+    ...(Array.isArray(recurrenceChange?.verificationEvidenceRefs)
+      ? recurrenceChange.verificationEvidenceRefs.map(
+          (ref) =>
+            time(evidenceById.get(ref)?.observedAt) ??
+            Number.POSITIVE_INFINITY,
+        )
+      : [Number.POSITIVE_INFINITY]),
   );
   if (
     recurrences.length !== 1 ||
@@ -1003,18 +1310,24 @@ export function problemKnownErrorFindings(value, options = {}) {
     time(recurrence?.observedAt) === null ||
     time(recurrenceEvidence?.observedAt) !== time(recurrence?.observedAt) ||
     time(recurrence?.observedAt) <= time(recurrenceChange?.executedAt) ||
+    time(recurrence?.observedAt) <= changeFinalizedAt ||
     time(recurrenceIncidentEvidence?.observedAt) <=
-      time(recurrenceChange?.executedAt) ||
-    time(knownError?.declaredAt) <= time(recurrence?.observedAt)
+      changeFinalizedAt ||
+    time(recurrenceMembership?.declaredAt) <=
+      changeFinalizedAt ||
+    time(recurrence?.observedAt) <=
+      time(recurrenceMembership?.declaredAt) ||
+    time(recurrence?.observedAt) <= time(knownError?.declaredAt)
   ) {
     add(
       "invalid_recurrence",
       "recurrences[0]",
-      "The recurrence must be owner-observed in a declared incident after the external change and before the current known-error declaration.",
+      "The recurrence must be owner-observed after the current known-error declaration, external change, and later incident membership declaration.",
     );
   }
 
   const lifecycleEvidenceRefs = [
+    incidentManifest.signatureEvidenceRef,
     ...memberships.flatMap((row) => [
       row.declarationEvidenceRef,
       row.incidentRecordEvidenceRef,
@@ -1036,6 +1349,7 @@ export function problemKnownErrorFindings(value, options = {}) {
   ];
   const lifecyclePrincipalRefs = [
     problem.declaredByRef,
+    incidentManifest.signedByRef,
     handoff.coordinatorRef,
     ...evidence.map((row) => row.producedByRef),
     ...hypotheses.map((row) => row.ownerRef),
@@ -1049,6 +1363,7 @@ export function problemKnownErrorFindings(value, options = {}) {
     principalRefs: principals.map((row) => row.id),
     evidenceRefs: evidence.map((row) => row.id),
     incidentMembershipRefs: memberships.map((row) => row.id),
+    incidentManifestRevisionRef: incidentManifest.revision,
     hypothesisRevisionRefs: hypotheses.map((row) => row.revision),
     hypothesisDispositionRevisionRefs: hypotheses.map(
       (row) => row.dispositionRevision,
@@ -1075,7 +1390,10 @@ export function problemKnownErrorFindings(value, options = {}) {
     coverage.state !== "exact-closed" ||
     !lifecycleUniverseIsClosed ||
     Object.entries(coverageExpectations).some(
-      ([field, expected]) => !exactSet(coverage[field], expected),
+      ([field, expected]) =>
+        Array.isArray(expected)
+          ? !exactSet(coverage[field], expected)
+          : coverage[field] !== expected,
     )
   ) {
     add(
@@ -1095,6 +1413,28 @@ export function problemKnownErrorFindings(value, options = {}) {
       "authority",
       "The candidate may coordinate evidence but cannot infer, approve, publish, execute, mutate, close, or accept risk.",
     );
+  }
+  const narrativeSurfaces = [
+    ["problem.title", problem.title],
+    ...hypotheses.map((row, index) => [
+      `hypotheses[${index}].statement`,
+      row.statement,
+    ]),
+    ...workarounds.map((row, index) => [
+      `workarounds[${index}].instructions`,
+      row.instructions,
+    ]),
+    ["handoff.summary", handoff.summary],
+    ["handoff.nextDecision", handoff.nextDecision],
+  ];
+  for (const [path, text] of narrativeSurfaces) {
+    if (hasProhibitedNarrativeClaim(text)) {
+      add(
+        "prohibited_authority_claim",
+        path,
+        "Narrative text cannot claim correlation, root cause, approval, publication, execution, mutation, closure, or risk authority for the Claw.",
+      );
+    }
   }
   if (
     handoff.state !== "owner-review-ready" ||
