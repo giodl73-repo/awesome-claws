@@ -16,7 +16,7 @@ Reconciles one complete owner-authenticated security-alert snapshot so every exa
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
 - Declared capability: OpenClaw tool profile `minimal` plus `read`, `write`, `edit`, `exec`, `show_widget` with workspace-only filesystem access.
 - Capability boundary: The base X4 starter reads only supplied workspace artifacts, runs the packaged Node validator through workspace-local exec, and uses workspace writes plus show_widget for the owner-review output; it has no browser, network, scanner, SIEM, MCP, plugin, cron, messaging, ticketing, incident, containment, or source-mutation capability.
-- Capability boundary: Run node scripts/security-alert-review-validator.mjs against the supplied review JSON with explicit --as-of, --principal-roster-digest, --evidence-root, --owner-trust, --source-bundle, and --public-trust arguments before rendering any result.
+- Capability boundary: Run node scripts/security-alert-review-validator.mjs against the supplied review JSON with explicit --workspace-root, --as-of, --principal-roster-digest, --evidence-root, --owner-trust, --source-bundle, and --public-trust arguments before rendering any result; every path must resolve inside the workspace.
 - Capability boundary: Future read integrations must preserve owner-signed snapshot totality, immutable policy history, typed human grants, caller-controlled time and trust, context-only public documentation, and all no-authority boundaries.
 
 Review the package before applying it. Claws can create agents and may declare

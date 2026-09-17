@@ -2,6 +2,8 @@
 
 Use `templates/security-alert-review.md` as the equivalent Markdown fallback
 for the inline visual. Preserve every native alert row and exact review reason.
+Run the packaged validator with `--workspace-root` set to the current workspace;
+all artifact and trust paths must resolve within that root.
 
 ## Required output
 

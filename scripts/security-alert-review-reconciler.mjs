@@ -3,9 +3,9 @@ import {
   createPublicKey,
   verify as verifySignature,
 } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { readFile, stat } from "node:fs/promises";
-import { resolve } from "node:path";
+import { isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { TextDecoder } from "node:util";
 import Ajv2020 from "ajv/dist/2020.js";
@@ -218,6 +218,26 @@ export function parseSourceJson(sourceBytes) {
   } catch {
     return null;
   }
+}
+
+export function resolveWorkspaceInputPath(
+  workspaceRoot,
+  inputPath,
+) {
+  if (typeof inputPath !== "string" || inputPath.length === 0) {
+    throw new Error("Workspace input path is required.");
+  }
+  const root = realpathSync(resolve(workspaceRoot));
+  const candidate = realpathSync(resolve(root, inputPath));
+  const relativePath = relative(root, candidate);
+  if (
+    relativePath === ".." ||
+    relativePath.startsWith(`..${sep}`) ||
+    isAbsolute(relativePath)
+  ) {
+    throw new Error("Workspace input path escapes the workspace root.");
+  }
+  return candidate;
 }
 
 export function computePolicyDigest(policy) {
@@ -1954,6 +1974,7 @@ async function runCli() {
   const asOf = optionValue("--as-of");
   const principalRosterDigest = optionValue("--principal-roster-digest");
   const evidenceRoot = optionValue("--evidence-root");
+  const workspaceRoot = optionValue("--workspace-root");
   const ownerTrustPath = optionValue("--owner-trust");
   const sourceBundlePath = optionValue("--source-bundle");
   const publicTrustPath = optionValue("--public-trust");
@@ -1962,35 +1983,63 @@ async function runCli() {
     !asOf ||
     !principalRosterDigest ||
     !evidenceRoot ||
+    !workspaceRoot ||
     !ownerTrustPath ||
     !sourceBundlePath ||
     !publicTrustPath
   ) {
     process.stderr.write(
-      "usage: node validate.mjs <artifact.json> --as-of <timestamp> --principal-roster-digest <sha256:digest> --evidence-root <sha256:digest> --owner-trust <trust.json> --source-bundle <sources.json> --public-trust <trust.json>\n",
+      "usage: node validate.mjs <artifact.json> --workspace-root <path> --as-of <timestamp> --principal-roster-digest <sha256:digest> --evidence-root <sha256:digest> --owner-trust <trust.json> --source-bundle <sources.json> --public-trust <trust.json>\n",
     );
     process.exitCode = 2;
     return;
   }
 
+  let resolvedInputPath;
+  let resolvedOwnerTrustPath;
+  let resolvedSourceBundlePath;
+  let resolvedPublicTrustPath;
+  try {
+    resolvedInputPath = resolveWorkspaceInputPath(workspaceRoot, inputPath);
+    resolvedOwnerTrustPath = resolveWorkspaceInputPath(
+      workspaceRoot,
+      ownerTrustPath,
+    );
+    resolvedSourceBundlePath = resolveWorkspaceInputPath(
+      workspaceRoot,
+      sourceBundlePath,
+    );
+    resolvedPublicTrustPath = resolveWorkspaceInputPath(
+      workspaceRoot,
+      publicTrustPath,
+    );
+  } catch {
+    const findings = [finding("invalid_workspace_path", "workspaceRoot")];
+    process.stdout.write(
+      `${JSON.stringify({ valid: false, findings }, null, 2)}\n`,
+    );
+    process.exitCode = 1;
+    return;
+  }
+
   const [input, ownerTrust, sourceBundle, publicTrustBundle] = await Promise.all([
     readBoundedJson(
-      inputPath,
+      resolvedInputPath,
       "input",
       SECURITY_ALERT_REVIEW_LIMITS.maxInputBytes,
     ),
     readBoundedJson(
-      ownerTrustPath,
+      resolvedOwnerTrustPath,
       "owner_trust",
       SECURITY_ALERT_REVIEW_LIMITS.maxAuxiliaryBytes,
     ),
     readBoundedJson(
-      sourceBundlePath,
+      resolvedSourceBundlePath,
       "source_bundle",
       SECURITY_ALERT_REVIEW_LIMITS.maxAuxiliaryBytes,
     ),
     readBoundedJson(
-      publicTrustPath,
+      resolvedPublicTrustPath,
       "public_trust",
       SECURITY_ALERT_REVIEW_LIMITS.maxAuxiliaryBytes,
     ),

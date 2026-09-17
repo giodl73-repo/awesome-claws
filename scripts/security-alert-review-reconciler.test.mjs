@@ -24,6 +24,7 @@ import {
   computePublicTrustDigest,
   normalizedAlert,
   parseSourceJson,
+  resolveWorkspaceInputPath,
   parseBoundedJsonText,
   resealSecurityAlertReview,
   SECURITY_ALERT_REVIEW_LIMITS,
@@ -182,6 +183,8 @@ function cliArguments(inputPath) {
   return [
     validatorPath,
     inputPath,
+    "--workspace-root",
+    root,
     "--as-of",
     AS_OF,
     "--principal-roster-digest",
@@ -1229,6 +1232,15 @@ test("schema-invalid and deeply nested inputs short-circuit semantic work", () =
 });
 
 test("schema cardinality string and byte limits bound validation work", () => {
+  assert.equal(resolveWorkspaceInputPath(root, fixturePath), fixturePath);
+  assert.throws(
+    () =>
+      resolveWorkspaceInputPath(
+        resolve(root, "sources", "benefits-realization-manager"),
+        fixturePath,
+      ),
+    /escapes the workspace root/u,
+  );
   const maximumComponentKey = alertKey({
     source: "s".repeat(512),
     nativeAlertId: "n".repeat(512),
@@ -1456,6 +1468,8 @@ test("public CLI validates only with explicit caller-controlled trust and time",
     [
       resolve(packageRoot, "scripts", "security-alert-review-validator.mjs"),
       resolve(packageRoot, "fixtures", "security-alert-review.example.json"),
+      "--workspace-root",
+      packageRoot,
       "--as-of",
       AS_OF,
       "--principal-roster-digest",

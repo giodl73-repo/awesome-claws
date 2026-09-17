@@ -3648,49 +3648,49 @@ var require_fast_uri = __commonJS({
       schemelessOptions.skipEscape = true;
       return serialize(resolved, schemelessOptions);
     }
-    function resolveComponent(base, relative, options, skipNormalization) {
+    function resolveComponent(base, relative2, options, skipNormalization) {
       const target = {};
       if (!skipNormalization) {
         base = parse(serialize(base, options), options);
-        relative = parse(serialize(relative, options), options);
+        relative2 = parse(serialize(relative2, options), options);
       }
       options = options || {};
-      if (!options.tolerant && relative.scheme) {
-        target.scheme = relative.scheme;
-        target.userinfo = relative.userinfo;
-        target.host = relative.host;
-        target.port = relative.port;
-        target.path = removeDotSegments(relative.path || "");
-        target.query = relative.query;
+      if (!options.tolerant && relative2.scheme) {
+        target.scheme = relative2.scheme;
+        target.userinfo = relative2.userinfo;
+        target.host = relative2.host;
+        target.port = relative2.port;
+        target.path = removeDotSegments(relative2.path || "");
+        target.query = relative2.query;
       } else {
-        if (relative.userinfo !== void 0 || relative.host !== void 0 || relative.port !== void 0) {
-          target.userinfo = relative.userinfo;
-          target.host = relative.host;
-          target.port = relative.port;
-          target.path = removeDotSegments(relative.path || "");
-          target.query = relative.query;
+        if (relative2.userinfo !== void 0 || relative2.host !== void 0 || relative2.port !== void 0) {
+          target.userinfo = relative2.userinfo;
+          target.host = relative2.host;
+          target.port = relative2.port;
+          target.path = removeDotSegments(relative2.path || "");
+          target.query = relative2.query;
         } else {
-          if (!relative.path) {
+          if (!relative2.path) {
             target.path = base.path;
-            if (relative.query !== void 0) {
-              target.query = relative.query;
+            if (relative2.query !== void 0) {
+              target.query = relative2.query;
             } else {
               target.query = base.query;
             }
           } else {
-            if (relative.path[0] === "/") {
-              target.path = removeDotSegments(relative.path);
+            if (relative2.path[0] === "/") {
+              target.path = removeDotSegments(relative2.path);
             } else {
               if ((base.userinfo !== void 0 || base.host !== void 0 || base.port !== void 0) && !base.path) {
-                target.path = "/" + relative.path;
+                target.path = "/" + relative2.path;
               } else if (!base.path) {
-                target.path = relative.path;
+                target.path = relative2.path;
               } else {
-                target.path = base.path.slice(0, base.path.lastIndexOf("/") + 1) + relative.path;
+                target.path = base.path.slice(0, base.path.lastIndexOf("/") + 1) + relative2.path;
               }
               target.path = removeDotSegments(target.path);
             }
-            target.query = relative.query;
+            target.query = relative2.query;
           }
           target.userinfo = base.userinfo;
           target.host = base.host;
@@ -3698,7 +3698,7 @@ var require_fast_uri = __commonJS({
         }
         target.scheme = base.scheme;
       }
-      target.fragment = relative.fragment;
+      target.fragment = relative2.fragment;
       return target;
     }
     function equal(uriA, uriB, options) {
@@ -7742,9 +7742,9 @@ import {
   createPublicKey,
   verify as verifySignature
 } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { readFile, stat } from "node:fs/promises";
-import { resolve } from "node:path";
+import { isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { TextDecoder } from "node:util";
 var SCHEMA_VERSION = "awesomeClaws.securityAlertReview.v1";
@@ -7922,6 +7922,18 @@ function parseSourceJson(sourceBytes) {
   } catch {
     return null;
   }
+}
+function resolveWorkspaceInputPath(workspaceRoot, inputPath) {
+  if (typeof inputPath !== "string" || inputPath.length === 0) {
+    throw new Error("Workspace input path is required.");
+  }
+  const root = realpathSync(resolve(workspaceRoot));
+  const candidate = realpathSync(resolve(root, inputPath));
+  const relativePath = relative(root, candidate);
+  if (relativePath === ".." || relativePath.startsWith(`..${sep}`) || isAbsolute(relativePath)) {
+    throw new Error("Workspace input path escapes the workspace root.");
+  }
+  return candidate;
 }
 function computePolicyDigest(policy) {
   return digest({
@@ -9128,34 +9140,62 @@ async function runCli() {
   const asOf = optionValue("--as-of");
   const principalRosterDigest = optionValue("--principal-roster-digest");
   const evidenceRoot = optionValue("--evidence-root");
+  const workspaceRoot = optionValue("--workspace-root");
   const ownerTrustPath = optionValue("--owner-trust");
   const sourceBundlePath = optionValue("--source-bundle");
   const publicTrustPath = optionValue("--public-trust");
-  if (!inputPath || !asOf || !principalRosterDigest || !evidenceRoot || !ownerTrustPath || !sourceBundlePath || !publicTrustPath) {
+  if (!inputPath || !asOf || !principalRosterDigest || !evidenceRoot || !workspaceRoot || !ownerTrustPath || !sourceBundlePath || !publicTrustPath) {
     process.stderr.write(
-      "usage: node validate.mjs <artifact.json> --as-of <timestamp> --principal-roster-digest <sha256:digest> --evidence-root <sha256:digest> --owner-trust <trust.json> --source-bundle <sources.json> --public-trust <trust.json>\n"
+      "usage: node validate.mjs <artifact.json> --workspace-root <path> --as-of <timestamp> --principal-roster-digest <sha256:digest> --evidence-root <sha256:digest> --owner-trust <trust.json> --source-bundle <sources.json> --public-trust <trust.json>\n"
     );
     process.exitCode = 2;
     return;
   }
+  let resolvedInputPath;
+  let resolvedOwnerTrustPath;
+  let resolvedSourceBundlePath;
+  let resolvedPublicTrustPath;
+  try {
+    resolvedInputPath = resolveWorkspaceInputPath(workspaceRoot, inputPath);
+    resolvedOwnerTrustPath = resolveWorkspaceInputPath(
+      workspaceRoot,
+      ownerTrustPath
+    );
+    resolvedSourceBundlePath = resolveWorkspaceInputPath(
+      workspaceRoot,
+      sourceBundlePath
+    );
+    resolvedPublicTrustPath = resolveWorkspaceInputPath(
+      workspaceRoot,
+      publicTrustPath
+    );
+  } catch {
+    const findings2 = [finding("invalid_workspace_path", "workspaceRoot")];
+    process.stdout.write(
+      `${JSON.stringify({ valid: false, findings: findings2 }, null, 2)}
+`
+    );
+    process.exitCode = 1;
+    return;
+  }
   const [input, ownerTrust, sourceBundle, publicTrustBundle] = await Promise.all([
     readBoundedJson(
-      inputPath,
+      resolvedInputPath,
       "input",
       SECURITY_ALERT_REVIEW_LIMITS.maxInputBytes
     ),
     readBoundedJson(
-      ownerTrustPath,
+      resolvedOwnerTrustPath,
       "owner_trust",
       SECURITY_ALERT_REVIEW_LIMITS.maxAuxiliaryBytes
     ),
     readBoundedJson(
-      sourceBundlePath,
+      resolvedSourceBundlePath,
       "source_bundle",
       SECURITY_ALERT_REVIEW_LIMITS.maxAuxiliaryBytes
     ),
     readBoundedJson(
-      publicTrustPath,
+      resolvedPublicTrustPath,
       "public_trust",
       SECURITY_ALERT_REVIEW_LIMITS.maxAuxiliaryBytes
     )
@@ -9206,6 +9246,7 @@ export {
   parseBoundedJsonText,
   parseSourceJson,
   resealSecurityAlertReview,
+  resolveWorkspaceInputPath,
   securityAlertReviewArtifactFindings,
   securityAlertReviewFindings,
   securityAlertReviewSchemaFindings,

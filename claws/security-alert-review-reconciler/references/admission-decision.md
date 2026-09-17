@@ -212,6 +212,7 @@ node --test `
 npm run check
 node scripts\security-alert-review-reconciler.mjs `
   sources\security-alert-review-reconciler\fixtures\security-alert-review.example.json `
+  --workspace-root . `
   --as-of 2026-09-16T23:30:00Z `
   --principal-roster-digest sha256:5fb91701b972bf4d591c567f6f1f44ec8ac4565e83f8bffd74982e5a5069f8c5 `
   --evidence-root sha256:aae87ad73783965f1b07a7b80e557f48727d73cfd69aefb8dd9ac7a0b99d6b38 `
