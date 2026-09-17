@@ -1,0 +1,860 @@
+{
+  "schemaVersion": "awesomeClaws.securityAlertReviewCandidate.v1",
+  "artifactId": "security-alert-review-2026-09-16",
+  "asOf": "2026-09-16T23:30:00Z",
+  "evidenceRoot": "sha256:8e7dd908422e89c50b07362349d5353f089db242e35edb6d4771b600304cbbe9",
+  "snapshot": {
+    "id": "snapshot-owner-alerts-2026-09-16",
+    "revision": "export-42",
+    "capturedAt": "2026-09-16T19:00:00Z",
+    "suppliedByRef": "principal-github-alert-export",
+    "complete": true,
+    "alertRefs": [
+      "alert-code-101-r3",
+      "alert-code-102-r5",
+      "alert-secret-77-r1",
+      "alert-dependabot-55-r4",
+      "alert-code-104-r1",
+      "alert-code-105-r1",
+      "alert-code-106-r2",
+      "alert-code-107-r1"
+    ],
+    "completenessRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
+    "evidenceRef": "evidence-alert-snapshot",
+    "alerts": [
+      {
+        "id": "alert-code-101-r3",
+        "source": "github/code-scanning",
+        "nativeAlertId": "101",
+        "revision": "analysis-3",
+        "supersedesRevision": null,
+        "detectorRef": "detector-codeql",
+        "sourceState": "open",
+        "sourceSeverity": "warning",
+        "assetIdentityState": "known",
+        "assetRef": "asset://github/octo/example",
+        "ownerRef": "principal-alert-owner-morgan",
+        "observedAt": "2026-09-16T18:05:00Z",
+        "evidenceRef": "evidence-alert-snapshot"
+      },
+      {
+        "id": "alert-code-102-r5",
+        "source": "github/code-scanning",
+        "nativeAlertId": "102",
+        "revision": "analysis-5",
+        "supersedesRevision": null,
+        "detectorRef": "detector-codeql",
+        "sourceState": "open",
+        "sourceSeverity": "error",
+        "assetIdentityState": "known",
+        "assetRef": "asset://github/octo/example",
+        "ownerRef": "principal-alert-owner-morgan",
+        "observedAt": "2026-09-16T18:06:00Z",
+        "evidenceRef": "evidence-alert-snapshot"
+      },
+      {
+        "id": "alert-secret-77-r1",
+        "source": "github/secret-scanning",
+        "nativeAlertId": "77",
+        "revision": "occurrence-1",
+        "supersedesRevision": null,
+        "detectorRef": "detector-secret-default",
+        "sourceState": "muted",
+        "sourceSeverity": null,
+        "assetIdentityState": "known",
+        "assetRef": "asset://github/octo/example",
+        "ownerRef": "principal-alert-owner-morgan",
+        "observedAt": "2026-09-16T18:07:00Z",
+        "evidenceRef": "evidence-alert-snapshot"
+      },
+      {
+        "id": "alert-dependabot-55-r4",
+        "source": "github/dependabot",
+        "nativeAlertId": "55",
+        "revision": "advisory-4",
+        "supersedesRevision": null,
+        "detectorRef": "detector-dependabot-npm",
+        "sourceState": "suppressed",
+        "sourceSeverity": "high",
+        "assetIdentityState": "known",
+        "assetRef": "asset://github/octo/example",
+        "ownerRef": "principal-alert-owner-morgan",
+        "observedAt": "2026-09-16T18:08:00Z",
+        "evidenceRef": "evidence-alert-snapshot"
+      },
+      {
+        "id": "alert-code-104-r1",
+        "source": "github/code-scanning",
+        "nativeAlertId": "104",
+        "revision": "analysis-1",
+        "supersedesRevision": null,
+        "detectorRef": "detector-codeql",
+        "sourceState": "open",
+        "sourceSeverity": "note",
+        "assetIdentityState": "unknown",
+        "assetRef": null,
+        "ownerRef": "principal-alert-owner-morgan",
+        "observedAt": "2026-09-16T18:09:00Z",
+        "evidenceRef": "evidence-alert-snapshot"
+      },
+      {
+        "id": "alert-code-105-r1",
+        "source": "github/code-scanning",
+        "nativeAlertId": "105",
+        "revision": "analysis-1",
+        "supersedesRevision": null,
+        "detectorRef": "detector-codeql",
+        "sourceState": "open",
+        "sourceSeverity": "warning",
+        "assetIdentityState": "known",
+        "assetRef": "asset://github/octo/example",
+        "ownerRef": "principal-alert-owner-morgan",
+        "observedAt": "2026-09-16T18:10:00Z",
+        "evidenceRef": "evidence-alert-snapshot"
+      },
+      {
+        "id": "alert-code-106-r2",
+        "source": "github/code-scanning",
+        "nativeAlertId": "106",
+        "revision": "analysis-2",
+        "supersedesRevision": "analysis-1",
+        "detectorRef": "detector-codeql",
+        "sourceState": "open",
+        "sourceSeverity": "warning",
+        "assetIdentityState": "known",
+        "assetRef": "asset://github/octo/example",
+        "ownerRef": "principal-alert-owner-morgan",
+        "observedAt": "2026-09-16T18:11:00Z",
+        "evidenceRef": "evidence-alert-snapshot"
+      },
+      {
+        "id": "alert-code-107-r1",
+        "source": "github/code-scanning",
+        "nativeAlertId": "107",
+        "revision": "analysis-1",
+        "supersedesRevision": null,
+        "detectorRef": "detector-codeql",
+        "sourceState": "open",
+        "sourceSeverity": "error",
+        "assetIdentityState": "known",
+        "assetRef": "asset://github/octo/example",
+        "ownerRef": "principal-alert-owner-morgan",
+        "observedAt": "2026-09-16T18:12:00Z",
+        "evidenceRef": "evidence-alert-snapshot"
+      }
+    ]
+  },
+  "detectorPolicy": {
+    "id": "detector-policy-security-alerts",
+    "revision": "policy-2026-09-16-2",
+    "effectiveAt": "2026-09-15T16:00:00Z",
+    "suppliedByRef": "principal-alert-owner-morgan",
+    "trustInputRefs": [
+      "trust-github-code-scanning",
+      "trust-github-secret-scanning",
+      "trust-github-dependabot"
+    ],
+    "trustInputDigests": [
+      "sha256:c1b5f31d5e580fecd0ce982088a58e7bed5ca23732a6eb182e300bcf1f4eb4e3",
+      "sha256:1cab07f6025e5e9488e23ab99c013eadb16c6b8b921e5c90e34b9f3d052509fb",
+      "sha256:ee98947147b352bd94fb7238cc8292b70cc0abf07a6b3c40cc620e3b51f5c14e"
+    ],
+    "detectorRules": [
+      {
+        "id": "detector-codeql",
+        "source": "github/code-scanning",
+        "category": "code-analysis",
+        "reviewRequired": true,
+        "allowedDispositionKinds": [
+          "false-positive",
+          "duplicate",
+          "incident-review-escalation"
+        ]
+      },
+      {
+        "id": "detector-secret-default",
+        "source": "github/secret-scanning",
+        "category": "secret-exposure",
+        "reviewRequired": true,
+        "allowedDispositionKinds": [
+          "false-positive",
+          "incident-review-escalation"
+        ]
+      },
+      {
+        "id": "detector-dependabot-npm",
+        "source": "github/dependabot",
+        "category": "vulnerability",
+        "reviewRequired": true,
+        "allowedDispositionKinds": [
+          "false-positive",
+          "incident-review-escalation"
+        ]
+      }
+    ],
+    "revisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+    "evidenceRef": "evidence-detector-policy"
+  },
+  "publicTrustInputs": [
+    {
+      "id": "trust-github-code-scanning",
+      "kind": "public-detector-contract",
+      "publisher": "GitHub",
+      "source": "github/code-scanning",
+      "uri": "https://docs.github.com/en/rest/code-scanning/code-scanning",
+      "retrievedAt": "2026-09-15T15:00:00Z",
+      "contentDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "authorityEffect": "context-only",
+      "recordDigest": "sha256:c1b5f31d5e580fecd0ce982088a58e7bed5ca23732a6eb182e300bcf1f4eb4e3"
+    },
+    {
+      "id": "trust-github-secret-scanning",
+      "kind": "public-detector-contract",
+      "publisher": "GitHub",
+      "source": "github/secret-scanning",
+      "uri": "https://docs.github.com/en/rest/secret-scanning/secret-scanning",
+      "retrievedAt": "2026-09-15T15:00:00Z",
+      "contentDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "authorityEffect": "context-only",
+      "recordDigest": "sha256:1cab07f6025e5e9488e23ab99c013eadb16c6b8b921e5c90e34b9f3d052509fb"
+    },
+    {
+      "id": "trust-github-dependabot",
+      "kind": "public-detector-contract",
+      "publisher": "GitHub",
+      "source": "github/dependabot",
+      "uri": "https://docs.github.com/en/rest/dependabot/alerts",
+      "retrievedAt": "2026-09-15T15:00:00Z",
+      "contentDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "authorityEffect": "context-only",
+      "recordDigest": "sha256:ee98947147b352bd94fb7238cc8292b70cc0abf07a6b3c40cc620e3b51f5c14e"
+    }
+  ],
+  "principalRoster": {
+    "id": "principal-roster-security-alert-review",
+    "revision": "roster-2026-09-16-1",
+    "capturedAt": "2026-09-15T15:30:00Z",
+    "suppliedByRef": "principal-security-governance-casey",
+    "principalRefs": [
+      "principal-github-alert-export",
+      "principal-alert-owner-morgan",
+      "principal-security-governance-casey",
+      "principal-security-analyst-riley",
+      "principal-incident-responder-sam",
+      "principal-incident-owner-alex",
+      "principal-security-alert-reconciler"
+    ],
+    "digest": "sha256:5fb91701b972bf4d591c567f6f1f44ec8ac4565e83f8bffd74982e5a5069f8c5",
+    "evidenceRef": "evidence-principal-roster"
+  },
+  "principals": [
+    {
+      "id": "principal-github-alert-export",
+      "kind": "system",
+      "identityKind": "system",
+      "name": "GitHub alert export",
+      "directoryObjectRef": "directory://systems/github-alert-export",
+      "scopes": [
+        "supply-alert-snapshot"
+      ]
+    },
+    {
+      "id": "principal-alert-owner-morgan",
+      "kind": "named-human",
+      "identityKind": "person",
+      "name": "Morgan Patel",
+      "directoryObjectRef": "directory://people/morgan-patel",
+      "scopes": [
+        "supply-detector-policy",
+        "own-alert-snapshot",
+        "receive-alert-review"
+      ]
+    },
+    {
+      "id": "principal-security-governance-casey",
+      "kind": "named-human",
+      "identityKind": "person",
+      "name": "Casey Nguyen",
+      "directoryObjectRef": "directory://people/casey-nguyen",
+      "scopes": [
+        "issue-alert-review-grant",
+        "supply-principal-roster",
+        "receive-alert-review"
+      ]
+    },
+    {
+      "id": "principal-security-analyst-riley",
+      "kind": "named-human",
+      "identityKind": "person",
+      "name": "Riley Chen",
+      "directoryObjectRef": "directory://people/riley-chen",
+      "scopes": [
+        "review-alert"
+      ]
+    },
+    {
+      "id": "principal-incident-responder-sam",
+      "kind": "named-human",
+      "identityKind": "person",
+      "name": "Sam Rivera",
+      "directoryObjectRef": "directory://people/sam-rivera",
+      "scopes": [
+        "review-alert"
+      ]
+    },
+    {
+      "id": "principal-incident-owner-alex",
+      "kind": "named-human",
+      "identityKind": "person",
+      "name": "Alex Okafor",
+      "directoryObjectRef": "directory://people/alex-okafor",
+      "scopes": [
+        "receive-incident-review"
+      ]
+    },
+    {
+      "id": "principal-security-alert-reconciler",
+      "kind": "claw",
+      "identityKind": "agent",
+      "name": "Security Alert Review Reconciler",
+      "directoryObjectRef": null,
+      "scopes": [
+        "reconcile-only"
+      ]
+    }
+  ],
+  "grants": [
+    {
+      "id": "grant-riley-prior-false-positive",
+      "type": "record-false-positive",
+      "granteeRef": "principal-security-analyst-riley",
+      "issuedByRef": "principal-security-governance-casey",
+      "source": "github/code-scanning",
+      "detectorRefs": [
+        "detector-codeql"
+      ],
+      "issuedAt": "2026-09-15T16:20:00Z",
+      "validFrom": "2026-09-15T17:00:00Z",
+      "validUntil": "2026-09-16T18:00:00Z",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "evidenceRef": "evidence-grant-riley-prior-false-positive",
+      "grantDigest": "sha256:25c4af1629b097548c7f3cca946e0cfbc0e08332a6cfad54ebf2b265126843e2"
+    },
+    {
+      "id": "grant-riley-false-positive",
+      "type": "record-false-positive",
+      "granteeRef": "principal-security-analyst-riley",
+      "issuedByRef": "principal-security-governance-casey",
+      "source": "github/code-scanning",
+      "detectorRefs": [
+        "detector-codeql"
+      ],
+      "issuedAt": "2026-09-16T17:20:00Z",
+      "validFrom": "2026-09-16T18:00:00Z",
+      "validUntil": "2026-09-17T18:00:00Z",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "evidenceRef": "evidence-grant-riley-false-positive",
+      "grantDigest": "sha256:eaf96b26c38722783395660cb6beb97cb3ba39ad44dd3832384190057ed29f5c"
+    },
+    {
+      "id": "grant-riley-duplicate",
+      "type": "record-duplicate",
+      "granteeRef": "principal-security-analyst-riley",
+      "issuedByRef": "principal-security-governance-casey",
+      "source": "github/code-scanning",
+      "detectorRefs": [
+        "detector-codeql"
+      ],
+      "issuedAt": "2026-09-16T17:21:00Z",
+      "validFrom": "2026-09-16T18:00:00Z",
+      "validUntil": "2026-09-17T18:00:00Z",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "evidenceRef": "evidence-grant-riley-duplicate",
+      "grantDigest": "sha256:995f061115fd40b88f0b495884346184366f79372ab41b0496ea4a01fc3d21ac"
+    },
+    {
+      "id": "grant-morgan-declare-duplicate",
+      "type": "declare-duplicate-group",
+      "granteeRef": "principal-alert-owner-morgan",
+      "issuedByRef": "principal-security-governance-casey",
+      "source": "github/code-scanning",
+      "detectorRefs": [
+        "detector-codeql"
+      ],
+      "issuedAt": "2026-09-16T17:22:00Z",
+      "validFrom": "2026-09-16T18:00:00Z",
+      "validUntil": "2026-09-17T18:00:00Z",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "evidenceRef": "evidence-grant-morgan-declare-duplicate",
+      "grantDigest": "sha256:bb5dde7ca224cc8b3ff8498b53b452326936e449775cf954069bedc787b3ed10"
+    },
+    {
+      "id": "grant-sam-incident-review",
+      "type": "request-incident-review",
+      "granteeRef": "principal-incident-responder-sam",
+      "issuedByRef": "principal-security-governance-casey",
+      "source": "github/code-scanning",
+      "detectorRefs": [
+        "detector-codeql"
+      ],
+      "issuedAt": "2026-09-16T17:23:00Z",
+      "validFrom": "2026-09-16T18:00:00Z",
+      "validUntil": "2026-09-17T18:00:00Z",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "evidenceRef": "evidence-grant-sam-incident-review",
+      "grantDigest": "sha256:05912884cd55100ab37354e8eea3738a4d95be1a58daad8aa3342cd2812b9f4d"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-principal-roster",
+      "kind": "principal-authority-roster",
+      "authorRef": "principal-security-governance-casey",
+      "observedAt": "2026-09-15T15:30:00Z",
+      "controlledUri": "controlled://security-alert-review/authority/roster-2026-09-16-1.json",
+      "contentDigest": "sha256:3434343434343434343434343434343434343434343434343434343434343434",
+      "subjectRefs": [
+        "principal-roster-security-alert-review"
+      ],
+      "subjectDigest": "sha256:5fb91701b972bf4d591c567f6f1f44ec8ac4565e83f8bffd74982e5a5069f8c5"
+    },
+    {
+      "id": "evidence-alert-snapshot",
+      "kind": "alert-snapshot",
+      "authorRef": "principal-github-alert-export",
+      "observedAt": "2026-09-16T19:00:00Z",
+      "controlledUri": "controlled://security-alert-review/snapshot/export-42.json",
+      "contentDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "subjectRefs": [
+        "snapshot-owner-alerts-2026-09-16",
+        "alert-code-101-r3",
+        "alert-code-102-r5",
+        "alert-secret-77-r1",
+        "alert-dependabot-55-r4",
+        "alert-code-104-r1",
+        "alert-code-105-r1",
+        "alert-code-106-r2",
+        "alert-code-107-r1"
+      ],
+      "subjectDigest": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1"
+    },
+    {
+      "id": "evidence-detector-policy",
+      "kind": "detector-policy-revision",
+      "authorRef": "principal-alert-owner-morgan",
+      "observedAt": "2026-09-15T16:00:00Z",
+      "controlledUri": "controlled://security-alert-review/policy/policy-2026-09-16-2.json",
+      "contentDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "subjectRefs": [
+        "detector-policy-security-alerts"
+      ],
+      "subjectDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce"
+    },
+    {
+      "id": "evidence-grant-riley-prior-false-positive",
+      "kind": "authority-grant",
+      "authorRef": "principal-security-governance-casey",
+      "observedAt": "2026-09-15T16:20:00Z",
+      "controlledUri": "controlled://security-alert-review/grants/riley-prior-false-positive.json",
+      "contentDigest": "sha256:5656565656565656565656565656565656565656565656565656565656565656",
+      "subjectRefs": [
+        "grant-riley-prior-false-positive"
+      ],
+      "subjectDigest": "sha256:25c4af1629b097548c7f3cca946e0cfbc0e08332a6cfad54ebf2b265126843e2"
+    },
+    {
+      "id": "evidence-grant-riley-false-positive",
+      "kind": "authority-grant",
+      "authorRef": "principal-security-governance-casey",
+      "observedAt": "2026-09-16T17:20:00Z",
+      "controlledUri": "controlled://security-alert-review/grants/riley-false-positive.json",
+      "contentDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "subjectRefs": [
+        "grant-riley-false-positive"
+      ],
+      "subjectDigest": "sha256:eaf96b26c38722783395660cb6beb97cb3ba39ad44dd3832384190057ed29f5c"
+    },
+    {
+      "id": "evidence-grant-riley-duplicate",
+      "kind": "authority-grant",
+      "authorRef": "principal-security-governance-casey",
+      "observedAt": "2026-09-16T17:21:00Z",
+      "controlledUri": "controlled://security-alert-review/grants/riley-duplicate.json",
+      "contentDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "subjectRefs": [
+        "grant-riley-duplicate"
+      ],
+      "subjectDigest": "sha256:995f061115fd40b88f0b495884346184366f79372ab41b0496ea4a01fc3d21ac"
+    },
+    {
+      "id": "evidence-grant-morgan-declare-duplicate",
+      "kind": "authority-grant",
+      "authorRef": "principal-security-governance-casey",
+      "observedAt": "2026-09-16T17:22:00Z",
+      "controlledUri": "controlled://security-alert-review/grants/morgan-declare-duplicate.json",
+      "contentDigest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "subjectRefs": [
+        "grant-morgan-declare-duplicate"
+      ],
+      "subjectDigest": "sha256:bb5dde7ca224cc8b3ff8498b53b452326936e449775cf954069bedc787b3ed10"
+    },
+    {
+      "id": "evidence-grant-sam-incident-review",
+      "kind": "authority-grant",
+      "authorRef": "principal-security-governance-casey",
+      "observedAt": "2026-09-16T17:23:00Z",
+      "controlledUri": "controlled://security-alert-review/grants/sam-incident-review.json",
+      "contentDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "subjectRefs": [
+        "grant-sam-incident-review"
+      ],
+      "subjectDigest": "sha256:05912884cd55100ab37354e8eea3738a4d95be1a58daad8aa3342cd2812b9f4d"
+    },
+    {
+      "id": "evidence-duplicate-group",
+      "kind": "duplicate-declaration",
+      "authorRef": "principal-alert-owner-morgan",
+      "observedAt": "2026-09-16T19:10:00Z",
+      "controlledUri": "controlled://security-alert-review/duplicate-groups/codeql-pair.json",
+      "contentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "subjectRefs": [
+        "duplicate-group-codeql-pair"
+      ],
+      "subjectDigest": "sha256:8a7f810c86a1d69625bdd552dd2cccb64e9c6d28130d844afbb484b6724abce9"
+    },
+    {
+      "id": "evidence-disposition-code-101",
+      "kind": "human-disposition",
+      "authorRef": "principal-security-analyst-riley",
+      "observedAt": "2026-09-16T19:20:00Z",
+      "controlledUri": "controlled://security-alert-review/dispositions/code-101.json",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "subjectRefs": [
+        "review-code-101"
+      ],
+      "subjectDigest": "sha256:91fdc6e924790abca25b605ba07666b6b5e192673e55f7d964c3131c2824e239"
+    },
+    {
+      "id": "evidence-disposition-code-102",
+      "kind": "human-disposition",
+      "authorRef": "principal-security-analyst-riley",
+      "observedAt": "2026-09-16T19:25:00Z",
+      "controlledUri": "controlled://security-alert-review/dispositions/code-102.json",
+      "contentDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "subjectRefs": [
+        "review-code-102"
+      ],
+      "subjectDigest": "sha256:72c1042cee54a6eb96124c5f92bdb02d94cf0cf47dfdd47f78464186362232c1"
+    },
+    {
+      "id": "evidence-self-suppression-attempt",
+      "kind": "suppression-attempt",
+      "authorRef": "principal-alert-owner-morgan",
+      "observedAt": "2026-09-16T19:30:00Z",
+      "controlledUri": "controlled://security-alert-review/attempts/code-105.json",
+      "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "subjectRefs": [
+        "suppression-attempt-code-105"
+      ],
+      "subjectDigest": "sha256:1da81f9e0a944e37d7340d18d9a522f19b7d645ea5ccd46044f4121822f0b8c6"
+    },
+    {
+      "id": "evidence-prior-decision-code-106",
+      "kind": "prior-decision",
+      "authorRef": "principal-security-analyst-riley",
+      "observedAt": "2026-09-15T18:00:00Z",
+      "controlledUri": "controlled://security-alert-review/history/code-106-analysis-1.json",
+      "contentDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "subjectRefs": [
+        "prior-decision-code-106"
+      ],
+      "subjectDigest": "sha256:7f5e367178b63374b5aa8da5131a9dcdb1dbf4dca03a26c95a32bbb6d9555479"
+    },
+    {
+      "id": "evidence-disposition-code-107",
+      "kind": "human-disposition",
+      "authorRef": "principal-incident-responder-sam",
+      "observedAt": "2026-09-16T19:45:00Z",
+      "controlledUri": "controlled://security-alert-review/dispositions/code-107.json",
+      "contentDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "subjectRefs": [
+        "review-code-107"
+      ],
+      "subjectDigest": "sha256:869ade29cbf6b7f0885d0d7dce88b728ee3a4d4c2283954c76308570da07e390"
+    },
+    {
+      "id": "evidence-escalation-code-107",
+      "kind": "incident-escalation",
+      "authorRef": "principal-incident-responder-sam",
+      "observedAt": "2026-09-16T19:45:00Z",
+      "controlledUri": "controlled://security-alert-review/escalations/code-107.json",
+      "contentDigest": "sha256:1212121212121212121212121212121212121212121212121212121212121212",
+      "subjectRefs": [
+        "incident-escalation-code-107"
+      ],
+      "subjectDigest": "sha256:a519583d3e37626f0792a213a27a8ad3aea47ab09421d2f9a10d791e5ea23cad"
+    }
+  ],
+  "duplicateGroups": [
+    {
+      "id": "duplicate-group-codeql-pair",
+      "source": "github/code-scanning",
+      "detectorRef": "detector-codeql",
+      "memberAlertKeys": [
+        "[\"github/code-scanning\",\"101\",\"analysis-3\"]",
+        "[\"github/code-scanning\",\"102\",\"analysis-5\"]"
+      ],
+      "primaryAlertKey": "[\"github/code-scanning\",\"101\",\"analysis-3\"]",
+      "declaredByRef": "principal-alert-owner-morgan",
+      "declaredAt": "2026-09-16T19:10:00Z",
+      "grantRef": "grant-morgan-declare-duplicate",
+      "evidenceRef": "evidence-duplicate-group",
+      "groupDigest": "sha256:8a7f810c86a1d69625bdd552dd2cccb64e9c6d28130d844afbb484b6724abce9"
+    }
+  ],
+  "suppressionAttempts": [
+    {
+      "id": "suppression-attempt-code-105",
+      "alertKey": "[\"github/code-scanning\",\"105\",\"analysis-1\"]",
+      "requestedByRef": "principal-alert-owner-morgan",
+      "requestedAt": "2026-09-16T19:30:00Z",
+      "requestedAction": "suppress",
+      "evidenceRef": "evidence-self-suppression-attempt",
+      "attemptDigest": "sha256:1da81f9e0a944e37d7340d18d9a522f19b7d645ea5ccd46044f4121822f0b8c6"
+    }
+  ],
+  "priorDecisions": [
+    {
+      "id": "prior-decision-code-106",
+      "source": "github/code-scanning",
+      "nativeAlertId": "106",
+      "revision": "analysis-1",
+      "detectorRef": "detector-codeql",
+      "alertKey": "[\"github/code-scanning\",\"106\",\"analysis-1\"]",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "outcome": "false-positive",
+      "decidedByRef": "principal-security-analyst-riley",
+      "decidedAt": "2026-09-15T18:00:00Z",
+      "grantRef": "grant-riley-prior-false-positive",
+      "evidenceRef": "evidence-prior-decision-code-106",
+      "invalidatedByAlertKey": "[\"github/code-scanning\",\"106\",\"analysis-2\"]",
+      "decisionDigest": "sha256:7f5e367178b63374b5aa8da5131a9dcdb1dbf4dca03a26c95a32bbb6d9555479"
+    }
+  ],
+  "reviewRecords": [
+    {
+      "id": "review-code-101",
+      "alertKey": "[\"github/code-scanning\",\"101\",\"analysis-3\"]",
+      "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "kind": "human-disposition",
+      "disposition": "false-positive",
+      "nonDecision": null,
+      "decidedByRef": "principal-security-analyst-riley",
+      "recordedAt": "2026-09-16T19:20:00Z",
+      "grantRef": "grant-riley-false-positive",
+      "evidenceRef": "evidence-disposition-code-101",
+      "duplicateGroupRef": null,
+      "incidentEscalationRef": null,
+      "recordDigest": "sha256:91fdc6e924790abca25b605ba07666b6b5e192673e55f7d964c3131c2824e239"
+    },
+    {
+      "id": "review-code-102",
+      "alertKey": "[\"github/code-scanning\",\"102\",\"analysis-5\"]",
+      "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "kind": "human-disposition",
+      "disposition": "duplicate",
+      "nonDecision": null,
+      "decidedByRef": "principal-security-analyst-riley",
+      "recordedAt": "2026-09-16T19:25:00Z",
+      "grantRef": "grant-riley-duplicate",
+      "evidenceRef": "evidence-disposition-code-102",
+      "duplicateGroupRef": "duplicate-group-codeql-pair",
+      "incidentEscalationRef": null,
+      "recordDigest": "sha256:72c1042cee54a6eb96124c5f92bdb02d94cf0cf47dfdd47f78464186362232c1"
+    },
+    {
+      "id": "review-secret-77",
+      "alertKey": "[\"github/secret-scanning\",\"77\",\"occurrence-1\"]",
+      "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "kind": "non-decision",
+      "disposition": null,
+      "nonDecision": "source-muted-or-suppressed",
+      "decidedByRef": null,
+      "recordedAt": "2026-09-16T19:31:00Z",
+      "grantRef": null,
+      "evidenceRef": null,
+      "duplicateGroupRef": null,
+      "incidentEscalationRef": null,
+      "recordDigest": "sha256:8ac948e2ed931bd71ce57460c6f96541276424bdbb2bbffef87771db4b7cdd26"
+    },
+    {
+      "id": "review-dependabot-55",
+      "alertKey": "[\"github/dependabot\",\"55\",\"advisory-4\"]",
+      "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "kind": "non-decision",
+      "disposition": null,
+      "nonDecision": "source-muted-or-suppressed",
+      "decidedByRef": null,
+      "recordedAt": "2026-09-16T19:32:00Z",
+      "grantRef": null,
+      "evidenceRef": null,
+      "duplicateGroupRef": null,
+      "incidentEscalationRef": null,
+      "recordDigest": "sha256:ffa46f64a2d29f21523a3841e211c7748f1a38c333ceb061b6162e4494b307fa"
+    },
+    {
+      "id": "review-code-104",
+      "alertKey": "[\"github/code-scanning\",\"104\",\"analysis-1\"]",
+      "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "kind": "non-decision",
+      "disposition": null,
+      "nonDecision": "unknown-asset-identity",
+      "decidedByRef": null,
+      "recordedAt": "2026-09-16T19:33:00Z",
+      "grantRef": null,
+      "evidenceRef": null,
+      "duplicateGroupRef": null,
+      "incidentEscalationRef": null,
+      "recordDigest": "sha256:cd8c852239a3ace08b7cdfa18167976586c1760f702eedda1d054bf14939a412"
+    },
+    {
+      "id": "review-code-105",
+      "alertKey": "[\"github/code-scanning\",\"105\",\"analysis-1\"]",
+      "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "kind": "non-decision",
+      "disposition": null,
+      "nonDecision": "self-suppression-attempt",
+      "decidedByRef": null,
+      "recordedAt": "2026-09-16T19:34:00Z",
+      "grantRef": null,
+      "evidenceRef": null,
+      "duplicateGroupRef": null,
+      "incidentEscalationRef": null,
+      "recordDigest": "sha256:b83f4288333489a27efc3ad1f0f7ff842a5fc6f56f27f693dc7a7fc22616bd72"
+    },
+    {
+      "id": "review-code-106",
+      "alertKey": "[\"github/code-scanning\",\"106\",\"analysis-2\"]",
+      "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "kind": "non-decision",
+      "disposition": null,
+      "nonDecision": "revision-invalidated-prior-decision",
+      "decidedByRef": null,
+      "recordedAt": "2026-09-16T19:35:00Z",
+      "grantRef": null,
+      "evidenceRef": null,
+      "duplicateGroupRef": null,
+      "incidentEscalationRef": null,
+      "recordDigest": "sha256:6e86d5af5aa4870f440434c52c2c064cba4ec4d7d380ca14b9f608fd066a89ea"
+    },
+    {
+      "id": "review-code-107",
+      "alertKey": "[\"github/code-scanning\",\"107\",\"analysis-1\"]",
+      "snapshotRoot": "sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1",
+      "policyRevisionDigest": "sha256:7abfc0265b43a5d217f7d2c0097e8625558f0f034c12971323a53a0392ad55ce",
+      "kind": "human-disposition",
+      "disposition": "incident-review-escalation",
+      "nonDecision": null,
+      "decidedByRef": "principal-incident-responder-sam",
+      "recordedAt": "2026-09-16T19:45:00Z",
+      "grantRef": "grant-sam-incident-review",
+      "evidenceRef": "evidence-disposition-code-107",
+      "duplicateGroupRef": null,
+      "incidentEscalationRef": "incident-escalation-code-107",
+      "recordDigest": "sha256:869ade29cbf6b7f0885d0d7dce88b728ee3a4d4c2283954c76308570da07e390"
+    }
+  ],
+  "incidentEscalations": [
+    {
+      "id": "incident-escalation-code-107",
+      "alertKey": "[\"github/code-scanning\",\"107\",\"analysis-1\"]",
+      "requestedByRef": "principal-incident-responder-sam",
+      "requestedAt": "2026-09-16T19:45:00Z",
+      "grantRef": "grant-sam-incident-review",
+      "incidentOwnerRef": "principal-incident-owner-alex",
+      "state": "requested-owner-review",
+      "incidentRef": null,
+      "declarationEffect": "none",
+      "evidenceRef": "evidence-escalation-code-107",
+      "escalationDigest": "sha256:a519583d3e37626f0792a213a27a8ad3aea47ab09421d2f9a10d791e5ea23cad"
+    }
+  ],
+  "coverage": {
+    "expectedAlertCount": 8,
+    "alertKeys": [
+      "[\"github/code-scanning\",\"101\",\"analysis-3\"]",
+      "[\"github/code-scanning\",\"102\",\"analysis-5\"]",
+      "[\"github/secret-scanning\",\"77\",\"occurrence-1\"]",
+      "[\"github/dependabot\",\"55\",\"advisory-4\"]",
+      "[\"github/code-scanning\",\"104\",\"analysis-1\"]",
+      "[\"github/code-scanning\",\"105\",\"analysis-1\"]",
+      "[\"github/code-scanning\",\"106\",\"analysis-2\"]",
+      "[\"github/code-scanning\",\"107\",\"analysis-1\"]"
+    ],
+    "reviewRecordRefs": [
+      "review-code-101",
+      "review-code-102",
+      "review-secret-77",
+      "review-dependabot-55",
+      "review-code-104",
+      "review-code-105",
+      "review-code-106",
+      "review-code-107"
+    ],
+    "humanDispositionCount": 3,
+    "nonDecisionCount": 5,
+    "humanDispositionAlertKeys": [
+      "[\"github/code-scanning\",\"101\",\"analysis-3\"]",
+      "[\"github/code-scanning\",\"102\",\"analysis-5\"]",
+      "[\"github/code-scanning\",\"107\",\"analysis-1\"]"
+    ],
+    "nonDecisionAlertKeys": [
+      "[\"github/secret-scanning\",\"77\",\"occurrence-1\"]",
+      "[\"github/dependabot\",\"55\",\"advisory-4\"]",
+      "[\"github/code-scanning\",\"104\",\"analysis-1\"]",
+      "[\"github/code-scanning\",\"105\",\"analysis-1\"]",
+      "[\"github/code-scanning\",\"106\",\"analysis-2\"]"
+    ]
+  },
+  "authority": {
+    "siemQuery": "not-performed",
+    "correlationInference": "not-performed",
+    "severityInference": "not-performed",
+    "sourceSuppression": "not-performed",
+    "sourceClosure": "not-performed",
+    "containment": "not-performed",
+    "incidentDeclaration": "not-performed",
+    "ticketMutation": "not-performed",
+    "riskAcceptance": "not-claimed",
+    "securityClaim": "not-claimed"
+  },
+  "handoff": {
+    "destination": "controlled://security-alert-review/handoffs/review-2026-09-16.json",
+    "published": false,
+    "state": "complete-covered",
+    "generatedAt": "2026-09-16T23:30:00Z",
+    "nextOwnerRef": "principal-security-governance-casey",
+    "humanDispositionRefs": [
+      "review-code-101",
+      "review-code-102",
+      "review-code-107"
+    ],
+    "nonDecisionRefs": [
+      "review-secret-77",
+      "review-dependabot-55",
+      "review-code-104",
+      "review-code-105",
+      "review-code-106"
+    ],
+    "incidentEscalationRefs": [
+      "incident-escalation-code-107"
+    ]
+  }
+}
