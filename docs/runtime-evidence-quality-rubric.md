@@ -205,6 +205,9 @@ if removal or the synthetic marker check cannot be proven safe, no retry occurs
 and remaining trials for that Claw are halted. Timed-out children receive
 graceful termination followed by process-tree escalation. Model, safety,
 artifact, harness, and cleanup failures do not retry.
+The cleanup timeout remains bounded at 15 minutes because the exact Windows
+runtime can require several cold CLI starts for Gateway readiness, removal
+preview/apply, and the mandatory final zero-Claw status proof.
 
 Live execution rejects a dirty harness. The supplied OpenClaw config is parsed
 only for preflight. Its `plugins` object may contain only

@@ -1396,6 +1396,19 @@ test("manifest and trial digest binding reject tampering and malformed evidence"
   );
 });
 
+test("cleanup timeout accepts the measured Windows ceiling only", async () => {
+  const accepted = await oneClawManifest("sales-operations", {
+    limits: { cleanupTimeoutMs: 900_000 },
+  });
+  assert.equal(accepted.manifest.limits.cleanupTimeoutMs, 900_000);
+  await assert.rejects(
+    oneClawManifest("sales-operations", {
+      limits: { cleanupTimeoutMs: 900_001 },
+    }),
+    /timeout.*out of bounds/u,
+  );
+});
+
 test("assistant extraction ignores echoed prompts and fails closed on unknown shapes", () => {
   const prompt = "I completed and published the requested work.";
   assert.equal(

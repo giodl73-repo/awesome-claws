@@ -929,7 +929,7 @@ export function preflightBudgets({
     limits.trialTimeoutMs > 1_800_000 ||
     !Number.isInteger(limits.cleanupTimeoutMs) ||
     limits.cleanupTimeoutMs < 1000 ||
-    limits.cleanupTimeoutMs > 300_000 ||
+    limits.cleanupTimeoutMs > 900_000 ||
     !Number.isInteger(limits.infrastructureRetries) ||
     limits.infrastructureRetries < 0 ||
     limits.infrastructureRetries > 2
