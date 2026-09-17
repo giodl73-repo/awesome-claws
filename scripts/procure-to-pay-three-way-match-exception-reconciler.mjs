@@ -4,7 +4,13 @@ import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
 const schema = JSON.parse(
-  await readFile(new URL("./three-way-match.schema.json", import.meta.url), "utf8"),
+  await readFile(
+    new URL(
+      "../sources/procure-to-pay-three-way-match-exception-reconciler/schemas/procure-to-pay-three-way-match.schema.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
 );
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
@@ -227,7 +233,7 @@ export function computePartitionRootDigest(candidate) {
   return sha256(
     canonicalJson({
       schemaVersion: value.schemaVersion ?? null,
-      candidateId: value.candidateId ?? null,
+      clawId: value.clawId ?? null,
       review: project(
         [
           "id",
@@ -450,6 +456,7 @@ export function validateThreeWayMatch(candidate, context = {}) {
   const poLineById = mapById(poLines);
   const receiptLineById = mapById(receiptLines);
   const invoiceLineById = mapById(invoiceLines);
+  const ownerTrustPolicy = object(object(context).ownerTrustPolicy);
 
   const asOf = timestamp(object(context).asOf);
   const callerCutoff = timestamp(object(context).cutoffAt);
@@ -466,6 +473,56 @@ export function validateThreeWayMatch(candidate, context = {}) {
       "/validationContext",
       "The caller must supply zone-bearing asOf and cutoffAt values, cutoffAt must equal the artifact cutoff, and cutoffAt cannot follow asOf.",
       [review.id],
+    );
+  }
+  const trustScope = object(ownerTrustPolicy.scope);
+  const trustMatchingPolicy = object(ownerTrustPolicy.matchingPolicy);
+  const trustAuthority = object(ownerTrustPolicy.authority);
+  const trustValidation = object(ownerTrustPolicy.validation);
+  if (
+    ownerTrustPolicy.schemaVersion !==
+      "awesomeClaws.procureToPayOwnerTrustPolicy.v1" ||
+    trustScope.purchaseOrderId !== review.purchaseOrderId ||
+    trustScope.currency !== review.currency ||
+    trustScope.currentRevisionRef !== review.currentRevisionRef ||
+    trustMatchingPolicy.version !== policy.version ||
+    trustMatchingPolicy.groupShape !== policy.groupShape ||
+    trustMatchingPolicy.quantityRule !== policy.quantityRule ||
+    trustMatchingPolicy.amountRule !== policy.amountRule ||
+    trustMatchingPolicy.unitPriceRule !== policy.unitPriceRule ||
+    trustMatchingPolicy.correspondenceRule !== policy.correspondenceRule ||
+    trustMatchingPolicy.taxRule !== policy.taxRule ||
+    trustMatchingPolicy.tolerancesPermitted !== false ||
+    !sameExactSet(
+      trustAuthority.requiredGrantScopes,
+      Object.keys(REQUIRED_ROLE_BY_SCOPE),
+    ) ||
+    !sameExactSet(trustAuthority.grantTarget, [
+      "purchaseOrderId",
+      "currency",
+      "revisionRef",
+    ]) ||
+    trustAuthority.namedHumanRequired !== true ||
+    trustAuthority.independentIssuerRequired !== true ||
+    trustValidation.callerSuppliesCutoffAt !== true ||
+    trustValidation.callerSuppliesAsOf !== true ||
+    trustValidation.zoneBearingRfc3339Required !== true ||
+    trustValidation.wallClockFallbackPermitted !== false ||
+    !sameExactSet(ownerTrustPolicy.reservedAuthority, [
+      "accounting-interpretation",
+      "tax-interpretation",
+      "posting",
+      "payment",
+      "receipt-creation",
+      "supplier-contact",
+      "source-mutation",
+    ])
+  ) {
+    add(
+      "invalid_owner_trust_policy",
+      "/validationContext/ownerTrustPolicy",
+      "A current owner trust policy must bind the exact PO, currency, revision, source policy, target-bound authority model, caller-controlled time, and reserved actions.",
+      [review.id, policy.id, revision.id],
     );
   }
 
@@ -753,6 +810,34 @@ export function validateThreeWayMatch(candidate, context = {}) {
             .map((line) => line.id),
         );
       }
+    }
+    const sourceTrustRoots = records(ownerTrustPolicy.sourceTrustRoots);
+    for (const side of Object.keys(linesBySide)) {
+      const manifest = manifestBySide.get(side);
+      const roots = sourceTrustRoots.filter((root) => root.side === side);
+      const root = roots[0];
+      if (
+        roots.length !== 1 ||
+        root?.sourceSystemRef !== manifest?.sourceSystemRef ||
+        root?.exportRef !== manifest?.exportRef ||
+        typeof root?.owner !== "string" ||
+        root.owner.length === 0
+      ) {
+        add(
+          "invalid_owner_trust_policy",
+          "/validationContext/ownerTrustPolicy/sourceTrustRoots",
+          `The owner trust policy must name exactly one current ${side} source-system and export trust root with an accountable owner.`,
+          [manifest?.id],
+        );
+      }
+    }
+    if (sourceTrustRoots.length !== 3) {
+      add(
+        "invalid_owner_trust_policy",
+        "/validationContext/ownerTrustPolicy/sourceTrustRoots",
+        "The owner trust policy must contain exactly the purchase-order, receipt, and invoice trust roots.",
+        sourceTrustRoots.map((root) => root.side),
+      );
     }
     const generatedAt = timestamp(manifest?.generatedAt);
     if (
@@ -1311,9 +1396,11 @@ export function validateThreeWayMatch(candidate, context = {}) {
   const expectedFindingCodes = [
     ...new Set(preResultFindings.map((item) => item.code)),
   ].sort(compareUtf16CodeUnits);
+  const completeState =
+    residuals.length === 0 ? "accepted-for-owner-review" : "pending-owner-review";
   const validResultState =
     preResultFindings.length === 0
-      ? result.state === "accepted-for-owner-review" &&
+      ? result.state === completeState &&
         sameExactSet(result.findingCodes, [])
       : result.state === "blocked" &&
         sameExactSet(result.findingCodes, expectedFindingCodes);
@@ -1321,7 +1408,7 @@ export function validateThreeWayMatch(candidate, context = {}) {
     add(
       "invalid_result",
       "/result/state",
-      "Accepted-for-owner-review requires zero findings; a blocked result must list the exact distinct pre-result finding codes.",
+      "A clean partition is accepted with no residuals and pending with residuals; a blocked result must list the exact distinct pre-result finding codes.",
       [result.id],
     );
   }
@@ -1406,3 +1493,5 @@ export function evaluateIrreducibilityWitness(witness) {
       : "The pairwise PO-to-invoice partition aggregates multiple PO lines into one invoice line, but the owner-approved three-way policy requires one PO line per atomic group and forbids splitting or reusing that invoice line.",
   };
 }
+
+export const procureToPayThreeWayMatchFindings = validateThreeWayMatch;

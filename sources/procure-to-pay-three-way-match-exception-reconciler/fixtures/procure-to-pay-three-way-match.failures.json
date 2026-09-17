@@ -1,0 +1,70 @@
+[
+  {
+    "id": "duplicate-invoice-line-reuse",
+    "description": "Attempts to consume one invoice line in both accepted match groups.",
+    "patches": [
+      {
+        "op": "add",
+        "path": "/matchGroups/1/invoiceLineRefs/-",
+        "value": "invoice-line-kit-partial-1"
+      }
+    ],
+    "expectedCodes": [
+      "cross_po_line_group",
+      "invalid_match_decision_binding",
+      "invalid_partition_root",
+      "invalid_result",
+      "line_reused",
+      "three_way_mismatch"
+    ]
+  },
+  {
+    "id": "unapproved-matching-policy",
+    "description": "Replaces the policy owner with a human who has no policy-approval role or grant.",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/matchingPolicy/approvedByRef",
+        "value": "principal-maya-chen"
+      }
+    ],
+    "expectedCodes": [
+      "invalid_human_authority",
+      "invalid_partition_root",
+      "invalid_result"
+    ]
+  },
+  {
+    "id": "stale-invoice-revision",
+    "description": "Rebinds one invoice line to the superseded PO revision.",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/invoiceLines/0/purchaseOrderRevisionRef",
+        "value": "po-450-r1"
+      }
+    ],
+    "expectedCodes": [
+      "invalid_line_manifest",
+      "invalid_result",
+      "invalid_source_revision"
+    ]
+  },
+  {
+    "id": "one-minor-unit-drift",
+    "description": "Changes one partial invoice line by one minor unit without changing its integer quantity or unit price.",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/invoiceLines/0/lineMinorUnits",
+        "value": "9999"
+      }
+    ],
+    "expectedCodes": [
+      "invalid_integer_arithmetic",
+      "invalid_line_manifest",
+      "invalid_result",
+      "three_way_mismatch"
+    ]
+  }
+]

@@ -1,0 +1,1056 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/procure-to-pay-three-way-match.v1.json",
+  "title": "Procure-to-Pay Three-Way Match Exception Reconciler artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "clawId",
+    "review",
+    "principals",
+    "authorityGrants",
+    "matchingPolicy",
+    "purchaseOrderRevision",
+    "amendment",
+    "manifests",
+    "purchaseOrderLines",
+    "receiptLines",
+    "invoiceLines",
+    "matchGroups",
+    "residuals",
+    "coverage",
+    "result",
+    "authorityClaims"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.procureToPayThreeWayMatch.v1"
+    },
+    "clawId": {
+      "const": "procure-to-pay-three-way-match-exception-reconciler"
+    },
+    "review": {
+      "$ref": "#/$defs/review"
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "authorityGrants": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "$ref": "#/$defs/authorityGrant"
+      }
+    },
+    "matchingPolicy": {
+      "$ref": "#/$defs/matchingPolicy"
+    },
+    "purchaseOrderRevision": {
+      "$ref": "#/$defs/purchaseOrderRevision"
+    },
+    "amendment": {
+      "$ref": "#/$defs/amendment"
+    },
+    "manifests": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/manifest"
+      }
+    },
+    "purchaseOrderLines": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/purchaseOrderLine"
+      }
+    },
+    "receiptLines": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/receiptLine"
+      }
+    },
+    "invoiceLines": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/invoiceLine"
+      }
+    },
+    "matchGroups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/matchGroup"
+      }
+    },
+    "residuals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/residual"
+      }
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "result": {
+      "$ref": "#/$defs/result"
+    },
+    "authorityClaims": {
+      "$ref": "#/$defs/authorityClaims"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+      "maxLength": 120
+    },
+    "opaqueOwnerRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@#-]{0,199}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "integerString": {
+      "type": "string",
+      "pattern": "^-?(?:0|[1-9][0-9]*)$"
+    },
+    "positiveIntegerString": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "nonEmptyIds": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "purchaseOrderId",
+        "currency",
+        "cutoffAt",
+        "currentRevisionRef",
+        "amendmentRef",
+        "matchingPolicyRef",
+        "destination",
+        "nextOwnerRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "purchaseOrderId": {
+          "$ref": "#/$defs/id"
+        },
+        "currency": {
+          "$ref": "#/$defs/currency"
+        },
+        "cutoffAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "currentRevisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "amendmentRef": {
+          "$ref": "#/$defs/id"
+        },
+        "matchingPolicyRef": {
+          "$ref": "#/$defs/id"
+        },
+        "destination": {
+          "const": "accounts-payable-exception-review"
+        },
+        "nextOwnerRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "roles"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 80,
+          "pattern": "^[^|\\r\\n]{3,80}$"
+        },
+        "kind": {
+          "const": "named-human"
+        },
+        "roles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "authority-issuer",
+              "matching-policy-owner",
+              "purchase-order-amendment-approver",
+              "match-reviewer",
+              "exception-owner"
+            ]
+          }
+        }
+      }
+    },
+    "authorityGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "purchaseOrderId",
+        "currency",
+        "revisionRef",
+        "scope",
+        "granteeRef",
+        "issuedByRef",
+        "issuedAt",
+        "activeFrom",
+        "activeUntil"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "purchaseOrderId": {
+          "$ref": "#/$defs/id"
+        },
+        "currency": {
+          "$ref": "#/$defs/currency"
+        },
+        "revisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "scope": {
+          "enum": [
+            "matching-policy-approval",
+            "purchase-order-amendment-approval",
+            "match-decision",
+            "owner-handoff"
+          ]
+        },
+        "granteeRef": {
+          "$ref": "#/$defs/id"
+        },
+        "issuedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "activeFrom": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "activeUntil": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "matchingPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "purchaseOrderId",
+        "currency",
+        "revisionRef",
+        "approvedPayloadDigest",
+        "approvedByRef",
+        "authorityGrantRef",
+        "approvedAt",
+        "groupShape",
+        "quantityRule",
+        "amountRule",
+        "unitPriceRule",
+        "correspondenceRule",
+        "taxRule"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^v[1-9][0-9]*$"
+        },
+        "purchaseOrderId": {
+          "$ref": "#/$defs/id"
+        },
+        "currency": {
+          "$ref": "#/$defs/currency"
+        },
+        "revisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "groupShape": {
+          "const": "one-po-line-to-one-or-more-receipt-and-invoice-lines"
+        },
+        "quantityRule": {
+          "const": "exact-signed-integer-equality"
+        },
+        "amountRule": {
+          "const": "exact-signed-minor-unit-equality"
+        },
+        "unitPriceRule": {
+          "const": "exact-current-po-unit-price"
+        },
+        "correspondenceRule": {
+          "const": "exact-source-line-reference-only"
+        },
+        "taxRule": {
+          "const": "out-of-scope"
+        }
+      }
+    },
+    "purchaseOrderRevision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "purchaseOrderId",
+        "revisionNumber",
+        "supersedesRevisionRef",
+        "amendmentRef",
+        "amendmentPayloadDigest",
+        "lineManifestDigest",
+        "approvedPayloadDigest",
+        "approvedByRef",
+        "authorityGrantRef",
+        "approvedAt",
+        "currency",
+        "manifestRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "purchaseOrderId": {
+          "$ref": "#/$defs/id"
+        },
+        "revisionNumber": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 999999
+        },
+        "supersedesRevisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "amendmentRef": {
+          "$ref": "#/$defs/id"
+        },
+        "amendmentPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "lineManifestDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "approvedPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "currency": {
+          "$ref": "#/$defs/currency"
+        },
+        "manifestRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "amendment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "purchaseOrderId",
+        "fromRevisionRef",
+        "toRevisionRef",
+        "approvedPayloadDigest",
+        "approvedByRef",
+        "authorityGrantRef",
+        "approvedAt",
+        "reasonCode",
+        "changes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "purchaseOrderId": {
+          "$ref": "#/$defs/id"
+        },
+        "fromRevisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "toRevisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "reasonCode": {
+          "const": "owner-approved-quantity-change"
+        },
+        "changes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/amendmentChange"
+          }
+        }
+      }
+    },
+    "amendmentChange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lineRef",
+        "field",
+        "from",
+        "to"
+      ],
+      "properties": {
+        "lineRef": {
+          "$ref": "#/$defs/id"
+        },
+        "field": {
+          "const": "quantity"
+        },
+        "from": {
+          "$ref": "#/$defs/positiveIntegerString"
+        },
+        "to": {
+          "$ref": "#/$defs/positiveIntegerString"
+        }
+      }
+    },
+    "manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "side",
+        "purchaseOrderId",
+        "currentRevisionRef",
+        "sourceSystemRef",
+        "exportRef",
+        "generatedAt",
+        "lineRefs",
+        "lineManifestDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "side": {
+          "enum": [
+            "purchase-order",
+            "receipt",
+            "invoice"
+          ]
+        },
+        "purchaseOrderId": {
+          "$ref": "#/$defs/id"
+        },
+        "currentRevisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceSystemRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "exportRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "lineRefs": {
+          "$ref": "#/$defs/ids"
+        },
+        "lineManifestDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "purchaseOrderLine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "manifestRef",
+        "sourceSystemRef",
+        "exportRef",
+        "sourceNativeLineId",
+        "revisionRef",
+        "purchaseOrderId",
+        "lineNumber",
+        "itemRef",
+        "unitOfMeasure",
+        "quantity",
+        "unitMinorUnits",
+        "extendedMinorUnits",
+        "currency"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "manifestRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceSystemRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "exportRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "sourceNativeLineId": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "revisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "purchaseOrderId": {
+          "$ref": "#/$defs/id"
+        },
+        "lineNumber": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999999
+        },
+        "itemRef": {
+          "$ref": "#/$defs/id"
+        },
+        "unitOfMeasure": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "quantity": {
+          "$ref": "#/$defs/positiveIntegerString"
+        },
+        "unitMinorUnits": {
+          "$ref": "#/$defs/positiveIntegerString"
+        },
+        "extendedMinorUnits": {
+          "$ref": "#/$defs/positiveIntegerString"
+        },
+        "currency": {
+          "$ref": "#/$defs/currency"
+        }
+      }
+    },
+    "receiptLine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "manifestRef",
+        "sourceSystemRef",
+        "exportRef",
+        "sourceNativeLineId",
+        "poLineRef",
+        "purchaseOrderRevisionRef",
+        "receiptId",
+        "kind",
+        "reversesLineRef",
+        "unitOfMeasure",
+        "quantity",
+        "recordedAt",
+        "currency"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "manifestRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceSystemRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "exportRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "sourceNativeLineId": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "poLineRef": {
+          "$ref": "#/$defs/id"
+        },
+        "purchaseOrderRevisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "receiptId": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "receipt",
+            "return"
+          ]
+        },
+        "reversesLineRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unitOfMeasure": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "quantity": {
+          "$ref": "#/$defs/integerString"
+        },
+        "recordedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "currency": {
+          "$ref": "#/$defs/currency"
+        }
+      }
+    },
+    "invoiceLine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "manifestRef",
+        "sourceSystemRef",
+        "exportRef",
+        "sourceNativeLineId",
+        "poLineRef",
+        "purchaseOrderRevisionRef",
+        "invoiceId",
+        "kind",
+        "reversesLineRef",
+        "unitOfMeasure",
+        "quantity",
+        "unitMinorUnits",
+        "lineMinorUnits",
+        "recordedAt",
+        "currency"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "manifestRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceSystemRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "exportRef": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "sourceNativeLineId": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "poLineRef": {
+          "$ref": "#/$defs/id"
+        },
+        "purchaseOrderRevisionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "invoiceId": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "invoice",
+            "credit"
+          ]
+        },
+        "reversesLineRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unitOfMeasure": {
+          "$ref": "#/$defs/opaqueOwnerRef"
+        },
+        "quantity": {
+          "$ref": "#/$defs/integerString"
+        },
+        "unitMinorUnits": {
+          "$ref": "#/$defs/positiveIntegerString"
+        },
+        "lineMinorUnits": {
+          "$ref": "#/$defs/integerString"
+        },
+        "recordedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "currency": {
+          "$ref": "#/$defs/currency"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "approvedByRef",
+        "authorityGrantRef",
+        "approvedAt",
+        "policyRef",
+        "policyVersion",
+        "policyPayloadDigest",
+        "groupPayloadDigest",
+        "purchaseOrderManifestDigest",
+        "receiptManifestDigest",
+        "invoiceManifestDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "policyRef": {
+          "$ref": "#/$defs/id"
+        },
+        "policyVersion": {
+          "type": "string",
+          "pattern": "^v[1-9][0-9]*$"
+        },
+        "policyPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "groupPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "purchaseOrderManifestDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "receiptManifestDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "invoiceManifestDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "matchTotals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "purchaseOrderQuantity",
+        "receiptQuantity",
+        "invoiceQuantity",
+        "purchaseOrderMinorUnits",
+        "invoiceMinorUnits"
+      ],
+      "properties": {
+        "purchaseOrderQuantity": {
+          "$ref": "#/$defs/integerString"
+        },
+        "receiptQuantity": {
+          "$ref": "#/$defs/integerString"
+        },
+        "invoiceQuantity": {
+          "$ref": "#/$defs/integerString"
+        },
+        "purchaseOrderMinorUnits": {
+          "$ref": "#/$defs/integerString"
+        },
+        "invoiceMinorUnits": {
+          "$ref": "#/$defs/integerString"
+        }
+      }
+    },
+    "matchGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "policyRef",
+        "poLineRefs",
+        "receiptLineRefs",
+        "invoiceLineRefs",
+        "totals",
+        "decision"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "policyRef": {
+          "$ref": "#/$defs/id"
+        },
+        "poLineRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "receiptLineRefs": {
+          "$ref": "#/$defs/nonEmptyIds"
+        },
+        "invoiceLineRefs": {
+          "$ref": "#/$defs/nonEmptyIds"
+        },
+        "totals": {
+          "$ref": "#/$defs/matchTotals"
+        },
+        "decision": {
+          "$ref": "#/$defs/decision"
+        }
+      }
+    },
+    "residual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "side",
+        "lineRef",
+        "poLineRef",
+        "reasonCode",
+        "ownerRef",
+        "recordedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "side": {
+          "enum": [
+            "purchase-order",
+            "receipt",
+            "invoice"
+          ]
+        },
+        "lineRef": {
+          "$ref": "#/$defs/id"
+        },
+        "poLineRef": {
+          "$ref": "#/$defs/id"
+        },
+        "reasonCode": {
+          "enum": [
+            "no-receipt-or-invoice-by-cutoff",
+            "three-way-mismatch-needs-owner-review",
+            "receipt-needs-owner-review",
+            "invoice-needs-owner-review"
+          ]
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "recordedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "purchaseOrderLineRefs",
+        "receiptLineRefs",
+        "invoiceLineRefs",
+        "groupRefs",
+        "residualRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "purchaseOrderLineRefs": {
+          "$ref": "#/$defs/nonEmptyIds"
+        },
+        "receiptLineRefs": {
+          "$ref": "#/$defs/ids"
+        },
+        "invoiceLineRefs": {
+          "$ref": "#/$defs/ids"
+        },
+        "groupRefs": {
+          "$ref": "#/$defs/ids"
+        },
+        "residualRefs": {
+          "$ref": "#/$defs/ids"
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "state",
+        "preparedByRef",
+        "authorityGrantRef",
+        "nextOwnerRef",
+        "partitionRootDigest",
+        "generatedAt",
+        "groupRefs",
+        "residualRefs",
+        "findingCodes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "accepted-for-owner-review",
+            "pending-owner-review",
+            "blocked"
+          ]
+        },
+        "preparedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "nextOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "partitionRootDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "groupRefs": {
+          "$ref": "#/$defs/ids"
+        },
+        "residualRefs": {
+          "$ref": "#/$defs/ids"
+        },
+        "findingCodes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        }
+      }
+    },
+    "authorityClaims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "posting",
+        "payment",
+        "supplierContact",
+        "accountingInterpretation",
+        "taxInterpretation",
+        "sourceMutation"
+      ],
+      "properties": {
+        "posting": {
+          "const": "not-claimed"
+        },
+        "payment": {
+          "const": "not-claimed"
+        },
+        "supplierContact": {
+          "const": "not-claimed"
+        },
+        "accountingInterpretation": {
+          "const": "not-claimed"
+        },
+        "taxInterpretation": {
+          "const": "not-claimed"
+        },
+        "sourceMutation": {
+          "const": "not-claimed"
+        }
+      }
+    }
+  }
+}

@@ -1,15 +1,43 @@
 import { readFile } from "node:fs/promises";
 
 export const acceptedFixture = JSON.parse(
-  await readFile(new URL("./fixtures/accepted.json", import.meta.url), "utf8"),
+  await readFile(
+    new URL(
+      "../sources/procure-to-pay-three-way-match-exception-reconciler/fixtures/procure-to-pay-three-way-match.example.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
 );
 
 export const failureCases = JSON.parse(
-  await readFile(new URL("./fixtures/failure-cases.json", import.meta.url), "utf8"),
+  await readFile(
+    new URL(
+      "../sources/procure-to-pay-three-way-match-exception-reconciler/fixtures/procure-to-pay-three-way-match.failures.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
 );
 
 export const irreducibilityWitness = JSON.parse(
-  await readFile(new URL("./fixtures/irreducibility-witness.json", import.meta.url), "utf8"),
+  await readFile(
+    new URL(
+      "../sources/procure-to-pay-three-way-match-exception-reconciler/fixtures/procure-to-pay-three-way-match.irreducibility.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+
+export const ownerTrustPolicy = JSON.parse(
+  await readFile(
+    new URL(
+      "../sources/procure-to-pay-three-way-match-exception-reconciler/fixtures/owner-trust-policy.example.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
 );
 
 function pointerSegments(path) {

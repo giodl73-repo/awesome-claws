@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 121,
-    "coveredCount": 121,
-    "recipeCount": 331,
-    "findingCodeCount": 435
+    "validatorCount": 122,
+    "coveredCount": 122,
+    "recipeCount": 334,
+    "findingCodeCount": 444
   },
   "entries": [
     {
@@ -5239,6 +5239,60 @@
             "invalid-plan-lineage",
             "invalid-shared-kpi-chronology",
             "invalid-source-authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "procure-to-pay-three-way-match-exception-reconciler",
+      "recipes": [
+        {
+          "id": "semantic-invalid-partition-root-1",
+          "operator": "replace",
+          "path": [
+            "review",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_partition_root",
+            "invalid_result"
+          ]
+        },
+        {
+          "id": "semantic-invalid-authority-grant-2",
+          "operator": "replace",
+          "path": [
+            "review",
+            "purchaseOrderId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_authority_grant",
+            "invalid_human_authority",
+            "invalid_line_manifest",
+            "invalid_owner_trust_policy",
+            "invalid_partition_root",
+            "invalid_result",
+            "invalid_review_binding",
+            "invalid_source_revision"
+          ]
+        },
+        {
+          "id": "semantic-invalid-decision-chronology-3",
+          "operator": "replace",
+          "path": [
+            "review",
+            "cutoffAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_decision_chronology",
+            "invalid_manifest_chronology",
+            "invalid_partition_root",
+            "invalid_result",
+            "invalid_side_residual",
+            "invalid_validation_context"
           ]
         }
       ]

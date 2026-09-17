@@ -8,7 +8,7 @@ import {
 const [id, input, ...args] = process.argv.slice(2);
 const semanticOptions = {};
 const usage =
-  "Usage: npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>] [--license-trust-root <trust-root.json>] [--trust-store <trust.json>] [--source-bundle <sources.json>] [--trust-keys <keys.json>] [--approved-plan-public-keys <keys.json>] [--approved-plan-metric-digests <digests.json>]";
+  "Usage: npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>] [--p2p-cutoff-at <RFC3339>] [--p2p-owner-policy <owner-policy.json>] [--license-trust-root <trust-root.json>] [--trust-store <trust.json>] [--source-bundle <sources.json>] [--trust-keys <keys.json>] [--approved-plan-public-keys <keys.json>] [--approved-plan-metric-digests <digests.json>]";
 for (let index = 0; index < args.length; index += 2) {
   const flag = args[index];
   const argument = args[index + 1];
@@ -16,6 +16,8 @@ for (let index = 0; index < args.length; index += 2) {
     !argument ||
     ![
       "--as-of",
+      "--p2p-cutoff-at",
+      "--p2p-owner-policy",
       "--license-trust-root",
       "--trust-store",
       "--source-bundle",
@@ -28,6 +30,8 @@ for (let index = 0; index < args.length; index += 2) {
   }
   if (flag === "--as-of") {
     semanticOptions.asOf = argument;
+  } else if (flag === "--p2p-cutoff-at") {
+    semanticOptions.cutoffAt = argument;
   } else if (flag === "--trust-keys") {
     const content = await readFile(resolve(argument));
     const trustConfiguration = JSON.parse(content.toString("utf8"));
@@ -45,7 +49,9 @@ for (let index = 0; index < args.length; index += 2) {
     ) {
       throw new Error(`${flag} must reference a JSON object.`);
     }
-    if (flag === "--license-trust-root") {
+    if (flag === "--p2p-owner-policy") {
+      semanticOptions.ownerTrustPolicy = trustConfiguration;
+    } else if (flag === "--license-trust-root") {
       semanticOptions.licenseTrustRoot = trustConfiguration;
     } else if (flag === "--trust-store") {
       semanticOptions.trustStore = trustConfiguration;

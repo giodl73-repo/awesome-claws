@@ -1,11 +1,14 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import {
   acceptedFixture,
   failureCases,
   irreducibilityWitness,
   materializeFailureCase,
-} from "./fixture-loader.mjs";
+  ownerTrustPolicy,
+} from "./procure-to-pay-three-way-match-exception-reconciler-fixtures.mjs";
 import {
   computeAmendmentPayloadDigest,
   computeLineManifestDigest,
@@ -15,12 +18,27 @@ import {
   computePurchaseOrderRevisionPayloadDigest,
   evaluateIrreducibilityWitness,
   validateThreeWayMatch,
-} from "./three-way-match.validator.mjs";
+} from "./procure-to-pay-three-way-match-exception-reconciler.mjs";
 
 const context = Object.freeze({
   cutoffAt: acceptedFixture.review.cutoffAt,
   asOf: "2026-09-16T12:00:00Z",
+  ownerTrustPolicy,
 });
+const template = await readFile(
+  new URL(
+    "../sources/procure-to-pay-three-way-match-exception-reconciler/templates/procure-to-pay-three-way-match.md",
+    import.meta.url,
+  ),
+  "utf8",
+);
+const visual = await readFile(
+  new URL(
+    "../sources/procure-to-pay-three-way-match-exception-reconciler/assets/three-way-match-review.html",
+    import.meta.url,
+  ),
+  "utf8",
+);
 
 function codes(candidate, validationContext = context) {
   return [
@@ -101,7 +119,89 @@ test("accepted fixture proves the bounded three-way partition", () => {
       recordedAt: "2026-09-16T01:10:00Z",
     },
   ]);
-  assert.equal(acceptedFixture.result.state, "accepted-for-owner-review");
+  assert.equal(acceptedFixture.result.state, "pending-owner-review");
+});
+
+test("result state is accepted only when the clean partition has no residuals", () => {
+  const candidate = structuredClone(acceptedFixture);
+  candidate.purchaseOrderLines = candidate.purchaseOrderLines.filter(
+    (line) => line.id !== "po-line-support",
+  );
+  candidate.residuals = [];
+  candidate.coverage.purchaseOrderLineRefs = candidate.purchaseOrderLines.map(
+    (line) => line.id,
+  );
+  candidate.coverage.residualRefs = [];
+  candidate.result.state = "accepted-for-owner-review";
+  candidate.result.residualRefs = [];
+  refreshManifest(candidate, "purchase-order");
+  candidate.purchaseOrderRevision.approvedPayloadDigest =
+    computePurchaseOrderRevisionPayloadDigest(candidate.purchaseOrderRevision);
+  bindDecisionsToCurrentPayloads(candidate);
+  refreshPartitionRoot(candidate);
+
+  assert.deepEqual(validateThreeWayMatch(candidate, context), []);
+});
+
+test("X3, X4, and public owner-policy surfaces preserve the complete contract", () => {
+  for (const required of [
+    "{{matchingPolicy.approvedPayloadDigest}}",
+    "{{purchaseOrderRevision.approvedPayloadDigest}}",
+    "{{purchaseOrderLines[].sourceNativeLineId}}",
+    "{{receiptLines[].reversesLineRef}}",
+    "{{invoiceLines[].reversesLineRef}}",
+    "{{matchGroups[].decision.groupPayloadDigest}}",
+    "{{matchGroups[].decision.receiptManifestDigest}}",
+    "{{result.partitionRootDigest}}",
+    "{{authorityClaims.accountingInterpretation}}",
+    "Receipt creation is not modeled or permitted",
+  ]) {
+    assert.ok(template.includes(required), required);
+  }
+  for (const required of [
+    'aria-labelledby="p2p-title"',
+    "Pending owner review",
+    "11 / 11",
+    "split receipts 6 + 4",
+    "exact return lineage",
+    "exact credit lineage",
+    "outputs/procure-to-pay-three-way-match.md",
+    "new URLSearchParams(window.location.search).get(\"scoutTheme\")",
+    "--cp-accent",
+    "var(--cp-bg)",
+  ]) {
+    assert.ok(visual.includes(required), required);
+  }
+  assert.equal(
+    ownerTrustPolicy.schemaVersion,
+    "awesomeClaws.procureToPayOwnerTrustPolicy.v1",
+  );
+  assert.equal(ownerTrustPolicy.sourceTrustRoots.length, 3);
+  assert.equal(ownerTrustPolicy.matchingPolicy.tolerancesPermitted, false);
+  assert.equal(ownerTrustPolicy.validation.wallClockFallbackPermitted, false);
+});
+
+test("public artifact CLI validates the exact fixture with owner policy and caller time", () => {
+  const result = spawnSync(
+    process.execPath,
+    [
+      "scripts/validate-artifact.mjs",
+      "procure-to-pay-three-way-match-exception-reconciler",
+      "claws/procure-to-pay-three-way-match-exception-reconciler/fixtures/procure-to-pay-three-way-match.example.json",
+      "--as-of",
+      context.asOf,
+      "--p2p-cutoff-at",
+      context.cutoffAt,
+      "--p2p-owner-policy",
+      "claws/procure-to-pay-three-way-match-exception-reconciler/fixtures/owner-trust-policy.example.json",
+    ],
+    {
+      cwd: new URL("..", import.meta.url),
+      encoding: "utf8",
+    },
+  );
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+  assert.equal(JSON.parse(result.stdout).valid, true);
 });
 
 test("human approvals and handoff bind exact immutable payloads", () => {
@@ -520,6 +620,7 @@ test("caller controls cutoff and validation never consults wall-clock time", () 
     codes(acceptedFixture, {
       cutoffAt: "2026-09-14T23:59:59Z",
       asOf: context.asOf,
+      ownerTrustPolicy,
     }).includes("invalid_validation_context"),
   );
 
@@ -527,6 +628,23 @@ test("caller controls cutoff and validation never consults wall-clock time", () 
   afterCutoff.invoiceLines[0].recordedAt = "2026-09-16T00:00:00Z";
   assert.ok(codes(afterCutoff).includes("record_after_cutoff"));
   assert.deepEqual(validateThreeWayMatch(acceptedFixture, context), []);
+});
+
+test("public owner trust policy is required and target-bound", () => {
+  assert.ok(
+    codes(acceptedFixture, {
+      cutoffAt: context.cutoffAt,
+      asOf: context.asOf,
+    }).includes("invalid_owner_trust_policy"),
+  );
+  const drifted = structuredClone(ownerTrustPolicy);
+  drifted.sourceTrustRoots[1].exportRef = "RCV-OTHER";
+  assert.ok(
+    codes(acceptedFixture, {
+      ...context,
+      ownerTrustPolicy: drifted,
+    }).includes("invalid_owner_trust_policy"),
+  );
 });
 
 test("integer quantity and minor-unit arithmetic rejects drift without tolerances", () => {

@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://awesome-claws.example/candidates/procure-to-pay-three-way-match-exception-reconciler/three-way-match.schema.json",
-  "title": "Procure-to-Pay Three-Way Match Exception Reconciler candidate evidence slice",
+  "$id": "https://awesome-claws.example/schemas/procure-to-pay-three-way-match.v1.json",
+  "title": "Procure-to-Pay Three-Way Match Exception Reconciler artifact",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schemaVersion",
-    "candidateId",
+    "clawId",
     "review",
     "principals",
     "authorityGrants",
@@ -25,9 +25,9 @@
   ],
   "properties": {
     "schemaVersion": {
-      "const": "awesomeClaws.procureToPayThreeWayMatchCandidate.v0"
+      "const": "awesomeClaws.procureToPayThreeWayMatch.v1"
     },
-    "candidateId": {
+    "clawId": {
       "const": "procure-to-pay-three-way-match-exception-reconciler"
     },
     "review": {
@@ -985,6 +985,7 @@
         "state": {
           "enum": [
             "accepted-for-owner-review",
+            "pending-owner-review",
             "blocked"
           ]
         },

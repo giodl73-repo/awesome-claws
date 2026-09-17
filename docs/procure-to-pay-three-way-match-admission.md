@@ -1,16 +1,14 @@
-# Procure-to-Pay Three-Way Match Exception Reconciler candidate decision
+# Procure-to-Pay Three-Way Match Exception Reconciler admission decision
 
 Date: 2026-09-16
 
-Status: bounded candidate evidence only; not registered, generated, or packaged as
-a public Claw
+Status: admitted and promoted as a public X4 Claw
 
 Evidence verdict: **recommend NEW**, implemented by adapting exact-partition
 patterns rather than by expanding the Financial Account Reconciliation
 Coordinator
 
-Admission status: **needs human** until maintainers accept the proposal and
-representative owner evidence
+Admission status: **admitted**
 
 Confidence: **0.92**
 
@@ -89,14 +87,15 @@ account reconciliation job.
 The repository instructions make `catalog.json` and `sources/<claw-id>/`
 authoritative and `claws/`, `CHOOSER.md`, and `catalog-chooser.json` generated.
 The admission rubric requires a distinct repeatable job or materially different
-workflow, output, evidence, or authority contract. This slice therefore lives
-only under `candidates/` and changes none of those public or generated surfaces.
+workflow, output, evidence, or authority contract. The admitted implementation
+uses those authoritative and generated surfaces and removes the superseded
+candidate-only directory.
 
-| Existing Claw | Source-backed behavior | Candidate consequence |
+| Existing Claw | Source-backed behavior | Contribution consequence |
 | --- | --- | --- |
 | Financial Account Reconciliation Coordinator | `contributions/financial-account-reconciliation-coordinator.json`, `sources/.../financial-account-reconciliation.schema.json`, and `scripts/financial-account-reconciliation-coordinator.mjs` define two co-equal monetary exports, exact manifests, 1:1/1:n/n:1 groups, BigInt arithmetic, typed authority, complete two-sided consumption, residuals, caller-supplied time, and no posting. Its focused tests prove row reuse, many-to-many rejection, one-minor-unit drift, and residual totality. | **Adapt** exact manifests, total partitioning, integer arithmetic, structured findings, caller time, and typed authority. Do not pretend its two-sided signed-balance convention proves PO revision, receipt quantity, or invoice-credit identity. |
 | Invoice and Payment Follow-up | `contributions/invoice-payment-followup.json`, `sources/.../invoice-receivables.schema.json`, and the focused case in `scripts/x3-decision-artifacts.test.mjs` track receivable balances, payments, credits, disputes, and owner-reviewed communications. | **Avoid as the core seam.** Reuse only the explicit credit vocabulary and no-payment/no-contact boundary. It is aggregate receivables follow-up, not source-line P2P matching, and its schema uses general JSON numbers. |
-| Procurement Evaluator | `contributions/procurement-evaluator.json`, `sources/.../vendor-evaluation.schema.json`, and `scripts/procurement-evaluator.test.mjs` compare vendors against weighted evidence and specialist review. | **Avoid as the core seam.** Reuse the purchasing-owner boundary. No vendor scoring, ranking, recommendation, or pre-selection work belongs in this candidate. |
+| Procurement Evaluator | `contributions/procurement-evaluator.json`, `sources/.../vendor-evaluation.schema.json`, and `scripts/procurement-evaluator.test.mjs` compare vendors against weighted evidence and specialist review. | **Avoid as the core seam.** Reuse the purchasing-owner boundary. No vendor scoring, ranking, recommendation, or pre-selection work belongs in this contribution. |
 | Contract Obligation Tracker | `contributions/contract-obligation-tracker.json`, `sources/.../contract-obligation-tracker.schema.json`, `scripts/contract-obligation-tracker.mjs`, and its focused tests bind one owner-confirmed version, total coverage, exact blockers, chronology, and current named-human authority. | **Adapt** current-version authority, closed ledgers, and fail-closed chronology. Avoid clause, obligation, due-state, legal, and completion semantics. |
 | Commercial Deal Desk Coordinator | `contributions/commercial-deal-desk-coordinator.json`, `sources/.../commercial-deal-desk.schema.json`, `scripts/commercial-deal-desk-coordinator.mjs`, and its focused tests bind an immutable revision, use BigInt quantity/minor-unit arithmetic, and require exact independent current approvals. | **Adapt** immutable revision binding, integer arithmetic, and exact approval scope. Avoid quote configuration, margin, discount, licensing, legal, and order-readiness domains. |
 
@@ -144,10 +143,10 @@ only under `candidates/` and changes none of those public or generated surfaces.
    three-way `Should Be Paid` status that can become `Exception` after bill
    edits and can be manually changed before payment. Useful precedent: partial
    receipt quantity is operationally distinct. Negative precedent: this
-   candidate must not expose a mutable pay decision or payment action.
+   contribution must not expose a mutable pay decision or payment action.
    - <https://www.odoo.com/documentation/19.0/applications/inventory_and_mrp/purchase/manage_deals/control_bills.html>
 
-The candidate is deliberately simpler than either comparator: it validates
+The contribution is deliberately simpler than either comparator: it validates
 owner-supplied evidence under one exact policy and stops at a review handoff.
 
 ## Evaluate
@@ -156,12 +155,12 @@ The role review used three repository roles from different tension clusters.
 
 | Lens | Finding | Revision made |
 | --- | --- | --- |
-| `claws-repo-steward` (cluster H, boundary purity) | A candidate must not leak into authoritative catalog, contribution, generated package, chooser, screenshot, or regression surfaces before admission. | Keep every file under `candidates/procure-to-pay-three-way-match-exception-reconciler/`; add no registry wiring. |
-| `power-user` (cluster B, operational control) | A third artifact that merely documents two worksheets would add ceremony. It needs one command, exact failures, and a named deletion target. | Add `verify.mjs`, four deterministic failure fixtures, and the three-worksheet deletion gate. Keep three exact line manifests and one complete partition root rather than a generalized evidence framework. |
+| `claws-repo-steward` (cluster H, boundary purity) | Candidate evidence must not leak into public surfaces before admission, and the candidate-only directory must disappear after promotion. | Promote admitted files into authoritative `sources/`, `scripts/`, `docs/`, and generated surfaces; remove `candidates/procure-to-pay-three-way-match-exception-reconciler/`. |
+| `power-user` (cluster B, operational control) | A third artifact that merely documents two worksheets would add ceremony. It needs one command, exact failures, and a named deletion target. | Add the public proof command, deterministic failure fixtures, and the three-worksheet deletion gate. Keep three exact line manifests and one complete partition root rather than a generalized evidence framework. |
 | `ciso` (cluster A, security/correctness) | An accepted result must not turn model or system inference into financial authority. Source identity, policy approval, amendment approval, matching, and handoff need fail-closed human bindings. | Require independently issued typed grants to named humans; structurally set posting, payment, supplier contact, accounting, tax, and source mutation to `not-claimed`. |
 
 No role found a reason to add external capabilities. The remaining trust roots
-are explicit: the candidate's digests prove internal consistency only, not
+are explicit: the contribution's digests prove internal consistency only, not
 source authenticity, completeness, or semantic correctness.
 
 ## Slice
@@ -244,28 +243,27 @@ irreducible. Simple 1:1 equality is composable. It proves the relevant operating
 contract is irreducible to two independent artifacts unless a new joint layer
 adds shared manifests, current-revision and policy identity, atomic
 three-source grouping, and global no-reuse enforcement. Adding that layer is
-the candidate capability under evaluation.
+the admitted capability.
 
 ### Observable proof
 
 Run:
 
 ```powershell
-node --test candidates\procure-to-pay-three-way-match-exception-reconciler\three-way-match.test.mjs
-node candidates\procure-to-pay-three-way-match-exception-reconciler\verify.mjs
+node --test scripts\procure-to-pay-three-way-match-exception-reconciler.test.mjs
+node scripts\procure-to-pay-three-way-match-exception-reconciler-proof.mjs
 ```
 
-`verify.mjs` exits nonzero unless the accepted fixture has zero findings, all
+The proof command exits nonzero unless the accepted fixture has zero findings, all
 structured failures emit their exact expected code sets, both pairwise witness
 partitions pass, and the three-way witness partition fails.
 
 ## Admission recommendation
 
-**Recommend NEW**, with implementation reuse from existing exact-partition and
-revision/authority patterns. Per repository policy, the actual admission
-decision remains **needs human**.
+**NEW**, with implementation reuse from existing exact-partition and
+revision/authority patterns.
 
-Unlike Financial Account Reconciliation Coordinator, this candidate repeatedly
+Unlike Financial Account Reconciliation Coordinator, this Claw repeatedly
 reconciles one current owner-approved PO revision, physical receipt/return
 lines, and invoice/credit lines for procurement and AP owners by atomically
 partitioning three exact manifests under one matching policy to produce exact
@@ -282,18 +280,8 @@ The eventual implementation should nevertheless compose shared canonical
 manifest, BigInt, authority, and structured-finding helpers rather than fork
 them.
 
-### Evidence still required before public admission
+### Residual lifecycle evidence
 
-- An accepted maintainer proposal and accountable maintainer.
-- A representative owner-controlled export proving the one-PO-line atomic
-  policy is operationally real rather than fixture-specific.
 - Source authenticity and complete-export trust-root treatment.
-- The full X3 package, template, contribution record, regression vectors,
-  current Control UI proof, and repository checks.
 - A decision on whether owner systems supply pre-normalized signed returns and
   credits exactly as required by this V1 contract.
-
-Until those gates pass, do not add `catalog.json`, `contributions/`,
-`sources/<claw-id>/`, `regression-cases.json`, generated `claws/`, chooser,
-screenshot, or public validator-registry entries, and do not implement the full
-Claw.

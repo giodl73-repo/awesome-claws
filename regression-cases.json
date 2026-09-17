@@ -3014,6 +3014,33 @@
         "visual"
       ],
       "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
+    },
+    {
+      "id": "procure-to-pay-three-way-match-exception-reconciler",
+      "acceptedRequest": "Reconcile PO-450 revision 2 and its approved amendment against these complete receipt and invoice exports at the supplied cutoff. Preserve split receipts, the return, partial invoices, the credit, and every unmatched line. Accept only exact owner-approved three-way groups; do not post, pay, create receipts, contact the supplier, interpret tax or accounting treatment, or change any source.",
+      "requiredEvidence": [
+        "One purchase order, exact current revision, prior-revision reference, owner-approved amendment, currency, and complete PO line export",
+        "Complete receipt and return line export plus complete invoice and credit line export at a caller-controlled cutoff",
+        "Immutable owner source identity triples for every PO, receipt, return, invoice, and credit line",
+        "Owner-approved exact matching policy and typed grants scoped to the purchase order, currency, revision, role, and active interval",
+        "Caller-supplied trusted zone-bearing RFC 3339 cutoff and validation asOf plus the named exception owner and private review destination"
+      ],
+      "authorityBoundaries": [
+        "Do not perform fuzzy matching, invent or apply tolerances, normalize currencies, split source rows, infer correspondence, or interpret tax or accounting treatment",
+        "Do not post or reverse accounting entries, initiate or approve payment, create receipts, contact suppliers, alter purchase orders or invoices, or mutate any owner system",
+        "Do not treat a match as approval to pay, a residual as a write-off or materiality judgment, or a complete partition as accounting, audit, control, or compliance assurance"
+      ],
+      "experience": {
+        "target": 4,
+        "primary": "inline-widget",
+        "output": "outputs/three-way-match-review.html",
+        "fallback": "outputs/procure-to-pay-three-way-match.md",
+        "asset": "assets/three-way-match-review.html"
+      },
+      "capabilityClasses": [
+        "visual"
+      ],
+      "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
     }
   ]
 }

@@ -1,0 +1,103 @@
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+*{box-sizing:border-box}.p2p{background:var(--cp-bg);color:var(--cp-text);font:15px/1.45 "Segoe UI",Aptos,Calibri,-apple-system,BlinkMacSystemFont,sans-serif;padding:24px;min-height:100%}.p2p-head{display:flex;justify-content:space-between;gap:20px;align-items:start}.p2p h1{font-size:28px;line-height:1.15;margin:0}.p2p-sub{color:var(--cp-text-muted);margin:8px 0 0}.p2p-state{background:var(--cp-accent-soft);border:1px solid var(--cp-accent);border-radius:.625rem;color:var(--cp-accent);font-weight:800;padding:10px 14px;white-space:nowrap}.p2p-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}.p2p-card,.p2p-panel{background:var(--cp-surface);border:1px solid var(--cp-border);border-radius:16px;box-shadow:0 0 2px rgba(0,0,0,0.12),0 1px 2px rgba(0,0,0,0.14)}.p2p-card{padding:16px}.p2p-label{color:var(--cp-text-muted);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}.p2p-value{display:block;font-size:27px;margin-top:5px}.p2p-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}.p2p-panel{padding:18px}.p2p-panel h2{font-size:18px;margin:0 0 12px}.p2p-group{border-top:1px solid var(--cp-border);padding:12px 0}.p2p-group:first-of-type{border-top:0}.p2p-row{display:flex;justify-content:space-between;gap:12px}.p2p-ok{color:var(--cp-success);font-weight:800}.p2p-pending{color:var(--cp-warning);font-weight:800}.p2p-meta{color:var(--cp-text-muted);font-size:13px;margin-top:4px}.p2p-chip{background:var(--cp-surface-soft);border:1px solid var(--cp-border);border-radius:.625rem;display:inline-block;font-size:12px;margin:2px;padding:4px 8px}.p2p-root{background:var(--cp-bg-elevated);border-left:4px solid var(--cp-accent);margin-top:14px;padding:12px}.p2p code{font-family:Consolas,"Courier New",Courier,monospace;font-size:12px;overflow-wrap:anywhere}.p2p-boundary{background:var(--cp-surface);border:1px solid var(--cp-border-strong);border-radius:.625rem;margin-top:14px;padding:14px}.p2p-boundary strong{display:block;margin-bottom:4px}@media(max-width:760px){.p2p{padding:14px}.p2p-head,.p2p-row{display:block}.p2p-state{display:inline-block;margin-top:12px}.p2p-metrics{grid-template-columns:1fr 1fr}.p2p-grid{grid-template-columns:1fr}}
+</style>
+<main class="p2p" aria-labelledby="p2p-title">
+  <section class="p2p-head">
+    <div>
+      <h1 id="p2p-title">PO-450 · revision 2</h1>
+      <p class="p2p-sub">Exact three-source exception review at the owner-supplied cutoff</p>
+    </div>
+    <div class="p2p-state">Pending owner review</div>
+  </section>
+  <section class="p2p-metrics" aria-label="Partition summary">
+    <article class="p2p-card"><span class="p2p-label">Source lines</span><strong class="p2p-value">11 / 11</strong><span>consumed exactly once</span></article>
+    <article class="p2p-card"><span class="p2p-label">Exact groups</span><strong class="p2p-value">2</strong><span>one PO line each</span></article>
+    <article class="p2p-card"><span class="p2p-label">Residuals</span><strong class="p2p-value">1</strong><span>PO side · named owner</span></article>
+    <article class="p2p-card"><span class="p2p-label">Structural findings</span><strong class="p2p-value">0</strong><span>policy and manifests bound</span></article>
+  </section>
+  <section class="p2p-grid">
+    <article class="p2p-panel">
+      <h2>Authorized three-sided groups</h2>
+      <div class="p2p-group">
+        <div class="p2p-row"><strong>Server kits</strong><span class="p2p-ok">10 = 10 = 10</span></div>
+        <div class="p2p-meta">PO line 10 · split receipts 6 + 4 · partial invoices 4 + 6 · USD 250.00 exact</div>
+      </div>
+      <div class="p2p-group">
+        <div class="p2p-row"><strong>Cables after amendment</strong><span class="p2p-ok">4 = 5 - 1 = 5 - 1</span></div>
+        <div class="p2p-meta">PO line 20 · exact return lineage · exact credit lineage · USD 20.00 exact</div>
+      </div>
+      <div class="p2p-group">
+        <div class="p2p-row"><strong>Support line</strong><span class="p2p-pending">PO residual</span></div>
+        <div class="p2p-meta">No receipt or invoice by cutoff · next owner Anika Shah</div>
+      </div>
+    </article>
+    <aside class="p2p-panel">
+      <h2>Owner controls</h2>
+      <p><span class="p2p-chip">Exact policy v1</span><span class="p2p-chip">PO / USD / R2 grants</span></p>
+      <p><span class="p2p-chip">3 immutable manifests</span><span class="p2p-chip">11 owner line identities</span></p>
+      <p><span class="p2p-chip">Return + credit lineage</span><span class="p2p-chip">Caller cutoff</span></p>
+      <div class="p2p-root"><strong>Complete partition root</strong><br><code>sha256:6ececdfc8ce2563dbc01f363edb335664e7280dad79226fdec3078cdd46ab407</code></div>
+    </aside>
+  </section>
+  <section class="p2p-boundary"><strong>Evidence handoff only</strong>No fuzzy match, tolerance, tax or accounting interpretation, posting, payment, receipt creation, supplier contact, or source mutation. The complete accessible fallback is <code>outputs/procure-to-pay-three-way-match.md</code>.</section>
+</main>

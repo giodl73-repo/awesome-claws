@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "awesomeClaws.procureToPayOwnerTrustPolicy.v1",
+  "scope": {
+    "purchaseOrderId": "po-450",
+    "currency": "USD",
+    "currentRevisionRef": "po-450-r2"
+  },
+  "sourceTrustRoots": [
+    {
+      "side": "purchase-order",
+      "sourceSystemRef": "ERP://Procurement/Tenant-7",
+      "exportRef": "PO-450@R2#2026-09-16",
+      "owner": "procurement-system-owner"
+    },
+    {
+      "side": "receipt",
+      "sourceSystemRef": "WMS://Receiving/DC-04",
+      "exportRef": "RCV-PO450@2026-09-15T235959Z",
+      "owner": "receiving-system-owner"
+    },
+    {
+      "side": "invoice",
+      "sourceSystemRef": "AP://Invoices/Tenant-7",
+      "exportRef": "AP-PO450@2026-09-15T235959Z",
+      "owner": "accounts-payable-system-owner"
+    }
+  ],
+  "matchingPolicy": {
+    "version": "v1",
+    "groupShape": "one-po-line-to-one-or-more-receipt-and-invoice-lines",
+    "quantityRule": "exact-signed-integer-equality",
+    "amountRule": "exact-signed-minor-unit-equality",
+    "unitPriceRule": "exact-current-po-unit-price",
+    "correspondenceRule": "exact-source-line-reference-only",
+    "taxRule": "out-of-scope",
+    "tolerancesPermitted": false
+  },
+  "authority": {
+    "requiredGrantScopes": [
+      "matching-policy-approval",
+      "purchase-order-amendment-approval",
+      "match-decision",
+      "owner-handoff"
+    ],
+    "grantTarget": [
+      "purchaseOrderId",
+      "currency",
+      "revisionRef"
+    ],
+    "namedHumanRequired": true,
+    "independentIssuerRequired": true
+  },
+  "validation": {
+    "callerSuppliesCutoffAt": true,
+    "callerSuppliesAsOf": true,
+    "zoneBearingRfc3339Required": true,
+    "wallClockFallbackPermitted": false
+  },
+  "reservedAuthority": [
+    "accounting-interpretation",
+    "tax-interpretation",
+    "posting",
+    "payment",
+    "receipt-creation",
+    "supplier-contact",
+    "source-mutation"
+  ]
+}

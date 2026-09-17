@@ -130,6 +130,150 @@
         "digest": { "$ref": "#/$defs/digest" }
       }
     },
+    "procureToPayOwnerTrustPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "scope",
+        "sourceTrustRoots",
+        "matchingPolicy",
+        "authority",
+        "validation",
+        "reservedAuthority"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "awesomeClaws.procureToPayOwnerTrustPolicy.v1"
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["purchaseOrderId", "currency", "currentRevisionRef"],
+          "properties": {
+            "purchaseOrderId": { "type": "string", "minLength": 1 },
+            "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+            "currentRevisionRef": { "type": "string", "minLength": 1 }
+          }
+        },
+        "sourceTrustRoots": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["side", "sourceSystemRef", "exportRef", "owner"],
+            "properties": {
+              "side": {
+                "enum": ["purchase-order", "receipt", "invoice"]
+              },
+              "sourceSystemRef": { "type": "string", "minLength": 1 },
+              "exportRef": { "type": "string", "minLength": 1 },
+              "owner": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "matchingPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "groupShape",
+            "quantityRule",
+            "amountRule",
+            "unitPriceRule",
+            "correspondenceRule",
+            "taxRule",
+            "tolerancesPermitted"
+          ],
+          "properties": {
+            "version": { "const": "v1" },
+            "groupShape": {
+              "const": "one-po-line-to-one-or-more-receipt-and-invoice-lines"
+            },
+            "quantityRule": { "const": "exact-signed-integer-equality" },
+            "amountRule": { "const": "exact-signed-minor-unit-equality" },
+            "unitPriceRule": { "const": "exact-current-po-unit-price" },
+            "correspondenceRule": {
+              "const": "exact-source-line-reference-only"
+            },
+            "taxRule": { "const": "out-of-scope" },
+            "tolerancesPermitted": { "const": false }
+          }
+        },
+        "authority": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "requiredGrantScopes",
+            "grantTarget",
+            "namedHumanRequired",
+            "independentIssuerRequired"
+          ],
+          "properties": {
+            "requiredGrantScopes": {
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 4,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "matching-policy-approval",
+                  "purchase-order-amendment-approval",
+                  "match-decision",
+                  "owner-handoff"
+                ]
+              }
+            },
+            "grantTarget": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "uniqueItems": true,
+              "items": {
+                "enum": ["purchaseOrderId", "currency", "revisionRef"]
+              }
+            },
+            "namedHumanRequired": { "const": true },
+            "independentIssuerRequired": { "const": true }
+          }
+        },
+        "validation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "callerSuppliesCutoffAt",
+            "callerSuppliesAsOf",
+            "zoneBearingRfc3339Required",
+            "wallClockFallbackPermitted"
+          ],
+          "properties": {
+            "callerSuppliesCutoffAt": { "const": true },
+            "callerSuppliesAsOf": { "const": true },
+            "zoneBearingRfc3339Required": { "const": true },
+            "wallClockFallbackPermitted": { "const": false }
+          }
+        },
+        "reservedAuthority": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "accounting-interpretation",
+              "tax-interpretation",
+              "posting",
+              "payment",
+              "receipt-creation",
+              "supplier-contact",
+              "source-mutation"
+            ]
+          }
+        }
+      }
+    },
     "namedIdentity": {
       "type": "object",
       "additionalProperties": false,
@@ -237,6 +381,13 @@
                 "asOf": {
                   "type": "string",
                   "format": "date-time"
+                },
+                "cutoffAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "ownerTrustPolicy": {
+                  "$ref": "#/$defs/procureToPayOwnerTrustPolicy"
                 },
                 "licenseTrustRoot": {
                   "type": "object",

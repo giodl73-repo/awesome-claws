@@ -2844,6 +2844,43 @@
       }
     },
     {
+      "id": "procure-to-pay-three-way-match-exception-reconciler",
+      "name": "Procure-to-Pay Three-Way Match Exception Reconciler",
+      "description": "Reconciles one exact owner-approved purchase-order revision against complete receipt and invoice line exports, partitioning every line into an authorized exact three-sided group or a typed side-specific residual.",
+      "audience": "Authorized procurement operations, receiving operations, accounts-payable operations, and accountable finance owners reviewing purchase-order matching exceptions from approved exports.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-16"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "procurement-evaluator",
       "name": "Procurement evaluator",
       "description": "Builds a traceable vendor evaluation from approved requirements, evidence, risks, and accountable purchasing decisions.",

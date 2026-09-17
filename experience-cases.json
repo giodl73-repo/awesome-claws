@@ -96,6 +96,14 @@
   },
   "visualCases": [
     {
+      "id": "procure-to-pay-three-way-match-exception-reconciler",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/three-way-match-review.html",
+      "fallback": "outputs/procure-to-pay-three-way-match.md",
+      "output": "outputs/three-way-match-review.html"
+    },
+    {
       "id": "enterprise-license-entitlement-reconciler",
       "target": 4,
       "primary": "inline-widget",

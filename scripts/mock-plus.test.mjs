@@ -34,7 +34,7 @@ test("inventory derives the current portfolio oracle surface", async () => {
   const { inventory } = await loadMockPlusContext();
   assert.equal(inventory.evidenceClass, MOCK_PLUS_EVIDENCE_CLASS);
   assert.equal(inventory.mode, MOCK_PLUS_MODE);
-  assert.equal(inventory.summary.clawCount, 121);
+  assert.equal(inventory.summary.clawCount, 122);
   assert.equal(
     inventory.summary.registeredSchemaCount,
     inventory.entries.filter((entry) => entry.schema.registered).length,
@@ -44,7 +44,7 @@ test("inventory derives the current portfolio oracle surface", async () => {
     inventory.entries.filter((entry) => entry.fixtureResources.length > 0)
       .length,
   );
-  assert.equal(inventory.summary.packagedSchemaCount, 121);
+  assert.equal(inventory.summary.packagedSchemaCount, 122);
   assert.equal(
     inventory.summary.schemaFixturePairClawCount,
     inventory.entries.filter((entry) =>
@@ -99,14 +99,14 @@ test("schema portfolio covers every Claw and active constraint family", async ()
 
   assert.equal(run.coverage.scope, "schema-portfolio");
   assert.equal(run.coverage.status, "passed");
-  assert.equal(run.coverage.clawCount, 121);
+  assert.equal(run.coverage.clawCount, 122);
   assert.equal(run.coverage.counts["control-failed"], 0);
   assert.equal(run.coverage.counts.survived, 0);
   assert.equal(run.coverage.counts["unsupported-oracle"], 0);
   assert.equal(run.coverage.counts["oracle-error"], 0);
-  assert.equal(run.coverage.safety.caseCount, 726);
+  assert.equal(run.coverage.safety.caseCount, 732);
   assert.equal(run.coverage.safety.blockingCount, 0);
-  assert.equal(run.coverage.schema.clawCount, 121);
+  assert.equal(run.coverage.schema.clawCount, 122);
   assert.equal(run.coverage.schema.survivedCount, 0);
   assert.deepEqual(run.coverage.schema.keywordFamilies, [
     "additionalProperties",
@@ -179,18 +179,18 @@ test("semantic portfolio covers every registered owner-defined validator", async
 
   assert.equal(run.coverage.scope, "semantic-portfolio");
   assert.equal(run.coverage.status, "passed");
-  assert.equal(run.coverage.clawCount, 121);
+  assert.equal(run.coverage.clawCount, 122);
   assert.equal(run.coverage.counts["control-failed"], 0);
   assert.equal(run.coverage.counts.survived, 0);
   assert.equal(run.coverage.counts["unsupported-oracle"], 0);
   assert.equal(run.coverage.counts["oracle-error"], 0);
-  assert.equal(run.coverage.safety.caseCount, 726);
+  assert.equal(run.coverage.safety.caseCount, 732);
   assert.equal(run.coverage.safety.blockingCount, 0);
-  assert.equal(run.coverage.semantics.applicableClawCount, 121);
-  assert.equal(run.coverage.semantics.caseCount, 331);
-  assert.equal(run.coverage.semantics.killedCount, 331);
-  assert.equal(run.coverage.semantics.findingCodeCount, 435);
-  assert.equal(Object.keys(run.coverage.semantics.perClaw).length, 121);
+  assert.equal(run.coverage.semantics.applicableClawCount, 122);
+  assert.equal(run.coverage.semantics.caseCount, 334);
+  assert.equal(run.coverage.semantics.killedCount, 334);
+  assert.equal(run.coverage.semantics.findingCodeCount, 444);
+  assert.equal(Object.keys(run.coverage.semantics.perClaw).length, 122);
   for (const coverage of Object.values(run.coverage.semantics.perClaw)) {
     assert.equal(coverage.applicable, coverage.killed);
     assert.deepEqual(coverage.uncoveredRecipeIds, []);
@@ -215,16 +215,16 @@ test("lifecycle portfolio classifies faults and removes every capability adapter
   });
   assert.equal(run.coverage.scope, "lifecycle-portfolio");
   assert.equal(run.coverage.status, "passed");
-  assert.equal(run.coverage.clawCount, 121);
+  assert.equal(run.coverage.clawCount, 122);
   assert.equal(run.coverage.counts["control-failed"], 0);
   assert.equal(run.coverage.counts.survived, 0);
   assert.equal(run.coverage.counts["unsupported-oracle"], 0);
   assert.equal(run.coverage.counts["oracle-error"], 0);
-  assert.equal(run.coverage.safety.caseCount, 726);
+  assert.equal(run.coverage.safety.caseCount, 732);
   assert.equal(run.coverage.safety.blockingCount, 0);
-  assert.equal(run.coverage.lifecycle.clawCount, 121);
-  assert.equal(run.coverage.lifecycle.caseCount, 605);
-  assert.equal(run.coverage.lifecycle.killedCount, 605);
+  assert.equal(run.coverage.lifecycle.clawCount, 122);
+  assert.equal(run.coverage.lifecycle.caseCount, 610);
+  assert.equal(run.coverage.lifecycle.killedCount, 610);
   assert.equal(
     run.coverage.lifecycle.completeness.every((item) =>
       [
@@ -244,9 +244,9 @@ test("lifecycle portfolio classifies faults and removes every capability adapter
     "harness-failure",
     "infrastructure-failure",
   ]);
-  assert.equal(run.coverage.capabilities.applicableClawCount, 61);
-  assert.equal(run.coverage.capabilities.caseCount, 85);
-  assert.equal(run.coverage.capabilities.killedCount, 85);
+  assert.equal(run.coverage.capabilities.applicableClawCount, 62);
+  assert.equal(run.coverage.capabilities.caseCount, 86);
+  assert.equal(run.coverage.capabilities.killedCount, 86);
   assert.deepEqual(run.coverage.capabilities.classes, [
     "bootstrap",
     "clawhub-plugin",

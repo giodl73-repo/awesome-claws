@@ -3,15 +3,17 @@ import {
   failureCases,
   irreducibilityWitness,
   materializeFailureCase,
-} from "./fixture-loader.mjs";
+  ownerTrustPolicy,
+} from "./procure-to-pay-three-way-match-exception-reconciler-fixtures.mjs";
 import {
   evaluateIrreducibilityWitness,
   validateThreeWayMatch,
-} from "./three-way-match.validator.mjs";
+} from "./procure-to-pay-three-way-match-exception-reconciler.mjs";
 
 const context = Object.freeze({
   cutoffAt: acceptedFixture.review.cutoffAt,
   asOf: "2026-09-16T12:00:00Z",
+  ownerTrustPolicy,
 });
 const acceptedFindings = validateThreeWayMatch(acceptedFixture, context);
 const failures = failureCases.map((definition) => {
@@ -29,7 +31,7 @@ const failures = failureCases.map((definition) => {
 });
 const irreducibility = evaluateIrreducibilityWitness(irreducibilityWitness);
 const proof = {
-  candidateId: acceptedFixture.candidateId,
+  clawId: acceptedFixture.clawId,
   accepted: {
     state: acceptedFixture.result.state,
     findingCount: acceptedFindings.length,

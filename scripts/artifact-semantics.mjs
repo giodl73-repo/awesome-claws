@@ -14,6 +14,8 @@ import { financialAccountReconciliationFindings } from "./financial-account-reco
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 import { learningProgramFindings } from "./learning-program-manager.mjs";
 import { partnerBusinessPlanFindings } from "./partner-business-manager.mjs";
+import { ownerTrustPolicy as procureToPayOwnerTrustPolicy } from "./procure-to-pay-three-way-match-exception-reconciler-fixtures.mjs";
+import { procureToPayThreeWayMatchFindings } from "./procure-to-pay-three-way-match-exception-reconciler.mjs";
 import { repositoryOperationsFindings } from "./repository-operations-manager.mjs";
 import { repositoryComplianceProgramFindings } from "./repository-compliance-program-manager.mjs";
 import { solutionArchitectureDecisionFindings } from "./solution-architecture-decision-advisor.mjs";
@@ -53301,6 +53303,8 @@ const validators = {
   "presentation-producer": presentationEvidenceManifestFindings,
   "privacy-request-coordinator": privacyRequestFindings,
   "procurement-evaluator": procurementEvaluationFindings,
+  "procure-to-pay-three-way-match-exception-reconciler":
+    procureToPayThreeWayMatchFindings,
   "purchase-researcher": purchaseResearchFindings,
   "public-safety-monitor": publicSafetyFindings,
   "quality-assurance-lead": qualityAssuranceReleaseFindings,
@@ -53395,6 +53399,11 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   }),
   "partner-business-manager": Object.freeze({
     asOf: "2026-09-14T19:00:00Z",
+  }),
+  "procure-to-pay-three-way-match-exception-reconciler": Object.freeze({
+    asOf: "2026-09-16T12:00:00Z",
+    cutoffAt: "2026-09-15T23:59:59Z",
+    ownerTrustPolicy: procureToPayOwnerTrustPolicy,
   }),
   "supplier-capacity-assurance-manager": Object.freeze({
     asOf: "2026-09-14T18:00:00Z",

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "awesomeClaws.catalogQuality.v1",
   "rubricVersion": 1,
-  "asOf": "2026-09-16",
+  "asOf": "2026-09-17",
   "methodology": "Deterministic repository-observable evidence; no live-model or real-world outcome claims.",
   "dimensions": {
     "distinctness": 15,
@@ -13,12 +13,12 @@
     "stewardship": 5
   },
   "summary": {
-    "entryCount": 121,
+    "entryCount": 122,
     "average": 98.9,
     "median": 100,
-    "qualifiedCount": 121,
+    "qualifiedCount": 122,
     "bands": {
-      "exemplary": 121,
+      "exemplary": 122,
       "strong": 0,
       "solid": 0,
       "needs-uplift": 0,
@@ -34,10 +34,10 @@
       "stewardship": 5
     },
     "evidenceCoverage": {
-      "contributionRecords": 110,
-      "schemas": 121,
-      "semanticValidators": 121,
-      "screenshots": 121
+      "contributionRecords": 111,
+      "schemas": 122,
+      "semanticValidators": 122,
+      "screenshots": 122
     }
   },
   "scores": [
@@ -71,7 +71,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 9
+        "maintenanceAgeDays": 10
       },
       "recommendations": [],
       "rank": 1
@@ -108,7 +108,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 2
@@ -146,7 +146,7 @@
           "visual",
           "workspace-execution"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 3
@@ -181,7 +181,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 26
+        "maintenanceAgeDays": 27
       },
       "recommendations": [],
       "rank": 4
@@ -216,7 +216,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 7
+        "maintenanceAgeDays": 8
       },
       "recommendations": [],
       "rank": 5
@@ -251,7 +251,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 19
+        "maintenanceAgeDays": 20
       },
       "recommendations": [],
       "rank": 6
@@ -289,7 +289,7 @@
           "cron",
           "visual"
         ],
-        "maintenanceAgeDays": 2
+        "maintenanceAgeDays": 3
       },
       "recommendations": [],
       "rank": 7
@@ -324,10 +324,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 26
+        "maintenanceAgeDays": 27
       },
       "recommendations": [],
-      "rank": 99
+      "rank": 100
     },
     {
       "id": "case-continuity-coordinator",
@@ -359,12 +359,12 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 100
+      "rank": 101
     },
     {
       "id": "certification-renewal-planner",
@@ -396,7 +396,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 19
+        "maintenanceAgeDays": 20
       },
       "recommendations": [],
       "rank": 8
@@ -433,12 +433,12 @@
         "capabilityClasses": [
           "workspace-execution"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 101
+      "rank": 102
     },
     {
       "id": "child-activity-manager",
@@ -470,7 +470,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 20
+        "maintenanceAgeDays": 21
       },
       "recommendations": [],
       "rank": 9
@@ -507,12 +507,12 @@
         "capabilityClasses": [
           "clawhub-skill"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 120
+      "rank": 121
     },
     {
       "id": "cloud-cost-analyst",
@@ -546,7 +546,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 10
@@ -583,7 +583,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 2
+        "maintenanceAgeDays": 3
       },
       "recommendations": [],
       "rank": 11
@@ -620,7 +620,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 12
@@ -655,7 +655,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 18
+        "maintenanceAgeDays": 19
       },
       "recommendations": [],
       "rank": 13
@@ -690,7 +690,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 16
+        "maintenanceAgeDays": 17
       },
       "recommendations": [],
       "rank": 14
@@ -725,7 +725,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 7
+        "maintenanceAgeDays": 8
       },
       "recommendations": [],
       "rank": 15
@@ -762,7 +762,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 2
+        "maintenanceAgeDays": 3
       },
       "recommendations": [],
       "rank": 16
@@ -800,7 +800,7 @@
           "clawhub-skill",
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 17
@@ -837,12 +837,12 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 114
+      "rank": 115
     },
     {
       "id": "data-governance-steward",
@@ -876,7 +876,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 18
@@ -913,7 +913,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 19
@@ -950,12 +950,12 @@
         "capabilityClasses": [
           "delegated-sessions"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 102
+      "rank": 103
     },
     {
       "id": "document-intake-analyst",
@@ -989,10 +989,10 @@
         "capabilityClasses": [
           "clawhub-skill"
         ],
-        "maintenanceAgeDays": 18
+        "maintenanceAgeDays": 19
       },
       "recommendations": [],
-      "rank": 115
+      "rank": 116
     },
     {
       "id": "document-renewal-tracker",
@@ -1024,7 +1024,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 20
+        "maintenanceAgeDays": 21
       },
       "recommendations": [],
       "rank": 20
@@ -1062,7 +1062,7 @@
           "bootstrap",
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 22
@@ -1099,7 +1099,7 @@
         "capabilityClasses": [
           "bootstrap"
         ],
-        "maintenanceAgeDays": 16
+        "maintenanceAgeDays": 17
       },
       "recommendations": [],
       "rank": 23
@@ -1137,10 +1137,10 @@
           "clawhub-skill",
           "cron"
         ],
-        "maintenanceAgeDays": 16
+        "maintenanceAgeDays": 17
       },
       "recommendations": [],
-      "rank": 103
+      "rank": 104
     },
     {
       "id": "experimentation-lead",
@@ -1174,7 +1174,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 24
@@ -1212,7 +1212,7 @@
           "bootstrap",
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 25
@@ -1247,7 +1247,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 19
+        "maintenanceAgeDays": 20
       },
       "recommendations": [],
       "rank": 26
@@ -1285,10 +1285,10 @@
           "clawhub-skill",
           "cron"
         ],
-        "maintenanceAgeDays": 17
+        "maintenanceAgeDays": 18
       },
       "recommendations": [],
-      "rank": 104
+      "rank": 105
     },
     {
       "id": "financial-account-reconciliation-coordinator",
@@ -1320,7 +1320,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 8
+        "maintenanceAgeDays": 9
       },
       "recommendations": [],
       "rank": 27
@@ -1358,7 +1358,7 @@
           "clawhub-skill",
           "bootstrap"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 28
@@ -1393,7 +1393,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 19
+        "maintenanceAgeDays": 20
       },
       "recommendations": [],
       "rank": 29
@@ -1430,10 +1430,10 @@
         "capabilityClasses": [
           "bootstrap"
         ],
-        "maintenanceAgeDays": 18
+        "maintenanceAgeDays": 19
       },
       "recommendations": [],
-      "rank": 105
+      "rank": 106
     },
     {
       "id": "games-backlog-manager",
@@ -1465,7 +1465,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 24
+        "maintenanceAgeDays": 25
       },
       "recommendations": [],
       "rank": 30
@@ -1500,7 +1500,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 25
+        "maintenanceAgeDays": 26
       },
       "recommendations": [],
       "rank": 31
@@ -1538,7 +1538,7 @@
           "bootstrap",
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 32
@@ -1573,7 +1573,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 27
+        "maintenanceAgeDays": 28
       },
       "recommendations": [],
       "rank": 33
@@ -1608,7 +1608,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 19
+        "maintenanceAgeDays": 20
       },
       "recommendations": [],
       "rank": 34
@@ -1643,7 +1643,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 24
+        "maintenanceAgeDays": 25
       },
       "recommendations": [],
       "rank": 35
@@ -1678,7 +1678,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 27
+        "maintenanceAgeDays": 28
       },
       "recommendations": [],
       "rank": 36
@@ -1713,7 +1713,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 20
+        "maintenanceAgeDays": 21
       },
       "recommendations": [],
       "rank": 37
@@ -1750,7 +1750,7 @@
         "capabilityClasses": [
           "delegated-sessions"
         ],
-        "maintenanceAgeDays": 26
+        "maintenanceAgeDays": 27
       },
       "recommendations": [],
       "rank": 38
@@ -1788,7 +1788,7 @@
           "cron",
           "visual"
         ],
-        "maintenanceAgeDays": 2
+        "maintenanceAgeDays": 3
       },
       "recommendations": [],
       "rank": 39
@@ -1823,7 +1823,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 9
+        "maintenanceAgeDays": 10
       },
       "recommendations": [],
       "rank": 40
@@ -1858,7 +1858,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 22
+        "maintenanceAgeDays": 23
       },
       "recommendations": [],
       "rank": 41
@@ -1893,7 +1893,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 18
+        "maintenanceAgeDays": 19
       },
       "recommendations": [],
       "rank": 42
@@ -1928,7 +1928,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 19
+        "maintenanceAgeDays": 20
       },
       "recommendations": [],
       "rank": 43
@@ -1963,7 +1963,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 16
+        "maintenanceAgeDays": 17
       },
       "recommendations": [],
       "rank": 44
@@ -1998,7 +1998,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 16
+        "maintenanceAgeDays": 17
       },
       "recommendations": [],
       "rank": 45
@@ -2035,7 +2035,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 2
+        "maintenanceAgeDays": 3
       },
       "recommendations": [],
       "rank": 46
@@ -2070,7 +2070,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 10
+        "maintenanceAgeDays": 11
       },
       "recommendations": [],
       "rank": 47
@@ -2105,7 +2105,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 20
+        "maintenanceAgeDays": 21
       },
       "recommendations": [],
       "rank": 48
@@ -2140,7 +2140,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 24
+        "maintenanceAgeDays": 25
       },
       "recommendations": [],
       "rank": 49
@@ -2177,7 +2177,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 50
@@ -2215,7 +2215,7 @@
           "bootstrap",
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 51
@@ -2250,7 +2250,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 23
+        "maintenanceAgeDays": 24
       },
       "recommendations": [],
       "rank": 52
@@ -2287,10 +2287,10 @@
         "capabilityClasses": [
           "clawhub-skill"
         ],
-        "maintenanceAgeDays": 18
+        "maintenanceAgeDays": 19
       },
       "recommendations": [],
-      "rank": 106
+      "rank": 107
     },
     {
       "id": "medical-appointment-prep",
@@ -2322,7 +2322,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 20
+        "maintenanceAgeDays": 21
       },
       "recommendations": [],
       "rank": 53
@@ -2360,7 +2360,7 @@
           "clawhub-skill",
           "workspace-execution"
         ],
-        "maintenanceAgeDays": 17
+        "maintenanceAgeDays": 18
       },
       "recommendations": [],
       "rank": 54
@@ -2395,10 +2395,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
-      "rank": 98
+      "rank": 99
     },
     {
       "id": "movie-streaming-organizer",
@@ -2430,7 +2430,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 26
+        "maintenanceAgeDays": 27
       },
       "recommendations": [],
       "rank": 55
@@ -2465,7 +2465,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 18
+        "maintenanceAgeDays": 19
       },
       "recommendations": [],
       "rank": 56
@@ -2500,7 +2500,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 25
+        "maintenanceAgeDays": 26
       },
       "recommendations": [],
       "rank": 57
@@ -2535,7 +2535,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 20
+        "maintenanceAgeDays": 21
       },
       "recommendations": [],
       "rank": 58
@@ -2572,7 +2572,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 2
+        "maintenanceAgeDays": 3
       },
       "recommendations": [],
       "rank": 59
@@ -2607,7 +2607,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 25
+        "maintenanceAgeDays": 26
       },
       "recommendations": [],
       "rank": 60
@@ -2642,7 +2642,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 27
+        "maintenanceAgeDays": 28
       },
       "recommendations": [],
       "rank": 61
@@ -2677,7 +2677,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 26
+        "maintenanceAgeDays": 27
       },
       "recommendations": [],
       "rank": 62
@@ -2714,10 +2714,10 @@
         "capabilityClasses": [
           "clawhub-skill"
         ],
-        "maintenanceAgeDays": 15
+        "maintenanceAgeDays": 16
       },
       "recommendations": [],
-      "rank": 107
+      "rank": 108
     },
     {
       "id": "privacy-request-coordinator",
@@ -2751,7 +2751,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
       "rank": 63
@@ -2789,10 +2789,10 @@
           "bootstrap",
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
-      "rank": 64
+      "rank": 65
     },
     {
       "id": "product-manager",
@@ -2826,12 +2826,12 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 116
+      "rank": 117
     },
     {
       "id": "professional-networking-followup",
@@ -2863,10 +2863,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 19
+        "maintenanceAgeDays": 20
       },
       "recommendations": [],
-      "rank": 65
+      "rank": 66
     },
     {
       "id": "project-manager",
@@ -2900,12 +2900,12 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 117
+      "rank": 118
     },
     {
       "id": "public-company-watcher",
@@ -2940,10 +2940,10 @@
           "clawhub-skill",
           "cron"
         ],
-        "maintenanceAgeDays": 17
+        "maintenanceAgeDays": 18
       },
       "recommendations": [],
-      "rank": 108
+      "rank": 109
     },
     {
       "id": "public-safety-monitor",
@@ -2978,12 +2978,12 @@
           "clawhub-skill",
           "cron"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 121
+      "rank": 122
     },
     {
       "id": "purchase-researcher",
@@ -3015,10 +3015,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 21
+        "maintenanceAgeDays": 22
       },
       "recommendations": [],
-      "rank": 66
+      "rank": 67
     },
     {
       "id": "quality-assurance-lead",
@@ -3052,10 +3052,10 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
-      "rank": 67
+      "rank": 68
     },
     {
       "id": "records-retention-disposition-coordinator",
@@ -3087,10 +3087,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 9
+        "maintenanceAgeDays": 10
       },
       "recommendations": [],
-      "rank": 68
+      "rank": 69
     },
     {
       "id": "recruiting-coordinator",
@@ -3122,12 +3122,12 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 118
+      "rank": 119
     },
     {
       "id": "release-coordinator",
@@ -3162,10 +3162,10 @@
           "clawhub-skill",
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
-      "rank": 69
+      "rank": 70
     },
     {
       "id": "repository-compliance-program-manager",
@@ -3199,10 +3199,10 @@
         "capabilityClasses": [
           "oauth-mcp"
         ],
-        "maintenanceAgeDays": 2
+        "maintenanceAgeDays": 3
       },
       "recommendations": [],
-      "rank": 70
+      "rank": 71
     },
     {
       "id": "repository-operations-manager",
@@ -3234,10 +3234,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 3
+        "maintenanceAgeDays": 4
       },
       "recommendations": [],
-      "rank": 71
+      "rank": 72
     },
     {
       "id": "research-briefing",
@@ -3271,12 +3271,12 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 109
+      "rank": 110
     },
     {
       "id": "research-monitor",
@@ -3311,10 +3311,10 @@
           "clawhub-plugin",
           "cron"
         ],
-        "maintenanceAgeDays": 17
+        "maintenanceAgeDays": 18
       },
       "recommendations": [],
-      "rank": 110
+      "rank": 111
     },
     {
       "id": "research-scout",
@@ -3349,10 +3349,10 @@
           "clawhub-skill",
           "cron"
         ],
-        "maintenanceAgeDays": 18
+        "maintenanceAgeDays": 19
       },
       "recommendations": [],
-      "rank": 111
+      "rank": 112
     },
     {
       "id": "restaurant-venue-scout",
@@ -3384,10 +3384,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 24
+        "maintenanceAgeDays": 25
       },
       "recommendations": [],
-      "rank": 72
+      "rank": 73
     },
     {
       "id": "resume-portfolio-curator",
@@ -3419,10 +3419,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 19
+        "maintenanceAgeDays": 20
       },
       "recommendations": [],
-      "rank": 73
+      "rank": 74
     },
     {
       "id": "sales-operations",
@@ -3454,12 +3454,12 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 119
+      "rank": 120
     },
     {
       "id": "school-coordinator",
@@ -3491,10 +3491,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 24
+        "maintenanceAgeDays": 25
       },
       "recommendations": [],
-      "rank": 74
+      "rank": 75
     },
     {
       "id": "security-analyst",
@@ -3528,10 +3528,10 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
-      "rank": 75
+      "rank": 76
     },
     {
       "id": "software-maintainer",
@@ -3567,10 +3567,10 @@
           "oauth-mcp",
           "workspace-execution"
         ],
-        "maintenanceAgeDays": 17
+        "maintenanceAgeDays": 18
       },
       "recommendations": [],
-      "rank": 76
+      "rank": 77
     },
     {
       "id": "solution-architecture-decision-advisor",
@@ -3604,10 +3604,10 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 2
+        "maintenanceAgeDays": 3
       },
       "recommendations": [],
-      "rank": 77
+      "rank": 78
     },
     {
       "id": "sports-team-watcher",
@@ -3639,10 +3639,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 26
+        "maintenanceAgeDays": 27
       },
       "recommendations": [],
-      "rank": 78
+      "rank": 79
     },
     {
       "id": "spreadsheet-analyst",
@@ -3676,10 +3676,10 @@
         "capabilityClasses": [
           "clawhub-skill"
         ],
-        "maintenanceAgeDays": 18
+        "maintenanceAgeDays": 19
       },
       "recommendations": [],
-      "rank": 112
+      "rank": 113
     },
     {
       "id": "stock-portfolio-monitor",
@@ -3711,10 +3711,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 26
+        "maintenanceAgeDays": 27
       },
       "recommendations": [],
-      "rank": 79
+      "rank": 80
     },
     {
       "id": "subscription-manager",
@@ -3746,10 +3746,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 26
+        "maintenanceAgeDays": 27
       },
       "recommendations": [],
-      "rank": 80
+      "rank": 81
     },
     {
       "id": "supplier-capacity-assurance-manager",
@@ -3783,10 +3783,10 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 2
+        "maintenanceAgeDays": 3
       },
       "recommendations": [],
-      "rank": 81
+      "rank": 82
     },
     {
       "id": "tax-document-organizer",
@@ -3818,10 +3818,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 21
+        "maintenanceAgeDays": 22
       },
       "recommendations": [],
-      "rank": 82
+      "rank": 83
     },
     {
       "id": "tls-certificate-rotation-verification-coordinator",
@@ -3853,10 +3853,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 6
+        "maintenanceAgeDays": 7
       },
       "recommendations": [],
-      "rank": 83
+      "rank": 84
     },
     {
       "id": "travel-concierge",
@@ -3894,10 +3894,10 @@
           "bootstrap",
           "visual"
         ],
-        "maintenanceAgeDays": 18
+        "maintenanceAgeDays": 19
       },
       "recommendations": [],
-      "rank": 84
+      "rank": 85
     },
     {
       "id": "travel-loyalty-points-organizer",
@@ -3929,10 +3929,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 19
+        "maintenanceAgeDays": 20
       },
       "recommendations": [],
-      "rank": 85
+      "rank": 86
     },
     {
       "id": "travel-planner",
@@ -3966,10 +3966,10 @@
         "capabilityClasses": [
           "clawhub-skill"
         ],
-        "maintenanceAgeDays": 17
+        "maintenanceAgeDays": 18
       },
       "recommendations": [],
-      "rank": 113
+      "rank": 114
     },
     {
       "id": "ux-research-synthesizer",
@@ -4003,10 +4003,10 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 28
+        "maintenanceAgeDays": 29
       },
       "recommendations": [],
-      "rank": 86
+      "rank": 87
     },
     {
       "id": "vehicle-service-coordinator",
@@ -4038,10 +4038,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 27
+        "maintenanceAgeDays": 28
       },
       "recommendations": [],
-      "rank": 87
+      "rank": 88
     },
     {
       "id": "video-concept-producer",
@@ -4075,10 +4075,10 @@
         "capabilityClasses": [
           "clawhub-plugin"
         ],
-        "maintenanceAgeDays": 15
+        "maintenanceAgeDays": 16
       },
       "recommendations": [],
-      "rank": 88
+      "rank": 89
     },
     {
       "id": "vulnerability-disposition-coordinator",
@@ -4110,10 +4110,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 9
+        "maintenanceAgeDays": 10
       },
       "recommendations": [],
-      "rank": 89
+      "rank": 90
     },
     {
       "id": "wardrobe-organizer",
@@ -4145,10 +4145,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 20
+        "maintenanceAgeDays": 21
       },
       "recommendations": [],
-      "rank": 90
+      "rank": 91
     },
     {
       "id": "warranty-returns-manager",
@@ -4180,10 +4180,10 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 19
+        "maintenanceAgeDays": 20
       },
       "recommendations": [],
-      "rank": 91
+      "rank": 92
     },
     {
       "id": "web-evidence-researcher",
@@ -4217,10 +4217,10 @@
         "capabilityClasses": [
           "clawhub-plugin"
         ],
-        "maintenanceAgeDays": 17
+        "maintenanceAgeDays": 18
       },
       "recommendations": [],
-      "rank": 92
+      "rank": 93
     },
     {
       "id": "website-evidence-collector",
@@ -4254,10 +4254,10 @@
         "capabilityClasses": [
           "clawhub-plugin"
         ],
-        "maintenanceAgeDays": 17
+        "maintenanceAgeDays": 18
       },
       "recommendations": [],
-      "rank": 93
+      "rank": 94
     },
     {
       "id": "work-chief-of-staff",
@@ -4291,10 +4291,10 @@
         "capabilityClasses": [
           "delegated-sessions"
         ],
-        "maintenanceAgeDays": 26
+        "maintenanceAgeDays": 27
       },
       "recommendations": [],
-      "rank": 94
+      "rank": 95
     },
     {
       "id": "workflow-operator",
@@ -4328,10 +4328,10 @@
         "capabilityClasses": [
           "clawhub-plugin"
         ],
-        "maintenanceAgeDays": 15
+        "maintenanceAgeDays": 16
       },
       "recommendations": [],
-      "rank": 95
+      "rank": 96
     },
     {
       "id": "workforce-planning-partner",
@@ -4365,10 +4365,10 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 2
+        "maintenanceAgeDays": 3
       },
       "recommendations": [],
-      "rank": 96
+      "rank": 97
     },
     {
       "id": "enterprise-license-entitlement-reconciler",
@@ -4402,7 +4402,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 1
+        "maintenanceAgeDays": 2
       },
       "recommendations": [],
       "rank": 21
@@ -4439,10 +4439,47 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 0
+        "maintenanceAgeDays": 1
       },
       "recommendations": [],
-      "rank": 97
+      "rank": 98
+    },
+    {
+      "id": "procure-to-pay-three-way-match-exception-reconciler",
+      "name": "Procure-to-Pay Three-Way Match Exception Reconciler",
+      "category": "governance",
+      "total": 100,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 20,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 5,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 4,
+        "capabilityClasses": [
+          "visual"
+        ],
+        "maintenanceAgeDays": 1
+      },
+      "recommendations": [],
+      "rank": 64
     }
   ]
 }
