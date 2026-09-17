@@ -159,15 +159,17 @@ The role review used three repository roles from different tension clusters.
 | `power-user` (cluster B, operational control) | A third artifact that merely documents two worksheets would add ceremony. It needs one command, exact failures, and a named deletion target. | Add the public proof command, deterministic failure fixtures, and the three-worksheet deletion gate. Keep three exact line manifests and one complete partition root rather than a generalized evidence framework. |
 | `ciso` (cluster A, security/correctness) | An accepted result must not turn model or system inference into financial authority. Source identity, policy approval, amendment approval, matching, and handoff need fail-closed human bindings. | Require independently issued typed grants to named humans; structurally set posting, payment, supplier contact, accounting, tax, and source mutation to `not-claimed`. |
 
-No role found a reason to add external capabilities. The remaining trust roots
-are explicit: the contribution's digests prove internal consistency only, not
-source authenticity, completeness, or semantic correctness.
+No role found a reason to add external capabilities. The caller-supplied owner
+policy now binds all three complete line-manifest digests and the exact
+principal/grant ledger. The remaining external trust boundary is the provenance
+and authenticity of that policy and its owner-issued export roots.
 
 ## Slice
 
 ### Representative accepted result
 
-`fixtures/accepted.json` contains:
+`sources/procure-to-pay-three-way-match-exception-reconciler/fixtures/procure-to-pay-three-way-match.example.json`
+contains:
 
 - PO `po-450` revision 2 and one owner-approved quantity amendment from 5 to 4
   on the cable line;
@@ -188,7 +190,8 @@ All 3 PO, 4 receipt, and 4 invoice lines are consumed exactly once.
 
 ### Structured failures
 
-`fixtures/failure-cases.json` pins exact finding-code sets for:
+`sources/procure-to-pay-three-way-match-exception-reconciler/fixtures/procure-to-pay-three-way-match.failures.json`
+pins exact finding-code sets for:
 
 - duplicate invoice-line reuse across two groups;
 - an unapproved matching-policy actor;
@@ -219,8 +222,8 @@ Findings have the stable shape:
 
 ### Irreducibility proof
 
-`fixtures/irreducibility-witness.json` is a constructive counterexample to
-pairwise sufficiency:
+`sources/procure-to-pay-three-way-match-exception-reconciler/fixtures/procure-to-pay-three-way-match.irreducibility.json`
+is a constructive counterexample to pairwise sufficiency:
 
 - the complete PO-to-receipt partition passes as two 1:1 groups;
 - the complete PO-to-invoice partition passes as one n:1 group; and
@@ -280,8 +283,13 @@ The eventual implementation should nevertheless compose shared canonical
 manifest, BigInt, authority, and structured-finding helpers rather than fork
 them.
 
-### Residual lifecycle evidence
+### Residual external lifecycle evidence
 
-- Source authenticity and complete-export trust-root treatment.
-- A decision on whether owner systems supply pre-normalized signed returns and
-  credits exactly as required by this V1 contract.
+- Authenticate the caller-supplied owner trust policy and its three export roots
+  through the adopting owner's system or signing process; the public CLI binds
+  their exact content but does not authenticate the issuer.
+- Confirm that each owner system exports the complete cutoff-bounded line
+  universe and supplies returns and credits as pre-normalized signed rows with
+  the exact source lineage required by this V1 contract.
+- Complete two representative owner-controlled runs before retiring the three
+  manual worksheets named in the deletion target.
