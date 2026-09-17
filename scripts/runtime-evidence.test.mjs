@@ -17,6 +17,7 @@ import {
   QUALIFICATION_GATES,
   aggregateRuntimeEvidence,
   assertCredentialFreeRedactedExcerpts,
+  assertEffectivePluginInventory,
   assertRuntimeAddPlan,
   assertWorkspaceContainment,
   boundedProcessDiagnostic,
@@ -24,6 +25,7 @@ import {
   buildScenarios,
   canonicalJson,
   classifyDrift,
+  cleanupChildEnv,
   controlledChildEnv,
   digest,
   extractFinalAssistantResponse,
@@ -32,6 +34,7 @@ import {
   inspectLiveConfig,
   isRetryableMonitorCleanupFailure,
   preflightBudgets,
+  prepareCleanupConfig,
   redactFailureExcerpt,
   renderRuntimeEvidenceReport,
   runOpenClawJson,
@@ -2292,24 +2295,46 @@ test("safe config identity binds declared provider/model without persisting cred
     await writeFile(
       configPath,
       JSON.stringify({
-        agent: { provider: "example-provider", model: "example-model" },
-        plugins: { enabled: false },
-        credential: "raw-secret-must-not-persist",
+        agents: {
+          defaults: {
+            model: {
+              primary: "github-copilot/gpt-5.6-sol",
+              fallbacks: [],
+            },
+            models: {
+              "github-copilot/gpt-5.6-sol": {
+                params: { maxTokens: 1000 },
+              },
+            },
+          },
+        },
+        models: {
+          providers: {
+            "github-copilot": {
+              params: { credential: "raw-secret-must-not-persist" },
+            },
+          },
+        },
+        plugins: {
+          enabled: true,
+          allow: ["github-copilot"],
+          slots: { memory: "none" },
+        },
       }),
     );
     const identity = await inspectLiveConfig(configPath, {
-      provider: "example-provider",
-      model: "example-model",
+      provider: "github-copilot",
+      model: "gpt-5.6-sol",
     });
     assert.match(identity.configDigest, /^sha256:[a-f0-9]{64}$/u);
-    assert.equal(identity.configurationAssertion, "matched");
+    assert.equal(identity.configurationAssertion, "structurally-unavailable");
     assert.doesNotMatch(JSON.stringify(identity), /raw-secret/u);
     await assert.rejects(
       inspectLiveConfig(configPath, {
         provider: "different-provider",
         model: "example-model",
       }),
-      /different provider\/model/u,
+      /bundled github-copilot plugin allowlist/u,
     );
     await writeFile(
       configPath,
@@ -2322,10 +2347,346 @@ test("safe config identity binds declared provider/model without persisting cred
         provider: "example-provider",
         model: "example-model",
       }),
-      /must disable plugin discovery/u,
+      /must contain only the bundled github-copilot plugin allowlist/u,
+    );
+    for (const unsafeConfig of [
+      {
+        plugins: {
+          enabled: true,
+          allow: ["github-copilot"],
+          deny: ["github-copilot"],
+        },
+      },
+      {
+        plugins: {
+          enabled: true,
+          allow: ["github-copilot"],
+          entries: { "github-copilot": { enabled: false } },
+        },
+      },
+      {
+        plugins: {
+          enabled: true,
+          allow: ["github-copilot"],
+          load: { paths: ["./untrusted-plugin"] },
+        },
+      },
+      {
+        plugins: {
+          enabled: true,
+          allow: ["github-copilot"],
+          slots: { memory: "memory-core" },
+        },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        channels: { discord: { enabled: true } },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        browser: {},
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        acp: { enabled: true, backend: "acpx" },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        tools: { allow: ["browser"] },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        agents: { entries: { worker: { tools: { alsoAllow: ["browser"] } } } },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        agents: {
+          defaults: {
+            model: {
+              primary: "example-provider/example-model",
+              fallbacks: ["xai/grok-4.6"],
+            },
+          },
+        },
+        models: {
+          providers: {
+            "example-provider": { params: {} },
+          },
+        },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        agents: {
+          defaults: {
+            model: {
+              primary: "example-provider/example-model",
+              fallbacks: [],
+            },
+          },
+        },
+        models: {
+          providers: {
+            "example-provider": { params: {} },
+            xai: { params: {} },
+          },
+        },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        agents: {
+          defaults: {
+            model: {
+              primary: "example-provider/example-model",
+              fallbacks: [],
+            },
+          },
+        },
+        models: {
+          providers: {
+            "example-provider": {
+              params: {},
+              agentRuntime: { id: "codex" },
+            },
+          },
+        },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        cloudWorkers: { profiles: { default: { provider: "openshell" } } },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        tools: { web: { search: { provider: "xai" } } },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        talk: { provider: "openai" },
+      },
+    ]) {
+      await writeFile(
+        configPath,
+        JSON.stringify({
+          agent: { provider: "example-provider", model: "example-model" },
+          ...unsafeConfig,
+        }),
+      );
+      await assert.rejects(
+        inspectLiveConfig(configPath, {
+          provider: "example-provider",
+          model: "example-model",
+        }),
+        /must contain only the bundled github-copilot plugin allowlist/u,
+      );
+    }
+  } finally {
+    await rm(testRoot, { recursive: true, force: true });
+  }
+});
+
+test("cleanup config strips every provider and model selector", async () => {
+  const testRoot = await mkdtemp(join(root, ".tmp", "cleanup-config-test-"));
+  const configPath = join(testRoot, "openclaw.json");
+  try {
+    await writeFile(
+      configPath,
+      JSON.stringify({
+        agents: {
+          defaults: {
+            workspace: join(testRoot, "workspace"),
+            model: { primary: "github-copilot/gpt-5.6-sol" },
+            utilityModel: "github-copilot/gpt-5.6-sol",
+            heartbeat: { model: "github-copilot/gpt-5.6-sol", every: "1h" },
+            subagents: {
+              model: "github-copilot/gpt-5.6-sol",
+              maxConcurrent: 1,
+            },
+          },
+          entries: [
+            {
+              id: "fixture",
+              model: "github-copilot/gpt-5.6-sol",
+              provider: "github-copilot",
+              workspace: join(testRoot, "agent"),
+            },
+          ],
+        },
+        models: { providers: { "github-copilot": {} } },
+        memory: {
+          search: {
+            enabled: false,
+            provider: "github-copilot",
+            model: "github-copilot/gpt-5.6-sol",
+          },
+        },
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        tools: {
+          profile: "minimal",
+          exec: { reviewer: { model: "github-copilot/gpt-5.6-sol" } },
+        },
+      }),
+    );
+    await prepareCleanupConfig(configPath);
+    const cleanupConfig = JSON.parse(await readFile(configPath, "utf8"));
+    assert.deepEqual(cleanupConfig.plugins, {
+      enabled: false,
+      slots: { memory: "none" },
+    });
+    assert.equal(cleanupConfig.models, undefined);
+    assert.equal(cleanupConfig.agents.defaults.workspace, join(testRoot, "workspace"));
+    assert.equal(cleanupConfig.agents.defaults.heartbeat.every, "1h");
+    assert.equal(cleanupConfig.agents.defaults.subagents.maxConcurrent, 1);
+    assert.equal(cleanupConfig.agents.entries[0].workspace, join(testRoot, "agent"));
+    assert.deepEqual(cleanupConfig.memory, { search: { enabled: false } });
+    assert.deepEqual(cleanupConfig.tools, {
+      profile: "minimal",
+      exec: { reviewer: {} },
+    });
+    assert.doesNotMatch(
+      JSON.stringify(cleanupConfig),
+      /github-copilot|utilityModel|"model"|"provider"/u,
     );
   } finally {
     await rm(testRoot, { recursive: true, force: true });
+  }
+});
+
+test("safe config requires the exact model with no fallback or alternate runtime", async () => {
+  const testRoot = await mkdtemp(join(root, ".tmp", "strict-model-config-test-"));
+  const configPath = join(testRoot, "openclaw.json");
+  const baseConfig = {
+    agents: {
+      defaults: {
+        model: {
+          primary: "github-copilot/gpt-5.6-sol",
+          fallbacks: [],
+        },
+        modelPolicy: { allow: ["github-copilot/gpt-5.6-sol"] },
+        models: {
+          "github-copilot/gpt-5.6-sol": { params: { maxTokens: 1000 } },
+        },
+      },
+    },
+    models: {
+      providers: {
+        "github-copilot": { params: { githubDomain: "microsoft.ghe.com" } },
+      },
+    },
+    plugins: {
+      enabled: true,
+      allow: ["github-copilot"],
+      slots: { memory: "none" },
+    },
+  };
+  try {
+    await writeFile(configPath, JSON.stringify(baseConfig));
+    await assert.rejects(
+      inspectLiveConfig(configPath, {
+        provider: "github-copilot",
+        model: "gpt-4o",
+      }),
+      /bundled github-copilot plugin allowlist/u,
+    );
+    for (const mutate of [
+      (config) => {
+        delete config.agents.defaults.model;
+      },
+      (config) => {
+        config.agents.defaults.model.fallbacks = [
+          "github-copilot/gpt-5.6-sol",
+        ];
+      },
+      (config) => {
+        config.agents.defaults.utilityModel = "gpt-4o";
+      },
+      (config) => {
+        config.agents.entries = [
+          {
+            id: "fixture",
+            model: "github-copilot/gpt-5.6-sol",
+            runtime: { type: "acp" },
+          },
+        ];
+      },
+      (config) => {
+        config.agents.list = [
+          {
+            id: "fixture",
+            tools: { allow: ["browser"] },
+          },
+        ];
+      },
+    ]) {
+      const unsafe = structuredClone(baseConfig);
+      mutate(unsafe);
+      await writeFile(configPath, JSON.stringify(unsafe));
+      await assert.rejects(
+        inspectLiveConfig(configPath, {
+          provider: "github-copilot",
+          model: "gpt-5.6-sol",
+        }),
+        /plugin auto-enable inputs/u,
+      );
+    }
+  } finally {
+    await rm(testRoot, { recursive: true, force: true });
+  }
+});
+
+test("cleanup environment removes provider credentials case-insensitively", () => {
+  const cleanupEnv = cleanupChildEnv(
+    {
+      PATH: "fixture-path",
+      COPILOT_GITHUB_TOKEN: "secret",
+      github_token: "secret",
+      Gh_Enterprise_Token: "secret",
+    },
+    "github-copilot",
+  );
+  assert.deepEqual(cleanupEnv, { PATH: "fixture-path" });
+});
+
+test("effective plugin inventory permits only bundled GitHub Copilot", () => {
+  assert.equal(
+    assertEffectivePluginInventory({
+      plugins: [
+        {
+          id: "github-copilot",
+          origin: "bundled",
+          enabled: true,
+          status: "loaded",
+        },
+      ],
+    }).id,
+    "github-copilot",
+  );
+  for (const plugins of [
+    [
+      {
+        id: "github-copilot",
+        origin: "bundled",
+        enabled: true,
+        status: "loaded",
+      },
+      {
+        id: "memory-core",
+        origin: "bundled",
+        enabled: true,
+        status: "loaded",
+      },
+    ],
+    [
+      {
+        id: "github-copilot",
+        origin: "workspace",
+        enabled: true,
+        status: "loaded",
+      },
+    ],
+  ]) {
+    assert.throws(
+      () => assertEffectivePluginInventory({ plugins }),
+      /effective plugin inventory must contain only/u,
+    );
   }
 });
 
