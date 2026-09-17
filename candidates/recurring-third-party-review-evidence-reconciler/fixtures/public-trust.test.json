@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "awesomeClaws.recurringThirdPartyReviewEvidenceReconcilerPublicTrust.v1",
+  "signers": [
+    {
+      "ownerRef": "principal-program-owner-ava",
+      "signingKeyId": "key-third-party-review-2026",
+      "algorithm": "Ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA++1Dks+bSKm/YGpksmrxusCDQ9QAQrZFwaX0/DqkX4U=\n-----END PUBLIC KEY-----\n",
+      "validFrom": "2026-07-01T00:00:00Z",
+      "validUntil": "2027-06-30T23:59:59Z"
+    }
+  ]
+}

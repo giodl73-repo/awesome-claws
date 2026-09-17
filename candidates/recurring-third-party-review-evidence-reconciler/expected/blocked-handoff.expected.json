@@ -1,0 +1,79 @@
+{
+  "valid": true,
+  "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+  "coverage": {
+    "declaredCells": 6,
+    "decisions": 6,
+    "coveredExactlyOnce": true
+  },
+  "scope": {
+    "vendorServiceRefs": [
+      "vendor-service-alpine-support",
+      "vendor-service-brightpay-payroll"
+    ],
+    "sharedSubprocessorRef": "subprocessor-shared-cloud",
+    "publicTrustEvidenceRef": "evidence-alpine-assurance-report",
+    "remediationRefs": [
+      "remediation-alpine-assurance"
+    ],
+    "exceptionRefs": [
+      "exception-brightpay-security"
+    ],
+    "riskAcceptanceAttemptRefs": [
+      "risk-attempt-alpine-assurance"
+    ]
+  },
+  "expiredEvidenceRefs": [
+    "evidence-alpine-assurance-report"
+  ],
+  "reopenedCells": [
+    {
+      "cellRef": "cell-alpine-assurance",
+      "predecessorDecisionRef": "predecessor-decision-alpine-assurance",
+      "remediationRef": "remediation-alpine-assurance",
+      "expiredEvidenceRefs": [
+        "evidence-alpine-assurance-report"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "code": "evidence-expired",
+      "cellRef": "cell-alpine-assurance",
+      "subjectRef": "evidence-alpine-assurance-report"
+    },
+    {
+      "code": "remediation-open",
+      "cellRef": "cell-alpine-assurance",
+      "subjectRef": "remediation-alpine-assurance"
+    },
+    {
+      "code": "unauthorized-risk-acceptance-attempt",
+      "cellRef": "cell-alpine-assurance",
+      "subjectRef": "risk-attempt-alpine-assurance"
+    }
+  ],
+  "handoff": {
+    "state": "blocked",
+    "nextOwnerRef": "principal-program-owner-ava",
+    "blockerCodes": [
+      "evidence-expired",
+      "remediation-open",
+      "unauthorized-risk-acceptance-attempt"
+    ],
+    "authorityClaims": {
+      "scoringClaim": false,
+      "selectionClaim": false,
+      "vendorContactClaim": false,
+      "contractInterpretationClaim": false,
+      "certificationClaim": false,
+      "riskAcceptanceClaim": false,
+      "exceptionApprovalClaim": false,
+      "onboardingClaim": false,
+      "renewalClaim": false,
+      "terminationClaim": false,
+      "purchaseClaim": false,
+      "mutationClaim": false
+    }
+  }
+}
