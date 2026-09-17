@@ -1,0 +1,113 @@
+{
+  "schemaVersion": "awesomeClaws.problemKnownErrorPublicTrust.v1",
+  "id": "public-trust-status-2026-09-16",
+  "publisher": "Contoso public service status",
+  "authorityGrants": [
+    {
+      "principalRef": "principal-problem-owner",
+      "principalRecordDigest": "sha256:5aa162394b7caca8c67fab06ae9e02b4ddd799ffc27b59bb19e569dfccfbc37c"
+    },
+    {
+      "principalRef": "principal-investigator",
+      "principalRecordDigest": "sha256:513784d93cf7b4d35d6bb61ddcb11ab407dd329fca33d23d7df1e288a5ad5294"
+    },
+    {
+      "principalRef": "principal-test-owner",
+      "principalRecordDigest": "sha256:57d876aed7f866235aacd7f3141ec9ec7e3b9d50bd87da31745e708152524fb4"
+    },
+    {
+      "principalRef": "principal-workaround-owner",
+      "principalRecordDigest": "sha256:4fdfa51e8072a4aff47f7db8359a2f4a8835afc0b6f2342f5c98c512c45d2488"
+    },
+    {
+      "principalRef": "principal-known-error-owner",
+      "principalRecordDigest": "sha256:fb6aaf307d62475d9092d7d3299c4e7b8e0d9bc69b09b4ac78664a1a436b7721"
+    },
+    {
+      "principalRef": "principal-change-owner",
+      "principalRecordDigest": "sha256:d6e00a3ab8e50933256d6e77bb4d7e64476ddcdb7eed5ac708012411b657053f"
+    },
+    {
+      "principalRef": "principal-incident-system",
+      "principalRecordDigest": "sha256:c29fb19ecda794e55deb9031c56e6fb41ab85e5670bf0dad93fa4bcde1d59e4b"
+    },
+    {
+      "principalRef": "principal-public-status",
+      "principalRecordDigest": "sha256:84bb55f65257c5e17a2c6c3eb391632bbdfb1b77e2ced9cbda9e907fd8d724c4"
+    }
+  ],
+  "evidenceRecords": [
+    {
+      "evidenceRef": "evidence-membership-inc-001",
+      "evidenceRecordDigest": "sha256:4864906f9978118d8c466e3acc805b8194f82d4e37527baf73ec87aa4f074284"
+    },
+    {
+      "evidenceRef": "evidence-membership-inc-002",
+      "evidenceRecordDigest": "sha256:45bd942f1c9169881532a5074822d0c7084d6243238c90773a3066a190429d52"
+    },
+    {
+      "evidenceRef": "evidence-membership-inc-003",
+      "evidenceRecordDigest": "sha256:1b7fac7ec85ad6485c726032d87f5fc97a291d6af72a8f8f7ed0c09ff1c42898"
+    },
+    {
+      "evidenceRef": "evidence-incident-inc-001",
+      "evidenceRecordDigest": "sha256:23be7eb29ceb577da75eef9e2bd067e8fc6d9abb02bc23dbe6413264ef89ed6c"
+    },
+    {
+      "evidenceRef": "evidence-incident-inc-002",
+      "evidenceRecordDigest": "sha256:ccfadf8b7742a68398dd957b34a05e79e1aa1bbffeb54e05d353e48236aedeb2"
+    },
+    {
+      "evidenceRef": "evidence-public-status-inc-003",
+      "evidenceRecordDigest": "sha256:1b2b20989e268c11e8cba9a9f1e55834c867888bae424647690d193ce3862897"
+    },
+    {
+      "evidenceRef": "evidence-hypothesis-route-cache",
+      "evidenceRecordDigest": "sha256:3732375baf54c2847dfdb991d5441bc1d90754075224e4d2dfe357099283306f"
+    },
+    {
+      "evidenceRef": "evidence-hypothesis-database",
+      "evidenceRecordDigest": "sha256:e882822d497ea659b4b9275c8c1ed6f307971fb0c8b94ee94b39a7cc85a947ce"
+    },
+    {
+      "evidenceRef": "evidence-test-route-cache",
+      "evidenceRecordDigest": "sha256:b8333f34847b80280ec38c501e012f1a19781195efab051ca613522f8cd76ed5"
+    },
+    {
+      "evidenceRef": "evidence-test-database",
+      "evidenceRecordDigest": "sha256:97ee9546f2c2678ec002287984038d94ac41e2cab6a99c4a01c43be0f2aa0dc4"
+    },
+    {
+      "evidenceRef": "evidence-workaround-approval",
+      "evidenceRecordDigest": "sha256:5d4e88885fda8e014a2af381dcc5508963ae9714f6a6dee649e7c71c045f4fb6"
+    },
+    {
+      "evidenceRef": "evidence-known-error-declaration",
+      "evidenceRecordDigest": "sha256:54d54bb782d1cddfbb189b4edd83e2728213ecf77297f8741476bd3b34e0e921"
+    },
+    {
+      "evidenceRef": "evidence-change-execution",
+      "evidenceRecordDigest": "sha256:944ac032dabe79daa3f200e395863f55aa4aab5ac82d7017407a4ff847f14baa"
+    },
+    {
+      "evidenceRef": "evidence-change-verification",
+      "evidenceRecordDigest": "sha256:0275149c76f00c4723ceed52bc9b9e501cd08f96acf70a5aa16a2f4d12fedcd0"
+    },
+    {
+      "evidenceRef": "evidence-problem-change-link",
+      "evidenceRecordDigest": "sha256:bc466586c8565a707b45c209bc4812ac2308054c934e7d756a5e9eb91221a278"
+    },
+    {
+      "evidenceRef": "evidence-recurrence-inc-003",
+      "evidenceRecordDigest": "sha256:7357912d523b3474301be0616abcb9c64477f7562310d80cb33f7290f24e5afa"
+    }
+  ],
+  "records": [
+    {
+      "evidenceRef": "evidence-public-status-inc-003",
+      "sourceRef": "https://status.contoso.example/incidents/inc-003",
+      "recordDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000003",
+      "publishedAt": "2026-08-12T14:30:00Z"
+    }
+  ]
+}

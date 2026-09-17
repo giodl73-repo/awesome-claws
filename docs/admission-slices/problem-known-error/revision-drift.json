@@ -1,0 +1,12 @@
+{
+  "description": "A new problem revision without renewed workaround and known-error bindings invalidates both lifecycle records.",
+  "mutation": {
+    "path": "problem.revision",
+    "value": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  },
+  "expectedFindingCodes": [
+    "invalid_problem_revision",
+    "invalid_workaround_revision_binding",
+    "invalid_known_error_revision_binding"
+  ]
+}
