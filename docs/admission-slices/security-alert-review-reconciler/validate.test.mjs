@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, generateKeyPairSync } from "node:crypto";
 import { readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -373,7 +373,7 @@ test("one complete snapshot covers every exact source native id revision key onc
   }
 });
 
-test("owner-signed source bytes reject coherent omission and digest substitution", () => {
+test("owner trust and signed source bytes reject authority substitution", () => {
   assert.equal(
     accepted.sourceAuthority.snapshotCompletenessRoot,
     accepted.snapshot.completenessRoot,
@@ -460,6 +460,113 @@ test("owner-signed source bytes reject coherent omission and digest substitution
       sourceBundle: malformedBundle,
     }).map((row) => row.code),
     ["invalid_source_record"],
+  );
+
+  const privateField = structuredClone(ownerTrust);
+  privateField.authorities["principal-alert-owner-morgan"][
+    "security-alert-owner-key-1"
+  ].privateKeyDerBase64 = "not-permitted";
+  assert.deepEqual(
+    findings(
+      accepted,
+      AS_OF,
+      accepted.principalRoster.digest,
+      accepted.evidenceRoot,
+      { ownerTrust: privateField },
+    ).map((row) => row.code),
+    ["owner_trust_schema_additional_properties"],
+  );
+
+  const topLevelSecret = {
+    ...structuredClone(ownerTrust),
+    secret: "not-permitted",
+  };
+  assert.deepEqual(
+    findings(
+      accepted,
+      AS_OF,
+      accepted.principalRoster.digest,
+      accepted.evidenceRoot,
+      { ownerTrust: topLevelSecret },
+    ).map((row) => row.code),
+    ["owner_trust_schema_additional_properties"],
+  );
+
+  const nonCanonical = structuredClone(ownerTrust);
+  nonCanonical.authorities["principal-alert-owner-morgan"][
+    "security-alert-owner-key-1"
+  ].publicKeyDerBase64 += "=";
+  assert.deepEqual(
+    findings(
+      accepted,
+      AS_OF,
+      accepted.principalRoster.digest,
+      accepted.evidenceRoot,
+      { ownerTrust: nonCanonical },
+    ).map((row) => row.code),
+    ["owner_trust_schema_pattern"],
+  );
+
+  const { privateKey } = generateKeyPairSync("ed25519");
+  const privateEncoding = structuredClone(ownerTrust);
+  privateEncoding.authorities["principal-alert-owner-morgan"][
+    "security-alert-owner-key-1"
+  ].publicKeyDerBase64 = privateKey
+    .export({ type: "pkcs8", format: "der" })
+    .toString("base64");
+  assert.deepEqual(
+    findings(
+      accepted,
+      AS_OF,
+      accepted.principalRoster.digest,
+      accepted.evidenceRoot,
+      { ownerTrust: privateEncoding },
+    ).map((row) => row.code),
+    ["invalid_owner_trust_key"],
+  );
+
+  const trailingBytes = structuredClone(ownerTrust);
+  const publicKeyBytes = Buffer.from(
+    trailingBytes.authorities["principal-alert-owner-morgan"][
+      "security-alert-owner-key-1"
+    ].publicKeyDerBase64,
+    "base64",
+  );
+  trailingBytes.authorities["principal-alert-owner-morgan"][
+    "security-alert-owner-key-1"
+  ].publicKeyDerBase64 = Buffer.concat([
+    publicKeyBytes,
+    Buffer.from("trailing-private-material"),
+  ]).toString("base64");
+  assert.deepEqual(
+    findings(
+      accepted,
+      AS_OF,
+      accepted.principalRoster.digest,
+      accepted.evidenceRoot,
+      { ownerTrust: trailingBytes },
+    ).map((row) => row.code),
+    ["invalid_owner_trust_key"],
+  );
+
+  const { publicKey: rsaPublicKey } = generateKeyPairSync("rsa", {
+    modulusLength: 1024,
+  });
+  const wrongAlgorithm = structuredClone(ownerTrust);
+  wrongAlgorithm.authorities["principal-alert-owner-morgan"][
+    "security-alert-owner-key-1"
+  ].publicKeyDerBase64 = rsaPublicKey
+    .export({ type: "spki", format: "der" })
+    .toString("base64");
+  assert.deepEqual(
+    findings(
+      accepted,
+      AS_OF,
+      accepted.principalRoster.digest,
+      accepted.evidenceRoot,
+      { ownerTrust: wrongAlgorithm },
+    ).map((row) => row.code),
+    ["invalid_owner_trust_key"],
   );
 });
 
@@ -588,6 +695,11 @@ test("public trust is independently supplied and restricted to safe approved URL
     "https://user:password@docs.github.com/en/rest/code-scanning",
     "https://docs.github.com/en/rest/code-scanning#credential",
     "https://docs.github.com/en/rest/code-scanning?access_token=secret",
+    "https://docs.github.com/en/rest/code-scanning?client_secret=value",
+    "https://docs.github.com/en/rest/code-scanning?private_key=value",
+    "https://docs.github.com/en/rest/code-scanning?signature=value",
+    "https://docs.github.com/en/rest/code-scanning?jwt=value",
+    "https://docs.github.com/en/rest/code-scanning?page=1",
     "https://127.0.0.1/code-scanning",
     "https://10.0.0.1/code-scanning",
     "https://169.254.169.254/code-scanning",

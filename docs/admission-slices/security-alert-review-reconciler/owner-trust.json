@@ -1,4 +1,5 @@
 {
+  "schemaVersion": "awesomeClaws.securityAlertOwnerTrust.v1",
   "authorities": {
     "principal-alert-owner-morgan": {
       "security-alert-owner-key-1": {

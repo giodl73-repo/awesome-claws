@@ -10,8 +10,6 @@ import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
-import { isCredentialFreePublicHttpsReference } from "../../../scripts/artifact-semantics.mjs";
-
 const SCHEMA_VERSION = "awesomeClaws.securityAlertReviewCandidate.v1";
 const SOURCE_SCHEMA_VERSION = "awesomeClaws.securityAlertSource.v1";
 const DIGEST = /^sha256:[0-9a-f]{64}$/u;
@@ -59,9 +57,13 @@ export const SECURITY_ALERT_REVIEW_LIMITS = Object.freeze({
 const schema = JSON.parse(
   readFileSync(new URL("./security-alert-review.schema.json", import.meta.url), "utf8"),
 );
+const ownerTrustSchema = JSON.parse(
+  readFileSync(new URL("./owner-trust.schema.json", import.meta.url), "utf8"),
+);
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateInputSchema = ajv.compile(schema);
+const validateOwnerTrustSchema = ajv.compile(ownerTrustSchema);
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -454,6 +456,39 @@ function evidenceSupports(
   );
 }
 
+function hasUnsafePublicHost(hostname) {
+  const host = hostname.toLowerCase().replace(/^\[|\]$/gu, "");
+  if (
+    /^(?:localhost(?:\.localdomain)?|.+\.localhost|0(?:\.\d{1,3}){3}|10(?:\.\d{1,3}){3}|127(?:\.\d{1,3}){3}|169\.254(?:\.\d{1,3}){2}|192\.168(?:\.\d{1,3}){2}|::1|f[cd][0-9a-f:]*|fe[89ab][0-9a-f:]*)$/u.test(
+      host,
+    )
+  ) {
+    return true;
+  }
+  const match = /^172\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/u.exec(host);
+  return match !== null && Number(match[1]) >= 16 && Number(match[1]) <= 31;
+}
+
+function isCredentialFreePublicHttpsReference(reference) {
+  const unsafeQueryKeys =
+    /^(?:access[_-]?token|api[_-]?key|auth|code|credential|key|password|secret|token)$/iu;
+  const unsafeQuery =
+    [...reference.searchParams.keys()].some((key) => unsafeQueryKeys.test(key)) ||
+    [...reference.searchParams.values()].some((value) =>
+      /\b(?:access[_-]?token|api[_-]?key|auth|credential|password|secret|token)\s*[:=]/iu.test(
+        value,
+      ),
+    );
+  return (
+    reference.protocol === "https:" &&
+    !reference.username &&
+    !reference.password &&
+    !reference.hash &&
+    !hasUnsafePublicHost(reference.hostname) &&
+    !unsafeQuery
+  );
+}
+
 function approvedPublicTrustReference(record) {
   try {
     const reference = new URL(record.uri);
@@ -461,6 +496,7 @@ function approvedPublicTrustReference(record) {
     const approvedDomains = APPROVED_PUBLIC_TRUST_DOMAINS[record.source] ?? [];
     return (
       isCredentialFreePublicHttpsReference(reference) &&
+      reference.search === "" &&
       approvedDomains.some(
         (domain) =>
           hostname === domain || hostname.endsWith(`.${domain}`),
@@ -767,10 +803,65 @@ export function securityAlertReviewSchemaFindings(value) {
     .sort(findingOrder);
 }
 
+export function ownerTrustFindings(value) {
+  if (!validateOwnerTrustSchema(value)) {
+    return (validateOwnerTrustSchema.errors ?? [])
+      .map((error) =>
+        finding(
+          `owner_trust_${schemaCode(error.keyword)}`,
+          normalizedSchemaPath(error),
+          [error.keyword],
+        ),
+      )
+      .sort(findingOrder);
+  }
+  const findings = [];
+  for (const [ownerRef, keys] of Object.entries(value.authorities)) {
+    for (const [signingKeyId, entry] of Object.entries(keys)) {
+      const bytes = decodeCanonicalBase64(entry.publicKeyDerBase64);
+      let publicKey = null;
+      try {
+        if (bytes) {
+          publicKey = createPublicKey({
+            key: bytes,
+            format: "der",
+            type: "spki",
+          });
+        }
+      } catch {
+        publicKey = null;
+      }
+      const canonicalSpki =
+        publicKey?.asymmetricKeyType === "ed25519"
+          ? publicKey.export({ type: "spki", format: "der" })
+          : null;
+      if (
+        canonicalSpki === null ||
+        !Buffer.isBuffer(canonicalSpki) ||
+        !canonicalSpki.equals(bytes)
+      ) {
+        findings.push(
+          finding("invalid_owner_trust_key", "ownerTrust.authorities", [
+            ownerRef,
+            signingKeyId,
+          ]),
+        );
+      }
+    }
+  }
+  return findings.sort(findingOrder);
+}
+
 export function securityAlertReviewFindings(value, options = {}) {
   try {
     const guardFindings = inputGuardFindings(value, options);
     if (guardFindings.length > 0) return guardFindings;
+    const schemaFindings = securityAlertReviewSchemaFindings(value);
+    if (schemaFindings.length > 0) return schemaFindings;
+    const asOf = timestamp(options.asOf);
+    if (asOf === null || timestamp(value.asOf) !== asOf) {
+      return [finding("invalid_as_of", "asOf")];
+    }
     for (const [name, auxiliary] of [
       ["ownerTrust", options.ownerTrust],
       ["sourceBundle", options.sourceBundle],
@@ -784,8 +875,8 @@ export function securityAlertReviewFindings(value, options = {}) {
         return [finding("invalid_auxiliary_input", name)];
       }
     }
-    const schemaFindings = securityAlertReviewSchemaFindings(value);
-    if (schemaFindings.length > 0) return schemaFindings;
+    const trustFindings = ownerTrustFindings(options.ownerTrust);
+    if (trustFindings.length > 0) return trustFindings;
     return securityAlertReviewSemanticFindings(value, options);
   } catch {
     return [finding("validation_error", "$")];

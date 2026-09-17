@@ -3,7 +3,7 @@
 ## Verdict
 
 **The candidate survives the bounded slice; keep it candidate-only.**
-Confidence: **0.91**.
+Confidence: **0.90**.
 
 The existing vulnerability, security assessment, incident, repository
 compliance, and control assessment contracts cannot preserve this owner alert
@@ -44,8 +44,8 @@ The missing capability is a private, source-neutral reconciliation record that:
   pinned by a caller trust root, typed grant, the policy revision effective when
   the action occurred, snapshot completeness root, time window, and
   caller-pinned controlled-evidence root;
-- carries independently supplied, safe-domain public detector-contract inputs
-  as context with no authority effect;
+- carries independently supplied, query-free safe-domain public
+  detector-contract inputs as context with no authority effect;
   and
 - invalidates rather than replays a prior decision when an alert revision
   changes.
@@ -143,7 +143,7 @@ Findings were applied from four repository roles in distinct tension clusters:
 | Compliance (`.craft/roles/claws/compliance.md`, cluster C) | Evidence must say what was reviewed, when, under which policy revision, and with complete coverage; public material must not masquerade as authority. | Snapshot and policy digests, an out-of-band principal-roster digest, exact coverage, controlled evidence, caller time, and public trust records with `authorityEffect: context-only` are mandatory. No compliance claim exists. |
 | Claws repo steward (`.craft/roles/claws/claws-repo-steward.md`, cluster H) | An unaccepted candidate must not leak into public or generated registry surfaces. | Every file is isolated below `docs/admission-slices/`; a test asserts that the candidate id is absent from `catalog.json`. |
 | Lorant reviewer (`.craft/roles/claws/lorant-reviewer.md`, cluster L) | Security-sensitive keys, time, grants, and failure branches need exact negative proof rather than convention. | The validator recomputes canonical tuple keys and all record digests, requires caller-supplied time, sorts findings deterministically, and tests missing/duplicate coverage, stale replay, grant misuse, self-suppression, source suppression, trust loss, incident declaration, and authority overclaim. |
-| Independent implementation review | Source authenticity, immutable historical policy, URL safety, total parsing, and resource bounds were incomplete. | The candidate now verifies owner-signed source manifests and bytes, keeps prior decisions on historical policy digests, requires independently supplied approved-domain public trust, short-circuits schema-invalid/deep input, and caps bytes, strings, collections, and source work. |
+| Independent implementation review | Source authenticity, immutable historical policy, URL safety, total parsing, resource bounds, and strict trust-store shape were incomplete. | The candidate now verifies owner-signed source manifests and bytes, keeps prior decisions on historical policy digests, requires independently supplied query-free approved-domain public trust, accepts only canonical Ed25519 SPKI owner keys in a closed schema, short-circuits schema-invalid/deep input, and caps bytes, strings, collections, and source work. |
 
 These reviews removed free-form decision rationale, automatic duplicate
 correlation, default time, and any incident/ticket side effect from V1.
@@ -181,6 +181,8 @@ Files:
   policies, signed source manifest, typed grants, decisions, non-decisions, and
   handoff.
 - `owner-trust.json`: independently supplied owner signing-key trust.
+- `owner-trust.schema.json`: closed trust-store schema; every object rejects
+  unknown fields and key leaves permit only canonical public SPKI bytes.
 - `source-bytes.json`: bounded bytes for each exact source identity and version.
 - `public-trust.json`: independently supplied public detector-contract records.
 - `adversarial-cases.json`: exact expected findings for the bounded failure
@@ -229,7 +231,7 @@ publishing the candidate. The standalone validator returns exactly:
 ```
 
 The durable decision remains **survive the bounded slice, candidate-only** at
-**0.91 confidence**.
+**0.90 confidence**.
 
 ## Deletion target
 
