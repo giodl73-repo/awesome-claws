@@ -406,6 +406,14 @@
       "asset": "assets/benefits-realization-review.html",
       "fallback": "outputs/benefits-realization-ledger.md",
       "output": "outputs/benefits-realization-review.html"
+    },
+    {
+      "id": "security-alert-review-reconciler",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/security-alert-review.html",
+      "fallback": "outputs/security-alert-review.md",
+      "output": "outputs/security-alert-review.html"
     }
   ]
 }

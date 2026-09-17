@@ -7,10 +7,11 @@ import { readFileSync } from "node:fs";
 import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { TextDecoder } from "node:util";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
-const SCHEMA_VERSION = "awesomeClaws.securityAlertReviewCandidate.v1";
+const SCHEMA_VERSION = "awesomeClaws.securityAlertReview.v1";
 const SOURCE_SCHEMA_VERSION = "awesomeClaws.securityAlertSource.v1";
 const DIGEST = /^sha256:[0-9a-f]{64}$/u;
 const CONTROLLED_URI = /^controlled:\/\/[^/?#]+\/[^?#]+$/u;
@@ -38,11 +39,6 @@ const AUTHORITY = Object.freeze({
   riskAcceptance: "not-claimed",
   securityClaim: "not-claimed",
 });
-const APPROVED_PUBLIC_TRUST_DOMAINS = Object.freeze({
-  "github/code-scanning": Object.freeze(["docs.github.com"]),
-  "github/secret-scanning": Object.freeze(["docs.github.com"]),
-  "github/dependabot": Object.freeze(["docs.github.com"]),
-});
 export const SECURITY_ALERT_REVIEW_LIMITS = Object.freeze({
   maxInputBytes: 1024 * 1024,
   maxAuxiliaryBytes: 2 * 1024 * 1024,
@@ -54,16 +50,61 @@ export const SECURITY_ALERT_REVIEW_LIMITS = Object.freeze({
   maxSourceBytesPerRecord: 256 * 1024,
   maxSourceBytesTotal: 1024 * 1024,
 });
-const schema = JSON.parse(
-  readFileSync(new URL("./security-alert-review.schema.json", import.meta.url), "utf8"),
+function readSupportJson(repositoryPath, packagePath) {
+  for (const relativePath of [repositoryPath, packagePath]) {
+    try {
+      return JSON.parse(readFileSync(new URL(relativePath, import.meta.url), "utf8"));
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error;
+    }
+  }
+  throw new Error(`Required validator support file is unavailable: ${packagePath}`);
+}
+
+const schema = readSupportJson(
+  "../sources/security-alert-review-reconciler/schemas/security-alert-review.schema.json",
+  "../schemas/security-alert-review.schema.json",
 );
-const ownerTrustSchema = JSON.parse(
-  readFileSync(new URL("./owner-trust.schema.json", import.meta.url), "utf8"),
+const ownerTrustSchema = readSupportJson(
+  "../sources/security-alert-review-reconciler/schemas/owner-trust.schema.json",
+  "../schemas/owner-trust.schema.json",
 );
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateInputSchema = ajv.compile(schema);
 const validateOwnerTrustSchema = ajv.compile(ownerTrustSchema);
+const fatalUtf8Decoder = new TextDecoder("utf-8", { fatal: true });
+
+export const SECURITY_ALERT_REVIEW_EXAMPLE_VALIDATION_OPTIONS = Object.freeze({
+  asOf: "2026-09-16T23:30:00Z",
+  principalRosterDigest:
+    "sha256:5fb91701b972bf4d591c567f6f1f44ec8ac4565e83f8bffd74982e5a5069f8c5",
+  evidenceRoot:
+    "sha256:aae87ad73783965f1b07a7b80e557f48727d73cfd69aefb8dd9ac7a0b99d6b38",
+  ownerTrust: Object.freeze(
+    readSupportJson(
+      "../sources/security-alert-review-reconciler/fixtures/owner-trust.example.json",
+      "../fixtures/owner-trust.example.json",
+    ),
+  ),
+  sourceBundle: Object.freeze(
+    readSupportJson(
+      "../sources/security-alert-review-reconciler/references/source-bytes.example.json",
+      "../references/source-bytes.example.json",
+    ),
+  ),
+  publicTrustBundle: Object.freeze(
+    readSupportJson(
+      "../sources/security-alert-review-reconciler/references/public-trust.example.json",
+      "../references/public-trust.example.json",
+    ),
+  ),
+});
+export const SECURITY_ALERT_REVIEW_EXAMPLE_PROFILE_OPTIONS = Object.freeze({
+  asOf: "2026-09-16T23:30:00Z",
+  fixtureTrustProfile: "packaged-example-v1",
+  fixtureSourceProfile: "packaged-example-v1",
+});
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -169,6 +210,14 @@ function decodeCanonicalBase64(value) {
   }
   const decoded = Buffer.from(value, "base64");
   return decoded.toString("base64") === value ? decoded : null;
+}
+
+export function parseSourceJson(sourceBytes) {
+  try {
+    return JSON.parse(fatalUtf8Decoder.decode(sourceBytes));
+  } catch {
+    return null;
+  }
 }
 
 export function computePolicyDigest(policy) {
@@ -489,15 +538,48 @@ function isCredentialFreePublicHttpsReference(reference) {
   );
 }
 
-function approvedPublicTrustReference(record) {
+function approvedPublicTrustDomains(bundle) {
+  const input = bundle?.approvedDomains;
+  if (!isRecord(input)) return null;
+  const entries = Object.entries(input);
+  if (entries.length === 0 || entries.length > 16) return null;
+  const result = new Map();
+  for (const [source, domains] of entries) {
+    if (
+      typeof source !== "string" ||
+      source.length === 0 ||
+      source.length > 512 ||
+      !Array.isArray(domains) ||
+      domains.length === 0 ||
+      domains.length > 8 ||
+      new Set(domains).size !== domains.length ||
+      domains.some(
+        (domain) =>
+          typeof domain !== "string" ||
+          domain !== domain.toLowerCase() ||
+          domain.length > 253 ||
+          !/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/u.test(
+            domain,
+          ) ||
+          hasUnsafePublicHost(domain),
+      )
+    ) {
+      return null;
+    }
+    result.set(source, domains);
+  }
+  return result;
+}
+
+export function approvedPublicTrustReference(record, approvedDomains) {
   try {
     const reference = new URL(record.uri);
     const hostname = reference.hostname.toLowerCase();
-    const approvedDomains = APPROVED_PUBLIC_TRUST_DOMAINS[record.source] ?? [];
+    const sourceDomains = approvedDomains?.get(record.source) ?? [];
     return (
       isCredentialFreePublicHttpsReference(reference) &&
       reference.search === "" &&
-      approvedDomains.some(
+      sourceDomains.some(
         (domain) =>
           hostname === domain || hostname.endsWith(`.${domain}`),
       )
@@ -675,10 +757,8 @@ function sourceAuthorityFindings(
       ]);
       continue;
     }
-    let parsed;
-    try {
-      parsed = JSON.parse(supplied.sourceBytes.toString("utf8"));
-    } catch {
+    const parsed = parseSourceJson(supplied.sourceBytes);
+    if (parsed === null) {
       add("invalid_source_content", "sourceBundle.sources", [sourceKey]);
       continue;
     }
@@ -881,6 +961,21 @@ export function securityAlertReviewFindings(value, options = {}) {
   } catch {
     return [finding("validation_error", "$")];
   }
+}
+
+export function securityAlertReviewArtifactFindings(value, options = {}) {
+  const fixtureProfiles =
+    options.fixtureTrustProfile === "packaged-example-v1" &&
+    options.fixtureSourceProfile === "packaged-example-v1";
+  return securityAlertReviewFindings(
+    value,
+    fixtureProfiles
+      ? {
+          ...options,
+          ...SECURITY_ALERT_REVIEW_EXAMPLE_VALIDATION_OPTIONS,
+        }
+      : options,
+  );
 }
 
 function securityAlertReviewSemanticFindings(value, options = {}) {
@@ -1112,7 +1207,11 @@ function securityAlertReviewSemanticFindings(value, options = {}) {
   }
   const policyDigest = value.detectorPolicy.revisionDigest;
   const suppliedTrustRows = options?.publicTrustBundle?.records;
+  const approvedDomains = approvedPublicTrustDomains(
+    options?.publicTrustBundle,
+  );
   const suppliedTrustShapeValid =
+    approvedDomains !== null &&
     Array.isArray(suppliedTrustRows) &&
     suppliedTrustRows.length <= 16 &&
     uniqueIds(suppliedTrustRows) &&
@@ -1137,7 +1236,7 @@ function securityAlertReviewSemanticFindings(value, options = {}) {
     );
     const valid =
       trust.kind === "public-detector-contract" &&
-      approvedPublicTrustReference(trust) &&
+      approvedPublicTrustReference(trust, approvedDomains) &&
       timestamp(trust.retrievedAt) !== null &&
       asOf !== null &&
       timestamp(trust.retrievedAt) <= asOf &&

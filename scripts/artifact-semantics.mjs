@@ -19,6 +19,10 @@ import { procureToPayThreeWayMatchFindings } from "./procure-to-pay-three-way-ma
 import { repositoryOperationsFindings } from "./repository-operations-manager.mjs";
 import { repositoryComplianceProgramFindings } from "./repository-compliance-program-manager.mjs";
 import { solutionArchitectureDecisionFindings } from "./solution-architecture-decision-advisor.mjs";
+import {
+  securityAlertReviewArtifactFindings,
+  SECURITY_ALERT_REVIEW_EXAMPLE_PROFILE_OPTIONS,
+} from "./security-alert-review-reconciler.mjs";
 import { supplierCapacityAssuranceFindings } from "./supplier-capacity-assurance-manager.mjs";
 import { tlsCertificateRotationVerificationFindings } from "./tls-certificate-rotation-verification-coordinator.mjs";
 import { workforcePlanningFindings } from "./workforce-planning-partner.mjs";
@@ -53343,6 +53347,7 @@ const validators = {
   "work-chief-of-staff": workChiefOfStaffFindings,
   "workflow-operator": workflowExecutionReconciliationFindings,
   "workforce-planning-partner": workforcePlanningFindings,
+  "security-alert-review-reconciler": securityAlertReviewArtifactFindings,
 };
 
 const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
@@ -53417,6 +53422,8 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   "repository-compliance-program-manager": Object.freeze({
     asOf: "2026-09-14T19:00:00Z",
   }),
+  "security-alert-review-reconciler":
+    SECURITY_ALERT_REVIEW_EXAMPLE_PROFILE_OPTIONS,
   "workforce-planning-partner": Object.freeze({
     asOf: "2026-09-14T17:00:00Z",
   }),

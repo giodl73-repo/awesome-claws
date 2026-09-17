@@ -110,6 +110,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Resume portfolio curator](claws/resume-portfolio-curator) | @giodl73; last verified 2026-08-28 |
 | [Sales operations](claws/sales-operations) | @giodl73-repo; last verified 2026-08-19 |
 | [School coordinator](claws/school-coordinator) | @giodl73-repo; last verified 2026-08-23 |
+| [Security alert review reconciler](claws/security-alert-review-reconciler) | @giodl73-repo; last verified 2026-09-17 |
 | [Security analyst](claws/security-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Software maintainer](claws/software-maintainer) | @giodl73-repo; last verified 2026-08-30 |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | @giodl73-repo; last verified 2026-09-14 |
@@ -227,6 +228,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Resume portfolio curator](claws/resume-portfolio-curator) | no bootstrap, external dependency, or schedule |
 | [Sales operations](claws/sales-operations) | no bootstrap, external dependency, or schedule |
 | [School coordinator](claws/school-coordinator) | no bootstrap, external dependency, or schedule |
+| [Security alert review reconciler](claws/security-alert-review-reconciler) | no bootstrap, external dependency, or schedule |
 | [Security analyst](claws/security-analyst) | no bootstrap, external dependency, or schedule |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | no bootstrap, external dependency, or schedule |
 | [Sports team watcher](claws/sports-team-watcher) | no bootstrap, external dependency, or schedule |
@@ -377,6 +379,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Resume portfolio curator](claws/resume-portfolio-curator) | None |
 | [Sales operations](claws/sales-operations) | None |
 | [School coordinator](claws/school-coordinator) | None |
+| [Security alert review reconciler](claws/security-alert-review-reconciler) | None |
 | [Security analyst](claws/security-analyst) | None |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | None |
 | [Sports team watcher](claws/sports-team-watcher) | None |
@@ -545,6 +548,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Quality assurance lead](claws/quality-assurance-lead) | Turns requirements and risk into a traceable test strategy, execution ledger, defect assessment, and release recommendation. |
 | [Release coordinator](claws/release-coordinator) | Coordinates a repository release from verified GitHub state to an approval-bound communication handoff. |
 | [Research briefing](claws/research-briefing) | Synthesizes supplied sources into concise, source-grounded briefs for time-sensitive decisions. |
+| [Security alert review reconciler](claws/security-alert-review-reconciler) | Reconciles one complete owner-authenticated security-alert snapshot so every exact source, native alert id, and revision receives one authorized human disposition or exact non-decision without querying a SIEM, inferring correlation or severity, mutating source state, declaring an incident, creating a ticket, or accepting risk. |
 | [Security analyst](claws/security-analyst) | Assesses security questions with explicit trust boundaries and reproducible evidence. |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | Turns one exact approved workload requirements revision into evidence-comparable architecture options, validation experiments, ADR chronology, and an accountable owner decision. |
 | [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | Reconciles an exact approved demand-plan revision against supplier commits, qualified capacity, inventory, quality, and inbound logistics evidence to prepare shortage and recovery decisions. |
@@ -622,6 +626,7 @@ Categories come directly from the catalog entry.
 | [Procure-to-Pay Three-Way Match Exception Reconciler](claws/procure-to-pay-three-way-match-exception-reconciler) | X4; Reconciles one exact owner-approved purchase-order revision against complete receipt and invoice line exports, partitioning every line into an authorized exact three-sided group or a typed side-specific residual. |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | X3; Reconciles an authoritative retention schedule, exact record-copy inventory, trigger and hold evidence, approved disposition batch, independently observed outcomes and certificates, and residual-copy closure into one snapshot-bound human-review handoff without interpreting policy or executing disposition. |
 | [Repository Compliance Program Manager](claws/repository-compliance-program-manager) | X3; Runs a recurring vendor-neutral security and compliance remediation program by reconciling approved signals and control revisions into deduplicated repository issues, accountable ownership, SLA state, exceptions, escalations, and independently verified closure without changing code, suppressing findings, approving exceptions, or accepting risk. |
+| [Security alert review reconciler](claws/security-alert-review-reconciler) | X4; Reconciles one complete owner-authenticated security-alert snapshot so every exact source, native alert id, and revision receives one authorized human disposition or exact non-decision without querying a SIEM, inferring correlation or severity, mutating source state, declaring an incident, creating a ticket, or accepting risk. |
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
@@ -830,6 +835,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Quality assurance lead](claws/quality-assurance-lead) | explicit tool policy |
 | [Release coordinator](claws/release-coordinator) | pinned skill; explicit tool policy |
 | [Research briefing](claws/research-briefing) | explicit tool policy |
+| [Security alert review reconciler](claws/security-alert-review-reconciler) | explicit tool policy |
 | [Security analyst](claws/security-analyst) | explicit tool policy |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | explicit tool policy |
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | pinned skill |

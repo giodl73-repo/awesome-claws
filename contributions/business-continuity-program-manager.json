@@ -145,6 +145,11 @@
         "difference": "Repository Compliance Program Manager normalizes security and compliance signals into repository remediation obligations and approved issue mutations. This Claw maintains business-process BIAs, owner-approved recovery requirements, operational dependencies, continuity-plan versions, exercises, corrective-action receipts, and independent process recertification with no issue-tracker capability."
       },
       {
+        "id": "security-alert-review-reconciler",
+        "overlap": "Both authenticate complete owner-supplied universes, preserve immutable policy or requirement revisions, require typed named-human authority, retain non-decisions and blockers, and prohibit incident declaration, ticket mutation, risk acceptance, and unsupported readiness claims.",
+        "difference": "Security Alert Review Reconciler closes one revision-exact native-alert review snapshot with human dispositions and exact non-decisions. This Claw governs recurring business continuity across critical-process registers, BIAs, RTO/RPO requirements, dependencies, continuity plans, exercises, findings, corrective actions, exceptions, and independent recertification without reviewing detector alerts."
+      },
+      {
         "id": "backup-restore-verification-coordinator",
         "overlap": "Both preserve recovery-objective evidence, dependency-aware blockers, exercise evidence, accountable owners, and a non-certifying resilience handoff.",
         "difference": "Backup Restore Verification Coordinator proves one technical restore round over protected resources, recovery points, isolated targets, provider jobs, validation, and cleanup. This Claw governs the recurring enterprise continuity lifecycle for exact business processes, BIAs, dependency maps, plan revisions, broad exercises, findings, remediation, exceptions, and recertification without selecting or restoring recovery points."

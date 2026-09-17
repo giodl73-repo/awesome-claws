@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "awesomeClaws.securityAlertReviewCandidate.v1",
+  "schemaVersion": "awesomeClaws.securityAlertReview.v1",
   "artifactId": "security-alert-review-2026-09-16",
   "asOf": "2026-09-16T23:30:00Z",
   "evidenceRoot": "sha256:aae87ad73783965f1b07a7b80e557f48727d73cfd69aefb8dd9ac7a0b99d6b38",

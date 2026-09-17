@@ -1,8 +1,8 @@
-# Security Alert Review Reconciler admission slice
+# Security Alert Review Reconciler admission decision
 
 ## Verdict
 
-**The candidate survives the bounded slice; keep it candidate-only.**
+**Approved as a distinct public Claw after the bounded admission slice.**
 Confidence: **0.90**.
 
 The existing vulnerability, security assessment, incident, repository
@@ -12,9 +12,10 @@ starting an incident, or entering an issue-mutation workflow. None can enforce
 one fresh authorized human disposition or one exact non-decision for every
 `(source, nativeAlertId, revision)` key.
 
-This is evidence for a distinct operating contract, not approval for a public
-Claw. This directory changes no catalog, contribution, generated package,
-chooser, regression registry, or public validator registry.
+This document retains the durable admission evidence that preceded public
+promotion. The public contribution is authoritative in `catalog.json`,
+`contributions/security-alert-review-reconciler.json`, and
+`sources/security-alert-review-reconciler/`.
 
 ## Frame
 
@@ -171,27 +172,31 @@ Every alert remains present in coverage.
 
 Files:
 
-- `security-alert-review.schema.json`: strict candidate schema and explicit
+- `schemas/security-alert-review.schema.json`: strict public schema and explicit
   authority non-claims.
-- `validate.mjs`: total semantic validator, caller-pinned principal roster,
+- `scripts/security-alert-review-reconciler.mjs`: total semantic validator,
+  caller-pinned principal roster,
   controlled-evidence root, signed-source verification, bounded parsing, digest
   helpers, deterministic findings, non-authoritative resealing helper, and
   standalone proof CLI.
-- `accepted.json`: the complete owner snapshot, current and historical detector
+- `fixtures/security-alert-review.example.json`: the complete owner snapshot,
+  current and historical detector
   policies, signed source manifest, typed grants, decisions, non-decisions, and
   handoff.
-- `owner-trust.json`: independently supplied owner signing-key trust.
-- `owner-trust.schema.json`: closed trust-store schema; every object rejects
+- `fixtures/owner-trust.example.json`: independently supplied owner signing-key
+  trust accepted by the paired schema.
+- `schemas/owner-trust.schema.json`: closed trust-store schema; every object rejects
   unknown fields and key leaves permit only canonical public SPKI bytes.
-- `source-bytes.json`: bounded bytes for each exact source identity and version.
-- `public-trust.json`: independently supplied public detector-contract records.
-- `adversarial-cases.json`: exact expected findings for the bounded failure
+- `references/source-bytes.example.json`: bounded bytes for each exact source
+  identity and version.
+- `references/public-trust.example.json`: independently supplied public
+  detector-contract records.
+- `fixtures/security-alert-review-adversarial-cases.json`: exact expected
+  findings for the bounded failure
   matrix.
-- `validate.test.mjs`: schema, semantics, authority, totality, determinism, CLI,
-  and no-registry proof.
-- `../../../scripts/security-alert-review-reconciler.test.mjs`: discovery bridge
-  that runs the candidate suite from the repository's required `scripts/*.test.mjs`
-  lane.
+- `scripts/security-alert-review-reconciler.test.mjs`: schema, semantics,
+  authority, totality, determinism, CLI, public-registry, and runtime-profile
+  proof in the repository's required `scripts/*.test.mjs` lane.
 
 ### Observable proof
 
@@ -205,23 +210,22 @@ node --test `
   scripts\repository-compliance-program-manager.test.mjs `
   scripts\control-assessment-schema.test.mjs
 npm run check
-node docs\admission-slices\security-alert-review-reconciler\validate.mjs `
-  docs\admission-slices\security-alert-review-reconciler\accepted.json `
+node scripts\security-alert-review-reconciler.mjs `
+  sources\security-alert-review-reconciler\fixtures\security-alert-review.example.json `
   --as-of 2026-09-16T23:30:00Z `
   --principal-roster-digest sha256:5fb91701b972bf4d591c567f6f1f44ec8ac4565e83f8bffd74982e5a5069f8c5 `
   --evidence-root sha256:aae87ad73783965f1b07a7b80e557f48727d73cfd69aefb8dd9ac7a0b99d6b38 `
-  --owner-trust docs\admission-slices\security-alert-review-reconciler\owner-trust.json `
-  --source-bundle docs\admission-slices\security-alert-review-reconciler\source-bytes.json `
-  --public-trust docs\admission-slices\security-alert-review-reconciler\public-trust.json
+  --owner-trust sources\security-alert-review-reconciler\fixtures\owner-trust.example.json `
+  --source-bundle sources\security-alert-review-reconciler\references\source-bytes.example.json `
+  --public-trust sources\security-alert-review-reconciler\references\public-trust.example.json
 ```
 
-The focused candidate-and-analogue command passes **184 of 184 tests** across
+The admission candidate-and-analogue command passed **184 of 184 tests** across
 the candidate, the five nearest contract analogues, and the Benefits
-signed-source precedent. The discovered candidate suite contributes 24
-top-level tests, including exact table-driven findings for all twenty-one
-structured failure cases and direct probes for the five independent-review
-blockers. `npm run check` executes that suite through the bridge without
-publishing the candidate. The standalone validator returns exactly:
+signed-source precedent. The promoted public suite adds registration and
+runtime-profile proof while retaining the exact table-driven findings and
+independent-review blocker probes. `npm run check` executes the public suite
+through normal repository discovery. The standalone validator returns exactly:
 
 ```json
 {
@@ -230,8 +234,7 @@ publishing the candidate. The standalone validator returns exactly:
 }
 ```
 
-The durable decision remains **survive the bounded slice, candidate-only** at
-**0.90 confidence**.
+The durable admission decision is **NEW at 0.90 confidence**.
 
 ## Deletion target
 

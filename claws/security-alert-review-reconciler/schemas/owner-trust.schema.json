@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://awesome-claws.local/admission-slices/security-alert-review-reconciler/owner-trust.schema.json",
+  "$id": "https://awesome-claws.local/schemas/security-alert-review-owner-trust.schema.json",
   "title": "Security Alert Review Reconciler owner trust",
   "type": "object",
   "additionalProperties": false,

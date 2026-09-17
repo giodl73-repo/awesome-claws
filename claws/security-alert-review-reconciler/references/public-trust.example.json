@@ -1,4 +1,15 @@
 {
+  "approvedDomains": {
+    "github/code-scanning": [
+      "docs.github.com"
+    ],
+    "github/secret-scanning": [
+      "docs.github.com"
+    ],
+    "github/dependabot": [
+      "docs.github.com"
+    ]
+  },
   "records": [
     {
       "id": "trust-github-code-scanning",

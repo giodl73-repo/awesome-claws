@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "security-alert-review-reconciler",
+    "name": "Security alert review reconciler",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-17"
+    },
+    "description": "Reconciles one complete owner-authenticated security-alert snapshot so every exact source, native alert id, and revision receives one authorized human disposition or exact non-decision without querying a SIEM, inferring correlation or severity, mutating source state, declaring an incident, creating a ticket, or accepting risk.",
+    "audience": "Security governance owners and authorized alert reviewers reconciling complete native alert exports across code analysis, secret exposure, vulnerability, identity, configuration, and behavior detectors.",
+    "principles": [
+      "Preserve every owner-native alert identity, revision, source state, severity, evidence record, and exact review outcome",
+      "Authenticate the complete normalized alert universe with owner-signed source manifests and bytes while keeping public detector documentation context-only",
+      "Bind each decision to the immutable detector-policy revision, named-human roster, typed grant, evidence, and caller-controlled time effective when the action occurred"
+    ],
+    "boundaries": [
+      "Do not query a SIEM, detector service, repository host, public URL, scanner, or other source system",
+      "Do not infer cross-source correlation, duplicate membership, source severity, exploitability, reachability, containment need, compliance, assurance, or security posture",
+      "Do not suppress, mute, close, resolve, dismiss, or otherwise mutate a source alert",
+      "Do not perform containment, declare or close an incident, create or update a ticket, accept risk, waive policy, or claim remediation",
+      "Treat muted, suppressed, unknown-asset, self-suppression, and revision-invalidated states as explicit non-decisions rather than approvals"
+    ],
+    "intake": [
+      "Complete owner snapshot id, revision, capture time, native alert rows, source versions, normalized alert universe, and exact source bytes",
+      "Owner-signed source manifest, independently supplied canonical Ed25519 SPKI trust, named-human principal roster, and caller-pinned roster and evidence roots",
+      "Current and immutable historical detector-policy revisions, safe query-free public detector documentation records, and typed time-bounded grants",
+      "Controlled evidence for snapshots, policy revisions, grants, duplicate declarations, human dispositions, prior decisions, suppression attempts, and incident-owner review requests"
+    ],
+    "workflow": [
+      "Bound input bytes, nesting, strings, collections, and source work; then schema-validate before semantic evaluation",
+      "Verify canonical Ed25519 owner trust, signed source identity and version manifests, exact source bytes, normalized alert rows, and snapshot completeness root",
+      "Validate independently supplied query-free public detector documentation against approved domains with context-only authority",
+      "Resolve the detector-policy revision effective for each grant or decision and preserve historical digests without rewriting them",
+      "Require exactly one current human disposition or exact non-decision for every source, native alert id, and revision key",
+      "Render an X4 owner-review ledger and equivalent Markdown handoff without taking source, incident, ticket, containment, or risk authority"
+    ],
+    "deliverables": [
+      "Owner-authenticated source, snapshot, public trust, policy-revision, principal, grant, and controlled-evidence ledgers",
+      "Complete native-alert coverage index keyed by source, native alert id, and revision",
+      "Authorized human disposition and exact non-decision ledger with historical revision invalidation",
+      "Owner-declared duplicate and incident-owner review-request records with no correlation or declaration effect",
+      "X4 security alert review visual with equivalent Markdown handoff and explicit authority non-claims"
+    ],
+    "example": {
+      "request": "Reconcile the complete owner-authenticated alert export for 2026-09-16 across code scanning, secret scanning, and dependency alerts. Preserve muted, suppressed, unknown-asset, self-suppression, and revised-alert states; record only authorized human outcomes; and do not query the SIEM, infer correlation or severity, mutate alerts, declare an incident, create tickets, or accept risk.",
+      "outcome": "An X4 revision-exact review ledger covering all eight native alerts with three authorized human dispositions, five exact non-decisions, one owner-declared duplicate group, one revision-invalidated prior decision, and one incident-owner review request that declares no incident."
+    },
+    "doneWhen": [
+      "The owner signature, source identities and versions, exact byte digests, normalized alert universe, and snapshot completeness root all verify against independently supplied trust",
+      "Every native alert key appears exactly once in coverage and has exactly one current human disposition or exact non-decision",
+      "Every grant and decision binds the policy revision effective at its original time, while current reviews bind the current policy and historical digests remain immutable",
+      "Public trust is independently supplied, query-free, approved-domain, and context-only; unsafe URLs, malformed trust, omissions, substitutions, stale replay, and authority overclaim fail closed",
+      "The X4 and Markdown handoff make no SIEM, correlation, severity, suppression, containment, incident, ticket, risk, compliance, remediation, or security claim"
+    ],
+    "capabilityGuidance": [
+      "The base X4 starter reads only supplied workspace artifacts, runs the packaged Node validator through workspace-local exec, and uses workspace writes plus show_widget for the owner-review output; it has no browser, network, scanner, SIEM, MCP, plugin, cron, messaging, ticketing, incident, containment, or source-mutation capability.",
+      "Run node scripts/security-alert-review-validator.mjs against the supplied review JSON with explicit --as-of, --principal-roster-digest, --evidence-root, --owner-trust, --source-bundle, and --public-trust arguments before rendering any result.",
+      "Future read integrations must preserve owner-signed snapshot totality, immutable policy history, typed human grants, caller-controlled time and trust, context-only public documentation, and all no-authority boundaries."
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "exec",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/security-alert-review.schema.json",
+        "path": "schemas/security-alert-review.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "schemas/owner-trust.schema.json",
+        "path": "schemas/owner-trust.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/security-alert-review.example.json",
+        "path": "fixtures/security-alert-review.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/security-alert-review-adversarial-cases.json",
+        "path": "fixtures/security-alert-review-adversarial-cases.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/owner-trust.example.json",
+        "path": "fixtures/owner-trust.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "references/source-bytes.example.json",
+        "path": "references/source-bytes.example.json",
+        "role": "reference"
+      },
+      {
+        "source": "references/public-trust.example.json",
+        "path": "references/public-trust.example.json",
+        "role": "reference"
+      },
+      {
+        "source": "references/admission-decision.md",
+        "path": "references/admission-decision.md",
+        "role": "reference"
+      },
+      {
+        "source": "templates/security-alert-review.md",
+        "path": "templates/security-alert-review.md",
+        "role": "template"
+      },
+      {
+        "source": "assets/security-alert-review.html",
+        "path": "assets/security-alert-review.html",
+        "role": "asset"
+      },
+      {
+        "source": "scripts/security-alert-review-validator.mjs",
+        "path": "scripts/security-alert-review-validator.mjs",
+        "role": "reference"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Security owners often reconcile heterogeneous detector exports in private spreadsheets or review decks because vulnerability, incident, assessment, and compliance workflows cannot preserve every native alert row and revision while requiring one authorized review result per exact key. Those parallel ledgers can silently omit muted or unknown-asset alerts, replay stale decisions, substitute unauthenticated source data, collapse owner-declared duplicates into machine correlation, or blur alert review into SIEM, incident, ticket, containment, and risk authority.",
+    "repeatableJob": "For each complete owner-authenticated alert snapshot, validate the signed native-alert universe, independently supplied trust, immutable detector-policy history, typed human grants, and controlled evidence; then reconcile every exact source/native-id/revision key to one authorized human disposition or exact non-decision and produce a bounded owner-review visual and Markdown handoff.",
+    "proofPlan": "Ship an X4 package with strict JSON Schemas for the review artifact and owner trust, accepted and adversarial fixtures, owner-signed source bytes, immutable policy history, total bounded semantic and CLI validation, safe public documentation URLs, deterministic findings, exact coverage and revision invalidation, Markdown and inline visual outputs, deterministic regression, semantic recipes, canonical Mock+, runtime evidence, quality scoring, current Control UI screenshot, focused analogue tests, full npm check, and branch-mode Autoreview.",
+    "existingAlternatives": [
+      {
+        "id": "enterprise-license-entitlement-reconciler",
+        "overlap": "Both reconcile a complete owner-supplied universe under independently supplied trust, immutable revisions, typed named-human grants, exact evidence digests, total coverage, and a workspace-local validator before an owner review.",
+        "difference": "Enterprise License Entitlement Reconciler determines organization, agreement, SKU, assignment, and seat-position states under license rights and does not preserve native security-alert identity. Security Alert Review Reconciler instead requires one authorized disposition or exact non-decision per source/native-alert/revision key and forbids license, SIEM, correlation, incident, ticket, containment, and risk authority."
+      },
+      {
+        "id": "business-continuity-program-manager",
+        "overlap": "Both are X4 governance workflows with complete owner-controlled universes, revision-bound policy or requirements, named-human authority, controlled evidence, exact blockers, non-claims, workspace-local validation, and owner-visible handoffs.",
+        "difference": "Business Continuity Program Manager maintains recurring process, BIA, RTO/RPO, dependency, continuity-plan, exercise, finding, corrective-action, exception, and recertification state. Security Alert Review Reconciler closes one authenticated native-alert snapshot with revision-exact dispositions and non-decisions and cannot declare incidents, invoke plans, mutate alerts, create tickets, or accept risk."
+      },
+      {
+        "id": "vulnerability-disposition-coordinator",
+        "overlap": "Both authenticate supplied security evidence, derive a complete revision-sensitive coverage universe, preserve suppression as data, require typed human authority, and invalidate stale dispositions.",
+        "difference": "Vulnerability Disposition Coordinator derives deployed instance, component, and advisory-revision triples for vulnerability exposure. Security Alert Review Reconciler preserves heterogeneous owner-native alerts including secret and code-analysis rows, unknown assets, and source states, and requires one review record per native source/id/revision without translating them into vulnerability semantics."
+      },
+      {
+        "id": "security-analyst",
+        "overlap": "Both use named-human security authority, controlled evidence, chronology, bounded conclusions, and explicit no-remediation boundaries.",
+        "difference": "Security Analyst assesses threat scenarios, likelihood, severity, controls, remediation, and risk-owner readiness. Security Alert Review Reconciler performs no security assessment or severity inference; its invariant is authenticated native-alert snapshot totality and one revision-exact review result per alert."
+      },
+      {
+        "id": "incident-response",
+        "overlap": "Both preserve exact evidence, named human roles, chronology, owner handoffs, and prohibit agent-owned consequential authority.",
+        "difference": "Incident Response owns an existing incident lifecycle, recovery evidence, and closure recommendation. Security Alert Review Reconciler cannot fabricate or declare an incident; it can only preserve an evidence-backed request for an incident owner to review one alert with incidentRef null and declaration effect none."
+      },
+      {
+        "id": "repository-compliance-program-manager",
+        "overlap": "Both bind complete source snapshots, caller-controlled time, exact revisions, deterministic findings, typed evidence, owner authority, and reopen behavior.",
+        "difference": "Repository Compliance Program Manager canonicalizes signals into controls, assets, obligations, and approved issue mutations. Security Alert Review Reconciler preserves every native alert before canonicalization, keeps unknown assets reviewable, and forbids ticket mutation."
+      },
+      {
+        "id": "compliance-reviewer",
+        "overlap": "Both require explicit evidence, named independent humans, complete coverage, chronology, and non-claims.",
+        "difference": "Compliance Reviewer evaluates framework requirements and control effectiveness. Security Alert Review Reconciler does not interpret requirements or controls and cannot make compliance, assurance, waiver, risk, remediation, or security claims."
+      },
+      {
+        "id": "benefits-realization-manager",
+        "overlap": "Both use owner-signed source manifests, exact source bytes, independent trust, immutable revisions, caller-controlled time, bounded validation, X4 output, and fixture resealing that cannot manufacture authority.",
+        "difference": "Benefits Realization Manager reconciles benefit and disbenefit realization, KPI allocations, and finance close. Security Alert Review Reconciler applies the signed-source pattern to a complete native security-alert universe and typed review outcomes while retaining strict no-SIEM, no-correlation, no-incident, no-ticket, and no-risk authority."
+      }
+    ]
+  }
+}

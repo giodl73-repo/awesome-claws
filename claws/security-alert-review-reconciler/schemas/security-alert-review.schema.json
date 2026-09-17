@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://awesome-claws.local/admission-slices/security-alert-review-reconciler/security-alert-review.schema.json",
-  "title": "Security Alert Review Reconciler candidate record",
+  "$id": "https://awesome-claws.local/schemas/security-alert-review.schema.json",
+  "title": "Security Alert Review Reconciler record",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -29,7 +29,7 @@
   ],
   "properties": {
     "schemaVersion": {
-      "const": "awesomeClaws.securityAlertReviewCandidate.v1"
+      "const": "awesomeClaws.securityAlertReview.v1"
     },
     "artifactId": {
       "$ref": "#/$defs/id"

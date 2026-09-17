@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 122,
-    "coveredCount": 122,
-    "recipeCount": 334,
-    "findingCodeCount": 444
+    "validatorCount": 123,
+    "coveredCount": 123,
+    "recipeCount": 337,
+    "findingCodeCount": 447
   },
   "entries": [
     {
@@ -280,6 +280,56 @@
           "replacement": "benefits-open-enrollment-planner",
           "expectedCodes": [
             "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "benefits-realization-manager",
+      "recipes": [
+        {
+          "id": "semantic-invalid-source-authority-1",
+          "operator": "replace",
+          "path": [
+            "request",
+            "ledgerId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid-source-authority"
+          ]
+        },
+        {
+          "id": "semantic-invalid-source-authority-2",
+          "operator": "replace",
+          "path": [
+            "request",
+            "cutoffAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid-source-authority",
+            "invalid-validation-context"
+          ]
+        },
+        {
+          "id": "semantic-invalid-attribution-binding-3",
+          "operator": "replace",
+          "path": [
+            "request",
+            "cutoffAt"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid-attribution-binding",
+            "invalid-caller-window",
+            "invalid-disbenefit-profile",
+            "invalid-evidence-authority-or-chronology",
+            "invalid-finance-close",
+            "invalid-owner-authority",
+            "invalid-plan-lineage",
+            "invalid-shared-kpi-chronology",
+            "invalid-source-authority"
           ]
         }
       ]
@@ -1166,6 +1216,56 @@
           "replacement": "document-renewal-tracker",
           "expectedCodes": [
             "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "enterprise-license-entitlement-reconciler",
+      "recipes": [
+        {
+          "id": "semantic-invalid-handoff-1",
+          "operator": "replace",
+          "path": [
+            "artifactId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_handoff",
+            "invalid_round_digest"
+          ]
+        },
+        {
+          "id": "semantic-invalid-authority-grant-2",
+          "operator": "replace",
+          "path": [
+            "round",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_authority_grant",
+            "invalid_destination_approval",
+            "invalid_evidence_binding",
+            "invalid_handoff",
+            "invalid_human_decision",
+            "invalid_reconciliation_authority",
+            "invalid_round_digest",
+            "invalid_source_authority"
+          ]
+        },
+        {
+          "id": "semantic-invalid-handoff-3",
+          "operator": "replace",
+          "path": [
+            "round",
+            "predecessorRoundRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_handoff",
+            "invalid_round_digest",
+            "invalid_trust_root"
           ]
         }
       ]
@@ -3340,6 +3440,60 @@
       ]
     },
     {
+      "id": "procure-to-pay-three-way-match-exception-reconciler",
+      "recipes": [
+        {
+          "id": "semantic-invalid-partition-root-1",
+          "operator": "replace",
+          "path": [
+            "review",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_partition_root",
+            "invalid_result"
+          ]
+        },
+        {
+          "id": "semantic-invalid-authority-grant-2",
+          "operator": "replace",
+          "path": [
+            "review",
+            "purchaseOrderId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_authority_grant",
+            "invalid_human_authority",
+            "invalid_line_manifest",
+            "invalid_owner_trust_policy",
+            "invalid_partition_root",
+            "invalid_result",
+            "invalid_review_binding",
+            "invalid_source_revision"
+          ]
+        },
+        {
+          "id": "semantic-invalid-decision-chronology-3",
+          "operator": "replace",
+          "path": [
+            "review",
+            "cutoffAt"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_decision_chronology",
+            "invalid_manifest_chronology",
+            "invalid_partition_root",
+            "invalid_result",
+            "invalid_side_residual",
+            "invalid_validation_context"
+          ]
+        }
+      ]
+    },
+    {
       "id": "procurement-evaluator",
       "recipes": [
         {
@@ -4099,6 +4253,48 @@
           "replacement": "school-coordinator",
           "expectedCodes": [
             "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-alert-review-reconciler",
+      "recipes": [
+        {
+          "id": "semantic-invalid-as-of-1",
+          "operator": "replace",
+          "path": [
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_as_of"
+          ]
+        },
+        {
+          "id": "semantic-invalid-evidence-root-2",
+          "operator": "replace",
+          "path": [
+            "evidenceRoot"
+          ],
+          "replacement": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "expectedCodes": [
+            "invalid_evidence_root"
+          ]
+        },
+        {
+          "id": "semantic-incomplete-snapshot-evidence-3",
+          "operator": "replace",
+          "path": [
+            "snapshot",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incomplete_snapshot_evidence",
+            "invalid_review_record",
+            "invalid_snapshot",
+            "invalid_source_authority"
           ]
         }
       ]
@@ -5139,160 +5335,6 @@
             "plan_scope_mismatch",
             "scenario_projection_mismatch",
             "unbound_plan_approval"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "enterprise-license-entitlement-reconciler",
-      "recipes": [
-        {
-          "id": "semantic-invalid-handoff-1",
-          "operator": "replace",
-          "path": [
-            "artifactId"
-          ],
-          "replacement": "mock-plus-missing",
-          "expectedCodes": [
-            "invalid_handoff",
-            "invalid_round_digest"
-          ]
-        },
-        {
-          "id": "semantic-invalid-authority-grant-2",
-          "operator": "replace",
-          "path": [
-            "round",
-            "id"
-          ],
-          "replacement": "mock-plus-missing",
-          "expectedCodes": [
-            "invalid_authority_grant",
-            "invalid_destination_approval",
-            "invalid_evidence_binding",
-            "invalid_handoff",
-            "invalid_human_decision",
-            "invalid_reconciliation_authority",
-            "invalid_round_digest",
-            "invalid_source_authority"
-          ]
-        },
-        {
-          "id": "semantic-invalid-handoff-3",
-          "operator": "replace",
-          "path": [
-            "round",
-            "predecessorRoundRef"
-          ],
-          "replacement": "mock-plus-missing",
-          "expectedCodes": [
-            "invalid_handoff",
-            "invalid_round_digest",
-            "invalid_trust_root"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "benefits-realization-manager",
-      "recipes": [
-        {
-          "id": "semantic-invalid-source-authority-1",
-          "operator": "replace",
-          "path": [
-            "request",
-            "ledgerId"
-          ],
-          "replacement": "mock-plus-missing",
-          "expectedCodes": [
-            "invalid-source-authority"
-          ]
-        },
-        {
-          "id": "semantic-invalid-source-authority-2",
-          "operator": "replace",
-          "path": [
-            "request",
-            "cutoffAt"
-          ],
-          "replacement": "2099-12-31T23:59:59Z",
-          "expectedCodes": [
-            "invalid-source-authority",
-            "invalid-validation-context"
-          ]
-        },
-        {
-          "id": "semantic-invalid-attribution-binding-3",
-          "operator": "replace",
-          "path": [
-            "request",
-            "cutoffAt"
-          ],
-          "replacement": "2000-01-01T00:00:00Z",
-          "expectedCodes": [
-            "invalid-attribution-binding",
-            "invalid-caller-window",
-            "invalid-disbenefit-profile",
-            "invalid-evidence-authority-or-chronology",
-            "invalid-finance-close",
-            "invalid-owner-authority",
-            "invalid-plan-lineage",
-            "invalid-shared-kpi-chronology",
-            "invalid-source-authority"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "procure-to-pay-three-way-match-exception-reconciler",
-      "recipes": [
-        {
-          "id": "semantic-invalid-partition-root-1",
-          "operator": "replace",
-          "path": [
-            "review",
-            "id"
-          ],
-          "replacement": "mock-plus-missing",
-          "expectedCodes": [
-            "invalid_partition_root",
-            "invalid_result"
-          ]
-        },
-        {
-          "id": "semantic-invalid-authority-grant-2",
-          "operator": "replace",
-          "path": [
-            "review",
-            "purchaseOrderId"
-          ],
-          "replacement": "mock-plus-missing",
-          "expectedCodes": [
-            "invalid_authority_grant",
-            "invalid_human_authority",
-            "invalid_line_manifest",
-            "invalid_owner_trust_policy",
-            "invalid_partition_root",
-            "invalid_result",
-            "invalid_review_binding",
-            "invalid_source_revision"
-          ]
-        },
-        {
-          "id": "semantic-invalid-decision-chronology-3",
-          "operator": "replace",
-          "path": [
-            "review",
-            "cutoffAt"
-          ],
-          "replacement": "2099-12-31T23:59:59Z",
-          "expectedCodes": [
-            "invalid_decision_chronology",
-            "invalid_manifest_chronology",
-            "invalid_partition_root",
-            "invalid_result",
-            "invalid_side_residual",
-            "invalid_validation_context"
           ]
         }
       ]
