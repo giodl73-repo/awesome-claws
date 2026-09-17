@@ -48,7 +48,8 @@
       "revisionRef"
     ],
     "namedHumanRequired": true,
-    "independentIssuerRequired": true
+    "independentIssuerRequired": true,
+    "authorityLedgerDigest": "sha256:dd22a37ed423bd8f68c814381ee8de3fc5f35ed8488d9b7232ce20f7c69c9473"
   },
   "validation": {
     "callerSuppliesCutoffAt": true,

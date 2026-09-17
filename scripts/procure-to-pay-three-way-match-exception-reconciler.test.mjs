@@ -11,6 +11,7 @@ import {
 } from "./procure-to-pay-three-way-match-exception-reconciler-fixtures.mjs";
 import {
   computeAmendmentPayloadDigest,
+  computeAuthorityLedgerDigest,
   computeLineManifestDigest,
   computeMatchGroupPayloadDigest,
   computeMatchingPolicyPayloadDigest,
@@ -154,7 +155,7 @@ test("X3, X4, and public owner-policy surfaces preserve the complete contract", 
     "{{matchGroups[].decision.receiptManifestDigest}}",
     "{{result.partitionRootDigest}}",
     "{{authorityClaims.accountingInterpretation}}",
-    "Receipt creation is not modeled or permitted",
+    "{{authorityClaims.receiptCreation}}",
   ]) {
     assert.ok(template.includes(required), required);
   }
@@ -179,6 +180,13 @@ test("X3, X4, and public owner-policy surfaces preserve the complete contract", 
   assert.equal(ownerTrustPolicy.sourceTrustRoots.length, 3);
   assert.equal(ownerTrustPolicy.matchingPolicy.tolerancesPermitted, false);
   assert.equal(ownerTrustPolicy.validation.wallClockFallbackPermitted, false);
+  assert.equal(
+    ownerTrustPolicy.authority.authorityLedgerDigest,
+    computeAuthorityLedgerDigest(
+      acceptedFixture.principals,
+      acceptedFixture.authorityGrants,
+    ),
+  );
 });
 
 test("public artifact CLI validates the exact fixture with owner policy and caller time", () => {
@@ -680,6 +688,34 @@ test("public owner trust policy is required and target-bound", () => {
       }).includes("invalid_owner_trust_policy"),
     );
   }
+
+  const selfAttested = structuredClone(acceptedFixture);
+  selfAttested.principals[0].name = "Forged Authority Issuer";
+  refreshPartitionRoot(selfAttested);
+  assert.ok(codes(selfAttested).includes("invalid_owner_trust_policy"));
+});
+
+test("every authority grant has a valid interval even when unused", () => {
+  const candidate = structuredClone(acceptedFixture);
+  candidate.authorityGrants.push({
+    ...structuredClone(candidate.authorityGrants[2]),
+    id: "grant-unused-match-review",
+    issuedAt: "2026-09-02T00:00:00Z",
+    activeFrom: "2026-09-01T00:00:00Z",
+  });
+  refreshPartitionRoot(candidate);
+  const trustedPolicy = structuredClone(ownerTrustPolicy);
+  trustedPolicy.authority.authorityLedgerDigest = computeAuthorityLedgerDigest(
+    candidate.principals,
+    candidate.authorityGrants,
+  );
+
+  assert.ok(
+    codes(candidate, {
+      ...context,
+      ownerTrustPolicy: trustedPolicy,
+    }).includes("invalid_authority_grant"),
+  );
 });
 
 test("current-revision source rows cannot predate revision approval", () => {
@@ -839,6 +875,7 @@ test("schema exposes no fuzzy, tolerance, tax, action, or mutation escape hatch"
   assert.deepEqual(acceptedFixture.authorityClaims, {
     posting: "not-claimed",
     payment: "not-claimed",
+    receiptCreation: "not-claimed",
     supplierContact: "not-claimed",
     accountingInterpretation: "not-claimed",
     taxInterpretation: "not-claimed",

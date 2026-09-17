@@ -40,6 +40,7 @@ const proof = {
       acceptedFixture.purchaseOrderLines.length +
       acceptedFixture.receiptLines.length +
       acceptedFixture.invoiceLines.length,
+    authorityLedgerDigest: ownerTrustPolicy.authority.authorityLedgerDigest,
     approvedPayloadDigestCount: 3,
     decisionBindingCount: acceptedFixture.matchGroups.length,
     partitionRootDigest: acceptedFixture.result.partitionRootDigest,

@@ -166,6 +166,44 @@ function project(fields, source) {
   return Object.fromEntries(fields.map((field) => [field, value[field] ?? null]));
 }
 
+function sortRowsById(rows) {
+  return records(rows).toSorted((left, right) =>
+    compareUtf16CodeUnits(left.id, right.id),
+  );
+}
+
+function authorityLedgerPayload(principals, grants) {
+  return {
+    principals: sortRowsById(principals).map((row) =>
+      project(["id", "name", "kind", "roles"], {
+        ...row,
+        roles: strings(row.roles).sort(compareUtf16CodeUnits),
+      }),
+    ),
+    authorityGrants: sortRowsById(grants).map((row) =>
+      project(
+        [
+          "id",
+          "purchaseOrderId",
+          "currency",
+          "revisionRef",
+          "scope",
+          "granteeRef",
+          "issuedByRef",
+          "issuedAt",
+          "activeFrom",
+          "activeUntil",
+        ],
+        row,
+      ),
+    ),
+  };
+}
+
+export function computeAuthorityLedgerDigest(principals, grants) {
+  return sha256(canonicalJson(authorityLedgerPayload(principals, grants)));
+}
+
 export function computeLineManifestDigest(side, lines) {
   const fields = LINE_FIELDS[side] ?? [];
   const payload = records(lines)
@@ -228,8 +266,10 @@ export function computePartitionRootDigest(candidate) {
   const revision = object(value.purchaseOrderRevision);
   const amendment = object(value.amendment);
   const coverage = object(value.coverage);
-  const sortRows = (rows) =>
-    records(rows).toSorted((left, right) => compareUtf16CodeUnits(left.id, right.id));
+  const authorityLedger = authorityLedgerPayload(
+    value.principals,
+    value.authorityGrants,
+  );
   return sha256(
     canonicalJson({
       schemaVersion: value.schemaVersion ?? null,
@@ -248,29 +288,8 @@ export function computePartitionRootDigest(candidate) {
         ],
         review,
       ),
-      principals: sortRows(value.principals).map((row) =>
-        project(["id", "name", "kind", "roles"], {
-          ...row,
-          roles: strings(row.roles).sort(compareUtf16CodeUnits),
-        }),
-      ),
-      authorityGrants: sortRows(value.authorityGrants).map((row) =>
-        project(
-          [
-            "id",
-            "purchaseOrderId",
-            "currency",
-            "revisionRef",
-            "scope",
-            "granteeRef",
-            "issuedByRef",
-            "issuedAt",
-            "activeFrom",
-            "activeUntil",
-          ],
-          row,
-        ),
-      ),
+      principals: authorityLedger.principals,
+      authorityGrants: authorityLedger.authorityGrants,
       matchingPolicy: project(
         ["id", "version", "approvedPayloadDigest", "approvedByRef", "authorityGrantRef", "approvedAt"],
         policy,
@@ -304,7 +323,7 @@ export function computePartitionRootDigest(candidate) {
           .map((change) => project(["lineRef", "field", "from", "to"], change))
           .sort((left, right) => compareUtf16CodeUnits(left.lineRef, right.lineRef)),
       },
-      manifests: sortRows(value.manifests).map((row) => ({
+      manifests: sortRowsById(value.manifests).map((row) => ({
         ...project(
           [
             "id",
@@ -320,7 +339,7 @@ export function computePartitionRootDigest(candidate) {
         ),
         lineRefs: strings(row.lineRefs).sort(compareUtf16CodeUnits),
       })),
-      matchGroups: sortRows(value.matchGroups).map((group) => ({
+      matchGroups: sortRowsById(value.matchGroups).map((group) => ({
         groupPayloadDigest: computeMatchGroupPayloadDigest(group),
         decision: project(
           [
@@ -339,7 +358,7 @@ export function computePartitionRootDigest(candidate) {
           group.decision,
         ),
       })),
-      residuals: sortRows(value.residuals).map((row) =>
+      residuals: sortRowsById(value.residuals).map((row) =>
         project(
           ["id", "side", "lineRef", "poLineRef", "reasonCode", "ownerRef", "recordedAt"],
           row,
@@ -540,6 +559,7 @@ export function validateThreeWayMatch(candidate, context = {}) {
       "grantTarget",
       "namedHumanRequired",
       "independentIssuerRequired",
+      "authorityLedgerDigest",
     ]) ||
     !hasExactKeys(trustValidation, [
       "callerSuppliesCutoffAt",
@@ -571,6 +591,8 @@ export function validateThreeWayMatch(candidate, context = {}) {
     ]) ||
     trustAuthority.namedHumanRequired !== true ||
     trustAuthority.independentIssuerRequired !== true ||
+    trustAuthority.authorityLedgerDigest !==
+      computeAuthorityLedgerDigest(principals, grants) ||
     trustValidation.callerSuppliesCutoffAt !== true ||
     trustValidation.callerSuppliesAsOf !== true ||
     trustValidation.zoneBearingRfc3339Required !== true ||
@@ -663,6 +685,9 @@ export function validateThreeWayMatch(candidate, context = {}) {
   for (const [index, grant] of grants.entries()) {
     const grantee = principalById.get(grant.granteeRef);
     const issuer = principalById.get(grant.issuedByRef);
+    const issuedAt = timestamp(grant.issuedAt);
+    const activeFrom = timestamp(grant.activeFrom);
+    const activeUntil = timestamp(grant.activeUntil);
     if (
       grant.purchaseOrderId !== review.purchaseOrderId ||
       grant.currency !== review.currency ||
@@ -672,12 +697,17 @@ export function validateThreeWayMatch(candidate, context = {}) {
       !strings(grantee.roles).includes(REQUIRED_ROLE_BY_SCOPE[grant.scope]) ||
       issuer?.kind !== "named-human" ||
       !strings(issuer.roles).includes("authority-issuer") ||
-      grant.granteeRef === grant.issuedByRef
+      grant.granteeRef === grant.issuedByRef ||
+      issuedAt === null ||
+      activeFrom === null ||
+      activeUntil === null ||
+      issuedAt > activeFrom ||
+      activeFrom >= activeUntil
     ) {
       add(
         "invalid_authority_grant",
         `/authorityGrants/${index}`,
-        "Every authority grant must be scoped to the exact purchase order, currency, and current revision, typed, and independently issued to a named human with the required role.",
+        "Every authority grant must be scoped to the exact purchase order, currency, and current revision, typed, chronologically valid, and independently issued to a named human with the required role.",
         [grant.id],
       );
     }

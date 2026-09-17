@@ -1026,6 +1026,7 @@
       "required": [
         "posting",
         "payment",
+        "receiptCreation",
         "supplierContact",
         "accountingInterpretation",
         "taxInterpretation",
@@ -1036,6 +1037,9 @@
           "const": "not-claimed"
         },
         "payment": {
+          "const": "not-claimed"
+        },
+        "receiptCreation": {
           "const": "not-claimed"
         },
         "supplierContact": {

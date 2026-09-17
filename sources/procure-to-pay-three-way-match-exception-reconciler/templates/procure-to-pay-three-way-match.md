@@ -96,10 +96,11 @@ findings remain and the exact finding codes must be preserved.
 | Reserved authority | Value |
 | --- | --- |
 | Posting / payment | `{{authorityClaims.posting}}` / `{{authorityClaims.payment}}` |
+| Receipt creation | `{{authorityClaims.receiptCreation}}` |
 | Supplier contact / source mutation | `{{authorityClaims.supplierContact}}` / `{{authorityClaims.sourceMutation}}` |
 | Accounting / tax interpretation | `{{authorityClaims.accountingInterpretation}}` / `{{authorityClaims.taxInterpretation}}` |
 
-Receipt creation is not modeled or permitted. A match is evidence for owner
-review, never approval to post or pay. Digests prove internal consistency only;
-source authenticity, export completeness, policy meaning, exception disposition,
-and every action remain owner-controlled.
+Every value must remain `not-claimed`. A match is evidence for owner review,
+never approval to create a receipt, post, or pay. Digests prove internal
+consistency only; source authenticity, export completeness, policy meaning,
+exception disposition, and every action remain owner-controlled.

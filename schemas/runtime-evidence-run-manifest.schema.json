@@ -209,7 +209,8 @@
             "requiredGrantScopes",
             "grantTarget",
             "namedHumanRequired",
-            "independentIssuerRequired"
+            "independentIssuerRequired",
+            "authorityLedgerDigest"
           ],
           "properties": {
             "requiredGrantScopes": {
@@ -236,7 +237,8 @@
               }
             },
             "namedHumanRequired": { "const": true },
-            "independentIssuerRequired": { "const": true }
+            "independentIssuerRequired": { "const": true },
+            "authorityLedgerDigest": { "$ref": "#/$defs/digest" }
           }
         },
         "validation": {

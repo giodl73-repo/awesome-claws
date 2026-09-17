@@ -49,7 +49,10 @@ accepted match group.
 
 Every grant is scoped to the exact PO, currency, revision, role, and active
 interval. Matching-policy approval, amendment approval, match decisions, and
-handoff require typed named humans under independently issued grants.
+handoff require typed named humans under independently issued grants. The
+caller-supplied policy binds the exact principal and grant ledger digest, so an
+artifact cannot self-attest a different actor, issuer, role, target, or active
+interval.
 
 The caller supplies both `cutoffAt` and validation `asOf` as zone-bearing RFC
 3339 timestamps. There is no wall-clock fallback. The handoff must follow every
