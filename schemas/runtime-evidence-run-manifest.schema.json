@@ -185,7 +185,9 @@
           "type": "object",
           "additionalProperties": false,
           "required": [
+            "id",
             "version",
+            "approvedPayloadDigest",
             "groupShape",
             "quantityRule",
             "amountRule",
@@ -195,7 +197,9 @@
             "tolerancesPermitted"
           ],
           "properties": {
+            "id": { "type": "string", "minLength": 1 },
             "version": { "const": "v1" },
+            "approvedPayloadDigest": { "$ref": "#/$defs/digest" },
             "groupShape": {
               "const": "one-po-line-to-one-or-more-receipt-and-invoice-lines"
             },
@@ -217,7 +221,8 @@
             "grantTarget",
             "namedHumanRequired",
             "independentIssuerRequired",
-            "authorityLedgerDigest"
+            "authorityLedgerDigest",
+            "approvalLedgerDigest"
           ],
           "properties": {
             "requiredGrantScopes": {
@@ -245,7 +250,8 @@
             },
             "namedHumanRequired": { "const": true },
             "independentIssuerRequired": { "const": true },
-            "authorityLedgerDigest": { "$ref": "#/$defs/digest" }
+            "authorityLedgerDigest": { "$ref": "#/$defs/digest" },
+            "approvalLedgerDigest": { "$ref": "#/$defs/digest" }
           }
         },
         "validation": {

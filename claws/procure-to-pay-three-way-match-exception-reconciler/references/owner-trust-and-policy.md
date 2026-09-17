@@ -34,9 +34,10 @@ configuration. V1 supports exactly:
 - exact source-line references only; and
 - no tax lane and no tolerance lane.
 
-The policy and amendment approvals bind exact payload digests. Match decisions
-bind the policy id, version, payload digest, group payload, and all three line
-manifest digests.
+The trust policy pins the exact matching-policy id and approved payload digest.
+Its approval-ledger digest also binds the policy approval, amendment approval,
+revision approval, and every match decision. Match decisions bind the policy
+id, version, payload digest, group payload, and all three line-manifest digests.
 
 ## Reversal lineage
 

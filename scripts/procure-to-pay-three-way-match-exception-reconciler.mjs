@@ -259,6 +259,62 @@ export function computeMatchGroupPayloadDigest(group) {
   );
 }
 
+export function computeApprovalLedgerDigest(candidate) {
+  const value = object(candidate);
+  return sha256(
+    canonicalJson({
+      matchingPolicy: project(
+        [
+          "id",
+          "approvedPayloadDigest",
+          "approvedByRef",
+          "authorityGrantRef",
+          "approvedAt",
+        ],
+        value.matchingPolicy,
+      ),
+      amendment: project(
+        [
+          "id",
+          "approvedPayloadDigest",
+          "approvedByRef",
+          "authorityGrantRef",
+          "approvedAt",
+        ],
+        value.amendment,
+      ),
+      purchaseOrderRevision: project(
+        [
+          "id",
+          "approvedPayloadDigest",
+          "approvedByRef",
+          "authorityGrantRef",
+          "approvedAt",
+        ],
+        value.purchaseOrderRevision,
+      ),
+      matchDecisions: sortRowsById(value.matchGroups).map((group) =>
+        project(
+          [
+            "id",
+            "approvedByRef",
+            "authorityGrantRef",
+            "approvedAt",
+            "policyRef",
+            "policyVersion",
+            "policyPayloadDigest",
+            "groupPayloadDigest",
+            "purchaseOrderManifestDigest",
+            "receiptManifestDigest",
+            "invoiceManifestDigest",
+          ],
+          object(group.decision),
+        ),
+      ),
+    }),
+  );
+}
+
 export function computePartitionRootDigest(candidate) {
   const value = object(candidate);
   const review = object(value.review);
@@ -546,7 +602,9 @@ export function validateThreeWayMatch(candidate, context = {}) {
         ]),
     ) ||
     !hasExactKeys(trustMatchingPolicy, [
+      "id",
       "version",
+      "approvedPayloadDigest",
       "groupShape",
       "quantityRule",
       "amountRule",
@@ -561,6 +619,7 @@ export function validateThreeWayMatch(candidate, context = {}) {
       "namedHumanRequired",
       "independentIssuerRequired",
       "authorityLedgerDigest",
+      "approvalLedgerDigest",
     ]) ||
     !hasExactKeys(trustValidation, [
       "callerSuppliesCutoffAt",
@@ -573,7 +632,9 @@ export function validateThreeWayMatch(candidate, context = {}) {
     trustScope.purchaseOrderId !== review.purchaseOrderId ||
     trustScope.currency !== review.currency ||
     trustScope.currentRevisionRef !== review.currentRevisionRef ||
+    trustMatchingPolicy.id !== policy.id ||
     trustMatchingPolicy.version !== policy.version ||
+    trustMatchingPolicy.approvedPayloadDigest !== policy.approvedPayloadDigest ||
     trustMatchingPolicy.groupShape !== policy.groupShape ||
     trustMatchingPolicy.quantityRule !== policy.quantityRule ||
     trustMatchingPolicy.amountRule !== policy.amountRule ||
@@ -594,6 +655,8 @@ export function validateThreeWayMatch(candidate, context = {}) {
     trustAuthority.independentIssuerRequired !== true ||
     trustAuthority.authorityLedgerDigest !==
       computeAuthorityLedgerDigest(principals, grants) ||
+    trustAuthority.approvalLedgerDigest !==
+      computeApprovalLedgerDigest(value) ||
     trustValidation.callerSuppliesCutoffAt !== true ||
     trustValidation.callerSuppliesAsOf !== true ||
     trustValidation.zoneBearingRfc3339Required !== true ||
@@ -713,6 +776,17 @@ export function validateThreeWayMatch(candidate, context = {}) {
       );
     }
   }
+  const missingGrantScopes = Object.keys(REQUIRED_ROLE_BY_SCOPE).filter(
+    (scope) => !grants.some((grant) => grant.scope === scope),
+  );
+  if (missingGrantScopes.length > 0) {
+    add(
+      "invalid_authority_grant",
+      "/authorityGrants",
+      "The authority ledger must contain at least one valid target-bound grant for every required scope.",
+      missingGrantScopes,
+    );
+  }
 
   if (
     review.currentRevisionRef !== revision.id ||
@@ -793,6 +867,7 @@ export function validateThreeWayMatch(candidate, context = {}) {
   if (
     amendment.toRevisionRef !== revision.id ||
     amendment.fromRevisionRef !== revision.supersedesRevisionRef ||
+    amendment.fromRevisionRef === revision.id ||
     revision.amendmentRef !== amendment.id ||
     timestamp(amendment.approvedAt) === null ||
     timestamp(revision.approvedAt) === null ||

@@ -11,6 +11,7 @@ import {
 } from "./procure-to-pay-three-way-match-exception-reconciler-fixtures.mjs";
 import {
   computeAmendmentPayloadDigest,
+  computeApprovalLedgerDigest,
   computeAuthorityLedgerDigest,
   computeLineManifestDigest,
   computeMatchGroupPayloadDigest,
@@ -88,6 +89,8 @@ function trustedContext(candidate) {
     candidate.principals,
     candidate.authorityGrants,
   );
+  policy.authority.approvalLedgerDigest =
+    computeApprovalLedgerDigest(candidate);
   const manifests = new Map(
     candidate.manifests.map((manifest) => [manifest.side, manifest]),
   );
@@ -201,6 +204,10 @@ test("X3, X4, and public owner-policy surfaces preserve the complete contract", 
       acceptedFixture.principals,
       acceptedFixture.authorityGrants,
     ),
+  );
+  assert.equal(
+    ownerTrustPolicy.authority.approvalLedgerDigest,
+    computeApprovalLedgerDigest(acceptedFixture),
   );
 });
 
@@ -778,6 +785,21 @@ test("public owner trust policy is required and target-bound", () => {
   selfAttested.principals[0].name = "Forged Authority Issuer";
   refreshPartitionRoot(selfAttested);
   assert.ok(codes(selfAttested).includes("invalid_owner_trust_policy"));
+
+  const substitutedPolicy = structuredClone(acceptedFixture);
+  substitutedPolicy.matchingPolicy.id = "policy-po-450-substituted";
+  substitutedPolicy.review.matchingPolicyRef =
+    substitutedPolicy.matchingPolicy.id;
+  substitutedPolicy.matchingPolicy.approvedPayloadDigest =
+    computeMatchingPolicyPayloadDigest(substitutedPolicy.matchingPolicy);
+  for (const group of substitutedPolicy.matchGroups) {
+    group.policyRef = substitutedPolicy.matchingPolicy.id;
+  }
+  bindDecisionsToCurrentPayloads(substitutedPolicy);
+  refreshPartitionRoot(substitutedPolicy);
+  assert.ok(
+    codes(substitutedPolicy).includes("invalid_owner_trust_policy"),
+  );
 });
 
 test("every authority grant has a valid interval even when unused", () => {
@@ -803,6 +825,26 @@ test("every authority grant has a valid interval even when unused", () => {
   );
 });
 
+test("the authority ledger contains every owner-mandated grant scope", () => {
+  const candidate = structuredClone(acceptedFixture);
+  const grant = candidate.authorityGrants.find(
+    (item) => item.scope === "match-decision",
+  );
+  grant.scope = "owner-handoff";
+  grant.granteeRef = "principal-anika-shah";
+  refreshPartitionRoot(candidate);
+
+  const findings = validateThreeWayMatch(candidate, trustedContext(candidate));
+  assert.ok(
+    findings.some(
+      (finding) =>
+        finding.code === "invalid_authority_grant" &&
+        finding.path === "/authorityGrants" &&
+        finding.targetRefs.includes("match-decision"),
+    ),
+  );
+});
+
 test("current-revision source rows cannot predate revision approval", () => {
   for (const side of ["receipt", "invoice"]) {
     const candidate = structuredClone(acceptedFixture);
@@ -823,6 +865,26 @@ test("current-revision source rows cannot predate revision approval", () => {
       side,
     );
   }
+});
+
+test("the prior revision cannot self-reference the current revision", () => {
+  const candidate = structuredClone(acceptedFixture);
+  candidate.amendment.fromRevisionRef = candidate.purchaseOrderRevision.id;
+  candidate.purchaseOrderRevision.supersedesRevisionRef =
+    candidate.purchaseOrderRevision.id;
+  candidate.amendment.approvedPayloadDigest =
+    computeAmendmentPayloadDigest(candidate.amendment);
+  candidate.purchaseOrderRevision.amendmentPayloadDigest =
+    candidate.amendment.approvedPayloadDigest;
+  candidate.purchaseOrderRevision.approvedPayloadDigest =
+    computePurchaseOrderRevisionPayloadDigest(candidate.purchaseOrderRevision);
+  refreshPartitionRoot(candidate);
+
+  assert.ok(
+    codes(candidate, trustedContext(candidate)).includes(
+      "invalid_purchase_order_revision",
+    ),
+  );
 });
 
 test("integer quantity and minor-unit arithmetic rejects drift without tolerances", () => {

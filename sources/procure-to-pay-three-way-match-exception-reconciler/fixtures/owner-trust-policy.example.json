@@ -29,7 +29,9 @@
     }
   ],
   "matchingPolicy": {
+    "id": "policy-po-450-exact-three-way",
     "version": "v1",
+    "approvedPayloadDigest": "sha256:8809547b82278e3c74354b30d620c1329db344e74121353faa2d9126d604a5a8",
     "groupShape": "one-po-line-to-one-or-more-receipt-and-invoice-lines",
     "quantityRule": "exact-signed-integer-equality",
     "amountRule": "exact-signed-minor-unit-equality",
@@ -52,7 +54,8 @@
     ],
     "namedHumanRequired": true,
     "independentIssuerRequired": true,
-    "authorityLedgerDigest": "sha256:dd22a37ed423bd8f68c814381ee8de3fc5f35ed8488d9b7232ce20f7c69c9473"
+    "authorityLedgerDigest": "sha256:dd22a37ed423bd8f68c814381ee8de3fc5f35ed8488d9b7232ce20f7c69c9473",
+    "approvalLedgerDigest": "sha256:d9f08d0cbfdcd5c4bc1bdc97584342d825cdaf78dd82c72a0a30f921c8febc86"
   },
   "validation": {
     "callerSuppliesCutoffAt": true,

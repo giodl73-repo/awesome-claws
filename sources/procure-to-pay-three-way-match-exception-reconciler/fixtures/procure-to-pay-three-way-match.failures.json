@@ -30,6 +30,7 @@
     ],
     "expectedCodes": [
       "invalid_human_authority",
+      "invalid_owner_trust_policy",
       "invalid_partition_root",
       "invalid_result"
     ]
