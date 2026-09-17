@@ -98,8 +98,9 @@ persisted. Evidence stores only SHA-256 hashes, a bounded redacted excerpt,
 allowlisted failure reproduction metadata, aggregate metrics, and relative
 evidence references. Provider-live failures may also retain a structured
 transport diagnostic limited to request/response presence, HTTP status,
-content-type class, first event type, event count, completion state, and fetch
-failure state. Payload content and headers are never included.
+content-type class, first event type, an ordered event-type histogram, event
+count, completion state, and fetch failure state. Payload content and headers
+are never included.
 
 ## Isolation and capability policy
 

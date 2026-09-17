@@ -1434,6 +1434,25 @@ export function extractModelTransportDiagnostic(value) {
       : null;
   const eventCountText = /\bevents=(\d+)\b/u.exec(streamDone)?.[1];
   const eventCount = eventCountText === undefined ? null : Number(eventCountText);
+  const eventTypesText = /\btypes=([A-Za-z0-9._,:-]*)/u.exec(streamDone)?.[1];
+  const streamEventTypes =
+    eventTypesText === undefined
+      ? null
+      : eventTypesText === ""
+        ? []
+        : eventTypesText.split(",").map((entry) => {
+            const match = /^([A-Za-z0-9._-]{1,80}):(\d+)$/u.exec(entry);
+            const count = Number(match?.[2]);
+            return match && Number.isSafeInteger(count) && count > 0
+              ? { type: match[1], count }
+              : null;
+          });
+  const validatedStreamEventTypes =
+    Array.isArray(streamEventTypes) &&
+    streamEventTypes.length <= 64 &&
+    streamEventTypes.every(Boolean)
+      ? streamEventTypes
+      : null;
   const responseContentType = /\btext\/event-stream\b/iu.test(fetchResponse)
     ? "sse"
     : /\b(?:application\/json|[A-Za-z0-9.+-]+\/[A-Za-z0-9.+-]+\+json)\b/iu.test(fetchResponse)
@@ -1451,6 +1470,7 @@ export function extractModelTransportDiagnostic(value) {
     firstEventType,
     streamEventCount:
       Number.isSafeInteger(eventCount) && eventCount >= 0 ? eventCount : null,
+    streamEventTypes: validatedStreamEventTypes,
     streamCompleted: text.includes("[responses] completed"),
     fetchFailed: text.includes("[model-fetch] error"),
   };
