@@ -586,6 +586,18 @@ function modelContextsAreBound(value, expectedRef) {
   });
 }
 
+function hasNestedConfigKey(value, expectedKey) {
+  if (Array.isArray(value)) {
+    return value.some((entry) => hasNestedConfigKey(entry, expectedKey));
+  }
+  if (!isPlainObject(value)) return false;
+  return Object.entries(value).some(
+    ([key, child]) =>
+      key.toLowerCase() === expectedKey ||
+      hasNestedConfigKey(child, expectedKey),
+  );
+}
+
 function hasPluginAutoEnableInput(config, expectedProvider, expectedModel) {
   const expectedRef = `${expectedProvider}/${expectedModel}`;
   const rootKeys = Object.keys(config);
@@ -618,6 +630,7 @@ function hasPluginAutoEnableInput(config, expectedProvider, expectedModel) {
     !modelMapIsBound(config.agents?.defaults?.models, expectedRef) ||
     !agentModelsAreBound(config.agents?.entries, expectedRef) ||
     !agentModelsAreBound(config.agents?.list, expectedRef) ||
+    hasNestedConfigKey(config.agents, "tts") ||
     !modelContextsAreBound(config, expectedRef) ||
     (talk !== undefined &&
       (!isPlainObject(talk) ||
@@ -678,23 +691,22 @@ export async function inspectLiveConfig(path, { provider, model }) {
   };
 }
 
-export function assertEffectivePluginInventory(payload) {
+export function assertTrustedPluginInventory(payload) {
   if (!isPlainObject(payload) || !Array.isArray(payload.plugins)) {
     throw new Error("OpenClaw effective plugin inventory is unavailable.");
   }
-  const active = payload.plugins.filter(
-    (plugin) =>
-      isPlainObject(plugin) &&
-      (plugin.enabled === true || plugin.status === "loaded"),
-  );
+  const plugins = payload.plugins.filter(isPlainObject);
+  const provider = plugins.filter((plugin) => plugin.id === "github-copilot");
+  const untrusted = plugins.filter((plugin) => plugin.origin !== "bundled");
   if (
-    active.length !== 1 ||
-    active[0].id !== "github-copilot" ||
-    active[0].origin !== "bundled" ||
-    active[0].enabled !== true ||
-    active[0].status !== "loaded"
+    plugins.length !== payload.plugins.length ||
+    provider.length !== 1 ||
+    provider[0].origin !== "bundled" ||
+    provider[0].enabled !== true ||
+    provider[0].status !== "loaded" ||
+    untrusted.length > 0
   ) {
-    const summary = active
+    const summary = plugins
       .map((plugin) => ({
         id: typeof plugin.id === "string" ? plugin.id : null,
         origin: typeof plugin.origin === "string" ? plugin.origin : null,
@@ -703,10 +715,30 @@ export function assertEffectivePluginInventory(payload) {
       }))
       .sort((left, right) => String(left.id).localeCompare(String(right.id)));
     throw new Error(
-      `OpenClaw effective plugin inventory must contain only the bundled github-copilot provider; active=${canonicalJson(summary)}.`,
+      `OpenClaw plugin discovery must contain a loaded bundled github-copilot provider and no non-bundled plugins; inventory=${canonicalJson(summary)}.`,
     );
   }
-  return active[0];
+  return provider[0];
+}
+
+export function assertEffectivePluginDoctor(payload) {
+  if (
+    !isPlainObject(payload) ||
+    payload.ok !== true ||
+    !Array.isArray(payload.pluginErrors) ||
+    !Array.isArray(payload.diagnostics) ||
+    !Array.isArray(payload.sourceShadowing) ||
+    !Array.isArray(payload.configurationWarnings) ||
+    payload.pluginErrors.length > 0 ||
+    payload.diagnostics.length > 0 ||
+    payload.sourceShadowing.length > 0 ||
+    payload.configurationWarnings.length > 0
+  ) {
+    throw new Error(
+      "OpenClaw effective-only plugin doctor must report a healthy runtime.",
+    );
+  }
+  return payload;
 }
 
 function stripCleanupRuntimeSelectors(value) {
@@ -2581,7 +2613,17 @@ async function liveAttempt({
       `${contract.id} effective plugin inventory`,
     );
     providerRecords.push(plugins.providerRecord);
-    assertEffectivePluginInventory(plugins.payload);
+    assertTrustedPluginInventory(plugins.payload);
+    const pluginDoctor = await runOpenClawJson(
+      live.openclawEntry,
+      ["plugins", "doctor"],
+      env,
+      attemptRoot,
+      remaining(),
+      `${contract.id} effective plugin doctor`,
+    );
+    providerRecords.push(pluginDoctor.providerRecord);
+    assertEffectivePluginDoctor(pluginDoctor.payload);
     workspace = added.payload?.agent?.workspace;
     if (
       typeof workspace !== "string" ||

@@ -219,12 +219,14 @@ including per-agent tool overrides. Provider configuration and every default or
 per-agent model reference must bind exclusively to
 `github-copilot/gpt-5.6-sol`, with an explicit default and no fallback chain;
 fallback providers, embedded agent runtimes, web/voice providers, worker
-providers, and unknown root config surfaces are rejected. The same policy is
-rechecked after Claw installation and before the model turn. This limits loading
-to OpenClaw's bundled Copilot provider without enabling another configured
-plugin surface. The harness then queries OpenClaw's public effective plugin
-inventory and requires exactly one loaded entry: the bundled, enabled
-`github-copilot` provider.
+providers, and unknown root config surfaces are rejected. The same policy is rechecked after Claw installation and before the model turn.
+This limits loading to OpenClaw's bundled Copilot provider without enabling
+another configured plugin surface. The harness then queries OpenClaw's public
+plugin discovery snapshot, requires the selected provider to be the loaded
+bundled `github-copilot` plugin, and rejects every non-bundled discovered
+plugin. Because the snapshot's enabled state describes the installed index
+rather than the effective runtime set, the harness separately runs the public
+effective-only plugin doctor and requires a healthy result before dispatch.
 
 Every copied attempt config is rehashed and compared with the manifest-bound
 config identity before any OpenClaw command. All model-bearing config contexts,

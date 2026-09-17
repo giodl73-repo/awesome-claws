@@ -17,7 +17,8 @@ import {
   QUALIFICATION_GATES,
   aggregateRuntimeEvidence,
   assertCredentialFreeRedactedExcerpts,
-  assertEffectivePluginInventory,
+  assertEffectivePluginDoctor,
+  assertTrustedPluginInventory,
   assertRuntimeAddPlan,
   assertWorkspaceContainment,
   boundedProcessDiagnostic,
@@ -2628,6 +2629,14 @@ test("safe config requires the exact model with no fallback or alternate runtime
           },
         ];
       },
+      (config) => {
+        config.agents.list = [
+          {
+            id: "fixture",
+            tts: { provider: "microsoft" },
+          },
+        ];
+      },
     ]) {
       const unsafe = structuredClone(baseConfig);
       mutate(unsafe);
@@ -2658,12 +2667,31 @@ test("cleanup environment removes provider credentials case-insensitively", () =
   assert.deepEqual(cleanupEnv, { PATH: "fixture-path" });
 });
 
-test("effective plugin inventory permits only bundled GitHub Copilot", () => {
+test("plugin discovery requires bundled GitHub Copilot and no external plugins", () => {
   assert.equal(
-    assertEffectivePluginInventory({
+    assertTrustedPluginInventory({
       plugins: [
         {
           id: "github-copilot",
+          origin: "bundled",
+          enabled: true,
+          status: "loaded",
+        },
+      ],
+    }).id,
+    "github-copilot",
+  );
+  assert.equal(
+    assertTrustedPluginInventory({
+      plugins: [
+        {
+          id: "github-copilot",
+          origin: "bundled",
+          enabled: true,
+          status: "loaded",
+        },
+        {
+          id: "memory-core",
           origin: "bundled",
           enabled: true,
           status: "loaded",
@@ -2676,20 +2704,6 @@ test("effective plugin inventory permits only bundled GitHub Copilot", () => {
     [
       {
         id: "github-copilot",
-        origin: "bundled",
-        enabled: true,
-        status: "loaded",
-      },
-      {
-        id: "memory-core",
-        origin: "bundled",
-        enabled: true,
-        status: "loaded",
-      },
-    ],
-    [
-      {
-        id: "github-copilot",
         origin: "workspace",
         enabled: true,
         status: "loaded",
@@ -2697,13 +2711,13 @@ test("effective plugin inventory permits only bundled GitHub Copilot", () => {
     ],
   ]) {
     assert.throws(
-      () => assertEffectivePluginInventory({ plugins }),
-      /effective plugin inventory must contain only/u,
+      () => assertTrustedPluginInventory({ plugins }),
+      /plugin discovery must contain/u,
     );
   }
   assert.throws(
     () =>
-      assertEffectivePluginInventory({
+      assertTrustedPluginInventory({
         plugins: [
           {
             id: "memory-core",
@@ -2713,7 +2727,33 @@ test("effective plugin inventory permits only bundled GitHub Copilot", () => {
           },
         ],
       }),
-    /active=.*memory-core/u,
+    /inventory=.*memory-core/u,
+  );
+});
+
+test("effective-only plugin doctor must be healthy", () => {
+  assert.equal(
+    assertEffectivePluginDoctor({
+      ok: true,
+      pluginErrors: [],
+      diagnostics: [],
+      sourceShadowing: [],
+      compatibility: [],
+      configurationWarnings: [],
+    }).ok,
+    true,
+  );
+  assert.throws(
+    () =>
+      assertEffectivePluginDoctor({
+        ok: false,
+        pluginErrors: [{ id: "github-copilot" }],
+        diagnostics: [],
+        sourceShadowing: [],
+        compatibility: [],
+        configurationWarnings: [],
+      }),
+    /effective-only plugin doctor/u,
   );
 });
 
