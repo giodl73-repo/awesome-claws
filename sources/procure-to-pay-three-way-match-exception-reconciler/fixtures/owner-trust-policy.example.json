@@ -10,19 +10,22 @@
       "side": "purchase-order",
       "sourceSystemRef": "ERP://Procurement/Tenant-7",
       "exportRef": "PO-450@R2#2026-09-16",
-      "owner": "procurement-system-owner"
+      "owner": "procurement-system-owner",
+      "lineManifestDigest": "sha256:466e4c140d683cfa89dc59c327b287e5b276217281af1c374d0a5eb52c6d58de"
     },
     {
       "side": "receipt",
       "sourceSystemRef": "WMS://Receiving/DC-04",
       "exportRef": "RCV-PO450@2026-09-15T235959Z",
-      "owner": "receiving-system-owner"
+      "owner": "receiving-system-owner",
+      "lineManifestDigest": "sha256:4959630f3723ab831a4335e1269974bfe41cec5db5cfc1a3965011df9d91c3fe"
     },
     {
       "side": "invoice",
       "sourceSystemRef": "AP://Invoices/Tenant-7",
       "exportRef": "AP-PO450@2026-09-15T235959Z",
-      "owner": "accounts-payable-system-owner"
+      "owner": "accounts-payable-system-owner",
+      "lineManifestDigest": "sha256:4fb2ecdc99032404a372ab97d5f26f50b9bb6a80f601c741fef1ccfcae50a621"
     }
   ],
   "matchingPolicy": {

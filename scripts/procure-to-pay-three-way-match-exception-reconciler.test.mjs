@@ -82,6 +82,21 @@ function refreshPartitionRoot(candidate) {
   candidate.result.partitionRootDigest = computePartitionRootDigest(candidate);
 }
 
+function trustedContext(candidate) {
+  const policy = structuredClone(ownerTrustPolicy);
+  policy.authority.authorityLedgerDigest = computeAuthorityLedgerDigest(
+    candidate.principals,
+    candidate.authorityGrants,
+  );
+  const manifests = new Map(
+    candidate.manifests.map((manifest) => [manifest.side, manifest]),
+  );
+  for (const trustRoot of policy.sourceTrustRoots) {
+    trustRoot.lineManifestDigest = manifests.get(trustRoot.side).lineManifestDigest;
+  }
+  return { ...context, ownerTrustPolicy: policy };
+}
+
 test("accepted fixture proves the bounded three-way partition", () => {
   assert.deepEqual(validateThreeWayMatch(acceptedFixture, context), []);
   assert.equal(acceptedFixture.purchaseOrderRevision.revisionNumber, 2);
@@ -141,7 +156,7 @@ test("result state is accepted only when the clean partition has no residuals", 
   bindDecisionsToCurrentPayloads(candidate);
   refreshPartitionRoot(candidate);
 
-  assert.deepEqual(validateThreeWayMatch(candidate, context), []);
+  assert.deepEqual(validateThreeWayMatch(candidate, trustedContext(candidate)), []);
 });
 
 test("X3, X4, and public owner-policy surfaces preserve the complete contract", () => {
@@ -275,7 +290,33 @@ test("owner source line identity is opaque, exact, and unique per manifest", () 
     assert.ok(
       linesBySide[manifest.side].every((line) => /[/@#]/u.test(line.sourceNativeLineId)),
     );
+    assert.equal(
+      ownerTrustPolicy.sourceTrustRoots.find((root) => root.side === manifest.side)
+        .lineManifestDigest,
+      manifest.lineManifestDigest,
+    );
   }
+});
+
+test("owner trust roots bind the complete export line manifests", () => {
+  const omitted = structuredClone(acceptedFixture);
+  omitted.purchaseOrderLines = omitted.purchaseOrderLines.filter(
+    (line) => line.id !== "po-line-support",
+  );
+  omitted.residuals = [];
+  omitted.coverage.purchaseOrderLineRefs = omitted.purchaseOrderLines.map(
+    (line) => line.id,
+  );
+  omitted.coverage.residualRefs = [];
+  omitted.result.state = "accepted-for-owner-review";
+  omitted.result.residualRefs = [];
+  refreshManifest(omitted, "purchase-order");
+  omitted.purchaseOrderRevision.approvedPayloadDigest =
+    computePurchaseOrderRevisionPayloadDigest(omitted.purchaseOrderRevision);
+  bindDecisionsToCurrentPayloads(omitted);
+  refreshPartitionRoot(omitted);
+
+  assert.ok(codes(omitted).includes("invalid_owner_trust_policy"));
 });
 
 test("row splitting cannot duplicate one owner source identity after resealing", () => {
@@ -296,7 +337,7 @@ test("row splitting cannot duplicate one owner source identity after resealing",
   bindDecisionsToCurrentPayloads(candidate);
   refreshPartitionRoot(candidate);
 
-  assert.deepEqual(codes(candidate), [
+  assert.deepEqual(codes(candidate, trustedContext(candidate)), [
     "duplicate_source_line_identity",
     "invalid_result",
   ]);
@@ -311,7 +352,10 @@ test("returns and credits require exact prior source-line bindings", () => {
   refreshManifest(beforeSource, "receipt");
   bindDecisionsToCurrentPayloads(beforeSource);
   refreshPartitionRoot(beforeSource);
-  assert.deepEqual(codes(beforeSource), ["invalid_result", "invalid_reversal"]);
+  assert.deepEqual(codes(beforeSource, trustedContext(beforeSource)), [
+    "invalid_result",
+    "invalid_reversal",
+  ]);
 
   const wrongUnit = structuredClone(acceptedFixture);
   const creditLine = wrongUnit.invoiceLines.find(
@@ -321,8 +365,8 @@ test("returns and credits require exact prior source-line bindings", () => {
   refreshManifest(wrongUnit, "invoice");
   bindDecisionsToCurrentPayloads(wrongUnit);
   refreshPartitionRoot(wrongUnit);
-  assert.ok(codes(wrongUnit).includes("invalid_reversal"));
-  assert.ok(codes(wrongUnit).includes("three_way_mismatch"));
+  assert.ok(codes(wrongUnit, trustedContext(wrongUnit)).includes("invalid_reversal"));
+  assert.ok(codes(wrongUnit, trustedContext(wrongUnit)).includes("three_way_mismatch"));
 });
 
 test("an invalid reversal is representable only through residuals", () => {
@@ -372,7 +416,46 @@ test("an invalid reversal is representable only through residuals", () => {
   bindDecisionsToCurrentPayloads(candidate);
   refreshPartitionRoot(candidate);
 
-  assert.deepEqual(validateThreeWayMatch(candidate, context), []);
+  assert.deepEqual(validateThreeWayMatch(candidate, trustedContext(candidate)), []);
+});
+
+test("valid reversals share their source line disposition", () => {
+  const candidate = structuredClone(acceptedFixture);
+  candidate.receiptLines.push({
+    id: "receipt-line-kit-late-return",
+    manifestRef: "manifest-receipts-po-450",
+    sourceSystemRef: "WMS://Receiving/DC-04",
+    exportRef: "RCV-PO450@2026-09-15T235959Z",
+    sourceNativeLineId: "RTN7001/10/1",
+    poLineRef: "po-line-server-kit",
+    purchaseOrderRevisionRef: "po-450-r2",
+    receiptId: "return-7001-1",
+    kind: "return",
+    reversesLineRef: "receipt-line-kit-partial-1",
+    unitOfMeasure: "EA",
+    quantity: "-1",
+    recordedAt: "2026-09-15T12:30:00Z",
+    currency: "USD",
+  });
+  candidate.residuals.push({
+    id: "residual-receipt-kit-late-return",
+    side: "receipt",
+    lineRef: "receipt-line-kit-late-return",
+    poLineRef: "po-line-server-kit",
+    reasonCode: "receipt-needs-owner-review",
+    ownerRef: "principal-anika-shah",
+    recordedAt: "2026-09-16T01:20:00Z",
+  });
+  candidate.coverage.receiptLineRefs.push("receipt-line-kit-late-return");
+  candidate.coverage.residualRefs.push("residual-receipt-kit-late-return");
+  candidate.result.residualRefs.push("residual-receipt-kit-late-return");
+  refreshManifest(candidate, "receipt");
+  bindDecisionsToCurrentPayloads(candidate);
+  refreshPartitionRoot(candidate);
+
+  assert.ok(
+    codes(candidate, trustedContext(candidate)).includes("invalid_reversal"),
+  );
 });
 
 test("every line is consumed exactly once by a group or side-specific residual", () => {
@@ -433,7 +516,7 @@ test("empty receipt and invoice sources produce a residual-only review", () => {
   candidate.result.residualRefs = candidate.residuals.map((residual) => residual.id);
   refreshPartitionRoot(candidate);
 
-  assert.deepEqual(validateThreeWayMatch(candidate, context), []);
+  assert.deepEqual(validateThreeWayMatch(candidate, trustedContext(candidate)), []);
 });
 
 test("an exact three-way match cannot be relabeled as side residuals", () => {
@@ -478,8 +561,10 @@ test("an exact three-way match cannot be relabeled as side residuals", () => {
   candidate.result.residualRefs = candidate.residuals.map((residual) => residual.id);
   refreshPartitionRoot(candidate);
 
-  assert.ok(codes(candidate).includes("invalid_side_residual"));
-  assert.ok(codes(candidate).includes("invalid_result"));
+  assert.ok(
+    codes(candidate, trustedContext(candidate)).includes("invalid_side_residual"),
+  );
+  assert.ok(codes(candidate, trustedContext(candidate)).includes("invalid_result"));
 });
 
 test("net-zero exact receipt and invoice additions cannot be hidden as side residuals", () => {
@@ -599,7 +684,7 @@ test("structured failure fixtures fail closed with exact finding codes", () => {
   for (const definition of failureCases) {
     const candidate = materializeFailureCase(definition);
     assert.deepEqual(codes(candidate), [...definition.expectedCodes].sort(), definition.id);
-    const findings = validateThreeWayMatch(candidate, context);
+    const findings = validateThreeWayMatch(candidate, trustedContext(candidate));
     for (const finding of findings) {
       assert.deepEqual(Object.keys(finding), ["code", "path", "message", "targetRefs"]);
       assert.equal(typeof finding.path, "string");
@@ -789,7 +874,11 @@ test("approved payloads and decision bindings reject replay after derived reseal
   refreshManifest(quantityReplay, "purchase-order");
   bindDecisionsToCurrentPayloads(quantityReplay);
   refreshPartitionRoot(quantityReplay);
-  assert.ok(codes(quantityReplay).includes("invalid_revision_approval_digest"));
+  assert.ok(
+    codes(quantityReplay, trustedContext(quantityReplay)).includes(
+      "invalid_revision_approval_digest",
+    ),
+  );
 
   const decisionReplay = structuredClone(acceptedFixture);
   decisionReplay.matchGroups[0].decision.policyVersion = "v2";

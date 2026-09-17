@@ -10,14 +10,16 @@ For each of the purchase-order, receipt, and invoice sides, the owner supplies:
 
 - an opaque `sourceSystemRef`;
 - an opaque `exportRef`;
+- the exact owner-controlled `lineManifestDigest` for that export;
 - the complete line universe at the caller-controlled cutoff; and
 - one opaque `sourceNativeLineId` per line.
 
 The exact `{sourceSystemRef, exportRef, sourceNativeLineId}` triple is immutable
 inside a review. The validator rejects duplicate triples in one manifest so a
-single owner line cannot be split into multiple candidate rows. Digests prove
-internal consistency only. They do not authenticate an owner system or prove
-that an export is complete.
+single owner line cannot be split into multiple candidate rows. Each
+caller-supplied trust root binds the recomputed line-manifest digest, preventing
+the artifact from silently changing or omitting export rows. The trust root
+itself remains owner-controlled; the digest does not authenticate its issuer.
 
 ## Owner-approved policy
 

@@ -163,14 +163,21 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["side", "sourceSystemRef", "exportRef", "owner"],
+            "required": [
+              "side",
+              "sourceSystemRef",
+              "exportRef",
+              "owner",
+              "lineManifestDigest"
+            ],
             "properties": {
               "side": {
                 "enum": ["purchase-order", "receipt", "invoice"]
               },
               "sourceSystemRef": { "type": "string", "minLength": 1 },
               "exportRef": { "type": "string", "minLength": 1 },
-              "owner": { "type": "string", "minLength": 1 }
+              "owner": { "type": "string", "minLength": 1 },
+              "lineManifestDigest": { "$ref": "#/$defs/digest" }
             }
           }
         },

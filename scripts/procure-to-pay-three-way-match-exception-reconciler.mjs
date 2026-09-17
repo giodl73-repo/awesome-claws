@@ -542,6 +542,7 @@ export function validateThreeWayMatch(candidate, context = {}) {
           "sourceSystemRef",
           "exportRef",
           "owner",
+          "lineManifestDigest",
         ]),
     ) ||
     !hasExactKeys(trustMatchingPolicy, [
@@ -908,33 +909,6 @@ export function validateThreeWayMatch(candidate, context = {}) {
         );
       }
     }
-    for (const side of Object.keys(linesBySide)) {
-      const manifest = manifestBySide.get(side);
-      const roots = sourceTrustRoots.filter((root) => root.side === side);
-      const root = roots[0];
-      if (
-        roots.length !== 1 ||
-        root?.sourceSystemRef !== manifest?.sourceSystemRef ||
-        root?.exportRef !== manifest?.exportRef ||
-        typeof root?.owner !== "string" ||
-        root.owner.length === 0
-      ) {
-        add(
-          "invalid_owner_trust_policy",
-          "/validationContext/ownerTrustPolicy/sourceTrustRoots",
-          `The owner trust policy must name exactly one current ${side} source-system and export trust root with an accountable owner.`,
-          [manifest?.id],
-        );
-      }
-    }
-    if (sourceTrustRoots.length !== 3) {
-      add(
-        "invalid_owner_trust_policy",
-        "/validationContext/ownerTrustPolicy/sourceTrustRoots",
-        "The owner trust policy must contain exactly the purchase-order, receipt, and invoice trust roots.",
-        sourceTrustRoots.map((root) => root.side),
-      );
-    }
     const generatedAt = timestamp(manifest?.generatedAt);
     if (
       generatedAt === null ||
@@ -950,6 +924,34 @@ export function validateThreeWayMatch(candidate, context = {}) {
         [manifest?.id],
       );
     }
+  }
+  for (const side of Object.keys(linesBySide)) {
+    const manifest = manifestBySide.get(side);
+    const roots = sourceTrustRoots.filter((root) => root.side === side);
+    const root = roots[0];
+    if (
+      roots.length !== 1 ||
+      root?.sourceSystemRef !== manifest?.sourceSystemRef ||
+      root?.exportRef !== manifest?.exportRef ||
+      root?.lineManifestDigest !== manifest?.lineManifestDigest ||
+      typeof root?.owner !== "string" ||
+      root.owner.length === 0
+    ) {
+      add(
+        "invalid_owner_trust_policy",
+        "/validationContext/ownerTrustPolicy/sourceTrustRoots",
+        `The owner trust policy must bind exactly one current ${side} source-system, export, line-manifest digest, and accountable owner.`,
+        [manifest?.id],
+      );
+    }
+  }
+  if (sourceTrustRoots.length !== 3) {
+    add(
+      "invalid_owner_trust_policy",
+      "/validationContext/ownerTrustPolicy/sourceTrustRoots",
+      "The owner trust policy must contain exactly the purchase-order, receipt, and invoice trust roots.",
+      sourceTrustRoots.map((root) => root.side),
+    );
   }
   if (
     revision.manifestRef !== manifestBySide.get("purchase-order")?.id ||
@@ -1190,6 +1192,8 @@ export function validateThreeWayMatch(candidate, context = {}) {
     const poLine = poLineById.get(poRefs[0]);
     const selectedReceipts = receiptRefs.map((ref) => receiptLineById.get(ref));
     const selectedInvoices = invoiceRefs.map((ref) => invoiceLineById.get(ref));
+    const receiptRefSet = new Set(receiptRefs);
+    const invoiceRefSet = new Set(invoiceRefs);
 
     if (
       group.policyRef !== policy.id ||
@@ -1227,14 +1231,36 @@ export function validateThreeWayMatch(candidate, context = {}) {
       selectedReceipts.some(
         (line) => line.kind === "return" && !receiptRefs.includes(line.reversesLineRef),
       ) ||
+      selectedReceipts.some(
+        (line) =>
+          line.kind === "receipt" &&
+          receiptLines.some(
+            (reversal) =>
+              reversal.kind === "return" &&
+              reversal.reversesLineRef === line.id &&
+              receiptReversalValid.get(reversal.id) &&
+              !receiptRefSet.has(reversal.id),
+          ),
+      ) ||
       selectedInvoices.some(
         (line) => line.kind === "credit" && !invoiceRefs.includes(line.reversesLineRef),
+      ) ||
+      selectedInvoices.some(
+        (line) =>
+          line.kind === "invoice" &&
+          invoiceLines.some(
+            (reversal) =>
+              reversal.kind === "credit" &&
+              reversal.reversesLineRef === line.id &&
+              invoiceReversalValid.get(reversal.id) &&
+              !invoiceRefSet.has(reversal.id),
+          ),
       )
     ) {
       add(
         "invalid_reversal",
         path,
-        "Every grouped return or credit must reference an earlier exact source line with matching PO, revision, currency, unit, and source system.",
+        "Every grouped return or credit must reference an earlier exact source line with matching PO, revision, currency, unit, and source system, and every valid reversal must share its source line's group.",
         [group.id, ...receiptRefs, ...invoiceRefs],
       );
     }
