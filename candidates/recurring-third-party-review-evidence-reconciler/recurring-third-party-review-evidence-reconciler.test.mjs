@@ -225,6 +225,23 @@ test("validator normalizes null and non-record contexts and hostile trust serial
       (item) => item.code === "invalid-validation-context",
     ),
   );
+
+  const privateReceipts = structuredClone(sourceReceipts);
+  privateReceipts.privateKeyMaterial =
+    "-----BEGIN PRIVATE KEY-----\nsecret-context\n-----END PRIVATE KEY-----";
+  const privateReceiptResult = evaluateRecurringThirdPartyReview(fixture, {
+    asOf,
+    publicTrust,
+    sourceReceipts: privateReceipts,
+  });
+  assert.equal(
+    privateReceiptResult.findings[0].code,
+    "invalid-validation-context",
+  );
+  assert.doesNotMatch(
+    JSON.stringify(privateReceiptResult),
+    /secret-context/u,
+  );
 });
 
 test("normalization rejects private keys and pre-read resource attacks without echo", () => {
@@ -236,6 +253,45 @@ test("normalization rejects private keys and pre-read resource attacks without e
   assert.equal(privateResult.valid, false);
   assert.equal(privateResult.findings[0].code, "private-key-material-prohibited");
   assert.doesNotMatch(JSON.stringify(privateResult), /secret-material/u);
+
+  const hiddenPrivate = clone();
+  Object.defineProperty(hiddenPrivate, "privateKeyMaterial", {
+    enumerable: false,
+    value: privateValue,
+  });
+  const hiddenPrivateResult = evaluate(hiddenPrivate);
+  assert.equal(
+    hiddenPrivateResult.findings[0].code,
+    "private-key-material-prohibited",
+  );
+  assert.doesNotMatch(
+    JSON.stringify(hiddenPrivateResult),
+    /secret-material/u,
+  );
+
+  let hiddenGetterRead = false;
+  const hiddenGetter = clone();
+  Object.defineProperty(hiddenGetter, "hidden", {
+    enumerable: false,
+    get() {
+      hiddenGetterRead = true;
+      throw new Error("hidden getter executed");
+    },
+  });
+  assert.doesNotThrow(() => evaluate(hiddenGetter));
+  assert.equal(hiddenGetterRead, false);
+  assert.equal(evaluate(hiddenGetter).findings[0].code, "invalid-json-input");
+
+  const symbolInput = clone();
+  symbolInput[Symbol("hidden")] = "value";
+  assert.equal(evaluate(symbolInput).findings[0].code, "invalid-json-input");
+
+  const hiddenValue = clone();
+  Object.defineProperty(hiddenValue, "hidden", {
+    enumerable: false,
+    value: "value",
+  });
+  assert.equal(evaluate(hiddenValue).findings[0].code, "invalid-json-input");
 
   let getterRead = false;
   const getterEnvelope = clone();
@@ -281,7 +337,10 @@ test("normalization rejects private keys and pre-read resource attacks without e
 
   const excessiveProperties = clone();
   excessiveProperties.excessive = Object.fromEntries(
-    Array.from({ length: 129 }, (_, index) => [`field${index}`, index]),
+    Array.from({ length: 129 }, (_, index) => [
+      `field${index}`,
+      "x".repeat(16 * 1024),
+    ]),
   );
   assert.equal(
     evaluate(excessiveProperties).findings[0].code,
@@ -1445,48 +1504,6 @@ test("Compliance Reviewer and Contract Obligation Tracker pass their actual cont
 });
 
 test("actual Compliance plus Contract composition fails the admission falsification", async () => {
-  const complianceSchema = JSON.parse(
-    await readFile(
-      resolve(root, "sources", "compliance-reviewer", "schemas", "control-assessment.schema.json"),
-      "utf8",
-    ),
-  );
-  const contractSchema = JSON.parse(
-    await readFile(
-      resolve(
-        root,
-        "sources",
-        "contract-obligation-tracker",
-        "schemas",
-        "contract-obligation-tracker.schema.json",
-      ),
-      "utf8",
-    ),
-  );
-  const complianceFixture = JSON.parse(
-    await readFile(
-      resolve(
-        root,
-        "sources",
-        "compliance-reviewer",
-        "fixtures",
-        "control-assessment.example.json",
-      ),
-      "utf8",
-    ),
-  );
-  const contractFixture = JSON.parse(
-    await readFile(
-      resolve(
-        root,
-        "sources",
-        "contract-obligation-tracker",
-        "fixtures",
-        "contract-obligation-tracker.example.json",
-      ),
-      "utf8",
-    ),
-  );
   const futureAnalogueSchema = JSON.parse(
     await readFile(
       resolve(here, "schemas", "strongest-composition-proof.schema.json"),
@@ -1496,15 +1513,6 @@ test("actual Compliance plus Contract composition fails the admission falsificat
   const compositionOptions = {
     candidateInput: fixture,
     candidateEvaluationContext: { asOf, publicTrust, sourceReceipts },
-    complianceSchema,
-    complianceArtifact: complianceFixture,
-    complianceSemanticValidator: (artifact) =>
-      validateArtifactSemantics("compliance-reviewer", artifact),
-    contractSchema,
-    contractArtifact: contractFixture,
-    contractSemanticValidator: contractObligationTrackerFindings,
-    contractValidationContext: { asOf },
-    contractResealer: resealContractObligationTracker,
     asOf,
   };
   const assessment =
@@ -1540,6 +1548,25 @@ test("actual Compliance plus Contract composition fails the admission falsificat
       "contract.obligations[].clauseLocator",
     ),
   );
+  for (const override of [
+    { complianceSchema: { type: "object" } },
+    { complianceSemanticValidator: () => [] },
+    { complianceArtifact: { prohibitedRoot: true } },
+    { contractSchema: { type: "object" } },
+    { contractSemanticValidator: () => [] },
+    { contractResealer: (value) => value },
+  ]) {
+    const overrideAssessment = assessStrongestComplianceContractComposition({
+      ...compositionOptions,
+      ...override,
+    });
+    assert.equal(overrideAssessment.proofValid, false);
+    assert.equal(
+      overrideAssessment.verdict,
+      "composition-proof-invalid",
+    );
+    assert.deepEqual(overrideAssessment.exactCellRefs, []);
+  }
   assert.equal(
     assessment.invariants.find(
       (item) => item.id === "owner-declared-service-applicability",

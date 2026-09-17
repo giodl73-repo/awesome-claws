@@ -79,9 +79,11 @@ machine result carries each of those authority claims as structural `false`.
 
 The strongest-composition adapter projects the exact six-cell fixture into
 actual typed Compliance Reviewer and Contract Obligation Tracker fields. It
-builds two service-scoped Compliance assessments and one resealed six-obligation
-Contract artifact, then executes both current schemas and both real semantic
-validators. The validated graph can round-trip the six cell relationships and
+imports the official schemas, fixtures, semantic validators, validation context,
+and resealer internally; caller-supplied replacements are rejected. It builds
+two service-scoped Compliance assessments and one resealed six-obligation
+Contract artifact, then executes both exact schemas and semantic validators
+before computing graph digests. The validated graph can round-trip the six cell relationships and
 catalog revision only by encoding requirement links into Contract clause fields
 and inventing agreement, clause, and due-date semantics that the candidate input
 does not own. It still cannot round-trip effective expiry or
@@ -175,7 +177,8 @@ The candidate contains:
 - `schemas/future-analogue-validator.schema.json`: the closed declarative
   validator artifact whose canonical digest is signed into the future graph;
 - `recurring-third-party-review-evidence-reconciler.mjs`: strict schema
-  validation, bounded descriptor-based normalization, canonical
+  validation, descriptor-first rejection of proxies, symbols, accessors,
+  non-enumerable state, and private-key material, bounded normalization, canonical
   catalog/cell/exception digests, independently signed owner manifests and
   predecessor artifact, signed source-byte receipt verification, full-input
   signature verification, post-close and caller-time-bounded source issuance,

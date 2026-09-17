@@ -8,6 +8,14 @@ import { fileURLToPath } from "node:url";
 import { isProxy } from "node:util/types";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import {
+  artifactSemanticValidationOptions,
+  validateArtifactSemantics,
+} from "../../scripts/artifact-semantics.mjs";
+import {
+  contractObligationTrackerFindings,
+  resealContractObligationTracker,
+} from "../../scripts/contract-obligation-tracker.mjs";
 
 export const SLICE_SCHEMA_VERSION =
   "awesomeClaws.recurringThirdPartyReviewEvidenceReconcilerSlice.v1";
@@ -31,6 +39,9 @@ export const SLICE_LIMITS = Object.freeze({
 
 const TIMESTAMP_PATTERN =
   /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(Z|([+-])(\d{2}):(\d{2}))$/u;
+const PRIVATE_KEY_PEM_PATTERN =
+  /-----BEGIN(?: [A-Z0-9]+)* PRIVATE KEY-----/iu;
+const PRIVATE_KEY_NAME_PATTERN = /private.*key|key.*private/iu;
 const AUTHORITY_CLAIMS = Object.freeze({
   scoringClaim: false,
   selectionClaim: false,
@@ -79,6 +90,42 @@ const futureAnalogueValidatorSchema = JSON.parse(
     "utf8",
   ),
 );
+const officialComplianceSchema = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../sources/compliance-reviewer/schemas/control-assessment.schema.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const officialComplianceArtifact = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../sources/compliance-reviewer/fixtures/control-assessment.example.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const officialContractSchema = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../sources/contract-obligation-tracker/schemas/contract-obligation-tracker.schema.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const officialContractArtifact = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../sources/contract-obligation-tracker/fixtures/contract-obligation-tracker.example.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateSchema = ajv.compile(schema);
@@ -95,7 +142,109 @@ function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function inspectJsonDescriptors(value, limits) {
+  const active = new WeakSet();
+  let nodes = 0;
+  let bytes = 0;
+  const hardLimitErrors = new Set([
+    "node-limit-exceeded",
+    "depth-limit-exceeded",
+    "byte-limit-exceeded",
+    "object-property-limit-exceeded",
+    "array-limit-exceeded",
+  ]);
+  const privateError = (path) =>
+    path[0] === "publicTrust"
+      ? "private-key-material-public-trust"
+      : "private-key-material";
+  const visit = (node, depth, path) => {
+    nodes += 1;
+    if (nodes > limits.maxNodes) return "node-limit-exceeded";
+    if (depth > limits.maxDepth) return "depth-limit-exceeded";
+    if (typeof node === "string") {
+      bytes += Buffer.byteLength(node, "utf8") + 2;
+      if (bytes > limits.maxBytes) return "byte-limit-exceeded";
+      return PRIVATE_KEY_PEM_PATTERN.test(node) ? privateError(path) : null;
+    }
+    if (
+      node === null ||
+      typeof node === "boolean" ||
+      (typeof node === "number" && Number.isFinite(node))
+    ) {
+      return null;
+    }
+    if (typeof node !== "object") return "non-json-value";
+    if (isProxy(node)) return "proxy-object";
+    if (active.has(node)) return "cycle";
+    active.add(node);
+    let descriptors;
+    let prototype;
+    try {
+      descriptors = Object.getOwnPropertyDescriptors(node);
+      prototype = Object.getPrototypeOf(node);
+    } catch {
+      return "unreadable-object";
+    }
+    let structuralError =
+      prototype === Object.prototype ||
+      prototype === Array.prototype ||
+      prototype === null
+        ? null
+        : "non-json-object";
+    const ownKeys = Reflect.ownKeys(descriptors);
+    if (
+      Array.isArray(node) &&
+      (!Number.isInteger(descriptors.length?.value) ||
+        descriptors.length.value < 0 ||
+        descriptors.length.value > limits.maxArrayItems)
+    ) {
+      return "array-limit-exceeded";
+    }
+    const dataKeys = ownKeys.filter(
+      (key) => !(Array.isArray(node) && key === "length"),
+    );
+    if (dataKeys.length > limits.maxObjectProperties) {
+      return "object-property-limit-exceeded";
+    }
+    for (const key of dataKeys) {
+      if (typeof key === "symbol") {
+        structuralError ??= "symbol-property";
+      }
+      const descriptor = descriptors[key];
+      if (descriptor.get || descriptor.set) {
+        structuralError ??= "accessor-property";
+        continue;
+      }
+      if (!descriptor.enumerable) {
+        structuralError ??= "non-enumerable-property";
+      }
+      if (
+        typeof key === "string" &&
+        PRIVATE_KEY_NAME_PATTERN.test(key)
+      ) {
+        return privateError([...path, key]);
+      }
+      const nestedError = visit(descriptor.value, depth + 1, [
+        ...path,
+        typeof key === "string" ? key : "<symbol>",
+      ]);
+      if (nestedError?.startsWith("private-key-material")) {
+        return nestedError;
+      }
+      if (hardLimitErrors.has(nestedError)) return nestedError;
+      structuralError ??= nestedError;
+    }
+    active.delete(node);
+    return structuralError;
+  };
+  return visit(value, 0, []);
+}
+
 function normalizeJsonValue(value, limits) {
+  const inspectionError = inspectJsonDescriptors(value, limits);
+  if (inspectionError !== null) {
+    return { value: null, error: inspectionError };
+  }
   const active = new WeakSet();
   let bytes = 0;
   let nodes = 0;
@@ -426,7 +575,7 @@ function duplicateValues(values) {
 
 function containsPrivateKeyMaterial(value, seen = new Set()) {
   if (typeof value === "string") {
-    return /-----BEGIN(?: [A-Z0-9]+)* PRIVATE KEY-----/iu.test(value);
+    return PRIVATE_KEY_PEM_PATTERN.test(value);
   }
   if (Array.isArray(value)) {
     if (seen.has(value)) return false;
@@ -438,7 +587,7 @@ function containsPrivateKeyMaterial(value, seen = new Set()) {
   seen.add(value);
   return Object.entries(value).some(
     ([key, nested]) =>
-      /private.*key|key.*private/iu.test(key) ||
+      PRIVATE_KEY_NAME_PATTERN.test(key) ||
       containsPrivateKeyMaterial(nested, seen),
   );
 }
@@ -1960,6 +2109,19 @@ export function evaluateRecurringThirdPartyReview(input, options = {}) {
     maxBytes: SLICE_LIMITS.inputBytes,
   });
   if (normalizedInput.error !== null) {
+    if (normalizedInput.error.startsWith("private-key-material")) {
+      return {
+        valid: false,
+        findings: [
+          finding(
+            "private-key-material-prohibited",
+            "$",
+            "The candidate envelope must never contain private key material.",
+          ),
+        ],
+        result: null,
+      };
+    }
     return {
       valid: false,
       findings: [
@@ -2006,6 +2168,34 @@ export function evaluateRecurringThirdPartyReview(input, options = {}) {
     maxBytes: SLICE_LIMITS.validationContextBytes,
   });
   if (normalizedContext.error !== null) {
+    if (
+      normalizedContext.error === "private-key-material-public-trust"
+    ) {
+      return {
+        valid: false,
+        findings: [
+          finding(
+            "invalid-public-trust-key",
+            "$.validationContext",
+            "The validation context must never contain private key material.",
+          ),
+        ],
+        result: null,
+      };
+    }
+    if (normalizedContext.error === "private-key-material") {
+      return {
+        valid: false,
+        findings: [
+          finding(
+            "invalid-validation-context",
+            "$.validationContext",
+            "The validation context must never contain private key material.",
+          ),
+        ],
+        result: null,
+      };
+    }
     return {
       valid: false,
       findings: [
@@ -2864,35 +3054,18 @@ function compositionInvalidResult(code) {
 function assessNormalizedComplianceContractComposition({
   candidateInput,
   candidateEvaluationContext,
-  complianceSchema,
-  complianceArtifact,
-  complianceSemanticValidator,
-  contractSchema,
-  contractArtifact,
-  contractSemanticValidator,
-  contractValidationContext,
-  contractResealer,
   asOf,
   futureAnalogueSchema = null,
   futureAnalogueValidatorArtifact = null,
   futureAnalogueGraph = null,
   futureAnalogueTrust = null,
 }) {
-  if (
-    typeof complianceSemanticValidator !== "function" ||
-    typeof contractSemanticValidator !== "function" ||
-    typeof contractResealer !== "function"
-  ) {
-    throw new TypeError(
-      "The strongest composition proof requires both real semantic validators and the Contract resealer.",
-    );
-  }
   const complianceAjv = new Ajv2020({ allErrors: true, strict: true });
   const contractAjv = new Ajv2020({ allErrors: true, strict: true });
   addFormats(complianceAjv);
   addFormats(contractAjv);
-  const validateCompliance = complianceAjv.compile(complianceSchema);
-  const validateContract = contractAjv.compile(contractSchema);
+  const validateCompliance = complianceAjv.compile(officialComplianceSchema);
+  const validateContract = contractAjv.compile(officialContractSchema);
   const compositionAsOf = timestamp(asOf);
   if (compositionAsOf === null) {
     return compositionInvalidResult("invalid-composition-context");
@@ -2912,28 +3085,46 @@ function assessNormalizedComplianceContractComposition({
   }
   const complianceProjections = typedComplianceProjections(
     candidateInput,
-    complianceArtifact,
+    officialComplianceArtifact,
     compositionAsOf,
   );
   const complianceOutcomes = complianceProjections.map((projection) =>
     validationOutcome(
       validateCompliance,
-      complianceSemanticValidator,
+      (artifact) =>
+        validateArtifactSemantics("compliance-reviewer", artifact),
       projection.artifact,
       {},
     ),
   );
   const contractProjection = typedContractProjection(
     candidateInput,
-    contractArtifact,
-    contractResealer,
+    officialContractArtifact,
+    resealContractObligationTracker,
   );
   const contractOutcome = validationOutcome(
     validateContract,
-    contractSemanticValidator,
+    contractObligationTrackerFindings,
     contractProjection.artifact,
-    contractValidationContext,
+    {
+      ...artifactSemanticValidationOptions("contract-obligation-tracker"),
+      asOf,
+    },
   );
+  if (
+    !complianceOutcomes.every((item) => item.valid) ||
+    !contractOutcome.valid
+  ) {
+    return {
+      ...compositionInvalidResult("invalid-official-analogue-proof"),
+      candidateEvaluation: { valid: true, findingCodes: [] },
+      analogueValidation: {
+        complianceProjections: complianceOutcomes,
+        contractProjection: contractOutcome,
+        futureAnalogue: null,
+      },
+    };
+  }
   const expected = expectedCompositionFacts(candidateInput, compositionAsOf);
   const complianceApplicability = complianceProjections.flatMap(({ artifact }) =>
     artifact.requirements.map((requirement) => {
@@ -3356,9 +3547,23 @@ export function assessStrongestComplianceContractComposition(options = {}) {
   } catch {
     return compositionInvalidResult("invalid-composition-input");
   }
+  const allowedKeys = new Set([
+    "candidateInput",
+    "candidateEvaluationContext",
+    "asOf",
+    "futureAnalogueSchema",
+    "futureAnalogueValidatorArtifact",
+    "futureAnalogueGraph",
+    "futureAnalogueTrust",
+  ]);
   if (
-    Object.values(descriptors).some(
-      (descriptor) => descriptor.enumerable && (descriptor.get || descriptor.set),
+    Reflect.ownKeys(descriptors).some(
+      (key) =>
+        typeof key !== "string" ||
+        !allowedKeys.has(key) ||
+        !descriptors[key].enumerable ||
+        descriptors[key].get ||
+        descriptors[key].set,
     )
   ) {
     return compositionInvalidResult("invalid-composition-input");
@@ -3375,13 +3580,6 @@ export function assessStrongestComplianceContractComposition(options = {}) {
       throw new TypeError("invalid composition argument");
     }
     return normalized.value;
-  };
-  const requiredFunction = (name) => {
-    const value = raw(name);
-    if (typeof value !== "function" || isProxy(value)) {
-      throw new TypeError("invalid composition function");
-    }
-    return value;
   };
   try {
     const futureAnalogueGraph = normalize(
@@ -3413,33 +3611,6 @@ export function assessStrongestComplianceContractComposition(options = {}) {
         "candidateEvaluationContext",
         SLICE_LIMITS.validationContextBytes,
       ),
-      complianceSchema: normalize(
-        "complianceSchema",
-        SLICE_LIMITS.analogueSchemaBytes,
-      ),
-      complianceArtifact: normalize(
-        "complianceArtifact",
-        SLICE_LIMITS.analogueArtifactBytes,
-      ),
-      complianceSemanticValidator: requiredFunction(
-        "complianceSemanticValidator",
-      ),
-      contractSchema: normalize(
-        "contractSchema",
-        SLICE_LIMITS.analogueSchemaBytes,
-      ),
-      contractArtifact: normalize(
-        "contractArtifact",
-        SLICE_LIMITS.analogueArtifactBytes,
-      ),
-      contractSemanticValidator: requiredFunction(
-        "contractSemanticValidator",
-      ),
-      contractValidationContext: normalize(
-        "contractValidationContext",
-        SLICE_LIMITS.validationContextBytes,
-      ),
-      contractResealer: requiredFunction("contractResealer"),
       asOf: normalize("asOf", 256),
       futureAnalogueSchema,
       futureAnalogueValidatorArtifact,
