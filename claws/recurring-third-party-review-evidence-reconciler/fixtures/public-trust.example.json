@@ -5,7 +5,7 @@
       "ownerRef": "principal-program-owner-ava",
       "signingKeyId": "key-third-party-review-2026",
       "algorithm": "Ed25519",
-      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAXvWoevluHN6eoqEbuA/rc798sf9GauoOZq/JUfKptDI=\n-----END PUBLIC KEY-----\n",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAuCKwmzaKROINdSnECaL7ePWa5p1dM1TZj5JhzrOJ6uY=\n-----END PUBLIC KEY-----\n",
       "validFrom": "2025-01-01T00:00:00Z",
       "validUntil": "2027-12-31T23:59:59Z"
     },

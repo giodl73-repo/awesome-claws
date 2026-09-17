@@ -1,4 +1,4 @@
-# Recurring Third-Party Review Evidence Reconciler candidate proof
+# Recurring Third-Party Review Evidence Reconciler proof
 
 - Cycle: `review-cycle-2026-q3`
 - Caller-controlled asOf: `2026-09-16T20:00:00.000Z`

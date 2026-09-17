@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (124)
+### Active (125)
 
 | Claw | Detail |
 | --- | --- |
@@ -101,6 +101,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Quality assurance lead](claws/quality-assurance-lead) | @giodl73-repo; last verified 2026-08-19 |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | @giodl73; last verified 2026-09-07 |
 | [Recruiting coordinator](claws/recruiting-coordinator) | @giodl73-repo; last verified 2026-08-19 |
+| [Recurring Third-Party Review Evidence Reconciler](claws/recurring-third-party-review-evidence-reconciler) | @giodl73; last verified 2026-09-17 |
 | [Release coordinator](claws/release-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Repository Compliance Program Manager](claws/repository-compliance-program-manager) | @giodl73-repo; last verified 2026-09-14 |
 | [Repository Operations Manager](claws/repository-operations-manager) | @giodl73-repo; last verified 2026-09-13 |
@@ -151,7 +152,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (92)
+### Low setup (93)
 
 | Claw | Detail |
 | --- | --- |
@@ -224,6 +225,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Quality assurance lead](claws/quality-assurance-lead) | no bootstrap, external dependency, or schedule |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | no bootstrap, external dependency, or schedule |
 | [Recruiting coordinator](claws/recruiting-coordinator) | no bootstrap, external dependency, or schedule |
+| [Recurring Third-Party Review Evidence Reconciler](claws/recurring-third-party-review-evidence-reconciler) | no bootstrap, external dependency, or schedule |
 | [Repository Operations Manager](claws/repository-operations-manager) | no bootstrap, external dependency, or schedule |
 | [Research briefing](claws/research-briefing) | no bootstrap, external dependency, or schedule |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | no bootstrap, external dependency, or schedule |
@@ -294,7 +296,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (101)
+### No external dependencies (102)
 
 | Claw | Detail |
 | --- | --- |
@@ -376,6 +378,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Quality assurance lead](claws/quality-assurance-lead) | None |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | None |
 | [Recruiting coordinator](claws/recruiting-coordinator) | None |
+| [Recurring Third-Party Review Evidence Reconciler](claws/recurring-third-party-review-evidence-reconciler) | None |
 | [Repository Operations Manager](claws/repository-operations-manager) | None |
 | [Research briefing](claws/research-briefing) | None |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | None |
@@ -523,7 +526,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Work chief of staff](claws/work-chief-of-staff) | Coordinates a multi-leader operating portfolio across specialist-Claw artifacts, shared resources, decision forums, and explicitly authorized commitments without becoming the executive or functional decision-maker. |
 | [Workflow operator](claws/workflow-operator) | Reconciles one exact bounded Lobster run against its reviewed workflow, typed input, exposed tool envelopes, human approval gate, independently observed effects, retry lineage, and private resume-or-abort handoff without duplicating Lobster state or claiming transactionality. |
 
-### X4 (31)
+### X4 (32)
 
 | Claw | Detail |
 | --- | --- |
@@ -550,6 +553,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Product manager](claws/product-manager) | Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [Project manager](claws/project-manager) | Keeps projects aligned through milestones, dependencies, decisions, and accountable execution. |
 | [Quality assurance lead](claws/quality-assurance-lead) | Turns requirements and risk into a traceable test strategy, execution ledger, defect assessment, and release recommendation. |
+| [Recurring Third-Party Review Evidence Reconciler](claws/recurring-third-party-review-evidence-reconciler) | Reconciles one approved recurring third-party review cycle over an exact owner-declared vendor-service requirement-cell index, verifies signed source receipts, derives evidence freshness and predecessor reopening, preserves typed human decisions, and produces a blocked or owner-review handoff without interpreting requirements or taking supplier, contract, risk, or lifecycle action. |
 | [Release coordinator](claws/release-coordinator) | Coordinates a repository release from verified GitHub state to an approval-bound communication handoff. |
 | [Research briefing](claws/research-briefing) | Synthesizes supplied sources into concise, source-grounded briefs for time-sensitive decisions. |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | Reconciles one complete owner-authenticated security-alert snapshot so every exact source, native alert id, and revision receives one authorized human disposition or exact non-decision without querying a SIEM, inferring correlation or severity, mutating source state, declaring an incident, creating a ticket, or accepting risk. |
@@ -612,7 +616,7 @@ Categories come directly from the catalog entry.
 | [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | X4; Turns one exact approved workload requirements revision into evidence-comparable architecture options, validation experiments, ADR chronology, and an accountable owner decision. |
 
-### Governance (18)
+### Governance (19)
 
 | Claw | Detail |
 | --- | --- |
@@ -630,6 +634,7 @@ Categories come directly from the catalog entry.
 | [Privacy request coordinator](claws/privacy-request-coordinator) | X5; Coordinates a privacy-rights request through verified intake, scoped evidence, deadlines, approvals, and a controlled response handoff. |
 | [Procure-to-Pay Three-Way Match Exception Reconciler](claws/procure-to-pay-three-way-match-exception-reconciler) | X4; Reconciles one exact owner-approved purchase-order revision against complete receipt and invoice line exports, partitioning every line into an authorized exact three-sided group or a typed side-specific residual. |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | X3; Reconciles an authoritative retention schedule, exact record-copy inventory, trigger and hold evidence, approved disposition batch, independently observed outcomes and certificates, and residual-copy closure into one snapshot-bound human-review handoff without interpreting policy or executing disposition. |
+| [Recurring Third-Party Review Evidence Reconciler](claws/recurring-third-party-review-evidence-reconciler) | X4; Reconciles one approved recurring third-party review cycle over an exact owner-declared vendor-service requirement-cell index, verifies signed source receipts, derives evidence freshness and predecessor reopening, preserves typed human decisions, and produces a blocked or owner-review handoff without interpreting requirements or taking supplier, contract, risk, or lifecycle action. |
 | [Repository Compliance Program Manager](claws/repository-compliance-program-manager) | X3; Runs a recurring vendor-neutral security and compliance remediation program by reconciling approved signals and control revisions into deduplicated repository issues, accountable ownership, SLA state, exceptions, escalations, and independently verified closure without changing code, suppressing findings, approving exceptions, or accepting risk. |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | X4; Reconciles one complete owner-authenticated security-alert snapshot so every exact source, native alert id, and revision receives one authorized human disposition or exact non-decision without querying a SIEM, inferring correlation or severity, mutating source state, declaring an incident, creating a ticket, or accepting risk. |
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
@@ -796,7 +801,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Wardrobe organizer](claws/wardrobe-organizer) | portable workspace artifacts only |
 | [Warranty and returns manager](claws/warranty-returns-manager) | portable workspace artifacts only |
 
-### Guarded attention (50)
+### Guarded attention (51)
 
 | Claw | Detail |
 | --- | --- |
@@ -839,6 +844,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Product manager](claws/product-manager) | explicit tool policy |
 | [Project manager](claws/project-manager) | explicit tool policy |
 | [Quality assurance lead](claws/quality-assurance-lead) | explicit tool policy |
+| [Recurring Third-Party Review Evidence Reconciler](claws/recurring-third-party-review-evidence-reconciler) | explicit tool policy |
 | [Release coordinator](claws/release-coordinator) | pinned skill; explicit tool policy |
 | [Research briefing](claws/research-briefing) | explicit tool policy |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | explicit tool policy |

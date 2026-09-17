@@ -12,51 +12,48 @@ import { test } from "node:test";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import {
-  assessStrongestComplianceContractComposition,
   computeCellIndexRevision,
   computeCellDigest,
   computeExceptionScopeDigest,
   computeFreshnessRuleRevision,
   computePredecessorArtifactDigest,
   computeRequirementCatalogRevision,
-  createFutureAnalogueValidatorArtifact,
-  createAuthoritySafeFutureAnalogueGraph,
   evaluateRecurringThirdPartyReview,
-  futureAnalogueGraphPayload,
   ownerManifestPayload,
-  resealFutureAnalogueGraph,
+  RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS,
+  recurringThirdPartyReviewFindings,
   renderReviewProof,
-  sha256Digest,
   sourceAuthorityPayload,
 } from "./recurring-third-party-review-evidence-reconciler.mjs";
 import {
   artifactSemanticValidationOptions,
+  hasArtifactSemanticValidator,
   validateArtifactSemantics,
-} from "../../scripts/artifact-semantics.mjs";
+} from "./artifact-semantics.mjs";
 import {
   contractObligationTrackerFindings,
-  resealContractObligationTracker,
-} from "../../scripts/contract-obligation-tracker.mjs";
+} from "./contract-obligation-tracker.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const root = resolve(here, "..", "..");
+const root = resolve(here, "..");
+const sourceRoot = resolve(root, "sources", "recurring-third-party-review-evidence-reconciler");
 const asOf = "2026-09-16T20:00:00Z";
 const fixture = JSON.parse(
-  await readFile(resolve(here, "fixtures", "approved-review-cycle.input.json"), "utf8"),
+  await readFile(resolve(sourceRoot, "fixtures", "recurring-third-party-review-evidence-reconciler.example.json"), "utf8"),
 );
 const publicTrust = JSON.parse(
-  await readFile(resolve(here, "fixtures", "public-trust.test.json"), "utf8"),
+  await readFile(resolve(sourceRoot, "fixtures", "public-trust.example.json"), "utf8"),
 );
 const sourceReceipts = JSON.parse(
-  await readFile(resolve(here, "fixtures", "source-receipts.test.json"), "utf8"),
+  await readFile(resolve(sourceRoot, "fixtures", "source-receipts.example.json"), "utf8"),
 );
 const expected = JSON.parse(
-  await readFile(resolve(here, "expected", "blocked-handoff.expected.json"), "utf8"),
+  await readFile(resolve(sourceRoot, "fixtures", "blocked-handoff.expected.json"), "utf8"),
 );
 const expectedFailure = JSON.parse(
-  await readFile(resolve(here, "expected", "prohibited-score.failure.json"), "utf8"),
+  await readFile(resolve(sourceRoot, "fixtures", "prohibited-score.failure.json"), "utf8"),
 );
-const proof = await readFile(resolve(here, "proof", "blocked-handoff.md"), "utf8");
+const proof = await readFile(resolve(sourceRoot, "references", "blocked-handoff.md"), "utf8");
 const clone = () => structuredClone(fixture);
 const evaluate = (input = fixture, options = {}) =>
   evaluateRecurringThirdPartyReview(input, {
@@ -128,6 +125,30 @@ test("accepted bounded fixture is trusted, exact, and intentionally blocked", ()
   assert.deepEqual(evaluation.findings, []);
   assert.deepEqual(resultSummary(evaluation), expected);
   assert.deepEqual(fixture, before, "evaluation must not mutate its inputs");
+});
+
+test("semantic registry exposes the public validator and example context", () => {
+  assert.equal(
+    hasArtifactSemanticValidator(
+      "recurring-third-party-review-evidence-reconciler",
+    ),
+    true,
+  );
+  assert.deepEqual(
+    artifactSemanticValidationOptions(
+      "recurring-third-party-review-evidence-reconciler",
+    ),
+    RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS,
+  );
+  assert.deepEqual(
+    recurringThirdPartyReviewFindings(
+      fixture,
+      artifactSemanticValidationOptions(
+        "recurring-third-party-review-evidence-reconciler",
+      ),
+    ),
+    [],
+  );
 });
 
 test("validator is total over non-JSON direct inputs", () => {
@@ -1503,482 +1524,15 @@ test("Compliance Reviewer and Contract Obligation Tracker pass their actual cont
   );
 });
 
-test("actual Compliance plus Contract composition fails the admission falsification", async () => {
-  const futureAnalogueSchema = JSON.parse(
-    await readFile(
-      resolve(here, "schemas", "strongest-composition-proof.schema.json"),
-      "utf8",
-    ),
-  );
-  const compositionOptions = {
-    candidateInput: fixture,
-    candidateEvaluationContext: { asOf, publicTrust, sourceReceipts },
-    asOf,
-  };
-  const assessment =
-    assessStrongestComplianceContractComposition(compositionOptions);
-  assert.equal(assessment.proofValid, true);
-  assert.equal(assessment.candidateEvaluation.valid, true);
-  assert.equal(assessment.preservesAllInvariants, false);
-  assert.equal(
-    assessment.verdict,
-    "reject-compliance-plus-contract-composition",
-  );
-  assert.deepEqual(
-    assessment.invariants.filter((item) => !item.preserved).map((item) => item.id),
-    ["evidence-expiry", "predecessor-reopening"],
-  );
-  assert.deepEqual(
-    assessment.exactCellRefs,
-    fixture.requirementCatalog.cells.map((item) => item.id).sort(),
-  );
-  assert.equal(
-    assessment.analogueValidation.complianceProjections.length,
-    fixture.vendorServices.length,
-  );
-  assert.ok(
-    assessment.analogueValidation.complianceProjections.every(
-      (item) => item.valid,
-    ),
-  );
-  assert.equal(assessment.analogueValidation.contractProjection.valid, true);
-  assert.equal(assessment.projectionAuthority.safe, false);
-  assert.ok(
-    assessment.projectionAuthority.inventedSemanticFields.includes(
-      "contract.obligations[].clauseLocator",
-    ),
-  );
-  for (const override of [
-    { complianceSchema: { type: "object" } },
-    { complianceSemanticValidator: () => [] },
-    { complianceArtifact: { prohibitedRoot: true } },
-    { contractSchema: { type: "object" } },
-    { contractSemanticValidator: () => [] },
-    { contractResealer: (value) => value },
-  ]) {
-    const overrideAssessment = assessStrongestComplianceContractComposition({
-      ...compositionOptions,
-      ...override,
-    });
-    assert.equal(overrideAssessment.proofValid, false);
-    assert.equal(
-      overrideAssessment.verdict,
-      "composition-proof-invalid",
-    );
-    assert.deepEqual(overrideAssessment.exactCellRefs, []);
-  }
-  assert.equal(
-    assessment.invariants.find(
-      (item) => item.id === "owner-declared-service-applicability",
-    ).matchedTypedRecords,
-    6,
-  );
-  assert.equal(
-    assessment.invariants.find(
-      (item) => item.id === "requirement-catalog-revision",
-    ).preserved,
-    true,
-  );
-  assert.equal(
-    assessment.invariants.find((item) => item.id === "evidence-expiry")
-      .matchedTypedRecords,
-    0,
-  );
-  assert.equal(
-    assessment.invariants.find((item) => item.id === "predecessor-reopening")
-      .matchedTypedRecords,
-    0,
-  );
-  assert.deepEqual(
-    assessment.invariants.find(
-      (item) => item.id === "owner-declared-service-applicability",
-    ).requiredFields,
-    [
-      "cellRef",
-      "vendorServiceRef",
-      "requirementRef",
-      "ownerRef",
-      "declarationEvidenceRef",
-      "cellDigest",
-    ],
-  );
-  assert.deepEqual(
-    assessment.invariants.find((item) => item.id === "evidence-expiry")
-      .requiredFields,
-    [
-      "evidenceRef",
-      "validUntil",
-      "maxAgeDays",
-      "effectiveExpiresAt",
-      "state",
-    ],
-  );
-  assert.deepEqual(
-    assessment.invariants.find((item) => item.id === "predecessor-reopening")
-      .requiredFields,
-    [
-      "cellRef",
-      "predecessorDecisionRef",
-      "decisionType",
-      "expiredEvidenceRefs",
-    ],
-  );
-
-  const { privateKey: compositionPrivateKey, publicKey: compositionPublicKey } =
-    generateKeyPairSync("ed25519");
-  const compositionAuthority = {
-    ownerRef: "principal-independent-composition-validator",
-    signingKeyId: "key-independent-composition-validator",
-    issuedAt: asOf,
-    signature: "placeholder",
-  };
-  const futureAnalogueValidatorArtifact =
-    createFutureAnalogueValidatorArtifact();
-  const futureGraph = createAuthoritySafeFutureAnalogueGraph(fixture, {
-    asOf,
-    authority: compositionAuthority,
-    validatorArtifactDigest: sha256Digest(futureAnalogueValidatorArtifact),
-    ...assessment.analogueValidation.currentGraphDigests,
-  });
-  const signFutureGraph = (value) => {
-    value.authority.signature = signPayload(
-      null,
-      futureAnalogueGraphPayload(value),
-      compositionPrivateKey,
-    ).toString("base64");
-    return value;
-  };
-  signFutureGraph(futureGraph);
-  const futureGraphAjv = new Ajv2020({ allErrors: true, strict: true });
-  addFormats(futureGraphAjv);
-  const validateFutureGraph = futureGraphAjv.compile(futureAnalogueSchema);
-  assert.equal(
-    validateFutureGraph(futureGraph),
-    true,
-    JSON.stringify(validateFutureGraph.errors),
-  );
-  const futureAnalogueTrust = {
-    schemaVersion:
-      "awesomeClaws.recurringThirdPartyReviewEvidenceReconcilerPublicTrust.v1",
-    signers: [
-      {
-        ownerRef: compositionAuthority.ownerRef,
-        signingKeyId: compositionAuthority.signingKeyId,
-        algorithm: "Ed25519",
-        publicKeyPem: compositionPublicKey.export({
-          type: "spki",
-          format: "pem",
-        }),
-        validFrom: "2026-09-16T00:00:00Z",
-        validUntil: "2027-09-16T00:00:00Z",
-      },
-    ],
-  };
-  const futureAssessment = assessStrongestComplianceContractComposition({
-    ...compositionOptions,
-    futureAnalogueSchema,
-    futureAnalogueValidatorArtifact,
-    futureAnalogueGraph: futureGraph,
-    futureAnalogueTrust,
-  });
-  assert.equal(
-    futureAssessment.proofValid,
-    true,
-    JSON.stringify(futureAssessment, null, 2),
-  );
-  assert.equal(futureAssessment.projectionAuthority.safe, true);
-  assert.equal(futureAssessment.preservesAllInvariants, true);
-  assert.equal(futureAssessment.verdict, "reject-candidate");
-
-  const substitutedValidatorArtifact = structuredClone(
-    futureAnalogueValidatorArtifact,
-  );
-  substitutedValidatorArtifact.validatorId =
-    "future-third-party-review-substituted-validator";
-  const noOpAssessment = assessStrongestComplianceContractComposition({
-    ...compositionOptions,
-    futureAnalogueSchema,
-    futureAnalogueValidatorArtifact: substitutedValidatorArtifact,
-    futureAnalogueGraph: futureGraph,
-    futureAnalogueTrust,
-  });
-  assert.equal(noOpAssessment.proofValid, false);
-  assert.equal(noOpAssessment.verdict, "composition-proof-invalid");
-
-  const untrustedFuture = assessStrongestComplianceContractComposition({
-    ...compositionOptions,
-    futureAnalogueSchema,
-    futureAnalogueValidatorArtifact,
-    futureAnalogueGraph: futureGraph,
-  });
-  assert.equal(untrustedFuture.proofValid, false);
-  assert.equal(untrustedFuture.projectionAuthority.safe, false);
-  assert.equal(untrustedFuture.verdict, "composition-proof-invalid");
-
-  const expiredGraph = structuredClone(futureGraph);
-  expiredGraph.authority.issuedAt = "2026-09-16T19:00:00Z";
-  expiredGraph.execution.executedAt = expiredGraph.authority.issuedAt;
-  signFutureGraph(expiredGraph);
-  const expiredTrust = structuredClone(futureAnalogueTrust);
-  expiredTrust.signers[0].validUntil = "2026-09-16T19:30:00Z";
-  const expiredAssessment = assessStrongestComplianceContractComposition({
-    ...compositionOptions,
-    futureAnalogueSchema,
-    futureAnalogueValidatorArtifact,
-    futureAnalogueGraph: expiredGraph,
-    futureAnalogueTrust: expiredTrust,
-  });
-  assert.equal(expiredAssessment.proofValid, false);
-  assert.equal(expiredAssessment.projectionAuthority.safe, false);
-  assert.equal(expiredAssessment.verdict, "composition-proof-invalid");
-
-  const aliasedFutureTrust = structuredClone(futureAnalogueTrust);
-  aliasedFutureTrust.signers[0].publicKeyPem = publicTrust.signers.find(
-    (item) => item.signingKeyId === fixture.sourceAuthority.signingKeyId,
-  ).publicKeyPem;
-  const aliasedAssessment = assessStrongestComplianceContractComposition({
-    ...compositionOptions,
-    futureAnalogueSchema,
-    futureAnalogueValidatorArtifact,
-    futureAnalogueGraph: futureGraph,
-    futureAnalogueTrust: aliasedFutureTrust,
-  });
-  assert.equal(aliasedAssessment.proofValid, false);
-  assert.equal(aliasedAssessment.projectionAuthority.safe, false);
-  assert.equal(aliasedAssessment.verdict, "composition-proof-invalid");
-
-  const decoyCandidateTrust = structuredClone(publicTrust);
-  decoyCandidateTrust.signers = decoyCandidateTrust.signers.filter(
-    (item) => item.signingKeyId !== fixture.sourceAuthority.signingKeyId,
-  );
-  const decoyAssessment = assessStrongestComplianceContractComposition({
-    ...compositionOptions,
-    candidateEvaluationContext: {
-      asOf,
-      publicTrust: decoyCandidateTrust,
-      sourceReceipts,
-    },
-    futureAnalogueSchema,
-    futureAnalogueValidatorArtifact,
-    futureAnalogueGraph: futureGraph,
-    futureAnalogueTrust,
-  });
-  assert.equal(decoyAssessment.proofValid, false);
-  assert.equal(decoyAssessment.projectionAuthority.safe, false);
-  assert.equal(decoyAssessment.verdict, "composition-proof-invalid");
-
-  const internallyAliasedTrust = structuredClone(futureAnalogueTrust);
-  internallyAliasedTrust.signers.push({
-    ...structuredClone(internallyAliasedTrust.signers[0]),
-    ownerRef: "principal-reviewer-riley",
-    signingKeyId: "key-aliased-candidate-owner",
-  });
-  const internallyAliasedAssessment =
-    assessStrongestComplianceContractComposition({
-      ...compositionOptions,
-      futureAnalogueSchema,
-      futureAnalogueValidatorArtifact,
-      futureAnalogueGraph: futureGraph,
-      futureAnalogueTrust: internallyAliasedTrust,
-    });
-  assert.equal(internallyAliasedAssessment.proofValid, false);
-  assert.equal(internallyAliasedAssessment.projectionAuthority.safe, false);
-  assert.equal(
-    internallyAliasedAssessment.verdict,
-    "composition-proof-invalid",
-  );
-
-  const detachedFutureGraph = structuredClone(futureGraph);
-  detachedFutureGraph.sourceArtifacts.complianceGraphDigest =
-    "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-  signFutureGraph(detachedFutureGraph);
-  const detachedAssessment = assessStrongestComplianceContractComposition({
-    ...compositionOptions,
-    futureAnalogueSchema,
-    futureAnalogueValidatorArtifact,
-    futureAnalogueGraph: detachedFutureGraph,
-    futureAnalogueTrust,
-  });
-  assert.equal(detachedAssessment.proofValid, false);
-  assert.equal(detachedAssessment.verdict, "composition-proof-invalid");
-
-  assert.doesNotThrow(() =>
-    assessStrongestComplianceContractComposition({
-      ...compositionOptions,
-      futureAnalogueSchema,
-      futureAnalogueValidatorArtifact,
-      futureAnalogueGraph: {},
-      futureAnalogueTrust,
-    }),
-  );
-  const malformedAssessment = assessStrongestComplianceContractComposition({
-    ...compositionOptions,
-    futureAnalogueSchema,
-    futureAnalogueValidatorArtifact,
-    futureAnalogueGraph: {},
-    futureAnalogueTrust,
-  });
-  assert.equal(malformedAssessment.proofValid, false);
-  assert.equal(malformedAssessment.projectionAuthority.safe, false);
-  assert.equal(malformedAssessment.verdict, "composition-proof-invalid");
-
-  const extraRecord = structuredClone(futureGraph);
-  extraRecord.complianceArtifact.expiryRecords.push({
-    ...extraRecord.complianceArtifact.expiryRecords[0],
-    evidenceRef: "evidence-alpine-security-questionnaire",
-  });
-  signFutureGraph(extraRecord);
-  const extraAssessment = assessStrongestComplianceContractComposition({
-    ...compositionOptions,
-    futureAnalogueSchema,
-    futureAnalogueValidatorArtifact,
-    futureAnalogueGraph: extraRecord,
-    futureAnalogueTrust,
-  });
-  assert.equal(extraAssessment.proofValid, false);
-  assert.equal(extraAssessment.projectionAuthority.safe, false);
-  assert.equal(extraAssessment.verdict, "composition-proof-invalid");
-
-  const duplicateRecord = structuredClone(futureGraph);
-  duplicateRecord.contractArtifact.reopeningRecords.push(
-    structuredClone(duplicateRecord.contractArtifact.reopeningRecords[0]),
-  );
-  signFutureGraph(duplicateRecord);
-  const duplicateAssessment = assessStrongestComplianceContractComposition({
-    ...compositionOptions,
-    futureAnalogueSchema,
-    futureAnalogueValidatorArtifact,
-    futureAnalogueGraph: duplicateRecord,
-    futureAnalogueTrust,
-  });
-  assert.equal(duplicateAssessment.proofValid, false);
-  assert.equal(duplicateAssessment.projectionAuthority.safe, false);
-  assert.equal(duplicateAssessment.verdict, "composition-proof-invalid");
-
-  const privateCandidate = clone();
-  privateCandidate.privateKeyMaterial =
-    "-----BEGIN PRIVATE KEY-----\nsecret\n-----END PRIVATE KEY-----";
-  const privateAssessment = assessStrongestComplianceContractComposition({
-    ...compositionOptions,
-    candidateInput: privateCandidate,
-    futureAnalogueSchema,
-    futureAnalogueValidatorArtifact,
-    futureAnalogueGraph: futureGraph,
-    futureAnalogueTrust,
-  });
-  assert.equal(privateAssessment.proofValid, false);
-  assert.equal(privateAssessment.verdict, "composition-proof-invalid");
-
-  const missingReceiptsAssessment =
-    assessStrongestComplianceContractComposition({
-      ...compositionOptions,
-      candidateEvaluationContext: { asOf, publicTrust },
-      futureAnalogueSchema,
-      futureAnalogueValidatorArtifact,
-      futureAnalogueGraph: futureGraph,
-      futureAnalogueTrust,
-    });
-  assert.equal(missingReceiptsAssessment.proofValid, false);
-  assert.equal(
-    missingReceiptsAssessment.verdict,
-    "composition-proof-invalid",
-  );
-
-  const wrongRevision = structuredClone(futureGraph);
-  wrongRevision.complianceArtifact.freshnessRuleRevision =
-    "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-  signFutureGraph(wrongRevision);
-  const wrongRevisionAssessment =
-    assessStrongestComplianceContractComposition({
-      ...compositionOptions,
-      futureAnalogueSchema,
-      futureAnalogueValidatorArtifact,
-      futureAnalogueGraph: wrongRevision,
-      futureAnalogueTrust,
-    });
-  assert.equal(wrongRevisionAssessment.proofValid, false);
-  assert.equal(wrongRevisionAssessment.verdict, "composition-proof-invalid");
-
-  let wrongContractRevision = structuredClone(futureGraph);
-  wrongContractRevision.contractArtifact.cellIndexRevision =
-    "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-  wrongContractRevision = resealFutureAnalogueGraph(wrongContractRevision);
-  signFutureGraph(wrongContractRevision);
-  const wrongContractRevisionAssessment =
-    assessStrongestComplianceContractComposition({
-      ...compositionOptions,
-      futureAnalogueSchema,
-      futureAnalogueValidatorArtifact,
-      futureAnalogueGraph: wrongContractRevision,
-      futureAnalogueTrust,
-    });
-  assert.equal(wrongContractRevisionAssessment.proofValid, false);
-  assert.equal(
-    wrongContractRevisionAssessment.verdict,
-    "composition-proof-invalid",
-  );
-
-  for (const invalidOptions of [null, undefined, {}, []]) {
-    assert.doesNotThrow(() =>
-      assessStrongestComplianceContractComposition(invalidOptions),
-    );
-    assert.equal(
-      assessStrongestComplianceContractComposition(invalidOptions).verdict,
-      "composition-proof-invalid",
-    );
-  }
-  const proxiedComposition = {
-    ...compositionOptions,
-    candidateInput: new Proxy(fixture, {}),
-  };
-  assert.doesNotThrow(() =>
-    assessStrongestComplianceContractComposition(proxiedComposition),
-  );
-  assert.equal(
-    assessStrongestComplianceContractComposition(proxiedComposition).verdict,
-    "composition-proof-invalid",
-  );
-
-  let compositionGetterRead = false;
-  const getterComposition = { ...compositionOptions };
-  Object.defineProperty(getterComposition, "candidateInput", {
-    enumerable: true,
-    get() {
-      compositionGetterRead = true;
-      throw new Error("sensitive composition getter");
-    },
-  });
-  const getterAssessment =
-    assessStrongestComplianceContractComposition(getterComposition);
-  assert.equal(compositionGetterRead, false);
-  assert.equal(getterAssessment.verdict, "composition-proof-invalid");
-  assert.doesNotMatch(
-    JSON.stringify(getterAssessment),
-    /sensitive composition getter/u,
-  );
-
-  const throwingAssessment = assessStrongestComplianceContractComposition({
-    ...compositionOptions,
-    complianceSemanticValidator() {
-      throw new Error("sensitive validator failure");
-    },
-  });
-  assert.equal(throwingAssessment.verdict, "composition-proof-invalid");
-  assert.doesNotMatch(
-    JSON.stringify(throwingAssessment),
-    /sensitive validator failure/u,
-  );
-});
-
-test("candidate CLI accepts the trusted fixture but reports a blocked handoff", () => {
+test("public CLI accepts the trusted fixture but reports a blocked handoff", () => {
   const result = spawnSync(
     process.execPath,
     [
       resolve(here, "recurring-third-party-review-evidence-reconciler.mjs"),
-      resolve(here, "fixtures", "approved-review-cycle.input.json"),
+      resolve(sourceRoot, "fixtures", "recurring-third-party-review-evidence-reconciler.example.json"),
       asOf,
-      resolve(here, "fixtures", "public-trust.test.json"),
-      resolve(here, "fixtures", "source-receipts.test.json"),
+      resolve(sourceRoot, "fixtures", "public-trust.example.json"),
+      resolve(sourceRoot, "fixtures", "source-receipts.example.json"),
     ],
     { cwd: root, encoding: "utf8" },
   );
@@ -1989,7 +1543,31 @@ test("candidate CLI accepts the trusted fixture but reports a blocked handoff", 
   assert.deepEqual(output.result.handoff.blockerCodes, expected.handoff.blockerCodes);
 });
 
-test("candidate CLI bounds every file and never echoes parser or file failures", async () => {
+test("generic artifact CLI validates the packaged public fixture", () => {
+  const result = spawnSync(
+    process.execPath,
+    [
+      resolve(root, "scripts", "validate-artifact.mjs"),
+      "recurring-third-party-review-evidence-reconciler",
+      resolve(
+        sourceRoot,
+        "fixtures",
+        "recurring-third-party-review-evidence-reconciler.example.json",
+      ),
+      "--as-of",
+      asOf,
+      "--public-trust",
+      resolve(sourceRoot, "fixtures", "public-trust.example.json"),
+      "--source-receipts",
+      resolve(sourceRoot, "fixtures", "source-receipts.example.json"),
+    ],
+    { cwd: root, encoding: "utf8" },
+  );
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(JSON.parse(result.stdout).valid, true);
+});
+
+test("public CLI bounds every file and never echoes parser or file failures", async () => {
   const scratch = resolve(root, ".tmp", `third-party-review-cli-${process.pid}`);
   await mkdir(scratch, { recursive: true });
   const invalidPath = resolve(scratch, "invalid.json");
@@ -1997,10 +1575,10 @@ test("candidate CLI bounds every file and never echoes parser or file failures",
   await writeFile(invalidPath, '{"secret-token":');
   await writeFile(oversizedPath, "x".repeat(2 * 1024 * 1024 + 1));
   const validArgs = [
-    resolve(here, "fixtures", "approved-review-cycle.input.json"),
+    resolve(sourceRoot, "fixtures", "recurring-third-party-review-evidence-reconciler.example.json"),
     asOf,
-    resolve(here, "fixtures", "public-trust.test.json"),
-    resolve(here, "fixtures", "source-receipts.test.json"),
+    resolve(sourceRoot, "fixtures", "public-trust.example.json"),
+    resolve(sourceRoot, "fixtures", "source-receipts.example.json"),
   ];
   try {
     for (const badPath of [invalidPath, oversizedPath]) {

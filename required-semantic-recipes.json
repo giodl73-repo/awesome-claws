@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 124,
-    "coveredCount": 124,
-    "recipeCount": 340,
-    "findingCodeCount": 457
+    "validatorCount": 125,
+    "coveredCount": 125,
+    "recipeCount": 343,
+    "findingCodeCount": 463
   },
   "entries": [
     {
@@ -3900,6 +3900,54 @@
           "replacement": "2099-12-31T23:59:59Z",
           "expectedCodes": [
             "invalid_time_range"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recurring-third-party-review-evidence-reconciler",
+      "recipes": [
+        {
+          "id": "semantic-source-envelope-signature-invalid-1",
+          "operator": "replace",
+          "path": [
+            "artifactId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "source-envelope-signature-invalid"
+          ]
+        },
+        {
+          "id": "semantic-inexact-owner-manifest-closure-2",
+          "operator": "replace",
+          "path": [
+            "requirementCatalog",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "inexact-owner-manifest-closure",
+            "invalid-cycle-revision-binding",
+            "invalid-owner-manifest",
+            "requirement-catalog-revision-mismatch",
+            "source-envelope-signature-invalid"
+          ]
+        },
+        {
+          "id": "semantic-invalid-cycle-revision-binding-3",
+          "operator": "replace",
+          "path": [
+            "requirementCatalog",
+            "approvedByRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid-cycle-revision-binding",
+            "invalid-owner-manifest",
+            "invalid-requirement-catalog-authority",
+            "requirement-catalog-revision-mismatch",
+            "source-envelope-signature-invalid"
           ]
         }
       ]

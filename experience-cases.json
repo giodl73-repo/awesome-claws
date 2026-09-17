@@ -422,6 +422,14 @@
       "asset": "assets/security-alert-review.html",
       "fallback": "outputs/security-alert-review.md",
       "output": "outputs/security-alert-review.html"
+    },
+    {
+      "id": "recurring-third-party-review-evidence-reconciler",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/third-party-review-status.html",
+      "fallback": "outputs/third-party-review-handoff.md",
+      "output": "outputs/third-party-review-status.html"
     }
   ]
 }

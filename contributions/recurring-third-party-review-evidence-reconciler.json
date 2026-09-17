@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "recurring-third-party-review-evidence-reconciler",
+    "name": "Recurring Third-Party Review Evidence Reconciler",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73"
+      ],
+      "lastVerified": "2026-09-17"
+    },
+    "description": "Reconciles one approved recurring third-party review cycle over an exact owner-declared vendor-service requirement-cell index, verifies signed source receipts, derives evidence freshness and predecessor reopening, preserves typed human decisions, and produces a blocked or owner-review handoff without interpreting requirements or taking supplier, contract, risk, or lifecycle action.",
+    "audience": "Authorized third-party governance, compliance-operations, vendor-management, and service owners reviewing supplied vendor-service evidence while requirement, source, remediation, exception, risk, and supplier decisions remain with their named owners.",
+    "principles": [
+      "Treat the owner-approved requirement catalog, exact applicability cells, freshness rules, and separately signed owner manifests as the review universe",
+      "Bind every current and predecessor decision to the exact catalog, cell-index, freshness-rule, and immutable cell digests",
+      "Verify every evidence reference against independently signed source bytes or receipts before deriving freshness",
+      "Use only caller-supplied time to derive current or expired evidence and to reopen exact predecessor decisions",
+      "Preserve remediation, exception, and review decisions as typed named-human records without executing or approving them",
+      "Keep every declared cell visible exactly once and fail closed on omission, duplication, stale evidence, broken lineage, or invalid authority",
+      "Produce one deterministic evidence ledger and blocked or owner-review handoff with every consequential authority claim structurally false"
+    ],
+    "boundaries": [
+      "Do not interpret requirement, contract, policy, assurance-report, questionnaire, subprocessor, or continuity-test content",
+      "Do not score risk, rank or select suppliers, certify compliance, accept risk, approve an exception, or determine remediation adequacy",
+      "Do not contact a vendor, create a ticket, schedule a review, onboard, renew, terminate, purchase, or mutate any owner system",
+      "Do not produce source evidence, invent applicability, infer missing vendor-service cells, or replace an owner declaration with a Cartesian product",
+      "Do not carry a predecessor decision forward when its relied evidence expired without a current replacement",
+      "Do not use wall-clock time, hidden defaults, unsigned manifests, unauthenticated source bytes, or untrusted keys",
+      "Do not expose private keys, credentials, source contents, or unapproved destinations in the durable handoff"
+    ],
+    "intake": [
+      "One approved current review cycle and one independently signed predecessor cycle with caller-controlled asOf",
+      "Owner-approved requirement catalog, exact vendor-service applicability cells, and content-bound revision digests",
+      "Vendor-service and shared-subprocessor manifests signed by their typed owners",
+      "Evidence-kind freshness rules plus signed source receipts binding exact source bytes, references, versions, and digests",
+      "Current and predecessor typed-human decisions with exact cell, revision, evidence, remediation, and exception bindings",
+      "Typed principals, one open remediation, one external exception, and any preserved unauthorized risk-acceptance attempt"
+    ],
+    "workflow": [
+      "Validate the complete bounded artifact and caller context before reading any review state",
+      "Verify the current envelope, predecessor artifact, catalog manifest, service manifests, and source receipt signatures against disjoint trusted public keys",
+      "Recompute catalog, applicability-cell, freshness-rule, predecessor-artifact, exception-scope, and immutable-cell digests",
+      "Derive every evidence expiry at caller asOf and reopen exactly those predecessor cells whose relied evidence expired without replacement",
+      "Require one typed current human decision per declared cell and preserve exact remediation, exception, and unauthorized-attempt blockers",
+      "Render the exact evidence state, reopened cells, blockers, authority non-claims, and next human owner in Markdown and an accessible inline review"
+    ],
+    "deliverables": [
+      "Signed review-cycle, owner-manifest, source-receipt, principal, evidence, and decision ledgers",
+      "Exact six-cell vendor-service requirement coverage index with immutable cell and revision bindings",
+      "Caller-time evidence-freshness ledger with effective expiry and predecessor reopening",
+      "Typed remediation, external exception, and unauthorized risk-attempt blocker register",
+      "Accessible recurring-review status view with a complete Markdown fallback and blocked or owner-review handoff"
+    ],
+    "doneWhen": [
+      "Every catalog, cell-index, freshness-rule, predecessor, owner-manifest, source-receipt, and cell digest or signature validates exactly",
+      "Every declared cell appears exactly once in both predecessor and current decision coverage with one typed named-human reviewer",
+      "Every evidence record has one exact authenticated source receipt and a deterministic current or expired state at caller asOf",
+      "Every expired predecessor decision without replacement is reopened with the exact expired evidence and one owned remediation",
+      "The handoff exposes every blocker and keeps contract interpretation, source production, certification, risk acceptance, remediation execution, supplier contact, renewal, and purchase authority false"
+    ],
+    "capabilityGuidance": [
+      "The base package uses only supplied workspace artifacts and grants no browser, network, shell, MCP, plugin, cron, messaging, ticketing, or source-system capability.",
+      "Requirement owners, vendor-service owners, evidence custodians, reviewers, remediation owners, exception authorities, risk owners, and supplier systems retain their existing authority.",
+      "Missing, stale, conflicting, unsigned, unauthenticated, duplicated, or out-of-scope evidence produces an exact blocker rather than a score, recommendation, or external action."
+    ],
+    "example": {
+      "request": "Reconcile our approved Q3 review for Alpine Support and BrightPay Payroll against the six owner-declared requirement cells and signed source receipts as of 2026-09-16T20:00:00Z. Reopen any predecessor decision whose evidence expired, preserve the approved exception and unauthorized risk-acceptance attempt, and do not interpret contracts, contact suppliers, accept risk, execute remediation, renew, or purchase.",
+      "outcome": "A signed six-cell recurring-review artifact and accessible status view showing one expired assurance report, the exact reopened predecessor cell, its owned remediation, the external exception, the unauthorized risk-attempt blocker, complete evidence lineage, and a blocked owner handoff with every consequential authority claim false."
+    },
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/recurring-third-party-review-evidence-reconciler.schema.json",
+        "path": "schemas/recurring-third-party-review-evidence-reconciler.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "schemas/public-trust.schema.json",
+        "path": "schemas/public-trust.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "schemas/source-receipts.schema.json",
+        "path": "schemas/source-receipts.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/recurring-third-party-review-evidence-reconciler.example.json",
+        "path": "fixtures/recurring-third-party-review-evidence-reconciler.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/public-trust.example.json",
+        "path": "fixtures/public-trust.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/source-receipts.example.json",
+        "path": "fixtures/source-receipts.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/blocked-handoff.expected.json",
+        "path": "fixtures/blocked-handoff.expected.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/prohibited-score.failure.json",
+        "path": "fixtures/prohibited-score.failure.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/recurring-third-party-review-evidence-reconciler.md",
+        "path": "templates/recurring-third-party-review-evidence-reconciler.md",
+        "role": "template"
+      },
+      {
+        "source": "assets/third-party-review-status.html",
+        "path": "assets/third-party-review-status.html",
+        "role": "asset"
+      },
+      {
+        "source": "references/admission-decision.md",
+        "path": "references/admission-decision.md",
+        "role": "reference"
+      },
+      {
+        "source": "references/blocked-handoff.md",
+        "path": "references/blocked-handoff.md",
+        "role": "reference"
+      }
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    }
+  },
+  "contribution": {
+    "problem": "Recurring third-party reviews are commonly coordinated through spreadsheets that reconstruct vendor-service applicability, retain stale evidence behind closed decisions, and separate remediation or exception state from the review handoff. The result can appear complete while an exact owner-declared cell has reopened.",
+    "repeatableJob": "Reconcile one approved recurring third-party review cycle over an exact owner-declared vendor-service requirement-cell universe, authenticate every source binding, derive freshness at caller time, reopen expired predecessor decisions, preserve typed human decisions and blockers, and hand the result to the named owner without taking consequential action.",
+    "proofPlan": "Ship an X4 package with a strict closed schema, signed two-service six-cell fixture, independently injected public trust and source receipts, total semantic validator, exact revision and immutable-cell bindings, independently signed predecessor and owner manifests, deterministic expiry and reopening, structural authority non-claims, blocked Markdown handoff, accessible inline status view, focused adversarial tests, public artifact-registry validation, semantic recipes, canonical Mock+, deterministic runtime and regression coverage, current Control UI screenshot, and cross-platform repository checks.",
+    "categoryRationale": "Governance is the correct category because this Claw reconciles an owner-declared review universe and preserves accountable human decisions without interpreting controls, scoring suppliers, accepting risk, executing remediation, or performing vendor-management actions.",
+    "existingAlternatives": [
+      {
+        "id": "compliance-reviewer",
+        "overlap": "Both preserve stable requirement and evidence identity, typed principals, exact review scope, remediation evidence, and explicit certification and risk non-claims.",
+        "difference": "Compliance Reviewer assesses requirements for one system snapshot; it has no typed vendor-service applicability-cell index, evidence-kind freshness catalog, independently signed predecessor artifact, or deterministic expiry-triggered reopening."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both preserve an exact owner-confirmed universe, caller-controlled time, typed human authority, evidence lineage, complete coverage, blockers, and an owner handoff.",
+        "difference": "Contract Obligation Tracker operates on owner-interpreted executed-agreement obligations and due state; using its agreement and clause fields for review cells would invent contract semantics and still omit evidence expiry and predecessor reopening."
+      },
+      {
+        "id": "procurement-evaluator",
+        "overlap": "Both organize vendor identity, attributable evidence, specialist review, and explicit no-contact and no-purchase boundaries.",
+        "difference": "Procurement Evaluator is a pre-selection weighted comparison and recommendation workflow, while this Claw forbids scoring, ranking, selection, and purchase recommendations and instead reconciles recurring evidence lineage."
+      },
+      {
+        "id": "business-continuity-program-manager",
+        "overlap": "Both bind current and predecessor revisions, preserve separately owned remediation and externally approved exceptions, and fail closed into exact blockers.",
+        "difference": "Business Continuity Program Manager owns processes, BIAs, plans, exercises, and recertifications; it cannot represent vendor-service applicability cells without replacing its authoritative universe."
+      },
+      {
+        "id": "supplier-capacity-assurance-manager",
+        "overlap": "Both use caller-supplied time, explicit source revisions, freshness windows, typed human checkpoints, and stale-evidence exclusion.",
+        "difference": "Supplier Capacity Assurance Manager derives quantity eligibility and allocation proposals, while this Claw contains no quantities, arithmetic, allocation, sourcing, scoring, or purchase authority."
+      }
+    ]
+  }
+}

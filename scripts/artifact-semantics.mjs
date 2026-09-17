@@ -22,6 +22,10 @@ import {
 } from "./problem-known-error-coordinator.mjs";
 import { repositoryOperationsFindings } from "./repository-operations-manager.mjs";
 import { repositoryComplianceProgramFindings } from "./repository-compliance-program-manager.mjs";
+import {
+  recurringThirdPartyReviewFindings,
+  RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS,
+} from "./recurring-third-party-review-evidence-reconciler.mjs";
 import { solutionArchitectureDecisionFindings } from "./solution-architecture-decision-advisor.mjs";
 import {
   securityAlertReviewArtifactFindings,
@@ -53321,6 +53325,8 @@ const validators = {
   "release-coordinator": releaseReadinessFindings,
   "repository-operations-manager": repositoryOperationsFindings,
   "repository-compliance-program-manager": repositoryComplianceProgramFindings,
+  "recurring-third-party-review-evidence-reconciler":
+    recurringThirdPartyReviewFindings,
   "records-retention-disposition-coordinator": retentionDispositionFindings,
   "infrastructure-drift-reconciliation-coordinator": infrastructureDriftFindings,
   "restaurant-venue-scout": restaurantVenueFindings,
@@ -53373,6 +53379,8 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   "contract-obligation-tracker": Object.freeze({
     asOf: "2026-09-05T17:00:00Z",
   }),
+  "recurring-third-party-review-evidence-reconciler":
+    RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS,
   "enterprise-license-entitlement-reconciler": Object.freeze({
     asOf: "2026-09-03T18:00:00Z",
     licenseTrustRoot: Object.freeze({

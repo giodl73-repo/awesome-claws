@@ -115,6 +115,11 @@
     "proofPlan": "Ship an X4 package with a strict JSON Schema, representative revision-bound fixture, Markdown fallback, inline visual, and a total semantic validator. Focused adversarial tests must reject customer/tenant/account or plan-revision drift; cross-workload or cross-service evidence; missing metric definition, window, source, or timestamps; milestone claims without acceptance criteria and receipts; unresolved or unowned actions; incoherent cadence or decision chronology; unauthorized customer contact, messaging, system or support-case mutation, commercial promises, pricing or contract changes, renewal commitments, risk acceptance, and claims of customer success. Generate the catalog, lifecycle and semantic recipes, regression snapshots, Mock+ profile, X3/X4 experience proof, and current Control UI screenshot.",
     "existingAlternatives": [
       {
+        "id": "recurring-third-party-review-evidence-reconciler",
+        "overlap": "Both run recurring evidence-bound reviews over an exact owner-approved scope, preserve stale or conflicting evidence and accountable decisions, and keep external contact, risk acceptance, renewal, and source-system mutation with named humans.",
+        "difference": "Recurring Third-Party Review Evidence Reconciler is limited to signed vendor-service requirement cells, evidence-kind expiry, predecessor-decision reopening, remediation, and exception records. Customer Success Program Manager owns customer, tenant, account, workload, service-health, outcome-milestone, success-plan, cadence, renewal, and escalation semantics and does not reconcile third-party assurance evidence."
+      },
+      {
         "id": "project-manager",
         "overlap": "Both reconcile milestones, risks, blockers, accountable owners, acceptance criteria, decisions, and a recurring status cadence into an evidence-based handoff.",
         "difference": "Project Manager coordinates a time-bounded delivery and its scope, dates, and dependencies. Customer Success Program Manager instead re-evaluates one immutable customer/tenant/account success-plan revision across independently defined adoption metrics, service-health evidence, accepted customer outcomes, and renewal or escalation handoff, while prohibiting success and commercial claims."

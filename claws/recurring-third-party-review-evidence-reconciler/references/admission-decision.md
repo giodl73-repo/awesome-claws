@@ -1,5 +1,14 @@
 # Recurring Third-Party Review Evidence Reconciler admission decision
 
+Promotion status: **approved NEW at 0.84 confidence and promoted as an X4
+public contribution on 2026-09-17**.
+
+The candidate-only paths and pre-promotion limitations below are retained as
+historical review evidence. The promoted package lives under
+`sources/recurring-third-party-review-evidence-reconciler/`, is registered by
+the repository artifact validator, and includes the signed source-receipt
+fixtures and accessible inline review.
+
 Status: **NEW CLAW proven by a bounded candidate slice; not a catalog contribution**
 
 Confidence: **high (0.84)**

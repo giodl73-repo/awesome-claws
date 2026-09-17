@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "awesomeClaws.recurringThirdPartyReviewEvidenceReconcilerSlice.v1",
+  "schemaVersion": "awesomeClaws.recurringThirdPartyReviewEvidenceReconciler.v1",
   "artifactId": "third-party-review-2026-q3",
   "requirementCatalog": {
     "id": "third-party-requirement-catalog",
@@ -735,7 +735,7 @@
     "ownerRef": "principal-program-owner-ava",
     "signingKeyId": "key-third-party-review-2026",
     "issuedAt": "2026-09-16T19:00:00Z",
-    "signature": "3Jpp1bVkBzUd6V/a5Tz3LZGgrjBkf67T88xR5Njm6kc6R3OP043wM+njczgBbElZWREuM3emnIjKLtv+q1W+BA=="
+    "signature": "33K6zjvnmHyp74g6GJFgPYMS0C6wvUB4WazaIN1SjBGFS9OFCFwV8aYwRaC8DmEDol4/7RDR50SVCNMDhVJKAQ=="
   },
   "ownerManifests": [
     {

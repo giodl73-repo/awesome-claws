@@ -2219,6 +2219,38 @@
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     },
     {
+      "id": "recurring-third-party-review-evidence-reconciler",
+      "acceptedRequest": "Reconcile our approved Q3 review for Alpine Support and BrightPay Payroll against the six owner-declared requirement cells and signed source receipts as of 2026-09-16T20:00:00Z. Reopen any predecessor decision whose evidence expired, preserve the approved exception and unauthorized risk-acceptance attempt, and do not interpret contracts, contact suppliers, accept risk, execute remediation, renew, or purchase.",
+      "requiredEvidence": [
+        "One approved current review cycle and one independently signed predecessor cycle with caller-controlled asOf",
+        "Owner-approved requirement catalog, exact vendor-service applicability cells, and content-bound revision digests",
+        "Vendor-service and shared-subprocessor manifests signed by their typed owners",
+        "Evidence-kind freshness rules plus signed source receipts binding exact source bytes, references, versions, and digests",
+        "Current and predecessor typed-human decisions with exact cell, revision, evidence, remediation, and exception bindings",
+        "Typed principals, one open remediation, one external exception, and any preserved unauthorized risk-acceptance attempt"
+      ],
+      "authorityBoundaries": [
+        "Do not interpret requirement, contract, policy, assurance-report, questionnaire, subprocessor, or continuity-test content",
+        "Do not score risk, rank or select suppliers, certify compliance, accept risk, approve an exception, or determine remediation adequacy",
+        "Do not contact a vendor, create a ticket, schedule a review, onboard, renew, terminate, purchase, or mutate any owner system",
+        "Do not produce source evidence, invent applicability, infer missing vendor-service cells, or replace an owner declaration with a Cartesian product",
+        "Do not carry a predecessor decision forward when its relied evidence expired without a current replacement",
+        "Do not use wall-clock time, hidden defaults, unsigned manifests, unauthenticated source bytes, or untrusted keys",
+        "Do not expose private keys, credentials, source contents, or unapproved destinations in the durable handoff"
+      ],
+      "experience": {
+        "target": 4,
+        "primary": "inline-widget",
+        "output": "outputs/third-party-review-status.html",
+        "fallback": "outputs/third-party-review-handoff.md",
+        "asset": "assets/third-party-review-status.html"
+      },
+      "capabilityClasses": [
+        "visual"
+      ],
+      "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
+    },
+    {
       "id": "release-coordinator",
       "acceptedRequest": "Assess whether repository acme/widget is ready for v2.4.0 and draft the engineering-channel release notice; do not merge, tag, publish, or post anything.",
       "requiredEvidence": [

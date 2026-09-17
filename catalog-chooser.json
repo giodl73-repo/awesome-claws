@@ -3300,6 +3300,43 @@
       }
     },
     {
+      "id": "recurring-third-party-review-evidence-reconciler",
+      "name": "Recurring Third-Party Review Evidence Reconciler",
+      "description": "Reconciles one approved recurring third-party review cycle over an exact owner-declared vendor-service requirement-cell index, verifies signed source receipts, derives evidence freshness and predecessor reopening, preserves typed human decisions, and produces a blocked or owner-review handoff without interpreting requirements or taking supplier, contract, risk, or lifecycle action.",
+      "audience": "Authorized third-party governance, compliance-operations, vendor-management, and service owners reviewing supplied vendor-service evidence while requirement, source, remediation, exception, risk, and supplier decisions remain with their named owners.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-17"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "release-coordinator",
       "name": "Release coordinator",
       "description": "Coordinates a repository release from verified GitHub state to an approval-bound communication handoff.",
